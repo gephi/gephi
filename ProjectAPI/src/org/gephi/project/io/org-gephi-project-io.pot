@@ -1,3 +1,21 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 11:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 msgid "gephiFormatException_import"
 msgstr ""
 "Gephi failed importing the project.\n"
@@ -8,23 +26,3 @@ msgstr ""
 
 msgid "gephiFormatException_export"
 msgstr ""
-"Gephi failed saving the project.\n"
-"\n"
-"Exception: %s : %s\n"
-"File: %s\n"
-"Line : %d"
-
-msgid "LBL_Gephi_loader_name"
-msgstr "Gephi Files"
-
-msgid "Services/MIMEResolver/GephiResolver.xml"
-msgstr "Gephi Files"
-
-msgid "Templates/Other/GephiTemplate.gephi"
-msgstr "Empty Gephi file"
-
-msgid "LoadTask.name"
-msgstr "Opening project"
-
-msgid "SaveTask.name"
-msgstr "Saving project"

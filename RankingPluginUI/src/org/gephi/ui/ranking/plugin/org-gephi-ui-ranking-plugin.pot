@@ -1,3 +1,21 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 11:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 msgid "OpenIDE-Module-Display-Category"
 msgstr "Plugin"
 
@@ -8,46 +26,3 @@ msgid "ColorTransformerUI.name"
 msgstr "Color"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Ranking transformers implementations"
-
-msgid "SizeTransformerUI.name"
-msgstr "Size/Weight"
-
-msgid "LabelColorTransformerUI.name"
-msgstr "Label Color"
-
-msgid "LabelSizeTransformerUI.name"
-msgstr "Label Size"
-
-msgid "ColorTransformerPanel.labelColor.text"
-msgstr "Color:"
-
-msgid "ColorTransformerPanel.labelRange.text"
-msgstr "Range:"
-
-msgid "SizeTransformerPanel.labelMaxSize.text"
-msgstr "Max size:"
-
-msgid "SizeTransformerPanel.labelMinSize.text"
-msgstr "Min size:"
-
-msgid "SizeTransformerPanel.labelRange.text"
-msgstr "Range:"
-
-msgid "SizeTransformerPanel.lowerBoundLabel.text"
-msgstr "NaN"
-
-msgid "SizeTransformerPanel.upperBoundLabel.text"
-msgstr "NaN"
-
-msgid "ColorTransformerPanel.lowerBoundLabel.text"
-msgstr "NaN"
-
-msgid "ColorTransformerPanel.upperBoundLabel.text"
-msgstr "NaN"
-
-msgid "PalettePopup.default"
-msgstr "Default"
-
-msgid "PalettePopup.invert"
-msgstr "Invert"

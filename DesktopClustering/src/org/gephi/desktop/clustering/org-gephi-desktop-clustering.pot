@@ -1,3 +1,21 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 11:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 msgid "CTL_ClusteringAction"
 msgstr "Clustering"
 
@@ -8,58 +26,3 @@ msgid "HINT_ClusteringTopComponent"
 msgstr ""
 
 msgid "OpenIDE-Module-Display-Category"
-msgstr "Gephi UI"
-
-msgid "OpenIDE-Module-Name"
-msgstr "Desktop Clustering"
-
-msgid "ClusteringTopComponent.settingsButton.text"
-msgstr "Settings"
-
-msgid "ClusteringTopComponent.descriptionLabel.text"
-msgstr "description"
-
-msgid "ClusteringTopComponent.resetLink.text"
-msgstr "Reset"
-
-msgid "ClusteringTopComponent.runButton.text"
-msgstr "Run"
-
-msgid "ClusteringTopComponent.runButton.stop"
-msgstr "Cancel"
-
-msgid "ClusteringTopComponent.chooser.text"
-msgstr "---Clustering algorithm"
-
-msgid "ClusteringTopComponent.settings.title"
-msgstr "{0} settings"
-
-msgid "ClustersNode.displayName"
-msgstr "Clusters"
-
-msgid "ClustersNode.actions.SelectAll.name"
-msgstr "Select All"
-
-msgid "ClustersNode.actions.GroupAll.name"
-msgstr "Group All"
-
-msgid "ClustersNode.actions.UngroupAll.name"
-msgstr "Ungroup All"
-
-msgid "ClusterNode.displayName.nodesCount.singular"
-msgstr "{0} node"
-
-msgid "ClusterNode.displayName.nodesCount.plural"
-msgstr "{0} nodes"
-
-msgid "ClusterNode.actions.Select.name"
-msgstr "Select"
-
-msgid "ClusterNode.actions.Group.name"
-msgstr "Group"
-
-msgid "ClusterNode.actions.Ungroup.name"
-msgstr "Ungroup"
-
-msgid "OpenIDE-Module-Short-Description"
-msgstr "Integrate and display clustering algorithms UI"

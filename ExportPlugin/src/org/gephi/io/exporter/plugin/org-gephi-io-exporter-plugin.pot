@@ -1,3 +1,21 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 11:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 msgid "OpenIDE-Module-Display-Category"
 msgstr "Plugin"
 
@@ -8,22 +26,3 @@ msgid "OpenIDE-Module-Name"
 msgstr "Export Plugin"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Standard exporters"
-
-msgid "fileType_GDF_Name"
-msgstr "GDF Files (GUESS)"
-
-msgid "fileType_GEXF_Name"
-msgstr "GEXF Files"
-
-msgid "fileType_GraphML_Name"
-msgstr "GraphML Files"
-
-msgid "ExporterGDF_name"
-msgstr "GDF"
-
-msgid "ExporterGEXF_name"
-msgstr "GEXF"
-
-msgid "ExporterGraphML_name"
-msgstr "GraphML"

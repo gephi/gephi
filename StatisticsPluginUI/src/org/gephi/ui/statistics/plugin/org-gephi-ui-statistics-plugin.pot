@@ -1,3 +1,21 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 11:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 msgid "OpenIDE-Module-Display-Category"
 msgstr "Plugin"
 
@@ -8,182 +26,3 @@ msgid "GraphDistancePanel.directedRadioButton.text"
 msgstr "Directed"
 
 msgid "GraphDistancePanel.undirectedRadioButton.text"
-msgstr "UnDirected"
-
-msgid "ClusteringCoefficientPanel.jLabel1.text"
-msgstr "Clustering Coefficent Metric"
-
-msgid "ClusteringCoefficientPanel.directedRadioButton.text"
-msgstr "Directed"
-
-msgid "ClusteringCoefficientPanel.undirectedRadioButton.text"
-msgstr "UnDirected"
-
-msgid "ClusteringCoefficientPanel.triangleRadioButton.text"
-msgstr "Fast Triangle"
-
-msgid "ClusteringCoefficientPanel.bruteRadioButton.text"
-msgstr "Brute Force"
-
-msgid "DegreeDistributionPanel.directedRadioButton.text"
-msgstr "Directed"
-
-msgid "DegreeDistributionPanel.undirectedRadioButton.text"
-msgstr "UnDirected"
-
-msgid "OpenIDE-Module-Short-Description"
-msgstr "Standard statistics UI implementations"
-
-msgid "PageRankPanel.probTextField.text"
-msgstr ""
-
-msgid "PageRankPanel.epsilonTextField.text"
-msgstr ""
-
-msgid "HitsPanel.epsilonTextField.text"
-msgstr ""
-
-msgid "GraphDensityPanel.directedRadioButton.text"
-msgstr "Directed"
-
-msgid "GraphDensityPanel.undirectedRadioButton.text"
-msgstr "UnDirected"
-
-msgid "DegreeDistributionPanel.descriptionLabel.text"
-msgstr ""
-
-msgid "GraphDistancePanel.descriptionLabel.text"
-msgstr ""
-
-msgid "HitsPanel.labelEpsilon.text"
-msgstr "Epsilon:"
-
-msgid "HitsPanel.descriptionLabel.text"
-msgstr ""
-
-msgid "HitsPanel.directedRadioButton.text"
-msgstr "Directed"
-
-msgid "HitsPanel.undirectedRadioButton.text"
-msgstr "UnDirected"
-
-msgid "ModularityPanel.randomizeCheckbox.text"
-msgstr "Randomize"
-
-msgid "ModularityPanel.desriptionLabel.text"
-msgstr ""
-
-msgid "PageRankPanel.labelP.text"
-msgstr "Probability (p):"
-
-msgid "PageRankPanel.labelE.text"
-msgstr "Epsilon:"
-
-msgid "PageRankPanel.descriptionLabel.text"
-msgstr ""
-
-msgid "PageRankPanel.directedRadioButton.text"
-msgstr "Directed"
-
-msgid "PageRankPanel.undirectedRadioButton.text"
-msgstr "UnDirected"
-
-msgid "GraphDensityPanel.header.title"
-msgstr "Density"
-
-msgid "GraphDensityPanel.header.description"
-msgstr ""
-"Measures how close the network is to complete.  A complete graph has all "
-"possible edges and density equal to 1."
-
-msgid "ClusteringCoefficientPanel.header.title"
-msgstr "Clustering Coefficent"
-
-msgid "ClusteringCoefficientPanel.header.description"
-msgstr ""
-"The clustering coefficient, along with the mean shortest path, can indicate "
-"a \"small-world\" effect. It indicates how nodes are embedded in their "
-"neighborhood. The average give an overall indication of the clustering in "
-"the network."
-
-msgid "ClusteringCoefficientPanel.labelAlgorithm.text_1"
-msgstr "Algorithm:"
-
-msgid "DegreeDistributionPanel.header.title"
-msgstr "Degree Distribution"
-
-msgid "DegreeDistributionPanel.header.description"
-msgstr ""
-"Measures the distribution of degrees amongst all of the nodes within the "
-"network."
-
-msgid "GraphDistancePanel.jXLabel1.text"
-msgstr ""
-"Measures how often a node appears on shortest paths between nodes in the "
-"network."
-
-msgid "GraphDistancePanel.jXLabel2.text"
-msgstr ""
-"The average distance from a given starting node to all other nodes in the "
-"network."
-
-msgid "GraphDistancePanel.jXLabel3.text"
-msgstr ""
-"The distance from a given starting node to the farthest node from it in the "
-"network."
-
-msgid "GraphDistancePanel.jLabel1.text"
-msgstr "Betweeness Centrality:"
-
-msgid "GraphDistancePanel.jLabel2.text"
-msgstr "Closeness Centrality:"
-
-msgid "GraphDistancePanel.jLabel3.text"
-msgstr "Eccentricity:"
-
-msgid "GraphDistancePanel.header.description"
-msgstr ""
-"The average graph-distance between all pairs of nodes.  Connected nodes have "
-"graph distance 1. The diameter is the longest graph distance between any two "
-"nodes in the network.  (i.e.  How far apart are the two most distant nodes)."
-
-msgid "GraphDistancePanel.header.title"
-msgstr "Distance"
-
-msgid "HitsPanel.header.description"
-msgstr ""
-"Computes two separate values for each node.  The first value (called "
-"Authority) measures how valuable information stored at that node is.  The "
-"second value (called Hub) measures the quality of the nodes links."
-
-msgid "HitsPanel.header.title"
-msgstr "HITS"
-
-msgid "HitsPanel.epsilonLabel.text"
-msgstr ""
-"Stopping criterion, the smaller this value, the longer convergence will take."
-
-msgid "PageRankPanel.jXHeader1.description"
-msgstr ""
-"Ranks nodes \"pages\" according to how often a user following links will non-"
-"randomly reach the node \"page\"."
-
-msgid "PageRankPanel.jXHeader1.title"
-msgstr "PageRank"
-
-msgid "PageRankPanel.jXLabel1.text"
-msgstr "Used to simulate the user randomly restarting the web-surfing."
-
-msgid "PageRankPanel.jXLabel2.text"
-msgstr ""
-"Stopping criterion, the smaller this value, the longer convergence will take."
-
-msgid "ModularityPanel.header.title"
-msgstr "Modularity"
-
-msgid "ModularityPanel.header.description"
-msgstr ""
-"Community detection algorithm.  A result value of 0.4 or greater is "
-"generally considered meaningful.  Randomizing the algorithm can produce a "
-"better decomposition resulting in a higher modularity score, however "
-"randomizing will increase computation time."

@@ -1,3 +1,21 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 11:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 msgid "OpenIDE-Module-Name"
 msgstr "Import Container Standard"
 
@@ -8,31 +26,3 @@ msgid "ImportContainerException_UnknowNodeId"
 msgstr "Unknow Node id"
 
 msgid "ImportContainerException_MissingNodeSource"
-msgstr "Missing Node Source, edge is ignored"
-
-msgid "ImportContainerException_MissingNodeTarget"
-msgstr "Missing Node Target, edge is ignored"
-
-msgid "ImportContainerException_MissingNodeId"
-msgstr "Missing Node Identifier"
-
-msgid "ImportContainerException_edgeExist"
-msgstr "Edge already exists"
-
-msgid "ImportContainerException_SelfLoop"
-msgstr "Self loop are not allowed"
-
-msgid "ImportContainerException_Bad_Edge_Type"
-msgstr "Edge type doesn't fit with default"
-
-msgid "ImportContainerException_Parallel_Edge"
-msgstr "Parallel edges are not supported yet, edge id=''{0}'' is ignored"
-
-msgid "ImportContainerException_Set_EdgeDefault"
-msgstr "Default edge type set as {0}"
-
-msgid "ImportContainerException_Weight_Zero_Ignored"
-msgstr "Edge weight is 0 or negative, edge id=''{0}'' is ignored"
-
-msgid "ImportContainerException_Weight_Zero"
-msgstr "Edge weight is 0 or negative, it may not be visible"

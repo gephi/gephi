@@ -1,3 +1,21 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 11:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 msgid "EdgePencilPanel.colorButton.text"
 msgstr ""
 
@@ -8,76 +26,3 @@ msgid "EdgePencilPanel.statusLabel.text"
 msgstr "jLabel1"
 
 msgid "EdgePencilPanel.labelColor.text"
-msgstr "Color:"
-
-msgid "BrushPanel.labelColor.text"
-msgstr "Color:"
-
-msgid "BrushPanel.labelIntensity.text"
-msgstr "Intensity:"
-
-msgid "BrushPanel.jLabel1.text"
-msgstr "%"
-
-msgid "BrushPanel.labelDiffusion.text"
-msgstr "Diffusion:"
-
-msgid "BrushPanel.colorButton.text"
-msgstr ""
-
-msgid "NodePencilPanel.labelColor.text"
-msgstr "Color:"
-
-msgid "NodePencilPanel.colorButton.text"
-msgstr ""
-
-msgid "NodePencilPanel.statusLabel.text"
-msgstr "Add node to the graph"
-
-msgid "NodePencilPanel.labelSize.text"
-msgstr "Size:"
-
-msgid "ShortestPathPanel.statusLabel.text"
-msgstr "jLabel1"
-
-msgid "ShortestPathPanel.resultLabel.text"
-msgstr ""
-
-msgid "ShortestPathPanel.labelColor.text"
-msgstr "Color:"
-
-msgid "ShortestPathPanel.colorButton.text"
-msgstr ""
-
-msgid "HeatMapPanel.statusLabel.text"
-msgstr "Click on a node"
-
-msgid "HeatMapPanel.labelMode.text"
-msgstr "Mode:"
-
-msgid "HeatMapPanel.labelGradient.text"
-msgstr "Gradient:"
-
-msgid "HeatMapPanel.labelPalette.text"
-msgstr "Palette:"
-
-msgid "HeatMapPanel.dontPaintUnreachableCheckbox.text"
-msgstr "Don't paint unreachable"
-
-msgid "HeatMapPanel.invertPalette.text"
-msgstr "Invert Palette"
-
-msgid "PainterPanel.labelColor.text"
-msgstr "Color:"
-
-msgid "PainterPanel.colorButton.text"
-msgstr ""
-
-msgid "SizerPanel.jLabel1.text"
-msgstr "Press on nodes and drag vertically the mouse"
-
-msgid "SizerPanel.labelSize.text"
-msgstr "Size:"
-
-msgid "SizerPanel.sizeLabel.text"
-msgstr "NaN"

@@ -1,3 +1,21 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 11:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 msgid "CTL_WelcomeAction"
 msgstr "Welcome"
 
@@ -8,31 +26,3 @@ msgid "HINT_WelcomeTopComponent"
 msgstr ""
 
 msgid "OpenIDE-Module-Display-Category"
-msgstr "Gephi UI"
-
-msgid "OpenIDE-Module-Name"
-msgstr "Welcome Screen"
-
-msgid "OpenIDE-Module-Short-Description"
-msgstr "Welcome screen component"
-
-msgid "WelcomeTopComponent.labelRecent.text"
-msgstr "Open recent"
-
-msgid "WelcomeTopComponent.labelNew.text"
-msgstr "New Project"
-
-msgid "WelcomeTopComponent.labelSamples.text"
-msgstr "Samples"
-
-msgid "WelcomeTopComponent.newProjectLink.text"
-msgstr "New Project"
-
-msgid "WelcomeTopComponent.header.title"
-msgstr "Welcome to Gephi"
-
-msgid "WelcomeTopComponent.openGephiError"
-msgstr "Impossible to open this file. It must he a compatible '.gephi' file."
-
-msgid "WelcomeTopComponent.openOnStartupCheckbox.text"
-msgstr "Open at startup"

@@ -1,3 +1,21 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 11:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 msgid "name"
 msgstr "Force Atlas"
 
@@ -8,79 +26,3 @@ msgstr ""
 "improves convergence at the end of the layout."
 
 msgid "forceAtlas.inertia.name"
-msgstr "Inertia"
-
-msgid "forceAtlas.inertia.desc"
-msgstr "Conservation of node speed at each new pass"
-
-msgid "forceAtlas.repulsionStrength.name"
-msgstr "Repulsion strength"
-
-msgid "forceAtlas.repulsionStrength.desc"
-msgstr "How strongly does each node reject others"
-
-msgid "forceAtlas.attractionStrength.name"
-msgstr "Attraction strength"
-
-msgid "forceAtlas.attractionStrength.desc"
-msgstr "How strongly does each pair of connected nodes attract each other"
-
-msgid "forceAtlas.maxDisplacement.name"
-msgstr "Maximum displacement"
-
-msgid "forceAtlas.maxDisplacement.desc"
-msgstr ""
-"This is limiting each node's displacement (to prevent some super-rejecting "
-"when nodes are too close)"
-
-msgid "forceAtlas.freezeBalance.name"
-msgstr "Auto stabilize function"
-
-msgid "forceAtlas.freezeBalance.desc"
-msgstr ""
-"Activates the freezing of unstable nodes. Despite some loss of efficiency, "
-"this prevents most of nodes flickering"
-
-msgid "forceAtlas.freezeStrength.name"
-msgstr "Autostab Strength"
-
-msgid "forceAtlas.freezeStrength.desc"
-msgstr "Power of the auto stabilize function"
-
-msgid "forceAtlas.freezeInertia.name"
-msgstr "Autostab sensibility"
-
-msgid "forceAtlas.freezeInertia.desc"
-msgstr ""
-"[0,1] This parameters represents the auto-adaptiveness of the anti-"
-"flickering function (actually, the freezing inertia)"
-
-msgid "forceAtlas.gravity.name"
-msgstr "Gravity"
-
-msgid "forceAtlas.gravity.desc"
-msgstr ""
-"This force attracts all nodes to the center to avoid dispersion of "
-"disconnected components"
-
-msgid "forceAtlas.outboundAttractionDistribution.name"
-msgstr "Attraction Distrib."
-
-msgid "forceAtlas.outboundAttractionDistribution.desc"
-msgstr ""
-"The attractive force is distributed along outbound links. This tends to push "
-"hubs at the periphery and put authorities more central"
-
-msgid "forceAtlas.adjustSizes.name"
-msgstr "Adjust by Sizes"
-
-msgid "forceAtlas.adjustSizes.desc"
-msgstr "Avoid nodes overlapping (depending from the size of each node)"
-
-msgid "forceAtlas.speed.name"
-msgstr "Speed"
-
-msgid "forceAtlas.speed.desc"
-msgstr ""
-"Value > 0 defaut 1 ; permits you to increase convergence speed at the price "
-"of a precision loss"

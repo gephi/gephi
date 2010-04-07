@@ -1,3 +1,21 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 11:16+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 msgid "OpenIDE-Module-Display-Category"
 msgstr "Gephi UI"
 
@@ -8,96 +26,3 @@ msgid "OpenIDE-Module-Short-Description"
 msgstr "Integrate import features in UI"
 
 msgid "error_no_matching_file_importer"
-msgstr ""
-"Impossible to find a compatible Importer.\n"
-"The file format is not supported. Check file's extension."
-
-msgid "error_no_matching_stream_importer"
-msgstr ""
-"Impossible to find a compatible Importer.\n"
-"The stream is not supported."
-
-msgid "error_no_matching_db_importer"
-msgstr ""
-"Impossible to find a compatible Importer.\n"
-"The database is not supported."
-
-msgid "error_file_not_found"
-msgstr "Impossible to open the file."
-
-msgid "error_missing_document_instance_factory"
-msgstr "Impossible to obtain an instance of DocumentBuilder"
-
-msgid "error_io"
-msgstr "Impossible to read the given file"
-
-msgid "error_sax"
-msgstr "Impossible to parse the given XML file"
-
-msgid "CTL_ImportDB"
-msgstr "Import Database"
-
-msgid "ReportPanel.title"
-msgstr "Import report"
-
-msgid "ReportPanel.labelSrc.text"
-msgstr "Source:"
-
-msgid "ReportPanel.sourceLabel.text"
-msgstr "jLabel2"
-
-msgid "ReportPanel.tab1ScrollPane.TabConstraints.tabTitle"
-msgstr "Issues"
-
-msgid "ReportPanel.nodeCountLabel.text"
-msgstr "jLabel4"
-
-msgid "ReportPanel.edgeCountLabel.text"
-msgstr "edgesNumberLabel"
-
-msgid "ReportPanel.labelEdgeCount.text"
-msgstr "# of Edges:"
-
-msgid "ReportPanel.labelNodeCount.text"
-msgstr "# of Nodes:"
-
-msgid "ReportPanel.fullGraphRadio.text"
-msgstr "Add full graph"
-
-msgid "ReportPanel.appendGraphRadio.text"
-msgstr "Append graph"
-
-msgid "ReportPanel.labelDynamic.text"
-msgstr "Dynamic Graph:"
-
-msgid "ReportPanel.labelHierarchical.text"
-msgstr "Hierarchical Graph:"
-
-msgid "ReportPanel.dynamicLabel.text"
-msgstr "NaN"
-
-msgid "ReportPanel.hierarchicalLabel.text"
-msgstr "NaN"
-
-msgid "ReportPanel.labelGraphType.text"
-msgstr "Graph Type:"
-
-msgid "ReportPanel.tab2ScrollPane.TabConstraints.tabTitle"
-msgstr "Report"
-
-msgid "DesktopImportController.database.ui.dialog.title"
-msgstr "Database settings"
-
-msgid "DesktopImportController.status.importSuccess"
-msgstr "{0} successfully imported"
-
-msgid "DesktopImportController.status.importSuccess.default"
-msgstr "Data"
-
-msgid "ReportPanel.autoscaleCheckbox.toolTipText"
-msgstr ""
-"Scale node size, node position and edge weight to fill the space in an "
-"optimized way"
-
-msgid "ReportPanel.autoscaleCheckbox.text"
-msgstr "Auto-scale"
