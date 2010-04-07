@@ -1,5 +1,0 @@
-msgid "Editor.TopComponent.Closing.Enabled"
-msgstr "true"
-
-msgid "View.TopComponent.Closing.Enabled"
-msgstr "true"
