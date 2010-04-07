@@ -3,15 +3,14 @@
 # This file is distributed under the same license as the Gephi package.
 # Gephi Team <gephi.team@lists.launchpad.net>, 2010.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi 0.7\n"
 "Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-04-07 11:16+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,3 +25,52 @@ msgid "CTL_ProjectAction"
 msgstr "Project"
 
 msgid "CTL_ProjectTopComponent"
+msgstr "Project Window"
+
+msgid "HINT_ProjectTopComponent"
+msgstr "This is a Project window"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Project Explorer"
+
+msgid "ProjectsNode_title"
+msgstr "Projects"
+
+msgid "ProjectsNode_addProject"
+msgstr "Add Project"
+
+msgid "ProjectNode_openProject"
+msgstr "Open Project"
+
+msgid "ProjectNode_closeProject"
+msgstr "Close Project"
+
+msgid "ProjectNode_removeProject"
+msgstr "Remove Project"
+
+msgid "ProjectNode_addWorkspace"
+msgstr "Add Workspace"
+
+msgid "ProjectNode_renameProject_dialogTitle"
+msgstr "Rename Project"
+
+msgid "ProjectNode_renameProject"
+msgstr "Rename Project"
+
+msgid "ProjectNode_projectProperties"
+msgstr "Properties..."
+
+msgid "ProjectNode_projectProperties_dialogTitle"
+msgstr "Project Properties"
+
+msgid "WorkspaceNode_closeWorkspace"
+msgstr "Close Workspace"
+
+msgid "WorkspaceNode_renameWorkspace"
+msgstr "Rename Workspace"
+
+msgid "WorkspaceNode_renameWorkspace_dialogTitle"
+msgstr "Rename Workspace"
+
+msgid "WorkspaceNode_openWorkspace"
+msgstr "Open"

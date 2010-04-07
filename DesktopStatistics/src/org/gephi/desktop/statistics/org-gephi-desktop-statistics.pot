@@ -3,15 +3,14 @@
 # This file is distributed under the same license as the Gephi package.
 # Gephi Team <gephi.team@lists.launchpad.net>, 2010.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi 0.7\n"
 "Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-04-07 11:16+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,3 +25,70 @@ msgid "CTL_StatisticsAction"
 msgstr "Statistics"
 
 msgid "CTL_StatisticsTopComponent"
+msgstr "Statistics"
+
+msgid "HINT_StatisticsTopComponent"
+msgstr "Statistics"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Statistics"
+
+msgid "StatisticsTopComponent.settingsButton.text"
+msgstr "Settings"
+
+msgid "AvailableStatisticsChooser.title"
+msgstr "Available Metrics"
+
+msgid "StatisticsDisplayPanel.jXBusyLabel1.text"
+msgstr ""
+
+msgid "StatisticsDisplayPanel.reportButton.text"
+msgstr "View"
+
+msgid "StatisticsDisplayPanel.runButton.text"
+msgstr "Run"
+
+msgid "StatisticsDisplayPanel.icon.text"
+msgstr ""
+
+msgid "StatisticsDisplayPanel.name.text"
+msgstr "name"
+
+msgid "StatisticsFrontEnd.runButton.text"
+msgstr "Run"
+
+msgid "StatisticsFrontEnd.reportButton.text"
+msgstr "View"
+
+msgid "StatisticsFrontEnd.displayLabel.text"
+msgstr "DisplayName"
+
+msgid "StatisticsFrontEnd.busyLabel.text"
+msgstr ""
+
+msgid "StatisticsFrontEnd.runStatus.run"
+msgstr "Run"
+
+msgid "StatisticsFrontEnd.runStatus.cancel"
+msgstr "Cancel"
+
+msgid "StatisticsFrontEnd.resultLabel.text"
+msgstr "Result"
+
+msgid "StatisticsFrontEnd.settingsPanel.title"
+msgstr "{0} settings"
+
+msgid "StatisticsReportPanel.copyButton.text"
+msgstr "Copy"
+
+msgid "StatisticsReportPanel.closeButton.text"
+msgstr "Close"
+
+msgid "StatisticsReportPanel.printButton.text"
+msgstr "Print"
+
+msgid "StatisticsReportPanel.saveButton.text"
+msgstr "Save"
+
+msgid "StatisticsReportPanel.status.saveSuccess"
+msgstr "Report saved to {0} directory"

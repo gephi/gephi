@@ -3,15 +3,14 @@
 # This file is distributed under the same license as the Gephi package.
 # Gephi Team <gephi.team@lists.launchpad.net>, 2010.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi 0.7\n"
 "Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-04-07 11:16+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,3 +25,58 @@ msgid "OpenIDE-Module-Short-Description"
 msgstr "Integrate layout UI"
 
 msgid "CTL_LayoutAction"
+msgstr "Layout"
+
+msgid "CTL_LayoutTopComponent"
+msgstr "Layout"
+
+msgid "HINT_LayoutTopComponent"
+msgstr ""
+
+msgid "LayoutPanel.infoLabel.text"
+msgstr ""
+
+msgid "LayoutPanel.choose.text"
+msgstr "---Choose a layout"
+
+msgid "LayoutPanel.runButton.text"
+msgstr "Run"
+
+msgid "LayoutPanel.runButton.tooltip"
+msgstr "Run the layout algorithm"
+
+msgid "LayoutPanel.stopButton.text"
+msgstr "Stop"
+
+msgid "LayoutPanel.stopButton.tooltip"
+msgstr "Stop the algorithm, could take a moment as it waits the pass to finish"
+
+msgid "LayoutPanel.resetButton.text"
+msgstr "Reset"
+
+msgid "LayoutPanel.tooltip.speed"
+msgstr "Speed"
+
+msgid "LayoutPanel.tooltip.quality"
+msgstr "Quality"
+
+msgid "LayoutPanel.presetsButton.text"
+msgstr "Presets..."
+
+msgid "LayoutPanel.presetsButton.savePreset"
+msgstr "Save preset..."
+
+msgid "LayoutPanel.presetsButton.savePreset.input"
+msgstr "Name"
+
+msgid "LayoutPanel.presetsButton.savePreset.input.name"
+msgstr "Preset name"
+
+msgid "LayoutPanel.presetsButton.nopreset"
+msgstr "No presets"
+
+msgid "LayoutPanel.status.savePreset"
+msgstr "{0} preset \"{1}\" saved"
+
+msgid "LayoutPanel.status.loadPreset"
+msgstr "{0} preset \"{1}\" loaded"

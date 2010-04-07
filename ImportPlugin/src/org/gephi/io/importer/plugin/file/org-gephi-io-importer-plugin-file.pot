@@ -3,15 +3,14 @@
 # This file is distributed under the same license as the Gephi package.
 # Gephi Team <gephi.team@lists.launchpad.net>, 2010.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi 0.7\n"
 "Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-04-07 11:16+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,3 +25,292 @@ msgid "fileType_NET_Name"
 msgstr "NET Files (Pajek)"
 
 msgid "fileType_GraphML_Name"
+msgstr "GraphML Files"
+
+msgid "fileType_GML_Name"
+msgstr "GML Files"
+
+msgid "fileType_TLP_Name"
+msgstr "TLP Files"
+
+msgid "fileType_CSV_Name"
+msgstr "CSV Files"
+
+msgid "fileType_DOT_Name"
+msgstr "DOT Files (GraphViz)"
+
+msgid "fileType_DL_Name"
+msgstr "DL Files (UCINET)"
+
+msgid "importerGDF_error_dataformat1"
+msgstr "The file must start with the \"nodedef> name\" line."
+
+msgid "importerGDF_error_dataformat2"
+msgstr ""
+"Bad column formatting. Each column must contains at least a name. Column "
+"names must not contains any coma."
+
+msgid "importerGDF_error_dataformat3"
+msgstr ""
+"Failed to import the column ''{0}'' for node ''{1}''. Error at value ''{2}''."
+
+msgid "importerGDF_error_dataformat4"
+msgstr "Failed to set the ''{0}'' attribute ''{1}'' for {2}."
+
+msgid "importerGDF_error_dataformat5"
+msgstr "The data type ''{0}'' is not recognized, string is used instead."
+
+msgid "importerGDF_error_dataformat6"
+msgstr "Column type is not found for ''{0}'', string is used instead."
+
+msgid "importerGDF_error_dataformat7"
+msgstr ""
+"Line ''{0}'' has more columns than defined in header. Please verify the "
+"number of comas."
+
+msgid "importerTPL_error_dataformat1"
+msgstr "Bad edge formatting at line {0}."
+
+msgid "importerNET_error_dataformat1"
+msgstr "The file must start with the \"*vertices\" line."
+
+msgid "importerNET_error_dataformat2"
+msgstr "Blank line detected at line {0}"
+
+msgid "importerNET_error_dataformat3"
+msgstr "Unbalanced (or too many) quote marks at line {0}"
+
+msgid "importerNET_error_dataformat4"
+msgstr "Vertex number ''{0}'' not in the range [1,{1}]"
+
+msgid "importerNET_error_dataformat5"
+msgstr ""
+"Vertex coordinates conversion problem at line {0}. Must be float number."
+
+msgid "importerGraphML_error_syntax1"
+msgstr "Syntax error, the file must start with the <graphml> markup."
+
+msgid "importerGraphML_error_syntax2"
+msgstr "Syntax error, node ''{0}'' must be nested in a <graph> markup."
+
+msgid "importerGraphML_error_attributefor"
+msgstr ""
+"Attribute ''for'' not found or unknown for attribute ''{0}''. The attribute "
+"is ignored."
+
+msgid "importerGraphML_error_attributetype1"
+msgstr "Attribute type not found for attribute ''{0}''. Set to default string."
+
+msgid "importerGraphML_error_attributetype2"
+msgstr ""
+"Attribute type for ''{0}'' is not recognized. The attribute is ignored."
+
+msgid "importerGraphML_error_attributedefault"
+msgstr "Attribute ''{0}'' default value cannot be cast to the ''{1}'' type."
+
+msgid "importerGraphML_log_nodeproperty"
+msgstr "Node property found: {0}"
+
+msgid "importerGraphML_log_edgeproperty"
+msgstr "Edge property found: {0}"
+
+msgid "importerGraphML_log_nodeattribute"
+msgstr "Node attribute found ''{0}'' ({1})"
+
+msgid "importerGraphML_log_edgeattribute"
+msgstr "Edge attribute found ''{0}'' ({1})"
+
+msgid "importerGraphML_error_datakey"
+msgstr "Data key is missing for element id={0}"
+
+msgid "importerGraphML_error_datavalue1"
+msgstr ""
+"Data value {0} type error for element id={1}. The value cannot be set as "
+"''{2}'' property."
+
+msgid "importerGraphML_error_datavalue2"
+msgstr ""
+"Data value {0} type error for element id={1}. The value cannot be set as "
+"''{2}'' attribute."
+
+msgid "importerGraphML_error_nodeid"
+msgstr "Node id is missing. The node is ignored."
+
+msgid "importerGML_error_listtoken"
+msgstr "Unexpected token type at line {0}"
+
+msgid "importerGML_error_nodeidmissing"
+msgstr "Node id is missing"
+
+msgid "importerGML_error_directedgraphparse"
+msgstr "Unexpected value for graph 'directed' property"
+
+msgid "importerGML_error_directedparse"
+msgstr "Unexpected value for 'directed' property for edge ''{0}''"
+
+msgid "importerGML_error_badparsing"
+msgstr "Invalid GML parsing"
+
+msgid "importerTPL_error_badparsing"
+msgstr "Invalid TPL parsing"
+
+msgid "importerGEXF_error_attributeclass"
+msgstr ""
+"Attribute ''class'' not found or unknown for attribute ''{0}''. The "
+"attribute is ignored."
+
+msgid "importerGEXF_error_attributedefault"
+msgstr "Attribute ''{0}'' default value cannot be cast to the ''{1}'' type."
+
+msgid "importerGEXF_error_attributeoptions"
+msgstr "Attribute ''{0}'' option values cannot be cast to the ''{1}'' type."
+
+msgid "importerGEXF_error_attributetype1"
+msgstr "Attribute type not found for attribute ''{0}''. Set to default string."
+
+msgid "importerGEXF_error_attributetype2"
+msgstr ""
+"Attribute type for ''{0}'' is not recognized. The attribute is ignored."
+
+msgid "importerGEXF_error_datakey"
+msgstr "Data key (attribute ''for'') is missing for element id={0}"
+
+msgid "importerGEXF_error_datakey1"
+msgstr "Data key (attribute ''id'') is missing for element id={0}"
+
+msgid "importerGEXF_error_dataoptionsvalue"
+msgstr ""
+"Data value ''{0}'' is not an option for element id={1}. The value cannot be "
+"set as ''{2}'' attribute."
+
+msgid "importerGEXF_error_datavalue"
+msgstr ""
+"Data value ''{0}'' type error for element id={1}. The value cannot be set as "
+"''{2}'' attribute."
+
+msgid "importerGEXF_error_defaultedgetype"
+msgstr ""
+"Default edge type ''{0}'' is not recognized. Set to default ''undirected''."
+
+msgid "importerGEXF_error_edgedouble"
+msgstr ""
+"Edge type ''double'' is currently not supported. Set to default ''mixed''."
+
+msgid "importerGEXF_error_edgetype"
+msgstr ""
+"Type ''{0}'' of the edge ''{1}'' is not recognized. Set to default value."
+
+msgid "importerGEXF_error_edgeid"
+msgstr "Edge id is missing. An id has been generated."
+
+msgid "importerGEXF_error_edgeweight"
+msgstr "Edge weight of id ''{0}'' is not a float. Weight is ignored."
+
+msgid "importerGEXF_error_nodeid"
+msgstr "Node id is missing. The node is ignored."
+
+msgid "importerGEXF_error_nodelabel"
+msgstr "Node label ''{0}'' is missing. The node is ignored."
+
+msgid "importerGEXF_error_nodeposition"
+msgstr "Node ''{0}'' has a wrong position on ''{1}'' (not a float)."
+
+msgid "importerGEXF_error_nodesize"
+msgstr "Node ''{0}'' has a wrong size (not a float)."
+
+msgid "importerGEXF_error_notnode"
+msgstr "Element ''{0}'' is not a node. The element is ignored."
+
+msgid "importerGEXF_error_parsingdatetype"
+msgstr "Date type ''{0}'' is not recognized. Set to default ''date''."
+
+msgid "importerGEXF_error_parsingmode"
+msgstr "Parsing mode ''{0}'' is not recognized. Set to default ''static''."
+
+msgid "importerGEXF_log_edgeeproperty"
+msgstr "Edge property found: {0}"
+
+msgid "importerGEXF_log_nodeproperty"
+msgstr "Node property found: {0}"
+
+msgid "importerGEXF_log_edgeattribute"
+msgstr "Edge attribute found ''{0}'' ({1})"
+
+msgid "importerGEXF_log_nodeattribute"
+msgstr "Node attribute found ''{0}'' ({1})"
+
+msgid "importerGEXF_log_default"
+msgstr "Default attribute value found: ''{0}'' ({1})"
+
+msgid "importerGEXF_log_options"
+msgstr "Attribute Options found: ''{0}'' ({1})"
+
+msgid "importerGEXF_log_version10"
+msgstr "GEXF version 1.0 (deprecated)"
+
+msgid "importerGEXF_log_version11"
+msgstr "GEXF version 1.1"
+
+msgid "importerDL_error_firstline"
+msgstr "First line of DL file must begin with 'DL'"
+
+msgid "importerDL_error_unknowntag"
+msgstr "Header unknown tag ''{0}''"
+
+msgid "importerDL_error_formatmissing"
+msgstr "DL 'format' tag is missing, 'fullmatrix' is the default"
+
+msgid "importerDL_error_badformat"
+msgstr ""
+"Format ''{0}'' is not supported, provide 'format=edgelist1' or "
+"'format=fullmatrix' format only"
+
+msgid "importerDL_error_nmissing"
+msgstr "Header of DL file must contain tag 'n = <numNodes>'"
+
+msgid "importerDL_error_mmissing"
+msgstr "Header of DL file must contain tag 'm = <numMatricies>'"
+
+msgid "importerDL_error_labelscount"
+msgstr "Number of labels ({0}) is different from n tag ({1})"
+
+msgid "importerDL_error_nodata"
+msgstr "No data line was found"
+
+msgid "importerDL_error_matrixrowscount"
+msgstr "Number of matrix rows ({0}) is greater than n tag ({1})"
+
+msgid "importerDL_error_matrixrowscount2"
+msgstr "Number of matrix rows ({0}) is less than n tag ({1})"
+
+msgid "importerDL_error_matriciescount"
+msgstr "Number of matricies sets ({0}) is different frrom nm tag ({1})"
+
+msgid "importerDL_error_matrixentriescount"
+msgstr ""
+"Number of matrix entries on row {0} of matrix {1} has more than allowed "
+"entries (line {2} of DL file)"
+
+msgid "importerDL_error_weightparseerror"
+msgstr "Unable to parse weight ''{0}'' on matrix {1} on line {2}"
+
+msgid "importerDL_error_edgelistssetscount"
+msgstr "Number of edgelist sets ({0}) is different frrom nm tag ({1})"
+
+msgid "importerDL_error_edgelistrowparse"
+msgstr "Unable to parse from id ''{0}'' on edgelist line {1}"
+
+msgid "importerDL_error_edgeparseweight"
+msgstr "Unable to parse weight ''{0}'' on edgelist line {1}"
+
+msgid "importerDOT_error_nothingfound"
+msgstr "No 'graph' or 'digraph' was found"
+
+msgid "importerDOT_error_labelunreachable"
+msgstr "Unable to find label at line {0}"
+
+msgid "importerDOT_error_colorunreachable"
+msgstr "Unable to find color at line {0}"
+
+msgid "importerDOT_error_edgeparsing"
+msgstr "Unable to parse edge at line {0}"

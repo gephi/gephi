@@ -3,15 +3,14 @@
 # This file is distributed under the same license as the Gephi package.
 # Gephi Team <gephi.team@lists.launchpad.net>, 2010.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi 0.7\n"
 "Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-04-07 11:16+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,3 +25,47 @@ msgstr "Summary:"
 
 msgid "ReportPanel.summaryTextField.text"
 msgstr ""
+
+msgid "ReportPanel.jLabel2.text"
+msgstr "Describe what you were doing when the problem occurred, please:"
+
+msgid "ReportPanel.followCheckBox.text"
+msgstr "I want to follow the issue"
+
+msgid "ReportPanel.emailTextField.text"
+msgstr ""
+
+msgid "ReportPanel.labelEmail.text"
+msgstr "Email:"
+
+msgid "ReportPanel.helpLabel.text"
+msgstr ""
+"Please leave your email, in order to be informed about the problem status"
+
+msgid "ReportPanel.dialog.title"
+msgstr "Exception Reporter"
+
+msgid "ReportPanel.dialog.sendButton"
+msgstr "Send"
+
+msgid "ReportHandler.button"
+msgstr "Report problem"
+
+msgid "ReportController.status.sending"
+msgstr "Sending report"
+
+msgid "ReportController.status.sent"
+msgstr "The problem has been reported, thanks."
+
+msgid "ReportController.status.failed"
+msgstr "A problem occured while sending the report."
+
+msgid "ReportPanel.jLabel3.text"
+msgstr ""
+"Crash reports help us improve the program. They contain no personal data."
+
+msgid "ReportPanel.viewDataButton.text"
+msgstr "View Data"
+
+msgid "ReportPanel.viewData.title"
+msgstr "View Report Data"

@@ -3,15 +3,14 @@
 # This file is distributed under the same license as the Gephi package.
 # Gephi Team <gephi.team@lists.launchpad.net>, 2010.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi 0.7\n"
 "Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-04-07 11:16+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,3 +25,58 @@ msgid "CTL_PartitionTopComponent"
 msgstr "Partition"
 
 msgid "HINT_PartitionTopComponent"
+msgstr "Partition"
+
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Partition"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Partition UI"
+
+msgid "PartitionChooser.applyButton.text"
+msgstr "Apply"
+
+msgid "PartitionChooser.choose.text"
+msgstr "---Choose a partition parameter"
+
+msgid "PartitionChooser.busyMessage"
+msgstr "Building..."
+
+msgid "PartitionToolbar.nodes.label"
+msgstr "Nodes"
+
+msgid "PartitionToolbar.edges.label"
+msgstr "Edges"
+
+msgid "PartitionChooser.groupLink.text"
+msgstr "Group"
+
+msgid "PartitionChooser.group.label"
+msgstr "Group"
+
+msgid "PartitionChooser.ungroup.label"
+msgstr "Ungroup"
+
+msgid "PartitionChooser.groupLink.toolTipText"
+msgstr "Group the partition, one group per part"
+
+msgid "PartitionChooser.pieLink.text"
+msgstr "Show Pie"
+
+msgid "PartitionChooser.showpie.label"
+msgstr "Show Pie"
+
+msgid "PartitionChooser.hidepie.label"
+msgstr "Hide Pie"
+
+msgid "PartitionChooser.refreshBusyLabel.text"
+msgstr ""
+
+msgid "PartitionChooser.refreshButton.text"
+msgstr ""
+
+msgid "PartitionChooser.refreshButton.toolTipText"
+msgstr "Refresh"

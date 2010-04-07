@@ -3,15 +3,14 @@
 # This file is distributed under the same license as the Gephi package.
 # Gephi Team <gephi.team@lists.launchpad.net>, 2010.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi 0.7\n"
 "Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-04-07 11:16+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,3 +25,82 @@ msgid "OpenIDE-Module-Short-Description"
 msgstr "Standard exporters UI"
 
 msgid "UIExporterGEXFPanel.labelExport.text"
+msgstr "Export:"
+
+msgid "UIExporterGDFPanel.jRadioButton1.text"
+msgstr "Simple quotes"
+
+msgid "UIExporterGDFPanel.positionExportCheckbox.text"
+msgstr "Position (x,y)"
+
+msgid "UIExporterGDFPanel.colorsExportCheckbox.text"
+msgstr "Colors"
+
+msgid "UIExporterGDFPanel.attributesExportCheckbox.text"
+msgstr "Attributes"
+
+msgid "UIExporterGDFPanel.labelExport.text"
+msgstr "Export:"
+
+msgid "UIExporterGDFPanel.jRadioButton2.text"
+msgstr "Double quotes"
+
+msgid "UIExporterGDFPanel.quotesCheckbox.text"
+msgstr "Quotes text"
+
+msgid "UIExporterGDFPanel.normalizeCheckbox.text"
+msgstr "Normalize"
+
+msgid "UIExporterGDFPanel.labelQuotes.text"
+msgstr "Field encapsulation use double quotes by default"
+
+msgid "UIExporterGDFPanel.labelNormalize.text"
+msgstr "Scale position and size between 0 and 1"
+
+msgid "UIExporterGEXFPanel.attributesExportCheckbox.text"
+msgstr "Attributes"
+
+msgid "UIExporterGEXFPanel.colorsExportCheckbox.text"
+msgstr "Colors"
+
+msgid "UIExporterGEXFPanel.positionExportCheckbox.text"
+msgstr "Position (x,y)"
+
+msgid "UIExporterGEXFPanel.sizeExportCheckbox.text"
+msgstr "Size"
+
+msgid "UIExporterGEXFPanel.normalizeCheckbox.text"
+msgstr "Normalize"
+
+msgid "UIExporterGEXFPanel.labelNormalize.text"
+msgstr "Scale position and size between 0 and 1"
+
+msgid "UIExporterGDFPanel.simpleQuotesCheckbox.text"
+msgstr "Simple quotes"
+
+msgid "UIExporterGDFPanel.labelQuotes1.text"
+msgstr "Use simple quotes instead of double quotes"
+
+msgid "UIExporterGDFPanel.visibilityCheckbox.text"
+msgstr "Visibility (visible, label visible)"
+
+msgid "UIExporterGraphMLPanel.labelExport.text"
+msgstr "Export:"
+
+msgid "UIExporterGraphMLPanel.positionExportCheckbox.text"
+msgstr "Position (x,y)"
+
+msgid "UIExporterGraphMLPanel.normalizeCheckbox.text"
+msgstr "Normalize"
+
+msgid "UIExporterGraphMLPanel.colorsExportCheckbox.text"
+msgstr "Colors"
+
+msgid "UIExporterGraphMLPanel.attributesExportCheckbox.text"
+msgstr "Attributes"
+
+msgid "UIExporterGraphMLPanel.sizeExportCheckbox.text"
+msgstr "Size"
+
+msgid "UIExporterGraphMLPanel.labelNormalize.text"
+msgstr "Scale position and size between 0 and 1"
