@@ -26,8 +26,11 @@ import java.util.Map.Entry;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import org.gephi.algorithms.shortestpath.AbstractShortestPathAlgorithm;
 import org.gephi.algorithms.shortestpath.BellmanFordShortestPathAlgorithm;
+import org.gephi.algorithms.shortestpath.DijkstraShortestPathAlgorithm;
 import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
@@ -46,7 +49,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=Tool.class)
+@ServiceProvider(service = Tool.class)
 public class HeatMap implements Tool {
     //Architecture
 
@@ -90,19 +93,23 @@ public class HeatMap implements Tool {
                         dontPaintUnreachable = heatMapPanel.isDontPaintUnreachable();
                     }
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                    DirectedGraph graph = null;
+
+                    AbstractShortestPathAlgorithm algorithm;
                     if (gc.getModel().getGraphVisible() instanceof DirectedGraph) {
-                        graph = (DirectedGraph) gc.getModel().getGraphVisible();
+                        DirectedGraph graph = (DirectedGraph) gc.getModel().getGraphVisible();
+                        algorithm = new BellmanFordShortestPathAlgorithm(graph, n);
+                        algorithm.compute();
                     } else {
-                        return;
+                        Graph graph = gc.getModel().getGraphVisible();
+                        algorithm = new DijkstraShortestPathAlgorithm(graph, n);
+                        algorithm.compute();
                     }
 
                     //Color
                     LinearGradient linearGradient = new LinearGradient(colors, positions);
 
                     //Algorithm
-                    BellmanFordShortestPathAlgorithm algorithm = new BellmanFordShortestPathAlgorithm(graph, n);
-                    algorithm.compute();
+
 
                     double maxDistance = algorithm.getMaxDistance();
                     if (!dontPaintUnreachable) {
