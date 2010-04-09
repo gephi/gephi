@@ -59,6 +59,8 @@ public abstract class AbstractShortestPathAlgorithm {
         }
     }
 
+    public abstract void compute();
+
     public HashMap<Node, Double> getDistances() {
         return distances;
     }
