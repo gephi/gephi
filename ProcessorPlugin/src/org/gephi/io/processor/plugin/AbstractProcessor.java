@@ -35,14 +35,16 @@ public abstract class AbstractProcessor {
             node.getNodeData().setLabel(nodeDraft.getLabel());
         }
 
-        node.getNodeData().getTextData().setVisible(nodeDraft.isLabelVisible());
+        if (node.getNodeData().getTextData() != null) {
+            node.getNodeData().getTextData().setVisible(nodeDraft.isLabelVisible());
+        }
 
-        if (nodeDraft.getLabelColor() != null) {
+        if (nodeDraft.getLabelColor() != null && node.getNodeData().getTextData() != null) {
             Color labelColor = nodeDraft.getLabelColor();
             node.getNodeData().getTextData().setColor(labelColor.getRed() / 255f, labelColor.getGreen() / 255f, labelColor.getBlue() / 255f, labelColor.getAlpha() / 255f);
         }
 
-        if (nodeDraft.getLabelSize() != -1f) {
+        if (nodeDraft.getLabelSize() != -1f && node.getNodeData().getTextData() != null) {
             node.getNodeData().getTextData().setSize(nodeDraft.getLabelSize());
         }
 
@@ -105,13 +107,16 @@ public abstract class AbstractProcessor {
         if (edgeDraft.getLabel() != null) {
             edge.getEdgeData().setLabel(edgeDraft.getLabel());
         }
-        edge.getEdgeData().getTextData().setVisible(edgeDraft.isLabelVisible());
 
-        if (edgeDraft.getLabelSize() != -1f) {
+        if (edge.getEdgeData().getTextData() != null) {
+            edge.getEdgeData().getTextData().setVisible(edgeDraft.isLabelVisible());
+        }
+
+        if (edgeDraft.getLabelSize() != -1f && edge.getEdgeData().getTextData() != null) {
             edge.getEdgeData().getTextData().setSize(edgeDraft.getLabelSize());
         }
 
-        if (edgeDraft.getLabelColor() != null) {
+        if (edgeDraft.getLabelColor() != null && edge.getEdgeData().getTextData() != null) {
             Color labelColor = edgeDraft.getLabelColor();
             edge.getEdgeData().getTextData().setColor(labelColor.getRed() / 255f, labelColor.getGreen() / 255f, labelColor.getBlue() / 255f, labelColor.getAlpha() / 255f);
         }
