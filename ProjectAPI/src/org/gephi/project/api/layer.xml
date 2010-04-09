@@ -50,31 +50,12 @@
                         <attr name="position" intvalue="1100"/>
                     </file>
                 </folder>
-                <folder name="Factories">
-                    <file name="org-gephi-project-io-GephiDataLoader.instance">
-                        <attr name="position" intvalue="100"/>
-                    </file>
-                </folder>
+ 
             </folder>
         </folder>
     </folder>
     <folder name="Actions">
     </folder>
     <folder name="Menu">
-    </folder>
-    <folder name="Services">
-        <folder name="MIMEResolver">
-            <file name="GephiResolver.xml" url="/org/gephi/project/io/GephiResolver.xml">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.project.io.Bundle"/>
-            </file>
-        </folder>
-    </folder>
-    <folder name="Templates">
-        <folder name="Other">
-            <file name="GephiTemplate.gephi" url="/org/gephi/project/io/GephiTemplate.gephi">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.project.io.Bundle"/>
-                <attr name="template" boolvalue="true"/>
-            </file>
-        </folder>
     </folder>
 </filesystem>
