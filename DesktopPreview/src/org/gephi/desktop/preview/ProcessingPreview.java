@@ -44,6 +44,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
         if (model != null) {
             uniEdgeMiniLabelFont = getPFont(model.getUniEdgeSupervisor().getMiniLabelFont());
             biEdgeMiniLabelFont = getPFont(model.getBiEdgeSupervisor().getMiniLabelFont());
+            background = model.getBackgroundColor();
         }
 
         // redraws the applet
@@ -168,10 +169,6 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
             initAppletLayout();
             redraw();
         }
-    }
-
-    public void setBackgroundColor(java.awt.Color c) {
-        this.background = c;
     }
 
     /**

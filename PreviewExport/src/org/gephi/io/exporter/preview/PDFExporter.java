@@ -1,12 +1,15 @@
 package org.gephi.io.exporter.preview;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,6 +57,10 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     private boolean cancel = false;
     private PdfContentByte cb;
     private Document document;
+    //Parameters
+    private Insets margin = new Insets(0, 0, 0, 0);
+    private boolean landscape = false;
+    private Rectangle pageSize = PageSize.A4;
 
     public boolean exportData(File file, Workspace workspace) throws Exception {
         try {
@@ -188,8 +195,10 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         cb.setRGBColorStroke(bc.getRed(), bc.getGreen(), bc.getBlue());
         cb.setLineWidth(node.getBorderWidth());
         cb.setRGBColorFill(c.getRed(), c.getGreen(), c.getBlue());
-        cb.circle(center.getX(), -center.getY(), node.getRadius());
+        cb.circle(center.getX(), center.getY(), node.getRadius());
         cb.fillStroke();
+
+        Progress.progress(progress);
     }
 
     public void renderNodeLabel(NodeLabel label) {
@@ -219,6 +228,8 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         setStrokeColor(selfLoop.getColor());
         cb.setLineWidth(selfLoop.getThickness() * selfLoop.getScale());
         cb.stroke();
+
+        Progress.progress(progress);
     }
 
     public void renderDirectedEdge(DirectedEdge edge) {
@@ -272,9 +283,9 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Point pt2 = arrow.getPt2();
         Point pt3 = arrow.getPt3();
 
-        cb.moveTo(pt1.getX(), -pt1.getY());
-        cb.lineTo(pt2.getX(), -pt2.getY());
-        cb.lineTo(pt3.getX(), -pt3.getY());
+        cb.moveTo(pt1.getX(), pt1.getY());
+        cb.lineTo(pt2.getX(), pt2.getY());
+        cb.lineTo(pt3.getX(), pt3.getY());
         cb.closePath();
 
         setFillColor(arrow.getColor());
@@ -355,13 +366,25 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         }
         Progress.switchToDeterminate(progress, max);
 
-        // export task
-        document = new Document(PageSize.A4);
+        //Rectangle
+        Rectangle size = new Rectangle(pageSize);
+        size.setBackgroundColor(new BaseColor(controller.getModel().getBackgroundColor()));
+        float ratioWidth = size.getWidth() / graphSheet.getWidth();
+        float ratioHeight = size.getHeight() / graphSheet.getHeight();
+        float scale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+        float translateX = size.getWidth() / 2f - size.getWidth() / 2f * scale;
+        float translateY = size.getHeight() / 2f - size.getHeight() / 2f * scale;
+
+        document = new Document(size);
+        //document.setMargins(margin.left, margin.right, margin.top, margin.bottom);
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
         document.open();
         cb = writer.getDirectContent();
         cb.saveState();
-        cb.transform(AffineTransform.getTranslateInstance(200, 400));
+        cb.transform(AffineTransform.getTranslateInstance(translateX, translateY));
+        cb.transform(AffineTransform.getScaleInstance(scale, -scale));
+
+        //
         renderGraph(graphSheet.getGraph());
         cb.restoreState();
         document.close();
@@ -388,8 +411,8 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
      * @param end    the end of the line to draw
      */
     private void line(Point start, Point end) {
-        cb.moveTo(start.getX(), -start.getY());
-        cb.lineTo(end.getX(), -end.getY());
+        cb.moveTo(start.getX(), start.getY());
+        cb.lineTo(end.getX(), end.getY());
     }
 
     /**
@@ -403,8 +426,8 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Point pt3 = curve.getPt3();
         Point pt4 = curve.getPt4();
 
-        cb.moveTo(pt1.getX(), -pt1.getY());
-        cb.curveTo(pt2.getX(), -pt2.getY(), pt3.getX(), -pt3.getY(), pt4.getX(), -pt4.getY());
+        cb.moveTo(pt1.getX(), pt1.getY());
+        cb.curveTo(pt2.getX(), pt2.getY(), pt3.getX(), pt3.getY(), pt4.getX(), pt4.getY());
     }
 
     /**

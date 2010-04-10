@@ -1,5 +1,6 @@
 package org.gephi.preview;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -194,6 +195,12 @@ public class PreviewControllerImpl implements PreviewController {
         if (model != null) {
             model.setCurrentPreset(preset);
             model.applyPreset(preset);
+        }
+    }
+
+    public void setBackgroundColor(Color color) {
+        if(model!=null) {
+            model.setBackgroundColor(color);
         }
     }
 }

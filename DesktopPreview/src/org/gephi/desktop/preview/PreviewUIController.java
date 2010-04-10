@@ -24,7 +24,6 @@ public class PreviewUIController implements GraphListener {
     private static PreviewUIController instance;
     private GraphSheet graphSheet = null;
     private GraphModel graphModel = null;
-    private Color backgroundColor = Color.WHITE;
 
     /**
      * Private constructor.
@@ -101,10 +100,6 @@ public class PreviewUIController implements GraphListener {
      */
     public void graphChanged(GraphEvent event) {
         showRefreshNotification();
-    }
-
-    public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
     }
 
     /**

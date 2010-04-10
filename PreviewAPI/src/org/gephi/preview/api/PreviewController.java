@@ -31,4 +31,6 @@ public interface PreviewController {
     public void savePreset(String name);
 
     public void setCurrentPreset(PreviewPreset preset);
+
+    public void setBackgroundColor(java.awt.Color color);
 }

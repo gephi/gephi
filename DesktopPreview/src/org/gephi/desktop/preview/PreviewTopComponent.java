@@ -14,10 +14,13 @@ import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.gephi.preview.api.GraphSheet;
+import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.UIUtils;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -57,8 +60,8 @@ public final class PreviewTopComponent extends TopComponent {
         ((JColorButton) backgroundButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                sketch.setBackgroundColor((Color) evt.getNewValue());
-                PreviewUIController.findInstance().setBackgroundColor((Color) evt.getNewValue());
+                PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+                controller.setBackgroundColor((Color) evt.getNewValue());
             }
         });
         southBusyLabel.setVisible(false);

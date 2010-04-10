@@ -61,4 +61,6 @@ public interface PreviewModel {
     public float getVisibilityRatio();
 
     public PreviewPreset getCurrentPreset();
+
+    public java.awt.Color getBackgroundColor();
 }

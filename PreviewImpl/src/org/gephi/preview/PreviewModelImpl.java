@@ -4,6 +4,7 @@
  */
 package org.gephi.preview;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
@@ -51,6 +52,7 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
     //States
     private boolean updateFlag = true;
     private float visibilityRatio = 1;
+    private Color backgroundColor = Color.WHITE;
     private PreviewPreset currentPreset;
 
     public PreviewModelImpl() {
@@ -135,6 +137,14 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
         this.visibilityRatio = visibilityRatio;
     }
 
+    public Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
     public PreviewPreset getCurrentPreset() {
         return currentPreset;
     }
@@ -205,6 +215,11 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
         visibilityRatioE.setTextContent(String.valueOf(visibilityRatio));
         previewModelE.appendChild(visibilityRatioE);
 
+        //Color
+        Element colorE = document.createElement("backgroundcolor");
+        colorE.setTextContent("" + backgroundColor.getRGB());
+        previewModelE.appendChild(colorE);
+
         //Properties
         writeProperties(document, previewModelE, nodeSupervisor);
         writeProperties(document, previewModelE, globalEdgeSupervisor);
@@ -250,6 +265,8 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
                 Element childE = (Element) n;
                 if (childE.getNodeName().equals("ratio")) {
                     visibilityRatio = Float.parseFloat(childE.getTextContent());
+                } else if (childE.getNodeName().equals("backgroundcolor")) {
+                    backgroundColor = new Color(Integer.parseInt(childE.getTextContent()));
                 } else if (childE.getNodeName().equals("previewproperty")) {
                     String name = childE.getAttribute("name");
                     Property p = propertiesMap.get(name);

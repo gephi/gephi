@@ -42,8 +42,7 @@ public class GraphSheetImpl implements GraphSheet {
         Vector topLeftVector = new Vector(node.getTopLeftPosition());
         Vector bottomRightVector = new Vector(node.getBottomRightPosition());
 
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             node = it.next();
 
             if (node.getTopLeftPosition().getX() < topLeftVector.x) {
@@ -99,11 +98,11 @@ public class GraphSheetImpl implements GraphSheet {
     private void updateDimensions() {
         Vector topLeftVector = new Vector(originalTopLeft);
         topLeftVector.sub(margin, margin, 0);
-        topLeft =  new PointImpl(topLeftVector);
+        topLeft = new PointImpl(topLeftVector);
 
         Vector bottomRightVector = new Vector(originalBottomRight);
         bottomRightVector.add(margin, margin, 0);
-        bottomRight =  new PointImpl(bottomRightVector);
+        bottomRight = new PointImpl(bottomRightVector);
 
         Vector box = new Vector(bottomRightVector);
         box.sub(topLeftVector);

@@ -355,8 +355,9 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         labelExport.setEnabled(false);
         southToolbar.add(labelExport);
 
-        svgExportButton.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        svgExportButton.setFont(svgExportButton.getFont().deriveFont(svgExportButton.getFont().getSize()-1f));
         org.openide.awt.Mnemonics.setLocalizedText(svgExportButton, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.svgExportButton.text")); // NOI18N
+        svgExportButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.svgExportButton.toolTipText")); // NOI18N
         svgExportButton.setEnabled(false);
         svgExportButton.setFocusable(false);
         svgExportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
