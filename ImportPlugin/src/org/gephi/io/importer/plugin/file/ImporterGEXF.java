@@ -764,7 +764,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("gexf");
+        return fileObject.hasExt("gexf") || fileObject.hasExt("GEXF");
     }
 
     public boolean cancel() {

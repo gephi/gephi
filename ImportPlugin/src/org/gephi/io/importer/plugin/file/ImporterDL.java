@@ -306,7 +306,7 @@ public class ImporterDL implements TextImporter, LongTask {
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("dl");
+        return fileObject.hasExt("dl") || fileObject.hasExt("DL");
     }
 
     public boolean cancel() {

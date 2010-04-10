@@ -476,6 +476,6 @@ public class ImporterGraphML implements XMLImporter, LongTask {
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("graphml");
+        return fileObject.hasExt("graphml")  || fileObject.hasExt("GRAPHML");
     }
 }

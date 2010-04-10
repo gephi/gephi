@@ -327,6 +327,6 @@ public class ImporterPajek implements TextImporter, LongTask {
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("net");
+        return fileObject.hasExt("net") || fileObject.hasExt("NET");
     }
 }

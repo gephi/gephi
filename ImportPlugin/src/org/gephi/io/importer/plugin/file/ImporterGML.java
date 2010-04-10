@@ -309,6 +309,6 @@ public class ImporterGML implements TextImporter, LongTask {
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("gml");
+        return fileObject.hasExt("gml") || fileObject.hasExt("GML");
     }
 }

@@ -145,7 +145,7 @@ public class ImporterTLP implements TextImporter, LongTask {
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("tlp");
+        return fileObject.hasExt("tlp") || fileObject.hasExt("TLP");
     }
 
     public boolean cancel() {

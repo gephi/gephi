@@ -125,7 +125,7 @@ public class ImporterCSV implements TextImporter, LongTask {
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("csv");
+        return fileObject.hasExt("csv") || fileObject.hasExt("CSV");
     }
 
     public boolean cancel() {

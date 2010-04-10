@@ -494,7 +494,7 @@ public class DesktopImportController implements ImportController {
                 return true;
             }
         }
-        if (fileObject.hasExt("zip")) {
+        if (fileObject.hasExt("zip") || fileObject.hasExt("ZIP")) {
             return true;
         }
         return false;

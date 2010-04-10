@@ -333,7 +333,7 @@ public class ImporterDOT implements TextImporter, LongTask {
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("dot");
+        return fileObject.hasExt("dot") || fileObject.hasExt("DOT");
     }
 
     public boolean cancel() {

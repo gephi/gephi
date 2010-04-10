@@ -562,6 +562,6 @@ public class ImporterGDF implements TextImporter, LongTask {
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("gdf");
+        return fileObject.hasExt("gdf") || fileObject.hasExt("GDF");
     }
 }
