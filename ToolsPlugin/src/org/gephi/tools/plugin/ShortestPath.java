@@ -24,7 +24,9 @@ import java.awt.Color;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import org.gephi.algorithms.shortestpath.AbstractShortestPathAlgorithm;
 import org.gephi.algorithms.shortestpath.BellmanFordShortestPathAlgorithm;
+import org.gephi.algorithms.shortestpath.DijkstraShortestPathAlgorithm;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
@@ -91,26 +93,28 @@ public class ShortestPath implements Tool {
                     float[] colorArray = new float[]{color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f};
                     Node targetNode = n;
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                    DirectedGraph graph = null;
-                    if (gc.getModel().getGraphVisible() instanceof DirectedGraph) {
-                        graph = (DirectedGraph) gc.getModel().getGraphVisible();
-                    } else {
-                        return;
-                    }
 
-                    BellmanFordShortestPathAlgorithm algorithm = new BellmanFordShortestPathAlgorithm(graph, sourceNode);
+                    AbstractShortestPathAlgorithm algorithm;
+                    if (gc.getModel().getGraphVisible() instanceof DirectedGraph) {
+                        algorithm = new BellmanFordShortestPathAlgorithm((DirectedGraph) gc.getModel().getGraphVisible(), sourceNode);
+                    } else {
+                        algorithm = new DijkstraShortestPathAlgorithm(gc.getModel().getGraphVisible(), sourceNode);
+                    }
                     algorithm.compute();
+
                     double distance;
                     if ((distance = algorithm.getDistances().get(targetNode)) != Double.POSITIVE_INFINITY) {
                         targetNode.getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
                         VizController.getInstance().selectNode(targetNode);
                         Edge predecessorEdge = algorithm.getPredecessorIncoming(targetNode);
-                        while (predecessorEdge != null && predecessorEdge.getSource() != sourceNode) {
+                        Node predecessor = algorithm.getPredecessor(targetNode);
+                        while (predecessorEdge != null && predecessor != sourceNode) {
                             predecessorEdge.getEdgeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
                             VizController.getInstance().selectEdge(predecessorEdge);
-                            predecessorEdge.getSource().getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
-                            VizController.getInstance().selectNode(predecessorEdge.getSource());
-                            predecessorEdge = algorithm.getPredecessorIncoming(predecessorEdge.getSource());
+                            predecessor.getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
+                            VizController.getInstance().selectNode(predecessor);
+                            predecessorEdge = algorithm.getPredecessorIncoming(predecessor);
+                            predecessor = algorithm.getPredecessor(predecessor);
                         }
                         predecessorEdge.getEdgeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
                         VizController.getInstance().selectEdge(predecessorEdge);

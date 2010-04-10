@@ -18,11 +18,12 @@ import org.gephi.graph.api.Node;
 public class DijkstraShortestPathAlgorithm extends AbstractShortestPathAlgorithm {
 
     protected Graph graph;
+    protected HashMap<Node, Edge> predecessors;
 
     public DijkstraShortestPathAlgorithm(Graph graph, Node sourceNode) {
         super(sourceNode);
         this.graph = graph;
-        // predecessors = new HashMap<Node, Edge>();
+        predecessors = new HashMap<Node, Edge>();
     }
 
     public void compute() {
@@ -56,15 +57,16 @@ public class DijkstraShortestPathAlgorithm extends AbstractShortestPathAlgorithm
 
             for (Edge edge : graph.getEdges(currentNode)) {
                 Node neighbor = graph.getOpposite(currentNode, edge);
+                double dist = edgeWeight(edge) + distances.get(currentNode);
                 if (distances.get(neighbor).equals(Double.POSITIVE_INFINITY)) {
-                    double dist = edgeWeight(edge) + distances.get(currentNode);
                     distances.put(neighbor, dist);
                     maxDistance = Math.max(maxDistance, dist);
+                    predecessors.put(neighbor, edge);
                 } else {
-                    double testDistance = distances.get(currentNode) + edgeWeight(edge);
-                    if (testDistance < distances.get(neighbor)) {
-                        distances.put(neighbor, testDistance);
-                        maxDistance = Math.max(maxDistance, testDistance);
+                    if (dist < distances.get(neighbor)) {
+                        distances.put(neighbor, dist);
+                        maxDistance = Math.max(maxDistance, dist);
+                        predecessors.put(neighbor, edge);
                     }
                 }
             }
@@ -75,5 +77,21 @@ public class DijkstraShortestPathAlgorithm extends AbstractShortestPathAlgorithm
 
     private double edgeWeight(Edge edge) {
         return edge.getWeight();
+    }
+
+    public Node getPredecessor(Node node) {
+        Edge edge = predecessors.get(node);
+        if (edge != null) {
+            if (edge.getSource() != node) {
+                return edge.getSource();
+            } else {
+                return edge.getTarget();
+            }
+        }
+        return null;
+    }
+
+    public Edge getPredecessorIncoming(Node node) {
+        return predecessors.get(node);
     }
 }

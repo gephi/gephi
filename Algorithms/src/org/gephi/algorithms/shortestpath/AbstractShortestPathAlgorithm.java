@@ -61,6 +61,10 @@ public abstract class AbstractShortestPathAlgorithm {
 
     public abstract void compute();
 
+    public abstract Node getPredecessor(Node node);
+
+    public abstract Edge getPredecessorIncoming(Node node);
+
     public HashMap<Node, Double> getDistances() {
         return distances;
     }

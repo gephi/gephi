@@ -82,7 +82,15 @@ public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgori
     }
 
     public Node getPredecessor(Node node) {
-        return predecessors.get(node).getSource();
+        Edge edge = predecessors.get(node);
+        if (edge != null) {
+            if (edge.getSource() != node) {
+                return edge.getSource();
+            } else {
+                return edge.getTarget();
+            }
+        }
+        return null;
     }
 
     public Edge getPredecessorIncoming(Node node) {
