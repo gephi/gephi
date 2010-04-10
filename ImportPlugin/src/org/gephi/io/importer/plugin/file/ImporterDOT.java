@@ -86,6 +86,7 @@ public class ImporterDOT implements TextImporter, LongTask {
         tk.ordinaryChar('>');
         tk.ordinaryChar('/');
         tk.ordinaryChar('*');
+        tk.ordinaryChar(',');
         tk.quoteChar('"');
         tk.whitespaceChars(';', ';');
         tk.ordinaryChar('=');
