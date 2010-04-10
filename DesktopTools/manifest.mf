@@ -3,5 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.desktop.tools
 OpenIDE-Module-Layer: org/gephi/desktop/tools/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/tools/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.2
+OpenIDE-Module-Specification-Version: 0.7.0.3
 
