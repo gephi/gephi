@@ -1,4 +1,6 @@
 Manifest-Version: 1.0
+AutoUpdate-Essential-Module: true
+AutoUpdate-Show-In-Client: true
 OpenIDE-Module: org.gephi.lib.itext
 OpenIDE-Module-Localizing-Bundle: org/gephi/lib/itext/Bundle.properties
 OpenIDE-Module-Specification-Version: 5.0.1
