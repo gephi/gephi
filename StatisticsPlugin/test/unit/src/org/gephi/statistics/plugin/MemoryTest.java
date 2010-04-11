@@ -54,11 +54,13 @@ public class MemoryTest {
         }
 
         Random random = new Random();
-        for (int j = 0; j < EDGES; j++) {
+        int j = 0;
+        while (j < EDGES) {
             Node source = graph.getNode(random.nextInt(NODES));
             Node target = graph.getNode(random.nextInt(NODES));
             if (graph.getEdge(source, target) == null) {
                 graph.addEdge(graphModel.factory().newEdge(source, target));
+                j++;
             }
         }
     }
@@ -73,10 +75,11 @@ public class MemoryTest {
 
     @Test
     public void testGraphDistance() {
+        System.out.println("Start Brandes");
         GraphDistance distance = new GraphDistance();
         distance.setDirected(true);
         distance.execute(graphModel, attributeModel);
-        System.out.println("Diameter: "+distance.getDiameter());
-        System.out.println("AVg Path Length: "+distance.getPathLength());
+        System.out.println("Diameter: " + distance.getDiameter());
+        System.out.println("AVg Path Length: " + distance.getPathLength());
     }
 }
