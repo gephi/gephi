@@ -170,7 +170,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         checkNode(node);
         AbstractEdge absEdge = checkEdge(edge);
         if (absEdge.getSource(view.getViewId()) == node) {
-            return absEdge.getTarget();
+            return absEdge.getTarget(view.getViewId());
         } else if (absEdge.getTarget(view.getViewId()) == node) {
             return absEdge.getSource(view.getViewId());
         }
