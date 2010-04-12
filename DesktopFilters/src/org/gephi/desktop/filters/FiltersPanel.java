@@ -83,8 +83,8 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                     controller.remove(query);
                 }
                 uiModel.setSelectedQuery(null);
-                controller.select(null);
-                controller.filter(null);
+                controller.selectVisible(null);
+                controller.filterVisible(null);
             }
         });
         filterButton.addActionListener(new ActionListener() {
@@ -93,10 +93,10 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 //selectButton.setSelected(false);
                 if (uiModel.getSelectedQuery() != null && filterButton.isSelected()) {
                     FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-                    controller.filter(uiModel.getSelectedRoot());
+                    controller.filterVisible(uiModel.getSelectedRoot());
                 } else {
                     FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-                    controller.filter(null);
+                    controller.filterVisible(null);
                 }
             }
         });
@@ -106,10 +106,10 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 //filterButton.setSelected(false);
                 if (uiModel.getSelectedQuery() != null && selectButton.isSelected()) {
                     FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-                    controller.select(uiModel.getSelectedRoot());
+                    controller.selectVisible(uiModel.getSelectedRoot());
                 } else {
                     FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-                    controller.select(null);
+                    controller.selectVisible(null);
                 }
             }
         });
@@ -207,10 +207,10 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         if (e.getSource() instanceof FilterUIModel) {
             if (uiModel.getSelectedQuery() != null && filterButton.isSelected()) {
                 FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-                controller.filter(uiModel.getSelectedRoot());
+                controller.filterVisible(uiModel.getSelectedRoot());
             } else if (uiModel.getSelectedQuery() != null && selectButton.isSelected()) {
                 FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-                controller.select(uiModel.getSelectedRoot());
+                controller.selectVisible(uiModel.getSelectedRoot());
             }
         }
         updateControls();

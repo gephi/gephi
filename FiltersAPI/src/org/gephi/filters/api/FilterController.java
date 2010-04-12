@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.filters.api;
 
 import org.gephi.filters.spi.Filter;
-import org.gephi.filters.spi.FilterProperty;
+import org.gephi.graph.api.GraphView;
 
 /**
  *
@@ -41,9 +41,11 @@ public interface FilterController {
 
     public void removeSubQuery(Query query, Query parent);
 
-    public void filter(Query query);
+    public void filterVisible(Query query);
 
-    public void select(Query query);
+    public void selectVisible(Query query);
+
+    public GraphView filter(Query query);
 
     public void exportToColumn(String title, Query query);
 

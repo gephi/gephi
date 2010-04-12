@@ -39,6 +39,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.utils.progress.Progress;
@@ -139,7 +140,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         model.removeSubQuery(query, parent);
     }
 
-    public void filter(Query query) {
+    public void filterVisible(Query query) {
         model.setFiltering(true);
         model.setCurrentQuery(query);
 
@@ -162,7 +163,14 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         }
     }
 
-    public void select(Query query) {
+    public GraphView filter(Query query) {
+        FilterProcessor processor = new FilterProcessor();
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        Graph result = processor.process((AbstractQueryImpl) query, graphModel);
+        return result.getView();
+    }
+
+    public void selectVisible(Query query) {
         model.setFiltering(false);
         model.setCurrentQuery(query);
 
