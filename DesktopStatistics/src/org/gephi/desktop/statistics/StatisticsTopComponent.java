@@ -88,7 +88,12 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         });
 
         if (pc.getCurrentWorkspace() != null) {
-            refreshModel(pc.getCurrentWorkspace().getLookup().lookup(StatisticsModelImpl.class));
+            StatisticsModelImpl m = pc.getCurrentWorkspace().getLookup().lookup(StatisticsModelImpl.class);
+            if (m == null) {
+                m = new StatisticsModelImpl();
+                pc.getCurrentWorkspace().add(m);
+            }
+            refreshModel(m);
         } else {
             refreshModel(null);
         }
