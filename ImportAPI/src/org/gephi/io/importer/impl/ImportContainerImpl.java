@@ -243,6 +243,44 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
     }
 
+    public void removeEdge(EdgeDraft edgeDraft) {
+        if (edgeDraft == null) {
+            throw new NullPointerException();
+        }
+        EdgeDraftImpl edgeDraftImpl = (EdgeDraftImpl) edgeDraft;
+        String id = edgeDraftImpl.getId();
+        String sourceTargetId = edgeDraftImpl.getSource().getId() + "-" + edgeDraftImpl.getTarget().getId();
+
+        if (!edgeMap.containsKey(id) && !edgeSourceTargetMap.containsKey(sourceTargetId)) {
+            return;
+        }
+
+        if (edgeDraftImpl.getType() != null) {
+            //UnCounting
+            switch (edgeDraftImpl.getType()) {
+                case DIRECTED:
+                    directedEdgesCount--;
+                    break;
+                case UNDIRECTED:
+                    undirectedEdgesCount--;
+                    break;
+                case MUTUAL:
+                    directedEdgesCount -= 2;
+                    break;
+            }
+        }
+
+        edgeSourceTargetMap.remove(sourceTargetId);
+        edgeMap.remove(id);
+
+        if (edgeDraftImpl.getType() != null && edgeDraftImpl.getType().equals(EdgeDraft.EdgeType.MUTUAL)) {
+            id = edgeDraftImpl.getId() + "-mutual";
+            sourceTargetId = edgeDraftImpl.getTarget().getId() + "-" + edgeDraftImpl.getSource().getId();
+            edgeSourceTargetMap.remove(sourceTargetId);
+            edgeMap.remove(id);
+        }
+    }
+
     public boolean edgeExists(String id) {
         if (id == null || id.isEmpty()) {
             throw new NullPointerException();

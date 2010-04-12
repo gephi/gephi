@@ -62,6 +62,13 @@ public interface ContainerLoader {
     public void addNode(NodeDraft nodeDraft);
 
     /**
+     * Removes an edge from the container. Do nothing if the edge is not in the
+     * container.
+     * @param edgeDraft         the edge that is to be removed from the container
+     */
+    public void removeEdge(EdgeDraft edgeDraft);
+
+    /**
      * Returns the node with the given <code>id</code>, or create a new node
      * with this id if not found.
      * @param id                a node identifier
