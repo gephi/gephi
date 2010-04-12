@@ -185,6 +185,10 @@ public class AbstractNode implements Node, Group, AVLItem {
         nodeData.getNodes().remove(viewId);
     }
 
+    public int countInViews() {
+        return nodeData.getNodes().getCount();
+    }
+
     public void incEnabledInDegree() {
         enabledInDegree++;
     }

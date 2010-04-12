@@ -165,7 +165,7 @@ public class StructureModifier {
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.setEnabled(node.size == 0);
-            if(node.isEnabled()) {
+            if (node.isEnabled()) {
                 view.incNodesEnabled(1);
             }
             edgeProcessor.resetEdgesCounting(node);
@@ -189,7 +189,7 @@ public class StructureModifier {
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.setEnabled(node.parent == treeStructure.root);
-            if(node.isEnabled()) {
+            if (node.isEnabled()) {
                 view.incNodesEnabled(1);
             }
             edgeProcessor.resetEdgesCounting(node);
@@ -213,7 +213,7 @@ public class StructureModifier {
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.setEnabled(node.level == level);
-            if(node.isEnabled()) {
+            if (node.isEnabled()) {
                 view.incNodesEnabled(1);
             }
             edgeProcessor.resetEdgesCounting(node);
@@ -379,7 +379,9 @@ public class StructureModifier {
                 }
                 edgeProcessor.clearEdges(descendant);
 
-                dhns.getGraphStructure().getNodeDictionnary().remove(descendant);
+                if (node.countInViews() == 1) {
+                    dhns.getGraphStructure().getNodeDictionnary().remove(descendant);
+                }
             }
 
             treeStructure.deleteDescendantAndSelf(node);
