@@ -54,7 +54,7 @@ public class ScaleLayout extends AbstractLayout implements Layout {
         double xMean = 0, yMean = 0;
         for (Node n : graph.getNodes()) {
             xMean += n.getNodeData().x();
-            yMean += n.getNodeData().x();
+            yMean += n.getNodeData().y();
         }
         xMean /= graph.getNodeCount();
         yMean /= graph.getNodeCount();
