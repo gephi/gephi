@@ -208,10 +208,12 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         try {
             BaseFont bf = genBaseFont(font);
             float ascent = bf.getAscentPoint(label.getValue(), font.getSize());
+            float descent = bf.getDescentPoint(label.getValue(), font.getSize());
+            float textHeight = (ascent - descent)/2f;
 
             cb.beginText();
             cb.setFontAndSize(bf, font.getSize());
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX() - ascent / 2, -p.getY(), 0);
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX(), -p.getY()-textHeight , 0);
             cb.endText();
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
