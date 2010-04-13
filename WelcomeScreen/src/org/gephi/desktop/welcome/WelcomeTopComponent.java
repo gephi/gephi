@@ -94,6 +94,14 @@ public final class WelcomeTopComponent extends TopComponent {
                 WelcomeTopComponent.this.close();
             }
         });
+        openProjectLink.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
+                pc.openProject();
+                WelcomeTopComponent.this.close();
+            }
+        });
     }
 
     private void loadMRU() {
@@ -185,6 +193,7 @@ public final class WelcomeTopComponent extends TopComponent {
         newProjectLink = new org.jdesktop.swingx.JXHyperlink();
         labelSamples = new javax.swing.JLabel();
         samplesPanel = new javax.swing.JPanel();
+        openProjectLink = new org.jdesktop.swingx.JXHyperlink();
         southPanel = new javax.swing.JPanel();
         openOnStartupCheckbox = new javax.swing.JCheckBox();
 
@@ -215,6 +224,8 @@ public final class WelcomeTopComponent extends TopComponent {
 
         samplesPanel.setOpaque(false);
 
+        org.openide.awt.Mnemonics.setLocalizedText(openProjectLink, org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.openProjectLink.text")); // NOI18N
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
@@ -227,11 +238,14 @@ public final class WelcomeTopComponent extends TopComponent {
                 .addGap(18, 18, 18)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(labelNew)
-                    .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
                     .addComponent(labelSamples)
+                    .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(newProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(openProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(newProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(62, 62, 62)))
                 .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
@@ -246,10 +260,12 @@ public final class WelcomeTopComponent extends TopComponent {
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addGap(5, 5, 5)
                         .addComponent(newProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(openProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(13, 13, 13)
                         .addComponent(labelSamples)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE))
+                        .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
                     .addComponent(recentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -273,6 +289,7 @@ public final class WelcomeTopComponent extends TopComponent {
     private javax.swing.JPanel mainPanel;
     private org.jdesktop.swingx.JXHyperlink newProjectLink;
     private javax.swing.JCheckBox openOnStartupCheckbox;
+    private org.jdesktop.swingx.JXHyperlink openProjectLink;
     private javax.swing.JPanel recentPanel;
     private javax.swing.JPanel samplesPanel;
     private javax.swing.JPanel southPanel;
