@@ -195,10 +195,8 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         cb.setRGBColorStroke(bc.getRed(), bc.getGreen(), bc.getBlue());
         cb.setLineWidth(node.getBorderWidth());
         cb.setRGBColorFill(c.getRed(), c.getGreen(), c.getBlue());
-        cb.circle(center.getX(), center.getY(), node.getRadius());
+        cb.circle(center.getX(), -center.getY(), node.getRadius());
         cb.fillStroke();
-
-        Progress.progress(progress);
     }
 
     public void renderNodeLabel(NodeLabel label) {
@@ -213,7 +211,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
             cb.beginText();
             cb.setFontAndSize(bf, font.getSize());
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX() - ascent / 2, -p.getY(), -90);
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX() - ascent / 2, -p.getY(), 0);
             cb.endText();
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
@@ -228,8 +226,6 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         setStrokeColor(selfLoop.getColor());
         cb.setLineWidth(selfLoop.getThickness() * selfLoop.getScale());
         cb.stroke();
-
-        Progress.progress(progress);
     }
 
     public void renderDirectedEdge(DirectedEdge edge) {
@@ -283,9 +279,9 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Point pt2 = arrow.getPt2();
         Point pt3 = arrow.getPt3();
 
-        cb.moveTo(pt1.getX(), pt1.getY());
-        cb.lineTo(pt2.getX(), pt2.getY());
-        cb.lineTo(pt3.getX(), pt3.getY());
+        cb.moveTo(pt1.getX(), -pt1.getY());
+        cb.lineTo(pt2.getX(), -pt2.getY());
+        cb.lineTo(pt3.getX(), -pt3.getY());
         cb.closePath();
 
         setFillColor(arrow.getColor());
@@ -366,82 +362,47 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         }
         Progress.switchToDeterminate(progress, max);
 
-        //Rectangle
-        /*float ratioWidth = size.getWidth() / graphSheet.getWidth();
-        float ratioHeight = size.getHeight() / graphSheet.getHeight();
-        float scale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
-        float translateX = size.getWidth() / 2f - size.getWidth() / 2f * scale;
-        float translateY = size.getHeight() / 2f - size.getHeight() / 2f * scale;*/
 
         Rectangle size = new Rectangle(pageSize);
-        //size.setBackgroundColor(new BaseColor(controller.getModel().getBackgroundColor()));
+        size.setBackgroundColor(new BaseColor(controller.getModel().getBackgroundColor()));
         document = new Document(size);
-        //document.setMargins(margin.left, margin.right, margin.top, margin.bottom);
+        document.setMargins(margin.left, margin.right, margin.top, margin.bottom);
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
         document.open();
         cb = writer.getDirectContent();
         cb.saveState();
-        //cb.transform(AffineTransform.getTranslateInstance(translateX, translateY));
-        //cb.transform(AffineTransform.getScaleInstance(10, -10));
 
-        float graphWidth = graphSheet.getWidth();
-        float graphHeight = graphSheet.getHeight();
-        float centerX = (graphSheet.getBottomRightPosition().getX()-graphSheet.getTopLeftPosition().getX())/2f;
-        float centerY = (graphSheet.getTopLeftPosition().getY()-graphSheet.getBottomRightPosition().getY())/2f;
+        double graphWidth = graphSheet.getWidth();
+        double graphHeight = graphSheet.getHeight();
+        double centerX = (graphSheet.getBottomRightPosition().getX() - graphSheet.getTopLeftPosition().getX()) / 2.;
+        double centerY = (graphSheet.getTopLeftPosition().getY() - graphSheet.getBottomRightPosition().getY()) / 2.;
 
+        //Limits
         float minX = Float.POSITIVE_INFINITY;
         float maxX = Float.NEGATIVE_INFINITY;
         float minY = Float.POSITIVE_INFINITY;
         float maxY = Float.NEGATIVE_INFINITY;
         for (Node n : graph.getNodes()) {
-            minX = Math.min(minX, n.getPosition().getX()-n.getRadius());
-            maxX = Math.max(maxX, n.getPosition().getX()+n.getRadius());
-            minY = Math.min(minY, n.getPosition().getY()-n.getRadius());
-            maxY = Math.max(maxY, n.getPosition().getY()+n.getRadius());
+            minX = Math.min(minX, n.getPosition().getX() - n.getRadius());
+            maxX = Math.max(maxX, n.getPosition().getX() + n.getRadius());
+            minY = Math.min(minY, n.getPosition().getY() - n.getRadius());
+            maxY = Math.max(maxY, n.getPosition().getY() + n.getRadius());
         }
-        centerX = (float)(maxX-minX)/2f;
-        centerY = -(float)(maxY-minY)/2f;
-        graphWidth = maxX-minX;
-        graphHeight = maxY-minY;
+        graphWidth = maxX - minX;
+        graphHeight = maxY - minY;
+        centerX = minX + graphWidth / 2.;
+        centerY = minY + graphHeight / 2.;
 
-        float ratioWidth = size.getWidth() / graphWidth;
-        float ratioHeight = size.getHeight() / graphHeight;
-        float scale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
-        float translateX = (size.getWidth()/2f)/scale;
-        float translateY = (size.getHeight()/2f)/scale;
-
-        cb.transform(AffineTransform.getTranslateInstance(-centerX*scale, -centerY*scale));
+        //Transform
+        double ratioWidth = size.getWidth() / graphWidth;
+        double ratioHeight = size.getHeight() / graphHeight;
+        double scale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+        double translateX = (size.getWidth() / 2.) / scale;
+        double translateY = (size.getHeight() / 2.) / scale;
+        cb.transform(AffineTransform.getTranslateInstance(-centerX * scale, -centerY * scale));
         cb.transform(AffineTransform.getScaleInstance(scale, scale));
         cb.transform(AffineTransform.getTranslateInstance(translateX, translateY));
 
-        /*cb.setLineWidth(1);
-        cb.setRGBColorFill(0,0,0);
-        cb.circle(-10,20,3);
-        cb.fillStroke();
-        cb.circle(30,0,3);
-        cb.fillStroke();
-        cb.circle(-10,0,3);
-        cb.fillStroke();
-        cb.circle(30,20,3);
-        cb.fillStroke();
-        cb.moveTo(-10,20);
-        cb.lineTo(30, 20);
-        cb.setLineWidth(1);
-        cb.stroke();
-        cb.moveTo(30, 20);
-        cb.lineTo(30, 0);
-        cb.setLineWidth(1);
-        cb.stroke();
-        cb.moveTo(30, 0);
-        cb.lineTo(-10, 0);
-        cb.setLineWidth(1);
-        cb.stroke();
-        cb.moveTo(-10, 0);
-        cb.lineTo(-10, 20);
-        cb.setLineWidth(1);
-        cb.stroke();*/
-
-        
         renderGraph(graphSheet.getGraph());
         cb.restoreState();
         document.close();
@@ -463,13 +424,13 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
     /**
      * Draws a line.
-     * 
+     *
      * @param start  the start of the line to draw
      * @param end    the end of the line to draw
      */
     private void line(Point start, Point end) {
-        cb.moveTo(start.getX(), start.getY());
-        cb.lineTo(end.getX(), end.getY());
+        cb.moveTo(start.getX(), -start.getY());
+        cb.lineTo(end.getX(), -end.getY());
     }
 
     /**
@@ -483,8 +444,8 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Point pt3 = curve.getPt3();
         Point pt4 = curve.getPt4();
 
-        cb.moveTo(pt1.getX(), pt1.getY());
-        cb.curveTo(pt2.getX(), pt2.getY(), pt3.getX(), pt3.getY(), pt4.getX(), pt4.getY());
+        cb.moveTo(pt1.getX(), -pt1.getY());
+        cb.curveTo(pt2.getX(), -pt2.getY(), pt3.getX(), -pt3.getY(), pt4.getX(), -pt4.getY());
     }
 
     /**
