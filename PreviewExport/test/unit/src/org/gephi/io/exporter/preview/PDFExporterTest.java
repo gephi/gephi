@@ -4,33 +4,13 @@
  */
 package org.gephi.io.exporter.preview;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Locale;
-import java.util.Random;
-import org.apache.batik.bridge.BridgeContext;
-import org.apache.batik.bridge.DocumentLoader;
-import org.apache.batik.bridge.GVTBuilder;
-import org.apache.batik.bridge.UserAgent;
-import org.apache.batik.bridge.UserAgentAdapter;
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.fop.svg.PDFTranscoder;
-import org.gephi.io.exporter.preview.util.LengthUnit;
-import org.gephi.io.exporter.preview.util.SupportSize;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -57,10 +37,21 @@ public class PDFExporterTest {
     public void tearDown() {
     }
 
+    @Test
+    public void testExport() {
+        PDFExporter pDFExporter = new PDFExporter();
+        try {
+            pDFExporter.exportData(new File("test2.pdf"), null);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
     /**
      * Test of exportData method, of class PDFExporter.
      */
-    @Test
+   /* @Test
     public void testExportData() throws Exception {
         File file = new File("test.pdf");
 
@@ -135,5 +126,5 @@ public class PDFExporterTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
