@@ -29,6 +29,7 @@ import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.utils.progress.Progress;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -128,14 +129,14 @@ public class LayoutControllerImpl implements LayoutController {
         }
 
         public void run() {
-            progressTicket.setDisplayName(layout.getBuilder().getName());
-            progressTicket.start();
+            Progress.setDisplayName(progressTicket, layout.getBuilder().getName());
+            Progress.start(progressTicket);
             layout.initAlgo();
             while (layout.canAlgo() && !stopRun) {
                 layout.goAlgo();
             }
             layout.endAlgo();
-            progressTicket.finish();
+            Progress.finish(progressTicket);
         }
 
         public boolean cancel() {
