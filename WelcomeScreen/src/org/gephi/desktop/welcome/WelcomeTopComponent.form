@@ -70,7 +70,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="labelNew" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="labelSamples" min="-2" max="-2" attributes="0"/>
-                      <Component id="samplesPanel" pref="162" max="32767" attributes="0"/>
+                      <Component id="samplesPanel" pref="185" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="10" pref="10" max="10" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -102,9 +102,9 @@
                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                           <Component id="labelSamples" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="samplesPanel" pref="81" max="32767" attributes="0"/>
+                          <Component id="samplesPanel" pref="92" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="recentPanel" pref="160" max="32767" attributes="0"/>
+                      <Component id="recentPanel" pref="174" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -199,7 +199,6 @@
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="org/gephi/desktop/welcome/Bundle.properties" key="WelcomeTopComponent.openOnStartupCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
-            <Property name="opaque" type="boolean" value="false"/>
           </Properties>
         </Component>
       </SubComponents>

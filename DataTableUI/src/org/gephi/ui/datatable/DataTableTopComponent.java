@@ -110,7 +110,7 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
 
         initComponents();
         setName(NbBundle.getMessage(DataTableTopComponent.class, "CTL_DataTableTopComponent"));
-        setToolTipText(NbBundle.getMessage(DataTableTopComponent.class, "HINT_DataTableTopComponent"));
+//        setToolTipText(NbBundle.getMessage(DataTableTopComponent.class, "HINT_DataTableTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
 
         //toolbar

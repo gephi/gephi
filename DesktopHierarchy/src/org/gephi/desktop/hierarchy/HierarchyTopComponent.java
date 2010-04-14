@@ -37,7 +37,7 @@ final class HierarchyTopComponent extends TopComponent {
     private HierarchyTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(HierarchyTopComponent.class, "CTL_HierarchyTopComponent"));
-        setToolTipText(NbBundle.getMessage(HierarchyTopComponent.class, "HINT_HierarchyTopComponent"));
+//        setToolTipText(NbBundle.getMessage(HierarchyTopComponent.class, "HINT_HierarchyTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
         initToolbar();

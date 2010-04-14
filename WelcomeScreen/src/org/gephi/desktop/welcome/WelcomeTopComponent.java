@@ -50,7 +50,7 @@ public final class WelcomeTopComponent extends TopComponent {
     public WelcomeTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(WelcomeTopComponent.class, "CTL_WelcomeTopComponent"));
-        setToolTipText(NbBundle.getMessage(WelcomeTopComponent.class, "HINT_WelcomeTopComponent"));
+//        setToolTipText(NbBundle.getMessage(WelcomeTopComponent.class, "HINT_WelcomeTopComponent"));
 //        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         putClientProperty(TopComponent.PROP_DRAGGING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);

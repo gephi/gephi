@@ -41,7 +41,7 @@ public final class BannerTopComponent extends TopComponent {
     public BannerTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(BannerTopComponent.class, "CTL_BannerTopComponent"));
-        setToolTipText(NbBundle.getMessage(BannerTopComponent.class, "HINT_BannerTopComponent"));
+//        setToolTipText(NbBundle.getMessage(BannerTopComponent.class, "HINT_BannerTopComponent"));
 //        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_DRAGGING_DISABLED, Boolean.TRUE);
@@ -165,6 +165,11 @@ public final class BannerTopComponent extends TopComponent {
         logoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         logoButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/logo_glow.png"))); // NOI18N
         logoButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/logo_glow.png"))); // NOI18N
+        logoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -208,6 +213,11 @@ public final class BannerTopComponent extends TopComponent {
 
         add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void logoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_logoButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bannerBackground;
     private javax.swing.JPanel buttonsPanel;

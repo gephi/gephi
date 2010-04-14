@@ -53,7 +53,7 @@ public final class ClusteringTopComponent extends TopComponent implements Change
         NO_SELECTION = NbBundle.getMessage(ClusteringTopComponent.class, "ClusteringTopComponent.chooser.text");
         initComponents();
         setName(NbBundle.getMessage(ClusteringTopComponent.class, "CTL_ClusteringTopComponent"));
-        setToolTipText(NbBundle.getMessage(ClusteringTopComponent.class, "HINT_ClusteringTopComponent"));
+//        setToolTipText(NbBundle.getMessage(ClusteringTopComponent.class, "HINT_ClusteringTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH, false));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
         if (UIUtils.isAquaLookAndFeel()) {

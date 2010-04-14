@@ -36,7 +36,7 @@ public final class ContextTopComponent extends TopComponent {
     public ContextTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(ContextTopComponent.class, "CTL_ContextTopComponent"));
-        setToolTipText(NbBundle.getMessage(ContextTopComponent.class, "HINT_ContextTopComponent"));
+//        setToolTipText(NbBundle.getMessage(ContextTopComponent.class, "HINT_ContextTopComponent"));
 //        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
         if (UIUtils.isAquaLookAndFeel()) {

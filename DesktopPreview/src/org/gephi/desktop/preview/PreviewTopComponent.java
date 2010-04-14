@@ -36,7 +36,7 @@ public final class PreviewTopComponent extends TopComponent {
     private PreviewTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
-        setToolTipText(NbBundle.getMessage(PreviewTopComponent.class, "HINT_PreviewTopComponent"));
+//        setToolTipText(NbBundle.getMessage(PreviewTopComponent.class, "HINT_PreviewTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
         if (UIUtils.isAquaLookAndFeel()) {
             previewPanel.setBackground(UIManager.getColor("NbExplorerView.background"));

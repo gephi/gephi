@@ -42,7 +42,7 @@ final class PartitionTopComponent extends TopComponent {
     private PartitionTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(PartitionTopComponent.class, "CTL_PartitionTopComponent"));
-        setToolTipText(NbBundle.getMessage(PartitionTopComponent.class, "HINT_PartitionTopComponent"));
+//        setToolTipText(NbBundle.getMessage(PartitionTopComponent.class, "HINT_PartitionTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
 
         initEvents();

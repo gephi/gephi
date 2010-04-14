@@ -55,7 +55,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         initComponents();
         initDesign();
         setName(NbBundle.getMessage(StatisticsTopComponent.class, "CTL_StatisticsTopComponent"));
-        setToolTipText(NbBundle.getMessage(StatisticsTopComponent.class, "HINT_StatisticsTopComponent"));
+//        setToolTipText(NbBundle.getMessage(StatisticsTopComponent.class, "HINT_StatisticsTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 

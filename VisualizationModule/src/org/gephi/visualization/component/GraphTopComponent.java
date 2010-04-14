@@ -56,7 +56,7 @@ final class GraphTopComponent extends TopComponent {
         initComponents();
 
         setName(NbBundle.getMessage(GraphTopComponent.class, "CTL_GraphTopComponent"));
-        setToolTipText(NbBundle.getMessage(GraphTopComponent.class, "HINT_GraphTopComponent"));
+//        setToolTipText(NbBundle.getMessage(GraphTopComponent.class, "HINT_GraphTopComponent"));
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
         engine = VizController.getInstance().getEngine();

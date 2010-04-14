@@ -48,7 +48,7 @@ public final class LayoutTopComponent extends TopComponent {
     public LayoutTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(LayoutTopComponent.class, "CTL_LayoutTopComponent"));
-        setToolTipText(NbBundle.getMessage(LayoutTopComponent.class, "HINT_LayoutTopComponent"));
+//        setToolTipText(NbBundle.getMessage(LayoutTopComponent.class, "HINT_LayoutTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 

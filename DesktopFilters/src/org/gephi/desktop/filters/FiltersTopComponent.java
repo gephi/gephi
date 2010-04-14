@@ -51,7 +51,7 @@ public final class FiltersTopComponent extends TopComponent {
     public FiltersTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(FiltersTopComponent.class, "CTL_FiltersTopComponent"));
-        setToolTipText(NbBundle.getMessage(FiltersTopComponent.class, "HINT_FiltersTopComponent"));
+//        setToolTipText(NbBundle.getMessage(FiltersTopComponent.class, "HINT_FiltersTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 

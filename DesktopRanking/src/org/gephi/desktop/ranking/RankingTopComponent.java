@@ -53,7 +53,7 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
 
     private RankingTopComponent() {
         setName(NbBundle.getMessage(RankingTopComponent.class, "CTL_RankingTopComponent"));
-        setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "HINT_RankingTopComponent"));
+//        setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "HINT_RankingTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
 
         RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);

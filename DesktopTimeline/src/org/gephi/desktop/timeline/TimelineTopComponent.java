@@ -64,7 +64,7 @@ public final class TimelineTopComponent
     public TimelineTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(TimelineTopComponent.class, "CTL_TimelineTopComponent"));
-        setToolTipText(NbBundle.getMessage(TimelineTopComponent.class, "HINT_TimelineTopComponent"));
+//        setToolTipText(NbBundle.getMessage(TimelineTopComponent.class, "HINT_TimelineTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
