@@ -53,3 +53,6 @@ msgstr "Impossible to open this file. It must he a compatible '.gephi' file."
 
 msgid "WelcomeTopComponent.openOnStartupCheckbox.text"
 msgstr "Open at startup"
+
+msgid "WelcomeTopComponent.openFileLink.text"
+msgstr "Open Graph File..."

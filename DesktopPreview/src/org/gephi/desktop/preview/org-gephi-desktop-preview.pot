@@ -97,7 +97,10 @@ msgid "PreviewTopComponent.resetZoomButton.text"
 msgstr "Reset zoom"
 
 msgid "PreviewSettingsTopComponent.svgExportButton.text"
-msgstr "SVG"
+msgstr "SVG/PDF"
 
 msgid "PreviewSettingsTopComponent.labelExport.text"
 msgstr "Export:"
+
+msgid "PreviewSettingsTopComponent.svgExportButton.toolTipText"
+msgstr "Export as SVG of PDF format"

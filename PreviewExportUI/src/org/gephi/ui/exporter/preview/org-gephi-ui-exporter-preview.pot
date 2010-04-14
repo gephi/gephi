@@ -1,0 +1,85 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Plugin"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Preview Export UI"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Vectorial exporters user interfaces"
+
+msgid "UIExporterPDFPanel.labelPageSize.text"
+msgstr "Page size:"
+
+msgid "UIExporterPDFPanel.widthTextField.text"
+msgstr ""
+
+msgid "UIExporterPDFPanel.labelWidth.text"
+msgstr "Width:"
+
+msgid "UIExporterPDFPanel.labelHeight.text"
+msgstr "Height:"
+
+msgid "UIExporterPDFPanel.heightTextField.text"
+msgstr ""
+
+msgid "UIExporterPDFPanel.portraitRadio.text"
+msgstr "Portrait"
+
+msgid "UIExporterPDFPanel.landscapeRadio.text"
+msgstr "Landscape"
+
+msgid "UIExporterPDFPanel.labelOrientation.text"
+msgstr "Orientation:"
+
+msgid "UIExporterPDFPanel.labelTop.text"
+msgstr "Top:"
+
+msgid "UIExporterPDFPanel.labelBottom.text"
+msgstr "Bottom:"
+
+msgid "UIExporterPDFPanel.topMarginTextField.text"
+msgstr ""
+
+msgid "UIExporterPDFPanel.bottomMarginTextField.text"
+msgstr ""
+
+msgid "UIExporterPDFPanel.labelMargins.text"
+msgstr "Margins:"
+
+msgid "UIExporterPDFPanel.labelLeft.text"
+msgstr "Left:"
+
+msgid "UIExporterPDFPanel.labelRight.text"
+msgstr "Right:"
+
+msgid "UIExporterPDFPanel.leftMarginTextField.text"
+msgstr ""
+
+msgid "UIExporterPDFPanel.rightMargintextField.text"
+msgstr ""
+
+msgid "UIExporterPDFPanel.pageSize.custom"
+msgstr "Custom..."
+
+msgid "UIExporterPDFPanel.widthUnitLabel.text"
+msgstr "mm"
+
+msgid "UIExporterPDFPanel.heightUnitLabel.text"
+msgstr "mm"

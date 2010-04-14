@@ -16,13 +16,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "OpenIDE-Module-Display-Category"
-msgstr "Plugin"
+msgstr "Libraries"
 
 msgid "OpenIDE-Module-Long-Description"
-msgstr "Vectorial exporters implementations"
+msgstr "Wrap iText PDF Library"
 
 msgid "OpenIDE-Module-Name"
-msgstr "Preview Export"
+msgstr "iText Wrapper"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Vectorial exporters implementations"
+msgstr "Wrap iText PDF Library"

@@ -105,7 +105,7 @@ msgstr "Heat Map"
 
 msgid "HeatMap.description"
 msgstr ""
-"Set color intensity on a node neigbourhood, by the distance (edge weight)"
+"Set color intensity on a node neighborhood, by the distance (edge weight)"
 
 msgid "HeatMap.status.maxdistance"
 msgstr "Max distance is "

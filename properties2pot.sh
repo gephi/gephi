@@ -28,7 +28,7 @@ if [[ $f == 'Bundle.properties' ]]; then
 
 			#check file
 			msgfmt -c $fname
-			#rm messages.mo
+			rm messages.mo
 		fi
 	fi
 

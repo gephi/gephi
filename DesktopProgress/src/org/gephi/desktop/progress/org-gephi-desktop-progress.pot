@@ -16,13 +16,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "OpenIDE-Module-Display-Category"
-msgstr "Plugin"
-
-msgid "OpenIDE-Module-Long-Description"
-msgstr "Vectorial exporters implementations"
+msgstr "Gephi UI"
 
 msgid "OpenIDE-Module-Name"
-msgstr "Preview Export"
+msgstr "Desktop Progress"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Vectorial exporters implementations"
+msgstr "Implement Progress Management and Netbeans bridge"
