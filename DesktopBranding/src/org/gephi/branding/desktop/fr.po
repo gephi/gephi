@@ -1,0 +1,122 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-13 22:16+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-14 03:51+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "CTL_BannerAction"
+msgstr "Bannière"
+
+msgid "CTL_BannerTopComponent"
+msgstr "Bannière"
+
+msgid "HINT_BannerTopComponent"
+msgstr ""
+
+msgid "OpenIDE-Module-Display-Category"
+msgstr "Gephi UI"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Initialisation et gestion du module Desktop"
+
+msgid "OpenIDE-Module-Name"
+msgstr "Desktop Branding"
+
+msgid "CTL_TopTabAction"
+msgstr "TopTab"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Initialisation et gestion du module Desktop"
+
+msgid "org_gephi_branding_desktop_update_center"
+msgstr ""
+
+msgid "org_gephi_branding_desktop_update_center_1"
+msgstr ""
+
+msgid ""
+"Services/AutoupdateType/org_gephi_branding_desktop_update_center.instance"
+msgstr "Centre de mise à jour"
+
+msgid ""
+"Services/AutoupdateType/org_gephi_branding_desktop_update_center_1.instance"
+msgstr "Greffons tierces"
+
+msgid "TopTabComponent.jLabel1.AccessibleContext.accessibleName"
+msgstr ""
+
+msgid "TopTabComponent.logoLabel.text"
+msgstr ""
+
+msgid "CommandLineProcessor.OutOfMemoryError.message"
+msgstr ""
+"Erreur mémoire. Augmentez la limite maximale  (-Xmx) dans le fichier de "
+"configuration du démarrage de Gephi."
+
+msgid ""
+"Actions/Edit/org-gephi-branding-desktop-actions-CleanWorkspace.instance"
+msgstr "Vider l'espace de travail"
+
+msgid ""
+"Actions/Edit/org-gephi-branding-desktop-actions-DeleteWorkspace.instance"
+msgstr "Supprimer l'espace de travail"
+
+msgid "Actions/Edit/org-gephi-branding-desktop-actions-NewWorkspace.instance"
+msgstr "Nouvel espace de travail"
+
+msgid "Actions/Edit/org-gephi-branding-desktop-actions-OpenProject.instance"
+msgstr "Ouvrir projet"
+
+msgid "Actions/Edit/org-gephi-branding-desktop-actions-SaveProject.instance"
+msgstr "Enregistrer projet"
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-CloseProject.instance"
+msgstr "Fermer projet"
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-NewProject.instance"
+msgstr "Nouveau projet"
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-OpenFile.instance"
+msgstr "Ouvrir..."
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-OpenProject.instance"
+msgstr "Ouvrir projet"
+
+msgid ""
+"Actions/File/org-gephi-branding-desktop-actions-ProjectProperties.instance"
+msgstr "Propriétés..."
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-ProjectTest.instance"
+msgstr "Test du projet"
+
+msgid ""
+"Actions/File/org-gephi-branding-desktop-actions-SaveAsProject.instance"
+msgstr "Enregistrer sous..."
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-SaveProject.instance"
+msgstr "Enregistrer projet"
+
+msgid "BannerTopComponent.logoButton.text"
+msgstr ""
+
+msgid "BannerTopComponent.logoButton.toolTipText"
+msgstr "Aller sur le site web de Gephi www.gephi.org"
+
+msgid "BannerTopComponent.bannerBackground.text"
+msgstr ""
+
+msgid "DragNDropFrameAdapter.openGephiError"
+msgstr ""
