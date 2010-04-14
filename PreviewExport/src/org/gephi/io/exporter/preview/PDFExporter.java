@@ -58,7 +58,10 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     private PdfContentByte cb;
     private Document document;
     //Parameters
-    private Insets margin = new Insets(0, 0, 0, 0);
+    private float marginTop = 0f;
+    private float marginBottom = 0f;
+    private float marginLeft = 0f;
+    private float marginRight = 0f;
     private boolean landscape = false;
     private Rectangle pageSize = PageSize.A4;
 
@@ -209,11 +212,11 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
             BaseFont bf = genBaseFont(font);
             float ascent = bf.getAscentPoint(label.getValue(), font.getSize());
             float descent = bf.getDescentPoint(label.getValue(), font.getSize());
-            float textHeight = (ascent - descent)/2f;
+            float textHeight = (ascent - descent) / 2f;
 
             cb.beginText();
             cb.setFontAndSize(bf, font.getSize());
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX(), -p.getY()-textHeight , 0);
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label.getValue(), p.getX(), -p.getY() - textHeight, 0);
             cb.endText();
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);
@@ -368,7 +371,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         Rectangle size = new Rectangle(pageSize);
         size.setBackgroundColor(new BaseColor(controller.getModel().getBackgroundColor()));
         document = new Document(size);
-        document.setMargins(margin.left, margin.right, margin.top, margin.bottom);
+        document.setMargins(marginLeft, marginRight, marginTop, marginBottom);
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
         document.open();
         cb = writer.getDirectContent();
@@ -466,5 +469,53 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
      */
     private void setFillColor(Color color) {
         cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    public float getMarginBottom() {
+        return marginBottom;
+    }
+
+    public void setMarginBottom(float marginBottom) {
+        this.marginBottom = marginBottom;
+    }
+
+    public float getMarginLeft() {
+        return marginLeft;
+    }
+
+    public void setMarginLeft(float marginLeft) {
+        this.marginLeft = marginLeft;
+    }
+
+    public float getMarginRight() {
+        return marginRight;
+    }
+
+    public void setMarginRight(float marginRight) {
+        this.marginRight = marginRight;
+    }
+
+    public float getMarginTop() {
+        return marginTop;
+    }
+
+    public void setMarginTop(float marginTop) {
+        this.marginTop = marginTop;
+    }
+
+    public boolean isLandscape() {
+        return landscape;
+    }
+
+    public void setLandscape(boolean landscape) {
+        this.landscape = landscape;
+    }
+
+    public Rectangle getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Rectangle pageSize) {
+        this.pageSize = pageSize;
     }
 }
