@@ -18,15 +18,17 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import org.gephi.io.exporter.preview.PDFExporter;
-import org.gephi.lib.validation.BetweenZeroAndOneValidator;
 import org.gephi.lib.validation.PositiveNumberValidator;
+import org.netbeans.validation.api.Problems;
+import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 
 /**
  *
@@ -37,7 +39,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
     private static final double INCH = 72.0;
     private static final double MM = 2.8346456692895527;
     private final String customSizeString;
-    private boolean milimeter = true;
+    private boolean millimeter = true;
     private NumberFormat sizeFormatter;
     private NumberFormat marginFormatter;
 
@@ -77,8 +79,19 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
         comboBoxModel.addElement(customSizeString);
         pageSizeCombo.setModel(comboBoxModel);
 
+        loadPreferences();
+
         initEvents();
-        updateUnitsLabel();
+        refreshUnit(false);
+    }
+
+    private void loadPreferences() {
+        boolean defaultMM = NbPreferences.forModule(UIExporterPDF.class).getBoolean("Default_Millimeter", false);
+        millimeter = NbPreferences.forModule(UIExporterPDF.class).getBoolean("Millimeter", defaultMM);
+    }
+
+    private void savePreferences() {
+        NbPreferences.forModule(UIExporterPDF.class).putBoolean("Millimeter", millimeter);
     }
 
     private void initEvents() {
@@ -106,6 +119,13 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
                 updatePageSize();
             }
         });
+        unitLink.setAction(new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {
+                millimeter = !millimeter;
+                refreshUnit(true);
+            }
+        });
     }
 
     public static ValidationPanel createValidationPanel(UIExporterPDFPanel innerPanel) {
@@ -116,9 +136,9 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
 
         //Size
         group.add(innerPanel.widthTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                new PositiveNumberValidator());
+                new PositiveSizeValidator(innerPanel));
         group.add(innerPanel.heightTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                new PositiveNumberValidator());
+                new PositiveSizeValidator(innerPanel));
 
         //Margins
         group.add(innerPanel.topMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
@@ -151,9 +171,18 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
 
     public void unsetup(PDFExporter pdfExporter) {
         if (pageSizeCombo.getSelectedItem() == customSizeString) {
-            double width = Double.parseDouble(widthTextField.getText());
-            double height = Double.parseDouble(heightTextField.getText());
-            if (milimeter) {
+            double width = pdfExporter.getPageSize().getWidth();
+            double height = pdfExporter.getPageSize().getHeight();
+            try {
+                width = sizeFormatter.parse(widthTextField.getText()).doubleValue();
+            } catch (ParseException ex) {
+            }
+            try {
+                height = sizeFormatter.parse(heightTextField.getText()).doubleValue();
+            } catch (ParseException ex) {
+            }
+
+            if (millimeter) {
                 width *= MM;
                 height *= MM;
             } else {
@@ -190,7 +219,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
             right = marginFormatter.parse(rightMargintextField.getText()).doubleValue();
         } catch (ParseException ex) {
         }
-        if (milimeter) {
+        if (millimeter) {
             top *= MM;
             bottom *= MM;
             left *= MM;
@@ -200,11 +229,12 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
         pdfExporter.setMarginBottom((float) bottom);
         pdfExporter.setMarginLeft((float) left);
         pdfExporter.setMarginRight((float) right);
+
+        savePreferences();
     }
 
     private void updatePageSize() {
         if (pageSizeCombo.getSelectedItem() != customSizeString && !widthTextField.getText().isEmpty() && !heightTextField.getText().isEmpty()) {
-
             DefaultComboBoxModel comboBoxModel = (DefaultComboBoxModel) pageSizeCombo.getModel();
             PageSizeItem item = getItem(widthTextField.getText(), heightTextField.getText());
             if (item == null) {
@@ -218,7 +248,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
     private void setPageSize(PageSizeItem pageSize) {
         double pageWidth = 0;
         double pageHeight = 0;
-        if (milimeter) {
+        if (millimeter) {
             pageWidth = pageSize.mmWidth;
             pageHeight = pageSize.mmHeight;
         } else {
@@ -235,7 +265,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
     }
 
     private void setMargins(float top, float bottom, float left, float right) {
-        if (milimeter) {
+        if (millimeter) {
             top /= MM;
             bottom /= MM;
             left /= MM;
@@ -255,7 +285,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
                 PageSizeItem pageSize = (PageSizeItem) o;
                 double pageWidth = 0;
                 double pageHeight = 0;
-                if (milimeter) {
+                if (millimeter) {
                     pageWidth = pageSize.mmWidth;
                     pageHeight = pageSize.mmHeight;
                 } else {
@@ -272,9 +302,72 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
         return null;
     }
 
-    private void updateUnitsLabel() {
-        widthUnitLabel.setText(milimeter ? "mm" : "in");
-        heightUnitLabel.setText(milimeter ? "mm" : "in");
+    private void refreshUnit(boolean convert) {
+        unitLink.setText(millimeter ? "Milimeter" : "Inch");
+        widthUnitLabel.setText(millimeter ? "mm" : "in");
+        heightUnitLabel.setText(millimeter ? "mm" : "in");
+        if (convert) {
+            if (pageSizeCombo.getSelectedItem() != customSizeString) {
+                setPageSize((PageSizeItem) pageSizeCombo.getSelectedItem());
+            } else {
+                double width = 0;
+                double height = 0;
+                try {
+                    width = sizeFormatter.parse(widthTextField.getText()).doubleValue();
+                } catch (ParseException ex) {
+                }
+                try {
+                    height = sizeFormatter.parse(heightTextField.getText()).doubleValue();
+                } catch (ParseException ex) {
+                }
+                
+                if (!millimeter) {
+                    width *= MM / INCH;
+                    height *= MM / INCH;
+                } else {
+                    width *= INCH / MM;
+                    height *= INCH / MM;
+                }
+                widthTextField.setText(sizeFormatter.format(width));
+                heightTextField.setText(sizeFormatter.format(height));
+            }
+            updatePageSize();
+            double top = 0.;
+            double bottom = 0.;
+            double left = 0.;
+            double right = 0.;
+            try {
+                top = marginFormatter.parse(topMarginTextField.getText()).doubleValue();
+            } catch (ParseException ex) {
+            }
+            try {
+                bottom = marginFormatter.parse(bottomMarginTextField.getText()).doubleValue();
+            } catch (ParseException ex) {
+            }
+            try {
+                left = marginFormatter.parse(leftMarginTextField.getText()).doubleValue();
+            } catch (ParseException ex) {
+            }
+            try {
+                right = marginFormatter.parse(rightMargintextField.getText()).doubleValue();
+            } catch (ParseException ex) {
+            }
+            if (!millimeter) {
+                top *= MM / INCH;
+                bottom *= MM / INCH;
+                left *= MM / INCH;
+                right *= MM / INCH;
+            } else {
+                top *= INCH / MM;
+                bottom *= INCH / MM;
+                left *= INCH / MM;
+                right *= INCH / MM;
+            }
+            topMarginTextField.setText(marginFormatter.format(top));
+            bottomMarginTextField.setText(marginFormatter.format(bottom));
+            leftMarginTextField.setText(marginFormatter.format(left));
+            rightMargintextField.setText(marginFormatter.format(right));
+        }
     }
 
     /** This method is called from within the constructor to
@@ -307,6 +400,8 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
         labelRight = new javax.swing.JLabel();
         leftMarginTextField = new javax.swing.JTextField();
         rightMargintextField = new javax.swing.JTextField();
+        labelUnit = new javax.swing.JLabel();
+        unitLink = new org.jdesktop.swingx.JXHyperlink();
 
         labelPageSize.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelPageSize.text")); // NOI18N
 
@@ -352,6 +447,12 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
 
         rightMargintextField.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.rightMargintextField.text")); // NOI18N
 
+        labelUnit.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelUnit.text")); // NOI18N
+
+        unitLink.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.unitLink.text")); // NOI18N
+        unitLink.setToolTipText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.unitLink.toolTipText")); // NOI18N
+        unitLink.setFocusPainted(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -359,52 +460,62 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelPageSize)
-                    .addComponent(labelOrientation)
-                    .addComponent(labelMargins))
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(landscapeRadio, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(portraitRadio, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(labelHeight)
-                                    .addComponent(labelWidth))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(heightTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(widthUnitLabel)
-                            .addComponent(heightUnitLabel)))
-                    .addComponent(pageSizeCombo, 0, 224, Short.MAX_VALUE)
+                        .addComponent(labelUnit)
+                        .addGap(62, 62, 62)
+                        .addComponent(unitLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labelPageSize)
+                            .addComponent(labelOrientation)
+                            .addComponent(labelMargins))
+                        .addGap(27, 27, 27)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(labelTop)
-                                .addGap(26, 26, 26)
-                                .addComponent(topMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(labelLeft))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(landscapeRadio, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(portraitRadio, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(labelHeight)
+                                            .addComponent(labelWidth))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(heightTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(10, 10, 10)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(widthUnitLabel)
+                                    .addComponent(heightUnitLabel)))
+                            .addComponent(pageSizeCombo, 0, 224, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(labelBottom)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(bottomMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(labelRight)))
-                        .addGap(21, 21, 21)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(leftMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rightMargintextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(labelTop)
+                                        .addGap(26, 26, 26)
+                                        .addComponent(topMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(labelLeft))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(labelBottom)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(bottomMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(labelRight)))
+                                .addGap(21, 21, 21)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(leftMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(rightMargintextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelUnit)
+                    .addComponent(unitLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelPageSize)
                     .addComponent(pageSizeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -437,7 +548,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
                     .addComponent(labelBottom)
                     .addComponent(labelRight)
                     .addComponent(rightMargintextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -514,6 +625,31 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
             return name;
         }
     }
+
+    private static class PositiveSizeValidator implements Validator<String> {
+
+        private UIExporterPDFPanel panel;
+
+        public PositiveSizeValidator(UIExporterPDFPanel panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public boolean validate(Problems problems, String compName, String model) {
+            boolean result = false;
+            try {
+                double i = panel.sizeFormatter.parse(panel.widthTextField.getText()).doubleValue();
+                result = i > 0;
+            } catch (ParseException ex) {
+            }
+            if (!result) {
+                String message = NbBundle.getMessage(getClass(),
+                        "PositiveSizeValidator.NEGATIVE", model);
+                problems.add(message);
+            }
+            return result;
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField bottomMarginTextField;
     private javax.swing.JTextField heightTextField;
@@ -526,6 +662,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelPageSize;
     private javax.swing.JLabel labelRight;
     private javax.swing.JLabel labelTop;
+    private javax.swing.JLabel labelUnit;
     private javax.swing.JLabel labelWidth;
     private javax.swing.JRadioButton landscapeRadio;
     private javax.swing.JTextField leftMarginTextField;
@@ -534,6 +671,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton portraitRadio;
     private javax.swing.JTextField rightMargintextField;
     private javax.swing.JTextField topMarginTextField;
+    private org.jdesktop.swingx.JXHyperlink unitLink;
     private javax.swing.JTextField widthTextField;
     private javax.swing.JLabel widthUnitLabel;
     // End of variables declaration//GEN-END:variables
