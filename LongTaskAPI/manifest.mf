@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.utils.longtask
 OpenIDE-Module-Localizing-Bundle: org/gephi/utils/longtask/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.1
+OpenIDE-Module-Specification-Version: 0.7.0.2
 

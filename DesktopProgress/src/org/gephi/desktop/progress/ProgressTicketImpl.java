@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.utils.progress.impl;
+package org.gephi.desktop.progress;
 
 import org.gephi.utils.progress.ProgressTicket;
 import org.netbeans.api.progress.ProgressHandle;
@@ -38,7 +38,6 @@ public final class ProgressTicketImpl implements ProgressTicket {
     private boolean started = false;
 
     public ProgressTicketImpl(String displayName, Cancellable cancellable) {
-        //TODO lookup if UI or not
         handle = ProgressHandleFactory.createHandle(displayName, cancellable);
     }
 

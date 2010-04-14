@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.utils.progress.impl;
+package org.gephi.desktop.progress;
 
 import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.utils.progress.ProgressTicketProvider;
@@ -29,7 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = ProgressTicketProvider.class)
+@ServiceProvider(service = ProgressTicketProvider.class, position = 10)
 public class ProgressTicketProviderImpl implements ProgressTicketProvider {
 
     public ProgressTicket createTicket(String taskName, Cancellable cancellable) {
