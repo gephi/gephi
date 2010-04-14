@@ -31,6 +31,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.gephi.lib.validation</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.4</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.gephi.preview.api</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>

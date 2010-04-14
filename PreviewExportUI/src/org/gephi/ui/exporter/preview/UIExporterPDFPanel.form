@@ -47,8 +47,8 @@
                       </Group>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel4" min="-2" max="-2" attributes="1"/>
-                          <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="1"/>
+                          <Component id="widthUnitLabel" min="-2" max="-2" attributes="1"/>
+                          <Component id="heightUnitLabel" alignment="0" min="-2" max="-2" attributes="1"/>
                       </Group>
                   </Group>
                   <Component id="pageSizeCombo" pref="224" max="32767" attributes="0"/>
@@ -90,14 +90,14 @@
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="widthUnitLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="widthTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="labelWidth" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="heightTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="heightUnitLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="labelHeight" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
@@ -122,7 +122,7 @@
                   <Component id="labelRight" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="rightMargintextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="59" max="32767" attributes="0"/>
+              <EmptySpace pref="62" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -177,17 +177,17 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel4">
+    <Component class="javax.swing.JLabel" name="widthUnitLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/exporter/preview/Bundle.properties" key="UIExporterPDFPanel.jLabel4.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/ui/exporter/preview/Bundle.properties" key="UIExporterPDFPanel.widthUnitLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel5">
+    <Component class="javax.swing.JLabel" name="heightUnitLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/exporter/preview/Bundle.properties" key="UIExporterPDFPanel.jLabel5.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/ui/exporter/preview/Bundle.properties" key="UIExporterPDFPanel.heightUnitLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

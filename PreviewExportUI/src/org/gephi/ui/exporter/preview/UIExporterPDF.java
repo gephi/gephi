@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import org.gephi.io.exporter.preview.PDFExporter;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
+import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -18,6 +19,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class UIExporterPDF implements ExporterUI {
 
     private UIExporterPDFPanel panel;
+    private ValidationPanel validationPanel;
     private PDFExporter exporterPDF;
 
     public void setup(Exporter exporter) {
@@ -35,7 +37,8 @@ public class UIExporterPDF implements ExporterUI {
 
     public JPanel getPanel() {
         panel = new UIExporterPDFPanel();
-        return panel;
+        validationPanel = UIExporterPDFPanel.createValidationPanel(panel);
+        return validationPanel;
     }
 
     public boolean isMatchingExporter(Exporter exporter) {

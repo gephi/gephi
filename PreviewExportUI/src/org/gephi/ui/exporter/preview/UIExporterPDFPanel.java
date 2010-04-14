@@ -17,10 +17,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import org.gephi.io.exporter.preview.PDFExporter;
+import org.gephi.lib.validation.BetweenZeroAndOneValidator;
+import org.gephi.lib.validation.PositiveNumberValidator;
+import org.netbeans.validation.api.builtin.Validators;
+import org.netbeans.validation.api.ui.ValidationGroup;
+import org.netbeans.validation.api.ui.ValidationPanel;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -34,12 +39,15 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
     private final String customSizeString;
     private boolean milimeter = true;
     private NumberFormat sizeFormatter;
+    private NumberFormat marginFormatter;
 
     public UIExporterPDFPanel() {
         initComponents();
 
         sizeFormatter = NumberFormat.getNumberInstance();
         sizeFormatter.setMaximumFractionDigits(3);
+        marginFormatter = NumberFormat.getNumberInstance();
+        marginFormatter.setMaximumFractionDigits(1);
 
         //Page size model - http://en.wikipedia.org/wiki/Paper_size
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
@@ -70,9 +78,10 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
         pageSizeCombo.setModel(comboBoxModel);
 
         initEvents();
+        updateUnitsLabel();
     }
 
-    public void initEvents() {
+    private void initEvents() {
         pageSizeCombo.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
@@ -97,6 +106,31 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
                 updatePageSize();
             }
         });
+    }
+
+    public static ValidationPanel createValidationPanel(UIExporterPDFPanel innerPanel) {
+        ValidationPanel validationPanel = new ValidationPanel();
+        validationPanel.setInnerComponent(innerPanel);
+
+        ValidationGroup group = validationPanel.getValidationGroup();
+
+        //Size
+        group.add(innerPanel.widthTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                new PositiveNumberValidator());
+        group.add(innerPanel.heightTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                new PositiveNumberValidator());
+
+        //Margins
+        group.add(innerPanel.topMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_NUMBER);
+        group.add(innerPanel.bottomMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_NUMBER);
+        group.add(innerPanel.leftMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_NUMBER);
+        group.add(innerPanel.rightMargintextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_NUMBER);
+
+        return validationPanel;
     }
 
     public void setup(PDFExporter pdfExporter) {
@@ -136,10 +170,26 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
 
         pdfExporter.setLandscape(landscapeRadio.isSelected());
 
-        double top = Double.parseDouble(topMarginTextField.getText());
-        double bottom = Double.parseDouble(bottomMarginTextField.getText());
-        double left = Double.parseDouble(leftMarginTextField.getText());
-        double right = Double.parseDouble(rightMargintextField.getText());
+        double top = pdfExporter.getMarginTop();
+        double bottom = pdfExporter.getMarginBottom();
+        double left = pdfExporter.getMarginLeft();
+        double right = pdfExporter.getMarginRight();
+        try {
+            top = marginFormatter.parse(topMarginTextField.getText()).doubleValue();
+        } catch (ParseException ex) {
+        }
+        try {
+            bottom = marginFormatter.parse(bottomMarginTextField.getText()).doubleValue();
+        } catch (ParseException ex) {
+        }
+        try {
+            left = marginFormatter.parse(leftMarginTextField.getText()).doubleValue();
+        } catch (ParseException ex) {
+        }
+        try {
+            right = marginFormatter.parse(rightMargintextField.getText()).doubleValue();
+        } catch (ParseException ex) {
+        }
         if (milimeter) {
             top *= MM;
             bottom *= MM;
@@ -191,10 +241,10 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
             left /= MM;
             right /= MM;
         }
-        topMarginTextField.setText(Float.toString(top));
-        bottomMarginTextField.setText(Float.toString(bottom));
-        leftMarginTextField.setText(Float.toString(left));
-        rightMargintextField.setText(Float.toString(right));
+        topMarginTextField.setText(marginFormatter.format(top));
+        bottomMarginTextField.setText(marginFormatter.format(bottom));
+        leftMarginTextField.setText(marginFormatter.format(left));
+        rightMargintextField.setText(marginFormatter.format(right));
     }
 
     private PageSizeItem getItem(String width, String height) {
@@ -222,6 +272,11 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
         return null;
     }
 
+    private void updateUnitsLabel() {
+        widthUnitLabel.setText(milimeter ? "mm" : "in");
+        heightUnitLabel.setText(milimeter ? "mm" : "in");
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -238,8 +293,8 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
         widthTextField = new javax.swing.JTextField();
         labelHeight = new javax.swing.JLabel();
         heightTextField = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        widthUnitLabel = new javax.swing.JLabel();
+        heightUnitLabel = new javax.swing.JLabel();
         labelOrientation = new javax.swing.JLabel();
         portraitRadio = new javax.swing.JRadioButton();
         landscapeRadio = new javax.swing.JRadioButton();
@@ -267,9 +322,9 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
         heightTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         heightTextField.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.heightTextField.text")); // NOI18N
 
-        jLabel4.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.jLabel4.text")); // NOI18N
+        widthUnitLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.widthUnitLabel.text")); // NOI18N
 
-        jLabel5.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.jLabel5.text")); // NOI18N
+        heightUnitLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.heightUnitLabel.text")); // NOI18N
 
         labelOrientation.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelOrientation.text")); // NOI18N
 
@@ -323,8 +378,8 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
                                     .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5)))
+                            .addComponent(widthUnitLabel)
+                            .addComponent(heightUnitLabel)))
                     .addComponent(pageSizeCombo, 0, 224, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -355,13 +410,13 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
                     .addComponent(pageSizeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
+                    .addComponent(widthUnitLabel)
                     .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelWidth))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
+                    .addComponent(heightUnitLabel)
                     .addComponent(labelHeight))
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -382,7 +437,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
                     .addComponent(labelBottom)
                     .addComponent(labelRight)
                     .addComponent(rightMargintextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -462,8 +517,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField bottomMarginTextField;
     private javax.swing.JTextField heightTextField;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel heightUnitLabel;
     private javax.swing.JLabel labelBottom;
     private javax.swing.JLabel labelHeight;
     private javax.swing.JLabel labelLeft;
@@ -481,5 +535,6 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
     private javax.swing.JTextField rightMargintextField;
     private javax.swing.JTextField topMarginTextField;
     private javax.swing.JTextField widthTextField;
+    private javax.swing.JLabel widthUnitLabel;
     // End of variables declaration//GEN-END:variables
 }
