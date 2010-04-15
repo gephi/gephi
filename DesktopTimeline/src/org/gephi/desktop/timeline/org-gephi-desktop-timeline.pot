@@ -22,7 +22,7 @@ msgid "CTL_TimelineTopComponent"
 msgstr "Timeline Window"
 
 msgid "HINT_TimelineTopComponent"
-msgstr "This is a Timeline window"
+msgstr ""
 
 msgid "OpenIDE-Module-Display-Category"
 msgstr "Gephi UI"

@@ -105,9 +105,6 @@ msgstr "Save As..."
 msgid "Actions/File/org-gephi-branding-desktop-actions-SaveProject.instance"
 msgstr "Save Project"
 
-msgid "BannerTopComponent.logoButton.text"
-msgstr ""
-
 msgid "BannerTopComponent.logoButton.toolTipText"
 msgstr "Go on Gephi website www.gephi.org"
 

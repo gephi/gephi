@@ -24,6 +24,7 @@ msgstr "Ranking"
 msgid "CTL_RankingTopComponent"
 msgstr "Ranking"
 
+#, fuzzy
 msgid "HINT_RankingTopComponent"
 msgstr "Ranking"
 

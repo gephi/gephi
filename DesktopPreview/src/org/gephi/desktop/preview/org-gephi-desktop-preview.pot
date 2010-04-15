@@ -33,9 +33,11 @@ msgstr "Preview Settings"
 msgid "CTL_PreviewTopComponent"
 msgstr "Preview"
 
+#, fuzzy
 msgid "HINT_PreviewSettingsTopComponent"
 msgstr "Preview Settings"
 
+#, fuzzy
 msgid "HINT_PreviewTopComponent"
 msgstr "Preview"
 

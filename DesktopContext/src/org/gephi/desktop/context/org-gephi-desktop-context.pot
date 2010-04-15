@@ -22,7 +22,7 @@ msgid "OpenIDE-Module-Name"
 msgstr "Desktop Context"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Contextal information about current graph"
+msgstr "Contextual information about current graph"
 
 msgid "CTL_ContextAction"
 msgstr "Context"
@@ -43,9 +43,6 @@ msgid "ContextPanel.labelEdges.text"
 msgstr "Edges:"
 
 msgid "ContextPanel.edgeLabel.text"
-msgstr ""
-
-msgid "ContextPanel.pieButton.text"
 msgstr ""
 
 msgid "ContextPanel.graphTypeLabel.text"

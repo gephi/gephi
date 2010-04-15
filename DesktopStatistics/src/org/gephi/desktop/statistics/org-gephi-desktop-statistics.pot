@@ -27,6 +27,7 @@ msgstr "Statistics"
 msgid "CTL_StatisticsTopComponent"
 msgstr "Statistics"
 
+#, fuzzy
 msgid "HINT_StatisticsTopComponent"
 msgstr "Statistics"
 

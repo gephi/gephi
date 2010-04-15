@@ -22,10 +22,10 @@ msgid "CTL_HierarchyAction"
 msgstr "Hierarchy"
 
 msgid "CTL_HierarchyTopComponent"
-msgstr "Hierarchy Window"
+msgstr "Hierarchy"
 
 msgid "HINT_HierarchyTopComponent"
-msgstr "This is a Hierarchy window"
+msgstr ""
 
 msgid "OpenIDE-Module-Display-Category"
 msgstr "Gephi UI"

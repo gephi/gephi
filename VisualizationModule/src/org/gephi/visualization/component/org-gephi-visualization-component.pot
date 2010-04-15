@@ -21,6 +21,7 @@ msgstr "Graph"
 msgid "CTL_GraphTopComponent"
 msgstr "Graph"
 
+#, fuzzy
 msgid "HINT_GraphTopComponent"
 msgstr "Graph"
 

@@ -25,7 +25,7 @@ msgid "CTL_PartitionTopComponent"
 msgstr "Partition"
 
 msgid "HINT_PartitionTopComponent"
-msgstr "Partition"
+msgstr ""
 
 msgid "OpenIDE-Module-Display-Category"
 msgstr "Gephi UI"

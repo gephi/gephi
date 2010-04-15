@@ -19,7 +19,7 @@ msgid "CTL_WelcomeAction"
 msgstr "Welcome"
 
 msgid "CTL_WelcomeTopComponent"
-msgstr "Welcome Window"
+msgstr "Welcome"
 
 msgid "HINT_WelcomeTopComponent"
 msgstr ""
