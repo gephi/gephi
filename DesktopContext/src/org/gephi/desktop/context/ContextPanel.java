@@ -169,7 +169,6 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         commandToolbar.setOpaque(false);
 
         pieButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/context/resources/pie.png"))); // NOI18N
-        pieButton.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.pieButton.text")); // NOI18N
         pieButton.setFocusable(false);
         pieButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         pieButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -213,6 +212,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         add(nodeLabel, gridBagConstraints);
 
         labelEdges.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.labelEdges.text")); // NOI18N
+        labelEdges.setToolTipText("null"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;

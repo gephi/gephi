@@ -47,9 +47,6 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/org/gephi/branding/desktop/resources/logo_std.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gephi/branding/desktop/Bundle.properties" key="BannerTopComponent.logoButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-            </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="org/gephi/branding/desktop/Bundle.properties" key="BannerTopComponent.logoButton.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>

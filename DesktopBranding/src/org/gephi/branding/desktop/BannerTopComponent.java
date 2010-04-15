@@ -156,7 +156,6 @@ public final class BannerTopComponent extends TopComponent {
         mainPanel.setLayout(new java.awt.GridBagLayout());
 
         logoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/logo_std.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(logoButton, org.openide.util.NbBundle.getMessage(BannerTopComponent.class, "BannerTopComponent.logoButton.text")); // NOI18N
         logoButton.setToolTipText(org.openide.util.NbBundle.getMessage(BannerTopComponent.class, "BannerTopComponent.logoButton.toolTipText")); // NOI18N
         logoButton.setBorder(null);
         logoButton.setBorderPainted(false);
@@ -165,11 +164,6 @@ public final class BannerTopComponent extends TopComponent {
         logoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         logoButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/logo_glow.png"))); // NOI18N
         logoButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/logo_glow.png"))); // NOI18N
-        logoButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                logoButtonActionPerformed(evt);
-            }
-        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
