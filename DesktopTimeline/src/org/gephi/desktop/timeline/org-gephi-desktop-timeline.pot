@@ -19,7 +19,7 @@ msgid "CTL_TimelineAction"
 msgstr "Timeline"
 
 msgid "CTL_TimelineTopComponent"
-msgstr "Timeline Window"
+msgstr "Timeline"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Timeline UI"

@@ -18,9 +18,6 @@ msgstr ""
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Implement ToolController and integrate tools UI"
 
-msgid "SelectionBar.statusLabel.text"
-msgstr "jLabel1"
-
 msgid "PropertiesBar.fullScreenButton.tooltip"
 msgstr "Full Screen"
 

@@ -54,14 +54,8 @@ msgstr "Import report"
 msgid "ReportPanel.labelSrc.text"
 msgstr "Source:"
 
-msgid "ReportPanel.sourceLabel.text"
-msgstr "jLabel2"
-
 msgid "ReportPanel.tab1ScrollPane.TabConstraints.tabTitle"
 msgstr "Issues"
-
-msgid "ReportPanel.nodeCountLabel.text"
-msgstr "jLabel4"
 
 msgid "ReportPanel.edgeCountLabel.text"
 msgstr "edgesNumberLabel"

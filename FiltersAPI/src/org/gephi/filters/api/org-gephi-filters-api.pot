@@ -31,4 +31,4 @@ msgid "FiltersLibrary.Category.Hierarchy"
 msgstr "Hierarchy"
 
 msgid "FiltersLibrary.Category.Edge"
-msgstr "Edge"
+msgstr "Edges"
