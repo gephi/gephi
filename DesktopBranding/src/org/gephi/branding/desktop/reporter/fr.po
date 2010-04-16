@@ -1,0 +1,73 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-15 22:11+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-16 03:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OutOfMemoryError.message"
+msgstr ""
+"Erreur mémoire. Augmentez le paramètre de taille maximale (-Xmx) dans le "
+"fichier de configuration de démarrage de Gephi."
+
+msgid "ReportPanel.jLabel1.text"
+msgstr "Résumé:"
+
+msgid "ReportPanel.summaryTextField.text"
+msgstr ""
+
+msgid "ReportPanel.jLabel2.text"
+msgstr "Décrivez ce que vous faisiez lorsque le problème est arrivé:"
+
+msgid "ReportPanel.followCheckBox.text"
+msgstr "Suivre ce problème"
+
+msgid "ReportPanel.emailTextField.text"
+msgstr ""
+
+msgid "ReportPanel.labelEmail.text"
+msgstr "Courriel:"
+
+msgid "ReportPanel.helpLabel.text"
+msgstr "Laissez votre courriel pour être informé du traitement"
+
+msgid "ReportPanel.dialog.title"
+msgstr "Rapporteur d'exception"
+
+msgid "ReportPanel.dialog.sendButton"
+msgstr "Envoyer"
+
+msgid "ReportHandler.button"
+msgstr "Rapporter le problème"
+
+msgid "ReportController.status.sending"
+msgstr "Envoyer le rapport"
+
+msgid "ReportController.status.sent"
+msgstr "Le problème a été rapporté, merci."
+
+msgid "ReportController.status.failed"
+msgstr "Un problème est survenu lors de l'envoi du rapport."
+
+msgid "ReportPanel.jLabel3.text"
+msgstr ""
+"Les rapports d'erreurs aident à améliorer le logiciel. Aucune donnée "
+"personnel n'est envoyée."
+
+msgid "ReportPanel.viewDataButton.text"
+msgstr "Voir les données"
+
+msgid "ReportPanel.viewData.title"
+msgstr "Voir les données du rapport"

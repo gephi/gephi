@@ -1,0 +1,48 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-15 21:56+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-16 03:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "CTL_NewProject"
+msgstr "Nouveau projet"
+
+msgid "CTL_OpenProject"
+msgstr "Ouvrir un projet"
+
+msgid "CTL_SaveProject"
+msgstr "Enregistrer"
+
+msgid "CTL_SaveAsProject"
+msgstr "Enregistrer sous..."
+
+msgid "CTL_OpenFile"
+msgstr "Ouvrir..."
+
+msgid "CTL_CloseProject"
+msgstr "Fermer le projet"
+
+msgid "CTL_ProjectProperties"
+msgstr "Propriétés..."
+
+msgid "CTL_NewWorkspace"
+msgstr "Nouvel espace de travail"
+
+msgid "CTL_DeleteWorkspace"
+msgstr "Supprimer l'espace de travail"
+
+msgid "CTL_CleanWorkspace"
+msgstr "Vider l'espace de travai"
