@@ -24,34 +24,14 @@ msgstr "Banner"
 msgid "HINT_BannerTopComponent"
 msgstr ""
 
-msgid "OpenIDE-Module-Display-Category"
-msgstr "Gephi UI"
-
 msgid "OpenIDE-Module-Long-Description"
 msgstr "Desktop initialization and management"
-
-msgid "OpenIDE-Module-Name"
-msgstr "Desktop Branding"
 
 msgid "CTL_TopTabAction"
 msgstr "TopTab"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Desktop initialization and management"
-
-msgid "org_gephi_branding_desktop_update_center"
-msgstr "http://gephi.org/updates/official/0.7-alpha/catalog.xml"
-
-msgid "org_gephi_branding_desktop_update_center_1"
-msgstr "http://gephi.org/updates/thirdparty/0.7-alpha/catalog.xml"
-
-msgid ""
-"Services/AutoupdateType/org_gephi_branding_desktop_update_center.instance"
-msgstr "Gephi Update Center"
-
-msgid ""
-"Services/AutoupdateType/org_gephi_branding_desktop_update_center_1.instance"
-msgstr "Gephi Thirdparties Plugins"
 
 msgid "TopTabComponent.jLabel1.AccessibleContext.accessibleName"
 msgstr ""

@@ -15,14 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "OpenIDE-Module-Display-Category"
-msgstr "Plugin"
-
 msgid "OpenIDE-Module-Long-Description"
 msgstr "Filters implementations, define new filters"
-
-msgid "OpenIDE-Module-Name"
-msgstr "Filters Plugin"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Filters implementations"

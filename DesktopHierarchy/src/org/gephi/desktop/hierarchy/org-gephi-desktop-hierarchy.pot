@@ -27,12 +27,6 @@ msgstr "Hierarchy"
 msgid "HINT_HierarchyTopComponent"
 msgstr ""
 
-msgid "OpenIDE-Module-Display-Category"
-msgstr "Gephi UI"
-
-msgid "OpenIDE-Module-Name"
-msgstr "Desktop Hierarchy"
-
 msgid "HierarchyControlPanel.showTreeLabel.toolTipText"
 msgstr "Show Tree"
 

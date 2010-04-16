@@ -24,12 +24,6 @@ msgstr "Filters"
 msgid "HINT_FiltersTopComponent"
 msgstr ""
 
-msgid "OpenIDE-Module-Display-Category"
-msgstr "Gephi UI"
-
-msgid "OpenIDE-Module-Name"
-msgstr "Desktop Filters"
-
 msgid "FiltersPanel.resetButton.text"
 msgstr "Reset"
 

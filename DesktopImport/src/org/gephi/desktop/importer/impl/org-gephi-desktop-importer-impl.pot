@@ -62,15 +62,3 @@ msgstr "Test Connection"
 
 msgid "EdgeListPanel.edgeQueryTextField.text"
 msgstr "SELECT * FROM edges"
-
-msgid "EdgeListPanel.port.text"
-msgstr ""
-
-msgid "EdgeListPanel.database.text"
-msgstr ""
-
-msgid "EdgeListPanel.user name.text"
-msgstr ""
-
-msgid "EdgeListPanel.password.text"
-msgstr ""

@@ -15,14 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "OpenIDE-Module-Display-Category"
-msgstr "Libraries"
-
 msgid "OpenIDE-Module-Long-Description"
 msgstr "Graphical Spline Editor"
-
-msgid "OpenIDE-Module-Name"
-msgstr "Spline Editor"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Graphical Spline Editor"

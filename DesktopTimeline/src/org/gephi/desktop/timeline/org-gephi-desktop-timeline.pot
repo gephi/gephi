@@ -24,14 +24,8 @@ msgstr "Timeline Window"
 msgid "HINT_TimelineTopComponent"
 msgstr ""
 
-msgid "OpenIDE-Module-Display-Category"
-msgstr "Gephi UI"
-
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Timeline UI"
-
-msgid "OpenIDE-Module-Name"
-msgstr "Desktop Timeline"
 
 msgid "TimelineTopComponent.settingsButton.text"
 msgstr "settings"

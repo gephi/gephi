@@ -15,9 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "OpenIDE-Module-Name"
-msgstr "Import Container Standard"
-
 msgid "ImportContainerException_nodeExist"
 msgstr "Duplicated node id=''{0}''"
 

@@ -15,12 +15,21 @@ if [[ $f == 'Bundle.properties' ]]; then
 	#rm *.pot
 
 	if [[ $path == org-* ]]; then
+		# Duplicates Bundle.properties and remove specific lines
+		ftmp=Bundle.properties.tmp
+		cp $f $ftmp
+		sed -i '/OpenIDE-Module-Display-Category/ d' $ftmp
+		sed -i '/OpenIDE-Module-Name/ d' $ftmp
+		sed -i '/org_gephi_branding_desktop_update_center/ d' $ftmp
+		sed -i '/^HINT_/ d' $ftmp
+		sed -i '/=$/ d' $ftmp
+		
 		echo $path
 		fname=${path}.pot
 		# generate POT file from Bundle.properties
-		msgcat $f --properties-input --output-file=$fname
+		msgcat $ftmp --properties-input --output-file=$fname
 
-		if [[ -f $fname ]]; then
+		if [[ -s $fname ]]; then
 			#add header
 			cp $fname tmp.txt
 			cat ${ROOT}/pot-header.txt tmp.txt > $fname
@@ -30,6 +39,8 @@ if [[ $f == 'Bundle.properties' ]]; then
 			msgfmt -c $fname
 			rm messages.mo
 		fi
+		
+		rm $ftmp
 	fi
 
 fi

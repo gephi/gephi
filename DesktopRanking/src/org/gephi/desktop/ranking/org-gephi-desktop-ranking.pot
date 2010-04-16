@@ -28,12 +28,6 @@ msgstr "Ranking"
 msgid "HINT_RankingTopComponent"
 msgstr "Ranking"
 
-msgid "OpenIDE-Module-Display-Category"
-msgstr "Gephi UI"
-
-msgid "OpenIDE-Module-Name"
-msgstr "Desktop Ranking"
-
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Integrated ranking UI"
 

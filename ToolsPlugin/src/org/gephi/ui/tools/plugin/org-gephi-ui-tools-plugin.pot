@@ -15,9 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "EdgePencilPanel.colorButton.text"
-msgstr ""
-
 msgid "EdgePencilPanel.labelWeight.text"
 msgstr "Weight:"
 
@@ -39,14 +36,8 @@ msgstr "%"
 msgid "BrushPanel.labelDiffusion.text"
 msgstr "Diffusion:"
 
-msgid "BrushPanel.colorButton.text"
-msgstr ""
-
 msgid "NodePencilPanel.labelColor.text"
 msgstr "Color:"
-
-msgid "NodePencilPanel.colorButton.text"
-msgstr ""
 
 msgid "NodePencilPanel.statusLabel.text"
 msgstr "Add node to the graph"
@@ -57,14 +48,8 @@ msgstr "Size:"
 msgid "ShortestPathPanel.statusLabel.text"
 msgstr "jLabel1"
 
-msgid "ShortestPathPanel.resultLabel.text"
-msgstr ""
-
 msgid "ShortestPathPanel.labelColor.text"
 msgstr "Color:"
-
-msgid "ShortestPathPanel.colorButton.text"
-msgstr ""
 
 msgid "HeatMapPanel.statusLabel.text"
 msgstr "Click on a node"
@@ -86,9 +71,6 @@ msgstr "Invert Palette"
 
 msgid "PainterPanel.labelColor.text"
 msgstr "Color:"
-
-msgid "PainterPanel.colorButton.text"
-msgstr ""
 
 msgid "SizerPanel.jLabel1.text"
 msgstr "Press on nodes and drag vertically the mouse"

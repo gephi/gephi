@@ -18,9 +18,6 @@ msgstr ""
 msgid "EqualStringPanel.regexCheckbox.text"
 msgstr "Use regex"
 
-msgid "EqualStringPanel.textField.text"
-msgstr ""
-
 msgid "EqualStringPanel.labelPattern.text"
 msgstr "Pattern:"
 
@@ -41,9 +38,3 @@ msgstr "Minimum:"
 
 msgid "EqualNumberPanel.jLabel2.text"
 msgstr "Maximum:"
-
-msgid "EqualNumberPanel.minLabel.text"
-msgstr ""
-
-msgid "EqualNumberPanel.maxLabel.text"
-msgstr ""

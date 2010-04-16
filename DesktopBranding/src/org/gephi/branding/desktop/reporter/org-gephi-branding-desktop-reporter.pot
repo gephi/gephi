@@ -23,17 +23,11 @@ msgstr ""
 msgid "ReportPanel.jLabel1.text"
 msgstr "Summary:"
 
-msgid "ReportPanel.summaryTextField.text"
-msgstr ""
-
 msgid "ReportPanel.jLabel2.text"
 msgstr "Describe what you were doing when the problem occurred, please:"
 
 msgid "ReportPanel.followCheckBox.text"
 msgstr "I want to follow the issue"
-
-msgid "ReportPanel.emailTextField.text"
-msgstr ""
 
 msgid "ReportPanel.labelEmail.text"
 msgstr "Email:"
