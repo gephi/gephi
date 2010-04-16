@@ -21,9 +21,6 @@ msgstr "Clustering"
 msgid "CTL_ClusteringTopComponent"
 msgstr "Clustering"
 
-msgid "HINT_ClusteringTopComponent"
-msgstr ""
-
 msgid "ClusteringTopComponent.settingsButton.text"
 msgstr "Settings"
 

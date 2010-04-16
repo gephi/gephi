@@ -21,9 +21,6 @@ msgstr "Welcome"
 msgid "CTL_WelcomeTopComponent"
 msgstr "Welcome"
 
-msgid "HINT_WelcomeTopComponent"
-msgstr ""
-
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Welcome screen component"
 

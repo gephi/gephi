@@ -45,32 +45,14 @@ msgstr "UnDirected"
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Standard statistics UI implementations"
 
-msgid "PageRankPanel.probTextField.text"
-msgstr ""
-
-msgid "PageRankPanel.epsilonTextField.text"
-msgstr ""
-
-msgid "HitsPanel.epsilonTextField.text"
-msgstr ""
-
 msgid "GraphDensityPanel.directedRadioButton.text"
 msgstr "Directed"
 
 msgid "GraphDensityPanel.undirectedRadioButton.text"
 msgstr "UnDirected"
 
-msgid "DegreeDistributionPanel.descriptionLabel.text"
-msgstr ""
-
-msgid "GraphDistancePanel.descriptionLabel.text"
-msgstr ""
-
 msgid "HitsPanel.labelEpsilon.text"
 msgstr "Epsilon:"
-
-msgid "HitsPanel.descriptionLabel.text"
-msgstr ""
 
 msgid "HitsPanel.directedRadioButton.text"
 msgstr "Directed"
@@ -81,17 +63,11 @@ msgstr "UnDirected"
 msgid "ModularityPanel.randomizeCheckbox.text"
 msgstr "Randomize"
 
-msgid "ModularityPanel.desriptionLabel.text"
-msgstr ""
-
 msgid "PageRankPanel.labelP.text"
 msgstr "Probability (p):"
 
 msgid "PageRankPanel.labelE.text"
 msgstr "Epsilon:"
-
-msgid "PageRankPanel.descriptionLabel.text"
-msgstr ""
 
 msgid "PageRankPanel.directedRadioButton.text"
 msgstr "Directed"

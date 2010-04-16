@@ -21,9 +21,6 @@ msgstr "Data Table"
 msgid "CTL_DataTableTopComponent"
 msgstr "Data Table"
 
-msgid "HINT_DataTableTopComponent"
-msgstr ""
-
 msgid "DataTableTopComponent.tableScrollPane.busyMessage"
 msgstr "Fetching data..."
 
@@ -44,12 +41,6 @@ msgstr "Refresh"
 
 msgid "DataTableTopComponent.labelBanner.text"
 msgstr "Data have been updated. Do you want to refresh the table?"
-
-msgid "DataTableTopComponent.filterTextField.text"
-msgstr ""
-
-msgid "DataTableTopComponent.boxGlue.text"
-msgstr ""
 
 msgid "DataTableTopComponent.visibleGraphCheckbox.text"
 msgstr "Visible graph only"

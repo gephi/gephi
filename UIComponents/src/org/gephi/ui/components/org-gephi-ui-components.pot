@@ -36,12 +36,6 @@ msgstr "Select All"
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Sharable Swing components"
 
-msgid "SwapListPanel.leftButton.text"
-msgstr ""
-
-msgid "SwapListPanel.rightButton.text"
-msgstr ""
-
 msgid "JRangeSliderPanel.lowerBoundTextField.text"
 msgstr "NaN"
 

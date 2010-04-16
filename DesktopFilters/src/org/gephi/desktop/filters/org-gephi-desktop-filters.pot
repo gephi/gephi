@@ -21,9 +21,6 @@ msgstr "Filters"
 msgid "CTL_FiltersTopComponent"
 msgstr "Filters"
 
-msgid "HINT_FiltersTopComponent"
-msgstr ""
-
 msgid "FiltersPanel.resetButton.text"
 msgstr "Reset"
 
@@ -42,14 +39,8 @@ msgstr "Filter"
 msgid "FiltersPanel.exportColumnButton.toolTipText"
 msgstr "Export filtered graph as a true/false data column"
 
-msgid "FiltersPanel.exportColumnButton.text"
-msgstr ""
-
 msgid "FiltersPanel.exportWorkspaceButton.toolTipText"
 msgstr "Export filtered graph to a new workspace"
-
-msgid "FiltersPanel.exportWorkspaceButton.text"
-msgstr ""
 
 msgid "FiltersPanel.exportColumn.input"
 msgstr "Column title"

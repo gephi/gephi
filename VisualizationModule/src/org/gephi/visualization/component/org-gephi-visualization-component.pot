@@ -31,9 +31,6 @@ msgstr "tab2"
 msgid "GraphTopComponent.jToggleButton2.TabConstraints.tabTitle"
 msgstr "tab2"
 
-msgid "CollapsePanel.extendButton.text"
-msgstr ""
-
 msgid "GraphTopComponent.waitingLabel.text"
 msgstr "Initializing..."
 
@@ -104,17 +101,11 @@ msgstr ""
 msgid "EdgeSettingsPanel.labelEdgeColor.text"
 msgstr "Edge default color:"
 
-msgid "EdgeSettingsPanel.edgeColorButton.text"
-msgstr ""
-
 msgid "EdgeSettingsPanel.sourceNodeColorCheckbox.text"
 msgstr "Source node color"
 
 msgid "EdgeSettingsPanel.showEdgesCheckbox.text"
 msgstr "Show"
-
-msgid "GlobalSettingsPanel.backgroundColorButton.text"
-msgstr ""
 
 msgid "GlobalSettingsPanel.hightlightCheckBox.text"
 msgstr "Highlight selection"
@@ -127,9 +118,6 @@ msgstr "Autoselect neighbor"
 
 msgid "LabelSettingsPanel.labelNodeFont.text"
 msgstr "Font:"
-
-msgid "LabelSettingsPanel.nodeColorButton.text"
-msgstr ""
 
 msgid "LabelSettingsPanel.showNodeLabelsCheckbox.text"
 msgstr "Node"
@@ -157,9 +145,6 @@ msgstr "Size:"
 
 msgid "LabelSettingsPanel.labelEdgeSize.text"
 msgstr "Size:"
-
-msgid "LabelSettingsPanel.edgeColorButton.text"
-msgstr ""
 
 msgid "LabelSettingsPanel.labelSizeMode.text"
 msgstr "Size:"

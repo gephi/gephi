@@ -21,9 +21,6 @@ msgstr "Banner"
 msgid "CTL_BannerTopComponent"
 msgstr "Banner"
 
-msgid "HINT_BannerTopComponent"
-msgstr ""
-
 msgid "OpenIDE-Module-Long-Description"
 msgstr "Desktop initialization and management"
 
@@ -33,11 +30,13 @@ msgstr "TopTab"
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Desktop initialization and management"
 
-msgid "TopTabComponent.jLabel1.AccessibleContext.accessibleName"
-msgstr ""
+msgid ""
+"Services/AutoupdateType/org_gephi_branding_desktop_update_center.instance"
+msgstr "Gephi Update Center"
 
-msgid "TopTabComponent.logoLabel.text"
-msgstr ""
+msgid ""
+"Services/AutoupdateType/org_gephi_branding_desktop_update_center_1.instance"
+msgstr "Gephi Thirdparties Plugins"
 
 msgid "CommandLineProcessor.OutOfMemoryError.message"
 msgstr ""
@@ -87,9 +86,6 @@ msgstr "Save Project"
 
 msgid "BannerTopComponent.logoButton.toolTipText"
 msgstr "Go on Gephi website www.gephi.org"
-
-msgid "BannerTopComponent.bannerBackground.text"
-msgstr ""
 
 msgid "DragNDropFrameAdapter.openGephiError"
 msgstr "Impossible to open this file. It must he a compatible '.gephi' file."

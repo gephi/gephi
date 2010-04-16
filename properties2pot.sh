@@ -18,11 +18,11 @@ if [[ $f == 'Bundle.properties' ]]; then
 		# Duplicates Bundle.properties and remove specific lines
 		ftmp=Bundle.properties.tmp
 		cp $f $ftmp
+		sed -i 's/\r$//' $ftmp
 		sed -i '/OpenIDE-Module-Display-Category/ d' $ftmp
 		sed -i '/OpenIDE-Module-Name/ d' $ftmp
-		sed -i '/org_gephi_branding_desktop_update_center/ d' $ftmp
-		sed -i '/^HINT_/ d' $ftmp
-		sed -i '/=$/ d' $ftmp
+		sed -i '/^org_gephi_branding_desktop_update_center/ d' $ftmp
+		sed -i '/=\s*$/ d' $ftmp
 		
 		echo $path
 		fname=${path}.pot
@@ -30,6 +30,8 @@ if [[ $f == 'Bundle.properties' ]]; then
 		msgcat $ftmp --properties-input --output-file=$fname
 
 		if [[ -s $fname ]]; then
+			#sed -i -l 2 '/msgid "TopTabComponent.logoLabel.text"\nmsgstr ""/ d' $fname
+			
 			#add header
 			cp $fname tmp.txt
 			cat ${ROOT}/pot-header.txt tmp.txt > $fname

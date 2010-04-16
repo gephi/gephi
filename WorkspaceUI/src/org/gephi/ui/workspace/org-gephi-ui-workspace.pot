@@ -33,12 +33,6 @@ msgstr "Are you sure do yo want to delete this workspace ?"
 msgid "WorkspacePanePanel_closeWorkspace_Title"
 msgstr "Close workspace"
 
-msgid "WorkspaceUISelectorPanel.leftArrowButton.text"
-msgstr ""
-
-msgid "WorkspaceUISelectorPanel.rightArrowButton.text"
-msgstr ""
-
 msgid "WorkspacePanePanel.closeButton.toolTipText"
 msgstr "Close workspace"
 

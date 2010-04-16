@@ -21,17 +21,11 @@ msgstr "Vectorial exporters user interfaces"
 msgid "UIExporterPDFPanel.labelPageSize.text"
 msgstr "Page size:"
 
-msgid "UIExporterPDFPanel.widthTextField.text"
-msgstr ""
-
 msgid "UIExporterPDFPanel.labelWidth.text"
 msgstr "Width:"
 
 msgid "UIExporterPDFPanel.labelHeight.text"
 msgstr "Height:"
-
-msgid "UIExporterPDFPanel.heightTextField.text"
-msgstr ""
 
 msgid "UIExporterPDFPanel.portraitRadio.text"
 msgstr "Portrait"
@@ -48,12 +42,6 @@ msgstr "Top:"
 msgid "UIExporterPDFPanel.labelBottom.text"
 msgstr "Bottom:"
 
-msgid "UIExporterPDFPanel.topMarginTextField.text"
-msgstr ""
-
-msgid "UIExporterPDFPanel.bottomMarginTextField.text"
-msgstr ""
-
 msgid "UIExporterPDFPanel.labelMargins.text"
 msgstr "Margins:"
 
@@ -62,12 +50,6 @@ msgstr "Left:"
 
 msgid "UIExporterPDFPanel.labelRight.text"
 msgstr "Right:"
-
-msgid "UIExporterPDFPanel.leftMarginTextField.text"
-msgstr ""
-
-msgid "UIExporterPDFPanel.rightMargintextField.text"
-msgstr ""
 
 msgid "UIExporterPDFPanel.pageSize.custom"
 msgstr "Custom..."

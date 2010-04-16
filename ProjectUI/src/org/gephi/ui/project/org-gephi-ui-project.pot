@@ -24,17 +24,8 @@ msgstr "Name:"
 msgid "ProjectPropertiesEditor.labelAuthor.text"
 msgstr "Author:"
 
-msgid "ProjectPropertiesEditor.authorTextField.text"
-msgstr ""
-
-msgid "ProjectPropertiesEditor.keywordsTextField.text"
-msgstr ""
-
 msgid "ProjectPropertiesEditor.labelKeywords.text"
 msgstr "Keywords:"
-
-msgid "ProjectPropertiesEditor.titleTextField.text"
-msgstr ""
 
 msgid "ProjectPropertiesEditor.labelDescription.text"
 msgstr "Description:"
@@ -42,14 +33,8 @@ msgstr "Description:"
 msgid "ProjectPropertiesEditor.labelTitle.text"
 msgstr "Title:"
 
-msgid "ProjectPropertiesEditor.nameTextField.text"
-msgstr ""
-
 msgid "ProjectPropertiesEditor.descriptionPanel.border.title"
 msgstr "Description"
-
-msgid "ProjectPropertiesEditor.fileLabel.text"
-msgstr ""
 
 msgid "ProjectPropertiesEditor.labelFile.text"
 msgstr "File:"

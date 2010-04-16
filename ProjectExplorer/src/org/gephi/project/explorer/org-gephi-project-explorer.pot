@@ -27,6 +27,9 @@ msgstr "Project"
 msgid "CTL_ProjectTopComponent"
 msgstr "Project Window"
 
+msgid "HINT_ProjectTopComponent"
+msgstr "This is a Project window"
+
 msgid "ProjectsNode_title"
 msgstr "Projects"
 

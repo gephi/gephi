@@ -24,20 +24,8 @@ msgstr "Context"
 msgid "CTL_ContextTopComponent"
 msgstr "Context"
 
-msgid "HINT_ContextTopComponent"
-msgstr ""
-
 msgid "ContextPanel.labelNodes.text"
 msgstr "Nodes:"
 
-msgid "ContextPanel.nodeLabel.text"
-msgstr ""
-
 msgid "ContextPanel.labelEdges.text"
 msgstr "Edges:"
-
-msgid "ContextPanel.edgeLabel.text"
-msgstr ""
-
-msgid "ContextPanel.graphTypeLabel.text"
-msgstr ""

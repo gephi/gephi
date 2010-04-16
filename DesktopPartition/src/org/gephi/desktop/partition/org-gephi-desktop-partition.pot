@@ -24,9 +24,6 @@ msgstr "Partition"
 msgid "CTL_PartitionTopComponent"
 msgstr "Partition"
 
-msgid "HINT_PartitionTopComponent"
-msgstr ""
-
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Partition UI"
 
@@ -65,12 +62,6 @@ msgstr "Show Pie"
 
 msgid "PartitionChooser.hidepie.label"
 msgstr "Hide Pie"
-
-msgid "PartitionChooser.refreshBusyLabel.text"
-msgstr ""
-
-msgid "PartitionChooser.refreshButton.text"
-msgstr ""
 
 msgid "PartitionChooser.refreshButton.toolTipText"
 msgstr "Refresh"

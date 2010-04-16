@@ -59,14 +59,8 @@ msgstr "Refresh"
 msgid "PreviewTopComponent.busyLabel.text"
 msgstr "Refreshing..."
 
-msgid "PreviewSettingsTopComponent.box.text"
-msgstr ""
-
 msgid "PreviewSettingsTopComponent.saveButton.toolTipText"
 msgstr "Save preset"
-
-msgid "PreviewSettingsTopComponent.saveButton.text"
-msgstr ""
 
 msgid "PreviewSettingsTopComponent.ratioLabel.text"
 msgstr "0"

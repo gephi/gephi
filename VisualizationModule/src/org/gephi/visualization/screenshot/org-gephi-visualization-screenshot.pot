@@ -30,9 +30,6 @@ msgstr "PNG"
 msgid "ScreenshotMaker.configure.title"
 msgstr "Screenshot settings"
 
-msgid "ScreenshotSettingsPanel.heightTextField.text"
-msgstr ""
-
 msgid "ScreenshotSettingsPanel.transparentBackgroundCheckBox.text"
 msgstr "Transparent background"
 
@@ -50,6 +47,3 @@ msgstr "Antialiasing:"
 
 msgid "ScreenshotSettingsPanel.selectDirectoryButton.text"
 msgstr "Select directory..."
-
-msgid "ScreenshotSettingsPanel.widthTextField.text"
-msgstr ""

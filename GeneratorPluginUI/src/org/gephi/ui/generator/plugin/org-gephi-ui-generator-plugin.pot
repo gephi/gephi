@@ -18,14 +18,8 @@ msgstr ""
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Standard generators UI"
 
-msgid "RandomGraphPanel.edgeField.text"
-msgstr ""
-
 msgid "RandomGraphPanel.nodeLabel.text"
 msgstr "Number of nodes:"
-
-msgid "RandomGraphPanel.nodeField.text"
-msgstr ""
 
 msgid "RandomGraphPanel.edgeLabel.text"
 msgstr "Wiring probability:"
@@ -33,20 +27,11 @@ msgstr "Wiring probability:"
 msgid "WattsStrogatzPanel.edgeLabel.text"
 msgstr "Number of neighbors:"
 
-msgid "WattsStrogatzPanel.nodeField.text"
-msgstr ""
-
 msgid "WattsStrogatzPanel.nodeLabel.text"
 msgstr "Number of nodes:"
 
 msgid "WattsStrogatzPanel.edgeLabel1.text"
 msgstr "Rewiring probability:"
-
-msgid "WattsStrogatzPanel.neighborField.text"
-msgstr ""
-
-msgid "WattsStrogatzPanel.probabilityField.text"
-msgstr ""
 
 msgid "WattsStrogatzPanel.NeigborValidator.problem"
 msgstr "{0} must be between 2 and {1}"

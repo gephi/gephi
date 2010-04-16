@@ -24,12 +24,6 @@ msgstr "Layout"
 msgid "CTL_LayoutTopComponent"
 msgstr "Layout"
 
-msgid "HINT_LayoutTopComponent"
-msgstr ""
-
-msgid "LayoutPanel.infoLabel.text"
-msgstr ""
-
 msgid "LayoutPanel.choose.text"
 msgstr "---Choose a layout"
 

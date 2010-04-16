@@ -24,20 +24,11 @@ msgstr "Hierarchy"
 msgid "CTL_HierarchyTopComponent"
 msgstr "Hierarchy"
 
-msgid "HINT_HierarchyTopComponent"
-msgstr ""
-
 msgid "HierarchyControlPanel.showTreeLabel.toolTipText"
 msgstr "Show Tree"
 
-msgid "HierarchyControlPanel.showTreeLabel.text"
-msgstr ""
-
 msgid "HierarchyControlPanel.labelView.text"
 msgstr "View:"
-
-msgid "HierarchyControlPanel.autoMetaEdgeButton.text"
-msgstr ""
 
 msgid "HierarchyControlPanel.linkLevel"
 msgstr "Level"
@@ -69,9 +60,6 @@ msgstr "Height:"
 msgid "HierarchyControlPanel.heightLabel.text"
 msgstr "0"
 
-msgid "HierarchyControlPanel.metaEdgesSettings.text"
-msgstr ""
-
 msgid "HierarchyControlPanel.metaEdgesSettings.title"
 msgstr "Meta-edges settings"
 
@@ -85,9 +73,6 @@ msgstr ""
 
 msgid "HierarchyControlPanel.jLabel1.text"
 msgstr "Auto meta-edges creation"
-
-msgid "MetaEdgesSettingsPanel.autoMetaEdgesCheckbox.text"
-msgstr ""
 
 msgid "MetaEdgesSettingsPanel.sumRadio.text"
 msgstr "Sum of edges weight"
