@@ -1,0 +1,99 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-16 21:58+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-17 04:22+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "Actions/Window/org-gephi-desktop-hierarchy-HierarchyAction.instance"
+msgstr "Hiérarchie"
+
+msgid "CTL_HierarchyAction"
+msgstr "Hiérarchie"
+
+msgid "CTL_HierarchyTopComponent"
+msgstr "Hiérarchie"
+
+msgid "HierarchyControlPanel.showTreeLabel.toolTipText"
+msgstr "Afficher l'arbre"
+
+msgid "HierarchyControlPanel.labelView.text"
+msgstr "Voir:"
+
+msgid "HierarchyControlPanel.linkLevel"
+msgstr "Niveau"
+
+msgid "HierarchyControlPanel.linkLevel.nodes"
+msgstr "noeuds"
+
+msgid "HierarchyControlPanel.linkLevel.leaves"
+msgstr "Feuilles..."
+
+msgid "HierarchyTopComponent.refreshButton.text"
+msgstr "Rafraichir"
+
+msgid "HierarchyTopComponent.busyLabel.text"
+msgstr "Rafraichissement..."
+
+msgid "HierarchyTopComponent.labelLevelLimit.text"
+msgstr "Couper les feuilles:"
+
+msgid "HierarchyTopComponent.bar.level"
+msgstr "Niveau"
+
+msgid "HierarchyTopComponent.bar.levelmax"
+msgstr "Aucun"
+
+msgid "HierarchyControlPanel.labelHeight.text"
+msgstr "Hauteur:"
+
+msgid "HierarchyControlPanel.heightLabel.text"
+msgstr "0"
+
+msgid "HierarchyControlPanel.metaEdgesSettings.title"
+msgstr "Paramètres des méta-liens"
+
+msgid "MetaEdgesSettingsPanel.jXHeader1.title"
+msgstr "Paramètres des méta-liens"
+
+msgid "MetaEdgesSettingsPanel.jXHeader1.description"
+msgstr ""
+"Les méta-liens établissent des connexions entre un groupe et un noeud, ou "
+"avec un autre groupe. Ils représentent les liens propres entre les "
+"descendants des groupes."
+
+msgid "HierarchyControlPanel.jLabel1.text"
+msgstr "Création automatique des méta-liens"
+
+msgid "MetaEdgesSettingsPanel.sumRadio.text"
+msgstr "Somme des poids des liens"
+
+msgid "MetaEdgesSettingsPanel.avgRadio.text"
+msgstr "Moyenne des poids des liens"
+
+msgid "MetaEdgesSettingsPanel.labelMax.text"
+msgstr "Poids maximal"
+
+msgid "MetaEdgesSettingsPanel.labelMin.text"
+msgstr "Poids minimal"
+
+msgid "MetaEdgesSettingsPanel.labelBuilding.text"
+msgstr ""
+
+msgid "MetaEdgesSettingsPanel.labelEnable.text"
+msgstr "Activer les méta-liens automatiques"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Greffon de visualisation pour la navigation hiérarchique"

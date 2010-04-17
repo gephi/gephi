@@ -8,20 +8,14 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-04-15 22:43+0000\n"
-"Last-Translator: Sébastien Heymann <Unknown>\n"
+"PO-Revision-Date: 2010-04-16 04:22+0000\n"
+"Last-Translator: Mathieu Bastian <mathieu.bastian@gmail.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-16 03:54+0000\n"
+"X-Launchpad-Export-Date: 2010-04-17 04:22+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
-
-msgid "OpenIDE-Module-Display-Category"
-msgstr "Gephi UI"
-
-msgid "OpenIDE-Module-Name"
-msgstr "Desktop Context"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Information contextuelle sur le graphe courant"
@@ -32,20 +26,14 @@ msgstr "Contexte"
 msgid "CTL_ContextTopComponent"
 msgstr "Contexte"
 
-msgid "HINT_ContextTopComponent"
-msgstr ""
-
 msgid "ContextPanel.labelNodes.text"
 msgstr "Noeuds:"
-
-msgid "ContextPanel.nodeLabel.text"
-msgstr ""
 
 msgid "ContextPanel.labelEdges.text"
 msgstr "Liens:"
 
-msgid "ContextPanel.edgeLabel.text"
-msgstr ""
+#~ msgid "OpenIDE-Module-Name"
+#~ msgstr "Desktop Context"
 
-msgid "ContextPanel.graphTypeLabel.text"
-msgstr ""
+#~ msgid "OpenIDE-Module-Display-Category"
+#~ msgstr "Gephi UI"
