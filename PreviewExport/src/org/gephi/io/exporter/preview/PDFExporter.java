@@ -369,18 +369,27 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
 
         Rectangle size = new Rectangle(pageSize);
-        size.setBackgroundColor(new BaseColor(controller.getModel().getBackgroundColor()));
-        document = new Document(size);
-        document.setMargins(marginLeft, marginRight, marginTop, marginBottom);
+        if (landscape) {
+            size = new Rectangle(pageSize.rotate());
+        }
+        //size.setBackgroundColor(new BaseColor(controller.getModel().getBackgroundColor()));
+        document = new Document(size, marginLeft, marginRight, marginTop, marginBottom);
+        //document.setMargins(marginLeft, marginRight, marginTop, marginBottom);
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
         document.open();
+        //document.setMargins(200, 200, 200, 200);
         cb = writer.getDirectContent();
         cb.saveState();
 
-        double graphWidth = graphSheet.getWidth();
-        double graphHeight = graphSheet.getHeight();
-        double centerX = (graphSheet.getBottomRightPosition().getX() - graphSheet.getTopLeftPosition().getX()) / 2.;
-        double centerY = (graphSheet.getTopLeftPosition().getY() - graphSheet.getBottomRightPosition().getY()) / 2.;
+        /*float x = -100;
+        float y = 50;
+        float w = 205;
+        float h = 100;
+
+        double graphWidth = w;
+        double graphHeight = h;
+        double centerX = x + w/2f;
+        double centerY = y - h/2f;*/
 
         //Limits
         float minX = Float.POSITIVE_INFINITY;
@@ -388,15 +397,15 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         float minY = Float.POSITIVE_INFINITY;
         float maxY = Float.NEGATIVE_INFINITY;
         for (Node n : graph.getNodes()) {
-            minX = Math.min(minX, n.getPosition().getX() - n.getRadius());
-            maxX = Math.max(maxX, n.getPosition().getX() + n.getRadius());
-            minY = Math.min(minY, n.getPosition().getY() - n.getRadius());
-            maxY = Math.max(maxY, n.getPosition().getY() + n.getRadius());
+            minX = Math.min(minX, n.getPosition().getX() - n.getRadius() - n.getBorderWidth());
+            maxX = Math.max(maxX, n.getPosition().getX() + n.getRadius() + n.getBorderWidth());
+            minY = Math.min(minY, -n.getPosition().getY() - n.getRadius() - n.getBorderWidth());
+            maxY = Math.max(maxY, -n.getPosition().getY() + n.getRadius() + n.getBorderWidth());
         }
-        graphWidth = maxX - minX;
-        graphHeight = maxY - minY;
-        centerX = minX + graphWidth / 2.;
-        centerY = minY + graphHeight / 2.;
+        double graphWidth = maxX - minX;
+        double graphHeight = maxY - minY;
+        double centerX = minX + graphWidth / 2.;
+        double centerY = minY + graphHeight / 2.;
 
         //Transform
         double ratioWidth = size.getWidth() / graphWidth;
@@ -409,6 +418,7 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
         cb.transform(AffineTransform.getTranslateInstance(translateX, translateY));
 
         renderGraph(graphSheet.getGraph());
+
         cb.restoreState();
         document.close();
 
