@@ -49,6 +49,7 @@ import org.openide.util.lookup.ServiceProvider;
  * Class exporting the preview graph as a PDF file.
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
+ * @author Mathieu Bastian
  */
 @ServiceProvider(service = VectorialFileExporter.class)
 public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTask {
@@ -58,10 +59,10 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     private PdfContentByte cb;
     private Document document;
     //Parameters
-    private float marginTop = 0f;
-    private float marginBottom = 0f;
-    private float marginLeft = 0f;
-    private float marginRight = 0f;
+    private float marginTop = 18f;
+    private float marginBottom = 18f;
+    private float marginLeft = 18f;
+    private float marginRight = 18f;
     private boolean landscape = false;
     private Rectangle pageSize = PageSize.A4;
 
@@ -373,23 +374,11 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
             size = new Rectangle(pageSize.rotate());
         }
         //size.setBackgroundColor(new BaseColor(controller.getModel().getBackgroundColor()));
-        document = new Document(size, marginLeft, marginRight, marginTop, marginBottom);
-        //document.setMargins(marginLeft, marginRight, marginTop, marginBottom);
+        document = new Document(size);
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
         document.open();
-        //document.setMargins(200, 200, 200, 200);
         cb = writer.getDirectContent();
         cb.saveState();
-
-        /*float x = -100;
-        float y = 50;
-        float w = 205;
-        float h = 100;
-
-        double graphWidth = w;
-        double graphHeight = h;
-        double centerX = x + w/2f;
-        double centerY = y - h/2f;*/
 
         //Limits
         float minX = Float.POSITIVE_INFINITY;
@@ -402,22 +391,26 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
             minY = Math.min(minY, -n.getPosition().getY() - n.getRadius() - n.getBorderWidth());
             maxY = Math.max(maxY, -n.getPosition().getY() + n.getRadius() + n.getBorderWidth());
         }
+
         double graphWidth = maxX - minX;
         double graphHeight = maxY - minY;
         double centerX = minX + graphWidth / 2.;
         double centerY = minY + graphHeight / 2.;
 
         //Transform
-        double ratioWidth = size.getWidth() / graphWidth;
-        double ratioHeight = size.getHeight() / graphHeight;
+        double pageWidth = size.getWidth() - marginLeft - marginRight;
+        double pageHeight = size.getHeight() - marginTop - marginBottom;
+        double ratioWidth = pageWidth / graphWidth;
+        double ratioHeight = pageHeight / graphHeight;
         double scale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
-        double translateX = (size.getWidth() / 2.) / scale;
-        double translateY = (size.getHeight() / 2.) / scale;
+        double translateX = (marginLeft + pageWidth / 2.) / scale;
+        double translateY = (marginBottom + pageHeight / 2.) / scale;
         cb.transform(AffineTransform.getTranslateInstance(-centerX * scale, -centerY * scale));
         cb.transform(AffineTransform.getScaleInstance(scale, scale));
         cb.transform(AffineTransform.getTranslateInstance(translateX, translateY));
 
         renderGraph(graphSheet.getGraph());
+        Progress.switchToIndeterminate(progress);
 
         cb.restoreState();
         document.close();

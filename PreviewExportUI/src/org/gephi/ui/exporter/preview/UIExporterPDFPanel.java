@@ -21,7 +21,6 @@ import java.text.ParseException;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import org.gephi.io.exporter.preview.PDFExporter;
-import org.gephi.lib.validation.PositiveNumberValidator;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
@@ -224,6 +223,11 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
             bottom *= MM;
             left *= MM;
             right *= MM;
+        } else {
+            top *= INCH;
+            bottom *= INCH;
+            left *= INCH;
+            right *= INCH;
         }
         pdfExporter.setMarginTop((float) top);
         pdfExporter.setMarginBottom((float) bottom);
@@ -270,6 +274,11 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
             bottom /= MM;
             left /= MM;
             right /= MM;
+        } else {
+            top /= INCH;
+            bottom /= INCH;
+            left /= INCH;
+            right /= INCH;
         }
         topMarginTextField.setText(marginFormatter.format(top));
         bottomMarginTextField.setText(marginFormatter.format(bottom));
@@ -303,9 +312,10 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
     }
 
     private void refreshUnit(boolean convert) {
-        unitLink.setText(millimeter ? "Milimeter" : "Inch");
-        widthUnitLabel.setText(millimeter ? "mm" : "in");
-        heightUnitLabel.setText(millimeter ? "mm" : "in");
+
+        unitLink.setText(millimeter ? NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.unitLink.millimeter") : NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.unitLink.inch"));
+        widthUnitLabel.setText(millimeter ? NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelUnit.millimeter") : NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelUnit.inch"));
+        heightUnitLabel.setText(widthUnitLabel.getText());
         if (convert) {
             if (pageSizeCombo.getSelectedItem() != customSizeString) {
                 setPageSize((PageSizeItem) pageSizeCombo.getSelectedItem());
@@ -320,7 +330,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
                     height = sizeFormatter.parse(heightTextField.getText()).doubleValue();
                 } catch (ParseException ex) {
                 }
-                
+
                 if (!millimeter) {
                     width *= MM / INCH;
                     height *= MM / INCH;
@@ -449,7 +459,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
 
         labelUnit.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelUnit.text")); // NOI18N
 
-        unitLink.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.unitLink.text")); // NOI18N
+        unitLink.setText(""); // NOI18N
         unitLink.setToolTipText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.unitLink.toolTipText")); // NOI18N
         unitLink.setFocusPainted(false);
 
