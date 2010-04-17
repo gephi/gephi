@@ -157,6 +157,8 @@ public class PreviewControllerImpl implements PreviewController {
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         model.clearSupervisors();
 
+        graphModel.getGraph().readLock();
+
         if (graphModel.isUndirected()) {
             previewGraph = factory.createPreviewGraph(model, graphModel.getUndirectedGraphVisible());
         } else if (graphModel.isDirected()) {
@@ -164,6 +166,9 @@ public class PreviewControllerImpl implements PreviewController {
         } else if (graphModel.isMixed()) {
             previewGraph = factory.createPreviewGraph(model, graphModel.getMixedGraphVisible());
         }
+
+        graphModel.getGraph().readUnlockAll();
+
         model.setUpdateFlag(true);
     }
 
