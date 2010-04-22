@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
@@ -270,12 +269,12 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         //Param
         private final int COLUMNS_ROWS = 20;
         //Data
-        private Map<Cell, Stack<Node>> data = new HashMap<Cell, Stack<Node>>();
+        private Map<Cell, List<Node>> data = new HashMap<Cell, List<Node>>();
 
         public SpatialGrid() {
             for (int row = 0; row < COLUMNS_ROWS; row++) {
                 for (int col = 0; col < COLUMNS_ROWS; col++) {
-                    Stack<Node> localnodes = new Stack();
+                    List<Node> localnodes = new ArrayList<Node>();
                     data.put(new Cell(row, col), localnodes);
                 }
             }
