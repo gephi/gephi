@@ -50,7 +50,7 @@ public class TextDataImpl implements TextData {
     }
 
     public void setLine(String line) {
-        this.line = new TextLine(line);
+        this.line = new TextLine(line, this.line.bounds);
     }
 
     public boolean hasCustomColor() {
@@ -136,8 +136,9 @@ public class TextDataImpl implements TextData {
         public TextLine() {
         }
 
-        public TextLine(String text) {
+        public TextLine(String text, Rectangle2D bounds) {
             this.text = text;
+            this.bounds = bounds;
         }
 
         public String getText() {
