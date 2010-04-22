@@ -74,6 +74,8 @@
             <public-packages>
                 <package>org.gephi.filters.plugin</package>
                 <package>org.gephi.filters.plugin.attribute</package>
+                <package>org.gephi.filters.plugin.dynamic</package>
+                <package>org.gephi.filters.plugin.edge</package>
                 <package>org.gephi.filters.plugin.graph</package>
                 <package>org.gephi.filters.plugin.hierarchy</package>
                 <package>org.gephi.filters.plugin.operator</package>
