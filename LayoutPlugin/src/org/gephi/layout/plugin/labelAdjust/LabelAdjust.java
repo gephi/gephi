@@ -57,6 +57,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
     }
 
     public void initAlgo() {
+        setConverged(false);
     }
 
     public void goAlgo() {
