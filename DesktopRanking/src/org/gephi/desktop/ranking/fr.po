@@ -1,0 +1,83 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-21 21:37+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-22 03:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "Actions/Window/org-gephi-desktop-ranking-RankingAction.instance"
+msgstr "Classement"
+
+msgid "CTL_RankingAction"
+msgstr "Classement"
+
+msgid "CTL_RankingTopComponent"
+msgstr "Classement"
+
+msgid "HINT_RankingTopComponent"
+msgstr ""
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Intègre l'interface utilisateur du module Ranking"
+
+msgid "RankingTopComponent.listButton.text"
+msgstr "Liste de résultats"
+
+msgid "RankingTopComponent.barchartButton.text"
+msgstr "Graphique des valeurs"
+
+msgid "RankingChooser.rankingComboBox.toolTipText"
+msgstr "Choisir un rang"
+
+msgid "RankingChooser.applyButton.toolTipText"
+msgstr "Appliquer la transformation actuelle au graphe."
+
+msgid "RankingChooser.applyButton.text"
+msgstr "Appliquer"
+
+msgid "RankingChooser.splineButton.toolTipText"
+msgstr "Configurer l'interpolation des rangs"
+
+msgid "RankingChooser.splineButton.text"
+msgstr "Spline..."
+
+msgid "RankingToolbar.nodes.label"
+msgstr "Noeuds"
+
+msgid "RankingToolbar.edges.label"
+msgstr "Liens"
+
+msgid "ResultListPanel.action.tablescreenshot"
+msgstr "Capture d'écran"
+
+msgid "ResultListPanel.tablescreenshot.filechooser.title"
+msgstr "Enregistrer sous..."
+
+msgid "ResultListPanel.tablescreenshot.filechooser.pngDescription"
+msgstr "PNG"
+
+msgid "ResultListPanel.tablescreenshot.error"
+msgstr ""
+"Une erreur est survenue lors de la prise de la capture d'écran.\\n\\"
+"nException: {0}: {1}\\nFichier: {2}\\nLigne: {3}"
+
+msgid "ResultListPanel.tablescreenshot.error.title"
+msgstr "Erreur"
+
+msgid "RankingChooser.choose.text"
+msgstr "Choisir un paramètre de classement"
+
+msgid "RankingChooser.splineEditor.title"
+msgstr "Interpoler"

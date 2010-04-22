@@ -1,0 +1,71 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-21 21:39+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-22 03:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Actions de gestion de projet et interface utilisateur"
+
+msgid "CloseProject_confirm_title"
+msgstr "Fermer le projet"
+
+msgid "CloseProject_confirm_message"
+msgstr ""
+"<html><b>Sauvegarder le projet ?</b><br><font size=\"-2\">Les changements "
+"seront perdus sinon.</html>"
+
+msgid "CloseProject_confirm_save"
+msgstr "Enregistrer"
+
+msgid "CloseProject_confirm_doNotSave"
+msgstr "Ne pas enregistrer"
+
+msgid "CloseProject_confirm_cancel"
+msgstr "Annuler"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Actions de gestion de projet et interface utilisateur"
+
+msgid "SaveAsProject_filechooser_filter"
+msgstr "Fichiers Gephi"
+
+msgid "SaveAsProject_SaveFailed"
+msgstr "Impossible d'écrire le fichier {0}."
+
+msgid "SaveAsProject_Overwrite"
+msgstr "{0} existe. Écraser ?"
+
+msgid "ProjectControllerUI.status.opened"
+msgstr "{0} ouvert"
+
+msgid "ProjectControllerUI.status.saved"
+msgstr "{0} enregistré"
+
+msgid "OpenProject_filechooser_filter"
+msgstr "Fichiers Gephi"
+
+msgid "OpenProject.defaulterror"
+msgstr "Impossible d'ouvrir ce fichier. Ce doit être un .gephi compatible."
+
+msgid "ProjectProperties_dialog_title"
+msgstr "Propriétés du projet"
+
+msgid "OpenFile_filechooser_graphfilter"
+msgstr "Fichiers de graphe"
+
+msgid "OpenFile_filechooser_zipfilter"
+msgstr "Fichiers d'archives ZIP"

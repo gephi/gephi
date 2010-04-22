@@ -1,0 +1,105 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-21 22:09+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-22 03:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "name"
+msgstr "Force Atlas"
+
+msgid "description"
+msgstr ""
+"Force Atlas rend les graphes plus compactes, lisibles, et peut rendre les "
+"autorités plus centrales que les hubs (option d'attraction distribuée). "
+"L'auto-stabilisation améliore la convergence à la fin du rendu."
+
+msgid "forceAtlas.inertia.name"
+msgstr "Inertie"
+
+msgid "forceAtlas.inertia.desc"
+msgstr "Conservation de la vitesse des noeuds à chaque nouvelle passe"
+
+msgid "forceAtlas.repulsionStrength.name"
+msgstr "Force de répulsion"
+
+msgid "forceAtlas.repulsionStrength.desc"
+msgstr "Avec quelle force chaque noeud se repousse"
+
+msgid "forceAtlas.attractionStrength.name"
+msgstr "Force d'attraction"
+
+msgid "forceAtlas.attractionStrength.desc"
+msgstr "Avec quelle force chaque noeud connecté s'attire"
+
+msgid "forceAtlas.maxDisplacement.name"
+msgstr "Déplacement maximal"
+
+msgid "forceAtlas.maxDisplacement.desc"
+msgstr ""
+"Limite le déplacement des noeuds lorsque les noeuds sont trop proches."
+
+msgid "forceAtlas.freezeBalance.name"
+msgstr "Auto-stabilisation"
+
+msgid "forceAtlas.freezeBalance.desc"
+msgstr ""
+"Active la fixation des noeuds instables. En dépit d'une perte d'efficacité, "
+"cela prévient les effets de scintillement."
+
+msgid "forceAtlas.freezeStrength.name"
+msgstr "Force d'auto-stabilisation"
+
+msgid "forceAtlas.freezeStrength.desc"
+msgstr "Puissance de la fonction d'auto-stabilisation"
+
+msgid "forceAtlas.freezeInertia.name"
+msgstr "Sensibilité de l'auto-stabilisation"
+
+msgid "forceAtlas.freezeInertia.desc"
+msgstr ""
+"[0,1] Ces paramètres représentent l'auto-adaptation de la fonction d'anti-"
+"scintillement (l'inertie de fixation)"
+
+msgid "forceAtlas.gravity.name"
+msgstr "Gravité"
+
+msgid "forceAtlas.gravity.desc"
+msgstr ""
+"Cette force attire tous les noeuds vers le centre pour éviter la dispertion "
+"des composantes déconnectées du graphe."
+
+msgid "forceAtlas.outboundAttractionDistribution.name"
+msgstr "Attraction distribuée"
+
+msgid "forceAtlas.outboundAttractionDistribution.desc"
+msgstr ""
+"La force attractive est répartie le ong des liens sortants. Cela tend à "
+"repousser les hubs à la périphérie et à rapprocher les autorités du centre."
+
+msgid "forceAtlas.adjustSizes.name"
+msgstr "Ajustement par taille"
+
+msgid "forceAtlas.adjustSizes.desc"
+msgstr ""
+"Évite le chevauchement des noeuds (dépend de la taille de chaque noeud)"
+
+msgid "forceAtlas.speed.name"
+msgstr "Vitesse"
+
+msgid "forceAtlas.speed.desc"
+msgstr ""
+"Valeur  > 0 défaut 1 ; augmente la vitesse de convergence au prix d'une "
+"perte de précision."

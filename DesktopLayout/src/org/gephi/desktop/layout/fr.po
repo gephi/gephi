@@ -1,0 +1,73 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-21 21:38+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-22 03:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Intègre l'interface utilisateur du module Layout"
+
+msgid "CTL_LayoutAction"
+msgstr "Spatialisation"
+
+msgid "CTL_LayoutTopComponent"
+msgstr "Spatialisation"
+
+msgid "LayoutPanel.choose.text"
+msgstr "Choisir une spatialisation"
+
+msgid "LayoutPanel.runButton.text"
+msgstr "Exécuter"
+
+msgid "LayoutPanel.runButton.tooltip"
+msgstr "Exécuter l'algorithme de spatialisation"
+
+msgid "LayoutPanel.stopButton.text"
+msgstr "Arrêter"
+
+msgid "LayoutPanel.stopButton.tooltip"
+msgstr ""
+"Arrêter l'algorithme. La fin de la passe peut durer un certain temps."
+
+msgid "LayoutPanel.resetButton.text"
+msgstr "Réinitialiser"
+
+msgid "LayoutPanel.tooltip.speed"
+msgstr "Vitesse"
+
+msgid "LayoutPanel.tooltip.quality"
+msgstr "Qualité"
+
+msgid "LayoutPanel.presetsButton.text"
+msgstr "Réglages..."
+
+msgid "LayoutPanel.presetsButton.savePreset"
+msgstr "Enregistrer le réglage..."
+
+msgid "LayoutPanel.presetsButton.savePreset.input"
+msgstr "Nom"
+
+msgid "LayoutPanel.presetsButton.savePreset.input.name"
+msgstr "Nom du réglage"
+
+msgid "LayoutPanel.presetsButton.nopreset"
+msgstr "Aucun preset"
+
+msgid "LayoutPanel.status.savePreset"
+msgstr "{0} réglage \"{1}\" enregistré"
+
+msgid "LayoutPanel.status.loadPreset"
+msgstr "{0} réglage \"{1}\" chargé"

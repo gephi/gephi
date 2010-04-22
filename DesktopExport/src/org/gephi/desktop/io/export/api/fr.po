@@ -1,0 +1,60 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-21 21:26+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-22 03:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "VectorialFileExporterUI_title"
+msgstr "Fichier SVG/PDF..."
+
+msgid "VectorialFileExporterUI_filechooser_title"
+msgstr "Export"
+
+msgid "VectorialFileExporterUI_optionsButton_name"
+msgstr "Options..."
+
+msgid "VectorialFileExporterUI_optionsDialog_title"
+msgstr "Options {0}"
+
+msgid "VectorialFileExporterUI_SaveFailed"
+msgstr "Impossible d'écrire le fichier {0}."
+
+msgid "VectorialFileExporterUI_overwriteDialog_message"
+msgstr "{0} existe. Écraser ?"
+
+msgid "VectorialFileExporterUI_overwriteDialog_title"
+msgstr "Confirmer"
+
+msgid "GraphFileExporterUI_title"
+msgstr "Fichier de graphe..."
+
+msgid "GraphFileExporterUI_filechooser_title"
+msgstr "Export"
+
+msgid "GraphFileExporterUI_optionsButton_name"
+msgstr "Options..."
+
+msgid "GraphFileExporterUI_optionsDialog_title"
+msgstr "Options {0}"
+
+msgid "GraphFileExporterUI_SaveFailed"
+msgstr "Impossible d'écrire le fichier {0}."
+
+msgid "GraphFileExporterUI_overwriteDialog_message"
+msgstr "{0} existe. Écraser ?"
+
+msgid "GraphFileExporterUI_overwriteDialog_title"
+msgstr "Confirmer"

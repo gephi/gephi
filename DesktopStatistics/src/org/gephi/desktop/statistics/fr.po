@@ -1,0 +1,81 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-21 21:44+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-22 03:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Interface utilisateur des statistiques et des métriques"
+
+msgid "CTL_StatisticsAction"
+msgstr "Statistiques"
+
+msgid "CTL_StatisticsTopComponent"
+msgstr "Statistiques"
+
+msgid "HINT_StatisticsTopComponent"
+msgstr ""
+
+msgid "StatisticsTopComponent.settingsButton.text"
+msgstr "Paramètres"
+
+msgid "AvailableStatisticsChooser.title"
+msgstr "Métriques disponibles"
+
+msgid "StatisticsDisplayPanel.reportButton.text"
+msgstr "Voir"
+
+msgid "StatisticsDisplayPanel.runButton.text"
+msgstr "Exécuter"
+
+msgid "StatisticsDisplayPanel.name.text"
+msgstr "nom"
+
+msgid "StatisticsFrontEnd.runButton.text"
+msgstr "Exécuter"
+
+msgid "StatisticsFrontEnd.reportButton.text"
+msgstr "Voir"
+
+msgid "StatisticsFrontEnd.displayLabel.text"
+msgstr "Afficher le nom"
+
+msgid "StatisticsFrontEnd.runStatus.run"
+msgstr "Exécuter"
+
+msgid "StatisticsFrontEnd.runStatus.cancel"
+msgstr "Annuler"
+
+msgid "StatisticsFrontEnd.resultLabel.text"
+msgstr "Résultats"
+
+msgid "StatisticsFrontEnd.settingsPanel.title"
+msgstr "Paramètres de {0}"
+
+msgid "StatisticsReportPanel.copyButton.text"
+msgstr "Copier"
+
+msgid "StatisticsReportPanel.closeButton.text"
+msgstr "Fermer"
+
+msgid "StatisticsReportPanel.printButton.text"
+msgstr "Imprimer"
+
+msgid "StatisticsReportPanel.saveButton.text"
+msgstr "Enregistrer"
+
+msgid "StatisticsReportPanel.status.saveSuccess"
+msgstr "Rapport enregistré dans le dossier {0}"
