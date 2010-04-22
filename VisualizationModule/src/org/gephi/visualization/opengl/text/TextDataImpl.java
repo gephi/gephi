@@ -131,9 +131,13 @@ public class TextDataImpl implements TextData {
     public static class TextLine {
 
         String text = "";
-        Rectangle2D bounds = new Rectangle(20, 20);
+        Rectangle2D bounds;
 
         public TextLine() {
+        }
+
+        public TextLine(String text) {
+            this.text = text;
         }
 
         public TextLine(String text, Rectangle2D bounds) {
