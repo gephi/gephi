@@ -199,20 +199,20 @@ public class LabelAdjust extends AbstractLayout implements Layout {
                     if (labelCollisionXleft > 0 && labelCollisionXright > 0) {// Collision
                         if (upDifferential > downDifferential) {
                             // N1 pushes N2 up
-                            layoutData.dy -= 0.01 * n1h;
+                            layoutData.dy -= 0.01 * n1h * (0.8 + 0.4 * Math.random());
                             somethingMoved = true;
                         } else {
                             // N1 pushes N2 down
-                            layoutData.dy += 0.01 * n1h;
+                            layoutData.dy += 0.01 * n1h * (0.8 + 0.4 * Math.random());
                             somethingMoved = true;
                         }
                         if (labelCollisionXleft > labelCollisionXright) {
                             // N1 pushes N2 right
-                            layoutData.dx += 0.01 * n1h / 2;
+                            layoutData.dx += 0.01 * (n1h / 2) * (0.8 + 0.4 * Math.random());
                             somethingMoved = true;
                         } else {
                             // N1 pushes N2 left
-                            layoutData.dx -= 0.01 * n1h / 2;
+                            layoutData.dx -= 0.01 * (n1h / 2) * (0.8 + 0.4 * Math.random());
                             somethingMoved = true;
                         }
                     }
