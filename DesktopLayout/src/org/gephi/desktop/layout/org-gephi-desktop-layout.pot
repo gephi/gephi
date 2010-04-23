@@ -61,7 +61,7 @@ msgid "LayoutPanel.presetsButton.savePreset.input.name"
 msgstr "Preset name"
 
 msgid "LayoutPanel.presetsButton.nopreset"
-msgstr "No presets"
+msgstr "No preset"
 
 msgid "LayoutPanel.status.savePreset"
 msgstr "{0} preset \"{1}\" saved"

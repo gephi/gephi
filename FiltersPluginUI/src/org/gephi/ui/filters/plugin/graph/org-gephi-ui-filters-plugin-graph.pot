@@ -15,17 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "DegreeRangeBuilder.name"
-msgstr "Degree Range"
+msgid "EgoPanel.labelNodeId.text"
+msgstr "Node ID:"
 
-msgid "InDegreeRangeBuilder.name"
-msgstr "In Degree Range"
+msgid "EgoPanel.labelDepth.text"
+msgstr "Depth:"
 
-msgid "OutDegreeRangeBuilder.name"
-msgstr "Out Degree Range"
-
-msgid "MutualDegreeRangeBuilder.name"
-msgstr "Mutual Degree Range"
-
-msgid "EgoBuilder.name"
-msgstr "Ego Network"
+msgid "EgoPanel.okButton.text"
+msgstr "OK"

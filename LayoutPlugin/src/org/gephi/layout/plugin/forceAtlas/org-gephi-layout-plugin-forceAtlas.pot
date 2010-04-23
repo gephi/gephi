@@ -99,5 +99,5 @@ msgstr "Speed"
 
 msgid "forceAtlas.speed.desc"
 msgstr ""
-"Value > 0 defaut 1 ; permits you to increase convergence speed at the price "
+"Value > 0 default 1 ; permits you to increase convergence speed at the price "
 "of a precision loss"

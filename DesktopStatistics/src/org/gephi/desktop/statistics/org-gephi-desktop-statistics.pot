@@ -50,7 +50,7 @@ msgid "StatisticsFrontEnd.reportButton.text"
 msgstr "View"
 
 msgid "StatisticsFrontEnd.displayLabel.text"
-msgstr "DisplayName"
+msgstr "Display Name"
 
 msgid "StatisticsFrontEnd.runStatus.run"
 msgstr "Run"

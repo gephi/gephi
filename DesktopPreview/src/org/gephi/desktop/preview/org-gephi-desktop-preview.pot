@@ -77,9 +77,6 @@ msgstr "Presets"
 msgid "PreviewSettingsTopComponent.ratio.minimum"
 msgstr "Minimum"
 
-msgid "PreviewTopComponent.southBusyLabel.text"
-msgstr "refr"
-
 msgid "PreviewTopComponent.backgroundButton.text"
 msgstr "Background"
 

@@ -54,22 +54,23 @@ msgstr "Right:"
 msgid "UIExporterPDFPanel.pageSize.custom"
 msgstr "Custom..."
 
-msgid "UIExporterPDFPanel.widthUnitLabel.text"
-msgstr "mm"
-
-msgid "UIExporterPDFPanel.heightUnitLabel.text"
-msgstr "mm"
-
 msgid "UIExporterPDFPanel.labelUnit.text"
 msgstr "Unit:"
 
-msgid "UIExporterPDFPanel.unitLink.text"
-msgstr ""
-"Mil\n"
-"limeter"
+msgid "UIExporterPDFPanel.unitLink.millimeter"
+msgstr "Millimeter"
+
+msgid "UIExporterPDFPanel.unitLink.inch"
+msgstr "Inch"
+
+msgid "UIExporterPDFPanel.labelUnit.millimeter"
+msgstr "mm"
+
+msgid "UIExporterPDFPanel.labelUnit.inch"
+msgstr "in"
 
 msgid "PositiveSizeValidator.NEGATIVE"
 msgstr "{0} must be positive"
 
 msgid "UIExporterPDFPanel.unitLink.toolTipText"
-msgstr "Chenge Unit Millimeter/Inches"
+msgstr "Change Unit Millimeter/Inches"

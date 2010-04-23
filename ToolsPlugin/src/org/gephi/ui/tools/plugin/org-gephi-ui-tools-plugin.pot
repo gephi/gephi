@@ -18,9 +18,6 @@ msgstr ""
 msgid "EdgePencilPanel.labelWeight.text"
 msgstr "Weight:"
 
-msgid "EdgePencilPanel.statusLabel.text"
-msgstr "jLabel1"
-
 msgid "EdgePencilPanel.labelColor.text"
 msgstr "Color:"
 
@@ -44,9 +41,6 @@ msgstr "Add node to the graph"
 
 msgid "NodePencilPanel.labelSize.text"
 msgstr "Size:"
-
-msgid "ShortestPathPanel.statusLabel.text"
-msgstr "jLabel1"
 
 msgid "ShortestPathPanel.labelColor.text"
 msgstr "Color:"

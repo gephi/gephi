@@ -30,6 +30,9 @@ msgstr "GEXF Files"
 msgid "fileType_GraphML_Name"
 msgstr "GraphML Files"
 
+msgid "fileType_CSV_Name"
+msgstr "CSV Files"
+
 msgid "ExporterGDF_name"
 msgstr "GDF"
 
@@ -38,3 +41,6 @@ msgstr "GEXF"
 
 msgid "ExporterGraphML_name"
 msgstr "GraphML"
+
+msgid "ExporterCSV_name"
+msgstr "Adjacency Matrix"

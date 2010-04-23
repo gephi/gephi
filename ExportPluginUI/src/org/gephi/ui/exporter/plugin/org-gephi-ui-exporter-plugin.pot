@@ -98,3 +98,21 @@ msgstr "Size"
 
 msgid "UIExporterGraphMLPanel.labelNormalize.text"
 msgstr "Scale position and size between 0 and 1"
+
+msgid "UIExporterCSVPanel.labelExport.text"
+msgstr "Export:"
+
+msgid "UIExporterCSVPanel.nodeIdCheckbox.text"
+msgstr "Node ID"
+
+msgid "UIExporterCSVPanel.edgeWeightCheckbox.text"
+msgstr "Edge Weight"
+
+msgid "UIExporterCSVPanel.listRadio.text"
+msgstr "List"
+
+msgid "UIExporterCSVPanel.matrixRadio.text"
+msgstr "Matrix"
+
+msgid "UIExporterCSVPanel.zeroEdgeCheckbox.text"
+msgstr "Zero when no edge"
