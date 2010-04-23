@@ -42,7 +42,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
     protected Graph graph;
     //Settings
     private double speed = 1;
-    private final double RADIUS_SCALE = 1.2;
+    private final double RADIUS_SCALE = 2;
     private double xmin;
     private double xmax;
     private double ymin;
@@ -182,8 +182,8 @@ public class LabelAdjust extends AbstractLayout implements Layout {
                 // Check labels, but when no label keep a rectangle equivalent to the sphere
                 double n1xmin = n1x - 0.5 * n1w;
                 double n2xmin = n2x - 0.5 * n2w;
-                double n1ymin = n1.getNodeData().y() - 0.5 * n1h;
-                double n2ymin = n2.getNodeData().y() - 0.5 * n2h;
+                double n1ymin = n1y - 0.5 * n1h;
+                double n2ymin = n2y - 0.5 * n2h;
                 double n1xmax = n1x + 0.5 * n1w;
                 double n2xmax = n2x + 0.5 * n2w;
                 double n1ymax = n1y + 0.5 * n1h;
