@@ -21,10 +21,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.filters.spi;
 
 import javax.swing.Icon;
+import org.gephi.filters.api.FilterLibrary;
 
 /**
- *
+ * A filter category is like a folder, it describes the type of the filter and
+ * bring together to users filters that have the same categories.
+ * <p>
+ * <b>Default categories are defined in the filter library:</b>
+ * <ul><li><code>FilterLibrary.TOPOLOGY</code></li>
+ * <li><code>FilterLibrary.ATTRIBUTES</code></li>
+ * <li><code>FilterLibrary.EDGE</code></li>
+ * <li><code>FilterLibrary.HIERARCHY</code></li></ul>
  * @author Mathieu Bastian
+ * @see FilterLibrary
  */
 public final class Category {
 
@@ -47,14 +56,27 @@ public final class Category {
         this.parent = parent;
     }
 
+    /**
+     * Returns the category's name.
+     * @return          the name of this category
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the icon or <code>null</code> if the category has no icon.
+     * @return          the icon or <code>null</code>
+     */
     public Icon getIcon() {
         return icon;
     }
 
+    /**
+     * Returns this category parent category or <code>null</code> if this
+     * category has no parent.
+     * @return          this category's parent or <code>null</code>
+     */
     public Category getParent() {
         return parent;
     }

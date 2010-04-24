@@ -21,14 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.filters.spi;
 
 import java.beans.PropertyEditor;
-import java.lang.reflect.InvocationTargetException;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.PropertyExecutor;
-import org.openide.nodes.Node.Property;
 import org.openide.nodes.PropertySupport;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
