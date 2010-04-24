@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.filters.impl;
+package org.gephi.filters;
 
 import java.beans.PropertyEditorManager;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -31,7 +31,7 @@ import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.PropertyExecutor;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.api.Range;
-import org.gephi.filters.impl.FilterThread.PropertyModifier;
+import org.gephi.filters.FilterThread.PropertyModifier;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.Operator;
@@ -48,9 +48,7 @@ import org.gephi.utils.progress.ProgressTicketProvider;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
 import org.gephi.project.api.WorkspaceListener;
-import org.openide.awt.StatusDisplayer;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
@@ -222,7 +220,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             e.getEdgeData().getAttributes().setValue(edgeCol.getIndex(), Boolean.TRUE);
         }
         result.readUnlock();
-        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToColumn.status", title));
+        //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToColumn.status", title));
     }
 
     public void exportToNewWorkspace(Query query) {
@@ -253,7 +251,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 graphModel.pushFrom(graphView);
                 Progress.finish(ticket);
                 String workspaceName = newWorkspace.getLookup().lookup(WorkspaceInformation.class).getName();
-                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToNewWorkspace.status", workspaceName));
+                //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToNewWorkspace.status", workspaceName));
             }
         }, "Export filter to workspace").start();
     }

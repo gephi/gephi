@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.gephi.filters.impl;
+package org.gephi.filters;
 
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;

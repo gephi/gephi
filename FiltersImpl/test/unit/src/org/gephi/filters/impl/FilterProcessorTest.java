@@ -22,6 +22,10 @@ package org.gephi.filters.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.filters.AbstractQueryImpl;
+import org.gephi.filters.FilterProcessor;
+import org.gephi.filters.FilterQueryImpl;
+import org.gephi.filters.OperatorQueryImpl;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.EdgeFilter;
 import org.gephi.filters.spi.Filter;

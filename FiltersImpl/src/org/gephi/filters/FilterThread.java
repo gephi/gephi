@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.gephi.filters.impl;
+package org.gephi.filters;
 
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +17,7 @@ import org.gephi.graph.api.GraphView;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.utils.progress.ProgressTicketProvider;
-import org.gephi.visualization.VizController;
+import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
@@ -80,7 +80,7 @@ public class FilterThread extends Thread {
             } else {
                 select(q);
             }
-            
+
             Progress.finish(progressTicket);
             /*try {
             //System.out.println("filter query " + q.getName());
@@ -129,9 +129,11 @@ public class FilterThread extends Thread {
 //        System.out.println("#Nodes: " + result.getNodeCount());
 //        System.out.println("#Edges: " + result.getEdgeCount());
         if (running) {
-            VizController.getInstance().getVizModel().setAutoSelectNeighbor(false);
-            VizController.getInstance().getSelectionManager().selectNodes(result.getNodes().toArray());
-            VizController.getInstance().getSelectionManager().selectEdges(result.getEdges().toArray());
+            VisualizationController visController = Lookup.getDefault().lookup(VisualizationController.class);
+            if (visController != null) {
+                visController.selectNodes(result.getNodes().toArray());
+                visController.selectEdges(result.getEdges().toArray());
+            }
         } else {
             //destroy view 
         }

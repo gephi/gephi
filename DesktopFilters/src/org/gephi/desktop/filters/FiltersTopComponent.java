@@ -24,7 +24,6 @@ import java.awt.BorderLayout;
 import java.util.logging.Logger;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterModel;
-import org.gephi.filters.impl.FilterModelImpl;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -64,17 +63,12 @@ public final class FiltersTopComponent extends TopComponent {
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
-                workspace.add(new FilterModelImpl());
                 workspace.add(new FilterUIModel());
             }
 
             public void select(Workspace workspace) {
                 filterModel = workspace.getLookup().lookup(FilterModel.class);
                 uiModel = workspace.getLookup().lookup(FilterUIModel.class);
-                if (filterModel == null) {
-                    filterModel = new FilterModelImpl();
-                    workspace.add(filterModel);
-                }
                 if (uiModel == null) {
                     uiModel = new FilterUIModel();
                     workspace.add(uiModel);
@@ -98,10 +92,6 @@ public final class FiltersTopComponent extends TopComponent {
             Workspace workspace = pc.getCurrentWorkspace();
             filterModel = workspace.getLookup().lookup(FilterModel.class);
             uiModel = workspace.getLookup().lookup(FilterUIModel.class);
-            if (filterModel == null) {
-                filterModel = new FilterModelImpl();
-                workspace.add(filterModel);
-            }
             if (uiModel == null) {
                 uiModel = new FilterUIModel();
                 workspace.add(uiModel);
