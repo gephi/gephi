@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization;
 
-import java.awt.Dimension;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
@@ -47,23 +46,26 @@ import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.visualization.swing.StandardGraphIO;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class VizController {
+@ServiceProvider(service = VisualizationController.class)
+public class VizController implements VisualizationController {
 
     //Singleton
     private static VizController instance;
 
-    private VizController() {
+    public VizController() {
     }
 
     public synchronized static VizController getInstance() {
         if (instance == null) {
-            instance = new VizController();
+            instance = (VizController)Lookup.getDefault().lookup(VisualizationController.class);
             instance.initInstances();
         }
         return instance;
