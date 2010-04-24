@@ -1,0 +1,109 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-23 22:01+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-24 03:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Implémentation des outils standards"
+
+msgid "Painter.name"
+msgstr "Pinceau"
+
+msgid "Painter.description"
+msgstr "Color les noeuds par clic gauche"
+
+msgid "Sizer.name"
+msgstr "Taille"
+
+msgid "Sizer.description"
+msgstr ""
+"Dimensionne les noeuds par clic gauche maintenu et déplacement vertical de "
+"la souris"
+
+msgid "Brush.name"
+msgstr "Pot de peinture"
+
+msgid "Brush.description"
+msgstr "Colore les noeuds et ses plus proches voisins par clic gauche"
+
+msgid "DiffusionMethod.None"
+msgstr "Aucune"
+
+msgid "DiffusionMethod.Neighbors"
+msgstr "Voisins"
+
+msgid "DiffusionMethod.NeighborsOfNeighbors"
+msgstr "Voisins des voisins"
+
+msgid "DiffusionMethod.Predecessors"
+msgstr "Prédécesseurs"
+
+msgid "DiffusionMethod.Successors"
+msgstr "Successeurs"
+
+msgid "NodePencil.name"
+msgstr "Crayon de noeuds"
+
+msgid "NodePencil.description"
+msgstr "Ajoute un nouveau noeud au graphe lors d'un clic souris"
+
+msgid "EdgePencil.name"
+msgstr "Crayon de liens"
+
+msgid "EdgePencil.description"
+msgstr "Ajoute un lien en cliquant sur la source puis sur la destination"
+
+msgid "EdgePencil.status1"
+msgstr "Sélectionnez un noeud source"
+
+msgid "EdgePencil.status2"
+msgstr "Sélectionnez un noeud de destination"
+
+msgid "ShortestPath.name"
+msgstr "Plus court chemin"
+
+msgid "ShortestPath.description"
+msgstr "Affiche le plus court chemin, s'il existe, entre deux noeuds cliqués"
+
+msgid "ShortestPath.status1"
+msgstr "Sélectionnez un noeud source"
+
+msgid "ShortestPath.status2"
+msgstr "Sélectionnez un noeud de destination"
+
+msgid "ShortestPath.result"
+msgstr "Un chemin de distance {0} a été trouvé"
+
+msgid "ShortestPath.noresult"
+msgstr "Aucun chemin n'existe entre ces deux noeuds"
+
+msgid "HeatMap.name"
+msgstr "Heat Map"
+
+msgid "HeatMap.description"
+msgstr ""
+"Définit l'intensité de la couleur au voisinage d'un noeud en fonction de la "
+"distance et du poids des liens."
+
+msgid "HeatMap.status.maxdistance"
+msgstr "La distance max est"
+
+msgid "Edit.name"
+msgstr "Editeur"
+
+msgid "Edit.description"
+msgstr "Editer les attributs du noeud"

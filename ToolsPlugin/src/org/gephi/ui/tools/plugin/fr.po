@@ -1,0 +1,78 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-23 22:16+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-24 03:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "EdgePencilPanel.labelWeight.text"
+msgstr "Poids :"
+
+msgid "EdgePencilPanel.labelColor.text"
+msgstr "Couleur :"
+
+msgid "BrushPanel.labelColor.text"
+msgstr "Couleur :"
+
+msgid "BrushPanel.labelIntensity.text"
+msgstr "Intensité :"
+
+msgid "BrushPanel.jLabel1.text"
+msgstr "%"
+
+msgid "BrushPanel.labelDiffusion.text"
+msgstr "Diffusion :"
+
+msgid "NodePencilPanel.labelColor.text"
+msgstr "Couleur :"
+
+msgid "NodePencilPanel.statusLabel.text"
+msgstr "Ajout d'un noeud au graphe"
+
+msgid "NodePencilPanel.labelSize.text"
+msgstr "Taille :"
+
+msgid "ShortestPathPanel.labelColor.text"
+msgstr "Couleur :"
+
+msgid "HeatMapPanel.statusLabel.text"
+msgstr "Cliquez sur un noeud"
+
+msgid "HeatMapPanel.labelMode.text"
+msgstr "Mode :"
+
+msgid "HeatMapPanel.labelGradient.text"
+msgstr "Dégradé :"
+
+msgid "HeatMapPanel.labelPalette.text"
+msgstr "Palette :"
+
+msgid "HeatMapPanel.dontPaintUnreachableCheckbox.text"
+msgstr "Ne peignez pas les noeuds inatteignables"
+
+msgid "HeatMapPanel.invertPalette.text"
+msgstr "Inverser la palette"
+
+msgid "PainterPanel.labelColor.text"
+msgstr "Couleur :"
+
+msgid "SizerPanel.jLabel1.text"
+msgstr "Maintenez le clic sur un noeud et déplacez verticalement la souris"
+
+msgid "SizerPanel.labelSize.text"
+msgstr "Taille :"
+
+msgid "SizerPanel.sizeLabel.text"
+msgstr "NaN"

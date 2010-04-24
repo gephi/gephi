@@ -1,0 +1,42 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-23 22:37+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-24 03:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "EqualStringPanel.regexCheckbox.text"
+msgstr "Utiliser la regexp"
+
+msgid "EqualStringPanel.labelPattern.text"
+msgstr "Forme :"
+
+msgid "EqualStringPanel.okButton.text"
+msgstr "OK"
+
+msgid "EqualBooleanPanel.trueButton.text"
+msgstr "Vrai"
+
+msgid "EqualBooleanPanel.falseButton.text"
+msgstr "Faux"
+
+msgid "EqualNumberPanel.labelValue.text"
+msgstr "Valeur"
+
+msgid "EqualNumberPanel.jLabel1.text"
+msgstr "Minimum :"
+
+msgid "EqualNumberPanel.jLabel2.text"
+msgstr "Maximum :"

@@ -1,0 +1,43 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-23 21:38+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-24 03:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "gephiFormatException_import"
+msgstr ""
+"Echec de l'import du projet.\\n\\nException: %s : %s\\nFichier: %s\\nLigne : "
+"%d"
+
+msgid "gephiFormatException_export"
+msgstr ""
+"Echec de l'export du projet.\\n\\nException: %s : %s\\nFichier: %s\\nLigne : "
+"%d"
+
+msgid "LBL_Gephi_loader_name"
+msgstr "Fichiers Gephi"
+
+msgid "Services/MIMEResolver/GephiResolver.xml"
+msgstr "Fichiers Gephi"
+
+msgid "Templates/Other/GephiTemplate.gephi"
+msgstr "Fichier Gephi vide"
+
+msgid "LoadTask.name"
+msgstr "Ouverture du projet"
+
+msgid "SaveTask.name"
+msgstr "Enregistrement du projet"

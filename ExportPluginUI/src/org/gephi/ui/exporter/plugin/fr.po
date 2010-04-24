@@ -1,0 +1,120 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-23 22:59+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-24 03:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Interface utilisateur des exporteurs standards"
+
+msgid "UIExporterGEXFPanel.labelExport.text"
+msgstr "Export :"
+
+msgid "UIExporterGDFPanel.jRadioButton1.text"
+msgstr "Guillemets simples"
+
+msgid "UIExporterGDFPanel.positionExportCheckbox.text"
+msgstr "Position (x,y)"
+
+msgid "UIExporterGDFPanel.colorsExportCheckbox.text"
+msgstr "Couleurs"
+
+msgid "UIExporterGDFPanel.attributesExportCheckbox.text"
+msgstr "Attributs"
+
+msgid "UIExporterGDFPanel.labelExport.text"
+msgstr "Export :"
+
+msgid "UIExporterGDFPanel.jRadioButton2.text"
+msgstr "Guillemets doubles"
+
+msgid "UIExporterGDFPanel.quotesCheckbox.text"
+msgstr "Texte entre guillemets"
+
+msgid "UIExporterGDFPanel.normalizeCheckbox.text"
+msgstr "Normaliser"
+
+msgid "UIExporterGDFPanel.labelQuotes.text"
+msgstr "L'encapsulation des champs prend des guillemets doubles par défaut"
+
+msgid "UIExporterGDFPanel.labelNormalize.text"
+msgstr "Réduit les positions et tailles entre 0 et 1"
+
+msgid "UIExporterGEXFPanel.attributesExportCheckbox.text"
+msgstr "Attributs"
+
+msgid "UIExporterGEXFPanel.colorsExportCheckbox.text"
+msgstr "Couleurs"
+
+msgid "UIExporterGEXFPanel.positionExportCheckbox.text"
+msgstr "Position (x,y)"
+
+msgid "UIExporterGEXFPanel.sizeExportCheckbox.text"
+msgstr "Tailler"
+
+msgid "UIExporterGEXFPanel.normalizeCheckbox.text"
+msgstr "Normaliser"
+
+msgid "UIExporterGEXFPanel.labelNormalize.text"
+msgstr "Réduit les positions et tailles entre 0 et 1"
+
+msgid "UIExporterGDFPanel.simpleQuotesCheckbox.text"
+msgstr "Guillemets simples"
+
+msgid "UIExporterGDFPanel.labelQuotes1.text"
+msgstr "Utiliser les guillemets simples à la place des guillemets doubles"
+
+msgid "UIExporterGDFPanel.visibilityCheckbox.text"
+msgstr "Visibilité (graphe visible, labels visibles)"
+
+msgid "UIExporterGraphMLPanel.labelExport.text"
+msgstr "Export :"
+
+msgid "UIExporterGraphMLPanel.positionExportCheckbox.text"
+msgstr "Position (x,y)"
+
+msgid "UIExporterGraphMLPanel.normalizeCheckbox.text"
+msgstr "Normaliser"
+
+msgid "UIExporterGraphMLPanel.colorsExportCheckbox.text"
+msgstr "Couleurs"
+
+msgid "UIExporterGraphMLPanel.attributesExportCheckbox.text"
+msgstr "Attributs"
+
+msgid "UIExporterGraphMLPanel.sizeExportCheckbox.text"
+msgstr "Taille"
+
+msgid "UIExporterGraphMLPanel.labelNormalize.text"
+msgstr "Réduit les positions et tailles entre 0 et 1"
+
+msgid "UIExporterCSVPanel.labelExport.text"
+msgstr ""
+
+msgid "UIExporterCSVPanel.nodeIdCheckbox.text"
+msgstr ""
+
+msgid "UIExporterCSVPanel.edgeWeightCheckbox.text"
+msgstr ""
+
+msgid "UIExporterCSVPanel.listRadio.text"
+msgstr ""
+
+msgid "UIExporterCSVPanel.matrixRadio.text"
+msgstr ""
+
+msgid "UIExporterCSVPanel.zeroEdgeCheckbox.text"
+msgstr ""
