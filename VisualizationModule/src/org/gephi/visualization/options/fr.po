@@ -1,0 +1,195 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-25 21:13+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-26 03:42+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "AdvancedOption_DisplayName_Default"
+msgstr "Défaut"
+
+msgid "AdvancedOption_DisplayName_OpenGL"
+msgstr "OpenGL"
+
+msgid "AdvancedOption_Keywords_Default"
+msgstr "visualisation, couleur"
+
+msgid "AdvancedOption_Keywords_OpenGL"
+msgstr "opengl, anticrénelage"
+
+msgid "AdvancedOption_Tooltip_Default"
+msgstr "Paramètres de visualisation par défaut"
+
+msgid "AdvancedOption_Tooltip_OpenGL"
+msgstr "Paramètres du moteur OpenGL"
+
+msgid "OptionsCategory_Keywords_Visualization"
+msgstr "visualisation, opengl"
+
+msgid "OptionsCategory_Name_Visualization"
+msgstr "Visualisation"
+
+msgid "OptionsCategory_Title_Visualization"
+msgstr "Visualisation"
+
+msgid "DefaultPanel.titleDesign.title"
+msgstr "Style"
+
+msgid "DefaultPanel.titleLabel.title"
+msgstr "Label"
+
+msgid "DefaultPanel.use3dCheckbox.text"
+msgstr "Utiliser le modèle 3d (sphère)"
+
+msgid "DefaultPanel.autoSelectNeighborCheckbox.text"
+msgstr "Voisins sélectionnés"
+
+msgid "DefaultPanel.highlightCheckbox.text"
+msgstr "Surbrillance de la sélection"
+
+msgid "DefaultPanel.labelDefaultSettings.text"
+msgstr "Paramètres par défaut :"
+
+msgid "DefaultPanel.nodeFontButton.text"
+msgstr ""
+
+msgid "DefaultPanel.edgeFontButton.text"
+msgstr ""
+
+msgid "DefaultPanel.labelNodeFont.text"
+msgstr "Police du label des noeuds"
+
+msgid "DefaultPanel.labelEdgeFont.text"
+msgstr "Police du label des liens"
+
+msgid "DefaultPanel.labelFont.text"
+msgstr "Police :"
+
+msgid "DefaultPanel.labelNodeLabelColor.text"
+msgstr "Couleur du label des noeuds"
+
+msgid "DefaultPanel.labelEdgeLabelColor.text"
+msgstr "Couleur du label des liens"
+
+msgid "DefaultPanel.labelColor.text"
+msgstr "Couleur :"
+
+msgid "OpenGLPanel.jXTitledSeparator1.title"
+msgstr "OpenGL"
+
+msgid "DefaultPanel.labelBackground.text"
+msgstr "Arrière-plan :"
+
+msgid "DefaultPanel.labelBackgroundColor.text"
+msgstr "Couleur"
+
+msgid "OpenGLPanel.labelShow.text"
+msgstr "Afficher :"
+
+msgid "OpenGLPanel.labelAntialiasing.text"
+msgstr "Anticrénelage :"
+
+msgid "OpenGLPanel.fpsCheckbox.text"
+msgstr "IPS (Image Par Seconde)"
+
+msgid "OpenGLPanel.jXTitledSeparator3.title"
+msgstr "Éclairage"
+
+msgid "OpenGLPanel.labelAmbiant.text"
+msgstr ""
+
+msgid "OpenGLPanel.ambientDiffuseColorButton.text"
+msgstr "Diffusion"
+
+msgid "OpenGLPanel.ambientSpecularColorButton.text"
+msgstr ""
+
+msgid "OpenGLPanel.ambientAmbiantColorButton.text"
+msgstr ""
+
+msgid "OpenGLPanel.light1Checkbox.text"
+msgstr "1"
+
+msgid "OpenGLPanel.light2Checkbox.text"
+msgstr "2"
+
+msgid "OpenGLPanel.light3Checkbox.text"
+msgstr "3"
+
+msgid "OpenGLPanel.light1AmbiantColorButton.text"
+msgstr ""
+
+msgid "OpenGLPanel.light1DiffuseColorButton.text"
+msgstr "Diffusion"
+
+msgid "OpenGLPanel.light1SpecularColorButton.text"
+msgstr ""
+
+msgid "OpenGLPanel.light2DiffuseColorButton.text"
+msgstr "Diffusion"
+
+msgid "OpenGLPanel.light2SpecularColorButton.text"
+msgstr ""
+
+msgid "OpenGLPanel.light3AmbiantColorButton.text"
+msgstr ""
+
+msgid "OpenGLPanel.light3DiffuseColorButton.text"
+msgstr "Diffusion"
+
+msgid "OpenGLPanel.light3SpecularColorButton.text"
+msgstr ""
+
+msgid "OpenGLPanel.labelDirectional.text"
+msgstr "Directionnel"
+
+msgid "OpenGLPanel.jLabel1.text"
+msgstr "X"
+
+msgid "OpenGLPanel.jLabel2.text"
+msgstr "Y"
+
+msgid "OpenGLPanel.jLabel3.text"
+msgstr "Z"
+
+msgid "OpenGLPanel.jLabel4.text"
+msgstr "X"
+
+msgid "OpenGLPanel.jLabel6.text"
+msgstr "Z"
+
+msgid "OpenGLPanel.jLabel5.text"
+msgstr "Y"
+
+msgid "OpenGLPanel.jLabel9.text"
+msgstr "Z"
+
+msgid "OpenGLPanel.jLabel8.text"
+msgstr "Y"
+
+msgid "OpenGLPanel.jLabel7.text"
+msgstr "X"
+
+msgid "OpenGLPanel.light2AmbiantColorButton.text"
+msgstr ""
+
+msgid "OpenGLPanel.resetButton.text"
+msgstr "Retour aux valeurs par défaut"
+
+msgid "DefaultPanel.resetButton.text"
+msgstr "Retour aux valeurs par défaut"
+
+msgid "OpenGLPanel.jLabel10.text"
+msgstr "Les paramètres d'éclairage prennent effet en mode 3d uniquement."

@@ -1,0 +1,233 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-25 21:33+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-26 03:42+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "CTL_GraphAction"
+msgstr "Graphe"
+
+msgid "CTL_GraphTopComponent"
+msgstr "Graphe"
+
+msgid "HINT_GraphTopComponent"
+msgstr ""
+
+msgid "GraphTopComponent.jToggleButton1.TabConstraints.tabTitle"
+msgstr "tab2"
+
+msgid "GraphTopComponent.jToggleButton2.TabConstraints.tabTitle"
+msgstr "tab2"
+
+msgid "GraphTopComponent.waitingLabel.text"
+msgstr "Initialisation..."
+
+msgid "VizToolbar.Global.background"
+msgstr "Couleur d'arrière-plan"
+
+msgid "VizToolbar.Global.screenshot"
+msgstr "Capturer l'écran"
+
+msgid "VizToolbar.Global.screenshot.configure"
+msgstr "Configurer..."
+
+msgid "VizToolbar.Nodes.showLabels"
+msgstr "Afficher les labels des noeuds"
+
+msgid "VizToolbar.Nodes.showHulls"
+msgstr "Afficher les enveloppes"
+
+msgid "VizToolbar.Edges.showEdges"
+msgstr "Afficher les liens"
+
+msgid "VizToolbar.Edges.edgeNodeColor"
+msgstr "Les liens ont la couleur du noeud source"
+
+msgid "VizToolbar.Edges.showLabels"
+msgstr "Afficher les labels des liens"
+
+msgid "VizToolbar.Edges.edgeScale"
+msgstr "Échelle du poids des liens"
+
+msgid "VizToolbar.Labels.font"
+msgstr "Police"
+
+msgid "VizToolbar.Labels.defaultColor"
+msgstr "Couleur par défaut"
+
+msgid "VizToolbar.Labels.sizeMode"
+msgstr "Mode de taille"
+
+msgid "VizToolbar.Labels.colorMode"
+msgstr "Mode de couleur"
+
+msgid "VizToolbar.Labels.attributes"
+msgstr "Attributs"
+
+msgid "VizToolbar.Labels.fontScale"
+msgstr "Échelle de taille de police"
+
+msgid "NodeSettingsPanel.adjustTextCheckbox.text"
+msgstr "Ajuster au texte"
+
+msgid "NodeSettingsPanel.labelShape.text"
+msgstr "Forme par défaut :"
+
+msgid "NodeSettingsPanel.defaultShape.message3d"
+msgstr ""
+"Cette forme est en 3d, le moteur graphique sera réinitialisé. Confirmer ?"
+
+msgid "NodeSettingsPanel.defaultShape.message.title"
+msgstr "Forme par défaut"
+
+msgid "NodeSettingsPanel.defaultShape.message2d"
+msgstr ""
+"Cette forme est en 2d, le moteur graphique sera réinitialisé. Confirmer ?"
+
+msgid "EdgeSettingsPanel.labelEdgeColor.text"
+msgstr "Couleur des liens par défaut :"
+
+msgid "EdgeSettingsPanel.sourceNodeColorCheckbox.text"
+msgstr "Couleur du noeud source"
+
+msgid "EdgeSettingsPanel.showEdgesCheckbox.text"
+msgstr "Afficher"
+
+msgid "GlobalSettingsPanel.hightlightCheckBox.text"
+msgstr "Sélection en surbrillance"
+
+msgid "GlobalSettingsPanel.labelBackgroundColor.text"
+msgstr "Couleur d'arrière-plan :"
+
+msgid "GlobalSettingsPanel.autoSelectNeigborCheckbox.text"
+msgstr "Voisins sélectionnés"
+
+msgid "LabelSettingsPanel.labelNodeFont.text"
+msgstr "Police :"
+
+msgid "LabelSettingsPanel.showNodeLabelsCheckbox.text"
+msgstr "Noeud"
+
+msgid "LabelSettingsPanel.nodeFontButton.text"
+msgstr ""
+
+msgid "LabelSettingsPanel.showEdgeLabelsCheckbox.text"
+msgstr "Lien"
+
+msgid "LabelSettingsPanel.labelEdgeFont.text"
+msgstr "Police :"
+
+msgid "LabelSettingsPanel.edgeFontButton.text"
+msgstr ""
+
+msgid "LabelSettingsPanel.labelEdgeColor.text"
+msgstr "Couleur :"
+
+msgid "LabelSettingsPanel.labelNodeColor.text"
+msgstr "Couleur :"
+
+msgid "LabelSettingsPanel.labelNodeSize.text"
+msgstr "Taille :"
+
+msgid "LabelSettingsPanel.labelEdgeSize.text"
+msgstr "Taille :"
+
+msgid "LabelSettingsPanel.labelSizeMode.text"
+msgstr "Taille :"
+
+msgid "LabelSettingsPanel.labelColorMode.text"
+msgstr "Couleur :"
+
+msgid "LabelSettingsPanel.hideNonSelectedCheckbox.text"
+msgstr "Cacher les non sélectionnés"
+
+msgid "SelectionToolbar.rectangle.tooltip"
+msgstr "Rectangle de sélection"
+
+msgid "SelectionToolbar.mouse.tooltip"
+msgstr "Sélection directe"
+
+msgid "SelectionToolbar.drag.tooltip"
+msgstr ""
+
+msgid "ActionsToolbar.centerOnGraph"
+msgstr "Centrer sur le graphe"
+
+msgid "ActionsToolbar.centerOnZero"
+msgstr "Centrer sur zéro"
+
+msgid "ActionsToolbar.resetColors"
+msgstr "Réinitialiser les couleurs"
+
+msgid "ActionsToolbar.resetSizes"
+msgstr "Réinitialiser les tailles"
+
+msgid "ActionsToolbar.resetLabelColors"
+msgstr "Réinitialiser la couleur des labels"
+
+msgid "ActionsToolbar.resetLabelSizes"
+msgstr "Réinitialiser la taille des labels"
+
+msgid "ActionsToolbar.resetLabelVisible"
+msgstr "Réinitialiser la visibilité des labels"
+
+msgid "LabelAttributesPanel.title"
+msgstr "Paramètres du texte des labels"
+
+msgid "LabelAttributesPanel.nodesToggleButton.text"
+msgstr "Noeuds"
+
+msgid "LabelAttributesPanel.edgesToggleButton.text"
+msgstr "Liens"
+
+msgid "LabelAttributesPanel.labelComment.text"
+msgstr "Sélectionner les attributs à afficher en tant que label"
+
+msgid "LabelAttributesPanel.showPropertiesCheckbox.text"
+msgstr "Afficher les propriétés"
+
+msgid "LabelSettingsPanel.configureLabelsButton.text"
+msgstr "Configurer..."
+
+msgid "EdgeSettingsPanel.selectionColorCheckbox.toolTipText"
+msgstr "Dessiner des couleurs particulières aux liens sélectionnés"
+
+msgid "EdgeSettingsPanel.selectionColorCheckbox.text"
+msgstr "Couleur de sélection"
+
+msgid "EdgeSettingsPanel.edgeInSelectionColorChooser.toolTipText"
+msgstr "Couleur de lien ENTRANT<-"
+
+msgid "EdgeSettingsPanel.edgeOutSelectionColorChooser.toolTipText"
+msgstr "Couleur de lien SORTANT->"
+
+msgid "EdgeSettingsPanel.edgeBothSelectionColorChooser.toolTipText"
+msgstr "Couleur de lien E/S<->"
+
+msgid "NodeSettingsPanel.showHullsCheckbox.text"
+msgstr "Afficher les enveloppes"
+
+msgid "EdgeSettingsPanel.labelScale.text"
+msgstr "Mettre à l'échelle"
+
+msgid "EdgeSettingsPanel.labelIn.text"
+msgstr "Entrant :"
+
+msgid "EdgeSettingsPanel.labelOut.text"
+msgstr "Sortant :"
+
+msgid "EdgeSettingsPanel.labelBoth.text"
+msgstr "Bidirectionnel :"
