@@ -248,7 +248,7 @@ public class FilterModelImpl implements FilterModel {
             queryE.setAttribute("parent", String.valueOf(parentId));
         }
         //Params
-        for (int i = 0; i < query.getParametersCount(); i++) {
+        for (int i = 0; i < query.getPropertiesCount(); i++) {
             FilterProperty prop = query.getFilter().getProperties()[i];
             Element paramE = writeParameter(document, i, prop);
             if (paramE != null) {

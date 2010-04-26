@@ -34,7 +34,7 @@ public class ParameterChildren extends Children.Keys<Integer> {
 
     public ParameterChildren(Query function) {
         this.function = function;
-        Integer[] indexes = new Integer[function.getParametersCount()];
+        Integer[] indexes = new Integer[function.getPropertiesCount()];
         for (int i = 0; i < indexes.length; i++) {
             indexes[i] = i;
         }
@@ -43,6 +43,6 @@ public class ParameterChildren extends Children.Keys<Integer> {
 
     @Override
     protected Node[] createNodes(Integer key) {
-        return new Node[]{new ParameterNode(function.getParameterName(key), function.getParameterValue(key))};
+        return new Node[]{new ParameterNode(function.getPropertyName(key), function.getPropertyValue(key))};
     }
 }

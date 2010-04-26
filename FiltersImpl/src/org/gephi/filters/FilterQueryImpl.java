@@ -64,15 +64,15 @@ public class FilterQueryImpl extends AbstractQueryImpl {
         this.name = name;
     }
 
-    public int getParametersCount() {
+    public int getPropertiesCount() {
         return parameters.length;
     }
 
-    public String getParameterName(int index) {
+    public String getPropertyName(int index) {
         return parameters[index].getKey();
     }
 
-    public Object getParameterValue(int index) {
+    public Object getPropertyValue(int index) {
         return parameters[index].getValue();
     }
 

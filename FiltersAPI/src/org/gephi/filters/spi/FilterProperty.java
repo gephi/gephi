@@ -26,6 +26,13 @@ import org.openide.nodes.PropertySupport;
 import org.openide.util.Lookup;
 
 /**
+ * Properties for filters. All editable properties of a filter must be used
+ * through this class, especially setting value should be done by using
+ * {@link #setValue(java.lang.Object) }.
+ * <p>
+ * The role of this class is to define filter's properties in order value changes
+ * can be tracked by the system, UI can be generated and values correctly saved
+ * in projects file.
  *
  * @author Mathieu Bastian
  */
@@ -40,10 +47,18 @@ public final class FilterProperty {
         propertyExecutor = Lookup.getDefault().lookup(PropertyExecutor.class);
     }
 
+    /**
+     * Returns property's name
+     * @return      property's name
+     */
     public String getName() {
         return property.getDisplayName();
     }
 
+    /**
+     * Returns property's value, can be <code>null</code>
+     * @return      property's value
+     */
     public Object getValue() {
         try {
             return property.getValue();
@@ -53,6 +68,11 @@ public final class FilterProperty {
         return null;
     }
 
+    /**
+     * Set property's value. The type of <code>value</code> must match with this
+     * property value type.
+     * @param value the value that is to be set
+     */
     public void setValue(Object value) {
         if (propertyExecutor != null) {
             propertyExecutor.setValue(this, value, new PropertyExecutor.Callback() {
@@ -74,18 +94,35 @@ public final class FilterProperty {
         }
     }
 
+    /**
+     * Returns the <code>PropertyEditor</code> associated to the property value.
+     * @return      the property editor
+     */
     public PropertyEditor getPropertyEditor() {
         return property.getPropertyEditor();
     }
 
-    public void setPropertyEditorClass(Class clazz) {
+    /**
+     * Sets the property editor class. The class must implement
+     * {@link PropertyEditor}.
+     * @param clazz the property editor class
+     */
+    public void setPropertyEditorClass(Class<? extends PropertyEditor> clazz) {
         property.setPropertyEditorClass(clazz);
     }
 
+    /**
+     * Returns the property's value type.
+     * @return      the value type
+     */
     public Class getValueType() {
         return property.getValueType();
     }
 
+    /**
+     * Returns the filter instance this property is associated to.
+     * @return      the filter this property belongs to
+     */
     public Filter getFilter() {
         return filter;
     }

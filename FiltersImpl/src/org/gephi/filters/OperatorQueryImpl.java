@@ -49,15 +49,15 @@ public class OperatorQueryImpl extends AbstractQueryImpl {
     public void setName(String name) {
     }
 
-    public int getParametersCount() {
+    public int getPropertiesCount() {
         return 0;
     }
 
-    public String getParameterName(int index) {
+    public String getPropertyName(int index) {
         return null;
     }
 
-    public Object getParameterValue(int index) {
+    public Object getPropertyValue(int index) {
         return null;
     }
 

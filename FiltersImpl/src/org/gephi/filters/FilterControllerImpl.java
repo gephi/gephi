@@ -117,12 +117,14 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     public void add(Query query) {
+        query = ((AbstractQueryImpl)query).getRoot();
         if (!model.hasQuery(query)) {
             model.addFirst(query);
         }
     }
 
     public void remove(Query query) {
+        query = ((AbstractQueryImpl)query).getRoot();
         model.remove(query);
     }
 

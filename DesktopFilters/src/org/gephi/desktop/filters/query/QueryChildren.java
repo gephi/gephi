@@ -63,7 +63,7 @@ public class QueryChildren extends Children.Array {
             nodesChildren.add(new HelpNode());
         } else {
             Query[] children = topQuery != null ? topQuery : query.getChildren();
-            boolean hasParameters = query == null ? false : query.getParametersCount() > 0;
+            boolean hasParameters = query == null ? false : query.getPropertiesCount() > 0;
             int slots = topQuery != null ? topQuery.length : query.getChildrenSlotsCount();
 
             if (slots == Integer.MAX_VALUE) {

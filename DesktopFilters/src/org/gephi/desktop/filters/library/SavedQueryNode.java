@@ -55,15 +55,15 @@ public class SavedQueryNode extends AbstractNode {
 
     private String getQueryName(Query query) {
         String res = query.getName();
-        if (query.getParametersCount() > 0) {
+        if (query.getPropertiesCount() > 0) {
             res += "(";
-            for (int i = 0; i < query.getParametersCount(); i++) {
-                res += "'" + query.getParameterValue(i).toString() + "'";
-                res += (i + 1 < query.getParametersCount()) ? "," : "";
+            for (int i = 0; i < query.getPropertiesCount(); i++) {
+                res += "'" + query.getPropertyValue(i).toString() + "'";
+                res += (i + 1 < query.getPropertiesCount()) ? "," : "";
             }
         }
         if (query.getChildren() != null) {
-            if (query.getParametersCount() == 0) {
+            if (query.getPropertiesCount() == 0) {
                 res += "(";
             } else {
                 res += ",";

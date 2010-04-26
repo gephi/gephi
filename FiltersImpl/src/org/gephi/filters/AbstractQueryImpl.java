@@ -44,11 +44,11 @@ public abstract class AbstractQueryImpl implements Query {
 
     public abstract int getChildrenSlotsCount();
 
-    public abstract int getParametersCount();
+    public abstract int getPropertiesCount();
 
-    public abstract String getParameterName(int index);
+    public abstract String getPropertyName(int index);
 
-    public abstract Object getParameterValue(int index);
+    public abstract Object getPropertyValue(int index);
 
     public abstract String getName();
 
@@ -72,7 +72,7 @@ public abstract class AbstractQueryImpl implements Query {
     }
 
     public void removeSubQuery(Query subQuery) {
-        children.remove((AbstractQueryImpl)subQuery);
+        children.remove((AbstractQueryImpl) subQuery);
     }
 
     public Query getParent() {
@@ -93,8 +93,8 @@ public abstract class AbstractQueryImpl implements Query {
 
     public AbstractQueryImpl getRoot() {
         AbstractQueryImpl root = this;
-        while(root.getParent()!=null) {
-            root = (AbstractQueryImpl)root.getParent();
+        while (root.getParent() != null) {
+            root = (AbstractQueryImpl) root.getParent();
         }
         return root;
     }
