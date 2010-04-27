@@ -117,14 +117,14 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     public void add(Query query) {
-        query = ((AbstractQueryImpl)query).getRoot();
+        query = ((AbstractQueryImpl) query).getRoot();
         if (!model.hasQuery(query)) {
             model.addFirst(query);
         }
     }
 
     public void remove(Query query) {
-        query = ((AbstractQueryImpl)query).getRoot();
+        query = ((AbstractQueryImpl) query).getRoot();
         model.remove(query);
     }
 
@@ -141,6 +141,9 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     public void filterVisible(Query query) {
+        if (query != null && model.getCurrentQuery() == query && model.isFiltering()) {
+            return;
+        }
         model.setFiltering(true);
         model.setCurrentQuery(query);
 
@@ -171,6 +174,9 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     public void selectVisible(Query query) {
+        if (query != null && model.getCurrentQuery() == query && !model.isFiltering()) {
+            return;
+        }
         model.setFiltering(false);
         model.setCurrentQuery(query);
 
