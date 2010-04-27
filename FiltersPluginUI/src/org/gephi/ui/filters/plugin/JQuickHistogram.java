@@ -145,15 +145,15 @@ public class JQuickHistogram {
     }
 
     public double getMedian() {
-        return data.get((data.size()+1)/2);
+        return data.get((data.size() + 1) / 2);
     }
 
     public double getMedianInRange() {
-        int median = (countInRange()+1)/2;
+        int median = (countInRange() + 1) / 2;
         for (int i = 0; i < data.size(); i++) {
             double d = data.get(i);
             if ((inclusive && d >= minRange && d <= maxRange) || (!inclusive && d > minRange && d < maxRange)) {
-                if(median--==0) {
+                if (median-- == 0) {
                     return d;
                 }
             }
@@ -186,6 +186,10 @@ public class JQuickHistogram {
         }
 
         private void drawHisto(Graphics2D g2d) {
+
+            if (histogram.minRange == null || histogram.maxRange == null) {
+                return;
+            }
 
             int dataSize = histogram.data.size();
             if (dataSize < currentWidth) {
