@@ -1,0 +1,178 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-26 20:11+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-27 03:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "GraphDistancePanel.directedRadioButton.text"
+msgstr "Dirigé"
+
+msgid "GraphDistancePanel.undirectedRadioButton.text"
+msgstr "Non dirigé"
+
+msgid "ClusteringCoefficientPanel.jLabel1.text"
+msgstr "Métrique du coefficient de clustering"
+
+msgid "ClusteringCoefficientPanel.directedRadioButton.text"
+msgstr "Dirigé"
+
+msgid "ClusteringCoefficientPanel.undirectedRadioButton.text"
+msgstr "Non dirigé"
+
+msgid "ClusteringCoefficientPanel.triangleRadioButton.text"
+msgstr "Fast Triangle"
+
+msgid "ClusteringCoefficientPanel.bruteRadioButton.text"
+msgstr "Force brute"
+
+msgid "DegreeDistributionPanel.directedRadioButton.text"
+msgstr "Dirigé"
+
+msgid "DegreeDistributionPanel.undirectedRadioButton.text"
+msgstr "Non dirigé"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr ""
+"Implémentations de l'interface utilisateur des statistiques standards"
+
+msgid "GraphDensityPanel.directedRadioButton.text"
+msgstr "Dirigé"
+
+msgid "GraphDensityPanel.undirectedRadioButton.text"
+msgstr "Non dirigé"
+
+msgid "HitsPanel.labelEpsilon.text"
+msgstr "Epsilon :"
+
+msgid "HitsPanel.directedRadioButton.text"
+msgstr "Dirigé"
+
+msgid "HitsPanel.undirectedRadioButton.text"
+msgstr "Non dirigé"
+
+msgid "ModularityPanel.randomizeCheckbox.text"
+msgstr "Aléatoire"
+
+msgid "PageRankPanel.labelP.text"
+msgstr "Probabilité (p):"
+
+msgid "PageRankPanel.labelE.text"
+msgstr "Epsilon :"
+
+msgid "PageRankPanel.directedRadioButton.text"
+msgstr "Dirigé"
+
+msgid "PageRankPanel.undirectedRadioButton.text"
+msgstr "Non dirigé"
+
+msgid "GraphDensityPanel.header.title"
+msgstr "Densité"
+
+msgid "GraphDensityPanel.header.description"
+msgstr ""
+"Mesure à quel point le graphe est prêt d'être complet. Un graphe complet a "
+"tous les liens possibles et une densité égale à 1."
+
+msgid "ClusteringCoefficientPanel.header.title"
+msgstr "Coefficient de clustering"
+
+msgid "ClusteringCoefficientPanel.header.description"
+msgstr ""
+"Le coefficient de clustering, couplé au plus court chemin moyen, indique la "
+"présence d'un effet de \"small-world\", soit la manière dont les noeuds sont "
+"encastrés dans leur voisinage. La moyenne donne un indice général sur le "
+"clustering du réseau."
+
+msgid "ClusteringCoefficientPanel.labelAlgorithm.text_1"
+msgstr "Algorithme :"
+
+msgid "DegreeDistributionPanel.header.title"
+msgstr "Distribution du degré"
+
+msgid "DegreeDistributionPanel.header.description"
+msgstr "Mesure la distribution du degré parmi tous les noeud du réseau."
+
+msgid "GraphDistancePanel.jXLabel1.text"
+msgstr ""
+"Mesure la fréquence d'apparition d'un noeud sur les plus court chemins entre "
+"les noeuds du réseau."
+
+msgid "GraphDistancePanel.jXLabel2.text"
+msgstr ""
+"La distance moyenne depuis un noeud de départ vers tous les noeuds du réseau."
+
+msgid "GraphDistancePanel.jXLabel3.text"
+msgstr ""
+"La distance depuis un noeud de départ vers le noeud le plus loin dans le "
+"réseau."
+
+msgid "GraphDistancePanel.jLabel1.text"
+msgstr "Betweeness Centrality :"
+
+msgid "GraphDistancePanel.jLabel2.text"
+msgstr "Closeness Centrality :"
+
+msgid "GraphDistancePanel.jLabel3.text"
+msgstr "Eccentricity :"
+
+msgid "GraphDistancePanel.header.description"
+msgstr ""
+"Distance moyenne entre deux noeuds. Les noeuds connectés ont une distance de "
+"1. Le diamètre est la plus longue distance possible entre deux noeuds du "
+"réseau."
+
+msgid "GraphDistancePanel.header.title"
+msgstr "Distance"
+
+msgid "HitsPanel.header.description"
+msgstr ""
+"Calcule deux valeurs distinctes pour chaque noeud. La première (appelée "
+"Autorité) mesure la valeur de l'information contenue dans le noeud. La "
+"seconde (appelée Hub) mesure la qualité des liens du noeud."
+
+msgid "HitsPanel.header.title"
+msgstr "HITS"
+
+msgid "HitsPanel.epsilonLabel.text"
+msgstr ""
+"Critère d'arrêt : plus cette valeur est petite, plus la convergence est "
+"longue."
+
+msgid "PageRankPanel.jXHeader1.description"
+msgstr ""
+"Classe les noeuds \"pages\" selon la fréquence à laquelle un utilisateur "
+"suivant les liens atteindra le noeud \"page\" de manière non aléatoire."
+
+msgid "PageRankPanel.jXHeader1.title"
+msgstr "PageRank"
+
+msgid "PageRankPanel.jXLabel1.text"
+msgstr "Simule le re-démarrage aléatoire d'une session de navigation web."
+
+msgid "PageRankPanel.jXLabel2.text"
+msgstr ""
+"Critère d'arrêt : plus cette valeur est petite, plus la convergence est "
+"longue."
+
+msgid "ModularityPanel.header.title"
+msgstr "Modularité"
+
+msgid "ModularityPanel.header.description"
+msgstr ""
+"Algorithme de détection de communauté. Un résultat égal ou supérieur à 0.4 "
+"est généralement considéré comme signifiant. Rendre l'algorithme aléatoire "
+"produit une meilleure décomposition, donnant un score de modularité plus "
+"élevé. Cela augmente cependant la durée de calcul."

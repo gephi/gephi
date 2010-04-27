@@ -1,0 +1,319 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-26 21:48+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-04-27 03:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "fileType_GDF_Name"
+msgstr "Fichiers GDF (GUESS)"
+
+msgid "fileType_GEXF_Name"
+msgstr "Fichiers GEXF"
+
+msgid "fileType_NET_Name"
+msgstr "Fichiers NET (Pajek)"
+
+msgid "fileType_GraphML_Name"
+msgstr "Fichiers GraphML"
+
+msgid "fileType_GML_Name"
+msgstr "Fichiers GML"
+
+msgid "fileType_TLP_Name"
+msgstr "Fichiers TLP"
+
+msgid "fileType_CSV_Name"
+msgstr "Fichiers CSV"
+
+msgid "fileType_DOT_Name"
+msgstr "Fichiers DOT (Graphviz)"
+
+msgid "fileType_DL_Name"
+msgstr "Fichiers DL (UCINET)"
+
+msgid "importerGDF_error_dataformat1"
+msgstr "Le fichier doit commencer avec la ligne \"nodedef> name\"."
+
+msgid "importerGDF_error_dataformat2"
+msgstr ""
+"Mauvais formatage de colonne. Chaque colonne doit contenir au moins un nom. "
+"Ces noms ne doivent contenir aucune virgule."
+
+msgid "importerGDF_error_dataformat3"
+msgstr ""
+"Échec de l'import de la colonne ''{0}'' pour le noeud ''{1}'' . Erreur à la "
+"valeur ''{2}''."
+
+msgid "importerGDF_error_dataformat4"
+msgstr ""
+"Échec de l'affectation de l'attribut ''{1}'' de type ''{0}'' pour le noeud "
+"{2}."
+
+msgid "importerGDF_error_dataformat5"
+msgstr ""
+"Type de données ''{0}'' non reconnu, 'string' est utilisé à la place."
+
+msgid "importerGDF_error_dataformat6"
+msgstr ""
+"Type de colonne introuvable pour ''{0}'', 'string' est utilisé à la place."
+
+msgid "importerGDF_error_dataformat7"
+msgstr ""
+"La ligne ''{0}'' a plus de colonnes que défini dans l'en-tête. Veuillez "
+"vérifier le nombre de virgules."
+
+msgid "importerTPL_error_dataformat1"
+msgstr "Mauvais formatage de lien à la ligne {0}."
+
+msgid "importerNET_error_dataformat1"
+msgstr "Le fichier doit commencer avec la ligne \"*vertices\"."
+
+msgid "importerNET_error_dataformat2"
+msgstr "Ligne vide détectée à la ligne {0}."
+
+msgid "importerNET_error_dataformat3"
+msgstr "Guillemets déséquilibrés ou trop nombreux à la ligne {0}."
+
+msgid "importerNET_error_dataformat4"
+msgstr "Numéro de sommet ''{0}'' hors de la plage [1,{1}]."
+
+msgid "importerNET_error_dataformat5"
+msgstr ""
+"Problème lors de la conversion des coordonnées du sommet à la ligne {0}. Ce "
+"doit être des nombres à virgule flottante."
+
+msgid "importerGraphML_error_syntax1"
+msgstr ""
+"Erreur de syntaxe, le fichier doit commencer par la balise <graphml>."
+
+msgid "importerGraphML_error_syntax2"
+msgstr ""
+"Erreur de syntaxe, le noeud ''{0}'' doit être encapsulé dans une balise "
+"<graph>."
+
+msgid "importerGraphML_error_attributefor"
+msgstr ""
+"Attribut ''for'' manquant ou inconnu pour l'attribut ''{0}''. L'attribut est "
+"ignoré."
+
+msgid "importerGraphML_error_attributetype1"
+msgstr "Type manquant pour l'attribut ''{0}''. 'string' mis par défaut."
+
+msgid "importerGraphML_error_attributetype2"
+msgstr "Type non reconnu pour l'attribut ''{0}''. L'attribut est ignoré."
+
+msgid "importerGraphML_error_attributedefault"
+msgstr ""
+"Valeur par défaut de l'attribut ''{0}'' non convertible vers le type ''{1}''."
+
+msgid "importerGraphML_log_nodeproperty"
+msgstr "Propriété de noeud trouvé : {0}"
+
+msgid "importerGraphML_log_edgeproperty"
+msgstr "Propriété de lien trouvé : {0}"
+
+msgid "importerGraphML_log_nodeattribute"
+msgstr "Attribut de noeud trouvé : ''{0}'' ({1})."
+
+msgid "importerGraphML_log_edgeattribute"
+msgstr "Attribut de lien trouvé : ''{0}'' ({1})."
+
+msgid "importerGraphML_error_datakey"
+msgstr "Clé de donnée manquante pour l'élément id={0}."
+
+msgid "importerGraphML_error_datavalue1"
+msgstr ""
+"Erreur de type pour la valeur de donnée {0} de l'élément id={1}. La valeur "
+"ne peut assignée à la propriété ''{2}''."
+
+msgid "importerGraphML_error_datavalue2"
+msgstr ""
+"Erreur de type pour la valeur de donnée {0} de l'élément id={1}. La valeur "
+"ne peut assignée à l'attribut ''{2}''."
+
+msgid "importerGraphML_error_nodeid"
+msgstr "Identifiant de noeud manquant. Le noeud est ignoré."
+
+msgid "importerGML_error_listtoken"
+msgstr "Type de chaîne inattendu ligne {0}."
+
+msgid "importerGML_error_nodeidmissing"
+msgstr "Identifiant de noeud manquant."
+
+msgid "importerGML_error_directedgraphparse"
+msgstr "Valeur inattendue pour la propriété de graphe 'directed'."
+
+msgid "importerGML_error_directedparse"
+msgstr "Valeur inattendue pour la propriété 'directed' du lien ''{0}''."
+
+msgid "importerGML_error_badparsing"
+msgstr "Parsing GML invalide."
+
+msgid "importerTPL_error_badparsing"
+msgstr "Parsing TLP invalide."
+
+msgid "importerGEXF_error_attributeclass"
+msgstr ""
+"Attribut ''class'' manquant ou inconnu pour l'attribut ''{0}''. L'attribut "
+"est ignoré."
+
+msgid "importerGEXF_error_attributedefault"
+msgstr ""
+"Valeur par défaut de l'attribut ''{0}'' non convertible vers le type ''{1}''."
+
+msgid "importerGEXF_error_attributeoptions"
+msgstr ""
+"Valeurs d'option de l'attribut ''{0}'' non convertible vers le type ''{1}''."
+
+msgid "importerGEXF_error_attributetype1"
+msgstr "Type de l'attribut ''{0}'' introuvable. 'string' utilisé par défaut."
+
+msgid "importerGEXF_error_attributetype2"
+msgstr "Type de l'attribut ''{0}'' non reconnu. L'attribut est ignoré."
+
+msgid "importerGEXF_error_datakey"
+msgstr "Clé de donnée (attribut ''for'') manquant pour l'élément id={0}."
+
+msgid "importerGEXF_error_datakey1"
+msgstr "Clé de donnée (attribut ''id'') manquant pour l'élément id={0}."
+
+msgid "importerGEXF_error_dataoptionsvalue"
+msgstr ""
+"La valeur de donnée ''{0}'' n'est pas une option pour l'élément id={1}. La "
+"valeur ne peut être affectée à l'attribut ''{2}''."
+
+msgid "importerGEXF_error_datavalue"
+msgstr ""
+
+msgid "importerGEXF_error_defaultedgetype"
+msgstr ""
+
+msgid "importerGEXF_error_edgedouble"
+msgstr ""
+
+msgid "importerGEXF_error_edgetype"
+msgstr ""
+
+msgid "importerGEXF_error_edgeid"
+msgstr ""
+
+msgid "importerGEXF_error_edgeweight"
+msgstr ""
+
+msgid "importerGEXF_error_nodeid"
+msgstr ""
+
+msgid "importerGEXF_error_nodelabel"
+msgstr ""
+
+msgid "importerGEXF_error_nodeposition"
+msgstr ""
+
+msgid "importerGEXF_error_nodesize"
+msgstr ""
+
+msgid "importerGEXF_error_notnode"
+msgstr ""
+
+msgid "importerGEXF_error_parsingdatetype"
+msgstr ""
+
+msgid "importerGEXF_error_parsingmode"
+msgstr ""
+
+msgid "importerGEXF_log_edgeeproperty"
+msgstr ""
+
+msgid "importerGEXF_log_nodeproperty"
+msgstr ""
+
+msgid "importerGEXF_log_edgeattribute"
+msgstr ""
+
+msgid "importerGEXF_log_nodeattribute"
+msgstr ""
+
+msgid "importerGEXF_log_default"
+msgstr ""
+
+msgid "importerGEXF_log_options"
+msgstr ""
+
+msgid "importerGEXF_log_version10"
+msgstr ""
+
+msgid "importerGEXF_log_version11"
+msgstr ""
+
+msgid "importerDL_error_firstline"
+msgstr ""
+
+msgid "importerDL_error_unknowntag"
+msgstr ""
+
+msgid "importerDL_error_formatmissing"
+msgstr ""
+
+msgid "importerDL_error_badformat"
+msgstr ""
+
+msgid "importerDL_error_nmissing"
+msgstr ""
+
+msgid "importerDL_error_mmissing"
+msgstr ""
+
+msgid "importerDL_error_labelscount"
+msgstr ""
+
+msgid "importerDL_error_nodata"
+msgstr ""
+
+msgid "importerDL_error_matrixrowscount"
+msgstr ""
+
+msgid "importerDL_error_matrixrowscount2"
+msgstr ""
+
+msgid "importerDL_error_matriciescount"
+msgstr ""
+
+msgid "importerDL_error_matrixentriescount"
+msgstr ""
+
+msgid "importerDL_error_weightparseerror"
+msgstr ""
+
+msgid "importerDL_error_edgelistssetscount"
+msgstr ""
+
+msgid "importerDL_error_edgelistrowparse"
+msgstr ""
+
+msgid "importerDL_error_edgeparseweight"
+msgstr ""
+
+msgid "importerDOT_error_nothingfound"
+msgstr ""
+
+msgid "importerDOT_error_labelunreachable"
+msgstr ""
+
+msgid "importerDOT_error_colorunreachable"
+msgstr ""
+
+msgid "importerDOT_error_edgeparsing"
+msgstr ""
