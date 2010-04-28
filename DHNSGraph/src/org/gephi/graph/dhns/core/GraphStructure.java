@@ -20,13 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.ref.WeakReference;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.graph.HierarchicalGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.gephi.graph.dhns.utils.avl.AbstractEdgeTree;
@@ -41,21 +41,29 @@ public class GraphStructure {
     private final AtomicInteger viewId = new AtomicInteger(1);
     private final Dhns dhns;
     private final GraphViewImpl mainView;
-    private final List<GraphViewImpl> views;
+    private final Queue<GraphViewImpl> views;
     private final AbstractNodeTree nodeDictionnary;
     private final AbstractEdgeTree edgeDictionnary;
     private GraphViewImpl visibleView;
+    //Destroy
+    private final Object lock = new Object();
+    private final ConcurrentLinkedQueue<GraphViewImpl> destroyQueue;
 
     public GraphStructure(Dhns dhns) {
         this.dhns = dhns;
         nodeDictionnary = new AbstractNodeTree();
         edgeDictionnary = new AbstractEdgeTree();
-        views = new ArrayList<GraphViewImpl>();
+        views = new ConcurrentLinkedQueue<GraphViewImpl>();
 
         //Main view
         mainView = new GraphViewImpl(dhns, 0);
         views.add(mainView);
         visibleView = mainView;
+
+        //Destructor
+        destroyQueue = new ConcurrentLinkedQueue<GraphViewImpl>();
+        ViewDestructorThread viewDestructorThread = new ViewDestructorThread(this);
+        viewDestructorThread.start();
     }
 
     public GraphViewImpl[] getViews() {
@@ -106,23 +114,16 @@ public class GraphStructure {
         view.setEdgesCountEnabled(mainView.getEdgesCountEnabled());
         view.setMutualEdgesTotal(mainView.getMutualEdgesTotal());
         view.setMutualEdgesEnabled(mainView.getMutualEdgesEnabled());
-        dhns.getReadLock().unlock();
         views.add(view);
+        dhns.getReadLock().unlock();
         return view;
     }
 
-    public void destroyView(GraphViewImpl view) {
+    public void destroyView(final GraphViewImpl view) {
         if (views.contains(view)) {
-            dhns.getReadLock().lock();
-            for (TreeListIterator itr = new TreeListIterator(mainView.getStructure().getTree(), 1); itr.hasNext();) {
-                AbstractNode node = itr.next();
-                node.getNodeData().getNodes().remove(view.getViewId());
-            }
-            dhns.getReadLock().unlock();
-            views.remove(view);
-            if (this.visibleView == view) {
-                this.visibleView = mainView;
-                dhns.getEventManager().fireEvent(EventType.VIEWS_UPDATED);
+            destroyQueue.add(view);
+            synchronized (this.lock) {
+                lock.notify();
             }
         }
     }
@@ -149,5 +150,66 @@ public class GraphStructure {
             this.visibleView = visibleView;
         }
         dhns.getEventManager().fireEvent(EventType.VIEWS_UPDATED);
+    }
+
+    private static class ViewDestructorThread extends Thread {
+
+        private final WeakReference<GraphStructure> structureReference;
+        private final int STD_TIMER = 300;
+        private final int UNDESTRO_TIMER = 5000;
+        private boolean running = true;
+
+        public ViewDestructorThread(GraphStructure graphStructure) {
+            super("DHNS View Destructor");
+            structureReference = new WeakReference<GraphStructure>(graphStructure);
+        }
+
+        @Override
+        public void run() {
+            GraphStructure structure = null;
+            while (running && (structure = structureReference.get()) != null) {
+                while (structure.destroyQueue.isEmpty()) {
+                    try {
+                        synchronized (structure.lock) {
+                            structure.lock.wait();
+                        }
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                boolean undestroyableViews = false;
+                for (GraphViewImpl v : structure.destroyQueue.toArray(new GraphViewImpl[0])) {
+                    if (!v.hasGraphReference()) {
+                        destroyView(structure, v);
+                        structure.destroyQueue.remove(v);
+                    } else {
+                        undestroyableViews = true;
+                    }
+                }
+                try {
+                    synchronized (structure.lock) {
+                        structure.lock.wait(undestroyableViews ? UNDESTRO_TIMER : STD_TIMER);
+                    }
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        private void destroyView(GraphStructure structure, GraphViewImpl view) {
+            //System.out.println("Destroy view " + view.getViewId());
+            structure.dhns.getWriteLock().lock();
+            for (TreeListIterator itr = new TreeListIterator(structure.mainView.getStructure().getTree(), 1); itr.hasNext();) {
+                AbstractNode node = itr.next();
+                node.getNodeData().getNodes().remove(view.getViewId());
+            }
+            structure.views.remove(view);
+            //System.out.println("Destroy view finished");
+            structure.dhns.getWriteLock().unlock();
+            if (structure.visibleView == view) {
+                structure.visibleView = structure.mainView;
+                structure.dhns.getEventManager().fireEvent(EventType.VIEWS_UPDATED);
+            }
+        }
     }
 }

@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.swing.SwingUtilities;
 import org.gephi.graph.api.Edge;
@@ -49,6 +48,7 @@ public abstract class AbstractGraphImpl {
         this.dhns = dhns;
         this.view = view;
         this.structure = view.getStructure();
+        view.addGraphReference(this);
     }
 
     public GraphModel getGraphModel() {

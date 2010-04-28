@@ -4,8 +4,12 @@
  */
 package org.gephi.graph.dhns.core;
 
+import java.lang.ref.WeakReference;
+import java.util.WeakHashMap;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.dhns.graph.AbstractGraphImpl;
 
 /**
  *
@@ -22,12 +26,32 @@ public class GraphViewImpl implements GraphView {
     private int mutualEdgesTotal;
     private int edgesCountEnabled;
     private int mutualEdgesEnabled;
+    //RefCounting
+    private final WeakHashMap<AbstractGraphImpl, Boolean> graphsMap = new WeakHashMap<AbstractGraphImpl, Boolean>();
 
     public GraphViewImpl(Dhns dhns, int viewId) {
         this.dhns = dhns;
         this.viewId = viewId;
         this.structure = new TreeStructure(viewId);
         this.structureModifier = new StructureModifier(dhns, this);
+    }
+
+    public void addGraphReference(AbstractGraphImpl graph) {
+        graphsMap.put(graph, Boolean.TRUE);
+
+        //Track graph references
+        /*StackTraceElement[] elm = Thread.currentThread().getStackTrace();
+        int i;
+        for (i = 1; i < elm.length; i++) {
+        if (!elm[i].getClassName().startsWith("org.gephi.graph")) {
+        break;
+        }
+        }
+        System.out.println("View " + viewId + " : " + elm[i].toString());*/
+    }
+
+    public boolean hasGraphReference() {
+        return !graphsMap.isEmpty();
     }
 
     public int getViewId() {
