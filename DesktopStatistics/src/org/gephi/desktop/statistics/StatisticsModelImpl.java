@@ -53,8 +53,10 @@ public class StatisticsModelImpl implements StatisticsModel {
     }
 
     public void addStatistics(Statistics statistics) {
-        statisticsList.add(statistics);
-        fireChangeEvent();
+        if (!statisticsList.contains(statistics)) { //Add the Statistic instance to statisticsList only if it not already in there
+            statisticsList.add(statistics);
+            fireChangeEvent();
+        }
     }
 
     public Statistics getStatistics(StatisticsUI statisticsUI) {
