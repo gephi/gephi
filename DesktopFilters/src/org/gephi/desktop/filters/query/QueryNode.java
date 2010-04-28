@@ -53,7 +53,7 @@ public class QueryNode extends AbstractNode {
     }
 
     private boolean isSelected() {
-        return FiltersTopComponent.findInstance().getUiModel().getSelectedQuery() == query;
+        return FiltersTopComponent.findInstance().getUiModel().getSelectedRoot() == query;
     }
 
 
