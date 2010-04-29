@@ -62,7 +62,7 @@ public interface NodeData extends Renderable {
 
     /**
      * Sets this node label.
-     * @param string        the label that is to be set as this node label
+     * @param label         the label that is to be set as this node label
      */
     public void setLabel(String label);
 

@@ -157,7 +157,7 @@ public interface GraphRenderer {
     /**
      * Renders the given preview edge mini-label.
      *
-     * @param label  the edge mini-label to render
+     * @param miniLabel  the edge mini-label to render
      */
     public void renderEdgeMiniLabel(EdgeMiniLabel miniLabel);
 }

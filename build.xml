@@ -56,9 +56,8 @@
                 <pathelement path="TimelineAPI/src"/>
                 <pathelement path="ToolsAPI/src"/>
             </sourcepath>
-            <group title="Core" packages="org.gephi.**.api:org.gephi.**.spi:org.gephi.data.*:org.gephi.utils.progress"></group>
-            <doctitle>Gephi 0.7alpha3 API Index</doctitle>
-            <header>Gephi 0.7alpha3 Javadoc</header>
+            <doctitle>Gephi 0.7alpha4 API Index</doctitle>
+            <header>Gephi 0.7alpha4 Javadoc</header>
         </javadoc>
     </target>
 </project>

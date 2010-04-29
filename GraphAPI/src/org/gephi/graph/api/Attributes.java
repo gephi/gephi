@@ -50,7 +50,7 @@ public interface Attributes {
 
     /**
      * Returns the value located at the specified column position.
-     * @param column    the column index
+     * @param index     the column index
      * @return          the value for the specified column position, or
      *                  <code>null</code> if index out of range
      */

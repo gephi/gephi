@@ -75,7 +75,7 @@ public interface EdgeData extends Renderable {
 
     /**
      * Sets this edge label.
-     * @param string        the label that is to be set as this edge label
+     * @param label         the label that is to be set as this edge label
      */
     public void setLabel(String label);
 
