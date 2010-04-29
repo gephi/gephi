@@ -22,6 +22,8 @@ package org.gephi.io.importer.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.gephi.io.importer.api.Issue.Level;
 
 /**
@@ -32,7 +34,7 @@ import org.gephi.io.importer.api.Issue.Level;
  */
 public final class Report {
 
-    private final List<ReportEntry> entries = new ArrayList<ReportEntry>();
+    private final Queue<ReportEntry> entries = new ConcurrentLinkedQueue<ReportEntry>();
     private Issue.Level exceptionLevel = Issue.Level.CRITICAL;
 
     /**
