@@ -30,6 +30,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.io.importer.api.ContainerLoader;
+import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.api.Issue;
@@ -147,6 +148,24 @@ public class ImporterGraphML implements XMLImporter, LongTask {
         NodeList edgeListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
         if (cancel) {
             return;
+        }
+
+        //Edge Default
+        NodeList graphList = root.getChildNodes();
+        for (int i = 0; i < graphList.getLength(); i++) {
+            if (graphList.item(i).getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                Element itemE = (Element) graphList.item(i);
+                if (itemE.getTagName().equalsIgnoreCase("graph")) {
+                    if (itemE.hasAttribute("edgedefault")) {
+                        String type = itemE.getAttribute("edgedefault");
+                        if (type.equalsIgnoreCase("directed")) {
+                            container.setEdgeDefault(EdgeDefault.DIRECTED);
+                        } else if (type.equalsIgnoreCase("undirected")) {
+                            container.setEdgeDefault(EdgeDefault.UNDIRECTED);
+                        }
+                    }
+                }
+            }
         }
 
         int taskMax = keyNodeListE.getLength() + keyEdgeListE.getLength() + nodeListE.getLength() + edgeListE.getLength();
@@ -392,16 +411,16 @@ public class ImporterGraphML implements XMLImporter, LongTask {
                 try {
                     switch (prop) {
                         case X:
-                            nodeDraft.setX(Float.parseFloat(dataValue));
+                            nodeDraft.setX(parseFloat(dataValue));
                             break;
                         case Y:
-                            nodeDraft.setY(Float.parseFloat(dataValue));
+                            nodeDraft.setY(parseFloat(dataValue));
                             break;
                         case Z:
-                            nodeDraft.setZ(Float.parseFloat(dataValue));
+                            nodeDraft.setZ(parseFloat(dataValue));
                             break;
                         case SIZE:
-                            nodeDraft.setSize(Float.parseFloat(dataValue));
+                            nodeDraft.setSize(parseFloat(dataValue));
                             break;
                     }
                 } catch (Exception e) {
@@ -423,6 +442,11 @@ public class ImporterGraphML implements XMLImporter, LongTask {
         }
     }
 
+    private float parseFloat(String str) {
+        str = str.replace(',', '.');
+        return Float.parseFloat(str);
+    }
+
     private void setEdgeData(Element dataE, EdgeDraft edgeDraft, String edgeId) {
         //Key
         String dataKey = dataE.getAttribute("key");
@@ -439,7 +463,7 @@ public class ImporterGraphML implements XMLImporter, LongTask {
                 try {
                     switch (prop) {
                         case WEIGHT:
-                            edgeDraft.setWeight(Float.parseFloat(dataValue));
+                            edgeDraft.setWeight(parseFloat(dataValue));
                             break;
                         case LABEL:
                             edgeDraft.setLabel(dataValue);
