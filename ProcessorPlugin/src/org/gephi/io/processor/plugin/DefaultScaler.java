@@ -20,8 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.processor.plugin;
 
+import java.util.Collection;
 import org.gephi.io.importer.api.Container;
-import org.gephi.io.importer.api.EdgeDraftGetter;
 import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.processor.spi.Scaler;
 import org.openide.util.lookup.ServiceProvider;
@@ -61,8 +61,24 @@ public class DefaultScaler implements Scaler {
         float sizeRatio = 0f;
         float averageSize = 2.5f;
 
+        Collection<? extends NodeDraftGetter> nodes = container.getUnloader().getNodes();
+
+        //Recenter
+        double centroidX = 0;
+        double centroidY = 0;
+        for (NodeDraftGetter node : nodes) {
+            centroidX += node.getX();
+            centroidY += node.getY();
+        }
+        centroidX /= nodes.size();
+        centroidY /= nodes.size();
+        for (NodeDraftGetter node : nodes) {
+            node.setX((float) (node.getX() - centroidX));
+            node.setY((float) (node.getY() - centroidY));
+        }
+
         //Measure
-        for (NodeDraftGetter node : container.getUnloader().getNodes()) {
+        for (NodeDraftGetter node : nodes) {
             sizeMin = Math.min(node.getSize(), sizeMin);
             sizeMax = Math.max(node.getSize(), sizeMax);
             xMin = Math.min(node.getX(), xMin);
@@ -104,7 +120,7 @@ public class DefaultScaler implements Scaler {
             averageSize = 0f;
 
             //Scale node size
-            for (NodeDraftGetter node : container.getUnloader().getNodes()) {
+            for (NodeDraftGetter node : nodes) {
                 float size = (node.getSize() - sizeMin) * sizeRatio + sizeMinimum;
                 node.setSize(size);
                 node.setX(node.getX() * sizeRatio);
@@ -114,7 +130,7 @@ public class DefaultScaler implements Scaler {
             }
             averageSize /= container.getUnloader().getNodes().size();
         }
-/*
+        /*
         float weightMin = Float.POSITIVE_INFINITY;
         float weightMax = Float.NEGATIVE_INFINITY;
         float weightRatio = 0f;
@@ -122,20 +138,20 @@ public class DefaultScaler implements Scaler {
         //Measure
         weightMaximum = averageSize * 0.8f;
         for (EdgeDraftGetter edge : container.getUnloader().getEdges()) {
-            weightMin = Math.min(edge.getWeight(), weightMin);
-            weightMax = Math.max(edge.getWeight(), weightMax);
+        weightMin = Math.min(edge.getWeight(), weightMin);
+        weightMax = Math.max(edge.getWeight(), weightMax);
         }
         if (weightMin == weightMax) {
-            weightRatio = weightMinimum / weightMin;
+        weightRatio = weightMinimum / weightMin;
         } else {
-            weightRatio = Math.abs((weightMaximum - weightMinimum) / (weightMax - weightMin));
+        weightRatio = Math.abs((weightMaximum - weightMinimum) / (weightMax - weightMin));
         }
 
         //Scale edge weight
         for (EdgeDraftGetter edge : container.getUnloader().getEdges()) {
-            float weight = (edge.getWeight() - weightMin) * weightRatio + weightMinimum;
-            assert !Float.isNaN(weight);
-            edge.setWeight(weight);
+        float weight = (edge.getWeight() - weightMin) * weightRatio + weightMinimum;
+        assert !Float.isNaN(weight);
+        edge.setWeight(weight);
         }*/
     }
 }
