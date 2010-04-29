@@ -63,6 +63,7 @@ public class InOutDegree implements Statistics, LongTask {
      */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         mIsCanceled = false;
+        mAvgInDegree = mAvgOutDegree = 0.0;
 
         //Attributes cols
         AttributeTable nodeTable = attributeModel.getNodeTable();
@@ -97,7 +98,7 @@ public class InOutDegree implements Statistics, LongTask {
             mProgress.progress(i);
         }
 
-        mAvgDegree += mAvgInDegree + mAvgOutDegree;
+        mAvgDegree = mAvgInDegree + mAvgOutDegree;
         mAvgInDegree /= graph.getNodeCount();
         mAvgOutDegree /= graph.getNodeCount();
         mAvgDegree /= graph.getNodeCount();
