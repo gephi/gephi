@@ -33,11 +33,11 @@ import java.util.concurrent.TimeUnit;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.GraphIO;
-import org.gephi.visualization.api.ModelImpl;
-import org.gephi.visualization.api.VizEvent;
-import org.gephi.visualization.api.VizEventListener;
-import org.gephi.visualization.api.VizEventManager;
+import org.gephi.visualization.apiimpl.GraphIO;
+import org.gephi.visualization.apiimpl.ModelImpl;
+import org.gephi.visualization.apiimpl.VizEvent;
+import org.gephi.visualization.apiimpl.VizEventListener;
+import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.visualization.opengl.AbstractEngine;
 
 /**

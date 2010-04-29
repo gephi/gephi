@@ -28,7 +28,7 @@ import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.ui.utils.PrefsUtils;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.config.GraphicalConfiguration;
 import org.gephi.visualization.opengl.Lighting;
 import org.gephi.visualization.opengl.Lighting.Light;

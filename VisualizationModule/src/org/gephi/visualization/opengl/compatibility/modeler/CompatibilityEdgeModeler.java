@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.apiimpl.ModelImpl;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
 import org.gephi.visualization.opengl.compatibility.objects.Edge3dModel;
 import org.gephi.visualization.opengl.compatibility.objects.SelfLoop2dModel;

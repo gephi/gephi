@@ -22,7 +22,7 @@ package org.gephi.visualization.opengl;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.apiimpl.ModelImpl;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
@@ -30,13 +30,13 @@ import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.Engine;
-import org.gephi.visualization.api.GraphIO;
-import org.gephi.visualization.api.VizEventManager;
+import org.gephi.visualization.apiimpl.Engine;
+import org.gephi.visualization.apiimpl.GraphIO;
+import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.api.objects.ModelClassLibrary;
-import org.gephi.visualization.api.Scheduler;
-import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.apiimpl.Scheduler;
+import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.bridge.EventBridge;

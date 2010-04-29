@@ -18,40 +18,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.api;
+package org.gephi.visualization.apiimpl;
 
-import java.awt.Component;
-import java.nio.DoubleBuffer;
-import java.nio.IntBuffer;
-import org.gephi.lib.gleem.linalg.Vec3f;
+import java.util.EventListener;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface GraphDrawable {
+public interface VizEventListener extends EventListener {
 
-    public Component getGraphComponent();
+    public void handleEvent(VizEvent event);
 
-    public int getViewportHeight();
-
-    public int getViewportWidth();
-
-    public float[] getCameraTarget();
-
-    public float[] getCameraLocation();
-
-    public void setCameraLocation(float[] cameraLocation);
-
-    public void setCameraTarget(float[] cameraTarget);
-
-    public Vec3f getCameraVector();
-
-    public double getDraggingMarkerX();
-
-    public double getDraggingMarkerY();
-
-    public DoubleBuffer getProjectionMatrix();
-
-    public IntBuffer getViewport();
+    public VizEvent.Type getType();
 }

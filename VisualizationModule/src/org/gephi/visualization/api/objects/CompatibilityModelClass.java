@@ -27,7 +27,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.initializer.Modeler;
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.apiimpl.ModelImpl;
 import org.gephi.visualization.api.initializer.CompatibilityModeler;
 
 /**

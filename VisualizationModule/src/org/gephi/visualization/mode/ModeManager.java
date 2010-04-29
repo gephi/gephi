@@ -22,7 +22,7 @@ package org.gephi.visualization.mode;
 
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.DisplayMode;
+import org.gephi.visualization.apiimpl.DisplayMode;
 import org.gephi.visualization.opengl.AbstractEngine;
 
 /**

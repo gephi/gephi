@@ -21,9 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.mode;
 
 import java.util.Iterator;
-import org.gephi.visualization.api.ColorLayer;
-import org.gephi.visualization.api.DisplayMode;
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.apiimpl.ColorLayer;
+import org.gephi.visualization.apiimpl.DisplayMode;
+import org.gephi.visualization.apiimpl.ModelImpl;
 import org.gephi.visualization.mode.ModeManager.AVAILABLE_MODES;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.octree.Octree;

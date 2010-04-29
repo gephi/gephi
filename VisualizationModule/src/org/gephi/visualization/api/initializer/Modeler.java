@@ -22,7 +22,7 @@ package org.gephi.visualization.api.initializer;
 
 import javax.swing.JPanel;
 import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.apiimpl.ModelImpl;
 
 /**
  *

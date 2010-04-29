@@ -30,7 +30,7 @@ import javax.media.opengl.glu.GLU;
 import org.gephi.utils.collection.avl.AVLItemAccessor;
 import org.gephi.utils.collection.avl.ParamAVLTree;
 import org.gephi.utils.collection.avl.AVLItem;
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.apiimpl.ModelImpl;
 
 /**
  *

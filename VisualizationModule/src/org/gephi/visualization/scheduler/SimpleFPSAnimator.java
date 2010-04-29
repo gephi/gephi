@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.scheduler;
 
-import org.gephi.visualization.api.Scheduler;
+import org.gephi.visualization.apiimpl.Scheduler;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 

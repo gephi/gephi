@@ -29,7 +29,7 @@ import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.AbstractEngine;
 
 /**
