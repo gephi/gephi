@@ -241,10 +241,12 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         // Apply displacements on nodes.
         for (Node n : nodes) {
             NodeData data = n.getNodeData();
-            ForceVector force = data.getLayoutData();
+            if (!data.isFixed()) {
+                ForceVector force = data.getLayoutData();
 
-            force.multiply((float) (1.0 / maxForce));
-            getDisplacement().moveNode(data, force);
+                force.multiply((float) (1.0 / maxForce));
+                getDisplacement().moveNode(data, force);
+            }
         }
         postAlgo();
 //        springEnergy = energy - electricEnergy;
