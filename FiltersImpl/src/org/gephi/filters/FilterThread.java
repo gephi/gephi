@@ -56,15 +56,15 @@ public class FilterThread extends Thread {
                     Exceptions.printStackTrace(ex);
                 }
             }
-            boolean propertyModified = false;
+            Query modifiedQuery = null;
             for (Iterator<PropertyModifier> itr = modifiersMap.values().iterator(); itr.hasNext();) {
                 PropertyModifier pm = itr.next();
                 itr.remove();
                 pm.callback.setValue(pm.value);
-                propertyModified = true;
+                modifiedQuery = pm.query;
             }
-            if (propertyModified) {
-                model.updateParameters(q);
+            if (modifiedQuery != null) {
+                model.updateParameters(modifiedQuery);
             }
 
             //Progress

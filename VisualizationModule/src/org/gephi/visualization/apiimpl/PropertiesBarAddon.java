@@ -18,13 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.gephi.visualization.apiimpl;
 
-package org.gephi.visualization.api;
+import javax.swing.JComponent;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface Engine {
+public interface PropertiesBarAddon {
 
+    public JComponent getComponent();
 }

@@ -33,7 +33,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.tools.api.ToolController;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.PropertiesBarAddon;
+import org.gephi.visualization.apiimpl.PropertiesBarAddon;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.project.api.Workspace;

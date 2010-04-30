@@ -8,7 +8,15 @@
     <hr>
     <p>
     <h2>API Changes</h2>
-    <ul><li>(March 28 2010) Add a <code>doImport()</code> method in <code>ImportController</code> that accepts
+    <ul><li>(April 30 2010) Change FilterController.filter() to FilterController.filterVisible()  and FilterController.select()
+            to FilterController.selectVisible(). The controller is managing this process in a separate thread, with progress,
+            and takes care of properties change. A more simple direct way to filter is required for headless access.
+            The FilterController.filter()  has been created and return the GraphView builded by the filter process.</li>
+        <li>(April 24 2010) Expose basic visualization features in a newly created Visualization API. No proper visualization
+            API exists but its creation is necessary to avoid implementation module dependencies. </li>       
+        <li>(April 17 2010) In PreviewAPI, the background color has been put in the PreviewModel. The PreviewController has
+            been updated as well. </li>
+        <li>(March 28 2010) Add a <code>doImport()</code> method in <code>ImportController</code> that accepts
             <code>InputStream</code>. In ImportAPI also, add <code>getWeight()</code> in EdgeDraft to let importers
             increment weight. New <code> AttributeUtils</code>  methods. Progress in GraphAPI and ImportAPI documentation.</li>
         <li>(Feb 17 2010) Change in ImportAPI to support bounded time intervals. Add methods

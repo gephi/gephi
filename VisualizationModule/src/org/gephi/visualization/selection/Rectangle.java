@@ -26,9 +26,9 @@ import javax.media.opengl.GLPbuffer;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.GraphDrawable;
-import org.gephi.visualization.api.ModelImpl;
-import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.apiimpl.GraphDrawable;
+import org.gephi.visualization.apiimpl.ModelImpl;
+import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.api.selection.SelectionArea;
 import org.gephi.lib.gleem.linalg.Vecf;
 

@@ -124,10 +124,18 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     }
 
     private void run() {
-        //Creat Statistics
+        //Create Statistics
         StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
         StatisticsBuilder builder = controller.getBuilder(statisticsUI.getStatisticsClass());
-        currentStatistics = builder.getStatistics();
+        Statistics statistics = currentModel.getStatistics(statisticsUI);
+        if (statistics != null) //If a Statistic instance for that particular StatisticUI has already been created, use it
+        {
+            currentStatistics = statistics;
+        } else //If not, create a new Statistic instance
+        {
+            currentStatistics = builder.getStatistics();
+        }
+
         LongTaskListener listener = new LongTaskListener() {
 
             public void taskFinished(LongTask task) {

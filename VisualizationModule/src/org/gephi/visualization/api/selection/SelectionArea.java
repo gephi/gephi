@@ -23,7 +23,7 @@ package org.gephi.visualization.api.selection;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.apiimpl.ModelImpl;
 import org.gephi.lib.gleem.linalg.Vecf;
 
 /**

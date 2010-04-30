@@ -51,7 +51,7 @@ public final class PropertiesAssociations {
         //Avoid any double
         for (Iterator<PropertyAssociation<EdgeProperties>> itr = edgePropertyAssociations.iterator(); itr.hasNext();) {
             PropertyAssociation<EdgeProperties> p = itr.next();
-            if (p.getTitle().equals(association.getTitle())) {
+            if (p.getTitle().equalsIgnoreCase(association.getTitle())) {
                 itr.remove();
             } else if (p.getProperty().equals(association.getProperty())) {
                 itr.remove();
@@ -68,7 +68,7 @@ public final class PropertiesAssociations {
         //Avoid any double
         for (Iterator<PropertyAssociation<NodeProperties>> itr = nodePropertyAssociations.iterator(); itr.hasNext();) {
             PropertyAssociation<NodeProperties> p = itr.next();
-            if (p.getTitle().equals(association.getTitle())) {
+            if (p.getTitle().equalsIgnoreCase(association.getTitle())) {
                 itr.remove();
             } else if (p.getProperty().equals(association.getProperty())) {
                 itr.remove();
@@ -87,7 +87,7 @@ public final class PropertiesAssociations {
 
     public NodeProperties getNodeProperty(String title) {
         for (PropertyAssociation<NodeProperties> p : nodePropertyAssociations) {
-            if (p.getTitle().equals(title)) {
+            if (p.getTitle().equalsIgnoreCase(title)) {
                 return p.getProperty();
             }
         }
@@ -96,7 +96,7 @@ public final class PropertiesAssociations {
 
     public EdgeProperties getEdgeProperty(String title) {
         for (PropertyAssociation<EdgeProperties> p : edgePropertyAssociations) {
-            if (p.getTitle().equals(title)) {
+            if (p.getTitle().equalsIgnoreCase(title)) {
                 return p.getProperty();
             }
         }

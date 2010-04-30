@@ -18,21 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.api;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
-import org.gephi.visualization.mode.ModeManager.AVAILABLE_MODES;
+package org.gephi.visualization.apiimpl;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface DisplayMode {
+public interface Engine {
 
-    public void load();
-
-    public void unload();
-
-    public AVAILABLE_MODES getMode();
 }

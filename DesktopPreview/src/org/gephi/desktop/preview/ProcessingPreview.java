@@ -22,8 +22,8 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
     private PVector trans = new PVector();
     private PVector lastMove = new PVector();
     private float scaling;
-    private PFont uniEdgeMiniLabelFont;
-    private PFont biEdgeMiniLabelFont;
+    private Font uniEdgeMiniLabelFont;
+    private Font biEdgeMiniLabelFont;
     private GraphSheet graphSheet = null;
     private final HashMap<String, PFont> fontMap = new HashMap<String, PFont>();
     private final static float MARGIN = 10f;
@@ -42,8 +42,8 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
         // updates fonts
         //fontMap.clear(); Don't clear to prevent PFont memory leak from Processing library.
         if (model != null) {
-            uniEdgeMiniLabelFont = getPFont(model.getUniEdgeSupervisor().getMiniLabelFont());
-            biEdgeMiniLabelFont = getPFont(model.getBiEdgeSupervisor().getMiniLabelFont());
+            uniEdgeMiniLabelFont = model.getUniEdgeSupervisor().getMiniLabelFont();
+            biEdgeMiniLabelFont = model.getBiEdgeSupervisor().getMiniLabelFont();
             background = model.getBackgroundColor();
         }
 
@@ -333,7 +333,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
     }
 
     public void renderNodeLabelBorder(NodeLabelBorder border) {
-        textFont(getPFont(border.getLabel().getFont()));
+        textFont(border.getLabel().getFont());
         noStroke();
         fill(border.getColor().getRed(),
                 border.getColor().getGreen(),
@@ -444,8 +444,8 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
         popMatrix();
     }
 
-    private void textFont(Font font){
-        PFont pFont=getPFont(font);
+    private void textFont(Font font) {
+        PFont pFont = getPFont(font);
         textFont(pFont, font.getSize());
     }
 
@@ -466,7 +466,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
      * @return      the related Processing font
      */
     private PFont getPFont(Font font) {
-        String fontName=font.getName();
+        String fontName = font.getName();
         if (fontMap.containsKey(fontName)) {
             return fontMap.get(fontName);
         }

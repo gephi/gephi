@@ -155,10 +155,10 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.visualization</package>
-                <package>org.gephi.visualization.api</package>
                 <package>org.gephi.visualization.api.initializer</package>
                 <package>org.gephi.visualization.api.objects</package>
                 <package>org.gephi.visualization.api.selection</package>
+                <package>org.gephi.visualization.apiimpl</package>
                 <package>org.gephi.visualization.opengl.text</package>
             </public-packages>
         </data>

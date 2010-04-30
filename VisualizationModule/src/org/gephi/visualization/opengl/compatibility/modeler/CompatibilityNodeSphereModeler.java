@@ -30,8 +30,8 @@ import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.initializer.CompatibilityNodeModeler;
 import org.gephi.visualization.modeler.NodeSphereModeler;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.api.ModelImpl;
-import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.apiimpl.ModelImpl;
+import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.compatibility.CompatibilityEngine;
 import org.gephi.visualization.opengl.compatibility.objects.NodeSphereModel;
 

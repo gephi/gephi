@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.opengl.text;
 
 import javax.swing.ImageIcon;
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.apiimpl.ModelImpl;
 import org.gephi.visualization.opengl.text.TextManager.Renderer;
 
 /**

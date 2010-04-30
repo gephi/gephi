@@ -160,11 +160,14 @@ public class ImporterPajek implements TextImporter, LongTask {
         if (curLine.indexOf('"') != -1) {
             String[] initial_split = curLine.trim().split("\"");
             // if there are any quote marks, there should be exactly 2
-            if (initial_split.length < 2 || initial_split.length > 3) {
+            if (initial_split.length < 1 || initial_split.length > 3) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat3", reader.getLineNumber()), Issue.Level.SEVERE));
             }
             index = initial_split[0].trim();
-            label = initial_split[1].trim();
+            if (initial_split.length > 1) {
+                label = initial_split[1].trim();
+            }
+
             if (initial_split.length == 3) {
                 parts = initial_split[2].trim().split("\\s+", -1);
             }

@@ -27,7 +27,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
 import org.gephi.graph.api.TextData;
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.apiimpl.ModelImpl;
 
 /**
  *

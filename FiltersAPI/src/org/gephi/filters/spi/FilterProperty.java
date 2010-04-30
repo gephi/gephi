@@ -152,7 +152,7 @@ public final class FilterProperty {
      * Create a property.
      * @param filter The filter instance
      * @param valueType The type of the property value, ex: <code>Double.class</code>
-     * @param filedName The Java field name of the property
+     * @param fieldName The Java field name of the property
      * @throws NoSuchMethodException if the getter or setter methods cannot be found
      */
     public static FilterProperty createProperty(Filter filter, Class valueType, String fieldName) throws NoSuchMethodException {

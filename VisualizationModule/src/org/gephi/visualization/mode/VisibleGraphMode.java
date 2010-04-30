@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.mode;
 
-import org.gephi.visualization.api.DisplayMode;
+import org.gephi.visualization.apiimpl.DisplayMode;
 import org.gephi.visualization.mode.ModeManager.AVAILABLE_MODES;
 import org.gephi.visualization.opengl.AbstractEngine;
 

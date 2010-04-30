@@ -46,7 +46,7 @@ import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.VizConfig;
+import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.swing.GLAbstractListener;
 import org.gephi.visualization.swing.GraphDrawableImpl;

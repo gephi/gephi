@@ -22,8 +22,8 @@ package org.gephi.visualization.opengl.text;
 
 import javax.swing.ImageIcon;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.api.GraphDrawable;
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.apiimpl.GraphDrawable;
+import org.gephi.visualization.apiimpl.ModelImpl;
 
 /**
  *

@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ranking.api;
 
 /**
- * Interface that defines the single {@link interpolate(float)} method. This interface is implemented by built-in interpolators.
+ * Interface that defines the single {@link #interpolate(float)} method. This interface is implemented by built-in interpolators.
  * @author Mathieu Bastian
  */
 public interface Interpolator {

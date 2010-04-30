@@ -33,7 +33,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-import org.gephi.visualization.api.PropertiesBarAddon;
+import org.gephi.visualization.apiimpl.PropertiesBarAddon;
 
 /**
  *

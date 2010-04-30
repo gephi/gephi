@@ -25,7 +25,7 @@ import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.swing.JPanel;
 import org.gephi.graph.api.Renderable;
-import org.gephi.visualization.api.ModelImpl;
+import org.gephi.visualization.apiimpl.ModelImpl;
 import org.gephi.visualization.api.initializer.CompatibilityModeler;
 import org.gephi.visualization.hull.ConvexHull;
 import org.gephi.visualization.opengl.compatibility.objects.ConvexHullModel;

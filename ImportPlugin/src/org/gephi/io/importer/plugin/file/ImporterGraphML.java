@@ -30,6 +30,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.io.importer.api.ContainerLoader;
+import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.api.Issue;
@@ -76,12 +77,15 @@ public class ImporterGraphML implements XMLImporter, LongTask {
         properties.addNodePropertyAssociation(NodeProperties.LABEL, "label");
         properties.addNodePropertyAssociation(NodeProperties.X, "x");
         properties.addNodePropertyAssociation(NodeProperties.Y, "y");
-        properties.addNodePropertyAssociation(NodeProperties.Y, "z");
+        properties.addNodePropertyAssociation(NodeProperties.Z, "z");
         properties.addNodePropertyAssociation(NodeProperties.SIZE, "size");
 
         //Default edge associations
         properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "label");
+        properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "edgelabel");
         properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "weight");
+        properties.addEdgePropertyAssociation(EdgeProperties.ID, "id");
+        properties.addEdgePropertyAssociation(EdgeProperties.ID, "edgeid");
     }
 
     public boolean importData(Document document, ContainerLoader container, Report report) throws Exception {
@@ -116,7 +120,7 @@ public class ImporterGraphML implements XMLImporter, LongTask {
 
         //Root
         Element root = document.getDocumentElement();
-        if (!root.getTagName().equals("graphml")) {
+        if (!root.getTagName().equalsIgnoreCase("graphml")) {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_syntax1"), Issue.Level.SEVERE));
             return;
         }
@@ -144,6 +148,24 @@ public class ImporterGraphML implements XMLImporter, LongTask {
         NodeList edgeListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
         if (cancel) {
             return;
+        }
+
+        //Edge Default
+        NodeList graphList = root.getChildNodes();
+        for (int i = 0; i < graphList.getLength(); i++) {
+            if (graphList.item(i).getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                Element itemE = (Element) graphList.item(i);
+                if (itemE.getTagName().equalsIgnoreCase("graph")) {
+                    if (itemE.hasAttribute("edgedefault")) {
+                        String type = itemE.getAttribute("edgedefault");
+                        if (type.equalsIgnoreCase("directed")) {
+                            container.setEdgeDefault(EdgeDefault.DIRECTED);
+                        } else if (type.equalsIgnoreCase("undirected")) {
+                            container.setEdgeDefault(EdgeDefault.UNDIRECTED);
+                        }
+                    }
+                }
+            }
         }
 
         int taskMax = keyNodeListE.getLength() + keyEdgeListE.getLength() + nodeListE.getLength() + edgeListE.getLength();
@@ -176,8 +198,8 @@ public class ImporterGraphML implements XMLImporter, LongTask {
             }
 
             //Parent
-            if (nodeE.getParentNode().getNodeName().equals("graph")) {
-                if (nodeE.getParentNode().getParentNode().getNodeName().equals("node")) {
+            if (nodeE.getParentNode().getNodeName().equalsIgnoreCase("graph")) {
+                if (nodeE.getParentNode().getParentNode().getNodeName().equalsIgnoreCase("node")) {
                     //Nested
                     Element parentE = (Element) nodeE.getParentNode().getParentNode();
                     String parentId = parentE.getAttribute("id");
@@ -199,7 +221,7 @@ public class ImporterGraphML implements XMLImporter, LongTask {
             Node child = nodeE.getFirstChild();
             if (child != null) {
                 do {
-                    if (child.getNodeName().equals("data")) {
+                    if (child.getNodeName().equalsIgnoreCase("data")) {
                         Element dataE = (Element) child;
                         setNodeData(dataE, node, nodeId);
                     }
@@ -251,13 +273,13 @@ public class ImporterGraphML implements XMLImporter, LongTask {
                 edge.setType(Boolean.parseBoolean(edgeE.getAttribute("directed")) ? EdgeDraft.EdgeType.DIRECTED : EdgeDraft.EdgeType.UNDIRECTED);
             } else {
                 //Try to find default
-                if (edgeE.getParentNode().getNodeName().equals("graph")) {
+                if (edgeE.getParentNode().getNodeName().equalsIgnoreCase("graph")) {
                     Element graphE = (Element) edgeE.getParentNode();
                     if (graphE.hasAttribute("edgedefault")) {
-                        String type = graphE.getAttribute("edgeDefault");
-                        if (type.equals("directed")) {
+                        String type = graphE.getAttribute("edgedefault");
+                        if (type.equalsIgnoreCase("directed")) {
                             edge.setType(EdgeDraft.EdgeType.DIRECTED);
-                        } else if (type.equals("undirected")) {
+                        } else if (type.equalsIgnoreCase("undirected")) {
                             edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
                         }
                     }
@@ -268,7 +290,7 @@ public class ImporterGraphML implements XMLImporter, LongTask {
             Node child = edgeE.getFirstChild();
             if (child != null) {
                 do {
-                    if (child.getNodeName().equals("data")) {
+                    if (child.getNodeName().equalsIgnoreCase("data")) {
                         Element dataE = (Element) child;
                         setEdgeData(dataE, edge, idStr);
                     }
@@ -299,21 +321,21 @@ public class ImporterGraphML implements XMLImporter, LongTask {
 
             //For
             String keyFor = keyE.getAttribute("for");
-            if (keyFor.isEmpty() || (!keyFor.equals("node") && !keyFor.equals("edge"))) {
+            if (keyFor.isEmpty() || (!keyFor.equalsIgnoreCase("node") && !keyFor.equalsIgnoreCase("edge"))) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributefor", keyName), Issue.Level.SEVERE));
                 continue;
             }
 
             //Try to see if the key is a node/edge property
             if (automaticProperties) {
-                if (keyFor.equals("node")) {
+                if (keyFor.equalsIgnoreCase("node")) {
                     NodeProperties prop = properties.getNodeProperty(keyName);
                     if (prop != null) {
                         nodePropertiesAttributes.put(keyId, prop);
                         report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_nodeproperty", keyName));
                         continue;
                     }
-                } else if (keyFor.equals("edge")) {
+                } else if (keyFor.equalsIgnoreCase("edge")) {
                     EdgeProperties prop = properties.getEdgeProperty(keyName);
                     if (prop != null) {
                         edgePropertiesAttributes.put(keyId, prop);
@@ -326,17 +348,17 @@ public class ImporterGraphML implements XMLImporter, LongTask {
             //Type
             String keyType = keyE.getAttribute("attr.type");
             AttributeType attributeType = AttributeType.STRING;
-            if (keyType.equals("boolean")) {
+            if (keyType.equalsIgnoreCase("boolean")) {
                 attributeType = AttributeType.BOOLEAN;
-            } else if (keyType.equals("int")) {
+            } else if (keyType.equalsIgnoreCase("int")) {
                 attributeType = AttributeType.INT;
-            } else if (keyType.equals("long")) {
+            } else if (keyType.equalsIgnoreCase("long")) {
                 attributeType = AttributeType.LONG;
-            } else if (keyType.equals("float")) {
+            } else if (keyType.equalsIgnoreCase("float")) {
                 attributeType = AttributeType.FLOAT;
-            } else if (keyType.equals("double")) {
+            } else if (keyType.equalsIgnoreCase("double")) {
                 attributeType = AttributeType.DOUBLE;
-            } else if (keyType.equals("string")) {
+            } else if (keyType.equalsIgnoreCase("string")) {
                 attributeType = AttributeType.STRING;
             } else {
                 if (keepComplexAndEmptyAttributeTypes) {
@@ -361,11 +383,11 @@ public class ImporterGraphML implements XMLImporter, LongTask {
             }
 
             //Add as attribute
-            if (keyFor.equals("node")) {
+            if (keyFor.equalsIgnoreCase("node")) {
                 AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
                 nodeClass.addColumn(keyId, keyName, attributeType, AttributeOrigin.DATA, defaultValue);
                 report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_nodeattribute", keyName, attributeType.getTypeString()));
-            } else if (keyFor.equals("edge")) {
+            } else if (keyFor.equalsIgnoreCase("edge")) {
                 AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
                 edgeClass.addColumn(keyId, keyName, attributeType, AttributeOrigin.DATA, defaultValue);
                 report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_edgeattribute", keyName, attributeType.getTypeString()));
@@ -389,16 +411,16 @@ public class ImporterGraphML implements XMLImporter, LongTask {
                 try {
                     switch (prop) {
                         case X:
-                            nodeDraft.setX(Float.parseFloat(dataValue));
+                            nodeDraft.setX(parseFloat(dataValue));
                             break;
                         case Y:
-                            nodeDraft.setY(Float.parseFloat(dataValue));
+                            nodeDraft.setY(parseFloat(dataValue));
                             break;
                         case Z:
-                            nodeDraft.setZ(Float.parseFloat(dataValue));
+                            nodeDraft.setZ(parseFloat(dataValue));
                             break;
                         case SIZE:
-                            nodeDraft.setSize(Float.parseFloat(dataValue));
+                            nodeDraft.setSize(parseFloat(dataValue));
                             break;
                     }
                 } catch (Exception e) {
@@ -420,6 +442,11 @@ public class ImporterGraphML implements XMLImporter, LongTask {
         }
     }
 
+    private float parseFloat(String str) {
+        str = str.replace(',', '.');
+        return Float.parseFloat(str);
+    }
+
     private void setEdgeData(Element dataE, EdgeDraft edgeDraft, String edgeId) {
         //Key
         String dataKey = dataE.getAttribute("key");
@@ -436,10 +463,13 @@ public class ImporterGraphML implements XMLImporter, LongTask {
                 try {
                     switch (prop) {
                         case WEIGHT:
-                            edgeDraft.setWeight(Float.parseFloat(dataValue));
+                            edgeDraft.setWeight(parseFloat(dataValue));
                             break;
                         case LABEL:
                             edgeDraft.setLabel(dataValue);
+                            break;
+                        case ID:
+                            edgeDraft.setId(dataValue);
                             break;
                     }
                 } catch (Exception e) {
@@ -476,6 +506,6 @@ public class ImporterGraphML implements XMLImporter, LongTask {
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("graphml")  || fileObject.hasExt("GRAPHML");
+        return fileObject.hasExt("graphml") || fileObject.hasExt("GRAPHML");
     }
 }

@@ -18,15 +18,40 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.visualization.api;
+package org.gephi.visualization.apiimpl;
 
-import javax.swing.JComponent;
+import java.awt.Component;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
+import org.gephi.lib.gleem.linalg.Vec3f;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface PropertiesBarAddon {
+public interface GraphDrawable {
 
-    public JComponent getComponent();
+    public Component getGraphComponent();
+
+    public int getViewportHeight();
+
+    public int getViewportWidth();
+
+    public float[] getCameraTarget();
+
+    public float[] getCameraLocation();
+
+    public void setCameraLocation(float[] cameraLocation);
+
+    public void setCameraTarget(float[] cameraTarget);
+
+    public Vec3f getCameraVector();
+
+    public double getDraggingMarkerX();
+
+    public double getDraggingMarkerY();
+
+    public DoubleBuffer getProjectionMatrix();
+
+    public IntBuffer getViewport();
 }

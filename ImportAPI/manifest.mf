@@ -3,5 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.io.importer.api
 OpenIDE-Module-Layer: org/gephi/io/importer/api/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/io/importer/api/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.5
+OpenIDE-Module-Specification-Version: 0.7.0.6
 
