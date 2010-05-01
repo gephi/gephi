@@ -8,20 +8,14 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-04-15 04:39+0000\n"
-"Last-Translator: Mathieu Bastian <mathieu.bastian@gmail.com>\n"
+"PO-Revision-Date: 2010-04-30 08:01+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-16 03:54+0000\n"
+"X-Launchpad-Export-Date: 2010-05-01 03:55+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
-
-msgid "OpenIDE-Module-Display-Category"
-msgstr "Gephi UI"
-
-msgid "OpenIDE-Module-Name"
-msgstr "Desktop Preview"
 
 msgid "CTL_PreviewAction"
 msgstr "Aperçu"
@@ -54,55 +48,52 @@ msgid "PreviewSettingsTopComponent.savePreset.input.title"
 msgstr "Réglages"
 
 msgid "PreviewSettingsTopComponent.savePreset.status"
-msgstr ""
+msgstr "Réglages {0} enregistrés"
 
 msgid "PreviewTopComponent.bannerLabel.text"
-msgstr ""
+msgstr "Espace de travail mis à jour. Rafraîchir la prévisualisation ?"
 
 msgid "PreviewTopComponent.refreshButton.text"
-msgstr ""
+msgstr "Rafraîchir"
 
 msgid "PreviewTopComponent.busyLabel.text"
-msgstr ""
-
-msgid "PreviewSettingsTopComponent.box.text"
-msgstr ""
+msgstr "Rafraîchissement en cours..."
 
 msgid "PreviewSettingsTopComponent.saveButton.toolTipText"
-msgstr ""
-
-msgid "PreviewSettingsTopComponent.saveButton.text"
-msgstr ""
+msgstr "Enregistrer les réglages"
 
 msgid "PreviewSettingsTopComponent.ratioLabel.text"
-msgstr ""
+msgstr "0"
 
 msgid "PreviewSettingsTopComponent.labelRatio.text"
-msgstr ""
+msgstr "Ratio :"
 
 msgid "PreviewSettingsTopComponent.refreshButton.text"
-msgstr ""
+msgstr "Rafraîchir"
 
 msgid "PreviewSettingsTopComponent.labelPreset.text"
-msgstr ""
+msgstr "Réglages"
 
 msgid "PreviewSettingsTopComponent.ratio.minimum"
-msgstr ""
-
-msgid "PreviewTopComponent.southBusyLabel.text"
-msgstr ""
+msgstr "Minimum"
 
 msgid "PreviewTopComponent.backgroundButton.text"
-msgstr ""
+msgstr "Arrière-plan"
 
 msgid "PreviewTopComponent.resetZoomButton.text"
-msgstr ""
+msgstr "Réinitialiser le zoom"
 
 msgid "PreviewSettingsTopComponent.svgExportButton.text"
-msgstr ""
+msgstr "SVG/PDF"
 
 msgid "PreviewSettingsTopComponent.labelExport.text"
-msgstr ""
+msgstr "Export :"
 
 msgid "PreviewSettingsTopComponent.svgExportButton.toolTipText"
-msgstr ""
+msgstr "Exporter au format SVG ou PDF"
+
+#~ msgid "OpenIDE-Module-Name"
+#~ msgstr "Desktop Preview"
+
+#~ msgid "OpenIDE-Module-Display-Category"
+#~ msgstr "Gephi UI"

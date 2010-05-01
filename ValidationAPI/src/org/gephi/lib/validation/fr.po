@@ -1,0 +1,33 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-30 08:16+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-01 03:55+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Simple API de validation"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Simple API de validation"
+
+msgid "PositiveNumberValidator_NOT_POSITIVE"
+msgstr "{0} soit être un nombre positif"
+
+msgid "BetweenZeroAndOneValidator_NOT_IN_RANGE"
+msgstr "{0} doit être un nombre réel compris ente 0 et 1"
+
+msgid "Multiple4NumberValidator_NOT_MULTIPLE"
+msgstr "{0} doit être un multiple de 4"
