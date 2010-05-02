@@ -51,6 +51,7 @@ public class PartitionModelImpl implements PartitionModel {
     private EdgePartition[] edgePartitions = new EdgePartition[0];
     private boolean waiting;
     private boolean pie;
+    private int visibleViewId = -1;
 
     public PartitionModelImpl() {
         listeners = new ArrayList<PropertyChangeListener>();
@@ -136,6 +137,10 @@ public class PartitionModelImpl implements PartitionModel {
 
     public boolean isPie() {
         return pie;
+    }
+
+    public int getVisibleViewId() {
+        return visibleViewId;
     }
 
     public void addPropertyChangeListener(PropertyChangeListener changeListener) {
@@ -227,5 +232,9 @@ public class PartitionModelImpl implements PartitionModel {
             this.pie = pie;
             firePropertyChangeEvent(PIE, oldValue, pie);
         }
+    }
+
+    public void setVisibleViewId(int visibleViewId) {
+        this.visibleViewId = visibleViewId;
     }
 }

@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
+    <attr name="Menu\Window\CloseWindowAction.shadow\position" intvalue="2700"/>
+    <attr name="Menu\Window\ClusteringAction.shadow\position" intvalue="100"/>
+    <attr name="Menu\Window\ContextAction.shadow\position" intvalue="200"/>
+    <attr name="Menu\Window\DataTableAction.shadow\position" intvalue="300"/>
+    <attr name="Menu\Window\Debug\position" intvalue="2200"/>
+    <attr name="Menu\Window\FiltersAction.shadow\position" intvalue="400"/>
+    <attr name="Menu\Window\GraphAction.shadow\position" intvalue="600"/>
+    <attr name="Menu\Window\HierarchyAction.shadow\position" intvalue="700"/>
+    <attr name="Menu\Window\KenaiAction.shadow\position" intvalue="1700"/>
+    <attr name="Menu\Window\LayoutAction.shadow\position" intvalue="800"/>
+    <attr name="Menu\Window\MaximizeWindowAction.shadow\position" intvalue="2800"/>
+    <attr name="Menu\Window\Navigator\position" intvalue="2100"/>
+    <attr name="Menu\Window\Other\position" intvalue="2500"/>
+    <attr name="Menu\Window\PartitionAction.shadow\position" intvalue="900"/>
+    <attr name="Menu\Window\PreviewAction.shadow\position" intvalue="1000"/>
+    <attr name="Menu\Window\PreviewSettingsAction.shadow\position" intvalue="1100"/>
+    <attr name="Menu\Window\Profile\position" intvalue="2300"/>
+    <attr name="Menu\Window\RankingAction.shadow\position" intvalue="1200"/>
+    <attr name="Menu\Window\Separator3.instance\position" intvalue="2600"/>
+    <attr name="Menu\Window\Separator4.instance\position" intvalue="3000"/>
+    <attr name="Menu\Window\Separator4_1.instance\position" intvalue="3200"/>
+    <attr name="Menu\Window\ShowPaletteAction.shadow\position" intvalue="1900"/>
+    <attr name="Menu\Window\Versioning\position" intvalue="2400"/>
+    <attr name="Menu\Window\WelcomeAction.shadow\position" intvalue="1300"/>
+    <attr name="Menu\Window\org-netbeans-core-ide-ServicesTabAction.shadow\position" intvalue="1600"/>
+    <attr name="Menu\Window\org-netbeans-core-windows-actions-ResetWindowsAction.shadow\position" intvalue="3100"/>
+    <attr name="Menu\Window\org-netbeans-core-windows-actions-UndockAction.shadow\position" intvalue="2900"/>
+    <attr name="Menu\Window\org-netbeans-modules-kenai-collab-chat-ChatAction.shadow\position" intvalue="2000"/>
+    <attr name="Menu\Window\org-netbeans-modules-project-ui-logical-tab-action.shadow\position" intvalue="1400"/>
+    <attr name="Menu\Window\org-netbeans-modules-project-ui-physical-tab-action.shadow\position" intvalue="1500"/>
+    <attr name="Menu\Window\org-netbeans-modules-tasklist-ui-TaskListAction.shadow\position" intvalue="1800"/>
     <folder name="Actions">
         <folder name="Window">
             <file name="org-gephi-desktop-statistics-StatisticsAction.instance">
@@ -15,6 +46,7 @@
         <folder name="Window">
             <file name="StatisticsAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-statistics-StatisticsAction.instance"/>
+                <attr name="position" intvalue="500"/>
             </file>
         </folder>
     </folder>

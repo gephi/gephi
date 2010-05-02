@@ -29,6 +29,8 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphEvent;
+import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
@@ -71,6 +73,8 @@ public class PartitionControllerImpl implements PartitionController, LookupListe
                 model = workspace.getLookup().lookup(PartitionModelImpl.class);
                 refreshPartitions = true;
                 trackColumnsChange(workspace.getLookup().lookup(AttributeModel.class));
+                GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
+                trachViewChange(gm);
             }
 
             public void unselect(Workspace workspace) {
@@ -82,13 +86,19 @@ public class PartitionControllerImpl implements PartitionController, LookupListe
 
             public void disable() {
                 untrackColumnsChange();
+                untrackViewChange(null);
             }
         });
         if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(PartitionModelImpl.class);
             if (model == null) {
                 model = new PartitionModelImpl();
+                Workspace workspace = pc.getCurrentWorkspace();
                 pc.getCurrentWorkspace().add(new PartitionModelImpl());
+
+                trackColumnsChange(workspace.getLookup().lookup(AttributeModel.class));
+                GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
+                trachViewChange(gm);
             }
         }
     }
@@ -110,6 +120,35 @@ public class PartitionControllerImpl implements PartitionController, LookupListe
             nodeColumnsResult = null;
             edgeColumnsResult = null;
         }
+    }
+    private GraphListener graphListener;
+
+    private void trachViewChange(final GraphModel graphModel) {
+        untrackViewChange(graphModel);
+        if (model.getVisibleViewId() == -1) {
+            model.setVisibleViewId(graphModel.getVisibleView().getViewId());
+        }
+        graphListener = new GraphListener() {
+
+            public void graphChanged(GraphEvent event) {
+                if (event.getEventType().equals(GraphEvent.EventType.VIEWS_UPDATED)) {
+                    if (model.getVisibleViewId() != graphModel.getVisibleView().getViewId()) {
+                        //View has been updated
+                        model.setVisibleViewId(graphModel.getVisibleView().getViewId());
+                        setSelectedPartition(null);
+                    }
+                }
+            }
+        };
+
+        graphModel.addGraphListener(graphListener);
+    }
+
+    private void untrackViewChange(GraphModel graphModel) {
+        if (graphListener != null && graphModel != null) {
+            graphModel.removeGraphListener(graphListener);
+        }
+        graphListener = null;
     }
 
     public void resultChanged(LookupEvent ev) {

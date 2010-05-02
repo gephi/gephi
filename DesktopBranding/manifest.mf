@@ -4,5 +4,5 @@ OpenIDE-Module: org.gephi.branding.desktop
 OpenIDE-Module-Install: org/gephi/branding/desktop/Installer.class
 OpenIDE-Module-Layer: org/gephi/branding/desktop/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/branding/desktop/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.8
+OpenIDE-Module-Specification-Version: 0.7.0.9
 

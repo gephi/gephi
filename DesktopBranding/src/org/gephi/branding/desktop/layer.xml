@@ -104,6 +104,10 @@
             <file name="ViewFavoritesTabAction.shadow_hidden"/>
             <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
             <file name="org-netbeans-core-windows-actions-GlobalPropertiesAction.shadow_hidden"/>
+            <file name="org-gephi-branding-desktop-actions-ResetWindows.instance">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-branding-desktop-actions-ResetWindows.instance"/>
+            </file>
+            <file name="org-netbeans-core-windows-actions-ResetWindowsAction.shadow_hidden"/>
         </folder>
     </folder>
     <folder name="Services">

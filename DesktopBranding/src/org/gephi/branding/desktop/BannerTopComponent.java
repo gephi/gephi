@@ -68,11 +68,18 @@ public final class BannerTopComponent extends TopComponent {
 
             }
         });
+
+        setPreferredSize(new Dimension(100, 30));
     }
 
     @Override
     public Dimension getMinimumSize() {
-        return new Dimension(10, 10);
+        return new Dimension(10, 30);
+    }
+
+    @Override
+    public Dimension getMaximumSize() {
+        return new Dimension(32000, 30);
     }
 
     private void addGroupTabs() {
@@ -116,6 +123,18 @@ public final class BannerTopComponent extends TopComponent {
         }
 
         refreshSelectedGroup();
+    }
+
+    public void reset() {
+        refreshSelectedGroup();
+        for (final ComponentGroup group : groups) {
+            TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(group.getGroupName());
+            if (group.getGroupName().equals(selectedGroup)) {
+                tpg.open();
+            } else {
+                tpg.close();
+            }
+        }
     }
 
     private void refreshSelectedGroup() {
@@ -175,6 +194,7 @@ public final class BannerTopComponent extends TopComponent {
         buttonsPanel.setBackground(new java.awt.Color(255, 255, 255));
         buttonsPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         buttonsPanel.setOpaque(false);
+        buttonsPanel.setPreferredSize(new java.awt.Dimension(10, 25));
         buttonsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -211,7 +231,6 @@ public final class BannerTopComponent extends TopComponent {
     private void logoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_logoButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bannerBackground;
     private javax.swing.JPanel buttonsPanel;

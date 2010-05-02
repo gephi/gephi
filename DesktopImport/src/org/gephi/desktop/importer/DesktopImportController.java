@@ -155,8 +155,7 @@ public class DesktopImportController implements ImportController {
         }
     }
 
-    private void importXML(InputStream stream, Importer importer, final Container container) {
-        final Document document = getDocument(stream);
+    private void importXML(final InputStream stream, Importer importer, final Container container) {
         final XMLImporter xmlImporter = (XMLImporter) importer;
         final Report report = container.getReport();
         LongTask task = null;
@@ -171,7 +170,10 @@ public class DesktopImportController implements ImportController {
                 if (t instanceof OutOfMemoryError) {
                     return;
                 }
-                Logger.getLogger("").log(Level.WARNING, "", t.getCause());
+                t.printStackTrace();
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(t.getCause().getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                //Logger.getLogger("").log(Level.WARNING, "", t.getCause());
             }
         };
 
@@ -180,6 +182,7 @@ public class DesktopImportController implements ImportController {
 
             public void run() {
                 try {
+                    final Document document = getDocument(stream);
                     if (xmlImporter.importData(document, container.getLoader(), report)) {
                         finishImport(container);
                     }
@@ -203,7 +206,10 @@ public class DesktopImportController implements ImportController {
         final LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
 
             public void fatalError(Throwable t) {
-                Logger.getLogger("").log(Level.WARNING, "", t.getCause());
+                t.printStackTrace();
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(t.getCause().getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                //Logger.getLogger("").log(Level.WARNING, "", t.getCause());
             }
         };
 

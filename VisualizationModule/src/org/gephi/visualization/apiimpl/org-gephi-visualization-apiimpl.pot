@@ -15,35 +15,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "CTL_NewProject"
-msgstr "New Project"
+msgid "GraphContextMenu_Group"
+msgstr "Group"
 
-msgid "CTL_OpenProject"
-msgstr "Open Project..."
+msgid "GraphContextMenu_Ungroup"
+msgstr "Ungroup"
 
-msgid "CTL_SaveProject"
-msgstr "Save"
+msgid "GraphContextMenu_Expand"
+msgstr "Expand"
 
-msgid "CTL_SaveAsProject"
-msgstr "Save As..."
+msgid "GraphContextMenu_Contract"
+msgstr "Contract"
 
-msgid "CTL_OpenFile"
-msgstr "Open..."
+msgid "GraphContextMenu_Settle"
+msgstr "Settle"
 
-msgid "CTL_CloseProject"
-msgstr "Close Project"
+msgid "GraphContextMenu_Free"
+msgstr "Free"
 
-msgid "CTL_ProjectProperties"
-msgstr "Properties..."
-
-msgid "CTL_NewWorkspace"
-msgstr "New workspace"
-
-msgid "CTL_DeleteWorkspace"
-msgstr "Delete workspace"
-
-msgid "CTL_CleanWorkspace"
-msgstr "Clean workspace"
-
-msgid "CTL_ResetWindows"
-msgstr "Reset Windows"
+msgid "GraphContextMenu_Delete"
+msgstr "Delete"

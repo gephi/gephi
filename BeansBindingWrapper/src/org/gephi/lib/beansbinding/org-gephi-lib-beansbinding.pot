@@ -15,35 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "CTL_NewProject"
-msgstr "New Project"
+msgid "OpenIDE-Module-Long-Description"
+msgstr ""
+"Beans Binding (JSR 295) is about keeping two properties (typically of two "
+"objects) in sync. An additional emphasis is placed on the ability to bind to "
+"Swing components, and easy integration with IDEs such as NetBeans."
 
-msgid "CTL_OpenProject"
-msgstr "Open Project..."
-
-msgid "CTL_SaveProject"
-msgstr "Save"
-
-msgid "CTL_SaveAsProject"
-msgstr "Save As..."
-
-msgid "CTL_OpenFile"
-msgstr "Open..."
-
-msgid "CTL_CloseProject"
-msgstr "Close Project"
-
-msgid "CTL_ProjectProperties"
-msgstr "Properties..."
-
-msgid "CTL_NewWorkspace"
-msgstr "New workspace"
-
-msgid "CTL_DeleteWorkspace"
-msgstr "Delete workspace"
-
-msgid "CTL_CleanWorkspace"
-msgstr "Clean workspace"
-
-msgid "CTL_ResetWindows"
-msgstr "Reset Windows"
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Beans Binding for Swing components"
