@@ -60,12 +60,6 @@ msgstr "Highlight Selection"
 msgid "DefaultPanel.labelDefaultSettings.text"
 msgstr "Default settings:"
 
-msgid "DefaultPanel.nodeFontButton.text"
-msgstr "jButton1"
-
-msgid "DefaultPanel.edgeFontButton.text"
-msgstr "jButton1"
-
 msgid "DefaultPanel.labelNodeFont.text"
 msgstr "Node Label Font"
 

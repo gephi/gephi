@@ -122,17 +122,11 @@ msgstr "Font:"
 msgid "LabelSettingsPanel.showNodeLabelsCheckbox.text"
 msgstr "Node"
 
-msgid "LabelSettingsPanel.nodeFontButton.text"
-msgstr "jButton1"
-
 msgid "LabelSettingsPanel.showEdgeLabelsCheckbox.text"
 msgstr "Edge"
 
 msgid "LabelSettingsPanel.labelEdgeFont.text"
 msgstr "Font:"
-
-msgid "LabelSettingsPanel.edgeFontButton.text"
-msgstr "jButton1"
 
 msgid "LabelSettingsPanel.labelEdgeColor.text"
 msgstr "Color:"
