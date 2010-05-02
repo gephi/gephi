@@ -58,7 +58,7 @@ import org.openide.util.Exceptions;
 public class GraphDistance implements Statistics, LongTask {
 
     /** */
-    private double[] mBetweeness;
+    private double[] mBetweenness;
     /** */
     private int[][] mDist;
     /** */
@@ -127,7 +127,7 @@ public class GraphDistance implements Statistics, LongTask {
         
         mN = graph.getNodeCount();
 
-        mBetweeness = new double[mN];
+        mBetweenness = new double[mN];
         mDist = new int[mN][mN];
         mEccentricity = new double[mN];
         mCloseness = new double[mN];
@@ -210,7 +210,7 @@ public class GraphDistance implements Statistics, LongTask {
                     delta[u_index] += (theta[u_index] / theta[w_index]) * (1 + delta[w_index]);
                 }
                 if (w != s) {
-                    mBetweeness[w_index] += delta[w_index];
+                    mBetweenness[w_index] += delta[w_index];
                 }
             }
             count++;
@@ -228,7 +228,7 @@ public class GraphDistance implements Statistics, LongTask {
             int s_index = indicies.get(s);
             row.setValue(eccentricityCol, mEccentricity[s_index]);
             row.setValue(closenessCol, mCloseness[s_index]);
-            row.setValue(betweenessCol, mBetweeness[s_index]);
+            row.setValue(betweenessCol, mBetweenness[s_index]);
         }
 
         graph.readUnlock();
@@ -312,8 +312,8 @@ public class GraphDistance implements Statistics, LongTask {
         String htmlIMG3 = "";
         try {
             TempDir tempDir = TempDirUtils.createTempDir();
-            htmlIMG1 = createImageFile(tempDir, mBetweeness, "Betweeness Centrality", "Nodes", "Betweeness");
-            htmlIMG2 = createImageFile(tempDir, mCloseness, "Closness Centrality", "Nodes", "Closness");
+            htmlIMG1 = createImageFile(tempDir, mBetweenness, "Betweenness Centrality", "Nodes", "Betweenness");
+            htmlIMG2 = createImageFile(tempDir, mCloseness, "Closeness Centrality", "Nodes", "Closeness");
             htmlIMG3 = createImageFile(tempDir, mEccentricity, "Eccentricty", "Nodes", "Eccentricity");
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
