@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-04-26 04:28+0000\n"
-"Last-Translator: Mathieu Bastian <mathieu.bastian@gmail.com>\n"
+"PO-Revision-Date: 2010-05-02 11:46+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-27 03:43+0000\n"
+"X-Launchpad-Export-Date: 2010-05-03 04:04+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "AdvancedOption_DisplayName_Default"
@@ -62,12 +62,6 @@ msgstr "Surbrillance de la sélection"
 msgid "DefaultPanel.labelDefaultSettings.text"
 msgstr "Paramètres par défaut :"
 
-msgid "DefaultPanel.nodeFontButton.text"
-msgstr ""
-
-msgid "DefaultPanel.edgeFontButton.text"
-msgstr ""
-
 msgid "DefaultPanel.labelNodeFont.text"
 msgstr "Police du label des noeuds"
 
@@ -108,16 +102,16 @@ msgid "OpenGLPanel.jXTitledSeparator3.title"
 msgstr "Éclairage"
 
 msgid "OpenGLPanel.labelAmbiant.text"
-msgstr ""
+msgstr "Ambiant"
 
 msgid "OpenGLPanel.ambientDiffuseColorButton.text"
 msgstr "Diffusion"
 
 msgid "OpenGLPanel.ambientSpecularColorButton.text"
-msgstr ""
+msgstr "Specular"
 
 msgid "OpenGLPanel.ambientAmbiantColorButton.text"
-msgstr ""
+msgstr "Ambiant"
 
 msgid "OpenGLPanel.light1Checkbox.text"
 msgstr "1"
@@ -129,28 +123,28 @@ msgid "OpenGLPanel.light3Checkbox.text"
 msgstr "3"
 
 msgid "OpenGLPanel.light1AmbiantColorButton.text"
-msgstr ""
+msgstr "Ambiant"
 
 msgid "OpenGLPanel.light1DiffuseColorButton.text"
 msgstr "Diffusion"
 
 msgid "OpenGLPanel.light1SpecularColorButton.text"
-msgstr ""
+msgstr "Specular"
 
 msgid "OpenGLPanel.light2DiffuseColorButton.text"
 msgstr "Diffusion"
 
 msgid "OpenGLPanel.light2SpecularColorButton.text"
-msgstr ""
+msgstr "Specular"
 
 msgid "OpenGLPanel.light3AmbiantColorButton.text"
-msgstr ""
+msgstr "Ambiant"
 
 msgid "OpenGLPanel.light3DiffuseColorButton.text"
 msgstr "Diffusion"
 
 msgid "OpenGLPanel.light3SpecularColorButton.text"
-msgstr ""
+msgstr "Specular"
 
 msgid "OpenGLPanel.labelDirectional.text"
 msgstr "Directionnel"
@@ -183,7 +177,7 @@ msgid "OpenGLPanel.jLabel7.text"
 msgstr "X"
 
 msgid "OpenGLPanel.light2AmbiantColorButton.text"
-msgstr ""
+msgstr "Ambiant"
 
 msgid "OpenGLPanel.resetButton.text"
 msgstr "Retour aux valeurs par défaut"

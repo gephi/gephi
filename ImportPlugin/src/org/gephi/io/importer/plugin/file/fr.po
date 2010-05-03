@@ -8,20 +8,20 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-04-28 04:44+0000\n"
-"Last-Translator: Mathieu Bastian <mathieu.bastian@gmail.com>\n"
+"PO-Revision-Date: 2010-05-02 11:33+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-29 03:53+0000\n"
+"X-Launchpad-Export-Date: 2010-05-03 04:04+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "fileType_GDF_Name"
 msgstr "Fichiers GDF (GUESS)"
 
 msgid "fileType_GEXF_Name"
-msgstr ""
+msgstr "Fichiers GEXF"
 
 msgid "fileType_NET_Name"
 msgstr "Fichiers NET (Pajek)"
@@ -199,123 +199,140 @@ msgstr ""
 
 msgid "importerGEXF_error_datavalue"
 msgstr ""
+"Mauvais type de donnée pour la valeur ''{0}'' de l'élément id={1}. La valeur "
+"ne peut être affectée à l'attribut ''{2}''."
 
 msgid "importerGEXF_error_defaultedgetype"
 msgstr ""
+"Type de liens par défaut ''{0}'' inconnu. Type ''undirected'' utilisé par "
+"défaut."
 
 msgid "importerGEXF_error_edgedouble"
 msgstr ""
+"Type de liens ''double'' actuellement non supporté. Type ''mixed'' utilisé "
+"par défaut."
 
 msgid "importerGEXF_error_edgetype"
 msgstr ""
+"Type ''{0}'' du lien ''{1}'' inconnu. Valeur par défaut utilisée à la place."
 
 msgid "importerGEXF_error_edgeid"
-msgstr ""
+msgstr "Identifiant de lien manquant. Un id a été généré."
 
 msgid "importerGEXF_error_edgeweight"
 msgstr ""
+"Le poids du lien ''{0}'' n'est pas de type float. Le poids est ignoré."
 
 msgid "importerGEXF_error_nodeid"
-msgstr ""
+msgstr "Identifiant du noeud ''{0}'' manquant. Le noeud est ignoré."
 
 msgid "importerGEXF_error_nodelabel"
-msgstr ""
+msgstr "Label du noeud ''{0}'' manquant. Le noeud est ignoré."
 
 msgid "importerGEXF_error_nodeposition"
-msgstr ""
+msgstr "Position du noeud ''{0}'' erronée à ''{1}'' (pas de type float)"
 
 msgid "importerGEXF_error_nodesize"
-msgstr ""
+msgstr "Taille du noeud ''{0}'' erronée (pas de type float)"
 
 msgid "importerGEXF_error_notnode"
-msgstr ""
+msgstr "L'élement ''{0}'' n'est pas un noeud. L'élément est ignoré."
 
 msgid "importerGEXF_error_parsingdatetype"
-msgstr ""
+msgstr "Type de date ''{0}'' inconnu. Type ''date'' utilisé par défaut."
 
 msgid "importerGEXF_error_parsingmode"
-msgstr ""
+msgstr "Mode de parsing ''{0}'' inconnu. Mode ''static'' utilisé pa défaut."
 
 msgid "importerGEXF_log_edgeeproperty"
-msgstr ""
+msgstr "Propriété de lien trouvée : {0}"
 
 msgid "importerGEXF_log_nodeproperty"
-msgstr ""
+msgstr "Propriété de noeud trouvée : {0}"
 
 msgid "importerGEXF_log_edgeattribute"
-msgstr ""
+msgstr "Attribut de lien trouvé : ''{0}'' ({1})"
 
 msgid "importerGEXF_log_nodeattribute"
-msgstr ""
+msgstr "Attribut de noeud trouvé : ''{0}'' ({1})"
 
 msgid "importerGEXF_log_default"
-msgstr ""
+msgstr "Valeur d'attribut par défaut trouvée : ''{0}'' ({1})"
 
 msgid "importerGEXF_log_options"
-msgstr ""
+msgstr "Options d'attribut trouvées : ''{0}'' ({1})"
 
 msgid "importerGEXF_log_version10"
-msgstr ""
+msgstr "GEXF version 1.0 (désapprouvé)"
 
 msgid "importerGEXF_log_version11"
-msgstr ""
+msgstr "GEXF version 1.1"
 
 msgid "importerDL_error_firstline"
-msgstr ""
+msgstr "La première ligne d'un fichier DL doit commencer par 'DL'"
 
 msgid "importerDL_error_unknowntag"
-msgstr ""
+msgstr "Repère d'en-tête inconnue ''{0}'"
 
 msgid "importerDL_error_formatmissing"
-msgstr ""
+msgstr "Repère DL 'format' manquante, 'fullmatrix' est utilisé par défaut."
 
 msgid "importerDL_error_badformat"
 msgstr ""
+"Format ''{0}'' non supporté, proposez 'format=edgelist1' ou "
+"'format=fullmatrix' uniquement."
 
 msgid "importerDL_error_nmissing"
-msgstr ""
+msgstr "L'en-tête du ficher DL doit contenir la repère 'n = <numNodes>'"
 
 msgid "importerDL_error_mmissing"
-msgstr ""
+msgstr "L'en-tête du ficher DL doit contenir le repère 'm = <numMatricies>'"
 
 msgid "importerDL_error_labelscount"
-msgstr ""
+msgstr "Nombre de labels ({0}) différent du repère n ({1})"
 
 msgid "importerDL_error_nodata"
-msgstr ""
+msgstr "Aucune ligne de données trouvée."
 
 msgid "importerDL_error_matrixrowscount"
-msgstr ""
+msgstr "Nombre de lignes de matrice ({0}) plus grand que le repère n ({1})"
 
 msgid "importerDL_error_matrixrowscount2"
-msgstr ""
+msgstr "Nombre de lignes de matrice ({0}) plus petit que le repère n ({1})"
 
 msgid "importerDL_error_matriciescount"
 msgstr ""
+"Nombre d'ensembles de matrices  ({0}) plus grand que le repère nm ({1})"
 
 msgid "importerDL_error_matrixentriescount"
 msgstr ""
+"Nombre d'entrées sur la ligne {0} de la matrice {1} plus grand que le nombre "
+"autorisé (ligne {2} du fichier DL)"
 
 msgid "importerDL_error_weightparseerror"
 msgstr ""
+"Impossible d'analyser le poids ''{0}'' sur la matrice {1} à la ligne {2}"
 
 msgid "importerDL_error_edgelistssetscount"
 msgstr ""
+"Nombre d'ensembles de listes de liens ({0}) différent du repère nm ({1})"
 
 msgid "importerDL_error_edgelistrowparse"
 msgstr ""
+"Impossible d'analyser depuis l'id ''{0}'' de la liste de liens ligne {1}"
 
 msgid "importerDL_error_edgeparseweight"
 msgstr ""
+"Impossible d'analyser le poids ''{0}'' de la liste de liens ligne {1}"
 
 msgid "importerDOT_error_nothingfound"
-msgstr ""
+msgstr "Aucun 'graph' ou 'digraph' trouvé"
 
 msgid "importerDOT_error_labelunreachable"
-msgstr ""
+msgstr "Impossible de trouver le label à la ligne {0}"
 
 msgid "importerDOT_error_colorunreachable"
-msgstr ""
+msgstr "Impossible de trouver la couleur à la ligne {0}"
 
 msgid "importerDOT_error_edgeparsing"
-msgstr ""
+msgstr "Impossible d'analyser le lien à la ligne {0}"
