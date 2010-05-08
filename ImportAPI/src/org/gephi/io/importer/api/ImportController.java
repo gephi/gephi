@@ -25,6 +25,7 @@ import org.gephi.io.importer.spi.DatabaseImporter;
 import org.gephi.io.importer.spi.DatabaseType;
 import org.gephi.io.importer.spi.FileFormatImporter;
 import org.gephi.io.processor.spi.Processor;
+import org.gephi.project.api.Workspace;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -48,7 +49,7 @@ public interface ImportController {
 
     public void process(Container container);
 
-    public void process(Container container, Processor processor);
+    public void process(Container container, Processor processor, Workspace workspace);
 
     public FileType[] getFileTypes();
 

@@ -23,6 +23,7 @@ import org.gephi.io.importer.spi.DatabaseTypeUI;
 import org.gephi.io.importer.spi.FileFormatImporter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -219,13 +220,15 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             processor = reportPanel.getProcessor();
 
             //Project
+            Workspace workspace = null;
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
             ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
             if (pc.getCurrentProject() == null) {
                 pcui.newProject();
+                workspace = pc.getCurrentWorkspace();
             }
 
-            controller.process(container, processor);
+            controller.process(container, processor, workspace);
 
             //StatusLine notify
             String source = container.getSource();

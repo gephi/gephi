@@ -21,6 +21,7 @@ import org.gephi.io.importer.api.EdgeDraftGetter;
 import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.gephi.timeline.api.TimelineController;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -36,14 +37,16 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         return "Append graph";
     }
 
-    public void process(ContainerUnloader container) {
-        //Workspace
+    public void process(ContainerUnloader container, Workspace workspace) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        workspace = pc.getCurrentWorkspace();
+        //Workspace
         if (workspace == null) {
-            //Append mode but no workspace
-            workspace = pc.newWorkspace(pc.getCurrentProject());
-            pc.openWorkspace(workspace);
+            workspace = pc.getCurrentWorkspace();
+            if (workspace == null) {
+                //Append mode but no workspace
+                workspace = pc.newWorkspace(pc.getCurrentProject());
+                pc.openWorkspace(workspace);
+            }
         }
         if (container.getSource() != null) {
             pc.setSource(workspace, container.getSource());

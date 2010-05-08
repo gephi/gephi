@@ -126,6 +126,6 @@ public class DesktopGeneratorController implements GeneratorController {
             pc.setSource(workspace, container.getSource());
         }
 
-        Lookup.getDefault().lookup(Processor.class).process(container.getUnloader());
+        Lookup.getDefault().lookup(Processor.class).process(container.getUnloader(), workspace);
     }
 }

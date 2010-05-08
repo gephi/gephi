@@ -26,6 +26,7 @@ import org.gephi.io.importer.spi.TextImporter;
 import org.gephi.io.importer.spi.XMLImporter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.Scaler;
+import org.gephi.project.api.Workspace;
 import org.gephi.utils.CharsetToolkit;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -129,10 +130,10 @@ public class ImportControllerImpl implements ImportController {
         if (processor == null) {
             throw new RuntimeException("Impossible to find Default Processor");
         }
-        process(container, processor);
+        process(container, processor, null);
     }
 
-    public void process(Container container, Processor processor) {
+    public void process(Container container, Processor processor, Workspace workspace) {
         container.closeLoader();
         if (container.isAutoScale()) {
             Scaler scaler = Lookup.getDefault().lookup(Scaler.class);
@@ -140,7 +141,7 @@ public class ImportControllerImpl implements ImportController {
                 scaler.doScale(container);
             }
         }
-        processor.process(container.getUnloader());
+        processor.process(container.getUnloader(), workspace);
     }
 
     private LineNumberReader getTextReader(FileObject fileObject) throws RuntimeException {

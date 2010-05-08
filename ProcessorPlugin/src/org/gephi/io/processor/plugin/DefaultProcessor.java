@@ -34,6 +34,7 @@ import org.gephi.io.importer.api.EdgeDraftGetter;
 import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.gephi.timeline.api.TimelineController;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -49,11 +50,13 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         return "Add full graph";
     }
 
-    public void process(ContainerUnloader container) {
+    public void process(ContainerUnloader container, Workspace workspace) {
         //Workspace
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        workspace = pc.newWorkspace(pc.getCurrentProject());
-        pc.openWorkspace(workspace);
+        if (workspace == null) {
+            workspace = pc.newWorkspace(pc.getCurrentProject());
+            pc.openWorkspace(workspace);
+        }
         if (container.getSource() != null) {
             pc.setSource(workspace, container.getSource());
         }
