@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.api;
 
+import java.io.Serializable;
+
 import org.gephi.io.database.drivers.SQLDriver;
 
 /**
@@ -27,7 +29,7 @@ import org.gephi.io.database.drivers.SQLDriver;
  *
  * @author Mathieu Bastian
  */
-public interface Database {
+public interface Database extends Serializable {
 
     public String getName();
 

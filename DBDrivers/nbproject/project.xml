@@ -29,6 +29,10 @@
                 <runtime-relative-path>ext/mysql-connector-java-5.1.7-bin.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/mysql-connector-java-5.1.7-bin.jar</binary-origin>
             </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/postgresql-8.4-701.jdbc4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/postgresql-8.4-701.jdbc4.jar</binary-origin>
+            </class-path-extension>
         </data>
     </configuration>
 </project>

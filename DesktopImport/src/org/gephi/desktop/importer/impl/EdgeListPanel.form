@@ -18,12 +18,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="configurationLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="67" max="-2" attributes="0"/>
-                      <Component id="configurationCombo" pref="442" max="32767" attributes="1"/>
-                  </Group>
+              <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="userLabel" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -36,24 +31,32 @@
                           <Component id="edgeQueryLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="nodeAttQueyLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="edgeAttQueryLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="configNameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="configurationLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="edgeAttQueryTextField" alignment="1" pref="443" max="32767" attributes="1"/>
-                          <Component id="nodeAttQueryTextField" alignment="1" pref="443" max="32767" attributes="1"/>
-                          <Component id="edgeQueryTextField" alignment="1" pref="443" max="32767" attributes="1"/>
-                          <Component id="nodeQueryTextField" alignment="1" pref="443" max="32767" attributes="1"/>
-                          <Component id="portTextField" alignment="0" pref="443" max="32767" attributes="1"/>
-                          <Component id="hostTextField" alignment="0" pref="443" max="32767" attributes="1"/>
-                          <Component id="dbTextField" alignment="1" pref="443" max="32767" attributes="1"/>
-                          <Component id="userTextField" alignment="1" pref="443" max="32767" attributes="1"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="driverComboBox" min="-2" pref="98" max="-2" attributes="1"/>
-                              <EmptySpace pref="216" max="32767" attributes="0"/>
-                              <Component id="testConnection" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="configurationCombo" pref="421" max="32767" attributes="1"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="removeConfigurationButton" min="-2" pref="21" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="pwdTextField" alignment="0" pref="443" max="32767" attributes="0"/>
+                          <Component id="configNameTextField" alignment="0" pref="448" max="32767" attributes="0"/>
+                          <Component id="edgeAttQueryTextField" alignment="1" pref="448" max="32767" attributes="1"/>
+                          <Component id="nodeAttQueryTextField" alignment="1" pref="448" max="32767" attributes="1"/>
+                          <Component id="edgeQueryTextField" alignment="1" pref="448" max="32767" attributes="1"/>
+                          <Component id="nodeQueryTextField" alignment="1" pref="448" max="32767" attributes="1"/>
+                          <Component id="portTextField" alignment="0" pref="448" max="32767" attributes="1"/>
+                          <Component id="hostTextField" alignment="0" pref="448" max="32767" attributes="1"/>
+                          <Component id="dbTextField" alignment="1" pref="448" max="32767" attributes="1"/>
+                          <Component id="userTextField" alignment="1" pref="448" max="32767" attributes="1"/>
+                          <Component id="driverComboBox" alignment="0" min="-2" pref="98" max="-2" attributes="1"/>
+                          <Component id="pwdTextField" alignment="0" pref="448" max="32767" attributes="0"/>
                       </Group>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="testConnection" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -63,16 +66,23 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="configurationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="configurationCombo" alignment="3" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="16" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="removeConfigurationButton" min="0" pref="0" max="32767" attributes="1"/>
+                  <Group type="103" alignment="1" groupAlignment="3" attributes="0">
+                      <Component id="configurationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="configurationCombo" alignment="0" pref="24" max="32767" attributes="1"/>
+                  </Group>
               </Group>
-              <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="configNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="configNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="driverLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="driverComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="testConnection" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -119,7 +129,8 @@
                   <Component id="edgeAttQueryLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="edgeAttQueryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="testConnection" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -323,6 +334,37 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
       </AuxValues>
+    </Component>
+    <Component class="javax.swing.JTextField" name="configNameTextField">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/desktop/importer/impl/Bundle.properties" key="EdgeListPanel.configName.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="configName" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="configNameLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/desktop/importer/impl/Bundle.properties" key="EdgeListPanel.configNameLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="removeConfigurationButton">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/org/gephi/desktop/importer/impl/remove_config.png"/>
+        </Property>
+        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/desktop/importer/impl/Bundle.properties" key="EdgeListPanel.removeConfigurationButton.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[65, 29]"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removeConfigurationButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

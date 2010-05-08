@@ -23,9 +23,9 @@ package org.gephi.desktop.importer.impl;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
-import javax.swing.ComboBoxModel;
+
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.ListDataListener;
+
 import org.gephi.io.database.drivers.SQLDriver;
 import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.importer.api.Database;
@@ -36,7 +36,7 @@ import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -45,9 +45,15 @@ import org.openide.util.Lookup;
 public class EdgeListPanel extends javax.swing.JPanel {
 
     private DatabaseType type;
+    private DatabaseManager databaseManager;
+
+    private static String NEW_CONFIGURATION_NAME =
+            NbBundle.getMessage(EdgeListPanel.class,
+                    "EdgeListPanel.template.name");
 
     /** Creates new form EdgeListPanel */
     public EdgeListPanel() {
+        databaseManager = new DatabaseManager();
         initComponents();
     }
 
@@ -61,6 +67,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         ValidationGroup group = validationPanel.getValidationGroup();
 
         //Validators
+        group.add(innerPanel.configNameTextField, Validators.REQUIRE_NON_EMPTY_STRING);
         group.add(innerPanel.hostTextField, Validators.HOST_NAME_OR_IP_ADDRESS);
         group.add(innerPanel.dbTextField, Validators.REQUIRE_NON_EMPTY_STRING);
         group.add(innerPanel.portTextField, Validators.REQUIRE_NON_EMPTY_STRING,
@@ -72,8 +79,20 @@ public class EdgeListPanel extends javax.swing.JPanel {
     }
 
     public Database getSelectedDatabase() {
-        ConfigurationComboModel model = (ConfigurationComboModel) configurationCombo.getModel();
-        return model.selectedItem.db;
+        ConfigurationComboModel model =
+            (ConfigurationComboModel)configurationCombo.getModel();
+        ConfigurationComboItem item = (ConfigurationComboItem)model.getSelectedItem();
+
+        populateEdgeListDatabase(item.db);
+
+        // add configuration if user changed the template configuration
+        if (item.equals(model.templateConfiguration)) {
+            databaseManager.addDatabase(item.db);
+        }
+
+        databaseManager.persist();
+
+        return item.db;
     }
 
     public SQLDriver getSelectedSQLDriver() {
@@ -88,6 +107,43 @@ public class EdgeListPanel extends javax.swing.JPanel {
     public void setDatabaseType(DatabaseType type) {
         this.type = type;
         configurationCombo.setModel(new EdgeListPanel.ConfigurationComboModel());
+        ConfigurationComboModel model =
+            (ConfigurationComboModel)configurationCombo.getModel();
+        if (model.getSelectedItem().equals(model.templateConfiguration)) {
+            this.removeConfigurationButton.setEnabled(false);
+        } else {
+            this.removeConfigurationButton.setEnabled(true);
+        }
+    }
+    
+    private void populateForm(EdgeListDatabase db) {
+        configNameTextField.setText(db.getName());
+        dbTextField.setText(db.getDBName());
+        hostTextField.setText(db.getHost());
+        portTextField.setText(db.getPort() == 0 ? "" : "" + db.getPort());
+        userTextField.setText(db.getUsername());
+        pwdTextField.setText(db.getPasswd());
+        driverComboBox.getModel().setSelectedItem(db.getSQLDriver());
+        nodeQueryTextField.setText(db.getNodeQuery());
+        edgeQueryTextField.setText(db.getEdgeQuery());
+        nodeAttQueryTextField.setText(db.getNodeAttributesQuery());
+        edgeAttQueryTextField.setText(db.getEdgeAttributesQuery());
+    }
+    
+    private void populateEdgeListDatabase(EdgeListDatabase db) {
+        db.setName(this.configNameTextField.getText());
+        db.setDBName(this.dbTextField.getText());
+        db.setHost(this.hostTextField.getText());
+        db.setPasswd(new String(this.pwdTextField.getPassword()));
+        db.setPort(portTextField.getText() != null
+                && !"".equals(portTextField.getText()) ? 
+                Integer.parseInt(portTextField.getText()) : 0);
+        db.setUsername(this.userTextField.getText());
+        db.setSQLDriver(this.getSelectedSQLDriver());
+        db.setNodeQuery(this.nodeQueryTextField.getText());
+        db.setEdgeQuery(this.edgeQueryTextField.getText());
+        db.setNodeAttributesQuery(this.nodeAttQueryTextField.getText());
+        db.setEdgeAttributesQuery(this.edgeAttQueryTextField.getText());
     }
 
     /** This method is called from within the constructor to
@@ -122,6 +178,9 @@ public class EdgeListPanel extends javax.swing.JPanel {
         edgeAttQueryTextField = new javax.swing.JTextField();
         testConnection = new javax.swing.JButton();
         pwdTextField = new javax.swing.JPasswordField();
+        configNameTextField = new javax.swing.JTextField();
+        configNameLabel = new javax.swing.JLabel();
+        removeConfigurationButton = new javax.swing.JButton();
 
         configurationCombo.setModel(new EdgeListPanel.ConfigurationComboModel());
         configurationCombo.addActionListener(new java.awt.event.ActionListener() {
@@ -182,18 +241,28 @@ public class EdgeListPanel extends javax.swing.JPanel {
         pwdTextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.password.text")); // NOI18N
         pwdTextField.setName("password"); // NOI18N
 
+        configNameTextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.configName.text")); // NOI18N
+        configNameTextField.setName("configName"); // NOI18N
+
+        configNameLabel.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.configNameLabel.text")); // NOI18N
+
+        removeConfigurationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/impl/remove_config.png"))); // NOI18N
+        removeConfigurationButton.setToolTipText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.removeConfigurationButton.toolTipText")); // NOI18N
+        removeConfigurationButton.setPreferredSize(new java.awt.Dimension(65, 29));
+        removeConfigurationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeConfigurationButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(configurationLabel)
-                        .addGap(67, 67, 67)
-                        .addComponent(configurationCombo, 0, 442, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(userLabel)
                             .addComponent(pwdLabel)
@@ -204,36 +273,48 @@ public class EdgeListPanel extends javax.swing.JPanel {
                             .addComponent(nodeQueryLabel)
                             .addComponent(edgeQueryLabel)
                             .addComponent(nodeAttQueyLabel)
-                            .addComponent(edgeAttQueryLabel))
+                            .addComponent(edgeAttQueryLabel)
+                            .addComponent(configNameLabel)
+                            .addComponent(configurationLabel))
                         .addGap(22, 22, 22)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(edgeAttQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                            .addComponent(nodeAttQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                            .addComponent(edgeQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                            .addComponent(nodeQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                            .addComponent(portTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                            .addComponent(hostTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                            .addComponent(dbTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                            .addComponent(userTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(driverComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
-                                .addComponent(testConnection))
-                            .addComponent(pwdTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(configurationCombo, 0, 421, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(removeConfigurationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(configNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                            .addComponent(edgeAttQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                            .addComponent(nodeAttQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                            .addComponent(edgeQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                            .addComponent(nodeQueryTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                            .addComponent(portTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                            .addComponent(hostTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                            .addComponent(dbTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                            .addComponent(userTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+                            .addComponent(driverComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pwdTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(testConnection)
+                        .addGap(5, 5, 5)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(16, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(removeConfigurationButton, 0, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(configurationLabel)
+                        .addComponent(configurationCombo, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)))
+                .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(configurationLabel)
-                    .addComponent(configurationCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
+                    .addComponent(configNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(configNameLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(driverLabel)
-                    .addComponent(driverComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(testConnection))
+                    .addComponent(driverComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(hostLabel)
@@ -270,7 +351,8 @@ public class EdgeListPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(edgeAttQueryLabel)
                     .addComponent(edgeAttQueryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(testConnection))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -283,7 +365,8 @@ public class EdgeListPanel extends javax.swing.JPanel {
         Connection conn = null;
         try {
             conn = getSelectedSQLDriver().getConnection(SQLUtils.getUrl(getSelectedSQLDriver(), hostTextField.getText(), Integer.parseInt(portTextField.getText()), dbTextField.getText()), userTextField.getText(), new String(pwdTextField.getPassword()));
-            NotifyDescriptor.Message e = new NotifyDescriptor.Message("Connection successful!", NotifyDescriptor.INFORMATION_MESSAGE);
+            String message = NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.alert.connection_successful");
+            NotifyDescriptor.Message e = new NotifyDescriptor.Message(message, NotifyDescriptor.INFORMATION_MESSAGE);
             DialogDisplayer.getDefault().notifyLater(e);
         } catch (SQLException ex) {
             NotifyDescriptor.Exception e = new NotifyDescriptor.Exception(ex);
@@ -298,21 +381,46 @@ public class EdgeListPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_testConnectionActionPerformed
 
+    private void removeConfigurationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeConfigurationButtonActionPerformed
+        ConfigurationComboModel model =
+            (ConfigurationComboModel)configurationCombo.getModel();
+        ConfigurationComboItem item = (ConfigurationComboItem)model.getSelectedItem();
+
+        if(databaseManager.removeDatabase(item.db)) {
+
+            model.removeElement(item);
+            databaseManager.persist();
+            String message = NbBundle.getMessage(EdgeListPanel.class,
+                    "EdgeListPanel.alert.configuration_removed", item.toString());
+            NotifyDescriptor.Message e = new NotifyDescriptor.Message(
+                    message, NotifyDescriptor.INFORMATION_MESSAGE);
+            DialogDisplayer.getDefault().notifyLater(e);
+            model.setSelectedItem(model.getElementAt(0));
+
+        } else {
+            String message = NbBundle.getMessage(EdgeListPanel.class,
+                    "EdgeListPanel.alert.configuration_unsaved");
+            NotifyDescriptor.Message e = new NotifyDescriptor.Message(
+                    message, NotifyDescriptor.ERROR_MESSAGE);
+            DialogDisplayer.getDefault().notifyLater(e);
+        }
+        
+    }//GEN-LAST:event_removeConfigurationButtonActionPerformed
+
     private void configurationComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_configurationComboActionPerformed
-        ConfigurationComboModel model = (ConfigurationComboModel) configurationCombo.getModel();
-        EdgeListDatabase selectedDatabase = model.getSelectedItem().db;
-        dbTextField.setText(selectedDatabase.getDBName());
-        hostTextField.setText(selectedDatabase.getHost());
-        portTextField.setText("" + selectedDatabase.getPort());
-        userTextField.setText(selectedDatabase.getUsername());
-        pwdTextField.setText(selectedDatabase.getPasswd());
-        driverComboBox.setSelectedItem(selectedDatabase.getSQLDriver());
-        nodeQueryTextField.setText(selectedDatabase.getNodeQuery());
-        edgeQueryTextField.setText(selectedDatabase.getEdgeQuery());
-        nodeAttQueryTextField.setText(selectedDatabase.getNodeAttributesQuery());
-        edgeAttQueryTextField.setText(selectedDatabase.getEdgeAttributesQuery());
+        ConfigurationComboModel model =
+            (ConfigurationComboModel)configurationCombo.getModel();
+        ConfigurationComboItem item = (ConfigurationComboItem)model.getSelectedItem();
+        if (item.equals(model.templateConfiguration)) {
+            this.removeConfigurationButton.setEnabled(false);
+        } else {
+            this.removeConfigurationButton.setEnabled(true);
+        }
     }//GEN-LAST:event_configurationComboActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel configNameLabel;
+    private javax.swing.JTextField configNameTextField;
     private javax.swing.JComboBox configurationCombo;
     private javax.swing.JLabel configurationLabel;
     private javax.swing.JLabel dbLabel;
@@ -333,6 +441,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
     protected javax.swing.JTextField portTextField;
     private javax.swing.JLabel pwdLabel;
     protected javax.swing.JPasswordField pwdTextField;
+    private javax.swing.JButton removeConfigurationButton;
     private javax.swing.JButton testConnection;
     private javax.swing.JLabel userLabel;
     protected javax.swing.JTextField userTextField;
@@ -341,73 +450,66 @@ public class EdgeListPanel extends javax.swing.JPanel {
     public void initEvents() {
     }
 
-    private class ConfigurationComboModel implements ComboBoxModel {
+    private class ConfigurationComboModel extends DefaultComboBoxModel {
 
-        private ConfigurationComboItem[] items;
-        private ConfigurationComboItem selectedItem;
+        /**
+         * The template configuration (will appear as "New Configuration")
+         */
+        ConfigurationComboItem templateConfiguration;
 
         public ConfigurationComboModel() {
+            super();
+            
             if (type != null) {
-                Collection configs = Lookup.getDefault().lookupAll(type.getDatabaseClass());
-                items = new ConfigurationComboItem[configs.size() + 1];
-                int i = 0;
-                for (Object db : configs) {
-                    EdgeListDatabase dbe = (EdgeListDatabase) db;
-                    ConfigurationComboItem item = new ConfigurationComboItem();
-                    item.db = dbe;
-                    items[i] = item;
-                    i++;
+
+                Collection<Database> configs = databaseManager.getDatabases();
+                for (Database db : configs) {
+                    EdgeListDatabase dbe = (EdgeListDatabase)db;
+                    ConfigurationComboItem item = new ConfigurationComboItem(dbe);
+                    this.insertElementAt(item, this.getSize());
                 }
+
+                // add template configuration option at end
                 EdgeListDatabase db = (EdgeListDatabase) type.createDatabase();
-                ConfigurationComboItem item = new ConfigurationComboItem();
-                item.db = db;
-                db.setName("New configuration");
-                items[i] = item;
-                selectedItem = items[items.length - 1];
+                populateEdgeListDatabase(db);
+                templateConfiguration = new ConfigurationComboItem(db);
+                templateConfiguration.setConfigurationName(NEW_CONFIGURATION_NAME);
+                this.insertElementAt(templateConfiguration, this.getSize());
+
+                this.setSelectedItem(this.getElementAt(0));
             }
+            
         }
 
+        @Override
         public void setSelectedItem(Object anItem) {
-            this.selectedItem = (ConfigurationComboItem) anItem;
-        }
-
-        public ConfigurationComboItem getSelectedItem() {
-            return selectedItem;
-        }
-
-        public int getSize() {
-            return items.length;
-        }
-
-        public Object getElementAt(int index) {
-            return items[index];
-        }
-
-        public void addListDataListener(ListDataListener l) {
-        }
-
-        public void removeListDataListener(ListDataListener l) {
+            ConfigurationComboItem item = (ConfigurationComboItem) anItem;
+            populateForm(item.db);
+            super.setSelectedItem(anItem);
         }
     }
 
     private class ConfigurationComboItem {
 
-        private EdgeListDatabase db;
+        private final EdgeListDatabase db;
+        private String configurationName;
 
-        public ConfigurationComboItem() {
+        public ConfigurationComboItem(EdgeListDatabase db) {
+            this.db = db;
+            this.configurationName = db.getName();
         }
 
         public EdgeListDatabase getDb() {
             return db;
         }
 
-        public void setDb(EdgeListDatabase db) {
-            this.db = db;
+        public void setConfigurationName(String configurationName) {
+            this.configurationName = configurationName;
         }
 
         @Override
         public String toString() {
-            String name = db.getName();
+            String name = configurationName;
             if (name == null || name.isEmpty()) {
                 name = SQLUtils.getUrl(db.getSQLDriver(), db.getHost(), db.getPort(), db.getDBName());
             }

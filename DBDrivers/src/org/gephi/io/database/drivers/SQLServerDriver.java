@@ -44,4 +44,18 @@ public class SQLServerDriver implements SQLDriver {
     public String toString() {
         return "SQL Server";
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SQLServerDriver) {
+            return ((SQLServerDriver) obj).getPrefix().equals(getPrefix());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return getPrefix().hashCode();
+    }
 }

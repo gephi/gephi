@@ -62,18 +62,7 @@ public class EdgeListDatabaseUIImpl implements EdgeListDatabaseUI {
     }
 
     public void unsetup() {
-        EdgeListDatabase selectedDB = (EdgeListDatabase) panel.getSelectedDatabase();
-        selectedDB.setDBName(panel.dbTextField.getText());
-        selectedDB.setHost(panel.hostTextField.getText());
-        selectedDB.setPasswd(new String(panel.pwdTextField.getPassword()));
-        selectedDB.setPort(Integer.parseInt(panel.portTextField.getText()));
-        selectedDB.setUsername(panel.userTextField.getText());
-        selectedDB.setSQLDriver(panel.getSelectedSQLDriver());
-        selectedDB.setNodeQuery(panel.nodeQueryTextField.getText());
-        selectedDB.setEdgeQuery(panel.edgeQueryTextField.getText());
-        selectedDB.setNodeAttributesQuery(panel.nodeAttQueryTextField.getText());
-        selectedDB.setEdgeAttributesQuery(panel.edgeAttQueryTextField.getText());
-        this.database = selectedDB;
+        this.database = (EdgeListDatabase) panel.getSelectedDatabase();
         panel = null;
     }
 
