@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.processor.spi;
 
 import org.gephi.io.importer.api.ContainerUnloader;
-import org.gephi.project.api.Workspace;
 
 /**
  *
@@ -29,7 +28,7 @@ import org.gephi.project.api.Workspace;
  */
 public interface Processor {
 
-    public void process(Workspace workspace, ContainerUnloader container);
+    public void process(ContainerUnloader container);
 
     public String getDisplayName();
 }

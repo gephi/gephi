@@ -88,6 +88,7 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
+                <package>org.gephi.desktop.importer.api</package>
                 <package>org.gephi.desktop.project.api</package>
             </public-packages>
         </data>

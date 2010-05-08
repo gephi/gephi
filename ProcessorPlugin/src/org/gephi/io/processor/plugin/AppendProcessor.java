@@ -20,7 +20,7 @@ import org.gephi.io.importer.api.EdgeDraft.EdgeType;
 import org.gephi.io.importer.api.EdgeDraftGetter;
 import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.processor.spi.Processor;
-import org.gephi.project.api.Workspace;
+import org.gephi.project.api.ProjectController;
 import org.gephi.timeline.api.TimelineController;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -36,11 +36,22 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         return "Append graph";
     }
 
-    public void process(Workspace workspace, ContainerUnloader container) {
+    public void process(ContainerUnloader container) {
+        //Workspace
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        workspace = pc.getCurrentWorkspace();
+        if (workspace == null) {
+            //Append mode but no workspace
+            workspace = pc.newWorkspace(pc.getCurrentProject());
+            pc.openWorkspace(workspace);
+        }
+        if (container.getSource() != null) {
+            pc.setSource(workspace, container.getSource());
+        }
+
         //Architecture
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         this.timelineController = Lookup.getDefault().lookup(TimelineController.class);
-        this.workspace = workspace;
 
         HierarchicalGraph graph = null;
         switch (container.getEdgeDefault()) {

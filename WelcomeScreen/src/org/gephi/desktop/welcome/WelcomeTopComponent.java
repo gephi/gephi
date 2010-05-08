@@ -13,9 +13,9 @@ import java.io.InputStream;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.gephi.io.importer.api.ImportController;
 import org.jdesktop.swingx.JXHyperlink;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
@@ -78,9 +78,9 @@ public final class WelcomeTopComponent extends TopComponent {
                         DialogDisplayer.getDefault().notify(msg);
                     }
                 } else {
-                    ImportController importController = Lookup.getDefault().lookup(ImportController.class);
-                    if (importController.isFileSupported(fileObject)) {
-                        importController.doImport(fileObject);
+                    ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
+                    if (importController.getImportController().isFileSupported(fileObject)) {
+                        importController.importFile(fileObject);
                     }
                 }
                 WelcomeTopComponent.this.close();
@@ -146,8 +146,8 @@ public final class WelcomeTopComponent extends TopComponent {
                 JXHyperlink fileLink = new JXHyperlink(new AbstractAction() {
 
                     public void actionPerformed(ActionEvent e) {
-                        ImportController importController = Lookup.getDefault().lookup(ImportController.class);
-                        importController.doImport(stream, importer);
+                        ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
+                        importController.importStream(stream, importer);
                         WelcomeTopComponent.this.close();
                     }
                 });

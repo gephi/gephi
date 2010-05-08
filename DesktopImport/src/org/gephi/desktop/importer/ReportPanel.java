@@ -21,13 +21,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.desktop.importer;
 
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Enumeration;
 import java.util.List;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeModelListener;
@@ -38,12 +44,14 @@ import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Report;
+import org.gephi.io.processor.spi.Processor;
 import org.gephi.ui.utils.BusyUtils;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
 /**
@@ -63,6 +71,8 @@ public class ReportPanel extends javax.swing.JPanel {
     private ImageIcon criticalIcon;
     //Container
     private Container container;
+    //UI
+    private ButtonGroup processorGroup = new ButtonGroup();
 
     public ReportPanel() {
         try {
@@ -71,6 +81,7 @@ public class ReportPanel extends javax.swing.JPanel {
                 public void run() {
                     initComponents();
                     initIcons();
+                    initProcessors();
                 }
             });
         } catch (InterruptedException ex) {
@@ -211,19 +222,33 @@ public class ReportPanel extends javax.swing.JPanel {
                 hierarchicalLabel.setText(container.isHierarchicalGraph() ? "yes" : "no");
             }
         });
+    }
 
+    private static final Object PROCESSOR_KEY = new Object();
+    private void initProcessors() {
+        int i=0;
+        for(Processor processor : Lookup.getDefault().lookupAll(Processor.class)) {
+            JRadioButton radio = new JRadioButton(processor.getDisplayName());
+            radio.setSelected(i==0);
+            radio.putClientProperty(PROCESSOR_KEY, processor);
+            processorGroup.add(radio);
+            GridBagConstraints constraints = new GridBagConstraints(0, i++, 1, 1, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
+            processorPanel.add(radio, constraints);
+        }
     }
 
     public void destroy() {
         fillingThreads.interrupt();
     }
 
-    public ProcessorStrategyEnum getProcessorStrategy() {
-        if (processorStrategyRadio.getSelection() == appendGraphRadio.getModel()) {
-            return ProcessorStrategyEnum.APPEND;
-        } else {
-            return ProcessorStrategyEnum.FULL;
+    public Processor getProcessor() {
+        for(Enumeration<AbstractButton> enumeration = processorGroup.getElements();enumeration.hasMoreElements();) {
+            AbstractButton radioButton = enumeration.nextElement();
+            if(radioButton.isSelected()) {
+                return (Processor)radioButton.getClientProperty(PROCESSOR_KEY);
+            }
         }
+        return null;
     }
 
     /** This method is called from within the constructor to
@@ -249,13 +274,12 @@ public class ReportPanel extends javax.swing.JPanel {
         graphTypeCombo = new javax.swing.JComboBox();
         nodeCountLabel = new javax.swing.JLabel();
         edgeCountLabel = new javax.swing.JLabel();
-        fullGraphRadio = new javax.swing.JRadioButton();
-        appendGraphRadio = new javax.swing.JRadioButton();
         labelDynamic = new javax.swing.JLabel();
         labelHierarchical = new javax.swing.JLabel();
         dynamicLabel = new javax.swing.JLabel();
         hierarchicalLabel = new javax.swing.JLabel();
         autoscaleCheckbox = new javax.swing.JCheckBox();
+        processorPanel = new javax.swing.JPanel();
 
         labelSrc.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelSrc.text")); // NOI18N
 
@@ -271,7 +295,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
         labelGraphType.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelGraphType.text")); // NOI18N
 
-        labelNodeCount.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labelNodeCount.setFont(new java.awt.Font("Tahoma", 1, 11));
         labelNodeCount.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelNodeCount.text")); // NOI18N
 
         labelEdgeCount.setFont(new java.awt.Font("Tahoma", 1, 11));
@@ -279,18 +303,11 @@ public class ReportPanel extends javax.swing.JPanel {
 
         graphTypeCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Directed", "Undirected", "Mixed" }));
 
-        nodeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        nodeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
         nodeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.nodeCountLabel.text")); // NOI18N
 
         edgeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
         edgeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.edgeCountLabel.text")); // NOI18N
-
-        processorStrategyRadio.add(fullGraphRadio);
-        fullGraphRadio.setSelected(true);
-        fullGraphRadio.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.fullGraphRadio.text")); // NOI18N
-
-        processorStrategyRadio.add(appendGraphRadio);
-        appendGraphRadio.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.appendGraphRadio.text")); // NOI18N
 
         labelDynamic.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelDynamic.text")); // NOI18N
 
@@ -303,6 +320,8 @@ public class ReportPanel extends javax.swing.JPanel {
         autoscaleCheckbox.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.autoscaleCheckbox.text")); // NOI18N
         autoscaleCheckbox.setToolTipText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.autoscaleCheckbox.toolTipText")); // NOI18N
 
+        processorPanel.setLayout(new java.awt.GridBagLayout());
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -310,11 +329,11 @@ public class ReportPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(labelSrc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sourceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE))
+                        .addComponent(sourceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -332,7 +351,7 @@ public class ReportPanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(nodeCountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                                    .addComponent(nodeCountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
                                     .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(autoscaleCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -340,11 +359,9 @@ public class ReportPanel extends javax.swing.JPanel {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(hierarchicalLabel)
                                     .addComponent(dynamicLabel)
-                                    .addComponent(edgeCountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE))
+                                    .addComponent(edgeCountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(fullGraphRadio)
-                                    .addComponent(appendGraphRadio))))))
+                                .addComponent(processorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -355,19 +372,19 @@ public class ReportPanel extends javax.swing.JPanel {
                     .addComponent(labelSrc)
                     .addComponent(sourceLabel))
                 .addGap(18, 18, 18)
-                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelGraphType)
+                    .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(autoscaleCheckbox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelNodeCount)
+                    .addComponent(nodeCountLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labelGraphType)
-                            .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(autoscaleCheckbox))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labelNodeCount)
-                            .addComponent(nodeCountLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(labelEdgeCount)
                             .addComponent(edgeCountLabel))
@@ -378,20 +395,15 @@ public class ReportPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(labelHierarchical)
-                            .addComponent(hierarchicalLabel)
-                            .addComponent(appendGraphRadio)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(fullGraphRadio)
-                        .addGap(23, 23, 23)))
+                            .addComponent(hierarchicalLabel)))
+                    .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JRadioButton appendGraphRadio;
     private javax.swing.JCheckBox autoscaleCheckbox;
     private javax.swing.JLabel dynamicLabel;
     private javax.swing.JLabel edgeCountLabel;
-    private javax.swing.JRadioButton fullGraphRadio;
     private javax.swing.JComboBox graphTypeCombo;
     private javax.swing.JLabel hierarchicalLabel;
     private org.netbeans.swing.outline.Outline issuesOutline;
@@ -402,6 +414,7 @@ public class ReportPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelNodeCount;
     private javax.swing.JLabel labelSrc;
     private javax.swing.JLabel nodeCountLabel;
+    private javax.swing.JPanel processorPanel;
     private javax.swing.ButtonGroup processorStrategyRadio;
     private javax.swing.JEditorPane reportEditor;
     private javax.swing.JLabel sourceLabel;

@@ -21,7 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.api;
 
 import java.io.InputStream;
+import org.gephi.io.importer.spi.DatabaseImporter;
 import org.gephi.io.importer.spi.DatabaseType;
+import org.gephi.io.importer.spi.FileFormatImporter;
+import org.gephi.io.processor.spi.Processor;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -33,17 +36,27 @@ import org.openide.filesystems.FileObject;
  */
 public interface ImportController {
 
+    public FileFormatImporter getFileImporter(FileObject fileObject);
+
+    public FileFormatImporter getFileImporter(String importerName);
+
+    public DatabaseImporter getDatabaseImporter(Database database);
+
+    public Container importFile(InputStream stream, FileFormatImporter importer);
+
+    public Container importDatabase(Database database, DatabaseImporter importer);
+
+    public void process(Container container);
+
+    public void process(Container container, Processor processor);
+
     public FileType[] getFileTypes();
-
-    public void doImport(FileObject fileObject);
-
-    public void doImport(InputStream stream, String importer);
-
-    public void doImport(Database database);
 
     public DatabaseType[] getDatabaseTypes();
 
     public Database[] getDatabases(DatabaseType type);
+
+    public DatabaseType getDatabaseType(Database database);
 
     public boolean isFileSupported(FileObject fileObject);
 }
