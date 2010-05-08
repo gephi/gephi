@@ -249,6 +249,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             //Nodes
             unknownParents = new ConcurrentHashMap<String, List<String>>();
             parseNodes(nodeListE, null);
+            nodeListE = null;
 
             //Unknown parents
             setUnknownParents();
