@@ -20,6 +20,29 @@
                 <package>com.mysql.jdbc.util</package>
                 <package>org.gephi.io.database.drivers</package>
                 <package>org.gjt.mm.mysql</package>
+                <package>org.postgresql</package>
+                <package>org.postgresql.copy</package>
+                <package>org.postgresql.core</package>
+                <package>org.postgresql.core.types</package>
+                <package>org.postgresql.core.v2</package>
+                <package>org.postgresql.core.v3</package>
+                <package>org.postgresql.ds</package>
+                <package>org.postgresql.ds.common</package>
+                <package>org.postgresql.ds.jdbc23</package>
+                <package>org.postgresql.ds.jdbc4</package>
+                <package>org.postgresql.fastpath</package>
+                <package>org.postgresql.geometric</package>
+                <package>org.postgresql.gss</package>
+                <package>org.postgresql.jdbc2</package>
+                <package>org.postgresql.jdbc2.optional</package>
+                <package>org.postgresql.jdbc3</package>
+                <package>org.postgresql.jdbc3g</package>
+                <package>org.postgresql.jdbc4</package>
+                <package>org.postgresql.largeobject</package>
+                <package>org.postgresql.ssl</package>
+                <package>org.postgresql.translation</package>
+                <package>org.postgresql.util</package>
+                <package>org.postgresql.xa</package>
             </public-packages>
             <class-path-extension>
                 <runtime-relative-path>ext/sqljdbc4.jar</runtime-relative-path>
