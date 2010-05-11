@@ -21,9 +21,6 @@ msgstr "Workspace management UI"
 msgid "WorkspaceUISelectorPanel.workspaceLabel.text"
 msgstr "No workspace"
 
-msgid "WorkspacePanePanel.workspaceLabel.text"
-msgstr "workspaceLabel"
-
 msgid "WorkspacePanePanel_closeWorkspace_Question"
 msgstr "Are you sure do yo want to delete this workspace ?"
 

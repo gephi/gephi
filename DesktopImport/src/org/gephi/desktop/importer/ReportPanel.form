@@ -23,11 +23,11 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="tabbedPane" alignment="0" pref="548" max="32767" attributes="0"/>
+                  <Component id="tabbedPane" alignment="0" pref="540" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="labelSrc" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="sourceLabel" pref="505" max="32767" attributes="0"/>
+                      <Component id="sourceLabel" pref="497" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -51,7 +51,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="nodeCountLabel" pref="350" max="32767" attributes="1"/>
+                                  <Component id="nodeCountLabel" pref="342" max="32767" attributes="1"/>
                                   <Component id="graphTypeCombo" min="-2" pref="107" max="-2" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
@@ -61,13 +61,10 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="hierarchicalLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="dynamicLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="edgeCountLabel" pref="349" max="32767" attributes="1"/>
+                                  <Component id="edgeCountLabel" pref="223" max="32767" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="fullGraphRadio" min="-2" max="-2" attributes="0"/>
-                                  <Component id="appendGraphRadio" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="processorPanel" min="-2" pref="207" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -85,21 +82,21 @@
                   <Component id="sourceLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="tabbedPane" pref="154" max="32767" attributes="0"/>
+              <Component id="tabbedPane" pref="170" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="labelGraphType" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="graphTypeCombo" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="autoscaleCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="labelNodeCount" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="nodeCountLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="labelGraphType" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="graphTypeCombo" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="autoscaleCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="labelNodeCount" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="nodeCountLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="labelEdgeCount" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="edgeCountLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -113,15 +110,11 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="labelHierarchical" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="hierarchicalLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="appendGraphRadio" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="fullGraphRadio" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="processorPanel" pref="54" max="32767" attributes="1"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -245,27 +238,6 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JRadioButton" name="fullGraphRadio">
-      <Properties>
-        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="processorStrategyRadio"/>
-        </Property>
-        <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/desktop/importer/Bundle.properties" key="ReportPanel.fullGraphRadio.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JRadioButton" name="appendGraphRadio">
-      <Properties>
-        <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-          <ComponentRef name="processorStrategyRadio"/>
-        </Property>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/desktop/importer/Bundle.properties" key="ReportPanel.appendGraphRadio.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JLabel" name="labelDynamic">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -304,5 +276,9 @@
         </Property>
       </Properties>
     </Component>
+    <Container class="javax.swing.JPanel" name="processorPanel">
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
+    </Container>
   </SubComponents>
 </Form>

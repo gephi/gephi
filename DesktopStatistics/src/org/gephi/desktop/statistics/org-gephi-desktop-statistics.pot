@@ -24,10 +24,6 @@ msgstr "Statistics"
 msgid "CTL_StatisticsTopComponent"
 msgstr "Statistics"
 
-#, fuzzy
-msgid "HINT_StatisticsTopComponent"
-msgstr "Statistics"
-
 msgid "StatisticsTopComponent.settingsButton.text"
 msgstr "Settings"
 

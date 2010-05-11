@@ -12,10 +12,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.io.importer.api.FileType;
-import org.gephi.io.importer.api.ImportController;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
@@ -415,8 +415,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         final JFileChooser chooser = new JFileChooser(lastPath);
         DialogFileFilter graphFilter = new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_graphfilter"));
 
-        ImportController importController = Lookup.getDefault().lookup(ImportController.class);
-        for (FileType fileType : importController.getFileTypes()) {
+        ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
+        for (FileType fileType : importController.getImportController().getFileTypes()) {
             DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
             dialogFileFilter.addExtensions(fileType.getExtensions());
             chooser.addChoosableFileFilter(dialogFileFilter);
@@ -438,9 +438,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
             //Save last path
             NbPreferences.forModule(ProjectControllerUIImpl.class).put(LAST_PATH, file.getAbsolutePath());
-
-            //Do
-            importController.doImport(fileObject);
+            
+            importController.importFile(fileObject);
         }
     }
 

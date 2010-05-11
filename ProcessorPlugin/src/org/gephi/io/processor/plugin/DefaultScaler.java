@@ -99,22 +99,22 @@ public class DefaultScaler implements Scaler {
 
             //Watch octree limit
             if (xMin * sizeRatio < -octreeLimit) {
-                sizeRatio = octreeLimit / xMin;
+                sizeRatio = Math.abs(octreeLimit / xMin);
             }
             if (xMax * sizeRatio > octreeLimit) {
-                sizeRatio = octreeLimit / xMax;
+                sizeRatio = Math.abs(octreeLimit / xMax);
             }
             if (yMin * sizeRatio < -octreeLimit) {
-                sizeRatio = octreeLimit / yMin;
+                sizeRatio = Math.abs(octreeLimit / yMin);
             }
             if (yMax * sizeRatio > octreeLimit) {
-                sizeRatio = octreeLimit / yMax;
+                sizeRatio = Math.abs(octreeLimit / yMax);
             }
             if (zMin * sizeRatio < -octreeLimit) {
-                sizeRatio = octreeLimit / zMin;
+                sizeRatio = Math.abs(octreeLimit / zMin);
             }
             if (zMax * sizeRatio > octreeLimit) {
-                sizeRatio = octreeLimit / zMax;
+                sizeRatio = Math.abs(octreeLimit / zMax);
             }
 
             averageSize = 0f;

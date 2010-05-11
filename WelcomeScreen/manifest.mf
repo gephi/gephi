@@ -3,5 +3,5 @@ OpenIDE-Module: org.gephi.desktop.welcome
 OpenIDE-Module-Install: org/gephi/desktop/welcome/Installer.class
 OpenIDE-Module-Layer: org/gephi/desktop/welcome/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/welcome/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.2
+OpenIDE-Module-Specification-Version: 0.7.0.3
 

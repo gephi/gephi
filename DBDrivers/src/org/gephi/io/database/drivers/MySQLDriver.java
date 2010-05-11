@@ -43,4 +43,19 @@ public class MySQLDriver implements SQLDriver {
     public String toString() {
         return "MySQL";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof MySQLDriver) {
+            return ((MySQLDriver) obj).getPrefix().equals(getPrefix());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return getPrefix().hashCode();
+    }
+
 }

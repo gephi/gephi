@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.api;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.List;
  *
  * @author Mathieu Bastian
  */
-public final class PropertiesAssociations {
+public final class PropertiesAssociations implements Serializable {
 
     public enum NodeProperties {
 

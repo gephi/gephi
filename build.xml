@@ -60,4 +60,100 @@
             <header>Gephi 0.7alpha4 Javadoc</header>
         </javadoc>
     </target>
+
+    <target name="clean-toolkit" description="Clean Toolkit dir">
+        <delete failonerror="false" includeemptydirs="true">
+            <fileset dir="toolkit"/>
+        </delete>
+    </target>
+
+    <target name="toolkit" depends="clean-toolkit,build,build-launchers" description="Build Gephi Toolkit JAR">
+
+        <property name="build.dir" value="${basedir}/build/cluster/modules"/>
+        <property name="libs.dir" value="${basedir}/build/cluster/modules/ext"/>
+        <property name="toolkit.jar.name" value="gephi-toolkit"/>
+        <property name="toolkit.dir" value="${basedir}/toolkit"/>
+        <property name="toolkit.jar" value="${toolkit.dir}/${toolkit.jar.name}.jar"/>
+        <property name="platform.dir" value="${toolkit.dir}/platform11"/>
+        <mkdir dir="${toolkit.dir}"/>
+
+        <echo message="Packaging ${app.name} into a single JAR at ${toolkit.jar}"/>
+
+        <subant genericantfile="${harness.dir}/suite.xml" target="copy-cluster" inheritrefs="true">
+            <property name="dest.dir" value="${toolkit.dir}"/>
+            <property name="nbexec.dir" value="${toolkit.dir}"/>
+            <property name="build.dir" value="${toolkit.dir}"/>
+            <resources refid="zip.platform.clusters"/>
+        </subant>
+
+        <property name="toolkit.tempdir" value="${toolkit.dir}/${toolkit.jar.name}"/>
+        <mkdir dir="${toolkit.tempdir}"/>
+        <property name="toolkit.platformdir" value="${platform.dir}"/>
+        <copy file="${toolkit.platformdir}/core/org-openide-filesystems.jar" todir="${toolkit.tempdir}"/>
+        <copy file="${toolkit.platformdir}/lib/org-openide-util.jar" todir="${toolkit.tempdir}"/>
+        <copy todir="${toolkit.tempdir}">
+            <fileset dir="${toolkit.platformdir}/modules">
+                <filename name="org-openide-nodes.jar"/>
+            </fileset>
+        </copy>
+        <copy todir="${toolkit.tempdir}">
+            <fileset dir="${build.dir}">
+                <include name="org-gephi-algorithms.jar"/>
+                <include name="org-gephi-data-attributes.jar"/>
+                <include name="org-gephi-data-attributes-api.jar"/>
+                <include name="org-gephi-filters.jar"/>
+                <include name="org-gephi-filters-api.jar"/>
+                <include name="org-gephi-filters-plugin.jar"/>
+                <include name="org-gephi-graph-api.jar"/>
+                <include name="org-gephi-graph-dhns.jar"/>
+                <include name="org-gephi-io-database-drivers.jar"/>
+                <include name="org-gephi-io-generator-api.jar"/>
+                <include name="org-gephi-io-generator-plugin.jar"/>
+                <include name="org-gephi-io-importer-api.jar"/>
+                <include name="org-gephi-io-importer-plugin.jar"/>
+                <include name="org-gephi-io-processor-plugin.jar"/>
+                <include name="org-gephi-layout-api.jar"/>
+                <include name="org-gephi-layout-plugin.jar"/>
+                <include name="org-gephi-project-api.jar"/>
+                <include name="org-gephi-statistics-api.jar"/>
+                <include name="org-gephi-statistics-plugin.jar"/>
+                <include name="org-gephi-project-api.jar"/>
+                <include name="org-gephi-utils.jar"/>
+                <include name="org-gephi-utils-collection.jar"/>
+            </fileset>
+        </copy>
+        <copy todir="${toolkit.tempdir}">
+            <fileset dir="${libs.dir}">
+                <include name="batik*.jar"/>
+                <include name="core.jar"/><!-- Processing -->
+                <include name="iText*.jar"/>
+                <include name="jcommon*.jar"/>
+                <include name="jfreechart*.jar"/>
+                <include name="joda-time*.jar"/>
+                <include name="mysql-connector*.jar"/>
+                <include name="postgresql*.jar"/>
+                <include name="sqljdbc*.jar"/>
+                <include name="google-collect*.jar"/>
+                <include name="trove*.jar"/>
+                <include name="xml-apis-ext*.jar"/>
+            </fileset>
+        </copy>
+
+        <jar destfile="${toolkit.dir}/temp_final.jar" filesetmanifest="skip">
+            <zipgroupfileset dir="${toolkit.tempdir}" includes="*.jar"/>
+
+            <manifest>
+                
+            </manifest>
+        </jar>
+
+        <zip destfile="${toolkit.jar}">
+            <zipfileset src="${toolkit.dir}/temp_final.jar"
+            excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+        </zip>
+
+        <delete file="${toolkit.dir}/temp_final.jar"/>
+        <delete dir="${platform.dir}"/>
+
+    </target>
 </project>

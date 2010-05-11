@@ -29,7 +29,7 @@ import org.gephi.project.api.Workspace;
  */
 public interface Processor {
 
-    public void process(Workspace workspace, ContainerUnloader container);
+    public void process(ContainerUnloader container, Workspace workspace);
 
     public String getDisplayName();
 }

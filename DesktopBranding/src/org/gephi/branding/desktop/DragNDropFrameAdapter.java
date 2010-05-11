@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.TransferHandler;
+import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.gephi.io.importer.api.ImportController;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
@@ -81,9 +81,9 @@ public class DragNDropFrameAdapter {
                             DialogDisplayer.getDefault().notify(msg);
                         }
                     } else {
-                        ImportController importController = Lookup.getDefault().lookup(ImportController.class);
-                        if (importController.isFileSupported(fileObject)) {
-                            importController.doImport(fileObject);
+                        ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
+                        if (importController.getImportController().isFileSupported(fileObject)) {
+                            importController.importFile(fileObject);
                         } else {
                             return false;
                         }

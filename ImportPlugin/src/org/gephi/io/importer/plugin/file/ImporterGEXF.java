@@ -249,6 +249,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             //Nodes
             unknownParents = new ConcurrentHashMap<String, List<String>>();
             parseNodes(nodeListE, null);
+            nodeListE = null;
 
             //Unknown parents
             setUnknownParents();
@@ -488,7 +489,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                     edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
                 } else if (edgeType.equals("directed")) {
                     edge.setType(EdgeDraft.EdgeType.DIRECTED);
-                } else if (edgeType.equals("double")) {
+                } else if (edgeType.equals("mutual")) {
                     edge.setType(EdgeDraft.EdgeType.MUTUAL);
                 } else {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetype", edgeType, edgeId), Issue.Level.SEVERE));

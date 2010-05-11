@@ -53,4 +53,6 @@ public interface ContainerUnloader {
     public boolean allowAutoNode();
 
     public boolean allowParallelEdges();
+
+    public String getSource();
 }

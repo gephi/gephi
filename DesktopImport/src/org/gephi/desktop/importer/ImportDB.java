@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import org.gephi.io.importer.api.ImportController;
+import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.io.importer.spi.DatabaseType;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
@@ -56,14 +56,14 @@ public class ImportDB extends CallableSystemAction {
     public JMenuItem getMenuPresenter() {
         JMenu menu = new JMenu(NbBundle.getMessage(ImportDB.class, "CTL_ImportDB"));
 
-        final ImportController importController = Lookup.getDefault().lookup(ImportController.class);
+        final ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
         if (importController != null) {
-            for (final DatabaseType db : importController.getDatabaseTypes()) {
+            for (final DatabaseType db : importController.getImportController().getDatabaseTypes()) {
                 String menuName = db.getName();
                 JMenuItem menuItem = new JMenuItem(new AbstractAction(menuName) {
 
                     public void actionPerformed(ActionEvent e) {
-                        importController.doImport(db.createDatabase());
+                        importController.importDatabase(db.createDatabase());
                     }
                 });
                 menu.add(menuItem);

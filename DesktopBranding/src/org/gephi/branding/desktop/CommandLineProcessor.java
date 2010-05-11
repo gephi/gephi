@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.gephi.io.importer.api.ImportController;
+import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.project.api.ProjectController;
 import org.netbeans.api.sendopts.CommandException;
 import org.netbeans.spi.sendopts.Env;
@@ -86,9 +86,9 @@ public class CommandLineProcessor extends OptionProcessor {
                     pc.openProject(file).run();
                     return;
                 } else {
-                    ImportController importController = Lookup.getDefault().lookup(ImportController.class);
-                    if (importController.isFileSupported(fileObject)) {
-                        importController.doImport(fileObject);
+                    ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
+                    if (importController.getImportController().isFileSupported(fileObject)) {
+                        importController.importFile(fileObject);
                     }
                 }
             }

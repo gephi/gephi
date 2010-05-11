@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.database.drivers;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -27,7 +28,7 @@ import java.sql.SQLException;
  *
  * @author Mathieu Bastian
  */
-public interface SQLDriver {
+public interface SQLDriver extends Serializable {
 
     public String getPrefix();
 

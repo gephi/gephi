@@ -33,6 +33,7 @@ import org.gephi.io.importer.api.EdgeDraft.EdgeType;
 import org.gephi.io.importer.api.EdgeDraftGetter;
 import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.processor.spi.Processor;
+import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.timeline.api.TimelineController;
 import org.openide.util.Lookup;
@@ -42,18 +43,27 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author  Mathieu Bastian
  */
-@ServiceProvider(service = Processor.class)
+@ServiceProvider(service = Processor.class, position = 10)
 public class DefaultProcessor extends AbstractProcessor implements Processor {
 
     public String getDisplayName() {
         return "Add full graph";
     }
 
-    public void process(Workspace workspace, ContainerUnloader container) {
+    public void process(ContainerUnloader container, Workspace workspace) {
+        //Workspace
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        if (workspace == null) {
+            workspace = pc.newWorkspace(pc.getCurrentProject());
+            pc.openWorkspace(workspace);
+        }
+        if (container.getSource() != null) {
+            pc.setSource(workspace, container.getSource());
+        }
+
         //Architecture
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         this.timelineController = Lookup.getDefault().lookup(TimelineController.class);
-        this.workspace = workspace;
 
         HierarchicalGraph graph = null;
         switch (container.getEdgeDefault()) {

@@ -62,3 +62,21 @@ msgstr "Test Connection"
 
 msgid "EdgeListPanel.edgeQueryTextField.text"
 msgstr "SELECT * FROM edges"
+
+msgid "EdgeListPanel.configNameLabel.text"
+msgstr "Configuration Name:"
+
+msgid "EdgeListPanel.alert.connection_successful"
+msgstr "Connection successful!"
+
+msgid "EdgeListPanel.alert.configuration_removed"
+msgstr "Configuration {0} successfully removed."
+
+msgid "EdgeListPanel.alert.configuration_unsaved"
+msgstr "This configuration is not saved."
+
+msgid "EdgeListPanel.template.name"
+msgstr "New Configuration"
+
+msgid "EdgeListPanel.removeConfigurationButton.toolTipText"
+msgstr "Remove selected configuration"

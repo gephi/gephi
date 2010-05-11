@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.gephi.desktop.importer;
+package org.gephi.utils;
 
 import java.io.*;
 import java.nio.charset.Charset;

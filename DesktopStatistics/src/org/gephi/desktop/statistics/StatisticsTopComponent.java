@@ -30,6 +30,8 @@ import javax.swing.event.ChangeListener;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.statistics.api.StatisticsController;
+import org.gephi.statistics.api.StatisticsModel;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -49,7 +51,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
     static final String ICON_PATH = "org/gephi/desktop/statistics/resources/small.png";
     private static final String PREFERRED_ID = "StatisticsTopComponent";
     //Model
-    private StatisticsModelImpl model;
+    private StatisticsModel model;
 
     public StatisticsTopComponent() {
         initComponents();
@@ -60,19 +62,15 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
         //Workspace events
+        final StatisticsController sc = Lookup.getDefault().lookup(StatisticsController.class);
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
-                workspace.add(new StatisticsModelImpl());
             }
 
             public void select(Workspace workspace) {
-                StatisticsModelImpl m = workspace.getLookup().lookup(StatisticsModelImpl.class);
-                if (m == null) {
-                    m = new StatisticsModelImpl();
-                    workspace.add(m);
-                }
+                StatisticsModel m = sc.getModel();
                 refreshModel(m);
             }
 
@@ -88,11 +86,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         });
 
         if (pc.getCurrentWorkspace() != null) {
-            StatisticsModelImpl m = pc.getCurrentWorkspace().getLookup().lookup(StatisticsModelImpl.class);
-            if (m == null) {
-                m = new StatisticsModelImpl();
-                pc.getCurrentWorkspace().add(m);
-            }
+            StatisticsModel m = sc.getModel();
             refreshModel(m);
         } else {
             refreshModel(null);
@@ -112,7 +106,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
         });
     }
 
-    private void refreshModel(StatisticsModelImpl model) {
+    private void refreshModel(StatisticsModel model) {
         if (model != null && model != this.model) {
             if (this.model != null) {
                 this.model.removeChangeListener(this);

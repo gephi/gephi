@@ -8,7 +8,12 @@
     <hr>
     <p>
     <h2>API Changes</h2>
-    <ul><li>(April 30 2010) Change FilterController.filter() to FilterController.filterVisible()  and FilterController.select()
+    <ul>
+        <li>(May 08 2010) Changes in Import modules to separate core and user interfaces. The <code>ImportController</code> is now
+        doing import task only and a new <code>ImportControllerUI</code> is displaying the user interface (Report Panel). The
+        <code>ImportControllerUI</code> interface is located in the DesktopProject module and should be user to properly
+        import file from Plugins. The <code>ImportController</code> methods could be used from the toolkit.</li>
+        <li>(April 30 2010) Change FilterController.filter() to FilterController.filterVisible()  and FilterController.select()
             to FilterController.selectVisible(). The controller is managing this process in a separate thread, with progress,
             and takes care of properties change. A more simple direct way to filter is required for headless access.
             The FilterController.filter()  has been created and return the GraphView builded by the filter process.</li>

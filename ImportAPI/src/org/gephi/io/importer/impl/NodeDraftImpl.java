@@ -23,6 +23,7 @@ package org.gephi.io.importer.impl;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeValue;
@@ -167,8 +168,19 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
             this.parents = Arrays.copyOf(this.parents, this.parents.length + 1);
             this.parents[this.parents.length - 1] = draftImpl;
         }
-        height = Math.max(height, draftImpl.height + 1);
+        draftImpl.setHeight(height + 1);
         container.setHierarchicalGraph(true);
+    }
+
+    public void setHeight(int height) {
+        if (height > this.height) {
+            this.height = height;
+            if (parents != null) {
+                for (NodeDraftGetter p : parents) {
+                    ((NodeDraftImpl) p).setHeight(height + 1);
+                }
+            }
+        }
     }
 
     public void addChild(NodeDraft child) {
@@ -181,10 +193,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     }
 
     public void addTimeSlice(String dateFrom, String dateTo) {
-        if(slices==null) {
+        if (slices == null) {
             slices = new ArrayList<String[]>();
         }
-        slices.add(new String[] {dateFrom, dateTo});
+        slices.add(new String[]{dateFrom, dateTo});
     }
 
     //GETTERS

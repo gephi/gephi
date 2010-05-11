@@ -64,4 +64,6 @@ public interface NodeDraftGetter extends NodeDraft {
     public NodeDraftGetter[] getParents();
 
     public List<String[]> getSlices();
+
+    public int getHeight();
 }

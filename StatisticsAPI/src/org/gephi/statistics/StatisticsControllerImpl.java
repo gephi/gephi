@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.desktop.statistics;
+package org.gephi.statistics;
 
 import org.gephi.statistics.spi.StatisticsBuilder;
 import org.gephi.statistics.spi.Statistics;
@@ -57,10 +57,15 @@ public class StatisticsControllerImpl implements StatisticsController {
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
+                workspace.add(new StatisticsModelImpl());
             }
 
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(StatisticsModelImpl.class);
+                if (model == null) {
+                    model = new StatisticsModelImpl();
+                    workspace.add(model);
+                }
             }
 
             public void unselect(Workspace workspace) {
@@ -76,6 +81,10 @@ public class StatisticsControllerImpl implements StatisticsController {
 
         if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(StatisticsModelImpl.class);
+            if (model == null) {
+                model = new StatisticsModelImpl();
+                pc.getCurrentWorkspace().add(model);
+            }
         }
     }
 

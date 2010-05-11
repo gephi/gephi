@@ -411,7 +411,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         Collections.sort(sortedMapValues, new Comparator<NodeDraftImpl>() {
 
             public int compare(NodeDraftImpl o1, NodeDraftImpl o2) {
-                return new Integer(o1.getHeight()).compareTo(o2.getHeight());
+                return new Integer(o2.getHeight()).compareTo(o1.getHeight());
             }
         });
         for (NodeDraftImpl n : sortedMapValues) {
