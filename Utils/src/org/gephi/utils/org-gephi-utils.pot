@@ -15,23 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Utils classes for core"
+
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Workspace management UI"
-
-msgid "WorkspaceUISelectorPanel.workspaceLabel.text"
-msgstr "No workspace"
-
-msgid "WorkspacePanePanel_closeWorkspace_Question"
-msgstr "Are you sure do yo want to delete this workspace ?"
-
-msgid "WorkspacePanePanel_closeWorkspace_Title"
-msgstr "Close workspace"
-
-msgid "WorkspacePanePanel.closeButton.toolTipText"
-msgstr "Close workspace"
-
-msgid "WorkspaceUISelectorPanel.leftArrowButton.toolTipText"
-msgstr "Precedent workspace"
-
-msgid "WorkspaceUISelectorPanel.rightArrowButton.toolTipText"
-msgstr "Next workspace"
+msgstr "Utils classes for core"

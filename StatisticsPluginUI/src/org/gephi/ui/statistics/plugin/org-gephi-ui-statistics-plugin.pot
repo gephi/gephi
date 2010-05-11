@@ -120,7 +120,7 @@ msgstr ""
 "network."
 
 msgid "GraphDistancePanel.jLabel1.text"
-msgstr "Betweeness Centrality:"
+msgstr "Betweenness Centrality:"
 
 msgid "GraphDistancePanel.jLabel2.text"
 msgstr "Closeness Centrality:"

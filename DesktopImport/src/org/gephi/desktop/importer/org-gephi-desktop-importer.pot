@@ -18,33 +18,6 @@ msgstr ""
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Integrate import features in UI"
 
-msgid "error_no_matching_file_importer"
-msgstr ""
-"Impossible to find a compatible Importer.\n"
-"The file format is not supported. Check file's extension."
-
-msgid "error_no_matching_stream_importer"
-msgstr ""
-"Impossible to find a compatible Importer.\n"
-"The stream is not supported."
-
-msgid "error_no_matching_db_importer"
-msgstr ""
-"Impossible to find a compatible Importer.\n"
-"The database is not supported."
-
-msgid "error_file_not_found"
-msgstr "Impossible to open the file."
-
-msgid "error_missing_document_instance_factory"
-msgstr "Impossible to obtain an instance of DocumentBuilder"
-
-msgid "error_io"
-msgstr "Impossible to read the given file"
-
-msgid "error_sax"
-msgstr "Impossible to parse the given XML file"
-
 msgid "CTL_ImportDB"
 msgstr "Import Database"
 
@@ -57,20 +30,11 @@ msgstr "Source:"
 msgid "ReportPanel.tab1ScrollPane.TabConstraints.tabTitle"
 msgstr "Issues"
 
-msgid "ReportPanel.edgeCountLabel.text"
-msgstr "edgesNumberLabel"
-
 msgid "ReportPanel.labelEdgeCount.text"
 msgstr "# of Edges:"
 
 msgid "ReportPanel.labelNodeCount.text"
 msgstr "# of Nodes:"
-
-msgid "ReportPanel.fullGraphRadio.text"
-msgstr "Add full graph"
-
-msgid "ReportPanel.appendGraphRadio.text"
-msgstr "Append graph"
 
 msgid "ReportPanel.labelDynamic.text"
 msgstr "Dynamic Graph:"
@@ -90,15 +54,6 @@ msgstr "Graph Type:"
 msgid "ReportPanel.tab2ScrollPane.TabConstraints.tabTitle"
 msgstr "Report"
 
-msgid "DesktopImportController.database.ui.dialog.title"
-msgstr "Database settings"
-
-msgid "DesktopImportController.status.importSuccess"
-msgstr "{0} successfully imported"
-
-msgid "DesktopImportController.status.importSuccess.default"
-msgstr "Data"
-
 msgid "ReportPanel.autoscaleCheckbox.toolTipText"
 msgstr ""
 "Scale node size, node position and edge weight to fill the space in an "
@@ -106,3 +61,27 @@ msgstr ""
 
 msgid "ReportPanel.autoscaleCheckbox.text"
 msgstr "Auto-scale"
+
+msgid "DesktopImportControllerUI.database.ui.dialog.title"
+msgstr "Database settings"
+
+msgid "DesktopImportControllerUI.status.importSuccess"
+msgstr "{0} successfully imported"
+
+msgid "DesktopImportControllerUI.status.importSuccess.default"
+msgstr "Data"
+
+msgid "DesktopImportControllerUI.error_no_matching_file_importer"
+msgstr ""
+"Impossible to find a compatible Importer.\n"
+"The file format is not supported. Check file's extension."
+
+msgid "DesktopImportControllerUI.error_no_matching_stream_importer"
+msgstr ""
+"Impossible to find a compatible Importer.\n"
+"The stream is not supported."
+
+msgid "DesktopImportControllerUI.error_no_matching_db_importer"
+msgstr ""
+"Impossible to find a compatible Importer.\n"
+"The database is not supported."

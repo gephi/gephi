@@ -21,10 +21,6 @@ msgstr "Graph"
 msgid "CTL_GraphTopComponent"
 msgstr "Graph"
 
-#, fuzzy
-msgid "HINT_GraphTopComponent"
-msgstr "Graph"
-
 msgid "GraphTopComponent.jToggleButton1.TabConstraints.tabTitle"
 msgstr "tab2"
 
