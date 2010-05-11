@@ -33,6 +33,7 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -88,6 +89,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Execute task
+            fileObject = getArchivedFile(fileObject);
             final String containerSource = fileObject.getNameExt();
             final InputStream stream = fileObject.getInputStream();
             executor.execute(task, new Runnable() {
@@ -239,6 +241,14 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         } else {
             System.err.println("Bad container");
         }
+    }
+
+    private FileObject getArchivedFile(FileObject fileObject) {
+        if (FileUtil.isArchiveFile(fileObject)) {
+            //Unzip
+            fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
+        }
+        return fileObject;
     }
 
     public ImportController getImportController() {
