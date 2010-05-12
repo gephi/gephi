@@ -1,0 +1,76 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-05-11 18:23+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-12 04:24+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "CTL_ClusteringAction"
+msgstr "Clustering"
+
+msgid "CTL_ClusteringTopComponent"
+msgstr "Clustering"
+
+msgid "ClusteringTopComponent.settingsButton.text"
+msgstr "Parámetros"
+
+msgid "ClusteringTopComponent.descriptionLabel.text"
+msgstr "Descripción"
+
+msgid "ClusteringTopComponent.resetLink.text"
+msgstr "Restaurar"
+
+msgid "ClusteringTopComponent.runButton.text"
+msgstr "Ejecutar"
+
+msgid "ClusteringTopComponent.runButton.stop"
+msgstr "Cancelar"
+
+msgid "ClusteringTopComponent.chooser.text"
+msgstr "Algoritmo de clustering"
+
+msgid "ClusteringTopComponent.settings.title"
+msgstr "{0} parámetros"
+
+msgid "ClustersNode.displayName"
+msgstr "Clusters"
+
+msgid "ClustersNode.actions.SelectAll.name"
+msgstr "Seleccionar todos"
+
+msgid "ClustersNode.actions.GroupAll.name"
+msgstr "Agrupar todos"
+
+msgid "ClustersNode.actions.UngroupAll.name"
+msgstr "Desagrupar todos"
+
+msgid "ClusterNode.displayName.nodesCount.singular"
+msgstr "{0} nodo"
+
+msgid "ClusterNode.displayName.nodesCount.plural"
+msgstr "{0} nodos"
+
+msgid "ClusterNode.actions.Select.name"
+msgstr "Seleccionar"
+
+msgid "ClusterNode.actions.Group.name"
+msgstr "Agrupar"
+
+msgid "ClusterNode.actions.Ungroup.name"
+msgstr "Desagrupar"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr ""
+"Integrar y mostrar la interfaz de usuario para los algoritmos de clustering"
