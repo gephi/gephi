@@ -1,0 +1,88 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-05-13 21:39+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-14 04:59+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Integrar características de importación en la interfaz de usuario"
+
+msgid "CTL_ImportDB"
+msgstr "Importar base de datos"
+
+msgid "ReportPanel.title"
+msgstr "Informe de importación"
+
+msgid "ReportPanel.labelSrc.text"
+msgstr "Fuente:"
+
+msgid "ReportPanel.tab1ScrollPane.TabConstraints.tabTitle"
+msgstr "Notificaciones"
+
+msgid "ReportPanel.labelEdgeCount.text"
+msgstr "# de aristas:"
+
+msgid "ReportPanel.labelNodeCount.text"
+msgstr "# de nodos:"
+
+msgid "ReportPanel.labelDynamic.text"
+msgstr "Grafo dinámico:"
+
+msgid "ReportPanel.labelHierarchical.text"
+msgstr "Grafo jerárquico:"
+
+msgid "ReportPanel.dynamicLabel.text"
+msgstr "NaN"
+
+msgid "ReportPanel.hierarchicalLabel.text"
+msgstr "NaN"
+
+msgid "ReportPanel.labelGraphType.text"
+msgstr "Tipo de grafo:"
+
+msgid "ReportPanel.tab2ScrollPane.TabConstraints.tabTitle"
+msgstr "Informe"
+
+msgid "ReportPanel.autoscaleCheckbox.toolTipText"
+msgstr ""
+"Escalar el tamaño y posición de los nodos y peso de las aristas para llenar "
+"el espacio de forma óptima."
+
+msgid "ReportPanel.autoscaleCheckbox.text"
+msgstr "Auto-escalar"
+
+msgid "DesktopImportControllerUI.database.ui.dialog.title"
+msgstr "Configuración de la base de datos"
+
+msgid "DesktopImportControllerUI.status.importSuccess"
+msgstr "{0} importados con éxito"
+
+msgid "DesktopImportControllerUI.status.importSuccess.default"
+msgstr "Datos"
+
+msgid "DesktopImportControllerUI.error_no_matching_file_importer"
+msgstr ""
+"Imposible encontrar un importador compatible.\\nEl formato de archivo no "
+"está soportado. Comprueba la extensión del archivo."
+
+msgid "DesktopImportControllerUI.error_no_matching_stream_importer"
+msgstr ""
+"Imposible encontrar un importador compatible.\\nEl flujo no está soportado."
+
+msgid "DesktopImportControllerUI.error_no_matching_db_importer"
+msgstr ""
+"Imposible encontrar un importador compatible.\\nLa base de datos no está "
+"soportada."

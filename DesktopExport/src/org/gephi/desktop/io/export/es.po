@@ -1,0 +1,61 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-05-13 22:12+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-14 04:59+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr ""
+"Integrar y administrar las características de exportación en la interfaz de "
+"usuario."
+
+msgid "CTL_Export"
+msgstr "Exportar"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Integrar exportación"
+
+msgid "error_no_matching_file_exporter"
+msgstr ""
+"Imposible encontrar un exportador compatible.\\nEl formato de archivo no "
+"está soportado."
+
+msgid "error_missing_document_instance_factory"
+msgstr "Imposible obtener una entidad de DocumentBuilder"
+
+msgid "error_transformer"
+msgstr "Imposible escribir archivo XML debido a un problema de Transformer."
+
+msgid "error_io"
+msgstr "Imposible escribir archivo de texto."
+
+msgid "GraphFileExporterUIPanel.labelVisibleOnly.text"
+msgstr "Exportar solamente el grafo visualizado actualmente"
+
+msgid "GraphFileExporterUIPanel.labelFullgraph.text"
+msgstr "Exportar el grafo completo"
+
+msgid "GraphFileExporterUIPanel.visibleOnlyRadio.text"
+msgstr "Visible solo"
+
+msgid "GraphFileExporterUIPanel.fullGraphRadio.text"
+msgstr "Completo"
+
+msgid "GraphFileExporterUIPanel.labelGraph.text"
+msgstr "Grafo:"
+
+msgid "DesktopExportController.status.exportSuccess"
+msgstr "{0} exportado con éxito"
