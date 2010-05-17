@@ -422,6 +422,9 @@ public class ImporterGraphML implements XMLImporter, LongTask {
                         case SIZE:
                             nodeDraft.setSize(parseFloat(dataValue));
                             break;
+                        case LABEL:
+                            nodeDraft.setLabel(dataValue);
+                            break;
                     }
                 } catch (Exception e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue1", dataKey, nodeId, prop.toString()), Issue.Level.SEVERE));
