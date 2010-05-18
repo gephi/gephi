@@ -1,0 +1,40 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-05-17 19:22+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-18 05:20+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr ""
+"Implementar ToolController e integrar la interfaz de usuario del módulo Tools"
+
+msgid "PropertiesBar.fullScreenButton.tooltip"
+msgstr "Pantalla completa"
+
+msgid "MouseSelectionPopupPanel.labelDiameter.text"
+msgstr "Diámetro"
+
+msgid "MouseSelectionPopupPanel.proportionnalZoomCheckbox.text"
+msgstr "Proporcional al zoom"
+
+msgid "SelectionBar.statusLabel.rectangleSelection"
+msgstr "Selección rectangular"
+
+msgid "SelectionBar.statusLabel.mouseSelection"
+msgstr "Selección"
+
+msgid "SelectionBar.statusLabel.dragging"
+msgstr "Arrastrar"

@@ -1,0 +1,80 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-05-17 18:54+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-18 05:20+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "Actions/Window/org-gephi-desktop-ranking-RankingAction.instance"
+msgstr "Clasificación"
+
+msgid "CTL_RankingAction"
+msgstr "Clasificación"
+
+msgid "CTL_RankingTopComponent"
+msgstr "Clasificación"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Integrar la interfaz de usuario del módulo Ranking"
+
+msgid "RankingTopComponent.listButton.text"
+msgstr "Lista de resultados"
+
+msgid "RankingTopComponent.barchartButton.text"
+msgstr "Gráfica de valores"
+
+msgid "RankingChooser.rankingComboBox.toolTipText"
+msgstr "Elige clasificación"
+
+msgid "RankingChooser.applyButton.toolTipText"
+msgstr "Aplicar la transformación actual al grafo"
+
+msgid "RankingChooser.applyButton.text"
+msgstr "Aplicar"
+
+msgid "RankingChooser.splineButton.toolTipText"
+msgstr "Configurar interpolación de la clasificación"
+
+msgid "RankingChooser.splineButton.text"
+msgstr "Spline..."
+
+msgid "RankingToolbar.nodes.label"
+msgstr "Nodos"
+
+msgid "RankingToolbar.edges.label"
+msgstr "Aristas"
+
+msgid "ResultListPanel.action.tablescreenshot"
+msgstr "Captura de pantalla"
+
+msgid "ResultListPanel.tablescreenshot.filechooser.title"
+msgstr "Guardar como..."
+
+msgid "ResultListPanel.tablescreenshot.filechooser.pngDescription"
+msgstr "PNG"
+
+msgid "ResultListPanel.tablescreenshot.error"
+msgstr ""
+"Un error ha ocurrido mientras se capturaba la pantallat.\\n\\nExcepción: "
+"{0}: {1}\\nArchivo: {2}\\nLínea: {3}"
+
+msgid "ResultListPanel.tablescreenshot.error.title"
+msgstr "Error"
+
+msgid "RankingChooser.choose.text"
+msgstr "---Elige un parámetro de clasificación"
+
+msgid "RankingChooser.splineEditor.title"
+msgstr "Interpolar"

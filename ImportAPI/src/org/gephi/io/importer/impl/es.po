@@ -1,0 +1,83 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-05-17 21:27+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-18 05:20+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "ImportContainerException_nodeExist"
+msgstr "Duplicada id de nodo=''{0}''"
+
+msgid "ImportContainerException_UnknowNodeId"
+msgstr "Id de nodo desconocida"
+
+msgid "ImportContainerException_MissingNodeSource"
+msgstr "Falta el nodo fuente, la arista es ignorada"
+
+msgid "ImportContainerException_MissingNodeTarget"
+msgstr "Falta el nodo objetivo, la arista es ignorada"
+
+msgid "ImportContainerException_MissingNodeId"
+msgstr "Falta el identificador de nodo"
+
+msgid "ImportContainerException_edgeExist"
+msgstr "La arista ya existe"
+
+msgid "ImportContainerException_SelfLoop"
+msgstr "Los bucles no están permitidos"
+
+msgid "ImportContainerException_Bad_Edge_Type"
+msgstr "El tipo de arista no se ajusta al tipo por defecto"
+
+msgid "ImportContainerException_Parallel_Edge"
+msgstr ""
+"Las aristas paralelas no están soportadas todavía, la arista con id=\"{0}\" "
+"es ignorada"
+
+msgid "ImportContainerException_Set_EdgeDefault"
+msgstr "El tipo de arista por defecto asignado como {0}"
+
+msgid "ImportContainerException_Weight_Zero_Ignored"
+msgstr ""
+"El peso de la arista es 0 o negativo, la arista con id=\"{0}\" es ignorada"
+
+msgid "ImportContainerException_Weight_Zero"
+msgstr "El peso de la arista es 0 o negativo, podría no ser visible"
+
+msgid "ImportControllerImpl.error_no_matching_file_importer"
+msgstr ""
+"Imposible encontrar un importador compatible.\\nEl formato de archivo no "
+"está soportado. Comprueba la extensión del archivo."
+
+msgid "ImportControllerImpl.error_no_matching_stream_importer"
+msgstr ""
+"Imposible encontrar un importador compatible.\\nEl flujo no está soportado."
+
+msgid "ImportControllerImpl.error_no_matching_db_importer"
+msgstr ""
+"Imposible encontrar un importador compatible.\\nLa base de datos no está "
+"soportada."
+
+msgid "ImportControllerImpl.error_file_not_found"
+msgstr "Imposible abrir el archivo"
+
+msgid "ImportControllerImpl.error_missing_document_instance_factory"
+msgstr "Imposible obtener una entidad de DocumentBuilder"
+
+msgid "ImportControllerImpl.error_io"
+msgstr "Imposible leer el archivo dado"
+
+msgid "ImportControllerImpl.error_sax"
+msgstr "Imposible analizar el archivo XML dado"

@@ -1,0 +1,78 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-05-17 19:03+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-05-18 05:20+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Interfaz de usuario para las estadísticas y métricas"
+
+msgid "CTL_StatisticsAction"
+msgstr "Estadísticas"
+
+msgid "CTL_StatisticsTopComponent"
+msgstr "Estadísticas"
+
+msgid "StatisticsTopComponent.settingsButton.text"
+msgstr "Configuración"
+
+msgid "AvailableStatisticsChooser.title"
+msgstr "Métricas disponibles"
+
+msgid "StatisticsDisplayPanel.reportButton.text"
+msgstr "Ver"
+
+msgid "StatisticsDisplayPanel.runButton.text"
+msgstr "Ejecutar"
+
+msgid "StatisticsDisplayPanel.name.text"
+msgstr "Nombre"
+
+msgid "StatisticsFrontEnd.runButton.text"
+msgstr "Ejecutar"
+
+msgid "StatisticsFrontEnd.reportButton.text"
+msgstr "Ver"
+
+msgid "StatisticsFrontEnd.displayLabel.text"
+msgstr "Mostrar nombre"
+
+msgid "StatisticsFrontEnd.runStatus.run"
+msgstr "Ejecutar"
+
+msgid "StatisticsFrontEnd.runStatus.cancel"
+msgstr "Cancelar"
+
+msgid "StatisticsFrontEnd.resultLabel.text"
+msgstr "Resultado"
+
+msgid "StatisticsFrontEnd.settingsPanel.title"
+msgstr "Parámetros de {0}"
+
+msgid "StatisticsReportPanel.copyButton.text"
+msgstr "Copiar"
+
+msgid "StatisticsReportPanel.closeButton.text"
+msgstr "Cerrar"
+
+msgid "StatisticsReportPanel.printButton.text"
+msgstr "Imprimir"
+
+msgid "StatisticsReportPanel.saveButton.text"
+msgstr "Guardar"
+
+msgid "StatisticsReportPanel.status.saveSuccess"
+msgstr "Informe guardado en el directorio {0}"
