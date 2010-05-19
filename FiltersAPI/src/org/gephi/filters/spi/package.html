@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body bgcolor="white">
+        Interfaces for creating new filter classes.
+        <h3>Create a new Filter</h3>
+        <ol><li>Create a new module and set <code>FilterAPI</code>, <code>GraphAPI</code>
+                and <code>UtilitiesAPI</code>> as dependencies.</li>
+            <li>Create a new builder class by implementing <code>FilterBuilder</code>,
+            this class is basically a factory that will create filter instances
+            on demand.</li>
+            <li>Add <b>@ServiceProvider</b> annotation to your builder, that it can
+                be found by the system. Set <code>FilterBuilder</code> as the
+                annotation parameter.</li>
+            <li>Create a new class that implements either <code>NodeFilter</code>,
+                <code>EdgeFilter</code> or <code>ComplexFilter</code>. Set
+                instantiation code in <code>LayoutBuilder.buildLayout()</code>.</li>
+            <li>Fill <code>getProperties()</code> method in your filter, it should
+            expose all properies that can be set by users and have an influence
+            on the filter execution.</li>
+            <li>If you need a user interface for your filter, fill
+                <code>getPanel()</code> method in the builder.</li>
+        </ol>
+    </body>
+</html>

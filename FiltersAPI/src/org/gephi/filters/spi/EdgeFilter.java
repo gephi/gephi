@@ -24,6 +24,9 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 
 /**
+ * Basic filters for edges, that works as predicates. For a given edge the filter's
+ * role is to return <code>true</code> if the edge is kept or <code>false</code>
+ * if it is removed.
  *
  * @author Mathieu Bastian
  */

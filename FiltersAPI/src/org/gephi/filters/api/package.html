@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body bgcolor="white">
+        API for graph filtering.
+        <p>
+            This API manage graph filtering. Its job is to execute filtering query
+            to produce subgraphs. Filters are combined in queries that are passed
+            to the system to be executed. The result of a filter query is a subgraph,
+            a subset of the original graph that is represented as a
+            <code>GraphView</code>.
+        </p>
+        <p>
+            The role of the <code>FilterModel</code> is to
+            host current queries. Each workspace has its <code>FilterModel</code>.
+        </p>
+        <p>
+            The controller hosts the current <code>FilterModel</code>, for the
+            current workspace.
+        </p>
+    </body>
+</html>

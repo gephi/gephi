@@ -25,7 +25,10 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 
 /**
- *
+ * Basic filters for nodes, that works as predicates. For a given node the filter's
+ * role is to return <code>true</code> if the node is kept or <code>false</code>
+ * if it is removed.
+ * 
  * @author Mathieu Bastian
  */
 public interface NodeFilter extends Filter {

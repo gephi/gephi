@@ -23,6 +23,9 @@ package org.gephi.filters.spi;
 import org.gephi.graph.api.Graph;
 
 /**
+ * Filter working with full graphs and generally returning a subgraph. Node and
+ * Edge filters removes either nodes or edges but not both. This filter interface
+ * has to be used in these case.
  *
  * @author Mathieu Bastian
  */
