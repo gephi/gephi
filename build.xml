@@ -93,7 +93,8 @@
         <copy file="${toolkit.platformdir}/lib/org-openide-util.jar" todir="${toolkit.tempdir}"/>
         <copy todir="${toolkit.tempdir}">
             <fileset dir="${toolkit.platformdir}/modules">
-                <filename name="org-openide-nodes.jar"/>
+                <include name="org-openide-nodes.jar"/>
+                <include name="org-netbeans-modules-masterfs.jar"/>
             </fileset>
         </copy>
         <copy todir="${toolkit.tempdir}">
@@ -139,7 +140,7 @@
             </fileset>
         </copy>
 
-        <jar destfile="${toolkit.dir}/temp_final.jar" filesetmanifest="skip">
+        <jar destfile="${toolkit.dir}/temp_final.jar" filesetmanifest="merge" duplicate="preserve">
             <zipgroupfileset dir="${toolkit.tempdir}" includes="*.jar"/>
 
             <manifest>
