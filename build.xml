@@ -119,7 +119,9 @@
                 <include name="org-gephi-statistics-api.jar"/>
                 <include name="org-gephi-statistics-plugin.jar"/>
                 <include name="org-gephi-project-api.jar"/>
+                <include name="org-gephi-timeline.jar"/>
                 <include name="org-gephi-utils.jar"/>
+                <include name="org-gephi-utils-longtask.jar" />
                 <include name="org-gephi-utils-collection.jar"/>
             </fileset>
         </copy>
