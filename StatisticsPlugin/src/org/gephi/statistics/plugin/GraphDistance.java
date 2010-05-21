@@ -60,8 +60,6 @@ public class GraphDistance implements Statistics, LongTask {
     /** */
     private double[] mBetweenness;
     /** */
-    private int[][] mDist;
-    /** */
     private double[] mCloseness;
     /** */
     private double[] mEccentricity;
@@ -128,7 +126,6 @@ public class GraphDistance implements Statistics, LongTask {
         mN = graph.getNodeCount();
 
         mBetweenness = new double[mN];
-        mDist = new int[mN][mN];
         mEccentricity = new double[mN];
         mCloseness = new double[mN];
         mDiameter = 0;
@@ -148,7 +145,7 @@ public class GraphDistance implements Statistics, LongTask {
 
             LinkedList<Node>[] P = new LinkedList[mN];
             double[] theta = new double[mN];
-            double[] d = new double[mN];
+            int[] d = new int[mN];
             for (int j = 0; j < mN; j++) {
                 P[j] = new LinkedList<Node>();
                 theta[j] = 0;
@@ -188,16 +185,17 @@ public class GraphDistance implements Statistics, LongTask {
                     }
                 }
             }
+            double reachable = 0;
             for (int i = 0; i < mN; i++) {
                 if (d[i] > 0) {
                     mAvgDist += d[i];
-                    mDist[s_index][i] = (int) d[i];
                     mEccentricity[s_index] = (int) Math.max(mEccentricity[s_index], d[i]);
                     mCloseness[s_index] += d[i];
-                    mDiameter = Math.max(mDiameter, mDist[s_index][i]);
-                }
+                    mDiameter = Math.max(mDiameter, d[i]);
+                    reachable++;
+                }               
             }
-            mCloseness[s_index] /= mN;
+             mCloseness[s_index] /= reachable;
 
             double[] delta = new double[mN];
             while (!S.empty()) {
@@ -226,11 +224,13 @@ public class GraphDistance implements Statistics, LongTask {
         for (Node s : graph.getNodes()) {
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
             int s_index = indicies.get(s);
+            if(!mDirected) {            
+                mBetweenness[s_index] /= 2;
+            }
             row.setValue(eccentricityCol, mEccentricity[s_index]);
             row.setValue(closenessCol, mCloseness[s_index]);
             row.setValue(betweenessCol, mBetweenness[s_index]);
         }
-
         graph.readUnlock();
     }
 
