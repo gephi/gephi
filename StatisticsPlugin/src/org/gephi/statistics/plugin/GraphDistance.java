@@ -76,7 +76,7 @@ public class GraphDistance implements Statistics, LongTask {
     /** */
     private boolean mIsCanceled;
     private String mGraphRevision;
-
+    private int mShortestPaths;
     /**
      * 
      * @return
@@ -130,7 +130,7 @@ public class GraphDistance implements Statistics, LongTask {
         mCloseness = new double[mN];
         mDiameter = 0;
         mAvgDist = 0;
-
+        mShortestPaths = 0;
         Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
         int index = 0;
         for (Node s : graph.getNodes()) {
@@ -195,8 +195,11 @@ public class GraphDistance implements Statistics, LongTask {
                     reachable++;
                 }               
             }
-             mCloseness[s_index] /= reachable;
+            if(reachable != 0)
+                 mCloseness[s_index] /= reachable;
 
+            mShortestPaths += reachable;
+            
             double[] delta = new double[mN];
             while (!S.empty()) {
                 Node w = S.pop();
@@ -219,7 +222,7 @@ public class GraphDistance implements Statistics, LongTask {
             Progress.progress(mProgress, count);
         }
 
-        mAvgDist /= mN * (mN - 1.0f);
+        mAvgDist /= this.mShortestPaths;//mN * (mN - 1.0f);
 
         for (Node s : graph.getNodes()) {
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
