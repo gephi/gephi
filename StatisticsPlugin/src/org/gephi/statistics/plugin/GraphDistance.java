@@ -224,6 +224,7 @@ public class GraphDistance implements Statistics, LongTask {
         for (Node s : graph.getNodes()) {
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
             int s_index = indicies.get(s);
+
             if(!mDirected) {            
                 mBetweenness[s_index] /= 2;
             }
