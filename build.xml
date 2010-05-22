@@ -108,8 +108,10 @@
                 <include name="org-gephi-graph-api.jar"/>
                 <include name="org-gephi-graph-dhns.jar"/>
                 <include name="org-gephi-io-database-drivers.jar"/>
-                <include name="org-gephi-io-generator-api.jar"/>
-                <include name="org-gephi-io-generator-plugin.jar"/>
+                <include name="org-gephi-utils-collection.jar"/>
+                <include name="org-gephi-utils-collection.jar"/>
+                <include name="org-gephi-io-exporter-api.jar"/>
+                <include name="org-gephi-io-exporter-plugin.jar"/>
                 <include name="org-gephi-io-importer-api.jar"/>
                 <include name="org-gephi-io-importer-plugin.jar"/>
                 <include name="org-gephi-io-processor-plugin.jar"/>
