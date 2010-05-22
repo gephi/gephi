@@ -224,8 +224,15 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     public void updateMetaEdges(HierarchicalGraph graph) {
         Modeler edgeInit = engine.getModelClasses()[AbstractEngine.CLASS_EDGE].getCurrentModeler();
 
+        float minWeight = Float.POSITIVE_INFINITY;
+        float maxWeight = Float.NEGATIVE_INFINITY;
+
         for (Edge edge : graph.getMetaEdges()) {
-            assert edge.getSource().getNodeData().getModel() != null && edge.getTarget().getNodeData().getModel() != null;
+            if (edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
+                continue;
+            }
+            minWeight = Math.min(minWeight, edge.getWeight());
+            maxWeight = Math.max(maxWeight, edge.getWeight());
             Model obj = edge.getEdgeData().getModel();
             if (obj == null) {
                 //Model is null, ADD
@@ -237,6 +244,9 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             }
             obj.setCacheMarker(cacheMarker);
         }
+
+        limits.setMinWeight(Math.min(minWeight, limits.getMinWeight()));
+        limits.setMaxWeight(Math.max(maxWeight, limits.getMaxWeight()));
     }
 
     public void updatePotatoes(HierarchicalGraph graph) {

@@ -107,6 +107,9 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     public boolean isInOctreeLeaf(Octant leaf) {
         NodeData nodeFrom = obj.getSource();
         NodeData nodeTo = obj.getTarget();
+        if(nodeFrom.getModel()==null || nodeTo.getModel()==null) {
+            return false;
+        }
         boolean res = true;
         if (octants[0] == leaf) {
             if (octants[0] != ((ModelImpl) nodeFrom.getModel()).getOctants()[0]) //0 = nodeFrom
