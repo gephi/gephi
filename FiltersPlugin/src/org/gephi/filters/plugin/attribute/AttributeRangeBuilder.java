@@ -160,7 +160,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         private void refreshRange() {
             if (range == null) {
                 range = new Range(min, max);
-            } else {
+            } else if (!min.equals(max)) {
                 range.trimBounds(min, max);
             }
         }
