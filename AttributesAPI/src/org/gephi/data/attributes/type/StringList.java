@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.type;
 
-import java.util.Arrays;
 import org.gephi.data.attributes.api.AttributeType;
 
 /**
@@ -30,14 +29,20 @@ import org.gephi.data.attributes.api.AttributeType;
  * String list is useful when, for a particular type, the number of string
  * that define an element is not known by advance.
  *
+ * @author Martin Škurla
  * @author Mathieu Bastian
- * @author Sebastien Heymann
  * @see AttributeType
  */
-public final class StringList {
+public final class StringList extends AbstractList<String> {
 
-    private final String[] list;
-    private volatile int hashCode = 0;      //Cache hashcode
+    /**
+     * Create a new string from a char array. One char per list cell.
+     *
+     * @param list      the list
+     */
+    public StringList(char[] list) {
+        super(StringList.parse(list));
+    }
 
     /**
      * Create a new string list with the given items.
@@ -45,10 +50,17 @@ public final class StringList {
      * @param list      the list of string items
      */
     public StringList(String[] list) {
-        if (list == null) {
-            throw new NullPointerException();
-        }
-        this.list = Arrays.copyOf(list, list.length);
+        super(list);
+    }
+
+    /**
+     * Create a new string list with items found in the given value. Default
+     * separators <code>,|;</code> are used to split the string in a list.
+     *
+     * @param value     a string with default separators
+     */
+    public StringList(String value) {
+        this(value, AbstractList.DEFAULT_SEPARATOR);
     }
 
     /**
@@ -59,40 +71,17 @@ public final class StringList {
      *                  <code>value</code>
      */
     public StringList(String value, String separator) {
-        if (value == null || separator == null) {
-            throw new NullPointerException();
-        }
-
-        this.list = value.split(separator);
-        for (int i = 0; i < list.length; i++) {
-            list[i] = list[i].trim();
-        }
+        super(value, separator, String.class);
     }
 
-    /**
-     * Create a new string list with items found in the given value. Default
-     * separators <code>,|;</code> are used to split the string in a list.
-     *
-     * @param value     a string with default separators
-     */
-    public StringList(String value) {
-        if (value == null) {
-            throw new NullPointerException();
-        }
+    private static String[] parse(char[] list) {
+        String[] resultList = new String[list.length];
 
-        this.list = value.split(",|;");
         for (int i = 0; i < list.length; i++) {
-            list[i] = list[i].trim();
+            resultList[i] = "" + list[i];
         }
-    }
 
-    /**
-     * Returns the size of the string list.
-     *
-     * @return          the size of the list
-     */
-    public int size() {
-        return list.length;
+        return resultList;
     }
 
     /**
@@ -103,76 +92,6 @@ public final class StringList {
      * @return          the item at the specified position, or <code>null</code>
      */
     public String getString(int index) {
-        if (index >= list.length) {
-            return null;
-        }
-        return list[index];
-    }
-
-    /**
-     * Returns <code>true</code> if any item in the list is <b>equal</b> to
-     * <code>value</code>.
-     *
-     * @param value     the item that is to be queried
-     * @return          <code>true</code> if the string list contains this value,
-     *                  <code>false</code> otherwise
-     */
-    public boolean contains(String value) {
-        for (int i = 0; i < list.length; i++) {
-            if (value.equals(list[i])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns the items in the order they were inserted, separated by comas.
-     *
-     * @return          the items separated by comas
-     */
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < list.length; i++) {
-            builder.append(list[i]);
-            builder.append(',');
-        }
-        if (list.length > 0) {
-            builder.deleteCharAt(builder.length() - 1);
-        }
-        return builder.toString();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof StringList)) {
-            return false;
-        }
-        StringList s = (StringList) obj;
-        if (s.list.length != this.list.length) {
-            return false;
-        }
-        for (int i = 0; i < list.length; i++) {
-            if (this.list[i] != s.list[i]) {
-                if (!this.list[i].equals(s.list[i])) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        if (hashCode == 0) {
-            int hash = 7;
-            for (int i = 0; i < list.length; i++) {
-                hash = 53 * hash + (this.list[i] != null ? this.list[i].hashCode() : 0);
-            }
-            hashCode = hash;
-        }
-        return hashCode;
+        return getItem(index);
     }
 }
