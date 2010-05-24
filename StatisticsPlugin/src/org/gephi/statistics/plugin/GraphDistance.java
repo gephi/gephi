@@ -65,6 +65,8 @@ public class GraphDistance implements Statistics, LongTask {
     private double[] mEccentricity;
     /** */
     private int mDiameter;
+
+    private int mRadius;
     /** */
     private double mAvgDist;
     /** */
@@ -77,6 +79,7 @@ public class GraphDistance implements Statistics, LongTask {
     private boolean mIsCanceled;
     private String mGraphRevision;
     private int mShortestPaths;
+    private boolean mRelativeValues;
     /**
      * 
      * @return
@@ -131,6 +134,7 @@ public class GraphDistance implements Statistics, LongTask {
         mDiameter = 0;
         mAvgDist = 0;
         mShortestPaths = 0;
+        mRadius = Integer.MAX_VALUE;
         Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
         int index = 0;
         for (Node s : graph.getNodes()) {
@@ -195,8 +199,13 @@ public class GraphDistance implements Statistics, LongTask {
                     reachable++;
                 }               
             }
+
+            mRadius = (int)Math.min(mEccentricity[s_index], mRadius);
+
             if(reachable != 0)
-                 mCloseness[s_index] /= reachable;
+            {
+                mCloseness[s_index] /= reachable;
+            }
 
             mShortestPaths += reachable;
             
@@ -231,6 +240,10 @@ public class GraphDistance implements Statistics, LongTask {
             if(!mDirected) {            
                 mBetweenness[s_index] /= 2;
             }
+            if(this.mRelativeValues){
+                mCloseness[s_index] = 1.0 / mCloseness[s_index];
+                mBetweenness[s_index] /= ((mN -1) * (mN - 2))/2;
+            }
             row.setValue(eccentricityCol, mEccentricity[s_index]);
             row.setValue(closenessCol, mCloseness[s_index]);
             row.setValue(betweenessCol, mBetweenness[s_index]);
@@ -245,6 +258,22 @@ public class GraphDistance implements Statistics, LongTask {
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         mIsCanceled = false;
         brandes(graphModel, attributeModel);
+    }
+
+    /**
+     * 
+     * @param pRelative
+     */
+    public void setRelative(boolean pRelative){
+        this.mRelativeValues = pRelative;
+    }
+
+    /**
+     *
+     * @param pRelative
+     */
+    public boolean useRelative(){
+        return this.mRelativeValues;
     }
 
     /**
@@ -331,7 +360,9 @@ public class GraphDistance implements Statistics, LongTask {
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
                 + "Diameter: " + this.mDiameter + "<br>"
+                + "Radius: " + this.mRadius + "<br>"
                 + "Average Path length: " + this.mAvgDist + "<br>"
+                + "Number of shortest paths: " + this.mShortestPaths + "<br>"
                 + htmlIMG1 + "<br>"
                 + htmlIMG2 + "<br>"
                 + htmlIMG3

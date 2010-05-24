@@ -55,11 +55,11 @@ public class ConnectedComponents implements Statistics, LongTask {
 
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         count = 1;
+       
+        weaklyConnected(graphModel, attributeModel);
         if (mDirected) {
             top_tarjans(graphModel, attributeModel);
         }
-        weaklyConnected(graphModel, attributeModel);
-
     }
 
     public void weaklyConnected(GraphModel graphModel, AttributeModel attributeModel) {
@@ -150,9 +150,9 @@ public class ConnectedComponents implements Statistics, LongTask {
         mIsCanceled = false;
         mStronglyCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn componentCol = nodeTable.getColumn("stronglycomponentnumber");
+        AttributeColumn componentCol = nodeTable.getColumn("strongcompnum");
         if (componentCol == null) {
-            componentCol = nodeTable.addColumn("stronglycomponentnumber", "Strongly Component ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+            componentCol = nodeTable.addColumn("strongcompnum", "Strongly-Connected ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
 
         DirectedGraph graph = graphModel.getDirectedGraphVisible();
@@ -256,7 +256,8 @@ public class ConnectedComponents implements Statistics, LongTask {
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
                 + "Weakly Connected Components: " + mComponentCount + "<br>"
-                + "Stronlgy Connected Components: " + this.mStronglyCount + "<br>"
+
+                + (mDirected?"Stronlgy Connected Components: " + this.mStronglyCount + "<br>":"")
                 + "</BODY></HTML>");
 
         return report;

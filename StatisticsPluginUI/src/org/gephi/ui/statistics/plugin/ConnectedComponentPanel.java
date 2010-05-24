@@ -45,6 +45,8 @@ public class ConnectedComponentPanel extends javax.swing.JPanel {
         header = new org.jdesktop.swingx.JXHeader();
         directedRadioButton = new javax.swing.JRadioButton();
         undirectedRadioButton = new javax.swing.JRadioButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         header.setDescription(org.openide.util.NbBundle.getMessage(ConnectedComponentPanel.class, "ConnectedComponentPanel.header.description")); // NOI18N
         header.setTitle(org.openide.util.NbBundle.getMessage(ConnectedComponentPanel.class, "ConnectedComponentPanel.header.title")); // NOI18N
@@ -55,17 +57,23 @@ public class ConnectedComponentPanel extends javax.swing.JPanel {
         buttonGroup1.add(undirectedRadioButton);
         undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(ConnectedComponentPanel.class, "ConnectedComponentPanel.undirectedRadioButton.text")); // NOI18N
 
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(ConnectedComponentPanel.class, "ConnectedComponentPanel.jLabel1.text")); // NOI18N
+
+        jLabel2.setText(org.openide.util.NbBundle.getMessage(ConnectedComponentPanel.class, "ConnectedComponentPanel.jLabel2.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(undirectedRadioButton)
-                        .addGap(180, 180, 180))
+                    .addComponent(undirectedRadioButton)
                     .addComponent(directedRadioButton))
-                .addGap(241, 241, 241))
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(25, 25, 25))
             .addGroup(layout.createSequentialGroup()
                 .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
                 .addContainerGap())
@@ -75,10 +83,14 @@ public class ConnectedComponentPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(directedRadioButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(directedRadioButton)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(undirectedRadioButton)
-                .addContainerGap(146, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(undirectedRadioButton)
+                    .addComponent(jLabel2))
+                .addContainerGap(115, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -87,6 +99,8 @@ public class ConnectedComponentPanel extends javax.swing.JPanel {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JRadioButton directedRadioButton;
     private org.jdesktop.swingx.JXHeader header;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JRadioButton undirectedRadioButton;
     // End of variables declaration//GEN-END:variables
 
