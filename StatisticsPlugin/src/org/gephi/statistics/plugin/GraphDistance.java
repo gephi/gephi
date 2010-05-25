@@ -112,7 +112,7 @@ public class GraphDistance implements Statistics, LongTask {
             closenessCol = nodeTable.addColumn("closnesscentrality", "Closeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
         if (betweenessCol == null) {
-            betweenessCol = nodeTable.addColumn("betweenesscentrality", "Betweeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+            betweenessCol = nodeTable.addColumn("betweenesscentrality", "Betweenness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
         Graph graph = null;
@@ -347,7 +347,7 @@ public class GraphDistance implements Statistics, LongTask {
             TempDir tempDir = TempDirUtils.createTempDir();
             htmlIMG1 = createImageFile(tempDir, mBetweenness, "Betweenness Centrality", "Nodes", "Betweenness");
             htmlIMG2 = createImageFile(tempDir, mCloseness, "Closeness Centrality", "Nodes", "Closeness");
-            htmlIMG3 = createImageFile(tempDir, mEccentricity, "Eccentricty", "Nodes", "Eccentricity");
+            htmlIMG3 = createImageFile(tempDir, mEccentricity, "Eccentricity", "Nodes", "Eccentricity");
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }

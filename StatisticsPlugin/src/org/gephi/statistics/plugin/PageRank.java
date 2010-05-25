@@ -189,7 +189,7 @@ public class PageRank implements Statistics, LongTask {
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn pangeRanksCol = nodeTable.getColumn("pageranks");
         if (pangeRanksCol == null) {
-            pangeRanksCol = nodeTable.addColumn("pageranks", "Page Ranks", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+            pangeRanksCol = nodeTable.addColumn("pageranks", "PageRank", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
         for (Node s : graph.getNodes()) {
@@ -219,9 +219,9 @@ public class PageRank implements Statistics, LongTask {
         dataset.addSeries(series);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Page Ranks",
-                "Node",
-                "Page Rank",
+                "PageRanks",
+                "Nodes",
+                "PageRank",
                 dataset,
                 PlotOrientation.VERTICAL,
                 true,
