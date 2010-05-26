@@ -1,7 +1,23 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008-2010 Gephi
+Authors : Martin Škurla <bujacik@gmail.com>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package org.gephi.data.attributes.type;
 
 /**
@@ -10,33 +26,19 @@ package org.gephi.data.attributes.type;
  */
 public final class IntegerList extends NumberList<Integer> {
 
-    public IntegerList(byte[] list) {
-        this(IntegerList.parse(list));
+    public IntegerList(int[] primitiveIntArray) {
+        super(TypeConvertor.<Integer>convertPrimitiveToWrapperArray(primitiveIntArray));
     }
 
-    public IntegerList(int[] list) {
-        super(list, list.length);
+    public IntegerList(Integer[] wrapperIntArray) {
+        super(wrapperIntArray);
     }
 
-    public IntegerList(Integer[] list) {
-        super(list);
+    public IntegerList(String input) {
+        this(input, AbstractList.DEFAULT_SEPARATOR);
     }
 
-    public IntegerList(String value) {
-        this(value, AbstractList.DEFAULT_SEPARATOR);
-    }
-
-    public IntegerList(String value, String separator) {
-        super(value, separator, Integer.class);
-    }
-
-    private static int[] parse(byte[] list) {
-        int[] resultList = new int[list.length];
-
-        for (int i = 0; i < list.length; i++) {
-            resultList[i] = list[i];
-        }
-
-        return resultList;
+    public IntegerList(String input, String separator) {
+        super(input, separator, Integer.class);
     }
 }

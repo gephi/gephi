@@ -1,13 +1,28 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.gephi.data.attributes.type;
+Copyright 2008-2010 Gephi
+Authors : Martin Škurla <bujacik@gmail.com>
+Website : http://www.gephi.org
 
-import java.lang.reflect.Array;
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.gephi.data.attributes.type;
 
 /**
  *
+ * @param <T> 
  * @author Martin Škurla
  */
 public abstract class NumberList<T extends Number> extends AbstractList<T> {
@@ -16,61 +31,12 @@ public abstract class NumberList<T extends Number> extends AbstractList<T> {
         super(wrapperArray);
     }
 
-    public NumberList(Object primitiveArray, int arrayLength) {
-        super(NumberList.<T>parse(primitiveArray, arrayLength));
+    public NumberList(String input, Class<T> finalType) {
+        this(input, AbstractList.DEFAULT_SEPARATOR, finalType);
     }
 
-    public NumberList(String value, Class<T> finalType) {
-        this(value, AbstractList.DEFAULT_SEPARATOR, finalType);
-    }
-
-    public NumberList(String value, String separator, Class<T> finalType) {
-        super(value, separator, finalType);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends Number> T[] parse(Object primitiveArray, int arrayLength) {
-        if (primitiveArray == null) {
-            throw new NullPointerException();
-        }
-
-        Class<T> wrapperClass = (Class<T>) getWrapperClass(primitiveArray);
-        T[] wrapperArray = (T[]) Array.newInstance(wrapperClass, arrayLength);
-
-        if (primitiveArray.getClass().isArray()) {
-            for (int i = 0; i < arrayLength; i++) {
-                T arrayItem = (T) Array.get(primitiveArray, i);
-                wrapperArray[i] = arrayItem;
-            }
-        } else {
-            throw new IllegalArgumentException("Given object is not of primitive array primitiveArray.getClass()");
-        }
-
-        return wrapperArray;
-    }
-
-    private static Class<?> getWrapperClass(Object primitiveArray) {
-        Class<?> primitiveArrayType = primitiveArray.getClass().getComponentType();
-
-        if (primitiveArrayType == byte.class) {
-            return Byte.class;
-        } else if (primitiveArrayType == short.class) {
-            return Short.class;
-        } else if (primitiveArrayType == int.class) {
-            return Integer.class;
-        } else if (primitiveArrayType == long.class) {
-            return Long.class;
-        } else if (primitiveArrayType == float.class) {
-            return Float.class;
-        } else if (primitiveArrayType == double.class) {
-            return Double.class;
-        } else if (primitiveArrayType == boolean.class) {
-            return Boolean.class;
-        } else if (primitiveArrayType == char.class) {
-            return Character.class;
-        }
-
-        throw new IllegalArgumentException("Given parameter '" + primitiveArray.getClass() + "' is not array of primitive type...");
+    public NumberList(String input, String separator, Class<T> finalType) {
+        super(input, separator, finalType);
     }
 }
 
