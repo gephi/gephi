@@ -21,7 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.type;
 
 /**
- *
+ * Complex type that define a list of Byte items. Can be created from a byte
+ * array, from a Byte array or from single string using either given or default separators.
+ * 
  * @author Martin Škurla
  */
 public final class ByteList extends NumberList<Byte> {

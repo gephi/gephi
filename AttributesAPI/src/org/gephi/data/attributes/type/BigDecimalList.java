@@ -23,6 +23,8 @@ package org.gephi.data.attributes.type;
 import java.math.BigDecimal;
 
 /**
+ * Complex type that define a list of BigDecimal items. Can be created from a BigDecimal
+ * array or from single string using either given or default separators.
  * 
  * @author Martin Škurla
  */

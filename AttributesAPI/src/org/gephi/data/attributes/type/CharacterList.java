@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.type;
 
 /**
+ * Complex type that define a list of Character items. Can be created from a char
+ * array, from a Character array or from single string using either given or default separators.
  *
  * @author Martin Škurla
  */

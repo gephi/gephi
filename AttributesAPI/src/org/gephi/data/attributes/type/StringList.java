@@ -23,8 +23,8 @@ package org.gephi.data.attributes.type;
 import org.gephi.data.attributes.api.AttributeType;
 
 /**
- * Complex type that define a list of string items. Can be created from a string
- * array or by using separators.
+ * Complex type that define a list of String items. Can be created from a String
+ * array, from a char array or from single string using either given or default separators.
  * <p>
  * String list is useful when, for a particular type, the number of string
  * that define an element is not known by advance.

@@ -21,7 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.type;
 
 /**
- *
+ * Complex type that define a list of Long items. Can be created from a long
+ * array, from a Long array or from single string using either given or default separators.
+ * 
  * @author Martin Škurla
  */
 public final class LongList extends NumberList<Long> {

@@ -21,8 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.type;
 
 /**
+ * Complex type that defines list of items that are numbers.
  *
- * @param <T> 
+ * @param <T> type parameter restricted to types extending Number type
+ * 
  * @author Martin Škurla
  */
 public abstract class NumberList<T extends Number> extends AbstractList<T> {

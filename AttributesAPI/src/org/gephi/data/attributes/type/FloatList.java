@@ -21,7 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.type;
 
 /**
- *
+ * Complex type that define a list of Float items. Can be created from a float
+ * array, from a Float array or from single string using either given or default separators.
+ * 
  * @author Martin Škurla
  */
 public final class FloatList extends NumberList<Float> {

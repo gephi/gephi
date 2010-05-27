@@ -25,7 +25,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 /**
- * Class responsible for manipulation of 
+ * Class responsible for type manipulation and creation needed in Attributes API.
  *
  * @author Martin Škurla
  */
@@ -34,6 +34,24 @@ public final class TypeConvertor {
 
     private TypeConvertor() {}
 
+    /**
+     * Creates array of given type from single String value. String value is always parsed by given
+     * separator into smaller chunks. Every chunk will represent independent object in final array.
+     * The exact conversion process from String value into final type is done by
+     * {@link #createInstanceFromString createInstanceFromString} method.
+     *
+     * @param <T>       type parameter representing final array type
+     * @param input     input
+     * @param separator separator which will be used in the process of tokenizing input
+     * @param finalType type of final array
+     * 
+     * @return final array
+     *
+     * @throws NullPointerException     if any of given parameters is null
+     * @throws IllegalArgumentException if array of given type cannot be created
+     *
+     * @see #createInstanceFromString createInstanceFromString
+     */
     @SuppressWarnings("unchecked")
     public static <T> T[] createArrayFromString(String input, String separator, Class<T> finalType) {
         if (input == null || separator == null || finalType == null) {
@@ -58,8 +76,31 @@ public final class TypeConvertor {
         return resultList;
     }
 
+    /**
+     * Transforms String value to any kind of object with given type. The concrete conversion
+     * must be done by the type itself. This assumes, that given type defines at least one of the
+     * following:
+     * <ul>
+     * <li>public constructor with single parameter of type String
+     * <li>factory method "valueOf" with single parameter of type String<br />
+     * If given type does not definy any of these requirements, IllegalArgumentException will be
+     * thrown.
+     * 
+     * @param <T>       type parameter representing final type
+     * @param input     input
+     * @param finalType type of final object
+     *
+     * @return final object
+     *
+     * @throws NullPointerException     if any of given parameters is null
+     * @throws IllegalArgumentException if given type cannot be created
+     */
     @SuppressWarnings("unchecked")
     public static <T> T createInstanceFromString(String input, Class<T> finalType) {
+        if (input == null || finalType == null) {
+            throw new NullPointerException();
+        }
+
         T resultValue = null;
 
         try {
@@ -86,10 +127,26 @@ public final class TypeConvertor {
         return resultValue;
     }
 
+    /**
+     * Converts given array of primitive type into array of wrapper type.
+     *
+     * @param <T>            type parameter representing final wrapper type
+     * @param primitiveArray primitive array
+     * 
+     * @return wrapper array
+     *
+     * @throws NullPointerException     if given parameter is null
+     * @throws IllegalArgumentException if given parameter is not array or given parameter is not
+     *                                  array of primitive type
+     */
     @SuppressWarnings("unchecked")
     public static <T> T[] convertPrimitiveToWrapperArray(Object primitiveArray) {
         if (primitiveArray == null) {
             throw new NullPointerException();
+        }
+
+        if (!primitiveArray.getClass().isArray()) {
+            throw new IllegalArgumentException("Given object is not of primitive array: " + primitiveArray.getClass());
         }
 
         Class<?> primitiveClass = primitiveArray.getClass().getComponentType();
@@ -97,19 +154,29 @@ public final class TypeConvertor {
         int arrayLength = Array.getLength(primitiveArray);
         T[] wrapperArray = (T[]) Array.newInstance(wrapperClass, arrayLength);
 
-        if (primitiveArray.getClass().isArray()) {
-            for (int i = 0; i < arrayLength; i++) {
-                T arrayItem = (T) Array.get(primitiveArray, i);
-                wrapperArray[i] = arrayItem;
-            }
-        } else {
-            throw new IllegalArgumentException("Given object is not of primitive array: " + primitiveArray.getClass());
+        for (int i = 0; i < arrayLength; i++) {
+            T arrayItem = (T) Array.get(primitiveArray, i);
+            wrapperArray[i] = arrayItem;
         }
 
         return wrapperArray;
     }
 
+    /**
+     * Returns wrapper type from given primitive type.
+     *
+     * @param primitiveType primitive type
+     * 
+     * @return wrapper type
+     *
+     * @throws NullPointerException     if given parameter is null
+     * @throws IllegalArgumentException if given parameter is not a primitive type
+     */
     public static Class<?> getWrapperFromPrimitive(Class<?> primitiveType) {
+        if (primitiveType == null) {
+            throw new NullPointerException();
+        }
+
         if (primitiveType == byte.class) {
             return Byte.class;
         } else if (primitiveType == short.class) {

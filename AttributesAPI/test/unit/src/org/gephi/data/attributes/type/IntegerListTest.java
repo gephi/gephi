@@ -9,37 +9,37 @@ import static org.junit.Assert.*;
 public class IntegerListTest {
 
     @Test
-    public void testCreatingListDefaultSeparator() {
+    public void testCreatingListFromStringWithDefaultSeparator() {
         IntegerList list = new IntegerList("11,22;33");
         assertEquals(list.size(), 3);
     }
 
     @Test
-    public void testCreatingListGivenSeparator() {
+    public void testCreatingListFromStringWithGivenSeparator() {
         IntegerList list = new IntegerList("11/22/33", "/");
         assertEquals(list.size(), 3);
     }
 
     @Test
-    public void testCreatingListPrimitiveArray() {
+    public void testCreatingListFromPrimitiveArray() {
         IntegerList list = new IntegerList(new int[] {11, 22, 33});
         assertEquals(list.size(), 3);
     }
 
     @Test
-    public void testCreatingListWrapperArray() {
+    public void testCreatingListFromWrapperArray() {
         IntegerList list = new IntegerList(new Integer[] {11, 22, 33});
         assertEquals(list.size(), 3);
     }
 
     @Test
-    public void testEmptyPrimitiveArray() {
+    public void testCreatingListFromEmptyPrimitiveArray() {
         IntegerList list = new IntegerList(new int [0]);
         assertEquals(list.size(), 0);
     }
 
     @Test
-    public void testEmptyWrapperArray() {
+    public void testCreatingListFromEmptyWrapperArray() {
         IntegerList list = new IntegerList(new Integer [0]);
         assertEquals(list.size(), 0);
     }

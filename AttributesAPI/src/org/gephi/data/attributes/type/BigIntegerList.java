@@ -23,7 +23,9 @@ package org.gephi.data.attributes.type;
 import java.math.BigInteger;
 
 /**
- *
+ * Complex type that define a list of BigInteger items. Can be created from a BigInteger
+ * array or from single string using either given or default separators.
+ * 
  * @author Martin Škurla
  */
 public final class BigIntegerList extends NumberList<BigInteger> {

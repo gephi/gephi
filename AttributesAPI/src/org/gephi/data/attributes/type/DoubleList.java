@@ -21,7 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.type;
 
 /**
- *
+ * Complex type that define a list of Double items. Can be created from a double
+ * array, from a Double array or from single string using either given or default separators.
+ * 
  * @author Martin Škurla
  */
 public final class DoubleList extends NumberList<Double> {
