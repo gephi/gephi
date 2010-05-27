@@ -18,59 +18,62 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.gephi.ui.statistics.plugin;
 
-import java.text.DecimalFormat;
 import javax.swing.JPanel;
-import org.gephi.statistics.plugin.GraphDistance;
+import org.gephi.statistics.plugin.EigenvectorCentrality;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.openide.util.lookup.ServiceProvider;
 
+/**
+ *
+ * @author pjmcswee
+ */
 @ServiceProvider(service = StatisticsUI.class)
-public class PathLengthUI implements StatisticsUI {
+public class EigenvectorCenralityUI implements StatisticsUI {
 
-    private GraphDistancePanel panel;
-    private GraphDistance graphDistance;
+    private EigenvectorCentralityPanel panel;
+    private EigenvectorCentrality eigen;
 
     public JPanel getSettingsPanel() {
-        panel = new GraphDistancePanel();
+        panel = new EigenvectorCentralityPanel();
         return panel;
     }
 
     public void setup(Statistics statistics) {
-        this.graphDistance = (GraphDistance) statistics;
+        this.eigen = (EigenvectorCentrality) statistics;
         if (panel != null) {
-            panel.setDirected(graphDistance.isDirected());
-            panel.doNormalize(graphDistance.useRelative());
+            panel.setNumRuns(eigen.getNumRuns());
+            panel.setDirected(eigen.isDirected());
         }
     }
 
     public void unsetup() {
         //Set params
-        graphDistance.setDirected(panel.isDirected());
-        graphDistance.setRelative(panel.normalize());
-        panel = null;
+        eigen.setNumRuns(panel.getNumRuns());
+        eigen.setDirected(panel.isDirected());
     }
 
     public Class<? extends Statistics> getStatisticsClass() {
-        return GraphDistance.class;
+        return EigenvectorCentrality.class;
     }
 
     public String getValue() {
-        DecimalFormat df = new DecimalFormat("###.###");
-        return "" + df.format(graphDistance.getPathLength());
+        return null;
     }
 
     public String getDisplayName() {
-        return "Average Path Length";
+        return "Eigenvector Centrality ";
     }
 
     public String getCategory() {
-        return StatisticsUI.CATEGORY_EDGE_OVERVIEW;
+        return StatisticsUI.CATEGORY_NODE_OVERVIEW;
     }
 
     public int getPosition() {
-        return 200;
+        return 1000;
     }
+
 }

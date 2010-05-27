@@ -599,7 +599,8 @@ public class Modularity implements Statistics, LongTask {
                 + "<h2> Parameters: </h2>"
                 + "Randomize:  " + (this.mRandomize ? "On" : "Off") + "<br>"
                 + "<br> <h2> Results: </h2>"
-                + "Modularity: " + mModularity
+                + "Modularity: " + mModularity + "<br>"
+                + "Number of Communities: " + mStructure.mCommunities.size()
                 + "</BODY></HTML>");
 
         return report;

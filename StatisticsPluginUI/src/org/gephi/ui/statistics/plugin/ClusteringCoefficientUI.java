@@ -46,14 +46,14 @@ public class ClusteringCoefficientUI implements StatisticsUI {
         this.clusteringCoefficient = (ClusteringCoefficient) statistics;
         if (panel != null) {
             panel.setDirected(clusteringCoefficient.isDirected());
-            panel.setBruteForce(clusteringCoefficient.isBruteForce());
+           // panel.setBruteForce(clusteringCoefficient.isBruteForce());
         }
     }
 
     public void unsetup() {
         //Set params
         clusteringCoefficient.setDirected(panel.isDirected());
-        clusteringCoefficient.setBruteForce(panel.isBruteForce());
+        //clusteringCoefficient.setBruteForce(panel.isBruteForce());
         panel = null;
     }
 
