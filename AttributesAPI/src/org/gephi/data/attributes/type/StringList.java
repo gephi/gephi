@@ -23,8 +23,8 @@ package org.gephi.data.attributes.type;
 import org.gephi.data.attributes.api.AttributeType;
 
 /**
- * Complex type that define a list of string items. Can be created from a string
- * array or by using separators.
+ * Complex type that define a list of String items. Can be created from a String
+ * array, from a char array or from single string using either given or default separators.
  * <p>
  * String list is useful when, for a particular type, the number of string
  * that define an element is not known by advance.
@@ -57,21 +57,21 @@ public final class StringList extends AbstractList<String> {
      * Create a new string list with items found in the given value. Default
      * separators <code>,|;</code> are used to split the string in a list.
      *
-     * @param value     a string with default separators
+     * @param input     a string with default separators
      */
-    public StringList(String value) {
-        this(value, AbstractList.DEFAULT_SEPARATOR);
+    public StringList(String input) {
+        this(input, AbstractList.DEFAULT_SEPARATOR);
     }
 
     /**
      * Create a new string list with items found using given separators.
      *
-     * @param value     a string with separators defined in <code>separator</code>
+     * @param input     a string with separators defined in <code>separator</code>
      * @param separator the separators chars that are to be used to split
      *                  <code>value</code>
      */
-    public StringList(String value, String separator) {
-        super(value, separator, String.class);
+    public StringList(String input, String separator) {
+        super(input, separator, String.class);
     }
 
     private static String[] parse(char[] list) {
