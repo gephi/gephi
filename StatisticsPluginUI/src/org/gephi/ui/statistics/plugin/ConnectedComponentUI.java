@@ -22,55 +22,57 @@ package org.gephi.ui.statistics.plugin;
 
 import java.text.DecimalFormat;
 import javax.swing.JPanel;
-import org.gephi.statistics.plugin.GraphDistance;
+import org.gephi.statistics.plugin.ConnectedComponents;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.openide.util.lookup.ServiceProvider;
 
+/**
+ *
+ * @author Patrick McSweeney
+ */
 @ServiceProvider(service = StatisticsUI.class)
-public class PathLengthUI implements StatisticsUI {
+public class ConnectedComponentUI  implements StatisticsUI {
 
-    private GraphDistancePanel panel;
-    private GraphDistance graphDistance;
+    private ConnectedComponentPanel panel;
+    private ConnectedComponents connectedComponents;
 
     public JPanel getSettingsPanel() {
-        panel = new GraphDistancePanel();
+        panel = new ConnectedComponentPanel();
         return panel;
     }
 
     public void setup(Statistics statistics) {
-        this.graphDistance = (GraphDistance) statistics;
+        this.connectedComponents = (ConnectedComponents) statistics;
         if (panel != null) {
-            panel.setDirected(graphDistance.isDirected());
-            panel.doNormalize(graphDistance.useRelative());
+            panel.setDirected(connectedComponents.isDirected());
         }
     }
 
     public void unsetup() {
         //Set params
-        graphDistance.setDirected(panel.isDirected());
-        graphDistance.setRelative(panel.normalize());
+        connectedComponents.setDirected(panel.isDirected());
         panel = null;
     }
 
     public Class<? extends Statistics> getStatisticsClass() {
-        return GraphDistance.class;
+        return ConnectedComponents.class;
     }
 
     public String getValue() {
         DecimalFormat df = new DecimalFormat("###.###");
-        return "" + df.format(graphDistance.getPathLength());
+        return "" + df.format(connectedComponents.getConnectedComponentsCount());
     }
 
     public String getDisplayName() {
-        return "Average Path Length";
+        return "Connected Components";
     }
 
     public String getCategory() {
-        return StatisticsUI.CATEGORY_EDGE_OVERVIEW;
+        return StatisticsUI.CATEGORY_NETWORK_OVERVIEW;
     }
 
     public int getPosition() {
-        return 200;
+        return 900;
     }
 }

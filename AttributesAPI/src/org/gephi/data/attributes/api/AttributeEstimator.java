@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Martin Škurla <bujacik@gmail.com>
+Authors : Cezary Bartosiak
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,28 +18,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.gephi.data.attributes.type;
 
-import java.math.BigInteger;
+package org.gephi.data.attributes.api;
 
 /**
- * Complex type that define a list of BigInteger items. Can be created from a BigInteger
- * array or from single string using either given or default separators.
- * 
- * @author Martin Škurla
+ * This enum is used to determine what should be done with "ties". For example
+ * if in the given time interval some attribute has got 3 different values we
+ * should know how to estimate its value.
+ *
+ * @author Cezary Bartosiak
  */
-public final class BigIntegerList extends NumberList<BigInteger> {
-
-    public BigIntegerList(BigInteger[] array) {
-        super(array);
-    }
-
-    public BigIntegerList(String input) {
-        this(input, AbstractList.DEFAULT_SEPARATOR);
-    }
-
-    public BigIntegerList(String input, String separator) {
-        super(input, separator, BigInteger.class);
-    }
+public enum AttributeEstimator {
+    AVERAGE,
+    SUM,
+    MIN,
+    MAX,
+    FIRST_OCCURENCE,
+    LAST_OCCURENCE,
+    CONCAT
 }
-

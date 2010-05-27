@@ -20,37 +20,76 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.api;
 
-import org.gephi.data.attributes.type.BigIntegerList;
-import org.gephi.data.attributes.type.BooleanList;
-import org.gephi.data.attributes.type.DoubleList;
-import org.gephi.data.attributes.type.FloatList;
+import java.math.BigInteger;
+import java.math.BigDecimal;
+import org.gephi.data.attributes.type.DynamicByte;
+import org.gephi.data.attributes.type.DynamicShort;
+import org.gephi.data.attributes.type.DynamicInteger;
+import org.gephi.data.attributes.type.DynamicLong;
+import org.gephi.data.attributes.type.DynamicFloat;
+import org.gephi.data.attributes.type.DynamicDouble;
+import org.gephi.data.attributes.type.DynamicBoolean;
+import org.gephi.data.attributes.type.DynamicCharacter;
+import org.gephi.data.attributes.type.DynamicString;
+import org.gephi.data.attributes.type.DynamicBigInteger;
+import org.gephi.data.attributes.type.DynamicBigDecimal;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.data.attributes.type.ByteList;
+import org.gephi.data.attributes.type.ShortList;
 import org.gephi.data.attributes.type.IntegerList;
 import org.gephi.data.attributes.type.LongList;
+import org.gephi.data.attributes.type.FloatList;
+import org.gephi.data.attributes.type.DoubleList;
+import org.gephi.data.attributes.type.BooleanList;
+import org.gephi.data.attributes.type.CharacterList;
 import org.gephi.data.attributes.type.StringList;
-import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.data.attributes.type.BigIntegerList;
+import org.gephi.data.attributes.type.BigDecimalList;
 
 /**
  * The different type an {@link AttributeColumn} can have.
  *
  * @author Mathieu Bastian
  * @author Martin Škurla
+ * @author Cezary Bartosiak
  */
 public enum AttributeType {
 
-    FLOAT(Float.class),
-    DOUBLE(Double.class),
+    BYTE(Byte.class),
+    SHORT(Short.class),
     INT(Integer.class),
     LONG(Long.class),
+    FLOAT(Float.class),
+    DOUBLE(Double.class),
     BOOLEAN(Boolean.class),
+    CHAR(Character.class),
     STRING(String.class),
-    LIST_STRING(StringList.class),
+    BIGINTEGER(BigInteger.class),
+    BIGDECIMAL(BigDecimal.class),
+    DYNAMIC_BYTE(DynamicByte.class),
+    DYNAMIC_SHORT(DynamicShort.class),
+    DYNAMIC_INT(DynamicInteger.class),
+    DYNAMIC_LONG(DynamicLong.class),
+    DYNAMIC_FLOAT(DynamicFloat.class),
+    DYNAMIC_DOUBLE(DynamicDouble.class),
+    DYNAMIC_BOOLEAN(DynamicBoolean.class),
+    DYNAMIC_CHAR(DynamicCharacter.class),
+    DYNAMIC_STRING(DynamicString.class),
+    DYNAMIC_BIGINTEGER(DynamicBigInteger.class),
+    DYNAMIC_BIGDECIMAL(DynamicBigDecimal.class),
+    TIME_INTERVAL(TimeInterval.class),
+    LIST_BYTE(ByteList.class),
+    LIST_SHORT(ShortList.class),
     LIST_INTEGER(IntegerList.class),
+    LIST_LONG(LongList.class),
     LIST_FLOAT(FloatList.class),
     LIST_DOUBLE(DoubleList.class),
     LIST_BOOLEAN(BooleanList.class),
-    LIST_LONG(LongList.class),
+    LIST_CHARACTER(CharacterList.class),
+    LIST_STRING(StringList.class),
     LIST_BIGINTEGER(BigIntegerList.class),
-    TIME_INTERVAL(TimeInterval.class);
+    LIST_BIGDECIMAL(BigDecimalList.class);
+
     private final Class type;
 
     AttributeType(Class type) {
@@ -92,32 +131,72 @@ public enum AttributeType {
      */
     public Object parse(String str) {
         switch (this) {
-            case FLOAT:
-                return new Float(str);
-            case DOUBLE:
-                return new Double(str);
+            case BYTE:
+                return new Byte(str);
+            case SHORT:
+                return new Short(str);
             case INT:
                 return new Integer(str);
             case LONG:
                 return new Long(str);
+            case FLOAT:
+                return new Float(str);
+            case DOUBLE:
+                return new Double(str);
             case BOOLEAN:
                 return new Boolean(str);
-            case LIST_STRING:
-                return new StringList(str);
+            case CHAR:
+                return new Character(str.charAt(0));
+            case BIGINTEGER:
+                return new BigInteger(str);
+            case BIGDECIMAL:
+                return new BigDecimal(str);
+            case DYNAMIC_BYTE:
+                return new DynamicByte(str);
+            case DYNAMIC_SHORT:
+                return new DynamicShort(str);
+            case DYNAMIC_INT:
+                return new DynamicInteger(str);
+            case DYNAMIC_LONG:
+                return new DynamicLong(str);
+            case DYNAMIC_FLOAT:
+                return new DynamicFloat(str);
+            case DYNAMIC_DOUBLE:
+                return new DynamicDouble(str);
+            case DYNAMIC_BOOLEAN:
+                return new DynamicBoolean(str);
+            case DYNAMIC_CHAR:
+                return new DynamicCharacter(str.charAt(0));
+            case DYNAMIC_STRING:
+                return new DynamicString(str);
+            case DYNAMIC_BIGINTEGER:
+                return new DynamicBigInteger(str);
+            case DYNAMIC_BIGDECIMAL:
+                return new DynamicBigDecimal(str);
+            case TIME_INTERVAL:
+                return new TimeInterval(str);
+            case LIST_BYTE:
+                return new ByteList(str);
+            case LIST_SHORT:
+                return new ShortList(str);
             case LIST_INTEGER:
                 return new IntegerList(str);
+            case LIST_LONG:
+                return new LongList(str);
             case LIST_FLOAT:
                 return new FloatList(str);
             case LIST_DOUBLE:
                 return new DoubleList(str);
-            case LIST_LONG:
-                return new LongList(str);
             case LIST_BOOLEAN:
                 return new BooleanList(str);
+            case LIST_CHARACTER:
+                return new CharacterList(str);
+            case LIST_STRING:
+                return new StringList(str);
             case LIST_BIGINTEGER:
                 return new BigIntegerList(str);
-            case TIME_INTERVAL:
-                return new TimeInterval(str);
+            case LIST_BIGDECIMAL:
+                return new BigDecimalList(str);
         }
         return str;
     }

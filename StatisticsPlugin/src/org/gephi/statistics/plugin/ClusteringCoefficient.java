@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.plugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Hashtable;
@@ -37,9 +39,21 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.utils.TempDirUtils;
+import org.gephi.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartRenderingInfo;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.entity.StandardEntityCollection;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 
 /**
@@ -185,6 +199,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     private ArrayWrapper[] mNetwork;
     private int mK;
     private int N;
+    private double[] mNodeClustering;
+    private int mTotalTriangles;
     /** */
     private String mGraphRevision;
 
@@ -204,13 +220,13 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         isCanceled = false;
         Graph graph = graphModel.getUndirectedGraph();
         this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
-        if (bruteForce) {
-            bruteForce(graphModel, attributeModel);
-            return;
-        } else {
+       // if (bruteForce) {
+       //     bruteForce(graphModel, attributeModel);
+       //     return;
+       // } else {
             triangles(graphModel, attributeModel);
-            return;
-        }
+        //    return;
+       // }
     }
 
     /**
@@ -322,7 +338,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         N = graph.getNodeCount();
         Node[] nodes = new Node[N];
-
+        mNodeClustering = new double[N];
+        
         /** Create network for processing */
         mNetwork = new ArrayWrapper[N];
 
@@ -393,7 +410,6 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         mK = (int) Math.sqrt(N);
 
 
-        // ClusteringThread.init(network);
         for (int v = 0; v < mK && v < N; v++) {
             newVertex(v);
             Progress.progress(progress, ++ProgressCount);
@@ -426,10 +442,12 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             int v = indicies.get(s);
             if (mNetwork[v].length() > 1) {
                 double cc = mTriangles[v];
+                mTotalTriangles += mTriangles[v];
                 cc /= (mNetwork[v].length() * (mNetwork[v].length() - 1));
                 if (!directed) {
                     cc *= 2.0f;
                 }
+                mNodeClustering[v] = cc;
                 AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
                 row.setValue(clusteringCol, cc);
                 avgClusteringCoeff += cc;
@@ -441,6 +459,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                 return;
             }
         }
+        mTotalTriangles /= 3;
         avgClusteringCoeff /= N;
 
         graph.readUnlock();
@@ -539,14 +558,63 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      */
     public String getReport() {
 
+        double max = 0;
+        XYSeries series1 = new XYSeries("Clustering Coefficient");
+        for (int i = 0; i <N; i++) {
+            series1.add(i, this.mNodeClustering[i]);
+            max =  Math.max(mNodeClustering[i], max);
+        }
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(series1);
+
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Clustering Coefficient Distribution",
+                "Node",
+                "Clustering Ceofficient",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        XYPlot plot = (XYPlot) chart.getPlot();
+        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        renderer.setSeriesLinesVisible(0, true);
+        renderer.setSeriesShapesVisible(0, false);
+        renderer.setSeriesLinesVisible(1, false);
+        renderer.setSeriesShapesVisible(1, true);
+        renderer.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
+        plot.setBackgroundPaint(java.awt.Color.WHITE);
+        plot.setDomainGridlinePaint(java.awt.Color.GRAY);
+        plot.setRangeGridlinePaint(java.awt.Color.GRAY);
+
+        plot.setRenderer(renderer);
+
+
+        String imageFile = "";
+        try {
+            final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+            TempDir tempDir = TempDirUtils.createTempDir();
+            final String fileName = "coefficients.png";
+            final File file1 = tempDir.createFile(fileName);
+            imageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
+            ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
+
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
+
+
+
         return new String("<HTML> <BODY> <h1> Clustering Coefficient Metric Report </h1> "
                 + "<hr> <br> <h2>Network Revision Number:</h2>"
                 + mGraphRevision
                 + "<br>" + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.directed ? "directed" : "undirected") + "<br>"
-                + "Algorithm applied: " + (this.bruteForce ? "Brute Force" : "Fast Triangles") + "<br> <h2> Results: </h2>"
-                + "Average Clustering Coefficient: " + avgClusteringCoeff + "</BODY> </HTML>");
-    }
+                + "Average Clustering Coefficient: " + avgClusteringCoeff + "<br>"
+                + "Total triangles: " + this.mTotalTriangles + "<br>"                 
+                + imageFile + "<br>" + "</BODY> </HTML>");
+     }
 
     /**
      * 

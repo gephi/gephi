@@ -224,7 +224,7 @@ public class Hits implements Statistics, LongTask {
         AttributeColumn authorityCol = nodeTable.getColumn("authority");
         AttributeColumn hubsCol = nodeTable.getColumn("hub");
         if (authorityCol == null) {
-            authorityCol = nodeTable.addColumn("authority", "Authortiy", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
+            authorityCol = nodeTable.addColumn("authority", "Authority", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
         }
         if (hubsCol == null) {
             hubsCol = nodeTable.addColumn("hub", "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
@@ -265,7 +265,7 @@ public class Hits implements Statistics, LongTask {
 
             JFreeChart chart = ChartFactory.createXYLineChart(
                     "Hubs",
-                    "Node",
+                    "Nodes",
                     "hubs",
                     dataset,
                     PlotOrientation.VERTICAL,
@@ -299,7 +299,7 @@ public class Hits implements Statistics, LongTask {
 
             JFreeChart chart2 = ChartFactory.createXYLineChart(
                     "Authority",
-                    "Node",
+                    "Nodes",
                     "Authority",
                     dataset2,
                     PlotOrientation.VERTICAL,

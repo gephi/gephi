@@ -34,17 +34,17 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
         return directedRadioButton.isSelected();
     }
 
-    public boolean isBruteForce() {
-        return bruteRadioButton.isSelected();
-    }
+   // public boolean isBruteForce() {
+   //     return bruteRadioButton.isSelected();
+   // }
 
     public void setDirected(boolean directed) {
         directedButtonGroup.setSelected(directed ? directedRadioButton.getModel() : undirectedRadioButton.getModel(), true);
     }
 
-    public void setBruteForce(boolean brute) {
-        algorithmButtonGroup.setSelected(brute ? bruteRadioButton.getModel() : triangleRadioButton.getModel(), true);
-    }
+  //  public void setBruteForce(boolean brute) {
+  //      algorithmButtonGroup.setSelected(brute ? bruteRadioButton.getModel() : triangleRadioButton.getModel(), true);
+  //  }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -59,10 +59,7 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
         algorithmButtonGroup = new javax.swing.ButtonGroup();
         directedRadioButton = new javax.swing.JRadioButton();
         undirectedRadioButton = new javax.swing.JRadioButton();
-        bruteRadioButton = new javax.swing.JRadioButton();
-        triangleRadioButton = new javax.swing.JRadioButton();
         header = new org.jdesktop.swingx.JXHeader();
-        labelAlgorithm = new javax.swing.JLabel();
 
         directedButtonGroup.add(directedRadioButton);
         directedRadioButton.setText(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.directedRadioButton.text")); // NOI18N
@@ -70,18 +67,8 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
         directedButtonGroup.add(undirectedRadioButton);
         undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.undirectedRadioButton.text")); // NOI18N
 
-        algorithmButtonGroup.add(bruteRadioButton);
-        bruteRadioButton.setText(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.bruteRadioButton.text")); // NOI18N
-
-        algorithmButtonGroup.add(triangleRadioButton);
-        triangleRadioButton.setSelected(true);
-        triangleRadioButton.setText(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.triangleRadioButton.text")); // NOI18N
-
         header.setDescription(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.header.description")); // NOI18N
         header.setTitle(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.header.title")); // NOI18N
-
-        labelAlgorithm.setFont(labelAlgorithm.getFont().deriveFont(labelAlgorithm.getFont().getStyle() | java.awt.Font.BOLD));
-        labelAlgorithm.setText(org.openide.util.NbBundle.getMessage(ClusteringCoefficientPanel.class, "ClusteringCoefficientPanel.labelAlgorithm.text_1")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -90,42 +77,27 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(undirectedRadioButton)
-                        .addGap(103, 103, 103)
-                        .addComponent(labelAlgorithm))
+                    .addComponent(undirectedRadioButton)
                     .addComponent(directedRadioButton))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bruteRadioButton)
-                    .addComponent(triangleRadioButton))
-                .addContainerGap(94, Short.MAX_VALUE))
-            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                .addContainerGap(397, Short.MAX_VALUE))
+            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(directedRadioButton)
-                    .addComponent(labelAlgorithm)
-                    .addComponent(bruteRadioButton))
+                .addComponent(directedRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(undirectedRadioButton)
-                    .addComponent(triangleRadioButton))
+                .addComponent(undirectedRadioButton)
                 .addContainerGap(103, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup algorithmButtonGroup;
-    protected javax.swing.JRadioButton bruteRadioButton;
     private javax.swing.ButtonGroup directedButtonGroup;
     private javax.swing.JRadioButton directedRadioButton;
     private org.jdesktop.swingx.JXHeader header;
-    private javax.swing.JLabel labelAlgorithm;
-    protected javax.swing.JRadioButton triangleRadioButton;
     private javax.swing.JRadioButton undirectedRadioButton;
     // End of variables declaration//GEN-END:variables
 }

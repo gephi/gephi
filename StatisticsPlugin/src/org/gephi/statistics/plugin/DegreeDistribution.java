@@ -311,7 +311,6 @@ public class DegreeDistribution implements Statistics, LongTask {
 
 
             TempDir tempDir = TempDirUtils.createTempDir();
-
             final String fileName = "inDistribution.png";
             final File file1 = tempDir.createFile(fileName);
             inImageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
@@ -438,15 +437,12 @@ public class DegreeDistribution implements Statistics, LongTask {
         String imageFile = "";
         try {
             final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            final File file1 = new File("distribution.png");
-            String fullPath = file1.getAbsolutePath();
-
-            fullPath = fullPath.replaceAll("\\\\", "\\\\\\\\");
-
-            imageFile = "<IMG SRC=\"file:\\\\\\\\" + fullPath + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
-
-            File f2 = new File(fullPath);
+            TempDir tempDir = TempDirUtils.createTempDir();
+            final String fileName = "distribution.png";
+            final File file1 = tempDir.createFile(fileName);
+            imageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
             ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
+
         } catch (IOException e) {
             System.out.println(e.toString());
         }

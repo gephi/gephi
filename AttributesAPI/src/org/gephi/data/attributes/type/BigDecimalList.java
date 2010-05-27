@@ -20,27 +20,25 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.data.attributes.type;
 
+import java.math.BigDecimal;
+
 /**
- * Complex type that define a list of Long items. Can be created from a long
- * array, from a Long array or from single string using either given or default separators.
+ * Complex type that define a list of BigDecimal items. Can be created from a BigDecimal
+ * array or from single string using either given or default separators.
  * 
  * @author Martin Škurla
  */
-public final class LongList extends NumberList<Long> {
+public final class BigDecimalList extends NumberList<BigDecimal> {
 
-    public LongList(long[] primitiveLongArray) {
-        super(TypeConvertor.<Long>convertPrimitiveToWrapperArray(primitiveLongArray));
+    public BigDecimalList(BigDecimal[] array) {
+        super(array);
     }
 
-    public LongList(Long[] wrapperLongArray) {
-        super(wrapperLongArray);
-    }
-
-    public LongList(String input) {
+    public BigDecimalList(String input) {
         this(input, AbstractList.DEFAULT_SEPARATOR);
     }
 
-    public LongList(String input, String separator) {
-        super(input, separator, Long.class);
+    public BigDecimalList(String input, String separator) {
+        super(input, separator, BigDecimal.class);
     }
 }

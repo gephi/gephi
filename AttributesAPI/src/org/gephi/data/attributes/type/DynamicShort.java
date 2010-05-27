@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Martin Škurla <bujacik@gmail.com>
+Authors : Cezary Bartosiak
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,29 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 package org.gephi.data.attributes.type;
 
 /**
- * Complex type that define a list of Long items. Can be created from a long
- * array, from a Long array or from single string using either given or default separators.
- * 
- * @author Martin Škurla
+ *
+ * @author Cezary Bartosiak
  */
-public final class LongList extends NumberList<Long> {
+public final class DynamicShort extends DynamicType<Short> {
+    public DynamicShort(String s) throws NumberFormatException {
 
-    public LongList(long[] primitiveLongArray) {
-        super(TypeConvertor.<Long>convertPrimitiveToWrapperArray(primitiveLongArray));
-    }
-
-    public LongList(Long[] wrapperLongArray) {
-        super(wrapperLongArray);
-    }
-
-    public LongList(String input) {
-        this(input, AbstractList.DEFAULT_SEPARATOR);
-    }
-
-    public LongList(String input, String separator) {
-        super(input, separator, Long.class);
     }
 }

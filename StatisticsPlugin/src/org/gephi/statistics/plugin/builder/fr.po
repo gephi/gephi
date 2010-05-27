@@ -40,3 +40,6 @@ msgstr "HITS"
 
 msgid "InOutDegree.name"
 msgstr "Degré entrant/sortant"
+
+msgid "ConnectedComponents.name"
+msgstr "Connected Components"
