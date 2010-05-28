@@ -93,7 +93,8 @@
         <copy file="${toolkit.platformdir}/lib/org-openide-util.jar" todir="${toolkit.tempdir}"/>
         <copy todir="${toolkit.tempdir}">
             <fileset dir="${toolkit.platformdir}/modules">
-                <filename name="org-openide-nodes.jar"/>
+                <include name="org-openide-nodes.jar"/>
+                <include name="org-netbeans-modules-masterfs.jar"/>
             </fileset>
         </copy>
         <copy todir="${toolkit.tempdir}">
@@ -107,8 +108,10 @@
                 <include name="org-gephi-graph-api.jar"/>
                 <include name="org-gephi-graph-dhns.jar"/>
                 <include name="org-gephi-io-database-drivers.jar"/>
-                <include name="org-gephi-io-generator-api.jar"/>
-                <include name="org-gephi-io-generator-plugin.jar"/>
+                <include name="org-gephi-utils-collection.jar"/>
+                <include name="org-gephi-utils-collection.jar"/>
+                <include name="org-gephi-io-exporter-api.jar"/>
+                <include name="org-gephi-io-exporter-plugin.jar"/>
                 <include name="org-gephi-io-importer-api.jar"/>
                 <include name="org-gephi-io-importer-plugin.jar"/>
                 <include name="org-gephi-io-processor-plugin.jar"/>
@@ -118,7 +121,9 @@
                 <include name="org-gephi-statistics-api.jar"/>
                 <include name="org-gephi-statistics-plugin.jar"/>
                 <include name="org-gephi-project-api.jar"/>
+                <include name="org-gephi-timeline.jar"/>
                 <include name="org-gephi-utils.jar"/>
+                <include name="org-gephi-utils-longtask.jar" />
                 <include name="org-gephi-utils-collection.jar"/>
             </fileset>
         </copy>
@@ -139,7 +144,7 @@
             </fileset>
         </copy>
 
-        <jar destfile="${toolkit.dir}/temp_final.jar" filesetmanifest="skip">
+        <jar destfile="${toolkit.dir}/temp_final.jar" filesetmanifest="merge" duplicate="preserve">
             <zipgroupfileset dir="${toolkit.tempdir}" includes="*.jar"/>
 
             <manifest>

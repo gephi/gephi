@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 
@@ -42,7 +43,7 @@ import org.openide.util.NbBundle;
 public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
     //Graph
-    protected Graph graph;
+    protected HierarchicalGraph graph;
     //Properties
     public double inertia;
     private double repulsionStrength;
@@ -77,16 +78,16 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
     }
 
     public void initAlgo() {
-        this.graph = graphModel.getGraphVisible();
+        this.graph = graphModel.getHierarchicalGraphVisible();
         for (Node n : graph.getNodes()) {
             n.getNodeData().setLayoutData(new ForceVectorNodeLayoutData());
         }
     }
 
     public void goAlgo() {
-        this.graph = graphModel.getGraphVisible();
+        this.graph = graphModel.getHierarchicalGraphVisible();
         Node[] nodes = graph.getNodes().toArray();
-        Edge[] edges = graph.getEdges().toArray();
+        Edge[] edges = graph.getEdgesAndMetaEdges().toArray();
 
         for (Node n : nodes) {
             if (n.getNodeData().getLayoutData() == null || !(n.getNodeData().getLayoutData() instanceof ForceVectorNodeLayoutData)) {

@@ -47,7 +47,7 @@ public class FilterThread extends Thread {
 
         while (running) {
             AbstractQueryImpl q;
-            while ((q = rootQuery.getAndSet(null)) == null) {
+            while ((q = rootQuery.getAndSet(null)) == null && running) {
                 try {
                     synchronized (this.lock) {
                         lock.wait();
@@ -55,6 +55,9 @@ public class FilterThread extends Thread {
                 } catch (InterruptedException ex) {
                     Exceptions.printStackTrace(ex);
                 }
+            }
+            if(!running) {
+                return;
             }
             Query modifiedQuery = null;
             for (Iterator<PropertyModifier> itr = modifiersMap.values().iterator(); itr.hasNext();) {
@@ -100,7 +103,6 @@ public class FilterThread extends Thread {
         if (q != null) {
             model.updateParameters(q);
         }
-
     }
 
     private void filter(AbstractQueryImpl query) {
@@ -153,6 +155,9 @@ public class FilterThread extends Thread {
 
     public void setRunning(boolean running) {
         this.running = running;
+        synchronized (this.lock) {
+            lock.notify();
+        }
     }
 
     public void addModifier(PropertyModifier modifier) {

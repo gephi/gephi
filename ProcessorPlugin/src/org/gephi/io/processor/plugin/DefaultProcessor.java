@@ -60,6 +60,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         if (container.getSource() != null) {
             pc.setSource(workspace, container.getSource());
         }
+        this.workspace = workspace;
 
         //Architecture
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();

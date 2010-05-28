@@ -20,6 +20,18 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.api;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import org.gephi.data.attributes.type.BigDecimalList;
+import org.gephi.data.attributes.type.BigIntegerList;
+import org.gephi.data.attributes.type.BooleanList;
+import org.gephi.data.attributes.type.ByteList;
+import org.gephi.data.attributes.type.CharacterList;
+import org.gephi.data.attributes.type.DoubleList;
+import org.gephi.data.attributes.type.FloatList;
+import org.gephi.data.attributes.type.IntegerList;
+import org.gephi.data.attributes.type.LongList;
+import org.gephi.data.attributes.type.ShortList;
 import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.attributes.type.TimeInterval;
 
@@ -27,17 +39,35 @@ import org.gephi.data.attributes.type.TimeInterval;
  * The different type an {@link AttributeColumn} can have.
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  */
 public enum AttributeType {
 
-    FLOAT(Float.class),
-    DOUBLE(Double.class),
+    BYTE(Byte.class),
+    SHORT(Short.class),
     INT(Integer.class),
     LONG(Long.class),
+    FLOAT(Float.class),
+    DOUBLE(Double.class),
     BOOLEAN(Boolean.class),
+    CHAR(Character.class),
     STRING(String.class),
+    BIGINTEGER(BigInteger.class),
+    BIGDECIMAL(BigDecimal.class),
+    TIME_INTERVAL(TimeInterval.class),
+
+    LIST_BYTE(ByteList.class),
+    LIST_SHORT(ShortList.class),
+    LIST_INTEGER(IntegerList.class),
+    LIST_LONG(LongList.class),
+    LIST_FLOAT(FloatList.class),
+    LIST_DOUBLE(DoubleList.class),
+    LIST_BOOLEAN(BooleanList.class),
+    LIST_CHARACTER(CharacterList.class),
     LIST_STRING(StringList.class),
-    TIME_INTERVAL(TimeInterval.class);
+    LIST_BIGINTEGER(BigIntegerList.class),
+    LIST_BIGDECIMAL(BigDecimalList.class);
+
     private final Class type;
 
     AttributeType(Class type) {
@@ -79,20 +109,53 @@ public enum AttributeType {
      */
     public Object parse(String str) {
         switch (this) {
-            case FLOAT:
-                return new Float(str);
-            case DOUBLE:
-                return new Double(str);
+            case BYTE:
+                return new Byte(str);
+            case SHORT:
+                return new Short(str);
             case INT:
                 return new Integer(str);
             case LONG:
                 return new Long(str);
+            case FLOAT:
+                return new Float(str);
+            case DOUBLE:
+                return new Double(str);
             case BOOLEAN:
                 return new Boolean(str);
-            case LIST_STRING:
-                return new StringList(str);
+            case CHAR:
+                return new Character(str.charAt(0));
+            case STRING:
+                return str;
+            case BIGINTEGER:
+                return new BigInteger(str);
+            case BIGDECIMAL:
+                return new BigDecimal(str);
             case TIME_INTERVAL:
                 return new TimeInterval(str);
+
+            case LIST_BYTE:
+                return new ByteList(str);
+            case LIST_SHORT:
+                return new ShortList(str);
+            case LIST_INTEGER:
+                return new IntegerList(str);
+            case LIST_LONG:
+                return new LongList(str);
+            case LIST_FLOAT:
+                return new FloatList(str);
+            case LIST_DOUBLE:
+                return new DoubleList(str);
+            case LIST_BOOLEAN:
+                return new BooleanList(str);
+            case LIST_CHARACTER:
+                return new CharacterList(str);
+            case LIST_STRING:
+                return new StringList(str);
+            case LIST_BIGINTEGER:
+                return new BigIntegerList(str);
+            case LIST_BIGDECIMAL:
+                return new BigDecimalList(str);
         }
         return str;
     }
@@ -111,24 +174,14 @@ public enum AttributeType {
      * @return      the compatible <code>AttributeType</code>, or <code>null</code>
      */
     public static AttributeType parse(Object obj) {
-        Class c = obj.getClass();
-        if (c.equals(String.class)) {
-            return AttributeType.STRING;
-        } else if (c.equals(Float.class)) {
-            return AttributeType.FLOAT;
-        } else if (c.equals(Double.class)) {
-            return AttributeType.DOUBLE;
-        } else if (c.equals(Integer.class)) {
-            return AttributeType.INT;
-        } else if (c.equals(Long.class)) {
-            return AttributeType.LONG;
-        } else if (c.equals(Boolean.class)) {
-            return AttributeType.BOOLEAN;
-        } else if (c.equals(StringList.class)) {
-            return AttributeType.LIST_STRING;
-        } else if (c.equals(TimeInterval.class)) {
-            return AttributeType.TIME_INTERVAL;
+        Class<?> c = obj.getClass();
+
+        for (AttributeType attributeType : AttributeType.values()) {
+            if (c.equals(attributeType.getType())) {
+                return attributeType;
+            }
         }
+
         return null;
     }
 }

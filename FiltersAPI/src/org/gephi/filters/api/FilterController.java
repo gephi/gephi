@@ -29,7 +29,32 @@ import org.gephi.graph.api.GraphView;
  * <p>
  * This controller is a singleton and can therefore be found in Lookup:
  * <pre>FilterController fc = Lookup.getDefault().lookup(FilterController.class);</pre>
+ * <p>
+ * The controller has two ways to execute filtering, a one-shot one that
+ * immediately returns the <code>GraphView</code> and a more complex one suitable
+ * for user interface interaction, with live parameter change.
+ * <p>
+ * The one-shot filtering can be executed like below:
+ * <pre>
+ * Filter filter = ...
+ * Query query = controller.createQuery(filter);
+ * GraphView view = controller.filter(query);
+ * </pre>
+ * The normal mode is to call {@link #filterVisible(org.gephi.filters.api.Query)}
+ * which let this controller manage the execution. The benefit of this of this mode
+ * is that properties change on filters are listened and filtering is automatically
+ * reexecuted if values changes. See how to execute a filter with two different
+ * values:
+ * <pre>
+ * Filter filter = ...
+ * filter.getProperties()[0].setValue(1);       //Set value 1, for example a threshold
+ * Query query = controller.createQuery(filter);
+ * controller.add(query);
+ * controller.filterVisible(query);     //A background thread executes the query
+ * filter.getProperties[0].setValue(2)      //The background thread reexecute the query
+ * </pre>
  * @author Mathieu Bastian
+ * @see GraphView
  */
 public interface FilterController {
 

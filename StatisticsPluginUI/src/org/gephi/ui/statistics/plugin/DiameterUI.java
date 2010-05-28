@@ -42,12 +42,14 @@ public class DiameterUI implements StatisticsUI {
         this.graphDistance = (GraphDistance) statistics;
         if (panel != null) {
             panel.setDirected(graphDistance.isDirected());
+            panel.doNormalize(graphDistance.useRelative());
         }
     }
 
     public void unsetup() {
         //Set params
         graphDistance.setDirected(panel.isDirected());
+        graphDistance.setRelative(panel.normalize());
         panel = null;
     }
 

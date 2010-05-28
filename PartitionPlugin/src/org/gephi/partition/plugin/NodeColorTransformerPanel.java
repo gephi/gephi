@@ -21,7 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.partition.plugin;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -30,9 +32,16 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import javax.swing.AbstractCellEditor;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
@@ -51,13 +60,9 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
     private JPopupMenu popupMenu;
 
     public NodeColorTransformerPanel() {
-        net.miginfocom.swing.MigLayout migLayout1 = new net.miginfocom.swing.MigLayout();
-        migLayout1.setColumnConstraints("[pref!]4[pref!]20[pref]");
-        setLayout(migLayout1);
-
         initComponents();
         createPopup();
-        addMouseListener(new MouseAdapter() {
+        table.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mousePressed(MouseEvent e) {
@@ -77,10 +82,12 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
                 }
             }
         });
+
+        table.setRowMargin(4);
+        table.setRowHeight(18);
     }
 
     public void setup(Partition partition, Transformer transformer) {
-        removeAll();
         nodeColorTransformer = (NodeColorTransformer) transformer;
         if (nodeColorTransformer.getMap().isEmpty()) {
             List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
@@ -97,25 +104,37 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
         Part[] partsArray = partition.getParts();
         Arrays.sort(partsArray);
 
+        //Model
+        String[] columnNames = new String[]{"Color", "Partition", "Percentage"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, partsArray.length) {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0;
+            }
+        };
+        table.setModel(model);
+
+        TableColumn partCol = table.getColumnModel().getColumn(1);
+        partCol.setCellRenderer(new TextRenderer());
+
+        TableColumn percCol = table.getColumnModel().getColumn(2);
+        percCol.setCellRenderer(new TextRenderer());
+        percCol.setPreferredWidth(60);
+        percCol.setMaxWidth(60);
+
+        TableColumn colorCol = table.getColumnModel().getColumn(0);
+        colorCol.setCellEditor(new ColorChooserEditor());
+        colorCol.setCellRenderer(new ColorChooserRenderer());
+        colorCol.setPreferredWidth(16);
+        colorCol.setMaxWidth(16);
+
         for (int i = 0; i < partsArray.length; i++) {
             final Part p = partsArray[partsArray.length - 1 - i];
-            final ColorChooser colorChooser = new ColorChooser(nodeColorTransformer.getMap().get(p.getValue()));
-            colorChooser.setPreferredSize(new Dimension(13, 13));
-            colorChooser.setMaximumSize(new Dimension(13, 13));
-            colorChooser.addActionListener(new ActionListener() {
-
-                public void actionPerformed(ActionEvent e) {
-                    nodeColorTransformer.getMap().put(p.getValue(), colorChooser.getColor());
-                }
-            });
-            add(colorChooser);
-            JLabel partLabel = new JLabel(p.getDisplayName());
-            partLabel.setFont(partLabel.getFont().deriveFont(10f));
-            add(partLabel);
-
-            JLabel percLabel = new JLabel("(" + formatter.format(p.getPercentage()) + ")");
-            percLabel.setFont(percLabel.getFont().deriveFont(10f));
-            add(percLabel, "wrap");
+            model.setValueAt(p.getValue(), i, 0);
+            model.setValueAt(p.getDisplayName(), i, 1);
+            String perc = "(" + formatter.format(p.getPercentage()) + ")";
+            model.setValueAt(perc, i, 2);
         }
     }
 
@@ -147,6 +166,80 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
         popupMenu.add(allBlackItem);
     }
 
+    class ColorChooserRenderer extends JLabel implements TableCellRenderer {
+
+        public ColorChooserRenderer() {
+            setOpaque(true);
+        }
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Color c = nodeColorTransformer.getMap().get(value);
+            setBackground(c);
+            return this;
+        }
+    }
+
+    class TextRenderer extends JLabel implements TableCellRenderer {
+
+        private EmptyIcon emptyIcon;
+
+        public TextRenderer() {
+            setFont(table.getFont());
+            emptyIcon = new EmptyIcon();
+        }
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setText((String) value);
+            if (column == 1) {
+                setIcon(emptyIcon);
+            } else {
+                setIcon(null);
+            }
+            return this;
+        }
+    }
+
+    class EmptyIcon implements Icon {
+
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+        }
+
+        public int getIconWidth() {
+            return 6;
+        }
+
+        public int getIconHeight() {
+            return 6;
+        }
+    }
+
+    class ColorChooserEditor extends AbstractCellEditor implements TableCellEditor {
+
+        private final ColorChooser delegate;
+        Object currentValue;
+
+        public ColorChooserEditor() {
+            delegate = new ColorChooser();
+            ActionListener actionListener = new ActionListener() {
+
+                public void actionPerformed(ActionEvent actionEvent) {
+                    nodeColorTransformer.getMap().put(currentValue, delegate.getColor());
+                }
+            };
+            delegate.addActionListener(actionListener);
+        }
+
+        public Object getCellEditorValue() {
+            return currentValue;
+        }
+
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
+                int row, int column) {
+            currentValue = value;
+            return delegate;
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -155,7 +248,36 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        table = new javax.swing.JTable();
+
+        setLayout(new java.awt.GridBagLayout());
+
+        table.setFont(table.getFont().deriveFont(table.getFont().getSize()-1f));
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3"
+            }
+        ));
+        table.setOpaque(false);
+        table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        table.setShowHorizontalLines(false);
+        table.setShowVerticalLines(false);
+        table.setTableHeader(null);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(4, 10, 0, 0);
+        add(table, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }

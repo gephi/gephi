@@ -409,10 +409,10 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
         edgeE.setAttribute("source", e.getSource().getNodeData().getId());
         edgeE.setAttribute("target", e.getTarget().getNodeData().getId());
 
-        if( e.isDirected() && !graphModel.isDirected() ) {
+        if( e.isDirected() && graphModel.isMixed() ) {
             edgeE.setAttribute("type", "directed");
         }
-        else if( !e.isDirected() && graphModel.isDirected() ) {
+        else if( !e.isDirected() && graphModel.isMixed() ) {
             edgeE.setAttribute("type", "undirected");
         }
 

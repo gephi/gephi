@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.layout.plugin.AbstractLayout;
@@ -26,7 +27,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
     private static final float SPEED_DIVISOR = 800;
     private static final float AREA_MULTIPLICATOR = 10000;
     //Graph
-    protected Graph graph;
+    protected HierarchicalGraph graph;
     //Properties
     private float area;
     private double gravity;
@@ -43,16 +44,16 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
     }
 
     public void initAlgo() {
-        this.graph = graphModel.getGraphVisible();
+        this.graph = graphModel.getHierarchicalGraphVisible();
         for (Node n : graph.getNodes()) {
             n.getNodeData().setLayoutData(new ForceVectorNodeLayoutData());
         }
     }
 
     public void goAlgo() {
-        this.graph = graphModel.getGraphVisible();
+        this.graph = graphModel.getHierarchicalGraphVisible();
         Node[] nodes = graph.getNodes().toArray();
-        Edge[] edges = graph.getEdges().toArray();
+        Edge[] edges = graph.getEdgesAndMetaEdges().toArray();
 
         for (Node n : nodes) {
             if (n.getNodeData().getLayoutData() == null || !(n.getNodeData().getLayoutData() instanceof ForceVectorNodeLayoutData)) {

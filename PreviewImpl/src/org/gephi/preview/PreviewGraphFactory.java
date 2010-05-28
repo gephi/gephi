@@ -1,6 +1,9 @@
 package org.gephi.preview;
 
 import java.util.HashMap;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalMixedGraph;
+import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.preview.api.PreviewModel;
 
 /**
@@ -18,7 +21,7 @@ public class PreviewGraphFactory {
      * @param sourceGraph   the undirected graph
      * @return              a generated preview graph
      */
-    public GraphImpl createPreviewGraph(PreviewModel model, org.gephi.graph.api.UndirectedGraph sourceGraph) {
+    public GraphImpl createPreviewGraph(PreviewModel model, HierarchicalUndirectedGraph sourceGraph) {
         // creates graph
         GraphImpl previewGraph = new GraphImpl(model);
 
@@ -28,7 +31,7 @@ public class PreviewGraphFactory {
         }
 
         // creates edges
-        for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdges()) {
+        for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdgesAndMetaEdges()) {
 
             if (sourceEdge.getWeight() <= 0) {
                 continue;
@@ -54,7 +57,7 @@ public class PreviewGraphFactory {
      * @param sourceGraph   the directed graph
      * @return              a generated preview graph
      */
-    public GraphImpl createPreviewGraph(PreviewModel model, org.gephi.graph.api.DirectedGraph sourceGraph) {
+    public GraphImpl createPreviewGraph(PreviewModel model, HierarchicalDirectedGraph sourceGraph) {
         // creates graph
         GraphImpl previewGraph = new GraphImpl(model);
 
@@ -64,7 +67,7 @@ public class PreviewGraphFactory {
         }
 
         // creates edges
-        for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdges()) {
+        for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdgesAndMetaEdges()) {
 
             if (sourceEdge.getWeight() <= 0) {
                 continue;
@@ -94,7 +97,7 @@ public class PreviewGraphFactory {
      * @param sourceGraph   the mixed graph
      * @return              a generated preview graph
      */
-    public GraphImpl createPreviewGraph(PreviewModel model, org.gephi.graph.api.MixedGraph sourceGraph) {
+    public GraphImpl createPreviewGraph(PreviewModel model, HierarchicalMixedGraph sourceGraph) {
         // creates graph
         GraphImpl previewGraph = new GraphImpl(model);
 
@@ -104,7 +107,7 @@ public class PreviewGraphFactory {
         }
 
         // creates edges
-        for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdges()) {
+        for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdgesAndMetaEdges()) {
 
             if (sourceEdge.getWeight() <= 0) {
                 continue;

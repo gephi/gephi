@@ -171,7 +171,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         }
                     });
                 }
-                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
+
+                Object result = DialogDisplayer.getDefault().notify(dd);
+                if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
                     return;
                 }
                 ui.unsetup();
