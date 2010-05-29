@@ -46,7 +46,7 @@ import org.gephi.data.attributes.type.TimeInterval;
  * as {@link WeakReference}, so the {@link AttributeRow} may share the objects reference with this index.
  * Moreover when no more objects possess a reference to a value, the {@link WeakReference} system
  * (i.e. Garbage collector) will automatically clean the old references.
- * 
+ *
  * @author Mathieu Bastian
  * @author Martin Škurla
  * @see AttributeType
@@ -62,7 +62,7 @@ public class DataIndex {
         StringList.class, BigIntegerList.class, BigDecimalList.class};
 
     @SuppressWarnings("rawtypes")
-    private static Map<String, WeakHashMap> centralHashMap;
+    private static Map<Class<?>, WeakHashMap> centralHashMap;
 
 //    private WeakHashMap<Byte, WeakReference<Byte>> byteMap;
 //    private WeakHashMap<Short, WeakReference<Short>> shortMap;
@@ -91,7 +91,7 @@ public class DataIndex {
 
     @SuppressWarnings("rawtypes")
     public DataIndex() {
-        centralHashMap = new HashMap<String, WeakHashMap>();
+        centralHashMap = new HashMap<Class<?>, WeakHashMap>();
 
         for (Class<?> supportedType : SUPPORTED_TYPES)
             putInCentralMap(supportedType);
@@ -122,8 +122,8 @@ public class DataIndex {
 //        bigDecimalListMap = new WeakHashMap<BigDecimalList, WeakReference<BigDecimalList>>();
     }
 
-    private static <T> void putInCentralMap(Class<T> clazz) {
-        centralHashMap.put(clazz.getSimpleName(), new WeakHashMap<T, WeakReference<T>>());
+    private static <T> void putInCentralMap(Class<T> supportedType) {
+        centralHashMap.put(supportedType, new WeakHashMap<T, WeakReference<T>>());
     }
 
     public int countEntries() {
@@ -310,8 +310,8 @@ public class DataIndex {
 
     @SuppressWarnings("unchecked")
     <T> T pushData(T data) {
-        String typeName = data.getClass().getSimpleName();
-        WeakHashMap<T, WeakReference<T>> weakHashMap = centralHashMap.get(typeName);
+        Class<?> classObjectKey = data.getClass();
+        WeakHashMap<T, WeakReference<T>> weakHashMap = centralHashMap.get(classObjectKey);
 
         if (weakHashMap == null)
             throw new IllegalArgumentException();
