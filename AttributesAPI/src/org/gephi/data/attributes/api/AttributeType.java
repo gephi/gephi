@@ -152,27 +152,27 @@ public enum AttributeType {
             case BIGDECIMAL:
                 return new BigDecimal(str);
             case DYNAMIC_BYTE:
-                return new DynamicByte(str);
+                throw new UnsupportedOperationException("Not supported.");
             case DYNAMIC_SHORT:
-                return new DynamicShort(str);
+                throw new UnsupportedOperationException("Not supported.");
             case DYNAMIC_INT:
-                return new DynamicInteger(str);
+                throw new UnsupportedOperationException("Not supported.");
             case DYNAMIC_LONG:
-                return new DynamicLong(str);
+                throw new UnsupportedOperationException("Not supported.");
             case DYNAMIC_FLOAT:
-                return new DynamicFloat(str);
+                throw new UnsupportedOperationException("Not supported.");
             case DYNAMIC_DOUBLE:
-                return new DynamicDouble(str);
+                throw new UnsupportedOperationException("Not supported.");
             case DYNAMIC_BOOLEAN:
-                return new DynamicBoolean(str);
+                throw new UnsupportedOperationException("Not supported.");
             case DYNAMIC_CHAR:
-                return new DynamicCharacter(str.charAt(0));
+                throw new UnsupportedOperationException("Not supported.");
             case DYNAMIC_STRING:
-                return new DynamicString(str);
+                throw new UnsupportedOperationException("Not supported.");
             case DYNAMIC_BIGINTEGER:
-                return new DynamicBigInteger(str);
+                throw new UnsupportedOperationException("Not supported.");
             case DYNAMIC_BIGDECIMAL:
-                return new DynamicBigDecimal(str);
+                throw new UnsupportedOperationException("Not supported.");
             case TIME_INTERVAL:
                 return new TimeInterval(str);
             case LIST_BYTE:
