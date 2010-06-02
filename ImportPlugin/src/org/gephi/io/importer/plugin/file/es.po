@@ -1,0 +1,365 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-06-01 18:02+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-06-02 03:34+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "fileType_GDF_Name"
+msgstr "Archivos GDF (GUESS)"
+
+msgid "fileType_GEXF_Name"
+msgstr "Archivos GEXF"
+
+msgid "fileType_NET_Name"
+msgstr "Archivos NET (Pajek)"
+
+msgid "fileType_GraphML_Name"
+msgstr "Archivos GraphML"
+
+msgid "fileType_GML_Name"
+msgstr "Archivos GML"
+
+msgid "fileType_TLP_Name"
+msgstr "Archivos TLP"
+
+msgid "fileType_CSV_Name"
+msgstr "Archivos CSV"
+
+msgid "fileType_DOT_Name"
+msgstr "Archivos DOT (GraphViz)"
+
+msgid "fileType_DL_Name"
+msgstr "Archivos DL (UCINET)"
+
+msgid "importerGDF_error_dataformat1"
+msgstr "El archivo debe comenzar con la línea \"nodedef> name\""
+
+msgid "importerGDF_error_dataformat2"
+msgstr ""
+"Mal formato de columna. Cada columna debe contener al menos un nombre. Los "
+"nombres de columna no deben contener ninguna coma."
+
+msgid "importerGDF_error_dataformat3"
+msgstr ""
+"Fallo al importar la columna ''{0}'' para el nodo ''{1}''. Error en el valor "
+"''{2}''."
+
+msgid "importerGDF_error_dataformat4"
+msgstr ""
+"Fallo al establecer el atributo ''{1}'' de tipo ''{0}'' para el nodo {2}."
+
+msgid "importerGDF_error_dataformat5"
+msgstr ""
+"El tipo de datos ''{0}'' no ha sido reconocido, se va a usar 'string' en su "
+"lugar."
+
+msgid "importerGDF_error_dataformat6"
+msgstr ""
+"Tipo de columna no encontrado para ''{0}'', se va a usar 'string' en su "
+"lugar."
+
+msgid "importerGDF_error_dataformat7"
+msgstr ""
+"La línea ''{0}'' tiene más columnas de las definidas en la cabecera. Por "
+"favor verifica el número de comas."
+
+msgid "importerTPL_error_dataformat1"
+msgstr "Mal formato de arista en la línea {0}."
+
+msgid "importerNET_error_dataformat1"
+msgstr "El archivo debe comenzar con la línea \"*vertices\"."
+
+msgid "importerNET_error_dataformat2"
+msgstr "Línea en blanco detectada en la línea {0}."
+
+msgid "importerNET_error_dataformat3"
+msgstr ""
+"Número desequilibrado (o demasiado alto) de comillas en la línea {0}."
+
+msgid "importerNET_error_dataformat4"
+msgstr "El número de vértice ''{0}'' no está en el rango [1,{1}]."
+
+msgid "importerNET_error_dataformat5"
+msgstr ""
+"Problema de conversión de coordenadas de vértice en la línea {0}. Debe ser "
+"un número en punto flotante."
+
+msgid "importerGraphML_error_syntax1"
+msgstr "Error de sintaxis, el archivo debe comenzar con la marca <graphml>."
+
+msgid "importerGraphML_error_syntax2"
+msgstr ""
+"Error de sintaxis, el nodo ''{0}'' debe estar anidado en una marca <graph>."
+
+msgid "importerGraphML_error_attributefor"
+msgstr ""
+"Atributo ''for'' no encontrado o desconocido para el atributo ''{0}''. El "
+"atributo va a ser ignorado."
+
+msgid "importerGraphML_error_attributetype1"
+msgstr ""
+"Tipo no encontrado para el atributo ''{0}''. Se va a usar 'string' en su "
+"lugar."
+
+msgid "importerGraphML_error_attributetype2"
+msgstr ""
+"El tipo del atributo ''{0}'' no puede ser reconocido. El atributo va a ser "
+"ignorado."
+
+msgid "importerGraphML_error_attributedefault"
+msgstr ""
+"El valor por defecto para el atributo ''{0}'' no puede ser convertido al "
+"tipo ''{1}''."
+
+msgid "importerGraphML_log_nodeproperty"
+msgstr "Propiedad de nodo encontrada: {0}"
+
+msgid "importerGraphML_log_edgeproperty"
+msgstr "Propiedad de arista encontrada: {0}."
+
+msgid "importerGraphML_log_nodeattribute"
+msgstr "Atributo de nodo encontrado: ''{0}'' ({1})"
+
+msgid "importerGraphML_log_edgeattribute"
+msgstr "Atributo de arista encontrado: ''{0}'' ({1})"
+
+msgid "importerGraphML_error_datakey"
+msgstr "Clave de dato no encontrada para el elemento con id={0}."
+
+msgid "importerGraphML_error_datavalue1"
+msgstr ""
+"Error de tipo para el valor {0} para el elemento con id id={1}. El valor no "
+"puede establecerse como la propiedad ''{2}''."
+
+msgid "importerGraphML_error_datavalue2"
+msgstr ""
+"Error de tipo para el valor {0} para el elemento con id id={1}. El valor no "
+"puede establecerse como el atributo ''{2}''."
+
+msgid "importerGraphML_error_nodeid"
+msgstr "Identificador de nodo no encontrado. El nodo va a ser ignorado."
+
+msgid "importerGML_error_listtoken"
+msgstr "Tipo de símbolo inesperado en la línea {0}"
+
+msgid "importerGML_error_nodeidmissing"
+msgstr "Identificador de nodo no encontrado."
+
+msgid "importerGML_error_directedgraphparse"
+msgstr "Valor inesperado para la propiedad 'directed' del grafo."
+
+msgid "importerGML_error_directedparse"
+msgstr "Valor inesperado para la propiedad 'directed' para la arista ''{0}''"
+
+msgid "importerGML_error_badparsing"
+msgstr "Análisis GML inválido"
+
+msgid "importerTPL_error_badparsing"
+msgstr "Análisis TPL inválido"
+
+msgid "importerGEXF_error_attributeclass"
+msgstr ""
+"Atributo ''class'' no encontrado o desconocido para el atributo ''{0}''. El "
+"atributo va a ser ignorado."
+
+msgid "importerGEXF_error_attributedefault"
+msgstr ""
+"El valor por defecto para el atributo ''{0}'' no puede ser convertido al "
+"tipo ''{1}''."
+
+msgid "importerGEXF_error_attributeoptions"
+msgstr ""
+"Los valores de opción para el atributo ''{0}'' no pueden ser convertidos al "
+"tipo ''{1}''."
+
+msgid "importerGEXF_error_attributetype1"
+msgstr ""
+"Tipo de atributo no encontrado para el atributo ''{0}''. Se va a utilizar "
+"'string' en su lugar."
+
+msgid "importerGEXF_error_attributetype2"
+msgstr ""
+"El tipo del atributo ''{0}'' no puede ser reconocido. El atributo va a ser "
+"ignorado."
+
+msgid "importerGEXF_error_datakey"
+msgstr ""
+"Clave de dato (atributo ''for'') no encontrada para el elemento con id={0}"
+
+msgid "importerGEXF_error_datakey1"
+msgstr ""
+"Clave de dato (atributo ''id'') no encontrada para el elemento con id={0}"
+
+msgid "importerGEXF_error_dataoptionsvalue"
+msgstr ""
+"El valor ''{0}'' no es una opción para el elemento con id={1}. El valor no "
+"puede ser establecido como el atributo ''{2}''."
+
+msgid "importerGEXF_error_datavalue"
+msgstr ""
+"Error de tipo para el valor {0} para el elemento con id id={1}. El valor no "
+"puede establecerse como el atributo ''{2}''."
+
+msgid "importerGEXF_error_defaultedgetype"
+msgstr ""
+"El tipo por defecto de arista ''{0}'' no puede ser reconocido. Se va a "
+"utilizar ''undirected'' en su lugar."
+
+msgid "importerGEXF_error_edgedouble"
+msgstr ""
+"El tipo de arista ''double'' no es soportado actualmente. Se va a utilizar "
+"''mixed'' en su lugar."
+
+msgid "importerGEXF_error_edgetype"
+msgstr ""
+"El tipo ''{0}'' de la arista ''{1}'' no puede ser reconocido. Se va a "
+"utilizar el tipo por defecto en su lugar."
+
+msgid "importerGEXF_error_edgeid"
+msgstr ""
+"Identificador de arista no encontrado. Un identificador ha sido generado."
+
+msgid "importerGEXF_error_edgeweight"
+msgstr ""
+"El peso de la arista con id ''{0}'' no es un número en punto flotante. El "
+"peso va a ser ignorado."
+
+msgid "importerGEXF_error_nodeid"
+msgstr "Identificador de nodo no encontrado. El nodo va a ser ignorado."
+
+msgid "importerGEXF_error_nodelabel"
+msgstr "Etiqueta del nodo ''{0}'' no encontrada. El nodo va a ser ignorado."
+
+msgid "importerGEXF_error_nodeposition"
+msgstr ""
+"Posición de nodo ''{0}'' errónea en ''{1}'' (no es un número en punto "
+"flotante)."
+
+msgid "importerGEXF_error_nodesize"
+msgstr ""
+"Tamaño de nodo ''{0}'' erróneo en ''{1}'' (no es un número en punto "
+"flotante)."
+
+msgid "importerGEXF_error_notnode"
+msgstr "El elemento ''{0}'' no es un nodo. El elemento va a ser ignorado."
+
+msgid "importerGEXF_error_parsingdatetype"
+msgstr ""
+"El tipo de fecha ''{0}'' no puede ser reconocido. Se va a utilizar ''date'' "
+"en su lugar."
+
+msgid "importerGEXF_error_parsingmode"
+msgstr ""
+"El modo de análisis ''{0}'' no puede ser reconocido. Se va a utilizar "
+"''static'' en su lugar."
+
+msgid "importerGEXF_log_edgeeproperty"
+msgstr "Propiedad de arista encontrada: {0}"
+
+msgid "importerGEXF_log_nodeproperty"
+msgstr "Propiedad de nodo encontrada: {0}"
+
+msgid "importerGEXF_log_edgeattribute"
+msgstr "Atributo de arista encontrado: ''{0}'' ({1})"
+
+msgid "importerGEXF_log_nodeattribute"
+msgstr "Atributo de nodo encontrado: ''{0}'' ({1})"
+
+msgid "importerGEXF_log_default"
+msgstr "Valor de atributo por defecto encontrado: ''{0}'' ({1})"
+
+msgid "importerGEXF_log_options"
+msgstr "Opciones de atributo por defecto encontradas: ''{0}'' ({1})"
+
+msgid "importerGEXF_log_version10"
+msgstr "GEXF version 1.0 (obsoleto)"
+
+msgid "importerGEXF_log_version11"
+msgstr "GEXF version 1.1"
+
+msgid "importerDL_error_firstline"
+msgstr "La primera línea de un archivo DL debe comenzar con 'DL'"
+
+msgid "importerDL_error_unknowntag"
+msgstr "Etiqueta de cabecera desconocida ''{0}''"
+
+msgid "importerDL_error_formatmissing"
+msgstr ""
+"La etiqueta 'format' de DL no puede ser encontrada, 'fullmatrix' es "
+"utilizada por defecto."
+
+msgid "importerDL_error_badformat"
+msgstr ""
+"El formato ''{0}'' no está soportado, proporciona 'format=edgelist1' o "
+"'format=fullmatrix' solamente."
+
+msgid "importerDL_error_nmissing"
+msgstr ""
+"La cabecera del archivo DL debe contener la etiqueta 'n = <numNodes>'"
+
+msgid "importerDL_error_mmissing"
+msgstr ""
+"La cabecera del archivo DL debe contener la etiqueta 'm = <numMatricies>'"
+
+msgid "importerDL_error_labelscount"
+msgstr "El número de etiquetas ({0}) es diferente de la etiqueta n ({1})"
+
+msgid "importerDL_error_nodata"
+msgstr "No se pudo encontrar linea de datos."
+
+msgid "importerDL_error_matrixrowscount"
+msgstr ""
+"El número de filas de matriz ({0}) es mayor que el de la etiqueta n ({1})"
+
+msgid "importerDL_error_matrixrowscount2"
+msgstr ""
+"El número de filas de matriz ({0}) es menor que el de la etiqueta n ({1})"
+
+msgid "importerDL_error_matriciescount"
+msgstr ""
+"El número de conjunto de matricies ({0}) es diferente de la etiqueta nm ({1})"
+
+msgid "importerDL_error_matrixentriescount"
+msgstr ""
+"El número de entradas de matriz en la fila {0} de la matriz {1} tiene más "
+"entradas de las permitidas (línea {2} del archivo DL)"
+
+msgid "importerDL_error_weightparseerror"
+msgstr "Imposible analizar el peso ''{0}'' en la matriz {1} en la línea {2}"
+
+msgid "importerDL_error_edgelistssetscount"
+msgstr ""
+"El número de conjuntos de listas de aristas ({0}) es diferente de la "
+"etiqueta nm ({1})"
+
+msgid "importerDL_error_edgelistrowparse"
+msgstr "Imposible analizar id ''{0}'' en la lista de aristas en la línea {1}"
+
+msgid "importerDL_error_edgeparseweight"
+msgstr ""
+"Imposible analizar el peso ''{0}'' en la lista de aristas en la línea {1}"
+
+msgid "importerDOT_error_nothingfound"
+msgstr "No se pudo encontrar 'graph' o 'digraph'"
+
+msgid "importerDOT_error_labelunreachable"
+msgstr "Imposible encontrar etiqueta en la línea {0}"
+
+msgid "importerDOT_error_colorunreachable"
+msgstr "Imposible encontrar color en la línea {0}"
+
+msgid "importerDOT_error_edgeparsing"
+msgstr "Imposible analizar la arista en la línea {0}"
