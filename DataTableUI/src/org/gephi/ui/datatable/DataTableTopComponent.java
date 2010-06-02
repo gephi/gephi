@@ -133,10 +133,6 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
             labelFilter.setEnabled(false);
             bannerPanel.setVisible(false);
             visibleGraphCheckbox.setEnabled(false);
-
-            AttributeModel attributeModel = pc.getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
-            attributeModel.getNodeTable().addAttributeListener(DataTableTopComponent.this);
-            attributeModel.getEdgeTable().addAttributeListener(DataTableTopComponent.this);
         }
         bannerPanel.setVisible(false);
     }
@@ -198,8 +194,8 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
             graphModel.addGraphListener(DataTableTopComponent.this);
 
             AttributeModel attributeModel = pc.getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
-            attributeModel.getNodeTable().removeAttributeListener(DataTableTopComponent.this);
-            attributeModel.getEdgeTable().removeAttributeListener(DataTableTopComponent.this);
+            attributeModel.getNodeTable().addAttributeListener(DataTableTopComponent.this);
+            attributeModel.getEdgeTable().addAttributeListener(DataTableTopComponent.this);
         }
 
         //Filter
