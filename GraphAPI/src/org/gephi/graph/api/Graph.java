@@ -122,7 +122,7 @@ public interface Graph {
     /**
      * Returns the node with identifier equal to <code>id</code>. If not found,
      * returns <code>null</code>. This id is generated and can be found in
-     * <code>Node.getId()</code>. Note the id is different between views.
+     * <code>Node.getId()</code>.
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
      * statement.
      * @param id a positive number
