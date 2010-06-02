@@ -28,7 +28,6 @@ import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValueFactory;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -64,10 +63,6 @@ public abstract class AbstractAttributeModel implements AttributeModel {
     public abstract Object getManagedValue(Object obj, AttributeType attributeType);
 
     public void clear() {
-    }
-
-    public Lookup getClassLookup(String tableName) {
-        return tableMap.get(tableName).getLookup();
     }
 
     public AttributeTableImpl getNodeTable() {

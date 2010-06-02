@@ -22,9 +22,11 @@ package org.gephi.partition.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.graph.api.Graph;
@@ -46,8 +48,6 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -55,7 +55,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = PartitionController.class)
-public class PartitionControllerImpl implements PartitionController, LookupListener {
+public class PartitionControllerImpl implements PartitionController, AttributeListener {
 
     private PartitionModelImpl model;
     private boolean refreshPartitions = true;
@@ -72,20 +72,24 @@ public class PartitionControllerImpl implements PartitionController, LookupListe
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(PartitionModelImpl.class);
                 refreshPartitions = true;
-                trackColumnsChange(workspace.getLookup().lookup(AttributeModel.class));
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
                 trachViewChange(gm);
+                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+                attributeModel.getNodeTable().addAttributeListener(PartitionControllerImpl.this);
+                attributeModel.getEdgeTable().addAttributeListener(PartitionControllerImpl.this);
             }
 
             public void unselect(Workspace workspace) {
                 model = null;
+                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+                attributeModel.getNodeTable().removeAttributeListener(PartitionControllerImpl.this);
+                attributeModel.getEdgeTable().removeAttributeListener(PartitionControllerImpl.this);
             }
 
             public void close(Workspace workspace) {
             }
 
             public void disable() {
-                untrackColumnsChange();
                 untrackViewChange(null);
             }
         });
@@ -95,30 +99,13 @@ public class PartitionControllerImpl implements PartitionController, LookupListe
                 model = new PartitionModelImpl();
                 Workspace workspace = pc.getCurrentWorkspace();
                 pc.getCurrentWorkspace().add(new PartitionModelImpl());
-
-                trackColumnsChange(workspace.getLookup().lookup(AttributeModel.class));
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
                 trachViewChange(gm);
+
+                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+                attributeModel.getNodeTable().addAttributeListener(PartitionControllerImpl.this);
+                attributeModel.getEdgeTable().addAttributeListener(PartitionControllerImpl.this);
             }
-        }
-    }
-    private Lookup.Result<AttributeColumn> nodeColumnsResult;
-    private Lookup.Result<AttributeColumn> edgeColumnsResult;
-
-    private void trackColumnsChange(AttributeModel attributeModel) {
-        untrackColumnsChange();
-        nodeColumnsResult = attributeModel.getNodeTable().getLookup().lookupResult(AttributeColumn.class);
-        edgeColumnsResult = attributeModel.getEdgeTable().getLookup().lookupResult(AttributeColumn.class);
-        nodeColumnsResult.addLookupListener(this);
-        edgeColumnsResult.addLookupListener(this);
-    }
-
-    private void untrackColumnsChange() {
-        if (nodeColumnsResult != null) {
-            nodeColumnsResult.removeLookupListener(this);
-            edgeColumnsResult.removeLookupListener(this);
-            nodeColumnsResult = null;
-            edgeColumnsResult = null;
         }
     }
     private GraphListener graphListener;
@@ -151,7 +138,7 @@ public class PartitionControllerImpl implements PartitionController, LookupListe
         graphListener = null;
     }
 
-    public void resultChanged(LookupEvent ev) {
+    public void attributesChanged(AttributeEvent event) {
         refreshPartitions = true;
     }
 
