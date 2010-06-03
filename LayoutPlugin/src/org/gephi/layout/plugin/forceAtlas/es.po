@@ -1,0 +1,107 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-06-02 16:01+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-06-03 03:35+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "name"
+msgstr "Force Atlas"
+
+msgid "description"
+msgstr ""
+"Force Atlas hace los grafos más compactos, legibles, y puede mostrar las "
+"'authorities' de más en el centro que los 'hubs' (opción Distribución de "
+"Atracción). La auto-estabilización mejora la convergencia en al final del "
+"algoritmo."
+
+msgid "forceAtlas.inertia.name"
+msgstr "Inercia"
+
+msgid "forceAtlas.inertia.desc"
+msgstr "Conservación de la velocidad de los nodos en cada nuevo paso"
+
+msgid "forceAtlas.repulsionStrength.name"
+msgstr "Fuerza de repulsión"
+
+msgid "forceAtlas.repulsionStrength.desc"
+msgstr "Fuerza con la que cada nodo repulsa a otros"
+
+msgid "forceAtlas.attractionStrength.name"
+msgstr "Fuerza de atracción"
+
+msgid "forceAtlas.attractionStrength.desc"
+msgstr "Fuerza con la que cada par de nodos conectados se atraen entre sí"
+
+msgid "forceAtlas.maxDisplacement.name"
+msgstr "Máximo desplazamiento"
+
+msgid "forceAtlas.maxDisplacement.desc"
+msgstr ""
+"Limita el desplazamiento de cada nodo (para prevenir super-repulsión cuando "
+"los nodos son muy cercanos)"
+
+msgid "forceAtlas.freezeBalance.name"
+msgstr "Auto-estabilizar"
+
+msgid "forceAtlas.freezeBalance.desc"
+msgstr ""
+"Activa el congelamiento de nodos inestables. A pesar de algo de pérdida de "
+"eficiencia, previene la inestabilidad de los nodos en la mayoría de los casos"
+
+msgid "forceAtlas.freezeStrength.name"
+msgstr "Fuerza de auto-estabilización"
+
+msgid "forceAtlas.freezeStrength.desc"
+msgstr "Fuerza de la función de auto-estabilización"
+
+msgid "forceAtlas.freezeInertia.name"
+msgstr "Sensibilidad de auto-estabilización"
+
+msgid "forceAtlas.freezeInertia.desc"
+msgstr ""
+"[0,1] Este parámetro representa la auto-adaptabilidad de la función de anti-"
+"inestabilidad (la inercia de fijación)"
+
+msgid "forceAtlas.gravity.name"
+msgstr "Gravedad"
+
+msgid "forceAtlas.gravity.desc"
+msgstr ""
+"Esta fuerza atrae todos los nodos hacia el centro para evitar la dispersión "
+"de componentes no conectados"
+
+msgid "forceAtlas.outboundAttractionDistribution.name"
+msgstr "Distrubución de Atracción"
+
+msgid "forceAtlas.outboundAttractionDistribution.desc"
+msgstr ""
+"La fuerza de atracción es distribuida a lo largo de los enlaces de unión. "
+"Esto tiende a empujar los 'hubs' a la periferia y hacer las 'authorities' "
+"más centrales"
+
+msgid "forceAtlas.adjustSizes.name"
+msgstr "Ajustar por tamaños"
+
+msgid "forceAtlas.adjustSizes.desc"
+msgstr "Evitar superposición de nodos (dependiendo del tamaño de cada nodo)"
+
+msgid "forceAtlas.speed.name"
+msgstr "Velocidad"
+
+msgid "forceAtlas.speed.desc"
+msgstr ""
+"Valor > 0, 1 por defecto ; Permite incrementar la velocidad de convergencia "
+"al precio de una pérdida de precisión"

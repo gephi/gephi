@@ -1,0 +1,110 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-06-02 21:41+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-06-03 03:35+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Implementaciones de las herramientas estándar"
+
+msgid "Painter.name"
+msgstr "Pincel"
+
+msgid "Painter.description"
+msgstr "Colorea los nodos presionando el botón izquierdo del ratón"
+
+msgid "Sizer.name"
+msgstr "Dar tamaño"
+
+msgid "Sizer.description"
+msgstr ""
+"Da tamaño a los nodos presionando el botón izquierdo del ratón y arrastrando "
+"hacia arriba o abajo"
+
+msgid "Brush.name"
+msgstr "Brocha"
+
+msgid "Brush.description"
+msgstr "Da color a los nodos presionando el botón izquierdo del ratón"
+
+msgid "DiffusionMethod.None"
+msgstr "Ninguna"
+
+msgid "DiffusionMethod.Neighbors"
+msgstr "Vecinos"
+
+msgid "DiffusionMethod.NeighborsOfNeighbors"
+msgstr "Vecinos de los vecinos"
+
+msgid "DiffusionMethod.Predecessors"
+msgstr "Predecesores"
+
+msgid "DiffusionMethod.Successors"
+msgstr "Sucesores"
+
+msgid "NodePencil.name"
+msgstr "Lapiz de nodos"
+
+msgid "NodePencil.description"
+msgstr "Añade un nuevo nodo al grafo en el lugar donde el raton es pulsado"
+
+msgid "EdgePencil.name"
+msgstr "Lazip de aristas"
+
+msgid "EdgePencil.description"
+msgstr ""
+"Añade una nueva arista pulsando en el nodo origen y después el nodo destino"
+
+msgid "EdgePencil.status1"
+msgstr "Elige un nodo origen"
+
+msgid "EdgePencil.status2"
+msgstr "Elige un nodo destino"
+
+msgid "ShortestPath.name"
+msgstr "Camino más corto"
+
+msgid "ShortestPath.description"
+msgstr "Muestra el camino más corto entre los dos nodos pulsados si existe"
+
+msgid "ShortestPath.status1"
+msgstr "Elige nodo origen"
+
+msgid "ShortestPath.status2"
+msgstr "Elige nodo destino"
+
+msgid "ShortestPath.result"
+msgstr "Un camino de distancia {0} ha sido encontrado"
+
+msgid "ShortestPath.noresult"
+msgstr "Ningún camino existe entre esos dos nodos"
+
+msgid "HeatMap.name"
+msgstr "Mapa de calor"
+
+msgid "HeatMap.description"
+msgstr ""
+"Establecer la intensidad de color de los vecinos de un nodo mediante la "
+"distancia (peso de la arista)"
+
+msgid "HeatMap.status.maxdistance"
+msgstr "La distancia máxima es"
+
+msgid "Edit.name"
+msgstr "Editor"
+
+msgid "Edit.description"
+msgstr "Editar atributos de un nodo"
