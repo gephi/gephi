@@ -150,7 +150,7 @@ public class GraphViewImpl implements GraphView {
         this.nodesEnabled = nodesEnabled;
     }
 
-    public GraphModel getGraphModel() {
+    public Dhns getGraphModel() {
         return dhns;
     }
 }

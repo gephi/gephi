@@ -46,7 +46,7 @@ public class DuplicateManager {
             nodeCopy.setEnabledMutualDegree(node.getEnabledMutualDegree());
             AbstractNode parentCopy = node.parent != null ? newStructure.getNodeAt(node.parent.getPre()) : null;
             newStructure.insertAsChild(nodeCopy, parentCopy);
-            newGraphStructure.getNodeDictionnary().add(nodeCopy);
+            newGraphStructure.addToDictionnary(nodeCopy);
         }
 
         //Edges
@@ -60,7 +60,7 @@ public class DuplicateManager {
                     AbstractNode sourceCopy = newStructure.getNodeAt(edge.getSource(view.getViewId()).getPre());
                     AbstractNode targetCopy = newStructure.getNodeAt(edge.getTarget(view.getViewId()).getPre());
                     if (edge.isMixed()) {
-                        edgeCopy = factory.newEdge(sourceCopy, targetCopy, edge.getWeight(), edge.isDirected());
+                        edgeCopy = factory.newEdge(edge.getEdgeData().getId(), sourceCopy, targetCopy, edge.getWeight(), edge.isDirected());
                         if (edge.isDirected()) {
                             destination.touchDirected();
                         } else {
@@ -74,7 +74,7 @@ public class DuplicateManager {
                     duplicateEdgeData(edge.getEdgeData(), edgeCopy.getEdgeData());
                     sourceCopy.getEdgesOutTree().add(edgeCopy);
                     targetCopy.getEdgesInTree().add(edgeCopy);
-                    newGraphStructure.getEdgeDictionnary().add(edgeCopy);
+                    newGraphStructure.addToDictionnary(edgeCopy);
                 }
             }
         }

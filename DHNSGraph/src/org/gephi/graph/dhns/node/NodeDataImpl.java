@@ -211,15 +211,19 @@ public class NodeDataImpl implements NodeData, GroupData {
     }
 
     public String getId() {
-        String id = (String) attributes.getValue(PropertiesColumn.NODE_ID.getIndex());
-        if (id == null || id.isEmpty()) {
-            return Integer.toString(ID);
+        if (attributes == null) {
+            return null;
         }
-        return id;
+        return (String) attributes.getValue(PropertiesColumn.NODE_ID.getIndex());
     }
 
-    public void setId(String id) {
+    public String setId(String id) {
+        if (attributes == null) {
+            return null;
+        }
+        String oldId = (String) attributes.getValue(PropertiesColumn.NODE_ID.getIndex());
         attributes.setValue(PropertiesColumn.NODE_ID.getIndex(), id);
+        return oldId;
     }
 
     public boolean isFixed() {

@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 OpenIDE-Module: org.gephi.graph.api
 OpenIDE-Module-Layer: org/gephi/graph/api/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/graph/api/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.2
+OpenIDE-Module-Specification-Version: 0.7.0.3
 AutoUpdate-Essential-Module: true

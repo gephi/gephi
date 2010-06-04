@@ -23,6 +23,7 @@ package org.gephi.graph.dhns.utils;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.Dhns;
+import org.gephi.graph.dhns.core.GraphStructure;
 import org.gephi.graph.dhns.core.TreeStructure;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.EdgeDataImpl;
@@ -78,7 +79,8 @@ public class DataSerializer {
 
     public void readData(Element dataE, Dhns dhns) {
 
-        TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
+        GraphStructure structure = dhns.getGraphStructure();
+        TreeStructure treeStructure = structure.getMainView().getStructure();
         NodeList dataListE = dataE.getChildNodes();
         for (int i = 0; i < dataListE.getLength(); i++) {
             if (dataListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -86,16 +88,17 @@ public class DataSerializer {
                 if (itemE.getTagName().equals(ELEMENT_NODEDATA)) {
                     AbstractNode node = treeStructure.getNodeAt(Integer.parseInt(itemE.getAttribute("nodepre")));
                     NodeDataImpl nodeDataImpl = (NodeDataImpl) node.getNodeData();
-                    readNodeData(itemE, nodeDataImpl);
+                    readNodeData(itemE, nodeDataImpl, structure);
                 } else if (itemE.getTagName().equals(ELEMENT_EDGEDATA)) {
                     AbstractNode source = treeStructure.getNodeAt(Integer.parseInt(itemE.getAttribute("sourcepre")));
                     AbstractNode target = treeStructure.getNodeAt(Integer.parseInt(itemE.getAttribute("targetpre")));
                     AbstractEdge edge = source.getEdgesOutTree().getItem(target.getId());
                     EdgeDataImpl edgeDataImpl = (EdgeDataImpl) edge.getEdgeData();
-                    readEdgeData(itemE, edgeDataImpl);
+                    readEdgeData(itemE, edgeDataImpl, structure);
                 }
             }
         }
+
     }
 
     public Element writeNodeData(Document document, NodeDataImpl nodeData) {
@@ -128,9 +131,9 @@ public class DataSerializer {
         return nodeDataE;
     }
 
-    public void readNodeData(Element nodeDataE, NodeData nodeData) {
+    public void readNodeData(Element nodeDataE, NodeData nodeData, GraphStructure structure) {
         if (nodeDataE.hasAttribute("id")) {
-            nodeData.setId(nodeDataE.getAttribute("id"));
+            structure.getNodeIDDictionnary().put(nodeDataE.getAttribute("id"), nodeData);
         }
 
         NodeList dataE = nodeDataE.getChildNodes();
@@ -174,9 +177,9 @@ public class DataSerializer {
         return edgeDataE;
     }
 
-    public void readEdgeData(Element edgeDataE, EdgeData edgeData) {
+    public void readEdgeData(Element edgeDataE, EdgeData edgeData, GraphStructure structure) {
         if (edgeDataE.hasAttribute("id")) {
-            edgeData.setId(edgeDataE.getAttribute("id"));
+            structure.getEdgeIDDIctionnary().put(edgeDataE.getAttribute("id"), edgeData.getEdge());
         }
 
         NodeList dataE = edgeDataE.getChildNodes();

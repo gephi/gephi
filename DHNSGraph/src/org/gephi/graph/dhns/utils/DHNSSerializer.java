@@ -193,7 +193,7 @@ public class DHNSSerializer {
                 edge.getEdgeData().setTextData(factory.newTextData());
                 source.getEdgesOutTree().add(edge);
                 target.getEdgesInTree().add(edge);
-                graphStructure.getEdgeDictionnary().add(edge);
+                graphStructure.addToDictionnary(edge);
             }
         }
         graphStructure.getMainView().getStructureModifier().getEdgeProcessor().computeMetaEdges();
@@ -260,7 +260,7 @@ public class DHNSSerializer {
                     absNode.getNodeData().setAttributes(factory.newNodeAttributes());
                     absNode.getNodeData().setTextData(factory.newTextData());
                     treeStructure.insertAsChild(absNode, parentNode);
-                    graphStructure.getNodeDictionnary().add(absNode);
+                    graphStructure.addToDictionnary(absNode);
                 }
             }
         }
@@ -335,7 +335,7 @@ public class DHNSSerializer {
                     treeStructure.insertAsChild(node, parentNode);
                 } else if (((Element) nodesE.item(i)).getTagName().equals(ELEMENT_VIEW_EDGE)) {
                     Element edgeViewE = (Element) nodesE.item(i);
-                    AbstractEdge edge = graphStructure.getEdgeDictionnary().get(Integer.parseInt(edgeViewE.getAttribute("id")));
+                    AbstractEdge edge = graphStructure.getEdgeFromDictionnary(Integer.parseInt(edgeViewE.getAttribute("id")));
                     AbstractNode source = treeStructure.getNodeAt(Integer.parseInt(edgeViewE.getAttribute("source")));
                     AbstractNode target = treeStructure.getNodeAt(Integer.parseInt(edgeViewE.getAttribute("target")));
                     source.getEdgesOutTree().add(edge);
