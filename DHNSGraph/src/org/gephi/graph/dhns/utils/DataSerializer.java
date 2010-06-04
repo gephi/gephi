@@ -107,7 +107,7 @@ public class DataSerializer {
 
         nodeDataE.setAttribute("nodepre", String.valueOf(node.getPre()));
 
-        if (!nodeData.getId().equals("" + node.getId())) {
+        if (nodeData.getId() != null && !nodeData.getId().equals("" + node.getId())) {
             nodeDataE.setAttribute("id", nodeData.getId());
         }
 
@@ -163,7 +163,7 @@ public class DataSerializer {
         edgeDataE.setAttribute("sourcepre", String.valueOf(edge.getSource().getPre()));
         edgeDataE.setAttribute("targetpre", String.valueOf(edge.getTarget().getPre()));
 
-        if (!edgeData.getId().equals("" + edge.getId())) {
+        if (edgeData.getId() != null && !edgeData.getId().equals("" + edge.getId())) {
             edgeDataE.setAttribute("id", edgeData.getId());
         }
 
