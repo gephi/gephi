@@ -3,5 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.partition.api
 OpenIDE-Module-Layer: org/gephi/partition/api/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/partition/api/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.3
+OpenIDE-Module-Specification-Version: 0.7.0.4
 

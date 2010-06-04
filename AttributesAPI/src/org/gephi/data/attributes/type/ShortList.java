@@ -21,26 +21,26 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.type;
 
 /**
- * Complex type that define a list of Long items. Can be created from a long
- * array, from a Long array or from single string using either given or default separators.
+ * Complex type that define a list of Short items. Can be created from a short
+ * array, from a Short array or from single string using either given or default separators.
  * 
  * @author Martin Škurla
  */
-public final class LongList extends NumberList<Long> {
-
-    public LongList(long[] primitiveLongArray) {
-        super(TypeConvertor.<Long>convertPrimitiveToWrapperArray(primitiveLongArray));
+public final class ShortList extends NumberList<Short> {
+    
+    public ShortList(short[] primitiveShortArray) {
+        super(TypeConvertor.<Short>convertPrimitiveToWrapperArray(primitiveShortArray));
     }
 
-    public LongList(Long[] wrapperLongArray) {
-        super(wrapperLongArray);
+    public ShortList(Short[] wrapperShortArray) {
+        super(wrapperShortArray);
     }
 
-    public LongList(String input) {
+    public ShortList(String input) {
         this(input, AbstractList.DEFAULT_SEPARATOR);
     }
 
-    public LongList(String input, String separator) {
-        super(input, separator, Long.class);
+    public ShortList(String input, String separator) {
+        super(input, separator, Short.class);
     }
 }

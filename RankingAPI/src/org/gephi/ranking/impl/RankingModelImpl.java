@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking.impl;
 
+import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.ranking.api.RankingModel;
 import org.gephi.ranking.api.NodeRanking;
 import org.gephi.ranking.api.EdgeRanking;
@@ -30,6 +31,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeListener;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -39,18 +42,14 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class RankingModelImpl implements RankingModel, LookupListener {
+public class RankingModelImpl implements RankingModel, AttributeListener {
 
     private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
-    private Lookup.Result<AttributeColumn> nodeColumnsResult;
-    private Lookup.Result<AttributeColumn> edgeColumnsResult;
 
     public RankingModelImpl() {
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -61,17 +60,15 @@ public class RankingModelImpl implements RankingModel, LookupListener {
             }
 
             public void select(Workspace workspace) {
-                nodeColumnsResult = ac.getModel().getNodeTable().getLookup().lookupResult(AttributeColumn.class);
-                edgeColumnsResult = ac.getModel().getEdgeTable().getLookup().lookupResult(AttributeColumn.class);
-                nodeColumnsResult.addLookupListener(RankingModelImpl.this);
-                edgeColumnsResult.addLookupListener(RankingModelImpl.this);
+                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+                attributeModel.getNodeTable().addAttributeListener(RankingModelImpl.this);
+                attributeModel.getEdgeTable().addAttributeListener(RankingModelImpl.this);
             }
 
             public void unselect(Workspace workspace) {
-                nodeColumnsResult.removeLookupListener(RankingModelImpl.this);
-                edgeColumnsResult.removeLookupListener(RankingModelImpl.this);
-                nodeColumnsResult = null;
-                edgeColumnsResult = null;
+                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+                attributeModel.getNodeTable().removeAttributeListener(RankingModelImpl.this);
+                attributeModel.getEdgeTable().removeAttributeListener(RankingModelImpl.this);
             }
 
             public void close(Workspace workspace) {
@@ -81,14 +78,13 @@ public class RankingModelImpl implements RankingModel, LookupListener {
             }
         });
         if (pc.getCurrentWorkspace() != null) {
-            nodeColumnsResult = ac.getModel().getNodeTable().getLookup().lookupResult(AttributeColumn.class);
-            edgeColumnsResult = ac.getModel().getEdgeTable().getLookup().lookupResult(AttributeColumn.class);
-            nodeColumnsResult.addLookupListener(RankingModelImpl.this);
-            edgeColumnsResult.addLookupListener(RankingModelImpl.this);
+            AttributeModel attributeModel = pc.getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
+            attributeModel.getNodeTable().addAttributeListener(RankingModelImpl.this);
+            attributeModel.getEdgeTable().addAttributeListener(RankingModelImpl.this);
         }
     }
 
-    public void resultChanged(LookupEvent le) {
+    public void attributesChanged(AttributeEvent event) {
         fireChangeEvent();
     }
 

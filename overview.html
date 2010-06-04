@@ -9,6 +9,18 @@
     <p>
     <h2>API Changes</h2>
     <ul>
+        <li><(June 04 2010) Improvements in the GraphAPI identifiers management. The system is now storing String
+        identifiers coming from users. New getters and setters methods have been created in <code>Graph</code>:
+        <ul><li><code>Graph.setId(Node, String)</code></li>
+            <li><code>Graph.setId(Edge, String)</code></li>
+            <li><code>Graph.getNode(String)</code></li>
+            <li><code>Graph.getEdge(String)</code></li></ul>
+        The <code>NodeData.setId()</code> and <code>EdgeData.setId()</code> methods have been removed, compatibility can't be kept.
+        Factory has also be changed to allow to create elements with String ID directly, as it's not possible anymore to
+        do it from <code>NodeData</code>.
+        <li>(June 02 2010) Changes in AttributesAPI with event management. The lookup system in <code>AttributeTable</code>
+        has been replaced by a more traditional event management system, with new <code>AttributeEvent</code> and
+        <code>AttributeListener</code> interfaces. The dispatch implementation is also now on a separate thread.</li>
         <li>(May 08 2010) Changes in Import modules to separate core and user interfaces. The <code>ImportController</code> is now
         doing import task only and a new <code>ImportControllerUI</code> is displaying the user interface (Report Panel). The
         <code>ImportControllerUI</code> interface is located in the DesktopProject module and should be user to properly

@@ -61,13 +61,6 @@ public interface EdgeData extends Renderable {
     public String getId();
 
     /**
-     * Sets the string identifier of this edge. This identifier can be set
-     * by users, in contrario of {@link Edge#getId()} which is set by the system.
-     * @param id            the id that is to be set for this edge
-     */
-    public void setId(String id);
-
-    /**
      * Returns the edge label, or <code>null</code> if none has been set.
      * @return              the edge lable, or <code>null</code>
      */
@@ -87,7 +80,7 @@ public interface EdgeData extends Renderable {
      * @return              the layout data of this edge, can be <code>null</code>
      */
     public <T extends LayoutData> T getLayoutData();
-    
+
     /**
      * Sets the layout data of this edge. Layout data are temporary data layout
      * algorithms can push to edges to save states when computing.

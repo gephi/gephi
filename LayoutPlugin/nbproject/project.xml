@@ -47,6 +47,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.openide.nodes</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.12.1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.util</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -57,6 +65,16 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.layout.plugin</package>
+                <package>org.gephi.layout.plugin.force</package>
+                <package>org.gephi.layout.plugin.force.quadtree</package>
+                <package>org.gephi.layout.plugin.force.yifanHu</package>
+                <package>org.gephi.layout.plugin.forceAtlas</package>
+                <package>org.gephi.layout.plugin.fruchterman</package>
+                <package>org.gephi.layout.plugin.labelAdjust</package>
+                <package>org.gephi.layout.plugin.multilevel</package>
+                <package>org.gephi.layout.plugin.random</package>
+                <package>org.gephi.layout.plugin.rotate</package>
+                <package>org.gephi.layout.plugin.scale</package>
             </public-packages>
         </data>
     </configuration>

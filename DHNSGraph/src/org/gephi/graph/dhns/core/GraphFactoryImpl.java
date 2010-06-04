@@ -76,9 +76,18 @@ public class GraphFactoryImpl implements GraphFactory {
     }
 
     public AbstractNode newNode() {
+        return newNode(null);
+    }
+
+    public AbstractNode newNode(String id) {
         AbstractNode node = new AbstractNode(idGen.newNodeId(), 0, 0, 0, 0, null);  //with wiew = 0
         node.getNodeData().setAttributes(newNodeAttributes());
         node.getNodeData().setTextData(newTextData());
+        if (id != null) {
+            node.getNodeData().setId(id);
+        } else {
+            node.getNodeData().setId("" + node.getId());
+        }
         return node;
     }
 
@@ -96,10 +105,15 @@ public class GraphFactoryImpl implements GraphFactory {
         }
         edge.setAttributes(newEdgeAttributes());
         edge.getEdgeData().setTextData(newTextData());
+        edge.getEdgeData().setId("" + edge.getId());
         return edge;
     }
 
     public AbstractEdge newEdge(Node source, Node target, float weight, boolean directed) {
+        return newEdge(null, source, target, weight, directed);
+    }
+
+    public AbstractEdge newEdge(String id, Node source, Node target, float weight, boolean directed) {
         if (source == null || target == null) {
             throw new NullPointerException();
         }
@@ -115,6 +129,11 @@ public class GraphFactoryImpl implements GraphFactory {
 
         edge.setAttributes(newEdgeAttributes());
         edge.getEdgeData().setTextData(newTextData());
+        if (id != null) {
+            edge.getEdgeData().setId(id);
+        } else {
+            edge.getEdgeData().setId("" + edge.getId());
+        }
         return edge;
     }
 
@@ -127,6 +146,7 @@ public class GraphFactoryImpl implements GraphFactory {
         MetaEdgeImpl edge = new MetaEdgeImpl(idGen.newEdgeId(), nodeSource, nodeTarget);
         edge.setAttributes(newEdgeAttributes());
         edge.getEdgeData().setTextData(newTextData());
+        edge.getEdgeData().setId("" + edge.getId());
         return edge;
     }
 }

@@ -76,13 +76,6 @@ public interface NodeData extends Renderable {
     public String getId();
 
     /**
-     * Sets the string identifier of this node. This identifier can be set
-     * by users, in contrario of {@link Node#getId()} which is set by the system.
-     * @param id            the id that is to be set for this node
-     */
-    public void setId(String id);
-
-    /**
      * Returns the layout data object associated to this node. Layout data are
      * temporary data layout algorithms can push to nodes to save states when
      * computing.

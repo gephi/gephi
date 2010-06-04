@@ -514,6 +514,20 @@ public class ImporterGEXF implements XMLImporter, LongTask {
                 edge.setLabel(edgeLabel);
             }
 
+            //Edge color
+            Element edgeColor = (Element) edgeE.getElementsByTagName("viz:color").item(0);
+            if (edgeColor != null) {
+                String rStr = edgeColor.getAttribute("r");
+                String gStr = edgeColor.getAttribute("g");
+                String bStr = edgeColor.getAttribute("b");
+
+                int r = (rStr.isEmpty()) ? 0 : Integer.parseInt(rStr);
+                int g = (gStr.isEmpty()) ? 0 : Integer.parseInt(gStr);
+                int b = (bStr.isEmpty()) ? 0 : Integer.parseInt(bStr);
+
+                edge.setColor(new Color(r, g, b));
+            }
+
             //Get Attvalue child nodes, avoiding using descendants
             Node child = edgeE.getFirstChild();
             if (child != null) {

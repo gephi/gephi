@@ -20,10 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.graph;
 
+import java.util.Map;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphViewImpl;
@@ -102,13 +104,31 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     }
 
     public Node getNode(int id) {
-        Node node = dhns.getGraphStructure().getNodeDictionnary().get(id);
+        Node node = dhns.getGraphStructure().getNodeFromDictionnary(id);
         return node;
     }
 
     public Edge getEdge(int id) {
-        Edge edge = dhns.getGraphStructure().getEdgeDictionnary().get(id);
+        Edge edge = dhns.getGraphStructure().getEdgeFromDictionnary(id);
         return edge;
+    }
+
+    public Node getNode(String id) {
+        if (id == null) {
+            throw new NullPointerException();
+        }
+        NodeData nd = dhns.getGraphStructure().getNodeIDDictionnary().get(id);
+        if (nd != null) {
+            return nd.getNode(view.getViewId());
+        }
+        return null;
+    }
+
+    public Edge getEdge(String id) {
+        if (id == null) {
+            throw new NullPointerException();
+        }
+        return dhns.getGraphStructure().getEdgeIDDIctionnary().get(id);
     }
 
     public NodeIterable getNodes() {
@@ -199,6 +219,32 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     public void clearMetaEdges(Node node) {
         AbstractNode absNode = checkNode(node);
         view.getStructureModifier().clearMetaEdges(absNode);
+    }
+
+    public void setId(Node node, String id) {
+        if (node == null) {
+            throw new NullPointerException("node can't be null");
+        }
+        AbstractNode absNode = (AbstractNode) node;
+        String oldId = absNode.getNodeData().setId(id);
+        Map<String, NodeData> map = view.getGraphModel().getGraphStructure().getNodeIDDictionnary();
+        if (oldId != null) {
+            map.remove(oldId);
+        }
+        map.put(id, node.getNodeData());
+    }
+
+    public void setId(Edge edge, String id) {
+        if (edge == null) {
+            throw new NullPointerException("edge can't be null");
+        }
+        AbstractEdge absEdge = (AbstractEdge) edge;
+        String oldId = absEdge.getEdgeData().setId(id);
+        Map<String, Edge> map = view.getGraphModel().getGraphStructure().getEdgeIDDIctionnary();
+        if (oldId != null) {
+            map.remove(oldId);
+        }
+        map.put(id, edge);
     }
 
     public ImmutableTreeNode wrapToTreeNode() {

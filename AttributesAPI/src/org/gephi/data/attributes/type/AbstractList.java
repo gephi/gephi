@@ -1,18 +1,89 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008-2010 Gephi
+Authors : Martin Škurla <bujacik@gmail.com>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package org.gephi.data.attributes.type;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
+ * Complex type that defines list of any type of items. Can be created from an array or from single
+ * string using either given or default separators. Internal representation of data is array of generic
+ * type. This means that every primitive type must be first converted into wrapper type. The exact
+ * conversion process from String value into given type is done by {@link TypeConvertor TypeConvertor}
+ * class.
+ *
+ * <br/><br/>
+ * <h3>Design guidelines</h3>
+ * This is a basic abstract class that every other 'List' class should extend. In order to not misuse
+ * the API, every extending type should be one of the following:
+ * <ul>
+ * <li>helper type which restricts the type parameter and possibly brings some new functionality (e.g.
+ *     {@link NumberList NumberList}). This is not final usable type so it should be declared as abstract.
+ * <li>final type that extends any of defined helper types or basic class and sets the type parameter
+ *     (e.g. there are types for representing all primitive types, String, BigInteger & BigDecimal).
+ *     These are final usable types so they should be declared as final.
+ * </ul>
+ *
+ * <h3>Flexibility</h3>
+ * The flexibility of this API is done in 2 ways:
+ * <ul>
+ * <li>We can add functionality by defining conversions from any other type in difference from general
+ *     supported types through defining new constructors (e.g. {@link StringList StringList} class can
+ *     be created from array of characters). We can also restrict the functionality (e.g. BigInteger &
+ *     BigDecimal cannot be created from arrays of primitive types). The conversion process should be
+ *     done by {@link TypeConvertor TypeConvertor} type if the conversion can be used in more List
+ *     implementations or by 'private static T parseXXX()' method in appropriate List implementation if
+ *     only this type uses the conversion (e.g. {@link StringList#parse}).
+ * <li>Any other functionality required from 'List' implementations should be done by implementing
+ *     appropriate non-static methods in concrete 'List' implementations.
+ * </ul>
+ *
+ * <h3>Extensibility</h3>
+ * This API can be simply extended. New 'List' type should extend base or any helper 'List' type. We can
+ * create final 'List' implementations as well as helper 'list' implementations with appropriate modifiers
+ * (see Design Guidelines). We can define as many constructors responsible for conversions from other
+ * types and as many additional methods as we want.<br/>
+ * To fully integrate new 'List' type into the whole codebase we have to update following types:
+ * <ol>
+ * <li>{@link org.gephi.data.attributes.api.AttributeType AttributeType}:
+ *     <ol>
+ *     <li>add appropriate enum constants
+ *     <li>update {@link org.gephi.data.attributes.api.AttributeType#parse(String str) parse(String)} method
+ *     </ol>
+ * <li>{@link org.gephi.data.attributes.model.DataIndex DataIndex}:
+ *     <ol>
+ *     <li>add appropriate instance variables
+ *     <li>initialize them in constructor
+ *     <li>update {@link org.gephi.data.attributes.model.DataIndex#countEntries countEntries()} method
+ *     <li>update {@link org.gephi.data.attributes.model.DataIndex#clear clear()} method
+ *     </ol>
+ * </ol>
+ *
+ * This class defines {@link #size method for recognizing size} of the list and
+ * {@link #getItem method for getting item by index}.
+ * 
+ * @param <T> type parameter defining final List type
  *
  * @author Martin Škurla
- * @param <T>
+ *
+ * @see TypeConvertor
  */
 public abstract class AbstractList<T> {
 
@@ -20,62 +91,16 @@ public abstract class AbstractList<T> {
     protected final T[] list;
     private volatile int hashCode = 0;
 
-    public AbstractList(String value, Class<T> finalType) {
-        this(value, DEFAULT_SEPARATOR, finalType);
+    public AbstractList(String input, Class<T> finalType) {
+        this(input, DEFAULT_SEPARATOR, finalType);
     }
 
-    public AbstractList(String value, String separator, Class<T> finalType) {
-        this(AbstractList.<T>parse(value, separator, finalType));
+    public AbstractList(String input, String separator, Class<T> finalType) {
+        this(TypeConvertor.<T>createArrayFromString(input, separator, finalType));
     }
 
-    public AbstractList(T[] list) {
-        this.list = Arrays.copyOf(list, list.length);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T[] parse(String value, String separator, Class<T> finalType) {
-        if (value == null || separator == null || finalType == null) {
-            throw new NullPointerException();
-        }
-
-        String[] stringValueList = value.split(separator);
-        T[] resultList = (T[]) Array.newInstance(finalType, stringValueList.length);
-
-        for (int i = 0; i < stringValueList.length; i++) {
-            String stringValue = stringValueList[i].trim();
-            T resultValue = null;
-
-            if (finalType == String.class) {
-                resultValue = (T) stringValue;
-            } else {
-                resultValue = AbstractList.<T>createInstance(stringValue, finalType);
-            }
-
-            resultList[i] = resultValue;
-        }
-        return resultList;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T createInstance(String value, Class<T> finalType) {
-        T resultValue = null;
-
-        try {
-            Method method = finalType.getMethod("valueOf", String.class);
-            resultValue = (T) method.invoke(null, value);
-        } catch (NoSuchMethodException e) {
-            try {
-                Constructor<T> constructor = finalType.getConstructor(String.class);
-                resultValue = constructor.newInstance(value);
-            } catch (NoSuchMethodException e1) {
-                throw new IllegalArgumentException("Type '" + finalType + "' does not have either method valueOf(String) or  constructor <init>  (String)...");
-            } catch (Exception e2) {
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return resultValue;
+    public AbstractList(T[] array) {
+        this.list = Arrays.copyOf(array, array.length);
     }
 
     public int size() {
