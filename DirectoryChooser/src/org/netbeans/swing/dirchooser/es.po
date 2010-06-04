@@ -1,0 +1,67 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-06-03 12:42+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-06-04 03:46+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr ""
+"Reemplaza la interfaz regular de elección de directorio de Swing en el modo "
+"solo-directorios."
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr ""
+"Reemplaza la interfaz regular de elección de directorio de Swing en el modo "
+"solo-directorios con una interfaz mejorada."
+
+msgid "LBL_NewFolder"
+msgstr "Nueva Carpeta"
+
+msgid "LBL_Rename"
+msgstr "Renombrar"
+
+msgid "LBL_Delete"
+msgstr "Eliminar"
+
+msgid "MSG_Delete"
+msgstr "¿Estás seguro de que quieres eliminar {0}?"
+
+msgid "MSG_Delete_Multiple"
+msgstr "¿Estás seguro de que quieres eliminar los siguientes elementos {0}?"
+
+msgid "MSG_Plur_Delete"
+msgstr "Los archivos no pueden ser eliminados."
+
+msgid "MSG_Sing_Delete"
+msgstr "El archivo no puede ser eliminado"
+
+msgid "MSG_Confirm"
+msgstr "Confirmar"
+
+msgid "TLTP_HomeFolder"
+msgstr "Abrir la carpeta de usuario"
+
+msgid "MSG_SlownessNote"
+msgstr ""
+"<html>El dialogo parece funcionar lento, probablemente debido a un bug del "
+"JDK\r\n"
+"Por favor intenta actualizar el JDK, eliminar archivos zip del escritorio "
+"o\r\n"
+"ejecutar el sistema con la propiedad <b>-J-"
+"Dnb.FileChooser.useShellFolder=false</b>.</html>"
+
+msgid "BTN_NotShow"
+msgstr "No mostrar de nuevo"

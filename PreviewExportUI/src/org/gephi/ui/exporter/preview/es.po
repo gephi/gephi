@@ -1,0 +1,78 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-06-03 09:21+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-06-04 03:46+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Interfaz de usuario de exportadores vectoriales"
+
+msgid "UIExporterPDFPanel.labelPageSize.text"
+msgstr "Tamaño de página:"
+
+msgid "UIExporterPDFPanel.labelWidth.text"
+msgstr "Ancho:"
+
+msgid "UIExporterPDFPanel.labelHeight.text"
+msgstr "Alto:"
+
+msgid "UIExporterPDFPanel.portraitRadio.text"
+msgstr "Vertical"
+
+msgid "UIExporterPDFPanel.landscapeRadio.text"
+msgstr "Horizontal"
+
+msgid "UIExporterPDFPanel.labelOrientation.text"
+msgstr "Orientación:"
+
+msgid "UIExporterPDFPanel.labelTop.text"
+msgstr "Superior:"
+
+msgid "UIExporterPDFPanel.labelBottom.text"
+msgstr "Inferior:"
+
+msgid "UIExporterPDFPanel.labelMargins.text"
+msgstr "Márgenes:"
+
+msgid "UIExporterPDFPanel.labelLeft.text"
+msgstr "Izquierdo:"
+
+msgid "UIExporterPDFPanel.labelRight.text"
+msgstr "Derecho:"
+
+msgid "UIExporterPDFPanel.pageSize.custom"
+msgstr "Personalizado..."
+
+msgid "UIExporterPDFPanel.labelUnit.text"
+msgstr "Unidades:"
+
+msgid "UIExporterPDFPanel.unitLink.millimeter"
+msgstr "Milímetros"
+
+msgid "UIExporterPDFPanel.unitLink.inch"
+msgstr "Pulgadas"
+
+msgid "UIExporterPDFPanel.labelUnit.millimeter"
+msgstr "mm"
+
+msgid "UIExporterPDFPanel.labelUnit.inch"
+msgstr "in"
+
+msgid "PositiveSizeValidator.NEGATIVE"
+msgstr "{0} debe ser positivo"
+
+msgid "UIExporterPDFPanel.unitLink.toolTipText"
+msgstr "Cambiar unidades entre milímetros/pulgadas"

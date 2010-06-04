@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-06-02 21:47+0000\n"
+"PO-Revision-Date: 2010-06-03 09:22+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,31 +17,5 @@ msgstr ""
 "X-Launchpad-Export-Date: 2010-06-04 03:46+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-msgid "OpenIDE-Module-Long-Description"
-msgstr ""
-"Componentes Swing reutilizables que pueden ser utilizados con diferentes "
-"propósitos"
-
-msgid "HTMLTextArea_CutString"
-msgstr "Cortar"
-
-msgid "HTMLTextArea_CopyString"
-msgstr "Copiar"
-
-msgid "HTMLTextArea_PasteString"
-msgstr "Pegar"
-
-msgid "HTMLTextArea_DeleteString"
-msgstr "Eliminar"
-
-msgid "HTMLTextArea_SelectAllString"
-msgstr "Seleccionar todo"
-
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Componentes Swing reutilizables"
-
-msgid "JRangeSliderPanel.lowerBoundTextField.text"
-msgstr "NaN"
-
-msgid "JRangeSliderPanel.upperBoundTextField.text"
-msgstr "NaN"
+msgstr "Interfaz de usuario de las implementaciones de los filtros"

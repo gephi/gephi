@@ -1,0 +1,66 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-06-03 09:47+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-06-04 03:46+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "ColorTransformerUI.name"
+msgstr "Color"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Implementaciones de los transformadores de clasificación"
+
+msgid "SizeTransformerUI.name"
+msgstr "Tamaño/Peso"
+
+msgid "LabelColorTransformerUI.name"
+msgstr "Color de etiqueta"
+
+msgid "LabelSizeTransformerUI.name"
+msgstr "Tamaño de etiqueta"
+
+msgid "ColorTransformerPanel.labelColor.text"
+msgstr "Color:"
+
+msgid "ColorTransformerPanel.labelRange.text"
+msgstr "Rango:"
+
+msgid "SizeTransformerPanel.labelMaxSize.text"
+msgstr "Tamaño max:"
+
+msgid "SizeTransformerPanel.labelMinSize.text"
+msgstr "Tamaño min:"
+
+msgid "SizeTransformerPanel.labelRange.text"
+msgstr "Rango:"
+
+msgid "SizeTransformerPanel.lowerBoundLabel.text"
+msgstr "NaN"
+
+msgid "SizeTransformerPanel.upperBoundLabel.text"
+msgstr "NaN"
+
+msgid "ColorTransformerPanel.lowerBoundLabel.text"
+msgstr "NaN"
+
+msgid "ColorTransformerPanel.upperBoundLabel.text"
+msgstr "NaN"
+
+msgid "PalettePopup.default"
+msgstr "Por defecto"
+
+msgid "PalettePopup.invert"
+msgstr "Invertir"

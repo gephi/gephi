@@ -1,0 +1,120 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-06-03 09:10+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-06-04 03:46+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Interfaz de usuario de los exportadores estándar"
+
+msgid "UIExporterGEXFPanel.labelExport.text"
+msgstr "Exportar:"
+
+msgid "UIExporterGDFPanel.jRadioButton1.text"
+msgstr "Comillas simples"
+
+msgid "UIExporterGDFPanel.positionExportCheckbox.text"
+msgstr "Posición (x,y)"
+
+msgid "UIExporterGDFPanel.colorsExportCheckbox.text"
+msgstr "Colores"
+
+msgid "UIExporterGDFPanel.attributesExportCheckbox.text"
+msgstr "Atributos"
+
+msgid "UIExporterGDFPanel.labelExport.text"
+msgstr "Exportar:"
+
+msgid "UIExporterGDFPanel.jRadioButton2.text"
+msgstr "Comillas dobles"
+
+msgid "UIExporterGDFPanel.quotesCheckbox.text"
+msgstr "Texto entre comillas"
+
+msgid "UIExporterGDFPanel.normalizeCheckbox.text"
+msgstr "Normalizar"
+
+msgid "UIExporterGDFPanel.labelQuotes.text"
+msgstr "La encapsulación de los campos usa comillas dobles por defecto"
+
+msgid "UIExporterGDFPanel.labelNormalize.text"
+msgstr "Escalar posición y tamaño entre 0 y 1"
+
+msgid "UIExporterGEXFPanel.attributesExportCheckbox.text"
+msgstr "Atributos"
+
+msgid "UIExporterGEXFPanel.colorsExportCheckbox.text"
+msgstr "Colores"
+
+msgid "UIExporterGEXFPanel.positionExportCheckbox.text"
+msgstr "Posición (x,y)"
+
+msgid "UIExporterGEXFPanel.sizeExportCheckbox.text"
+msgstr "Tamaño"
+
+msgid "UIExporterGEXFPanel.normalizeCheckbox.text"
+msgstr "Normalizar"
+
+msgid "UIExporterGEXFPanel.labelNormalize.text"
+msgstr "Escalar posición y tamaño entre 0 y 1"
+
+msgid "UIExporterGDFPanel.simpleQuotesCheckbox.text"
+msgstr "Comillas simples"
+
+msgid "UIExporterGDFPanel.labelQuotes1.text"
+msgstr "Usar comillas simples en lugar de comillas dobles"
+
+msgid "UIExporterGDFPanel.visibilityCheckbox.text"
+msgstr "Visibilidad (grafo visible, etiquetas visibles)"
+
+msgid "UIExporterGraphMLPanel.labelExport.text"
+msgstr "Exportar:"
+
+msgid "UIExporterGraphMLPanel.positionExportCheckbox.text"
+msgstr "Posición (x,y)"
+
+msgid "UIExporterGraphMLPanel.normalizeCheckbox.text"
+msgstr "Normalizar"
+
+msgid "UIExporterGraphMLPanel.colorsExportCheckbox.text"
+msgstr "Colores"
+
+msgid "UIExporterGraphMLPanel.attributesExportCheckbox.text"
+msgstr "Atributos"
+
+msgid "UIExporterGraphMLPanel.sizeExportCheckbox.text"
+msgstr "Tamaño"
+
+msgid "UIExporterGraphMLPanel.labelNormalize.text"
+msgstr "Escalar tamaño y posición entre 0 y 1"
+
+msgid "UIExporterCSVPanel.labelExport.text"
+msgstr "Exportar:"
+
+msgid "UIExporterCSVPanel.nodeIdCheckbox.text"
+msgstr "ID de nodo"
+
+msgid "UIExporterCSVPanel.edgeWeightCheckbox.text"
+msgstr "Peso de arista"
+
+msgid "UIExporterCSVPanel.listRadio.text"
+msgstr "Lista"
+
+msgid "UIExporterCSVPanel.matrixRadio.text"
+msgstr "Matriz"
+
+msgid "UIExporterCSVPanel.zeroEdgeCheckbox.text"
+msgstr "Cero cuando no hay arista"

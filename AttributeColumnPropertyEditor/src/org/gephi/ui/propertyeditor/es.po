@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-06-02 21:47+0000\n"
+"PO-Revision-Date: 2010-06-03 09:39+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,29 +19,9 @@ msgstr ""
 
 msgid "OpenIDE-Module-Long-Description"
 msgstr ""
-"Componentes Swing reutilizables que pueden ser utilizados con diferentes "
-"propósitos"
-
-msgid "HTMLTextArea_CutString"
-msgstr "Cortar"
-
-msgid "HTMLTextArea_CopyString"
-msgstr "Copiar"
-
-msgid "HTMLTextArea_PasteString"
-msgstr "Pegar"
-
-msgid "HTMLTextArea_DeleteString"
-msgstr "Eliminar"
-
-msgid "HTMLTextArea_SelectAllString"
-msgstr "Seleccionar todo"
+"Estos editores de propiedades pueden ser utilizados para mostrar un combobox "
+"con las columnas actuales en un PropertySheet."
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Componentes Swing reutilizables"
-
-msgid "JRangeSliderPanel.lowerBoundTextField.text"
-msgstr "NaN"
-
-msgid "JRangeSliderPanel.upperBoundTextField.text"
-msgstr "NaN"
+msgstr ""
+"Proporcionar la clase PropertyEditor para las propiedades de AttributeColumn"

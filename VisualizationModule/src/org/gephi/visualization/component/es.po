@@ -1,0 +1,226 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-06-03 11:19+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-06-04 03:46+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "CTL_GraphAction"
+msgstr "Grafo"
+
+msgid "CTL_GraphTopComponent"
+msgstr "Grafo"
+
+msgid "GraphTopComponent.jToggleButton1.TabConstraints.tabTitle"
+msgstr "tab2"
+
+msgid "GraphTopComponent.jToggleButton2.TabConstraints.tabTitle"
+msgstr "tab2"
+
+msgid "GraphTopComponent.waitingLabel.text"
+msgstr "Inicializando..."
+
+msgid "VizToolbar.Global.background"
+msgstr "Color de fondo"
+
+msgid "VizToolbar.Global.screenshot"
+msgstr "Captura de pantalla"
+
+msgid "VizToolbar.Global.screenshot.configure"
+msgstr "Configurar..."
+
+msgid "VizToolbar.Nodes.showLabels"
+msgstr "Mostrar etiquetas de los nodos"
+
+msgid "VizToolbar.Nodes.showHulls"
+msgstr "Mostrar envolturas"
+
+msgid "VizToolbar.Edges.showEdges"
+msgstr "Mostrar aristas"
+
+msgid "VizToolbar.Edges.edgeNodeColor"
+msgstr "Las aristas tienen el color del nodo origen"
+
+msgid "VizToolbar.Edges.showLabels"
+msgstr "Mostrar etiquetas de las aristas"
+
+msgid "VizToolbar.Edges.edgeScale"
+msgstr "Escala del peso de las aristas"
+
+msgid "VizToolbar.Labels.font"
+msgstr "Fuente"
+
+msgid "VizToolbar.Labels.defaultColor"
+msgstr "Color por defecto"
+
+msgid "VizToolbar.Labels.sizeMode"
+msgstr "Modo de tamaño"
+
+msgid "VizToolbar.Labels.colorMode"
+msgstr "Modo de color"
+
+msgid "VizToolbar.Labels.attributes"
+msgstr "Atributos"
+
+msgid "VizToolbar.Labels.fontScale"
+msgstr "Escala de la fuente"
+
+msgid "NodeSettingsPanel.adjustTextCheckbox.text"
+msgstr "Ajustar al texto"
+
+msgid "NodeSettingsPanel.labelShape.text"
+msgstr "Forma por defecto:"
+
+msgid "NodeSettingsPanel.defaultShape.message3d"
+msgstr ""
+"Esta forma es en 3 dimensiones, el motor gráfico va a ser reinicializado. "
+"¿Proceder?"
+
+msgid "NodeSettingsPanel.defaultShape.message.title"
+msgstr "Forma por defecto"
+
+msgid "NodeSettingsPanel.defaultShape.message2d"
+msgstr ""
+"Esta forma es en 2 dimensiones, el motor gráfico va a ser reinicializado. "
+"¿Proceder?"
+
+msgid "EdgeSettingsPanel.labelEdgeColor.text"
+msgstr "Color por defecto de las aristas:"
+
+msgid "EdgeSettingsPanel.sourceNodeColorCheckbox.text"
+msgstr "Color del nodo origen"
+
+msgid "EdgeSettingsPanel.showEdgesCheckbox.text"
+msgstr "Mostrar"
+
+msgid "GlobalSettingsPanel.hightlightCheckBox.text"
+msgstr "Destacar selección"
+
+msgid "GlobalSettingsPanel.labelBackgroundColor.text"
+msgstr "Color de fondo:"
+
+msgid "GlobalSettingsPanel.autoSelectNeigborCheckbox.text"
+msgstr "Auto-seleccionar nodos vecinos"
+
+msgid "LabelSettingsPanel.labelNodeFont.text"
+msgstr "Fuente:"
+
+msgid "LabelSettingsPanel.showNodeLabelsCheckbox.text"
+msgstr "Nodos"
+
+msgid "LabelSettingsPanel.showEdgeLabelsCheckbox.text"
+msgstr "Aristas"
+
+msgid "LabelSettingsPanel.labelEdgeFont.text"
+msgstr "Fuente:"
+
+msgid "LabelSettingsPanel.labelEdgeColor.text"
+msgstr "Color:"
+
+msgid "LabelSettingsPanel.labelNodeColor.text"
+msgstr "Color:"
+
+msgid "LabelSettingsPanel.labelNodeSize.text"
+msgstr "Tamaño:"
+
+msgid "LabelSettingsPanel.labelEdgeSize.text"
+msgstr "Tamaño:"
+
+msgid "LabelSettingsPanel.labelSizeMode.text"
+msgstr "Tamaño:"
+
+msgid "LabelSettingsPanel.labelColorMode.text"
+msgstr "Color:"
+
+msgid "LabelSettingsPanel.hideNonSelectedCheckbox.text"
+msgstr "Ocultar no seleccionados"
+
+msgid "SelectionToolbar.rectangle.tooltip"
+msgstr "Selección rectangular"
+
+msgid "SelectionToolbar.mouse.tooltip"
+msgstr "Selección directa"
+
+msgid "SelectionToolbar.drag.tooltip"
+msgstr "Desplazar"
+
+msgid "ActionsToolbar.centerOnGraph"
+msgstr "Centrar en el grafo"
+
+msgid "ActionsToolbar.centerOnZero"
+msgstr "Centrar en el punto cero"
+
+msgid "ActionsToolbar.resetColors"
+msgstr "Reestablecer colores"
+
+msgid "ActionsToolbar.resetSizes"
+msgstr "Reestablecer tamaños"
+
+msgid "ActionsToolbar.resetLabelColors"
+msgstr "Reestablecer colores de las etiquetas"
+
+msgid "ActionsToolbar.resetLabelSizes"
+msgstr "Reestablecer tamaño de las etiquetas"
+
+msgid "ActionsToolbar.resetLabelVisible"
+msgstr "Reestablecer visibilidad de las etiquetas"
+
+msgid "LabelAttributesPanel.title"
+msgstr "Configuración del texto de la etiquetas"
+
+msgid "LabelAttributesPanel.nodesToggleButton.text"
+msgstr "Nodos"
+
+msgid "LabelAttributesPanel.edgesToggleButton.text"
+msgstr "Aristas"
+
+msgid "LabelAttributesPanel.labelComment.text"
+msgstr "Seleccionar atributos para mostrar como etiquetas"
+
+msgid "LabelAttributesPanel.showPropertiesCheckbox.text"
+msgstr "Mostrar propiedades"
+
+msgid "LabelSettingsPanel.configureLabelsButton.text"
+msgstr "Configurar..."
+
+msgid "EdgeSettingsPanel.selectionColorCheckbox.toolTipText"
+msgstr "Dibujar color particular para las aristas seleccionadas"
+
+msgid "EdgeSettingsPanel.selectionColorCheckbox.text"
+msgstr "Color de selección"
+
+msgid "EdgeSettingsPanel.edgeInSelectionColorChooser.toolTipText"
+msgstr "Color de arista Entrante <-"
+
+msgid "EdgeSettingsPanel.edgeOutSelectionColorChooser.toolTipText"
+msgstr "Color de arista Saliente ->"
+
+msgid "EdgeSettingsPanel.edgeBothSelectionColorChooser.toolTipText"
+msgstr "Color de arista Bidireccional <->"
+
+msgid "NodeSettingsPanel.showHullsCheckbox.text"
+msgstr "Mostrar envolturas"
+
+msgid "EdgeSettingsPanel.labelScale.text"
+msgstr "Escala"
+
+msgid "EdgeSettingsPanel.labelIn.text"
+msgstr "Entrada:"
+
+msgid "EdgeSettingsPanel.labelOut.text"
+msgstr "Salida"
+
+msgid "EdgeSettingsPanel.labelBoth.text"
+msgstr "Bidireccional:"

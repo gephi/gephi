@@ -1,0 +1,39 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-06-03 10:44+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-06-04 03:46+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Interfaz de usuario para la gestión del espacio de trabajo"
+
+msgid "WorkspaceUISelectorPanel.workspaceLabel.text"
+msgstr "Sin espacio de trabajo"
+
+msgid "WorkspacePanePanel_closeWorkspace_Question"
+msgstr "¿Estás seguro de que quieres eliminar este espacio de trabajo?"
+
+msgid "WorkspacePanePanel_closeWorkspace_Title"
+msgstr "Cerrar espacio de trabajo"
+
+msgid "WorkspacePanePanel.closeButton.toolTipText"
+msgstr "Cerrar espacio de trabajo"
+
+msgid "WorkspaceUISelectorPanel.leftArrowButton.toolTipText"
+msgstr "Anterior espacio de trabajo"
+
+msgid "WorkspaceUISelectorPanel.rightArrowButton.toolTipText"
+msgstr "Siguiente espacio de trabajo"

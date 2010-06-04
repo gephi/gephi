@@ -1,0 +1,78 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-06-03 10:37+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-06-04 03:46+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "EdgePencilPanel.labelWeight.text"
+msgstr "Peso:"
+
+msgid "EdgePencilPanel.labelColor.text"
+msgstr "Color:"
+
+msgid "BrushPanel.labelColor.text"
+msgstr "Color:"
+
+msgid "BrushPanel.labelIntensity.text"
+msgstr "Intensidad:"
+
+msgid "BrushPanel.jLabel1.text"
+msgstr "%"
+
+msgid "BrushPanel.labelDiffusion.text"
+msgstr "Difusión:"
+
+msgid "NodePencilPanel.labelColor.text"
+msgstr "Color:"
+
+msgid "NodePencilPanel.statusLabel.text"
+msgstr "Añadir nodo al grafo"
+
+msgid "NodePencilPanel.labelSize.text"
+msgstr "Tamaño:"
+
+msgid "ShortestPathPanel.labelColor.text"
+msgstr "Color:"
+
+msgid "HeatMapPanel.statusLabel.text"
+msgstr "Pulsa en un nodo"
+
+msgid "HeatMapPanel.labelMode.text"
+msgstr "Modo:"
+
+msgid "HeatMapPanel.labelGradient.text"
+msgstr "Gradiente:"
+
+msgid "HeatMapPanel.labelPalette.text"
+msgstr "Paleta:"
+
+msgid "HeatMapPanel.dontPaintUnreachableCheckbox.text"
+msgstr "No pintar nodos inalcanzables"
+
+msgid "HeatMapPanel.invertPalette.text"
+msgstr "Invertir paleta"
+
+msgid "PainterPanel.labelColor.text"
+msgstr "Color"
+
+msgid "SizerPanel.jLabel1.text"
+msgstr "Presiona en los nodos y arrastra el ratón verticalmente"
+
+msgid "SizerPanel.labelSize.text"
+msgstr "Tamaño:"
+
+msgid "SizerPanel.sizeLabel.text"
+msgstr "NaN"
