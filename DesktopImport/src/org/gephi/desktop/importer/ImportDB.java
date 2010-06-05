@@ -29,6 +29,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.io.importer.spi.DatabaseType;
+import org.gephi.neo4j.Neo4jImporter;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -69,7 +70,8 @@ public class ImportDB extends CallableSystemAction {
 
                 if (dialogResult == JFileChooser.APPROVE_OPTION) {
                     File neo4jDirectory = fileChooser.getSelectedFile();
-                    System.out.println("selected file: " + neo4jDirectory.getAbsolutePath());
+
+                    Neo4jImporter.importLocal(neo4jDirectory);
                 }
             }
         });

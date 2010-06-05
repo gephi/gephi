@@ -18,6 +18,10 @@
                 <package>org.neo4j.kernel.manage</package>
             </public-packages>
             <class-path-extension>
+                <runtime-relative-path>ext/jta-1.0.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jta-1.0.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/neo4j-kernel-1.1-20100528.104638-80.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/neo4j-kernel-1.1-20100528.104638-80.jar</binary-origin>
             </class-path-extension>
