@@ -21,9 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.desktop.importer;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
 import javax.swing.AbstractAction;
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.io.importer.spi.DatabaseType;
 import org.openide.util.HelpCtx;
@@ -55,6 +58,30 @@ public class ImportDB extends CallableSystemAction {
     @Override
     public JMenuItem getMenuPresenter() {
         JMenu menu = new JMenu(NbBundle.getMessage(ImportDB.class, "CTL_ImportDB"));
+
+        JMenuItem neo4jLocalDatabaseMenuItem = new JMenuItem(new AbstractAction("Neo4j local database") {
+
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("Choose local Neo4j directory");
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int dialogResult = fileChooser.showOpenDialog(null);
+
+                if (dialogResult == JFileChooser.APPROVE_OPTION) {
+                    File neo4jDirectory = fileChooser.getSelectedFile();
+                    System.out.println("selected file: " + neo4jDirectory.getAbsolutePath());
+                }
+            }
+        });
+        menu.add(neo4jLocalDatabaseMenuItem);
+
+        JMenuItem neo4jRemoteDatabaseMenuItem = new JMenuItem(new AbstractAction("Neo4j remote database") {
+
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Not implemented yet...", "Neo4j remote database support", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        menu.add(neo4jRemoteDatabaseMenuItem);
 
         final ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
         if (importController != null) {
