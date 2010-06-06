@@ -248,7 +248,7 @@ public class ConnectedComponents implements Statistics, LongTask {
      * @return
      */
     public String getReport() {
-        String report = new String("<HTML> <BODY> <h1>Graph Distance  Report </h1> "
+        String report = new String("<HTML> <BODY> <h1>Connected Components Report </h1> "
                 + "<hr> <br> <h2>Network Revision Number:</h2>"
                 + mGraphRevision
                 + "<br>"

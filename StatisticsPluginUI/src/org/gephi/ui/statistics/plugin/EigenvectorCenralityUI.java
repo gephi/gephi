@@ -18,7 +18,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.ui.statistics.plugin;
 
 import javax.swing.JPanel;
@@ -65,7 +64,7 @@ public class EigenvectorCenralityUI implements StatisticsUI {
     }
 
     public String getDisplayName() {
-        return "Eigenvector Centrality ";
+        return "Eigenvector Centrality";
     }
 
     public String getCategory() {
@@ -75,5 +74,4 @@ public class EigenvectorCenralityUI implements StatisticsUI {
     public int getPosition() {
         return 1000;
     }
-
 }
