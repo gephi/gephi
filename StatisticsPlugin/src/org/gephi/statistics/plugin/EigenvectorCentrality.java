@@ -155,12 +155,13 @@ public class EigenvectorCentrality implements Statistics, LongTask {
                     return;
                 }
             }
-            System.out.println(s + "\t" + max);
             mSumChange = 0;
             for (int k = 0; k < N; k++) {
-                mSumChange += Math.abs(mCentralities[k] - (tmp[k] / max));
-                mCentralities[k] = tmp[k] / max;
-                //tmp[k] = 0;
+                if(max != 0){
+                    mSumChange += Math.abs(mCentralities[k] - (tmp[k] / max));
+                    mCentralities[k] = tmp[k] / max;
+                    //tmp[k] = 0;
+                }
                 if (this.mIsCanceled) {
                     return;
                 }
