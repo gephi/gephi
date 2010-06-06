@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Cezary Bartosiak
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -222,6 +222,48 @@ public enum AttributeType {
                 return attributeType;
             }
         }
+
+        return null;
+    }
+
+	/**
+     * Build an dynamic <code>AttributeType</code> from the given <code>obj</code> type.
+     * If the given <code>obj</code> class match with an
+     * <code>AttributeType</code> type, returns this type. Returns <code>null</code>
+     * otherwise.
+     * <p>
+     * For instance if
+     * <b>obj instanceof Float</b> equals <b>true</b>, returns
+     * <code>AttributeType.DYNAMIC_FLOAT</code>.
+     *
+     * @param obj   the object that is to be parsed
+     * @return      the compatible <code>AttributeType</code>, or <code>null</code>
+     */
+    public static AttributeType parseDynamic(Object obj) {
+		Class<?> c = obj.getClass();
+		
+		if (c.equals(Byte.class))
+			return DYNAMIC_BYTE;
+		if (c.equals(Short.class))
+			return DYNAMIC_SHORT;
+		if (c.equals(Integer.class))
+			return DYNAMIC_INT;
+		if (c.equals(Long.class))
+			return DYNAMIC_LONG;
+		if (c.equals(Float.class))
+			return DYNAMIC_FLOAT;
+		if (c.equals(Double.class))
+			return DYNAMIC_DOUBLE;
+		if (c.equals(Boolean.class))
+			return DYNAMIC_BOOLEAN;
+		if (c.equals(Character.class))
+			return DYNAMIC_CHAR;
+		if (c.equals(String.class))
+			return DYNAMIC_STRING;
+		if (c.equals(BigInteger.class))
+			return DYNAMIC_BIGINTEGER;
+		if (c.equals(BigDecimal.class))
+			return DYNAMIC_BIGDECIMAL;
 
         return null;
     }
