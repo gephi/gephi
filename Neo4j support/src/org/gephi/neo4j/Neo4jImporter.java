@@ -66,6 +66,7 @@ public final class Neo4jImporter {
 
         //createNewProject();
 
+        // the algorithm traverses through all relationships
         for (Relationship neoRelationship : traverser.relationships())
             processRelationship(neoRelationship);
 
@@ -99,6 +100,14 @@ public final class Neo4jImporter {
     private static class GephiHelper {
         private GephiHelper() {}
 
+        /**
+         * Creates Gephi node representation from Neo4j node and all its property data. If Gephi node
+         * doesn't already exist, it will be created with all attached data from Neo4j node, otherwise
+         * it will not be created again.
+         *
+         * @param neoNode Neo4j node
+         * @return Gephi node
+         */
         public static org.gephi.graph.api.Node getGephiNodeFromNeoNode(org.neo4j.graphdb.Node neoNode) {
             Integer gephiNodeId = idMapper.get(neoNode.getId());
 
@@ -109,28 +118,43 @@ public final class Neo4jImporter {
                 gephiNode = graphModel.factory().newNode();
                 graphModel.getGraph().addNode(gephiNode);
 
+                for (String neoPropertyKey : neoNode.getPropertyKeys()) {
+                    Object neoPropertyValue = neoNode.getProperty(neoPropertyKey);
+                    // property keys and values don't have to be stored, because delegate mechanism
+                    // will query all required data directly from Neo4j database
+
+                    // only for testing purposes
+                    gephiNode.getNodeData().setLabel(neoPropertyValue.toString());
+                }
+
                 idMapper.put(neoNode.getId(), gephiNode.getId());
             }
 
-            for (String neoPropertyKey : neoNode.getPropertyKeys()) {
-                Object neoPropertyValue = neoNode.getProperty(neoPropertyKey);
-
-                gephiNode.getNodeData().setLabel(neoPropertyValue.toString());
-            }
+            // only for testing purposes
             if (gephiNode.getNodeData().getLabel() == null)
                 gephiNode.getNodeData().setLabel("<START NODE>");
 
             return gephiNode;
         }
 
+        /**
+         * Creates Gephi edge betweeen two Gephi nodes. Graph is traversing through all relationships
+         * (edges), so for every Neo4j relationship a Gephi edge will be created.
+         *
+         * @param startGephiNode  start Gephi node
+         * @param endGephiNode    end Gephi node
+         * @param neoRelationship Neo4j relationship
+         */
         public static void createGephiEdge(org.gephi.graph.api.Node startGephiNode,
                                            org.gephi.graph.api.Node endGephiNode,
                                            Relationship neoRelationship) {
-            Edge gephiEdge;
-
-            gephiEdge = graphModel.factory().newEdge(startGephiNode, endGephiNode);
+            Edge gephiEdge = graphModel.factory().newEdge(startGephiNode, endGephiNode);
             graphModel.getGraph().addEdge(gephiEdge);
 
+            // property keys and values don't have to be stored, because delegate mechanism will query
+            // all required data directly from Neo4j database
+
+            // only for testing purposes
             gephiEdge.getEdgeData().setLabel(neoRelationship.getType().name());
         }
     }
