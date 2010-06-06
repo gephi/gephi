@@ -34,6 +34,7 @@ import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -99,10 +100,11 @@ public class ConnectedComponents implements Statistics, LongTask {
             LinkedList<Node> component = new LinkedList<Node>();
 
             //Seed the seach Q
-            for (Node first : graph.getNodes()) {
+            NodeIterable iter = graph.getNodes();
+            for (Node first : iter) {
                 if (color[indicies.get(first)] == 0) {
                     Q.add(first);
-
+                    iter.doBreak();
                     break;
                 }
             }
@@ -176,13 +178,16 @@ public class ConnectedComponents implements Statistics, LongTask {
             LinkedList<Node> component = new LinkedList<Node>();
             //Seed the seach Q
             Node first = null;
-            for (Node u : graph.getNodes()) {
+            NodeIterable iter = graph.getNodes();
+            for (Node u : iter) {
                 if (index[indicies.get(u)] == 0) {
                     first = u;
+                    iter.doBreak();
                     break;
                 }
             }
             if (first == null) {
+                graph.readUnlockAll();
                 return;
             }
             tarjans(componentCol, S, graph, first, index, low_index, indicies);
