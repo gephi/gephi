@@ -33,7 +33,6 @@ import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.EdgeDraft;
-import org.gephi.io.importer.api.EdgeListDatabase;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.PropertiesAssociations;
@@ -41,37 +40,30 @@ import org.gephi.io.importer.api.PropertiesAssociations.EdgeProperties;
 import org.gephi.io.importer.api.PropertiesAssociations.NodeProperties;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.DatabaseImporter;
-import org.gephi.io.importer.spi.DatabaseType;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = DatabaseImporter.class)
-public class EdgeListImporter implements DatabaseImporter {
+public class ImporterEdgeList implements DatabaseImporter {
 
     private Report report;
-    private EdgeListDatabase database;
+    private EdgeListDatabaseImpl database;
     private ContainerLoader container;
     private Connection connection;
 
-    public boolean importData(Database database, ContainerLoader container, Report report) throws Exception {
-        this.database = (EdgeListDatabase) database;
-        this.container = container;
-        this.report = report;
-
+    public boolean execute() {
         try {
             importData();
         } catch (Exception e) {
-            clean();
-            throw e;
+            close();
+            throw new RuntimeException(e);
         }
-        clean();
+        close();
         return true;
     }
 
-    private void clean() {
+    private void close() {
         //Close connection
         if (connection != null) {
             try {
@@ -79,11 +71,6 @@ public class EdgeListImporter implements DatabaseImporter {
                 report.log("Database connection terminated");
             } catch (Exception e) { /* ignore close errors */ }
         }
-
-        report = null;
-        database = null;
-        connection = null;
-        container = null;
     }
 
     private void importData() throws Exception {
@@ -494,10 +481,27 @@ public class EdgeListImporter implements DatabaseImporter {
         }
     }
 
-    public boolean isMatchingImporter(DatabaseType databaseType) {
-        if (databaseType instanceof EdgeList) {
-            return true;
-        }
-        return false;
+    public void setDatabase(Database database) {
+        this.database = (EdgeListDatabaseImpl) database;
     }
+
+    public Database getDatabase() {
+        return database;
+    }
+
+    public void setContainer(ContainerLoader container) {
+        this.container = container;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
+
+    public ContainerLoader getContainer() {
+        return container;
+    }
+
+    public Report getReport() {
+        return report;
+    }  
 }

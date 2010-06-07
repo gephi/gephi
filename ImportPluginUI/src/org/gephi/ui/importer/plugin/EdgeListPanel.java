@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.desktop.importer.impl;
+package org.gephi.ui.importer.plugin;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -29,8 +29,7 @@ import javax.swing.DefaultComboBoxModel;
 import org.gephi.io.database.drivers.SQLDriver;
 import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.importer.api.Database;
-import org.gephi.io.importer.api.EdgeListDatabase;
-import org.gephi.io.importer.spi.DatabaseType;
+import org.gephi.io.importer.plugin.database.EdgeListDatabaseImpl;
 import org.netbeans.validation.api.builtin.Validators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
@@ -44,16 +43,14 @@ import org.openide.util.NbBundle;
  */
 public class EdgeListPanel extends javax.swing.JPanel {
 
-    private DatabaseType type;
-    private DatabaseManager databaseManager;
-
+    private EdgeListDatabaseManager databaseManager;
     private static String NEW_CONFIGURATION_NAME =
             NbBundle.getMessage(EdgeListPanel.class,
-                    "EdgeListPanel.template.name");
+            "EdgeListPanel.template.name");
 
     /** Creates new form EdgeListPanel */
     public EdgeListPanel() {
-        databaseManager = new DatabaseManager();
+        databaseManager = new EdgeListDatabaseManager();
         initComponents();
     }
 
@@ -80,8 +77,8 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
     public Database getSelectedDatabase() {
         ConfigurationComboModel model =
-            (ConfigurationComboModel)configurationCombo.getModel();
-        ConfigurationComboItem item = (ConfigurationComboItem)model.getSelectedItem();
+                (ConfigurationComboModel) configurationCombo.getModel();
+        ConfigurationComboItem item = (ConfigurationComboItem) model.getSelectedItem();
 
         populateEdgeListDatabase(item.db);
 
@@ -104,19 +101,18 @@ public class EdgeListPanel extends javax.swing.JPanel {
         driverComboBox.setModel(driverModel);
     }
 
-    public void setDatabaseType(DatabaseType type) {
-        this.type = type;
+    public void setup() {
         configurationCombo.setModel(new EdgeListPanel.ConfigurationComboModel());
         ConfigurationComboModel model =
-            (ConfigurationComboModel)configurationCombo.getModel();
+                (ConfigurationComboModel) configurationCombo.getModel();
         if (model.getSelectedItem().equals(model.templateConfiguration)) {
             this.removeConfigurationButton.setEnabled(false);
         } else {
             this.removeConfigurationButton.setEnabled(true);
         }
     }
-    
-    private void populateForm(EdgeListDatabase db) {
+
+    private void populateForm(EdgeListDatabaseImpl db) {
         configNameTextField.setText(db.getName());
         dbTextField.setText(db.getDBName());
         hostTextField.setText(db.getHost());
@@ -129,15 +125,15 @@ public class EdgeListPanel extends javax.swing.JPanel {
         nodeAttQueryTextField.setText(db.getNodeAttributesQuery());
         edgeAttQueryTextField.setText(db.getEdgeAttributesQuery());
     }
-    
-    private void populateEdgeListDatabase(EdgeListDatabase db) {
+
+    private void populateEdgeListDatabase(EdgeListDatabaseImpl db) {
         db.setName(this.configNameTextField.getText());
         db.setDBName(this.dbTextField.getText());
         db.setHost(this.hostTextField.getText());
         db.setPasswd(new String(this.pwdTextField.getPassword()));
         db.setPort(portTextField.getText() != null
-                && !"".equals(portTextField.getText()) ? 
-                Integer.parseInt(portTextField.getText()) : 0);
+                && !"".equals(portTextField.getText())
+                ? Integer.parseInt(portTextField.getText()) : 0);
         db.setUsername(this.userTextField.getText());
         db.setSQLDriver(this.getSelectedSQLDriver());
         db.setNodeQuery(this.nodeQueryTextField.getText());
@@ -181,6 +177,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
         configNameTextField = new javax.swing.JTextField();
         configNameLabel = new javax.swing.JLabel();
         removeConfigurationButton = new javax.swing.JButton();
+        jXHeader1 = new org.jdesktop.swingx.JXHeader();
 
         configurationCombo.setModel(new EdgeListPanel.ConfigurationComboModel());
         configurationCombo.addActionListener(new java.awt.event.ActionListener() {
@@ -230,7 +227,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
         edgeAttQueryTextField.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.edgeAttQueryTextField.text")); // NOI18N
 
-        testConnection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/impl/test_connection.png"))); // NOI18N
+        testConnection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/importer/plugin/resources/test_connection.png"))); // NOI18N
         testConnection.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.testConnection.text")); // NOI18N
         testConnection.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -246,7 +243,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
         configNameLabel.setText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.configNameLabel.text")); // NOI18N
 
-        removeConfigurationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/importer/impl/remove_config.png"))); // NOI18N
+        removeConfigurationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/importer/plugin/resources/remove_config.png"))); // NOI18N
         removeConfigurationButton.setToolTipText(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.removeConfigurationButton.toolTipText")); // NOI18N
         removeConfigurationButton.setPreferredSize(new java.awt.Dimension(65, 29));
         removeConfigurationButton.addActionListener(new java.awt.event.ActionListener() {
@@ -255,11 +252,14 @@ public class EdgeListPanel extends javax.swing.JPanel {
             }
         });
 
+        jXHeader1.setDescription(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.header")); // NOI18N
+        jXHeader1.setTitle(org.openide.util.NbBundle.getMessage(EdgeListPanel.class, "EdgeListPanel.jXHeader1.title")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -297,16 +297,17 @@ public class EdgeListPanel extends javax.swing.JPanel {
                         .addComponent(testConnection)
                         .addGap(5, 5, 5)))
                 .addContainerGap())
+            .addComponent(jXHeader1, javax.swing.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(16, Short.MAX_VALUE)
+                .addComponent(jXHeader1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(removeConfigurationButton, 0, 0, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(configurationLabel)
-                        .addComponent(configurationCombo, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)))
+                    .addComponent(configurationCombo, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                    .addComponent(configurationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(configNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -352,7 +353,8 @@ public class EdgeListPanel extends javax.swing.JPanel {
                     .addComponent(edgeAttQueryLabel)
                     .addComponent(edgeAttQueryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(testConnection))
+                .addComponent(testConnection)
+                .addContainerGap(39, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -383,10 +385,10 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
     private void removeConfigurationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeConfigurationButtonActionPerformed
         ConfigurationComboModel model =
-            (ConfigurationComboModel)configurationCombo.getModel();
-        ConfigurationComboItem item = (ConfigurationComboItem)model.getSelectedItem();
+                (ConfigurationComboModel) configurationCombo.getModel();
+        ConfigurationComboItem item = (ConfigurationComboItem) model.getSelectedItem();
 
-        if(databaseManager.removeDatabase(item.db)) {
+        if (databaseManager.removeDatabase(item.db)) {
 
             model.removeElement(item);
             databaseManager.persist();
@@ -404,20 +406,19 @@ public class EdgeListPanel extends javax.swing.JPanel {
                     message, NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notifyLater(e);
         }
-        
+
     }//GEN-LAST:event_removeConfigurationButtonActionPerformed
 
     private void configurationComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_configurationComboActionPerformed
         ConfigurationComboModel model =
-            (ConfigurationComboModel)configurationCombo.getModel();
-        ConfigurationComboItem item = (ConfigurationComboItem)model.getSelectedItem();
+                (ConfigurationComboModel) configurationCombo.getModel();
+        ConfigurationComboItem item = (ConfigurationComboItem) model.getSelectedItem();
         if (item.equals(model.templateConfiguration)) {
             this.removeConfigurationButton.setEnabled(false);
         } else {
             this.removeConfigurationButton.setEnabled(true);
         }
     }//GEN-LAST:event_configurationComboActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel configNameLabel;
     private javax.swing.JTextField configNameTextField;
@@ -433,6 +434,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
     protected javax.swing.JTextField edgeQueryTextField;
     private javax.swing.JLabel hostLabel;
     protected javax.swing.JTextField hostTextField;
+    private org.jdesktop.swingx.JXHeader jXHeader1;
     protected javax.swing.JTextField nodeAttQueryTextField;
     private javax.swing.JLabel nodeAttQueyLabel;
     private javax.swing.JLabel nodeQueryLabel;
@@ -459,26 +461,21 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
         public ConfigurationComboModel() {
             super();
-            
-            if (type != null) {
-
-                Collection<Database> configs = databaseManager.getDatabases();
-                for (Database db : configs) {
-                    EdgeListDatabase dbe = (EdgeListDatabase)db;
-                    ConfigurationComboItem item = new ConfigurationComboItem(dbe);
-                    this.insertElementAt(item, this.getSize());
-                }
-
-                // add template configuration option at end
-                EdgeListDatabase db = (EdgeListDatabase) type.createDatabase();
-                populateEdgeListDatabase(db);
-                templateConfiguration = new ConfigurationComboItem(db);
-                templateConfiguration.setConfigurationName(NEW_CONFIGURATION_NAME);
-                this.insertElementAt(templateConfiguration, this.getSize());
-
-                this.setSelectedItem(this.getElementAt(0));
+            Collection<Database> configs = databaseManager.getEdgeListDatabases();
+            for (Database db : configs) {
+                EdgeListDatabaseImpl dbe = (EdgeListDatabaseImpl) db;
+                ConfigurationComboItem item = new ConfigurationComboItem(dbe);
+                this.insertElementAt(item, this.getSize());
             }
-            
+
+            // add template configuration option at end
+            EdgeListDatabaseImpl db = new EdgeListDatabaseImpl();
+            populateEdgeListDatabase(db);
+            templateConfiguration = new ConfigurationComboItem(db);
+            templateConfiguration.setConfigurationName(NEW_CONFIGURATION_NAME);
+            this.insertElementAt(templateConfiguration, this.getSize());
+
+            this.setSelectedItem(this.getElementAt(0));
         }
 
         @Override
@@ -491,15 +488,15 @@ public class EdgeListPanel extends javax.swing.JPanel {
 
     private class ConfigurationComboItem {
 
-        private final EdgeListDatabase db;
+        private final EdgeListDatabaseImpl db;
         private String configurationName;
 
-        public ConfigurationComboItem(EdgeListDatabase db) {
+        public ConfigurationComboItem(EdgeListDatabaseImpl db) {
             this.db = db;
             this.configurationName = db.getName();
         }
 
-        public EdgeListDatabase getDb() {
+        public EdgeListDatabaseImpl getDb() {
             return db;
         }
 

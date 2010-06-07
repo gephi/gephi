@@ -18,9 +18,10 @@ import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.DatabaseImporter;
-import org.gephi.io.importer.spi.DatabaseType;
-import org.gephi.io.importer.spi.DatabaseTypeUI;
-import org.gephi.io.importer.spi.FileFormatImporter;
+import org.gephi.io.importer.spi.DatabaseImporterBuilder;
+import org.gephi.io.importer.spi.FileImporter;
+import org.gephi.io.importer.spi.Importer;
+import org.gephi.io.importer.spi.ImporterUI;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -72,7 +73,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
     public void importFile(FileObject fileObject) {
         try {
-            final FileFormatImporter importer = controller.getFileImporter(fileObject);
+            final FileImporter importer = controller.getFileImporter(FileUtil.toFile(fileObject));
             if (importer == null) {
                 NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(msg);
@@ -113,7 +114,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
     public void importStream(final InputStream stream, String importerName) {
         try {
-            final FileFormatImporter importer = controller.getFileImporter(importerName);
+            final FileImporter importer = controller.getFileImporter(importerName);
             if (importer == null) {
                 NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(msg);
@@ -146,19 +147,22 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         }
     }
 
-    public void importDatabase(Database database) {
+    public void importDatabase(DatabaseImporterBuilder importerBuilder) {
+        importDatabase(null, importerBuilder);
+    }
+
+    public void importDatabase(Database database, DatabaseImporterBuilder importerBuilder) {
         try {
-            final DatabaseImporter importer = controller.getDatabaseImporter(database);
-            DatabaseType type = controller.getDatabaseType(database);
-            if (importer == null || type == null) {
+            if (importerBuilder == null) {
                 NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(msg);
                 return;
             }
 
-            DatabaseTypeUI ui = type.getUI();
+            ImporterUI ui = controller.getUI(importerBuilder);
+            final DatabaseImporter importer = importerBuilder.getImporter();
             if (ui != null) {
-                ui.setup(type);
+                ui.setup(importer);
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.database.ui.dialog.title");
                 JPanel panel = ui.getPanel();
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
@@ -177,7 +181,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                     return;
                 }
                 ui.unsetup();
-                database = ui.getDatabase();
+                if (database == null) {
+                    database = importer.getDatabase();
+                }
             }
 
             LongTask task = null;
@@ -216,7 +222,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             ReportPanel reportPanel = new ReportPanel();
             reportPanel.setData(report, container);
             DialogDescriptor dd = new DialogDescriptor(reportPanel, NbBundle.getMessage(DesktopImportControllerUI.class, "ReportPanel.title"));
-            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
+            if (!DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                 reportPanel.destroy();
                 return;
             }

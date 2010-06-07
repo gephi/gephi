@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 OpenIDE-Module: org.gephi.desktop.project
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/project/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.1
+OpenIDE-Module-Specification-Version: 0.7.0.2
 AutoUpdate-Essential-Module: true

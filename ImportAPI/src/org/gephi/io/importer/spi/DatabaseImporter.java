@@ -20,9 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.spi;
 
-import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.Database;
-import org.gephi.io.importer.api.Report;
 
 /**
  * Importers interface for importing data from databases source.
@@ -32,22 +30,14 @@ import org.gephi.io.importer.api.Report;
 public interface DatabaseImporter extends Importer {
 
     /**
-     * Import data from <code>database</code> and push it to <code>container</code>. Informations, logs and
-     * issues are pushed to <code>report</code> for further analysis and verification.
-     * @param database the database description, connexion details and queries
-     * @param container container loading interface
-     * @param report the import report for logging informations and issues
-     * @return <code>true</code> if the import is successfull and can be processed or <code>false</code> otherwise
-     * @throws java.lang.Exception for catching potential exceptions
+     * Sets the database description, connexion details and queries
+     * @param database  the database that is to be used to import
      */
-    public boolean importData(Database database, ContainerLoader container, Report report) throws Exception;
+    public void setDatabase(Database database);
 
     /**
-     * Returns <code>true</code> if this importer can import <code>databaseType</code>. Called from
-     * controllers to identify dynamically which importers can be used for a particular source.
-     * @param databaseType the type of database
-     * @return <code>true</code> if the importer is compatible with <code>databaseType</code> or <code>false</code>
-     * otherwise
+     * Returns the current database description, connexion details and queries
+     * @return         the database that is to be used to import
      */
-    public boolean isMatchingImporter(DatabaseType databaseType);
+    public Database getDatabase();
 }

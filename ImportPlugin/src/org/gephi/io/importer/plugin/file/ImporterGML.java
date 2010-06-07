@@ -23,6 +23,7 @@ package org.gephi.io.importer.plugin.file;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.util.ArrayList;
 import org.gephi.data.attributes.api.AttributeTable;
@@ -31,50 +32,35 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
-import org.gephi.io.importer.api.FileType;
+import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
-import org.gephi.io.importer.spi.FileFormatImporter;
-import org.gephi.io.importer.spi.TextImporter;
+import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 //Inspired from infovis.graph.io;
 //Original author Jean-Daniel Fekete
-@ServiceProvider(service = FileFormatImporter.class)
-public class ImporterGML implements TextImporter, LongTask {
+public class ImporterGML implements FileImporter, LongTask {
 
     //Architecture
+    private Reader reader;
     private ContainerLoader container;
     private Report report;
     private ProgressTicket progressTicket;
     private boolean cancel = false;
 
-    public boolean importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception {
-        this.container = container;
-        this.report = report;
-
+    public boolean execute() {
+        LineNumberReader lineReader = ImportUtils.getTextReader(reader);
         try {
-            importData(reader);
+            importData(lineReader);
         } catch (Exception e) {
-            clean();
-            throw e;
+            throw new RuntimeException(e);
         }
-        boolean result = !cancel;
-        clean();
-        return result;
-    }
-
-    private void clean() {
-        this.progressTicket = null;
-        this.container = null;
-        this.report = null;
-        this.cancel = false;
+        return !cancel;
     }
 
     private void importData(LineNumberReader reader) throws Exception {
@@ -294,6 +280,26 @@ public class ImporterGML implements TextImporter, LongTask {
         return ret;
     }
 
+    public void setReader(Reader reader) {
+        this.reader = reader;
+    }
+
+    public void setContainer(ContainerLoader container) {
+        this.container = container;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
+
+    public ContainerLoader getContainer() {
+        return container;
+    }
+
+    public Report getReport() {
+        return report;
+    }
+
     public boolean cancel() {
         cancel = true;
         return true;
@@ -301,14 +307,5 @@ public class ImporterGML implements TextImporter, LongTask {
 
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
-    }
-
-    public FileType[] getFileTypes() {
-        FileType ft = new FileType(".gml", NbBundle.getMessage(getClass(), "fileType_GML_Name"));
-        return new FileType[]{ft};
-    }
-
-    public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("gml") || fileObject.hasExt("GML");
     }
 }

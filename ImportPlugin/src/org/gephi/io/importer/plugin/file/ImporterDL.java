@@ -5,6 +5,7 @@
 package org.gephi.io.importer.plugin.file;
 
 import java.io.LineNumberReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,25 +13,21 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDraft;
-import org.gephi.io.importer.api.FileType;
+import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
-import org.gephi.io.importer.spi.FileFormatImporter;
-import org.gephi.io.importer.spi.TextImporter;
+import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = FileFormatImporter.class)
-public class ImporterDL implements TextImporter, LongTask {
+public class ImporterDL implements FileImporter, LongTask {
 
     //enum
     private enum Format {
@@ -38,6 +35,7 @@ public class ImporterDL implements TextImporter, LongTask {
         FULLMATRIX, EDGELIST1
     };
     //Architecture
+    private Reader reader;
     private ContainerLoader container;
     private Report report;
     private ProgressTicket progressTicket;
@@ -49,30 +47,14 @@ public class ImporterDL implements TextImporter, LongTask {
     private int numMatricies;
     private int dataLineStartDelta = -1;
 
-    public boolean importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception {
-        this.container = container;
-        this.report = report;
-
+    public boolean execute() {
+        LineNumberReader lineReader = ImportUtils.getTextReader(reader);
         try {
-            importData(reader);
+            importData(lineReader);
         } catch (Exception e) {
-            clean();
-            throw e;
+            throw new RuntimeException(e);
         }
-        boolean result = !cancel;
-        clean();
-        return result;
-    }
-
-    private void clean() {
-        this.container = null;
-        this.report = null;
-        this.cancel = false;
-        this.progressTicket = null;
-        headerMap = null;
-        numNodes = 0;
-        numMatricies = 1;
-        format = Format.FULLMATRIX;
+        return !cancel;
     }
 
     private void importData(LineNumberReader reader) throws Exception {
@@ -300,13 +282,24 @@ public class ImporterDL implements TextImporter, LongTask {
         return pointer + dataLineStartDelta;
     }
 
-    public FileType[] getFileTypes() {
-        FileType ft = new FileType(".dl", NbBundle.getMessage(getClass(), "fileType_DL_Name"));
-        return new FileType[]{ft};
+    public void setReader(Reader reader) {
+        this.reader = reader;
     }
 
-    public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("dl") || fileObject.hasExt("DL");
+    public void setContainer(ContainerLoader container) {
+        this.container = container;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
+
+    public ContainerLoader getContainer() {
+        return container;
+    }
+
+    public Report getReport() {
+        return report;
     }
 
     public boolean cancel() {

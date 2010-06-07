@@ -20,20 +20,18 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.spi;
 
-import javax.swing.JPanel;
-import org.gephi.io.importer.api.Database;
+import java.io.Reader;
 
 /**
+ * Importers interface for importing data from files.
  *
  * @author Mathieu Bastian
  */
-public interface DatabaseTypeUI {
+public interface FileImporter extends Importer {
 
-    public JPanel getPanel();
-
-    public void setup(DatabaseType type);
-
-    public void unsetup();
-
-    public Database getDatabase();
+    /**
+     * Sets the reader where characters can be retrieved.
+     * @param stream    the reader on data
+     */
+    public void setReader(Reader reader);
 }
