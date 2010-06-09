@@ -89,14 +89,14 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
 
     public void setup(Partition partition, Transformer transformer) {
         nodeColorTransformer = (NodeColorTransformer) transformer;
-        if (nodeColorTransformer.getMap().isEmpty()) {
-            List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
-            int i = 0;
-            for (Part p : partition.getParts()) {
-                nodeColorTransformer.getMap().put(p.getValue(), colors.get(i));
-                i++;
-            }
+        //if (nodeColorTransformer.getMap().isEmpty()) {
+        List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
+        int i = 0;
+        for (Part p : partition.getParts()) {
+            nodeColorTransformer.getMap().put(p.getValue(), colors.get(i));
+            i++;
         }
+        //}
         NumberFormat formatter = NumberFormat.getPercentInstance();
         formatter.setMaximumFractionDigits(2);
         this.partition = partition;
@@ -129,12 +129,12 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
         colorCol.setPreferredWidth(16);
         colorCol.setMaxWidth(16);
 
-        for (int i = 0; i < partsArray.length; i++) {
-            final Part p = partsArray[partsArray.length - 1 - i];
-            model.setValueAt(p.getValue(), i, 0);
-            model.setValueAt(p.getDisplayName(), i, 1);
+        for (int j = 0; j < partsArray.length; j++) {
+            final Part p = partsArray[partsArray.length - 1 - j];
+            model.setValueAt(p.getValue(), j, 0);
+            model.setValueAt(p.getDisplayName(), j, 1);
             String perc = "(" + formatter.format(p.getPercentage()) + ")";
-            model.setValueAt(perc, i, 2);
+            model.setValueAt(perc, j, 2);
         }
     }
 

@@ -32,7 +32,6 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
-import org.gephi.graph.api.EdgeIterator;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -40,6 +39,7 @@ import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartRenderingInfo;
@@ -107,16 +107,16 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
 
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn pangeRanksCol = nodeTable.getColumn("eigencentrality");
-        if (pangeRanksCol == null) {
-            pangeRanksCol = nodeTable.addColumn("eigencentrality", "Eigenvector Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        AttributeColumn eigenCol = nodeTable.getColumn("eigencentrality");
+        if (eigenCol == null) {
+            eigenCol = nodeTable.addColumn("eigencentrality", "Eigenvector Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
         Graph graph = null;
         if (mDirected) {
-            graph = graphModel.getDirectedGraph();
+            graph = graphModel.getDirectedGraphVisible();
         } else {
-            graph = graphModel.getUndirectedGraph();
+            graph = graphModel.getUndirectedGraphVisible();
         }
         this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
         int N = graph.getNodeCount();
@@ -124,6 +124,8 @@ public class EigenvectorCentrality implements Statistics, LongTask {
 
         double[] tmp = new double[N];
         mCentralities = new double[N];
+
+        Progress.start(mProgress, mNumRuns);
 
         Hashtable<Integer, Node> indicies = new Hashtable<Integer, Node>();
         Hashtable<Node, Integer> invIndicies = new Hashtable<Node, Integer>();
@@ -155,12 +157,13 @@ public class EigenvectorCentrality implements Statistics, LongTask {
                     return;
                 }
             }
-            System.out.println(s + "\t" + max);
             mSumChange = 0;
             for (int k = 0; k < N; k++) {
-                mSumChange += Math.abs(mCentralities[k] - (tmp[k] / max));
-                mCentralities[k] = tmp[k] / max;
-                //tmp[k] = 0;
+                if (max != 0) {
+                    mSumChange += Math.abs(mCentralities[k] - (tmp[k] / max));
+                    mCentralities[k] = tmp[k] / max;
+                    //tmp[k] = 0;
+                }
                 if (this.mIsCanceled) {
                     return;
                 }
@@ -168,17 +171,21 @@ public class EigenvectorCentrality implements Statistics, LongTask {
             if (this.mIsCanceled) {
                 return;
             }
+
+            Progress.progress(mProgress);
         }
 
         for (int i = 0; i < N; i++) {
             Node s = indicies.get(i);
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
-            row.setValue(pangeRanksCol, mCentralities[i]);
+            row.setValue(eigenCol, mCentralities[i]);
             if (this.mIsCanceled) {
                 return;
             }
         }
         graph.readUnlock();
+
+        Progress.finish(mProgress);
     }
 
     /**
@@ -230,7 +237,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         } catch (IOException e) {
             System.out.println(e.toString());
         }
-        String report = new String("<HTML> <BODY> <h1>PageRank Report </h1> "
+        String report = new String("<HTML> <BODY> <h1>Eigenvector Centrality Report</h1> "
                 + "<hr> <br> <h2>Network Revision Number:</h2>"
                 + mGraphRevision
                 + "<h2> Parameters: </h2>"

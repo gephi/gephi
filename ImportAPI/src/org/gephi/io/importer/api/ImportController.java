@@ -20,13 +20,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.api;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Reader;
 import org.gephi.io.importer.spi.DatabaseImporter;
-import org.gephi.io.importer.spi.DatabaseType;
-import org.gephi.io.importer.spi.FileFormatImporter;
+import org.gephi.io.importer.spi.FileImporter;
+import org.gephi.io.importer.spi.ImporterBuilder;
+import org.gephi.io.importer.spi.ImporterUI;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.Workspace;
-import org.openide.filesystems.FileObject;
 
 /**
  * Manage and control the import executionf low.
@@ -37,13 +40,17 @@ import org.openide.filesystems.FileObject;
  */
 public interface ImportController {
 
-    public FileFormatImporter getFileImporter(FileObject fileObject);
+    public Container importFile(File file) throws FileNotFoundException;
 
-    public FileFormatImporter getFileImporter(String importerName);
+    public Container importFile(File file, FileImporter importer) throws FileNotFoundException;
 
-    public DatabaseImporter getDatabaseImporter(Database database);
+    public Container importFile(Reader reader, FileImporter importer);
 
-    public Container importFile(InputStream stream, FileFormatImporter importer);
+    public Container importFile(InputStream stream, FileImporter importer);
+
+    public FileImporter getFileImporter(File file);
+
+    public FileImporter getFileImporter(String importerName);
 
     public Container importDatabase(Database database, DatabaseImporter importer);
 
@@ -53,11 +60,7 @@ public interface ImportController {
 
     public FileType[] getFileTypes();
 
-    public DatabaseType[] getDatabaseTypes();
+    public boolean isFileSupported(File file);
 
-    public Database[] getDatabases(DatabaseType type);
-
-    public DatabaseType getDatabaseType(Database database);
-
-    public boolean isFileSupported(FileObject fileObject);
+    public ImporterUI getUI(ImporterBuilder builder);
 }

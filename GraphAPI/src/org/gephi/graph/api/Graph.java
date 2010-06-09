@@ -120,7 +120,7 @@ public interface Graph {
     public boolean contains(Edge edge);
 
     /**
-     * Returns the node with identifier equal to <code>id</code>. If not found,
+     * Returns the node with identifier equals to <code>id</code>. If not found,
      * returns <code>null</code>. This id is generated and can be found in
      * <code>Node.getId()</code>.
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
@@ -131,7 +131,20 @@ public interface Graph {
     public Node getNode(int id);
 
     /**
-     * Returns the edge with identifier equal to <code>id</code>. If not found,
+     * Returns the node with identifier equals to <code>id</code>. If not found,
+     * returns <code>null</code>. This id is set by user and can be found at
+     * <code>NodeData.getId()</code>. To set this Id, use <code>Graph.setId()</code>.
+     * <p>
+     * The node must be present in the view this graph is from.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
+     * @param id the string identifier, unique
+     * @return the node with given <code>id</code>, or <code>null</code> if not found
+     */
+    public Node getNode(String id);
+
+    /**
+     * Returns the edge with identifier equals to <code>id</code>. If not found,
      * returns <code>null</code>. This id is generated and can be found in
      * <code>Edge.getId()</code>.
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
@@ -140,6 +153,17 @@ public interface Graph {
      * @return the edge with given <code>id</code>, or <code>null</code> if not found
      */
     public Edge getEdge(int id);
+
+    /**
+     * Returns the edge with identifier equals to <code>id</code>. If not found,
+     * returns <code>null</code>.  This id is set by user and can be found at
+     * <code>EdgeData.getId()</code>. To set this Id, use <code>Graph.setId()</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
+     * @param id the string identifier, unique
+     * @return the edge with given <code>id</code>, or <code>null</code> if not found
+     */
+    public Edge getEdge(String id);
 
     /**
      * Returns nodes contained in the graph.
@@ -307,6 +331,20 @@ public interface Graph {
      * @throws IllegalMonitorStateException if the current thread is holding a read lock
      */
     public void clearEdges();
+
+    /**
+     * Sets the string identifier of <code>node</code>. This identifier can be set
+     * by users, in contrario of {@link Node#getId()} which is set by the system.
+     * @param id            the id that is to be set for <code>node</code>
+     */
+    public void setId(Node node, String id);
+
+    /**
+     * Sets the string identifier of <code>edge</code>. This identifier can be set
+     * by users, in contrario of {@link Edge#getId()} which is set by the system.
+     * @param id            the id that is to be set for <code>edge</code>
+     */
+    public void setId(Edge edge, String id);
 
     /**
      * Acquires a read lock on the graph. Calling thread will be blocked until all write locks are released.

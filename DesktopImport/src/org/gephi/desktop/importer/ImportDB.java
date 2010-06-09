@@ -28,10 +28,14 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import org.gephi.desktop.importer.api.ImportControllerUI;
-import org.gephi.io.importer.spi.DatabaseType;
+
 import org.gephi.neo4j.api.Neo4jImporter;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
+
+import org.gephi.io.importer.spi.DatabaseImporterBuilder;
+import org.gephi.io.importer.spi.ImporterUI;
+
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -96,12 +100,16 @@ public class ImportDB extends CallableSystemAction {
 
         final ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
         if (importController != null) {
-            for (final DatabaseType db : importController.getImportController().getDatabaseTypes()) {
-                String menuName = db.getName();
+            for (final DatabaseImporterBuilder dbb : Lookup.getDefault().lookupAll(DatabaseImporterBuilder.class)) {
+                String menuName = dbb.getIdentifier();
+                ImporterUI ui = importController.getImportController().getUI(dbb);
+                if (ui != null) {
+                    menuName = ui.getDisplayName();
+                }
                 JMenuItem menuItem = new JMenuItem(new AbstractAction(menuName) {
 
                     public void actionPerformed(ActionEvent e) {
-                        importController.importDatabase(db.createDatabase());
+                        importController.importDatabase(dbb);
                     }
                 });
                 menu.add(menuItem);

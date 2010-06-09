@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,35 +18,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.io.importer.plugin.database;
+package org.gephi.statistics.plugin.builder;
 
-import org.gephi.io.importer.api.Database;
-import org.gephi.io.importer.api.EdgeListDatabase;
-import org.gephi.io.importer.spi.DatabaseType;
-import org.gephi.io.importer.spi.DatabaseTypeUI;
-import org.openide.util.Lookup;
+import org.gephi.statistics.plugin.EigenvectorCentrality;
+import org.gephi.statistics.plugin.Hits;
+import org.gephi.statistics.spi.Statistics;
+import org.gephi.statistics.spi.StatisticsBuilder;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * @author Mathieu Bastian
+ * @author pjmcswee
  */
-@ServiceProvider(service = DatabaseType.class)
-public class EdgeList implements DatabaseType {
+@ServiceProvider(service = StatisticsBuilder.class)
+public class EigenvectorCentralityBuilder implements StatisticsBuilder {
 
     public String getName() {
-        return "Edge List...";
+        return NbBundle.getMessage(HitsBuilder.class, "EigenvectorCentrality.name");
     }
 
-    public DatabaseTypeUI getUI() {
-        return Lookup.getDefault().lookup(EdgeListDatabaseUI.class);
+    public Statistics getStatistics() {
+        return new EigenvectorCentrality();
     }
 
-    public Class<? extends Database> getDatabaseClass() {
-        return EdgeListDatabase.class;
-    }
-
-    public Database createDatabase() {
-        return new EdgeListDatabaseImpl();
+    public Class<? extends Statistics> getStatisticsClass() {
+        return EigenvectorCentrality.class;
     }
 }

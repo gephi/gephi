@@ -31,8 +31,8 @@ public class PostgreSQLDriver implements SQLDriver {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof SQLServerDriver) {
-            return ((SQLServerDriver) obj).getPrefix().equals(getPrefix());
+        if (obj instanceof PostgreSQLDriver) {
+            return ((PostgreSQLDriver) obj).getPrefix().equals(getPrefix());
         } else {
             return false;
         }

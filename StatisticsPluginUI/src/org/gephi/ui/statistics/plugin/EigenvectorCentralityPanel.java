@@ -23,20 +23,20 @@ public class EigenvectorCentralityPanel extends javax.swing.JPanel {
     }
 
     public boolean isDirected(){
-        return this.jRadioButton1.isSelected();
+        return this.directedButton.isSelected();
     }
 
     public void setDirected(boolean pDirected){
-        this.jRadioButton1.setSelected(true);
+        this.directedButton.setSelected(true);
     }
 
     public void setNumRuns(int mRuns){
-        jTextField1.setText(mRuns+"");
+        iterationsTextField.setText(mRuns+"");
     }
 
     public int getNumRuns(){
         try{
-            int runs = Integer.parseInt(jTextField1.getText());
+            int runs = Integer.parseInt(iterationsTextField.getText());
             return runs;
         }catch(Exception e){e.printStackTrace();}
         return 0;
@@ -54,27 +54,27 @@ public class EigenvectorCentralityPanel extends javax.swing.JPanel {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         header = new org.jdesktop.swingx.JXHeader();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        iterationsTextField = new javax.swing.JTextField();
+        labeliterations = new javax.swing.JLabel();
+        directedButton = new javax.swing.JRadioButton();
+        undirectedButton = new javax.swing.JRadioButton();
 
         header.setDescription(org.openide.util.NbBundle.getMessage(EigenvectorCentralityPanel.class, "EigenvectorCentralityPanel.header.description")); // NOI18N
         header.setTitle(org.openide.util.NbBundle.getMessage(EigenvectorCentralityPanel.class, "EigenvectorCentralityPanel.header.title")); // NOI18N
 
-        jTextField1.setText(org.openide.util.NbBundle.getMessage(EigenvectorCentralityPanel.class, "EigenvectorCentralityPanel.jTextField1.text")); // NOI18N
-        jTextField1.setMinimumSize(new java.awt.Dimension(30, 27));
+        iterationsTextField.setText(org.openide.util.NbBundle.getMessage(EigenvectorCentralityPanel.class, "EigenvectorCentralityPanel.iterationsTextField.text")); // NOI18N
+        iterationsTextField.setMinimumSize(new java.awt.Dimension(30, 27));
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(EigenvectorCentralityPanel.class, "EigenvectorCentralityPanel.jLabel1.text")); // NOI18N
+        labeliterations.setText(org.openide.util.NbBundle.getMessage(EigenvectorCentralityPanel.class, "EigenvectorCentralityPanel.labeliterations.text")); // NOI18N
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setText(org.openide.util.NbBundle.getMessage(EigenvectorCentralityPanel.class, "EigenvectorCentralityPanel.jRadioButton1.text")); // NOI18N
+        buttonGroup1.add(directedButton);
+        directedButton.setText(org.openide.util.NbBundle.getMessage(EigenvectorCentralityPanel.class, "EigenvectorCentralityPanel.directedButton.text")); // NOI18N
 
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setText(org.openide.util.NbBundle.getMessage(EigenvectorCentralityPanel.class, "EigenvectorCentralityPanel.jRadioButton2.text")); // NOI18N
-        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(undirectedButton);
+        undirectedButton.setText(org.openide.util.NbBundle.getMessage(EigenvectorCentralityPanel.class, "EigenvectorCentralityPanel.undirectedButton.text")); // NOI18N
+        undirectedButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton2ActionPerformed(evt);
+                undirectedButtonActionPerformed(evt);
             }
         });
 
@@ -82,50 +82,47 @@ public class EigenvectorCentralityPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(directedButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(undirectedButton))
+                .addGap(73, 73, 73)
+                .addComponent(labeliterations)
                 .addGap(8, 8, 8)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(167, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jRadioButton1)
-                .addContainerGap(312, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jRadioButton2)
-                .addContainerGap(296, Short.MAX_VALUE))
+                .addComponent(iterationsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(117, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
+                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton1)
+                    .addComponent(directedButton)
+                    .addComponent(iterationsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labeliterations))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton2)
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addComponent(undirectedButton)
+                .addContainerGap(101, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+    private void undirectedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undirectedButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton2ActionPerformed
+    }//GEN-LAST:event_undirectedButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JRadioButton directedButton;
     private org.jdesktop.swingx.JXHeader header;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField iterationsTextField;
+    private javax.swing.JLabel labeliterations;
+    private javax.swing.JRadioButton undirectedButton;
     // End of variables declaration//GEN-END:variables
 
 }

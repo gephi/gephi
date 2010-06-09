@@ -58,6 +58,14 @@
             <test-dependencies>
                 <test-type>
                     <name>unit</name>
+                    <test-dependency>
+                        <code-name-base>org.gephi.data.attributes</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
+                    <test-dependency>
+                        <code-name-base>org.gephi.data.attributes.api</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
                 </test-type>
             </test-dependencies>
             <public-packages/>

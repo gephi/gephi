@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.plugin.file;
 
+import java.io.Reader;
 import java.util.HashMap;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -32,21 +33,18 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
-import org.gephi.io.importer.api.FileType;
+import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.PropertiesAssociations;
 import org.gephi.io.importer.api.PropertiesAssociations.EdgeProperties;
 import org.gephi.io.importer.api.PropertiesAssociations.NodeProperties;
 import org.gephi.io.importer.api.Report;
-import org.gephi.io.importer.spi.FileFormatImporter;
-import org.gephi.io.importer.spi.XMLImporter;
+import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -56,10 +54,10 @@ import org.w3c.dom.NodeList;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = FileFormatImporter.class)
-public class ImporterGraphML implements XMLImporter, LongTask {
+public class ImporterGraphML implements FileImporter, LongTask {
 
     //Architecture
+    private Reader reader;
     private ContainerLoader container;
     private Report report;
     private ProgressTicket progressTicket;
@@ -69,8 +67,8 @@ public class ImporterGraphML implements XMLImporter, LongTask {
     private final boolean automaticProperties = true;
     //Attributes
     protected PropertiesAssociations properties = new PropertiesAssociations();
-    private HashMap<String, NodeProperties> nodePropertiesAttributes;
-    private HashMap<String, EdgeProperties> edgePropertiesAttributes;
+    private HashMap<String, NodeProperties> nodePropertiesAttributes = new HashMap<String, NodeProperties>();
+    private HashMap<String, EdgeProperties> edgePropertiesAttributes = new HashMap<String, EdgeProperties>();
 
     public ImporterGraphML() {
         //Default node associations
@@ -88,31 +86,14 @@ public class ImporterGraphML implements XMLImporter, LongTask {
         properties.addEdgePropertyAssociation(EdgeProperties.ID, "edgeid");
     }
 
-    public boolean importData(Document document, ContainerLoader container, Report report) throws Exception {
-        this.container = container;
-        this.report = report;
-        this.nodePropertiesAttributes = new HashMap<String, NodeProperties>();
-        this.edgePropertiesAttributes = new HashMap<String, EdgeProperties>();
-
+    public boolean execute() {
+        Document document = ImportUtils.getXMLDocument(reader);
         try {
             importData(document);
         } catch (Exception e) {
-            clean();
-            throw e;
+            throw new RuntimeException(e);
         }
-        boolean result = !cancel;
-        clean();
-        return result;
-    }
-
-    private void clean() {
-        //Clean
-        this.container = null;
-        this.progressTicket = null;
-        this.report = null;
-        this.nodePropertiesAttributes = null;
-        this.edgePropertiesAttributes = null;
-        this.cancel = false;
+        return !cancel;
     }
 
     private void importData(Document document) throws Exception {
@@ -494,6 +475,26 @@ public class ImporterGraphML implements XMLImporter, LongTask {
         }
     }
 
+    public void setReader(Reader reader) {
+        this.reader = reader;
+    }
+
+    public void setContainer(ContainerLoader container) {
+        this.container = container;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
+
+    public ContainerLoader getContainer() {
+        return container;
+    }
+
+    public Report getReport() {
+        return report;
+    }
+
     public boolean cancel() {
         cancel = true;
         return true;
@@ -501,14 +502,5 @@ public class ImporterGraphML implements XMLImporter, LongTask {
 
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
-    }
-
-    public FileType[] getFileTypes() {
-        FileType ft = new FileType(".graphml", NbBundle.getMessage(getClass(), "fileType_GraphML_Name"));
-        return new FileType[]{ft};
-    }
-
-    public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("graphml") || fileObject.hasExt("GRAPHML");
     }
 }

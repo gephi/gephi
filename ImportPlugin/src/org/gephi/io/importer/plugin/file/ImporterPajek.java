@@ -22,61 +22,44 @@ package org.gephi.io.importer.plugin.file;
 
 import java.io.BufferedReader;
 import java.io.LineNumberReader;
+import java.io.Reader;
 import java.util.StringTokenizer;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDraft;
-import org.gephi.io.importer.api.FileType;
+import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
-import org.gephi.io.importer.spi.FileFormatImporter;
-import org.gephi.io.importer.spi.TextImporter;
+import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = FileFormatImporter.class)
-public class ImporterPajek implements TextImporter, LongTask {
+public class ImporterPajek implements FileImporter, LongTask {
 
     //Architecture
+    private Reader reader;
+    private LineNumberReader lineReader;
     private ContainerLoader container;
     private Report report;
     private ProgressTicket progressTicket;
     private boolean cancel = false;
     //Node data
-    private LineNumberReader reader;
     private NodeDraft[] verticesArray;
 
-    public boolean importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception {
-        this.container = container;
-        this.report = report;
-        this.reader = reader;
-
+    public boolean execute() {
+        lineReader = ImportUtils.getTextReader(reader);
         try {
-            importData(reader);
+            importData(lineReader);
         } catch (Exception e) {
-            clean();
-            throw e;
+            throw new RuntimeException(e);
         }
-        boolean result = !cancel;
-        clean();
-        return result;
-    }
-
-    private void clean() {
-        this.reader = null;
-        this.container = null;
-        this.report = null;
-        this.verticesArray = null;
-        this.cancel = false;
-        this.progressTicket = null;
+        return !cancel;
     }
 
     private void importData(LineNumberReader reader) throws Exception {
@@ -161,7 +144,7 @@ public class ImporterPajek implements TextImporter, LongTask {
             String[] initial_split = curLine.trim().split("\"");
             // if there are any quote marks, there should be exactly 2
             if (initial_split.length < 1 || initial_split.length > 3) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat3", reader.getLineNumber()), Issue.Level.SEVERE));
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat3", lineReader.getLineNumber()), Issue.Level.SEVERE));
             }
             index = initial_split[0].trim();
             if (initial_split.length > 1) {
@@ -216,7 +199,7 @@ public class ImporterPajek implements TextImporter, LongTask {
 
                         i++;
                     } catch (Exception e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat5", reader.getLineNumber()), Issue.Level.WARNING));
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat5", lineReader.getLineNumber()), Issue.Level.WARNING));
                     }
                 }
 
@@ -256,7 +239,7 @@ public class ImporterPajek implements TextImporter, LongTask {
                 break;
             }
             if (nextLine.equals("")) { // skip blank lines
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat2", reader.getLineNumber()), Issue.Level.WARNING));
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat2", lineReader.getLineNumber()), Issue.Level.WARNING));
                 continue;
             }
 
@@ -289,7 +272,7 @@ public class ImporterPajek implements TextImporter, LongTask {
                     try {
                         edgeWeight = new Float(st.nextToken());
                     } catch (Exception e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat5", reader.getLineNumber()), Issue.Level.WARNING));
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat5", lineReader.getLineNumber()), Issue.Level.WARNING));
                     }
 
                     edge.setWeight(edgeWeight);
@@ -320,16 +303,27 @@ public class ImporterPajek implements TextImporter, LongTask {
         return true;
     }
 
+    public void setReader(Reader reader) {
+        this.reader = reader;
+    }
+
+    public void setContainer(ContainerLoader container) {
+        this.container = container;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
+
+    public ContainerLoader getContainer() {
+        return container;
+    }
+
+    public Report getReport() {
+        return report;
+    }
+
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
-    }
-
-    public FileType[] getFileTypes() {
-        FileType ft = new FileType(".net", NbBundle.getMessage(getClass(), "fileType_NET_Name"));
-        return new FileType[]{ft};
-    }
-
-    public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("net") || fileObject.hasExt("NET");
     }
 }

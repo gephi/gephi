@@ -8,7 +8,6 @@ import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.ContainerUnloader;
-import org.gephi.io.importer.api.EdgeListDatabase;
 import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.importer.api.Report;
 import org.junit.After;
@@ -25,12 +24,11 @@ import org.openide.util.Lookup;
  */
 public class EdgeListImporterTest {
 
-    private EdgeListDatabase database;
+    private EdgeListDatabaseImpl database;
     private ContainerLoader containerLoader;
     private ContainerUnloader containerUnloader;
 
     public EdgeListImporterTest() {
-
     }
 
     @BeforeClass
@@ -81,8 +79,10 @@ public class EdgeListImporterTest {
     @Test
     public void testImport() throws Exception {
 
-        EdgeListImporter importer = new EdgeListImporter();
-        importer.importData(database, containerLoader, new Report());
+        ImporterEdgeList importer = new ImporterEdgeList();
+        importer.setDatabase(database);
+        importer.setContainer(containerLoader);
+        importer.setReport(new Report());
 
         boolean hasId = false;
         boolean hasLabel = false;
@@ -105,14 +105,14 @@ public class EdgeListImporterTest {
 
         //Look at attributes
         System.out.println("--Node Attributes cols");
-        for(AttributeColumn col : containerLoader.getAttributeModel().getNodeTable().getColumns()) {
-            System.out.println(col.getIndex()+":"+col.getId()+ "("+col.getType()+")");
+        for (AttributeColumn col : containerLoader.getAttributeModel().getNodeTable().getColumns()) {
+            System.out.println(col.getIndex() + ":" + col.getId() + "(" + col.getType() + ")");
         }
 
         //Look at attributes
         System.out.println("--Edge Attributes cols");
-        for(AttributeColumn col : containerLoader.getAttributeModel().getEdgeTable().getColumns()) {
-            System.out.println(col.getIndex()+":"+col.getId()+ "("+col.getType()+")");
+        for (AttributeColumn col : containerLoader.getAttributeModel().getEdgeTable().getColumns()) {
+            System.out.println(col.getIndex() + ":" + col.getId() + "(" + col.getType() + ")");
         }
     }
 }

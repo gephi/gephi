@@ -20,20 +20,20 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="header" alignment="0" pref="741" max="32767" attributes="0"/>
+          <Component id="header" alignment="0" pref="633" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="262" max="-2" attributes="0"/>
-                      <Component id="descriptionLabel" pref="455" max="32767" attributes="0"/>
+                      <Component id="descriptionLabel" pref="355" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="directedRadioButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="271" max="32767" attributes="0"/>
+                      <EmptySpace pref="230" max="32767" attributes="0"/>
                       <Component id="normalizeButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="166" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="165" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -41,21 +41,21 @@
               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="1"/>
-                  <Component id="jLabel1" alignment="0" pref="382" max="32767" attributes="1"/>
                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="1"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jXLabel3" alignment="0" pref="321" max="32767" attributes="0"/>
-                  <Component id="jXLabel2" pref="321" max="32767" attributes="0"/>
-                  <Component id="jXLabel1" alignment="0" pref="321" max="32767" attributes="0"/>
+                  <Component id="jXLabel3" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jXLabel2" max="32767" attributes="0"/>
+                  <Component id="jXLabel1" alignment="1" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="undirectedRadioButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="633" max="32767" attributes="0"/>
+              <EmptySpace pref="548" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -72,8 +72,8 @@
               <Component id="undirectedRadioButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jXLabel1" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                  <Component id="jXLabel1" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -85,7 +85,7 @@
                   <Group type="102" attributes="0">
                       <Component id="jXLabel3" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
-                      <Component id="descriptionLabel" max="32767" attributes="0"/>
+                      <Component id="descriptionLabel" pref="14" max="32767" attributes="0"/>
                   </Group>
                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -204,7 +204,7 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JRadioButton" name="normalizeButton">
+    <Component class="javax.swing.JCheckBox" name="normalizeButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/ui/statistics/plugin/Bundle.properties" key="GraphDistancePanel.normalizeButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
