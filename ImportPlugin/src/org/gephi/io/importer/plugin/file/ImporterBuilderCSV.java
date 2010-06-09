@@ -20,11 +20,11 @@ public final class ImporterBuilderCSV implements FileImporterBuilder {
 
     public static final String IDENTIFER = "csv";
 
-    public FileImporter getImporter() {
+    public FileImporter buildImporter() {
         return new ImporterCSV();
     }
 
-    public String getIdentifier() {
+    public String getName() {
         return IDENTIFER;
     }
 

@@ -20,11 +20,11 @@ public class ImporterBuilderGEXF implements FileImporterBuilder {
 
     public static final String IDENTIFER = "gexf";
 
-    public FileImporter getImporter() {
+    public FileImporter buildImporter() {
         return new ImporterGEXF();
     }
 
-    public String getIdentifier() {
+    public String getName() {
         return IDENTIFER;
     }
 

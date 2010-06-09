@@ -17,11 +17,11 @@ public class ImporterBuilderEdgeList implements DatabaseImporterBuilder {
 
     public static final String IDENTIFER = "edgelist";
 
-    public DatabaseImporter getImporter() {
+    public DatabaseImporter buildImporter() {
         return new ImporterEdgeList();
     }
 
-    public String getIdentifier() {
+    public String getName() {
         return IDENTIFER;
     }
 }

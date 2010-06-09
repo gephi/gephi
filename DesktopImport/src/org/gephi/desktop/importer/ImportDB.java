@@ -60,15 +60,15 @@ public class ImportDB extends CallableSystemAction {
         final ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
         if (importController != null) {
             for (final DatabaseImporterBuilder dbb : Lookup.getDefault().lookupAll(DatabaseImporterBuilder.class)) {
-                String menuName = dbb.getIdentifier();
-                ImporterUI ui = importController.getImportController().getUI(dbb);
+                ImporterUI ui = importController.getImportController().getUI(dbb.buildImporter());
+                String menuName = dbb.getName();
                 if (ui != null) {
                     menuName = ui.getDisplayName();
                 }
                 JMenuItem menuItem = new JMenuItem(new AbstractAction(menuName) {
 
                     public void actionPerformed(ActionEvent e) {
-                        importController.importDatabase(dbb);
+                        importController.importDatabase(dbb.buildImporter());
                     }
                 });
                 menu.add(menuItem);

@@ -20,11 +20,11 @@ public class ImporterBuilderGML implements FileImporterBuilder {
 
     public static final String IDENTIFER = "gml";
 
-    public FileImporter getImporter() {
+    public FileImporter buildImporter() {
         return new ImporterGML();
     }
 
-    public String getIdentifier() {
+    public String getName() {
         return IDENTIFER;
     }
 

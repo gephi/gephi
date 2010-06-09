@@ -20,11 +20,11 @@ public class ImporterBuilderGDF implements FileImporterBuilder {
 
     public static final String IDENTIFER = "gdf";
 
-    public FileImporter getImporter() {
+    public FileImporter buildImporter() {
         return new ImporterGDF();
     }
 
-    public String getIdentifier() {
+    public String getName() {
         return IDENTIFER;
     }
 

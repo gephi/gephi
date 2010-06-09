@@ -20,11 +20,11 @@ public final class ImporterBuilderDOT implements FileImporterBuilder {
 
     public static final String IDENTIFER = "dot";
 
-    public FileImporter getImporter() {
+    public FileImporter buildImporter() {
         return new ImporterDOT();
     }
 
-    public String getIdentifier() {
+    public String getName() {
         return IDENTIFER;
     }
 

@@ -23,7 +23,6 @@ package org.gephi.io.importer.plugin.file;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 
 import java.awt.Color;
-import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,7 +97,9 @@ public class ImporterGEXF implements FileImporter, LongTask {
         properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "weight");
     }
 
-    public boolean execute() {
+    public boolean execute(ContainerLoader container) {
+        this.container = container;
+        this.report = new Report();
         Document document = ImportUtils.getXMLDocument(reader);
         try {
             importData(document);
@@ -752,14 +753,6 @@ public class ImporterGEXF implements FileImporter, LongTask {
 
     public void setReader(Reader reader) {
         this.reader = reader;
-    }
-
-    public void setContainer(ContainerLoader container) {
-        this.container = container;
-    }
-
-    public void setReport(Report report) {
-        this.report = report;
     }
 
     public ContainerLoader getContainer() {

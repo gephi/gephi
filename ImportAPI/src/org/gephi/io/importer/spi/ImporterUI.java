@@ -21,5 +21,5 @@ public interface ImporterUI {
 
     public String getDisplayName();
 
-    public String getIdentifier();
+    public boolean isUIForImporter(Importer importer);
 }

@@ -86,7 +86,9 @@ public class ImporterGraphML implements FileImporter, LongTask {
         properties.addEdgePropertyAssociation(EdgeProperties.ID, "edgeid");
     }
 
-    public boolean execute() {
+    public boolean execute(ContainerLoader container) {
+        this.container = container;
+        this.report = new Report();
         Document document = ImportUtils.getXMLDocument(reader);
         try {
             importData(document);
@@ -477,14 +479,6 @@ public class ImporterGraphML implements FileImporter, LongTask {
 
     public void setReader(Reader reader) {
         this.reader = reader;
-    }
-
-    public void setContainer(ContainerLoader container) {
-        this.container = container;
-    }
-
-    public void setReport(Report report) {
-        this.report = report;
     }
 
     public ContainerLoader getContainer() {

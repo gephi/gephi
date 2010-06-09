@@ -10,5 +10,5 @@ package org.gephi.io.importer.spi;
  */
 public interface DatabaseImporterBuilder extends ImporterBuilder {
 
-    public DatabaseImporter getImporter();
+    public DatabaseImporter buildImporter();
 }

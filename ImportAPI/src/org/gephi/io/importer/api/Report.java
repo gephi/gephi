@@ -46,6 +46,10 @@ public final class Report {
         entries.add(new ReportEntry(message));
     }
 
+    public void append(Report report) {
+        entries.addAll(report.entries);
+    }
+
     /**
      * Log an issue in the report.
      * @param issue the issue to write in the report
