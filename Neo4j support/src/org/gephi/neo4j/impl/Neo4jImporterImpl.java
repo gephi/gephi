@@ -1,14 +1,18 @@
-package org.gephi.neo4j;
+package org.gephi.neo4j.impl;
 
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.neo4j.api.Neo4jImporter;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.ProgressTicket;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipExpander;
@@ -19,18 +23,69 @@ import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Traverser;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.TraversalFactory;
+import org.neo4j.remote.RemoteGraphDatabase;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 
-public final class Neo4jImporter {
-    private static GraphDatabaseService graphDB;
-    private static Map<Long, Integer> idMapper;
-    private static GraphModel graphModel;
+@ServiceProvider(service=Neo4jImporter.class)
+public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
+    private GraphDatabaseService graphDB;
+    private Map<Long, Integer> idMapper;
+    private GraphModel graphModel;
+    private ProgressTicket progressTicket;
+    private boolean cancelImport;//TODO finish implementing canceling task
 
-    private Neo4jImporter() {}
 
-    public static void importLocal(File neo4jDirectory) {
+    @Override
+    public boolean cancel() {
+        cancelImport = true;
+        return true;
+    }
+
+    @Override
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        cancelImport = false;
+        this.progressTicket = progressTicket;
+    }
+
+    @Override
+    public void importLocal(File neo4jDirectory) {
+        progressTicket.setDisplayName("Importing data from local Neo4j database");
+
         graphDB = new EmbeddedGraphDatabase(neo4jDirectory.getAbsolutePath());
+        doImport();
+    }
+
+    @Override
+    public void importRemote(String resourceURI) {
+        progressTicket.setDisplayName("Importing data from remote Neo4j database");
+
+        try {
+            graphDB = new RemoteGraphDatabase(resourceURI);
+            doImport();
+        }
+        catch (URISyntaxException e) {
+            e.printStackTrace();//TODO how to treat this exception
+        }
+    }
+
+    @Override
+    public void importRemote(String resourceURI, String login, String password) {
+        progressTicket.setDisplayName("Importing data from remote Neo4j database");
+
+        try {
+            graphDB = new RemoteGraphDatabase(resourceURI, login, password);
+            doImport();
+        }
+        catch (URISyntaxException e) {
+            e.printStackTrace();//TODO here too
+        }
+    }
+
+    private void doImport() {
+        progressTicket.start();
+
         idMapper = new HashMap<Long, Integer>();
 
         Transaction transaction = graphDB.beginTx();
@@ -43,10 +98,11 @@ public final class Neo4jImporter {
             transaction.finish();
         }
 
+        progressTicket.finish();
         graphDB.shutdown();
     }
 
-    private static void importWholeGraph() {
+    private void importWholeGraph() {
         TraversalDescription traversalDescription = TraversalFactory.createTraversalDescription();
         RelationshipExpander relationshipExpander = TraversalFactory.expanderForAllTypes();
 
@@ -62,13 +118,17 @@ public final class Neo4jImporter {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         graphModel = graphController.getModel();
         graphModel.clear();
-        graphModel.getGraph().clear();
+        graphModel.getGraph().clear();//TODO solve problem with projects and workspace, how to treat canceling task?
 
         //createNewProject();
 
         // the algorithm traverses through all relationships
-        for (Relationship neoRelationship : traverser.relationships())
+        for (Relationship neoRelationship : traverser.relationships()) {
+            if (cancelImport)
+                break;
+
             processRelationship(neoRelationship);
+        }
 
         showCurrentWorkspace();
     }
@@ -78,7 +138,7 @@ public final class Neo4jImporter {
 //        pc.newProject();
 //    }
 
-    private static void showCurrentWorkspace() {
+    private void showCurrentWorkspace() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
 
         Workspace workspace = pc.getCurrentWorkspace();
@@ -88,17 +148,19 @@ public final class Neo4jImporter {
         pc.openWorkspace(workspace);
     }
 
-    private static void processRelationship(Relationship neoRelationship) {
-        org.gephi.graph.api.Node gephiStartNode =
-                GephiHelper.getGephiNodeFromNeoNode(neoRelationship.getStartNode());
-        org.gephi.graph.api.Node gephiEndNode =
-                GephiHelper.getGephiNodeFromNeoNode(neoRelationship.getEndNode());
+    private void processRelationship(Relationship neoRelationship) {
+        GephiHelper gephiHelper = new GephiHelper();
 
-        GephiHelper.createGephiEdge(gephiStartNode, gephiEndNode, neoRelationship);
+        org.gephi.graph.api.Node gephiStartNode =
+                gephiHelper.getGephiNodeFromNeoNode(neoRelationship.getStartNode());
+        org.gephi.graph.api.Node gephiEndNode =
+                gephiHelper.getGephiNodeFromNeoNode(neoRelationship.getEndNode());
+
+        gephiHelper.createGephiEdge(gephiStartNode, gephiEndNode, neoRelationship);
     }
 
-    private static class GephiHelper {
-        private GephiHelper() {}
+    private class GephiHelper {
+        public GephiHelper() {}
 
         /**
          * Creates Gephi node representation from Neo4j node and all its property data. If Gephi node
@@ -108,7 +170,7 @@ public final class Neo4jImporter {
          * @param neoNode Neo4j node
          * @return Gephi node
          */
-        public static org.gephi.graph.api.Node getGephiNodeFromNeoNode(org.neo4j.graphdb.Node neoNode) {
+        public org.gephi.graph.api.Node getGephiNodeFromNeoNode(org.neo4j.graphdb.Node neoNode) {
             Integer gephiNodeId = idMapper.get(neoNode.getId());
 
             org.gephi.graph.api.Node gephiNode;
@@ -145,7 +207,7 @@ public final class Neo4jImporter {
          * @param endGephiNode    end Gephi node
          * @param neoRelationship Neo4j relationship
          */
-        public static void createGephiEdge(org.gephi.graph.api.Node startGephiNode,
+        public void createGephiEdge(org.gephi.graph.api.Node startGephiNode,
                                            org.gephi.graph.api.Node endGephiNode,
                                            Relationship neoRelationship) {
             Edge gephiEdge = graphModel.factory().newEdge(startGephiNode, endGephiNode);

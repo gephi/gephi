@@ -29,7 +29,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.io.importer.spi.DatabaseType;
-import org.gephi.neo4j.Neo4jImporter;
+import org.gephi.neo4j.api.Neo4jImporter;
+import org.gephi.utils.longtask.api.LongTaskExecutor;
+import org.gephi.utils.longtask.spi.LongTask;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -69,9 +71,16 @@ public class ImportDB extends CallableSystemAction {
                 int dialogResult = fileChooser.showOpenDialog(null);
 
                 if (dialogResult == JFileChooser.APPROVE_OPTION) {
-                    File neo4jDirectory = fileChooser.getSelectedFile();
+                    final File neo4jDirectory = fileChooser.getSelectedFile();
+                    final Neo4jImporter neo4jImporter = Lookup.getDefault().lookup(Neo4jImporter.class);
 
-                    Neo4jImporter.importLocal(neo4jDirectory);
+                    LongTaskExecutor executor = new LongTaskExecutor(true);
+                    executor.execute((LongTask) neo4jImporter, new Runnable() {
+                        @Override
+                        public void run() {
+                            neo4jImporter.importLocal(neo4jDirectory);
+                        }
+                    });
                 }
             }
         });

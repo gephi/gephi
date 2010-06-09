@@ -31,6 +31,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.gephi.utils.longtask</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.7.0.2</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.neo4j</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -48,7 +56,7 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
-                <package>org.gephi.neo4j</package>
+                <package>org.gephi.neo4j.api</package>
             </public-packages>
         </data>
     </configuration>
