@@ -49,29 +49,37 @@ public enum AttributeType {
     LONG(Long.class),
     FLOAT(Float.class),
     DOUBLE(Double.class),
-    BOOLEAN(Boolean.class),
-    CHAR(Character.class),
-    STRING(String.class),
     BIGINTEGER(BigInteger.class),
     BIGDECIMAL(BigDecimal.class),
-    TIME_INTERVAL(TimeInterval.class),
 
-    LIST_BYTE(ByteList.class),
-    LIST_SHORT(ShortList.class),
-    LIST_INTEGER(IntegerList.class),
-    LIST_LONG(LongList.class),
-    LIST_FLOAT(FloatList.class),
-    LIST_DOUBLE(DoubleList.class),
-    LIST_BOOLEAN(BooleanList.class),
-    LIST_CHARACTER(CharacterList.class),
-    LIST_STRING(StringList.class),
-    LIST_BIGINTEGER(BigIntegerList.class),
-    LIST_BIGDECIMAL(BigDecimalList.class);
+    BOOLEAN(Boolean.class, false),
+    CHAR(Character.class, false),
+    STRING(String.class, false),
+    TIME_INTERVAL(TimeInterval.class, false),
 
-    private final Class type;
+    LIST_BYTE(ByteList.class, false ),//??? LIST TYPES ARE RECOGNIZED AS NUMBERS?
+    LIST_SHORT(ShortList.class, false),
+    LIST_INTEGER(IntegerList.class, false),
+    LIST_LONG(LongList.class, false),
+    LIST_FLOAT(FloatList.class, false),
+    LIST_DOUBLE(DoubleList.class, false),
+    LIST_BIGINTEGER(BigIntegerList.class, false),
+    LIST_BIGDECIMAL(BigDecimalList.class, false),
 
-    AttributeType(Class type) {
+    LIST_BOOLEAN(BooleanList.class, false),
+    LIST_CHARACTER(CharacterList.class, false),
+    LIST_STRING(StringList.class, false);
+
+    private final Class<?> type;
+    private final boolean  isNumber;
+
+    AttributeType(Class<?> type) {
+        this(type, true);
+    }
+
+    AttributeType(Class<?> type, boolean isNumber) {
         this.type = type;
+        this.isNumber = isNumber;
     }
 
     @Override
@@ -89,11 +97,21 @@ public enum AttributeType {
     }
 
     /**
+     * Determines if the type represents a number.
+     *
+     * @return true if type represents number, false otherwise
+     */
+    public boolean isNumber() {
+        //return isNumber();
+        return Number.class.isAssignableFrom(type); //if List types are nor recognized as Numbers
+    }
+
+    /**
      * Returns the <code>Class</code> the type is associated with.
      *
      * @return      the <code>class</code> the type is associated with
      */
-    public Class getType() {
+    public Class<?> getType() {
         return type;
     }
 

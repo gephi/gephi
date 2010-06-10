@@ -93,7 +93,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
         Transaction transaction = graphDB.beginTx();
 
         try {
-            importWholeGraph();
+            importGraph();
             transaction.success();
         }
         finally {
@@ -104,7 +104,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
         graphDB.shutdown();
     }
 
-    private void importWholeGraph() {
+    private void importGraph() {
         TraversalDescription traversalDescription = TraversalFactory.createTraversalDescription();
         RelationshipExpander relationshipExpander = TraversalFactory.expanderForAllTypes();
 
@@ -154,9 +154,9 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
         GephiHelper gephiHelper = new GephiHelper();
 
         org.gephi.graph.api.Node gephiStartNode =
-                gephiHelper.getGephiNodeFromNeoNode(neoRelationship.getStartNode());
+                gephiHelper.createGephiNodeFromNeoNode(neoRelationship.getStartNode());
         org.gephi.graph.api.Node gephiEndNode =
-                gephiHelper.getGephiNodeFromNeoNode(neoRelationship.getEndNode());
+                gephiHelper.createGephiNodeFromNeoNode(neoRelationship.getEndNode());
 
         gephiHelper.createGephiEdge(gephiStartNode, gephiEndNode, neoRelationship);
     }
@@ -172,7 +172,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
          * @param neoNode Neo4j node
          * @return Gephi node
          */
-        public org.gephi.graph.api.Node getGephiNodeFromNeoNode(org.neo4j.graphdb.Node neoNode) {
+        public org.gephi.graph.api.Node createGephiNodeFromNeoNode(org.neo4j.graphdb.Node neoNode) {
             Integer gephiNodeId = idMapper.get(neoNode.getId());
 
             org.gephi.graph.api.Node gephiNode;
@@ -186,6 +186,8 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
                     Object neoPropertyValue = neoNode.getProperty(neoPropertyKey);
                     // property keys and values don't have to be stored, because delegate mechanism
                     // will query all required data directly from Neo4j database
+
+                    
 
                     // only for testing purposes
                     gephiNode.getNodeData().setLabel(neoPropertyValue.toString());

@@ -217,16 +217,20 @@ public class AttributeRangeBuilder implements CategoryBuilder {
                         }
                     }
                 }
-                Object[] valuesArray = vals.toArray();
-                min = AttributeUtils.getDefault().getMin(column, valuesArray);
-                max = AttributeUtils.getDefault().getMax(column, valuesArray);
+                //Object[] valuesArray = vals.toArray();
+                Comparable[] comparableArray = ComparableArrayConverter.convert(vals);
+
+                min = AttributeUtils.getDefault().getMin(column, comparableArray /*valuesArray*/);
+                max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
                 refreshRange();
-                return valuesArray;
+                return comparableArray;//valuesArray;
             } else {
-                Object[] valuesArray = values.toArray();
-                min = AttributeUtils.getDefault().getMin(column, valuesArray);
-                max = AttributeUtils.getDefault().getMax(column, valuesArray);
-                return valuesArray;
+                //Object[] valuesArray = values.toArray();
+                Comparable[] comparableArray = ComparableArrayConverter.convert(values);
+
+                min = AttributeUtils.getDefault().getMin(column, comparableArray /*valuesArray*/);
+                max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
+                return comparableArray;//valuesArray;
             }
         }
 
