@@ -81,8 +81,7 @@ public class EdgeListImporterTest {
 
         ImporterEdgeList importer = new ImporterEdgeList();
         importer.setDatabase(database);
-        importer.setContainer(containerLoader);
-        importer.setReport(new Report());
+        importer.execute(containerLoader);
 
         boolean hasId = false;
         boolean hasLabel = false;

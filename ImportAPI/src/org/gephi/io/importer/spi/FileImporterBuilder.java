@@ -13,7 +13,7 @@ import org.openide.filesystems.FileObject;
  */
 public interface FileImporterBuilder extends ImporterBuilder {
 
-    public FileImporter getImporter();
+    public FileImporter buildImporter();
 
     /**
      * Get default file types this importer can deal with.

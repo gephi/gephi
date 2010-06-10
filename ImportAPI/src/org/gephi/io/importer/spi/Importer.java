@@ -21,16 +21,27 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.spi;
 
 import org.gephi.io.importer.api.ContainerLoader;
+import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.api.Report;
 
 /**
  * Interface for classes which imports data from files, databases, streams or other sources.
+ * <p>
+ * Importers are built from {@link ImporterBuilder} services and can be configured
+ * by {@link ImporterUI} classes.
  *
  * @author Mathieu Bastian
+ * @see ImportController
  */
 public interface Importer {
 
-    public boolean execute();
+    /**
+     * Run the import processus.
+     * @param loader    the container where imported data will be pushed
+     * @return          <code>true</code> if the import is successfull or
+     *                  <code>false</code> if it has been cancelled
+     */
+    public boolean execute(ContainerLoader loader);
 
     /**
      * Returns the import container. The container is the import "result", all
@@ -44,18 +55,4 @@ public interface Importer {
      * @return          the import report
      */
     public Report getReport();
-
-    /**
-     * Sets the import container. All data imported are pushed to this container.
-     * It is the import "result".
-     * @param container the import container where data are to be pushed
-     */
-    public void setContainer(ContainerLoader container);
-
-    /**
-     * Sets the import report. Informations, logs and issues are pushed to
-     * <code>report</code> during import for further analysis and verification.
-     * @param report    the import report object
-     */
-    public void setReport(Report report);
 }

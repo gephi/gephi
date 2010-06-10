@@ -21,11 +21,11 @@ public class ImporterBuilderGraphML implements FileImporterBuilder {
 
     public static final String IDENTIFER = "graphml";
 
-    public FileImporter getImporter() {
+    public FileImporter buildImporter() {
         return new ImporterGraphML();
     }
 
-    public String getIdentifier() {
+    public String getName() {
         return IDENTIFER;
     }
 

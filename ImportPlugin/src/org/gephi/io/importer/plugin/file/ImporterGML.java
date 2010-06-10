@@ -53,7 +53,9 @@ public class ImporterGML implements FileImporter, LongTask {
     private ProgressTicket progressTicket;
     private boolean cancel = false;
 
-    public boolean execute() {
+    public boolean execute(ContainerLoader container) {
+        this.container = container;
+        this.report = new Report();
         LineNumberReader lineReader = ImportUtils.getTextReader(reader);
         try {
             importData(lineReader);
@@ -282,14 +284,6 @@ public class ImporterGML implements FileImporter, LongTask {
 
     public void setReader(Reader reader) {
         this.reader = reader;
-    }
-
-    public void setContainer(ContainerLoader container) {
-        this.container = container;
-    }
-
-    public void setReport(Report report) {
-        this.report = report;
     }
 
     public ContainerLoader getContainer() {

@@ -20,11 +20,11 @@ public class ImporterBuilderPajek implements FileImporterBuilder {
 
     public static final String IDENTIFER = "net";
 
-    public FileImporter getImporter() {
+    public FileImporter buildImporter() {
         return new ImporterPajek();
     }
 
-    public String getIdentifier() {
+    public String getName() {
         return IDENTIFER;
     }
 

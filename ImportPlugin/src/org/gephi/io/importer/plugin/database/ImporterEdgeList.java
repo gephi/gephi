@@ -52,7 +52,9 @@ public class ImporterEdgeList implements DatabaseImporter {
     private ContainerLoader container;
     private Connection connection;
 
-    public boolean execute() {
+    public boolean execute(ContainerLoader container) {
+        this.container = container;
+        this.report = new Report();
         try {
             importData();
         } catch (Exception e) {
@@ -487,14 +489,6 @@ public class ImporterEdgeList implements DatabaseImporter {
 
     public Database getDatabase() {
         return database;
-    }
-
-    public void setContainer(ContainerLoader container) {
-        this.container = container;
-    }
-
-    public void setReport(Report report) {
-        this.report = report;
     }
 
     public ContainerLoader getContainer() {

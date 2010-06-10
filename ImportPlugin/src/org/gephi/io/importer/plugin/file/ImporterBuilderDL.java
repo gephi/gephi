@@ -20,11 +20,11 @@ public final class ImporterBuilderDL implements FileImporterBuilder {
 
     public static final String IDENTIFER = "dl";
 
-    public FileImporter getImporter() {
+    public FileImporter buildImporter() {
         return new ImporterDL();
     }
 
-    public String getIdentifier() {
+    public String getName() {
         return IDENTIFER;
     }
 
