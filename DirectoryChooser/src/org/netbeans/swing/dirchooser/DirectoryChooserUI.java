@@ -88,6 +88,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
+import org.gephi.neo4j.api.Neo4jHelper;
 import org.openide.awt.HtmlRenderer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -464,6 +465,10 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
         cancelButton.setToolTipText(cancelButtonToolTipText);
         cancelButton.addActionListener(getCancelSelectionAction());
         buttonPanel.add(cancelButton);
+
+        //TODO initial approve button disabled code started
+        approveButton.setEnabled(false);
+        //TODO initial approve button disabled code ended
     }
     
     private void createCenterPanel(final JFileChooser fc) {
@@ -1302,6 +1307,10 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
             
             setFileName(getStringOfFileName(f));
         }
+
+        //TODO button visibility code started
+        approveButton.setEnabled(Neo4jHelper.isValidNeo4jDirectory(f));
+        //TODO button visibility code ended
     }
     
     private void fireSelectedFilesChanged(PropertyChangeEvent e) {
@@ -1969,7 +1978,6 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
     private class DirectoryChooserFileView extends BasicFileView {
         
         public Icon getIcon(File f) {
-            
             Icon icon = getCachedIcon(f);
             if (icon != null) {
                 return icon;
@@ -2404,6 +2412,12 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
         private Icon getNodeIcon(DirectoryNode node) {
             File file = node.getFile();
             if(file.exists()) {
+                //TODO icon changer code started
+                if (Neo4jHelper.isValidNeo4jDirectory(file)) {
+                    return Neo4jHelper.getDirectoryChooserIcon();
+                }
+                //TODO icon changer code ended
+
                 return fileChooser.getIcon(file);
             } else {
                 return null;

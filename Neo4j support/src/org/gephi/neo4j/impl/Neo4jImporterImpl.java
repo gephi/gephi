@@ -33,7 +33,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     private GraphDatabaseService graphDB;
     private Map<Long, Integer> idMapper;
     private GraphModel graphModel;
-    private ProgressTicket progressTicket;
+    private ProgressTicket progressTicket;//TODO not working after some refacrotings
     private boolean cancelImport;//TODO finish implementing canceling task
 
 
@@ -47,10 +47,12 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     public void setProgressTicket(ProgressTicket progressTicket) {
         cancelImport = false;
         this.progressTicket = progressTicket;
+        System.out.println("set progress ticket");
     }
 
     @Override
     public void importLocal(File neo4jDirectory) {
+        System.out.println("set display name");
         progressTicket.setDisplayName("Importing data from local Neo4j database");
 
         graphDB = new EmbeddedGraphDatabase(neo4jDirectory.getAbsolutePath());
