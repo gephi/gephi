@@ -21,6 +21,7 @@ import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.DatabaseImporter;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.io.importer.spi.ImporterUI;
+import org.gephi.io.importer.spi.SpigotImporter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -301,6 +302,63 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 public void run() {
                     try {
                         Container container = controller.importDatabase(db, importer);
+                        if (container != null) {
+                            container.setSource(containerSource);
+                            finishImport(container);
+                        }
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }, "Import " + containerSource, errorHandler);
+        } catch (Exception ex) {
+            Logger.getLogger("").log(Level.WARNING, "", ex);
+        }
+    }
+
+    public void importSpigot(final SpigotImporter importer) {
+        try {
+            if (importer == null) {
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return;
+            }
+
+            ImporterUI ui = controller.getUI(importer);
+            if (ui != null) {
+                ui.setup(importer);
+                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.spigot.ui.dialog.title");
+                JPanel panel = ui.getPanel();
+                final DialogDescriptor dd = new DialogDescriptor(panel, title);
+                if (panel instanceof ValidationPanel) {
+                    ValidationPanel vp = (ValidationPanel) panel;
+                    vp.addChangeListener(new ChangeListener() {
+
+                        public void stateChanged(ChangeEvent e) {
+                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                        }
+                    });
+                }
+
+                Object result = DialogDisplayer.getDefault().notify(dd);
+                if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
+                    return;
+                }
+                ui.unsetup();
+            }
+
+            LongTask task = null;
+            if (importer instanceof LongTask) {
+                task = (LongTask) importer;
+            }
+
+            //Execute task
+            final String containerSource = ui != null ? ui.getDisplayName() : "Spigot";
+            executor.execute(task, new Runnable() {
+
+                public void run() {
+                    try {
+                        Container container = controller.importSpigot(importer);
                         if (container != null) {
                             container.setSource(containerSource);
                             finishImport(container);

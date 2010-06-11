@@ -22,6 +22,8 @@ import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.io.importer.spi.FileImporterBuilder;
 import org.gephi.io.importer.spi.Importer;
 import org.gephi.io.importer.spi.ImporterUI;
+import org.gephi.io.importer.spi.SpigotImporter;
+import org.gephi.io.importer.spi.SpigotImporterBuilder;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.Scaler;
 import org.gephi.project.api.Workspace;
@@ -39,6 +41,7 @@ public class ImportControllerImpl implements ImportController {
 
     private final FileImporterBuilder[] fileImporterBuilders;
     private final DatabaseImporterBuilder[] databaseImporterBuilders;
+    private final SpigotImporterBuilder[] spigotImporterBuilders;
     private final ImporterUI[] uis;
 
     public ImportControllerImpl() {
@@ -47,6 +50,9 @@ public class ImportControllerImpl implements ImportController {
 
         //Get DatabaseImporters
         databaseImporterBuilders = Lookup.getDefault().lookupAll(DatabaseImporterBuilder.class).toArray(new DatabaseImporterBuilder[0]);
+
+        //Get Spigots
+        spigotImporterBuilders = Lookup.getDefault().lookupAll(SpigotImporterBuilder.class).toArray(new SpigotImporterBuilder[0]);
 
         //Get UIS
         uis = Lookup.getDefault().lookupAll(ImporterUI.class).toArray(new ImporterUI[0]);
@@ -132,6 +138,29 @@ public class ImportControllerImpl implements ImportController {
         container.setReport(report);
 
         importer.setDatabase(database);
+
+        try {
+            if (importer.execute(container.getLoader())) {
+                if (importer.getReport() != null) {
+                    report.append(importer.getReport());
+                }
+                return container;
+            }
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+        return null;
+    }
+
+    public Container importSpigot(SpigotImporter importer) {
+        //Create Container
+        final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
+
+        //Report
+        Report report = new Report();
+        container.setReport(report);
 
         try {
             if (importer.execute(container.getLoader())) {
