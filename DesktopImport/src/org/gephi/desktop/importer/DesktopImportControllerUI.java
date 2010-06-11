@@ -327,7 +327,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             ImporterUI ui = controller.getUI(importer);
             if (ui != null) {
                 ui.setup(importer);
-                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.spigot.ui.dialog.title");
+                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.spigot.ui.dialog.title", ui.getDisplayName());
                 JPanel panel = ui.getPanel();
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
