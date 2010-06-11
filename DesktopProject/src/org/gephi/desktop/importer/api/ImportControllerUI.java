@@ -9,7 +9,7 @@ import java.io.Reader;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.spi.DatabaseImporter;
-import org.gephi.io.importer.spi.FileImporter;
+import org.gephi.io.importer.spi.SpigotImporter;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -27,6 +27,8 @@ public interface ImportControllerUI {
     public void importDatabase(Database database, DatabaseImporter importer);
 
     public void importDatabase(DatabaseImporter importer);
+
+    public void importSpigot(SpigotImporter importer);
 
     public ImportController getImportController();
 }
