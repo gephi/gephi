@@ -33,7 +33,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     private GraphDatabaseService graphDB;
     private Map<Long, Integer> idMapper;
     private GraphModel graphModel;
-    private ProgressTicket progressTicket;//TODO not working after some refacrotings
+    private ProgressTicket progressTicket;
     private boolean cancelImport;//TODO finish implementing canceling task
 
 
@@ -68,7 +68,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
             doImport();
         }
         catch (URISyntaxException e) {
-            e.printStackTrace();//TODO how to treat this exception - in GUI
+            e.printStackTrace();
         }
     }
 
@@ -82,7 +82,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
             doImport();
         }
         catch (URISyntaxException e) {
-            e.printStackTrace();//TODO here too in GUI too
+            e.printStackTrace();
         }
     }
 
@@ -124,10 +124,18 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
             if (cancelImport)
                 break;
 
+            try {
+                Thread.sleep(500);
+            }
+            catch (InterruptedException e) {
+                
+            }
+
             processRelationship(neoRelationship);
         }
 
-        showCurrentWorkspace();
+        if (!cancelImport)
+            showCurrentWorkspace();
     }
 
     private void createNewProject() {
