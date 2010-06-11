@@ -72,7 +72,15 @@ public class Neo4jImportExportAction extends CallableSystemAction {
         String remoteImportMessage = NbBundle.getMessage(Neo4jImportExportAction.class, "CTL_Neo4j_RemoteImportMenuLabel");
         JMenuItem remoteImport = new JMenuItem(new AbstractAction(remoteImportMessage) {
             public void actionPerformed(ActionEvent e) {
-                //TODO implement
+                final Neo4jImporter neo4jImporter = Lookup.getDefault().lookup(Neo4jImporter.class);
+
+                LongTaskExecutor executor = new LongTaskExecutor(true);
+                executor.execute((LongTask) neo4jImporter, new Runnable() {
+                    @Override
+                    public void run() {
+                        neo4jImporter.importRemote("rmi://rmi-server/neo4j-graphdb");
+                    }
+                });
             }
         });
 

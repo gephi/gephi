@@ -47,13 +47,12 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     public void setProgressTicket(ProgressTicket progressTicket) {
         cancelImport = false;
         this.progressTicket = progressTicket;
-        System.out.println("set progress ticket");
     }
 
     @Override
     public void importLocal(File neo4jDirectory) {
-        System.out.println("set display name");
-        progressTicket.progress("Importing data from local Neo4j database");
+        progressTicket.setDisplayName("Importing data from local Neo4j database");
+        progressTicket.start();
 
         graphDB = new EmbeddedGraphDatabase(neo4jDirectory.getAbsolutePath());
         doImport();
@@ -62,6 +61,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     @Override
     public void importRemote(String resourceURI) {
         progressTicket.setDisplayName("Importing data from remote Neo4j database");
+        progressTicket.start();
 
         try {
             graphDB = new RemoteGraphDatabase(resourceURI);
@@ -75,6 +75,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     @Override
     public void importRemote(String resourceURI, String login, String password) {
         progressTicket.setDisplayName("Importing data from remote Neo4j database");
+        progressTicket.start();
 
         try {
             graphDB = new RemoteGraphDatabase(resourceURI, login, password);
@@ -86,7 +87,6 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     }
 
     private void doImport() {
-        progressTicket.start();
         idMapper = new HashMap<Long, Integer>();
 
         Transaction transaction = graphDB.beginTx();
