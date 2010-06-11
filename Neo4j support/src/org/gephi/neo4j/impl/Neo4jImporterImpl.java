@@ -53,7 +53,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     @Override
     public void importLocal(File neo4jDirectory) {
         System.out.println("set display name");
-        progressTicket.setDisplayName("Importing data from local Neo4j database");
+        progressTicket.progress("Importing data from local Neo4j database");
 
         graphDB = new EmbeddedGraphDatabase(neo4jDirectory.getAbsolutePath());
         doImport();
@@ -68,7 +68,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
             doImport();
         }
         catch (URISyntaxException e) {
-            e.printStackTrace();//TODO how to treat this exception
+            e.printStackTrace();//TODO how to treat this exception - in GUI
         }
     }
 
@@ -81,17 +81,15 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
             doImport();
         }
         catch (URISyntaxException e) {
-            e.printStackTrace();//TODO here too
+            e.printStackTrace();//TODO here too in GUI too
         }
     }
 
     private void doImport() {
         progressTicket.start();
-
         idMapper = new HashMap<Long, Integer>();
 
         Transaction transaction = graphDB.beginTx();
-
         try {
             importGraph();
             transaction.success();
@@ -108,21 +106,18 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
         TraversalDescription traversalDescription = TraversalFactory.createTraversalDescription();
         RelationshipExpander relationshipExpander = TraversalFactory.expanderForAllTypes();
 
-        org.neo4j.graphdb.Node startNode = graphDB.getReferenceNode();
+        org.neo4j.graphdb.Node referenceNode = graphDB.getReferenceNode();
 
         Traverser traverser = 
             traversalDescription.depthFirst()
                                 .expand(relationshipExpander)
                                 .filter(ReturnFilter.ALL)
                                 .prune(PruneEvaluator.NONE)
-                                .traverse(startNode);
+                                .traverse(referenceNode);
 
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        graphModel = graphController.getModel();
-        graphModel.clear();
-        graphModel.getGraph().clear();//TODO solve problem with projects and workspace, how to treat canceling task?
-
-        //createNewProject();
+        createNewProject();
+        initializeGraphModel();
+        //TODO solve problem with projects and workspace, how to treat canceling task?
 
         // the algorithm traverses through all relationships
         for (Relationship neoRelationship : traverser.relationships()) {
@@ -135,17 +130,21 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
         showCurrentWorkspace();
     }
 
-//    private static void createNewProject() {
-//        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-//        pc.newProject();
-//    }
+    private void createNewProject() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.newProject();
+    }
+
+    private void initializeGraphModel() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        graphModel = graphController.getModel();
+    }
 
     private void showCurrentWorkspace() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
 
         Workspace workspace = pc.getCurrentWorkspace();
         if (workspace == null)
-        //pc.newProject();
             workspace = pc.newWorkspace(pc.getCurrentProject());
         pc.openWorkspace(workspace);
     }

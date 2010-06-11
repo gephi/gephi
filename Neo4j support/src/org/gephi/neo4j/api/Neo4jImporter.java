@@ -20,7 +20,7 @@ public interface Neo4jImporter {
     /**
      * Imports data from remote Neo4j database.
      * 
-     * @param resourceURI URI of the remote Neo4j databse
+     * @param resourceURI URI of the remote Neo4j database
      */
     void importRemote(String resourceURI);
 

@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.desktop.neo4j
+OpenIDE-Module-Layer: org/gephi/desktop/neo4j/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/neo4j/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

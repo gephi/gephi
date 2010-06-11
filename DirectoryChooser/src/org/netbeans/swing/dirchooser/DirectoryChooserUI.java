@@ -88,11 +88,12 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
-import org.gephi.neo4j.api.Neo4jHelper;
+import org.netbeans.swing.dirchooser.spi.CustomDirectoryProvider;
 import org.openide.awt.HtmlRenderer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.util.RequestProcessor;
@@ -197,12 +198,25 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
     private JComponent topCombo, topComboWrapper, topToolbar;
     private JPanel slownessPanel;
 
+    private CustomDirectoryProvider customDirectoryProvider;
+
     public static ComponentUI createUI(JComponent c) {
         return new DirectoryChooserUI((JFileChooser) c);
     }
 
     public DirectoryChooserUI(JFileChooser filechooser) {
         super(filechooser);
+
+        Collection<? extends CustomDirectoryProvider> directoryProviders =
+                Lookup.getDefault().lookupAll(CustomDirectoryProvider.class);
+
+        customDirectoryProvider = null;
+        for (CustomDirectoryProvider directoryProvider : directoryProviders) {
+            if (directoryProvider.isEnabled()) {
+                this.customDirectoryProvider = directoryProvider;
+                break;
+            }
+        }
     }
     
     public void installUI(JComponent c) {
@@ -467,7 +481,8 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
         buttonPanel.add(cancelButton);
 
         //TODO initial approve button disabled code started
-        approveButton.setEnabled(false);
+        if (customDirectoryProvider != null)
+            approveButton.setEnabled(false);
         //TODO initial approve button disabled code ended
     }
     
@@ -1309,7 +1324,8 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
         }
 
         //TODO button visibility code started
-        approveButton.setEnabled(Neo4jHelper.isValidNeo4jDirectory(f));
+        if (customDirectoryProvider != null)
+            approveButton.setEnabled(customDirectoryProvider.isValidCustomDirectory(f));
         //TODO button visibility code ended
     }
     
@@ -2413,8 +2429,8 @@ public class DirectoryChooserUI extends BasicFileChooserUI {
             File file = node.getFile();
             if(file.exists()) {
                 //TODO icon changer code started
-                if (Neo4jHelper.isValidNeo4jDirectory(file)) {
-                    return Neo4jHelper.getDirectoryChooserIcon();
+                if (customDirectoryProvider != null && customDirectoryProvider.isValidCustomDirectory(file)) {
+                    return customDirectoryProvider.getCustomDirectoryIcon();
                 }
                 //TODO icon changer code ended
 
