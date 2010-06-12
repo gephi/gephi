@@ -32,12 +32,24 @@ import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipExpander;
+import org.neo4j.graphdb.traversal.PruneEvaluator;
+import org.neo4j.graphdb.traversal.ReturnFilter;
+import org.neo4j.graphdb.traversal.TraversalDescription;
+import org.neo4j.graphdb.traversal.Traverser;
+import org.neo4j.kernel.TraversalFactory;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public class AttributeTableImpl implements AttributeTable {
+
+    private GraphDatabaseService graphDB;//inject value
 
     protected String name;
     protected final AbstractAttributeModel model;
@@ -68,7 +80,7 @@ public class AttributeTableImpl implements AttributeTable {
     }
 
     public AttributeColumnImpl addColumn(String id, AttributeType type) {
-        return addColumn(id, id, type, AttributeOrigin.DATA, null);
+        return addColumn(id, id, type, AttributeOrigin.PROPERTY, null);
     }
 
     public AttributeColumnImpl addColumn(String id, AttributeType type, AttributeOrigin origin) {
@@ -117,6 +129,28 @@ public class AttributeTableImpl implements AttributeTable {
 
         //Version
         version++;
+
+        if (getName().equals(NbBundle.getMessage(AttributeTableImpl.class, "NodeAttributeTable.name"))) {
+            for (Node node : graphDB.getAllNodes()) {
+                node.removeProperty(column.getId());
+            }
+        }
+        else if (getName().equals(NbBundle.getMessage(AttributeTableImpl.class, "EdgeAttributeTable.name"))) {
+            TraversalDescription traversalDescription = TraversalFactory.createTraversalDescription();
+            RelationshipExpander relationshipExpander = TraversalFactory.expanderForAllTypes();
+
+            Node referenceNode = graphDB.getReferenceNode();
+
+            Traverser traverser =
+                traversalDescription.depthFirst()
+                                    .expand(relationshipExpander)
+                                    .filter(ReturnFilter.ALL)
+                                    .prune(PruneEvaluator.NONE)
+                                    .traverse(referenceNode);
+            for (Relationship relationship : traverser.relationships()) {
+                relationship.removeProperty(column.getId());
+            }
+        }
     }
 
     public synchronized AttributeColumnImpl getColumn(int index) {
