@@ -98,7 +98,7 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
             return false;
         }
 
-        AbstractEdge edge = dhns.factory().newEdge(source, target, 1.0f, directed);
+        AbstractEdge edge = dhns.factory().newEdge(null, source, target, 1.0f, directed);
         view.getStructureModifier().addEdge(edge);
         if (directed) {
             dhns.touchDirected();

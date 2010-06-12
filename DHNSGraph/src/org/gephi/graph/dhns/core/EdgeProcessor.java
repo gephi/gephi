@@ -77,7 +77,7 @@ public class EdgeProcessor {
                 }
 
                 source.getEdgesOutTree().remove(edge);
-                dhns.getGraphStructure().getEdgeDictionnary().remove(edge);
+                dhns.getGraphStructure().removeFromDictionnary(edge);
             }
             node.getEdgesInTree().clear();
         }
@@ -99,7 +99,7 @@ public class EdgeProcessor {
                 }
 
                 edge.getTarget(viewId).getEdgesInTree().remove(edge);
-                dhns.getGraphStructure().getEdgeDictionnary().remove(edge);
+                dhns.getGraphStructure().removeFromDictionnary(edge);
             }
             node.getEdgesOutTree().clear();
         }
@@ -187,7 +187,7 @@ public class EdgeProcessor {
         view.setEdgesCountEnabled(0);
         view.setMutualEdgesEnabled(0);
         view.setMutualEdgesTotal(0);
-        dhns.getGraphStructure().getEdgeDictionnary().clear();
+        dhns.getGraphStructure().clearEdgeDictionnary();
     }
 
     public void clearAllMetaEdges() {

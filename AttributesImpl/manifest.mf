@@ -3,5 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.data.attributes
 OpenIDE-Module-Layer: org/gephi/data/attributes/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/data/attributes/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7
+OpenIDE-Module-Specification-Version: 0.7.1
 

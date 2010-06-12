@@ -69,10 +69,6 @@ public abstract class AbstractProcessor {
             node.getNodeData().setSize(10f);
         }
 
-        if (nodeDraft.getId() != null) {
-            node.getNodeData().setId(nodeDraft.getId());
-        }
-
         //Dynamic
         if (timelineController != null && nodeDraft.getSlices() != null) {
             for (String[] slice : nodeDraft.getSlices()) {

@@ -29,18 +29,22 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.graph.HierarchicalDirectedGraphImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.utils.DHNSSerializer;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.w3c.dom.Element;
 import static org.junit.Assert.*;
 
@@ -66,9 +70,14 @@ public class DhnsTestSerializer {
 
     @Before
     public void setUp() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.newProject();
+        Workspace workspace = pc.getCurrentWorkspace();
+        Lookup.getDefault().lookup(AttributeController.class).getModel();
+
         //Graph 1 - Multilevel sample without edges
         DhnsGraphController controller1 = new DhnsGraphController();
-        dhns1 = new Dhns(controller1, null);
+        dhns1 = new Dhns(controller1, workspace);
         graph1 = new HierarchicalDirectedGraphImpl(dhns1, dhns1.getGraphStructure().getMainView());
         GraphFactoryImpl factory1 = dhns1.factory();
 
@@ -85,9 +94,12 @@ public class DhnsTestSerializer {
         graph1.addNode(nodeD, nodeB);
 
         //Graph2 - Directed sample with edges
+        Workspace workspace2 = pc.newWorkspace(pc.getCurrentProject());
+        pc.openWorkspace(workspace2);
+        Lookup.getDefault().lookup(AttributeController.class).getModel();
         nodeMap2 = new HashMap<String, Node>();
         DhnsGraphController controller2 = new DhnsGraphController();
-        dhns2 = new Dhns(controller2, null);
+        dhns2 = new Dhns(controller2, workspace2);
         graph2 = new HierarchicalDirectedGraphImpl(dhns2, dhns2.getGraphStructure().getMainView());
         GraphFactoryImpl factory2 = dhns2.factory();
 
@@ -149,7 +161,11 @@ public class DhnsTestSerializer {
         DHNSSerializer dHNSSerializer = new DHNSSerializer();
         Element e1 = dHNSSerializer.writeDhns(dHNSSerializer.createDocument(), dhns2);
         String s1 = printXML(e1);
-        Dhns d2 = new Dhns(new DhnsGraphController(), null);
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        Workspace workspace3 = pc.newWorkspace(pc.getCurrentProject());
+        pc.openWorkspace(workspace3);
+        Lookup.getDefault().lookup(AttributeController.class).getModel();
+        Dhns d2 = new Dhns(new DhnsGraphController(), workspace3);
         dHNSSerializer.readDhns(e1, d2);
         Element e2 = dHNSSerializer.writeDhns(dHNSSerializer.createDocument(), d2);
         String s2 = printXML(e2);

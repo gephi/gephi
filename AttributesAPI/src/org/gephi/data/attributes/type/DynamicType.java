@@ -92,31 +92,6 @@ public abstract class DynamicType<T> {
 	}
 
 	/**
-	 * Removes all intervals.
-	 */
-	public void clearValues() {
-		clearValues(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-	}
-
-	/**
-	 * Removes all intervals overlapping with a [{@code low}, {@code high}]
-	 * time interval.
-	 *
-	 * @param low  the left endpoint
-	 * @param high the right endpoint
-	 *
-	 * @throws IllegalArgumentException if {@code low} > {@code high}.
-	 */
-	public void clearValues(double low, double high) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		intervalTree.delete(new Interval<T>(low, high, null));
-	}
-
-	/**
 	 * Returns the estimated value of a set of values whose time intervals
 	 * overlap with a [{@code -inf}, {@code inf}] time interval.
 	 * {@code Estimator.FIRST} is used.
@@ -224,31 +199,6 @@ public abstract class DynamicType<T> {
 		for (Interval<T> i : intervalTree.search(interval))
 			result.add(i.getValue());
 		return result;
-	}
-
-	/**
-	 * Adds a new interval [{@code -inf}, {@code inf}] with some {@code value}.
-	 */
-	public void setValue(T value) {
-		setValue(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, value);
-	}
-
-	/**
-	 * Adds a new interval [{@code low}, {@code high}] with some {@code value}.
-	 *
-	 * @param low   the left endpoint
-	 * @param high  the right endpoint
-	 * @param value an instance of type {@code T}
-	 *
-	 * @throws IllegalArgumentException if {@code low} > {@code high}.
-	 */
-	public void setValue(double low, double high, T value) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		intervalTree.insert(new Interval<T>(low, high, value));
 	}
 
 	/**

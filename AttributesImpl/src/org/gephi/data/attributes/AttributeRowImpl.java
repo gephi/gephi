@@ -24,7 +24,6 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
-import org.gephi.data.attributes.api.Estimator;
 
 /**
  *
@@ -198,56 +197,4 @@ public class AttributeRowImpl implements AttributeRow {
     public void setValues(AttributeValueImpl[] values) {
         this.values = values;
     }
-
-	public void setValue(AttributeValue value, double low, double high) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void setValue(AttributeColumn column, Object value, double low, double high) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void setValue(String column, Object value, double low, double high) {
-        throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void setValue(int index, Object value, double low, double high) {
-        throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public Object getValue(AttributeColumn column, double low, double high) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public Object getValue(AttributeColumn column, Estimator estimator) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public Object getValue(AttributeColumn column, double low, double high, Estimator estimator) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public Object getValue(String column, double low, double high) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public Object getValue(String column, Estimator estimator) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public Object getValue(String column, double low, double high, Estimator estimator) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public Object getValue(int index, double low, double high) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public Object getValue(int index, Estimator estimator) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public Object getValue(int index, double low, double high, Estimator estimator) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
 }

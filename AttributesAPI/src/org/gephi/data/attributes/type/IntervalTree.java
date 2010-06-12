@@ -37,7 +37,13 @@ import java.util.List;
  * <p>The space consumption is <i>O</i>(<i>n</i>).
  * 
  * <p>Note that this implementation doesn't allow intervals to be duplicated.
- * 
+ *
+ * <p>References:
+ * <ul>
+ * <li>Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, and Clifford Stein.
+ * Introduction to Algorithms, Second Edition. MIT, 2001. ISBN 83-204-2879-3
+ * </ul>
+ *
  * @author Cezary Bartosiak
  * 
  * @param <T> type of data

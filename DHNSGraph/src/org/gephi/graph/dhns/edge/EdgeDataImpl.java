@@ -184,15 +184,19 @@ public class EdgeDataImpl implements EdgeData {
         }
     }
 
-    public void setId(String id) {
+    public String setId(String id) {
+        if (attributes == null) {
+            return null;
+        }
+        String oldId = (String) attributes.getValue(PropertiesColumn.EDGE_ID.getIndex());
         attributes.setValue(PropertiesColumn.EDGE_ID.getIndex(), id);
+        return oldId;
     }
 
     public String getId() {
-        String id = (String) attributes.getValue(PropertiesColumn.EDGE_ID.getIndex());
-        if (id == null || id.isEmpty()) {
-            return Integer.toString(edge.getId());
+        if (attributes == null) {
+            return null;
         }
-        return id;
+        return (String) attributes.getValue(PropertiesColumn.EDGE_ID.getIndex());
     }
 }
