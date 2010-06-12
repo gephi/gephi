@@ -32,7 +32,7 @@ import org.openide.util.NbBundle;
  * @author Mathieu Bastian
  */
 public class AttributeRowImpl implements AttributeRow {
-    public final String RESERVED_NEO4J_COLUMN_NAME = "neoid";
+    //public final String RESERVED_NEO4J_COLUMN_NAME = "neoid";
     private GraphDatabaseService graphDB;//inject value
     private int neo4jId;
 
@@ -46,14 +46,25 @@ public class AttributeRowImpl implements AttributeRow {
     }
 
     public void reset() {
-        //TODO implementation???
-//        rowVersion = attributeTable.getVersion();
+        rowVersion = attributeTable.getVersion();
+
+        if (attributeTable.getName().equals(NbBundle.getMessage(AttributeTableImpl.class, "NodeAttributeTable.name"))) {
+            for (String propertyKey : graphDB.getNodeById(neo4jId).getPropertyKeys()) {
+                graphDB.getNodeById(neo4jId).setProperty(propertyKey, attributeTable.getColumn(propertyKey).defaultValue);
+            }
+        }
+        else if (attributeTable.getName().equals(NbBundle.getMessage(AttributeTableImpl.class, "EdgeAttributeTable.name"))) {
+            for (String propertyKey : graphDB.getRelationshipById(neo4jId).getPropertyKeys()) {
+                graphDB.getRelationshipById(neo4jId).setProperty(propertyKey, attributeTable.getColumn(propertyKey).defaultValue);
+            }
+        }
+
 //        int attSize = attributeTable.countColumns();
 //        AttributeValueImpl[] newValues = new AttributeValueImpl[attSize];
 //        for (int i = 0; i < attSize; i++) {
 //            newValues[i] = attributeTable.getColumn(i).defaultValue;
 //        }
-//        this.values = newValues;
+        //this.values = newValues;
     }
 
     public void setValues(AttributeRow attributeRow) {
