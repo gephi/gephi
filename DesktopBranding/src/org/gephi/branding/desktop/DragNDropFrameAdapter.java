@@ -82,7 +82,7 @@ public class DragNDropFrameAdapter {
                         }
                     } else {
                         ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
-                        if (importController.getImportController().isFileSupported(fileObject)) {
+                        if (importController.getImportController().isFileSupported(FileUtil.toFile(fileObject))) {
                             importController.importFile(fileObject);
                         } else {
                             return false;

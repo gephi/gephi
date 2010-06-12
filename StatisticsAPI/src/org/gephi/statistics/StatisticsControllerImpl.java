@@ -98,6 +98,8 @@ public class StatisticsControllerImpl implements StatisticsController {
         final AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         StatisticsBuilder builder = getBuilder(pStatistics.getClass());
         final StatisticsUI[] uis = getUI(pStatistics);
+
+        model.addStatistics(pStatistics);
         for (StatisticsUI s : uis) {
             s.setup(pStatistics);
             model.setRunning(s, true);
@@ -116,7 +118,6 @@ public class StatisticsControllerImpl implements StatisticsController {
                     for (StatisticsUI s : uis) {
                         model.setRunning(s, false);
                     }
-                    model.addStatistics(pStatistics);
                 }
             }, builder.getName(), null);
         } else {
@@ -127,7 +128,6 @@ public class StatisticsControllerImpl implements StatisticsController {
             for (StatisticsUI s : uis) {
                 model.setRunning(s, false);
             }
-            model.addStatistics(pStatistics);
         }
     }
 

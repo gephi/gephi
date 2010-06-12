@@ -100,6 +100,9 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
             busyLabel.setBusy(true);
             reportButton.setEnabled(false);
             resultLabel.setText("");
+            if (currentStatistics == null) {
+                currentStatistics = currentModel.getStatistics(statisticsUI);
+            }
         } else {
             runButton.setText(RUN);
             busyLabel.setBusy(false);

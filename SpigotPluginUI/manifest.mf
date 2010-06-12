@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.ui.spigot.plugin
+OpenIDE-Module-Localizing-Bundle: org/gephi/ui/spigot/plugin/Bundle.properties
+OpenIDE-Module-Specification-Version: 0.8
+

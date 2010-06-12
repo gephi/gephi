@@ -9,7 +9,19 @@
     <p>
     <h2>API Changes</h2>
     <ul>
-        <li><(June 04 2010) Improvements in the GraphAPI identifiers management. The system is now storing String
+        <li>(June 11 2010) Add Spigot support to the ImportAPI and SPI. Like <code>DatabaseImporter</code>, the
+            <code>SpigotImporter</code> interface is a new type of Importers. Modifications have also be made to the
+            <code>ImportController</code> to support spigot import.
+        <li>(June 08 2010) Refactoring and improvements in the Import API and SPI. The refactoring aim is to solve the singleton
+            issue with importers and let users implement builders interface that create importers instance. Therefore an
+            <code>ImporterBuilder</code> interface has been created and should be registered with the <code>@ServiceProvider</code>
+            annotation. The various importers types have been simplified and leave more choice to the implementations about how the
+            input is managed. XML and Text file importers has been merged in a <code>FileImporter</code> interface, working with the
+            <code>java.io.Reader</code>. Utility static methods, for instance <em>get Document from Reader</em> can now be found in a new
+            <code>ImportUtils</code> class. The <code>ImportController</code> has been simplified for File import and now accepts
+            <code>java.io.Reader</code> also. The main improvement on these modules in the support of UI components for importers.
+            The aim is to let importers define an <code>ImporterUI</code> implementation to manage settings of these importers.
+        <li>(June 04 2010) Improvements in the GraphAPI identifiers management. The system is now storing String
         identifiers coming from users. New getters and setters methods have been created in <code>Graph</code>:
         <ul><li><code>Graph.setId(Node, String)</code></li>
             <li><code>Graph.setId(Edge, String)</code></li>

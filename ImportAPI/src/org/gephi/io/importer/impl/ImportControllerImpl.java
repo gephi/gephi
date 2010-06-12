@@ -4,37 +4,33 @@
  */
 package org.gephi.io.importer.impl;
 
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.LineNumberReader;
+import java.io.Reader;
 import java.util.ArrayList;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerFactory;
 import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.FileType;
 import org.gephi.io.importer.api.ImportController;
+import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.DatabaseImporter;
-import org.gephi.io.importer.spi.DatabaseType;
-import org.gephi.io.importer.spi.FileFormatImporter;
-import org.gephi.io.importer.spi.StreamImporter;
-import org.gephi.io.importer.spi.TextImporter;
-import org.gephi.io.importer.spi.XMLImporter;
+import org.gephi.io.importer.spi.DatabaseImporterBuilder;
+import org.gephi.io.importer.spi.FileImporter;
+import org.gephi.io.importer.spi.FileImporterBuilder;
+import org.gephi.io.importer.spi.Importer;
+import org.gephi.io.importer.spi.ImporterUI;
+import org.gephi.io.importer.spi.SpigotImporter;
+import org.gephi.io.importer.spi.SpigotImporterBuilder;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.Scaler;
 import org.gephi.project.api.Workspace;
-import org.gephi.utils.CharsetToolkit;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  *
@@ -43,42 +39,67 @@ import org.xml.sax.SAXException;
 @ServiceProvider(service = ImportController.class)
 public class ImportControllerImpl implements ImportController {
 
-    private FileFormatImporter[] fileFormatImporters;
-    private DatabaseImporter[] databaseImporters;
-    private DatabaseType[] databaseTypes;
+    private final FileImporterBuilder[] fileImporterBuilders;
+    private final DatabaseImporterBuilder[] databaseImporterBuilders;
+    private final SpigotImporterBuilder[] spigotImporterBuilders;
+    private final ImporterUI[] uis;
 
     public ImportControllerImpl() {
         //Get FileFormatImporters
-        fileFormatImporters = new FileFormatImporter[0];
-        fileFormatImporters = Lookup.getDefault().lookupAll(FileFormatImporter.class).toArray(fileFormatImporters);
+        fileImporterBuilders = Lookup.getDefault().lookupAll(FileImporterBuilder.class).toArray(new FileImporterBuilder[0]);
 
         //Get DatabaseImporters
-        databaseImporters = new DatabaseImporter[0];
-        databaseImporters = Lookup.getDefault().lookupAll(DatabaseImporter.class).toArray(databaseImporters);
+        databaseImporterBuilders = Lookup.getDefault().lookupAll(DatabaseImporterBuilder.class).toArray(new DatabaseImporterBuilder[0]);
 
-        //Get DatabaseTypes
-        databaseTypes = new DatabaseType[0];
-        databaseTypes = Lookup.getDefault().lookupAll(DatabaseType.class).toArray(databaseTypes);
+        //Get Spigots
+        spigotImporterBuilders = Lookup.getDefault().lookupAll(SpigotImporterBuilder.class).toArray(new SpigotImporterBuilder[0]);
+
+        //Get UIS
+        uis = Lookup.getDefault().lookupAll(ImporterUI.class).toArray(new ImporterUI[0]);
     }
 
-    public FileFormatImporter getFileImporter(FileObject fileObject) {
+    public FileImporter getFileImporter(File file) {
+        FileObject fileObject = FileUtil.toFileObject(file);
         fileObject = getArchivedFile(fileObject);   //Unzip and return content file
-        return getMatchingImporter(fileObject);
-    }
-
-    public FileFormatImporter getFileImporter(String importerName) {
-        return getMatchingImporter(importerName);
-    }
-
-    public DatabaseImporter getDatabaseImporter(Database database) {
-        DatabaseType type = getDatabaseType(database);
-        if (type != null) {
-            return getMatchingImporter(type);
+        FileImporterBuilder builder = getMatchingImporter(fileObject);
+        if (fileObject != null && builder != null) {
+            return builder.buildImporter();
         }
         return null;
     }
 
-    public Container importFile(InputStream stream, FileFormatImporter importer) {
+    public FileImporter getFileImporter(String importerName) {
+        FileImporterBuilder builder = getMatchingImporter(importerName);
+        if (builder != null) {
+            return builder.buildImporter();
+        }
+        return null;
+    }
+
+    public Container importFile(File file) throws FileNotFoundException {
+        FileObject fileObject = FileUtil.toFileObject(file);
+        if (fileObject != null) {
+            fileObject = getArchivedFile(fileObject);   //Unzip and return content file
+            FileImporterBuilder builder = getMatchingImporter(fileObject);
+            if (fileObject != null && builder != null) {
+                return importFile(fileObject.getInputStream(), builder.buildImporter());
+            }
+        }
+        return null;
+    }
+
+    public Container importFile(File file, FileImporter importer) throws FileNotFoundException {
+        FileObject fileObject = FileUtil.toFileObject(file);
+        if (fileObject != null) {
+            fileObject = getArchivedFile(fileObject);   //Unzip and return content file
+            if (fileObject != null) {
+                return importFile(fileObject.getInputStream(), importer);
+            }
+        }
+        return null;
+    }
+
+    public Container importFile(Reader reader, FileImporter importer) {
         //Create Container
         final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
 
@@ -86,25 +107,26 @@ public class ImportControllerImpl implements ImportController {
         Report report = new Report();
         container.setReport(report);
 
-        try {
+        importer.setReader(reader);
 
-            if (importer instanceof XMLImporter) {
-                Document document = getDocument(stream);
-                if (((XMLImporter) importer).importData(document, container.getLoader(), report)) {
-                    return container;
+        try {
+            if (importer.execute(container.getLoader())) {
+                if (importer.getReport() != null) {
+                    report.append(importer.getReport());
                 }
-            } else if (importer instanceof TextImporter) {
-                LineNumberReader reader = getTextReader(stream);
-                if (((TextImporter) importer).importData(reader, container.getLoader(), report)) {
-                    return container;
-                }
-            } else if (importer instanceof StreamImporter) {
+                return container;
             }
+        } catch (RuntimeException ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-
         return null;
+    }
+
+    public Container importFile(InputStream stream, FileImporter importer) {
+        Reader reader = ImportUtils.getTextReader(stream);
+        return importFile(reader, importer);
     }
 
     public Container importDatabase(Database database, DatabaseImporter importer) {
@@ -114,14 +136,44 @@ public class ImportControllerImpl implements ImportController {
         //Report
         Report report = new Report();
         container.setReport(report);
+
+        importer.setDatabase(database);
+
         try {
-            if (importer.importData(database, container.getLoader(), report)) {
+            if (importer.execute(container.getLoader())) {
+                if (importer.getReport() != null) {
+                    report.append(importer.getReport());
+                }
                 return container;
             }
+        } catch (RuntimeException ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
+        return null;
+    }
 
+    public Container importSpigot(SpigotImporter importer) {
+        //Create Container
+        final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
+
+        //Report
+        Report report = new Report();
+        container.setReport(report);
+
+        try {
+            if (importer.execute(container.getLoader())) {
+                if (importer.getReport() != null) {
+                    report.append(importer.getReport());
+                }
+                return container;
+            }
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
         return null;
     }
 
@@ -144,52 +196,10 @@ public class ImportControllerImpl implements ImportController {
         processor.process(container.getUnloader(), workspace);
     }
 
-    private LineNumberReader getTextReader(FileObject fileObject) throws RuntimeException {
-        try {
-            return getTextReader(fileObject.getInputStream());
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(NbBundle.getMessage(getClass(), "ImportControllerImpl.error_file_not_found"));
-        }
-    }
-
-    private LineNumberReader getTextReader(InputStream stream) throws RuntimeException {
-        try {
-            LineNumberReader reader;
-            CharsetToolkit charsetToolkit = new CharsetToolkit(stream);
-            reader = (LineNumberReader) charsetToolkit.getReader();
-            return reader;
-        } catch (IOException ex) {
-            throw new RuntimeException(NbBundle.getMessage(getClass(), "ImportControllerImpl.error_io"));
-        }
-    }
-
-    private Document getDocument(InputStream stream) throws RuntimeException {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(stream);
-            return document;
-        } catch (ParserConfigurationException ex) {
-            throw new RuntimeException(NbBundle.getMessage(getClass(), "ImportControllerImpl.error_missing_document_instance_factory"));
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(NbBundle.getMessage(getClass(), "ImportControllerImpl.error_file_not_found"));
-        } catch (SAXException ex) {
-            throw new RuntimeException(NbBundle.getMessage(getClass(), "ImportControllerImpl.error_sax"));
-        } catch (IOException ex) {
-            throw new RuntimeException(NbBundle.getMessage(getClass(), "ImportControllerImpl.error_io"));
-        }
-    }
-
-    private Document getDocument(FileObject fileObject) throws RuntimeException {
-        try {
-            InputStream stream = fileObject.getInputStream();
-            return getDocument(stream);
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(NbBundle.getMessage(getClass(), "ImportControllerImpl.error_file_not_found"));
-        }
-    }
-
     private FileObject getArchivedFile(FileObject fileObject) {
+        if (fileObject == null) {
+            return null;
+        }
         if (FileUtil.isArchiveFile(fileObject)) {
             //Unzip
             fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
@@ -197,8 +207,11 @@ public class ImportControllerImpl implements ImportController {
         return fileObject;
     }
 
-    private FileFormatImporter getMatchingImporter(FileObject fileObject) {
-        for (FileFormatImporter im : fileFormatImporters) {
+    private FileImporterBuilder getMatchingImporter(FileObject fileObject) {
+        if (fileObject == null) {
+            return null;
+        }
+        for (FileImporterBuilder im : fileImporterBuilders) {
             if (im.isMatchingImporter(fileObject)) {
                 return im;
             }
@@ -206,8 +219,8 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
-    private FileFormatImporter getMatchingImporter(String extension) {
-        for (FileFormatImporter im : fileFormatImporters) {
+    private FileImporterBuilder getMatchingImporter(String extension) {
+        for (FileImporterBuilder im : fileImporterBuilders) {
             for (FileType ft : im.getFileTypes()) {
                 for (String ext : ft.getExtensions()) {
                     if (ext.equalsIgnoreCase(extension)) {
@@ -219,28 +232,9 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
-    private DatabaseImporter getMatchingImporter(DatabaseType type) {
-        for (DatabaseImporter im : databaseImporters) {
-            if (im.isMatchingImporter(type)) {
-                return im;
-            }
-        }
-
-        return null;
-    }
-
-    public DatabaseType getDatabaseType(Database database) {
-        for (DatabaseType dbt : databaseTypes) {
-            if (dbt.getDatabaseClass().isAssignableFrom(database.getClass())) {
-                return dbt;
-            }
-        }
-        return null;
-    }
-
     public FileType[] getFileTypes() {
         ArrayList<FileType> list = new ArrayList<FileType>();
-        for (FileFormatImporter im : fileFormatImporters) {
+        for (FileImporterBuilder im : fileImporterBuilders) {
             for (FileType ft : im.getFileTypes()) {
                 list.add(ft);
             }
@@ -248,24 +242,25 @@ public class ImportControllerImpl implements ImportController {
         return list.toArray(new FileType[0]);
     }
 
-    public DatabaseType[] getDatabaseTypes() {
-        return databaseTypes;
-    }
-
-    public Database[] getDatabases(DatabaseType type) {
-        Database[] dbs = new Database[0];
-        return Lookup.getDefault().lookupAll(type.getDatabaseClass()).toArray(dbs);
-    }
-
-    public boolean isFileSupported(FileObject fileObject) {
-        for (FileFormatImporter im : fileFormatImporters) {
+    public boolean isFileSupported(File file) {
+        FileObject fileObject = FileUtil.toFileObject(file);
+        for (FileImporterBuilder im : fileImporterBuilders) {
             if (im.isMatchingImporter(fileObject)) {
                 return true;
             }
         }
-        if (fileObject.hasExt("zip") || fileObject.hasExt("ZIP")) {
+        if (fileObject.getExt().equalsIgnoreCase("zip")) {
             return true;
         }
         return false;
+    }
+
+    public ImporterUI getUI(Importer importer) {
+        for (ImporterUI ui : uis) {
+            if (ui.isUIForImporter(importer)) {
+                return ui;
+            }
+        }
+        return null;
     }
 }
