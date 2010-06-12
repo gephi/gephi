@@ -5,6 +5,11 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -124,13 +129,6 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
             if (cancelImport)
                 break;
 
-            try {
-                Thread.sleep(500);
-            }
-            catch (InterruptedException e) {
-                
-            }
-
             processRelationship(neoRelationship);
         }
 
@@ -189,23 +187,21 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
                 gephiNode = graphModel.factory().newNode();
                 graphModel.getGraph().addNode(gephiNode);
 
+                AttributeController attributeController =
+                            Lookup.getDefault().lookup(AttributeController.class);
+
                 for (String neoPropertyKey : neoNode.getPropertyKeys()) {
                     Object neoPropertyValue = neoNode.getProperty(neoPropertyKey);
-                    // property keys and values don't have to be stored, because delegate mechanism
-                    // will query all required data directly from Neo4j database
 
-                    
+                    AttributeTable nodeTable = attributeController.getModel().getNodeTable();
+                    nodeTable.addColumn(neoPropertyKey, AttributeType.parse(neoPropertyValue), AttributeOrigin.PROPERTY);
 
-                    // only for testing purposes
-                    gephiNode.getNodeData().setLabel(neoPropertyValue.toString());
+                    Attributes attributes = gephiNode.getNodeData().getAttributes();
+                    attributes.setValue(neoPropertyKey, neoPropertyValue);
                 }
 
                 idMapper.put(neoNode.getId(), gephiNode.getId());
             }
-
-            // only for testing purposes
-            if (gephiNode.getNodeData().getLabel() == null)
-                gephiNode.getNodeData().setLabel("<START NODE>");
 
             return gephiNode;
         }
@@ -224,11 +220,18 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
             Edge gephiEdge = graphModel.factory().newEdge(startGephiNode, endGephiNode);
             graphModel.getGraph().addEdge(gephiEdge);
 
-            // property keys and values don't have to be stored, because delegate mechanism will query
-            // all required data directly from Neo4j database
+            AttributeController attributeController =
+                        Lookup.getDefault().lookup(AttributeController.class);
 
-            // only for testing purposes
-            gephiEdge.getEdgeData().setLabel(neoRelationship.getType().name());
+            for (String neoPropertyKey : neoRelationship.getPropertyKeys()) {
+                Object neoPropertyValue = neoRelationship.getProperty(neoPropertyKey);
+
+                AttributeTable edgeTable = attributeController.getModel().getEdgeTable();
+                edgeTable.addColumn(neoPropertyKey, AttributeType.parse(neoPropertyValue), AttributeOrigin.PROPERTY);
+
+                Attributes attributes = gephiEdge.getEdgeData().getAttributes();
+                attributes.setValue(neoPropertyKey, neoPropertyValue);
+            }
         }
     }
 }
