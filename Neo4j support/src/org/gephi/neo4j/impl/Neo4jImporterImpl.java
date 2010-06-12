@@ -14,6 +14,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.neo4j.api.Neo4jImporter;
+import org.gephi.neo4j.attributes.AttributeRowImpl;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -198,6 +199,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
 
                     Attributes attributes = gephiNode.getNodeData().getAttributes();
                     attributes.setValue(neoPropertyKey, neoPropertyValue);
+                    ((AttributeRowImpl) attributes).setNeo4jId((int) neoNode.getId());
                 }
 
                 idMapper.put(neoNode.getId(), gephiNode.getId());

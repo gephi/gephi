@@ -45,6 +45,10 @@ public class AttributeRowImpl implements AttributeRow {
         reset();
     }
 
+    public void setNeo4jId(int neo4jId) {
+        this.neo4jId = neo4jId;
+    }
+
     public void reset() {
         rowVersion = attributeTable.getVersion();
 
