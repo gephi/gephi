@@ -1,15 +1,36 @@
-package org.gephi.neo4j.impl.attributes.same;
+/*
+Copyright 2008 WebAtlas
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Website : http://www.gephi.org
 
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.gephi.neo4j.attributes;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.neo4j.impl.attributes.I_____AttributeTableImpl;
 
-
+/**
+ *
+ * @author Mathieu Bastian
+ */
 public class AttributeColumnImpl implements AttributeColumn {
 
-    protected final I_____AttributeTableImpl table;
+    protected final AttributeTableImpl table;
     protected final int index;
     protected final String id;
     protected final String title;
@@ -17,7 +38,7 @@ public class AttributeColumnImpl implements AttributeColumn {
     protected final AttributeOrigin origin;
     protected final AttributeValueImpl defaultValue;
 
-    public AttributeColumnImpl(I_____AttributeTableImpl table, int index, String id, String title, AttributeType attributeType, AttributeOrigin origin, Object defaultValue) {
+    public AttributeColumnImpl(AttributeTableImpl table, int index, String id, String title, AttributeType attributeType, AttributeOrigin origin, Object defaultValue) {
         this.table = table;
         this.index = index;
         this.id = id;
@@ -27,7 +48,10 @@ public class AttributeColumnImpl implements AttributeColumn {
         this.defaultValue = new AttributeValueImpl(this, defaultValue);
     }
 
-    
+    public AttributeTableImpl getTable() {
+        return table;
+    }
+
     public AttributeType getType() {
         return type;
     }
@@ -49,7 +73,7 @@ public class AttributeColumnImpl implements AttributeColumn {
     }
 
     public Object getDefaultValue() {
-        return defaultValue;
+        return defaultValue.getValue();
     }
 
     @Override

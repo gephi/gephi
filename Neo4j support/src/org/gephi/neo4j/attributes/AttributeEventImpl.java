@@ -1,10 +1,16 @@
-package org.gephi.neo4j.impl.attributes.same;
-
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.gephi.neo4j.attributes;
 
 import org.gephi.data.attributes.api.AttributeEvent;
 
-
-public class AttributeEventImpl implements AttributeEvent {
+/**
+ *
+ * @author Mathieu Bastian
+ */
+public final class AttributeEventImpl implements AttributeEvent {
 
     private final EventType type;
     private final Object source;
@@ -27,5 +33,4 @@ public class AttributeEventImpl implements AttributeEvent {
     public Object getData() {
         return data;
     }
-
 }
