@@ -17,7 +17,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLReporter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.utils.CharsetToolkit;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -36,7 +35,7 @@ public final class ImportUtils {
         try {
             return getTextReader(fileObject.getInputStream());
         } catch (FileNotFoundException ex) {
-            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_file_not_found"));
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
         }
     }
 
@@ -47,7 +46,7 @@ public final class ImportUtils {
             reader = (LineNumberReader) charsetToolkit.getReader();
             return reader;
         } catch (IOException ex) {
-            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_io"));
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_io"));
         }
     }
 
@@ -63,13 +62,13 @@ public final class ImportUtils {
             Document document = builder.parse(stream);
             return document;
         } catch (ParserConfigurationException ex) {
-            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_missing_document_instance_factory"));
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_missing_document_instance_factory"));
         } catch (FileNotFoundException ex) {
-            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_file_not_found"));
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
         } catch (SAXException ex) {
-            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_sax"));
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_sax"));
         } catch (IOException ex) {
-            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_io"));
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_io"));
         }
     }
 
@@ -80,13 +79,13 @@ public final class ImportUtils {
             Document document = builder.parse(new InputSource(reader));
             return document;
         } catch (ParserConfigurationException ex) {
-            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_missing_document_instance_factory"));
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_missing_document_instance_factory"));
         } catch (FileNotFoundException ex) {
-            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_file_not_found"));
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
         } catch (SAXException ex) {
-            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_sax"));
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_sax"));
         } catch (IOException ex) {
-            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_io"));
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_io"));
         }
     }
 
@@ -95,7 +94,7 @@ public final class ImportUtils {
             InputStream stream = fileObject.getInputStream();
             return getXMLDocument(stream);
         } catch (FileNotFoundException ex) {
-            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_file_not_found"));
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_file_not_found"));
         }
     }
 
@@ -109,12 +108,13 @@ public final class ImportUtils {
 
                 @Override
                 public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
-                    System.out.println("Error:" + errorType + ", message : " + message);
+                    throw new RuntimeException("Error:" + errorType + ", message : " + message);
+                    //System.out.println("Error:" + errorType + ", message : " + message);
                 }
             });
             return inputFactory.createXMLStreamReader(reader);
         } catch (XMLStreamException ex) {
-            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_io"));
+            throw new RuntimeException(NbBundle.getMessage(ImportUtils.class, "ImportUtils.error_io"));
         }
     }
 
