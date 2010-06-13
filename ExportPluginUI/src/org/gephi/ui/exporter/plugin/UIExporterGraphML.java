@@ -2,13 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.gephi.ui.exporter.plugin;
 
 import javax.swing.JPanel;
 import org.gephi.io.exporter.plugin.ExporterGraphML;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -39,7 +39,11 @@ public class UIExporterGraphML implements ExporterUI {
         return panel;
     }
 
-    public boolean isMatchingExporter(Exporter exporter) {
+    public boolean isUIForExporter(Exporter exporter) {
         return exporter instanceof ExporterGraphML;
+    }
+
+    public String getDisplayName() {
+        return NbBundle.getMessage(UIExporterGraphML.class, "UIExporterGraphML.name");
     }
 }

@@ -38,12 +38,12 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import org.gephi.desktop.io.export.ExportControllerUI;
 import org.gephi.desktop.io.export.spi.ExporterClassUI;
-import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.ExporterUI;
-import org.gephi.io.exporter.spi.FileExporter;
-import org.gephi.io.exporter.spi.VectorialFileExporter;
+import org.gephi.io.exporter.spi.VectorExporter;
+import org.gephi.io.exporter.spi.VectorFileExporterBuilder;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -62,7 +62,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ExporterClassUI.class)
 public final class VectorialFileExporterUI implements ExporterClassUI {
 
-    private VectorialFileExporter selectedExporter;
+    private VectorFileExporterBuilder selectedBuilder;
+    private VectorExporter selectedExporter;
     private File selectedFile;
 
     public String getName() {
@@ -70,14 +71,14 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
     }
 
     public boolean isEnable() {
-        return !Lookup.getDefault().lookupAll(VectorialFileExporter.class).isEmpty();
+        return true;
     }
 
     public void action() {
         final String LAST_PATH = "VectorialFileExporterUI_Last_Path";
         final String LAST_PATH_DEFAULT = "VectorialFileExporterUI_Last_Path_Default";
 
-        final ExportController exportController = Lookup.getDefault().lookup(ExportController.class);
+        final ExportControllerUI exportController = Lookup.getDefault().lookup(ExportControllerUI.class);
         if (exportController == null) {
             return;
         }
@@ -94,11 +95,11 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
         optionsButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                ExporterUI exporterUI = exportController.getUI(selectedExporter);
+                ExporterUI exporterUI = exportController.getExportController().getUI(selectedExporter);
                 if (exporterUI != null) {
                     JPanel panel = exporterUI.getPanel();
                     exporterUI.setup(selectedExporter);
-                    DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_optionsDialog_title", selectedExporter.getName()));
+                    DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_optionsDialog_title", selectedBuilder.getName()));
                     Object result = DialogDisplayer.getDefault().notify(dd);
                     exporterUI.unsetup(result == NotifyDescriptor.OK_OPTION);
                 }
@@ -139,8 +140,11 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
                 DialogFileFilter fileFilter = (DialogFileFilter) evt.getNewValue();
 
                 //Options panel enabling
-                selectedExporter = getExporter(fileFilter);
-                if (selectedExporter != null && exportController.hasUI(selectedExporter)) {
+                selectedBuilder = getExporter(fileFilter);
+                if (selectedBuilder != null) {
+                    selectedExporter = selectedBuilder.buildExporter();
+                }
+                if (selectedExporter != null && exportController.getExportController().getUI(selectedExporter) != null) {
                     optionsButton.setEnabled(true);
                 } else {
                     optionsButton.setEnabled(false);
@@ -167,8 +171,8 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
 
         //File filters
         DialogFileFilter defaultFilter = null;
-        for (FileExporter vectorialFileExporter : exportController.getVectorialFileExporters()) {
-            for (FileType fileType : vectorialFileExporter.getFileTypes()) {
+        for (VectorFileExporterBuilder vectorFileExporter : Lookup.getDefault().lookupAll(VectorFileExporterBuilder.class)) {
+            for (FileType fileType : vectorFileExporter.getFileTypes()) {
                 DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
                 dialogFileFilter.addExtensions(fileType.getExtensions());
                 if (defaultFilter == null) {
@@ -193,13 +197,13 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
             NbPreferences.forModule(VectorialFileExporterUI.class).put(LAST_PATH, file.getAbsolutePath());
 
             //Do
-            exportController.doExport(selectedExporter, fileObject);
+            exportController.exportFile(fileObject, selectedExporter);
         }
     }
 
     private boolean canExport(JFileChooser chooser) {
         File file = chooser.getSelectedFile();
-        String defaultExtention = selectedExporter.getFileTypes()[0].getExtension();
+        String defaultExtention = selectedBuilder.getFileTypes()[0].getExtension();
 
         try {
             if (!file.getPath().endsWith(defaultExtention)) {
@@ -226,15 +230,14 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
         return true;
     }
 
-    private VectorialFileExporter getExporter(DialogFileFilter fileFilter) {
-        final ExportController exportController = Lookup.getDefault().lookup(ExportController.class);
+    private VectorFileExporterBuilder getExporter(DialogFileFilter fileFilter) {
         //Find fileFilter
-        for (VectorialFileExporter vectorialFileExporter : exportController.getVectorialFileExporters()) {
-            for (FileType fileType : vectorialFileExporter.getFileTypes()) {
+        for (VectorFileExporterBuilder graphFileExporter : Lookup.getDefault().lookupAll(VectorFileExporterBuilder.class)) {
+            for (FileType fileType : graphFileExporter.getFileTypes()) {
                 DialogFileFilter tempFilter = new DialogFileFilter(fileType.getName());
                 tempFilter.addExtensions(fileType.getExtensions());
                 if (tempFilter.equals(fileFilter)) {
-                    return vectorialFileExporter;
+                    return graphFileExporter;
                 }
             }
         }

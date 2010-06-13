@@ -21,14 +21,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.gephi.io.exporter.api;
 
-import org.gephi.io.exporter.spi.FileExporter;
+import org.gephi.io.exporter.spi.CharacterExporter;
 
 /**
  * File type definition. A simple class which contains a <b>name</b> and 
  * <b>extension</b> for a file type.
  *
  * @author Mathieu Bastian
- * @see FileExporter
+ * @see CharactersExporter
  */
 public final class FileType
 {

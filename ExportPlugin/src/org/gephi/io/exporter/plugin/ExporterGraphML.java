@@ -1,9 +1,19 @@
 package org.gephi.io.exporter.plugin;
 
 import java.awt.Color;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.Writer;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -15,14 +25,13 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.io.exporter.api.FileType;
-import org.gephi.io.exporter.spi.GraphFileExporter;
-import org.gephi.io.exporter.spi.GraphFileExporterSettings;
-import org.gephi.io.exporter.spi.XMLGraphFileExporter;
+import org.gephi.io.exporter.spi.GraphExporter;
+import org.gephi.io.exporter.spi.CharacterExporter;
+import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -32,11 +41,13 @@ import org.w3c.dom.Text;
  * @author Sebastien Heymann
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = GraphFileExporter.class)
-public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
+public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTask {
 
     private boolean cancel = false;
     private ProgressTicket progressTicket;
+    private Workspace workspace;
+    private Writer writer;
+    private boolean exportVisible;
     private GraphModel graphModel;
     private AttributeModel attributeModel;
     //Settings
@@ -55,38 +66,42 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
     private float minZ;
     private float maxZ;
 
-    public boolean exportData(Document document, GraphFileExporterSettings settings) throws Exception {
-        try {
-            graphModel = settings.getWorkspace().getLookup().lookup(GraphModel.class);
-            attributeModel = settings.getWorkspace().getLookup().lookup(AttributeModel.class);
-            HierarchicalGraph graph = null;
-            if (settings.isExportVisible()) {
-                graph = graphModel.getHierarchicalGraphVisible();
-            } else {
-                graph = graphModel.getHierarchicalGraph();
-            }
-            exportData(document, graph, attributeModel);
-        } catch (Exception e) {
-            clean();
-            throw e;
+    public boolean execute() {
+        attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+        graphModel = workspace.getLookup().lookup(GraphModel.class);
+        HierarchicalGraph graph = null;
+        if (exportVisible) {
+            graph = graphModel.getHierarchicalGraphVisible();
+        } else {
+            graph = graphModel.getHierarchicalGraph();
         }
-        boolean c = cancel;
-        clean();
-        return !c;
+        try {
+            exportData(createDocument(), graph, attributeModel);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return !cancel;
     }
 
-    private void clean() {
-        cancel = false;
-        progressTicket = null;
-        minSize = 0f;
-        maxSize = 0f;
-        minX = 0f;
-        maxX = 0f;
-        minY = 0f;
-        maxY = 0f;
-        graphModel = null;
-        attributeModel = null;
+    public Document createDocument() throws ParserConfigurationException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+        final Document document = documentBuilder.newDocument();
+        document.setXmlVersion("1.0");
+        document.setXmlStandalone(true);
+        return document;
     }
+
+    private void transform(Document document) throws TransformerConfigurationException, TransformerException {
+        Source source = new DOMSource(document);
+        Result result = new StreamResult(writer);
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.transform(source, result);
+    }
+
     /*
     public Schema getSchema() {
     try {
@@ -100,9 +115,10 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
     return null;
     }
      */
-
     public boolean exportData(Document document, HierarchicalGraph graph, AttributeModel model) throws Exception {
         Progress.start(progressTicket);
+
+        graph.readLock();
 
         //Options
         calculateMinMax(graph);
@@ -124,6 +140,12 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
 
         Element graphE = createGraph(document, graph);
         root.appendChild(graphE);
+
+        graph.readUnlockAll();
+
+        if (!cancel) {
+            transform(document);
+        }
 
         Progress.finish(progressTicket);
         return !cancel;
@@ -320,6 +342,9 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
         } else {
             // there is no tree
             for (Node n : graph.getNodes()) {
+                if (cancel) {
+                    break;
+                }
                 Element nodeE = createNode(document, graph, n);
                 parentE.appendChild(nodeE);
             }
@@ -392,6 +417,9 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
             it = graph.getEdges();
         }
         for (Edge e : it.toArray()) {
+            if (cancel) {
+                break;
+            }
             Element edgeE = createEdge(document, e);
             edgesE.appendChild(edgeE);
         }
@@ -608,9 +636,23 @@ public class ExporterGraphML implements XMLGraphFileExporter, LongTask {
         return normalize;
     }
 
-    private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd+HH:mm");
-        Date date = new Date();
-        return dateFormat.format(date);
+    public boolean isExportVisible() {
+        return exportVisible;
+    }
+
+    public void setExportVisible(boolean exportVisible) {
+        this.exportVisible = exportVisible;
+    }
+
+    public void setWriter(Writer writer) {
+        this.writer = writer;
+    }
+
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 }

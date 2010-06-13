@@ -20,14 +20,20 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.spi;
 
-import java.io.BufferedWriter;
+import org.gephi.project.api.Workspace;
 
 /**
- * Graph exporter for text files.
  *
  * @author Mathieu Bastian
  */
-public interface TextGraphFileExporter extends GraphFileExporter {
+public interface VectorExporter extends Exporter {
 
-    public boolean exportData(BufferedWriter writer, GraphFileExporterSettings settings) throws Exception;
+    public void setWorkspace(Workspace workspace);
+
+    /**
+     * The workspace the <code>GraphModel</code> has to be retrieved.
+     *
+     * @return  the workspace the graph is belonging
+     */
+    public Workspace getWorkspace();
 }

@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.plugin.ExporterGDF;
 import org.gephi.io.exporter.spi.ExporterUI;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -54,7 +55,11 @@ public class UIExporterGDF implements ExporterUI {
         return panel;
     }
 
-    public boolean isMatchingExporter(Exporter exporter) {
+    public boolean isUIForExporter(Exporter exporter) {
         return exporter instanceof ExporterGDF;
+    }
+
+    public String getDisplayName() {
+        return NbBundle.getMessage(UIExporterGDF.class, "UIExporterGDF.name");
     }
 }

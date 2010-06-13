@@ -84,7 +84,6 @@ public class Export extends CallableSystemAction {
 
     @Override
     public JMenuItem getMenuPresenter() {
-
         for (final ExporterClassUI ui : Lookup.getDefault().lookupAll(ExporterClassUI.class)) {
             String menuName = ui.getName();
             JMenuItem menuItem = new JMenuItem(new AbstractAction(menuName) {

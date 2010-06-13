@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import org.gephi.io.exporter.plugin.ExporterCSV;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,7 +39,11 @@ public class UIExporterCSV implements ExporterUI {
         return panel;
     }
 
-    public boolean isMatchingExporter(Exporter exporter) {
+    public boolean isUIForExporter(Exporter exporter) {
         return exporter instanceof ExporterCSV;
+    }
+
+    public String getDisplayName() {
+        return NbBundle.getMessage(UIExporterCSV.class, "UIExporterCSV.name");
     }
 }

@@ -9,6 +9,7 @@ import org.gephi.io.exporter.preview.PDFExporter;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
 import org.netbeans.validation.api.ui.ValidationPanel;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -41,7 +42,11 @@ public class UIExporterPDF implements ExporterUI {
         return validationPanel;
     }
 
-    public boolean isMatchingExporter(Exporter exporter) {
+    public boolean isUIForExporter(Exporter exporter) {
         return exporter instanceof PDFExporter;
+    }
+
+    public String getDisplayName() {
+        return NbBundle.getMessage(UIExporterPDF.class, "UIExporterPDF.name");
     }
 }

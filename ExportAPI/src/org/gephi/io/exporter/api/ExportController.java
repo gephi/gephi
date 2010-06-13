@@ -18,17 +18,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.io.exporter.api;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
+import org.gephi.io.exporter.spi.ByteExporter;
 import org.gephi.io.exporter.spi.ExporterUI;
-import org.gephi.io.exporter.spi.VectorialFileExporter;
-import org.gephi.io.exporter.spi.GraphFileExporter;
 import org.gephi.io.exporter.spi.Exporter;
-import org.openide.filesystems.FileObject;
+import org.gephi.io.exporter.spi.CharacterExporter;
+import org.gephi.project.api.Workspace;
 
 /**
- * Manage exporting tasls.
+ * Manage exporting tasks.
  * <p>
  * This controller is a singleton and can therefore be found in Lookup:
  * <pre>ExportController ec = Lookup.getDefault().lookup(ExportController.class);</pre>
@@ -36,17 +39,19 @@ import org.openide.filesystems.FileObject;
  */
 public interface ExportController {
 
-    public void doExport(GraphFileExporter exporter, FileObject fileObject, boolean visibleOnly);
+    public void exportFile(File file) throws IOException;
 
-    public void doExport(VectorialFileExporter exporter, FileObject fileObject);
+    public void exportFile(File file, Workspace workspace) throws IOException;
 
-    public void doExport(FileObject fileObject);
+    public void exportFile(File file, Exporter fileExporter) throws IOException;
 
-    public GraphFileExporter[] getGraphFileExporters();
+    public void exportWriter(Writer writer, CharacterExporter characterExporter);
 
-    public VectorialFileExporter[] getVectorialFileExporters();
+    public void exportStream(OutputStream stream, ByteExporter byteExporter);
 
-    public boolean hasUI(Exporter exporter);
+    public Exporter getFileExporter(File file);
+
+    public Exporter getExporter(String exporterName);
 
     public ExporterUI getUI(Exporter exporter);
 }

@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.spi;
 
+import org.gephi.project.api.Workspace;
+
 /**
  * Define a class that can export data.
  *
@@ -27,5 +29,17 @@ package org.gephi.io.exporter.spi;
  */
 public interface Exporter {
 
-    public String getName();
+    public boolean execute();
+
+    /**
+     * Sets the worksapce from where to export data
+     * @param workspace the workspace to export
+     */
+    public void setWorkspace(Workspace workspace);
+
+    /**
+     * Returns the workspace from where data are exported
+     * @return          the workspace the data are to be exported
+     */
+    public Workspace getWorkspace();
 }

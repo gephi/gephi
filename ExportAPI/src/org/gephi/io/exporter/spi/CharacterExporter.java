@@ -20,14 +20,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.spi;
 
-import java.io.File;
-import org.gephi.project.api.Workspace;
+import java.io.Writer;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface VectorialFileExporter extends FileExporter {
+public interface CharacterExporter extends Exporter {
 
-    public boolean exportData(File file, Workspace workspace) throws Exception;
+    /**
+     * Set the writer where to export.
+     * @param writer      the writer the exporter is to write
+     */
+    public void setWriter(Writer writer);
 }
