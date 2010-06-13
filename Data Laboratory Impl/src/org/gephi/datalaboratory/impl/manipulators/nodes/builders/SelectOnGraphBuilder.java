@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -19,21 +18,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory.spi.edges;
+package org.gephi.datalaboratory.impl.manipulators.nodes.builders;
 
-import org.gephi.datalaboratory.spi.GraphElementsManipulator;
-import org.gephi.graph.api.Edge;
+import org.gephi.datalaboratory.impl.manipulators.nodes.SelectOnGraph;
+import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
+import org.gephi.datalaboratory.spi.nodes.NodesManipulatorBuilder;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * GraphElementsManipulator for edges.
- * @see GraphElementsManipulator
+ *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface EdgesManipulator extends GraphElementsManipulator{
-    /**
-     * Prepare edges for this action.
-     * @param edges All selected edges to operate
-     * @param clickedEdge The right clicked edge of all edges
-     */
-    void setup(Edge[] edges, Edge clickedEdge);
+@ServiceProvider(service=NodesManipulatorBuilder.class)
+public class SelectOnGraphBuilder implements NodesManipulatorBuilder{
+
+    public NodesManipulator getNodesManipulator() {
+        return new SelectOnGraph();
+    }
 }

@@ -32,7 +32,8 @@ import org.gephi.graph.api.Node;
 public interface NodesManipulator extends GraphElementsManipulator {
     /**
      * Prepare nodes for this action.
-     * @param nodes Selected nodes to operate
+     * @param nodes All selected nodes to operate
+     * @param clickedNode The right clicked node of all nodes
      */
-    void setup(Node[] nodes);
+    void setup(Node[] nodes, Node clickedNode);
 }

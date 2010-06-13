@@ -39,6 +39,8 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
@@ -51,7 +53,10 @@ import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
 import org.openide.awt.MouseUtils;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.gephi.datalaboratory.DataLaboratoryHelper;
+import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 
 /**
  *
@@ -254,7 +259,7 @@ public class NodeDataTable {
         }
 
         public boolean isEditable() {
-            return column.getOrigin().equals(AttributeOrigin.DATA);
+            return column.getOrigin().equals(AttributeOrigin.DATA) || column.getId().equals("label");
         }
     }
 
@@ -339,19 +344,30 @@ public class NodeDataTable {
         }
 
         private JPopupMenu createPopup(Point p) {
-            int row = outlineTable.rowAtPoint(p);
-            final Node node = getNodeFromRow(row);
+            final Node[] selectedNodes = getNodesFromSelectedRows(outlineTable.getSelectedRows());
+            final Node clickedNode=getNodeFromRow(outlineTable.rowAtPoint(p));
             JPopupMenu contextMenu = new JPopupMenu();
-            JMenuItem selectMenu = new JMenuItem();
-            selectMenu.setText(NbBundle.getMessage(NodeDataTable.class, "NodeDataTable.popup.select"));
-            selectMenu.addActionListener(new ActionListener() {
+            DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+            for (NodesManipulator nm : dlh.getNodesManipulators()) {
+                nm.setup(selectedNodes,clickedNode);
+                if (nm.canExecute()) {
+                    contextMenu.add(createMenuItemFromNodesManipulator(nm));
+                    //TODO: Check and use the NodesManipulatorUI
+                }
+            }
+            return contextMenu;
+        }
+
+        private JMenuItem createMenuItemFromNodesManipulator(final NodesManipulator nm) {
+            JMenuItem menuItem = new JMenuItem();
+            menuItem.setText(nm.getName());
+            menuItem.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    VizController.getInstance().getSelectionManager().centerOnNode(node);
+                    nm.execute();
                 }
             });
-            contextMenu.add(selectMenu);
-            return contextMenu;
+            return menuItem;
         }
 
         private Node getNodeFromRow(int rowIndex) {
@@ -362,6 +378,14 @@ public class NodeDataTable {
             }
             ImmutableTreeNode immutableTreeNode = (ImmutableTreeNode) tp.getLastPathComponent();
             return immutableTreeNode.getNode();
+        }
+
+        private Node[] getNodesFromSelectedRows(int[] selectedRows) {
+            Node[] node = new Node[selectedRows.length];
+            for (int i = 0; i < node.length; i++) {
+                node[i] = getNodeFromRow(selectedRows[i]);
+            }
+            return node;
         }
     }
 }

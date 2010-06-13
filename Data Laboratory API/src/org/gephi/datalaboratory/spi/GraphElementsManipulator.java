@@ -64,7 +64,7 @@ public interface GraphElementsManipulator {
      * Implementations should evaluate the current data and conditions.
      * @return True if it has to be shown, false otherwise
      */
-    boolean show();
+    boolean canExecute();
 
     /**
      * Returns a GraphElementsManipulatorUI for this GraphElementsManipulator if it needs one.

@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -21,19 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.spi.edges;
 
-import org.gephi.datalaboratory.spi.GraphElementsManipulator;
-import org.gephi.graph.api.Edge;
-
 /**
- * GraphElementsManipulator for edges.
- * @see GraphElementsManipulator
+ * This interface is used for providing EdgesManipulator instances
+ * using the Netbeans Lookup but avoiding the singleton it causes.
+ * Each EdgesManipulator should have a EdgesManipulatorBuilder
+ * with @ServiceProvider annotation to be public.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface EdgesManipulator extends GraphElementsManipulator{
-    /**
-     * Prepare edges for this action.
-     * @param edges All selected edges to operate
-     * @param clickedEdge The right clicked edge of all edges
-     */
-    void setup(Edge[] edges, Edge clickedEdge);
+public interface EdgesManipulatorBuilder {
+
+    EdgesManipulator getEdgesManipulator();
 }
