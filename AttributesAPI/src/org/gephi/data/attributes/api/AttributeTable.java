@@ -25,9 +25,8 @@ package org.gephi.data.attributes.api;
  * appened with different level of details. The table maintains a map with
  * column identifier and title (header) in order they can be retrieved efficiently.
  * <p>
- * Tracking added or removed columlns can be performed by creating a
- * <code>LookupListener</code> on this table lookup, with <code>AttributeColumn</code>
- * as lookup result. See {@link #getLookup()}.
+ * Tracking added or removed columns can be performed by adding an
+ * {@link AttributeListener} to this table.
  *
  * @author Mathieu Bastian
  * @see AttributeColumn

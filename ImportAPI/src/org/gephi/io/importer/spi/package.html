@@ -3,21 +3,26 @@
     <body bgcolor="white">
         Interfaces for creating new data importers.
         <h3>Create a new Importer</h3>
-        <ol><li>Create a new module and set <code>ImportAPI</code> as a dependency.</li>
-            <li>Create a new class that implements the particular type of importers
-                you need:<ul><li>TextImporter (text files)</li>
-                    <li>XMLImporter (xml-based files)</li>
-                    <li>StreamImporter (Java ImputStream)</li>
-                    <li>DatabaseImporter (databases)</li></ul></li>
+        <ol><li>Create a new module and set <code>Import API</code>,
+                <code>File System API</code> and <code>Utilities API</code> as dependencies.</li>
+            <li>Create a new builder class, which implements:
+                <ul><li>FileImporterBuilder (files)</li>
+                    <li>DatabaseImporterBuilder (databases)</li>
+                    <li>SpigotImportBuilder (web and more complex scenarios)</li></ul>
             <li>Add <b>@ServiceProvider</b> annotation to your class to declare
-                you are implementing an Importer service. Put <code>FileFormatImporter.class</code>
+                you are implementing an Importer service. Put <code>FileImporterBuilder.class</code>
                 as the annotation <b>service</b> parameter for text and XML,
-                <code>StreamImporter.class</code> for Streams and
-                <code>DatabaseImporter.class</code> for Databases.</li></ol>
+                <code>SpigotImportBuilder.class</code> for spigots and
+                <code>DatabaseImporter.class</code> for databases.</li>
+            <li>Create a new importer class,which implements <code>FileImporter</code>,
+                <code>DatabaseImport</code> or <code>SpigotImporter</code>.</li>
+            <li>In the builder, return a new instance of your importer in the <code>buildImporter()</code> method.</li>
+            <li>For settings UI, create a new <code>ImporterUI</code> implementation and add the
+                <b>@ServiceProvider</b> annotation to it.</li>
+        </ol>
         <p>To let your export task be cancelled and its progress watched, implement
-            <code>LongTask</code> interface.</p>
-        <p>Note that Importers are singleton, it's preferable to always instantiate
-            an inner class importer when <code>importData()</code> is called.
+            <code>LongTask</code> interface. Add <code>LongTask API</code> as dependency to your module first.</p>
+        <p>See <a href="http://wiki.gephi.org/index.php/HowTo_write_an_import">HowTo write an import</a> for more details.
     </body>
 </html>
 

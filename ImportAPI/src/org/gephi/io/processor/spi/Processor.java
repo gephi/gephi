@@ -50,7 +50,7 @@ public interface Processor {
 
     /**
      * Returns the processor name.
-     * @return
+     * @return the processor display name
      */
     public String getDisplayName();
 }
