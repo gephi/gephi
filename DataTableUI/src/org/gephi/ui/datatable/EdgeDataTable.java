@@ -20,20 +20,32 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.datatable;
 
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.RowFilter;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.datalaboratory.DataLaboratoryHelper;
+import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
+import org.openide.awt.MouseUtils;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -50,7 +62,6 @@ public class EdgeDataTable {
         table.setHighlighters(HighlighterFactory.createAlternateStriping());
         table.setColumnControlVisible(true);
         table.setSortable(true);
-        table.setColumnControlVisible(true);
         table.setRowFilter(rowFilter);
 
         propertiesColumns = new PropertyEdgeDataColumn[2];
@@ -80,6 +91,7 @@ public class EdgeDataTable {
                 return edge.getTarget().getId() + " - " + edge.getTarget().getNodeData().getLabel();
             }
         };
+        table.addMouseListener(new PopupAdapter());
     }
 
     public JXTable getTable() {
@@ -181,6 +193,10 @@ public class EdgeDataTable {
 
         public void removeTableModelListener(TableModelListener l) {
         }
+
+        public Edge getEdgeAtRow(int row) {
+            return edges[row];
+        }
     }
 
     private static interface EdgeDataColumn {
@@ -221,7 +237,7 @@ public class EdgeDataTable {
         }
 
         public boolean isEditable() {
-            return column.getOrigin().equals(AttributeOrigin.DATA);
+            return column.getOrigin().equals(AttributeOrigin.DATA) || column.getId().equals("label");
         }
     }
 
@@ -246,6 +262,89 @@ public class EdgeDataTable {
 
         public boolean isEditable() {
             return false;
+        }
+    }
+
+    private class PopupAdapter extends MouseUtils.PopupMouseAdapter {
+
+        PopupAdapter() {
+        }
+
+        protected void showPopup(MouseEvent e) {
+            int selRow = table.rowAtPoint(e.getPoint());
+
+            if (selRow != -1) {
+                if (!table.getSelectionModel().isSelectedIndex(selRow)) {
+                    table.getSelectionModel().clearSelection();
+                    table.getSelectionModel().setSelectionInterval(selRow, selRow);
+                }
+            } else {
+                table.getSelectionModel().clearSelection();
+            }
+            Point p = e.getPoint();
+            JPopupMenu pop = createPopup(p);
+            showPopup(p.x, p.y, pop);
+
+            e.consume();
+        }
+
+        private void showPopup(int xpos, int ypos, final JPopupMenu popup) {
+            if ((popup != null) && (popup.getSubElements().length > 0)) {
+                final PopupMenuListener p = new PopupMenuListener() {
+
+                    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                    }
+
+                    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                        popup.removePopupMenuListener(this);
+                        table.requestFocus();
+                    }
+
+                    public void popupMenuCanceled(PopupMenuEvent e) {
+                    }
+                };
+                popup.addPopupMenuListener(p);
+                popup.show(table, xpos, ypos);
+            }
+        }
+
+        private JPopupMenu createPopup(Point p) {
+            final Edge[] selectedEdges = getEdgesFromSelectedRows(table.getSelectedRows());
+            final Edge clickedEdge=getEdgeFromRow(table.rowAtPoint(p));
+            JPopupMenu contextMenu = new JPopupMenu();
+            DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+            for (EdgesManipulator em : dlh.getEdgesManipulators()) {
+                em.setup(selectedEdges,clickedEdge);
+                if (em.canExecute()) {
+                    contextMenu.add(createMenuItemFromEdgesManipulator(em));
+                    //TODO: Check and use the EdgesManipulatorUI
+                }
+            }
+            return contextMenu;
+        }
+        
+         private JMenuItem createMenuItemFromEdgesManipulator(final EdgesManipulator em) {
+            JMenuItem menuItem = new JMenuItem();
+            menuItem.setText(em.getName());
+            menuItem.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    em.execute();
+                }
+            });
+            return menuItem;
+        }
+
+        private Edge getEdgeFromRow(int row) {
+            return ((EdgeDataTableModel) table.getModel()).getEdgeAtRow(row);
+        }
+
+        private Edge[] getEdgesFromSelectedRows(int[] selectedRows) {
+            Edge[] edges = new Edge[selectedRows.length];
+            for (int i = 0; i < edges.length; i++) {
+                edges[i] = getEdgeFromRow(selectedRows[i]);
+            }
+            return edges;
         }
     }
 }
