@@ -46,9 +46,11 @@ public class EdgeListDatabaseImporterUI implements ImporterUI {
         return EdgeListPanel.createValidationPanel(panel);
     }
 
-    public void unsetup() {
-        Database database = panel.getSelectedDatabase();
-        importer.setDatabase(database);
+    public void unsetup(boolean update) {
+        if (update) {
+            Database database = panel.getSelectedDatabase();
+            importer.setDatabase(database);
+        }
         panel = null;
         importer = null;
     }

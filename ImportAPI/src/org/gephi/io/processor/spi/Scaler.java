@@ -23,10 +23,18 @@ package org.gephi.io.processor.spi;
 import org.gephi.io.importer.api.Container;
 
 /**
+ * The scaler is part of the processing job and is responsible of transforming the
+ * position and size of imported nodes in order to fit in the system's scale.
  *
  * @author Mathieu Bastian
+ * @see Processor
  */
 public interface Scaler {
 
+    /**
+     * Scale <code>container</code> content to the system scale. Adapt and recenter
+     * the scale of nodes positions and sizes.
+     * @param container the container that is to be scaled to the right scale
+     */
     public void doScale(Container container);
 }

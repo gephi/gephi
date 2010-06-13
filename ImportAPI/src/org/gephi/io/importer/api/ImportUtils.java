@@ -12,6 +12,11 @@ import java.io.Reader;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLReporter;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.utils.CharsetToolkit;
 import org.openide.filesystems.FileObject;
@@ -91,6 +96,25 @@ public final class ImportUtils {
             return getXMLDocument(stream);
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_file_not_found"));
+        }
+    }
+
+    public XMLStreamReader getXMLReader(Reader reader) {
+        try {
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+                inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+            }
+            inputFactory.setXMLReporter(new XMLReporter() {
+
+                @Override
+                public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                    System.out.println("Error:" + errorType + ", message : " + message);
+                }
+            });
+            return inputFactory.createXMLStreamReader(reader);
+        } catch (XMLStreamException ex) {
+            throw new RuntimeException(NbBundle.getMessage(AttributeUtils.class, "ImportControllerImpl.error_io"));
         }
     }
 

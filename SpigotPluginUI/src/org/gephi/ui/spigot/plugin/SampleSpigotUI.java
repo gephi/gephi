@@ -27,7 +27,7 @@ public class SampleSpigotUI implements ImporterUI {
         return panel;
     }
 
-    public void unsetup() {
+    public void unsetup(boolean update) {
         panel = null;
     }
 

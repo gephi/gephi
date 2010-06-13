@@ -8,11 +8,16 @@ import org.gephi.io.importer.api.FileType;
 import org.openide.filesystems.FileObject;
 
 /**
- *
+ * Importer builder specific for {@link FileImporter}.
+ * 
  * @author Mathieu Bastian
  */
 public interface FileImporterBuilder extends ImporterBuilder {
 
+    /**
+     * Builds a new file importer instance, ready to be used.
+     * @return  a new file importer
+     */
     public FileImporter buildImporter();
 
     /**
