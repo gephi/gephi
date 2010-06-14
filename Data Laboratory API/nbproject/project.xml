@@ -16,7 +16,7 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
-                <package>org.gephi.datalaboratory</package>
+                <package>org.gephi.datalaboratory.api</package>
                 <package>org.gephi.datalaboratory.spi</package>
                 <package>org.gephi.datalaboratory.spi.edges</package>
                 <package>org.gephi.datalaboratory.spi.nodes</package>

@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -19,21 +18,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory.spi.nodes;
+package org.gephi.datalaboratory.api;
 
-import org.gephi.datalaboratory.spi.Manipulator;
-import org.gephi.graph.api.Node;
+import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
+import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 
 /**
- * Manipulator for nodes.
- * @see Manipulator
+ * Interface for simplifying the implementation of Data Laboratory.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface NodesManipulator extends Manipulator {
+public interface DataLaboratoryHelper {
+
     /**
-     * Prepare nodes for this action.
-     * @param nodes All selected nodes to operate
-     * @param clickedNode The right clicked node of all nodes
+     * Prepares an array with one new instance of every NodesManipulator
+     * that has a builder registered and returns it.
+     * @return Array of all NodesManipulator implementations
      */
-    void setup(Node[] nodes, Node clickedNode);
+    NodesManipulator[] getNodesManipulators();
+
+    /**
+     * Prepares an array with one new instance of every EdgesManipulator
+     * that has a builder registered and returns it.
+     * @return Array of all EdgesManipulator implementations
+     */
+    EdgesManipulator[] getEdgesManipulators();
 }

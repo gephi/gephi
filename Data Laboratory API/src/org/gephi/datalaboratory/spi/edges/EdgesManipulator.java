@@ -21,15 +21,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.spi.edges;
 
-import org.gephi.datalaboratory.spi.GraphElementsManipulator;
+import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.graph.api.Edge;
 
 /**
- * GraphElementsManipulator for edges.
- * @see GraphElementsManipulator
+ * Manipulator for edges.
+ * @see Manipulator
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface EdgesManipulator extends GraphElementsManipulator{
+public interface EdgesManipulator extends Manipulator{
     /**
      * Prepare edges for this action.
      * @param edges All selected edges to operate

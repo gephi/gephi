@@ -31,25 +31,20 @@ import org.openide.util.NbBundle;
  *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class DeleteNodes implements NodesManipulator {
-
+public class Group implements NodesManipulator{
     private Node[] nodes;
 
     public void setup(Node[] nodes, Node clickedNode) {
-        this.nodes = nodes;
+        this.nodes=nodes;
     }
 
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        gec.deleteNodes(nodes);
+        gec.groupNodes(nodes);
     }
 
     public String getName() {
-        if(nodes.length>1){
-            return NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.name.multiple");
-        }else{
-            return NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.name.single");
-        }
+        return NbBundle.getMessage(Group.class, "Group.name");
     }
 
     public String getDescription() {
@@ -57,7 +52,8 @@ public class DeleteNodes implements NodesManipulator {
     }
 
     public boolean canExecute() {
-        return true;
+        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
+        return gec.canGroupNodes(nodes);
     }
 
     public ManipulatorUI getUI() {
@@ -65,6 +61,7 @@ public class DeleteNodes implements NodesManipulator {
     }
 
     public int getPosition() {
-        return 100;
+        return 200;
     }
+
 }

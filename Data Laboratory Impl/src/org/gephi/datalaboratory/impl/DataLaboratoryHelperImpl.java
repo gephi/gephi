@@ -23,8 +23,8 @@ package org.gephi.datalaboratory.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import org.gephi.datalaboratory.DataLaboratoryHelper;
-import org.gephi.datalaboratory.spi.GraphElementsManipulator;
+import org.gephi.datalaboratory.api.DataLaboratoryHelper;
+import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulatorBuilder;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
@@ -59,10 +59,10 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper{
         return edgesManipulators.toArray(new EdgesManipulator[0]);
     }
 
-    private void sortGraphElementsManipulators(ArrayList<? extends GraphElementsManipulator> gem){
-        Collections.sort(gem, new Comparator<GraphElementsManipulator>(){
+    private void sortGraphElementsManipulators(ArrayList<? extends Manipulator> m){
+        Collections.sort(m, new Comparator<Manipulator>(){
 
-            public int compare(GraphElementsManipulator o1, GraphElementsManipulator o2) {
+            public int compare(Manipulator o1, Manipulator o2) {
                 return o1.getPosition()-o2.getPosition();
             }
         });

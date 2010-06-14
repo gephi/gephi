@@ -18,28 +18,21 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory;
+package org.gephi.datalaboratory.impl.manipulators.nodes.builders;
 
-import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
+import org.gephi.datalaboratory.impl.manipulators.nodes.Group;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
+import org.gephi.datalaboratory.spi.nodes.NodesManipulatorBuilder;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Interface for simplifying the implementation of Data Laboratory.
+ *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface DataLaboratoryHelper {
+@ServiceProvider(service=NodesManipulatorBuilder.class)
+public class GroupBuilder implements NodesManipulatorBuilder{
 
-    /**
-     * Prepares an array with one new instance of every NodesManipulator
-     * that has a builder registered and returns it.
-     * @return Array of all NodesManipulator implementations
-     */
-    NodesManipulator[] getNodesManipulators();
-
-    /**
-     * Prepares an array with one new instance of every EdgesManipulator
-     * that has a builder registered and returns it.
-     * @return Array of all EdgesManipulator implementations
-     */
-    EdgesManipulator[] getEdgesManipulators();
+    public NodesManipulator getNodesManipulator() {
+        return new Group();
+    }
 }

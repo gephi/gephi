@@ -31,25 +31,22 @@ import org.openide.util.NbBundle;
  *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class DeleteNodes implements NodesManipulator {
-
+public class Ungroup implements NodesManipulator {
     private Node[] nodes;
 
     public void setup(Node[] nodes, Node clickedNode) {
-        this.nodes = nodes;
+        this.nodes=nodes;
     }
 
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        gec.deleteNodes(nodes);
+        for(Node n:nodes){
+            gec.ungroupNodes(n);//At least 1 node is a group. And we don't have to check now every node because the ungroupNodes method does it for us.
+        }
     }
 
     public String getName() {
-        if(nodes.length>1){
-            return NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.name.multiple");
-        }else{
-            return NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.name.single");
-        }
+        return NbBundle.getMessage(Ungroup.class, "Ungroup.name");
     }
 
     public String getDescription() {
@@ -57,7 +54,13 @@ public class DeleteNodes implements NodesManipulator {
     }
 
     public boolean canExecute() {
-        return true;
+        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
+        for(Node n:nodes){
+            if(gec.canUngroupNodes(n)){
+                return true;//If any of the nodes can be ungrouped, then allow to execute this action.
+            }
+        }
+        return false;
     }
 
     public ManipulatorUI getUI() {
@@ -65,6 +68,7 @@ public class DeleteNodes implements NodesManipulator {
     }
 
     public int getPosition() {
-        return 100;
+        return 300;
     }
+
 }

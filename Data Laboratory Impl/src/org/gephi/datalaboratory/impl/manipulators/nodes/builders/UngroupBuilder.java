@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -19,21 +18,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory.spi.nodes;
+package org.gephi.datalaboratory.impl.manipulators.nodes.builders;
 
-import org.gephi.datalaboratory.spi.Manipulator;
-import org.gephi.graph.api.Node;
+import org.gephi.datalaboratory.impl.manipulators.nodes.Ungroup;
+import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
+import org.gephi.datalaboratory.spi.nodes.NodesManipulatorBuilder;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Manipulator for nodes.
- * @see Manipulator
+ *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface NodesManipulator extends Manipulator {
-    /**
-     * Prepare nodes for this action.
-     * @param nodes All selected nodes to operate
-     * @param clickedNode The right clicked node of all nodes
-     */
-    void setup(Node[] nodes, Node clickedNode);
+@ServiceProvider(service=NodesManipulatorBuilder.class)
+public class UngroupBuilder implements NodesManipulatorBuilder{
+
+    public NodesManipulator getNodesManipulator() {
+        return new Ungroup();
+    }
+
 }

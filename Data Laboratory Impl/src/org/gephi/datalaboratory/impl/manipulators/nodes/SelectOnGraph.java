@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl.manipulators.nodes;
 
-import org.gephi.datalaboratory.spi.GraphElementsManipulatorUI;
+import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
@@ -53,7 +53,7 @@ public class SelectOnGraph implements NodesManipulator {
         return true;
     }
 
-    public GraphElementsManipulatorUI getUI() {
+    public ManipulatorUI getUI() {
         return null;
     }
 

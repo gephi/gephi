@@ -375,6 +375,15 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
         }
     }
 
+    private void refresh(){
+        bannerPanel.setVisible(false);
+        if (classDisplayed.equals(ClassDisplayed.NODE)) {
+            initNodesView();
+        } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+            initEdgesView();
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -502,12 +511,7 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
-        bannerPanel.setVisible(false);
-        if (classDisplayed.equals(ClassDisplayed.NODE)) {
-            initNodesView();
-        } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
-            initEdgesView();
-        }
+        refresh();
 }//GEN-LAST:event_refreshButtonActionPerformed
 
     private void edgesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edgesButtonActionPerformed

@@ -36,46 +36,46 @@ import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
  * @see NodesManipulator
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface GraphElementsManipulator {
+public interface Manipulator {
 
     /**
-     * Execute this GraphElementsManipulator.
+     * Execute this Manipulator.
      * It will operate with data like nodes and edge previously set up.
      */
     void execute();
 
     /**
-     * Return name to show for this GraphElementsManipulator on the context menu.
+     * Return name to show for this Manipulator on the context menu.
      * Implementations should provide different names depending on the data this
-     * GraphElementsManipulator has (for example depending on the number of nodes in a NodeManipulator).
+     * Manipulator has (for example depending on the number of nodes in a NodeManipulator).
      * @return Name to show at current time and conditions
      */
     String getName();
 
     /**
-     * Description of the GraphElementsManipulator.
+     * Description of the Manipulator.
      * TODO: Maybe show as tooltip?
      * @return Description
      */
     String getDescription();
 
     /**
-     * Indicates if this GraphElementsManipulator has to be shown.
+     * Indicates if this Manipulator has to be shown.
      * Implementations should evaluate the current data and conditions.
      * @return True if it has to be shown, false otherwise
      */
     boolean canExecute();
 
     /**
-     * Returns a GraphElementsManipulatorUI for this GraphElementsManipulator if it needs one.
-     * @return GraphElementsManipulatorUI for this GraphElementsManipulator or null
+     * Returns a ManipulatorUI for this Manipulator if it needs one.
+     * @return ManipulatorUI for this Manipulator or null
      */
-    GraphElementsManipulatorUI getUI();
+    ManipulatorUI getUI();
 
     /**
      * Returns a position value that indicates the position
-     * of this GraphElementsManipulator in the context menu. Less means upper.
-     * @return This GraphElementsManipulator position
+     * of this Manipulator in the context menu. Less means upper.
+     * @return This Manipulator position
      */
     int getPosition();
 }

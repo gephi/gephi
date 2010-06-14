@@ -20,11 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl.manipulators.edges;
 
-import org.gephi.datalaboratory.spi.GraphElementsManipulatorUI;
+import org.gephi.datalaboratory.api.GraphElementsController;
+import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -41,12 +40,8 @@ public class DeleteEdges implements EdgesManipulator {
     }
 
     public void execute() {
-        Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
-        for (Edge edge : edges) {
-            if (graph.contains(edge)) {
-                graph.removeEdge(edge);
-            }
-        }
+        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
+        gec.deleteEdges(edges);
     }
 
     public String getName() {
@@ -65,7 +60,7 @@ public class DeleteEdges implements EdgesManipulator {
         return true;
     }
 
-    public GraphElementsManipulatorUI getUI() {
+    public ManipulatorUI getUI() {
         return null;
     }
 

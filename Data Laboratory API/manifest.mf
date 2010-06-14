@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 OpenIDE-Module: org.gephi.datalaboratory
-OpenIDE-Module-Localizing-Bundle: org/gephi/datalaboratory/Bundle.properties
+OpenIDE-Module-Localizing-Bundle: org/gephi/datalaboratory/api/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0
 

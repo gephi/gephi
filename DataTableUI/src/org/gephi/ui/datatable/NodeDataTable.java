@@ -51,7 +51,7 @@ import org.netbeans.swing.outline.RowModel;
 import org.openide.awt.MouseUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.gephi.datalaboratory.DataLaboratoryHelper;
+import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 
 /**

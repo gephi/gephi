@@ -23,17 +23,17 @@ package org.gephi.datalaboratory.spi;
 import javax.swing.JPanel;
 
 /**
- * UI GraphElementsManipulators can provide.
+ * UI Manipulators can provide.
  * This itself provides a JPanel and a window name/title.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface GraphElementsManipulatorUI {
+public interface ManipulatorUI {
 
     /**
-     * Prepare this UI to be able to interact with its GraphElementsManipulator.
-     * @param gem GraphElementsManipulator for the UI
+     * Prepare this UI to be able to interact with its Manipulator.
+     * @param gem Manipulator for the UI
      */
-    void setup(GraphElementsManipulator gem);
+    void setup(Manipulator m);
 
     /**
      * Called when the window is closed or accepted.
@@ -47,7 +47,7 @@ public interface GraphElementsManipulatorUI {
     String getDisplayName();
 
     /**
-     * Returns a settings panel instance for this GraphElementsManipulator.
+     * Returns a settings panel instance for this Manipulator.
      * @return Settings panel instance
      */
     public JPanel getSettingsPanel();
