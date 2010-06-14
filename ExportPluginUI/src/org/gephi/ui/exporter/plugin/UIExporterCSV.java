@@ -20,15 +20,18 @@ public class UIExporterCSV implements ExporterUI {
 
     private UIExporterCSVPanel panel;
     private ExporterCSV exporterCSV;
+    private ExporterCSVSettings settings = new ExporterCSVSettings();
 
     public void setup(Exporter exporter) {
         exporterCSV = (ExporterCSV) exporter;
+        settings.load(exporterCSV);
         panel.setup(exporterCSV);
     }
 
     public void unsetup(boolean update) {
         if (update) {
             panel.unsetup(exporterCSV);
+            settings.save(exporterCSV);
         }
         panel = null;
         exporterCSV = null;
@@ -45,5 +48,27 @@ public class UIExporterCSV implements ExporterUI {
 
     public String getDisplayName() {
         return NbBundle.getMessage(UIExporterCSV.class, "UIExporterCSV.name");
+    }
+
+    private static class ExporterCSVSettings {
+
+        private boolean edgeWeight = true;
+        private boolean writeZero = true;
+        private boolean header = true;
+        private boolean list = false;
+
+        private void save(ExporterCSV exporterCSV) {
+            this.edgeWeight = exporterCSV.isEdgeWeight();
+            this.writeZero = exporterCSV.isWriteZero();
+            this.header = exporterCSV.isHeader();
+            this.list = exporterCSV.isList();
+        }
+
+        private void load(ExporterCSV exporterCSV) {
+            exporterCSV.setEdgeWeight(edgeWeight);
+            exporterCSV.setWriteZero(writeZero);
+            exporterCSV.setHeader(header);
+            exporterCSV.setList(list);
+        }
     }
 }

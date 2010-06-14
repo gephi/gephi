@@ -36,15 +36,18 @@ public class UIExporterGEXF implements ExporterUI {
 
     private UIExporterGEXFPanel panel;
     private ExporterGEXF exporterGEXF;
+    private ExporterGEXFSettings settings;
 
     public void setup(Exporter exporter) {
         exporterGEXF = (ExporterGEXF) exporter;
+        settings.load(exporterGEXF);
         panel.setup(exporterGEXF);
     }
 
     public void unsetup(boolean update) {
         if (update) {
             panel.unsetup(exporterGEXF);
+            settings.save(exporterGEXF);
         }
         panel = null;
         exporterGEXF = null;
@@ -61,5 +64,30 @@ public class UIExporterGEXF implements ExporterUI {
 
     public String getDisplayName() {
         return NbBundle.getMessage(UIExporterGEXF.class, "UIExporterGEXF.name");
+    }
+
+    private static class ExporterGEXFSettings {
+
+        private boolean normalize = false;
+        private boolean exportColors = true;
+        private boolean exportPosition = true;
+        private boolean exportSize = true;
+        private boolean exportAttributes = true;
+
+        private void save(ExporterGEXF exporterGEXF) {
+            this.normalize = exporterGEXF.isNormalize();
+            this.exportColors = exporterGEXF.isExportColors();
+            this.exportPosition = exporterGEXF.isExportPosition();
+            this.exportSize = exporterGEXF.isExportSize();
+            this.exportAttributes = exporterGEXF.isExportAttributes();
+        }
+
+        private void load(ExporterGEXF exporterGEXF) {
+            exporterGEXF.setNormalize(normalize);
+            exporterGEXF.setExportColors(exportColors);
+            exporterGEXF.setExportAttributes(exportAttributes);
+            exporterGEXF.setExportPosition(exportPosition);
+            exporterGEXF.setExportSize(exportSize);
+        }
     }
 }
