@@ -35,7 +35,9 @@ import org.gephi.project.api.Workspace;
  * <p>
  * This controller is a singleton and can therefore be found in Lookup:
  * <pre>ExportController ec = Lookup.getDefault().lookup(ExportController.class);</pre>
+ *
  * @author Mathieu Bastian
+ * @see Exporter
  */
 public interface ExportController {
 

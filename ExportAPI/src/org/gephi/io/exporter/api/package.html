@@ -1,6 +1,21 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html>
     <body bgcolor="white">
-        API for exporting data to any support.
+        API for exporting data to any support. The API supports File, Writer and
+        OutputStream.
+        <h3>How to export a graph file</h3>
+        <pre>
+ExportController ec = Lookup.getDefault().lookup(ExportController.class);
+ec.exportFile(new File("export.gexf"));
+        </pre>
+        <h3>How to export to a String</h3>
+        <pre>
+ExportController ec = Lookup.getDefault().lookup(ExportController.class);
+Exporter exporter = ec.getExporter("gexf");
+CharacterExporter characterExporter = (CharacterExporter)exporter;
+StringWriter stringWriter = new StringWriter();
+ec.exportWriter(stringWriter, characterExporter);
+String result = stringWriter.toString();
+        </pre>
     </body>
 </html>

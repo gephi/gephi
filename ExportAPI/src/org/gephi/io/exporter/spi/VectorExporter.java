@@ -23,17 +23,9 @@ package org.gephi.io.exporter.spi;
 import org.gephi.project.api.Workspace;
 
 /**
+ * Exporter interface for exporters that export vector graphics.
  *
  * @author Mathieu Bastian
  */
 public interface VectorExporter extends Exporter {
-
-    public void setWorkspace(Workspace workspace);
-
-    /**
-     * The workspace the <code>GraphModel</code> has to be retrieved.
-     *
-     * @return  the workspace the graph is belonging
-     */
-    public Workspace getWorkspace();
 }

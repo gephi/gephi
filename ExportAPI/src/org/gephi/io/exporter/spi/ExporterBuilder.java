@@ -4,9 +4,18 @@
  */
 package org.gephi.io.exporter.spi;
 
+import org.gephi.io.exporter.api.ExportController;
+
 /**
+ * Factory class for building exporter instances. Declared in the system as
+ * services (i.e. singleton), the role of builders is simply the create new
+ * instances of particular exporter on demand.
+ * <p>
+ * To be recognized by the system, implementations must just add the following annotation:
+ * <pre>@ServiceProvider(service=ExporterBuilder.class)</pre>
  *
  * @author Mathieu Bastian
+ * @see ExportController
  */
 public interface ExporterBuilder {
 

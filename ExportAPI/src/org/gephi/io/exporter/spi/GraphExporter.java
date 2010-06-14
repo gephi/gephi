@@ -5,7 +5,9 @@
 package org.gephi.io.exporter.spi;
 
 /**
- *
+ * Exporter interface for exporters that export the graph, either complete or
+ * filtered (i.e. visible graph).
+ * 
  * @author Mathieu Bastian
  */
 public interface GraphExporter extends Exporter {

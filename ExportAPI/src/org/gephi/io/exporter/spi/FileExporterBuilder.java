@@ -7,12 +7,11 @@ package org.gephi.io.exporter.spi;
 import org.gephi.io.exporter.api.FileType;
 
 /**
- *
+ * Exporter builder for a particular file format support.
+ * 
  * @author Mathieu Bastian
  */
 public interface FileExporterBuilder extends ExporterBuilder {
-
-    public Exporter buildExporter();
 
     /**
      * Get default file types this exporter can deal with.

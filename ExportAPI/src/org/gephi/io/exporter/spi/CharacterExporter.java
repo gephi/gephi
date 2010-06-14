@@ -23,6 +23,7 @@ package org.gephi.io.exporter.spi;
 import java.io.Writer;
 
 /**
+ * Exporter class for char streams, when an <code>Writer</code> is needed.
  *
  * @author Mathieu Bastian
  */

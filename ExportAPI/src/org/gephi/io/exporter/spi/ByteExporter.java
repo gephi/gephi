@@ -7,7 +7,8 @@ package org.gephi.io.exporter.spi;
 import java.io.OutputStream;
 
 /**
- *
+ * Exporter class for byte streams, when an <code>OutputStream</code> is needed.
+ * 
  * @author Mathieu Bastian
  */
 public interface ByteExporter extends Exporter {
