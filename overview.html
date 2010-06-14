@@ -9,6 +9,11 @@
     <p>
     <h2>API Changes</h2>
     <ul>
+        <li>(June 14 2010) Export API refactoring, inspired from ImportAPI. Create an <code>ExporterBuilder</code> interface for
+            exporter creation and different exporters: <code>GraphExporter</code>, <code>VectorExporter</code>, <code>ByteExporter</code>
+            and <code>CharacterExporter</code> that covers common cases. The way exporters write data has been rationalized by using either
+            <code>java.io.Writer</code> (text) or <code>java.io.OutputStream</code> (byte). The <code>ExportController</code> has been improved
+            to support all use-cases, including file, writer and stream export.
         <li>(June 11 2010) Add Spigot support to the ImportAPI and SPI. Like <code>DatabaseImporter</code>, the
             <code>SpigotImporter</code> interface is a new type of Importers. Modifications have also be made to the
             <code>ImportController</code> to support spigot import.
