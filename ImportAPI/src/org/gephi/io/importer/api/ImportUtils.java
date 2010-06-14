@@ -98,7 +98,7 @@ public final class ImportUtils {
         }
     }
 
-    public XMLStreamReader getXMLReader(Reader reader) {
+    public static XMLStreamReader getXMLReader(Reader reader) {
         try {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
