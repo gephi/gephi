@@ -265,6 +265,13 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                     if (hullModel != null && hullModel.isCacheMatching(cacheMarker)) {
                         ConvexHull hull = (ConvexHull) hullModel.getObj();
                         hull.addNode(n);
+                        hull.setModel(hullModel);
+                    } else if (hullModel != null) {
+                        //Its not the first time the hull exist
+                        ConvexHullModel model = (ConvexHullModel) hullModel;
+                        model.setScale(1f);
+                        hullModel.setCacheMarker(cacheMarker);
+                        hulls.add((ModelImpl) hullModel);
                     } else {
                         ConvexHull ch = new ConvexHull();
                         ch.setMetaNode(parent);
@@ -273,11 +280,6 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                         group.getGroupData().setHullModel(obj);
                         obj.setCacheMarker(cacheMarker);
                         hulls.add(obj);
-                        if (hullModel != null) {
-                            //Its not the first time the hull exist
-                            ConvexHullModel model = (ConvexHullModel) obj;
-                            model.setScale(1f);
-                        }
                     }
                 }
             }

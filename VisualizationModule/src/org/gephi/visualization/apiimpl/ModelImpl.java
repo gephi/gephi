@@ -178,6 +178,10 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
         return cacheMarker == this.cacheMarker;
     }
 
+    public int getCacheMarker() {
+        return cacheMarker;
+    }
+
     public boolean isHighlight() {
         return highlight;
     }
