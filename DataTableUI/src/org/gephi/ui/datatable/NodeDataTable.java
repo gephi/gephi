@@ -305,17 +305,15 @@ public class NodeDataTable {
                     outlineTable.getSelectionModel().clearSelection();
                     outlineTable.getSelectionModel().setSelectionInterval(selRow, selRow);
                 }
-            } else {
-                outlineTable.getSelectionModel().clearSelection();
+                Point p = e.getPoint();
+                if (popupAllowed) {
+                    JPopupMenu pop = createPopup(p);
+                    showPopup(p.x, p.y, pop);
+                } else {
+                    outlineTable.getSelectionModel().clearSelection();
+                }
             }
-            //Point p = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), OutlineView.this);
-            Point p = e.getPoint();
-            if (popupAllowed) {
-                JPopupMenu pop = createPopup(p);
-                showPopup(p.x, p.y, pop);
-
-                e.consume();
-            }
+            e.consume();
         }
 
         private void showPopup(int xpos, int ypos, final JPopupMenu popup) {
@@ -346,17 +344,15 @@ public class NodeDataTable {
             Integer lastManipulatorType = null;
             for (NodesManipulator nm : dlh.getNodesManipulators()) {
                 nm.setup(selectedNodes, clickedNode);
-                if (nm.canExecute()) {
-                    if(lastManipulatorType==null){
-                        lastManipulatorType = nm.getType();
-                    }
-                    if (lastManipulatorType != nm.getType()) {
-                        contextMenu.addSeparator();
-                    }
+                if (lastManipulatorType == null) {
                     lastManipulatorType = nm.getType();
-                    contextMenu.add(createMenuItemFromNodesManipulator(nm));
-                    //TODO: Check and use the NodesManipulatorUI
                 }
+                if (lastManipulatorType != nm.getType()) {
+                    contextMenu.addSeparator();
+                }
+                lastManipulatorType = nm.getType();
+                contextMenu.add(createMenuItemFromNodesManipulator(nm));
+                //TODO: Check and use the NodesManipulatorUI
             }
             return contextMenu;
         }
@@ -364,13 +360,18 @@ public class NodeDataTable {
         private JMenuItem createMenuItemFromNodesManipulator(final NodesManipulator nm) {
             JMenuItem menuItem = new JMenuItem();
             menuItem.setText(nm.getName());
+            menuItem.setToolTipText(nm.getDescription());
             menuItem.setIcon(nm.getIcon());
-            menuItem.addActionListener(new ActionListener() {
+            if (nm.canExecute()) {
+                menuItem.addActionListener(new ActionListener() {
 
-                public void actionPerformed(ActionEvent e) {
-                    nm.execute();
-                }
-            });
+                    public void actionPerformed(ActionEvent e) {
+                        nm.execute();
+                    }
+                });
+            } else {
+                menuItem.setEnabled(false);
+            }
             return menuItem;
         }
 

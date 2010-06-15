@@ -18,15 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory.impl.manipulators.edges;
+package org.gephi.datalaboratory.impl.manipulators.nodes;
 
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
-import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
-import org.gephi.graph.api.Edge;
-import org.openide.util.ImageUtilities;
+import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
+import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -34,26 +32,24 @@ import org.openide.util.NbBundle;
  *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class DeleteEdges implements EdgesManipulator {
+public class RemoveNodeFromGroup implements NodesManipulator {
 
-    private Edge[] edges;
+    private Node[] nodes;
 
-    public void setup(Edge[] edges, Edge clickedEdge) {
-        this.edges = edges;
+    public void setup(Node[] nodes, Node clickedNode) {
+        this.nodes = nodes;
     }
 
     public void execute() {
-        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(DeleteEdges.class, "DeleteEdges.confirmation.message"), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-            gec.deleteEdges(edges);
-        }
+        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
+        gec.removeNodesFromGroup(nodes);//At least 1 node is in a group. And we don't have to check now every node because the removeNodesFromGroup method does it for us.
     }
 
     public String getName() {
-        if (edges.length > 1) {
-            return NbBundle.getMessage(DeleteEdges.class, "DeleteEdges.name.multiple");
-        } else {
-            return NbBundle.getMessage(DeleteEdges.class, "DeleteEdges.name.single");
+        if(nodes.length>1){
+            return NbBundle.getMessage(RemoveNodeFromGroup.class, "RemoveNodeFromGroup.name.multiple");
+        }else{
+            return NbBundle.getMessage(RemoveNodeFromGroup.class, "RemoveNodeFromGroup.name.single");
         }
     }
 
@@ -62,7 +58,13 @@ public class DeleteEdges implements EdgesManipulator {
     }
 
     public boolean canExecute() {
-        return true;
+        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
+        for (Node n : nodes) {
+            if (gec.isNodeInGroup(n)) {
+                return true;//If any of the nodes can be removed from its group, then allow to execute this action.
+            }
+        }
+        return false;
     }
 
     public ManipulatorUI getUI() {
@@ -70,14 +72,14 @@ public class DeleteEdges implements EdgesManipulator {
     }
 
     public int getType() {
-        return 0;
+        return 100;
     }
 
     public int getPosition() {
-        return 0;
+        return 300;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/cross.png", true);
+        return null;
     }
 }

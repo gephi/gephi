@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.nodes;
 
 import javax.swing.Icon;
+import javax.swing.JOptionPane;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
@@ -42,14 +43,16 @@ public class DeleteNodes implements NodesManipulator {
     }
 
     public void execute() {
-        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        gec.deleteNodes(nodes);
+        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.confirmation.message"), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
+            gec.deleteNodes(nodes);
+        }
     }
 
     public String getName() {
-        if(nodes.length>1){
+        if (nodes.length > 1) {
             return NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.name.multiple");
-        }else{
+        } else {
             return NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.name.single");
         }
     }
@@ -68,7 +71,7 @@ public class DeleteNodes implements NodesManipulator {
 
     public int getType() {
         return 0;
-    }  
+    }
 
     public int getPosition() {
         return 100;

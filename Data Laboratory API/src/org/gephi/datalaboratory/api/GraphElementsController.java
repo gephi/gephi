@@ -69,16 +69,47 @@ public interface GraphElementsController {
     boolean canGroupNodes(Node[] nodes);
 
     /**
-     * Ungroups a node if it forms a gruop
+     * Ungroups a node if it forms a group.
      * @param nodes Node to ungroup
      * @return True if the node was succesfully ungrouped, false otherwise
      */
-    boolean ungroupNodes(Node node);
+    boolean ungroupNode(Node node);
 
     /**
-     * Checks if the node can be ungrouped (it forms a group of nodes)
+     * Tries to ungroup every node un the array of nodes checking first they form a group.
+     * @param nodes Array of nodes to ungroup
+     */
+    void ungroupNodes(Node[] nodes);
+
+    boolean ungroupNodeRecursively(Node node);
+
+    void ungroupNodesRecursively(Node[] nodes);
+
+    /**
+     * Checks if the node can be ungrouped (it forms a group of nodes).
      * @param node Node to check
      * @return True if the node can be ungrouped, false otherwise
      */
-    boolean canUngroupNodes(Node node);
+    boolean canUngroupNode(Node node);
+
+    /**
+     * Removes a node from its group if the node is in a group (has a parent).
+     * Also breaks the group if the last node is removed.
+     * @param node Node to remove from its group
+     * @return True if the node was removed from a group, false otherwise
+     */
+    boolean removeNodeFromGroup(Node node);
+
+    /**
+     * Tries to remove every node in the array from its group checking first they are in a group.
+     * Also breaks groups when the last node is removed.
+     * @param nodes Arrays of nodes to remove from its group
+     */
+    void removeNodesFromGroup(Node[] nodes);
+
+    /**
+     * Checks if the node is in a group (has a parent).
+     * @return True if the node is in a group, false otherwise
+     */
+    boolean isNodeInGroup(Node node);
 }

@@ -76,7 +76,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     public boolean groupNodes(Node[] nodes) {
         if (canGroupNodes(nodes)) {
             HierarchicalGraph hg = getHierarchicalGraph();
-            Node group=hg.groupNodes(nodes);
+            Node group = hg.groupNodes(nodes);
             hg.readLock();
             group.getNodeData().setLabel(NbBundle.getMessage(GraphElementsControllerImpl.class, "Group.nodeCount.label", hg.getChildrenCount(group)));
             hg.readUnlock();
@@ -97,23 +97,77 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         return true;
     }
 
-    public boolean ungroupNodes(Node node) {
-        if(canUngroupNodes(node)){
+    public boolean ungroupNode(Node node) {
+        if (canUngroupNode(node)) {
             HierarchicalGraph hg = getHierarchicalGraph();
             hg.ungroupNodes(node);
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public boolean canUngroupNodes(Node node) {
+    public void ungroupNodes(Node[] nodes) {
+        for (Node n : nodes) {
+            ungroupNode(n);
+        }
+    }
+
+    public boolean ungroupNodeRecursively(Node node){
+        if (canUngroupNode(node)) {
+            HierarchicalGraph hg = getHierarchicalGraph();
+            for(Node n:hg.getDescendant(node).toArray()){
+                ungroupNode(n);
+            }
+            hg.ungroupNodes(node);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void ungroupNodesRecursively(Node[] nodes){
+        for(Node n:nodes){
+            ungroupNodeRecursively(n);
+        }
+    }
+
+    public boolean canUngroupNode(Node node) {
         boolean canUngroup;
         HierarchicalGraph hg = getHierarchicalGraph();
         hg.readLock();
-        canUngroup=hg.getChildrenCount(node)>0;
+        canUngroup = hg.getChildrenCount(node) > 0;
         hg.readUnlock();
         return canUngroup;
+    }
+
+    public boolean removeNodeFromGroup(Node node) {
+        if (isNodeInGroup(node)) {
+            HierarchicalGraph hg = getHierarchicalGraph();
+            Node parent=hg.getParent(node);
+            hg.readLock();
+            int childrenCount=hg.getChildrenCount(parent);
+            hg.readUnlock();
+            if (childrenCount == 1) {
+                hg.ungroupNodes(parent);//Break group when the last child is removed.
+            } else {
+                hg.removeFromGroup(node);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void removeNodesFromGroup(Node[] nodes) {
+        for (Node n : nodes) {
+            removeNodeFromGroup(n);
+        }
+    }
+
+    public boolean isNodeInGroup(Node node) {
+        HierarchicalGraph hg = getHierarchicalGraph();
+        return hg.getParent(node) != null;
     }
 
     private Graph getGraph() {

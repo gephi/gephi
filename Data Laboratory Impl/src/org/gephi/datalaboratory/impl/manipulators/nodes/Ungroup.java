@@ -34,21 +34,24 @@ import org.openide.util.NbBundle;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class Ungroup implements NodesManipulator {
+
     private Node[] nodes;
 
     public void setup(Node[] nodes, Node clickedNode) {
-        this.nodes=nodes;
+        this.nodes = nodes;
     }
 
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        for(Node n:nodes){
-            gec.ungroupNodes(n);//At least 1 node is a group. And we don't have to check now every node because the ungroupNodes method does it for us.
-        }
+        gec.ungroupNodes(nodes);//At least 1 node is a group. And we don't have to check now every node because the ungroupNodes method does it for us.
     }
 
     public String getName() {
-        return NbBundle.getMessage(Ungroup.class, "Ungroup.name");
+        if (nodes.length > 1) {
+            return NbBundle.getMessage(Ungroup.class, "Ungroup.name.multiple");
+        } else {
+            return NbBundle.getMessage(Ungroup.class, "Ungroup.name.single");
+        }
     }
 
     public String getDescription() {
@@ -57,8 +60,8 @@ public class Ungroup implements NodesManipulator {
 
     public boolean canExecute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        for(Node n:nodes){
-            if(gec.canUngroupNodes(n)){
+        for (Node n : nodes) {
+            if (gec.canUngroupNode(n)) {
                 return true;//If any of the nodes can be ungrouped, then allow to execute this action.
             }
         }

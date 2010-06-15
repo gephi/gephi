@@ -55,7 +55,6 @@ public interface Manipulator {
 
     /**
      * Description of the Manipulator.
-     * TODO: Maybe show as tooltip?
      * @return Description
      */
     String getDescription();

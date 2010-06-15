@@ -278,13 +278,12 @@ public class EdgeDataTable {
                     table.getSelectionModel().clearSelection();
                     table.getSelectionModel().setSelectionInterval(selRow, selRow);
                 }
+                Point p = e.getPoint();
+                JPopupMenu pop = createPopup(p);
+                showPopup(p.x, p.y, pop);
             } else {
                 table.getSelectionModel().clearSelection();
             }
-            Point p = e.getPoint();
-            JPopupMenu pop = createPopup(p);
-            showPopup(p.x, p.y, pop);
-
             e.consume();
         }
 
@@ -316,17 +315,15 @@ public class EdgeDataTable {
             Integer lastManipulatorType = null;
             for (EdgesManipulator em : dlh.getEdgesManipulators()) {
                 em.setup(selectedEdges, clickedEdge);
-                if (em.canExecute()) {
-                    if(lastManipulatorType==null){
-                        lastManipulatorType = em.getType();
-                    }
-                    if (lastManipulatorType != em.getType()) {
-                        contextMenu.addSeparator();
-                    }
+                if (lastManipulatorType == null) {
                     lastManipulatorType = em.getType();
-                    contextMenu.add(createMenuItemFromEdgesManipulator(em));
-                    //TODO: Check and use the EdgesManipulatorUI
                 }
+                if (lastManipulatorType != em.getType()) {
+                    contextMenu.addSeparator();
+                }
+                lastManipulatorType = em.getType();
+                contextMenu.add(createMenuItemFromEdgesManipulator(em));
+                //TODO: Check and use the EdgesManipulatorUI
             }
             return contextMenu;
         }
@@ -334,13 +331,18 @@ public class EdgeDataTable {
         private JMenuItem createMenuItemFromEdgesManipulator(final EdgesManipulator em) {
             JMenuItem menuItem = new JMenuItem();
             menuItem.setText(em.getName());
+            menuItem.setToolTipText(em.getDescription());
             menuItem.setIcon(em.getIcon());
-            menuItem.addActionListener(new ActionListener() {
+            if (em.canExecute()) {
+                menuItem.addActionListener(new ActionListener() {
 
-                public void actionPerformed(ActionEvent e) {
-                    em.execute();
-                }
-            });
+                    public void actionPerformed(ActionEvent e) {
+                        em.execute();
+                    }
+                });
+            } else {
+                menuItem.setEnabled(false);
+            }
             return menuItem;
         }
 
