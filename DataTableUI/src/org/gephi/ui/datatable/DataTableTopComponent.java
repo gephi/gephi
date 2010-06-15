@@ -127,13 +127,8 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
         //Init
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         if (pc.getCurrentWorkspace() == null) {
-            nodesButton.setEnabled(false);
-            edgesButton.setEnabled(false);
-            filterTextField.setEnabled(false);
-            labelFilter.setEnabled(false);
-            bannerPanel.setVisible(false);
-            visibleGraphCheckbox.setEnabled(false);
-        }else{
+            clear();
+        } else {
             refresh();
         }
         bannerPanel.setVisible(false);
@@ -148,17 +143,11 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
 
             public void initialize(Workspace workspace) {
                 workspace.add(new DataTablesModel());
-                refresh();
             }
 
             public void select(Workspace workspace) {
-                elementGroup.clearSelection();
-                tableScrollPane.setViewportView(null);
-                nodesButton.setEnabled(true);
-                edgesButton.setEnabled(true);
-                filterTextField.setEnabled(true);
-                labelFilter.setEnabled(true);
-                visibleGraphCheckbox.setEnabled(true);
+                hideTable();
+                enableControls();
                 bannerPanel.setVisible(false);
                 graphModel = gc.getModel();
                 graphModel.addGraphListener(DataTableTopComponent.this);
@@ -185,13 +174,6 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
             }
 
             public void disable() {
-                elementGroup.clearSelection();
-                nodesButton.setEnabled(false);
-                edgesButton.setEnabled(false);
-                filterTextField.setEnabled(false);
-                labelFilter.setEnabled(false);
-                bannerPanel.setVisible(false);
-                visibleGraphCheckbox.setEnabled(false);
                 clear();
             }
         });
@@ -382,15 +364,36 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
         }
     }
 
-    private void clear(){
-        tableScrollPane.setViewport(null);
+    private void enableControls() {
+        nodesButton.setEnabled(true);
+        edgesButton.setEnabled(true);
+        filterTextField.setEnabled(true);
+        labelFilter.setEnabled(true);
+        visibleGraphCheckbox.setEnabled(true);
     }
 
-    private void refresh(){
+    private void clear() {
+        elementGroup.clearSelection();
+        nodesButton.setEnabled(false);
+        edgesButton.setEnabled(false);
+        filterTextField.setEnabled(false);
+        labelFilter.setEnabled(false);
+        bannerPanel.setVisible(false);
+        visibleGraphCheckbox.setEnabled(false);
+        hideTable();
+    }
+
+    private void hideTable(){
+        tableScrollPane.setViewportView(null);
+    }
+
+    private void refresh() {
         bannerPanel.setVisible(false);
         if (classDisplayed.equals(ClassDisplayed.NODE)) {
+            nodesButton.setSelected(true);
             initNodesView();
         } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+            edgesButton.setSelected(true);
             initEdgesView();
         }
     }
