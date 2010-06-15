@@ -5,6 +5,7 @@
 package org.gephi.desktop.importer;
 
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -18,9 +19,9 @@ import org.gephi.io.importer.api.Database;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.DatabaseImporter;
-import org.gephi.io.importer.spi.DatabaseType;
-import org.gephi.io.importer.spi.DatabaseTypeUI;
-import org.gephi.io.importer.spi.FileFormatImporter;
+import org.gephi.io.importer.spi.FileImporter;
+import org.gephi.io.importer.spi.ImporterUI;
+import org.gephi.io.importer.spi.SpigotImporter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -72,7 +73,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
     public void importFile(FileObject fileObject) {
         try {
-            final FileFormatImporter importer = controller.getFileImporter(fileObject);
+            final FileImporter importer = controller.getFileImporter(FileUtil.toFile(fileObject));
             if (importer == null) {
                 NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(msg);
@@ -82,6 +83,30 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             //MRU
             MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
             mostRecentFiles.addFile(fileObject.getPath());
+
+            ImporterUI ui = controller.getUI(importer);
+            if (ui != null) {
+                ui.setup(importer);
+                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
+                JPanel panel = ui.getPanel();
+                final DialogDescriptor dd = new DialogDescriptor(panel, title);
+                if (panel instanceof ValidationPanel) {
+                    ValidationPanel vp = (ValidationPanel) panel;
+                    vp.addChangeListener(new ChangeListener() {
+
+                        public void stateChanged(ChangeEvent e) {
+                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                        }
+                    });
+                }
+
+                Object result = DialogDisplayer.getDefault().notify(dd);
+                if (!result.equals(NotifyDescriptor.OK_OPTION)) {
+                    ui.unsetup(false);
+                    return;
+                }
+                ui.unsetup(true);
+            }
 
             LongTask task = null;
             if (importer instanceof LongTask) {
@@ -113,11 +138,35 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
     public void importStream(final InputStream stream, String importerName) {
         try {
-            final FileFormatImporter importer = controller.getFileImporter(importerName);
+            final FileImporter importer = controller.getFileImporter(importerName);
             if (importer == null) {
                 NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(msg);
                 return;
+            }
+
+            ImporterUI ui = controller.getUI(importer);
+            if (ui != null) {
+                ui.setup(importer);
+                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
+                JPanel panel = ui.getPanel();
+                final DialogDescriptor dd = new DialogDescriptor(panel, title);
+                if (panel instanceof ValidationPanel) {
+                    ValidationPanel vp = (ValidationPanel) panel;
+                    vp.addChangeListener(new ChangeListener() {
+
+                        public void stateChanged(ChangeEvent e) {
+                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                        }
+                    });
+                }
+
+                Object result = DialogDisplayer.getDefault().notify(dd);
+                if (!result.equals(NotifyDescriptor.OK_OPTION)) {
+                    ui.unsetup(false);
+                    return;
+                }
+                ui.unsetup(true);
             }
 
             LongTask task = null;
@@ -146,19 +195,80 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         }
     }
 
-    public void importDatabase(Database database) {
+    public void importFile(final Reader reader, String importerName) {
         try {
-            final DatabaseImporter importer = controller.getDatabaseImporter(database);
-            DatabaseType type = controller.getDatabaseType(database);
-            if (importer == null || type == null) {
+            final FileImporter importer = controller.getFileImporter(importerName);
+            if (importer == null) {
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "DesktopImportControllerUI.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return;
+            }
+
+            ImporterUI ui = controller.getUI(importer);
+            if (ui != null) {
+                ui.setup(importer);
+                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
+                JPanel panel = ui.getPanel();
+                final DialogDescriptor dd = new DialogDescriptor(panel, title);
+                if (panel instanceof ValidationPanel) {
+                    ValidationPanel vp = (ValidationPanel) panel;
+                    vp.addChangeListener(new ChangeListener() {
+
+                        public void stateChanged(ChangeEvent e) {
+                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                        }
+                    });
+                }
+
+                Object result = DialogDisplayer.getDefault().notify(dd);
+                if (!result.equals(NotifyDescriptor.OK_OPTION)) {
+                    ui.unsetup(false);
+                    return;
+                }
+                ui.unsetup(true);
+            }
+
+            LongTask task = null;
+            if (importer instanceof LongTask) {
+                task = (LongTask) importer;
+            }
+
+            //Execute task
+            final String containerSource = "Stream " + importer;
+            executor.execute(task, new Runnable() {
+
+                public void run() {
+                    try {
+                        Container container = controller.importFile(reader, importer);
+                        if (container != null) {
+                            container.setSource(containerSource);
+                            finishImport(container);
+                        }
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }, "Import " + containerSource, errorHandler);
+        } catch (Exception ex) {
+            Logger.getLogger("").log(Level.WARNING, "", ex);
+        }
+    }
+
+    public void importDatabase(DatabaseImporter importer) {
+        importDatabase(null, importer);
+    }
+
+    public void importDatabase(Database database, final DatabaseImporter importer) {
+        try {
+            if (importer == null) {
                 NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(msg);
                 return;
             }
 
-            DatabaseTypeUI ui = type.getUI();
+            ImporterUI ui = controller.getUI(importer);
             if (ui != null) {
-                ui.setup(type);
+                ui.setup(importer);
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.database.ui.dialog.title");
                 JPanel panel = ui.getPanel();
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
@@ -174,10 +284,13 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
+                    ui.unsetup(false);
                     return;
                 }
-                ui.unsetup();
-                database = ui.getDatabase();
+                ui.unsetup(true);
+                if (database == null) {
+                    database = importer.getDatabase();
+                }
             }
 
             LongTask task = null;
@@ -207,6 +320,64 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         }
     }
 
+    public void importSpigot(final SpigotImporter importer) {
+        try {
+            if (importer == null) {
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.error_no_matching_db_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return;
+            }
+
+            ImporterUI ui = controller.getUI(importer);
+            if (ui != null) {
+                ui.setup(importer);
+                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.spigot.ui.dialog.title", ui.getDisplayName());
+                JPanel panel = ui.getPanel();
+                final DialogDescriptor dd = new DialogDescriptor(panel, title);
+                if (panel instanceof ValidationPanel) {
+                    ValidationPanel vp = (ValidationPanel) panel;
+                    vp.addChangeListener(new ChangeListener() {
+
+                        public void stateChanged(ChangeEvent e) {
+                            dd.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                        }
+                    });
+                }
+
+                Object result = DialogDisplayer.getDefault().notify(dd);
+                if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
+                    ui.unsetup(false);
+                    return;
+                }
+                ui.unsetup(true);
+            }
+
+            LongTask task = null;
+            if (importer instanceof LongTask) {
+                task = (LongTask) importer;
+            }
+
+            //Execute task
+            final String containerSource = ui != null ? ui.getDisplayName() : "Spigot";
+            executor.execute(task, new Runnable() {
+
+                public void run() {
+                    try {
+                        Container container = controller.importSpigot(importer);
+                        if (container != null) {
+                            container.setSource(containerSource);
+                            finishImport(container);
+                        }
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }, "Import " + containerSource, errorHandler);
+        } catch (Exception ex) {
+            Logger.getLogger("").log(Level.WARNING, "", ex);
+        }
+    }
+
     private void finishImport(Container container) {
         if (container.verify()) {
             Report report = container.getReport();
@@ -216,7 +387,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             ReportPanel reportPanel = new ReportPanel();
             reportPanel.setData(report, container);
             DialogDescriptor dd = new DialogDescriptor(reportPanel, NbBundle.getMessage(DesktopImportControllerUI.class, "ReportPanel.title"));
-            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.CANCEL_OPTION)) {
+            if (!DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                 reportPanel.destroy();
                 return;
             }

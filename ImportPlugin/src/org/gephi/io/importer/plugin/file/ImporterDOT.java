@@ -6,29 +6,27 @@ package org.gephi.io.importer.plugin.file;
 
 import java.awt.Color;
 import java.io.LineNumberReader;
+import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
-import org.gephi.io.importer.api.FileType;
+import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
-import org.gephi.io.importer.spi.FileFormatImporter;
-import org.gephi.io.importer.spi.TextImporter;
+import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
-@ServiceProvider(service = FileFormatImporter.class)
-public class ImporterDOT implements TextImporter, LongTask {
+public class ImporterDOT implements FileImporter, LongTask {
 
     //Architecture
+    private Reader reader;
     private ContainerLoader container;
     private Report report;
     private ProgressTicket progressTicket;
@@ -37,28 +35,16 @@ public class ImporterDOT implements TextImporter, LongTask {
     private Map<String, Color> colorTable = new HashMap<String, Color>();
     private String graphName = "";
 
-    public boolean importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception {
+    public boolean execute(ContainerLoader container) {
         this.container = container;
-        this.report = report;
-
+        this.report = new Report();
+        LineNumberReader lineReader = ImportUtils.getTextReader(reader);
         try {
-            importData(reader);
+            importData(lineReader);
         } catch (Exception e) {
-            clean();
-            throw e;
+            throw new RuntimeException(e);
         }
-        boolean result = !cancel;
-        clean();
-        return result;
-    }
-
-    private void clean() {
-        this.container = null;
-        this.report = null;
-        this.cancel = false;
-        this.progressTicket = null;
-        graphName = "";
-        colorTable = new HashMap<String, Color>();
+        return !cancel;
     }
 
     private void importData(LineNumberReader reader) throws Exception {
@@ -328,13 +314,16 @@ public class ImporterDOT implements TextImporter, LongTask {
         edgeAttributes(streamTokenizer, edge);
     }
 
-    public FileType[] getFileTypes() {
-        FileType ft = new FileType(".dot", NbBundle.getMessage(getClass(), "fileType_DOT_Name"));
-        return new FileType[]{ft};
+    public void setReader(Reader reader) {
+        this.reader = reader;
     }
 
-    public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("dot") || fileObject.hasExt("DOT");
+    public ContainerLoader getContainer() {
+        return container;
+    }
+
+    public Report getReport() {
+        return report;
     }
 
     public boolean cancel() {

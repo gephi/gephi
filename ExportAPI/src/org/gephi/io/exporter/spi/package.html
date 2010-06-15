@@ -1,19 +1,29 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html>
     <body bgcolor="white">
-        Interfaces that plugins are implementing to define and integrate new exporters.
-        <h3>Create a new Graph File exporter</h3>
-        <ol><li>Create a new module, and set <code>ExportAPI</code> as a dependency.</li>
-            <li>Create a new class that implements <code>TextGraphFileExporter</code>
-                or <code>XMLGraphFileExporter</code>.</li>
+        Interfaces for creating new data exporters.
+        <h3>Create a new Exporter</h3>
+        <ol><li>Create a new module and set <code>Export API</code>,
+                <code>Project API</code> and <code>Utilities API</code> as dependencies.</li>
+            <li>Create a new builder class, which implements:
+                <ul><li>GraphFileExporterBuilder (graph)</li>
+                    <li>VectorFileExporterBuilder (vector graphics)</li>
+                    <li>ExportBuilder (custom)</li></ul>
             <li>Add <b>@ServiceProvider</b> annotation to your class to declare
-                you are implementing an Exporter service. Put <code>GraphFileExporter.class</code>
-                as the annotation <b>service</b> parameter.</li></ol>
+                you are implementing an Exporter service. Put <code>GraphFileExporterBuilder.class</code>
+                as the annotation <b>service</b> parameter for graph files,
+                <code>VectorFileExporterBuilder.class</code> for vector graphics and
+                <code>ExportBuilder.class</code> for the rest.</li>
+            <li>Create a new exporter class, which implements <code>GraphExporter</code>,
+                <code>VectorExporter</code> or simply <code>Exporter</code>.</li>
+            <li>Implement also <code>ByteExporter</code> interface for byte streams or
+                <code>CharacterExporter</code> for texts.</li>
+            <li>In the builder, return a new instance of your exporter in the <code>buildExporter()</code> method.</li>
+            <li>For settings UI, create a new <code>ExporterUI</code> implementation and add the
+                <b>@ServiceProvider</b> annotation to it.</li>
+        </ol>
         <p>To let your export task be cancelled and its progress watched, implement
-            <code>LongTask</code> interface.</p>
-        <p>Note that Exporters are singleton, it's preferable to always instantiate
-            an inner class exporter when <code>exportData()</code> is called.
-        </p>
+            <code>LongTask</code> interface. Add <code>LongTask API</code> as dependency to your module first.</p>
     </body>
 </html>
 

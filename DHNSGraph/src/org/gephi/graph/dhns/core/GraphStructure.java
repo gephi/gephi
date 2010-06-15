@@ -21,11 +21,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.core;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.gephi.graph.api.Edge;
 import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.api.GraphEvent.EventType;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
@@ -44,6 +49,8 @@ public class GraphStructure {
     private final Queue<GraphViewImpl> views;
     private final AbstractNodeTree nodeDictionnary;
     private final AbstractEdgeTree edgeDictionnary;
+    private final Map<String, NodeData> nodeIDDictionnary;   //Temporary, waiting for attributes indexing
+    private final Map<String, Edge> edgeIDDIctionnary;
     private GraphViewImpl visibleView;
     //Destroy
     private final Object lock = new Object();
@@ -53,6 +60,8 @@ public class GraphStructure {
         this.dhns = dhns;
         nodeDictionnary = new AbstractNodeTree();
         edgeDictionnary = new AbstractEdgeTree();
+        nodeIDDictionnary = new HashMap<String, NodeData>();
+        edgeIDDIctionnary = new HashMap<String, Edge>();
         views = new ConcurrentLinkedQueue<GraphViewImpl>();
 
         //Main view
@@ -128,12 +137,58 @@ public class GraphStructure {
         }
     }
 
-    public AbstractNodeTree getNodeDictionnary() {
-        return nodeDictionnary;
+    public void addToDictionnary(AbstractNode node) {
+        nodeDictionnary.add(node);
+        if (node.getNodeData().getId() != null) {
+            nodeIDDictionnary.put(node.getNodeData().getId(), node.getNodeData());
+        }
     }
 
-    public AbstractEdgeTree getEdgeDictionnary() {
-        return edgeDictionnary;
+    public void removeFromDictionnary(AbstractNode node) {
+        nodeDictionnary.remove(node);
+        if (node.getNodeData().getId() != null) {
+            nodeIDDictionnary.remove(node.getNodeData().getId());
+        }
+    }
+
+    public void addToDictionnary(AbstractEdge edge) {
+        edgeDictionnary.add(edge);
+        if (edge.getEdgeData().getId() != null) {
+            edgeIDDIctionnary.put(edge.getEdgeData().getId(), edge);
+        }
+    }
+
+    public void removeFromDictionnary(AbstractEdge edge) {
+        edgeDictionnary.remove(edge);
+        if (edge.getEdgeData().getId() != null) {
+            edgeIDDIctionnary.remove(edge.getEdgeData().getId());
+        }
+    }
+
+    public void clearNodeDictionnary() {
+        nodeDictionnary.clear();
+        nodeIDDictionnary.clear();
+    }
+
+    public void clearEdgeDictionnary() {
+        edgeDictionnary.clear();
+        edgeIDDIctionnary.clear();
+    }
+
+    public AbstractEdge getEdgeFromDictionnary(int id) {
+        return edgeDictionnary.get(id);
+    }
+
+    public AbstractNode getNodeFromDictionnary(int id) {
+        return nodeDictionnary.get(id);
+    }
+
+    public Map<String, NodeData> getNodeIDDictionnary() {
+        return nodeIDDictionnary;
+    }
+
+    public Map<String, Edge> getEdgeIDDIctionnary() {
+        return edgeIDDIctionnary;
     }
 
     public GraphViewImpl getVisibleView() {

@@ -89,14 +89,14 @@ public class DhnsTestFiltering {
         Node node7 = nodeMap.get("Node 7");
         Node node8 = nodeMap.get("Node 8");
 
-        AbstractEdge edge1 = factory.newEdge(node4, node5, 1f, true);
-        AbstractEdge edge2 = factory.newEdge(node5, node6, 4f, true);
-        AbstractEdge edge3 = factory.newEdge(node6, node5, 3f, true);
-        AbstractEdge edge4 = factory.newEdge(node7, node7, 5f, true);
-        AbstractEdge edge5 = factory.newEdge(node4, node4, 2f, true);
-        AbstractEdge edge6 = factory.newEdge(node2, node1, 1f, true);
-        AbstractEdge edge7 = factory.newEdge(node2, node3, 10f, true);
-        AbstractEdge edge8 = factory.newEdge(node2, node5, 12f, true);
+        AbstractEdge edge1 = factory.newEdge("4-5", node4, node5, 1f, true);
+        AbstractEdge edge2 = factory.newEdge("5-6", node5, node6, 4f, true);
+        AbstractEdge edge3 = factory.newEdge("6-5", node6, node5, 3f, true);
+        AbstractEdge edge4 = factory.newEdge("7-7", node7, node7, 5f, true);
+        AbstractEdge edge5 = factory.newEdge("4-4", node4, node4, 2f, true);
+        AbstractEdge edge6 = factory.newEdge("2-1", node2, node1, 1f, true);
+        AbstractEdge edge7 = factory.newEdge("2-3", node2, node3, 10f, true);
+        AbstractEdge edge8 = factory.newEdge("2-5", node2, node5, 12f, true);
 
         graphGlobal.addEdge(edge1);
         graphGlobal.addEdge(edge2);
@@ -166,13 +166,13 @@ public class DhnsTestFiltering {
         AbstractNode node2 = dhns.factory().newNode();
         graph.addNode(node1);
         graph.addNode(node2);
-        GraphViewImpl view = (GraphViewImpl)dhns.newView();
+        GraphViewImpl view = (GraphViewImpl) dhns.newView();
         int viewId = view.getViewId();
         dhns.destroyView(view);
-        System.out.println("Free memory: "+Runtime.getRuntime().freeMemory());
+        System.out.println("Free memory: " + Runtime.getRuntime().freeMemory());
         view = null;
         System.gc();
-        System.out.println("Free memory: "+Runtime.getRuntime().freeMemory());
+        System.out.println("Free memory: " + Runtime.getRuntime().freeMemory());
         AbstractNode n1 = node1.getInView(viewId);
         AbstractNode n2 = node2.getInView(viewId);
         assertNull(n1);

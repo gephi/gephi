@@ -75,15 +75,15 @@ public class FilterProcessorTest {
         }
 
         //Add edges
-        graph.addEdge(factory.newEdge(graph.getNode(0), graph.getNode(1), 1f, false));
-        graph.addEdge(factory.newEdge(graph.getNode(1), graph.getNode(3), 1f, false));
-        graph.addEdge(factory.newEdge(graph.getNode(3), graph.getNode(2), 1f, false));
-        graph.addEdge(factory.newEdge(graph.getNode(2), graph.getNode(0), 1f, false));
-        graph.addEdge(factory.newEdge(graph.getNode(4), graph.getNode(5), 2f, false));
-        graph.addEdge(factory.newEdge(graph.getNode(5), graph.getNode(7), 2f, false));
-        graph.addEdge(factory.newEdge(graph.getNode(7), graph.getNode(6), 2f, false));
-        graph.addEdge(factory.newEdge(graph.getNode(6), graph.getNode(4), 2f, false));
-        graph.addEdge(factory.newEdge(graph.getNode(3), graph.getNode(4), 5f, false));
+        graph.addEdge(factory.newEdge("0-1", graph.getNode(0), graph.getNode(1), 1f, false));
+        graph.addEdge(factory.newEdge("1-3",graph.getNode(1), graph.getNode(3), 1f, false));
+        graph.addEdge(factory.newEdge("3-2",graph.getNode(3), graph.getNode(2), 1f, false));
+        graph.addEdge(factory.newEdge("2-0",graph.getNode(2), graph.getNode(0), 1f, false));
+        graph.addEdge(factory.newEdge("4-5",graph.getNode(4), graph.getNode(5), 2f, false));
+        graph.addEdge(factory.newEdge("5-7",graph.getNode(5), graph.getNode(7), 2f, false));
+        graph.addEdge(factory.newEdge("7-6",graph.getNode(7), graph.getNode(6), 2f, false));
+        graph.addEdge(factory.newEdge("6-4",graph.getNode(6), graph.getNode(4), 2f, false));
+        graph.addEdge(factory.newEdge("3-4",graph.getNode(3), graph.getNode(4), 5f, false));
 
         //Query
         NodeDegreeFilter nodeDegreeFilter = new NodeDegreeFilter(3);

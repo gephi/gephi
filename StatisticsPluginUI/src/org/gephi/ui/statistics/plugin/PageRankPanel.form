@@ -20,11 +20,11 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jXHeader1" alignment="0" pref="446" max="32767" attributes="0"/>
+          <Component id="jXHeader1" alignment="0" pref="522" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="descriptionLabel" alignment="0" pref="426" max="32767" attributes="0"/>
+                  <Component id="descriptionLabel" alignment="0" pref="502" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="directedRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -42,8 +42,8 @@
                               <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                               <Component id="epsilonTextField" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jXLabel1" alignment="1" pref="302" max="32767" attributes="0"/>
-                          <Component id="jXLabel2" alignment="0" pref="302" max="32767" attributes="0"/>
+                          <Component id="jXLabel1" alignment="1" max="32767" attributes="0"/>
+                          <Component id="jXLabel2" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -74,7 +74,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jXLabel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
-              <Component id="descriptionLabel" pref="2" max="32767" attributes="0"/>
+              <Component id="descriptionLabel" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>

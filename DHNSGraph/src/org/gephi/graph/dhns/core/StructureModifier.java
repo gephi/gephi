@@ -331,7 +331,7 @@ public class StructureModifier {
 
         private void addNode(AbstractNode node) {
             treeStructure.insertAsChild(node, node.parent);
-            dhns.getGraphStructure().getNodeDictionnary().add(node);
+            dhns.getGraphStructure().addToDictionnary(node);
         }
 
         private void addEdge(AbstractEdge edge) {
@@ -361,7 +361,7 @@ public class StructureModifier {
                 targetNode.incEnabledInDegree();
             }
 
-            dhns.getGraphStructure().getEdgeDictionnary().add(edge);
+            dhns.getGraphStructure().addToDictionnary(edge);
 
             //Add Meta Edge
             if (!edge.isSelfLoop()) {
@@ -380,7 +380,7 @@ public class StructureModifier {
                 edgeProcessor.clearEdges(descendant);
 
                 if (node.countInViews() == 1) {
-                    dhns.getGraphStructure().getNodeDictionnary().remove(descendant);
+                    dhns.getGraphStructure().removeFromDictionnary(descendant);
                 }
             }
 
@@ -414,7 +414,7 @@ public class StructureModifier {
             boolean res = source.getEdgesOutTree().remove(edge);
             res = res && target.getEdgesInTree().remove(edge);
 
-            dhns.getGraphStructure().getEdgeDictionnary().remove(edge);
+            dhns.getGraphStructure().removeFromDictionnary(edge);
 
             //Remove edge from possible metaEdge
             edgeProcessor.removeEdgeFromMetaEdge(edge);
@@ -428,7 +428,7 @@ public class StructureModifier {
         private void clearAllNodes() {
             treeStructure.clear();
             view.setNodesEnabled(0);
-            dhns.getGraphStructure().getNodeDictionnary().clear();
+            dhns.getGraphStructure().clearNodeDictionnary();
         }
 
         private void clearEdges(AbstractNode node) {

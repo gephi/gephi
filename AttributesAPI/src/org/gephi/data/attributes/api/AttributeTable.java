@@ -20,17 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.api;
 
-import org.openide.util.Lookup;
-import org.openide.util.LookupListener;
-
 /**
  * Table hosts columns and permits all manipulation on them. Columns can be
  * appened with different level of details. The table maintains a map with
  * column identifier and title (header) in order they can be retrieved efficiently.
  * <p>
- * Tracking added or removed columlns can be performed by creating a
- * <code>LookupListener</code> on this table lookup, with <code>AttributeColumn</code>
- * as lookup result. See {@link #getLookup()}.
+ * Tracking added or removed columns can be performed by adding an
+ * {@link AttributeListener} to this table.
  *
  * @author Mathieu Bastian
  * @see AttributeColumn
@@ -140,14 +136,17 @@ public interface AttributeTable {
     public boolean hasColumn(String title);
 
     /**
-     * Return this table's lookup, which contains {@link AttributeColumn} objects.
-     * <p>
-     * Add a {@link LookupListener} to be notified when columns are added or
-     * removed from this table.
-     *
-     * @return              this table's columns <code>Lookup</code>
+     * Adds <code>listener</code> to the listeners of this table. It receives
+     * events when columns are added or removed.
+     * @param listener      the listener that is to be added
      */
-    public Lookup getLookup();
+    public void addAttributeListener(AttributeListener listener);
+
+    /**
+     * Removes <code>listener</code> to the listeners of this table.
+     * @param listener      the listener that is to be added
+     */
+    public void removeAttributeListener(AttributeListener listener);
 
     /**
      * Merge this table with the given <code>table</code> given. New columns from

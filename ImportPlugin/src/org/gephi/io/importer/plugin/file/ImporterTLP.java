@@ -21,55 +21,44 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.plugin.file;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.LineNumberReader;
+import java.io.Reader;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDraft;
-import org.gephi.io.importer.api.FileType;
+import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
-import org.gephi.io.importer.spi.FileFormatImporter;
-import org.gephi.io.importer.spi.TextImporter;
+import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Sebastien Heymann
  */
-@ServiceProvider(service = FileFormatImporter.class)
-public class ImporterTLP implements TextImporter, LongTask {
+public class ImporterTLP implements FileImporter, LongTask {
 
     //Architecture
+    private Reader reader;
     private ContainerLoader container;
     private Report report;
     private ProgressTicket progressTicket;
     private boolean cancel = false;
 
-    public boolean importData(LineNumberReader reader, ContainerLoader container, Report report) throws Exception {
+    public boolean execute(ContainerLoader container) {
         this.container = container;
         this.report = report;
-
+        LineNumberReader lineReader = ImportUtils.getTextReader(reader);
         try {
-            importData(reader);
+            importData(lineReader);
         } catch (Exception e) {
-            clean();
-            throw e;
+            throw new RuntimeException(e);
         }
-        boolean result = !cancel;
-        clean();
-        return result;
-    }
-
-    private void clean() {
-        this.progressTicket = null;
-        this.container = null;
-        this.report = null;
-        this.cancel = false;
+        return !cancel;
     }
 
     private void importData(LineNumberReader reader) throws Exception {
@@ -139,13 +128,16 @@ public class ImporterTLP implements TextImporter, LongTask {
         container.addEdge(edge);
     }
 
-    public FileType[] getFileTypes() {
-        FileType ft = new FileType(".tlp", NbBundle.getMessage(getClass(), "fileType_TLP_Name"));
-        return new FileType[]{ft};
+    public void setReader(Reader reader) {
+        this.reader = reader;
     }
 
-    public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("tlp") || fileObject.hasExt("TLP");
+    public ContainerLoader getContainer() {
+        return container;
+    }
+
+    public Report getReport() {
+        return report;
     }
 
     public boolean cancel() {

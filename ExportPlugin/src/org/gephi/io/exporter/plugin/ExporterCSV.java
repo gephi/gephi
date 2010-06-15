@@ -4,7 +4,7 @@
  */
 package org.gephi.io.exporter.plugin;
 
-import java.io.BufferedWriter;
+import java.io.Writer;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -12,22 +12,18 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.io.exporter.api.FileType;
-import org.gephi.io.exporter.spi.GraphFileExporter;
-import org.gephi.io.exporter.spi.GraphFileExporterSettings;
-import org.gephi.io.exporter.spi.TextGraphFileExporter;
+import org.gephi.io.exporter.spi.GraphExporter;
+import org.gephi.io.exporter.spi.CharacterExporter;
+import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = GraphFileExporter.class)
-public class ExporterCSV implements TextGraphFileExporter, LongTask {
+public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
 
     private static final String SEPARATOR = ";";
     private static final String EOL = "\n";
@@ -37,31 +33,29 @@ public class ExporterCSV implements TextGraphFileExporter, LongTask {
     private boolean header = true;
     private boolean list = false;
     //Architecture
+    private Workspace workspace;
+    private Writer writer;
+    private boolean exportVisible;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
     //Buffer
     private StringBuilder stringBuilder;
-    private BufferedWriter writer;
 
-    public boolean exportData(BufferedWriter writer, GraphFileExporterSettings settings) throws Exception {
-        this.writer = writer;
-
+    public boolean execute() {
+        GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
+        Graph graph = null;
+        if (exportVisible) {
+            graph = graphModel.getGraphVisible();
+        } else {
+            graph = graphModel.getGraph();
+        }
         try {
-            GraphModel graphModel = settings.getWorkspace().getLookup().lookup(GraphModel.class);
-            Graph graph = null;
-            if (settings.isExportVisible()) {
-                graph = graphModel.getGraphVisible();
-            } else {
-                graph = graphModel.getGraph();
-            }
             exportData(graph);
         } catch (Exception e) {
-            clean();
-            throw e;
+            throw new RuntimeException(e);
         }
-        boolean c = cancel;
-        clean();
-        return !c;
+
+        return !cancel;
     }
 
     private void exportData(Graph graph) throws Exception {
@@ -188,23 +182,6 @@ public class ExporterCSV implements TextGraphFileExporter, LongTask {
         stringBuilder.append(SEPARATOR);
     }
 
-    private void clean() {
-        //Clean
-        stringBuilder = null;
-        writer = null;
-        cancel = false;
-        progressTicket = null;
-    }
-
-    public FileType[] getFileTypes() {
-        FileType ft = new FileType(".csv", NbBundle.getMessage(getClass(), "fileType_CSV_Name"));
-        return new FileType[]{ft};
-    }
-
-    public String getName() {
-        return NbBundle.getMessage(getClass(), "ExporterCSV_name");
-    }
-
     public boolean cancel() {
         cancel = true;
         return true;
@@ -244,5 +221,25 @@ public class ExporterCSV implements TextGraphFileExporter, LongTask {
 
     public void setList(boolean list) {
         this.list = list;
+    }
+
+    public boolean isExportVisible() {
+        return exportVisible;
+    }
+
+    public void setExportVisible(boolean exportVisible) {
+        this.exportVisible = exportVisible;
+    }
+
+    public void setWriter(Writer writer) {
+        this.writer = writer;
+    }
+
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 }

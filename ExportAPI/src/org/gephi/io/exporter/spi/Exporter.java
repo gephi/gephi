@@ -20,12 +20,32 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.spi;
 
+import org.gephi.project.api.Workspace;
+
 /**
- * Define a class that can export data.
+ * Define a class that can export data. Different sub-interfaces are available
+ * for byte and character targets.
  *
  * @author Mathieu Bastian
  */
 public interface Exporter {
 
-    public String getName();
+    /**
+     * Run the export process.
+     * @return          <code>true</code> if the operation is successful,
+     *                  <code>false</code> if it has been cancelled
+     */
+    public boolean execute();
+
+    /**
+     * Sets the worksapce from where to export data
+     * @param workspace the workspace to export
+     */
+    public void setWorkspace(Workspace workspace);
+
+    /**
+     * Returns the workspace from where data are exported
+     * @return          the workspace the data are to be exported
+     */
+    public Workspace getWorkspace();
 }

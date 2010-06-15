@@ -9,6 +9,35 @@
     <p>
     <h2>API Changes</h2>
     <ul>
+        <li>(June 14 2010) Export API refactoring, inspired from ImportAPI. Create an <code>ExporterBuilder</code> interface for
+            exporter creation and different exporters: <code>GraphExporter</code>, <code>VectorExporter</code>, <code>ByteExporter</code>
+            and <code>CharacterExporter</code> that covers common cases. The way exporters write data has been rationalized by using either
+            <code>java.io.Writer</code> (text) or <code>java.io.OutputStream</code> (byte). The <code>ExportController</code> has been improved
+            to support all use-cases, including file, writer and stream export.
+        <li>(June 11 2010) Add Spigot support to the ImportAPI and SPI. Like <code>DatabaseImporter</code>, the
+            <code>SpigotImporter</code> interface is a new type of Importers. Modifications have also be made to the
+            <code>ImportController</code> to support spigot import.
+        <li>(June 08 2010) Refactoring and improvements in the Import API and SPI. The refactoring aim is to solve the singleton
+            issue with importers and let users implement builders interface that create importers instance. Therefore an
+            <code>ImporterBuilder</code> interface has been created and should be registered with the <code>@ServiceProvider</code>
+            annotation. The various importers types have been simplified and leave more choice to the implementations about how the
+            input is managed. XML and Text file importers has been merged in a <code>FileImporter</code> interface, working with the
+            <code>java.io.Reader</code>. Utility static methods, for instance <em>get Document from Reader</em> can now be found in a new
+            <code>ImportUtils</code> class. The <code>ImportController</code> has been simplified for File import and now accepts
+            <code>java.io.Reader</code> also. The main improvement on these modules in the support of UI components for importers.
+            The aim is to let importers define an <code>ImporterUI</code> implementation to manage settings of these importers.
+        <li>(June 04 2010) Improvements in the GraphAPI identifiers management. The system is now storing String
+        identifiers coming from users. New getters and setters methods have been created in <code>Graph</code>:
+        <ul><li><code>Graph.setId(Node, String)</code></li>
+            <li><code>Graph.setId(Edge, String)</code></li>
+            <li><code>Graph.getNode(String)</code></li>
+            <li><code>Graph.getEdge(String)</code></li></ul>
+        The <code>NodeData.setId()</code> and <code>EdgeData.setId()</code> methods have been removed, compatibility can't be kept.
+        Factory has also be changed to allow to create elements with String ID directly, as it's not possible anymore to
+        do it from <code>NodeData</code>.
+        <li>(June 02 2010) Changes in AttributesAPI with event management. The lookup system in <code>AttributeTable</code>
+        has been replaced by a more traditional event management system, with new <code>AttributeEvent</code> and
+        <code>AttributeListener</code> interfaces. The dispatch implementation is also now on a separate thread.</li>
         <li>(May 08 2010) Changes in Import modules to separate core and user interfaces. The <code>ImportController</code> is now
         doing import task only and a new <code>ImportControllerUI</code> is displaying the user interface (Report Panel). The
         <code>ImportControllerUI</code> interface is located in the DesktopProject module and should be user to properly
@@ -45,7 +74,7 @@
 <h2>API List</h2>
 <ul><li><b>Attributes API</b> - Provides access to attributes values through an efficient column/row system.</li>
     <li><span class="unstable"><b>Clustering API</b></span> - API/SPI for clustering algorithms (experimental).</li>
-<li><span class="unstable"><b>Export API</b></span>  - Export API/SPI provides the infrastructure for exporting data to any support and define new exporters.</li>
+<li><b>Export API</b>  - Export API/SPI provides the infrastructure for exporting data to any support and define new exporters.</li>
 <li><span class="unstable"><b>Filters API</b></span>  - API/SPI for filters, define and control current filtering.</li>
 <li><b>Generator API</b> -  Generator API/SPI provides the way to create and execute graph generators.</li>
 <li><b>Graph API</b> - API for accessing the graph.</li>

@@ -28,10 +28,18 @@ package org.gephi.graph.api;
 public interface GraphFactory {
 
     /**
-     * Create a new node.
+     * Create a new node, with default identifier.
      * @return          a new node instance
      */
     public Node newNode();
+
+    /**
+     * Create a new node with an identifier. If <code>id</code> is <code>null</code>
+     * a default identifier is used.
+     * @param id        a unique identifier, could be <code>null</code>
+     * @return          a new node instance
+     */
+    public Node newNode(String id);
 
     /**
      * Create a new edge. This method don't force the type of edge (directed or
@@ -54,4 +62,15 @@ public interface GraphFactory {
      * @return      a new mixed edge instance
      */
     public Edge newEdge(Node source, Node target, float weight, boolean directed);
+
+    /**
+     * Creates a new edge.
+     * @param id        a unique identifier, could be <code>null</code>
+     * @param source    the edge's source
+     * @param target    the edge's targer
+     * @param weight    the edge's weight
+     * @param directed  the edge's type
+     * @return      a new mixed edge instance
+     */
+    public Edge newEdge(String id, Node source, Node target, float weight, boolean directed);
 }

@@ -26,7 +26,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -45,6 +44,9 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeEvent;
+import org.gephi.data.attributes.api.AttributeListener;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
@@ -58,8 +60,6 @@ import org.gephi.ui.utils.UIUtils;
 import org.netbeans.swing.etable.ETableColumnModel;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
@@ -69,7 +69,7 @@ import org.openide.windows.WindowManager;
  *
  * @author Mathieu Bastian
  */
-final class DataTableTopComponent extends TopComponent implements LookupListener, GraphListener {
+final class DataTableTopComponent extends TopComponent implements AttributeListener, GraphListener {
 
     private enum ClassDisplayed {
 
@@ -83,8 +83,6 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
     private static final Color invalidFilterColor = new Color(254, 242, 242);
     private final boolean dynamicFiltering;
     //Data
-    private Lookup.Result<AttributeColumn> nodeColumnsResult;
-    private Lookup.Result<AttributeColumn> edgeColumnsResult;
     private GraphModel graphModel;
     private DataTablesModel dataTablesModel;
     private boolean visibleOnly = false;
@@ -92,7 +90,7 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
     private NodeDataTable nodeTable;
     private EdgeDataTable edgeTable;
     //States
-    ClassDisplayed classDisplayed = ClassDisplayed.NONE;
+    ClassDisplayed classDisplayed = ClassDisplayed.NODE;//Display nodes by default at first.
     //Executor
     ExecutorService taskExecutor;
 
@@ -135,6 +133,8 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
             labelFilter.setEnabled(false);
             bannerPanel.setVisible(false);
             visibleGraphCheckbox.setEnabled(false);
+        }else{
+            refresh();
         }
         bannerPanel.setVisible(false);
     }
@@ -148,6 +148,7 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
 
             public void initialize(Workspace workspace) {
                 workspace.add(new DataTablesModel());
+                refresh();
             }
 
             public void select(Workspace workspace) {
@@ -162,23 +163,25 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
                 graphModel = gc.getModel();
                 graphModel.addGraphListener(DataTableTopComponent.this);
                 dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
-                nodeColumnsResult = ac.getModel().getNodeTable().getLookup().lookupResult(AttributeColumn.class);
-                edgeColumnsResult = ac.getModel().getEdgeTable().getLookup().lookupResult(AttributeColumn.class);
-                nodeColumnsResult.addLookupListener(DataTableTopComponent.this);
-                edgeColumnsResult.addLookupListener(DataTableTopComponent.this);
+
+                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+                attributeModel.getNodeTable().addAttributeListener(DataTableTopComponent.this);
+                attributeModel.getEdgeTable().addAttributeListener(DataTableTopComponent.this);
+                refresh();
             }
 
             public void unselect(Workspace workspace) {
                 graphModel.removeGraphListener(DataTableTopComponent.this);
-                nodeColumnsResult.removeLookupListener(DataTableTopComponent.this);
-                edgeColumnsResult.removeLookupListener(DataTableTopComponent.this);
-                nodeColumnsResult = null;
-                edgeColumnsResult = null;
+                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+                attributeModel.getNodeTable().removeAttributeListener(DataTableTopComponent.this);
+                attributeModel.getEdgeTable().removeAttributeListener(DataTableTopComponent.this);
                 graphModel = null;
                 dataTablesModel = null;
+                clear();
             }
 
             public void close(Workspace workspace) {
+                clear();
             }
 
             public void disable() {
@@ -189,16 +192,17 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
                 labelFilter.setEnabled(false);
                 bannerPanel.setVisible(false);
                 visibleGraphCheckbox.setEnabled(false);
+                clear();
             }
         });
         if (pc.getCurrentWorkspace() != null) {
             dataTablesModel = pc.getCurrentWorkspace().getLookup().lookup(DataTablesModel.class);
-            nodeColumnsResult = ac.getModel().getNodeTable().getLookup().lookupResult(AttributeColumn.class);
-            edgeColumnsResult = ac.getModel().getEdgeTable().getLookup().lookupResult(AttributeColumn.class);
-            nodeColumnsResult.addLookupListener(DataTableTopComponent.this);
-            edgeColumnsResult.addLookupListener(DataTableTopComponent.this);
             graphModel = gc.getModel();
             graphModel.addGraphListener(DataTableTopComponent.this);
+
+            AttributeModel attributeModel = pc.getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
+            attributeModel.getNodeTable().addAttributeListener(DataTableTopComponent.this);
+            attributeModel.getEdgeTable().addAttributeListener(DataTableTopComponent.this);
         }
 
         //Filter
@@ -265,8 +269,8 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
                     busylabel.setBusy(true);
 
                     //Attributes columns
-                    Collection<? extends AttributeColumn> attributeColumns = nodeColumnsResult.allInstances();
-                    final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
+                    AttributeModel attModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
+                    final AttributeColumn[] cols = attModel.getNodeTable().getColumns();
 
                     //Nodes from DHNS
                     HierarchicalGraph graph;
@@ -305,8 +309,8 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
                     busylabel.setBusy(true);
 
                     //Attributes columns
-                    Collection<? extends AttributeColumn> attributeColumns = edgeColumnsResult.allInstances();
-                    final AttributeColumn[] cols = attributeColumns.toArray(new AttributeColumn[0]);
+                    AttributeModel attModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
+                    final AttributeColumn[] cols = attModel.getEdgeTable().getColumns();
 
                     //Edges from DHNS
                     HierarchicalGraph graph;
@@ -335,7 +339,7 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
         Future future = taskExecutor.submit(initEdgesRunnable);
     }
 
-    public void resultChanged(LookupEvent ev) {
+    public void attributesChanged(AttributeEvent event) {
         if (!bannerPanel.isVisible() && classDisplayed != ClassDisplayed.NONE) {
             SwingUtilities.invokeLater(new Runnable() {
 
@@ -375,6 +379,19 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
                 }
             }
             columnComboBox.setModel(model);
+        }
+    }
+
+    private void clear(){
+        tableScrollPane.setViewport(null);
+    }
+
+    private void refresh(){
+        bannerPanel.setVisible(false);
+        if (classDisplayed.equals(ClassDisplayed.NODE)) {
+            initNodesView();
+        } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+            initEdgesView();
         }
     }
 
@@ -505,12 +522,7 @@ final class DataTableTopComponent extends TopComponent implements LookupListener
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
-        bannerPanel.setVisible(false);
-        if (classDisplayed.equals(ClassDisplayed.NODE)) {
-            initNodesView();
-        } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
-            initEdgesView();
-        }
+        refresh();
 }//GEN-LAST:event_refreshButtonActionPerformed
 
     private void edgesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edgesButtonActionPerformed

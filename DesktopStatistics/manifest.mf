@@ -3,5 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.desktop.statistics
 OpenIDE-Module-Layer: org/gephi/desktop/statistics/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/statistics/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.4
+OpenIDE-Module-Specification-Version: 0.7.0.5
 

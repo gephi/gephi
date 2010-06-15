@@ -23,6 +23,7 @@ package org.gephi.io.importer.plugin.file;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 
 import java.awt.Color;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,21 +40,18 @@ import org.gephi.data.attributes.type.StringList;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
-import org.gephi.io.importer.api.FileType;
+import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.PropertiesAssociations;
 import org.gephi.io.importer.api.PropertiesAssociations.EdgeProperties;
 import org.gephi.io.importer.api.PropertiesAssociations.NodeProperties;
 import org.gephi.io.importer.api.Report;
-import org.gephi.io.importer.spi.FileFormatImporter;
-import org.gephi.io.importer.spi.XMLImporter;
+import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -64,10 +62,10 @@ import org.w3c.dom.NodeList;
  * @author Mathieu Bastian
  * @author Sebastien Heymann
  */
-@ServiceProvider(service = FileFormatImporter.class)
-public class ImporterGEXF implements XMLImporter, LongTask {
+public class ImporterGEXF implements FileImporter, LongTask {
 
     //Architecture
+    private Reader reader;
     private ContainerLoader container;
     private Report report;
     private ProgressTicket progressTicket;
@@ -79,10 +77,10 @@ public class ImporterGEXF implements XMLImporter, LongTask {
     private boolean isDateTypeFloat = false;
     //Attributes
     protected PropertiesAssociations properties = new PropertiesAssociations();
-    private HashMap<String, NodeProperties> nodePropertiesAttributes;
-    private HashMap<String, EdgeProperties> edgePropertiesAttributes;
+    private HashMap<String, NodeProperties> nodePropertiesAttributes = new HashMap<String, NodeProperties>();
+    private HashMap<String, EdgeProperties> edgePropertiesAttributes = new HashMap<String, EdgeProperties>();
     //Attributes options
-    private HashMap<String, StringList> optionsAttributes;
+    private HashMap<String, StringList> optionsAttributes = new HashMap<String, StringList>();
     //Unknown parents nodes
     private ConcurrentHashMap<String, List<String>> unknownParents; // <parentId, ChildIdList>
 
@@ -99,36 +97,16 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "weight");
     }
 
-    public boolean importData(Document document, ContainerLoader container, Report report) throws Exception {
+    public boolean execute(ContainerLoader container) {
         this.container = container;
-        this.report = report;
-        this.nodePropertiesAttributes = new HashMap<String, NodeProperties>();
-        this.edgePropertiesAttributes = new HashMap<String, EdgeProperties>();
-        this.optionsAttributes = new HashMap<String, StringList>();
-
+        this.report = new Report();
+        Document document = ImportUtils.getXMLDocument(reader);
         try {
             importData(document);
         } catch (Exception e) {
-            clean();
-            throw e;
+            throw new RuntimeException(e);
         }
-        boolean result = !cancel;
-        clean();
-        return result;
-    }
-
-    private void clean() {
-        //Clean
-        this.container = null;
-        this.progressTicket = null;
-        this.report = null;
-        this.nodePropertiesAttributes = null;
-        this.edgePropertiesAttributes = null;
-        this.optionsAttributes = null;
-        this.cancel = false;
-        this.isDynamicMode = false;
-        this.isDateTypeFloat = false;
-        this.unknownParents = null;
+        return !cancel;
     }
 
     private void importData(Document document) throws Exception {
@@ -264,7 +242,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
     private void parseNodes(NodeList nodeListE, String parent) throws Exception {
         for (int i = 0; i < nodeListE.getLength(); i++) {
             //security
-            if(nodeListE.item(i).getNodeType() != ELEMENT_NODE) {
+            if (nodeListE.item(i).getNodeType() != ELEMENT_NODE) {
                 continue;
             }
 
@@ -450,7 +428,7 @@ public class ImporterGEXF implements XMLImporter, LongTask {
     private void parseEdges(NodeList edgeListE, String parent) {
         for (int i = 0; i < edgeListE.getLength(); i++) {
             //security
-            if(edgeListE.item(i).getNodeType() != ELEMENT_NODE) {
+            if (edgeListE.item(i).getNodeType() != ELEMENT_NODE) {
                 continue;
             }
             Element edgeE = (Element) edgeListE.item(i);
@@ -512,6 +490,20 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             String edgeLabel = edgeE.getAttribute("label");
             if (!edgeLabel.isEmpty()) {
                 edge.setLabel(edgeLabel);
+            }
+
+            //Edge color
+            Element edgeColor = (Element) edgeE.getElementsByTagName("viz:color").item(0);
+            if (edgeColor != null) {
+                String rStr = edgeColor.getAttribute("r");
+                String gStr = edgeColor.getAttribute("g");
+                String bStr = edgeColor.getAttribute("b");
+
+                int r = (rStr.isEmpty()) ? 0 : Integer.parseInt(rStr);
+                int g = (gStr.isEmpty()) ? 0 : Integer.parseInt(gStr);
+                int b = (bStr.isEmpty()) ? 0 : Integer.parseInt(bStr);
+
+                edge.setColor(new Color(r, g, b));
             }
 
             //Get Attvalue child nodes, avoiding using descendants
@@ -653,23 +645,23 @@ public class ImporterGEXF implements XMLImporter, LongTask {
             }
 
             /*if (isDynamicMode) {
-                String attrStart = null;
-                String attrEnd = null;
-                //Attribute start date
-                if (!columnE.getAttribute("start").isEmpty()) {
-                    attrStart = columnE.getAttribute("start");
-                }
+            String attrStart = null;
+            String attrEnd = null;
+            //Attribute start date
+            if (!columnE.getAttribute("start").isEmpty()) {
+            attrStart = columnE.getAttribute("start");
+            }
 
-                //Attribute end date
-                if (!columnE.getAttribute("end").isEmpty()) {
-                    attrEnd = columnE.getAttribute("end");
-                }
+            //Attribute end date
+            if (!columnE.getAttribute("end").isEmpty()) {
+            attrEnd = columnE.getAttribute("end");
+            }
 
-                if (attrStart != null || attrEnd != null) {
-                    columnE.addTimeSlice(attrStart, attrEnd);
-                }
+            if (attrStart != null || attrEnd != null) {
+            columnE.addTimeSlice(attrStart, attrEnd);
+            }
             }*/
-            
+
             //Add as attribute
             if (colClass.equals("node")) {
                 AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
@@ -759,13 +751,16 @@ public class ImporterGEXF implements XMLImporter, LongTask {
         }
     }
 
-    public FileType[] getFileTypes() {
-        FileType ft = new FileType(".gexf", NbBundle.getMessage(getClass(), "fileType_GEXF_Name"));
-        return new FileType[]{ft};
+    public void setReader(Reader reader) {
+        this.reader = reader;
     }
 
-    public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.hasExt("gexf") || fileObject.hasExt("GEXF");
+    public ContainerLoader getContainer() {
+        return container;
+    }
+
+    public Report getReport() {
+        return report;
     }
 
     public boolean cancel() {

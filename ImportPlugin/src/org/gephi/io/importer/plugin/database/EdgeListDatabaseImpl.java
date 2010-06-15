@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.plugin.database;
 
 import org.gephi.io.importer.api.AbstractDatabase;
-import org.gephi.io.importer.api.EdgeListDatabase;
 import org.gephi.io.importer.api.PropertiesAssociations.EdgeProperties;
 import org.gephi.io.importer.api.PropertiesAssociations.NodeProperties;
 
@@ -29,7 +28,7 @@ import org.gephi.io.importer.api.PropertiesAssociations.NodeProperties;
  *
  * @author Mathieu Bastian
  */
-public class EdgeListDatabaseImpl extends AbstractDatabase implements EdgeListDatabase {
+public class EdgeListDatabaseImpl extends AbstractDatabase {
 
     private String nodeQuery;
     private String edgeQuery;

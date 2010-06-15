@@ -22,7 +22,6 @@ package org.gephi.graph.dhns.core;
 
 import java.util.AbstractList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -94,11 +93,10 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
      * @param coll  the collection to copy
      * @throws NullPointerException if the collection is null
      */
-    public DurableTreeList(Collection<AbstractNode> coll) {
-        super();
-        addAll(coll);
-    }
-
+    /*public DurableTreeList(Collection<AbstractNode> coll) {
+    super();
+    addAll(coll);
+    }*/
     public void incPreConsistent() {
         preConsistent++;
     }

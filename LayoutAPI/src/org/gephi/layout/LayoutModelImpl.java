@@ -94,6 +94,7 @@ public class LayoutModelImpl implements LayoutModel {
     protected void setSelectedLayout(Layout selectedLayout) {
         Layout oldValue = this.selectedLayout;
         this.selectedLayout = selectedLayout;
+        this.selectedBuilder = selectedLayout.getBuilder();
         if (oldValue != null) {
             saveProperties(oldValue);
         }

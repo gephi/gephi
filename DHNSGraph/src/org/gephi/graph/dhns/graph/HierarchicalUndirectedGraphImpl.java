@@ -76,7 +76,7 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
             //Edge already exist
             return false;
         }
-        AbstractEdge edge = dhns.factory().newEdge(absNode1, absNode2, 1.0f, false);
+        AbstractEdge edge = dhns.factory().newEdge(null, absNode1, absNode2, 1.0f, false);
         view.getStructureModifier().addEdge(edge);
         dhns.touchUndirected();
         return true;
