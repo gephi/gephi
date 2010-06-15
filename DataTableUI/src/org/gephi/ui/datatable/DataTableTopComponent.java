@@ -90,7 +90,7 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
     private NodeDataTable nodeTable;
     private EdgeDataTable edgeTable;
     //States
-    ClassDisplayed classDisplayed = ClassDisplayed.NONE;
+    ClassDisplayed classDisplayed = ClassDisplayed.NODE;//Display nodes by default at first.
     //Executor
     ExecutorService taskExecutor;
 
@@ -133,6 +133,8 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
             labelFilter.setEnabled(false);
             bannerPanel.setVisible(false);
             visibleGraphCheckbox.setEnabled(false);
+        }else{
+            refresh();
         }
         bannerPanel.setVisible(false);
     }
@@ -146,6 +148,7 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
 
             public void initialize(Workspace workspace) {
                 workspace.add(new DataTablesModel());
+                refresh();
             }
 
             public void select(Workspace workspace) {
@@ -164,6 +167,7 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
                 attributeModel.getNodeTable().addAttributeListener(DataTableTopComponent.this);
                 attributeModel.getEdgeTable().addAttributeListener(DataTableTopComponent.this);
+                refresh();
             }
 
             public void unselect(Workspace workspace) {
@@ -173,9 +177,11 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
                 attributeModel.getEdgeTable().removeAttributeListener(DataTableTopComponent.this);
                 graphModel = null;
                 dataTablesModel = null;
+                clear();
             }
 
             public void close(Workspace workspace) {
+                clear();
             }
 
             public void disable() {
@@ -186,6 +192,7 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
                 labelFilter.setEnabled(false);
                 bannerPanel.setVisible(false);
                 visibleGraphCheckbox.setEnabled(false);
+                clear();
             }
         });
         if (pc.getCurrentWorkspace() != null) {
@@ -373,6 +380,10 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
             }
             columnComboBox.setModel(model);
         }
+    }
+
+    private void clear(){
+        tableScrollPane.setViewport(null);
     }
 
     private void refresh(){

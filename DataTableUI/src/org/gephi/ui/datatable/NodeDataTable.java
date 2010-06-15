@@ -279,7 +279,6 @@ public class NodeDataTable {
         @Override
         public javax.swing.Icon getIcon(Object o) {
             return null;
-
         }
 
         @Override
@@ -365,6 +364,7 @@ public class NodeDataTable {
         private JMenuItem createMenuItemFromNodesManipulator(final NodesManipulator nm) {
             JMenuItem menuItem = new JMenuItem();
             menuItem.setText(nm.getName());
+            menuItem.setIcon(nm.getIcon());
             menuItem.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {

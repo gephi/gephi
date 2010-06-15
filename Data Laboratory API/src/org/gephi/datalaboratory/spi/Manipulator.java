@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.spi;
 
+import javax.swing.Icon;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 
 /**
@@ -85,4 +86,10 @@ public interface Manipulator {
      * @return This Manipulator position
      */
     int getPosition();
+
+    /**
+     * Returns an icon for this manipulator if necessary.
+     * @return Icon for the manipulator or null
+     */
+    Icon getIcon();
 }

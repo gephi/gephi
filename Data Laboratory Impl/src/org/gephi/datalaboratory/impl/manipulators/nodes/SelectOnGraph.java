@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl.manipulators.nodes;
 
+import javax.swing.Icon;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
@@ -63,5 +64,9 @@ public class SelectOnGraph implements NodesManipulator {
 
     public int getPosition() {
         return 0;
+    }
+
+    public Icon getIcon() {
+        return null;
     }
 }
