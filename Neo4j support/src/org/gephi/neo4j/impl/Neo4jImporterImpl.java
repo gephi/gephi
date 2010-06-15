@@ -3,18 +3,7 @@ package org.gephi.neo4j.impl;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.graph.api.Attributes;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.neo4j.api.Neo4jImporter;
-import org.gephi.neo4j.attributes.AttributeRowImpl;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -37,10 +26,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=Neo4jImporter.class)
 public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     private GraphDatabaseService graphDB;
-    private Map<Long, Integer> idMapper;
-    private GraphModel graphModel;
     private ProgressTicket progressTicket;
     private boolean cancelImport;//TODO finish implementing canceling task
+    private GraphModelConvertor graphModelConvertor;
 
 
     @Override
@@ -93,8 +81,6 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     }
 
     private void doImport() {
-        idMapper = new HashMap<Long, Integer>();
-
         Transaction transaction = graphDB.beginTx();
         try {
             importGraph();
@@ -122,9 +108,9 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
                                 .traverse(referenceNode);
 
         createNewProject();
-        initializeGraphModel();
         //TODO solve problem with projects and workspace, how to treat canceling task?
 
+        graphModelConvertor = GraphModelConvertor.getInstance();
         // the algorithm traverses through all relationships
         for (Relationship neoRelationship : traverser.relationships()) {
             if (cancelImport)
@@ -142,11 +128,6 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
         pc.newProject();
     }
 
-    private void initializeGraphModel() {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        graphModel = graphController.getModel();
-    }
-
     private void showCurrentWorkspace() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
 
@@ -157,83 +138,11 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     }
 
     private void processRelationship(Relationship neoRelationship) {
-        GephiHelper gephiHelper = new GephiHelper();
-
         org.gephi.graph.api.Node gephiStartNode =
-                gephiHelper.createGephiNodeFromNeoNode(neoRelationship.getStartNode());
+                graphModelConvertor.createGephiNodeFromNeoNode(neoRelationship.getStartNode());
         org.gephi.graph.api.Node gephiEndNode =
-                gephiHelper.createGephiNodeFromNeoNode(neoRelationship.getEndNode());
+                graphModelConvertor.createGephiNodeFromNeoNode(neoRelationship.getEndNode());
 
-        gephiHelper.createGephiEdge(gephiStartNode, gephiEndNode, neoRelationship);
-    }
-
-    private class GephiHelper {
-        public GephiHelper() {}
-
-        /**
-         * Creates Gephi node representation from Neo4j node and all its property data. If Gephi node
-         * doesn't already exist, it will be created with all attached data from Neo4j node, otherwise
-         * it will not be created again.
-         *
-         * @param neoNode Neo4j node
-         * @return Gephi node
-         */
-        public org.gephi.graph.api.Node createGephiNodeFromNeoNode(org.neo4j.graphdb.Node neoNode) {
-            Integer gephiNodeId = idMapper.get(neoNode.getId());
-
-            org.gephi.graph.api.Node gephiNode;
-            if (gephiNodeId != null)
-                gephiNode = graphModel.getGraph().getNode(gephiNodeId);
-            else {
-                gephiNode = graphModel.factory().newNode();
-                graphModel.getGraph().addNode(gephiNode);
-
-                AttributeController attributeController =
-                            Lookup.getDefault().lookup(AttributeController.class);
-
-                for (String neoPropertyKey : neoNode.getPropertyKeys()) {
-                    Object neoPropertyValue = neoNode.getProperty(neoPropertyKey);
-
-                    AttributeTable nodeTable = attributeController.getModel().getNodeTable();
-                    nodeTable.addColumn(neoPropertyKey, AttributeType.parse(neoPropertyValue), AttributeOrigin.PROPERTY);
-
-                    Attributes attributes = gephiNode.getNodeData().getAttributes();
-                    attributes.setValue(neoPropertyKey, neoPropertyValue);
-                    ((AttributeRowImpl) attributes).setNeo4jId((int) neoNode.getId());
-                }
-
-                idMapper.put(neoNode.getId(), gephiNode.getId());
-            }
-
-            return gephiNode;
-        }
-
-        /**
-         * Creates Gephi edge betweeen two Gephi nodes. Graph is traversing through all relationships
-         * (edges), so for every Neo4j relationship a Gephi edge will be created.
-         *
-         * @param startGephiNode  start Gephi node
-         * @param endGephiNode    end Gephi node
-         * @param neoRelationship Neo4j relationship
-         */
-        public void createGephiEdge(org.gephi.graph.api.Node startGephiNode,
-                                           org.gephi.graph.api.Node endGephiNode,
-                                           Relationship neoRelationship) {
-            Edge gephiEdge = graphModel.factory().newEdge(startGephiNode, endGephiNode);
-            graphModel.getGraph().addEdge(gephiEdge);
-
-            AttributeController attributeController =
-                        Lookup.getDefault().lookup(AttributeController.class);
-
-            for (String neoPropertyKey : neoRelationship.getPropertyKeys()) {
-                Object neoPropertyValue = neoRelationship.getProperty(neoPropertyKey);
-
-                AttributeTable edgeTable = attributeController.getModel().getEdgeTable();
-                edgeTable.addColumn(neoPropertyKey, AttributeType.parse(neoPropertyValue), AttributeOrigin.PROPERTY);
-
-                Attributes attributes = gephiEdge.getEdgeData().getAttributes();
-                attributes.setValue(neoPropertyKey, neoPropertyValue);
-            }
-        }
+        graphModelConvertor.createGephiEdge(gephiStartNode, gephiEndNode, neoRelationship);
     }
 }
