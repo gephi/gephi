@@ -26,6 +26,9 @@ package org.gephi.data.attributes.api;
  * <p>
  * It contains its index that may be used to get the appropriate value in the
  * <code>AttributeRow</code> values array.
+ * <p>
+ * For Gephi internal implementation purposes, names of columns are restricted. They can have any name
+ * except these defined in {@link org.gephi.data.properties.PropertiesColumn PropertiesColumn} enum.
  * <h2>Iterate rows values</h2>
  * <pre>
  * Attribute row = ...;

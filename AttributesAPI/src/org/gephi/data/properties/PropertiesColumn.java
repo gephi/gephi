@@ -20,30 +20,63 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.properties;
 
+import org.gephi.data.attributes.api.AttributeType;
+
 /**
  * Enum that define static <code>AttributeColumn</code> indexes, like <code>ID</code>
  * or <code>LABEL</code>. Use these enum to find the index of these columns in
  * node and edge table.
  * <h4>Get nodes ID column
  * <pre>
- * AttributeColumn col = nodeTable.getColumn(PropertiesColumn.NODE_ID);
+ * AttributeColumn col = nodeTable.getColumn(PropertiesColumn.NODE_ID.getIndex());
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  */
 public enum PropertiesColumn {
 
-    NODE_ID(0),
-    NODE_LABEL(1),
-    EDGE_ID(0),
-    EDGE_LABEL(1);
+    NODE_ID   (0, "id",    AttributeType.STRING, null),
+    NODE_LABEL(1, "label", AttributeType.STRING, null),
+    EDGE_ID   (0, "id",    AttributeType.STRING, null),
+    EDGE_LABEL(1, "label", AttributeType.STRING, null);
+    
     private final int index;
+    private final String id;
+    private final AttributeType type;
+    private final Object defaultValue;
 
-    PropertiesColumn(int index) {
+    PropertiesColumn(int index, String id, AttributeType attributeType, Object defaultValue) {
         this.index = index;
+        this.id = id;
+        this.type = attributeType;
+        this.defaultValue = defaultValue;
     }
 
     public int getIndex() {
         return index;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Returns column title which will be showed to user in AttributeTables. Default title is derived
+     * from id uppercasing first character. For multiword titles, getTitle() method in appropriate enum
+     * constant object should be overridden.
+     *
+     * @return title
+     */
+    public String getTitle() {
+        return Character.toUpperCase(id.charAt(0)) + id.substring(1, id.length());
+    }
+
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
+
+    public AttributeType getType() {
+        return type;
     }
 }
 
