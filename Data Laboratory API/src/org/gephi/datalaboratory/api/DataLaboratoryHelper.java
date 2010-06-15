@@ -32,6 +32,7 @@ public interface DataLaboratoryHelper {
     /**
      * Prepares an array with one new instance of every NodesManipulator
      * that has a builder registered and returns it.
+     * It also must ensure to return the manipulators ordered first by type and then by position
      * @return Array of all NodesManipulator implementations
      */
     NodesManipulator[] getNodesManipulators();
@@ -39,6 +40,7 @@ public interface DataLaboratoryHelper {
     /**
      * Prepares an array with one new instance of every EdgesManipulator
      * that has a builder registered and returns it.
+     * It also must ensure to return the manipulators ordered first by type and then by position
      * @return Array of all EdgesManipulator implementations
      */
     EdgesManipulator[] getEdgesManipulators();

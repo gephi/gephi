@@ -60,8 +60,11 @@ public class Group implements NodesManipulator{
         return null;
     }
 
-    public int getPosition() {
-        return 200;
+    public int getType() {
+        return 100;
     }
 
+    public int getPosition() {
+        return 0;
+    }
 }

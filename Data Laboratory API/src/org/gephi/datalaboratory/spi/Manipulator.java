@@ -73,6 +73,13 @@ public interface Manipulator {
     ManipulatorUI getUI();
 
     /**
+     * Type of manipulator. This is used for separating the manipulators
+     * in groups when shown, using popup separators. First types to show will be the lesser.
+     * @return Type of this manipulator
+     */
+    int getType();
+
+    /**
      * Returns a position value that indicates the position
      * of this Manipulator in the context menu. Less means upper.
      * @return This Manipulator position

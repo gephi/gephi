@@ -310,20 +310,28 @@ public class EdgeDataTable {
 
         private JPopupMenu createPopup(Point p) {
             final Edge[] selectedEdges = getEdgesFromSelectedRows(table.getSelectedRows());
-            final Edge clickedEdge=getEdgeFromRow(table.rowAtPoint(p));
+            final Edge clickedEdge = getEdgeFromRow(table.rowAtPoint(p));
             JPopupMenu contextMenu = new JPopupMenu();
             DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+            Integer lastManipulatorType = null;
             for (EdgesManipulator em : dlh.getEdgesManipulators()) {
-                em.setup(selectedEdges,clickedEdge);
+                em.setup(selectedEdges, clickedEdge);
                 if (em.canExecute()) {
+                    if(lastManipulatorType==null){
+                        lastManipulatorType = em.getType();
+                    }
+                    if (lastManipulatorType != em.getType()) {
+                        contextMenu.addSeparator();
+                    }
+                    lastManipulatorType = em.getType();
                     contextMenu.add(createMenuItemFromEdgesManipulator(em));
                     //TODO: Check and use the EdgesManipulatorUI
                 }
             }
             return contextMenu;
         }
-        
-         private JMenuItem createMenuItemFromEdgesManipulator(final EdgesManipulator em) {
+
+        private JMenuItem createMenuItemFromEdgesManipulator(final EdgesManipulator em) {
             JMenuItem menuItem = new JMenuItem();
             menuItem.setText(em.getName());
             menuItem.addActionListener(new ActionListener() {

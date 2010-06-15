@@ -341,12 +341,20 @@ public class NodeDataTable {
 
         private JPopupMenu createPopup(Point p) {
             final Node[] selectedNodes = getNodesFromSelectedRows(outlineTable.getSelectedRows());
-            final Node clickedNode=getNodeFromRow(outlineTable.rowAtPoint(p));
+            final Node clickedNode = getNodeFromRow(outlineTable.rowAtPoint(p));
             JPopupMenu contextMenu = new JPopupMenu();
             DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+            Integer lastManipulatorType = null;
             for (NodesManipulator nm : dlh.getNodesManipulators()) {
-                nm.setup(selectedNodes,clickedNode);
+                nm.setup(selectedNodes, clickedNode);
                 if (nm.canExecute()) {
+                    if(lastManipulatorType==null){
+                        lastManipulatorType = nm.getType();
+                    }
+                    if (lastManipulatorType != nm.getType()) {
+                        contextMenu.addSeparator();
+                    }
+                    lastManipulatorType = nm.getType();
                     contextMenu.add(createMenuItemFromNodesManipulator(nm));
                     //TODO: Check and use the NodesManipulatorUI
                 }

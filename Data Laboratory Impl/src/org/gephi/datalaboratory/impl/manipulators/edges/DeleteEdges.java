@@ -64,6 +64,10 @@ public class DeleteEdges implements EdgesManipulator {
         return null;
     }
 
+    public int getType() {
+        return 0;
+    }
+
     public int getPosition() {
         return 0;
     }

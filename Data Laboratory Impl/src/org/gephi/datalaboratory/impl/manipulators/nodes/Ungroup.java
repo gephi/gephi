@@ -67,8 +67,11 @@ public class Ungroup implements NodesManipulator {
         return null;
     }
 
-    public int getPosition() {
-        return 300;
+    public int getType() {
+        return 100;
     }
 
+    public int getPosition() {
+        return 100;
+    }
 }

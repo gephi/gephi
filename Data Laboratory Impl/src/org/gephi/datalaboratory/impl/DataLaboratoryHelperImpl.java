@@ -38,12 +38,12 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  * @see DataLaboratoryHelper
  */
-@ServiceProvider(service=DataLaboratoryHelper.class)
-public class DataLaboratoryHelperImpl implements DataLaboratoryHelper{
+@ServiceProvider(service = DataLaboratoryHelper.class)
+public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
 
     public NodesManipulator[] getNodesManipulators() {
-        ArrayList<NodesManipulator> nodesManipulators=new ArrayList<NodesManipulator>();
-        for(NodesManipulatorBuilder nm:Lookup.getDefault().lookupAll(NodesManipulatorBuilder.class)){
+        ArrayList<NodesManipulator> nodesManipulators = new ArrayList<NodesManipulator>();
+        for (NodesManipulatorBuilder nm : Lookup.getDefault().lookupAll(NodesManipulatorBuilder.class)) {
             nodesManipulators.add(nm.getNodesManipulator());
         }
         sortGraphElementsManipulators(nodesManipulators);
@@ -51,19 +51,24 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper{
     }
 
     public EdgesManipulator[] getEdgesManipulators() {
-        ArrayList<EdgesManipulator> edgesManipulators=new ArrayList<EdgesManipulator>();
-        for(EdgesManipulatorBuilder em:Lookup.getDefault().lookupAll(EdgesManipulatorBuilder.class)){
+        ArrayList<EdgesManipulator> edgesManipulators = new ArrayList<EdgesManipulator>();
+        for (EdgesManipulatorBuilder em : Lookup.getDefault().lookupAll(EdgesManipulatorBuilder.class)) {
             edgesManipulators.add(em.getEdgesManipulator());
         }
         sortGraphElementsManipulators(edgesManipulators);
         return edgesManipulators.toArray(new EdgesManipulator[0]);
     }
 
-    private void sortGraphElementsManipulators(ArrayList<? extends Manipulator> m){
-        Collections.sort(m, new Comparator<Manipulator>(){
+    private void sortGraphElementsManipulators(ArrayList<? extends Manipulator> m) {
+        Collections.sort(m, new Comparator<Manipulator>() {
 
             public int compare(Manipulator o1, Manipulator o2) {
-                return o1.getPosition()-o2.getPosition();
+                //Order by type, position.
+                if (o1.getType() == o2.getType()) {
+                    return o1.getPosition() - o2.getPosition();
+                }else{
+                    return o1.getType()-o2.getType();
+                }
             }
         });
     }
