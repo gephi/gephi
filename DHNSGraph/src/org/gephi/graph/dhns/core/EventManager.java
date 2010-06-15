@@ -21,74 +21,172 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphEvent;
-import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.GraphListener;
+import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.dhns.event.AbstractEvent;
+import org.gephi.graph.dhns.event.EdgeEvent;
+import org.gephi.graph.dhns.event.GeneralEvent;
+import org.gephi.graph.dhns.event.GraphEventDataImpl;
+import org.gephi.graph.dhns.event.GraphEventImpl;
+import org.gephi.graph.dhns.event.NodeEvent;
+import org.gephi.graph.dhns.event.ViewEvent;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class EventManager {
+public class EventManager implements Runnable {
 
-    private Dhns dhns;
-    private List<GraphListener> listeners;
-    private boolean dispatchOnOtherThread = true;
+    //Const
+    private final static long DELAY = 1;
+    //Architecture
+    private final Dhns dhns;
+    private final List<GraphListener> listeners;
+    private final AtomicReference<Thread> thread = new AtomicReference<Thread>();
+    private final LinkedBlockingQueue<AbstractEvent> eventQueue;
+    private final Object lock = new Object();
+    //Flag
+    private boolean stop;
 
     public EventManager(Dhns dhns) {
         this.dhns = dhns;
-        listeners = new ArrayList<GraphListener>();
+        this.eventQueue = new LinkedBlockingQueue<AbstractEvent>();
+        this.listeners = Collections.synchronizedList(new ArrayList<GraphListener>());
     }
 
-    public synchronized void addListener(GraphListener listener) {
+    @Override
+    public void run() {
+        while (!stop) {
+            try {
+                Thread.sleep(DELAY);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            List<Object> eventCompress = null;
+
+            AbstractEvent precEvt = null;
+            AbstractEvent evt = null;
+            while ((evt = eventQueue.peek()) != null) {
+                if (precEvt != null) {
+                    if ((evt instanceof NodeEvent || evt instanceof EdgeEvent) && precEvt.getEventType().equals(evt.getEventType()) && precEvt.getView()==evt.getView()) {     //Same type
+                        if (eventCompress == null) {
+                            eventCompress = new ArrayList<Object>();
+                            eventCompress.add(precEvt.getData());
+                        }
+
+                        eventCompress.add(evt.getData());
+                    } else {
+                        break;
+                    }
+                }
+                eventQueue.poll();
+                precEvt = evt;
+            }
+
+            if (precEvt != null) {
+                GraphEvent event = createEvent(precEvt, eventCompress);
+                for (GraphListener l : listeners.toArray(new GraphListener[0])) {
+                    l.graphChanged(event);
+                }
+            }
+
+            while (eventQueue.isEmpty()) {
+                try {
+                    synchronized (lock) {
+                        lock.wait();
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+    }
+
+    private GraphEvent createEvent(AbstractEvent event, List<Object> compress) {
+        final GraphEventDataImpl eventData = (event instanceof GeneralEvent) ? null : new GraphEventDataImpl();
+        final GraphEventImpl graphEventImpl = new GraphEventImpl(event.getView(), event.getEventType(), eventData);
+        if (event instanceof NodeEvent) {
+            Node[] nodes;
+            if (compress != null) {
+                nodes = compress.toArray(new Node[0]);
+            } else {
+                nodes = new Node[]{(Node) event.getData()};
+            }
+            switch (event.getEventType()) {
+                case NODES_ADDED:
+                    eventData.setAddedNodes(nodes);
+                    break;
+                case NODES_REMOVED:
+                    eventData.setRemovedNodes(nodes);
+                    break;
+                case EXPAND:
+                    eventData.setExpandedNodes(nodes);
+                    break;
+                case RETRACT:
+                    eventData.setRetractedNodes(nodes);
+                    break;
+                case MOVE_NODE:
+                    eventData.setMovedNodes(nodes);
+                    break;
+            }
+        } else if (event instanceof EdgeEvent) {
+            Edge[] edges;
+            if (compress != null) {
+                edges = compress.toArray(new Edge[0]);
+            } else {
+                edges = new Edge[]{(Edge) event.getData()};
+            }
+            switch (event.getEventType()) {
+                case EDGES_ADDED:
+                    eventData.setAddedEdges(edges);
+                    break;
+                case EDGES_REMOVED:
+                    eventData.setRemovedEdges(edges);
+                    break;
+            }
+        } else if (event instanceof ViewEvent) {
+            eventData.setView((GraphView) event.getData());
+        }
+        return graphEventImpl;
+    }
+
+    public void stop(boolean stop) {
+        this.stop = stop;
+    }
+
+    public void fireEvent(AbstractEvent event) {
+        eventQueue.add(event);
+        synchronized (lock) {
+            lock.notifyAll();
+        }
+    }
+
+    public void start() {
+        Thread t = new Thread(this);
+        t.setDaemon(true);
+        t.setName("graph-event-bus");
+        if (this.thread.compareAndSet(null, t)) {
+            t.start();
+        }
+    }
+
+    public boolean isRunning() {
+        return thread.get() != null;
+    }
+
+    public void addGraphListener(GraphListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
 
-    public synchronized void removeListener(GraphListener listener) {
+    public void removeGraphListener(GraphListener listener) {
         listeners.remove(listener);
-    }
-
-    public List<GraphListener> getListeners() {
-        return listeners;
-    }
-
-    public void fireEvent(EventType type) {
-        if (!listeners.isEmpty()) {
-            final GraphEvent event = new GraphEventImpl(type);
-            if (dispatchOnOtherThread) {
-                Executor eventBus = dhns.getController().getEventBus();
-                eventBus.execute(new Runnable() {
-
-                    public void run() {
-                        dispatchEvent(event);
-                    }
-                });
-            } else {
-                dispatchEvent(event);
-            }
-        }
-    }
-
-    private synchronized void dispatchEvent(GraphEvent event) {
-        for (GraphListener list : listeners) {
-            list.graphChanged(event);
-        }
-    }
-
-    private static class GraphEventImpl implements GraphEvent {
-
-        private EventType type;
-
-        public GraphEventImpl(EventType eventType) {
-            this.type = eventType;
-        }
-
-        public EventType getEventType() {
-            return type;
-        }
     }
 }

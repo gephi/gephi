@@ -76,11 +76,15 @@ public class GraphFactoryImpl implements GraphFactory {
     }
 
     public AbstractNode newNode() {
-        return newNode(null);
+        return newNode(null, 0);
     }
 
-    public AbstractNode newNode(String id) {
-        AbstractNode node = new AbstractNode(idGen.newNodeId(), 0, 0, 0, 0, null);  //with wiew = 0
+    public AbstractNode newNode(int viewId) {
+        return newNode(null, viewId);
+    }
+
+    public AbstractNode newNode(String id, int viewId) {
+        AbstractNode node = new AbstractNode(idGen.newNodeId(), viewId, 0, 0, 0, null);  //with wiew = 0
         node.getNodeData().setAttributes(newNodeAttributes());
         node.getNodeData().setTextData(newTextData());
         if (id != null) {
@@ -89,6 +93,10 @@ public class GraphFactoryImpl implements GraphFactory {
             node.getNodeData().setId("" + node.getId());
         }
         return node;
+    }
+
+    public AbstractNode newNode(String id) {
+        return newNode(id, 0);
     }
 
     public AbstractEdge newEdge(Node source, Node target) {

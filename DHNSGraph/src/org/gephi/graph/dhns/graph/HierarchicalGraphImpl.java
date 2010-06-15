@@ -360,16 +360,19 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
         if (nodes == null || nodes.length == 0) {
             throw new IllegalArgumentException("nodes can't be null or empty");
         }
+        AbstractNode[] absNodes = new AbstractNode[nodes.length];
         AbstractNode parent = null;
         for (int i = 0; i < nodes.length; i++) {
             AbstractNode node = checkNode(nodes[i]);
+            absNodes[i] = node;
             if (parent == null) {
                 parent = node.parent;
             } else if (parent != node.parent) {
                 throw new IllegalArgumentException("All nodes must have the same parent");
             }
         }
-        Node group = view.getStructureModifier().group(nodes);
+
+        Node group = view.getStructureModifier().group(absNodes);
         return group;
     }
 

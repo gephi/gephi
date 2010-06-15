@@ -43,8 +43,26 @@ public interface GraphEvent {
      */
     public enum EventType {
 
-        NODES_UPDATED, EDGES_UPDATED, NODES_AND_EDGES_UPDATED, VIEWS_UPDATED
+        NODES_ADDED,
+        NODES_REMOVED,
+        EDGES_ADDED,
+        EDGES_REMOVED,
+        MOVE_NODE,
+        VISIBLE_VIEW,
+        NEW_VIEW,
+        DESTROY_VIEW,
+        CLEAR_NODES,
+        CLEAR_EDGES,
+        EXPAND,
+        RETRACT,
+        META_EDGES_UPDATE
     };
 
     public EventType getEventType();
+
+    public GraphEventData getData();
+
+    public GraphView getSource();
+
+    public boolean is(EventType... type);
 }
