@@ -26,6 +26,7 @@ import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.SizeTransformer;
 import org.gephi.ranking.api.Transformer;
 import org.gephi.ui.components.JRangeSlider;
+import org.openide.util.NbPreferences;
 
 /**
  *
@@ -40,21 +41,31 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
     public SizeTransformerPanel(Transformer transformer, Ranking ranking) {
         initComponents();
 
+        final String MIN_SIZE = "SizeTransformerPanel_" + transformer.getClass().getSimpleName() + "_min";
+        final String MAX_SIZE = "SizeTransformerPanel_" + transformer.getClass().getSimpleName() + "_max";
+
         sizeTransformer = (SizeTransformer) transformer;
         this.ranking = ranking;
 
-        minSize.setValue(sizeTransformer.getMinSize());
-        maxSize.setValue(sizeTransformer.getMaxSize());
+        float minSizeStart = NbPreferences.forModule(SizeTransformerPanel.class).getFloat(MIN_SIZE, sizeTransformer.getMinSize());
+        float maxSizeStart = NbPreferences.forModule(SizeTransformerPanel.class).getFloat(MAX_SIZE, sizeTransformer.getMaxSize());
+        sizeTransformer.setMinSize(minSizeStart);
+        sizeTransformer.setMaxSize(maxSizeStart);
+
+        minSize.setValue(minSizeStart);
+        maxSize.setValue(maxSizeStart);
         minSize.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 sizeTransformer.setMinSize((Float) minSize.getValue());
+                NbPreferences.forModule(SizeTransformerPanel.class).putFloat(MIN_SIZE, (Float) minSize.getValue());
             }
         });
         maxSize.addChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
                 sizeTransformer.setMaxSize((Float) maxSize.getValue());
+                NbPreferences.forModule(SizeTransformerPanel.class).putFloat(MAX_SIZE, (Float) maxSize.getValue());
             }
         });
 
