@@ -102,6 +102,8 @@
                 <include name="org-gephi-algorithms.jar"/>
                 <include name="org-gephi-data-attributes.jar"/>
                 <include name="org-gephi-data-attributes-api.jar"/>
+                <include name="org-gephi-io-exporter-api.jar"/>
+                <include name="org-gephi-io-exporter-plugin.jar"/>
                 <include name="org-gephi-filters.jar"/>
                 <include name="org-gephi-filters-api.jar"/>
                 <include name="org-gephi-filters-plugin.jar"/>

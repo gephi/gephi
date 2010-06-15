@@ -10,7 +10,6 @@ import java.text.NumberFormat;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.desktop.io.export.api.VectorialFileExporterUI;
@@ -58,7 +57,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         // checks the state of the workspace
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         if (pc.getCurrentWorkspace() != null) {
-            refreshButton.setEnabled(true);
+            enableRefreshButton();
         }
 
         // forces the controller instanciation

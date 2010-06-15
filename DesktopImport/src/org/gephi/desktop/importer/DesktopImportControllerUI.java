@@ -102,9 +102,10 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (!result.equals(NotifyDescriptor.OK_OPTION)) {
+                    ui.unsetup(false);
                     return;
                 }
-                ui.unsetup();
+                ui.unsetup(true);
             }
 
             LongTask task = null;
@@ -162,9 +163,10 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (!result.equals(NotifyDescriptor.OK_OPTION)) {
+                    ui.unsetup(false);
                     return;
                 }
-                ui.unsetup();
+                ui.unsetup(true);
             }
 
             LongTask task = null;
@@ -220,9 +222,10 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (!result.equals(NotifyDescriptor.OK_OPTION)) {
+                    ui.unsetup(false);
                     return;
                 }
-                ui.unsetup();
+                ui.unsetup(true);
             }
 
             LongTask task = null;
@@ -281,9 +284,10 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
+                    ui.unsetup(false);
                     return;
                 }
-                ui.unsetup();
+                ui.unsetup(true);
                 if (database == null) {
                     database = importer.getDatabase();
                 }
@@ -342,9 +346,10 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
+                    ui.unsetup(false);
                     return;
                 }
-                ui.unsetup();
+                ui.unsetup(true);
             }
 
             LongTask task = null;

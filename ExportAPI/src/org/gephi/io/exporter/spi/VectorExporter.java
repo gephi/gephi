@@ -20,14 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.spi;
 
-import java.io.File;
 import org.gephi.project.api.Workspace;
 
 /**
+ * Exporter interface for exporters that export vector graphics.
  *
  * @author Mathieu Bastian
  */
-public interface VectorialFileExporter extends FileExporter {
-
-    public boolean exportData(File file, Workspace workspace) throws Exception;
+public interface VectorExporter extends Exporter {
 }

@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.plugin;
 
-import java.io.BufferedWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -35,22 +35,22 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.io.exporter.api.FileType;
-import org.gephi.io.exporter.spi.GraphFileExporter;
-import org.gephi.io.exporter.spi.GraphFileExporterSettings;
-import org.gephi.io.exporter.spi.TextGraphFileExporter;
+import org.gephi.io.exporter.spi.GraphExporter;
+import org.gephi.io.exporter.spi.CharacterExporter;
+import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = GraphFileExporter.class)
-public class ExporterGDF implements TextGraphFileExporter, LongTask {
+public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
+    private Workspace workspace;
+    private boolean exportVisible;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
     //Settings
@@ -74,45 +74,24 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
     private AttributeColumn[] nodeColumns;
     private AttributeColumn[] edgeColumns;
     //Buffer
-    private BufferedWriter writer;
+    private Writer writer;
 
-    public boolean exportData(BufferedWriter writer, GraphFileExporterSettings settings) throws Exception {
-        this.writer = writer;
-
+    public boolean execute() {
+        AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+        GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
+        Graph graph = null;
+        if (exportVisible) {
+            graph = graphModel.getGraphVisible();
+        } else {
+            graph = graphModel.getGraph();
+        }
         try {
-            GraphModel graphModel = settings.getWorkspace().getLookup().lookup(GraphModel.class);
-            AttributeModel attributeModel = settings.getWorkspace().getLookup().lookup(AttributeModel.class);
-            Graph graph = null;
-            if (settings.isExportVisible()) {
-                graph = graphModel.getGraphVisible();
-            } else {
-                graph = graphModel.getGraph();
-            }
             exportData(graph, attributeModel);
         } catch (Exception e) {
-            clean();
-            throw e;
+            throw new RuntimeException(e);
         }
-        boolean c = cancel;
-        clean();
-        return !c;
-    }
 
-    private void clean() {
-        //Clean
-        writer = null;
-        defaultNodeColumnsGDFs = null;
-        defaultEdgeColumnsGDFs = null;
-        nodeColumns = null;
-        edgeColumns = null;
-        minSize = 0f;
-        maxSize = 0f;
-        minX = 0f;
-        maxX = 0f;
-        minY = 0f;
-        maxY = 0f;
-        cancel = false;
-        progressTicket = null;
+        return !cancel;
     }
 
     private void exportData(Graph graph, AttributeModel attributeModel) throws Exception {
@@ -176,6 +155,9 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
         //Node lines
         for (Node node : graph.getNodes()) {
+            if (cancel) {
+                break;
+            }
             NodeData nodeData = node.getNodeData();
 
             //Id
@@ -262,7 +244,9 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
 
         //Edge lines
         for (Edge edge : edgeIterable) {
-
+            if (cancel) {
+                break;
+            }
             //Source & Target
             stringBuilder.append(edge.getSource().getNodeData().getId());
             stringBuilder.append(",");
@@ -301,11 +285,12 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
         }
 
         //Unlock
-        graph.readUnlock();
+        graph.readUnlockAll();
 
         //Write StringBuilder
-        writer.append(stringBuilder);
-
+        if (!cancel) {
+            writer.append(stringBuilder);
+        }
         Progress.finish(progressTicket);
     }
 
@@ -815,5 +800,25 @@ public class ExporterGDF implements TextGraphFileExporter, LongTask {
         public Object getDefaultValue() {
             return defaultValue;
         }
+    }
+
+    public boolean isExportVisible() {
+        return exportVisible;
+    }
+
+    public void setExportVisible(boolean exportVisible) {
+        this.exportVisible = exportVisible;
+    }
+
+    public void setWriter(Writer writer) {
+        this.writer = writer;
+    }
+
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 }

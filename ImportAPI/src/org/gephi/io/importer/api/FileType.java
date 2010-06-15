@@ -24,7 +24,6 @@ package org.gephi.io.importer.api;
  * File type definition. A simple class which contains a <b>name</b> and <b>extension</b> for a file type/
  *
  * @author Mathieu Bastian
- * @see FileFormatImporter
  */
 public final class FileType {
 

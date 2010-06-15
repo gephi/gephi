@@ -20,14 +20,18 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.spi;
 
-import java.io.BufferedWriter;
+import java.io.Writer;
 
 /**
- * Graph exporter for text files.
+ * Exporter class for char streams, when an <code>Writer</code> is needed.
  *
  * @author Mathieu Bastian
  */
-public interface TextGraphFileExporter extends GraphFileExporter {
+public interface CharacterExporter extends Exporter {
 
-    public boolean exportData(BufferedWriter writer, GraphFileExporterSettings settings) throws Exception;
+    /**
+     * Set the writer where to export.
+     * @param writer      the writer the exporter is to write
+     */
+    public void setWriter(Writer writer);
 }

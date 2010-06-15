@@ -20,9 +20,22 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.plugin;
 
+import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -34,14 +47,13 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.io.exporter.api.FileType;
-import org.gephi.io.exporter.spi.GraphFileExporter;
-import org.gephi.io.exporter.spi.GraphFileExporterSettings;
-import org.gephi.io.exporter.spi.XMLGraphFileExporter;
+import org.gephi.io.exporter.spi.GraphExporter;
+import org.gephi.io.exporter.spi.CharacterExporter;
+import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -50,21 +62,22 @@ import org.w3c.dom.Text;
  *
  * @author Sebastien Heymann
  */
-@ServiceProvider(service=GraphFileExporter.class)
-public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
+public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask {
 
+    //Architecture
     private boolean cancel = false;
     private ProgressTicket progressTicket;
+    private Workspace workspace;
+    private boolean exportVisible;
+    private Writer writer;
     private GraphModel graphModel;
     private AttributeModel attributeModel;
-
     //Settings
     private boolean normalize = false;
     private boolean exportColors = true;
     private boolean exportPosition = true;
     private boolean exportSize = true;
     private boolean exportAttributes = true;
-
     //Settings Helper
     private float minSize;
     private float maxSize;
@@ -75,51 +88,59 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
     private float minZ;
     private float maxZ;
 
-    public boolean exportData(Document document, GraphFileExporterSettings settings) throws Exception {
-        try {
-            graphModel = settings.getWorkspace().getLookup().lookup(GraphModel.class);
-            attributeModel = settings.getWorkspace().getLookup().lookup(AttributeModel.class);
-            HierarchicalGraph graph = null;
-            if (settings.isExportVisible()) {
-                graph = graphModel.getHierarchicalGraphVisible();
-            } else {
-                graph = graphModel.getHierarchicalGraph();
-            }
-            exportData(document, graph, attributeModel);
-        } catch (Exception e) {
-            clean();
-            throw e;
+    public boolean execute() {
+        attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+        graphModel = workspace.getLookup().lookup(GraphModel.class);
+        HierarchicalGraph graph = null;
+        if (exportVisible) {
+            graph = graphModel.getHierarchicalGraphVisible();
+        } else {
+            graph = graphModel.getHierarchicalGraph();
         }
-        boolean c = cancel;
-        clean();
-        return !c;
+        try {
+            exportData(createDocument(), graph, attributeModel);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return !cancel;
     }
 
-    private void clean() {
-        cancel = false;
-        progressTicket = null;
-        minSize = 0f;
-        maxSize = 0f;
-        minX = 0f;
-        maxX = 0f;
-        minY = 0f;
-        maxY = 0f;
+    public Document createDocument() throws ParserConfigurationException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+        final Document document = documentBuilder.newDocument();
+        document.setXmlVersion("1.0");
+        document.setXmlStandalone(true);
+        return document;
     }
-/*
+
+    private void transform(Document document) throws TransformerConfigurationException, TransformerException {
+        Source source = new DOMSource(document);
+        Result result = new StreamResult(writer);
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.transform(source, result);
+    }
+
+    /*
     public Schema getSchema() {
-        try {
-            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            return sf.newSchema(new URL("http://www.gexf.net/1.1draft/gexf.xsd"));
-        } catch (MalformedURLException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (SAXException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        return null;
+    try {
+    SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    return sf.newSchema(new URL("http://www.gexf.net/1.1draft/gexf.xsd"));
+    } catch (MalformedURLException ex) {
+    Exceptions.printStackTrace(ex);
+    } catch (SAXException ex) {
+    Exceptions.printStackTrace(ex);
     }
-*/
-    public boolean exportData(Document document, HierarchicalGraph graph, AttributeModel model) throws Exception {
+    return null;
+    }
+     */
+    public void exportData(Document document, HierarchicalGraph graph, AttributeModel model) throws Exception {
         Progress.start(progressTicket);
+
+        graph.readLock();
 
         //Options
         if (normalize) {
@@ -128,14 +149,14 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
 
         //Calculate progress units count
         int max;
-        if(graphModel.isHierarchical()) {
+        if (graphModel.isHierarchical()) {
             HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
             max = hgraph.getNodeCount() + hgraph.getEdgeCount();
         } else {
             max = graph.getNodeCount() + graph.getEdgeCount();
         }
         Progress.switchToDeterminate(progressTicket, max);
-        
+
         Element root = document.createElementNS("http://www.gexf.net/1.1draft", "gexf");
         root.setAttribute("xmlns:viz", "http:///www.gexf.net/1.1draft/viz");
         //root.setAttribute("xsi:schemaLocation", "http://www.gexf.net/1.1draft http://www.gexf.net/1.1draft/gexf.xsd");
@@ -149,8 +170,13 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
         Element graphE = createGraph(document, graph);
         root.appendChild(graphE);
 
+        graph.readUnlockAll();
+
+        if (!cancel) {
+            transform(document);
+        }
+
         Progress.finish(progressTicket);
-        return !cancel;
     }
 
     private Element createMeta(Document document) throws Exception {
@@ -181,16 +207,15 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
         Element graphE = document.createElement("graph");
 
         /*if(graphModel.isDynamic()) {
-            graphE.setAttribute("type", "dynamic");
+        graphE.setAttribute("type", "dynamic");
         }
         else {*/
-            graphE.setAttribute("type", "static");
-       /* }*/
+        graphE.setAttribute("type", "static");
+        /* }*/
 
-        if(graphModel.isDirected()) {
+        if (graphModel.isDirected()) {
             graphE.setAttribute("defaultedgetype", "directed");
-        }
-        else {
+        } else {
             graphE.setAttribute("defaultedgetype", "undirected"); // defaultValue
         }
         graphE.setAttribute("idtype", "string");
@@ -203,7 +228,7 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
             nodeAttributesE.setAttribute("class", "node");
             nodeAttributesE.setAttribute("mode", "static");
             for (AttributeColumn column : attributeModel.getNodeTable().getColumns()) {
-                if(!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
                     //Data or computed
                     Element attributeE = createAttribute(document, column);
                     nodeAttributesE.appendChild(attributeE);
@@ -211,7 +236,7 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
                     hasNodeColumns = true;
                 }
             }
-            if(hasNodeColumns) {
+            if (hasNodeColumns) {
                 graphE.appendChild(nodeAttributesE);
             }
             //Edge attributes
@@ -220,7 +245,7 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
             edgeAttributesE.setAttribute("class", "edge");
             edgeAttributesE.setAttribute("mode", "static");
             for (AttributeColumn column : attributeModel.getEdgeTable().getColumns()) {
-                if(!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
                     //Data or computed
                     Element attributeE = createAttribute(document, column);
                     edgeAttributesE.appendChild(attributeE);
@@ -228,7 +253,7 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
                     hasEdgeColumns = true;
                 }
             }
-            if(hasEdgeColumns) {
+            if (hasEdgeColumns) {
                 graphE.appendChild(edgeAttributesE);
             }
         }
@@ -249,7 +274,7 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
         Element attributeE = document.createElement("attribute");
         attributeE.setAttribute("id", column.getId());
         attributeE.setAttribute("title", column.getTitle());
-        switch(column.getType()) {
+        switch (column.getType()) {
             case INT:
                 attributeE.setAttribute("type", "integer");
                 break;
@@ -263,7 +288,7 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
                 attributeE.setAttribute("type", column.getType().getTypeString().toLowerCase());
                 break;
         }
-        if(column.getDefaultValue() != null) {
+        if (column.getDefaultValue() != null) {
             Element defaultE = document.createElement("default");
             Text defaultTextE = document.createTextNode(column.getDefaultValue().toString());
             defaultE.appendChild(defaultTextE);
@@ -273,7 +298,7 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
 
     private Element createNodeAttvalue(Document document, AttributeColumn column, Node n) throws Exception {
         int index = column.getIndex();
-        if(n.getNodeData().getAttributes().getValue(index) != null) {
+        if (n.getNodeData().getAttributes().getValue(index) != null) {
             String value = n.getNodeData().getAttributes().getValue(index).toString();
             String id = column.getId();
 
@@ -287,7 +312,7 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
 
     private Element createEdgeAttvalue(Document document, AttributeColumn column, Edge e) throws Exception {
         int index = column.getIndex();
-        if(e.getEdgeData().getAttributes().getValue(index) != null) {
+        if (e.getEdgeData().getAttributes().getValue(index) != null) {
             String value = e.getEdgeData().getAttributes().getValue(index).toString();
             String id = column.getId();
 
@@ -301,27 +326,28 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
 
     private Element createNodes(Document document, Graph graph, int count, Node nodeParent) throws Exception {
         Element nodesE = document.createElement("nodes");
-        nodesE.setAttribute("count", ""+count);
+        nodesE.setAttribute("count", "" + count);
 
-        if(nodeParent != null) {
+        if (nodeParent != null) {
             // we are inside the tree
             HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
-            for( Node n : hgraph.getChildren(nodeParent)) {
+            for (Node n : hgraph.getChildren(nodeParent)) {
                 Element childE = createNode(document, graph, n);
                 nodesE.appendChild(childE);
             }
-        }
-        else if(graphModel.isHierarchical()) {
+        } else if (graphModel.isHierarchical()) {
             // we are on the top of the tree
             HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
-            for( Node n : hgraph.getTopNodes()) {
+            for (Node n : hgraph.getTopNodes()) {
                 Element nodeE = createNode(document, hgraph, n);
                 nodesE.appendChild(nodeE);
             }
-        }
-        else {
+        } else {
             // there is no tree
-            for( Node n : graph.getNodes() ) {
+            for (Node n : graph.getNodes()) {
+                if (cancel) {
+                    break;
+                }
                 Element nodeE = createNode(document, graph, n);
                 nodesE.appendChild(nodeE);
             }
@@ -340,39 +366,39 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
             boolean hasColumns = false;
             Element attvaluesE = document.createElement("attvalues");
             for (AttributeColumn column : attributeModel.getNodeTable().getColumns()) {
-                if(!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
                     //Data or computed
                     Element attvalueE = createNodeAttvalue(document, column, n);
-                    if(attvalueE != null) {
+                    if (attvalueE != null) {
                         attvaluesE.appendChild(attvalueE);
                         hasColumns = true;
                     }
                 }
             }
-            if(hasColumns) {
+            if (hasColumns) {
                 nodeE.appendChild(attvaluesE);
             }
         }
 
         //Viz
-        if(exportSize) {
+        if (exportSize) {
             Element sizeE = createNodeSize(document, n);
             nodeE.appendChild(sizeE);
         }
-        if(exportColors) {
+        if (exportColors) {
             Element colorE = createNodeColors(document, n);
             nodeE.appendChild(colorE);
         }
-        if(exportPosition) {
+        if (exportPosition) {
             Element positionE = createNodePosition(document, n);
             nodeE.appendChild(positionE);
         }
 
         //Hierarchy
-        if(graphModel.isHierarchical()) {
+        if (graphModel.isHierarchical()) {
             HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
             int childCount = hgraph.getChildrenCount(n);
-            if(childCount != 0) {
+            if (childCount != 0) {
                 Element nodesE = createNodes(document, graph, childCount, n);
                 nodeE.appendChild(nodesE);
             }
@@ -384,17 +410,19 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
 
     private Element createEdges(Document document, Graph graph) throws Exception {
         Element edgesE = document.createElement("edges");
-        edgesE.setAttribute("count", ""+graph.getEdgeCount());
+        edgesE.setAttribute("count", "" + graph.getEdgeCount());
 
         EdgeIterable it;
-        if(graphModel.isHierarchical()) {
+        if (graphModel.isHierarchical()) {
             HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
             it = hgraph.getEdgesAndMetaEdges();
-        }
-        else {
+        } else {
             it = graph.getEdges();
         }
-        for( Edge e : it.toArray() ) {
+        for (Edge e : it.toArray()) {
+            if (cancel) {
+                break;
+            }
             Element edgeE = createEdge(document, e);
             edgesE.appendChild(edgeE);
         }
@@ -409,21 +437,20 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
         edgeE.setAttribute("source", e.getSource().getNodeData().getId());
         edgeE.setAttribute("target", e.getTarget().getNodeData().getId());
 
-        if( e.isDirected() && graphModel.isMixed() ) {
+        if (e.isDirected() && graphModel.isMixed()) {
             edgeE.setAttribute("type", "directed");
-        }
-        else if( !e.isDirected() && graphModel.isMixed() ) {
+        } else if (!e.isDirected() && graphModel.isMixed()) {
             edgeE.setAttribute("type", "undirected");
         }
 
         String label = e.getEdgeData().getLabel();
-        if( label != null && !label.isEmpty() ) {
+        if (label != null && !label.isEmpty()) {
             edgeE.setAttribute("label", label);
         }
 
         float weight = e.getWeight();
-        if( weight != 1.0) {
-            edgeE.setAttribute("weight", ""+weight);
+        if (weight != 1.0) {
+            edgeE.setAttribute("weight", "" + weight);
         }
 
         //Attribute values
@@ -431,16 +458,16 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
             boolean hasColumns = false;
             Element attvaluesE = document.createElement("attvalues");
             for (AttributeColumn column : attributeModel.getEdgeTable().getColumns()) {
-                if(!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
                     //Data or computed
                     Element attvalueE = createEdgeAttvalue(document, column, e);
-                    if(attvalueE != null) {
+                    if (attvalueE != null) {
                         attvaluesE.appendChild(attvalueE);
                         hasColumns = true;
                     }
                 }
             }
-            if(hasColumns) {
+            if (hasColumns) {
                 edgeE.appendChild(attvaluesE);
             }
         }
@@ -455,16 +482,16 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
         if (normalize) {
             size = (size - minSize) / (maxSize - minSize);
         }
-        sizeE.setAttribute("value", ""+size);
+        sizeE.setAttribute("value", "" + size);
 
         return sizeE;
     }
 
     private Element createNodeColors(Document document, Node n) throws Exception {
         Element colorE = document.createElement("viz:color");
-        colorE.setAttribute("r", ""+(Math.round(n.getNodeData().r() * 255f)));
-        colorE.setAttribute("g", ""+(Math.round(n.getNodeData().g() * 255f)));
-        colorE.setAttribute("b", ""+(Math.round(n.getNodeData().b() * 255f)));
+        colorE.setAttribute("r", "" + (Math.round(n.getNodeData().r() * 255f)));
+        colorE.setAttribute("g", "" + (Math.round(n.getNodeData().g() * 255f)));
+        colorE.setAttribute("b", "" + (Math.round(n.getNodeData().b() * 255f)));
 
         return colorE;
     }
@@ -475,19 +502,19 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
         if (normalize && x != 0.0) {
             x = (x - minX) / (maxX - minX);
         }
-        positionE.setAttribute("x", ""+x);
+        positionE.setAttribute("x", "" + x);
 
         float y = n.getNodeData().y();
         if (normalize && y != 0.0) {
             y = (y - minY) / (maxY - minY);
         }
-        positionE.setAttribute("y", ""+y);
+        positionE.setAttribute("y", "" + y);
 
         float z = n.getNodeData().z();
         if (normalize && z != 0.0) {
             z = (z - minZ) / (maxZ - minZ);
         }
-        positionE.setAttribute("z", ""+z);
+        positionE.setAttribute("z", "" + z);
 
         return positionE;
     }
@@ -532,6 +559,7 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
         FileType ft = new FileType(".gexf", NbBundle.getMessage(getClass(), "fileType_GEXF_Name"));
         return new FileType[]{ft};
     }
+
     public void setExportAttributes(boolean exportAttributes) {
         this.exportAttributes = exportAttributes;
     }
@@ -572,10 +600,29 @@ public class ExporterGEXF implements XMLGraphFileExporter, LongTask {
         return normalize;
     }
 
-    
     private String getDateTime() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd+HH:mm");
         Date date = new Date();
         return dateFormat.format(date);
+    }
+
+    public boolean isExportVisible() {
+        return exportVisible;
+    }
+
+    public void setExportVisible(boolean exportVisible) {
+        this.exportVisible = exportVisible;
+    }
+
+    public void setWriter(Writer writer) {
+        this.writer = writer;
+    }
+
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 }
