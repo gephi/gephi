@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.api;
 
+import org.gephi.data.properties.PropertiesColumn;
+
 /**
  * Table hosts columns and permits all manipulation on them. Columns can be
  * appened with different level of details. The table maintains a map with
@@ -30,6 +32,7 @@ package org.gephi.data.attributes.api;
  * as lookup result. See {@link #getLookup()}.
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  * @see AttributeColumn
  * @see AttributeRow
  */
@@ -90,6 +93,15 @@ public interface AttributeTable {
      * @return              the newly created column
      */
     public AttributeColumn addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue);
+
+    /**
+     * Creates and add a new properties column to this table. All needed informations are set in
+     * PropertiesColumn instance.
+     *
+     * @param propertiesColumn the properties column
+     * @return                 the newly created column
+     */
+    public AttributeColumn addPropertiesColumn(PropertiesColumn propertiesColumn);
 
     /**
      * If exists, remove the column and all rows values.
@@ -160,4 +172,18 @@ public interface AttributeTable {
      * @param table         the table that is to be merged with this table
      */
     public void mergeTable(AttributeTable table);
+
+    /**
+     * Determines if this AttributeTable represents node table.
+     *
+     * @return true if this table represents node table, false otherwise
+     */
+    public boolean isNodeTable();
+
+    /**
+     * Determines if this AttributeTable represents edge table.
+     *
+     * @return true if current table represents edge table, false otherwise
+     */
+    public boolean isEdgeTable();
 }

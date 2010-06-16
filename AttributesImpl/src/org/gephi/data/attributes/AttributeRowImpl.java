@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
@@ -28,12 +29,15 @@ import org.gephi.data.attributes.api.AttributeValue;
 /**
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  */
 public class AttributeRowImpl implements AttributeRow {
 
     protected AttributeTableImpl attributeTable;
     protected AttributeValueImpl[] values;
     protected int rowVersion = -1;
+
+    private Object delegateIdValue;
 
     public AttributeRowImpl(AttributeTableImpl attributeClass) {
         this.attributeTable = attributeClass;
@@ -103,12 +107,26 @@ public class AttributeRowImpl implements AttributeRow {
             }
             value = attributeTable.getFactory().newValue(column, value.getValue());
         }
+
+        if (column.getOrigin().isDelegate()) {
+            if (delegateIdValue == null)
+                delegateIdValue = value.getValue();
+            else
+                throw new IllegalArgumentException("This column has already set the delegate id value");
+        }
+
         setValue(column.getIndex(), (AttributeValueImpl) value);
     }
 
     private void setValue(int index, AttributeValueImpl value) {
         updateColumns();
+
+        value.setAttributeRow(this);
         this.values[index] = value;
+    }
+
+    Object getDelegateIdValue() {
+        return delegateIdValue;
     }
 
     public Object getValue(AttributeColumn column) {

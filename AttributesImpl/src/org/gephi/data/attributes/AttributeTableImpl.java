@@ -32,10 +32,13 @@ import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.properties.PropertiesColumn;
+import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  */
 public class AttributeTableImpl implements AttributeTable {
 
@@ -65,6 +68,14 @@ public class AttributeTableImpl implements AttributeTable {
 
     public synchronized int countColumns() {
         return columns.size();
+    }
+
+    public AttributeColumn addPropertiesColumn(PropertiesColumn propertiesColumn) {
+        return addColumn(propertiesColumn.getId(),
+                         propertiesColumn.getTitle(),
+                         propertiesColumn.getType(),
+                         propertiesColumn.getOrigin(),
+                         propertiesColumn.getDefaultValue());
     }
 
     public AttributeColumnImpl addColumn(String id, AttributeType type) {
@@ -193,6 +204,14 @@ public class AttributeTableImpl implements AttributeTable {
 
     private void fireAttributeEvent(AttributeEvent event) {
         eventDispatchThread.fireEvent(event);
+    }
+
+    public boolean isNodeTable() {
+        return name.equals(NbBundle.getMessage(AttributeTableImpl.class, "NodeAttributeTable.name"));
+    }
+
+    public boolean isEdgeTable() {
+        return name.equals(NbBundle.getMessage(AttributeTableImpl.class, "EdgeAttributeTable.name"));
     }
 
     protected class AttributeEventDispatchThread extends Thread {

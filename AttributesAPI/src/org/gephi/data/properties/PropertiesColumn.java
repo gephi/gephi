@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.properties;
 
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
 
 /**
@@ -35,20 +36,23 @@ import org.gephi.data.attributes.api.AttributeType;
  */
 public enum PropertiesColumn {
 
-    NODE_ID   (0, "id",    AttributeType.STRING, null),
-    NODE_LABEL(1, "label", AttributeType.STRING, null),
-    EDGE_ID   (0, "id",    AttributeType.STRING, null),
-    EDGE_LABEL(1, "label", AttributeType.STRING, null);
+    NODE_ID   (0,  "id",      AttributeType.STRING, AttributeOrigin.PROPERTY,       null),
+    NODE_LABEL(1,  "label",   AttributeType.STRING, AttributeOrigin.PROPERTY,       null),
+    EDGE_ID   (0,  "id",      AttributeType.STRING, AttributeOrigin.PROPERTY,       null),
+    EDGE_LABEL(1,  "label",   AttributeType.STRING, AttributeOrigin.PROPERTY,       null),
+    NEO4J_ID  (-1, "neo4jId", AttributeType.LONG,   AttributeOrigin.DELEGATE_NEO4J, null);
     
     private final int index;
     private final String id;
     private final AttributeType type;
+    private final AttributeOrigin origin;
     private final Object defaultValue;
 
-    PropertiesColumn(int index, String id, AttributeType attributeType, Object defaultValue) {
+    PropertiesColumn(int index, String id, AttributeType attributeType, AttributeOrigin origin, Object defaultValue) {
         this.index = index;
         this.id = id;
         this.type = attributeType;
+        this.origin = origin;
         this.defaultValue = defaultValue;
     }
 
@@ -77,6 +81,10 @@ public enum PropertiesColumn {
 
     public AttributeType getType() {
         return type;
+    }
+
+    public AttributeOrigin getOrigin() {
+        return origin;
     }
 }
 

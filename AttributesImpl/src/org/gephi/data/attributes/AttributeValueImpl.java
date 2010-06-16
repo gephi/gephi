@@ -21,15 +21,20 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
+import org.gephi.data.properties.PropertiesColumn;
 
 /**
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  */
 public final class AttributeValueImpl implements AttributeValue {
 
     private final AttributeColumnImpl column;
     private final Object value;
+
+    private AttributeRowImpl row;
 
     public AttributeValueImpl(AttributeColumnImpl column, Object value) {
         this.column = column;
@@ -41,6 +46,25 @@ public final class AttributeValueImpl implements AttributeValue {
     }
 
     public Object getValue() {
-        return value;
+        if (!column.getOrigin().isDelegate())
+            return value;
+        else {
+            Object delegateIdValue = row.getDelegateIdValue();
+            PropertiesColumn propertiesColumn = column.getOrigin().getPropertiesColumn();
+
+            AttributeValueDelegateProvider attributeValueDelegateProvider =
+            PropertyColumnToAttributeValueDelegateProviderMapper.getInstance().get(propertiesColumn);
+
+            if (row.attributeTable.isEdgeTable())
+                return attributeValueDelegateProvider.getEdgeValue(column, delegateIdValue);
+            else if (row.attributeTable.isNodeTable())
+                return attributeValueDelegateProvider.getNodeValue(column, delegateIdValue);
+            else
+                throw new AssertionError();
+        }
+    }
+
+    void setAttributeRow(AttributeRowImpl row) {
+        this.row = row;
     }
 }
