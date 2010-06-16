@@ -23,6 +23,8 @@ package org.gephi.ui.datatable;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +39,7 @@ import javax.swing.table.TableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
+import org.gephi.datalaboratory.impl.manipulators.edges.builders.special.SpecialDeleteEdgesBuilder;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
@@ -92,6 +95,24 @@ public class EdgeDataTable {
             }
         };
         table.addMouseListener(new PopupAdapter());
+        table.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    Edge[] selectedEdges = getEdgesFromSelectedRows();
+                    if (selectedEdges.length > 0) {
+                        EdgesManipulator del = Lookup.getDefault().lookup(SpecialDeleteEdgesBuilder.class).getEdgesManipulator();
+                        if (del != null) {
+                            del.setup(selectedEdges, null);
+                            if (del.canExecute()) {
+                                del.execute();
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public JXTable getTable() {
@@ -308,7 +329,7 @@ public class EdgeDataTable {
         }
 
         private JPopupMenu createPopup(Point p) {
-            final Edge[] selectedEdges = getEdgesFromSelectedRows(table.getSelectedRows());
+            final Edge[] selectedEdges = getEdgesFromSelectedRows();
             final Edge clickedEdge = getEdgeFromRow(table.rowAtPoint(p));
             JPopupMenu contextMenu = new JPopupMenu();
             DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
@@ -347,17 +368,18 @@ public class EdgeDataTable {
             }
             return menuItem;
         }
+    }
 
-        private Edge getEdgeFromRow(int row) {
-            return ((EdgeDataTableModel) table.getModel()).getEdgeAtRow(row);
-        }
+    private Edge getEdgeFromRow(int row) {
+        return ((EdgeDataTableModel) table.getModel()).getEdgeAtRow(row);
+    }
 
-        private Edge[] getEdgesFromSelectedRows(int[] selectedRows) {
-            Edge[] edges = new Edge[selectedRows.length];
-            for (int i = 0; i < edges.length; i++) {
-                edges[i] = getEdgeFromRow(selectedRows[i]);
-            }
-            return edges;
+    private Edge[] getEdgesFromSelectedRows() {
+        int[] selectedRows = table.getSelectedRows();
+        Edge[] edges = new Edge[selectedRows.length];
+        for (int i = 0; i < edges.length; i++) {
+            edges[i] = getEdgeFromRow(selectedRows[i]);
         }
+        return edges;
     }
 }

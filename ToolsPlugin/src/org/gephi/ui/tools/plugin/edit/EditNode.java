@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.tools.plugin.edit;
 
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
@@ -57,7 +58,13 @@ public class EditNode extends AbstractNode {
                 for (AttributeValue value : row.getValues()) {
                     AttributeValueWrapper wrap = new AttributeValueWrapper(row, value.getColumn().getIndex());
                     AttributeType type = value.getColumn().getType();
-                    Property p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), "setValue" + type.getType().getSimpleName());
+                    Property p;
+                    if (value.getColumn().getOrigin() != AttributeOrigin.COMPUTED) {
+                        p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), "setValue" + type.getType().getSimpleName());
+                    } else {
+                        //Not editable because it is computed:
+                        p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), null);
+                    }
                     p.setDisplayName(value.getColumn().getTitle());
                     p.setName(value.getColumn().getId());
                     set.put(p);

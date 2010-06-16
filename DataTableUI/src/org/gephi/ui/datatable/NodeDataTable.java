@@ -23,6 +23,8 @@ package org.gephi.ui.datatable;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ import org.openide.awt.MouseUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
+import org.gephi.datalaboratory.impl.manipulators.nodes.builders.special.SpecialDeleteNodesBuilder;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 
 /**
@@ -87,6 +90,24 @@ public class NodeDataTable {
         };
 
         outlineTable.addMouseListener(new PopupAdapter());
+        outlineTable.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    Node[] selectedNodes = getNodesFromSelectedRows();
+                    if (selectedNodes.length > 0) {
+                        NodesManipulator del = Lookup.getDefault().lookup(SpecialDeleteNodesBuilder.class).getNodesManipulator();
+                        if (del != null) {
+                            del.setup(selectedNodes, null);
+                            if (del.canExecute()) {
+                                del.execute();
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public Outline getOutlineTable() {
@@ -337,7 +358,7 @@ public class NodeDataTable {
         }
 
         private JPopupMenu createPopup(Point p) {
-            final Node[] selectedNodes = getNodesFromSelectedRows(outlineTable.getSelectedRows());
+            final Node[] selectedNodes = getNodesFromSelectedRows();
             final Node clickedNode = getNodeFromRow(outlineTable.rowAtPoint(p));
             JPopupMenu contextMenu = new JPopupMenu();
             DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
@@ -376,23 +397,24 @@ public class NodeDataTable {
             }
             return menuItem;
         }
+    }
 
-        private Node getNodeFromRow(int rowIndex) {
-            int row = outlineTable.convertRowIndexToModel(rowIndex);
-            TreePath tp = outlineTable.getLayoutCache().getPathForRow(row);
-            if (tp == null) {
-                return null;
-            }
-            ImmutableTreeNode immutableTreeNode = (ImmutableTreeNode) tp.getLastPathComponent();
-            return immutableTreeNode.getNode();
+    private Node getNodeFromRow(int rowIndex) {
+        int row = outlineTable.convertRowIndexToModel(rowIndex);
+        TreePath tp = outlineTable.getLayoutCache().getPathForRow(row);
+        if (tp == null) {
+            return null;
         }
+        ImmutableTreeNode immutableTreeNode = (ImmutableTreeNode) tp.getLastPathComponent();
+        return immutableTreeNode.getNode();
+    }
 
-        private Node[] getNodesFromSelectedRows(int[] selectedRows) {
-            Node[] node = new Node[selectedRows.length];
-            for (int i = 0; i < node.length; i++) {
-                node[i] = getNodeFromRow(selectedRows[i]);
-            }
-            return node;
+    private Node[] getNodesFromSelectedRows() {
+        int[] selectedRows = outlineTable.getSelectedRows();
+        Node[] node = new Node[selectedRows.length];
+        for (int i = 0; i < node.length; i++) {
+            node[i] = getNodeFromRow(selectedRows[i]);
         }
+        return node;
     }
 }

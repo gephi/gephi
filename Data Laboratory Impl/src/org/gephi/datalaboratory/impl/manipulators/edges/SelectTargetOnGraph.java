@@ -21,12 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.edges;
 
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
-import org.openide.util.ImageUtilities;
+import org.gephi.graph.api.Node;
+import org.gephi.visualization.VizController;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -34,27 +34,20 @@ import org.openide.util.NbBundle;
  *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class DeleteEdges implements EdgesManipulator {
-
-    private Edge[] edges;
+public class SelectTargetOnGraph implements EdgesManipulator{
+    private Edge clickedEdge;
 
     public void setup(Edge[] edges, Edge clickedEdge) {
-        this.edges = edges;
+        this.clickedEdge=clickedEdge;
     }
 
     public void execute() {
-        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(DeleteEdges.class, "DeleteEdges.confirmation.message"), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-            gec.deleteEdges(edges);
-        }
+        Node source=clickedEdge.getTarget();
+        VizController.getInstance().getSelectionManager().centerOnNode(source);
     }
 
     public String getName() {
-        if (edges.length > 1) {
-            return NbBundle.getMessage(DeleteEdges.class, "DeleteEdges.name.multiple");
-        } else {
-            return NbBundle.getMessage(DeleteEdges.class, "DeleteEdges.name.single");
-        }
+        return NbBundle.getMessage(SelectTargetOnGraph.class, "SelectTargetOnGraph.name");
     }
 
     public String getDescription() {
@@ -62,7 +55,8 @@ public class DeleteEdges implements EdgesManipulator {
     }
 
     public boolean canExecute() {
-        return Lookup.getDefault().lookup(GraphElementsController.class).areEdgesInGraph(edges);
+        GraphElementsController gec=Lookup.getDefault().lookup(GraphElementsController.class);
+        return gec.isEdgeInGraph(clickedEdge);
     }
 
     public ManipulatorUI getUI() {
@@ -74,10 +68,11 @@ public class DeleteEdges implements EdgesManipulator {
     }
 
     public int getPosition() {
-        return 200;
+        return 100;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/cross.png", true);
+        return null;
     }
+
 }

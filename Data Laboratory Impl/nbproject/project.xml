@@ -39,7 +39,10 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>org.gephi.datalaboratory.impl.manipulators.edges.builders.special</package>
+                <package>org.gephi.datalaboratory.impl.manipulators.nodes.builders.special</package>
+            </public-packages>
         </data>
     </configuration>
 </project>
