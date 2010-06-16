@@ -61,6 +61,22 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         }
     }
 
+    public void deleteEdgeWithNodes(Edge edge, boolean deleteSource, boolean deleteTarget) {
+        if (deleteSource) {
+            deleteNode(edge.getSource());
+        }
+        if (deleteTarget) {
+            deleteNode(edge.getTarget());
+        }
+        removeEdge(edge, getGraph());//If no node is deleted, we need to remove the edge.
+    }
+
+    public void deleteEdgesWithNodes(Edge[] edges, boolean deleteSource, boolean deleteTarget) {
+        for (Edge edge : edges) {
+            deleteEdgeWithNodes(edge, deleteSource, deleteTarget);
+        }
+    }
+
     public boolean groupNodes(Node[] nodes) {
         if (canGroupNodes(nodes)) {
             HierarchicalGraph hg = getHierarchicalGraph();
@@ -75,7 +91,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     public boolean canGroupNodes(Node[] nodes) {
-        if(!areNodesInGraph(nodes)){
+        if (!areNodesInGraph(nodes)) {
             return false;
         }
         HierarchicalGraph hg = getHierarchicalGraph();
@@ -124,7 +140,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     public boolean canUngroupNode(Node node) {
-        if(!isNodeInGraph(node)){
+        if (!isNodeInGraph(node)) {
             return false;
         }
         boolean canUngroup;
@@ -160,26 +176,26 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     public boolean isNodeInGroup(Node node) {
-        if(!isNodeInGraph(node)){
+        if (!isNodeInGraph(node)) {
             return false;
         }
         HierarchicalGraph hg = getHierarchicalGraph();
         return hg.getParent(node) != null;
     }
 
-    public void setNodeFixed(Node node, boolean fixed){
-        if(isNodeInGraph(node)){
+    public void setNodeFixed(Node node, boolean fixed) {
+        if (isNodeInGraph(node)) {
             node.getNodeData().setFixed(fixed);
         }
     }
 
-    public void setNodesFixed(Node[] nodes, boolean fixed){
-        for(Node n:nodes){
+    public void setNodesFixed(Node[] nodes, boolean fixed) {
+        for (Node n : nodes) {
             setNodeFixed(n, fixed);
         }
     }
 
-    public boolean isNodeFixed(Node node){
+    public boolean isNodeFixed(Node node) {
         return node.getNodeData().isFixed();
     }
 
@@ -230,5 +246,5 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         if (isEdgeInGraph(edge)) {
             graph.removeEdge(edge);
         }
-    }    
+    }
 }

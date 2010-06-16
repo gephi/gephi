@@ -54,6 +54,10 @@ public interface GraphElementsController {
      */
     void deleteEdges(Edge[] edges);
 
+    void deleteEdgeWithNodes(Edge edge, boolean deleteSource, boolean deleteTarget);
+
+    void deleteEdgesWithNodes(Edge[] edges, boolean deleteSource, boolean deleteTarget);
+
     /**
      * Groups an array of nodes if it is possible.
      * @param nodes Array of nodes to group

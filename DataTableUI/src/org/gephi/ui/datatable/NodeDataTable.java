@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
@@ -55,7 +56,12 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.impl.manipulators.nodes.builders.special.SpecialDeleteNodesBuilder;
+import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -389,7 +395,18 @@ public class NodeDataTable {
                 menuItem.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {
-                        nm.execute();
+                        ManipulatorUI ui = nm.getUI();
+                        if (ui != null) {
+                            ui.setup(nm);
+                            JPanel settingsPanel=ui.getSettingsPanel();
+                            DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(NodeDataTable.class, "SettingsPanel.title",  ui.getDisplayName()));
+                            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                                ui.unSetup();
+                                nm.execute();
+                            }
+                        } else {
+                            nm.execute();
+                        }
                     }
                 });
             } else {
