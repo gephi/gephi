@@ -21,10 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.nodes;
 
 import javax.swing.Icon;
+import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -51,7 +53,7 @@ public class SelectOnGraph implements NodesManipulator {
     }
 
     public boolean canExecute() {
-        return true;
+        return Lookup.getDefault().lookup(GraphElementsController.class).isNodeInGraph(node);
     }
 
     public ManipulatorUI getUI() {

@@ -360,7 +360,9 @@ public class NodeDataTable {
         private JMenuItem createMenuItemFromNodesManipulator(final NodesManipulator nm) {
             JMenuItem menuItem = new JMenuItem();
             menuItem.setText(nm.getName());
-            menuItem.setToolTipText(nm.getDescription());
+            if (nm.getDescription() != null && !nm.getDescription().isEmpty()) {
+                menuItem.setToolTipText(nm.getDescription());
+            }
             menuItem.setIcon(nm.getIcon());
             if (nm.canExecute()) {
                 menuItem.addActionListener(new ActionListener() {

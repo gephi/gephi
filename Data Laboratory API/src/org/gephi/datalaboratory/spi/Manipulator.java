@@ -29,11 +29,13 @@ import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
  * <p>These are shown on right click on one or more elements of a table and are able to:</p>
  * <ul>
  *  <li>Execute an action</li>
- *  <li>Provide a name, description and order of appearance (position)</li>
- *  <li>Indicate wether they have to be shown or not</li>
+ *  <li>Provide a name, description, type and order of appearance (position in group of its type)</li>
+ *  <li>Indicate wether they have to be executable or not</li>
  *  <li>Provide and UI or not</li>
+ *  <li>Provide and icon or not</li>
  * </ul>
  * <p>Used for NodesManipulator and EdgesManipulator.</p>
+ * <p>The only methods that could be called before setting up a manipulator with the data are getType and getPosition</p>
  * @see NodesManipulator
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */

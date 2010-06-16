@@ -29,7 +29,7 @@ import org.gephi.graph.api.Node;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface GraphElementsController {
-    
+
     /**
      * Tries to delete a node checking first if it is on the graph.
      * @param node Node to delete
@@ -81,8 +81,17 @@ public interface GraphElementsController {
      */
     void ungroupNodes(Node[] nodes);
 
+    /**
+     * Ungroups a node if it forms a group and also ungroups all its descendant.
+     * @param node Node to ungroup recursively
+     * @return True if the node was succesfully ungrouped, false otherwise
+     */
     boolean ungroupNodeRecursively(Node node);
 
+    /**
+     * Tries to ungroup every node un the array of nodes checking first they form a group.
+     * @param nodes Array of nodes to ungroup
+     */
     void ungroupNodesRecursively(Node[] nodes);
 
     /**
@@ -112,4 +121,58 @@ public interface GraphElementsController {
      * @return True if the node is in a group, false otherwise
      */
     boolean isNodeInGroup(Node node);
+
+    /**
+     * Sets a fixed state of a node to the indicated.
+     * @param node Node to set fixed state
+     * @param fixed Fixed state for the node
+     */
+    void setNodeFixed(Node node, boolean fixed);
+
+    /**
+     * Sets a fixed state of an array of nodes to the indicated.
+     * @param nodes Array of nodes to set fixed state
+     * @param fixed Fixed state for the nodes
+     */
+    void setNodesFixed(Node[] nodes, boolean fixed);
+
+    /**
+     * Checks the fixed state of a node.
+     * @param node Node to check
+     * @return Fixed state of the node
+     */
+    boolean isNodeFixed(Node node);
+
+    /*****************
+     * The next methods that check if nodes and edges are in the graph,
+     * are necessary because the table in DataLaboratory is not refreshed
+     * automatically after changing the graph, so deleted nodes could be referenced.
+     ****************/
+    /**
+     * Checks if a node is contained in the graph.
+     * @param node Node to check
+     * @return True if the node is in the graph, false otherwise
+     */
+    boolean isNodeInGraph(Node node);
+
+    /**
+     * Checks if an array of nodes are contained in the graph.
+     * @param nodes Array of nodes to check
+     * @return True if all the nodes are in the graph, false otherwise
+     */
+    boolean areNodesInGraph(Node[] nodes);
+
+    /**
+     * Checks if an edge is contained in the graph.
+     * @param edge Edge to check
+     * @return True if the edge is in the graph, false otherwise
+     */
+    boolean isEdgeInGraph(Edge edge);
+
+    /**
+     * Checks if an array of edges are contained in the graph.
+     * @param edges Edges to check
+     * @return True if all the edges are in the graph, false otherwise
+     */
+    boolean areEdgesInGraph(Edge[] edges);
 }

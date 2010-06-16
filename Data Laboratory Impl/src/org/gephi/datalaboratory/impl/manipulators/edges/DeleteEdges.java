@@ -62,7 +62,7 @@ public class DeleteEdges implements EdgesManipulator {
     }
 
     public boolean canExecute() {
-        return true;
+        return Lookup.getDefault().lookup(GraphElementsController.class).areEdgesInGraph(edges);
     }
 
     public ManipulatorUI getUI() {

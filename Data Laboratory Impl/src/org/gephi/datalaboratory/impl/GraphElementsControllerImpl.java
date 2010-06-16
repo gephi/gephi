@@ -61,18 +61,6 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         }
     }
 
-    private void removeNode(Node node, Graph graph) {
-        if (graph.contains(node)) {
-            graph.removeNode(node);
-        }
-    }
-
-    private void removeEdge(Edge edge, Graph graph) {
-        if (graph.contains(edge)) {
-            graph.removeEdge(edge);
-        }
-    }
-
     public boolean groupNodes(Node[] nodes) {
         if (canGroupNodes(nodes)) {
             HierarchicalGraph hg = getHierarchicalGraph();
@@ -87,6 +75,9 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     public boolean canGroupNodes(Node[] nodes) {
+        if(!areNodesInGraph(nodes)){
+            return false;
+        }
         HierarchicalGraph hg = getHierarchicalGraph();
         Node parent = hg.getParent(nodes[0]);
         for (Node n : nodes) {
@@ -113,10 +104,10 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         }
     }
 
-    public boolean ungroupNodeRecursively(Node node){
+    public boolean ungroupNodeRecursively(Node node) {
         if (canUngroupNode(node)) {
             HierarchicalGraph hg = getHierarchicalGraph();
-            for(Node n:hg.getDescendant(node).toArray()){
+            for (Node n : hg.getDescendant(node).toArray()) {
                 ungroupNode(n);
             }
             hg.ungroupNodes(node);
@@ -126,13 +117,16 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         }
     }
 
-    public void ungroupNodesRecursively(Node[] nodes){
-        for(Node n:nodes){
+    public void ungroupNodesRecursively(Node[] nodes) {
+        for (Node n : nodes) {
             ungroupNodeRecursively(n);
         }
     }
 
     public boolean canUngroupNode(Node node) {
+        if(!isNodeInGraph(node)){
+            return false;
+        }
         boolean canUngroup;
         HierarchicalGraph hg = getHierarchicalGraph();
         hg.readLock();
@@ -144,9 +138,9 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     public boolean removeNodeFromGroup(Node node) {
         if (isNodeInGroup(node)) {
             HierarchicalGraph hg = getHierarchicalGraph();
-            Node parent=hg.getParent(node);
+            Node parent = hg.getParent(node);
             hg.readLock();
-            int childrenCount=hg.getChildrenCount(parent);
+            int childrenCount = hg.getChildrenCount(parent);
             hg.readUnlock();
             if (childrenCount == 1) {
                 hg.ungroupNodes(parent);//Break group when the last child is removed.
@@ -166,10 +160,58 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     public boolean isNodeInGroup(Node node) {
+        if(!isNodeInGraph(node)){
+            return false;
+        }
         HierarchicalGraph hg = getHierarchicalGraph();
         return hg.getParent(node) != null;
     }
 
+    public void setNodeFixed(Node node, boolean fixed){
+        if(isNodeInGraph(node)){
+            node.getNodeData().setFixed(fixed);
+        }
+    }
+
+    public void setNodesFixed(Node[] nodes, boolean fixed){
+        for(Node n:nodes){
+            setNodeFixed(n, fixed);
+        }
+    }
+
+    public boolean isNodeFixed(Node node){
+        return node.getNodeData().isFixed();
+    }
+
+    public boolean isNodeInGraph(Node node) {
+        return getGraph().contains(node);
+    }
+
+    public boolean areNodesInGraph(Node[] nodes) {
+        Graph graph = getGraph();
+        for (Node n : nodes) {
+            if (!graph.contains(n)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isEdgeInGraph(Edge edge) {
+        return getGraph().contains(edge);
+    }
+
+    public boolean areEdgesInGraph(Edge[] edges) {
+        Graph graph = getGraph();
+        for (Edge e : edges) {
+            if (!graph.contains(e)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /************Private methods : ************/
     private Graph getGraph() {
         return Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
     }
@@ -177,4 +219,16 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     private HierarchicalGraph getHierarchicalGraph() {
         return Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
     }
+
+    private void removeNode(Node node, Graph graph) {
+        if (isNodeInGraph(node)) {
+            graph.removeNode(node);
+        }
+    }
+
+    private void removeEdge(Edge edge, Graph graph) {
+        if (isEdgeInGraph(edge)) {
+            graph.removeEdge(edge);
+        }
+    }    
 }

@@ -331,7 +331,9 @@ public class EdgeDataTable {
         private JMenuItem createMenuItemFromEdgesManipulator(final EdgesManipulator em) {
             JMenuItem menuItem = new JMenuItem();
             menuItem.setText(em.getName());
-            menuItem.setToolTipText(em.getDescription());
+            if (em.getDescription() != null && !em.getDescription().isEmpty()) {
+                menuItem.setToolTipText(em.getDescription());
+            }
             menuItem.setIcon(em.getIcon());
             if (em.canExecute()) {
                 menuItem.addActionListener(new ActionListener() {
