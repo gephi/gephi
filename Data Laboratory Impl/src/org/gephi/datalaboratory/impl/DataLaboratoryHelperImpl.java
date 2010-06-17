@@ -23,13 +23,21 @@ package org.gephi.datalaboratory.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import javax.swing.JPanel;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
+import org.gephi.datalaboratory.impl.manipulators.edges.DeleteEdges;
+import org.gephi.datalaboratory.impl.manipulators.nodes.DeleteNodes;
 import org.gephi.datalaboratory.spi.Manipulator;
+import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulatorBuilder;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulatorBuilder;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -71,5 +79,33 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                 }
             }
         });
+    }
+
+    public void executeManipulator(final Manipulator m) {
+        new Thread(new Runnable() {
+
+            public void run() {
+                ManipulatorUI ui = m.getUI();
+                        if (ui != null) {
+                            ui.setup(m);
+                            JPanel settingsPanel=ui.getSettingsPanel();
+                            DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title",  ui.getDisplayName()));
+                            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                                ui.unSetup();
+                                m.execute();
+                            }
+                        } else {
+                            m.execute();
+                        }
+            }
+        }).start();
+    }
+
+    public NodesManipulator getDeleteNodesManipulator() {
+        return new DeleteNodes();
+    }
+
+    public EdgesManipulator getDeleEdgesManipulator() {
+        return new DeleteEdges();
     }
 }

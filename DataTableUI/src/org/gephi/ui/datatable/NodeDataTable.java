@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
@@ -55,13 +54,7 @@ import org.openide.awt.MouseUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
-import org.gephi.datalaboratory.impl.manipulators.nodes.builders.special.SpecialDeleteNodesBuilder;
-import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -103,11 +96,12 @@ public class NodeDataTable {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
                     Node[] selectedNodes = getNodesFromSelectedRows();
                     if (selectedNodes.length > 0) {
-                        NodesManipulator del = Lookup.getDefault().lookup(SpecialDeleteNodesBuilder.class).getNodesManipulator();
+                        DataLaboratoryHelper dlh=Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+                        NodesManipulator del = dlh.getDeleteNodesManipulator();
                         if (del != null) {
                             del.setup(selectedNodes, null);
                             if (del.canExecute()) {
-                                del.execute();
+                                dlh.executeManipulator(del);
                             }
                         }
                     }
@@ -394,18 +388,8 @@ public class NodeDataTable {
                 menuItem.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {
-                        ManipulatorUI ui = nm.getUI();
-                        if (ui != null) {
-                            ui.setup(nm);
-                            JPanel settingsPanel=ui.getSettingsPanel();
-                            DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(NodeDataTable.class, "SettingsPanel.title",  ui.getDisplayName()));
-                            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                                ui.unSetup();
-                                nm.execute();
-                            }
-                        } else {
-                            nm.execute();
-                        }
+                        DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+                        dlh.executeManipulator(nm);
                     }
                 });
             } else {

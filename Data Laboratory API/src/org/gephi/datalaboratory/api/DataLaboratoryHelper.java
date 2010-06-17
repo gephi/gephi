@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.api;
 
+import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 
@@ -44,4 +45,25 @@ public interface DataLaboratoryHelper {
      * @return Array of all EdgesManipulator implementations
      */
     EdgesManipulator[] getEdgesManipulators();
+
+    /**
+     * Prepares the dialog UI of a manipulator if it has one and executes the manipulator in a separate
+     * Thread when the dialog is accepted or directly if there is no UI.
+     * @param m Manipulator to execute
+     */
+    void executeManipulator(Manipulator m);
+
+    /**
+     * Special method for making public DeleteNodes manipulator so it can be specifically retrieved from Data Table UI.
+     * It is used for reacting to delete key.
+     * @return DeleteNodes new instance
+     */
+    NodesManipulator getDeleteNodesManipulator();
+
+    /**
+     * Special method for making public DeleteEdges manipulator so it can be specifically retrieved from Data Table UI.
+     * It is used for reacting to delete key.
+     * @return DeleteEdges new instance
+     */
+    EdgesManipulator getDeleEdgesManipulator();
 }

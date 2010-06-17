@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.RowFilter;
 import javax.swing.event.PopupMenuEvent;
@@ -40,8 +39,6 @@ import javax.swing.table.TableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
-import org.gephi.datalaboratory.impl.manipulators.edges.builders.special.SpecialDeleteEdgesBuilder;
-import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
@@ -49,12 +46,8 @@ import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.awt.MouseUtils;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -108,11 +101,12 @@ public class EdgeDataTable {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
                     Edge[] selectedEdges = getEdgesFromSelectedRows();
                     if (selectedEdges.length > 0) {
-                        EdgesManipulator del = Lookup.getDefault().lookup(SpecialDeleteEdgesBuilder.class).getEdgesManipulator();
+                        DataLaboratoryHelper dlh=Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+                        EdgesManipulator del = dlh.getDeleEdgesManipulator();
                         if (del != null) {
                             del.setup(selectedEdges, null);
                             if (del.canExecute()) {
-                                del.execute();
+                                dlh.executeManipulator(del);
                             }
                         }
                     }
@@ -365,18 +359,8 @@ public class EdgeDataTable {
                 menuItem.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {
-                        ManipulatorUI ui = em.getUI();
-                        if (ui != null) {
-                            ui.setup(em);
-                            JPanel settingsPanel=ui.getSettingsPanel();
-                            DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(EdgeDataTable.class, "SettingsPanel.title", ui.getDisplayName()));
-                            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                                ui.unSetup();
-                                em.execute();
-                            }
-                        } else {
-                            em.execute();
-                        }
+                        DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+                        dlh.executeManipulator(em);
                     }
                 });
             } else {
