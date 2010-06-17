@@ -350,7 +350,6 @@ public class EdgeDataTable {
                 }
                 lastManipulatorType = em.getType();
                 contextMenu.add(createMenuItemFromEdgesManipulator(em));
-                //TODO: Check and use the EdgesManipulatorUI
             }
             return contextMenu;
         }

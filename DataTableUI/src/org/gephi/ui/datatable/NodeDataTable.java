@@ -379,7 +379,6 @@ public class NodeDataTable {
                 }
                 lastManipulatorType = nm.getType();
                 contextMenu.add(createMenuItemFromNodesManipulator(nm));
-                //TODO: Check and use the NodesManipulatorUI
             }
             return contextMenu;
         }

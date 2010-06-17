@@ -25,6 +25,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -38,6 +39,26 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphElementsController.class)
 public class GraphElementsControllerImpl implements GraphElementsController {
+
+    public boolean createEdge(Node source, Node target, boolean directed) {
+        if (isNodeInGraph(source) && isNodeInGraph(target)) {
+            if (source != target) {//Cannot create self-loop
+                return getMixedGraph().addEdge(source, target, directed);//The edge will be created if it does not already exist.
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public void createEdges(Node source, Node[] allNodes, boolean directed) {
+        if (isNodeInGraph(source) && areNodesInGraph(allNodes)) {
+            for (Node n : allNodes) {
+                createEdge(source, n, directed);
+            }
+        }
+    }
 
     public void deleteNode(Node node) {
         removeNode(node, getGraph());
@@ -230,6 +251,10 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     /************Private methods : ************/
     private Graph getGraph() {
         return Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+    }
+
+    private MixedGraph getMixedGraph() {
+        return Lookup.getDefault().lookup(GraphController.class).getModel().getMixedGraph();
     }
 
     private HierarchicalGraph getHierarchicalGraph() {

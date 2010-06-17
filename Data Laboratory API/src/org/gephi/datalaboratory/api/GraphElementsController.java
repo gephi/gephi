@@ -26,9 +26,29 @@ import org.gephi.graph.api.Node;
 /**
  * This interface defines part of the Data Laboratory API. It contains methods for manipulating
  * the nodes and edges of the graph.
+ * All the provided methods take care to check first that the nodes and edges to manipulate are in the graph.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface GraphElementsController {
+
+    /**
+     * Creates and edge between source and target node (if does not already exist), directed or undirected.
+     * This will not create a self-loop.
+     * @param source Source node
+     * @param target Target node
+     * @param directed Indicates if the edge has to be directed
+     * @return True if the edge was created succesfully, false otherwise
+     */
+    boolean createEdge(Node source, Node target, boolean directed);
+
+    /**
+     * Tries to create edges between the source node and all other edges, directed or undirected.
+     * An edge won't be created if it already exists or is a self-loop.
+     * @param source Source node
+     * @param allNodes All edges
+     * @param directed Indicates if the edges have to be directed
+     */
+    void createEdges(Node source, Node[] allNodes, boolean directed);
 
     /**
      * Tries to delete a node checking first if it is on the graph.
@@ -54,8 +74,22 @@ public interface GraphElementsController {
      */
     void deleteEdges(Edge[] edges);
 
+    /**
+     * Tries to delete an edge checking first if it is on the graph
+     * and also deletes its source and target node if it is indicated.
+     * @param edge Edge to delete
+     * @param deleteSource Indicates if the source node has to be deleted
+     * @param deleteTarget Indicates if the target node has to be deleted
+     */
     void deleteEdgeWithNodes(Edge edge, boolean deleteSource, boolean deleteTarget);
 
+    /**
+     * Tries to delete an array of edges checking first if they are on the graph
+     * and also deletes their source and target node if it is indicated.
+     * @param edges Array of edges to delete
+     * @param deleteSource Indicates if the source nodes have to be deleted
+     * @param deleteTarget Indicates if the target nodes have to be deleted
+     */
     void deleteEdgesWithNodes(Edge[] edges, boolean deleteSource, boolean deleteTarget);
 
     /**
@@ -151,6 +185,7 @@ public interface GraphElementsController {
      * The next methods that check if nodes and edges are in the graph,
      * are necessary because the table in DataLaboratory is not refreshed
      * automatically after changing the graph, so deleted nodes could be referenced.
+     * Manipulators should take care of this if they don't use this API (which does it in every action).
      ****************/
     /**
      * Checks if a node is contained in the graph.
