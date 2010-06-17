@@ -46,25 +46,32 @@ public final class AttributeValueImpl implements AttributeValue {
     }
 
     public Object getValue() {
-        if (!column.getOrigin().isDelegate())
+        if (!column.getOrigin().isDelegate()) {
+            System.out.println("origin: " + column.getOrigin());
+            System.out.println("delegate: " + column.getOrigin().isDelegate());
+            System.out.println();
             return value;
+        }
         else {
-            Object delegateIdValue = row.getDelegateIdValue();
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+            Object delegateIdValue = 1L;//row.getDelegateIdValue();
             PropertiesColumn propertiesColumn = column.getOrigin().getPropertiesColumn();
 
             AttributeValueDelegateProvider attributeValueDelegateProvider =
             PropertyColumnToAttributeValueDelegateProviderMapper.getInstance().get(propertiesColumn);
 
-            if (row.attributeTable.isEdgeTable())
+//            if (row.attributeTable.isEdgeTable())
                 return attributeValueDelegateProvider.getEdgeValue(column, delegateIdValue);
-            else if (row.attributeTable.isNodeTable())
-                return attributeValueDelegateProvider.getNodeValue(column, delegateIdValue);
-            else
-                throw new AssertionError();
+//            else if (row.attributeTable.isNodeTable())
+//                return attributeValueDelegateProvider.getNodeValue(column, delegateIdValue);
+//            else
+//                throw new AssertionError();
         }
     }
 
     void setAttributeRow(AttributeRowImpl row) {
+        System.out.println("set attribute row: " + row);
         this.row = row;
     }
 }

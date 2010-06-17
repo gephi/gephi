@@ -15,16 +15,22 @@ public class Neo4jDelegateProviderImpl implements AttributeValueDelegateProvider
     
     @Override
     public PropertiesColumn getDelegateIdColumn() {
+        System.out.println("> getDelegateIdColumn()");
+
         return PropertiesColumn.NEO4J_ID;
     }
 
     @Override
     public Object getNodeValue(AttributeColumn attributeColumn, Object id) {
+        System.out.println(">> getNodeValue()");
+
         return graphDB.getRelationshipById((Long) id).getProperty(attributeColumn.getId());
     }
 
     @Override
     public Object getEdgeValue(AttributeColumn attributeColumn, Object id) {
+        System.out.println(">>> getEdgeValue()");
+
         return graphDB.getNodeById((Long) id).getProperty(attributeColumn.getId());
     }
 }

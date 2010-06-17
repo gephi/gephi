@@ -7,6 +7,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import org.gephi.neo4j.api.Neo4jExporter;
 import org.gephi.neo4j.api.Neo4jImporter;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -99,7 +100,25 @@ public class Neo4jImportExportAction extends CallableSystemAction {
         String localExportMessage = NbBundle.getMessage(Neo4jImportExportAction.class, "CTL_Neo4j_LocalExportMenuLabel");
         JMenuItem localExport = new JMenuItem(new AbstractAction(localExportMessage) {
             public void actionPerformed(ActionEvent e) {
-                //TODO implement
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setDialogTitle("Choose target Neo4j directory");
+
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+                int dialogResult = fileChooser.showOpenDialog(null);
+
+                if (dialogResult == JFileChooser.APPROVE_OPTION) {
+                    final File neo4jDirectory = fileChooser.getSelectedFile();
+                    final Neo4jExporter neo4jExporter = Lookup.getDefault().lookup(Neo4jExporter.class);
+
+                    LongTaskExecutor executor = new LongTaskExecutor(true);
+                    executor.execute((LongTask) neo4jExporter, new Runnable() {
+                        @Override
+                        public void run() {
+                            neo4jExporter.exportLocal(neo4jDirectory);
+                        }
+                    });
+                }
             }
         });
 

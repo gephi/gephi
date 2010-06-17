@@ -3,6 +3,8 @@ package org.gephi.neo4j.impl;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Set;
 import org.gephi.neo4j.api.Neo4jImporter;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -10,14 +12,9 @@ import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipExpander;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.traversal.PruneEvaluator;
-import org.neo4j.graphdb.traversal.ReturnFilter;
-import org.neo4j.graphdb.traversal.TraversalDescription;
-import org.neo4j.graphdb.traversal.Traverser;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
-import org.neo4j.kernel.TraversalFactory;
+import org.neo4j.kernel.management.PrimitiveMBean;
 import org.neo4j.remote.RemoteGraphDatabase;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -26,9 +23,10 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=Neo4jImporter.class)
 public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     private GraphDatabaseService graphDB;
+    private GraphModelConvertor graphModelConvertor;
+    
     private ProgressTicket progressTicket;
     private boolean cancelImport;//TODO finish implementing canceling task
-    private GraphModelConvertor graphModelConvertor;
 
 
     @Override
@@ -54,16 +52,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
 
     @Override
     public void importRemote(String resourceURI) {
-        progressTicket.setDisplayName("Importing data from remote Neo4j database");
-        progressTicket.start();
-
-        try {
-            graphDB = new RemoteGraphDatabase(resourceURI);
-            doImport();
-        }
-        catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        importRemote(resourceURI, null, null);
     }
 
     @Override
@@ -72,7 +61,11 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
         progressTicket.start();
 
         try {
-            graphDB = new RemoteGraphDatabase(resourceURI, login, password);
+            if (login == null && password == null)
+                graphDB = new RemoteGraphDatabase(resourceURI);
+            else
+                graphDB = new RemoteGraphDatabase(resourceURI, login, password);
+
             doImport();
         }
         catch (URISyntaxException e) {
@@ -90,33 +83,46 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
             transaction.finish();
         }
 
-        progressTicket.finish();
         graphDB.shutdown();
+        progressTicket.finish();
     }
 
     private void importGraph() {
-        TraversalDescription traversalDescription = TraversalFactory.createTraversalDescription();
-        RelationshipExpander relationshipExpander = TraversalFactory.expanderForAllTypes();
+//        TraversalDescription traversalDescription = TraversalFactory.createTraversalDescription();
+//        RelationshipExpander relationshipExpander = TraversalFactory.expanderForAllTypes();
+//
+//        org.neo4j.graphdb.Node referenceNode = graphDB.getReferenceNode();
 
-        org.neo4j.graphdb.Node referenceNode = graphDB.getReferenceNode();
-
-        Traverser traverser = 
-            traversalDescription.depthFirst()
-                                .expand(relationshipExpander)
-                                .filter(ReturnFilter.ALL)
-                                .prune(PruneEvaluator.NONE)
-                                .traverse(referenceNode);
+//        Traverser traverser =
+//            traversalDescription.depthFirst()
+//                                .expand(relationshipExpander)
+//                                .filter(ReturnFilter.ALL)
+//                                .prune(PruneEvaluator.NONE)
+//                                .traverse(referenceNode);
 
         createNewProject();
         //TODO solve problem with projects and workspace, how to treat canceling task?
 
-        graphModelConvertor = GraphModelConvertor.getInstance();
+        graphModelConvertor = GraphModelConvertor.getInstance(graphDB);
         // the algorithm traverses through all relationships
-        for (Relationship neoRelationship : traverser.relationships()) {
-            if (cancelImport)
-                break;
+//        for (Relationship neoRelationship : traverser.relationships()) {
+//            if (cancelImport)
+//                break;
+//
+//            processRelationship(neoRelationship);
+//        }
 
-            processRelationship(neoRelationship);
+        EmbeddedGraphDatabase embeddedGraphDatabase = (EmbeddedGraphDatabase) graphDB;
+        PrimitiveMBean primitives = embeddedGraphDatabase.getManagementBean(PrimitiveMBean.class);
+
+        Set<Long> processedRelationships = new HashSet<Long>((int) primitives.getNumberOfRelationshipIdsInUse());
+        for (org.neo4j.graphdb.Node node : graphDB.getAllNodes()) {
+            for (Relationship relationship : node.getRelationships()) {
+                if (!processedRelationships.contains(relationship.getId())) {
+                    processedRelationships.add(relationship.getId());
+                    processRelationship(relationship);
+                }
+            }
         }
 
         if (!cancelImport)

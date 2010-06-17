@@ -38,7 +38,17 @@ public enum AttributeOrigin {
     DATA    ("AttributeOrigin_data"),
     COMPUTED("AttributeOrigin_computed"),
 
-    DELEGATE_NEO4J(PropertiesColumn.NEO4J_ID);
+    DELEGATE_NEO4J(PropertiesColumn.NEO4J_ID) {
+        @Override
+        public boolean isDelegate() {
+            return true;
+        }
+
+        @Override
+        public PropertiesColumn getPropertiesColumn() {
+            return PropertiesColumn.NEO4J_ID;
+        }
+    };
     
 
     private final String label;
@@ -51,6 +61,7 @@ public enum AttributeOrigin {
 
     AttributeOrigin(PropertiesColumn propertiesColumn) {
         this.label = null;
+        System.out.println("propCol: " + propertiesColumn);
         this.propertiesColumn = propertiesColumn;
     }
 
