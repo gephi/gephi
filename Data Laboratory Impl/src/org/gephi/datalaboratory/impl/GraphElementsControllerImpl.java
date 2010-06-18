@@ -220,6 +220,10 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         return node.getNodeData().isFixed();
     }
 
+    public Node[] getNodeNeighbours(Node node){
+        return getGraph().getNeighbors(node).toArray();
+    }
+
     public boolean isNodeInGraph(Node node) {
         return getGraph().contains(node);
     }

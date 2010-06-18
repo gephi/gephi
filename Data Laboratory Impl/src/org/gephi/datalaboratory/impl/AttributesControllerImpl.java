@@ -32,8 +32,10 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * Implementation of the AttributesController interface
+ * declared in the Data Laboratory API.
  * @author Eduardo Ramos <eduramiba@gmail.com>
+ * @see AttributesController
  */
 @ServiceProvider(service = AttributesController.class)
 public class AttributesControllerImpl implements AttributesController {

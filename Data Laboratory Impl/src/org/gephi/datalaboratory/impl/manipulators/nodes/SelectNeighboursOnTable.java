@@ -18,17 +18,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory.impl.manipulators.edges;
+package org.gephi.datalaboratory.impl.manipulators.nodes;
 
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
-import org.gephi.datalaboratory.api.AttributesController;
 import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
-import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
-import org.gephi.graph.api.Edge;
-import org.openide.util.ImageUtilities;
+import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
+import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -36,28 +33,21 @@ import org.openide.util.NbBundle;
  *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class ClearEdgesData implements EdgesManipulator {
+public class SelectNeighboursOnTable implements NodesManipulator {
+    private Node node;
+    private Node[] neighbours;
 
-    private Edge[] edges;
-
-    public void setup(Edge[] edges, Edge clickedEdge) {
-        this.edges = edges;
+    public void setup(Node[] nodes, Node clickedNode) {
+        this.node=clickedNode;
+        this.neighbours=Lookup.getDefault().lookup(GraphElementsController.class).getNodeNeighbours(node);
     }
 
     public void execute() {
-        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearEdgesData.class, "ClearEdgesData.confirmation.message"), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            AttributesController ac = Lookup.getDefault().lookup(AttributesController.class);
-            ac.clearEdgesData(edges);
-            Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
-        }
+        Lookup.getDefault().lookup(DataTablesController.class).setNodeTableSelection(neighbours);
     }
 
     public String getName() {
-        if (edges.length > 1) {
-            return NbBundle.getMessage(ClearEdgesData.class, "ClearEdgesData.name.multiple");
-        } else {
-            return NbBundle.getMessage(ClearEdgesData.class, "ClearEdgesData.name.single");
-        }
+        return NbBundle.getMessage(SelectNeighboursOnTable.class, "SelectNeighboursOnTable.name");
     }
 
     public String getDescription() {
@@ -65,7 +55,7 @@ public class ClearEdgesData implements EdgesManipulator {
     }
 
     public boolean canExecute() {
-        return Lookup.getDefault().lookup(GraphElementsController.class).areEdgesInGraph(edges);
+        return Lookup.getDefault().lookup(GraphElementsController.class).isNodeInGraph(node)&&neighbours.length>0;//Do not enable if the node has no neighbours.
     }
 
     public ManipulatorUI getUI() {
@@ -77,10 +67,10 @@ public class ClearEdgesData implements EdgesManipulator {
     }
 
     public int getPosition() {
-        return 400;
+        return 50;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/clear-data.png", true);
+        return null;
     }
 }

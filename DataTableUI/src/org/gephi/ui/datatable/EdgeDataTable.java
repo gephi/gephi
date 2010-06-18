@@ -27,6 +27,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.JMenuItem;
@@ -48,6 +49,7 @@ import org.jdesktop.swingx.table.TableColumnExt;
 import org.jdesktop.swingx.table.TableColumnModelExt;
 import org.openide.awt.MouseUtils;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -66,9 +68,9 @@ public class EdgeDataTable {
         table.setSortable(true);
         table.setRowFilter(rowFilter);
 
-        propertiesColumns = new PropertyEdgeDataColumn[2];
+        propertiesColumns = new PropertyEdgeDataColumn[3];
 
-        propertiesColumns[0] = new PropertyEdgeDataColumn("Source") {
+        propertiesColumns[0] = new PropertyEdgeDataColumn(NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.source.column.text")) {
 
             @Override
             public Class getColumnClass() {
@@ -81,7 +83,7 @@ public class EdgeDataTable {
             }
         };
 
-        propertiesColumns[1] = new PropertyEdgeDataColumn("Target") {
+        propertiesColumns[1] = new PropertyEdgeDataColumn(NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.target.column.text")) {
 
             @Override
             public Class getColumnClass() {
@@ -91,6 +93,22 @@ public class EdgeDataTable {
             @Override
             public Object getValueFor(Edge edge) {
                 return edge.getTarget().getId() + " - " + edge.getTarget().getNodeData().getLabel();
+            }
+        };
+        propertiesColumns[2] = new PropertyEdgeDataColumn(NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.type.column.text")) {
+
+            @Override
+            public Class getColumnClass() {
+                return String.class;
+            }
+
+            @Override
+            public Object getValueFor(Edge edge) {
+                if(edge.isDirected()){
+                    return NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.type.column.directed");
+                }else{
+                    return NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.type.column.undirected");
+                }
             }
         };
         table.addMouseListener(new PopupAdapter());
@@ -145,6 +163,19 @@ public class EdgeDataTable {
 
         EdgeDataTableModel model = new EdgeDataTableModel(graph.getEdges().toArray(), columns.toArray(new EdgeDataColumn[0]));
         table.setModel(model);
+    }
+
+    public void setEdgesSelection(Edge[] edges) {
+        HashSet<Edge> edgesSet=new HashSet<Edge>();
+        for(Edge e:edges){
+            edgesSet.add(e);
+        }
+        table.clearSelection();
+        for (int i = 0; i < table.getRowCount(); i++) {
+            if(edgesSet.contains(getEdgeFromRow(i))){
+                table.addRowSelectionInterval(i, i);
+            }
+        }
     }
 
     private String[] getHiddenColumns() {

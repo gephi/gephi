@@ -23,6 +23,7 @@ package org.gephi.datalaboratory.impl.manipulators.nodes;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import org.gephi.datalaboratory.api.AttributesController;
+import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
@@ -47,6 +48,7 @@ public class ClearNodesData implements NodesManipulator {
         if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.confirmation.message"), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             AttributesController ac = Lookup.getDefault().lookup(AttributesController.class);
             ac.clearNodesData(nodes);
+            Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
         }
     }
 

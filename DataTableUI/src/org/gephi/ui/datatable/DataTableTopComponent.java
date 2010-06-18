@@ -47,11 +47,15 @@ import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.datalaboratory.api.DataTablesController;
+import org.gephi.datalaboratory.api.DataTablesEventListener;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.BusyUtils;
 import org.gephi.project.api.Workspace;
@@ -69,7 +73,7 @@ import org.openide.windows.WindowManager;
  *
  * @author Mathieu Bastian
  */
-final class DataTableTopComponent extends TopComponent implements AttributeListener, GraphListener {
+final class DataTableTopComponent extends TopComponent implements DataTablesEventListener, AttributeListener, GraphListener {
 
     private enum ClassDisplayed {
 
@@ -135,6 +139,8 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
     }
 
     private void initEvents() {
+        //DataTablesEvent listener
+        Lookup.getDefault().lookup(DataTablesController.class).addDataTablesEventListener(this);
         //Workspace Listener
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
@@ -383,7 +389,7 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
         hideTable();
     }
 
-    private void hideTable(){
+    private void hideTable() {
         tableScrollPane.setViewportView(null);
     }
 
@@ -396,6 +402,43 @@ final class DataTableTopComponent extends TopComponent implements AttributeListe
             edgesButton.setSelected(true);
             initEdgesView();
         }
+    }
+
+    public void selectNodesTable() {
+        classDisplayed = classDisplayed.NODE;
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                refresh();
+            }
+        });
+    }
+
+    public void selectEdgesTable() {
+        classDisplayed = classDisplayed.EDGE;
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                refresh();
+            }
+        });
+    }
+
+    public void refreshCurrentTable() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                refresh();
+            }
+        });
+    }
+
+    public void setNodeTableSelection(final Node[] nodes) {
+        nodeTable.setNodesSelection(nodes);
+    }
+
+    public void setEdgeTableSelection(Edge[] edges) {
+        edgeTable.setEdgesSelection(edges);
     }
 
     /** This method is called from within the constructor to

@@ -28,6 +28,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import javax.swing.JMenuItem;
@@ -96,7 +97,7 @@ public class NodeDataTable {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
                     Node[] selectedNodes = getNodesFromSelectedRows();
                     if (selectedNodes.length > 0) {
-                        DataLaboratoryHelper dlh=Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+                        DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
                         NodesManipulator del = dlh.getDeleteNodesManipulator();
                         if (del != null) {
                             del.setup(selectedNodes, null);
@@ -142,6 +143,19 @@ public class NodeDataTable {
             Exceptions.printStackTrace(ex);
         } catch (InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
+        }
+    }
+
+    public void setNodesSelection(Node[] nodes) {
+        HashSet<Node> nodesSet=new HashSet<Node>();
+        for(Node n:nodes){
+            nodesSet.add(n);
+        }
+        outlineTable.clearSelection();
+        for (int i = 0; i < outlineTable.getRowCount(); i++) {
+            if(nodesSet.contains(getNodeFromRow(i))){
+                outlineTable.addRowSelectionInterval(i, i);
+            }
         }
     }
 

@@ -74,8 +74,8 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                 //Order by type, position.
                 if (o1.getType() == o2.getType()) {
                     return o1.getPosition() - o2.getPosition();
-                }else{
-                    return o1.getType()-o2.getType();
+                } else {
+                    return o1.getType() - o2.getType();
                 }
             }
         });
@@ -86,17 +86,17 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
 
             public void run() {
                 ManipulatorUI ui = m.getUI();
-                        if (ui != null) {
-                            ui.setup(m);
-                            JPanel settingsPanel=ui.getSettingsPanel();
-                            DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title",  ui.getDisplayName()));
-                            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                                ui.unSetup();
-                                m.execute();
-                            }
-                        } else {
-                            m.execute();
-                        }
+                if (ui != null) {
+                    ui.setup(m);
+                    JPanel settingsPanel = ui.getSettingsPanel();
+                    DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()));
+                    if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                        ui.unSetup();
+                        m.execute();
+                    }
+                } else {
+                    m.execute();
+                }
             }
         }).start();
     }

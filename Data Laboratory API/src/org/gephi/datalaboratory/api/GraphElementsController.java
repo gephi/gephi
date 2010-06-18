@@ -181,6 +181,8 @@ public interface GraphElementsController {
      */
     boolean isNodeFixed(Node node);
 
+    Node[] getNodeNeighbours(Node node);
+
     /*****************
      * The next methods that check if nodes and edges are in the graph,
      * are necessary because the table in DataLaboratory is not refreshed
