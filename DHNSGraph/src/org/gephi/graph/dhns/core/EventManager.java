@@ -119,10 +119,10 @@ public class EventManager implements Runnable {
                 nodes = new Node[]{(Node) event.getData()};
             }
             switch (event.getEventType()) {
-                case NODES_ADDED:
+                case ADD_NODES:
                     eventData.setAddedNodes(nodes);
                     break;
-                case NODES_REMOVED:
+                case REMOVE_NODES:
                     eventData.setRemovedNodes(nodes);
                     break;
                 case EXPAND:
@@ -131,7 +131,7 @@ public class EventManager implements Runnable {
                 case RETRACT:
                     eventData.setRetractedNodes(nodes);
                     break;
-                case MOVE_NODE:
+                case MOVE_NODES:
                     eventData.setMovedNodes(nodes);
                     break;
             }
@@ -143,10 +143,10 @@ public class EventManager implements Runnable {
                 edges = new Edge[]{(Edge) event.getData()};
             }
             switch (event.getEventType()) {
-                case EDGES_ADDED:
+                case ADD_EDGES:
                     eventData.setAddedEdges(edges);
                     break;
-                case EDGES_REMOVED:
+                case REMOVE_EDGES:
                     eventData.setRemovedEdges(edges);
                     break;
             }
