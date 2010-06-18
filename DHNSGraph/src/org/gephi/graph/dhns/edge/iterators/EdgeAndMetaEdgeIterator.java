@@ -77,7 +77,7 @@ public class EdgeAndMetaEdgeIterator extends AbstractEdgeIterator implements Ite
 
             pointer = edgeIterator.next();
             if (!metaEdge) {
-                if (!nodePredicate.evaluate(pointer.getTarget())) {
+                if (!nodePredicate.evaluate(pointer.getTarget(currentNode.getViewId()))) {
                     pointer = null;
                 }
             }

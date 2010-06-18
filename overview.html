@@ -9,6 +9,10 @@
     <p>
     <h2>API Changes</h2>
     <ul>
+        <li>(June 18 2010) Graph API event management improvements. The <code>GraphEvent</code> has now precise events, including
+            <code>ADD_NODES</code>, <code>REMOVE_NODES</code>, <code>ADD_EDGES</code>, <code>REMOVE_EDGES</code> and
+            <code>VISIBLE_VIEW</code>. A new <code>GraphEventData</code> interface has been created to retrieve elements related to
+            the events.
         <li>(June 14 2010) Export API refactoring, inspired from ImportAPI. Create an <code>ExporterBuilder</code> interface for
             exporter creation and different exporters: <code>GraphExporter</code>, <code>VectorExporter</code>, <code>ByteExporter</code>
             and <code>CharacterExporter</code> that covers common cases. The way exporters write data has been rationalized by using either

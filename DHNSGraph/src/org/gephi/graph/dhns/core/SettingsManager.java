@@ -24,9 +24,11 @@ import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.GraphSettings;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.dhns.edge.AverageMetaEdgeBuilder;
 import org.gephi.graph.dhns.edge.MetaEdgeBuilder;
 import org.gephi.graph.dhns.edge.SumMetaEdgeBuilder;
+import org.gephi.graph.dhns.event.GeneralEvent;
 
 /**
  *
@@ -159,7 +161,9 @@ public class SettingsManager implements GraphSettings {
 
     private void fireUpdate() {
         dhns.getGraphVersion().incEdgeVersion();
-        dhns.getEventManager().fireEvent(EventType.EDGES_UPDATED);
+        for (GraphView view : dhns.getGraphStructure().getViews()) {
+            dhns.getEventManager().fireEvent(new GeneralEvent(EventType.META_EDGES_UPDATE, view));
+        }
     }
 
     public Map<String, Object> getClientProperties() {
