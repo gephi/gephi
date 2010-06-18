@@ -38,6 +38,7 @@ public class AttributeFactoryImpl implements AttributeValueFactory, AttributeRow
     }
 
     public AttributeValue newValue(AttributeColumn column, Object value) {
+//        System.out.println(">>>>>AVF");
         if (value == null) {
             return new AttributeValueImpl((AttributeColumnImpl) column, null);
         }
@@ -47,6 +48,10 @@ public class AttributeFactoryImpl implements AttributeValueFactory, AttributeRow
         Object managedValue = model.getManagedValue(value, column.getType());
         return new AttributeValueImpl((AttributeColumnImpl) column, managedValue);
     }
+
+//    public AttributeValue newValue(AttributeColumn column, Object value, Object idDelegateValue) {
+//        return new AttributeValueImpl((AttributeColumnImpl) column, value, idDelegateValue);
+//    }
 
     public AttributeRowImpl newNodeRow() {
         return new AttributeRowImpl(model.getNodeTable());

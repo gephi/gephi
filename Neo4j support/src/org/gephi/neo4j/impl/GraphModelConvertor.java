@@ -3,6 +3,7 @@ package org.gephi.neo4j.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+//import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -86,14 +87,29 @@ public class GraphModelConvertor {
         AttributeTable nodeTable = attributeModel.getNodeTable();
         Attributes attributes = gephiNode.getNodeData().getAttributes();
 
+        Object neoNodeId = neoNode.getId();
         for (String neoPropertyKey : neoNode.getPropertyKeys()) {
             Object neoPropertyValue = neoNode.getProperty(neoPropertyKey);
 
-            if (!nodeTable.hasColumn(neoPropertyKey))
-                nodeTable.addColumn(neoPropertyKey, neoPropertyKey, AttributeType.parse(neoPropertyValue), AttributeOrigin.DELEGATE_NEO4J, null);
+            if (!nodeTable.hasColumn(neoPropertyKey)) {
+                System.out.println("creating node column: " + neoPropertyKey);
+                nodeTable.addColumn(neoPropertyKey, neoPropertyKey, AttributeType.parse(neoPropertyValue), AttributeOrigin.DELEGATE, null, Neo4jDelegateProviderImpl.getInstance());
+            }
+            else
+                System.out.println("node column already exist");
+            //TODO doplnit este parameter na delegovanie pre stlpec
 
-            attributes.setValue(neoPropertyKey, neoPropertyValue);
+            //if (nodeTable.getColumn(neoPropertyKey).getOrigin().isDelegate())
+            if (nodeTable.getColumn(neoPropertyKey).getOrigin() == AttributeOrigin.DELEGATE) {
+                System.out.printf("setting delegating value '%s' to column '%s'", neoNodeId, neoPropertyKey);
+                attributes.setValue(neoPropertyKey, neoNodeId);//TODO doplnit
+            }
+            else {
+                System.out.printf("setting delegating value '%s' to column '%s'", neoPropertyValue, neoPropertyKey);
+                attributes.setValue(neoPropertyKey, neoPropertyValue);
+            }
         }
+        System.out.println();
     }
 
     /**
@@ -116,13 +132,17 @@ public class GraphModelConvertor {
         AttributeTable edgeTable = attributeModel.getEdgeTable();
         Attributes attributes = gephiEdge.getEdgeData().getAttributes();
 
+        Object neoRelationshipId = neoRelationship.getId();
         for (String neoPropertyKey : neoRelationship.getPropertyKeys()) {
             Object neoPropertyValue = neoRelationship.getProperty(neoPropertyKey);
 
             if (!edgeTable.hasColumn(neoPropertyKey))
-                edgeTable.addColumn(neoPropertyKey, neoPropertyKey, AttributeType.parse(neoPropertyValue), AttributeOrigin.DELEGATE_NEO4J, null);
+                edgeTable.addColumn(neoPropertyKey, neoPropertyKey, AttributeType.parse(neoPropertyValue), AttributeOrigin.DELEGATE, null, Neo4jDelegateProviderImpl.getInstance());
 
-            attributes.setValue(neoPropertyKey, neoPropertyValue);
+            if (edgeTable.getColumn(neoPropertyKey).getOrigin() == AttributeOrigin.DELEGATE)
+                attributes.setValue(neoPropertyKey, neoRelationshipId);//TODO doplnit
+            else
+                attributes.setValue(neoPropertyKey, neoPropertyValue);
         }
     }
 

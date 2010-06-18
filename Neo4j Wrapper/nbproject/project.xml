@@ -7,22 +7,12 @@
             <suite-component/>
             <module-dependencies/>
             <public-packages>
-                <package>org.neo4j.commons</package>
-                <package>org.neo4j.commons.collection</package>
-                <package>org.neo4j.commons.commandline</package>
-                <package>org.neo4j.commons.iterator</package>
                 <package>org.neo4j.graphdb</package>
-                <package>org.neo4j.graphdb.event</package>
-                <package>org.neo4j.graphdb.traversal</package>
                 <package>org.neo4j.kernel</package>
                 <package>org.neo4j.kernel.impl.batchinsert</package>
                 <package>org.neo4j.kernel.management</package>
                 <package>org.neo4j.remote</package>
             </public-packages>
-            <class-path-extension>
-                <runtime-relative-path>ext/neo4j-kernel-1.1-20100617.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/neo4j-kernel-1.1-20100617.jar</binary-origin>
-            </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jta-1.0.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jta-1.0.1.jar</binary-origin>
@@ -30,6 +20,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/neo4j-remote-graphdb-0.6.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/neo4j-remote-graphdb-0.6.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/neo4j-kernel-1.1-20100618.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/neo4j-kernel-1.1-20100618.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

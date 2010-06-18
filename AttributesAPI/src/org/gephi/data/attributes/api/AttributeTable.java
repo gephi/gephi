@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.api;
 
+import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
 import org.gephi.data.properties.PropertiesColumn;
 
 /**
@@ -93,6 +94,8 @@ public interface AttributeTable {
      * @return              the newly created column
      */
     public AttributeColumn addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue);
+
+    public AttributeColumn addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue, AttributeValueDelegateProvider attributeValueDelegateProvider);
 
     /**
      * Creates and add a new properties column to this table. All needed informations are set in

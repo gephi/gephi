@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.api;
 
+import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
+
 /**
  * Column is the header of a data column. It belongs to an <code>AttributeTable</code>
  * and is the key to access data within <code>AttributeRow</code>.
@@ -95,4 +97,6 @@ public interface AttributeColumn {
      * @return  the default value, or <code>null</code>
      */
     public Object getDefaultValue();
+
+    public AttributeValueDelegateProvider getProvider();
 }

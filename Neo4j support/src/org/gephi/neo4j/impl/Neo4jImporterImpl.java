@@ -88,6 +88,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     }
 
     private void importGraph() {
+        Neo4jDelegateProviderImpl.setGraphDB(graphDB);
 //        TraversalDescription traversalDescription = TraversalFactory.createTraversalDescription();
 //        RelationshipExpander relationshipExpander = TraversalFactory.expanderForAllTypes();
 //
@@ -144,6 +145,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     }
 
     private void processRelationship(Relationship neoRelationship) {
+        System.out.println("processing relationship: " + neoRelationship.getType().name());
         org.gephi.graph.api.Node gephiStartNode =
                 graphModelConvertor.createGephiNodeFromNeoNode(neoRelationship.getStartNode());
         org.gephi.graph.api.Node gephiEndNode =

@@ -11,7 +11,7 @@ import org.gephi.data.properties.PropertiesColumn;
  * @author Martin Škurla
  */
 public interface AttributeValueDelegateProvider {
-    PropertiesColumn getDelegateIdColumn();
+    //PropertiesColumn getDelegateIdColumn();
     Object getNodeValue(AttributeColumn attributeColumn, Object id);
     Object getEdgeValue(AttributeColumn attributeColumn, Object id);
 }

@@ -94,7 +94,13 @@ public class AttributeRowImpl implements AttributeRow {
         if (column == null) {
             throw new NullPointerException("Column is null");
         }
-        AttributeValue attValue = attributeTable.getFactory().newValue(column, value);
+
+        AttributeValue attValue;
+//        if (column.getOrigin() == AttributeOrigin.DELEGATE)//TODO zmenene
+//        if (column.getOrigin().isDelegate())//TODO zmenene
+//            attValue = attributeTable.getFactory().newValue(column, null, value);
+//        else
+            attValue = attributeTable.getFactory().newValue(column, value);
         setValue(attValue);
     }
 
@@ -108,12 +114,14 @@ public class AttributeRowImpl implements AttributeRow {
             value = attributeTable.getFactory().newValue(column, value.getValue());
         }
 
-        if (column.getOrigin().isDelegate()) {
-            if (delegateIdValue == null)
-                delegateIdValue = value.getValue();
-            else
-                throw new IllegalArgumentException("This column has already set the delegate id value");
-        }
+//        if (column.getOrigin().isDelegate()) {
+//            System.out.printf("column origin '%s' is delegate...", column.getOrigin());
+//
+//            if (delegateIdValue == null)
+//                delegateIdValue = value.getValue();
+//            else
+//                throw new IllegalArgumentException("This column has already set the delegate id value");
+//        }
 
         setValue(column.getIndex(), (AttributeValueImpl) value);
     }
@@ -121,8 +129,18 @@ public class AttributeRowImpl implements AttributeRow {
     private void setValue(int index, AttributeValueImpl value) {
         updateColumns();
 
-        value.setAttributeRow(this);
+//        value.setAttributeRow(this);
         this.values[index] = value;
+
+//        if (column.getOrigin().isDelegate()) {
+//        if (attributeTable.getColumn(index).getOrigin().isDelegate()) {//TODO zmenene
+//            System.out.printf("column origin '%s' is delegate...", attributeTable.getColumn(index));//column.getOrigin());
+//
+//            if (delegateIdValue == null)
+//                delegateIdValue = value.getValue();
+//            else
+//                throw new IllegalArgumentException("This column has already set the delegate id value");
+//        }
     }
 
     Object getDelegateIdValue() {

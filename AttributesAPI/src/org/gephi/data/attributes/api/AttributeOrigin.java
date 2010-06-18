@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.api;
 
-import org.gephi.data.properties.PropertiesColumn;
+//import org.gephi.data.properties.PropertiesColumn;
 
 /**
  * Meta-data that describes the origin of columns content. Default value is <b>DATA</b>.
@@ -37,39 +37,39 @@ public enum AttributeOrigin {
     PROPERTY("AttributeOrigin_property"),
     DATA    ("AttributeOrigin_data"),
     COMPUTED("AttributeOrigin_computed"),
+    DELEGATE(null);
+//    DELEGATE_NEO4J(null/*PropertiesColumn.NEO4J_ID*/) {
+//        @Override
+//        public boolean isDelegate() {
+//            return true;
+//        }
 
-    DELEGATE_NEO4J(PropertiesColumn.NEO4J_ID) {
-        @Override
-        public boolean isDelegate() {
-            return true;
-        }
-
-        @Override
-        public PropertiesColumn getPropertiesColumn() {
-            return PropertiesColumn.NEO4J_ID;
-        }
-    };
+//        @Override
+//        public PropertiesColumn getPropertiesColumn() {
+//            return PropertiesColumn.NEO4J_ID;
+//        }
+//    };
     
 
     private final String label;
-    private final PropertiesColumn propertiesColumn;
+//    private final PropertiesColumn propertiesColumn;
 
     AttributeOrigin(String label) {
         this.label = label;
-        this.propertiesColumn = null;
+//        this.propertiesColumn = null;
     }
 
-    AttributeOrigin(PropertiesColumn propertiesColumn) {
-        this.label = null;
-        System.out.println("propCol: " + propertiesColumn);
-        this.propertiesColumn = propertiesColumn;
-    }
+//    AttributeOrigin(PropertiesColumn propertiesColumn) {
+//        this.label = null;
+//        System.out.println("propCol: " + propertiesColumn);
+//        this.propertiesColumn = propertiesColumn;
+//    }
 
-    public boolean isDelegate() {
-        return propertiesColumn != null;
-    }
-
-    public PropertiesColumn getPropertiesColumn() {
-        return propertiesColumn;
-    }
+//    public boolean isDelegate() {
+//        return label == null;//propertiesColumn != null;;
+//    }
+//
+//    public PropertiesColumn getPropertiesColumn() {
+//        return null;//propertiesColumn;
+//    }
 }

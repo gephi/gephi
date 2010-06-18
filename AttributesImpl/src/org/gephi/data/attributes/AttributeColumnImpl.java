@@ -23,6 +23,7 @@ package org.gephi.data.attributes;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
 
 /**
  *
@@ -37,14 +38,16 @@ public class AttributeColumnImpl implements AttributeColumn {
     protected final AttributeType type;
     protected final AttributeOrigin origin;
     protected final AttributeValueImpl defaultValue;
+    protected final AttributeValueDelegateProvider attributeValueDelegateProvider;//TODO added
 
-    public AttributeColumnImpl(AttributeTableImpl table, int index, String id, String title, AttributeType attributeType, AttributeOrigin origin, Object defaultValue) {
+    public AttributeColumnImpl(AttributeTableImpl table, int index, String id, String title, AttributeType attributeType, AttributeOrigin origin, Object defaultValue, AttributeValueDelegateProvider attributeValueDelegateProvider) {
         this.table = table;
         this.index = index;
         this.id = id;
         this.type = attributeType;
         this.title = title;
         this.origin = origin;
+        this.attributeValueDelegateProvider = attributeValueDelegateProvider;
         this.defaultValue = new AttributeValueImpl(this, defaultValue);
     }
 
@@ -74,6 +77,10 @@ public class AttributeColumnImpl implements AttributeColumn {
 
     public Object getDefaultValue() {
         return defaultValue.getValue();
+    }
+
+    public AttributeValueDelegateProvider getProvider() {
+        return attributeValueDelegateProvider;
     }
 
     @Override
