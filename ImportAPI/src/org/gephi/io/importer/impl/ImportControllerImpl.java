@@ -125,8 +125,12 @@ public class ImportControllerImpl implements ImportController {
     }
 
     public Container importFile(InputStream stream, FileImporter importer) {
-        Reader reader = ImportUtils.getTextReader(stream);
-        return importFile(reader, importer);
+        try {
+            Reader reader = ImportUtils.getTextReader(stream);
+            return importFile(reader, importer);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public Container importDatabase(Database database, DatabaseImporter importer) {

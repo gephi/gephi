@@ -383,7 +383,7 @@ public class CharsetToolkit {
      * @return a <code>BufferedReader</code>
      * @throws FileNotFoundException if the file is not found.
      */
-    public BufferedReader getReader() throws FileNotFoundException {
+    public BufferedReader getReader() {
         LineNumberReader reader = new LineNumberReader(new InputStreamReader(input, getCharset()));
         if (hasUTF8Bom() || hasUTF16LEBom() || hasUTF16BEBom()) {
             try {
