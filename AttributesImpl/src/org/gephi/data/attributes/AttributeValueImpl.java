@@ -61,12 +61,12 @@ public final class AttributeValueImpl implements AttributeValue {
             AttributeValueDelegateProvider attributeValueDelegateProvider =
             PropertyColumnToAttributeValueDelegateProviderMapper.getInstance().get(propertiesColumn);
 
-//            if (row.attributeTable.isEdgeTable())
+            if (AttributeUtilsImpl.getDefault().isEdgeColumn(column))
                 return attributeValueDelegateProvider.getEdgeValue(column, delegateIdValue);
-//            else if (row.attributeTable.isNodeTable())
-//                return attributeValueDelegateProvider.getNodeValue(column, delegateIdValue);
-//            else
-//                throw new AssertionError();
+            else if (AttributeUtilsImpl.getDefault().isNodeColumn(column))
+                return attributeValueDelegateProvider.getNodeValue(column, delegateIdValue);
+            else
+                throw new AssertionError();
         }
     }
 

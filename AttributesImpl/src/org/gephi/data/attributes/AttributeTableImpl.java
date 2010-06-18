@@ -206,14 +206,6 @@ public class AttributeTableImpl implements AttributeTable {
         eventDispatchThread.fireEvent(event);
     }
 
-    public boolean isNodeTable() {
-        return name.equals(NbBundle.getMessage(AttributeTableImpl.class, "NodeAttributeTable.name"));
-    }
-
-    public boolean isEdgeTable() {
-        return name.equals(NbBundle.getMessage(AttributeTableImpl.class, "EdgeAttributeTable.name"));
-    }
-
     protected class AttributeEventDispatchThread extends Thread {
 
         private boolean stop;

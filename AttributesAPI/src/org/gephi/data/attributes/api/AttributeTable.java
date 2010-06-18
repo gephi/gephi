@@ -172,18 +172,4 @@ public interface AttributeTable {
      * @param table         the table that is to be merged with this table
      */
     public void mergeTable(AttributeTable table);
-
-    /**
-     * Determines if this AttributeTable represents node table.
-     *
-     * @return true if this table represents node table, false otherwise
-     */
-    public boolean isNodeTable();
-
-    /**
-     * Determines if this AttributeTable represents edge table.
-     *
-     * @return true if current table represents edge table, false otherwise
-     */
-    public boolean isEdgeTable();
 }
