@@ -91,7 +91,6 @@ public class Neo4jExporterImpl implements Neo4jExporter, LongTask {
         graphModelConvertor = GraphModelConvertor.getInstance(graphDB);
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
 
-        // the algorithm traverses through all edges
         for (Edge gephiEdge : graphModel.getGraph().getEdges()) {
             org.neo4j.graphdb.Node neoStartNode =
                     graphModelConvertor.createNeoNodeFromGephiNode(gephiEdge.getSource());

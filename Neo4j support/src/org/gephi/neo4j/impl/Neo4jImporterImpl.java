@@ -3,18 +3,16 @@ package org.gephi.neo4j.impl;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.Set;
 import org.gephi.neo4j.api.Neo4jImporter;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
-import org.neo4j.kernel.management.PrimitiveMBean;
 import org.neo4j.remote.RemoteGraphDatabase;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -83,47 +81,20 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
             transaction.finish();
         }
 
-        graphDB.shutdown();
+        //graphDB.shutdown();
         progressTicket.finish();
     }
 
     private void importGraph() {
         Neo4jDelegateProviderImpl.setGraphDB(graphDB);
-//        TraversalDescription traversalDescription = TraversalFactory.createTraversalDescription();
-//        RelationshipExpander relationshipExpander = TraversalFactory.expanderForAllTypes();
-//
-//        org.neo4j.graphdb.Node referenceNode = graphDB.getReferenceNode();
-
-//        Traverser traverser =
-//            traversalDescription.depthFirst()
-//                                .expand(relationshipExpander)
-//                                .filter(ReturnFilter.ALL)
-//                                .prune(PruneEvaluator.NONE)
-//                                .traverse(referenceNode);
-
         createNewProject();
         //TODO solve problem with projects and workspace, how to treat canceling task?
 
         graphModelConvertor = GraphModelConvertor.getInstance(graphDB);
-        // the algorithm traverses through all relationships
-//        for (Relationship neoRelationship : traverser.relationships()) {
-//            if (cancelImport)
-//                break;
-//
-//            processRelationship(neoRelationship);
-//        }
 
-        EmbeddedGraphDatabase embeddedGraphDatabase = (EmbeddedGraphDatabase) graphDB;
-        PrimitiveMBean primitives = embeddedGraphDatabase.getManagementBean(PrimitiveMBean.class);
-
-        Set<Long> processedRelationships = new HashSet<Long>((int) primitives.getNumberOfRelationshipIdsInUse());
         for (org.neo4j.graphdb.Node node : graphDB.getAllNodes()) {
-            for (Relationship relationship : node.getRelationships()) {
-                if (!processedRelationships.contains(relationship.getId())) {
-                    processedRelationships.add(relationship.getId());
-                    processRelationship(relationship);
-                }
-            }
+            for (Relationship relationship : node.getRelationships(Direction.INCOMING))
+                processRelationship(relationship);
         }
 
         if (!cancelImport)
@@ -145,7 +116,6 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     }
 
     private void processRelationship(Relationship neoRelationship) {
-        System.out.println("processing relationship: " + neoRelationship.getType().name());
         org.gephi.graph.api.Node gephiStartNode =
                 graphModelConvertor.createGephiNodeFromNeoNode(neoRelationship.getStartNode());
         org.gephi.graph.api.Node gephiEndNode =

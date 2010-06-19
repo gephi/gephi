@@ -40,7 +40,6 @@ public enum PropertiesColumn {
     NODE_LABEL(1,  "label",   AttributeType.STRING, AttributeOrigin.PROPERTY, null),
     EDGE_ID   (0,  "id",      AttributeType.STRING, AttributeOrigin.PROPERTY, null),
     EDGE_LABEL(1,  "label",   AttributeType.STRING, AttributeOrigin.PROPERTY, null);
-//    NEO4J_ID  (-1, "neo4jId", AttributeType.LONG,   AttributeOrigin.DELEGATE, null);//TODO mozno zakomentovat
     
     private final int index;
     private final String id;

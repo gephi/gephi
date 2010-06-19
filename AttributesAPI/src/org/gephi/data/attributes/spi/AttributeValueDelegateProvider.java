@@ -2,16 +2,29 @@ package org.gephi.data.attributes.spi;
 
 
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.properties.PropertiesColumn;
 
 
 /**
- * Provider for delegating
+ * Provider for delegating attribute value.
  *
  * @author Martin Škurla
  */
 public interface AttributeValueDelegateProvider {
-    //PropertiesColumn getDelegateIdColumn();
+    /**
+     *
+     * @param attributeColumn
+     * @param id
+     * 
+     * @return
+     */
     Object getNodeValue(AttributeColumn attributeColumn, Object id);
+
+    /**
+     *
+     * @param attributeColumn
+     * @param id
+     * 
+     * @return
+     */
     Object getEdgeValue(AttributeColumn attributeColumn, Object id);
 }

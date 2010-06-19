@@ -34,7 +34,6 @@ import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
 import org.gephi.data.properties.PropertiesColumn;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -118,34 +117,6 @@ public class AttributeTableImpl implements AttributeTable {
 
         return column;
     }
-
-//    public synchronized AttributeColumnImpl addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue) {
-//        if (defaultValue != null) {
-//            if (defaultValue.getClass() != type.getType()) {
-//                if (defaultValue.getClass() == String.class) {
-//                    defaultValue = type.parse((String) defaultValue);
-//                } else {
-//                    throw new IllegalArgumentException("The default value type cannot be cast to the type");
-//                }
-//            }
-//            defaultValue = model.getManagedValue(defaultValue, type);
-//        }
-//        AttributeColumnImpl column = new AttributeColumnImpl(this, columns.size(), id, title, type, origin, defaultValue);
-//        columns.add(column);
-//        columnsMap.put(id, column);
-//        if (title != null && !title.equals(id)) {
-//            columnsMap.put(title, column);
-//        }
-//        columnsSet.put(column, column);
-//
-//        //Version
-//        version++;
-//
-//        fireAttributeEvent(
-//                new AttributeEventImpl(AttributeEvent.EventType.ADD_COLUMN, this, column));
-//
-//        return column;
-//    }
 
     public synchronized void removeColumn(AttributeColumn column) {
         //Remove from collections

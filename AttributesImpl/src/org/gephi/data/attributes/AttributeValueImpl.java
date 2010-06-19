@@ -23,8 +23,6 @@ package org.gephi.data.attributes;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
-//import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
-//import org.gephi.data.properties.PropertiesColumn;
 
 /**
  *
@@ -36,20 +34,10 @@ public final class AttributeValueImpl implements AttributeValue {
     private final AttributeColumnImpl column;
     private final Object value;
 
-//    private AttributeRowImpl row;
-//    private Object delegateIdValue;//TODO pridane
-
     public AttributeValueImpl(AttributeColumnImpl column, Object value) {
         this.column = column;
         this.value = value;
-        //System.out.printf("AttributeValueImpl column: '%s' value: '%s'\n", column.origin, value);
     }
-
-//    public AttributeValueImpl(AttributeColumnImpl column, Object value, Object delegateIdValue) {//TODO pridane
-//        this.column = column;
-//        this.value = value;
-//        this.delegateIdValue = delegateIdValue;
-//    }
 
     public AttributeColumnImpl getColumn() {
         return column;
@@ -57,42 +45,20 @@ public final class AttributeValueImpl implements AttributeValue {
 
     public Object getValue() {
         if (column.getOrigin() != AttributeOrigin.DELEGATE) {
-//        if (!column.getOrigin().isDelegate()) {
-//            System.out.println("origin: " + column.getOrigin());
-//            System.out.println("delegate: " + column.getOrigin().isDelegate());
-//            System.out.println();
             return value;
         }
         else {
-//            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//            System.out.println("origin: " + column.getOrigin());
-//            System.out.println("row: " + row);
-
-//            Object delegateIdValue = row.getDelegateIdValue();
-//            PropertiesColumn propertiesColumn = column.getOrigin().getPropertiesColumn();
-
-//            AttributeValueDelegateProvider attributeValueDelegateProvider =
-//            PropertyColumnToAttributeValueDelegateProviderMapper.getInstance().get(propertiesColumn);
-            AttributeValueDelegateProvider attributeValueDelegateProvider = column.getProvider();//TODO nastavit
-            //System.out.println("column name: " + column.id);
             if (value == null)
                 return null;
 
-            System.out.println(">>>>>valueeeee: " + value);
+            AttributeValueDelegateProvider attributeValueDelegateProvider = column.getProvider();
 
             if (AttributeUtilsImpl.getDefault().isEdgeColumn(column))
-                //return attributeValueDelegateProvider.getEdgeValue(column, delegateIdValue);
                 return attributeValueDelegateProvider.getEdgeValue(column, value);
             else if (AttributeUtilsImpl.getDefault().isNodeColumn(column))
-                //return attributeValueDelegateProvider.getNodeValue(column, delegateIdValue);
                 return attributeValueDelegateProvider.getNodeValue(column, value);
             else
                 throw new AssertionError();
         }
     }
-
-//    void setAttributeRow(AttributeRowImpl row) {
-//        System.out.println("set attribute row: " + row);
-//        this.row = row;
-//    }
 }
