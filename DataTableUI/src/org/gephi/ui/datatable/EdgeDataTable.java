@@ -178,6 +178,10 @@ public class EdgeDataTable {
         }
     }
 
+    public boolean hasData(){
+        return table.getRowCount()>0;
+    }
+
     private String[] getHiddenColumns() {
         List<String> hiddenCols = new ArrayList<String>();
         TableColumnModelExt columnModel = (TableColumnModelExt) table.getColumnModel();
@@ -402,7 +406,7 @@ public class EdgeDataTable {
     }
 
     private Edge getEdgeFromRow(int row) {
-        return ((EdgeDataTableModel) table.getModel()).getEdgeAtRow(row);
+        return ((EdgeDataTableModel) table.getModel()).getEdgeAtRow(table.convertRowIndexToModel(row));
     }
 
     private Edge[] getEdgesFromSelectedRows() {

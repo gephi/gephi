@@ -18,15 +18,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory.impl.manipulators.nodes;
+package org.gephi.datalaboratory.impl.manipulators.edges;
 
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
+import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
-import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
+import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -34,27 +34,22 @@ import org.openide.util.NbBundle;
  *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class DeleteNodes implements NodesManipulator {
+public class SelectNodesOnTable implements EdgesManipulator{
+    private Edge clickedEdge;
 
-    private Node[] nodes;
-
-    public void setup(Node[] nodes, Node clickedNode) {
-        this.nodes = nodes;
+    public void setup(Edge[] edges, Edge clickedEdge) {
+        this.clickedEdge=clickedEdge;
     }
 
     public void execute() {
-        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.confirmation.message"), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-            gec.deleteNodes(nodes);
-        }
+        Node[] nodes=new Node[]{clickedEdge.getSource(),clickedEdge.getTarget()};
+        DataTablesController dtc=Lookup.getDefault().lookup(DataTablesController.class);
+        dtc.setNodeTableSelection(nodes);
+        dtc.selectNodesTable();
     }
 
     public String getName() {
-        if (nodes.length > 1) {
-            return NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.name.multiple");
-        } else {
-            return NbBundle.getMessage(DeleteNodes.class, "DeleteNodes.name.single");
-        }
+        return NbBundle.getMessage(SelectNodesOnTable.class, "SelectNodesOnTable.name");
     }
 
     public String getDescription() {
@@ -62,7 +57,8 @@ public class DeleteNodes implements NodesManipulator {
     }
 
     public boolean canExecute() {
-        return Lookup.getDefault().lookup(GraphElementsController.class).areNodesInGraph(nodes);
+        GraphElementsController gec=Lookup.getDefault().lookup(GraphElementsController.class);
+        return gec.isEdgeInGraph(clickedEdge);
     }
 
     public ManipulatorUI getUI() {
@@ -74,10 +70,11 @@ public class DeleteNodes implements NodesManipulator {
     }
 
     public int getPosition() {
-        return 300;
+        return 200;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/cross.png", true);
+        return null;
     }
+
 }

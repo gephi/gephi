@@ -224,6 +224,10 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         return getGraph().getNeighbors(node).toArray();
     }
 
+    public Edge[] getNodeEdges(Node node){
+        return getGraph().getEdges(node).toArray();
+    }
+
     public boolean isNodeInGraph(Node node) {
         return getGraph().contains(node);
     }

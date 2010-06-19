@@ -67,7 +67,7 @@ public class SelectNeighboursOnTable implements NodesManipulator {
     }
 
     public int getPosition() {
-        return 50;
+        return 100;
     }
 
     public Icon getIcon() {

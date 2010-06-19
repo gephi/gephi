@@ -77,7 +77,7 @@ public class ClearEdgesData implements EdgesManipulator {
     }
 
     public int getPosition() {
-        return 400;
+        return 500;
     }
 
     public Icon getIcon() {

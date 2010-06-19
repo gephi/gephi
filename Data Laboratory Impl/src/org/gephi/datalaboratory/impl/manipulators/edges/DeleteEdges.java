@@ -74,7 +74,7 @@ public class DeleteEdges implements EdgesManipulator {
     }
 
     public int getPosition() {
-        return 200;
+        return 300;
     }
 
     public Icon getIcon() {

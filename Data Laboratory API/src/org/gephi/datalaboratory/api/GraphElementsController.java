@@ -181,7 +181,19 @@ public interface GraphElementsController {
      */
     boolean isNodeFixed(Node node);
 
+    /**
+     * Prepares and returns an array with the neighbour nodes of the specified node.
+     * @param node Node to get neighbours
+     * @return Array of neighbour nodes
+     */
     Node[] getNodeNeighbours(Node node);
+
+    /**
+     * Prepares and returns an array with the edges incident to the specified node.
+     * @param node Node to get edges
+     * @return Array of incident edges
+     */
+    Edge[] getNodeEdges(Node node);
 
     /*****************
      * The next methods that check if nodes and edges are in the graph,

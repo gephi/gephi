@@ -159,6 +159,10 @@ public class NodeDataTable {
         }
     }
 
+    public boolean hasData(){
+        return outlineTable.getRowCount()>0;
+    }
+
     private static class NodeTreeModel implements TreeModel {
 
         private ImmutableTreeNode root;

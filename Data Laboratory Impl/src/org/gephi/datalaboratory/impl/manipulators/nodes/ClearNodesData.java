@@ -77,7 +77,7 @@ public class ClearNodesData implements NodesManipulator {
     }
 
     public int getPosition() {
-        return 200;
+        return 400;
     }
 
     public Icon getIcon() {
