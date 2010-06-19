@@ -1,0 +1,63 @@
+# Occitan (post 1500) translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-06-18 10:29+0000\n"
+"Last-Translator: Cédric VALMARY (Tot en òc) <cvalmary@yahoo.fr>\n"
+"Language-Team: Occitan (post 1500) <oc@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-06-19 03:52+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OutOfMemoryError.message"
+msgstr ""
+
+msgid "ReportPanel.jLabel1.text"
+msgstr "Resumit :"
+
+msgid "ReportPanel.jLabel2.text"
+msgstr ""
+
+msgid "ReportPanel.followCheckBox.text"
+msgstr "Seguir aqueste problèma"
+
+msgid "ReportPanel.labelEmail.text"
+msgstr "Corrièl :"
+
+msgid "ReportPanel.helpLabel.text"
+msgstr ""
+
+msgid "ReportPanel.dialog.title"
+msgstr "Raportador d'excepcions"
+
+msgid "ReportPanel.dialog.sendButton"
+msgstr "Mandar"
+
+msgid "ReportHandler.button"
+msgstr "Raportar lo problèma"
+
+msgid "ReportController.status.sending"
+msgstr "Mandar lo rapòrt"
+
+msgid "ReportController.status.sent"
+msgstr "Lo problèma es estat raportat. Mercés."
+
+msgid "ReportController.status.failed"
+msgstr ""
+
+msgid "ReportPanel.jLabel3.text"
+msgstr ""
+
+msgid "ReportPanel.viewDataButton.text"
+msgstr "Veire las donadas"
+
+msgid "ReportPanel.viewData.title"
+msgstr "Donadas del rapòrt."
