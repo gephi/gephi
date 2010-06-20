@@ -43,38 +43,8 @@ public class AttributeUtilsImpl extends AttributeUtils {
 
     @Override
     public boolean isNumberColumn(AttributeColumn column) {
-        return column.getType().isNumber();
-    }
-
-    private Comparable<?> getMaxValueAccordingToAttributeType(AttributeType attributeType) {
-        Comparable<?> max = null;
-        switch (attributeType) {
-            case BYTE:
-                max = Byte.MAX_VALUE;
-                break;
-            case SHORT:
-                max = Short.MAX_VALUE;
-                break;
-            case INT:
-                max = Integer.MAX_VALUE;
-                break;
-            case LONG:
-                max = Long.MAX_VALUE;
-                break;
-            case FLOAT:
-                max = Float.POSITIVE_INFINITY;
-                break;
-            case DOUBLE:
-                max = Double.POSITIVE_INFINITY;
-                break;
-            default:
-                throw new IllegalStateException("Enum type " + attributeType + " is not supported...");
-                //what about BigInteger & BigDecimal??? maybe change algorithm and in first iteration
-                //the first element will be set to min and every other iteraton the comparison will execute???
-                //after that first parameter will no more be needed
-        }
-
-        return max;
+        AttributeType attributeType = column.getType();
+        return Number.class.isAssignableFrom(attributeType.getType());
     }
 
     @Override
@@ -84,53 +54,23 @@ public class AttributeUtilsImpl extends AttributeUtils {
             throw new IllegalArgumentException("Colun must be a number column");
         }
 
-        AttributeType type = column.getType();
-        Comparable<?> min = getMaxValueAccordingToAttributeType(type);
+        switch (values.length) {
+            case 0:
+                return null;
+            case 1:
+                return values[0];
+            // values.length > 1
+            default:
+                Comparable<?> min = values[0];
 
-        for (Comparable o : values) {
-            if (o.compareTo(min) < 0)
-                min = o;
+                for (int index = 1; index < values.length; index++) {
+                    Comparable o = values[index];
+                    if (o.compareTo(min) < 0)
+                        min = o;
+                }
+
+                return min;
         }
-        return min;
-
-//        if (type.equals(AttributeType.DOUBLE)) {
-//            Double min = Double.POSITIVE_INFINITY;
-//            for (Object o : values) {
-//                Double ca = (Double) o;
-//                if (ca.compareTo(min) < 0) {
-//                    min = ca;
-//                }
-//            }
-//            return min;
-//        } else if (type.equals(AttributeType.FLOAT)) {
-//            Float min = Float.POSITIVE_INFINITY;
-//            for (Object o : values) {
-//                Float ca = (Float) o;
-//                if (ca.compareTo(min) < 0) {
-//                    min = ca;
-//                }
-//            }
-//            return min;
-//        } else if (type.equals(AttributeType.INT)) {
-//            Integer min = Integer.MAX_VALUE;
-//            for (Object o : values) {
-//                Integer ca = (Integer) o;
-//                if (ca.compareTo(min) < 0) {
-//                    min = ca;
-//                }
-//            }
-//            return min;
-//        } else if (type.equals(AttributeType.LONG)) {
-//            Long min = Long.MAX_VALUE;
-//            for (Object o : values) {
-//                Long ca = (Long) o;
-//                if (ca.compareTo(min) < 0) {
-//                    min = ca;
-//                }
-//            }
-//            return min;
-//        }
-//        return null;
     }
 
     @Override
@@ -140,53 +80,23 @@ public class AttributeUtilsImpl extends AttributeUtils {
             throw new IllegalArgumentException("Colun must be a number column");
         }
 
-        AttributeType type = column.getType();
-        Comparable<?> max = getMaxValueAccordingToAttributeType(type);
+        switch (values.length) {
+            case 0:
+                return null;
+            case 1:
+                return values[0];
+            // values.length > 1
+            default:
+                Comparable<?> max = values[0];
 
-        for (Comparable o : values) {
-            if (o.compareTo(max) > 0)
-                max = o;
+                for (int index = 1; index < values.length; index++) {
+                    Comparable o = values[index];
+                    if (o.compareTo(max) > 0)
+                        max = o;
+                }
+
+                return max;
         }
-        return max;
-
-//        if (type.equals(AttributeType.DOUBLE)) {
-//            Double max = Double.NEGATIVE_INFINITY;
-//            for (Object o : values) {
-//                Double ca = (Double) o;
-//                if (ca.compareTo(max) > 0) {
-//                    max = ca;
-//                }
-//            }
-//            return max;
-//        } else if (type.equals(AttributeType.FLOAT)) {
-//            Float max = Float.NEGATIVE_INFINITY;
-//            for (Object o : values) {
-//                Float ca = (Float) o;
-//                if (ca.compareTo(max) > 0) {
-//                    max = ca;
-//                }
-//            }
-//            return max;
-//        } else if (type.equals(AttributeType.INT)) {
-//            Integer max = Integer.MIN_VALUE;
-//            for (Object o : values) {
-//                Integer ca = (Integer) o;
-//                if (ca.compareTo(max) > 0) {
-//                    max = ca;
-//                }
-//            }
-//            return max;
-//        } else if (type.equals(AttributeType.LONG)) {
-//            Long max = Long.MIN_VALUE;
-//            for (Object o : values) {
-//                Long ca = (Long) o;
-//                if (ca.compareTo(max) > 0) {
-//                    max = ca;
-//                }
-//            }
-//            return max;
-//        }
-//        return null;
     }
 
     @Override

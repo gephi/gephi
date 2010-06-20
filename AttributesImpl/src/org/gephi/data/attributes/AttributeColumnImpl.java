@@ -28,6 +28,7 @@ import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
 /**
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  */
 public class AttributeColumnImpl implements AttributeColumn {
 
@@ -38,7 +39,7 @@ public class AttributeColumnImpl implements AttributeColumn {
     protected final AttributeType type;
     protected final AttributeOrigin origin;
     protected final AttributeValueImpl defaultValue;
-    protected final AttributeValueDelegateProvider attributeValueDelegateProvider;//TODO added
+    protected final AttributeValueDelegateProvider attributeValueDelegateProvider;
 
     public AttributeColumnImpl(AttributeTableImpl table, int index, String id, String title, AttributeType attributeType, AttributeOrigin origin, Object defaultValue, AttributeValueDelegateProvider attributeValueDelegateProvider) {
         this.table = table;

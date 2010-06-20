@@ -91,7 +91,7 @@ public class GraphModelConvertor {
             Object neoPropertyValue = neoNode.getProperty(neoPropertyKey);
 
             if (!nodeTable.hasColumn(neoPropertyKey))
-                nodeTable.addColumn(neoPropertyKey, neoPropertyKey, AttributeType.parse(neoPropertyValue), AttributeOrigin.DELEGATE, null, Neo4jDelegateProviderImpl.getInstance());
+                nodeTable.addColumn(neoPropertyKey, neoPropertyKey, AttributeType.parse(neoPropertyValue), Neo4jDelegateProviderImpl.getInstance(), null);
 
             if (nodeTable.getColumn(neoPropertyKey).getOrigin() == AttributeOrigin.DELEGATE)
                 attributes.setValue(neoPropertyKey, neoNodeId);
@@ -125,7 +125,7 @@ public class GraphModelConvertor {
             Object neoPropertyValue = neoRelationship.getProperty(neoPropertyKey);
 
             if (!edgeTable.hasColumn(neoPropertyKey))
-                edgeTable.addColumn(neoPropertyKey, neoPropertyKey, AttributeType.parse(neoPropertyValue), AttributeOrigin.DELEGATE, null, Neo4jDelegateProviderImpl.getInstance());
+                edgeTable.addColumn(neoPropertyKey, neoPropertyKey, AttributeType.parse(neoPropertyValue), Neo4jDelegateProviderImpl.getInstance(), null);
 
             if (edgeTable.getColumn(neoPropertyKey).getOrigin() == AttributeOrigin.DELEGATE)
                 attributes.setValue(neoPropertyKey, neoRelationshipId);
@@ -172,4 +172,12 @@ public class GraphModelConvertor {
                 neoRelationship.setProperty(attributeValue.getColumn().getId(), attributeValue.getValue());
         }
     }
+
+//    private Object convertArrayToListType(Object array) {
+//        if (!array.getClass().isArray())
+//            return array;
+//        else {
+//
+//        }
+//    }
 }

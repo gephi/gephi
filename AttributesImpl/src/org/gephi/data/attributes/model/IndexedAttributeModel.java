@@ -22,8 +22,6 @@ package org.gephi.data.attributes.model;
 
 import org.gephi.data.attributes.AbstractAttributeModel;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.attributes.type.StringList;
-import org.gephi.data.attributes.type.TimeInterval;
 
 /**
  *
@@ -42,22 +40,6 @@ public class IndexedAttributeModel extends AbstractAttributeModel {
     @Override
     public Object getManagedValue(Object obj, AttributeType attributeType) {
         return dataIndex.pushData(obj);
-
-//        switch (attributeType) {
-//            case BOOLEAN:
-//                return dataIndex.pushData((Boolean) obj);
-//            case FLOAT:
-//                return dataIndex.pushData((Float) obj);
-//            case INT:
-//                return dataIndex.pushData((Integer) obj);
-//            case STRING:
-//                return dataIndex.pushData((String) obj);
-//            case LIST_STRING:
-//                return dataIndex.pushData((StringList) obj);
-//            case TIME_INTERVAL:
-//                return dataIndex.pushData((TimeInterval) obj);
-//        }
-//        return obj;
     }
 
     @Override

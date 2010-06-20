@@ -79,18 +79,22 @@ public class AttributeTableImpl implements AttributeTable {
     }
 
     public AttributeColumnImpl addColumn(String id, AttributeType type) {
-        return addColumn(id, id, type, AttributeOrigin.DATA, null);
+        return addColumn(id, id, type, AttributeOrigin.DATA, null, null);
     }
 
     public AttributeColumnImpl addColumn(String id, AttributeType type, AttributeOrigin origin) {
-        return addColumn(id, id, type, origin, null);
+        return addColumn(id, id, type, origin, null, null);
     }
 
     public AttributeColumnImpl addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue) {
         return addColumn(id, title, type, origin, defaultValue, null);
     }
 
-    public synchronized AttributeColumnImpl addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue, AttributeValueDelegateProvider attributeValueDelegateProvider) {
+    public AttributeColumn addColumn(String id, String title, AttributeType type, AttributeValueDelegateProvider attributeValueDelegateProvider, Object defaultValue) {
+        return addColumn(id, title, type, AttributeOrigin.DELEGATE, defaultValue, attributeValueDelegateProvider);
+    }
+
+    private synchronized AttributeColumnImpl addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue, AttributeValueDelegateProvider attributeValueDelegateProvider) {
         if (defaultValue != null) {
             if (defaultValue.getClass() != type.getType()) {
                 if (defaultValue.getClass() == String.class) {

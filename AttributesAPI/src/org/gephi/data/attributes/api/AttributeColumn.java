@@ -40,6 +40,7 @@ import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
  * </pre>
  * 
  * @author Mathieu Bastian
+ * @author Martin Škurla
  * @see AttributeRow
  * @see AttributeTable
  */
@@ -98,5 +99,11 @@ public interface AttributeColumn {
      */
     public Object getDefaultValue();
 
+    /**
+     * Returns the attribute value delegate provider. The Provider is always set if the origin of the
+     * current attribute column is AttributeOrigin.DELEGATE.
+     *
+     * @return attribute value delegate provider
+     */
     public AttributeValueDelegateProvider getProvider();
 }

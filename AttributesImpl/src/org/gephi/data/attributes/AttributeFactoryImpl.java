@@ -41,6 +41,15 @@ public class AttributeFactoryImpl implements AttributeValueFactory, AttributeRow
         if (value == null) {
             return new AttributeValueImpl((AttributeColumnImpl) column, null);
         }
+//        System.out.println("column: " + column.getId());//TODO remove
+//        System.out.println("value: " + value + ": " + value.getClass());
+//        System.out.println();
+//
+//        value.getClass();
+//        column.getType();
+//        column.getType().getType();
+//        value.getClass();
+
         if (value.getClass() != column.getType().getType() && value.getClass() == String.class) {
             value = column.getType().parse((String) value);
         }

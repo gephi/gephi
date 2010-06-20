@@ -125,7 +125,6 @@ public class Neo4jImportExportAction extends CallableSystemAction {
         String remoteExportMessage = NbBundle.getMessage(Neo4jImportExportAction.class, "CTL_Neo4j_RemoteExportMenuLabel");
         JMenuItem remoteExport = new JMenuItem(new AbstractAction(remoteExportMessage) {
             public void actionPerformed(ActionEvent e) {
-                //TODO implement
             }
         });
         

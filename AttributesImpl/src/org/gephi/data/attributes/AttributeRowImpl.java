@@ -28,7 +28,6 @@ import org.gephi.data.attributes.api.AttributeValue;
 /**
  *
  * @author Mathieu Bastian
- * @author Martin Škurla
  */
 public class AttributeRowImpl implements AttributeRow {
 
@@ -80,6 +79,7 @@ public class AttributeRowImpl implements AttributeRow {
         } else {
             //add column
             AttributeType type = AttributeType.parse(value);
+            System.out.println("parsed value type: " + value.getClass());
             if (type != null) {
                 attributeColumn = attributeTable.addColumn(column, type);
                 setValue(attributeColumn, value);

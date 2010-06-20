@@ -24,7 +24,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     private GraphModelConvertor graphModelConvertor;
     
     private ProgressTicket progressTicket;
-    private boolean cancelImport;//TODO finish implementing canceling task
+    private boolean cancelImport;
 
 
     @Override
@@ -81,20 +81,22 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
             transaction.finish();
         }
 
-        //graphDB.shutdown();
         progressTicket.finish();
     }
 
     private void importGraph() {
         Neo4jDelegateProviderImpl.setGraphDB(graphDB);
         createNewProject();
-        //TODO solve problem with projects and workspace, how to treat canceling task?
 
         graphModelConvertor = GraphModelConvertor.getInstance(graphDB);
 
         for (org.neo4j.graphdb.Node node : graphDB.getAllNodes()) {
-            for (Relationship relationship : node.getRelationships(Direction.INCOMING))
+            for (Relationship relationship : node.getRelationships(Direction.INCOMING)) {
+                if (cancelImport)
+                    return;
+
                 processRelationship(relationship);
+            }
         }
 
         if (!cancelImport)

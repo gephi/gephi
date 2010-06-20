@@ -95,11 +95,21 @@ public interface AttributeTable {
      */
     public AttributeColumn addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue);
 
-    public AttributeColumn addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue, AttributeValueDelegateProvider attributeValueDelegateProvider);
+    /**
+     * Creates and add a new column to this table. Attribute origin will be set to AttributeOrigin.DELEGATE.
+     *
+     * @param id                             the identifier of the column
+     * @param title                          the title of the column
+     * @param type                           the type of the column
+     * @param attributeValueDelegateProvider the attribute value delegate provider of the column
+     * @param defaultValue                   the default value of the column
+     * @return                               the newly created column
+     */
+    public AttributeColumn addColumn(String id, String title, AttributeType type, AttributeValueDelegateProvider attributeValueDelegateProvider, Object defaultValue);
 
     /**
      * Creates and add a new properties column to this table. All needed informations are set in
-     * PropertiesColumn instance.
+     * PropertiesColumn enum instance.
      *
      * @param propertiesColumn the properties column
      * @return                 the newly created column

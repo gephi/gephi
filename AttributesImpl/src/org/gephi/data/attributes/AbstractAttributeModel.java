@@ -62,13 +62,11 @@ public abstract class AbstractAttributeModel implements AttributeModel {
         PropertiesColumn[] columnsForEdgeTable = {PropertiesColumn.EDGE_ID,
                                                   PropertiesColumn.EDGE_LABEL};
 
-        for (PropertiesColumn columnForNodeTable : columnsForNodeTable) {
+        for (PropertiesColumn columnForNodeTable : columnsForNodeTable)
             nodeTable.addPropertiesColumn(columnForNodeTable);
-        }
 
-        for (PropertiesColumn columnForEdgeTable : columnsForEdgeTable) {
+        for (PropertiesColumn columnForEdgeTable : columnsForEdgeTable)
             edgeTable.addPropertiesColumn(columnForEdgeTable);
-        }
     }
 
     public abstract Object getManagedValue(Object obj, AttributeType attributeType);
