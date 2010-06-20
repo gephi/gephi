@@ -30,7 +30,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Nodes manipulator that selects in nodes table all neighbours of a node.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class SelectNeighboursOnTable implements NodesManipulator {

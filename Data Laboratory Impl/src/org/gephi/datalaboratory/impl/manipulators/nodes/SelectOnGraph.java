@@ -30,7 +30,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Nodes manipulator that centers the graph view to show a node.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class SelectOnGraph implements NodesManipulator {

@@ -31,7 +31,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Nodes manipulator that deletes one or more nodes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class DeleteNodes implements NodesManipulator {

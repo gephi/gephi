@@ -103,6 +103,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
             HierarchicalGraph hg = getHierarchicalGraph();
             Node group = hg.groupNodes(nodes);
             hg.readLock();
+            //Set the group node label to the same used int visualization module:
             group.getNodeData().setLabel(NbBundle.getMessage(GraphElementsControllerImpl.class, "Group.nodeCount.label", hg.getChildrenCount(group)));
             hg.readUnlock();
             return true;
@@ -144,6 +145,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     public boolean ungroupNodeRecursively(Node node) {
         if (canUngroupNode(node)) {
             HierarchicalGraph hg = getHierarchicalGraph();
+            //We can get directly all descendant nodes withoud using recursion and break the groups:
             for (Node n : hg.getDescendant(node).toArray()) {
                 ungroupNode(n);
             }
@@ -167,7 +169,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         boolean canUngroup;
         HierarchicalGraph hg = getHierarchicalGraph();
         hg.readLock();
-        canUngroup = hg.getChildrenCount(node) > 0;
+        canUngroup = hg.getChildrenCount(node) > 0;//The node has children
         hg.readUnlock();
         return canUngroup;
     }

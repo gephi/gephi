@@ -33,7 +33,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Nodes manipulator that clears all data of one or more nodes except the id and computed attributes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class ClearNodesData implements NodesManipulator {
@@ -61,7 +61,7 @@ public class ClearNodesData implements NodesManipulator {
     }
 
     public String getDescription() {
-        return "";
+        return NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.description");
     }
 
     public boolean canExecute() {

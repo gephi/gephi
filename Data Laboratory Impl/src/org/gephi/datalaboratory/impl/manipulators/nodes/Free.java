@@ -30,7 +30,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Nodes manipulator that frees (not fixed position) one or more nodes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class Free implements NodesManipulator {

@@ -412,6 +412,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
                 nodesButton.setSelected(true);
                 if (nodeTable.hasData()) {//If it is not the first time shown, to keep selection.
                     tableScrollPane.setViewportView(nodeTable.getOutlineTable());
+                    refreshFilterColumns();
                 } else {
                     refresh();
                 }
@@ -427,6 +428,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
                 edgesButton.setSelected(true);
                 if (edgeTable.hasData()) {//If it is not the first time shown, to keep selection.
                     tableScrollPane.setViewportView(edgeTable.getTable());
+                    refreshFilterColumns();
                 } else {
                     refresh();
                 }

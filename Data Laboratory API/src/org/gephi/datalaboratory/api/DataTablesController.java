@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.api;
 
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
+
 
 /**
  * This interface defines part of the Data Laboratory API.
@@ -27,8 +30,44 @@ package org.gephi.datalaboratory.api;
  * This is done by registering the data table ui as a listener of these events that can be requested with this controller.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface DataTablesController extends DataTablesEventListener{
+public interface DataTablesController{
+
+    /**
+     * Requests the tables implementation to show nodes table.
+     */
+    void selectNodesTable();
+
+     /**
+     * Requests the tables implementation to show edges table.
+     */
+    void selectEdgesTable();
+
+     /**
+     * Requests the tables implementation to refresh the data of the table being shown.
+     */
+    void refreshCurrentTable();
+
+    /**
+     * Requests the tables implementation to adapt the nodes table row selection to the specified nodes.
+     * @param nodes Nodes to select
+     */
+    void setNodeTableSelection(Node[] nodes);
+
+    /**
+     * Requests the tables implementation to adapt the edges table row selection to the specified edges.
+     * @param edges Edges to select
+     */
+    void setEdgeTableSelection(Edge[] edges);
+
+    /**
+     * Register a listener for these requests.
+     * @param listener Instance of DataTablesEventListener
+     */
     void addDataTablesEventListener(DataTablesEventListener listener);
 
+    /**
+     * Remove a registered listener for these requests.
+     * @param listener Instance of DataTablesEventListener
+     */
     void removeDataTablesEventListener(DataTablesEventListener listener);
 }

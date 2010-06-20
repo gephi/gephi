@@ -31,7 +31,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Nodes manipulator that selects in edges table all edges that have a node.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class SelectEdgesOnTable implements NodesManipulator {

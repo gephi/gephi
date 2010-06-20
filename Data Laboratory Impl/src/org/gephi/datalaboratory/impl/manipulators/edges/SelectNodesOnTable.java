@@ -31,7 +31,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Edges manipulator that selects source and target node of an edge and selects them in nodes table.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class SelectNodesOnTable implements EdgesManipulator{

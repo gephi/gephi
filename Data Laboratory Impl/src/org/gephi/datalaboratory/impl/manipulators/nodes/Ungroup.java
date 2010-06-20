@@ -30,7 +30,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Nodes manipulator that breaks one or more selected groups.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class Ungroup implements NodesManipulator {

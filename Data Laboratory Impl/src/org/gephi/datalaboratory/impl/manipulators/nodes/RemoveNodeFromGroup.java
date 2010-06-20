@@ -29,7 +29,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Nodes manipulator that removes a node from its group if it has one. If the last node of the group is removed, breaks the group.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class RemoveNodeFromGroup implements NodesManipulator {

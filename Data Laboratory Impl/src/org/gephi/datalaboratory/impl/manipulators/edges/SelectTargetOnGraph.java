@@ -31,7 +31,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Edges manipulator that shows the target node of an edge centered in graph view.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class SelectTargetOnGraph implements EdgesManipulator{

@@ -30,7 +30,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Nodes manipulator that groups one or more nodes into a new group node hierarchically.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class Group implements NodesManipulator{

@@ -30,7 +30,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Nodes manipulator that breaks one or more selected groups recursively, breaking all groups formed by descendant nodes of the groups.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class UngroupRecursively implements NodesManipulator {
@@ -55,7 +55,7 @@ public class UngroupRecursively implements NodesManipulator {
     }
 
     public String getDescription() {
-        return "";
+        return NbBundle.getMessage(Ungroup.class, "UngroupRecursively.description");
     }
 
     public boolean canExecute() {

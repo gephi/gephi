@@ -17,7 +17,7 @@ import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 
 /**
- *
+ * UI for DeleteEdgesWithNodes edges manipulator.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class DeleteEdgesWithNodesUI extends javax.swing.JPanel implements ManipulatorUI {

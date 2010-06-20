@@ -26,7 +26,7 @@ import org.gephi.datalaboratory.spi.edges.EdgesManipulatorBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * Builder for ClearEdgesData edges manipulator.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service=EdgesManipulatorBuilder.class)

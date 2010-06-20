@@ -33,7 +33,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Edges manipulator that clears all data of one or more edges except the id and computed attributes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class ClearEdgesData implements EdgesManipulator {
@@ -61,7 +61,7 @@ public class ClearEdgesData implements EdgesManipulator {
     }
 
     public String getDescription() {
-        return "";
+        return NbBundle.getMessage(ClearEdgesData.class, "ClearEdgesData.description");
     }
 
     public boolean canExecute() {

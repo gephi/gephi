@@ -31,7 +31,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Edges manipulator that deletes one or more edges and allows the user to choose what of their nodes to delete at the same time.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class DeleteEdgesWithNodes implements EdgesManipulator {

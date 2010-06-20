@@ -31,7 +31,9 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Nodes manipulator that links at least 2 different nodes creating edges.
+ * Asks the user to select a source node and whether to create directed or undirected edges.
+ * It will create edges between the source node and all of the other nodes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class LinkNodes implements NodesManipulator{
@@ -54,7 +56,7 @@ public class LinkNodes implements NodesManipulator{
     }
 
     public String getDescription() {
-        return "";
+        return NbBundle.getMessage(LinkNodes.class, "LinkNodes.description");
     }
 
     public boolean canExecute() {

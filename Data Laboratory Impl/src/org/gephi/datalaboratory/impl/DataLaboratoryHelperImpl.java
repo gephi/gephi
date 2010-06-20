@@ -86,6 +86,7 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
 
             public void run() {
                 ManipulatorUI ui = m.getUI();
+                //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                 if (ui != null) {
                     ui.setup(m);
                     JPanel settingsPanel = ui.getSettingsPanel();

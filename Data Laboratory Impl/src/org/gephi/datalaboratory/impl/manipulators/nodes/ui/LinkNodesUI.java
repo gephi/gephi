@@ -17,7 +17,7 @@ import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.graph.api.Node;
 
 /**
- *
+ * UI for LinkNodes nodes manipulator.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class LinkNodesUI extends javax.swing.JPanel implements ManipulatorUI {

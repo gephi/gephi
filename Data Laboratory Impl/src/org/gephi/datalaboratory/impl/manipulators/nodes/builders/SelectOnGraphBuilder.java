@@ -26,7 +26,7 @@ import org.gephi.datalaboratory.spi.nodes.NodesManipulatorBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * Builder for SelectOnGraph nodes manipulator.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service=NodesManipulatorBuilder.class)
