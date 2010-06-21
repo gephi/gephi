@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Eduardo Ramos
 Website : http://www.gephi.org
 
 This file is part of Gephi.

@@ -56,6 +56,11 @@ public class EditWindowControllerImpl implements EditWindowController {
         });
     }
 
+    public boolean isOpen(){
+        EditToolTopComponent topComponent = (EditToolTopComponent) WindowManager.getDefault().findTopComponent("EditToolTopComponent");
+        return topComponent.isOpened();
+    }
+
     public void editNode(final Node node) {
         SwingUtilities.invokeLater(new Runnable() {
 

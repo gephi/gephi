@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Eduardo Ramos
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -34,6 +34,8 @@ import java.util.regex.PatternSyntaxException;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TreeModelListener;
@@ -57,6 +59,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
+import org.gephi.tools.api.EditWindowController;
 
 /**
  *
@@ -92,6 +95,20 @@ public class NodeDataTable {
         };
 
         outlineTable.addMouseListener(new PopupAdapter());
+        outlineTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent e) {
+                EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
+                if (edc.isOpen()) {
+                    if (outlineTable.getSelectedRow() != -1) {
+                        Node node = getNodeFromRow(outlineTable.getSelectedRow());
+                        edc.editNode(node);
+                    } else {
+                        edc.disableEdit();
+                    }
+                }
+            }
+        });
         outlineTable.addKeyListener(new KeyAdapter() {
 
             @Override
@@ -143,7 +160,7 @@ public class NodeDataTable {
                     outlineTable.setModel(mdl);
                     NodeDataTable.this.dataTablesModel = dataTablesModel;
                     setNodesSelection(selectedNodes);//Keep row selection before refreshing.
-                    selectedNodes=null;
+                    selectedNodes = null;
                 }
             });
         } catch (InterruptedException ex) {

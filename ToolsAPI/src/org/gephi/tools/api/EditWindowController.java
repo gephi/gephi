@@ -31,6 +31,8 @@ public interface  EditWindowController {
 
     void closeEditWindow();
 
+    boolean isOpen();
+
     void editNode(Node node);
 
     void disableEdit();
