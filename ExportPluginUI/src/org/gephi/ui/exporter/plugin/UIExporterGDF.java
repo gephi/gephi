@@ -36,7 +36,7 @@ public class UIExporterGDF implements ExporterUI {
 
     private UIExporterGDFPanel panel;
     private ExporterGDF exporterGDF;
-    private ExporterGDFSettings settings;
+    private ExporterGDFSettings settings = new ExporterGDFSettings();
 
     public void setup(Exporter exporter) {
         exporterGDF = (ExporterGDF) exporter;
