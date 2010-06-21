@@ -60,5 +60,11 @@ public interface ExporterUI {
      * @return          <code>true</code> if the UI is matching with <code>exporter</code>,
      *                  <code>false</code> otherwise.
      */
-    public boolean isMatchingExporter(Exporter exporter);
+    public boolean isUIForExporter(Exporter exporter);
+
+    /**
+     * Returns the exporter display name
+     * @return          the exporter display name
+     */
+    public String getDisplayName();
 }

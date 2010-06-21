@@ -1,10 +1,5 @@
 package org.gephi.io.exporter.preview;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Locale;
@@ -17,10 +12,10 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
-import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.preview.util.LengthUnit;
 import org.gephi.io.exporter.preview.util.SupportSize;
-import org.gephi.io.exporter.spi.VectorialFileExporter;
+import org.gephi.io.exporter.spi.CharacterExporter;
+import org.gephi.io.exporter.spi.VectorExporter;
 import org.gephi.preview.api.BidirectionalEdge;
 import org.gephi.preview.api.CubicBezierCurve;
 import org.gephi.preview.api.DirectedEdge;
@@ -44,7 +39,6 @@ import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -58,49 +52,82 @@ import org.w3c.dom.svg.SVGRect;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-@ServiceProvider(service = VectorialFileExporter.class)
-public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTask {
+public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExporter, LongTask {
 
-    private final static float MARGIN = 25f;
-    private final String namespaceURI = SVGDOMImplementation.SVG_NAMESPACE_URI;
-    private final HashMap<NodeLabel, SVGLocatable> nodeLabelMap = new HashMap<NodeLabel, SVGLocatable>();
+    //Architecture
     private Document doc;
     private ProgressTicket progress;
     private boolean cancel = false;
+    private Workspace workspace;
+    private Writer writer;
+    //Settings
+    private final static float MARGIN = 25f;
+    private final String namespaceURI = SVGDOMImplementation.SVG_NAMESPACE_URI;
+    //Helper
+    private final HashMap<NodeLabel, SVGLocatable> nodeLabelMap = new HashMap<NodeLabel, SVGLocatable>();
     private Element svgRoot;
     private Element nodeGroupElem;
     private Element edgeGroupElem;
     private Element labelGroupElem;
     private Element labelBorderGroupElem;
 
-    public boolean exportData(File file, Workspace workspace) throws Exception {
+    public boolean execute() {
+        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        GraphSheet graphSheet = controller.getGraphSheet();
         try {
-            SupportSize supportSize = new SupportSize(210, 297, LengthUnit.MILLIMETER);
-            exportData(file, supportSize);
+            exportData(graphSheet);
         } catch (Exception e) {
-            clean();
-            throw e;
+            throw new RuntimeException(e);
         }
-        boolean c = cancel;
-        clean();
-        return !c;
+
+        return !cancel;
     }
 
-    public FileType[] getFileTypes() {
-        return new FileType[]{new FileType(".svg", "SVG files")};
-    }
+    /**
+     * Does export the preview graph as an SVG image.
+     *
+     * @param file         the output SVG file
+     * @param supportSize  the support size of the exported image
+     * @throws Exception
+     */
+    private void exportData(GraphSheet graphSheet) throws Exception {
+        SupportSize supportSize = new SupportSize(210, 297, LengthUnit.MILLIMETER);
+        Progress.start(progress);
+        Graph graph = graphSheet.getGraph();
 
-    public String getName() {
-        return "SVG Exporter";
-    }
+        // calculates progress units count
+        int max = 0;
+        if (graph.showNodes()) {
+            max += graph.countNodes();
+        }
+        if (graph.showEdges()) {
+            max += graph.countUnidirectionalEdges() + graph.countBidirectionalEdges();
+            if (graph.showSelfLoops()) {
+                max += graph.countSelfLoops();
+            }
+        }
+        Progress.switchToDeterminate(progress, max);
 
-    public boolean cancel() {
-        cancel = true;
-        return true;
-    }
+        // export tasks
+        buildDOM(graphSheet, supportSize);
 
-    public void setProgressTicket(ProgressTicket progressTicket) {
-        this.progress = progressTicket;
+        // creates SVG-to-SVG transcoder
+        SVGTranscoder t = new SVGTranscoder();
+        t.addTranscodingHint(SVGTranscoder.KEY_XML_DECLARATION,
+                new String("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
+
+        // sets transcoder input and output
+        TranscoderInput input = new TranscoderInput(doc);
+
+        // performs transcoding
+        try {
+            TranscoderOutput output = new TranscoderOutput(writer);
+            t.transcode(input, output);
+        } finally {
+            writer.close();
+        }
+
+        Progress.finish(progress);
     }
 
     public void renderGraph(Graph graph) {
@@ -377,56 +404,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     /**
-     * Cleans all fields.
-     */
-    public void clean() {
-        progress = null;
-        cancel = false;
-        doc = null;
-        nodeLabelMap.clear();
-        svgRoot = null;
-        nodeGroupElem = null;
-        edgeGroupElem = null;
-        labelGroupElem = null;
-        labelBorderGroupElem = null;
-    }
-
-    /**
-     * Does export the preview graph as an SVG image.
-     *
-     * @param file         the output SVG file
-     * @param supportSize  the support size of the exported image
-     * @throws Exception
-     */
-    private void exportData(File file, SupportSize supportSize) throws Exception {
-        // fetches the preview graph sheet
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        GraphSheet graphSheet = controller.getGraphSheet();
-        Graph graph = graphSheet.getGraph();
-
-        Progress.start(progress);
-
-        // calculates progress units count
-        int max = 0;
-        if (graph.showNodes()) {
-            max += graph.countNodes();
-        }
-        if (graph.showEdges()) {
-            max += graph.countUnidirectionalEdges() + graph.countBidirectionalEdges();
-            if (graph.showSelfLoops()) {
-                max += graph.countSelfLoops();
-            }
-        }
-        Progress.switchToDeterminate(progress, max);
-
-        // export tasks
-        buildDOM(graphSheet, supportSize);
-        saveDOM(file);
-
-        Progress.finish(progress);
-    }
-
-    /**
      * Builds the DOM from the preview graph.
      *
      * @param graphSheet   the preview graph sheet
@@ -469,38 +446,6 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     /**
-     * Saves the current DOM to a file.
-     *
-     * @param file  the file to write the DOM to
-     */
-    private void saveDOM(File file) throws Exception {
-        OutputStream ostream = null;
-        Writer w = null;
-
-        // creates SVG-to-SVG transcoder
-        SVGTranscoder t = new SVGTranscoder();
-        t.addTranscodingHint(SVGTranscoder.KEY_XML_DECLARATION,
-                new String("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
-
-        // sets transcoder input and output
-        TranscoderInput input = new TranscoderInput(doc);
-
-        // performs transcoding
-        try {
-            ostream = new BufferedOutputStream(new FileOutputStream(file));
-            try {
-                w = new OutputStreamWriter(ostream, "utf8");
-                TranscoderOutput output = new TranscoderOutput(w);
-                t.transcode(input, output);
-            } finally {
-                w.close();
-            }
-        } finally {
-            ostream.close();
-        }
-    }
-
-    /**
      * Creates a new element from the current document.
      *
      * @param qualifiedName  the qualified name of the element type to
@@ -532,5 +477,26 @@ public class SVGExporter implements GraphRenderer, VectorialFileExporter, LongTa
         group.setAttribute("id", name);
 
         return group;
+    }
+
+    public boolean cancel() {
+        cancel = true;
+        return true;
+    }
+
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        this.progress = progressTicket;
+    }
+
+    public void setWriter(Writer writer) {
+        this.writer = writer;
+    }
+
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 }
