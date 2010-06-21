@@ -24,15 +24,15 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gephi.graph.api.Node;
+import org.gephi.tools.api.EditWindowController;
 import org.gephi.tools.spi.NodeClickEventListener;
 import org.gephi.tools.spi.Tool;
 import org.gephi.tools.spi.ToolEventListener;
 import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
-import org.gephi.ui.tools.plugin.edit.EditToolTopComponent;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.windows.WindowManager;
 
 /**
  *
@@ -40,19 +40,16 @@ import org.openide.windows.WindowManager;
  */
 @ServiceProvider(service = Tool.class)
 public class Edit implements Tool {
-
-    private EditToolTopComponent topComponent;
+    EditWindowController edc;
 
     public void select() {
-        topComponent = (EditToolTopComponent) WindowManager.getDefault().findTopComponent("EditToolTopComponent");
-        topComponent.open();
-        topComponent.requestActive();
+        edc=Lookup.getDefault().lookup(EditWindowController.class);
+        edc.openEditWindow();
     }
 
     public void unselect() {
-        topComponent.disableEdit();
-        topComponent.close();
-        topComponent = null;
+        edc.disableEdit();
+        edc.closeEditWindow();
     }
 
     public ToolEventListener[] getListeners() {
@@ -60,9 +57,9 @@ public class Edit implements Tool {
 
                 public void clickNodes(Node[] nodes) {
                     if (nodes.length > 0) {
-                        topComponent.editNode(nodes[0]);
+                        edc.editNode(nodes[0]);
                     } else {
-                        topComponent.disableEdit();
+                        edc.disableEdit();
                     }
                 }
             }};

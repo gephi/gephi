@@ -50,4 +50,6 @@ public interface ToolController {
      * @return      the properties bar component
      */
     public JComponent getPropertiesBar();
+
+
 }

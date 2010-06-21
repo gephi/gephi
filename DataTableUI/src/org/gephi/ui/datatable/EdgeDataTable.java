@@ -39,6 +39,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
@@ -60,6 +61,7 @@ public class EdgeDataTable {
     private JXTable table;
     private PropertyEdgeDataColumn[] propertiesColumns;
     private RowFilter rowFilter;
+    private Edge[] selectedEdges;
 
     public EdgeDataTable() {
         table = new JXTable();
@@ -104,9 +106,9 @@ public class EdgeDataTable {
 
             @Override
             public Object getValueFor(Edge edge) {
-                if(edge.isDirected()){
+                if (edge.isDirected()) {
                     return NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.type.column.directed");
-                }else{
+                } else {
                     return NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.type.column.undirected");
                 }
             }
@@ -119,7 +121,7 @@ public class EdgeDataTable {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
                     Edge[] selectedEdges = getEdgesFromSelectedRows();
                     if (selectedEdges.length > 0) {
-                        DataLaboratoryHelper dlh=Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+                        DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
                         EdgesManipulator del = dlh.getDeleEdgesManipulator();
                         if (del != null) {
                             del.setup(selectedEdges, null);
@@ -151,6 +153,9 @@ public class EdgeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, DataTablesModel dataTablesModel) {
+        if (selectedEdges == null) {
+            selectedEdges = getEdgesFromSelectedRows();
+        }
         ArrayList<EdgeDataColumn> columns = new ArrayList<EdgeDataColumn>();
 
         for (PropertyEdgeDataColumn p : propertiesColumns) {
@@ -163,23 +168,26 @@ public class EdgeDataTable {
 
         EdgeDataTableModel model = new EdgeDataTableModel(graph.getEdges().toArray(), columns.toArray(new EdgeDataColumn[0]));
         table.setModel(model);
+        setEdgesSelection(selectedEdges);//Keep row selection before refreshing.
+        selectedEdges = null;
     }
 
     public void setEdgesSelection(Edge[] edges) {
-        HashSet<Edge> edgesSet=new HashSet<Edge>();
-        for(Edge e:edges){
+        this.selectedEdges = edges;//Keep this selection request to be able to do it if the table is first refreshed later.
+        HashSet<Edge> edgesSet = new HashSet<Edge>();
+        for (Edge e : edges) {
             edgesSet.add(e);
         }
         table.clearSelection();
         for (int i = 0; i < table.getRowCount(); i++) {
-            if(edgesSet.contains(getEdgeFromRow(i))){
+            if (edgesSet.contains(getEdgeFromRow(i))) {
                 table.addRowSelectionInterval(i, i);
             }
         }
     }
 
-    public boolean hasData(){
-        return table.getRowCount()>0;
+    public boolean hasData() {
+        return table.getRowCount() > 0;
     }
 
     private String[] getHiddenColumns() {
@@ -293,7 +301,7 @@ public class EdgeDataTable {
         }
 
         public boolean isEditable() {
-            return column.getOrigin().equals(AttributeOrigin.DATA) || column.getId().equals("label");
+            return column.getOrigin().equals(AttributeOrigin.DATA) || (column.getOrigin().equals(AttributeOrigin.PROPERTY) && column.getIndex() != PropertiesColumn.EDGE_ID.getIndex());
         }
     }
 

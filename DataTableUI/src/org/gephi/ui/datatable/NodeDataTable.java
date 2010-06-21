@@ -42,6 +42,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
@@ -68,6 +69,7 @@ public class NodeDataTable {
     private QuickFilter quickFilter;
     private Pattern pattern;
     private DataTablesModel dataTablesModel;
+    Node[] selectedNodes;
 
     public NodeDataTable() {
         outlineTable = new Outline();
@@ -126,6 +128,9 @@ public class NodeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, final DataTablesModel dataTablesModel) {
+        if (selectedNodes == null) {
+            selectedNodes = getNodesFromSelectedRows();
+        }
         NodeTreeModel nodeTreeModel = new NodeTreeModel(graph.wrapToTreeNode());
         final OutlineModel mdl = DefaultOutlineModel.createOutlineModel(nodeTreeModel, new NodeRowModel(cols), true);
         outlineTable.setRootVisible(false);
@@ -137,6 +142,8 @@ public class NodeDataTable {
                 public void run() {
                     outlineTable.setModel(mdl);
                     NodeDataTable.this.dataTablesModel = dataTablesModel;
+                    setNodesSelection(selectedNodes);//Keep row selection before refreshing.
+                    selectedNodes=null;
                 }
             });
         } catch (InterruptedException ex) {
@@ -147,20 +154,21 @@ public class NodeDataTable {
     }
 
     public void setNodesSelection(Node[] nodes) {
-        HashSet<Node> nodesSet=new HashSet<Node>();
-        for(Node n:nodes){
+        this.selectedNodes = nodes;//Keep this selection request to be able to do it if the table is first refreshed later.
+        HashSet<Node> nodesSet = new HashSet<Node>();
+        for (Node n : nodes) {
             nodesSet.add(n);
         }
         outlineTable.clearSelection();
         for (int i = 0; i < outlineTable.getRowCount(); i++) {
-            if(nodesSet.contains(getNodeFromRow(i))){
+            if (nodesSet.contains(getNodeFromRow(i))) {
                 outlineTable.addRowSelectionInterval(i, i);
             }
         }
     }
 
-    public boolean hasData(){
-        return outlineTable.getRowCount()>0;
+    public boolean hasData() {
+        return outlineTable.getRowCount() > 0;
     }
 
     private static class NodeTreeModel implements TreeModel {
@@ -294,7 +302,7 @@ public class NodeDataTable {
         }
 
         public boolean isEditable() {
-            return column.getOrigin().equals(AttributeOrigin.DATA) || column.getId().equals("label");
+            return column.getOrigin().equals(AttributeOrigin.DATA) || (column.getOrigin().equals(AttributeOrigin.PROPERTY) && column.getIndex() != PropertiesColumn.NODE_ID.getIndex());
         }
     }
 
