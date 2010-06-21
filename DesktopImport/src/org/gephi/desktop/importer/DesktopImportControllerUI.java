@@ -175,7 +175,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Execute task
-            final String containerSource = "Stream " + importer;
+            final String containerSource = "Stream " + importerName;
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -234,7 +234,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Execute task
-            final String containerSource = "Stream " + importer;
+            final String containerSource = "Stream " + importerName;
             executor.execute(task, new Runnable() {
 
                 public void run() {
