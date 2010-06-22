@@ -20,7 +20,7 @@ public class UIExporterGraphML implements ExporterUI {
 
     private UIExporterGraphMLPanel panel;
     private ExporterGraphML exporterGraphML;
-    private ExporterGraphMLSettings settings;
+    private ExporterGraphMLSettings settings =  new ExporterGraphMLSettings();
 
     public void setup(Exporter exporter) {
         exporterGraphML = (ExporterGraphML) exporter;

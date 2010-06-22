@@ -15,7 +15,7 @@
         <folder name="Window">
             <file name="PartitionAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-partition-PartitionAction.instance"/>
-                <attr name="position" intvalue="1220"/>
+                <attr name="position" intvalue="800"/>
             </file>
         </folder>
     </folder>

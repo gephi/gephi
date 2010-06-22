@@ -36,7 +36,7 @@ public class UIExporterGEXF implements ExporterUI {
 
     private UIExporterGEXFPanel panel;
     private ExporterGEXF exporterGEXF;
-    private ExporterGEXFSettings settings;
+    private ExporterGEXFSettings settings =  new ExporterGEXFSettings();
 
     public void setup(Exporter exporter) {
         exporterGEXF = (ExporterGEXF) exporter;

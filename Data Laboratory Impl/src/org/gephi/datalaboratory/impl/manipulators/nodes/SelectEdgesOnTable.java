@@ -35,16 +35,19 @@ import org.openide.util.NbBundle;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class SelectEdgesOnTable implements NodesManipulator {
+
     private Node node;
     private Edge[] edges;
 
     public void setup(Node[] nodes, Node clickedNode) {
-        this.node=clickedNode;
-        this.edges=Lookup.getDefault().lookup(GraphElementsController.class).getNodeEdges(node);
+        this.node = clickedNode;
+        if (Lookup.getDefault().lookup(GraphElementsController.class).isNodeInGraph(node)) {
+            this.edges = Lookup.getDefault().lookup(GraphElementsController.class).getNodeEdges(node);
+        }
     }
 
     public void execute() {
-        DataTablesController dtc=Lookup.getDefault().lookup(DataTablesController.class);
+        DataTablesController dtc = Lookup.getDefault().lookup(DataTablesController.class);
         dtc.setEdgeTableSelection(edges);
         dtc.selectEdgesTable();
     }
@@ -58,7 +61,7 @@ public class SelectEdgesOnTable implements NodesManipulator {
     }
 
     public boolean canExecute() {
-        return Lookup.getDefault().lookup(GraphElementsController.class).isNodeInGraph(node)&&edges.length>0;//Do not enable if the node has no edges.
+        return edges!=null;//Do not enable if the node has no edges.
     }
 
     public ManipulatorUI getUI() {

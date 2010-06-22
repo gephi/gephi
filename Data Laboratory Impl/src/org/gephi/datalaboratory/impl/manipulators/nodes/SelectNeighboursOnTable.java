@@ -38,8 +38,10 @@ public class SelectNeighboursOnTable implements NodesManipulator {
     private Node[] neighbours;
 
     public void setup(Node[] nodes, Node clickedNode) {
-        this.node=clickedNode;
-        this.neighbours=Lookup.getDefault().lookup(GraphElementsController.class).getNodeNeighbours(node);
+        this.node = clickedNode;
+        if (Lookup.getDefault().lookup(GraphElementsController.class).isNodeInGraph(node)) {
+            this.neighbours = Lookup.getDefault().lookup(GraphElementsController.class).getNodeNeighbours(node);
+        }
     }
 
     public void execute() {
@@ -55,7 +57,7 @@ public class SelectNeighboursOnTable implements NodesManipulator {
     }
 
     public boolean canExecute() {
-        return Lookup.getDefault().lookup(GraphElementsController.class).isNodeInGraph(node)&&neighbours.length>0;//Do not enable if the node has no neighbours.
+        return neighbours != null;//Do not enable if the node has no neighbours.
     }
 
     public ManipulatorUI getUI() {
