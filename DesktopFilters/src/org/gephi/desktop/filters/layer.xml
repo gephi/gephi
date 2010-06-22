@@ -15,6 +15,7 @@
         <folder name="Window">
             <file name="FiltersAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-filters-FiltersAction.instance"/>
+                <attr name="position" intvalue="400"/>
             </file>
         </folder>
     </folder>

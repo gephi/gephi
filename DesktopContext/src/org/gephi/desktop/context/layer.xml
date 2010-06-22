@@ -14,6 +14,7 @@
         <folder name="Window">
             <file name="ContextAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-context-ContextAction.instance"/>
+                <attr name="position" intvalue="200"/>
             </file>
         </folder>
     </folder>

@@ -15,6 +15,7 @@
         <folder name="Window">
             <file name="GraphAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-visualization-component-GraphAction.instance"/>
+                <attr name="position" intvalue="500"/>
             </file>
         </folder>
     </folder>

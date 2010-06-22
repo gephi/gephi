@@ -15,6 +15,7 @@
         <folder name="Window">
             <file name="DataTableAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-ui-datatable-DataTableAction.instance"/>
+                <attr name="position" intvalue="300"/>
             </file>
         </folder>
     </folder>

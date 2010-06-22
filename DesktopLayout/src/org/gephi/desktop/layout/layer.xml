@@ -15,7 +15,7 @@
         <folder name="Window">
             <file name="LayoutAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-layout-LayoutAction.instance"/>
-                <attr name="position" intvalue="810"/>
+                <attr name="position" intvalue="700"/>
             </file>
         </folder>
     </folder>
