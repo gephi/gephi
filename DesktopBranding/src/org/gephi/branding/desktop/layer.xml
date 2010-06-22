@@ -118,7 +118,7 @@
                 <attr name="enabled" boolvalue="true"/>
                 <attr name="instanceCreate" methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
                 <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
-                <attr name="url_key" stringvalue="org_gephi_branding_desktop_update_center"/>
+                <attr name="url" stringvalue="org_gephi_branding_desktop_update_center"/>
             </file>
             <file name="org_gephi_branding_desktop_update_center_1.instance">
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
@@ -126,7 +126,7 @@
                 <attr name="enabled" boolvalue="true"/>
                 <attr name="instanceCreate" methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
                 <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
-                <attr name="url_key" stringvalue="org_gephi_branding_desktop_update_center_1"/>
+                <attr name="url" stringvalue="org_gephi_branding_desktop_update_center_1"/>
             </file>
         </folder>
     </folder>

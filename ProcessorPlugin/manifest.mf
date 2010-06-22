@@ -1,7 +1,6 @@
 Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.io.processor.plugin
-OpenIDE-Module-Layer: org/gephi/io/processor/plugin/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/io/processor/plugin/Bundle.properties
 OpenIDE-Module-Specification-Version: 0.7.0.7
 
