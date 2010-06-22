@@ -52,7 +52,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>7.19.1.1</specification-version>
+                        <specification-version>7.23.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
