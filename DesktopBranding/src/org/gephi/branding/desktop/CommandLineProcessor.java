@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.gephi.desktop.importer.api.ImportControllerUI;
+import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.ProjectController;
 import org.netbeans.api.sendopts.CommandException;
 import org.netbeans.spi.sendopts.Env;
@@ -81,14 +82,28 @@ public class CommandLineProcessor extends OptionProcessor {
                     file = new File(env.getCurrentDirectory(), filenameList.get(i));
                 }
                 FileObject fileObject = FileUtil.toFileObject(file);
+                if (!file.exists()) {
+                    NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(CommandLineProcessor.class, "CommandLineProcessor.fileNotFound", file.getName()), NotifyDescriptor.WARNING_MESSAGE);
+                    DialogDisplayer.getDefault().notify(msg);
+                    return;
+                }
                 if (fileObject.hasExt(GEPHI_EXTENSION)) {
-                    ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                    pc.openProject(file).run();
+                    ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
+                    try {
+                        pc.openProject(file);
+                    } catch (Exception ew) {
+                        ew.printStackTrace();
+                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(CommandLineProcessor.class, "CommandLineProcessor.openGephiError"), NotifyDescriptor.WARNING_MESSAGE);
+                        DialogDisplayer.getDefault().notify(msg);
+                    }
                     return;
                 } else {
                     ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
                     if (importController.getImportController().isFileSupported(FileUtil.toFile(fileObject))) {
                         importController.importFile(fileObject);
+                    } else {
+                        NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(CommandLineProcessor.class, "CommandLineProcessor.fileNotSupported"), NotifyDescriptor.WARNING_MESSAGE);
+                        DialogDisplayer.getDefault().notify(msg);
                     }
                 }
             }

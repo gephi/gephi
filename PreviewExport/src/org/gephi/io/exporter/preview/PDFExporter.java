@@ -1,6 +1,5 @@
 package org.gephi.io.exporter.preview;
 
-import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
@@ -9,15 +8,11 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Font;
-import java.awt.Insets;
 import java.awt.geom.AffineTransform;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import org.gephi.io.exporter.api.FileType;
-import org.gephi.io.exporter.preview.util.LengthUnit;
-import org.gephi.io.exporter.preview.util.SupportSize;
-import org.gephi.io.exporter.spi.VectorialFileExporter;
+import java.io.OutputStream;
+import org.gephi.io.exporter.spi.ByteExporter;
+import org.gephi.io.exporter.spi.VectorExporter;
 import org.gephi.preview.api.BidirectionalEdge;
 import org.gephi.preview.api.Color;
 import org.gephi.preview.api.CubicBezierCurve;
@@ -43,7 +38,6 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Class exporting the preview graph as a PDF file.
@@ -51,10 +45,11 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = VectorialFileExporter.class)
-public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTask {
+public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter, LongTask {
 
     private ProgressTicket progress;
+    private Workspace workspace;
+    private OutputStream stream;
     private boolean cancel = false;
     private PdfContentByte cb;
     private Document document;
@@ -66,34 +61,94 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     private boolean landscape = false;
     private Rectangle pageSize = PageSize.A4;
 
-    public boolean exportData(File file, Workspace workspace) throws Exception {
+    public boolean execute() {
+        // fetches the preview graph sheet
+        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        GraphSheet graphSheet = controller.getGraphSheet();
+        Graph graph = graphSheet.getGraph();
         try {
-            SupportSize supportSize = new SupportSize(210, 297, LengthUnit.MILLIMETER);
-            exportData(file, supportSize);
+            exportData(graph);
         } catch (Exception e) {
-            clean();
-            throw e;
+            throw new RuntimeException(e);
         }
-        boolean c = cancel;
-        clean();
-        return !c;
+
+        return !cancel;
     }
 
-    public FileType[] getFileTypes() {
-        return new FileType[]{new FileType(".pdf", "PDF files")};
-    }
+    /**
+     * Does export the preview graph as an SVG image.
+     *
+     * @param file         the output SVG file
+     * @throws Exception
+     */
+    private void exportData(Graph graph) throws Exception {
+        Progress.start(progress);
 
-    public String getName() {
-        return "PDF Exporter";
+        // calculates progress units count
+        int max = 0;
+        if (graph.showNodes()) {
+            max += graph.countNodes();
+        }
+        if (graph.showEdges()) {
+            max += graph.countUnidirectionalEdges() + graph.countBidirectionalEdges();
+            if (graph.showSelfLoops()) {
+                max += graph.countSelfLoops();
+            }
+        }
+        Progress.switchToDeterminate(progress, max);
+
+        Rectangle size = new Rectangle(pageSize);
+        if (landscape) {
+            size = new Rectangle(pageSize.rotate());
+        }
+        //size.setBackgroundColor(new BaseColor(controller.getModel().getBackgroundColor()));
+        document = new Document(size);
+        PdfWriter pdfWriter = PdfWriter.getInstance(document, stream);
+        document.open();
+        cb = pdfWriter.getDirectContent();
+        cb.saveState();
+
+        //Limits
+        float minX = Float.POSITIVE_INFINITY;
+        float maxX = Float.NEGATIVE_INFINITY;
+        float minY = Float.POSITIVE_INFINITY;
+        float maxY = Float.NEGATIVE_INFINITY;
+        for (Node n : graph.getNodes()) {
+            minX = Math.min(minX, n.getPosition().getX() - n.getRadius() - n.getBorderWidth());
+            maxX = Math.max(maxX, n.getPosition().getX() + n.getRadius() + n.getBorderWidth());
+            minY = Math.min(minY, -n.getPosition().getY() - n.getRadius() - n.getBorderWidth());
+            maxY = Math.max(maxY, -n.getPosition().getY() + n.getRadius() + n.getBorderWidth());
+        }
+
+        double graphWidth = maxX - minX;
+        double graphHeight = maxY - minY;
+        double centerX = minX + graphWidth / 2.;
+        double centerY = minY + graphHeight / 2.;
+
+        //Transform
+        double pageWidth = size.getWidth() - marginLeft - marginRight;
+        double pageHeight = size.getHeight() - marginTop - marginBottom;
+        double ratioWidth = pageWidth / graphWidth;
+        double ratioHeight = pageHeight / graphHeight;
+        double scale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
+        double translateX = (marginLeft + pageWidth / 2.) / scale;
+        double translateY = (marginBottom + pageHeight / 2.) / scale;
+        cb.transform(AffineTransform.getTranslateInstance(-centerX * scale, -centerY * scale));
+        cb.transform(AffineTransform.getScaleInstance(scale, scale));
+        cb.transform(AffineTransform.getTranslateInstance(translateX, translateY));
+
+        renderGraph(graph);
+        Progress.switchToIndeterminate(progress);
+
+        cb.restoreState();
+        document.close();
+
+        Progress.finish(progress);
     }
 
     public boolean cancel() {
         cancel = true;
         return true;
-    }
-
-    public void setProgressTicket(ProgressTicket progressTicket) {
-        this.progress = progressTicket;
     }
 
     public void renderGraph(Graph graph) {
@@ -331,94 +386,6 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
     }
 
     /**
-     * Cleans all fields.
-     */
-    public void clean() {
-        progress = null;
-        cancel = false;
-        cb = null;
-        document = null;
-    }
-
-    /**
-     * Does export the preview graph as an SVG image.
-     *
-     * @param file         the output SVG file
-     * @param supportSize  the support size of the exported image
-     * @throws Exception
-     */
-    private void exportData(File file, SupportSize supportSize) throws Exception {
-        // fetches the preview graph sheet
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        GraphSheet graphSheet = controller.getGraphSheet();
-        Graph graph = graphSheet.getGraph();
-
-        Progress.start(progress);
-
-        // calculates progress units count
-        int max = 0;
-        if (graph.showNodes()) {
-            max += graph.countNodes();
-        }
-        if (graph.showEdges()) {
-            max += graph.countUnidirectionalEdges() + graph.countBidirectionalEdges();
-            if (graph.showSelfLoops()) {
-                max += graph.countSelfLoops();
-            }
-        }
-        Progress.switchToDeterminate(progress, max);
-
-
-        Rectangle size = new Rectangle(pageSize);
-        if (landscape) {
-            size = new Rectangle(pageSize.rotate());
-        }
-        //size.setBackgroundColor(new BaseColor(controller.getModel().getBackgroundColor()));
-        document = new Document(size);
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
-        document.open();
-        cb = writer.getDirectContent();
-        cb.saveState();
-
-        //Limits
-        float minX = Float.POSITIVE_INFINITY;
-        float maxX = Float.NEGATIVE_INFINITY;
-        float minY = Float.POSITIVE_INFINITY;
-        float maxY = Float.NEGATIVE_INFINITY;
-        for (Node n : graph.getNodes()) {
-            minX = Math.min(minX, n.getPosition().getX() - n.getRadius() - n.getBorderWidth());
-            maxX = Math.max(maxX, n.getPosition().getX() + n.getRadius() + n.getBorderWidth());
-            minY = Math.min(minY, -n.getPosition().getY() - n.getRadius() - n.getBorderWidth());
-            maxY = Math.max(maxY, -n.getPosition().getY() + n.getRadius() + n.getBorderWidth());
-        }
-
-        double graphWidth = maxX - minX;
-        double graphHeight = maxY - minY;
-        double centerX = minX + graphWidth / 2.;
-        double centerY = minY + graphHeight / 2.;
-
-        //Transform
-        double pageWidth = size.getWidth() - marginLeft - marginRight;
-        double pageHeight = size.getHeight() - marginTop - marginBottom;
-        double ratioWidth = pageWidth / graphWidth;
-        double ratioHeight = pageHeight / graphHeight;
-        double scale = ratioWidth < ratioHeight ? ratioWidth : ratioHeight;
-        double translateX = (marginLeft + pageWidth / 2.) / scale;
-        double translateY = (marginBottom + pageHeight / 2.) / scale;
-        cb.transform(AffineTransform.getTranslateInstance(-centerX * scale, -centerY * scale));
-        cb.transform(AffineTransform.getScaleInstance(scale, scale));
-        cb.transform(AffineTransform.getTranslateInstance(translateX, translateY));
-
-        renderGraph(graphSheet.getGraph());
-        Progress.switchToIndeterminate(progress);
-
-        cb.restoreState();
-        document.close();
-
-        Progress.finish(progress);
-    }
-
-    /**
      * Generates an iText BaseFont object from a Java Font one.
      *
      * @param font  the reference font
@@ -520,5 +487,21 @@ public class PDFExporter implements GraphRenderer, VectorialFileExporter, LongTa
 
     public void setPageSize(Rectangle pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public void setProgressTicket(ProgressTicket progressTicket) {
+        this.progress = progressTicket;
+    }
+
+    public void setOutputStream(OutputStream stream) {
+        this.stream = stream;
+    }
+
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
     }
 }

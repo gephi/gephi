@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.plugin.ExporterGDF;
 import org.gephi.io.exporter.spi.ExporterUI;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -35,15 +36,18 @@ public class UIExporterGDF implements ExporterUI {
 
     private UIExporterGDFPanel panel;
     private ExporterGDF exporterGDF;
+    private ExporterGDFSettings settings = new ExporterGDFSettings();
 
     public void setup(Exporter exporter) {
         exporterGDF = (ExporterGDF) exporter;
+        settings.load(exporterGDF);
         panel.setup(exporterGDF);
     }
 
     public void unsetup(boolean update) {
         if (update) {
             panel.unsetup(exporterGDF);
+            settings.save(exporterGDF);
         }
         panel = null;
         exporterGDF = null;
@@ -54,7 +58,42 @@ public class UIExporterGDF implements ExporterUI {
         return panel;
     }
 
-    public boolean isMatchingExporter(Exporter exporter) {
+    public boolean isUIForExporter(Exporter exporter) {
         return exporter instanceof ExporterGDF;
+    }
+
+    public String getDisplayName() {
+        return NbBundle.getMessage(UIExporterGDF.class, "UIExporterGDF.name");
+    }
+
+    private static class ExporterGDFSettings {
+
+        private boolean normalize = false;
+        private boolean simpleQuotes = false;
+        private boolean useQuotes = true;
+        private boolean exportColors = true;
+        private boolean exportPosition = true;
+        private boolean exportAttributes = true;
+        private boolean exportVisibility = false;
+
+        private void save(ExporterGDF exporterGDF) {
+            this.normalize = exporterGDF.isNormalize();
+            this.simpleQuotes = exporterGDF.isSimpleQuotes();
+            this.useQuotes = exporterGDF.isUseQuotes();
+            this.exportColors = exporterGDF.isExportColors();
+            this.exportPosition = exporterGDF.isExportPosition();
+            this.exportAttributes = exporterGDF.isExportAttributes();
+            this.exportVisibility = exporterGDF.isExportVisibility();
+        }
+
+        private void load(ExporterGDF exporterGDF) {
+            exporterGDF.setNormalize(normalize);
+            exporterGDF.setSimpleQuotes(simpleQuotes);
+            exporterGDF.setUseQuotes(useQuotes);
+            exporterGDF.setExportColors(exportColors);
+            exporterGDF.setExportAttributes(exportAttributes);
+            exporterGDF.setExportPosition(exportPosition);
+            exporterGDF.setExportVisibility(exportVisibility);
+        }
     }
 }

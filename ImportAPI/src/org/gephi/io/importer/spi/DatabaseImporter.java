@@ -21,11 +21,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.spi;
 
 import org.gephi.io.importer.api.Database;
+import org.gephi.io.importer.api.ImportController;
 
 /**
- * Importers interface for importing data from databases source.
+ * Importers interface for importing data from database sources.
  *
  * @author Mathieu Bastian
+ * @see ImportController
  */
 public interface DatabaseImporter extends Importer {
 

@@ -31,7 +31,7 @@ public interface FileImporter extends Importer {
 
     /**
      * Sets the reader where characters can be retrieved.
-     * @param stream    the reader on data
+     * @param reader    the reader on data
      */
     public void setReader(Reader reader);
 }

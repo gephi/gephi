@@ -85,6 +85,8 @@ public class Dhns implements GraphModel {
         graphStructure = new GraphStructure(this);
         duplicateManager = new DuplicateManager(this);
 
+        eventManager.start();
+
         //AttributeFactory
         AttributeRowFactory attributeRowFactory = null;
         if (workspace != null) {
@@ -218,11 +220,11 @@ public class Dhns implements GraphModel {
     }
 
     public void addGraphListener(GraphListener graphListener) {
-        eventManager.addListener(graphListener);
+        eventManager.addGraphListener(graphListener);
     }
 
     public void removeGraphListener(GraphListener graphListener) {
-        eventManager.removeListener(graphListener);
+        eventManager.removeGraphListener(graphListener);
     }
 
     public Graph getGraph() {
@@ -384,7 +386,7 @@ public class Dhns implements GraphModel {
         Dhns source = (Dhns) graphImpl.getGraphModel();
         source.getDuplicateManager().duplicate(this, (GraphViewImpl) graphImpl.getView());
         graphVersion.incNodeAndEdgeVersion();
-        eventManager.fireEvent(EventType.NODES_AND_EDGES_UPDATED);
+       // eventManager.fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void clear() {

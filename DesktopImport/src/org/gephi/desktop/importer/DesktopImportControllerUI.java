@@ -86,9 +86,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
             ImporterUI ui = controller.getUI(importer);
             if (ui != null) {
-                ui.setup(importer);
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
                 JPanel panel = ui.getPanel();
+                ui.setup(importer);
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
                     ValidationPanel vp = (ValidationPanel) panel;
@@ -102,9 +102,10 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (!result.equals(NotifyDescriptor.OK_OPTION)) {
+                    ui.unsetup(false);
                     return;
                 }
-                ui.unsetup();
+                ui.unsetup(true);
             }
 
             LongTask task = null;
@@ -146,9 +147,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
             ImporterUI ui = controller.getUI(importer);
             if (ui != null) {
-                ui.setup(importer);
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.file.ui.dialog.title", ui.getDisplayName());
                 JPanel panel = ui.getPanel();
+                ui.setup(importer);
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
                     ValidationPanel vp = (ValidationPanel) panel;
@@ -162,9 +163,10 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (!result.equals(NotifyDescriptor.OK_OPTION)) {
+                    ui.unsetup(false);
                     return;
                 }
-                ui.unsetup();
+                ui.unsetup(true);
             }
 
             LongTask task = null;
@@ -173,7 +175,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Execute task
-            final String containerSource = "Stream " + importer;
+            final String containerSource = "Stream " + importerName;
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -220,9 +222,10 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (!result.equals(NotifyDescriptor.OK_OPTION)) {
+                    ui.unsetup(false);
                     return;
                 }
-                ui.unsetup();
+                ui.unsetup(true);
             }
 
             LongTask task = null;
@@ -231,7 +234,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Execute task
-            final String containerSource = "Stream " + importer;
+            final String containerSource = "Stream " + importerName;
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -264,10 +267,10 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             ImporterUI ui = controller.getUI(importer);
-            if (ui != null) {
-                ui.setup(importer);
+            if (ui != null) { 
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.database.ui.dialog.title");
                 JPanel panel = ui.getPanel();
+                ui.setup(importer);
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
                     ValidationPanel vp = (ValidationPanel) panel;
@@ -281,9 +284,10 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
+                    ui.unsetup(false);
                     return;
                 }
-                ui.unsetup();
+                ui.unsetup(true);
                 if (database == null) {
                     database = importer.getDatabase();
                 }
@@ -326,9 +330,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
             ImporterUI ui = controller.getUI(importer);
             if (ui != null) {
-                ui.setup(importer);
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.spigot.ui.dialog.title", ui.getDisplayName());
                 JPanel panel = ui.getPanel();
+                ui.setup(importer);
                 final DialogDescriptor dd = new DialogDescriptor(panel, title);
                 if (panel instanceof ValidationPanel) {
                     ValidationPanel vp = (ValidationPanel) panel;
@@ -342,9 +346,10 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                 Object result = DialogDisplayer.getDefault().notify(dd);
                 if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
+                    ui.unsetup(false);
                     return;
                 }
-                ui.unsetup();
+                ui.unsetup(true);
             }
 
             LongTask task = null;

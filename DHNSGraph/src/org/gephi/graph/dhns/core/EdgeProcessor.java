@@ -20,9 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
+import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
+import org.gephi.graph.dhns.event.EdgeEvent;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
@@ -53,7 +55,14 @@ public class EdgeProcessor {
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
     }
 
-    public void clearEdges(AbstractNode node) {
+    public AbstractEdge[] clearEdges(AbstractNode node) {
+        int edgesCount = node.getEdgesInTree().getCount() + node.getEdgesOutTree().getCount();
+        if (edgesCount == 0) {
+            return null;
+        }
+        AbstractEdge[] clearedEdges = new AbstractEdge[edgesCount];
+        int i = 0;
+
         if (node.getEdgesInTree().getCount() > 0) {
             edgeIterator.setNode(node.getEdgesInTree());
             while (edgeIterator.hasNext()) {
@@ -77,7 +86,8 @@ public class EdgeProcessor {
                 }
 
                 source.getEdgesOutTree().remove(edge);
-                dhns.getGraphStructure().removeFromDictionnary(edge);
+                clearedEdges[i] = edge;
+                i++;
             }
             node.getEdgesInTree().clear();
         }
@@ -99,10 +109,12 @@ public class EdgeProcessor {
                 }
 
                 edge.getTarget(viewId).getEdgesInTree().remove(edge);
-                dhns.getGraphStructure().removeFromDictionnary(edge);
+                clearedEdges[i] = edge;
+                i++;
             }
             node.getEdgesOutTree().clear();
         }
+        return clearedEdges;
     }
 
     public void clearEdgesWithoutRemove(AbstractNode node) {

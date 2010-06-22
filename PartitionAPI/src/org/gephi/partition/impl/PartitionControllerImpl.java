@@ -118,7 +118,7 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
         graphListener = new GraphListener() {
 
             public void graphChanged(GraphEvent event) {
-                if (event.getEventType().equals(GraphEvent.EventType.VIEWS_UPDATED)) {
+                if (event.is(GraphEvent.EventType.VISIBLE_VIEW)) {
                     if (model.getVisibleViewId() != graphModel.getVisibleView().getViewId()) {
                         //View has been updated
                         model.setVisibleViewId(graphModel.getVisibleView().getViewId());

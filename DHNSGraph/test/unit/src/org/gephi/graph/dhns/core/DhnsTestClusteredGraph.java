@@ -951,14 +951,6 @@ public class DhnsTestClusteredGraph {
             }
         };
         dhnsGlobal.addGraphListener(gl);
-        assertEquals(1, dhnsGlobal.getEventManager().getListeners().size());
-        dhnsGlobal.addGraphListener(gl);
-        assertEquals(1, dhnsGlobal.getEventManager().getListeners().size());
-        dhnsGlobal.removeGraphListener(gl);
-        assertEquals(0, dhnsGlobal.getEventManager().getListeners().size());
-
-        GraphFactoryImpl factory = dhnsGlobal.factory();
-        graphGlobal.addNode(factory.newNode());
     }
 
     public void checkHierarchy(TreeStructure treeStructure) throws Exception {

@@ -38,14 +38,13 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import org.gephi.desktop.io.export.ExportControllerUI;
 import org.gephi.desktop.io.export.GraphFileExporterUIPanel;
 import org.gephi.desktop.io.export.spi.ExporterClassUI;
-import org.gephi.desktop.io.export.spi.ExporterClassUI;
-import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.ExporterUI;
-import org.gephi.io.exporter.spi.FileExporter;
-import org.gephi.io.exporter.spi.GraphFileExporter;
+import org.gephi.io.exporter.spi.GraphExporter;
+import org.gephi.io.exporter.spi.GraphFileExporterBuilder;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -64,7 +63,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ExporterClassUI.class)
 public final class GraphFileExporterUI implements ExporterClassUI {
 
-    private GraphFileExporter selectedExporter;
+    private GraphFileExporterBuilder selectedBuilder;
+    private GraphExporter selectedExporter;
     private File selectedFile;
     private boolean visibleOnlyGraph = false;
 
@@ -80,7 +80,7 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         final String LAST_PATH = "GraphFileExporterUI_Last_Path";
         final String LAST_PATH_DEFAULT = "GraphFileExporterUI_Last_Path_Default";
 
-        final ExportController exportController = Lookup.getDefault().lookup(ExportController.class);
+        final ExportControllerUI exportController = Lookup.getDefault().lookup(ExportControllerUI.class);
         if (exportController == null) {
             return;
         }
@@ -97,11 +97,11 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         optionsButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                ExporterUI exporterUI = exportController.getUI(selectedExporter);
+                ExporterUI exporterUI = exportController.getExportController().getUI(selectedExporter);
                 if (exporterUI != null) {
                     JPanel panel = exporterUI.getPanel();
                     exporterUI.setup(selectedExporter);
-                    DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsDialog_title", selectedExporter.getName()));
+                    DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsDialog_title", selectedBuilder.getName()));
                     Object result = DialogDisplayer.getDefault().notify(dd);
                     exporterUI.unsetup(result == NotifyDescriptor.OK_OPTION);
                 }
@@ -145,8 +145,11 @@ public final class GraphFileExporterUI implements ExporterClassUI {
                 DialogFileFilter fileFilter = (DialogFileFilter) evt.getNewValue();
 
                 //Options panel enabling
-                selectedExporter = getExporter(fileFilter);
-                if (selectedExporter != null && exportController.hasUI(selectedExporter)) {
+                selectedBuilder = getExporter(fileFilter);
+                if (selectedBuilder != null) {
+                    selectedExporter = selectedBuilder.buildExporter();
+                }
+                if (selectedBuilder != null && exportController.getExportController().getUI(selectedExporter) != null) {
                     optionsButton.setEnabled(true);
                 } else {
                     optionsButton.setEnabled(false);
@@ -173,7 +176,7 @@ public final class GraphFileExporterUI implements ExporterClassUI {
 
         //File filters
         DialogFileFilter defaultFilter = null;
-        for (FileExporter graphFileExporter : exportController.getGraphFileExporters()) {
+        for (GraphFileExporterBuilder graphFileExporter : Lookup.getDefault().lookupAll(GraphFileExporterBuilder.class)) {
             for (FileType fileType : graphFileExporter.getFileTypes()) {
                 DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
                 dialogFileFilter.addExtensions(fileType.getExtensions());
@@ -202,13 +205,14 @@ public final class GraphFileExporterUI implements ExporterClassUI {
             visibleOnlyGraph = graphSettings.isVisibleOnlyGraph();
 
             //Do
-            exportController.doExport(selectedExporter, fileObject, visibleOnlyGraph);
+            selectedExporter.setExportVisible(visibleOnlyGraph);
+            exportController.exportFile(fileObject, selectedExporter);
         }
     }
 
     private boolean canExport(JFileChooser chooser) {
         File file = chooser.getSelectedFile();
-        String defaultExtention = selectedExporter.getFileTypes()[0].getExtension();
+        String defaultExtention = selectedBuilder.getFileTypes()[0].getExtension();
 
         try {
             if (!file.getPath().endsWith(defaultExtention)) {
@@ -237,10 +241,9 @@ public final class GraphFileExporterUI implements ExporterClassUI {
         return true;
     }
 
-    private GraphFileExporter getExporter(DialogFileFilter fileFilter) {
-        final ExportController exportController = Lookup.getDefault().lookup(ExportController.class);
+    private GraphFileExporterBuilder getExporter(DialogFileFilter fileFilter) {
         //Find fileFilter
-        for (GraphFileExporter graphFileExporter : exportController.getGraphFileExporters()) {
+        for (GraphFileExporterBuilder graphFileExporter : Lookup.getDefault().lookupAll(GraphFileExporterBuilder.class)) {
             for (FileType fileType : graphFileExporter.getFileTypes()) {
                 DialogFileFilter tempFilter = new DialogFileFilter(fileType.getName());
                 tempFilter.addExtensions(fileType.getExtensions());
