@@ -38,5 +38,12 @@
             </not>
         </condition>
     </fail>
+    <fail message="Cannot find NetBeans build harness. ${line.separator}Check that nbplatform.${nbplatform.active}.netbeans.dest.dir and nbplatform.${nbplatform.active}.harness.dir are defined. ${line.separator}On a developer machine these are normally defined in ${user.properties.file}=${netbeans.user}/build.properties ${line.separator}but for automated builds you should pass these properties to Ant explicitly.">
+        <condition>
+            <not>
+                <available type="dir" file="${harness.dir}"/>
+            </not>
+        </condition>
+    </fail>
     <import file="${harness.dir}/suite.xml"/>
 </project>
