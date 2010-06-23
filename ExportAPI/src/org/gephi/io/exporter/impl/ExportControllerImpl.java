@@ -19,10 +19,10 @@ import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.FileExporterBuilder;
+import org.gephi.io.exporter.spi.GraphFileExporterBuilder;
+import org.gephi.io.exporter.spi.VectorFileExporterBuilder;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -38,6 +38,8 @@ public class ExportControllerImpl implements ExportController {
     private final ExporterUI[] uis;
 
     public ExportControllerImpl() {
+        Lookup.getDefault().lookupAll(GraphFileExporterBuilder.class);
+        Lookup.getDefault().lookupAll(VectorFileExporterBuilder.class);
         fileExporterBuilders = Lookup.getDefault().lookupAll(FileExporterBuilder.class).toArray(new FileExporterBuilder[0]);
         uis = Lookup.getDefault().lookupAll(ExporterUI.class).toArray(new ExporterUI[0]);
     }
@@ -165,11 +167,10 @@ public class ExportControllerImpl implements ExportController {
     }
 
     public Exporter getFileExporter(File file) {
-        FileObject fileObject = FileUtil.toFileObject(file);
         for (FileExporterBuilder im : fileExporterBuilders) {
             for (FileType ft : im.getFileTypes()) {
                 for (String ex : ft.getExtensions()) {
-                    if (fileObject.hasExt(ex)) {
+                    if (hasExt(file, ex)) {
                         return im.buildExporter();
                     }
                 }
@@ -203,5 +204,24 @@ public class ExportControllerImpl implements ExportController {
             }
         }
         return null;
+    }
+
+    private boolean hasExt(File file, String ext) {
+        if (ext == null || ext.isEmpty()) {
+            return false;
+        }
+
+        /** period at first position is not considered as extension-separator */
+        if ((file.getName().length() - ext.length()) <= 1) {
+            return false;
+        }
+
+        boolean ret = file.getName().endsWith(ext);
+
+        if (!ret) {
+            return false;
+        }
+
+        return true;
     }
 }
