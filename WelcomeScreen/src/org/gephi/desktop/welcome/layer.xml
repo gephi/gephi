@@ -14,6 +14,7 @@
         <folder name="Window">
             <file name="WelcomeAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-welcome-WelcomeAction.instance"/>
+                <attr name="position" intvalue="1300"/>
             </file>
         </folder>
     </folder>

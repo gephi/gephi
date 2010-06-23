@@ -79,7 +79,7 @@ public class EdgeNodeIterator extends AbstractEdgeIterator implements Iterator<E
             } else {
                 if (edgeIterator.hasNext()) {
                     pointer = edgeIterator.next();
-                    if (!nodePredicate.evaluate(mode.equals(EdgeNodeIteratorMode.IN) ? pointer.getSource() : pointer.getTarget())) {
+                    if (!nodePredicate.evaluate(mode.equals(EdgeNodeIteratorMode.IN) ? pointer.getSource(viewId) : pointer.getTarget(viewId))) {
                         pointer = null;
                     }
                 } else {

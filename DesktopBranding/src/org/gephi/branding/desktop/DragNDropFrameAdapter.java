@@ -70,6 +70,9 @@ public class DragNDropFrameAdapter {
                     List data = (List) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
                     File file = (File) data.get(0);
                     FileObject fileObject = FileUtil.toFileObject(file);
+                    if(!file.exists()) {
+                        return false;
+                    }
                     if (fileObject.hasExt(GEPHI_EXTENSION)) {
 
                         ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);

@@ -32,6 +32,8 @@ import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.event.AbstractEvent;
+import org.gephi.graph.dhns.event.ViewEvent;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.gephi.graph.dhns.utils.avl.AbstractEdgeTree;
@@ -124,6 +126,7 @@ public class GraphStructure {
         view.setMutualEdgesTotal(mainView.getMutualEdgesTotal());
         view.setMutualEdgesEnabled(mainView.getMutualEdgesEnabled());
         views.add(view);
+        dhns.getEventManager().fireEvent(new ViewEvent(EventType.NEW_VIEW, view));
         dhns.getReadLock().unlock();
         return view;
     }
@@ -204,7 +207,7 @@ public class GraphStructure {
         } else {
             this.visibleView = visibleView;
         }
-        dhns.getEventManager().fireEvent(EventType.VIEWS_UPDATED);
+        dhns.getEventManager().fireEvent(new ViewEvent(EventType.VISIBLE_VIEW, this.visibleView));
     }
 
     private static class ViewDestructorThread extends Thread {
@@ -260,10 +263,11 @@ public class GraphStructure {
             }
             structure.views.remove(view);
             //System.out.println("Destroy view finished");
+            structure.dhns.getEventManager().fireEvent(new ViewEvent(EventType.DESTROY_VIEW, view));
             structure.dhns.getWriteLock().unlock();
             if (structure.visibleView == view) {
                 structure.visibleView = structure.mainView;
-                structure.dhns.getEventManager().fireEvent(EventType.VIEWS_UPDATED);
+                structure.dhns.getEventManager().fireEvent(new ViewEvent(EventType.VISIBLE_VIEW, structure.mainView));
             }
         }
     }

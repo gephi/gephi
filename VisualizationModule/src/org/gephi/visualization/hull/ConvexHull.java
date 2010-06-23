@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.hull;
 
+import java.util.Iterator;
 import org.gephi.utils.collection.avl.AVLItemAccessor;
 import org.gephi.utils.collection.avl.ParamAVLTree;
 import org.gephi.graph.api.Model;
@@ -39,7 +40,7 @@ public class ConvexHull implements Renderable {
     private ParamAVLTree<Node> groupNodesTree;
     private ModelImpl[] hullNodes;
     private float alpha = 0.5f;
-    private Model model;
+    private ModelImpl model;
     private float centroidX;
     private float centroidY;
 
@@ -73,6 +74,15 @@ public class ConvexHull implements Renderable {
     }
 
     private ModelImpl[] computeHull() {
+        Iterator<Node> itr = groupNodesTree.iterator();
+        for (; itr.hasNext();) {
+            Node n = itr.next();
+            if (n.getNodeData().getModel() == null) {
+                itr.remove();
+            } else if (model != null && !n.getNodeData().getModel().isCacheMatching(model.getCacheMarker())) {
+                itr.remove();
+            }
+        }
         Node[] n = AlgoHull.calculate(groupNodesTree.toArray(new Node[0]));
         ModelImpl[] models = new ModelImpl[n.length];
         float cenX = 0;
@@ -160,7 +170,7 @@ public class ConvexHull implements Renderable {
     }
 
     public void setModel(Model obj) {
-        this.model = obj;
+        this.model = (ModelImpl) obj;
     }
 
     public TextData getTextData() {

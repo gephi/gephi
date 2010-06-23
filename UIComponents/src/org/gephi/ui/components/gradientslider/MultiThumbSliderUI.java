@@ -352,6 +352,9 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
                 return -1;
             }
         }
+        if(thumbPositions.length==0) {
+            return -1;
+        }
         int min = Math.abs(v - thumbPositions[0]);
         int minIndex = 0;
         for (int a = 1; a < thumbPositions.length; a++) {
