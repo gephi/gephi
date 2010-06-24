@@ -373,6 +373,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
     private void enableControls() {
         nodesButton.setEnabled(true);
         edgesButton.setEnabled(true);
+        refreshButtonControlToolbar.setEnabled(true);
         filterTextField.setEnabled(true);
         labelFilter.setEnabled(true);
         visibleGraphCheckbox.setEnabled(true);
@@ -384,6 +385,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         edgesButton.setEnabled(false);
         filterTextField.setEnabled(false);
         labelFilter.setEnabled(false);
+        refreshButtonControlToolbar.setEnabled(false);
         bannerPanel.setVisible(false);
         visibleGraphCheckbox.setEnabled(false);
         hideTable();
@@ -618,6 +620,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
     private void refreshButtonControlToolbarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonControlToolbarActionPerformed
         refreshCurrentTable();
     }//GEN-LAST:event_refreshButtonControlToolbarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bannerPanel;
     private javax.swing.JLabel boxGlue;

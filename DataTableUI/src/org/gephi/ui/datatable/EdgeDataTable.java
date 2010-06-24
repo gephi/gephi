@@ -27,6 +27,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
@@ -69,6 +70,7 @@ public class EdgeDataTable {
         table.setColumnControlVisible(true);
         table.setSortable(true);
         table.setRowFilter(rowFilter);
+        table.setHorizontalScrollEnabled(true);
 
         propertiesColumns = new PropertyEdgeDataColumn[3];
 
@@ -157,10 +159,7 @@ public class EdgeDataTable {
             selectedEdges = getEdgesFromSelectedRows();
         }
         ArrayList<EdgeDataColumn> columns = new ArrayList<EdgeDataColumn>();
-
-        for (PropertyEdgeDataColumn p : propertiesColumns) {
-            columns.add(p);
-        }
+        columns.addAll(Arrays.asList(propertiesColumns));
 
         for (AttributeColumn c : cols) {
             columns.add(new AttributeEdgeDataColumn(c));
@@ -175,9 +174,7 @@ public class EdgeDataTable {
     public void setEdgesSelection(Edge[] edges) {
         this.selectedEdges = edges;//Keep this selection request to be able to do it if the table is first refreshed later.
         HashSet<Edge> edgesSet = new HashSet<Edge>();
-        for (Edge e : edges) {
-            edgesSet.add(e);
-        }
+        edgesSet.addAll(Arrays.asList(edges));
         table.clearSelection();
         for (int i = 0; i < table.getRowCount(); i++) {
             if (edgesSet.contains(getEdgeFromRow(i))) {

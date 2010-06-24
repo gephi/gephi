@@ -48,7 +48,7 @@ public interface Manipulator {
     void execute();
 
     /**
-     * Return name to show for this Manipulator on the context menu.
+     * Return name to show for this Manipulator on the ui.
      * Implementations should provide different names depending on the data this
      * Manipulator has (for example depending on the number of nodes in a NodeManipulator).
      * @return Name to show at current time and conditions

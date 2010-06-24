@@ -156,6 +156,7 @@
             <file name="LaboratoryGroup.wsgrp" url="LaboratoryGroup.wsgrp"/>
             <folder name="LaboratoryGroup">
                 <file name="DataTableTopComponent.wstcgrp" url="DataTableTopComponent.wstcgrp"/>
+                <file name="LaboratoryTopComponent.wstcgrp" url="LaboratoryTopComponent.wstcgrp"/>
             </folder>
             <file name="OverviewGroup.wsgrp" url="OverviewGroup.wsgrp"/>
             <folder name="OverviewGroup">

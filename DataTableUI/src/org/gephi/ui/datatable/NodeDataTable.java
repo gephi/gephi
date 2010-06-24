@@ -28,6 +28,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -173,9 +174,7 @@ public class NodeDataTable {
     public void setNodesSelection(Node[] nodes) {
         this.selectedNodes = nodes;//Keep this selection request to be able to do it if the table is first refreshed later.
         HashSet<Node> nodesSet = new HashSet<Node>();
-        for (Node n : nodes) {
-            nodesSet.add(n);
-        }
+        nodesSet.addAll(Arrays.asList(nodes));
         outlineTable.clearSelection();
         for (int i = 0; i < outlineTable.getRowCount(); i++) {
             if (nodesSet.contains(getNodeFromRow(i))) {
