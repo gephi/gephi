@@ -144,7 +144,6 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         //Workspace Listener
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-        final AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {

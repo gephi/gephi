@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.api;
 
 import org.gephi.datalaboratory.spi.Manipulator;
+import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 
@@ -45,6 +46,8 @@ public interface DataLaboratoryHelper {
      * @return Array of all EdgesManipulator implementations
      */
     EdgesManipulator[] getEdgesManipulators();
+
+    AttributeColumnsManipulator[] getAttributeColumnsManipulators();
 
     /**
      * Prepares the dialog UI of a manipulator if it has one and executes the manipulator in a separate

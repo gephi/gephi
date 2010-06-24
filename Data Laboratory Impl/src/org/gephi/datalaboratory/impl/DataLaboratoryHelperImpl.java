@@ -29,6 +29,7 @@ import org.gephi.datalaboratory.impl.manipulators.edges.DeleteEdges;
 import org.gephi.datalaboratory.impl.manipulators.nodes.DeleteNodes;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
+import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulatorBuilder;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
@@ -54,7 +55,7 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         for (NodesManipulatorBuilder nm : Lookup.getDefault().lookupAll(NodesManipulatorBuilder.class)) {
             nodesManipulators.add(nm.getNodesManipulator());
         }
-        sortGraphElementsManipulators(nodesManipulators);
+        sortManipulators(nodesManipulators);
         return nodesManipulators.toArray(new NodesManipulator[0]);
     }
 
@@ -63,11 +64,18 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         for (EdgesManipulatorBuilder em : Lookup.getDefault().lookupAll(EdgesManipulatorBuilder.class)) {
             edgesManipulators.add(em.getEdgesManipulator());
         }
-        sortGraphElementsManipulators(edgesManipulators);
+        sortManipulators(edgesManipulators);
         return edgesManipulators.toArray(new EdgesManipulator[0]);
     }
 
-    private void sortGraphElementsManipulators(ArrayList<? extends Manipulator> m) {
+    public AttributeColumnsManipulator[] getAttributeColumnsManipulators(){
+        ArrayList<AttributeColumnsManipulator> attributeColumnsManipulators=new ArrayList<AttributeColumnsManipulator>();
+        attributeColumnsManipulators.addAll(Lookup.getDefault().lookupAll(AttributeColumnsManipulator.class));
+        sortAttributeColumnsManipulators(attributeColumnsManipulators);
+        return attributeColumnsManipulators.toArray(new AttributeColumnsManipulator[0]);
+    }
+
+    private void sortManipulators(ArrayList<? extends Manipulator> m) {
         Collections.sort(m, new Comparator<Manipulator>() {
 
             public int compare(Manipulator o1, Manipulator o2) {
@@ -77,6 +85,16 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                 } else {
                     return o1.getType() - o2.getType();
                 }
+            }
+        });
+    }
+
+    private void sortAttributeColumnsManipulators(ArrayList<? extends AttributeColumnsManipulator> m) {
+        Collections.sort(m, new Comparator<AttributeColumnsManipulator>(){
+
+            public int compare(AttributeColumnsManipulator o1, AttributeColumnsManipulator o2) {
+                //Order by position.
+                return o1.getPosition()-o2.getPosition();
             }
         });
     }
@@ -94,6 +112,8 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                     if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                         ui.unSetup();
                         m.execute();
+                    }else{
+                        ui.unSetup();
                     }
                 } else {
                     m.execute();

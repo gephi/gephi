@@ -7,6 +7,14 @@
             <suite-component/>
             <module-dependencies>
                 <dependency>
+                    <code-name-base>org.gephi.data.attributes.api</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.7.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.gephi.graph.api</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -18,6 +26,7 @@
             <public-packages>
                 <package>org.gephi.datalaboratory.api</package>
                 <package>org.gephi.datalaboratory.spi</package>
+                <package>org.gephi.datalaboratory.spi.attributecolumns</package>
                 <package>org.gephi.datalaboratory.spi.edges</package>
                 <package>org.gephi.datalaboratory.spi.nodes</package>
             </public-packages>

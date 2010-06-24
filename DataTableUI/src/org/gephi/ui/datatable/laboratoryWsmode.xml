@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mode version="2.3">
+    <name unique="laboratorymode" />
+  <kind type="editor" />
+  <state type="joined" />
+ <constraints>
+    <path orientation="horizontal" number="1" weight="0.7831858407079646"/>
+    <path orientation="vertical" number="1" weight="0.36"/>
+  </constraints>
+  <bounds x="0" y="0" width="0" height="0" />
+  <frame state="0"/>
+    <active-tc  id="LaboratoryTopComponent" />
+    <empty-behavior permanent="false"/>
+</mode>
