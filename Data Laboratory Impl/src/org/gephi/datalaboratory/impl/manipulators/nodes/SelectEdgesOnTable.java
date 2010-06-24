@@ -27,6 +27,7 @@ import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -77,6 +78,6 @@ public class SelectEdgesOnTable implements NodesManipulator {
     }
 
     public Icon getIcon() {
-        return null;
+        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/table-select-row.png", true);
     }
 }

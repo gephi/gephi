@@ -27,6 +27,7 @@ import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -34,15 +35,16 @@ import org.openide.util.NbBundle;
  * Edges manipulator that shows the source node of an edge centered in graph view.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class SelectSourceOnGraph implements EdgesManipulator{
+public class SelectSourceOnGraph implements EdgesManipulator {
+
     private Edge clickedEdge;
 
     public void setup(Edge[] edges, Edge clickedEdge) {
-        this.clickedEdge=clickedEdge;
+        this.clickedEdge = clickedEdge;
     }
 
     public void execute() {
-        Node source=clickedEdge.getSource();
+        Node source = clickedEdge.getSource();
         VizController.getInstance().getSelectionManager().centerOnNode(source);
     }
 
@@ -55,7 +57,7 @@ public class SelectSourceOnGraph implements EdgesManipulator{
     }
 
     public boolean canExecute() {
-        GraphElementsController gec=Lookup.getDefault().lookup(GraphElementsController.class);
+        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         return gec.isEdgeInGraph(clickedEdge);
     }
 
@@ -72,7 +74,6 @@ public class SelectSourceOnGraph implements EdgesManipulator{
     }
 
     public Icon getIcon() {
-        return null;
+        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/magnifier--arrow.png", true);
     }
-
 }

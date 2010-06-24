@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.spi.attributecolumns;
 
-import javax.swing.Icon;
+import java.awt.Image;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 
@@ -81,5 +81,5 @@ public interface AttributeColumnsManipulator {
      * Returns an icon for this AttributeColumnsManipulator if necessary.
      * @return Icon for the manipulator or null
      */
-    Icon getIcon();
+    Image getIcon();
 }
