@@ -32,6 +32,100 @@ import org.gephi.data.attributes.api.Estimator;
  * @author Cezary Bartosiak
  */
 public final class DynamicBigInteger extends DynamicType<BigInteger> {
+	/**
+	 * Constructs a new {@code DynamicType} instance with no intervals.
+	 */
+	public DynamicBigInteger() {
+		super();
+	}
+
+	/**
+	 * Constructs a new {@code DynamicType} instance that contains a given
+	 * {@code Interval<T>} in.
+	 * 
+	 * @param in interval to add (could be null)
+	 */
+	public DynamicBigInteger(Interval<BigInteger> in) {
+		super(in);
+	}
+
+	/**
+	 * Constructs a new {@code DynamicType} instance with intervals given by
+	 * {@code List<Interval<T>>} in.
+	 * 
+	 * @param in intervals to add (could be null)
+	 */
+	public DynamicBigInteger(List<Interval<BigInteger>> in) {
+		super(in);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source}.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 */
+	public DynamicBigInteger(DynamicBigInteger source) {
+		super(source);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} that contains a given
+	 * {@code Interval<T>} in.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     interval to add (could be null)
+	 */
+	public DynamicBigInteger(DynamicBigInteger source,
+			Interval<BigInteger> in) {
+		super(source, in);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} that contains a given
+	 * {@code Interval<T>} in. Before add it removes from the newly created
+	 * object all intervals that overlap with a given {@code Interval<T>} out.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     interval to add (could be null)
+	 * @param out    interval to remove (could be null)
+	 */
+	public DynamicBigInteger(DynamicBigInteger source, Interval<BigInteger> in,
+			Interval<BigInteger> out) {
+		super(source, in, out);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * given by {@code List<Interval<T>>} in.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     intervals to add (could be null)
+	 */
+	public DynamicBigInteger(DynamicBigInteger source,
+			List<Interval<BigInteger>> in) {
+		super(source, in);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * given by {@code List<Interval<T>>} in. Before add it removes from the
+	 * newly created object all intervals that overlap with intervals given by
+	 * {@code List<Interval<T>>} out.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     intervals to add (could be null)
+	 * @param out    intervals to remove (could be null)
+	 */
+	public DynamicBigInteger(DynamicBigInteger source,
+			List<Interval<BigInteger>> in, List<Interval<BigInteger>> out) {
+		super(source, in, out);
+	}
+
 	@Override
 	public BigInteger getValue(double low, double high, Estimator estimator) {
 		if (low > high)
@@ -66,7 +160,7 @@ public final class DynamicBigInteger extends DynamicType<BigInteger> {
 				}
 				int max   = map.get(values.get(0).hashCode());
 				int index = 0;
-				for (int i = 1; index < values.size(); ++i)
+				for (int i = 1; i < values.size(); ++i)
 					if (max < map.get(values.get(i).hashCode())) {
 						max   = map.get(values.get(i).hashCode());
 						index = i;
@@ -90,9 +184,9 @@ public final class DynamicBigInteger extends DynamicType<BigInteger> {
 						maximum = values.get(i);
 				return maximum;
 			case FIRST:
-				return intervalTree.minimum().getValue();
+				return values.get(0);
 			case LAST:
-				return intervalTree.maximum().getValue();
+				return values.get(values.size() - 1);
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}

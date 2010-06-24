@@ -56,7 +56,8 @@ public final class IntervalTree<T> {
 	 * Constructs an empty {@code IntervalTree}.
 	 */
 	public IntervalTree() {
-		nil  = new Node();
+		nil = new Node();
+		nil.left = nil.right = nil.p = nil;
 		root = nil;
 	}
 
@@ -75,8 +76,10 @@ public final class IntervalTree<T> {
 	}
 
 	private void insert(Node z) {
-		Node y = nil;
-		Node x = root;
+		z.left = z.right = nil;
+
+		Node y = root;
+		Node x = root.left;
 		while (x != nil) {
 			y = x;
 			if (z.i.getLow() < x.i.getLow())
@@ -85,20 +88,16 @@ public final class IntervalTree<T> {
 			y.max = Math.max(z.max, y.max);
 		}
 		z.p = y;
-		if (y == nil)
-			root = z;
-		else if (z.i.getLow() < y.i.getLow())
+		if (y == root || z.i.getLow() < y.i.getLow())
 			y.left = z;
 		else y.right = z;
-		z.left  = nil;
-		z.right = nil;
-		z.color = RED;
 		insertFixup(z);
 	}
 
 	private void insertFixup(Node z) {
 		Node y = nil;
 
+		z.color = RED;
 		while (z.p.color == RED)
 			if (z.p == z.p.p.left) {
 				y = z.p.p.right;
@@ -136,7 +135,7 @@ public final class IntervalTree<T> {
 					leftRotate(z.p.p);
 				}
 			}
-		root.color = BLACK;
+		root.left.color = BLACK;
 	}
 
 	/**
@@ -157,41 +156,43 @@ public final class IntervalTree<T> {
 
 	private void delete(Node z) {
 		z.max = Double.NEGATIVE_INFINITY;
-		for (Node i = z.p; i != nil; i = i.p)
+		for (Node i = z.p; i != root; i = i.p)
 			i.max = Math.max(i.left.max, i.right.max);
 
-		Node y = z;
-		Node x = nil;
+		Node y;
+		Node x;
 
-		if (z.left != nil && z.right != nil)
-			y = succesor(z);
-		if (z.left != nil)
-			x = y.left;
-		else x = y.right;
+		if (z.left == nil || z.right == nil)
+			y = z;
+		else y = succesor(z);
+		if (y.left == nil)
+			x = y.right;
+		else x = y.left;
 		x.p = y.p;
-		if (y.p == nil)
-			root = x;
+		if (root == x.p)
+			root.left = x;
 		else if (y == y.p.left)
 			y.p.left = x;
 		else y.p.right = x;
 		if (y != z) {
-			y.left    = z.left;
-			y.left.p  = y;
-			y.right   = z.right;
-			y.right.p = y;
-			y.p       = z.p;
-			if (z == root)
-				root = y;
-			else if (z == z.p.left)
+			if (y.color == BLACK)
+				deleteFixup(x);
+
+			y.left   = z.left;
+			y.right  = z.right;
+			y.p      = z.p;
+			y.color  = z.color;
+			z.left.p = z.right.p = y;
+			if (z == z.p.left)
 				z.p.left = y;
 			else z.p.right = y;
 		}
-		if (y.color == BLACK)
+		else if (y.color == BLACK)
 			deleteFixup(x);
 	}
 
 	private void deleteFixup(Node x) {
-		while (x != root && x.color == BLACK)
+		while (x != root.left && x.color == BLACK)
 			if (x == x.p.left) {
 				Node w = x.p.right;
 				if (w.color == RED) {
@@ -215,7 +216,7 @@ public final class IntervalTree<T> {
 					x.p.color     = BLACK;
 					w.right.color = BLACK;
 					leftRotate(x.p);
-					x = root;
+					x = root.left;
 				}
 			}
 			else {
@@ -241,7 +242,7 @@ public final class IntervalTree<T> {
 					x.p.color    = BLACK;
 					w.left.color = BLACK;
 					rightRotate(x.p);
-					x = root;
+					x = root.left;
 				}
 			}
 		x.color = BLACK;
@@ -254,9 +255,7 @@ public final class IntervalTree<T> {
 		if (y.left != nil)
 			y.left.p = x;
 		y.p = x.p;
-		if (x.p == nil)
-			root = y;
-		else if (x == x.p.left)
+		if (x == x.p.left)
 			x.p.left = y;
 		else x.p.right = y;
 		y.left = x;
@@ -273,9 +272,7 @@ public final class IntervalTree<T> {
 		if (y.right != nil)
 			y.right.p = x;
 		y.p = x.p;
-		if (x.p == nil)
-			root = y;
-		else if (x == x.p.left)
+		if (x == x.p.left)
 			x.p.left = y;
 		else x.p.right = y;
 		y.right = x;
@@ -286,13 +283,19 @@ public final class IntervalTree<T> {
 	}
 
 	private Node succesor(Node x) {
-		if (x.right != nil)
-			return treeMinimum(x.right);
-		Node y = x.p;
-		while (y != nil && x == y.right) {
+		Node y = x.right;
+		if (y != nil) {
+			while (y.left != nil)
+				y = y.left;
+			return y;
+		}
+		y = x.p;
+		while (x == y.right) {
 			x = y;
 			y = y.p;
 		}
+		if (y == root)
+			return nil;
 		return y;
 	}
 
@@ -303,9 +306,9 @@ public final class IntervalTree<T> {
 	 *         or null if the tree is empty.
 	 */
 	public Interval<T> minimum() {
-		if (root == nil)
+		if (root.left == nil)
 			return null;
-		return treeMinimum(root).i;
+		return treeMinimum(root.left).i;
 	}
 
 	private Node treeMinimum(Node x) {
@@ -321,15 +324,49 @@ public final class IntervalTree<T> {
 	 *         or null if the tree is empty.
 	 */
 	public Interval<T> maximum() {
-		if (root == nil)
+		if (root.left == nil)
 			return null;
-		return treeMaximum(root).i;
+		return treeMaximum(root.left).i;
 	}
 
 	private Node treeMaximum(Node x) {
 		while (x.right != nil)
 			x = x.right;
 		return x;
+	}
+
+	/**
+	 * Returns the leftmost point or {@code Double.POSITIVE_INFINITY} in case
+	 * of no intervals.
+	 *
+	 * @return the leftmost point.
+	 */
+	public double getLow() {
+		if (isEmpty())
+			return Double.POSITIVE_INFINITY;
+		return minimum().getLow();
+	}
+
+	/**
+	 * Returns the rightmost point or {@code Double.NEGATIVE_INFINITY} in case
+	 * of no intervals.
+	 *
+	 * @return the rightmost point.
+	 */
+	public double getHigh() {
+		if (isEmpty())
+			return Double.NEGATIVE_INFINITY;
+		return root.left.max;
+	}
+
+	/**
+	 * Indicates if this {@code IntervalTree} contains 0 intervals.
+	 * 
+	 * @return {@code true} if this {@code IntervalTree} is empty,
+	 *         {@code false} otherwise.
+	 */
+	public boolean isEmpty() {
+		return root.left == nil;
 	}
 
 	/**
@@ -351,9 +388,33 @@ public final class IntervalTree<T> {
 		return overlaps;
 	}
 
+	/**
+	 * Returns all intervals overlapping with an interval given by {@code low}
+	 * and {@code high}.
+	 *
+	 * @param low   the left endpoint of an interval to be searched for overlaps
+	 * @param high  the right endpoint an interval to be searched for overlaps
+	 *
+	 * @return all intervals overlapping with an interval given by {@code low}
+	 * and {@code high}.
+	 *
+	 * @throws IllegalArgumentException if {@code low} > {@code high}.
+	 */
+	public List<Interval<T>> search(double low, double high) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		List<Interval<T>> overlaps = new ArrayList<Interval<T>>();
+		for (Node n : searchNodes(new Interval<T>(low, high)))
+			overlaps.add(n.i);
+		return overlaps;
+	}
+
 	private List<Node> searchNodes(Interval<T> interval) {
 		List<Node> result = new ArrayList<Node>();
-		searchNodes(root, interval, result);
+		searchNodes(root.left, interval, result);
 		return result;
 	}
 
@@ -412,8 +473,9 @@ public final class IntervalTree<T> {
 		if (obj != null && obj.getClass().equals(this.getClass())) {
 			List<Interval<T>> thisIntervals = new ArrayList<Interval<T>>();
 			List<Interval<T>> objIntervals  = new ArrayList<Interval<T>>();
-			inorderTreeWalk(root, thisIntervals);
-			inorderTreeWalk(((IntervalTree<T>)obj).root, objIntervals);
+			inorderTreeWalk(root.left, thisIntervals);
+			((IntervalTree<T>)obj).inorderTreeWalk(
+					((IntervalTree<T>)obj).root.left, objIntervals);
 			if (thisIntervals.size() == objIntervals.size()) {
 				for (int i = 0; i < thisIntervals.size(); ++i)
 					if (!thisIntervals.get(i).equals(objIntervals.get(i)))
@@ -432,7 +494,7 @@ public final class IntervalTree<T> {
 	@Override
 	public int hashCode() {
 		List<Interval<T>> list = new ArrayList<Interval<T>>();
-		inorderTreeWalk(root, list);
+		inorderTreeWalk(root.left, list);
 		return Arrays.deepHashCode(list.toArray());
 	}
 
@@ -446,12 +508,12 @@ public final class IntervalTree<T> {
 	@Override
 	public String toString() {
 		List<Interval<T>> list = new ArrayList<Interval<T>>();
-		inorderTreeWalk(root, list);
+		inorderTreeWalk(root.left, list);
 		if (!list.isEmpty()) {
 			StringBuilder sb = new StringBuilder("[");
 			sb.append(list.get(0).toString());
 			for (int i = 1; i < list.size(); ++i)
-				sb.append(", " + list.get(i).toString());
+				sb.append(", ").append(list.get(i).toString());
 			sb.append("]");
 			return sb.toString();
 		}

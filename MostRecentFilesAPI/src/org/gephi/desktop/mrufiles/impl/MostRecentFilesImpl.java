@@ -15,6 +15,7 @@ import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
+
 /**
  *
  * @author Mathieu Bastian

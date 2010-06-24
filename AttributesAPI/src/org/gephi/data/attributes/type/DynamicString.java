@@ -31,6 +31,98 @@ import org.gephi.data.attributes.api.Estimator;
  * @author Cezary Bartosiak
  */
 public final class DynamicString extends DynamicType<String> {
+	/**
+	 * Constructs a new {@code DynamicType} instance with no intervals.
+	 */
+	public DynamicString() {
+		super();
+	}
+
+	/**
+	 * Constructs a new {@code DynamicType} instance that contains a given
+	 * {@code Interval<T>} in.
+	 * 
+	 * @param in interval to add (could be null)
+	 */
+	public DynamicString(Interval<String> in) {
+		super(in);
+	}
+
+	/**
+	 * Constructs a new {@code DynamicType} instance with intervals given by
+	 * {@code List<Interval<T>>} in.
+	 * 
+	 * @param in intervals to add (could be null)
+	 */
+	public DynamicString(List<Interval<String>> in) {
+		super(in);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source}.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 */
+	public DynamicString(DynamicString source) {
+		super(source);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} that contains a given
+	 * {@code Interval<T>} in.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     interval to add (could be null)
+	 */
+	public DynamicString(DynamicString source, Interval<String> in) {
+		super(source, in);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} that contains a given
+	 * {@code Interval<T>} in. Before add it removes from the newly created
+	 * object all intervals that overlap with a given {@code Interval<T>} out.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     interval to add (could be null)
+	 * @param out    interval to remove (could be null)
+	 */
+	public DynamicString(DynamicString source, Interval<String> in,
+			Interval<String> out) {
+		super(source, in, out);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * given by {@code List<Interval<T>>} in.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     intervals to add (could be null)
+	 */
+	public DynamicString(DynamicString source, List<Interval<String>> in) {
+		super(source, in);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * given by {@code List<Interval<T>>} in. Before add it removes from the
+	 * newly created object all intervals that overlap with intervals given by
+	 * {@code List<Interval<T>>} out.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     intervals to add (could be null)
+	 * @param out    intervals to remove (could be null)
+	 */
+	public DynamicString(DynamicString source, List<Interval<String>> in,
+			List<Interval<String>> out) {
+		super(source, in, out);
+	}
+
 	@Override
 	public String getValue(double low, double high, Estimator estimator) {
 		if (low > high)
@@ -61,7 +153,7 @@ public final class DynamicString extends DynamicType<String> {
 				}
 				int max   = map.get(values.get(0).hashCode());
 				int index = 0;
-				for (int i = 1; index < values.size(); ++i)
+				for (int i = 1; i < values.size(); ++i)
 					if (max < map.get(values.get(i).hashCode())) {
 						max   = map.get(values.get(i).hashCode());
 						index = i;
@@ -83,9 +175,9 @@ public final class DynamicString extends DynamicType<String> {
 						maximum = values.get(i);
 				return maximum;
 			case FIRST:
-				return intervalTree.minimum().getValue();
+				return values.get(0);
 			case LAST:
-				return intervalTree.maximum().getValue();
+				return values.get(values.size() - 1);
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}

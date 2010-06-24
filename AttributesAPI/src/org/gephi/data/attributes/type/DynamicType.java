@@ -36,38 +36,136 @@ public abstract class DynamicType<T> {
 	protected IntervalTree<T> intervalTree;
 
 	/**
-	 * Constructs a new {@code DynamicType} instance.
+	 * Constructs a new {@code DynamicType} instance with no intervals.
 	 */
 	public DynamicType() {
 		intervalTree = new IntervalTree<T>();
 	}
 
 	/**
-	 * Returns the leftmost point.
+	 * Constructs a new {@code DynamicType} instance that contains a given
+	 * {@code Interval<T>} in.
+	 * 
+	 * @param in interval to add (could be null)
+	 */
+	public DynamicType(Interval<T> in) {
+		this();
+		if (in != null)
+			intervalTree.insert(in);
+	}
+
+	/**
+	 * Constructs a new {@code DynamicType} instance with intervals given by
+	 * {@code List<Interval<T>>} in.
+	 * 
+	 * @param in intervals to add (could be null)
+	 */
+	public DynamicType(List<Interval<T>> in) {
+		this();
+		if (in != null)
+			for (Interval<T> interval : in)
+				intervalTree.insert(interval);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source}.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 */
+	public DynamicType(DynamicType<T> source) {
+		if (source == null)
+			intervalTree = new IntervalTree<T>();
+		else intervalTree = source.intervalTree;
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} that contains a given
+	 * {@code Interval<T>} in.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     interval to add (could be null)
+	 */
+	public DynamicType(DynamicType<T> source, Interval<T> in) {
+		this(source);
+		if (in != null)
+			intervalTree.insert(in);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} that contains a given
+	 * {@code Interval<T>} in. Before add it removes from the newly created
+	 * object all intervals that overlap with a given {@code Interval<T>} out.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     interval to add (could be null)
+	 * @param out    interval to remove (could be null)
+	 */
+	public DynamicType(DynamicType<T> source, Interval<T> in, Interval<T> out) {
+		this(source);
+		if (out != null)
+			intervalTree.delete(out);
+		if (in != null)
+			intervalTree.insert(in);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * given by {@code List<Interval<T>>} in.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     intervals to add (could be null)
+	 */
+	public DynamicType(DynamicType<T> source, List<Interval<T>> in) {
+		this(source);
+		if (in != null)
+			for (Interval<T> interval : in)
+				intervalTree.insert(interval);
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * given by {@code List<Interval<T>>} in. Before add it removes from the
+	 * newly created object all intervals that overlap with intervals given by
+	 * {@code List<Interval<T>>} out.
+	 * 
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     intervals to add (could be null)
+	 * @param out    intervals to remove (could be null)
+	 */
+	public DynamicType(DynamicType<T> source, List<Interval<T>> in,
+			List<Interval<T>> out) {
+		this(source);
+		if (out != null)
+			for (Interval<T> interval : out)
+				intervalTree.delete(interval);
+		if (in != null)
+			for (Interval<T> interval : in)
+				intervalTree.insert(interval);
+	}
+
+	/**
+	 * Returns the leftmost point or {@code Double.POSITIVE_INFINITY} in case
+	 * of no intervals.
 	 *
 	 * @return the leftmost point.
 	 */
 	public double getLow() {
-		try {
-			return intervalTree.minimum().getLow();
-		}
-		catch (Exception e) {
-			return Double.POSITIVE_INFINITY;
-		}
+		return intervalTree.getLow();
 	}
 
 	/**
-	 * Returns the rightmost point.
+	 * Returns the rightmost point or {@code Double.NEGATIVE_INFINITY} in case
+	 * of no intervals.
 	 *
 	 * @return the rightmost point.
 	 */
 	public double getHigh() {
-		try {
-			return intervalTree.maximum().getHigh();
-		}
-		catch (Exception e) {
-			return Double.NEGATIVE_INFINITY;
-		}
+		return intervalTree.getHigh();
 	}
 
 	/**
@@ -189,14 +287,8 @@ public abstract class DynamicType<T> {
 	 * @throws IllegalArgumentException if {@code low} > {@code high}.
 	 */
 	public List<T> getValues(double low, double high) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
 		List<T> result = new ArrayList<T>();
-		Interval<T> interval = new Interval<T>(low, high, null);
-		for (Interval<T> i : intervalTree.search(interval))
+		for (Interval<T> i : intervalTree.search(low, high))
 			result.add(i.getValue());
 		return result;
 	}
@@ -230,7 +322,7 @@ public abstract class DynamicType<T> {
 	 */
 	@Override
 	public int hashCode() {
-		return super.hashCode() + intervalTree.hashCode();
+		return intervalTree.hashCode();
 	}
 
 	/**

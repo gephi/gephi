@@ -35,6 +35,10 @@ public final class Interval<T> implements Comparable<Interval<T>> {
 	/**
 	 * Constructs a new interval instance.
 	 *
+	 * <p>Note that {@code value} cannot be null if you want use this
+	 * {@code interval} as a value storage. If it is null some estimators
+	 * could not work and generate exceptions.
+	 *
 	 * @param low   the left endpoint
 	 * @param high  the right endpoint
 	 * @param value the value stored in this interval
@@ -50,6 +54,29 @@ public final class Interval<T> implements Comparable<Interval<T>> {
 		this.low   = low;
 		this.high  = high;
 		this.value = value;
+	}
+
+	/**
+	 * Constructs a new interval instance with no value.
+	 *
+	 * <p>Note that {@code value} cannot be null if you want use this
+	 * {@code interval} as a value storage. If it is null some estimators
+	 * could not work and generate exceptions.
+	 *
+	 * @param low  the left endpoint
+	 * @param high the right endpoint
+	 *
+	 * @throws IllegalArgumentException if {@code low} > {@code high}.
+	 */
+	public Interval(double low, double high) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		this.low   = low;
+		this.high  = high;
+		this.value = null;
 	}
 
 	/**

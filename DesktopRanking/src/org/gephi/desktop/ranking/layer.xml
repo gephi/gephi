@@ -15,7 +15,7 @@
         <folder name="Window">
             <file name="RankingAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-ranking-RankingAction.instance"/>
-                <attr name="position" intvalue="1210"/>
+                <attr name="position" intvalue="1100"/>
             </file>
         </folder>
     </folder>
