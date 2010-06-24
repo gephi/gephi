@@ -22,12 +22,12 @@ package org.gephi.graph.dhns.core;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphSettings;
@@ -52,6 +52,7 @@ import org.gephi.graph.dhns.graph.iterators.NodeIterableImpl;
 import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.gephi.graph.dhns.predicate.Predicate;
 import org.gephi.project.api.Workspace;
+import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -88,6 +89,7 @@ public class Dhns implements GraphModel {
         eventManager.start();
 
         //AttributeFactory
+        Lookup.getDefault().lookup(AttributeController.class);  //be sure AC is inited
         AttributeRowFactory attributeRowFactory = null;
         if (workspace != null) {
             AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);

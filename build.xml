@@ -74,7 +74,7 @@
         <property name="toolkit.jar.name" value="gephi-toolkit"/>
         <property name="toolkit.dir" value="${basedir}/toolkit"/>
         <property name="toolkit.jar" value="${toolkit.dir}/${toolkit.jar.name}.jar"/>
-        <property name="platform.dir" value="${toolkit.dir}/platform11"/>
+        <property name="platform.dir" value="${toolkit.dir}/platform"/>
         <mkdir dir="${toolkit.dir}"/>
 
         <echo message="Packaging ${app.name} into a single JAR at ${toolkit.jar}"/>
@@ -91,6 +91,7 @@
         <property name="toolkit.platformdir" value="${platform.dir}"/>
         <copy file="${toolkit.platformdir}/core/org-openide-filesystems.jar" todir="${toolkit.tempdir}"/>
         <copy file="${toolkit.platformdir}/lib/org-openide-util.jar" todir="${toolkit.tempdir}"/>
+        <copy file="${toolkit.platformdir}/lib/org-openide-util-lookup.jar" todir="${toolkit.tempdir}"/>
         <copy todir="${toolkit.tempdir}">
             <fileset dir="${toolkit.platformdir}/modules">
                 <include name="org-openide-nodes.jar"/>
@@ -102,8 +103,7 @@
                 <include name="org-gephi-algorithms.jar"/>
                 <include name="org-gephi-data-attributes.jar"/>
                 <include name="org-gephi-data-attributes-api.jar"/>
-                <include name="org-gephi-io-exporter-api.jar"/>
-                <include name="org-gephi-io-exporter-plugin.jar"/>
+                <include name="org-gephi-io-exporter-preview.jar"/>
                 <include name="org-gephi-filters.jar"/>
                 <include name="org-gephi-filters-api.jar"/>
                 <include name="org-gephi-filters-plugin.jar"/>
@@ -119,6 +119,8 @@
                 <include name="org-gephi-io-processor-plugin.jar"/>
                 <include name="org-gephi-layout-api.jar"/>
                 <include name="org-gephi-layout-plugin.jar"/>
+                <include name="org-gephi-preview-api.jar"/>
+                <include name="org-gephi-preview.jar"/>
                 <include name="org-gephi-project-api.jar"/>
                 <include name="org-gephi-statistics-api.jar"/>
                 <include name="org-gephi-statistics-plugin.jar"/>
