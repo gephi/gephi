@@ -1,211 +1,225 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2008-2010 Gephi
+ * Authors : Mathieu Bastian, Cezary Bartosiak
+ * Website : http://www.gephi.org
+ *
+ * This file is part of Gephi.
+ *
+ * Gephi is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Gephi is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.type;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.gephi.data.attributes.api.Estimator;
 
 /**
- * Complex type for specifying time interval. An, interval is two <code>double</code>
- * with <code>start</code> inferior or equal to <code>end</code>. Thus intervals
- * are inclusive.
+ * Complex type for specifying time interval. An, interval is two
+ * <code>double</code> with <code>start</code> inferior or equal to
+ * <code>end</code>. Thus intervals are inclusive.
+ *
  * <p>
  * This type accepts multiple, overlapping intervals.
  *
- * @author Mathieu Bastian
+ * @author Mathieu Bastian, Cezary Bartosiak
  */
 //Brute-force implementation
-public final class TimeInterval {
-    private static final String INFINITY_CHAR = " ";
-    private final double[][] array;
-    private final double min;
-    private final double max;
+public final class TimeInterval extends DynamicType<Double[]> {
+	/**
+	 * Constructs a new {@code DynamicType} instance with no intervals.
+	 */
+	public TimeInterval() {
+		super();
+	}
 
-    public TimeInterval(List<double[]> intervaList) {
-        double minimum = Double.POSITIVE_INFINITY;
-        double maximum = Double.NEGATIVE_INFINITY;
-        array = new double[intervaList.size()][2];
-        for (int i = 0; i < array.length; i++) {
-            double[] slice = intervaList.get(i);
-            array[i] = new double[]{slice[0], slice[1]};
-            minimum = Math.min(minimum, slice[0]);
-            maximum = Math.max(maximum, slice[1]);
-        }
-        min = minimum;
-        max = maximum;
-    }
+	/**
+	 * Constructs a new {@code DynamicType} instance that contains a given
+	 * {@code interval} [{@code low}, {@code high}].
+	 *
+	 * @param low  the left endpoint
+	 * @param high the right endpoint
+	 */
+	public TimeInterval(double low, double high) {
+		super(new Interval<Double[]>(low, high, new Double[] { low, high }));
+	}
 
-    public TimeInterval(double[][] intervalArray) {
-        double minimum = Double.POSITIVE_INFINITY;
-        double maximum = Double.NEGATIVE_INFINITY;
-        array = new double[intervalArray.length][2];
-        for (int i = 0; i < array.length; i++) {
-            double[] slice = intervalArray[i];
-            array[i] = new double[]{slice[0], slice[1]};
-            minimum = Math.min(minimum, slice[0]);
-            maximum = Math.max(maximum, slice[1]);
-        }
-        min = minimum;
-        max = maximum;
-    }
+	/**
+	 * Constructs a new {@code DynamicType} instance with intervals given by
+	 * {@code List<Double[]>} in.
+	 *
+	 * @param in intervals to add (could be null)
+	 */
+	public TimeInterval(List<Double[]> in) {
+		super(getList(in));
+	}
 
-    public TimeInterval(double start, double end) {
-        array = new double[][]{{start, end}};
-        min = start;
-        max = end;
-    }
+	/**
+	 * Constructs a shallow copy of {@code source}.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 */
+	public TimeInterval(TimeInterval source) {
+		super(source);
+	}
 
-    public TimeInterval(String str) {
-        double minimum = Double.POSITIVE_INFINITY;
-        double maximum = Double.NEGATIVE_INFINITY;
-        if (str.charAt(0) == '[') {
-            Pattern p = Pattern.compile("\\[([ 0-9.,]*)\\]");
-            Matcher m = p.matcher(str);
-            int count = 0;
-            while (m.find()) {
-                count++;
-            }
-            m.reset();
-            array = new double[count][2];
-            int i = 0;
-            while (m.find()) {
-                int start = m.start();
-                int end = m.end();
-                if (start != end) {
-                    String data = str.substring(start + 1, end - 1);
-                    String[] split = data.split(",");
-                    double begin = Double.NEGATIVE_INFINITY;
-                    double close = Double.POSITIVE_INFINITY;
-                    if(!split[0].equals(INFINITY_CHAR)) {
-                        begin = Double.parseDouble(split[0]);
-                    }
-                    if(!split[1].equals(INFINITY_CHAR)) {
-                        close = Double.parseDouble(split[1]);
-                    }
-                    array[i++] = new double[]{begin, close};
-                    minimum = Math.min(minimum, begin);
-                    maximum = Math.max(maximum, close);
-                }
-            }
-        } else {
-            String[] split = str.split(",");
-            double[] slice = null;
-            array = new double[split.length / 2][2];
-            for (int i = 0; i < split.length; i++) {
-                if (i % 2 == 0) {
-                    slice = new double[2];
-                    String s = split[i];
-                    if (s.equals(INFINITY_CHAR)) {
-                        slice[0] = Double.NEGATIVE_INFINITY;
-                        minimum = Double.NEGATIVE_INFINITY;
-                    } else {
-                        slice[0] = Double.parseDouble(s);
-                        minimum = Math.min(minimum, slice[0]);
-                    }
-                } else {
-                    String s = split[i];
-                    if (s.equals(INFINITY_CHAR)) {
-                        slice[1] = Double.POSITIVE_INFINITY;
-                        maximum = Double.POSITIVE_INFINITY;
-                    } else {
-                        slice[1] = Double.parseDouble(s);
-                        maximum = Math.max(maximum, slice[1]);
-                    }
-                    array[i / 2] = slice;
-                }
-            }
-        }
+	/**
+	 * Constructs a shallow copy of {@code source} that contains a given
+	 * {@code interval} [{@code low}, {@code high}].
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param low    the left endpoint
+	 * @param high   the right endpoint
+	 */
+	public TimeInterval(TimeInterval source, double low, double high) {
+		super(source, new Interval<Double[]>(low, high, new Double[] {
+			low, high }));
+	}
 
-        min = minimum;
-        max = maximum;
-    }
+	/**
+	 * Constructs a shallow copy of {@code source} that contains a given
+	 * {@code interval} [{@code alow}, {@code ahigh}]. Before add it removes
+	 * from the newly created object all intervals that overlap with a given
+	 * {@code interval} [{@code rlow}, {@code rhigh}].
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param alow   the left endpoint of the interval to add
+	 * @param ahigh  the right endpoint of the interval to add
+	 * @param rlow   the left endpoint of the interval to remove
+	 * @param rhigh  the right endpoint of the interval to remove
+	 */
+	public TimeInterval(TimeInterval source, double alow, double ahigh,
+			double rlow, double rhigh) {
+		super(source,
+			new Interval<Double[]>(alow, ahigh, new Double[] { alow, ahigh }),
+			new Interval<Double[]>(rlow, rhigh, new Double[] { rlow, rhigh }));
+	}
 
-    public double getMin() {
-        return min;
-    }
+	/**
+	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * given by {@code List<Double[]>} in.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     intervals to add (could be null)
+	 */
+	public TimeInterval(TimeInterval source, List<Double[]> in) {
+		super(source, getList(in));
+	}
 
-    public double getMax() {
-        return max;
-    }
+	/**
+	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * given by {@code List<Double[]>} in. Before add it removes from the
+	 * newly created object all intervals that overlap with intervals given by
+	 * {@code List<Double[]>} out.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param in     intervals to add (could be null)
+	 * @param out    intervals to remove (could be null)
+	 */
+	public TimeInterval(TimeInterval source, List<Double[]> in,
+			List<Double[]> out) {
+		super(source, getList(in), getList(out));
+	}
 
-    public int getSliceCount() {
-        return array.length;
-    }
+	private static List<Interval<Double[]>> getList(List<Double[]> arg) {
+		if (arg == null)
+			return null;
+		List<Interval<Double[]>> list = new ArrayList<Interval<Double[]>>();
+		for (Double[] item : arg)
+			list.add(new Interval<Double[]>(item[0], item[1], item));
+		return list;
+	}
 
-    public double getStart(int sliceIndex) {
-        return array[sliceIndex][0];
-    }
+	@Override
+	public Double[] getValue(double low, double high, Estimator estimator) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
 
-    public double getEnd(int sliceIndex) {
-        return array[sliceIndex][1];
-    }
+		List<Double[]> values = getValues(low, high);
+		if (values.isEmpty())
+			return null;
 
-    public boolean isInRange(double start, double end) {
-        for (int i = 0; i < array.length; i++) {
-            double[] slice = array[i];
-            if (slice[0] <= start && slice[1] >= end) {
-                return true;
-            }
-            if (slice[0] >= start && slice[0] <= end) {
-                return true;
-            }
-            if (slice[1] >= start && slice[1] <= end) {
-                return true;
-            }
-        }
-        return false;
-    }
+		switch (estimator) {
+			case AVERAGE:
+				throw new UnsupportedOperationException(
+							"Not supported estimator");
+			case MEDIAN:
+				if (values.size() % 2 == 1)
+					return values.get(values.size() / 2);
+				return values.get(values.size() / 2 - 1);
+			case MODE:
+				Hashtable<Integer, Integer> map =
+						new Hashtable<Integer, Integer>();
+				for (int i = 0; i < values.size(); ++i) {
+					int prev = 0;
+					if (map.containsKey(values.get(i).hashCode()))
+						prev = map.get(values.get(i).hashCode());
+					map.put(values.get(i).hashCode(), prev + 1);
+				}
+				int max   = map.get(values.get(0).hashCode());
+				int index = 0;
+				for (int i = 1; i < values.size(); ++i)
+					if (max < map.get(values.get(i).hashCode())) {
+						max   = map.get(values.get(i).hashCode());
+						index = i;
+					}
+				return values.get(index);
+			case SUM:
+				throw new UnsupportedOperationException(
+							"Not supported estimator");
+			case MIN:
+				throw new UnsupportedOperationException(
+							"Not supported estimator");
+			case MAX:
+				throw new UnsupportedOperationException(
+							"Not supported estimator");
+			case FIRST:
+				return values.get(0);
+			case LAST:
+				return values.get(values.size() - 1);
+			default:
+				throw new IllegalArgumentException("Unknown estimator.");
+		}
+	}
 
-    @Override
-    public String toString() {
-        if (array.length > 1) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < array.length; i++) {
-                double[] slice = array[i];
-                stringBuilder.append(slice[0]);
-                stringBuilder.append(",");
-                stringBuilder.append(slice[1]);
-            }
-            return stringBuilder.toString();
-        } else {
-            return array[0][0] + "," + array[0][1];
-        }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof TimeInterval) {
-            TimeInterval inter = (TimeInterval) obj;
-            if (inter.array.length == array.length) {
-                for (int i = 0; i < inter.array.length; i++) {
-                    double[] slice = inter.array[i];
-                    if (slice[0] != array[i][0]) {
-                        return false;
-                    }
-                    if (slice[1] != array[i][1]) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + Arrays.deepHashCode(this.array);
-        return hash;
-    }
+	/**
+	 * Returns a string representation of this instance in a format
+	 * {@code [[low, high], ..., [low, high]]}. Intervals are
+	 * ordered by its left endpoint.
+	 *
+	 * @return a string representation of this instance.
+	 */
+	@Override
+	public String toString() {
+		List<Double[]> list = getValues();
+		if (!list.isEmpty()) {
+			StringBuilder sb = new StringBuilder("[");
+			sb.append("[").append(list.get(0)[0]).append(", ").
+					append(list.get(0)[1]).append("]");
+			for (int i = 1; i < list.size(); ++i)
+				sb.append(", ").append("[").append(list.get(i)[0]).append(", ").
+						append(list.get(i)[1]).append("]");
+			sb.append("]");
+			return sb.toString();
+		}
+		return "[empty]";
+	}
 }

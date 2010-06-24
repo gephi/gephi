@@ -220,8 +220,8 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                 for (Node n : graph.getNodes()) {
                     Object val = n.getNodeData().getAttributes().getValue(nodeColumn.getIndex());
                     if (val != null) {
-                        Double valMin = ((TimeInterval) val).getMin();
-                        Double valMax = ((TimeInterval) val).getMax();
+                        Double valMin = ((TimeInterval) val).getLow();
+                        Double valMax = ((TimeInterval) val).getHigh();
                         if (valMin != Double.NEGATIVE_INFINITY) {
                             min = Math.min(min, valMin);
                         }
@@ -235,8 +235,8 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                 for (Edge e : graph.getEdges()) {
                     Object val = e.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
                     if (val != null) {
-                        Double valMin = ((TimeInterval) val).getMin();
-                        Double valMax = ((TimeInterval) val).getMax();
+                        Double valMin = ((TimeInterval) val).getLow();
+                        Double valMax = ((TimeInterval) val).getHigh();
                         if (valMin != Double.NEGATIVE_INFINITY) {
                             min = Math.min(min, valMin);
                         }

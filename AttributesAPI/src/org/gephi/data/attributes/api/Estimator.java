@@ -104,6 +104,20 @@ package org.gephi.data.attributes.api;
  *    <td>the string which occured firstly</td>
  *    <td>the string which occured lastly</td>
  * </tr>
+ * <tr>
+ *    <td><b>TimeInterval</b></td>
+ *    <td>-</td>
+ *    <td>the time interval separating the higher half from the lower half (if
+ *        there is an even number of time intervals, the median is then defined
+ *        to be the time interval which occured earlier than the second middle
+ *        time interval)</td>
+ *    <td>the time interval that occurs the most frequently</td>
+ *    <td>-</td>
+ *    <td>-</td>
+ *    <td>-</td>
+ *    <td>the time interval which occured firstly</td>
+ *    <td>the time interval which occured lastly</td>
+ * </tr>
  * </table>
  * 
  * @author Cezary Bartosiak

@@ -174,7 +174,7 @@ public enum AttributeType {
             case DYNAMIC_BIGDECIMAL:
                 throw new UnsupportedOperationException("Not supported.");
             case TIME_INTERVAL:
-                return new TimeInterval(str);
+                throw new UnsupportedOperationException("Not supported.");
             case LIST_BYTE:
                 return new ByteList(str);
             case LIST_SHORT:
