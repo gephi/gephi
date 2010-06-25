@@ -146,12 +146,16 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.NodeData sourceNodeData = sourceNode.getNodeData();
         org.gephi.graph.api.TextData sourceNodeTextData = sourceNodeData.getTextData();
 
-        String label = sourceNodeTextData.getText();
-        if (label == null || label.isEmpty()) {
-            label = sourceNodeData.getLabel();
+        String label = sourceNodeData.getLabel();
+        if (sourceNodeTextData != null && sourceNodeTextData.getText() != null && sourceNodeTextData.getText().isEmpty()) {
+            label = sourceNodeTextData.getText();
         }
 
-        float labelSize = sourceNodeTextData.getSize();
+        float labelSize = 1f;
+        if (sourceNodeTextData != null) {
+            labelSize = sourceNodeTextData.getSize();
+        }
+
         if (previewGraph.getModel().getNodeSupervisor().getProportionalLabelSize()) {
             labelSize *= sourceNodeData.getRadius() / 10f;
         }
@@ -206,9 +210,14 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.EdgeData sourceEdgeData = sourceEdge.getEdgeData();
         org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
-        String label = sourceEdgeTextData.getText();
-        if (label == null || label.isEmpty()) {
-            label = sourceEdgeData.getLabel();
+        String label = sourceEdgeData.getLabel();
+        if (sourceEdgeTextData != null && sourceEdgeTextData.getText() != null && sourceEdgeTextData.getText().isEmpty()) {
+            label = sourceEdgeTextData.getText();
+        }
+
+        float labelSize = 1f;
+        if (sourceEdgeTextData != null) {
+            labelSize = sourceEdgeTextData.getSize();
         }
 
         UnidirectionalEdgeImpl previewEdge = new UnidirectionalEdgeImpl(
@@ -217,7 +226,7 @@ public class PreviewGraphFactory {
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
                 label,
-                sourceEdgeTextData.getSize());
+                labelSize);
 
         previewGraph.addUnidirectionalEdge(previewEdge);
 
@@ -235,9 +244,14 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.EdgeData sourceEdgeData = sourceEdge.getEdgeData();
         org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
-        String label = sourceEdgeTextData.getText();
-        if (label == null || label.isEmpty()) {
-            label = sourceEdgeData.getLabel();
+        String label = sourceEdgeData.getLabel();
+        if (sourceEdgeTextData != null && sourceEdgeTextData.getText() != null && sourceEdgeTextData.getText().isEmpty()) {
+            label = sourceEdgeTextData.getText();
+        }
+
+        float labelSize = 1f;
+        if (sourceEdgeTextData != null) {
+            labelSize = sourceEdgeTextData.getSize();
         }
 
         BidirectionalEdgeImpl previewEdge = new BidirectionalEdgeImpl(
@@ -246,7 +260,7 @@ public class PreviewGraphFactory {
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
                 label,
-                sourceEdgeTextData.getSize());
+                labelSize);
 
         previewGraph.addBidirectionalEdge(previewEdge);
 
@@ -264,9 +278,14 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.EdgeData sourceEdgeData = sourceEdge.getEdgeData();
         org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
-        String label = sourceEdgeTextData.getText();
-        if (label == null || label.isEmpty()) {
-            label = sourceEdgeData.getLabel();
+        String label = sourceEdgeData.getLabel();
+        if (sourceEdgeTextData != null && sourceEdgeTextData.getText() != null && sourceEdgeTextData.getText().isEmpty()) {
+            label = sourceEdgeTextData.getText();
+        }
+
+        float labelSize = 1f;
+        if (sourceEdgeTextData != null) {
+            labelSize = sourceEdgeTextData.getSize();
         }
 
         UndirectedEdgeImpl previewEdge = new UndirectedEdgeImpl(
@@ -275,7 +294,7 @@ public class PreviewGraphFactory {
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
                 label,
-                sourceEdgeTextData.getSize());
+                labelSize);
 
         previewGraph.addUndirectedEdge(previewEdge);
 

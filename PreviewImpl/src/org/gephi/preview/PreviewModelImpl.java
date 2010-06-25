@@ -189,14 +189,16 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
                 if (editor != null) {
                     String valueStr = propertiesMap.get(p.getName());
                     if (valueStr != null && !valueStr.isEmpty()) {
-                        editor.setAsText(valueStr);
                         if (p.getValueType().equals(Font.class)) { //bug 551877
-                            editor.setValue(Font.decode(valueStr));
+                            p.setValue(Font.decode(valueStr));
+                        } else {
+                            editor.setAsText(valueStr);
+                            Object value = editor.getValue();
+                            if (value != null) {
+                                p.setValue(value);
+                            }
                         }
-                        Object value = editor.getValue();
-                        if (value != null) {
-                            p.setValue(value);
-                        }
+
                     }
                 }
 

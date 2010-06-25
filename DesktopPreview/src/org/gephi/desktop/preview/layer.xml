@@ -21,9 +21,11 @@
         <folder name="Window">
             <file name="PreviewAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-preview-PreviewAction.instance"/>
+                <attr name="position" intvalue="900"/>
             </file>
             <file name="PreviewSettingsAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-preview-PreviewSettingsAction.instance"/>
+                <attr name="position" intvalue="1000"/>
             </file>
         </folder>
     </folder>

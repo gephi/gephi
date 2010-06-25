@@ -46,7 +46,7 @@
         <folder name="Window">
             <file name="StatisticsAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-statistics-StatisticsAction.instance"/>
-                <attr name="position" intvalue="500"/>
+                <attr name="position" intvalue="1200"/>
             </file>
         </folder>
     </folder>
