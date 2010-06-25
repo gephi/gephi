@@ -7,6 +7,7 @@ package org.gephi.ui.datatable;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -21,6 +22,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.jvnet.flamingo.common.CommandButtonDisplayState;
 import org.jvnet.flamingo.common.JCommandButton;
+import org.jvnet.flamingo.common.JCommandButtonStrip;
 import org.jvnet.flamingo.common.JCommandMenuButton;
 import org.jvnet.flamingo.common.RichTooltip;
 import org.jvnet.flamingo.common.icon.ImageWrapperResizableIcon;
@@ -106,17 +108,36 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
      * Creates the buttons that call the AttributeColumnManipulators for nodes and edges table.
      */
     private void prepareNodeAndEdgeColumnButtons() {
-        AttributeModel attributeModel=Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
+        AttributeModel attributeModel = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
         AttributeTable nodesTable = attributeModel.getNodeTable();
         AttributeTable edgesTable = attributeModel.getEdgeTable();
 
         DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
         AttributeColumnsManipulator[] manipulators = dlh.getAttributeColumnsManipulators();
 
+        JCommandButtonStrip currentNodeButtonGroup = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
+        currentNodeButtonGroup.setDisplayState(CommandButtonDisplayState.MEDIUM);
+        JCommandButtonStrip currentEdgeButtonGroup = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
+        currentEdgeButtonGroup.setDisplayState(CommandButtonDisplayState.MEDIUM);
+        Integer lastManipulatorType = null;
         for (AttributeColumnsManipulator acm : manipulators) {
-            nodesAttributeColumnsPanel.add(prepareJCommandButton(nodesTable, acm));
-            edgesAttributeColumnsPanel.add(prepareJCommandButton(edgesTable, acm));
+            if (lastManipulatorType == null) {
+                lastManipulatorType = acm.getType();
+            }
+            if (lastManipulatorType != acm.getType()) {
+                nodesAttributeColumnsPanel.add(currentNodeButtonGroup);
+                edgesAttributeColumnsPanel.add(currentEdgeButtonGroup);
+                currentNodeButtonGroup = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
+                currentNodeButtonGroup.setDisplayState(CommandButtonDisplayState.MEDIUM);
+                currentEdgeButtonGroup = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
+                currentEdgeButtonGroup.setDisplayState(CommandButtonDisplayState.MEDIUM);
+            }
+            lastManipulatorType = acm.getType();
+            currentNodeButtonGroup.add(prepareJCommandButton(nodesTable, acm));
+            currentEdgeButtonGroup.add(prepareJCommandButton(edgesTable, acm));
         }
+        nodesAttributeColumnsPanel.add(currentNodeButtonGroup);
+        edgesAttributeColumnsPanel.add(currentEdgeButtonGroup);
     }
 
     /**
@@ -126,11 +147,11 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
      * @return Prepared JCommandButton
      */
     private JCommandButton prepareJCommandButton(final AttributeTable table, final AttributeColumnsManipulator acm) {
-        final AttributeColumn[] columns =table.getColumns();
+        final AttributeColumn[] columns = table.getColumns();
         JCommandButton manipulatorButton;
         if (acm.getIcon() != null) {
-            manipulatorButton = new JCommandButton(acm.getName(),ImageWrapperResizableIcon.getIcon(acm.getIcon(),new Dimension(16, 16)));
-        }else{
+            manipulatorButton = new JCommandButton(acm.getName(), ImageWrapperResizableIcon.getIcon(acm.getIcon(), new Dimension(16, 16)));
+        } else {
             manipulatorButton = new JCommandButton(acm.getName());
         }
         manipulatorButton.setCommandButtonKind(JCommandButton.CommandButtonKind.POPUP_ONLY);
@@ -139,28 +160,37 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
             manipulatorButton.setPopupRichTooltip(new RichTooltip(NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.RichToolTip.title.text"), acm.getDescription()));
         }
 
-        manipulatorButton.setPopupCallback(new PopupPanelCallback() {
+        final ArrayList<AttributeColumn> availableColumns = new ArrayList<AttributeColumn>();
+        for (final AttributeColumn column : columns) {
+            if (acm.canManipulateColumn(table,column)) {
+                availableColumns.add(column);
+            }
+        }
 
-            public JPopupPanel getPopupPanel(JCommandButton jcb) {
-                JCommandPopupMenu popup = new JCommandPopupMenu();
+        if (!availableColumns.isEmpty()) {
+            manipulatorButton.setPopupCallback(new PopupPanelCallback() {
 
-                JCommandMenuButton button;
-                for (final AttributeColumn column : columns) {
-                    if (acm.canManipulateColumn(column)) {
+                public JPopupPanel getPopupPanel(JCommandButton jcb) {
+                    JCommandPopupMenu popup = new JCommandPopupMenu();
+
+                    JCommandMenuButton button;
+                    for (final AttributeColumn column : availableColumns) {
+
                         button = new JCommandMenuButton(column.getTitle(), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("org/gephi/ui/datatable/resources/column.png"), new Dimension(16, 16)));
                         button.addActionListener(new ActionListener() {
 
                             public void actionPerformed(ActionEvent e) {
-                                acm.execute(table, column);
-                                //TODO: execute with Data Laboratory API.
+                                Lookup.getDefault().lookup(DataLaboratoryHelper.class).executeAttributeColumnsManipulator(acm, table, column);
                             }
                         });
                         popup.addMenuButton(button);
                     }
+                    return popup;
                 }
-                return popup;
-            }
-        });
+            });
+        }else{
+            manipulatorButton.setEnabled(false);
+        }
 
         return manipulatorButton;
     }
@@ -199,7 +229,10 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
         attributeColumnsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "attributeColumnsPanel.title"))); // NOI18N
 
         nodesAttributeColumnsPanel.setName("a"); // NOI18N
+        nodesAttributeColumnsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 20));
         nodeEdgeTabbedPane.addTab(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.a.TabConstraints.tabTitle"), nodesAttributeColumnsPanel); // NOI18N
+
+        edgesAttributeColumnsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 20));
         nodeEdgeTabbedPane.addTab(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.edgesAttributeColumnsPanel.TabConstraints.tabTitle"), edgesAttributeColumnsPanel); // NOI18N
 
         javax.swing.GroupLayout attributeColumnsPanelLayout = new javax.swing.GroupLayout(attributeColumnsPanel);

@@ -24,12 +24,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.swing.JPanel;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.impl.manipulators.edges.DeleteEdges;
 import org.gephi.datalaboratory.impl.manipulators.nodes.DeleteNodes;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
+import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulatorBuilder;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
@@ -90,11 +93,15 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
     }
 
     private void sortAttributeColumnsManipulators(ArrayList<? extends AttributeColumnsManipulator> m) {
-        Collections.sort(m, new Comparator<AttributeColumnsManipulator>(){
+        Collections.sort(m, new Comparator<AttributeColumnsManipulator>() {
 
             public int compare(AttributeColumnsManipulator o1, AttributeColumnsManipulator o2) {
-                //Order by position.
-                return o1.getPosition()-o2.getPosition();
+                //Order by type, position.
+                if (o1.getType() == o2.getType()) {
+                    return o1.getPosition() - o2.getPosition();
+                } else {
+                    return o1.getType() - o2.getType();
+                }
             }
         });
     }
@@ -117,6 +124,29 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                     }
                 } else {
                     m.execute();
+                }
+            }
+        }).start();
+    }
+
+    public void executeAttributeColumnsManipulator(final AttributeColumnsManipulator m, final AttributeTable table, final AttributeColumn column) {
+        new Thread(new Runnable() {
+
+            public void run() {
+                AttributeColumnsManipulatorUI ui = m.getUI();
+                //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
+                if (ui != null) {
+                    ui.setup(m);
+                    JPanel settingsPanel = ui.getSettingsPanel();
+                    DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()));
+                    if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                        ui.unSetup();
+                        m.execute(table,column);
+                    }else{
+                        ui.unSetup();
+                    }
+                } else {
+                    m.execute(table,column);
                 }
             }
         }).start();

@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.api;
 
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
@@ -29,6 +31,21 @@ import org.gephi.graph.api.Node;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface AttributesController {
+
+    /**
+     * Deletes a specified column from a table if the table has the column.
+     * @param table Table to delete the column
+     * @param column Column to delete
+     */
+    void deleteAttributeColumn(AttributeTable table, AttributeColumn column);
+
+    /**
+     * Clears all rows data for a given column of a table (nodes table or edges table)
+     * @param table Table to clear column data
+     * @param column Column to clear data
+     */
+    void clearColumnData(AttributeTable table, AttributeColumn column);
+
     /**
      * Clears all node attributes except computed attributes and id, checking first that the node is in the graph.
      * @param node Node to clear data

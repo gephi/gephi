@@ -30,7 +30,7 @@ import org.gephi.data.attributes.api.AttributeTable;
  * <p>These are shown as drop down buttons and are able to:</p>
  * <ul>
  *  <li>Execute an action with 1 column</li>
- *  <li>Provide a name, description and order of appearance (position)</li>
+ *  <li>Provide a name, description, type and order of appearance (position in group of its type)</li>
  *  <li>Indicate wether they can be executed on a specific AttributeColumn or not</li>
  *  <li>Provide and UI or not</li>
  *  <li>Provide and icon or not</li>
@@ -62,7 +62,7 @@ public interface AttributeColumnsManipulator {
      * Indicates if this AttributeColumnsManipulator can manipulate a specific AttributeColumn.
      * @return True if it can manipulate the column, false otherwise
      */
-    boolean canManipulateColumn(AttributeColumn column);
+    boolean canManipulateColumn(AttributeTable table,AttributeColumn column);
 
     /**
      * Returns a ManipulatorUI for this Manipulator if it needs one.
@@ -71,8 +71,15 @@ public interface AttributeColumnsManipulator {
     AttributeColumnsManipulatorUI getUI();
 
     /**
+     * Type of manipulator. This is used for separating the manipulators
+     * in groups when shown. First types to show will be the lesser.
+     * @return Type of this manipulator
+     */
+    int getType();
+
+    /**
      * Returns a position value that indicates the position
-     * of this AttributeColumnsManipulator in the UI. Less means upper.
+     * of this AttributeColumnsManipulator in its type group. Less means upper.
      * @return This AttributeColumnsManipulator position
      */
     int getPosition();

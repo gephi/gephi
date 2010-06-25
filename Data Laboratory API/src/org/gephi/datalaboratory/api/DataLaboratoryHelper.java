@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.api;
 
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
@@ -34,7 +36,7 @@ public interface DataLaboratoryHelper {
     /**
      * Prepares an array with one new instance of every NodesManipulator
      * that has a builder registered and returns it.
-     * It also must ensure to return the manipulators ordered first by type and then by position
+     * It also must ensure to return the manipulators ordered first by type and then by position.
      * @return Array of all NodesManipulator implementations
      */
     NodesManipulator[] getNodesManipulators();
@@ -42,11 +44,16 @@ public interface DataLaboratoryHelper {
     /**
      * Prepares an array with one new instance of every EdgesManipulator
      * that has a builder registered and returns it.
-     * It also must ensure to return the manipulators ordered first by type and then by position
+     * It also must ensure to return the manipulators ordered first by type and then by position.
      * @return Array of all EdgesManipulator implementations
      */
     EdgesManipulator[] getEdgesManipulators();
 
+    /**
+     * Prepares an array that has one instance of every AttributeColumnsManipulator implementation.
+     * It also must ensure to return the manipulators ordered first by type and then by position.
+     * @return Array of all AttributeColumnsManipulator implementations
+     */
     AttributeColumnsManipulator[] getAttributeColumnsManipulators();
 
     /**
@@ -55,6 +62,15 @@ public interface DataLaboratoryHelper {
      * @param m Manipulator to execute
      */
     void executeManipulator(Manipulator m);
+
+    /**
+     * Prepares the dialog UI of a AttributeColumnsManipulator if it has one and executes the manipulator in a separate
+     * Thread when the dialog is accepted or directly if there is no UI.
+     * @param m AttributeColumnsManipulator
+     * @param table Table of the column
+     * @param column Column to manipulate
+     */
+    void executeAttributeColumnsManipulator(final AttributeColumnsManipulator m, final AttributeTable table, final AttributeColumn column);
 
     /**
      * Special method for making public DeleteNodes manipulator so it can be specifically retrieved from Data Table UI.

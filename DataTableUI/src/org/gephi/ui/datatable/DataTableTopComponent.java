@@ -372,7 +372,6 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
     private void enableControls() {
         nodesButton.setEnabled(true);
         edgesButton.setEnabled(true);
-        refreshButtonControlToolbar.setEnabled(true);
         filterTextField.setEnabled(true);
         labelFilter.setEnabled(true);
         visibleGraphCheckbox.setEnabled(true);
@@ -384,7 +383,6 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         edgesButton.setEnabled(false);
         filterTextField.setEnabled(false);
         labelFilter.setEnabled(false);
-        refreshButtonControlToolbar.setEnabled(false);
         bannerPanel.setVisible(false);
         visibleGraphCheckbox.setEnabled(false);
         hideTable();
@@ -411,12 +409,9 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
             public void run() {
                 classDisplayed = classDisplayed.NODE;
                 nodesButton.setSelected(true);
-                if (nodeTable.hasData()) {//If it is not the first time shown, to keep selection.
-                    tableScrollPane.setViewportView(nodeTable.getOutlineTable());
-                    refreshFilterColumns();
-                } else {
-                    refresh();
-                }
+                tableScrollPane.setViewportView(nodeTable.getOutlineTable());
+                refreshFilterColumns();
+                refresh();
             }
         });
     }
@@ -427,12 +422,9 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
             public void run() {
                 classDisplayed = classDisplayed.EDGE;
                 edgesButton.setSelected(true);
-                if (edgeTable.hasData()) {//If it is not the first time shown, to keep selection.
-                    tableScrollPane.setViewportView(edgeTable.getTable());
-                    refreshFilterColumns();
-                } else {
-                    refresh();
-                }
+                tableScrollPane.setViewportView(edgeTable.getTable());
+                refreshFilterColumns();
+                refresh();
             }
         });
     }
@@ -479,8 +471,6 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         edgesButton = new javax.swing.JToggleButton();
         separator = new javax.swing.JToolBar.Separator();
         visibleGraphCheckbox = new javax.swing.JCheckBox();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
-        refreshButtonControlToolbar = new javax.swing.JButton();
         boxGlue = new javax.swing.JLabel();
         labelFilter = new org.jdesktop.swingx.JXLabel();
         filterTextField = new javax.swing.JTextField();
@@ -524,18 +514,6 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         visibleGraphCheckbox.setFocusable(false);
         visibleGraphCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         controlToolbar.add(visibleGraphCheckbox);
-        controlToolbar.add(jSeparator1);
-
-        org.openide.awt.Mnemonics.setLocalizedText(refreshButtonControlToolbar, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.refreshButtonControlToolbar.text")); // NOI18N
-        refreshButtonControlToolbar.setFocusable(false);
-        refreshButtonControlToolbar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        refreshButtonControlToolbar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        refreshButtonControlToolbar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                refreshButtonControlToolbarActionPerformed(evt);
-            }
-        });
-        controlToolbar.add(refreshButtonControlToolbar);
 
         org.openide.awt.Mnemonics.setLocalizedText(boxGlue, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.boxGlue.text")); // NOI18N
         boxGlue.setMaximumSize(new java.awt.Dimension(32767, 32767));
@@ -615,11 +593,6 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
     private void nodesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nodesButtonActionPerformed
         selectNodesTable();
 }//GEN-LAST:event_nodesButtonActionPerformed
-
-    private void refreshButtonControlToolbarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonControlToolbarActionPerformed
-        refreshCurrentTable();
-    }//GEN-LAST:event_refreshButtonControlToolbarActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bannerPanel;
     private javax.swing.JLabel boxGlue;
@@ -628,12 +601,10 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
     private javax.swing.JToggleButton edgesButton;
     private javax.swing.ButtonGroup elementGroup;
     private javax.swing.JTextField filterTextField;
-    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JLabel labelBanner;
     private org.jdesktop.swingx.JXLabel labelFilter;
     private javax.swing.JToggleButton nodesButton;
     private javax.swing.JButton refreshButton;
-    private javax.swing.JButton refreshButtonControlToolbar;
     private javax.swing.JToolBar.Separator separator;
     private javax.swing.JScrollPane tableScrollPane;
     private javax.swing.JCheckBox visibleGraphCheckbox;

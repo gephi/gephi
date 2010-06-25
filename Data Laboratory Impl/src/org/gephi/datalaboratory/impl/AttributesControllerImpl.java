@@ -21,13 +21,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl;
 
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalaboratory.api.AttributesController;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -40,6 +44,28 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AttributesController.class)
 public class AttributesControllerImpl implements AttributesController {
+
+    public void deleteAttributeColumn(AttributeTable table, AttributeColumn column){
+        table.removeColumn(column);
+    }
+
+    public void clearColumnData(AttributeTable table, AttributeColumn column){
+        AttributeController ac=Lookup.getDefault().lookup(AttributeController.class);
+        Graph graph=Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+        if(table==ac.getModel().getNodeTable()){
+            //Clear column data for nodes:
+            Node[] nodes=graph.getNodes().toArray();
+            for(Node n:nodes){
+                n.getNodeData().getAttributes().setValue(column.getIndex(), null);
+            }
+        }else if(table==ac.getModel().getEdgeTable()){
+            //Clear column data for edges:
+            Edge[] edges=graph.getEdges().toArray();
+            for(Edge e:edges){
+                e.getEdgeData().getAttributes().setValue(column.getIndex(), null);
+            }
+        }
+    }
 
     public void clearNodeData(Node node) {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);

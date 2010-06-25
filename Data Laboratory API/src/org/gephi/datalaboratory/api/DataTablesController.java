@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.api;
 
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
@@ -41,6 +42,13 @@ public interface DataTablesController{
      * Requests the tables implementation to show edges table.
      */
     void selectEdgesTable();
+
+    /**
+     * Request the tables implementation to show the given table.
+     * Normally nodes or edges table.
+     * @param table Table to show
+     */
+    void selectTable(AttributeTable table);
 
      /**
      * Requests the tables implementation to refresh the data of the table being shown.

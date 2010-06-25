@@ -21,10 +21,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl;
 
 import java.util.ArrayList;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.api.DataTablesEventListener;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -33,9 +36,10 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  * @see DataTablesController
  */
-@ServiceProvider(service=DataTablesController.class)
-public class DataTablesControllerImpl implements DataTablesController{
-    ArrayList<DataTablesEventListener> listeners=new ArrayList<DataTablesEventListener>();
+@ServiceProvider(service = DataTablesController.class)
+public class DataTablesControllerImpl implements DataTablesController {
+
+    ArrayList<DataTablesEventListener> listeners = new ArrayList<DataTablesEventListener>();
 
     public void addDataTablesEventListener(DataTablesEventListener listener) {
         listeners.add(listener);
@@ -46,31 +50,40 @@ public class DataTablesControllerImpl implements DataTablesController{
     }
 
     public void selectNodesTable() {
-        for(DataTablesEventListener l:listeners){
+        for (DataTablesEventListener l : listeners) {
             l.selectNodesTable();
         }
     }
 
     public void selectEdgesTable() {
-        for(DataTablesEventListener l:listeners){
+        for (DataTablesEventListener l : listeners) {
             l.selectEdgesTable();
         }
     }
 
+    public void selectTable(AttributeTable table) {
+        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
+        if (ac.getModel().getNodeTable() == table) {
+            selectNodesTable();
+        } else {
+            selectEdgesTable();
+        }
+    }
+
     public void refreshCurrentTable() {
-        for(DataTablesEventListener l:listeners){
+        for (DataTablesEventListener l : listeners) {
             l.refreshCurrentTable();
         }
     }
 
     public void setNodeTableSelection(Node[] nodes) {
-        for(DataTablesEventListener l:listeners){
+        for (DataTablesEventListener l : listeners) {
             l.setNodeTableSelection(nodes);
         }
     }
 
     public void setEdgeTableSelection(Edge[] edges) {
-        for(DataTablesEventListener l:listeners){
+        for (DataTablesEventListener l : listeners) {
             l.setEdgeTableSelection(edges);
         }
     }

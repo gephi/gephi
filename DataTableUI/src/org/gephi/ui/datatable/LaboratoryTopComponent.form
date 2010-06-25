@@ -83,7 +83,10 @@
                 </Constraint>
               </Constraints>
 
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="horizontalGap" type="int" value="25"/>
+                <Property name="verticalGap" type="int" value="20"/>
+              </Layout>
             </Container>
             <Container class="javax.swing.JPanel" name="edgesAttributeColumnsPanel">
               <Constraints>
@@ -96,7 +99,10 @@
                 </Constraint>
               </Constraints>
 
-              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+              <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout">
+                <Property name="horizontalGap" type="int" value="25"/>
+                <Property name="verticalGap" type="int" value="20"/>
+              </Layout>
             </Container>
           </SubComponents>
         </Container>

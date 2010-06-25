@@ -83,7 +83,7 @@ public interface Manipulator {
 
     /**
      * Returns a position value that indicates the position
-     * of this Manipulator in the context menu. Less means upper.
+     * of this Manipulator in its type group. Less means upper.
      * @return This Manipulator position
      */
     int getPosition();
