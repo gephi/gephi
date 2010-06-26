@@ -22,6 +22,7 @@ package org.gephi.datalaboratory.api;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
@@ -31,6 +32,18 @@ import org.gephi.graph.api.Node;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface AttributesController {
+
+    /**
+     * ADds a new column to the specified table with the given id, title and type of column.
+     * The AttributeOrigin of the column will be set to DATA.
+     * Default column value will be set to null.
+     * @param table Table to add the column.
+     * @param id Id for the new column
+     * @param title Title for the new column
+     * @param type Type for the new column
+     * @return The created column
+     */
+    AttributeColumn addAttributeColumn(AttributeTable table, String id, String title, AttributeType type);
 
     /**
      * Deletes a specified column from a table if the table has the column.

@@ -1,6 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2008-2010 Gephi
+Authors : Eduardo Ramos <eduramiba@gmail.com>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.datatable;
 
@@ -9,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeEvent;
@@ -20,6 +37,7 @@ import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.ui.general.actions.AddColumnPanel;
 import org.jvnet.flamingo.common.CommandButtonDisplayState;
 import org.jvnet.flamingo.common.JCommandButton;
 import org.jvnet.flamingo.common.JCommandButtonStrip;
@@ -29,6 +47,9 @@ import org.jvnet.flamingo.common.icon.ImageWrapperResizableIcon;
 import org.jvnet.flamingo.common.popup.JCommandPopupMenu;
 import org.jvnet.flamingo.common.popup.JPopupPanel;
 import org.jvnet.flamingo.common.popup.PopupPanelCallback;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -162,7 +183,7 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
 
         final ArrayList<AttributeColumn> availableColumns = new ArrayList<AttributeColumn>();
         for (final AttributeColumn column : columns) {
-            if (acm.canManipulateColumn(table,column)) {
+            if (acm.canManipulateColumn(table, column)) {
                 availableColumns.add(column);
             }
         }
@@ -188,11 +209,34 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
                     return popup;
                 }
             });
-        }else{
+        } else {
             manipulatorButton.setEnabled(false);
         }
 
         return manipulatorButton;
+    }
+
+    /**
+     * Create the special Add new column buttons for nodes and edges table.
+     */
+    private void prepareAddColumnButtons(){
+        JButton button;
+        button=new JButton(NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.addNodeColumnButton.text"), ImageUtilities.loadImageIcon("/org/gephi/ui/datatable/resources/table-insert-column.png", true));
+        button.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                showAddColumnUI(AddColumnPanel.Mode.NODES_TABLE);
+            }
+        });
+        nodesAttributeColumnsPanel.add(button);
+        button=new JButton(NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.addEdgeColumnButton.text"), ImageUtilities.loadImageIcon("/org/gephi/ui/datatable/resources/table-insert-column.png", true));
+        button.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                showAddColumnUI(AddColumnPanel.Mode.EDGES_TABLE);
+            }
+        });
+        edgesAttributeColumnsPanel.add(button);
     }
 
     private void refresh() {
@@ -201,6 +245,7 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
             public void run() {
                 clear();
                 nodeEdgeTabbedPane.setEnabled(true);
+                prepareAddColumnButtons();
                 prepareNodeAndEdgeColumnButtons();
             }
         });
@@ -211,6 +256,15 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
         nodesAttributeColumnsPanel.removeAll();
         edgesAttributeColumnsPanel.removeAll();
         nodeEdgeTabbedPane.setEnabled(false);
+    }
+
+    private void showAddColumnUI(AddColumnPanel.Mode mode){
+        AddColumnPanel panel=new AddColumnPanel();
+        panel.setup(mode);
+        DialogDescriptor dd = new DialogDescriptor(panel, panel.getDisplayName());
+        if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+            panel.execute();
+        }
     }
 
     /** This method is called from within the constructor to
@@ -226,11 +280,11 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
         nodesAttributeColumnsPanel = new javax.swing.JPanel();
         edgesAttributeColumnsPanel = new javax.swing.JPanel();
 
-        attributeColumnsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "attributeColumnsPanel.title"))); // NOI18N
+        attributeColumnsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.attributeColumnsPanel.title"))); // NOI18N
 
         nodesAttributeColumnsPanel.setName("a"); // NOI18N
         nodesAttributeColumnsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 20));
-        nodeEdgeTabbedPane.addTab(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.a.TabConstraints.tabTitle"), nodesAttributeColumnsPanel); // NOI18N
+        nodeEdgeTabbedPane.addTab(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.nodesAttributeColumnsPanel.TabConstraints.tabTitle"), nodesAttributeColumnsPanel); // NOI18N
 
         edgesAttributeColumnsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 20));
         nodeEdgeTabbedPane.addTab(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.edgesAttributeColumnsPanel.TabConstraints.tabTitle"), edgesAttributeColumnsPanel); // NOI18N
@@ -247,7 +301,7 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
         attributeColumnsPanelLayout.setVerticalGroup(
             attributeColumnsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, attributeColumnsPanelLayout.createSequentialGroup()
-                .addComponent(nodeEdgeTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                .addComponent(nodeEdgeTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -268,6 +322,7 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel attributeColumnsPanel;
     private javax.swing.JPanel edgesAttributeColumnsPanel;

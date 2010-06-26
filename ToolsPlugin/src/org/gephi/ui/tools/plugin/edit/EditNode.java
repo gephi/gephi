@@ -21,11 +21,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.tools.plugin.edit;
 
 import java.awt.Color;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.type.StringList;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
@@ -161,6 +164,32 @@ public class EditNode extends AbstractNode {
             this.index = index;
         }
 
+        //TODO: Add rest of AttributeTypes
+
+        public Byte getValueByte(){
+            return (Byte) row.getValue(index);
+        }
+
+        public void setValueByte(Byte object){
+            row.setValue(index, object);
+        }
+
+        public Short getValueShort(){
+            return (Short) row.getValue(index);
+        }
+
+        public void setValueShort(Short object){
+            row.setValue(index, object);
+        }
+
+        public Character getValueCharacter(){
+            return (Character) row.getValue(index);
+        }
+
+        public void setValueCharacter(Character object){
+            row.setValue(index, object);
+        }
+
         public String getValueString() {
             return (String) row.getValue(index);
         }
@@ -206,6 +235,22 @@ public class EditNode extends AbstractNode {
         }
 
         public void setValueLong(Long object) {
+            row.setValue(index, object);
+        }
+
+        public BigInteger getValueBigInteger() {
+            return (BigInteger) row.getValue(index);
+        }
+
+        public void setValueBigInteger(BigInteger object) {
+            row.setValue(index, object);
+        }
+
+        public BigDecimal getValueBigDecimal() {
+            return (BigDecimal) row.getValue(index);
+        }
+
+        public void setValueBigDecimal(BigDecimal object) {
             row.setValue(index, object);
         }
 
