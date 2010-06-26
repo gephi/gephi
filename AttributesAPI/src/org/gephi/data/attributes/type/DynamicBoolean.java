@@ -90,8 +90,7 @@ public final class DynamicBoolean extends DynamicType<Boolean> {
 	 * @param in     interval to add (could be null)
 	 * @param out    interval to remove (could be null)
 	 */
-	public DynamicBoolean(DynamicBoolean source, Interval<Boolean> in,
-			Interval<Boolean> out) {
+	public DynamicBoolean(DynamicBoolean source, Interval<Boolean> in, Interval<Boolean> out) {
 		super(source, in, out);
 	}
 
@@ -118,8 +117,7 @@ public final class DynamicBoolean extends DynamicType<Boolean> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public DynamicBoolean(DynamicBoolean source, List<Interval<Boolean>> in,
-			List<Interval<Boolean>> out) {
+	public DynamicBoolean(DynamicBoolean source, List<Interval<Boolean>> in, List<Interval<Boolean>> out) {
 		super(source, in, out);
 	}
 

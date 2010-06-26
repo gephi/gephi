@@ -91,8 +91,7 @@ public final class DynamicShort extends DynamicType<Short> {
 	 * @param in     interval to add (could be null)
 	 * @param out    interval to remove (could be null)
 	 */
-	public DynamicShort(DynamicShort source, Interval<Short> in,
-			Interval<Short> out) {
+	public DynamicShort(DynamicShort source, Interval<Short> in, Interval<Short> out) {
 		super(source, in, out);
 	}
 
@@ -119,8 +118,7 @@ public final class DynamicShort extends DynamicType<Short> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public DynamicShort(DynamicShort source, List<Interval<Short>> in,
-			List<Interval<Short>> out) {
+	public DynamicShort(DynamicShort source, List<Interval<Short>> in, List<Interval<Short>> out) {
 		super(source, in, out);
 	}
 

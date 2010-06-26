@@ -90,8 +90,7 @@ public final class DynamicCharacter extends DynamicType<Character> {
 	 * @param in     interval to add (could be null)
 	 * @param out    interval to remove (could be null)
 	 */
-	public DynamicCharacter(DynamicCharacter source, Interval<Character> in,
-			Interval<Character> out) {
+	public DynamicCharacter(DynamicCharacter source, Interval<Character> in, Interval<Character> out) {
 		super(source, in, out);
 	}
 
@@ -119,8 +118,7 @@ public final class DynamicCharacter extends DynamicType<Character> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public DynamicCharacter(DynamicCharacter source,
-			List<Interval<Character>> in, List<Interval<Character>> out) {
+	public DynamicCharacter(DynamicCharacter source, List<Interval<Character>> in, List<Interval<Character>> out) {
 		super(source, in, out);
 	}
 

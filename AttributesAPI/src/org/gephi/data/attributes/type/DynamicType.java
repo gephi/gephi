@@ -137,8 +137,7 @@ public abstract class DynamicType<T> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public DynamicType(DynamicType<T> source, List<Interval<T>> in,
-			List<Interval<T>> out) {
+	public DynamicType(DynamicType<T> source, List<Interval<T>> in, List<Interval<T>> out) {
 		this(source);
 		if (out != null)
 			for (Interval<T> interval : out)

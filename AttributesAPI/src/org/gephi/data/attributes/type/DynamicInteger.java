@@ -91,8 +91,7 @@ public final class DynamicInteger extends DynamicType<Integer> {
 	 * @param in     interval to add (could be null)
 	 * @param out    interval to remove (could be null)
 	 */
-	public DynamicInteger(DynamicInteger source, Interval<Integer> in,
-			Interval<Integer> out) {
+	public DynamicInteger(DynamicInteger source, Interval<Integer> in, Interval<Integer> out) {
 		super(source, in, out);
 	}
 
@@ -119,8 +118,7 @@ public final class DynamicInteger extends DynamicType<Integer> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public DynamicInteger(DynamicInteger source, List<Interval<Integer>> in,
-			List<Interval<Integer>> out) {
+	public DynamicInteger(DynamicInteger source, List<Interval<Integer>> in, List<Interval<Integer>> out) {
 		super(source, in, out);
 	}
 

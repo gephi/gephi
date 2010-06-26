@@ -102,8 +102,7 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	 * @param rlow   the left endpoint of the interval to remove
 	 * @param rhigh  the right endpoint of the interval to remove
 	 */
-	public TimeInterval(TimeInterval source, double alow, double ahigh,
-			double rlow, double rhigh) {
+	public TimeInterval(TimeInterval source, double alow, double ahigh, double rlow, double rhigh) {
 		super(source,
 			new Interval<Double[]>(alow, ahigh, new Double[] { alow, ahigh }),
 			new Interval<Double[]>(rlow, rhigh, new Double[] { rlow, rhigh }));
@@ -132,8 +131,7 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public TimeInterval(TimeInterval source, List<Double[]> in,
-			List<Double[]> out) {
+	public TimeInterval(TimeInterval source, List<Double[]> in, List<Double[]> out) {
 		super(source, getList(in), getList(out));
 	}
 

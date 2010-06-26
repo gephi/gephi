@@ -77,8 +77,7 @@ public final class DynamicBigInteger extends DynamicType<BigInteger> {
 	 *               instance is created)
 	 * @param in     interval to add (could be null)
 	 */
-	public DynamicBigInteger(DynamicBigInteger source,
-			Interval<BigInteger> in) {
+	public DynamicBigInteger(DynamicBigInteger source, Interval<BigInteger> in) {
 		super(source, in);
 	}
 
@@ -92,8 +91,7 @@ public final class DynamicBigInteger extends DynamicType<BigInteger> {
 	 * @param in     interval to add (could be null)
 	 * @param out    interval to remove (could be null)
 	 */
-	public DynamicBigInteger(DynamicBigInteger source, Interval<BigInteger> in,
-			Interval<BigInteger> out) {
+	public DynamicBigInteger(DynamicBigInteger source, Interval<BigInteger> in, Interval<BigInteger> out) {
 		super(source, in, out);
 	}
 
@@ -105,8 +103,7 @@ public final class DynamicBigInteger extends DynamicType<BigInteger> {
 	 *               instance is created)
 	 * @param in     intervals to add (could be null)
 	 */
-	public DynamicBigInteger(DynamicBigInteger source,
-			List<Interval<BigInteger>> in) {
+	public DynamicBigInteger(DynamicBigInteger source, List<Interval<BigInteger>> in) {
 		super(source, in);
 	}
 
@@ -121,8 +118,7 @@ public final class DynamicBigInteger extends DynamicType<BigInteger> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public DynamicBigInteger(DynamicBigInteger source,
-			List<Interval<BigInteger>> in, List<Interval<BigInteger>> out) {
+	public DynamicBigInteger(DynamicBigInteger source, List<Interval<BigInteger>> in, List<Interval<BigInteger>> out) {
 		super(source, in, out);
 	}
 

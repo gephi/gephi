@@ -90,8 +90,7 @@ public final class DynamicString extends DynamicType<String> {
 	 * @param in     interval to add (could be null)
 	 * @param out    interval to remove (could be null)
 	 */
-	public DynamicString(DynamicString source, Interval<String> in,
-			Interval<String> out) {
+	public DynamicString(DynamicString source, Interval<String> in, Interval<String> out) {
 		super(source, in, out);
 	}
 
@@ -118,8 +117,7 @@ public final class DynamicString extends DynamicType<String> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public DynamicString(DynamicString source, List<Interval<String>> in,
-			List<Interval<String>> out) {
+	public DynamicString(DynamicString source, List<Interval<String>> in, List<Interval<String>> out) {
 		super(source, in, out);
 	}
 

@@ -91,8 +91,7 @@ public final class DynamicDouble extends DynamicType<Double> {
 	 * @param in     interval to add (could be null)
 	 * @param out    interval to remove (could be null)
 	 */
-	public DynamicDouble(DynamicDouble source, Interval<Double> in,
-			Interval<Double> out) {
+	public DynamicDouble(DynamicDouble source, Interval<Double> in, Interval<Double> out) {
 		super(source, in, out);
 	}
 
@@ -119,8 +118,7 @@ public final class DynamicDouble extends DynamicType<Double> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public DynamicDouble(DynamicDouble source, List<Interval<Double>> in,
-			List<Interval<Double>> out) {
+	public DynamicDouble(DynamicDouble source, List<Interval<Double>> in, List<Interval<Double>> out) {
 		super(source, in, out);
 	}
 

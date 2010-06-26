@@ -91,8 +91,7 @@ public final class DynamicFloat extends DynamicType<Float> {
 	 * @param in     interval to add (could be null)
 	 * @param out    interval to remove (could be null)
 	 */
-	public DynamicFloat(DynamicFloat source, Interval<Float> in,
-			Interval<Float> out) {
+	public DynamicFloat(DynamicFloat source, Interval<Float> in, Interval<Float> out) {
 		super(source, in, out);
 	}
 
@@ -119,8 +118,7 @@ public final class DynamicFloat extends DynamicType<Float> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public DynamicFloat(DynamicFloat source, List<Interval<Float>> in,
-			List<Interval<Float>> out) {
+	public DynamicFloat(DynamicFloat source, List<Interval<Float>> in, List<Interval<Float>> out) {
 		super(source, in, out);
 	}
 

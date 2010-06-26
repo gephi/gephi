@@ -77,8 +77,7 @@ public final class DynamicBigDecimal extends DynamicType<BigDecimal> {
 	 *               instance is created)
 	 * @param in     interval to add (could be null)
 	 */
-	public DynamicBigDecimal(DynamicBigDecimal source,
-			Interval<BigDecimal> in) {
+	public DynamicBigDecimal(DynamicBigDecimal source, Interval<BigDecimal> in) {
 		super(source, in);
 	}
 
@@ -92,8 +91,7 @@ public final class DynamicBigDecimal extends DynamicType<BigDecimal> {
 	 * @param in     interval to add (could be null)
 	 * @param out    interval to remove (could be null)
 	 */
-	public DynamicBigDecimal(DynamicBigDecimal source, Interval<BigDecimal> in,
-			Interval<BigDecimal> out) {
+	public DynamicBigDecimal(DynamicBigDecimal source, Interval<BigDecimal> in, Interval<BigDecimal> out) {
 		super(source, in, out);
 	}
 
@@ -105,8 +103,7 @@ public final class DynamicBigDecimal extends DynamicType<BigDecimal> {
 	 *               instance is created)
 	 * @param in     intervals to add (could be null)
 	 */
-	public DynamicBigDecimal(DynamicBigDecimal source,
-			List<Interval<BigDecimal>> in) {
+	public DynamicBigDecimal(DynamicBigDecimal source, List<Interval<BigDecimal>> in) {
 		super(source, in);
 	}
 
@@ -121,8 +118,7 @@ public final class DynamicBigDecimal extends DynamicType<BigDecimal> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public DynamicBigDecimal(DynamicBigDecimal source,
-			List<Interval<BigDecimal>> in, List<Interval<BigDecimal>> out) {
+	public DynamicBigDecimal(DynamicBigDecimal source, List<Interval<BigDecimal>> in, List<Interval<BigDecimal>> out) {
 		super(source, in, out);
 	}
 	

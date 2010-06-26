@@ -91,8 +91,7 @@ public final class DynamicByte extends DynamicType<Byte> {
 	 * @param in     interval to add (could be null)
 	 * @param out    interval to remove (could be null)
 	 */
-	public DynamicByte(DynamicByte source, Interval<Byte> in,
-			Interval<Byte> out) {
+	public DynamicByte(DynamicByte source, Interval<Byte> in, Interval<Byte> out) {
 		super(source, in, out);
 	}
 
@@ -119,8 +118,7 @@ public final class DynamicByte extends DynamicType<Byte> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public DynamicByte(DynamicByte source, List<Interval<Byte>> in,
-			List<Interval<Byte>> out) {
+	public DynamicByte(DynamicByte source, List<Interval<Byte>> in, List<Interval<Byte>> out) {
 		super(source, in, out);
 	}
 

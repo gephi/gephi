@@ -91,8 +91,7 @@ public final class DynamicLong extends DynamicType<Long> {
 	 * @param in     interval to add (could be null)
 	 * @param out    interval to remove (could be null)
 	 */
-	public DynamicLong(DynamicLong source, Interval<Long> in,
-			Interval<Long> out) {
+	public DynamicLong(DynamicLong source, Interval<Long> in, Interval<Long> out) {
 		super(source, in, out);
 	}
 
@@ -119,8 +118,7 @@ public final class DynamicLong extends DynamicType<Long> {
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public DynamicLong(DynamicLong source, List<Interval<Long>> in,
-			List<Interval<Long>> out) {
+	public DynamicLong(DynamicLong source, List<Interval<Long>> in, List<Interval<Long>> out) {
 		super(source, in, out);
 	}
 
