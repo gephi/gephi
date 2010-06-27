@@ -32,6 +32,28 @@ import org.gephi.graph.api.Node;
 public interface GraphElementsController {
 
     /**
+     * Creates a node with default id and the given label.
+     * @param label Label for the node
+     * @return The new created node
+     */
+    Node createNode(String label);
+
+    /**
+     * Duplicates a node if it is in the graph, and returns the new node.
+     * Sets the same attributes for the node as the original node: id, label and AttributeColumns with DATA AttributeOrigin.
+     * Does not copy AttributeColumns with COMPUTED AttributeOrigin.
+     * @param node Node to copy
+     * @return New node
+     */
+    Node duplicateNode(Node node);
+
+    /**
+     * Tries to duplicate an array of nodes with the same behavious as <code>duplicateNode</code> method.
+     * @param nodes Array of nodes to duplicate
+     */
+    void duplicateNodes(Node[] nodes);
+
+    /**
      * Creates and edge between source and target node (if does not already exist), directed or undirected.
      * This will not create a self-loop.
      * @param source Source node

@@ -21,7 +21,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * AttributeColumnsManipulator that clears all data of a AttributeColumn of a AttributeTable.
+ * Only allows to clear columns with DATA AttributeOrigin or the label column.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)

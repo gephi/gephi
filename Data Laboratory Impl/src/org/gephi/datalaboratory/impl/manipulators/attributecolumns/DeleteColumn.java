@@ -19,7 +19,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * AttributeColumnsManipulator that deletes a AttributeColumn of a AttributeTable.
+ * Only allows to delete columns with DATA AttributeOrigin.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)

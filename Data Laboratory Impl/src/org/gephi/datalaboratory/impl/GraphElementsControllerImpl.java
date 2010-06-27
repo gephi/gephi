@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl;
 
+import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -39,6 +41,34 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphElementsController.class)
 public class GraphElementsControllerImpl implements GraphElementsController {
+
+    public Node createNode(String label) {
+        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode();
+        newNode.getNodeData().setLabel(label);
+        getGraph().addNode(newNode);
+        return newNode;
+    }
+
+    public Node duplicateNode(Node node) {
+        if (isNodeInGraph(node)) {
+            Node copy=createNode(node.getNodeData().getLabel());
+            AttributeRow row=(AttributeRow) node.getNodeData().getAttributes();
+            for (int i = 0; i < row.countValues(); i++) {
+                if(row.getValues()[i].getColumn().getOrigin()==AttributeOrigin.DATA){
+                    copy.getNodeData().getAttributes().setValue(i, row.getValue(i));
+                }
+            }
+            return copy;
+        } else {
+            return null;
+        }
+    }
+
+    public void duplicateNodes(Node[] nodes){
+        for(Node n:nodes){
+            duplicateNode(n);
+        }
+    }
 
     public boolean createEdge(Node source, Node target, boolean directed) {
         if (isNodeInGraph(source) && isNodeInGraph(target)) {
@@ -222,11 +252,11 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         return node.getNodeData().isFixed();
     }
 
-    public Node[] getNodeNeighbours(Node node){
+    public Node[] getNodeNeighbours(Node node) {
         return getGraph().getNeighbors(node).toArray();
     }
 
-    public Edge[] getNodeEdges(Node node){
+    public Edge[] getNodeEdges(Node node) {
         return getGraph().getEdges(node).toArray();
     }
 

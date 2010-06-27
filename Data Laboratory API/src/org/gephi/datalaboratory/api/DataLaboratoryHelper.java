@@ -25,6 +25,7 @@ import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
+import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 
 /**
@@ -50,7 +51,14 @@ public interface DataLaboratoryHelper {
     EdgesManipulator[] getEdgesManipulators();
 
     /**
-     * Prepares an array that has one instance of every AttributeColumnsManipulator implementation.
+     * Prepares an array with one new instance of every GeneralActionsManipulator that is registered.
+     * It also must ensure to return the manipulators ordered first by type and then by position.
+     * @return Array of all GeneralActionsManipulator implementations
+     */
+    GeneralActionsManipulator[] getGeneralActionsManipulators();
+
+    /**
+     * Prepares an array that has one instance of every AttributeColumnsManipulator implementation that is registered.
      * It also must ensure to return the manipulators ordered first by type and then by position.
      * @return Array of all AttributeColumnsManipulator implementations
      */

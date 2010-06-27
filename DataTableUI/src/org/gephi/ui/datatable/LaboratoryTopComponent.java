@@ -28,12 +28,14 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
+import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -93,7 +95,7 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
             }
 
             public void select(Workspace workspace) {
-                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+                AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
                 attributeModel.getNodeTable().addAttributeListener(LaboratoryTopComponent.this);
                 attributeModel.getEdgeTable().addAttributeListener(LaboratoryTopComponent.this);
                 refresh();
@@ -219,9 +221,9 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
     /**
      * Create the special Add new column buttons for nodes and edges table.
      */
-    private void prepareAddColumnButtons(){
+    private void prepareAddColumnButtons() {
         JButton button;
-        button=new JButton(NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.addNodeColumnButton.text"), ImageUtilities.loadImageIcon("/org/gephi/ui/datatable/resources/table-insert-column.png", true));
+        button = new JButton(NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.addNodeColumnButton.text"), ImageUtilities.loadImageIcon("/org/gephi/ui/datatable/resources/table-insert-column.png", true));
         button.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -229,7 +231,7 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
             }
         });
         nodesAttributeColumnsPanel.add(button);
-        button=new JButton(NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.addEdgeColumnButton.text"), ImageUtilities.loadImageIcon("/org/gephi/ui/datatable/resources/table-insert-column.png", true));
+        button = new JButton(NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.addEdgeColumnButton.text"), ImageUtilities.loadImageIcon("/org/gephi/ui/datatable/resources/table-insert-column.png", true));
         button.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -239,27 +241,61 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
         edgesAttributeColumnsPanel.add(button);
     }
 
+    /**
+     * Adds the buttons for the GeneralActionsManipulators.
+     */
+    public void prepareGeneralActionButtons() {
+        final DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+        GeneralActionsManipulator[] manipulators = dlh.getGeneralActionsManipulators();
+        JButton button;
+        for (final GeneralActionsManipulator m : manipulators) {
+            button = new JButton(m.getName(), m.getIcon());
+            if (m.getDescription() != null && !m.getDescription().isEmpty()) {
+                button.setToolTipText(m.getDescription());
+            }
+            if (m.canExecute()) {
+                button.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        dlh.executeManipulator(m);
+                    }
+                });
+            } else {
+                button.setEnabled(false);
+            }
+            generalManipulatorsPanel.add(button);
+        }
+
+    }
+
     private void refresh() {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
                 clear();
                 nodeEdgeTabbedPane.setEnabled(true);
+                prepareGeneralActionButtons();
                 prepareAddColumnButtons();
                 prepareNodeAndEdgeColumnButtons();
+                generalManipulatorsPanel.updateUI();
+                nodesAttributeColumnsPanel.updateUI();
+                edgesAttributeColumnsPanel.updateUI();
             }
         });
-
     }
 
     private void clear() {
+        generalManipulatorsPanel.removeAll();
         nodesAttributeColumnsPanel.removeAll();
         edgesAttributeColumnsPanel.removeAll();
         nodeEdgeTabbedPane.setEnabled(false);
+        generalManipulatorsPanel.updateUI();
+        nodesAttributeColumnsPanel.updateUI();
+        edgesAttributeColumnsPanel.updateUI();
     }
 
-    private void showAddColumnUI(AddColumnPanel.Mode mode){
-        AddColumnPanel panel=new AddColumnPanel();
+    private void showAddColumnUI(AddColumnPanel.Mode mode) {
+        AddColumnPanel panel = new AddColumnPanel();
         panel.setup(mode);
         DialogDescriptor dd = new DialogDescriptor(panel, panel.getDisplayName());
         if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
@@ -279,6 +315,7 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
         nodeEdgeTabbedPane = new javax.swing.JTabbedPane();
         nodesAttributeColumnsPanel = new javax.swing.JPanel();
         edgesAttributeColumnsPanel = new javax.swing.JPanel();
+        generalManipulatorsPanel = new javax.swing.JPanel();
 
         attributeColumnsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.attributeColumnsPanel.title"))); // NOI18N
 
@@ -295,13 +332,13 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
             attributeColumnsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(attributeColumnsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(nodeEdgeTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
+                .addComponent(nodeEdgeTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
                 .addContainerGap())
         );
         attributeColumnsPanelLayout.setVerticalGroup(
             attributeColumnsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, attributeColumnsPanelLayout.createSequentialGroup()
-                .addComponent(nodeEdgeTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                .addComponent(nodeEdgeTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -311,21 +348,24 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(attributeColumnsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(attributeColumnsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(generalManipulatorsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(attributeColumnsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(generalManipulatorsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel attributeColumnsPanel;
     private javax.swing.JPanel edgesAttributeColumnsPanel;
+    private javax.swing.JPanel generalManipulatorsPanel;
     private javax.swing.JTabbedPane nodeEdgeTabbedPane;
     private javax.swing.JPanel nodesAttributeColumnsPanel;
     // End of variables declaration//GEN-END:variables
@@ -374,26 +414,6 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
     @Override
     public void componentClosed() {
         // TODO add custom code on component closing
-    }
-
-    void writeProperties(java.util.Properties p) {
-        // better to version settings since initial version as advocated at
-        // http://wiki.apidesign.org/wiki/PropertyFiles
-        p.setProperty("version", "1.0");
-        // TODO store your settings
-    }
-
-    Object readProperties(java.util.Properties p) {
-        if (instance == null) {
-            instance = this;
-        }
-        instance.readPropertiesImpl(p);
-        return instance;
-    }
-
-    private void readPropertiesImpl(java.util.Properties p) {
-        String version = p.getProperty("version");
-        // TODO read your settings according to their version
     }
 
     @Override
