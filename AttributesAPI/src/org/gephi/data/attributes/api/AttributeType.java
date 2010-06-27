@@ -184,9 +184,9 @@ public enum AttributeType {
             }
         }
 
-//        Class<?> arrayComponentType = c.getComponentType();//TODO remove
-//        if (arrayComponentType == String.class)
-//            return AttributeType.LIST_STRING;
+        Class<?> arrayComponentType = c.getComponentType();//TODO remove
+        if (arrayComponentType == String.class)
+            return AttributeType.LIST_STRING;
 
         return null;
     }
