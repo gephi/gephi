@@ -36,6 +36,10 @@ import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphEvent;
+import org.gephi.graph.api.GraphListener;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -62,12 +66,13 @@ import org.openide.util.Lookup;
  * 
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public final class LaboratoryTopComponent extends TopComponent implements AttributeListener {
+public final class LaboratoryTopComponent extends TopComponent implements AttributeListener, GraphListener {
 
     private static LaboratoryTopComponent instance;
     /** path to the icon used by the component and its open action */
     static final String ICON_PATH = "org/gephi/ui/datatable/resources/diamond.png";
     private static final String PREFERRED_ID = "LaboratoryTopComponent";
+    private GraphModel graphModel;
 
     public LaboratoryTopComponent() {
         initComponents();
@@ -89,6 +94,7 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
 
     private void initEvents() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
@@ -98,10 +104,17 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
                 AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
                 attributeModel.getNodeTable().addAttributeListener(LaboratoryTopComponent.this);
                 attributeModel.getEdgeTable().addAttributeListener(LaboratoryTopComponent.this);
+
+                graphModel = gc.getModel();
+                graphModel.addGraphListener(LaboratoryTopComponent.this);
+                
                 refresh();
             }
 
             public void unselect(Workspace workspace) {
+                graphModel.removeGraphListener(LaboratoryTopComponent.this);
+                graphModel = null;
+
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
                 attributeModel.getNodeTable().addAttributeListener(LaboratoryTopComponent.this);
                 attributeModel.getEdgeTable().addAttributeListener(LaboratoryTopComponent.this);
@@ -117,6 +130,9 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
             }
         });
         if (pc.getCurrentWorkspace() != null) {
+            graphModel = gc.getModel();
+            graphModel.addGraphListener(LaboratoryTopComponent.this);
+
             AttributeModel attributeModel = pc.getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
             attributeModel.getNodeTable().addAttributeListener(LaboratoryTopComponent.this);
             attributeModel.getEdgeTable().addAttributeListener(LaboratoryTopComponent.this);
@@ -124,6 +140,10 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
     }
 
     public void attributesChanged(AttributeEvent event) {
+        refresh();
+    }
+
+    public void graphChanged(GraphEvent event) {
         refresh();
     }
 

@@ -154,13 +154,15 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
                 hideTable();
                 enableControls();
                 bannerPanel.setVisible(false);
-                graphModel = gc.getModel();
-                graphModel.addGraphListener(DataTableTopComponent.this);
-                dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
 
                 AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
                 attributeModel.getNodeTable().addAttributeListener(DataTableTopComponent.this);
                 attributeModel.getEdgeTable().addAttributeListener(DataTableTopComponent.this);
+
+                graphModel = gc.getModel();
+                graphModel.addGraphListener(DataTableTopComponent.this);
+                dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
+                
                 refresh();
             }
 

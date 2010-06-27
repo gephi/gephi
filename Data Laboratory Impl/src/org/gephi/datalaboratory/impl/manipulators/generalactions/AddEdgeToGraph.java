@@ -1,0 +1,106 @@
+/*
+Copyright 2008-2010 Gephi
+Authors : Eduardo Ramos <eduramiba@gmail.com>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.gephi.datalaboratory.impl.manipulators.generalactions;
+
+import javax.swing.Icon;
+import org.gephi.datalaboratory.impl.manipulators.generalactions.ui.AddEdgeToGraphUI;
+import org.gephi.datalaboratory.spi.ManipulatorUI;
+import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.Node;
+import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
+
+/**
+ * GeneralActionsManipulator that adds a new edge to the graph, asking for source and target nodes and type of edge in UI.
+ * @author Eduardo Ramos <eduramiba@gmail.com>
+ */
+@ServiceProvider(service = GeneralActionsManipulator.class)
+public class AddEdgeToGraph implements GeneralActionsManipulator {
+
+    private Node source=null, target=null;
+    private boolean directed;
+
+    public void execute() {
+        if (source != null && target != null) {
+            Lookup.getDefault().lookup(GraphController.class).getModel().getMixedGraph().addEdge(source, target, directed);
+        }
+    }
+
+    public String getName() {
+        return NbBundle.getMessage(AddNodeToGraph.class, "AddEdgeToGraph.name");
+    }
+
+    public String getDescription() {
+        return "";
+    }
+
+    public boolean canExecute() {
+        Graph graph=Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+        graph.readLock();
+        int nodes=graph.getNodeCount();
+        graph.readUnlock();
+        return nodes>1;
+    }
+
+    public ManipulatorUI getUI() {
+        return new AddEdgeToGraphUI();
+    }
+
+    public int getType() {
+        return 0;
+    }
+
+    public int getPosition() {
+        return 200;
+    }
+
+    public Icon getIcon() {
+        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/plus-white.png", true);
+    }
+
+    public boolean isDirected() {
+        return directed;
+    }
+
+    public void setDirected(boolean directed) {
+        this.directed = directed;
+    }
+
+    public Node getSource() {
+        return source;
+    }
+
+    public void setSource(Node source) {
+        this.source = source;
+    }
+
+    public Node getTarget() {
+        return target;
+    }
+
+    public void setTarget(Node target) {
+        this.target = target;
+    }
+}

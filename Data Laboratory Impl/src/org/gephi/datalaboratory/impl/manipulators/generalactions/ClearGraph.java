@@ -18,35 +18,34 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory.impl.generalactions;
+package org.gephi.datalaboratory.impl.manipulators.generalactions;
 
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
-import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * GeneralActionsManipulator that adds a new node to the graph, asking for its label.
- * Uses the default id for the node.
+ * GeneralActionsManipulator that clears the entire graph, asking for confirmation.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service=GeneralActionsManipulator.class)
-public class AddNodeToGraph implements GeneralActionsManipulator{
+public class ClearGraph implements GeneralActionsManipulator {
 
     public void execute() {
-        String label = JOptionPane.showInputDialog(null, NbBundle.getMessage(AddNodeToGraph.class, "AddNodeToGraph.dialog.text"), NbBundle.getMessage(AddNodeToGraph.class, "AddNodeToGraph.name"), JOptionPane.QUESTION_MESSAGE);
-        if (label != null) {
-            Lookup.getDefault().lookup(GraphElementsController.class).createNode(label);
+        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearGraph.class, "ClearGraph.dialog.text"), NbBundle.getMessage(ClearGraph.class, "ClearGraph.name"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+            Lookup.getDefault().lookup(GraphController.class).getModel().getGraph().clear();
         }
     }
 
     public String getName() {
-        return NbBundle.getMessage(AddNodeToGraph.class, "AddNodeToGraph.name");
+        return NbBundle.getMessage(ClearGraph.class, "ClearGraph.name");
     }
 
     public String getDescription() {
@@ -54,7 +53,11 @@ public class AddNodeToGraph implements GeneralActionsManipulator{
     }
 
     public boolean canExecute() {
-        return true;
+        Graph graph=Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+        graph.readLock();
+        int nodes=graph.getNodeCount();
+        graph.readUnlock();
+        return nodes>0;
     }
 
     public ManipulatorUI getUI() {
@@ -66,10 +69,10 @@ public class AddNodeToGraph implements GeneralActionsManipulator{
     }
 
     public int getPosition() {
-        return 0;
+        return 200;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/plus-circle.png",true);
+        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/eraser--minus.png", true);
     }
 }

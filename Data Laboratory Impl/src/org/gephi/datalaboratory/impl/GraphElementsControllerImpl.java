@@ -20,15 +20,18 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl;
 
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.datalaboratory.api.GraphElementsController;
+import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.UndirectedGraph;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -43,8 +46,9 @@ import org.openide.util.lookup.ServiceProvider;
 public class GraphElementsControllerImpl implements GraphElementsController {
 
     public Node createNode(String label) {
+        Lookup.getDefault().lookup(AttributeController.class).getModel();//Make sure graph has AttributeModel, this can be first node.
         Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode();
-        newNode.getNodeData().setLabel(label);
+        newNode.getNodeData().setLabel(label);        
         getGraph().addNode(newNode);
         return newNode;
     }
@@ -73,7 +77,11 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     public boolean createEdge(Node source, Node target, boolean directed) {
         if (isNodeInGraph(source) && isNodeInGraph(target)) {
             if (source != target) {//Cannot create self-loop
-                return getMixedGraph().addEdge(source, target, directed);//The edge will be created if it does not already exist.
+                if(directed){
+                    return getDirectedGraph().addEdge(source, target);//The edge will be created if it does not already exist.
+                }else{
+                    return getUndirectedGraph().addEdge(source, target);//The edge will be created if it does not already exist.
+                }
             } else {
                 return false;
             }
@@ -295,6 +303,14 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     private MixedGraph getMixedGraph() {
         return Lookup.getDefault().lookup(GraphController.class).getModel().getMixedGraph();
+    }
+
+    private DirectedGraph getDirectedGraph(){
+        return Lookup.getDefault().lookup(GraphController.class).getModel().getDirectedGraph();
+    }
+
+    private UndirectedGraph getUndirectedGraph(){
+        return Lookup.getDefault().lookup(GraphController.class).getModel().getUndirectedGraph();
     }
 
     private HierarchicalGraph getHierarchicalGraph() {
