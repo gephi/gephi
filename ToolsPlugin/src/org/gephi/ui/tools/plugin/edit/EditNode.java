@@ -20,13 +20,25 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.tools.plugin.edit;
 
+import com.sun.org.apache.xerces.internal.impl.PropertyManager;
 import java.awt.Color;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.EnumSet;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.type.BigDecimalList;
+import org.gephi.data.attributes.type.BigIntegerList;
+import org.gephi.data.attributes.type.BooleanList;
+import org.gephi.data.attributes.type.ByteList;
+import org.gephi.data.attributes.type.CharacterList;
+import org.gephi.data.attributes.type.DoubleList;
+import org.gephi.data.attributes.type.FloatList;
+import org.gephi.data.attributes.type.IntegerList;
+import org.gephi.data.attributes.type.LongList;
+import org.gephi.data.attributes.type.ShortList;
 import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.data.properties.PropertiesColumn;
@@ -56,7 +68,7 @@ public class EditNode extends AbstractNode {
 
     @Override
     public PropertySet[] getPropertySets() {
-        propertySets=new PropertySet[]{prepareNodeProperties(),prepareNodeAttributes()};
+        propertySets = new PropertySet[]{prepareNodeProperties(), prepareNodeAttributes()};
         return propertySets;
     }
 
@@ -76,10 +88,18 @@ public class EditNode extends AbstractNode {
                 AttributeType type = value.getColumn().getType();
                 Property p;
                 if (value.getColumn().getOrigin() != AttributeOrigin.COMPUTED && value.getColumn().getIndex() != PropertiesColumn.NODE_ID.getIndex()) {
-                    p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), "setValue" + type.getType().getSimpleName());
+                    if (!AttributeValueWrapper.notSupportedTypes.contains(type)) {//The AttributeType can be edited by default:
+                        p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), "setValue" + type.getType().getSimpleName());
+                    } else {//Use the AttributeType as String:
+                        p = new PropertySupport.Reflection(wrap, String.class, "getValue" + type.getType().getSimpleName(), "setValue" + type.getType().getSimpleName());
+                    }
                 } else {
                     //Not editable because it is computed value or the node/edge id:
-                    p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), null);
+                    if (!AttributeValueWrapper.notSupportedTypes.contains(type)) {//The AttributeType can be edited by default:
+                        p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), null);
+                    } else {//Use the AttributeType as String:
+                        p = new PropertySupport.Reflection(wrap, String.class, "getValue" + type.getType().getSimpleName(), null);
+                    }
                 }
                 p.setDisplayName(value.getColumn().getTitle());
                 p.setName(value.getColumn().getId());
@@ -128,19 +148,18 @@ public class EditNode extends AbstractNode {
         }
     }
 
-    public Color getNodeColor(){
-        NodeData data=node.getNodeData();
+    public Color getNodeColor() {
+        NodeData data = node.getNodeData();
         return new Color(data.r(), data.g(), data.b(), data.alpha());
     }
 
-    public void setNodeColor(Color c){
-        NodeData data=node.getNodeData();
-        data.setR(c.getRed()/255f);
-        data.setG(c.getGreen()/255f);
-        data.setB(c.getBlue()/255f);
-        data.setAlpha(c.getAlpha()/255f);
+    public void setNodeColor(Color c) {
+        NodeData data = node.getNodeData();
+        data.setR(c.getRed() / 255f);
+        data.setG(c.getGreen() / 255f);
+        data.setB(c.getBlue() / 255f);
+        data.setAlpha(c.getAlpha() / 255f);
     }
-
 
     /**
      * Used to build property for each position coordinate (x,y,z) in the same way.
@@ -148,14 +167,33 @@ public class EditNode extends AbstractNode {
      */
     private Property buildGeneralPositionProperty(NodeData data, String coordinate) throws NoSuchMethodException {
         //Position:
-        Property p = new PropertySupport.Reflection(data, Float.TYPE, coordinate, "set"+coordinate.toUpperCase());
-        p.setDisplayName(NbBundle.getMessage(EditNode.class, "Property.position.text",coordinate));
+        Property p = new PropertySupport.Reflection(data, Float.TYPE, coordinate, "set" + coordinate.toUpperCase());
+        p.setDisplayName(NbBundle.getMessage(EditNode.class, "Property.position.text", coordinate));
         p.setName(coordinate);
         return p;
     }
 
     public static class AttributeValueWrapper {
 
+        /**
+         * These AttributeTypes are not supported by default by netbeans property editor.
+         * We will use attributes of these types as Strings and parse them.
+         */
+        private static EnumSet<AttributeType> notSupportedTypes = EnumSet.of(
+                AttributeType.BIGINTEGER,
+                AttributeType.BIGDECIMAL,
+                AttributeType.TIME_INTERVAL,
+                AttributeType.LIST_BIGDECIMAL,
+                AttributeType.LIST_BIGINTEGER,
+                AttributeType.LIST_BOOLEAN,
+                AttributeType.LIST_BYTE,
+                AttributeType.LIST_CHARACTER,
+                AttributeType.LIST_DOUBLE,
+                AttributeType.LIST_FLOAT,
+                AttributeType.LIST_INTEGER,
+                AttributeType.LIST_LONG,
+                AttributeType.LIST_SHORT,
+                AttributeType.LIST_STRING);
         private AttributeRow row;
         private int index;
 
@@ -164,29 +202,36 @@ public class EditNode extends AbstractNode {
             this.index = index;
         }
 
-        //TODO: Add rest of AttributeTypes
+        private String convertToStringIfNotNull() {
+            Object value = row.getValue(index);
+            if (value != null) {
+                return value.toString();
+            } else {
+                return null;
+            }
+        }
 
-        public Byte getValueByte(){
+        public Byte getValueByte() {
             return (Byte) row.getValue(index);
         }
 
-        public void setValueByte(Byte object){
+        public void setValueByte(Byte object) {
             row.setValue(index, object);
         }
 
-        public Short getValueShort(){
+        public Short getValueShort() {
             return (Short) row.getValue(index);
         }
 
-        public void setValueShort(Short object){
+        public void setValueShort(Short object) {
             row.setValue(index, object);
         }
 
-        public Character getValueCharacter(){
+        public Character getValueCharacter() {
             return (Character) row.getValue(index);
         }
 
-        public void setValueCharacter(Character object){
+        public void setValueCharacter(Character object) {
             row.setValue(index, object);
         }
 
@@ -238,28 +283,117 @@ public class EditNode extends AbstractNode {
             row.setValue(index, object);
         }
 
-        public BigInteger getValueBigInteger() {
-            return (BigInteger) row.getValue(index);
+        /****** Next types are not supported by property editors by default so they are used and parsed as Strings ******/
+        public String getValueBigInteger() {
+            return convertToStringIfNotNull();
         }
 
-        public void setValueBigInteger(BigInteger object) {
-            row.setValue(index, object);
+        public void setValueBigInteger(String object) {
+            row.setValue(index, new BigInteger(object));
         }
 
-        public BigDecimal getValueBigDecimal() {
-            return (BigDecimal) row.getValue(index);
+        public String getValueBigDecimal() {
+            return convertToStringIfNotNull();
         }
 
-        public void setValueBigDecimal(BigDecimal object) {
-            row.setValue(index, object);
+        public void setValueBigDecimal(String object) {
+            row.setValue(index, new BigDecimal(object));
         }
 
-        public StringList getValueStringList() {
-            return (StringList) row.getValue(index);
+        public String getValueTimeInterval() {
+            return convertToStringIfNotNull();
         }
 
-        public void setValueStringList(StringList object) {
-            row.setValue(index, object);
+        public void setValueTimeInterval(String object) {
+            row.setValue(index, new TimeInterval(object));
+        }
+
+        public String getValueByteList() {
+            return convertToStringIfNotNull();
+        }
+
+        public void setValueByteList(String object) {
+            row.setValue(index, new ByteList(object));
+        }
+
+        public String getValueShortList() {
+            return convertToStringIfNotNull();
+        }
+
+        public void setValueShortList(String object) {
+            row.setValue(index, new ShortList(object));
+        }
+
+        public String getValueIntegerList() {
+            return convertToStringIfNotNull();
+        }
+
+        public void setValueIntegerList(String object) {
+            row.setValue(index, new IntegerList(object));
+        }
+
+        public String getValueLongList() {
+            return convertToStringIfNotNull();
+        }
+
+        public void setValueLongList(String object) {
+            row.setValue(index, new LongList(object));
+        }
+
+        public String getValueFloatList() {
+            return convertToStringIfNotNull();
+        }
+
+        public void setValueFloatList(String object) {
+            row.setValue(index, new FloatList(object));
+        }
+
+        public String getValueDoubleList() {
+            return convertToStringIfNotNull();
+        }
+
+        public void setValueDoubleList(String object) {
+            row.setValue(index, new DoubleList(object));
+        }
+
+        public String getValueBooleanList() {
+            return convertToStringIfNotNull();
+        }
+
+        public void setValueBooleanList(String object) {
+            row.setValue(index, new BooleanList(object));
+        }
+
+        public String getValueCharacterList() {
+            return convertToStringIfNotNull();
+        }
+
+        public void setValueCharacterList(String object) {
+            row.setValue(index, new CharacterList(object));
+        }
+
+        public String getValueStringList() {
+            return convertToStringIfNotNull();
+        }
+
+        public void setValueStringList(String object) {
+            row.setValue(index, new StringList(object));
+        }
+
+        public String getValueBigIntegerList() {
+            return convertToStringIfNotNull();
+        }
+
+        public void setValueBigIntegerList(String object) {
+            row.setValue(index, new BigIntegerList(object));
+        }
+
+        public String getValueBigDecimalList() {
+            return convertToStringIfNotNull();
+        }
+
+        public void setValueBigDecimalList(String object) {
+            row.setValue(index, new BigDecimalList(object));
         }
     }
 }

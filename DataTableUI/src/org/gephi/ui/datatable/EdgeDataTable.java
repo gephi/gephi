@@ -282,7 +282,12 @@ public class EdgeDataTable {
         }
 
         public Class getColumnClass() {
-            return column.getType().getType();
+            Class clazz = column.getType().getType();
+            if (clazz == Character.class) {
+                return String.class;//The table implementation does not allow to edit Character cells. Treat them as Strings.
+            } else {
+                return clazz;
+            }
         }
 
         public String getColumnName() {
@@ -294,7 +299,17 @@ public class EdgeDataTable {
         }
 
         public void setValueFor(Edge edge, Object value) {
+            if (column.getType().getType() == Character.class) {
+                //The table implementation does not allow to edit Character cells. Treat them as Strings and use first character of them:
+                String str = (String) value;
+                if (str != null && str.length() > 0) {
+                    value = new Character(str.charAt(0));
+                } else {
+                    value = null;
+                }
+            }
             edge.getEdgeData().getAttributes().setValue(column.getIndex(), value);
+
         }
 
         public boolean isEditable() {

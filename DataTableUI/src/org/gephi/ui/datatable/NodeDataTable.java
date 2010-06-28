@@ -297,7 +297,12 @@ public class NodeDataTable {
         }
 
         public Class getColumnClass() {
-            return column.getType().getType();
+            Class clazz = column.getType().getType();
+            if (clazz == Character.class) {
+                return String.class;//The table implementation does not allow to edit Character cells. Treat them as Strings.
+            } else {
+                return clazz;
+            }
         }
 
         public String getColumnName() {
@@ -314,6 +319,15 @@ public class NodeDataTable {
 
         public void setValueFor(ImmutableTreeNode node, Object value) {
             Node graphNode = node.getNode();
+            if (column.getType().getType() == Character.class) {
+                //The table implementation does not allow to edit Character cells. Treat them as Strings and use first character of them:
+                String str = (String) value;
+                if (str != null && str.length() > 0) {
+                    value = new Character(str.charAt(0));
+                } else {
+                    value = null;
+                }
+            }
             graphNode.getNodeData().getAttributes().setValue(column.getIndex(), value);
         }
 
