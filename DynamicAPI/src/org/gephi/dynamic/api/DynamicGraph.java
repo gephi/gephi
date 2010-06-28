@@ -21,13 +21,8 @@
 package org.gephi.dynamic.api;
 
 import org.gephi.data.attributes.api.Estimator;
-import org.gephi.data.attributes.type.DynamicType;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 
 /**
@@ -35,57 +30,7 @@ import org.gephi.graph.api.Node;
  *
  * @author Cezary Bartosiak
  */
-public class DynamicGraph {
-	private static final String DYNAMIC_RANGE = "dynamicrange";
-
-	private GraphModel model;
-	private GraphView  view;
-	private double     low;
-	private double     high;
-
-	/**
-	 * Constructs a new {@code DynamicGraph} that wraps a given {@code Graph}.
-	 * The time interval is [{@code -infinity}, {@code +infinity}].
-	 *
-	 * @param graph wrapped {@code Graph}
-	 */
-	public DynamicGraph(Graph graph) {
-		this(graph, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-	}
-
-	/**
-	 * Constructs a new {@code DynamicGraph} that wraps a given {@code Graph}
-	 * and a time interval [{@code low}, {@code high}].
-	 *
-	 * @param graph wrapped {@code Graph}
-	 *
-	 * @throws IllegalArgumentException if {@code low} > {@code high}.
-	 */
-	public DynamicGraph(Graph graph, double low, double high) {
-		if (low > high)
-			throw new IllegalArgumentException(
-					"The left endpoint of the interval must be less than " +
-					"the right endpoint.");
-
-		model = graph.getGraphModel();
-		view  = model.newView();
-
-		this.low  = low;
-		this.high = high;
-
-		Graph vgraph = model.getGraph(view);
-		for (Node n : vgraph.getNodes()) {
-			TimeInterval ti = (TimeInterval)n.getNodeData().getAttributes().getValue(DYNAMIC_RANGE);
-			if (!ti.isInRange(low, high))
-				vgraph.removeNode(n);
-		}
-		for (Edge e : vgraph.getEdges()) {
-			TimeInterval ti = (TimeInterval)e.getEdgeData().getAttributes().getValue(DYNAMIC_RANGE);
-			if (!ti.isInRange(low, high))
-				vgraph.removeEdge(e);
-		}
-	}
-
+public interface DynamicGraph {
 	/**
 	 * Returns values of attributes of the given {@code Node} in the given
 	 * {@code point} of time using {@code Estimator.FIRST} for each dynamic
@@ -101,13 +46,7 @@ public class DynamicGraph {
 	 * @throws IllegalArgumentException if {@code point} is out of range
 	 *                                  wrapped by this {@code DynamicGraph}.
 	 */
-	public Object[] getAttributesValues(Node node, double point) {
-		int count = node.getNodeData().getAttributes().countValues();
-		Estimator[] estimators = new Estimator[count];
-		for (int i = 0; i < count; ++i)
-			estimators[i] = Estimator.FIRST;
-		return getAttributesValues(node, point, estimators);
-	}
+	public Object[] getAttributesValues(Node node, double point);
 
 	/**
 	 * Returns values of attributes of the given {@code Node} in the given
@@ -130,10 +69,7 @@ public class DynamicGraph {
 	 * @throws IllegalArgumentException if the length of the {@code estimators}
 	 *                                  table differ from the count of attributes.
 	 */
-	public Object[] getAttributesValues(Node node, double point, Estimator[] estimators) {
-		checkPoint(point);
-		return getAttributesValues(node, point, point, estimators);
-	}
+	public Object[] getAttributesValues(Node node, double point, Estimator[] estimators);
 
 	/**
 	 * Returns values of attributes of the given {@code Node} in the given
@@ -152,13 +88,7 @@ public class DynamicGraph {
 	 *                                  time interval [{@code low}, {@code high}]
 	 *                                  is out of range wrapped by this DynamicGraph.
 	 */
-	public Object[] getAttributesValues(Node node, double low, double high) {
-		int count = node.getNodeData().getAttributes().countValues();
-		Estimator[] estimators = new Estimator[count];
-		for (int i = 0; i < count; ++i)
-			estimators[i] = Estimator.FIRST;
-		return getAttributesValues(node, low, high, estimators);
-	}
+	public Object[] getAttributesValues(Node node, double low, double high);
 
 	/**
 	 * Returns values of attributes of the given {@code Node} in the given
@@ -183,21 +113,7 @@ public class DynamicGraph {
 	 * @throws IllegalArgumentException if the length of the {@code estimators}
 	 *                                  table differ from the count of attributes.
 	 */
-	public Object[] getAttributesValues(Node node, double low, double high, Estimator[] estimators) {
-		checkLowHigh(low, high);
-		checkEstimators(node, estimators);
-
-		Attributes attributes = node.getNodeData().getAttributes();
-		Object[]   values     = new Object[attributes.countValues()];
-
-		for (int i = 0; i < attributes.countValues(); ++i) {
-			values[i] = attributes.getValue(i);
-			if (values[i] instanceof DynamicType)
-				values[i] = ((DynamicType)values[i]).getValue(estimators[i]);
-		}
-
-		return values;
-	}
+	public Object[] getAttributesValues(Node node, double low, double high, Estimator[] estimators);
 
 	/**
 	 * Returns values of attributes of the given {@code Edge} in the given
@@ -214,13 +130,7 @@ public class DynamicGraph {
 	 * @throws IllegalArgumentException if {@code point} is out of range
 	 *                                  wrapped by this {@code DynamicGraph}.
 	 */
-	public Object[] getAttributesValues(Edge edge, double point) {
-		int count = edge.getEdgeData().getAttributes().countValues();
-		Estimator[] estimators = new Estimator[count];
-		for (int i = 0; i < count; ++i)
-			estimators[i] = Estimator.FIRST;
-		return getAttributesValues(edge, point, estimators);
-	}
+	public Object[] getAttributesValues(Edge edge, double point);
 
 	/**
 	 * Returns values of attributes of the given {@code Edge} in the given
@@ -243,10 +153,7 @@ public class DynamicGraph {
 	 * @throws IllegalArgumentException if the length of the {@code estimators}
 	 *                                  table differ from the count of attributes.
 	 */
-	public Object[] getAttributesValues(Edge edge, double point, Estimator[] estimators) {
-		checkPoint(point);
-		return getAttributesValues(edge, point, point, estimators);
-	}
+	public Object[] getAttributesValues(Edge edge, double point, Estimator[] estimators);
 
 	/**
 	 * Returns values of attributes of the given {@code Edge} in the given
@@ -265,13 +172,7 @@ public class DynamicGraph {
 	 *                                  time interval [{@code low}, {@code high}]
 	 *                                  is out of range wrapped by this DynamicGraph.
 	 */
-	public Object[] getAttributesValues(Edge edge, double low, double high) {
-		int count = edge.getEdgeData().getAttributes().countValues();
-		Estimator[] estimators = new Estimator[count];
-		for (int i = 0; i < count; ++i)
-			estimators[i] = Estimator.FIRST;
-		return getAttributesValues(edge, low, high, estimators);
-	}
+	public Object[] getAttributesValues(Edge edge, double low, double high);
 
 	/**
 	 * Returns values of attributes of the given {@code Edge} in the given
@@ -296,21 +197,7 @@ public class DynamicGraph {
 	 * @throws IllegalArgumentException if the length of the {@code estimators}
 	 *                                  table differ from the count of attributes.
 	 */
-	public Object[] getAttributesValues(Edge edge, double low, double high, Estimator[] estimators) {
-		checkLowHigh(low, high);
-		checkEstimators(edge, estimators);
-
-		Attributes attributes = edge.getEdgeData().getAttributes();
-		Object[]   values     = new Object[attributes.countValues()];
-
-		for (int i = 0; i < attributes.countValues(); ++i) {
-			values[i] = attributes.getValue(i);
-			if (values[i] instanceof DynamicType)
-				values[i] = ((DynamicType)values[i]).getValue(estimators[i]);
-		}
-
-		return values;
-	}
+	public Object[] getAttributesValues(Edge edge, double low, double high, Estimator[] estimators);
 
 	/**
 	 * Returns the left endpoint of the time interval wrapped by this
@@ -319,9 +206,7 @@ public class DynamicGraph {
 	 * @return the left endpoint of the time interval wrapped by this
 	 *         {@code DynamicGraph}.
 	 */
-	public double getLow() {
-		return low;
-	}
+	public double getLow();
 
 	/**
 	 * Returns the right endpoint of the time interval wrapped by this
@@ -330,9 +215,7 @@ public class DynamicGraph {
 	 * @return the right endpoint of the time interval wrapped by this
 	 *         {@code DynamicGraph}.
 	 */
-	public double getHigh() {
-		return high;
-	}
+	public double getHigh();
 
 	/**
 	 * Returns a "snapshot graph", i.e. a graph for the given point of time.
@@ -347,9 +230,7 @@ public class DynamicGraph {
 	 * @throws IllegalArgumentException if {@code point} is out of range
 	 *                                  wrapped by this {@code DynamicGraph}.
 	 */
-	public Graph getSnapshotGraph(double point) {
-		return getSnapshotGraph(point, Estimator.FIRST);
-	}
+	public Graph getSnapshotGraph(double point);
 
 	/**
 	 * Returns a "snapshot graph", i.e. a graph for the given point of time
@@ -365,10 +246,7 @@ public class DynamicGraph {
 	 * @throws IllegalArgumentException if {@code point} is out of range
 	 *                                  wrapped by this {@code DynamicGraph}.
 	 */
-	public Graph getSnapshotGraph(double point, Estimator estimator) {
-		checkPoint(point);
-		return getSnapshotGraph(point, point, estimator);
-	}
+	public Graph getSnapshotGraph(double point, Estimator estimator);
 
 	/**
 	 * Returns a "snapshot graph", i.e. a graph for the given time interval.
@@ -385,9 +263,7 @@ public class DynamicGraph {
 	 *                                  time interval [{@code low}, {@code high}]
 	 *                                  is out of range wrapped by this DynamicGraph.
 	 */
-	public Graph getSnapshotGraph(double low, double high) {
-		return getSnapshotGraph(low, high, Estimator.FIRST);
-	}
+	public Graph getSnapshotGraph(double low, double high);
 
 	/**
 	 * Returns a "snapshot graph", i.e. a graph for the given time interval
@@ -405,26 +281,7 @@ public class DynamicGraph {
 	 *                                  time interval [{@code low}, {@code high}]
 	 *                                  is out of range wrapped by this DynamicGraph.
 	 */
-	public Graph getSnapshotGraph(double low, double high, Estimator estimator) {
-		checkLowHigh(low, high);
-		Graph graph  = model.getGraph();
-		Graph vgraph = model.getGraph(view);
-		for (Node n : graph.getNodes()) {
-			TimeInterval ti = (TimeInterval)n.getNodeData().getAttributes().getValue(DYNAMIC_RANGE);
-			if (ti.getValue(low, high, estimator) == null && vgraph.contains(n))
-				vgraph.removeNode(n);
-			else if (ti.getValue(low, high, estimator) != null && !vgraph.contains(n))
-				vgraph.addNode(n);
-		}
-		for (Edge e : graph.getEdges()) {
-			TimeInterval ti = (TimeInterval)e.getEdgeData().getAttributes().getValue(DYNAMIC_RANGE);
-			if (ti.getValue(low, high, estimator) == null && vgraph.contains(e))
-				vgraph.removeEdge(e);
-			else if (ti.getValue(low, high, estimator) != null && !vgraph.contains(e))
-				vgraph.addEdge(e);
-		}
-		return vgraph;
-	}
+	public Graph getSnapshotGraph(double low, double high, Estimator estimator);
 
 	/**
 	 * Returns a "weak snapshot graph", i.e. a graph for the given point of
@@ -438,10 +295,7 @@ public class DynamicGraph {
 	 * @throws IllegalArgumentException if {@code point} is out of range
 	 *                                  wrapped by this {@code DynamicGraph}.
 	 */
-	public Graph getWeakSnapshotGraph(double point) {
-		checkPoint(point);
-		return getWeakSnapshotGraph(point, point);
-	}
+	public Graph getWeakSnapshotGraph(double point);
 
 	/**
 	 * Returns a "weak snapshot graph", i.e. a graph for the given time interval.
@@ -458,26 +312,7 @@ public class DynamicGraph {
 	 *                                  time interval [{@code low}, {@code high}]
 	 *                                  is out of range wrapped by this DynamicGraph.
 	 */
-	public Graph getWeakSnapshotGraph(double low, double high) {
-		checkLowHigh(low, high);
-		Graph graph  = model.getGraph();
-		Graph vgraph = model.getGraph(view);
-		for (Node n : graph.getNodes()) {
-			TimeInterval ti = (TimeInterval)n.getNodeData().getAttributes().getValue(DYNAMIC_RANGE);
-			if (ti.getValues(low, high).isEmpty() && vgraph.contains(n))
-				vgraph.removeNode(n);
-			else if (!ti.getValues(low, high).isEmpty() && !vgraph.contains(n))
-				vgraph.addNode(n);
-		}
-		for (Edge e : graph.getEdges()) {
-			TimeInterval ti = (TimeInterval)e.getEdgeData().getAttributes().getValue(DYNAMIC_RANGE);
-			if (ti.getValues(low, high).isEmpty() && vgraph.contains(e))
-				vgraph.removeEdge(e);
-			else if (!ti.getValues(low, high).isEmpty() && !vgraph.contains(e))
-				vgraph.addEdge(e);
-		}
-		return vgraph;
-	}
+	public Graph getWeakSnapshotGraph(double low, double high);
 
 	/**
 	 * Returns a "strong snapshot graph", i.e. a graph for the given point of
@@ -491,10 +326,7 @@ public class DynamicGraph {
 	 * @throws IllegalArgumentException if {@code point} is out of range
 	 *                                  wrapped by this {@code DynamicGraph}.
 	 */
-	public Graph getStrongSnapshotGraph(double point) {
-		checkPoint(point);
-		return getStrongSnapshotGraph(point, point);
-	}
+	public Graph getStrongSnapshotGraph(double point);
 
 	/**
 	 * Returns a "strong snapshot graph", i.e. a graph for the given time interval.
@@ -511,106 +343,12 @@ public class DynamicGraph {
 	 *                                  time interval [{@code low}, {@code high}]
 	 *                                  is out of range wrapped by this DynamicGraph.
 	 */
-	public Graph getStrongSnapshotGraph(double low, double high) {
-		checkLowHigh(low, high);
-		Graph graph  = model.getGraph();
-		Graph vgraph = model.getGraph(view);
-		for (Node n : graph.getNodes()) {
-			TimeInterval ti = (TimeInterval)n.getNodeData().getAttributes().getValue(DYNAMIC_RANGE);
-			if (ti.getValues(low, high).size() < ti.getValues().size() && vgraph.contains(n))
-				vgraph.removeNode(n);
-			else if (ti.getValues(low, high).size() == ti.getValues().size() && !vgraph.contains(n))
-				vgraph.addNode(n);
-		}
-		for (Edge e : graph.getEdges()) {
-			TimeInterval ti = (TimeInterval)e.getEdgeData().getAttributes().getValue(DYNAMIC_RANGE);
-			if (ti.getValues(low, high).size() < ti.getValues().size() && vgraph.contains(e))
-				vgraph.removeEdge(e);
-			else if (ti.getValues(low, high).size() == ti.getValues().size() && !vgraph.contains(e))
-				vgraph.addEdge(e);
-		}
-		return vgraph;
-	}
+	public Graph getStrongSnapshotGraph(double low, double high);
 
 	/**
 	 * Returns the wrapped graph.
 	 *
 	 * @return the wrapped graph.
 	 */
-	public Graph getUnderlyingGraph() {
-		return model.getGraph();
-	}
-
-	private void checkPoint(double point) {
-		if (point < low || point > high)
-			throw new IllegalArgumentException(
-					"The point cannot be out of range " +
-					"wrapped by this DynamicGraph");
-	}
-
-	private void checkLowHigh(double low, double high) {
-		if (low > high)
-			throw new IllegalArgumentException(
-					"The left endpoint of the interval must be less than " +
-					"the right endpoint.");
-		if (high < this.low || low > this.high)
-			throw new IllegalArgumentException(
-					"The time interval [low, high] cannot be out of range " +
-					"wrapped by this DynamicGraph");
-	}
-
-	private void checkEstimators(Node node, Estimator[] estimators) {
-		int count = node.getNodeData().getAttributes().countValues();
-		if (count != estimators.length)
-			throw new IllegalArgumentException(
-					"The length of the estimators table must be the same as " +
-					"the count of attributes.");
-	}
-
-	private void checkEstimators(Edge edge, Estimator[] estimators) {
-		int count = edge.getEdgeData().getAttributes().countValues();
-		if (count != estimators.length)
-			throw new IllegalArgumentException(
-					"The length of the estimators table must be the same as " +
-					"the count of attributes.");
-	}
-
-	/**
-	 * Compares this instance with the specified object for equality.
-	 *
-	 * @param obj object to which this instance is to be compared
-	 *
-	 * @return {@code true} if and only if the specified {@code Object} is a
-	 *         {@code DynamicGraph} which has the 'equal' graph.
-	 *
-     * @see #hashCode
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (obj != null && obj.getClass().equals(this.getClass()) &&
-				((DynamicGraph)obj).model.getGraph().equals(model.getGraph()))
-			return true;
-		return false;
-	}
-
-	/**
-	 * Returns a hashcode of this instance.
-	 *
-	 * @return a hashcode of this instance.
-	 */
-	@Override
-	public int hashCode() {
-		return model.getGraph().hashCode();
-	}
-
-	/**
-	 * Returns a string representation of this instance in a format
-	 * provided by the underlying graph.
-	 *
-	 * @return a string representation of this instance.
-	 */
-	@Override
-	public String toString() {
-		return model.getGraph().toString();
-	}
+	public Graph getUnderlyingGraph();
 }
