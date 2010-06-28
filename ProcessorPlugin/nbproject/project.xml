@@ -63,7 +63,9 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>org.gephi.io.processor.plugin</package>
+            </public-packages>
         </data>
     </configuration>
 </project>
