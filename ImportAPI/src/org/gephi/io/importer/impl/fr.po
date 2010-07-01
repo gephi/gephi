@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-05-11 04:23+0000\n"
+"X-Launchpad-Export-Date: 2010-07-01 03:46+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "ImportContainerException_nodeExist"
@@ -53,3 +53,24 @@ msgstr "Poids du lien 0 ou négatif, le lien id=''{0}'' est ignoré"
 
 msgid "ImportContainerException_Weight_Zero"
 msgstr "Poids du lien 0 ou négatif, le lien est peut être invisible"
+
+msgid "ImportControllerImpl.error_no_matching_file_importer"
+msgstr ""
+
+msgid "ImportControllerImpl.error_no_matching_stream_importer"
+msgstr ""
+
+msgid "ImportControllerImpl.error_no_matching_db_importer"
+msgstr ""
+
+msgid "ImportControllerImpl.error_file_not_found"
+msgstr ""
+
+msgid "ImportControllerImpl.error_missing_document_instance_factory"
+msgstr ""
+
+msgid "ImportControllerImpl.error_io"
+msgstr ""
+
+msgid "ImportControllerImpl.error_sax"
+msgstr ""
