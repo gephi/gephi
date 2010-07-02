@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -86,6 +88,21 @@ public class AttributesControllerImpl implements AttributesController {
         for (Attributes attributes : getTableAttributeRows(table)) {
             attributes.setValue(columnIndex, null);
         }
+    }
+
+    public Map<Object,Integer> calculateColumnValuesFrequencies(AttributeTable table,AttributeColumn column){
+        Map<Object,Integer> valuesFrequencies=new HashMap<Object, Integer>();
+        Object value;
+        for(Attributes attributes:getTableAttributeRows(table)){
+            value=attributes.getValue(column.getIndex());
+            if(valuesFrequencies.containsKey(value)){
+                valuesFrequencies.put(value, new Integer(valuesFrequencies.get(value)+1));
+            }else{
+                valuesFrequencies.put(value, new Integer(1));
+            }
+        }
+
+        return valuesFrequencies;
     }
 
     public void clearNodeData(Node node) {

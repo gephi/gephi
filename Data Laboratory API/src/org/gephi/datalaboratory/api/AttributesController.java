@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.api;
 
+import java.util.Map;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
@@ -69,6 +70,14 @@ public interface AttributesController {
      * @param column Column to clear data
      */
     void clearColumnData(AttributeTable table, AttributeColumn column);
+
+    /**
+     * Calculates the frequency of appearance of each value of the given column.
+     * @param table Table of the column
+     * @param column Column to calculate values frequencies
+     * @return Map containing each different value mapped to its frequency of appearance
+     */
+    Map<Object,Integer> calculateColumnValuesFrequencies(AttributeTable table,AttributeColumn column);
 
     /**
      * Clears all node attributes except computed attributes and id, checking first that the node is in the graph.
