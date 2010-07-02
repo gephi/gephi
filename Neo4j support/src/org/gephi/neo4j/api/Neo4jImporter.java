@@ -1,7 +1,7 @@
 package org.gephi.neo4j.api;
 
 
-import java.io.File;
+import org.neo4j.graphdb.GraphDatabaseService;
 
 
 /**
@@ -15,21 +15,8 @@ public interface Neo4jImporter {
      *
      * @param neo4jDirectory Neo4j directory
      */
-    void importLocal(File neo4jDirectory);
 
-    /**
-     * Imports data from remote Neo4j database.
-     * 
-     * @param resourceURI URI of the remote Neo4j database
-     */
-    void importRemote(String resourceURI);
+    void importDatabase(GraphDatabaseService graphDB);
 
-    /**
-     * Imports data from remote Neo4j database.
-     * 
-     * @param resourceURI URI of the remote Neo4j database
-     * @param login       login
-     * @param password    password
-     */
-    void importRemote(String resourceURI, String login, String password);
+    void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth);
 }

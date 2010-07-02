@@ -8,8 +8,10 @@
             <module-dependencies/>
             <public-packages>
                 <package>org.neo4j.graphdb</package>
+                <package>org.neo4j.graphdb.traversal</package>
+                <package>org.neo4j.index</package>
+                <package>org.neo4j.index.lucene</package>
                 <package>org.neo4j.kernel</package>
-                <package>org.neo4j.kernel.impl.batchinsert</package>
                 <package>org.neo4j.kernel.management</package>
                 <package>org.neo4j.remote</package>
             </public-packages>
@@ -22,8 +24,16 @@
                 <binary-origin>release/modules/ext/neo4j-remote-graphdb-0.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/neo4j-kernel-1.1-20100618.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/neo4j-kernel-1.1-20100618.jar</binary-origin>
+                <runtime-relative-path>ext/neo4j-kernel-1.1-20100702.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/neo4j-kernel-1.1-20100702.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/neo4j-index-1.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/neo4j-index-1.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lucene-core-2.9.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lucene-core-2.9.1.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

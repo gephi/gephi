@@ -8,10 +8,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.gephi.desktop.neo4j.ui.RemoteDatabasePanel;
+import org.gephi.desktop.neo4j.ui.TraversalPanel;
+import org.gephi.desktop.neo4j.ui.util.Neo4jUtils;
 import org.gephi.neo4j.api.Neo4jExporter;
 import org.gephi.neo4j.api.Neo4jImporter;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.spi.LongTask;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
@@ -24,6 +27,8 @@ import org.openide.util.actions.CallableSystemAction;
  * @author Martin Škurla
  */
 public class Neo4jImportExportAction extends CallableSystemAction {
+    private GraphDatabaseService graphDB;
+
     @Override
     public void performAction() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -55,18 +60,35 @@ public class Neo4jImportExportAction extends CallableSystemAction {
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
                 int dialogResult = fileChooser.showOpenDialog(null);
+                if (dialogResult == JFileChooser.CANCEL_OPTION)
+                    return;
 
-                if (dialogResult == JFileChooser.APPROVE_OPTION) {
-                    final File neo4jDirectory = fileChooser.getSelectedFile();
-                    final Neo4jImporter neo4jImporter = Lookup.getDefault().lookup(Neo4jImporter.class);
+                final File neo4jDirectory = fileChooser.getSelectedFile();
+                if (graphDB != null)
+                    graphDB.shutdown();
 
-                    LongTaskExecutor executor = new LongTaskExecutor(true);
-                    executor.execute((LongTask) neo4jImporter, new Runnable() {
-                        @Override
-                        public void run() {
-                            neo4jImporter.importLocal(neo4jDirectory);
-                        }
-                    });
+                graphDB = Neo4jUtils.localDatabase(neo4jDirectory);
+
+                String traversalDialogTitle = NbBundle.getMessage(Neo4jImportExportAction.class, "CTL_Neo4j_TraversalDialogTitle");
+                final TraversalPanel traversalPanel = new TraversalPanel(graphDB);
+                ValidationPanel validationPanel = traversalPanel.createValidationPanel();
+
+                if (validationPanel.showOkCancelDialog(traversalDialogTitle)) {
+                    if (dialogResult == JFileChooser.APPROVE_OPTION) {
+                        final Neo4jImporter neo4jImporter = Lookup.getDefault().lookup(Neo4jImporter.class);
+
+                        LongTaskExecutor executor = new LongTaskExecutor(true);
+                        executor.execute((LongTask) neo4jImporter, new Runnable() {
+
+                            @Override
+                            public void run() {
+                                neo4jImporter.importDatabase(graphDB,
+                                                             traversalPanel.getStartNodeId(),
+                                                             traversalPanel.getOrder(),
+                                                             traversalPanel.getMaxDepth());
+                            }
+                        });
+                    }
                 }
 
                 Neo4jCustomDirectoryProvider.setEnabled(false);
@@ -103,19 +125,24 @@ public class Neo4jImportExportAction extends CallableSystemAction {
         JMenuItem remoteImport = new JMenuItem(new AbstractAction(remoteImportMessage) {
             public void actionPerformed(ActionEvent e) {
                 final RemoteDatabasePanel databasePanel = new RemoteDatabasePanel();
-                final ValidationPanel panel = RemoteDatabasePanel.createValidationPanel(databasePanel);
+                final ValidationPanel validationPanel = RemoteDatabasePanel.createValidationPanel(databasePanel);
                 String remoteImportDialogTitle = NbBundle.getMessage(Neo4jImportExportAction.class, "CTL_Neo4j_RemoteImportDialogTitle");
 
-                if (panel.showOkCancelDialog(remoteImportDialogTitle)) {
+                if (validationPanel.showOkCancelDialog(remoteImportDialogTitle)) {
                     final Neo4jImporter neo4jImporter = Lookup.getDefault().lookup(Neo4jImporter.class);
 
                     LongTaskExecutor executor = new LongTaskExecutor(true);
                     executor.execute((LongTask) neo4jImporter, new Runnable() {
                         @Override
                         public void run() {
-                            neo4jImporter.importRemote(databasePanel.getRemoteUrl(),
-                                                       databasePanel.getLogin(),
-                                                       databasePanel.getPassword());
+                            if (graphDB != null)
+                                graphDB.shutdown();
+
+                            graphDB = Neo4jUtils.remoteDatabase(databasePanel.getRemoteUrl(),
+                                                                databasePanel.getLogin(),
+                                                                databasePanel.getPassword());
+                                    
+                            neo4jImporter.importDatabase(graphDB);
                         }
                     });
                 }
@@ -126,10 +153,10 @@ public class Neo4jImportExportAction extends CallableSystemAction {
         JMenuItem remoteExport = new JMenuItem(new AbstractAction(remoteExportMessage) {
             public void actionPerformed(ActionEvent e) {
                 final RemoteDatabasePanel databasePanel = new RemoteDatabasePanel();
-                final ValidationPanel panel = RemoteDatabasePanel.createValidationPanel(databasePanel);
+                final ValidationPanel validationPanel = RemoteDatabasePanel.createValidationPanel(databasePanel);
                 String remoteExportDialogTitle = NbBundle.getMessage(Neo4jImportExportAction.class, "CTL_Neo4j_RemoteExportDialogTitle");
 
-                if (panel.showOkCancelDialog(remoteExportDialogTitle)) {
+                if (validationPanel.showOkCancelDialog(remoteExportDialogTitle)) {
                     final Neo4jExporter neo4jExporter = Lookup.getDefault().lookup(Neo4jExporter.class);
 
                     LongTaskExecutor executor = new LongTaskExecutor(true);

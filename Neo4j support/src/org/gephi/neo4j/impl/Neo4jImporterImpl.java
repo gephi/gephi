@@ -1,20 +1,24 @@
 package org.gephi.neo4j.impl;
 
 
-import java.io.File;
-import java.net.URISyntaxException;
 import org.gephi.neo4j.api.Neo4jImporter;
+import org.gephi.neo4j.api.TraversalOrder;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.kernel.EmbeddedGraphDatabase;
+import org.neo4j.graphdb.traversal.PruneEvaluator;
+import org.neo4j.graphdb.traversal.TraversalDescription;
+import org.neo4j.graphdb.traversal.Traverser;
+import org.neo4j.kernel.TraversalFactory;
 import org.neo4j.remote.RemoteGraphDatabase;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 
@@ -22,6 +26,7 @@ import org.openide.util.lookup.ServiceProvider;
 public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     private GraphDatabaseService graphDB;
     private GraphModelConvertor graphModelConvertor;
+    private Traverser traverser;
     
     private ProgressTicket progressTicket;
     private boolean cancelImport;
@@ -40,35 +45,33 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     }
 
     @Override
-    public void importLocal(File neo4jDirectory) {
-        progressTicket.setDisplayName("Importing data from local Neo4j database");
+    public void importDatabase(GraphDatabaseService graphDB) {
+        importDatabase(graphDB, -1, TraversalOrder.DEPTH_FIRST, Integer.MAX_VALUE);
+    }
+
+    @Override
+    public void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth) {
+        this.graphDB = graphDB;
+
+        String longTaskMessage = (graphDB instanceof RemoteGraphDatabase)
+                ? NbBundle.getMessage(Neo4jImporterImpl.class, "CTL_Neo4j_RemoteImportMessage")
+                : NbBundle.getMessage(Neo4jImporterImpl.class, "CTL_Neo4j_LocalImportMessage");
+
+        progressTicket.setDisplayName(longTaskMessage);
         progressTicket.start();
 
-        graphDB = new EmbeddedGraphDatabase(neo4jDirectory.getAbsolutePath());
+        if (startNodeId != -1) {
+            TraversalDescription traversalDescription = TraversalFactory.createTraversalDescription();
+            PruneEvaluator pruneEvaluator = TraversalFactory.pruneAfterDepth(maxDepth);
+
+            traversalDescription = order.update(traversalDescription);
+            traverser = traversalDescription.prune(pruneEvaluator)
+                                            .traverse(graphDB.getNodeById(startNodeId));
+        }
+        else
+             traverser = null;
+
         doImport();
-    }
-
-    @Override
-    public void importRemote(String resourceURI) {
-        importRemote(resourceURI, null, null);
-    }
-
-    @Override
-    public void importRemote(String resourceURI, String login, String password) {
-        progressTicket.setDisplayName("Importing data from remote Neo4j database");
-        progressTicket.start();
-
-        try {
-            if (login == null && password == null)
-                graphDB = new RemoteGraphDatabase(resourceURI);
-            else
-                graphDB = new RemoteGraphDatabase(resourceURI, login, password);
-
-            doImport();
-        }
-        catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
     }
 
     private void doImport() {
@@ -90,14 +93,25 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
 
         graphModelConvertor = GraphModelConvertor.getInstance(graphDB);
 
-        for (org.neo4j.graphdb.Node node : graphDB.getAllNodes()) {
-            for (Relationship relationship : node.getRelationships(Direction.INCOMING)) {
-                if (cancelImport)
-                    return;
+//        if (traverser == null) {
+        Iterable<Node> nodeIterable = (traverser != null) ? traverser.nodes() : graphDB.getAllNodes();
+            for (org.neo4j.graphdb.Node node : nodeIterable) {
+                for (Relationship relationship : node.getRelationships(Direction.INCOMING)) {
+                    if (cancelImport)
+                        return;
 
-                processRelationship(relationship);
+                    processRelationship(relationship);
+                }
             }
-        }
+//        }
+//        else {
+//            for (Relationship relationship : traverser.relationships()) {
+//                if (cancelImport)
+//                    return;
+//
+//                processRelationship(relationship);
+//            }
+//        }
 
         if (!cancelImport)
             showCurrentWorkspace();
