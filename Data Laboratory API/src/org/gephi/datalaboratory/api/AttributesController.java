@@ -35,15 +35,26 @@ public interface AttributesController {
 
     /**
      * ADds a new column to the specified table with the given id, title and type of column.
+     * The id of the column will be set to the number of columns.
      * The AttributeOrigin of the column will be set to DATA.
      * Default column value will be set to null.
      * @param table Table to add the column.
-     * @param id Id for the new column
      * @param title Title for the new column
      * @param type Type for the new column
      * @return The created column
      */
-    AttributeColumn addAttributeColumn(AttributeTable table, String id, String title, AttributeType type);
+    AttributeColumn addAttributeColumn(AttributeTable table, String title, AttributeType type);
+
+    /**
+     * Duplicates a given column of a table and copies al row values.
+     * If the AttributeType for the new column is different from the old column, it will try to parse each value. If it is not possible, the value will be set to null.
+     * @param table Table of the column to duplicate
+     * @param column Column to duplicate
+     * @param title Title for the new column
+     * @param type AttributeType for the new column
+     * @return The created column
+     */
+    AttributeColumn duplicateColumn(AttributeTable table, AttributeColumn column, String title, AttributeType type);
 
     /**
      * Deletes a specified column from a table if the table has the column.

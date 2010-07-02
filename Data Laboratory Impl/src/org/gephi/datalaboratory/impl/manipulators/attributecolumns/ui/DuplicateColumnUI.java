@@ -18,66 +18,59 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.general.actions;
+package org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui;
 
-import org.gephi.data.attributes.api.AttributeController;
+import javax.swing.JPanel;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.datalaboratory.api.AttributesController;
-import org.openide.util.Lookup;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.DuplicateColumn;
+import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
+import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * UI for DuplicateColumn AttributeColumnsManipulator.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class AddColumnPanel extends javax.swing.JPanel {
+public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI{
+    private DuplicateColumn manipulator;
     private AttributeType[] availableTypes;
-    private AttributeTable table;
 
-    public enum Mode{
-        NODES_TABLE,EDGES_TABLE;
-    }
-
-    /** Creates new form AddColumnPanel */
-    public AddColumnPanel() {
+    /** Creates new form DuplicateColumnUI */
+    public DuplicateColumnUI() {
         initComponents();
     }
 
-    public String getDisplayName(){
-        return NbBundle.getMessage(AddColumnPanel.class, "AddColumnPanel.title");
-    }
+    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column) {
+        this.manipulator=(DuplicateColumn) m;
 
-    /**
-     * Setup the mode of column creation: nodes table or edges table.
-     * @param mode Mode
-     */
-    public void setup(Mode mode){
-        AttributeController ac=Lookup.getDefault().lookup(AttributeController.class);
-        //Set description text for the mode of column creation:
-        switch(mode){
-            case NODES_TABLE:
-                descriptionLabel.setText(NbBundle.getMessage(AddColumnPanel.class, "AddColumnPanel.descriptionLabel.text.nodes"));
-                table=ac.getModel().getNodeTable();
-                break;
-            case EDGES_TABLE:
-                descriptionLabel.setText(NbBundle.getMessage(AddColumnPanel.class, "AddColumnPanel.descriptionLabel.text.edges"));
-                table=ac.getModel().getEdgeTable();
-                break;
-        }
-        
+        descriptionLabel.setText(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.descriptionLabel.text", column.getTitle()));
+        titleTextField.setText(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.new.title", column.getTitle()));
 
         availableTypes=AttributeType.values();
-        for(AttributeType type:availableTypes){
+        int oldColumnTypeIndex=0;
+        for (int i = 0; i < availableTypes.length; i++) {
+            AttributeType type = availableTypes[i];     
             typeComboBox.addItem(type.getTypeString());
+            if(type==column.getType()){
+                oldColumnTypeIndex=i;
+            }
         }
+        typeComboBox.setSelectedIndex(oldColumnTypeIndex);
     }
 
-    /**
-     * Execute the creation of the column, with the given parameters in setup and with the interface itself.
-     */
-    public void execute(){
-        Lookup.getDefault().lookup(AttributesController.class).addAttributeColumn(table, titleTextField.getText(), availableTypes[typeComboBox.getSelectedIndex()]);
+    public void unSetup() {
+        manipulator.setColumnType(availableTypes[typeComboBox.getSelectedIndex()]);
+        manipulator.setTitle(titleTextField.getText());
+    }
+
+    public String getDisplayName() {
+        return manipulator.getName();
+    }
+
+    public JPanel getSettingsPanel() {
+        return this;
     }
 
     /** This method is called from within the constructor to
@@ -89,34 +82,34 @@ public class AddColumnPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        descriptionLabel = new javax.swing.JLabel();
         titleLabel = new javax.swing.JLabel();
         titleTextField = new javax.swing.JTextField();
         typeLabel = new javax.swing.JLabel();
         typeComboBox = new javax.swing.JComboBox();
+        descriptionLabel = new javax.swing.JLabel();
+
+        titleLabel.setText(org.openide.util.NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.titleLabel.text")); // NOI18N
+
+        titleTextField.setText(org.openide.util.NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.titleTextField.text")); // NOI18N
+
+        typeLabel.setText(org.openide.util.NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.typeLabel.text")); // NOI18N
 
         descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setText(null);
-
-        titleLabel.setText(org.openide.util.NbBundle.getMessage(AddColumnPanel.class, "AddColumnPanel.titleLabel.text")); // NOI18N
-
-        titleTextField.setText(org.openide.util.NbBundle.getMessage(AddColumnPanel.class, "AddColumnPanel.titleTextField.text")); // NOI18N
-
-        typeLabel.setText(org.openide.util.NbBundle.getMessage(AddColumnPanel.class, "AddColumnPanel.typeLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(titleLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(typeLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(typeComboBox, 0, 199, Short.MAX_VALUE)))
@@ -126,8 +119,8 @@ public class AddColumnPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(titleLabel)
                     .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -138,8 +131,6 @@ public class AddColumnPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JLabel titleLabel;

@@ -21,12 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns;
 
 import java.awt.Image;
-import javax.swing.JOptionPane;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.datalaboratory.api.AttributesController;
-import org.gephi.datalaboratory.api.DataTablesController;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.DuplicateColumnUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.openide.util.ImageUtilities;
@@ -35,22 +34,21 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * AttributeColumnsManipulator that deletes a AttributeColumn of a AttributeTable.
- * Only allows to delete columns with DATA AttributeOrigin.
+ * AttributeColumnsManipulator that duplicate a AttributeColumn of a AttributeTable setting the same values for the rows.
+ * Allow the user to select the title and AttributeType of the new column in the UI
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
-public class DeleteColumn implements AttributeColumnsManipulator {
+public class DuplicateColumn implements AttributeColumnsManipulator {
+    private String title;
+    private AttributeType columnType;
 
     public void execute(AttributeTable table, AttributeColumn column) {
-        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearColumnData.class, "ClearColumnData.confirmation.message", column.getTitle()), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            Lookup.getDefault().lookup(AttributesController.class).deleteAttributeColumn(table, column);
-            Lookup.getDefault().lookup(DataTablesController.class).selectTable(table);
-        }
+        Lookup.getDefault().lookup(AttributesController.class).duplicateColumn(table, column, title, columnType);
     }
 
     public String getName() {
-        return NbBundle.getMessage(DeleteColumn.class, "DeleteColumn.name");
+        return NbBundle.getMessage(DuplicateColumn.class, "DuplicateColumn.name");
     }
 
     public String getDescription() {
@@ -58,15 +56,15 @@ public class DeleteColumn implements AttributeColumnsManipulator {
     }
 
     public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
-        return column.getOrigin() == AttributeOrigin.DATA;
+        return true;
     }
 
     public AttributeColumnsManipulatorUI getUI() {
-        return null;
+        return new DuplicateColumnUI();
     }
 
     public int getType() {
-        return 0;
+        return 100;
     }
 
     public int getPosition() {
@@ -74,6 +72,22 @@ public class DeleteColumn implements AttributeColumnsManipulator {
     }
 
     public Image getIcon() {
-        return ImageUtilities.loadImage("org/gephi/datalaboratory/impl/manipulators/resources/table-delete-column.png");
+        return ImageUtilities.loadImage("org/gephi/datalaboratory/impl/manipulators/resources/table-duplicate-column.png");
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public AttributeType getColumnType() {
+        return columnType;
+    }
+
+    public void setColumnType(AttributeType columnType) {
+        this.columnType = columnType;
     }
 }

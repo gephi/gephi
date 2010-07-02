@@ -144,7 +144,7 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                 AttributeColumnsManipulatorUI ui = m.getUI();
                 //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                 if (ui != null) {
-                    ui.setup(m);
+                    ui.setup(m,table,column);
                     JPanel settingsPanel = ui.getSettingsPanel();
                     DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()));
                     if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {

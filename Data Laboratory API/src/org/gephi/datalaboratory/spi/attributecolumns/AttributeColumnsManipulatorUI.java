@@ -22,6 +22,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.spi.attributecolumns;
 
 import javax.swing.JPanel;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeTable;
 
 /**
  * UI AttributeColumnsManipulators can provide.
@@ -32,9 +34,11 @@ public interface AttributeColumnsManipulatorUI {
 
     /**
      * Prepare this UI to be able to interact with its AttributeColumnsManipulator.
-     * @param gem Manipulator for the UI
+     * @param m Manipulator for the UI
+     * @param table Table of the column to manipulate
+     * @param column Column to manipulate
      */
-    void setup(AttributeColumnsManipulator m);
+    void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column);
 
     /**
      * Called when the window is closed or accepted.
