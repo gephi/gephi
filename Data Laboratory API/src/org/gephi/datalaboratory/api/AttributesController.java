@@ -21,9 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.api;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
@@ -80,6 +82,15 @@ public interface AttributesController {
     Map<Object,Integer> calculateColumnValuesFrequencies(AttributeTable table,AttributeColumn column);
 
     /**
+     * 
+     * @param table
+     * @param column
+     * @param newColumnTitle
+     * @param regex
+     */
+    void createBooleanMatchesColumn(AttributeTable table, AttributeColumn column, String newColumnTitle,Pattern pattern);
+
+    /**
      * Clears all node attributes except computed attributes and id, checking first that the node is in the graph.
      * @param node Node to clear data
      */
@@ -102,4 +113,12 @@ public interface AttributesController {
      * @param nodes Array of edges to clear data
      */
     void clearEdgesData(Edge[] edges);
+
+    /**
+     * Returns all rows of a given table.
+     * Used for iterating through all attribute rows of a table
+     * @param table Table to get attribute rows
+     * @return Array of attribute rows of the table
+     */
+    Attributes[] getTableAttributeRows(AttributeTable table);
 }

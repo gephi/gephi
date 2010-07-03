@@ -22,6 +22,8 @@ package org.gephi.datalaboratory.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -90,19 +92,36 @@ public class AttributesControllerImpl implements AttributesController {
         }
     }
 
-    public Map<Object,Integer> calculateColumnValuesFrequencies(AttributeTable table,AttributeColumn column){
-        Map<Object,Integer> valuesFrequencies=new HashMap<Object, Integer>();
+    public Map<Object, Integer> calculateColumnValuesFrequencies(AttributeTable table, AttributeColumn column) {
+        Map<Object, Integer> valuesFrequencies = new HashMap<Object, Integer>();
         Object value;
-        for(Attributes attributes:getTableAttributeRows(table)){
-            value=attributes.getValue(column.getIndex());
-            if(valuesFrequencies.containsKey(value)){
-                valuesFrequencies.put(value, new Integer(valuesFrequencies.get(value)+1));
-            }else{
+        for (Attributes attributes : getTableAttributeRows(table)) {
+            value = attributes.getValue(column.getIndex());
+            if (valuesFrequencies.containsKey(value)) {
+                valuesFrequencies.put(value, new Integer(valuesFrequencies.get(value) + 1));
+            } else {
                 valuesFrequencies.put(value, new Integer(1));
             }
         }
 
         return valuesFrequencies;
+    }
+
+    public void createBooleanMatchesColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern) {
+        if (pattern != null) {
+            AttributeColumn newColumn = addAttributeColumn(table, newColumnTitle, AttributeType.BOOLEAN);
+            Matcher matcher;
+            Object value;
+            for (Attributes attributes : getTableAttributeRows(table)) {
+                value = attributes.getValue(column.getIndex());
+                if (value != null) {
+                    matcher = pattern.matcher(value.toString());
+                }else{
+                    matcher=pattern.matcher("");
+                }
+                attributes.setValue(newColumn.getIndex(), new Boolean(matcher.matches()));
+            }
+        }
     }
 
     public void clearNodeData(Node node) {
@@ -144,6 +163,24 @@ public class AttributesControllerImpl implements AttributesController {
             clearEdgeData(e);
         }
     }
+   
+    public Attributes[] getTableAttributeRows(AttributeTable table) {
+        Attributes[] attributes;
+        if (isNodeTable(table)) {
+            Node[] nodes = getNodesArray();
+            attributes = new Attributes[nodes.length];
+            for (int i = 0; i < nodes.length; i++) {
+                attributes[i] = nodes[i].getNodeData().getAttributes();
+            }
+        } else {
+            Edge[] edges = getEdgesArray();
+            attributes = new Attributes[edges.length];
+            for (int i = 0; i < edges.length; i++) {
+                attributes[i] = edges[i].getEdgeData().getAttributes();
+            }
+        }
+        return attributes;
+    }
 
     /************Private methods : ************/
     /**
@@ -171,30 +208,7 @@ public class AttributesControllerImpl implements AttributesController {
     private Edge[] getEdgesArray() {
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
         return graph.getEdges().toArray();
-    }
-
-    /**
-     * Used for iterating through all attribute rows of a table
-     * @param table Table to get attribute rows
-     * @return Array of attribute rows of the table
-     */
-    private Attributes[] getTableAttributeRows(AttributeTable table) {
-        Attributes[] attributes;
-        if (isNodeTable(table)) {
-            Node[] nodes = getNodesArray();
-            attributes = new Attributes[nodes.length];
-            for (int i = 0; i < nodes.length; i++) {
-                attributes[i] = nodes[i].getNodeData().getAttributes();
-            }
-        } else {
-            Edge[] edges = getEdgesArray();
-            attributes = new Attributes[edges.length];
-            for (int i = 0; i < edges.length; i++) {
-                attributes[i] = edges[i].getEdgeData().getAttributes();
-            }
-        }
-        return attributes;
-    }
+    }    
 
     /**
      * Used for checking if a column is not a computed column or id column. Must indicate if the column is from nodes table or not.

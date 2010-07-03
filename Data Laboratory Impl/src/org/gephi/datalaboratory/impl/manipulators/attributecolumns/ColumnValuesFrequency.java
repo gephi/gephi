@@ -48,18 +48,34 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         Map<Object, Integer> valuesFrequencies = Lookup.getDefault().lookup(AttributesController.class).calculateColumnValuesFrequencies(table, column);
         ArrayList<Object> values = new ArrayList<Object>(valuesFrequencies.keySet());
 
+        //Try to sort the values when they are comparable. (All objects of the set will have the same type) and not null.
         Collections.sort(values, new Comparator<Object>() {
 
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof Comparable) {
-                    return ((Comparable) o1).compareTo(o2);//Try to sort the values when they are comparable. (All objects of the set will have the same type).
+                    //Check for null objects because some comparables can't handle them (like Float...)
+                    if (o1 == null) {
+                        if (o2 == null) {
+                            return 0;
+                        } else {
+                            return -1;//Null lesser than anything
+                        }
+                    } else if (o2 == null) {
+                        if (o1 == null) {
+                            return 0;
+                        } else {
+                            return 1;//Anything greater than null
+                        }
+                    } else {
+                        return ((Comparable) o1).compareTo(o2);
+                    }
                 } else {
                     return 0;//Cannot sort
                 }
             }
         });
 
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         sb.append("<html><ol>");
 
@@ -68,7 +84,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
             sb.append("<b>");
             if (value != null) {
                 sb.append(value.toString());
-            }else{
+            } else {
                 sb.append("null");
             }
             sb.append("</b> - ");
@@ -77,9 +93,9 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         }
 
         sb.append("</ol></html>");
-        SimpleHTMLReport report=new SimpleHTMLReport(
+        SimpleHTMLReport report = new SimpleHTMLReport(
                 NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.report.title",
-                column.getTitle()),sb.toString());//Automatically show report dialog with the html.
+                column.getTitle()), sb.toString());//Automatically show report dialog with the html.
     }
 
     public String getName() {
