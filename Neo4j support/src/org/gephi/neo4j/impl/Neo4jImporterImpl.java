@@ -1,7 +1,11 @@
 package org.gephi.neo4j.impl;
 
 
+import java.util.Collection;
+import java.util.Collections;
+import org.gephi.neo4j.api.FilterInfo;
 import org.gephi.neo4j.api.Neo4jImporter;
+import org.gephi.neo4j.api.RelationshipInfo;
 import org.gephi.neo4j.api.TraversalOrder;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -9,7 +13,6 @@ import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.traversal.PruneEvaluator;
@@ -51,6 +54,15 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
 
     @Override
     public void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth) {
+        importDatabase(graphDB, startNodeId, order, maxDepth, Collections.<RelationshipInfo>emptyList());
+    }
+
+    public void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth,
+            Collection<RelationshipInfo> relationshipInfos) {
+        importDatabase(graphDB, startNodeId, order, maxDepth, relationshipInfos, Collections.<FilterInfo>emptyList());
+    }
+
+    public void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth, Collection<RelationshipInfo> relationshipInfos, Collection<FilterInfo> filterInfos) {
         this.graphDB = graphDB;
 
         String longTaskMessage = (graphDB instanceof RemoteGraphDatabase)
@@ -65,6 +77,13 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
             PruneEvaluator pruneEvaluator = TraversalFactory.pruneAfterDepth(maxDepth);
 
             traversalDescription = order.update(traversalDescription);
+
+            for (RelationshipInfo relationshipInfo : relationshipInfos)
+                traversalDescription = traversalDescription.relationships(relationshipInfo.getRelationshipType(),
+                                                                          relationshipInfo.getDirection());
+
+            //TODO create ReturnFilter, add support for array parsing, validation
+
             traverser = traversalDescription.prune(pruneEvaluator)
                                             .traverse(graphDB.getNodeById(startNodeId));
         }
@@ -93,9 +112,8 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
 
         graphModelConvertor = GraphModelConvertor.getInstance(graphDB);
 
-//        if (traverser == null) {
-        Iterable<Node> nodeIterable = (traverser != null) ? traverser.nodes() : graphDB.getAllNodes();
-            for (org.neo4j.graphdb.Node node : nodeIterable) {
+        if (traverser == null) {
+            for (org.neo4j.graphdb.Node node : graphDB.getAllNodes()) {
                 for (Relationship relationship : node.getRelationships(Direction.INCOMING)) {
                     if (cancelImport)
                         return;
@@ -103,15 +121,15 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
                     processRelationship(relationship);
                 }
             }
-//        }
-//        else {
-//            for (Relationship relationship : traverser.relationships()) {
-//                if (cancelImport)
-//                    return;
-//
-//                processRelationship(relationship);
-//            }
-//        }
+        }
+        else {
+            for (Relationship relationship : traverser.relationships()) {
+                if (cancelImport)
+                    return;
+
+                processRelationship(relationship);
+            }
+        }
 
         if (!cancelImport)
             showCurrentWorkspace();

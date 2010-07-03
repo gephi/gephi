@@ -2,7 +2,10 @@ package org.gephi.desktop.neo4j.ui.util;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
+import java.util.List;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.remote.RemoteGraphDatabase;
 
@@ -28,5 +31,14 @@ public class Neo4jUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static String[] relationshipTypeNames(GraphDatabaseService graphDB) {
+        List<String> relationshipTypeNames = new LinkedList<String>();
+
+        for (RelationshipType relationshipType : graphDB.getRelationshipTypes())
+            relationshipTypeNames.add(relationshipType.name());
+
+        return relationshipTypeNames.toArray(new String [0]);
     }
 }

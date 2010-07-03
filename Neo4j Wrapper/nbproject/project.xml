@@ -10,6 +10,7 @@
                 <package>org.neo4j.graphdb</package>
                 <package>org.neo4j.graphdb.traversal</package>
                 <package>org.neo4j.index</package>
+                <package>org.neo4j.index.impl</package>
                 <package>org.neo4j.index.lucene</package>
                 <package>org.neo4j.kernel</package>
                 <package>org.neo4j.kernel.management</package>

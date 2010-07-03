@@ -85,7 +85,8 @@ public class Neo4jImportExportAction extends CallableSystemAction {
                                 neo4jImporter.importDatabase(graphDB,
                                                              traversalPanel.getStartNodeId(),
                                                              traversalPanel.getOrder(),
-                                                             traversalPanel.getMaxDepth());
+                                                             traversalPanel.getMaxDepth(),
+                                                             traversalPanel.getRelationshipInfos());
                             }
                         });
                     }

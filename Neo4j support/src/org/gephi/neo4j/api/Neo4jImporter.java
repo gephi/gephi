@@ -1,6 +1,7 @@
 package org.gephi.neo4j.api;
 
 
+import java.util.Collection;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 
@@ -19,4 +20,10 @@ public interface Neo4jImporter {
     void importDatabase(GraphDatabaseService graphDB);
 
     void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth);
+
+    void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth,
+            Collection<RelationshipInfo> relationshipInfos);
+
+    void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth,
+            Collection<RelationshipInfo> relationshipInfos, Collection<FilterInfo> filterInfos);
 }

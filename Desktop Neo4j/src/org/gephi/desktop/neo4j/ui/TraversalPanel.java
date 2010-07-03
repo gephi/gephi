@@ -1,12 +1,23 @@
 package org.gephi.desktop.neo4j.ui;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import javax.swing.AbstractButton;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.AbstractTableModel;
+import org.gephi.desktop.neo4j.ui.util.Neo4jUtils;
+import org.gephi.neo4j.api.FilterInfo;
+import org.gephi.neo4j.api.RelationshipInfo;
 import org.gephi.neo4j.api.TraversalOrder;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.NotFoundException;
-import org.netbeans.validation.api.Problems;
-import org.netbeans.validation.api.Validator;
+import org.neo4j.graphdb.Node;
+import org.neo4j.index.IndexService;
+import org.neo4j.index.lucene.LuceneIndexService;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
 
@@ -16,10 +27,18 @@ import org.netbeans.validation.api.ui.ValidationPanel;
  */
 public class TraversalPanel extends javax.swing.JPanel {
     private final GraphDatabaseService graphDB;
+    private final RelationshipsTableModel relationshipsTableModel;
+    private final FilterTableModel filterTableModel;
+
+    private int relationshipsSelectedRow;
+    private int filterSelectedRow;
 
     public TraversalPanel(GraphDatabaseService graphDB) {
-        initComponents();
         this.graphDB = graphDB;
+        this.relationshipsTableModel = new RelationshipsTableModel();
+        this.filterTableModel = new FilterTableModel();
+
+        initComponents();
     }
 
     @SuppressWarnings("unchecked")
@@ -29,6 +48,7 @@ public class TraversalPanel extends javax.swing.JPanel {
         orderButtonGroup = new javax.swing.ButtonGroup();
         maxDepthButtonGroup = new javax.swing.ButtonGroup();
         startNodeButtonGroup = new javax.swing.ButtonGroup();
+        relationshipsButtonGroup = new javax.swing.ButtonGroup();
         traversePanel = new javax.swing.JPanel();
         orderPanel = new javax.swing.JPanel();
         breadthFirstOrderRadioButton = new javax.swing.JRadioButton();
@@ -38,17 +58,27 @@ public class TraversalPanel extends javax.swing.JPanel {
         endOfGraphMaxDepthRadioButton = new javax.swing.JRadioButton();
         maxDepthSpinner = new javax.swing.JSpinner();
         relationshipsPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jComboBox1 = new javax.swing.JComboBox();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
+        relationshipTypeLabel = new javax.swing.JLabel();
+        directionLabel = new javax.swing.JLabel();
+        addRelationshipsButton = new javax.swing.JButton();
+        removeRelationshipsButton = new javax.swing.JButton();
+        relationshipsScrollPane = new javax.swing.JScrollPane();
+        relationshipsTable = new javax.swing.JTable();
+        relationshipTypeComboBox = new javax.swing.JComboBox();
+        outcomingRelationshipsRadioButton = new javax.swing.JRadioButton();
+        bothRelationshipsRadioButton = new javax.swing.JRadioButton();
+        incomingRelationshipsRadioButton = new javax.swing.JRadioButton();
         filterPanel = new javax.swing.JPanel();
+        propertyKeyLabel = new javax.swing.JLabel();
+        propertyValueLabel = new javax.swing.JLabel();
+        operatorLabel = new javax.swing.JLabel();
+        propertyKeyFilterTextField = new javax.swing.JTextField();
+        propertyValueFilterTextField = new javax.swing.JTextField();
+        addFilterButton = new javax.swing.JButton();
+        removeFilterButton = new javax.swing.JButton();
+        filterScrollPane = new javax.swing.JScrollPane();
+        filterTable = new javax.swing.JTable();
+        operatorComboBox = new javax.swing.JComboBox();
         startNodePanel = new javax.swing.JPanel();
         idStartNodeRadioButton = new javax.swing.JRadioButton();
         indexStartNodeRadioButton = new javax.swing.JRadioButton();
@@ -86,7 +116,7 @@ public class TraversalPanel extends javax.swing.JPanel {
                 .addComponent(depthFirstOrderRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(breadthFirstOrderRadioButton)
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         maxDepthPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.maxDepthPanel.border.title"))); // NOI18N
@@ -121,116 +151,189 @@ public class TraversalPanel extends javax.swing.JPanel {
                     .addComponent(maxDepthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(endOfGraphMaxDepthRadioButton)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         relationshipsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.relationshipsPanel.border.title"))); // NOI18N
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.jLabel1.text")); // NOI18N
+        relationshipTypeLabel.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.relationshipTypeLabel.text")); // NOI18N
 
-        jLabel2.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.jLabel2.text")); // NOI18N
+        directionLabel.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.directionLabel.text")); // NOI18N
 
-        jButton1.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.jButton1.text")); // NOI18N
-
-        jButton2.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.jButton2.text")); // NOI18N
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+        addRelationshipsButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.addRelationshipsButton.text")); // NOI18N
+        addRelationshipsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addRelationshipsButtonActionPerformed(evt);
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        removeRelationshipsButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.removeRelationshipsButton.text")); // NOI18N
+        removeRelationshipsButton.setEnabled(false);
+        removeRelationshipsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeRelationshipsButtonActionPerformed(evt);
+            }
+        });
 
-        jRadioButton1.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.jRadioButton1.text")); // NOI18N
+        relationshipsTable.setModel(relationshipsTableModel);
+        relationshipsTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        relationshipsTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                relationshipsTableMouseClicked(evt);
+            }
+        });
+        relationshipsScrollPane.setViewportView(relationshipsTable);
 
-        jRadioButton2.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.jRadioButton2.text")); // NOI18N
+        relationshipTypeComboBox.setModel(new DefaultComboBoxModel(Neo4jUtils.relationshipTypeNames(graphDB)));
 
-        jRadioButton3.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.jRadioButton3.text")); // NOI18N
+        relationshipsButtonGroup.add(outcomingRelationshipsRadioButton);
+        outcomingRelationshipsRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.outcomingRelationshipsRadioButton.text")); // NOI18N
+
+        relationshipsButtonGroup.add(bothRelationshipsRadioButton);
+        bothRelationshipsRadioButton.setSelected(true);
+        bothRelationshipsRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.bothRelationshipsRadioButton.text")); // NOI18N
+
+        relationshipsButtonGroup.add(incomingRelationshipsRadioButton);
+        incomingRelationshipsRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.incomingRelationshipsRadioButton.text")); // NOI18N
 
         javax.swing.GroupLayout relationshipsPanelLayout = new javax.swing.GroupLayout(relationshipsPanel);
         relationshipsPanel.setLayout(relationshipsPanelLayout);
         relationshipsPanelLayout.setHorizontalGroup(
             relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(relationshipsPanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(relationshipsPanelLayout.createSequentialGroup()
-                            .addGap(128, 128, 128)
-                            .addComponent(jButton1)
-                            .addGap(35, 35, 35)
-                            .addComponent(jButton2))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, relationshipsPanelLayout.createSequentialGroup()
-                            .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(relationshipsPanelLayout.createSequentialGroup()
-                                    .addGap(25, 25, 25)
-                                    .addComponent(jLabel1))
-                                .addGroup(relationshipsPanelLayout.createSequentialGroup()
-                                    .addGap(34, 34, 34)
-                                    .addComponent(jLabel2)))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(relationshipsPanelLayout.createSequentialGroup()
-                        .addGap(58, 58, 58)
+                    .addComponent(directionLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(relationshipTypeLabel, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bothRelationshipsRadioButton)
+                    .addComponent(outcomingRelationshipsRadioButton)
+                    .addComponent(incomingRelationshipsRadioButton)
+                    .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(relationshipTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(relationshipsPanelLayout.createSequentialGroup()
-                                .addGap(45, 45, 45)
-                                .addComponent(jRadioButton3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(35, 35, 35))
-                            .addComponent(jRadioButton1))
-                        .addGap(15, 15, 15)
-                        .addComponent(jRadioButton2)))
-                .addContainerGap(104, Short.MAX_VALUE))
+                            .addComponent(removeRelationshipsButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(addRelationshipsButton, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(relationshipsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                .addContainerGap())
         );
+
+        relationshipsPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addRelationshipsButton, removeRelationshipsButton});
+
         relationshipsPanelLayout.setVerticalGroup(
             relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(relationshipsPanelLayout.createSequentialGroup()
-                .addGap(42, 42, 42)
-                .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(relationshipsPanelLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addGap(40, 40, 40)
-                .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(relationshipsPanelLayout.createSequentialGroup()
+                .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(relationshipsScrollPane, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, relationshipsPanelLayout.createSequentialGroup()
                         .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(relationshipsPanelLayout.createSequentialGroup()
-                                .addGap(11, 11, 11)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jRadioButton3))
-                        .addGap(18, 18, 18)
-                        .addComponent(jRadioButton1))
-                    .addComponent(jRadioButton2))
-                .addGap(34, 34, 34))
+                                .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(directionLabel)
+                                    .addComponent(incomingRelationshipsRadioButton))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(outcomingRelationshipsRadioButton)
+                                .addGap(25, 25, 25)
+                                .addGroup(relationshipsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(relationshipTypeLabel)
+                                    .addComponent(relationshipTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(relationshipsPanelLayout.createSequentialGroup()
+                                .addGap(46, 46, 46)
+                                .addComponent(bothRelationshipsRadioButton)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addRelationshipsButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(removeRelationshipsButton)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         filterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.filterPanel.border.title"))); // NOI18N
+
+        propertyKeyLabel.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.propertyKeyLabel.text")); // NOI18N
+
+        propertyValueLabel.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.propertyValueLabel.text")); // NOI18N
+
+        operatorLabel.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.operatorLabel.text")); // NOI18N
+
+        propertyKeyFilterTextField.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.propertyKeyFilterTextField.text")); // NOI18N
+
+        propertyValueFilterTextField.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.propertyValueFilterTextField.text")); // NOI18N
+
+        addFilterButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.addFilterButton.text")); // NOI18N
+        addFilterButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addFilterButtonActionPerformed(evt);
+            }
+        });
+
+        removeFilterButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.removeFilterButton.text")); // NOI18N
+        removeFilterButton.setEnabled(false);
+        removeFilterButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeFilterButtonActionPerformed(evt);
+            }
+        });
+
+        filterTable.setModel(filterTableModel);
+        filterTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                filterTableMouseClicked(evt);
+            }
+        });
+        filterScrollPane.setViewportView(filterTable);
+
+        operatorComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "==", "!=", ">", ">=", "<", "<=" }));
 
         javax.swing.GroupLayout filterPanelLayout = new javax.swing.GroupLayout(filterPanel);
         filterPanel.setLayout(filterPanelLayout);
         filterPanelLayout.setHorizontalGroup(
             filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 501, Short.MAX_VALUE)
+            .addGroup(filterPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(filterPanelLayout.createSequentialGroup()
+                        .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(propertyKeyLabel)
+                            .addComponent(operatorLabel)
+                            .addComponent(propertyValueLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(addFilterButton)
+                            .addComponent(propertyKeyFilterTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+                            .addComponent(propertyValueFilterTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+                            .addComponent(operatorComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, 118, Short.MAX_VALUE)))
+                    .addComponent(removeFilterButton))
+                .addGap(10, 10, 10)
+                .addComponent(filterScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
+
+        filterPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addFilterButton, removeFilterButton});
+
         filterPanelLayout.setVerticalGroup(
             filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 77, Short.MAX_VALUE)
+            .addGroup(filterPanelLayout.createSequentialGroup()
+                .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(filterScrollPane, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, filterPanelLayout.createSequentialGroup()
+                        .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(propertyKeyLabel)
+                            .addComponent(propertyKeyFilterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(6, 6, 6)
+                        .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(propertyValueLabel)
+                            .addComponent(propertyValueFilterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(operatorLabel)
+                            .addComponent(operatorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addFilterButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(removeFilterButton)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         startNodePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.startNodePanel.border.title"))); // NOI18N
@@ -238,14 +341,26 @@ public class TraversalPanel extends javax.swing.JPanel {
         startNodeButtonGroup.add(idStartNodeRadioButton);
         idStartNodeRadioButton.setSelected(true);
         idStartNodeRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.idStartNodeRadioButton.text")); // NOI18N
+        idStartNodeRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                idStartNodeRadioButtonActionPerformed(evt);
+            }
+        });
 
         startNodeButtonGroup.add(indexStartNodeRadioButton);
         indexStartNodeRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.indexStartNodeRadioButton.text")); // NOI18N
+        indexStartNodeRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                indexStartNodeRadioButtonActionPerformed(evt);
+            }
+        });
 
         indexValueStartNodeTextField.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.index value.text")); // NOI18N
+        indexValueStartNodeTextField.setEnabled(false);
         indexValueStartNodeTextField.setName("index value"); // NOI18N
 
         indexKeyStartNodeTextField.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.index key.text")); // NOI18N
+        indexKeyStartNodeTextField.setEnabled(false);
         indexKeyStartNodeTextField.setName("index key"); // NOI18N
 
         indexValueStartNodeLabel.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.indexValueStartNodeLabel.text")); // NOI18N
@@ -290,21 +405,22 @@ public class TraversalPanel extends javax.swing.JPanel {
                 .addGroup(startNodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
                     .addComponent(indexValueStartNodeLabel)
                     .addComponent(indexValueStartNodeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout traversePanelLayout = new javax.swing.GroupLayout(traversePanel);
         traversePanel.setLayout(traversePanelLayout);
         traversePanelLayout.setHorizontalGroup(
             traversePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(traversePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addComponent(relationshipsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, traversePanelLayout.createSequentialGroup()
+                    .addComponent(startNodePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(orderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(maxDepthPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addComponent(filterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(relationshipsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(traversePanelLayout.createSequentialGroup()
-                .addComponent(startNodePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(orderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(maxDepthPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         traversePanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {maxDepthPanel, orderPanel});
@@ -312,15 +428,17 @@ public class TraversalPanel extends javax.swing.JPanel {
         traversePanelLayout.setVerticalGroup(
             traversePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(traversePanelLayout.createSequentialGroup()
-                .addGroup(traversePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(traversePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(maxDepthPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(orderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(startNodePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE))
+                    .addComponent(startNodePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(relationshipsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(filterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+
+        traversePanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {maxDepthPanel, orderPanel, startNodePanel});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -334,35 +452,103 @@ public class TraversalPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void idStartNodeRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_idStartNodeRadioButtonActionPerformed
+        idStartNodeTextField        .setEnabled(true);
+        indexKeyStartNodeTextField  .setEnabled(false);
+        indexValueStartNodeTextField.setEnabled(false);
+    }//GEN-LAST:event_idStartNodeRadioButtonActionPerformed
 
+    private void indexStartNodeRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_indexStartNodeRadioButtonActionPerformed
+        idStartNodeTextField        .setEnabled(false);
+        indexKeyStartNodeTextField  .setEnabled(true);
+        indexValueStartNodeTextField.setEnabled(true);
+    }//GEN-LAST:event_indexStartNodeRadioButtonActionPerformed
+
+    private void addRelationshipsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRelationshipsButtonActionPerformed
+        String relationshipType = (String) relationshipTypeComboBox.getSelectedItem();
+
+        String direction = null;
+        for (Enumeration<AbstractButton> e = relationshipsButtonGroup.getElements(); e.hasMoreElements();) {
+            AbstractButton button = e.nextElement();
+            if (button.isSelected()) {
+                direction = button.getText();
+                break;
+            }
+        }
+
+        relationshipsTableModel.addData(relationshipType, direction);
+    }//GEN-LAST:event_addRelationshipsButtonActionPerformed
+
+    private void removeRelationshipsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeRelationshipsButtonActionPerformed
+        removeRelationshipsButton.setEnabled(false);
+
+        relationshipsTable.removeRowSelectionInterval(relationshipsSelectedRow, relationshipsSelectedRow);
+        relationshipsTableModel.removeData(relationshipsSelectedRow);
+    }//GEN-LAST:event_removeRelationshipsButtonActionPerformed
+
+    private void relationshipsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_relationshipsTableMouseClicked
+        removeRelationshipsButton.setEnabled(true);
+        this.relationshipsSelectedRow = relationshipsTable.getSelectedRow();
+    }//GEN-LAST:event_relationshipsTableMouseClicked
+
+    private void addFilterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFilterButtonActionPerformed
+        filterTableModel.addData(propertyKeyFilterTextField.getText(),
+                                 (String) operatorComboBox.getSelectedItem(),
+                                 propertyValueFilterTextField.getText());
+    }//GEN-LAST:event_addFilterButtonActionPerformed
+
+    private void removeFilterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeFilterButtonActionPerformed
+        removeFilterButton.setEnabled(false);
+
+        filterTable.removeRowSelectionInterval(filterSelectedRow, filterSelectedRow);
+        filterTableModel.removeData(filterSelectedRow);
+    }//GEN-LAST:event_removeFilterButtonActionPerformed
+
+    private void filterTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_filterTableMouseClicked
+        removeFilterButton.setEnabled(true);
+        this.filterSelectedRow = filterTable.getSelectedRow();
+    }//GEN-LAST:event_filterTableMouseClicked
+
+//private boolean focusLost;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addFilterButton;
+    private javax.swing.JButton addRelationshipsButton;
+    private javax.swing.JRadioButton bothRelationshipsRadioButton;
     private javax.swing.JRadioButton breadthFirstOrderRadioButton;
     private javax.swing.JRadioButton concreteMaxDepthRadioButton;
     private javax.swing.JRadioButton depthFirstOrderRadioButton;
+    private javax.swing.JLabel directionLabel;
     private javax.swing.JRadioButton endOfGraphMaxDepthRadioButton;
     private javax.swing.JPanel filterPanel;
+    private javax.swing.JScrollPane filterScrollPane;
+    private javax.swing.JTable filterTable;
     private javax.swing.JRadioButton idStartNodeRadioButton;
     private javax.swing.JTextField idStartNodeTextField;
+    private javax.swing.JRadioButton incomingRelationshipsRadioButton;
     private javax.swing.JTextField indexKeyStartNodeTextField;
     private javax.swing.JRadioButton indexStartNodeRadioButton;
     private javax.swing.JLabel indexValueStartNodeLabel;
     private javax.swing.JTextField indexValueStartNodeTextField;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.ButtonGroup maxDepthButtonGroup;
     private javax.swing.JPanel maxDepthPanel;
     private javax.swing.JSpinner maxDepthSpinner;
+    private javax.swing.JComboBox operatorComboBox;
+    private javax.swing.JLabel operatorLabel;
     private javax.swing.ButtonGroup orderButtonGroup;
     private javax.swing.JPanel orderPanel;
+    private javax.swing.JRadioButton outcomingRelationshipsRadioButton;
+    private javax.swing.JTextField propertyKeyFilterTextField;
+    private javax.swing.JLabel propertyKeyLabel;
+    private javax.swing.JTextField propertyValueFilterTextField;
+    private javax.swing.JLabel propertyValueLabel;
+    private javax.swing.JComboBox relationshipTypeComboBox;
+    private javax.swing.JLabel relationshipTypeLabel;
+    private javax.swing.ButtonGroup relationshipsButtonGroup;
     private javax.swing.JPanel relationshipsPanel;
+    private javax.swing.JScrollPane relationshipsScrollPane;
+    private javax.swing.JTable relationshipsTable;
+    private javax.swing.JButton removeFilterButton;
+    private javax.swing.JButton removeRelationshipsButton;
     private javax.swing.ButtonGroup startNodeButtonGroup;
     private javax.swing.JPanel startNodePanel;
     private javax.swing.JPanel traversePanel;
@@ -379,7 +565,57 @@ public class TraversalPanel extends javax.swing.JPanel {
     }
 
     public long getStartNodeId() {
-        return Integer.parseInt(idStartNodeTextField.getText());
+        if (idStartNodeRadioButton.isSelected())
+            return Integer.parseInt(idStartNodeTextField.getText());
+        else {
+            IndexService indexService = new LuceneIndexService(graphDB);
+
+            Node node = indexService.getSingleNode(indexKeyStartNodeTextField.getText(),
+                                                   indexValueStartNodeTextField.getText());
+
+            return node.getId();
+        }
+    }
+
+    public Collection<RelationshipInfo> getRelationshipInfos() {
+        List<RelationshipInfo> relationshipInfos = new LinkedList<RelationshipInfo>();
+
+        for (String[] data : relationshipsTableModel.data)
+            relationshipInfos.add(new RelationshipInfo(DynamicRelationshipType.withName(data[0]),
+                                                       Direction.valueOf(data[1].toUpperCase())));
+
+        return relationshipInfos;
+    }
+
+    public Collection<FilterInfo> getFilterInfos() {
+        List<FilterInfo> filterInfos = new LinkedList<FilterInfo>();
+
+        for (String[] data : filterTableModel.data) {
+            filterInfos.add(new FilterInfo(data[0], data[1], parseValue(data[2])));
+        }
+
+        return filterInfos;
+    }
+
+    private Object parseValue(String value) {
+        value = value.trim().toLowerCase();
+
+        try {
+            return Long.parseLong(value);
+        }
+        catch (NumberFormatException nfe) {/* parse another type */}
+
+        try {
+            return Double.parseDouble(value);
+        }
+        catch (NumberFormatException nfe) {/* parse another type */}
+
+        if (value.equals("true"))
+            return true;
+        else if (value.equals("false"))
+            return false;
+//TODO array parsing
+        return value;
     }
 
     public ValidationPanel createValidationPanel() {
@@ -388,35 +624,159 @@ public class TraversalPanel extends javax.swing.JPanel {
         ValidationGroup group = validationPanel.getValidationGroup();
 
         //Validators
-        group.add(this.idStartNodeTextField, new NodeIdValidator());
+//        group.add(this.idStartNodeTextField, ValidationStrategy.ON_FOCUS_LOSS,       new NodeIdValidator());
+//        group.add(this.idStartNodeTextField, ValidationStrategy.ON_CHANGE_OR_ACTION, new NodeIdValidator());
 
         return validationPanel;
     }
 
-    private class NodeIdValidator implements Validator<String>{
+//    private class NodeIdValidator implements Validator<String>{
+//        private int counter = 0;
+//
+//        @Override
+//        public boolean validate(Problems problems, String string, String value) {
+//            System.out.println("focus lost: " + focusLost);
+////            if (idStartNodeRadioButton.isSelected()) {
+//             if (!focusLost) {
+//                int nodeId;
+//
+//                try {
+//                    nodeId = Integer.parseInt(value);
+//                }
+//                catch (NumberFormatException nfe) {
+//                    problems.add("not number...");
+//                    return false;
+//                }
+//
+//                try {
+//                    graphDB.getNodeById(nodeId);
+//                }
+//                catch (NotFoundException nfe) {
+//                    problems.add("Node with id '" + nodeId + "' doesn't exist");
+//                    return false;
+//                }
+//            }
+//
+//            if (focusLost) {
+//                counter++;
+//
+//                if (counter == 2) {
+//                    counter = 0;
+//                    focusLost = false;
+//                }
+//            }
+//
+//            return true;
+//        }
+//    }
+
+    private class RelationshipsTableModel extends AbstractTableModel {
+        private final Class[]  columnTypes = {String.class,        String.class};
+        private final String[] columnNames = {"Relationship type", "Direction"};
+        private final List<String[]> data;
+
+        
+        public RelationshipsTableModel() {
+            data = new ArrayList<String[]>();
+        }
+
+
+        public void addData(String relationshipType, String direction) {
+            data.add(new String[] {relationshipType, direction} );
+
+            fireTableDataChanged();
+        }
+
+        public void removeData(int index) {
+            data.remove(index);
+
+            fireTableDataChanged();
+        }
+
+
         @Override
-        public boolean validate(Problems problems, String string, String value) {
-            if (idStartNodeRadioButton.isSelected()) {
-                int nodeId;
+        public int getRowCount() {
+            return data.size();
+        }
 
-                try {
-                    nodeId = Integer.parseInt(value);
-                }
-                catch (NumberFormatException nfe) {
-                    problems.add("not number...");
-                    return false;
-                }
+        @Override
+        public int getColumnCount() {
+            return columnTypes.length;
+        }
 
-                try {
-                    graphDB.getNodeById(nodeId);
-                }
-                catch (NotFoundException nfe) {
-                    problems.add("Node with id '" + nodeId + "' doesn't exist");
-                    return false;
-                }
-            }
+        @Override
+        public String getColumnName(int columnIndex) {
+            return columnNames[columnIndex];
+        }
 
-            return true;
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return columnTypes[columnIndex];
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            return data.get(rowIndex)[columnIndex];
+        }
+    }
+
+    private class FilterTableModel extends AbstractTableModel {
+        private final Class[]  columnTypes = {String.class,   String.class, String.class};
+        private final String[] columnNames = {"Property key", "Operator",   "Property value"};
+        private final List<String[]> data;
+
+
+        public FilterTableModel() {
+            data = new ArrayList<String[]>();
+        }
+
+
+        public void addData(String key, String operator, String value) {
+            data.add(new String[] {key, operator, value} );
+
+            fireTableDataChanged();
+        }
+
+        public void removeData(int index) {
+            data.remove(index);
+
+            fireTableDataChanged();
+        }
+
+
+        @Override
+        public int getRowCount() {
+            return data.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return columnTypes.length;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            return columnNames[columnIndex];
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return columnTypes[columnIndex];
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            return data.get(rowIndex)[columnIndex];
         }
     }
 }
