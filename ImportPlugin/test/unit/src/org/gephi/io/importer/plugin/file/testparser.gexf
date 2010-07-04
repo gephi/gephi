@@ -25,7 +25,11 @@
 					<attvalue for="2" value="String1, String2, String 3"/>
 				</attvalues>
 			</node>
-			<node id="4c175b4b2c9016b9071b4bc2" label="Node 3" start="2000-01-01" end="2007-12-31">
+			<node id="4c175b4b2c9016b9071b4bc2" label="Node 3" start="2000-01-01" end="2003-12-31">
+				<slices>
+					<slice start="2000-01-01" end="2000-01-15" />
+					<slice start="2001-01-30" end="2001-02-01" />
+				</slices>
 				<attvalues>
 					<attvalue for="0" value="Author"/>
 					<attvalue for="1" value="3.0"/>

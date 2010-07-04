@@ -42,6 +42,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
     private static final String NODE_POSITION = "viz:position";
     private static final String NODE_COLOR = "viz:color";
     private static final String NODE_SIZE = "viz:size";
+    private static final String NODE_SLICE = "slice";
     private static final String EDGE = "edge";
     private static final String EDGE_ID = "id";
     private static final String EDGE_SOURCE = "source";
@@ -52,6 +53,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
     private static final String EDGE_START = "start";
     private static final String EDGE_COLOR = "viz:color";
     private static final String EDGE_END = "end";
+    private static final String EDGE_SLICE = "slice";
     private static final String ATTRIBUTE = "attribute";
     private static final String ATTRIBUTE_ID = "id";
     private static final String ATTRIBUTE_TITLE = "title";
@@ -145,14 +147,10 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
         node.setId(id);
         node.setLabel(label);
 
-        //Dynamic
-        if (startDate != null || endDate != null) {
-            node.addTimeSlice(startDate, endDate);
-        }
-
         container.addNode(node);
 
         boolean end = false;
+        boolean slices = false;
         while (reader.hasNext() && !end) {
             int type = reader.next();
 
@@ -166,6 +164,9 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
                         readNodeColor(reader, node);
                     } else if (NODE_SIZE.equalsIgnoreCase(xmlReader.getLocalName())) {
                         readNodeSize(reader, node);
+                    } else if (NODE_SLICE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        readNodeSlice(reader, node);
+                        slices = true;
                     }
                     break;
 
@@ -175,6 +176,12 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
                     }
                     break;
             }
+        }
+
+
+        //Dynamic
+        if (!slices && (startDate != null || endDate != null)) {
+            node.addTimeSlice(startDate, endDate);
         }
     }
 
@@ -296,6 +303,24 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
         }
     }
 
+    private void readNodeSlice(XMLStreamReader reader, NodeDraft node) throws Exception {
+        String start = "";
+        String end = "";
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if ("start".equalsIgnoreCase(attName)) {
+                start = reader.getAttributeValue(i);
+            } else if ("end".equalsIgnoreCase(attName)) {
+                end = reader.getAttributeValue(i);
+            }
+        }
+
+        if (!start.isEmpty() || !end.isEmpty()) {
+            node.addTimeSlice(start, end);
+        }
+    }
+
     private void readEdge(XMLStreamReader reader) throws Exception {
         String id = "";
         String label = "";
@@ -368,14 +393,10 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             edge.setLabel(label);
         }
 
-        //Dynamic
-        if (startDate != null || endDate != null) {
-            edge.addTimeSlice(startDate, endDate);
-        }
-
         container.addEdge(edge);
 
         boolean end = false;
+        boolean slices = false;
         while (reader.hasNext() && !end) {
             int type = reader.next();
 
@@ -385,6 +406,9 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
                         readEdgeAttValue(reader, edge);
                     } else if (EDGE_COLOR.equalsIgnoreCase(xmlReader.getLocalName())) {
                         readEdgeColor(reader, edge);
+                    } else if (EDGE_SLICE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        readEdgeSlice(reader, edge);
+                        slices = true;
                     }
                     break;
 
@@ -394,6 +418,11 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
                     }
                     break;
             }
+        }
+
+        //Dynamic
+        if (!slices && (startDate != null || endDate != null)) {
+            edge.addTimeSlice(startDate, endDate);
         }
     }
 
@@ -456,6 +485,24 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
         int b = (bStr.isEmpty()) ? 0 : Integer.parseInt(bStr);
 
         edge.setColor(new Color(r, g, b));
+    }
+
+    private void readEdgeSlice(XMLStreamReader reader, EdgeDraft edge) throws Exception {
+        String start = "";
+        String end = "";
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if ("start".equalsIgnoreCase(attName)) {
+                start = reader.getAttributeValue(i);
+            } else if ("end".equalsIgnoreCase(attName)) {
+                end = reader.getAttributeValue(i);
+            }
+        }
+
+        if (!start.isEmpty() || !end.isEmpty()) {
+            edge.addTimeSlice(start, end);
+        }
     }
 
     private void readAttributes(XMLStreamReader reader) throws Exception {
