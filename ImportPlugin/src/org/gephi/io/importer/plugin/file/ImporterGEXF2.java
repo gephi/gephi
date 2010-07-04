@@ -213,6 +213,9 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             //Data attribute value
             AttributeColumn column = container.getAttributeModel().getNodeTable().getColumn(fore);
             if (column != null) {
+                if(!startDate.isEmpty() || !endDate.isEmpty()) {
+                    //Dynamic
+                }
                 try {
                     Object val = column.getType().parse(value);
                     node.addAttributeValue(column, val);
@@ -454,6 +457,9 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             //Data attribute value
             AttributeColumn column = container.getAttributeModel().getEdgeTable().getColumn(fore);
             if (column != null) {
+                if(!startDate.isEmpty() || !endDate.isEmpty()) {
+                    //Dynamic
+                }
                 try {
                     Object val = column.getType().parse(value);
                     edge.addAttributeValue(column, val);
