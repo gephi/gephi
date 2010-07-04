@@ -60,6 +60,9 @@ public class Neo4jImportExportAction extends CallableSystemAction {
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
                 int dialogResult = fileChooser.showOpenDialog(null);
+
+                Neo4jCustomDirectoryProvider.setEnabled(false);
+
                 if (dialogResult == JFileChooser.CANCEL_OPTION)
                     return;
 
@@ -91,8 +94,6 @@ public class Neo4jImportExportAction extends CallableSystemAction {
                         });
                     }
                 }
-
-                Neo4jCustomDirectoryProvider.setEnabled(false);
             }
         });
 
