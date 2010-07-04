@@ -48,11 +48,11 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         Map<Object, Integer> valuesFrequencies = Lookup.getDefault().lookup(AttributesController.class).calculateColumnValuesFrequencies(table, column);
         ArrayList<Object> values = new ArrayList<Object>(valuesFrequencies.keySet());
 
-        //Try to sort the values when they are comparable. (All objects of the set will have the same type) and not null.
-        Collections.sort(values, new Comparator<Object>() {
+        //Try to sort the values when they are comparable. (All objects of the set will have the same type) and not null:
+        if (!values.isEmpty() && values.get(0) instanceof Comparable) {
+            Collections.sort(values, new Comparator<Object>() {
 
-            public int compare(Object o1, Object o2) {
-                if (o1 instanceof Comparable) {
+                public int compare(Object o1, Object o2) {
                     //Check for null objects because some comparables can't handle them (like Float...)
                     if (o1 == null) {
                         if (o2 == null) {
@@ -69,11 +69,9 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
                     } else {
                         return ((Comparable) o1).compareTo(o2);
                     }
-                } else {
-                    return 0;//Cannot sort
                 }
-            }
-        });
+            });
+        }
 
         StringBuilder sb = new StringBuilder();
 

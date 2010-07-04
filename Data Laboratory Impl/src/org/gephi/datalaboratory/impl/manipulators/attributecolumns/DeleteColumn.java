@@ -58,7 +58,7 @@ public class DeleteColumn implements AttributeColumnsManipulator {
     }
 
     public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
-        return column.getOrigin() == AttributeOrigin.DATA;
+        return column.getOrigin() != AttributeOrigin.PROPERTY;
     }
 
     public AttributeColumnsManipulatorUI getUI() {
