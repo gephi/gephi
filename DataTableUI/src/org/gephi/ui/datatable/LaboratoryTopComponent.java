@@ -333,18 +333,29 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
 
         attributeColumnsPanel = new javax.swing.JPanel();
         nodeEdgeTabbedPane = new javax.swing.JTabbedPane();
+        nodesScroll = new javax.swing.JScrollPane();
         nodesAttributeColumnsPanel = new javax.swing.JPanel();
+        edgesScroll = new javax.swing.JScrollPane();
         edgesAttributeColumnsPanel = new javax.swing.JPanel();
+        generalManipulatorsScroll = new javax.swing.JScrollPane();
         generalManipulatorsPanel = new javax.swing.JPanel();
 
         attributeColumnsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.attributeColumnsPanel.title"))); // NOI18N
 
+        nodesScroll.setBorder(null);
+
         nodesAttributeColumnsPanel.setName("a"); // NOI18N
         nodesAttributeColumnsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 20));
-        nodeEdgeTabbedPane.addTab(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.nodesAttributeColumnsPanel.TabConstraints.tabTitle"), nodesAttributeColumnsPanel); // NOI18N
+        nodesScroll.setViewportView(nodesAttributeColumnsPanel);
+
+        nodeEdgeTabbedPane.addTab(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.nodesScroll.TabConstraints.tabTitle"), nodesScroll); // NOI18N
+
+        edgesScroll.setBorder(null);
 
         edgesAttributeColumnsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 20));
-        nodeEdgeTabbedPane.addTab(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.edgesAttributeColumnsPanel.TabConstraints.tabTitle"), edgesAttributeColumnsPanel); // NOI18N
+        edgesScroll.setViewportView(edgesAttributeColumnsPanel);
+
+        nodeEdgeTabbedPane.addTab(org.openide.util.NbBundle.getMessage(LaboratoryTopComponent.class, "LaboratoryTopComponent.edgesScroll.TabConstraints.tabTitle"), edgesScroll); // NOI18N
 
         javax.swing.GroupLayout attributeColumnsPanelLayout = new javax.swing.GroupLayout(attributeColumnsPanel);
         attributeColumnsPanel.setLayout(attributeColumnsPanelLayout);
@@ -358,36 +369,43 @@ public final class LaboratoryTopComponent extends TopComponent implements Attrib
         attributeColumnsPanelLayout.setVerticalGroup(
             attributeColumnsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, attributeColumnsPanelLayout.createSequentialGroup()
-                .addComponent(nodeEdgeTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                .addComponent(nodeEdgeTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        generalManipulatorsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 20));
+        generalManipulatorsScroll.setViewportView(generalManipulatorsPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(attributeColumnsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(generalManipulatorsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(generalManipulatorsScroll, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
+                    .addComponent(attributeColumnsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(attributeColumnsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(generalManipulatorsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(attributeColumnsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(generalManipulatorsScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel attributeColumnsPanel;
     private javax.swing.JPanel edgesAttributeColumnsPanel;
+    private javax.swing.JScrollPane edgesScroll;
     private javax.swing.JPanel generalManipulatorsPanel;
+    private javax.swing.JScrollPane generalManipulatorsScroll;
     private javax.swing.JTabbedPane nodeEdgeTabbedPane;
     private javax.swing.JPanel nodesAttributeColumnsPanel;
+    private javax.swing.JScrollPane nodesScroll;
     // End of variables declaration//GEN-END:variables
 
     /**
