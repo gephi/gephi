@@ -58,7 +58,12 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
     private static final String ATTRIBUTE_TYPE = "type";
     private static final String ATTRIBUTE_DEFAULT = "default";
     private static final String ATTRIBUTES = "attributes";
+    private static final String ATTRIBUTES_CLASS = "class";
     private static final String ATTVALUE = "attvalue";
+    private static final String ATTVALUE_FOR = "for";
+    private static final String ATTVALUE_VALUE = "value";
+    private static final String ATTVALUE_START = "start";
+    private static final String ATTVALUE_END = "end";
     //Architecture
     private Reader reader;
     private ContainerLoader container;
@@ -138,8 +143,12 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
         NodeDraft node = container.factory().newNodeDraft();
         node.setId(id);
-
         node.setLabel(label);
+
+        //Dynamic
+        if (startDate != null || endDate != null) {
+            node.addTimeSlice(startDate, endDate);
+        }
 
         container.addNode(node);
 
@@ -177,13 +186,13 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String attName = reader.getAttributeName(i).getLocalPart();
-            if ("for".equalsIgnoreCase(attName) || "id".equalsIgnoreCase(attName)) {
+            if (ATTVALUE_FOR.equalsIgnoreCase(attName) || "id".equalsIgnoreCase(attName)) {
                 fore = reader.getAttributeValue(i);
-            } else if ("value".equalsIgnoreCase(attName)) {
+            } else if (ATTVALUE_VALUE.equalsIgnoreCase(attName)) {
                 value = reader.getAttributeValue(i);
-            } else if ("start".equalsIgnoreCase(attName)) {
+            } else if (ATTVALUE_START.equalsIgnoreCase(attName)) {
                 startDate = reader.getAttributeValue(i);
-            } else if ("end".equalsIgnoreCase(attName)) {
+            } else if (ATTVALUE_END.equalsIgnoreCase(attName)) {
                 endDate = reader.getAttributeValue(i);
             }
         }
@@ -195,7 +204,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
         if (!value.isEmpty()) {
             //Data attribute value
-            AttributeColumn column = container.getAttributeModel().getEdgeTable().getColumn(fore);
+            AttributeColumn column = container.getAttributeModel().getNodeTable().getColumn(fore);
             if (column != null) {
                 try {
                     Object val = column.getType().parse(value);
@@ -396,13 +405,13 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String attName = reader.getAttributeName(i).getLocalPart();
-            if ("for".equalsIgnoreCase(attName) || "id".equalsIgnoreCase(attName)) {
+            if (ATTVALUE_FOR.equalsIgnoreCase(attName) || "id".equalsIgnoreCase(attName)) {
                 fore = reader.getAttributeValue(i);
-            } else if ("value".equalsIgnoreCase(attName)) {
+            } else if (ATTVALUE_VALUE.equalsIgnoreCase(attName)) {
                 value = reader.getAttributeValue(i);
-            } else if ("start".equalsIgnoreCase(attName)) {
+            } else if (ATTVALUE_START.equalsIgnoreCase(attName)) {
                 startDate = reader.getAttributeValue(i);
-            } else if ("end".equalsIgnoreCase(attName)) {
+            } else if (ATTVALUE_END.equalsIgnoreCase(attName)) {
                 endDate = reader.getAttributeValue(i);
             }
         }
@@ -453,7 +462,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
         String classAtt = "";
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String attName = reader.getAttributeName(i).getLocalPart();
-            if ("class".equalsIgnoreCase(attName)) {
+            if (ATTRIBUTES_CLASS.equalsIgnoreCase(attName)) {
                 classAtt = reader.getAttributeValue(i);
             }
         }
@@ -500,9 +509,8 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
         if (!id.isEmpty() && !type.isEmpty()) {
             //Class type
-            if (classAtt.isEmpty() || !(classAtt.equals("node") || classAtt.equals("edge"))) {
+            if (classAtt.isEmpty() || !(classAtt.equalsIgnoreCase("node") || classAtt.equalsIgnoreCase("edge"))) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributeclass", title), Issue.Level.SEVERE));
-                return;
             }
 
             //Default?
@@ -532,18 +540,50 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
             //Type
             AttributeType attributeType = AttributeType.STRING;
-            if (type.equals("boolean")) {
+            if (type.equalsIgnoreCase("boolean")) {
                 attributeType = AttributeType.BOOLEAN;
-            } else if (type.equals("integer")) {
+            } else if (type.equalsIgnoreCase("integer")) {
                 attributeType = AttributeType.INT;
-            } else if (type.equals("long")) {
+            } else if (type.equalsIgnoreCase("long")) {
                 attributeType = AttributeType.LONG;
-            } else if (type.equals("float")) {
+            } else if (type.equalsIgnoreCase("float")) {
                 attributeType = AttributeType.FLOAT;
-            } else if (type.equals("double")) {
+            } else if (type.equalsIgnoreCase("double")) {
                 attributeType = AttributeType.DOUBLE;
-            } else if (type.equals("string")) {
+            } else if (type.equalsIgnoreCase("string")) {
                 attributeType = AttributeType.STRING;
+            } else if (type.equalsIgnoreCase("bigdecimal")) {
+                attributeType = AttributeType.BIGDECIMAL;
+            } else if (type.equalsIgnoreCase("biginteger")) {
+                attributeType = AttributeType.BIGINTEGER;
+            } else if (type.equalsIgnoreCase("byte")) {
+                attributeType = AttributeType.BYTE;
+            } else if (type.equalsIgnoreCase("char")) {
+                attributeType = AttributeType.CHAR;
+            } else if (type.equalsIgnoreCase("short")) {
+                attributeType = AttributeType.SHORT;
+            } else if (type.equalsIgnoreCase("listboolean")) {
+                attributeType = AttributeType.LIST_BOOLEAN;
+            } else if (type.equalsIgnoreCase("listint")) {
+                attributeType = AttributeType.LIST_INTEGER;
+            } else if (type.equalsIgnoreCase("listlong")) {
+                attributeType = AttributeType.LIST_LONG;
+            } else if (type.equalsIgnoreCase("listfloat")) {
+                attributeType = AttributeType.LIST_FLOAT;
+            } else if (type.equalsIgnoreCase("listdouble")) {
+                attributeType = AttributeType.LIST_DOUBLE;
+            } else if (type.equalsIgnoreCase("liststring")) {
+                attributeType = AttributeType.LIST_STRING;
+            } else if (type.equalsIgnoreCase("listbigdecimal")) {
+                attributeType = AttributeType.LIST_BIGDECIMAL;
+            } else if (type.equalsIgnoreCase("listbiginteger")) {
+                attributeType = AttributeType.LIST_BIGINTEGER;
+            } else if (type.equalsIgnoreCase("listbyte")) {
+                attributeType = AttributeType.LIST_BYTE;
+            } else if (type.equalsIgnoreCase("listchar")) {
+                attributeType = AttributeType.LIST_CHARACTER;
+            } else if (type.equalsIgnoreCase("listshort")) {
+                attributeType = AttributeType.LIST_SHORT;
             } else {
                 return;
             }
@@ -560,10 +600,18 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             }
 
             //Add to model
-            if ("node".equalsIgnoreCase(classAtt)) {
+            if ("node".equalsIgnoreCase(classAtt) || classAtt.isEmpty()) {
+                if (container.getAttributeModel().getNodeTable().hasColumn(id)) {
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributecolumn_exist", id));
+                    return;
+                }
                 container.getAttributeModel().getNodeTable().addColumn(id, title, attributeType, AttributeOrigin.DATA, defaultValue);
                 report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_nodeattribute", title, attributeType.getTypeString()));
-            } else if ("edge".equalsIgnoreCase(classAtt)) {
+            } else if ("edge".equalsIgnoreCase(classAtt) || classAtt.isEmpty()) {
+                if (container.getAttributeModel().getEdgeTable().hasColumn(id)) {
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributecolumn_exist", id));
+                    return;
+                }
                 container.getAttributeModel().getEdgeTable().addColumn(id, title, attributeType, AttributeOrigin.DATA, defaultValue);
                 report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_edgeattribute", title, attributeType.getTypeString()));
             }
