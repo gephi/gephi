@@ -25,16 +25,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
+import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.AttributesController;
-import org.gephi.datalaboratory.impl.utils.SimpleHTMLReport;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
+import org.gephi.ui.components.SimpleHTMLReport;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.WindowManager;
 
 /**
  * AttributeColumnsManipulator that duplicate a AttributeColumn of a AttributeTable setting the same values for the rows.
@@ -73,7 +75,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
             });
         }
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
         sb.append("<html><ol>");
 
@@ -91,9 +93,12 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         }
 
         sb.append("</ol></html>");
-        SimpleHTMLReport report = new SimpleHTMLReport(
-                NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.report.title",
-                column.getTitle()), sb.toString());//Automatically show report dialog with the html.
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), sb.toString());
+            }
+        });
     }
 
     public String getName() {

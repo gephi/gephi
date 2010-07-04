@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.desktop.statistics;
+package org.gephi.ui.components;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.awt.Dimension;
@@ -50,7 +50,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.WindowConstants;
 import javax.swing.text.View;
-import org.gephi.ui.components.JHTMLEditorPane;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -152,11 +151,11 @@ class ReportSelection implements Transferable {
  *
  * @author pjmcswee
  */
-public class StatisticsReportPanel extends javax.swing.JDialog implements Printable {
+public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
     private String mHTMLReport;
 
-    public StatisticsReportPanel(java.awt.Frame parent, String html) {
+    public SimpleHTMLReport(java.awt.Frame parent, String html) {
         super(parent, false);
         mHTMLReport = html;
         initComponents();
@@ -165,7 +164,6 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
         Dimension dimension = new Dimension(700, 600);
         setPreferredSize(dimension);
         displayPane.setCaretPosition(0);
-        setTitle("HTML Report");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         pack();
         setLocationRelativeTo(parent);
@@ -190,10 +188,11 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
         saveButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.title")); // NOI18N
 
         jScrollPane1.setViewportView(displayPane);
 
-        closeButton.setText(org.openide.util.NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.closeButton.text")); // NOI18N
+        closeButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.closeButton.text")); // NOI18N
         closeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeButtonActionPerformed(evt);
@@ -203,8 +202,8 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        printButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/statistics/resources/print.png"))); // NOI18N
-        printButton.setText(org.openide.util.NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.printButton.text")); // NOI18N
+        printButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/print.png"))); // NOI18N
+        printButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.printButton.text")); // NOI18N
         printButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 printButtonActionPerformed(evt);
@@ -212,8 +211,8 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
         });
         jToolBar1.add(printButton);
 
-        copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/statistics/resources/copy.gif"))); // NOI18N
-        copyButton.setText(org.openide.util.NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.copyButton.text")); // NOI18N
+        copyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/copy.gif"))); // NOI18N
+        copyButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.copyButton.text")); // NOI18N
         copyButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 copyButtonActionPerformed(evt);
@@ -221,8 +220,8 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
         });
         jToolBar1.add(copyButton);
 
-        saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/statistics/resources/save.png"))); // NOI18N
-        saveButton.setText(org.openide.util.NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.saveButton.text")); // NOI18N
+        saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/save.png"))); // NOI18N
+        saveButton.setText(org.openide.util.NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.saveButton.text")); // NOI18N
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveButtonActionPerformed(evt);
@@ -236,11 +235,11 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(closeButton)
                 .addContainerGap())
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -274,19 +273,18 @@ public class StatisticsReportPanel extends javax.swing.JDialog implements Printa
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         final String html = this.mHTMLReport;
 
-        final String path = NbPreferences.forModule(StatisticsReportPanel.class).get(LAST_PATH, null);
+        final String path = NbPreferences.forModule(SimpleHTMLReport.class).get(LAST_PATH, null);
         JFileChooser fileChooser = new JFileChooser(path);
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int result = fileChooser.showOpenDialog(WindowManager.getDefault().getMainWindow());
+        int result = fileChooser.showSaveDialog(WindowManager.getDefault().getMainWindow());
         if (result == JFileChooser.APPROVE_OPTION) {
             final File destinationFolder = fileChooser.getSelectedFile();
-            NbPreferences.forModule(StatisticsReportPanel.class).put(LAST_PATH, destinationFolder.getAbsolutePath());
+            NbPreferences.forModule(SimpleHTMLReport.class).put(LAST_PATH, destinationFolder.getAbsolutePath());
             Thread saveReportThread = new Thread(new Runnable() {
 
                 public void run() {
                     try {
                         saveReport(html, destinationFolder);
-                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(StatisticsReportPanel.class, "StatisticsReportPanel.status.saveSuccess", destinationFolder.getName()));
+                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(SimpleHTMLReport.class, "SimpleHTMLReport.status.saveSuccess", destinationFolder.getName()));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

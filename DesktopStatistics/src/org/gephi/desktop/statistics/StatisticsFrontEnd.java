@@ -30,6 +30,7 @@ import org.gephi.statistics.spi.StatisticsBuilder;
 import org.gephi.statistics.api.StatisticsController;
 import org.gephi.statistics.api.StatisticsModel;
 import org.gephi.statistics.spi.StatisticsUI;
+import org.gephi.ui.components.SimpleHTMLReport;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.longtask.api.LongTaskListener;
 import org.openide.DialogDescriptor;
@@ -175,7 +176,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
                 SwingUtilities.invokeLater(new Runnable() {
 
                     public void run() {
-                        StatisticsReportPanel dialog = new StatisticsReportPanel(WindowManager.getDefault().getMainWindow(), report);
+                        SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), report);
                     }
                 });
             }

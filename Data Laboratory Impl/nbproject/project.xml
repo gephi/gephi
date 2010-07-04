@@ -39,6 +39,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.gephi.ui.components</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.7.0.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.gephi.visualization</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -68,6 +76,14 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>8.3.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.windows</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>6.33.1</specification-version>
                     </run-dependency>
                 </dependency>
             </module-dependencies>
