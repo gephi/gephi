@@ -268,7 +268,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
             e.printStackTrace();
         }
 }//GEN-LAST:event_printButtonActionPerformed
-    private final String LAST_PATH = "StatisticsReportPanel_Save_Last_Path";
+    private final String LAST_PATH = "SimpleHTMLReport_Save_Last_Path";
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         final String html = this.mHTMLReport;

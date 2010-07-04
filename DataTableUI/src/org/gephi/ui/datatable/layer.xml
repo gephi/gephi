@@ -9,12 +9,6 @@
                 <attr name="iconBase" stringvalue="org/gephi/ui/datatable/resources/icon.png"/>
                 <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
             </file>
-            <file name="org-gephi-ui-datatable-LaboratoryAction.instance">
-                <attr name="component" methodvalue="org.gephi.ui.datatable.LaboratoryTopComponent.findInstance"/>
-                <attr name="displayName" bundlevalue="org.gephi.ui.datatable.Bundle#CTL_LaboratoryAction"/>
-                <attr name="iconBase" stringvalue="org/gephi/ui/datatable/resources/diamond.png"/>
-                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
-            </file>
         </folder>
     </folder>
     <folder name="Menu">
@@ -32,17 +26,12 @@
     <folder name="Windows2">
         <folder name="Components">
             <file name="DataTableTopComponent.settings" url="DataTableTopComponentSettings.xml"/>
-            <file name="LaboratoryTopComponent.settings" url="LaboratoryTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
             <folder name="datatablemode">
                 <file name="DataTableTopComponent.wstcref" url="DataTableTopComponentWstcref.xml"/>
             </folder>
             <file name="datatablemode.wsmode" url="datatableWsmode.xml"/>
-            <folder name="laboratorymode">
-                <file name="LaboratoryTopComponent.wstcref" url="LaboratoryTopComponentWstcref.xml"/>
-            </folder>
-            <file name="laboratorymode.wsmode" url="laboratoryWsmode.xml"/>
         </folder>
     </folder>
 </filesystem>

@@ -21,11 +21,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.datatable;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -35,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -47,8 +50,12 @@ import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.api.DataTablesEventListener;
+import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
+import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphEvent;
@@ -60,8 +67,22 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.BusyUtils;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.ui.general.actions.AddColumnPanel;
 import org.gephi.ui.utils.UIUtils;
+import org.jvnet.flamingo.common.CommandButtonDisplayState;
+import org.jvnet.flamingo.common.JCommandButton;
+import org.jvnet.flamingo.common.JCommandButtonStrip;
+import org.jvnet.flamingo.common.JCommandMenuButton;
+import org.jvnet.flamingo.common.RichTooltip;
+import org.jvnet.flamingo.common.icon.ImageWrapperResizableIcon;
+import org.jvnet.flamingo.common.popup.JCommandPopupMenu;
+import org.jvnet.flamingo.common.popup.JPopupPanel;
+import org.jvnet.flamingo.common.popup.PopupPanelCallback;
 import org.netbeans.swing.etable.ETableColumnModel;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -93,10 +114,13 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
     //Table
     private NodeDataTable nodeTable;
     private EdgeDataTable edgeTable;
+    //General actions buttons
+    private ArrayList<JButton> generalActionsButtons = new ArrayList<JButton>();
     //States
     ClassDisplayed classDisplayed = ClassDisplayed.NODE;//Display nodes by default at first.
     //Executor
     ExecutorService taskExecutor;
+    RefreshOnceHelperThread refreshOnceHelperThread;
 
     private DataTableTopComponent() {
 
@@ -131,9 +155,9 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         //Init
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         if (pc.getCurrentWorkspace() == null) {
-            clear();
+            clearAll();
         } else {
-            refresh();
+            refreshAll();
         }
         bannerPanel.setVisible(false);
     }
@@ -152,7 +176,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
 
             public void select(Workspace workspace) {
                 hideTable();
-                enableControls();
+                enableTableControls();
                 bannerPanel.setVisible(false);
 
                 AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
@@ -162,8 +186,8 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
                 graphModel = gc.getModel();
                 graphModel.addGraphListener(DataTableTopComponent.this);
                 dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
-                
-                refresh();
+
+                refreshAll();
             }
 
             public void unselect(Workspace workspace) {
@@ -173,15 +197,15 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
                 attributeModel.getEdgeTable().removeAttributeListener(DataTableTopComponent.this);
                 graphModel = null;
                 dataTablesModel = null;
-                clear();
+                clearAll();
             }
 
             public void close(Workspace workspace) {
-                clear();
+                clearAll();
             }
 
             public void disable() {
-                clear();
+                clearAll();
             }
         });
         if (pc.getCurrentWorkspace() != null) {
@@ -232,6 +256,57 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         });
     }
 
+    private void refreshAll() {
+        refreshTable();
+        refreshColumnManipulators();
+        refreshGeneralActionsButtons();
+    }
+
+    private void clearAll() {
+        clearTableControls();
+        clearColumnManipulators();
+        clearGeneralActionsButtons();
+    }
+
+    public void attributesChanged(AttributeEvent event) {
+        if (refreshOnceHelperThread == null || !refreshOnceHelperThread.isAlive()) {
+            refreshOnceHelperThread = new RefreshOnceHelperThread();
+            refreshOnceHelperThread.start();
+        } else {
+            refreshOnceHelperThread.eventAttended();
+        }
+//        if (!bannerPanel.isVisible() && classDisplayed != ClassDisplayed.NONE) {
+//            SwingUtilities.invokeLater(new Runnable() {
+//
+//                public void run() {
+//                    bannerPanel.setVisible(true);
+//                }
+//            });
+//        }
+//        refreshColumnManipulators();
+//        refreshGeneralActionsButtons();
+    }
+
+    public void graphChanged(GraphEvent event) {
+        if (refreshOnceHelperThread == null || !refreshOnceHelperThread.isAlive()) {
+            refreshOnceHelperThread = new RefreshOnceHelperThread();
+            refreshOnceHelperThread.start();
+        } else {
+            refreshOnceHelperThread.eventAttended();
+        }
+//        if (!bannerPanel.isVisible() && classDisplayed != ClassDisplayed.NONE) {
+//            SwingUtilities.invokeLater(new Runnable() {
+//
+//                public void run() {
+//                    bannerPanel.setVisible(true);
+//                }
+//            });
+//        }
+//        refreshColumnManipulators();
+//        refreshGeneralActionsButtons();
+    }
+
+    /****************Table related methods:*****************/
     private void refreshFilter() {
         if (classDisplayed.equals(ClassDisplayed.NODE)) {
             if (nodeTable.setFilter(filterTextField.getText(), columnComboBox.getSelectedIndex())) {
@@ -328,28 +403,6 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         Future future = taskExecutor.submit(initEdgesRunnable);
     }
 
-    public void attributesChanged(AttributeEvent event) {
-        if (!bannerPanel.isVisible() && classDisplayed != ClassDisplayed.NONE) {
-            SwingUtilities.invokeLater(new Runnable() {
-
-                public void run() {
-                    bannerPanel.setVisible(true);
-                }
-            });
-        }
-    }
-
-    public void graphChanged(GraphEvent event) {
-        if (!bannerPanel.isVisible() && classDisplayed != ClassDisplayed.NONE) {
-            SwingUtilities.invokeLater(new Runnable() {
-
-                public void run() {
-                    bannerPanel.setVisible(true);
-                }
-            });
-        }
-    }
-
     private void refreshFilterColumns() {
         if (classDisplayed.equals(ClassDisplayed.NODE)) {
             ETableColumnModel columnModel = (ETableColumnModel) nodeTable.getOutlineTable().getColumnModel();
@@ -371,7 +424,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         }
     }
 
-    private void enableControls() {
+    private void enableTableControls() {
         nodesButton.setEnabled(true);
         edgesButton.setEnabled(true);
         filterTextField.setEnabled(true);
@@ -379,7 +432,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         visibleGraphCheckbox.setEnabled(true);
     }
 
-    private void clear() {
+    private void clearTableControls() {
         elementGroup.clearSelection();
         nodesButton.setEnabled(false);
         edgesButton.setEnabled(false);
@@ -394,7 +447,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         tableScrollPane.setViewportView(null);
     }
 
-    private void refresh() {
+    private void refreshTable() {
         bannerPanel.setVisible(false);
         if (classDisplayed.equals(ClassDisplayed.NODE)) {
             nodesButton.setSelected(true);
@@ -413,7 +466,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
                 nodesButton.setSelected(true);
                 tableScrollPane.setViewportView(nodeTable.getOutlineTable());
                 refreshFilterColumns();
-                refresh();
+                refreshAll();
             }
         });
     }
@@ -426,7 +479,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
                 edgesButton.setSelected(true);
                 tableScrollPane.setViewportView(edgeTable.getTable());
                 refreshFilterColumns();
-                refresh();
+                refreshAll();
             }
         });
     }
@@ -435,7 +488,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                refresh();
+                refreshTable();
             }
         });
     }
@@ -458,6 +511,226 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         });
     }
 
+    /*************Column manipulators related methods:*************/
+    private void refreshColumnManipulators() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                clearColumnManipulators();
+                prepareAddColumnButton();
+                prepareColumnManipulatorsButtons();
+                columnManipulatorsPanel.updateUI();
+            }
+        });
+    }
+
+    private void clearColumnManipulators() {
+        columnManipulatorsPanel.removeAll();
+        columnManipulatorsPanel.updateUI();
+    }
+
+    /**
+     * Creates the buttons that call the AttributeColumnManipulators.
+     */
+    private void prepareColumnManipulatorsButtons() {
+        AttributeModel attributeModel = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
+        AttributeTable table;
+        if (classDisplayed == ClassDisplayed.NODE) {
+            table = attributeModel.getNodeTable();
+        } else {
+            table = attributeModel.getEdgeTable();
+        }
+
+        DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+        AttributeColumnsManipulator[] manipulators = dlh.getAttributeColumnsManipulators();
+
+        JCommandButtonStrip currentButtonGroup = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
+        currentButtonGroup.setDisplayState(CommandButtonDisplayState.BIG);
+        Integer lastManipulatorType = null;
+        for (AttributeColumnsManipulator acm : manipulators) {
+            if (lastManipulatorType == null) {
+                lastManipulatorType = acm.getType();
+            }
+            if (lastManipulatorType != acm.getType()) {
+                columnManipulatorsPanel.add(currentButtonGroup);
+                currentButtonGroup = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
+                currentButtonGroup.setDisplayState(CommandButtonDisplayState.BIG);
+            }
+            lastManipulatorType = acm.getType();
+            currentButtonGroup.add(prepareJCommandButton(table, acm));
+        }
+        columnManipulatorsPanel.add(currentButtonGroup);
+    }
+
+    /**
+     * Creates a JCommandButton for the specified table and AttributeColumnsManipulator
+     * @param table Table
+     * @param acm AttributeColumnsManipulator
+     * @return Prepared JCommandButton
+     */
+    private JCommandButton prepareJCommandButton(final AttributeTable table, final AttributeColumnsManipulator acm) {
+        final AttributeColumn[] columns = table.getColumns();
+        JCommandButton manipulatorButton;
+        if (acm.getIcon() != null) {
+            manipulatorButton = new JCommandButton(acm.getName(), ImageWrapperResizableIcon.getIcon(acm.getIcon(), new Dimension(16, 16)));
+        } else {
+            manipulatorButton = new JCommandButton(acm.getName());
+        }
+        manipulatorButton.setCommandButtonKind(JCommandButton.CommandButtonKind.POPUP_ONLY);
+        manipulatorButton.setDisplayState(CommandButtonDisplayState.MEDIUM);
+        if (acm.getDescription() != null && !acm.getDescription().isEmpty()) {
+            manipulatorButton.setPopupRichTooltip(new RichTooltip(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.RichToolTip.title.text"), acm.getDescription()));
+        }
+
+        final ArrayList<AttributeColumn> availableColumns = new ArrayList<AttributeColumn>();
+        for (final AttributeColumn column : columns) {
+            if (acm.canManipulateColumn(table, column)) {
+                availableColumns.add(column);
+            }
+        }
+
+        if (!availableColumns.isEmpty()) {
+            manipulatorButton.setPopupCallback(new PopupPanelCallback() {
+
+                public JPopupPanel getPopupPanel(JCommandButton jcb) {
+                    JCommandPopupMenu popup = new JCommandPopupMenu();
+
+                    JCommandMenuButton button;
+                    for (final AttributeColumn column : availableColumns) {
+
+                        button = new JCommandMenuButton(column.getTitle(), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("org/gephi/ui/datatable/resources/column.png"), new Dimension(16, 16)));
+                        button.addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                Lookup.getDefault().lookup(DataLaboratoryHelper.class).executeAttributeColumnsManipulator(acm, table, column);
+                            }
+                        });
+                        popup.addMenuButton(button);
+                    }
+                    return popup;
+                }
+            });
+        } else {
+            manipulatorButton.setEnabled(false);
+        }
+
+        return manipulatorButton;
+    }
+
+    /**
+     * Create the special Add new column buttons for nodes and edges table.
+     */
+    private void prepareAddColumnButton() {
+        JCommandButtonStrip strip = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
+        strip.setDisplayState(CommandButtonDisplayState.BIG);
+        JCommandButton button = new JCommandButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.addColumnButton.text"), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("/org/gephi/ui/datatable/resources/table-insert-column.png", true), new Dimension(16, 16)));
+        button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
+        button.setDisplayState(CommandButtonDisplayState.BIG);
+        if (classDisplayed == ClassDisplayed.NODE) {
+            button.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    showAddColumnUI(AddColumnPanel.Mode.NODES_TABLE);
+                }
+            });
+        } else {
+            button.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    showAddColumnUI(AddColumnPanel.Mode.EDGES_TABLE);
+                }
+            });
+        }
+        strip.add(button);
+        columnManipulatorsPanel.add(strip);
+    }
+
+    private void showAddColumnUI(AddColumnPanel.Mode mode) {
+        AddColumnPanel panel = new AddColumnPanel();
+        panel.setup(mode);
+        DialogDescriptor dd = new DialogDescriptor(panel, panel.getDisplayName());
+        if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+            panel.execute();
+        }
+    }
+
+    /**************General actions manipulators related methods:***************/
+    private void refreshGeneralActionsButtons() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                clearGeneralActionsButtons();
+                prepareGeneralActionsButtons();
+            }
+        });
+    }
+
+    private void clearGeneralActionsButtons() {
+        for (JButton b : generalActionsButtons) {
+            controlToolbar.remove(b);
+        }
+        generalActionsButtons.clear();
+        controlToolbar.updateUI();
+    }
+
+    /**
+     * Adds the buttons for the GeneralActionsManipulators.
+     */
+    public void prepareGeneralActionsButtons() {
+        //Figure out the index to place the buttons, in order to put them between separator 2 and the boxGlue.
+        int index = controlToolbar.getComponentIndex(boxGlue);
+
+        final DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+        GeneralActionsManipulator[] manipulators = dlh.getGeneralActionsManipulators();
+        JButton button;
+        for (final GeneralActionsManipulator m : manipulators) {
+            button = new JButton(m.getName(), m.getIcon());
+            if (m.getDescription() != null && !m.getDescription().isEmpty()) {
+                button.setToolTipText(m.getDescription());
+            }
+            if (m.canExecute()) {
+                button.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        dlh.executeManipulator(m);
+                    }
+                });
+            } else {
+                button.setEnabled(false);
+            }
+            controlToolbar.add(button, index);
+            index++;
+            generalActionsButtons.add(button);
+        }
+        controlToolbar.updateUI();
+    }
+
+    /**
+     * This thread is used for processing graphChanged and attributesChanged events.
+     * It takes care to only refresh the UI once (the last one) when a lot of events come in a short period of time.
+     */
+    class RefreshOnceHelperThread extends Thread {
+
+        private boolean moreEvents = false;
+
+        @Override
+        public void run() {
+            try {
+                do {
+                    Thread.sleep(100);
+                    moreEvents = false;
+                } while (moreEvents);
+                DataTableTopComponent.this.refreshAll();
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+
+        public void eventAttended() {
+            this.moreEvents = true;
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -473,6 +746,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         edgesButton = new javax.swing.JToggleButton();
         separator = new javax.swing.JToolBar.Separator();
         visibleGraphCheckbox = new javax.swing.JCheckBox();
+        separator2 = new javax.swing.JToolBar.Separator();
         boxGlue = new javax.swing.JLabel();
         labelFilter = new org.jdesktop.swingx.JXLabel();
         filterTextField = new javax.swing.JTextField();
@@ -481,6 +755,8 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         bannerPanel = new javax.swing.JPanel();
         labelBanner = new javax.swing.JLabel();
         refreshButton = new javax.swing.JButton();
+        attributeColumnsScrollPane = new javax.swing.JScrollPane();
+        columnManipulatorsPanel = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -516,6 +792,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         visibleGraphCheckbox.setFocusable(false);
         visibleGraphCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         controlToolbar.add(visibleGraphCheckbox);
+        controlToolbar.add(separator2);
 
         org.openide.awt.Mnemonics.setLocalizedText(boxGlue, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.boxGlue.text")); // NOI18N
         boxGlue.setMaximumSize(new java.awt.Dimension(32767, 32767));
@@ -539,6 +816,8 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         add(controlToolbar, gridBagConstraints);
+
+        tableScrollPane.setMinimumSize(new java.awt.Dimension(100, 100));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -582,6 +861,21 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         gridBagConstraints.weightx = 1.0;
         add(bannerPanel, gridBagConstraints);
+
+        attributeColumnsScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.attributeColumnsPanel.title"))); // NOI18N
+        attributeColumnsScrollPane.setMinimumSize(new java.awt.Dimension(200, 130));
+        attributeColumnsScrollPane.setPreferredSize(new java.awt.Dimension(200, 130));
+
+        columnManipulatorsPanel.setMinimumSize(new java.awt.Dimension(200, 100));
+        columnManipulatorsPanel.setPreferredSize(new java.awt.Dimension(200, 100));
+        columnManipulatorsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 20));
+        attributeColumnsScrollPane.setViewportView(columnManipulatorsPanel);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        add(attributeColumnsScrollPane, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
@@ -596,9 +890,11 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         selectNodesTable();
 }//GEN-LAST:event_nodesButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane attributeColumnsScrollPane;
     private javax.swing.JPanel bannerPanel;
     private javax.swing.JLabel boxGlue;
     private javax.swing.JComboBox columnComboBox;
+    private javax.swing.JPanel columnManipulatorsPanel;
     private javax.swing.JToolBar controlToolbar;
     private javax.swing.JToggleButton edgesButton;
     private javax.swing.ButtonGroup elementGroup;
@@ -608,6 +904,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
     private javax.swing.JToggleButton nodesButton;
     private javax.swing.JButton refreshButton;
     private javax.swing.JToolBar.Separator separator;
+    private javax.swing.JToolBar.Separator separator2;
     private javax.swing.JScrollPane tableScrollPane;
     private javax.swing.JCheckBox visibleGraphCheckbox;
     // End of variables declaration//GEN-END:variables
