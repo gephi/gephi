@@ -18,11 +18,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.partition.plugin;
+package org.gephi.ui.partition.plugin;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,6 +44,7 @@ import javax.swing.table.TableColumn;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
+import org.gephi.partition.plugin.NodeColorTransformer;
 import org.gephi.partition.spi.Transformer;
 import org.gephi.ui.utils.PaletteUtils;
 import org.openide.util.NbBundle;

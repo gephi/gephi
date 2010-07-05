@@ -3,39 +3,47 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>org.gephi.partition.api</code-name-base>
+            <code-name-base>org.gephi.ui.partition.plugin</code-name-base>
             <suite-component/>
             <module-dependencies>
                 <dependency>
-                    <code-name-base>org.gephi.data.attributes.api</code-name-base>
+                    <code-name-base>org.gephi.partition.api</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>0.7</specification-version>
+                        <specification-version>0.7.0.5</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.gephi.graph.api</code-name-base>
+                    <code-name-base>org.gephi.partition.plugin</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>0.7</specification-version>
+                        <specification-version>0.7.0.2</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.gephi.project.api</code-name-base>
+                    <code-name-base>org.gephi.ui.components</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>0.7</specification-version>
+                        <specification-version>0.7.0.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.gephi.utils.collection</code-name-base>
+                    <code-name-base>org.gephi.ui.utils</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>0.7</specification-version>
+                        <specification-version>0.7.0.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.util</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>8.6.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -47,10 +55,7 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages>
-                <package>org.gephi.partition.api</package>
-                <package>org.gephi.partition.spi</package>
-            </public-packages>
+            <public-packages/>
         </data>
     </configuration>
 </project>
