@@ -37,4 +37,12 @@ public interface DataTablesEventListener {
     void setNodeTableSelection(Node[] nodes);
 
     void setEdgeTableSelection(Edge[] edges);
+
+    Node[] getNodeTableSelection();
+
+    Edge[] getEdgeTableSelection();
+
+    boolean isNodeTableMode();
+
+    boolean isEdgeTableMode();
 }

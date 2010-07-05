@@ -24,21 +24,20 @@ import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
-
 /**
  * This interface defines part of the Data Laboratory API.
  * It provides methods to control the Data Table UI that shows a table for nodes and other for edges.
  * This is done by registering the data table ui as a listener of these events that can be requested with this controller.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface DataTablesController{
+public interface DataTablesController {
 
     /**
      * Requests the tables implementation to show nodes table.
      */
     void selectNodesTable();
 
-     /**
+    /**
      * Requests the tables implementation to show edges table.
      */
     void selectEdgesTable();
@@ -50,7 +49,7 @@ public interface DataTablesController{
      */
     void selectTable(AttributeTable table);
 
-     /**
+    /**
      * Requests the tables implementation to refresh the data of the table being shown.
      */
     void refreshCurrentTable();
@@ -71,11 +70,29 @@ public interface DataTablesController{
      * Register a listener for these requests.
      * @param listener Instance of DataTablesEventListener
      */
-    void addDataTablesEventListener(DataTablesEventListener listener);
+    void setDataTablesEventListener(DataTablesEventListener listener);
 
     /**
-     * Remove a registered listener for these requests.
-     * @param listener Instance of DataTablesEventListener
+     * Request the tables implementation to provide the selected nodes in nodes table.
+     * @return Array of selected nodes
      */
-    void removeDataTablesEventListener(DataTablesEventListener listener);
+    Node[] getNodeTableSelection();
+
+    /**
+     * Request the tables implementation to provide the selected edges in edges table.
+     * @return Array of selected edges
+     */
+    Edge[] getEdgeTableSelection();
+
+    /**
+     * Checks if the data tables implementation is showing nodes table
+     * @return True if nodes table is being shown, false otherwise
+     */
+    boolean isNodeTableMode();
+
+    /**
+     * Checks if the data tables implementation is showing edges table
+     * @return True if edges table is being shown, false otherwise
+     */
+    boolean isEdgeTableMode();
 }

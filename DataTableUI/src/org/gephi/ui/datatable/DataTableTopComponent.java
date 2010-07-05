@@ -164,7 +164,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
 
     private void initEvents() {
         //DataTablesEvent listener
-        Lookup.getDefault().lookup(DataTablesController.class).addDataTablesEventListener(this);
+        Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(this);
         //Workspace Listener
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
@@ -509,6 +509,22 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
                 edgeTable.setEdgesSelection(edges);
             }
         });
+    }
+
+    public Node[] getNodeTableSelection(){
+        return nodeTable.getNodesFromSelectedRows();
+    }
+
+    public Edge[] getEdgeTableSelection(){
+        return edgeTable.getEdgesFromSelectedRows();
+    }
+
+    public boolean isNodeTableMode() {
+        return classDisplayed==ClassDisplayed.NODE;
+    }
+
+    public boolean isEdgeTableMode() {
+        return classDisplayed==ClassDisplayed.EDGE;
     }
 
     /*************Column manipulators related methods:*************/

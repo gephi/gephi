@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl;
 
-import java.util.ArrayList;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.DataTablesController;
@@ -39,26 +38,18 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = DataTablesController.class)
 public class DataTablesControllerImpl implements DataTablesController {
 
-    ArrayList<DataTablesEventListener> listeners = new ArrayList<DataTablesEventListener>();
+    DataTablesEventListener listener;
 
-    public void addDataTablesEventListener(DataTablesEventListener listener) {
-        listeners.add(listener);
-    }
-
-    public void removeDataTablesEventListener(DataTablesEventListener listener) {
-        listeners.remove(listener);
+    public void setDataTablesEventListener(DataTablesEventListener listener) {
+        this.listener = listener;
     }
 
     public void selectNodesTable() {
-        for (DataTablesEventListener l : listeners) {
-            l.selectNodesTable();
-        }
+        listener.selectNodesTable();
     }
 
     public void selectEdgesTable() {
-        for (DataTablesEventListener l : listeners) {
-            l.selectEdgesTable();
-        }
+        listener.selectEdgesTable();
     }
 
     public void selectTable(AttributeTable table) {
@@ -71,20 +62,30 @@ public class DataTablesControllerImpl implements DataTablesController {
     }
 
     public void refreshCurrentTable() {
-        for (DataTablesEventListener l : listeners) {
-            l.refreshCurrentTable();
-        }
+        listener.refreshCurrentTable();
     }
 
     public void setNodeTableSelection(Node[] nodes) {
-        for (DataTablesEventListener l : listeners) {
-            l.setNodeTableSelection(nodes);
-        }
+        listener.setNodeTableSelection(nodes);
     }
 
     public void setEdgeTableSelection(Edge[] edges) {
-        for (DataTablesEventListener l : listeners) {
-            l.setEdgeTableSelection(edges);
-        }
+        listener.setEdgeTableSelection(edges);
+    }
+
+    public Node[] getNodeTableSelection() {
+        return listener.getNodeTableSelection();
+    }
+
+    public Edge[] getEdgeTableSelection() {
+        return listener.getEdgeTableSelection();
+    }
+
+    public boolean isNodeTableMode() {
+        return listener.isNodeTableMode();
+    }
+
+    public boolean isEdgeTableMode() {
+        return listener.isEdgeTableMode();
     }
 }

@@ -465,7 +465,7 @@ public class NodeDataTable {
         return immutableTreeNode.getNode();
     }
 
-    private Node[] getNodesFromSelectedRows() {
+    public Node[] getNodesFromSelectedRows() {
         int[] selectedRows = outlineTable.getSelectedRows();
         Node[] node = new Node[selectedRows.length];
         for (int i = 0; i < node.length; i++) {

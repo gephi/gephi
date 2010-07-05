@@ -429,7 +429,7 @@ public class EdgeDataTable {
         return ((EdgeDataTableModel) table.getModel()).getEdgeAtRow(table.convertRowIndexToModel(row));
     }
 
-    private Edge[] getEdgesFromSelectedRows() {
+    public Edge[] getEdgesFromSelectedRows() {
         int[] selectedRows = table.getSelectedRows();
         Edge[] edges = new Edge[selectedRows.length];
         for (int i = 0; i < edges.length; i++) {
