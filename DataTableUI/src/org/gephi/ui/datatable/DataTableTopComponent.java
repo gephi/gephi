@@ -710,15 +710,15 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
      * It takes care to only refresh the UI once (the last one) when a lot of events come in a short period of time.
      */
     class RefreshOnceHelperThread extends Thread {
-
+        private static final int CHECK_TIME_INTERVAL=50;//50 ms.
         private boolean moreEvents = false;
 
         @Override
         public void run() {
             try {
                 do {
-                    Thread.sleep(100);
                     moreEvents = false;
+                    Thread.sleep(CHECK_TIME_INTERVAL);
                 } while (moreEvents);
                 DataTableTopComponent.this.refreshAll();
             } catch (InterruptedException ex) {

@@ -39,8 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.WindowManager;
 
 /**
- * AttributeColumnsManipulator that duplicate a AttributeColumn of a AttributeTable setting the same values for the rows.
- * Allow the user to select the title and AttributeType of the new column in the UI
+ * AttributeColumnsManipulator that shows a report with a list of the different values of a column and their frequency of appearance.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)

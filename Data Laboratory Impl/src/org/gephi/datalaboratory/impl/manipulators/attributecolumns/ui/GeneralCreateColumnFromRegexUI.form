@@ -59,28 +59,28 @@
     <Component class="javax.swing.JLabel" name="titleLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="CreateBooleanMatchesColumnUI.titleLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="GeneralCreateColumnFromRegexUI.titleLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="titleTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="CreateBooleanMatchesColumnUI.titleTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="GeneralCreateColumnFromRegexUI.titleTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="regexLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="CreateBooleanMatchesColumnUI.regexLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="GeneralCreateColumnFromRegexUI.regexLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="regexTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="CreateBooleanMatchesColumnUI.regexTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="GeneralCreateColumnFromRegexUI.regexTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

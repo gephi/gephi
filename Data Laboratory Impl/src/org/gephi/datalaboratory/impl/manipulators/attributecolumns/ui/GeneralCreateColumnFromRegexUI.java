@@ -28,7 +28,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalaboratory.impl.manipulators.attributecolumns.CreateBooleanMatchesColumn;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.GeneralCreateColumnFromRegex;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.openide.util.NbBundle;
@@ -37,14 +37,18 @@ import org.openide.util.NbBundle;
  * UI for CreateBooleanMatchesColumn AttributeColumnsManipulator
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class CreateBooleanMatchesColumnUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
-
+public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
+    public enum Mode{
+        BOOLEAN,
+        MATCHING_GROUPS
+    }
+    private Mode mode=Mode.BOOLEAN;
     private static final Color invalidFilterColor = new Color(254, 242, 242);
-    private CreateBooleanMatchesColumn manipulator;
+    private GeneralCreateColumnFromRegex manipulator;
     private Pattern pattern;
 
     /** Creates new form CreateBooleanMatchesColumnUI */
-    public CreateBooleanMatchesColumnUI() {
+    public GeneralCreateColumnFromRegexUI() {
         initComponents();
         regexTextField.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -63,8 +67,15 @@ public class CreateBooleanMatchesColumnUI extends javax.swing.JPanel implements 
     }
 
     public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column) {
-        this.manipulator = (CreateBooleanMatchesColumn) m;
-        descriptionLabel.setText(NbBundle.getMessage(CreateBooleanMatchesColumnUI.class, "CreateBooleanMatchesColumnUI.descriptionLabel.text",column.getTitle()));
+        this.manipulator = (GeneralCreateColumnFromRegex) m;
+        switch(mode){
+            case BOOLEAN:
+                descriptionLabel.setText(NbBundle.getMessage(GeneralCreateColumnFromRegexUI.class, "GeneralCreateColumnFromRegexUI.descriptionLabel.text.boolean",column.getTitle()));
+                break;
+            case MATCHING_GROUPS:
+                descriptionLabel.setText(NbBundle.getMessage(GeneralCreateColumnFromRegexUI.class, "GeneralCreateColumnFromRegexUI.descriptionLabel.text.matching_groups",column.getTitle()));
+                break;
+        }
         refreshPattern();
     }
 
@@ -92,6 +103,14 @@ public class CreateBooleanMatchesColumnUI extends javax.swing.JPanel implements 
         }
     }
 
+    public Mode getMode() {
+        return mode;
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
+    }  
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -107,13 +126,13 @@ public class CreateBooleanMatchesColumnUI extends javax.swing.JPanel implements 
         regexTextField = new javax.swing.JTextField();
         descriptionLabel = new javax.swing.JLabel();
 
-        titleLabel.setText(org.openide.util.NbBundle.getMessage(CreateBooleanMatchesColumnUI.class, "CreateBooleanMatchesColumnUI.titleLabel.text")); // NOI18N
+        titleLabel.setText(org.openide.util.NbBundle.getMessage(GeneralCreateColumnFromRegexUI.class, "GeneralCreateColumnFromRegexUI.titleLabel.text")); // NOI18N
 
-        titleTextField.setText(org.openide.util.NbBundle.getMessage(CreateBooleanMatchesColumnUI.class, "CreateBooleanMatchesColumnUI.titleTextField.text")); // NOI18N
+        titleTextField.setText(org.openide.util.NbBundle.getMessage(GeneralCreateColumnFromRegexUI.class, "GeneralCreateColumnFromRegexUI.titleTextField.text")); // NOI18N
 
-        regexLabel.setText(org.openide.util.NbBundle.getMessage(CreateBooleanMatchesColumnUI.class, "CreateBooleanMatchesColumnUI.regexLabel.text")); // NOI18N
+        regexLabel.setText(org.openide.util.NbBundle.getMessage(GeneralCreateColumnFromRegexUI.class, "GeneralCreateColumnFromRegexUI.regexLabel.text")); // NOI18N
 
-        regexTextField.setText(org.openide.util.NbBundle.getMessage(CreateBooleanMatchesColumnUI.class, "CreateBooleanMatchesColumnUI.regexTextField.text")); // NOI18N
+        regexTextField.setText(org.openide.util.NbBundle.getMessage(GeneralCreateColumnFromRegexUI.class, "GeneralCreateColumnFromRegexUI.regexTextField.text")); // NOI18N
 
         descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setText(null);

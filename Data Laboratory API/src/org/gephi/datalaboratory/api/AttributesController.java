@@ -82,13 +82,24 @@ public interface AttributesController {
     Map<Object,Integer> calculateColumnValuesFrequencies(AttributeTable table,AttributeColumn column);
 
     /**
-     * 
-     * @param table
-     * @param column
-     * @param newColumnTitle
-     * @param regex
+     * Creates a new boolean column from the given column and regular expression with boolean values that indicate if
+     * each of the old column values match the regular expression.
+     * @param table Table of the column to match
+     * @param column Column to match
+     * @param newColumnTitle Title for the new boolean column
+     * @param regex Regular expression to match
      */
     void createBooleanMatchesColumn(AttributeTable table, AttributeColumn column, String newColumnTitle,Pattern pattern);
+
+    /**
+     * Creates a new string list column from the given column and regular expression with values that are
+     * the list of matching groups of the given regular expression.
+     * @param table Table of the column to match
+     * @param column Column to match
+     * @param newColumnTitle Title for the new boolean column
+     * @param regex Regular expression to match
+     */
+    void createFoundGroupsListColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern);
 
     /**
      * Clears all node attributes except computed attributes and id, checking first that the node is in the graph.

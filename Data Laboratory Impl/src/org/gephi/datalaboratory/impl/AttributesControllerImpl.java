@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -31,6 +32,7 @@ import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalaboratory.api.AttributesController;
 import org.gephi.datalaboratory.api.GraphElementsController;
@@ -120,6 +122,32 @@ public class AttributesControllerImpl implements AttributesController {
                     matcher=pattern.matcher("");
                 }
                 attributes.setValue(newColumn.getIndex(), new Boolean(matcher.matches()));
+            }
+        }
+    }
+
+    public void createFoundGroupsListColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern){
+        if (pattern != null) {
+            AttributeColumn newColumn = addAttributeColumn(table, newColumnTitle, AttributeType.LIST_STRING);
+            Matcher matcher;
+            Object value;
+            ArrayList<String> foundGroups=new ArrayList<String>();
+            for (Attributes attributes : getTableAttributeRows(table)) {
+                value = attributes.getValue(column.getIndex());
+                if (value != null) {
+                    matcher = pattern.matcher(value.toString());
+                }else{
+                    matcher=pattern.matcher("");
+                }
+                while(matcher.find()){
+                    foundGroups.add(matcher.group());
+                }
+                if(foundGroups.size()>0){
+                    attributes.setValue(newColumn.getIndex(), new StringList(foundGroups.toArray(new String[0])));
+                    foundGroups.clear();
+                }else{
+                    attributes.setValue(newColumn.getIndex(), null);
+                }
             }
         }
     }

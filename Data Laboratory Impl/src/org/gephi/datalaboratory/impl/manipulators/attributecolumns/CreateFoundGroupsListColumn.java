@@ -21,11 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns;
 
 import java.awt.Image;
+import java.util.regex.Pattern;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.datalaboratory.api.AttributesController;
-import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.DuplicateColumnUI;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.GeneralCreateColumnFromRegexUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.openide.util.ImageUtilities;
@@ -34,25 +34,26 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * AttributeColumnsManipulator that duplicate a AttributeColumn of a AttributeTable setting the same values for the rows.
- * Allows the user to select the title and AttributeType of the new column in the UI
+ * AttributeColumnsManipulator that creates a new string list column from the given column and regular expression with values that are
+ * the list of matching groups of the given regular expression.
+ * Allows the user to select the title of the new column in the UI
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
-public class DuplicateColumn implements AttributeColumnsManipulator {
-    private String title;
-    private AttributeType columnType;
+public class CreateFoundGroupsListColumn extends GeneralCreateColumnFromRegex {
 
     public void execute(AttributeTable table, AttributeColumn column) {
-        Lookup.getDefault().lookup(AttributesController.class).duplicateColumn(table, column, title, columnType);
+        if (pattern != null) {
+            Lookup.getDefault().lookup(AttributesController.class).createFoundGroupsListColumn(table, column, title, pattern);
+        }
     }
 
     public String getName() {
-        return NbBundle.getMessage(DuplicateColumn.class, "DuplicateColumn.name");
+        return NbBundle.getMessage(CreateFoundGroupsListColumn.class, "CreateFoundGroupsListColumn.name");
     }
 
     public String getDescription() {
-        return "";
+        return NbBundle.getMessage(CreateFoundGroupsListColumn.class, "CreateFoundGroupsListColumn.description");
     }
 
     public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
@@ -60,34 +61,20 @@ public class DuplicateColumn implements AttributeColumnsManipulator {
     }
 
     public AttributeColumnsManipulatorUI getUI() {
-        return new DuplicateColumnUI();
+        GeneralCreateColumnFromRegexUI ui = new GeneralCreateColumnFromRegexUI();
+        ui.setMode(GeneralCreateColumnFromRegexUI.Mode.MATCHING_GROUPS);
+        return ui;
     }
 
     public int getType() {
-        return 0;
-    }
-
-    public int getPosition() {
         return 200;
     }
 
+    public int getPosition() {
+        return 100;
+    }
+
     public Image getIcon() {
-        return ImageUtilities.loadImage("org/gephi/datalaboratory/impl/manipulators/resources/table-duplicate-column.png");
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public AttributeType getColumnType() {
-        return columnType;
-    }
-
-    public void setColumnType(AttributeType columnType) {
-        this.columnType = columnType;
+        return ImageUtilities.loadImage("org/gephi/datalaboratory/impl/manipulators/resources/binocular--arrow.png");
     }
 }

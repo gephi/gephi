@@ -25,8 +25,7 @@ import java.util.regex.Pattern;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.AttributesController;
-import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.CreateBooleanMatchesColumnUI;
-import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.DuplicateColumnUI;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.GeneralCreateColumnFromRegexUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.openide.util.ImageUtilities;
@@ -35,16 +34,13 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * AttributeColumnsManipulator that duplicate a AttributeColumn of a AttributeTable setting the same values for the rows.
- * Allow the user to select the title and AttributeType of the new column in the UI
+ * AttributeColumnsManipulator that creates a new boolean column from the given column and regular expression with boolean values that indicate if
+ * each of the old column values match the regular expression.
+ * Allows the user to select the title of the new column in the UI
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
-public class CreateBooleanMatchesColumn implements AttributeColumnsManipulator {
-
-    private String title;
-    private Pattern pattern;
-
+public class CreateBooleanMatchesColumn extends GeneralCreateColumnFromRegex{
     public void execute(AttributeTable table, AttributeColumn column) {
         if (pattern != null) {
             Lookup.getDefault().lookup(AttributesController.class).createBooleanMatchesColumn(table, column, title, pattern);
@@ -64,7 +60,9 @@ public class CreateBooleanMatchesColumn implements AttributeColumnsManipulator {
     }
 
     public AttributeColumnsManipulatorUI getUI() {
-        return new CreateBooleanMatchesColumnUI();
+        GeneralCreateColumnFromRegexUI ui=new GeneralCreateColumnFromRegexUI();
+        ui.setMode(GeneralCreateColumnFromRegexUI.Mode.BOOLEAN);
+        return ui;
     }
 
     public int getType() {
@@ -77,21 +75,5 @@ public class CreateBooleanMatchesColumn implements AttributeColumnsManipulator {
 
     public Image getIcon() {
         return ImageUtilities.loadImage("org/gephi/datalaboratory/impl/manipulators/resources/binocular--arrow.png");
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Pattern getPattern() {
-        return pattern;
-    }
-
-    public void setPattern(Pattern pattern) {
-        this.pattern = pattern;
     }
 }
