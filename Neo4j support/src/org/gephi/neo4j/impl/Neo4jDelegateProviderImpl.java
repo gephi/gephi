@@ -3,6 +3,7 @@ package org.gephi.neo4j.impl;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
+import org.gephi.data.properties.PropertiesColumn;
 import org.neo4j.graphdb.GraphDatabaseService;
 
 
@@ -25,7 +26,10 @@ public class Neo4jDelegateProviderImpl implements AttributeValueDelegateProvider
 
     @Override
     public Object getEdgeValue(AttributeColumn attributeColumn, Object id) {
-        return graphDB.getRelationshipById((Long) id).getProperty(attributeColumn.getId());
+        if (attributeColumn.getId().equals(PropertiesColumn.NEO4J_RELATIONSHIP_TYPE.getId()))
+            return graphDB.getRelationshipById((Long) id).getType().name();
+        else
+            return graphDB.getRelationshipById((Long) id).getProperty(attributeColumn.getId());
     }
 
     public static Neo4jDelegateProviderImpl getInstance() {

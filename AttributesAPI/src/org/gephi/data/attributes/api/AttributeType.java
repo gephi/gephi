@@ -187,8 +187,6 @@ public enum AttributeType {
      * @return      the compatible <code>AttributeType</code>, or <code>null</code>
      */
     public static AttributeType parse(Object obj) {
-        System.out.println("parse: " + obj.getClass());
-
         Class<?> type = obj.getClass();
 
         for (AttributeType attributeType : values()) {

@@ -23,7 +23,7 @@ package org.gephi.data.attributes;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
-import org.gephi.data.attributes.type.AbstractList;
+import org.gephi.data.attributes.type.ListFactory;
 
 /**
  *
@@ -63,7 +63,7 @@ public final class AttributeValueImpl implements AttributeValue {
                 throw new AssertionError();
 
             if (result.getClass().isArray())
-                result = AbstractList.fromArray(result);
+                result = ListFactory.fromArray(result);
 
             return result;
         }

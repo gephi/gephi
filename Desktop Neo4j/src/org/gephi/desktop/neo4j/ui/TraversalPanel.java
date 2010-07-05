@@ -23,7 +23,7 @@ import org.netbeans.validation.api.ui.ValidationPanel;
 
 /**
  *
- * @author Martin Šlurla
+ * @author Martin Škurla
  */
 public class TraversalPanel extends javax.swing.JPanel {
     private final GraphDatabaseService graphDB;

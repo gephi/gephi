@@ -111,6 +111,7 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
         createNewProject();
 
         graphModelConvertor = GraphModelConvertor.getInstance(graphDB);
+        graphModelConvertor.createNeo4jRelationshipTypeGephiColumn();
 
         if (traverser == null) {
             for (org.neo4j.graphdb.Node node : graphDB.getAllNodes()) {

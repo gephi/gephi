@@ -10,6 +10,7 @@ import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
@@ -120,6 +121,16 @@ public class GraphModelConvertor {
         fillGephiEdgeDataWithNeoRelationshipData(gephiEdge, neoRelationship);
     }
 
+    public void createNeo4jRelationshipTypeGephiColumn() {
+        PropertiesColumn propertiesColumn = PropertiesColumn.NEO4J_RELATIONSHIP_TYPE;
+        
+        attributeModel.getEdgeTable().addColumn(propertiesColumn.getId(),
+                                                propertiesColumn.getTitle(),
+                                                AttributeType.STRING,
+                                                Neo4jDelegateProviderImpl.getInstance(),
+                                                null);
+    }
+
     private void fillGephiEdgeDataWithNeoRelationshipData(Edge gephiEdge, Relationship neoRelationship) {
         AttributeTable edgeTable = attributeModel.getEdgeTable();
         Attributes attributes = gephiEdge.getEdgeData().getAttributes();
@@ -136,6 +147,8 @@ public class GraphModelConvertor {
             else
                 attributes.setValue(neoPropertyKey, neoPropertyValue);
         }
+
+        attributes.setValue(PropertiesColumn.NEO4J_RELATIONSHIP_TYPE.getId(), neoRelationshipId);
     }
 
     public org.neo4j.graphdb.Node createNeoNodeFromGephiNode(org.gephi.graph.api.Node gephiNode) {
