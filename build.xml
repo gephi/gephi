@@ -130,6 +130,8 @@
                 <include name="org-gephi-utils-longtask.jar" />
                 <include name="org-gephi-utils-collection.jar"/>
                 <include name="org-gephi-ranking-api-jar"/>
+                <include name="org-gephi-partition-api.jar"/>
+                <include name="org-gephi-partition-plugin.jar"/>
             </fileset>
         </copy>
         <copy todir="${toolkit.tempdir}">
