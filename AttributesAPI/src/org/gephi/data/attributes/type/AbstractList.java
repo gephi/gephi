@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.data.attributes.type;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
@@ -172,6 +173,31 @@ public abstract class AbstractList<T> {
             hashCode = hash;
         }
         return hashCode;
+    }
+
+    public static AbstractList fromArray(Object array) {
+        Class<?> componentType = array.getClass().getComponentType();
+
+        if (componentType == byte.class)
+            return new ByteList((byte[]) array);
+        else if (componentType == short.class)
+            return new ShortList((short[]) array);
+        else if (componentType == int.class)
+            return new IntegerList((int[]) array);
+        else if (componentType == long.class)
+            return new LongList((long[]) array);
+        else if (componentType == float.class)
+            return new FloatList((float[]) array);
+        else if (componentType == double.class)
+            return new DoubleList((double[]) array);
+        else if (componentType == boolean.class)
+            return new BooleanList((boolean[]) array);
+        else if (componentType == char.class)
+            return new CharacterList((char[]) array);
+        else if (componentType == String.class)
+            return new StringList((String[]) array);//TODO doplnit pre wrapper??? pre bigInteger a bigDecimal
+
+        throw new AssertionError();
     }
 }
 

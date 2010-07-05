@@ -23,6 +23,7 @@ package org.gephi.data.attributes;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
+import org.gephi.data.attributes.type.AbstractList;
 
 /**
  *
@@ -53,12 +54,18 @@ public final class AttributeValueImpl implements AttributeValue {
 
             AttributeValueDelegateProvider attributeValueDelegateProvider = column.getProvider();
 
+            Object result;
             if (AttributeUtilsImpl.getDefault().isEdgeColumn(column))
-                return attributeValueDelegateProvider.getEdgeValue(column, value);
+                result = attributeValueDelegateProvider.getEdgeValue(column, value);
             else if (AttributeUtilsImpl.getDefault().isNodeColumn(column))
-                return attributeValueDelegateProvider.getNodeValue(column, value);
+                result = attributeValueDelegateProvider.getNodeValue(column, value);
             else
                 throw new AssertionError();
+
+            if (result.getClass().isArray())
+                result = AbstractList.fromArray(result);
+
+            return result;
         }
     }
 }

@@ -22,6 +22,7 @@ package org.gephi.data.attributes.api;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import org.gephi.data.attributes.type.BigDecimalList;
 import org.gephi.data.attributes.type.BigIntegerList;
 import org.gephi.data.attributes.type.BooleanList;
@@ -43,37 +44,43 @@ import org.gephi.data.attributes.type.TimeInterval;
  */
 public enum AttributeType {
 
-    BYTE(Byte.class),
-    SHORT(Short.class),
-    INT(Integer.class),
-    LONG(Long.class),
-    FLOAT(Float.class),
-    DOUBLE(Double.class),
+    BYTE      (Byte.class),
+    SHORT     (Short.class),
+    INT       (Integer.class),
+    LONG      (Long.class),
+    FLOAT     (Float.class),
+    DOUBLE    (Double.class),
     BIGINTEGER(BigInteger.class),
     BIGDECIMAL(BigDecimal.class),
 
-    BOOLEAN(Boolean.class),
-    CHAR(Character.class),
-    STRING(String.class),
+    BOOLEAN      (Boolean.class),
+    CHAR         (Character.class),
+    STRING       (String.class),
     TIME_INTERVAL(TimeInterval.class),
 
-    LIST_BYTE(ByteList.class),
-    LIST_SHORT(ShortList.class),
-    LIST_INTEGER(IntegerList.class),
-    LIST_LONG(LongList.class),
-    LIST_FLOAT(FloatList.class),
-    LIST_DOUBLE(DoubleList.class),
-    LIST_BIGINTEGER(BigIntegerList.class),
-    LIST_BIGDECIMAL(BigDecimalList.class),
+    LIST_BYTE      (ByteList.class,       new Class[] {byte.class, Byte.class}),
+    LIST_SHORT     (ShortList.class,      new Class[] {short.class, Short.class}),
+    LIST_INTEGER   (IntegerList.class,    new Class[] {int.class, Integer.class}),
+    LIST_LONG      (LongList.class,       new Class[] {long.class, Long.class}),
+    LIST_FLOAT     (FloatList.class,      new Class[] {float.class, Float.class}),
+    LIST_DOUBLE    (DoubleList.class,     new Class[] {double.class, Double.class}),
+    LIST_BIGINTEGER(BigIntegerList.class, new Class[] {BigInteger.class}),
+    LIST_BIGDECIMAL(BigDecimalList.class, new Class[] {BigDecimal.class}),
 
-    LIST_BOOLEAN(BooleanList.class),
-    LIST_CHARACTER(CharacterList.class),
-    LIST_STRING(StringList.class);
+    LIST_BOOLEAN  (BooleanList.class,     new Class[] {boolean.class, Boolean.class}),
+    LIST_CHARACTER(CharacterList.class,   new Class[] {char.class, Character.class}),
+    LIST_STRING   (StringList.class,      new Class[] {String.class});
 
     private final Class<?> type;
+    private final Class[] componentTypes;
 
     AttributeType(Class<?> type) {
+        this(type, null);
+    }
+
+    private AttributeType(Class<?> type, Class[] componentTypes) {
         this.type = type;
+        this.componentTypes = componentTypes;
     }
 
     @Override
@@ -97,6 +104,10 @@ public enum AttributeType {
      */
     public Class<?> getType() {
         return type;
+    }
+
+    public Class[] getComponentTypes() {
+        return componentTypes;
     }
 
     /**
@@ -176,17 +187,30 @@ public enum AttributeType {
      * @return      the compatible <code>AttributeType</code>, or <code>null</code>
      */
     public static AttributeType parse(Object obj) {
-        Class<?> c = obj.getClass();
+        System.out.println("parse: " + obj.getClass());
 
-        for (AttributeType attributeType : AttributeType.values()) {
-            if (c.equals(attributeType.getType())) {
+        Class<?> type = obj.getClass();
+
+        for (AttributeType attributeType : values()) {
+            if (type.equals(attributeType.getType()))
                 return attributeType;
-            }
         }
 
-        Class<?> arrayComponentType = c.getComponentType();//TODO remove
-        if (arrayComponentType == String.class)
-            return AttributeType.LIST_STRING;
+        return null;
+    }
+
+    public static AttributeType parseFromArray(Object array) {
+        Class<?> arrayComponentType = array.getClass().getComponentType();
+
+        if (arrayComponentType != null) {
+            for (AttributeType attributeType : values()) {
+
+                if (attributeType.getComponentTypes() != null) {
+                    if (Arrays.asList(attributeType.getComponentTypes()).contains(arrayComponentType))
+                        return attributeType;
+                }
+            }
+        }
 
         return null;
     }

@@ -90,8 +90,12 @@ public class GraphModelConvertor {
         for (String neoPropertyKey : neoNode.getPropertyKeys()) {
             Object neoPropertyValue = neoNode.getProperty(neoPropertyKey);
 
-            if (!nodeTable.hasColumn(neoPropertyKey))
-                nodeTable.addColumn(neoPropertyKey, neoPropertyKey, AttributeType.parse(neoPropertyValue), Neo4jDelegateProviderImpl.getInstance(), null);
+            if (!nodeTable.hasColumn(neoPropertyKey)) {
+                if (!neoPropertyValue.getClass().isArray())
+                    nodeTable.addColumn(neoPropertyKey, neoPropertyKey, AttributeType.parse(neoPropertyValue), Neo4jDelegateProviderImpl.getInstance(), null);
+                else
+                    nodeTable.addColumn(neoPropertyKey, neoPropertyKey, AttributeType.parseFromArray(neoPropertyValue), Neo4jDelegateProviderImpl.getInstance(), null);
+            }
 
             if (nodeTable.getColumn(neoPropertyKey).getOrigin() == AttributeOrigin.DELEGATE)
                 attributes.setValue(neoPropertyKey, neoNodeId);
@@ -172,12 +176,4 @@ public class GraphModelConvertor {
                 neoRelationship.setProperty(attributeValue.getColumn().getId(), attributeValue.getValue());
         }
     }
-
-//    private Object convertArrayToListType(Object array) {
-//        if (!array.getClass().isArray())
-//            return array;
-//        else {
-//
-//        }
-//    }
 }
