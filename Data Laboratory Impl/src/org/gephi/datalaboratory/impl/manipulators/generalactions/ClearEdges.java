@@ -25,7 +25,6 @@ import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.impl.manipulators.generalactions.ui.ClearEdgesUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.MixedGraph;
 import org.openide.util.ImageUtilities;
@@ -61,11 +60,7 @@ public class ClearEdges implements GeneralActionsManipulator {
     }
 
     public boolean canExecute() {
-        Graph graph=Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
-        graph.readLock();
-        int edges=graph.getEdgeCount();
-        graph.readUnlock();
-        return edges>0;
+        return Lookup.getDefault().lookup(GraphElementsController.class).getEdgesCount()>0;
     }
 
     public ManipulatorUI getUI() {

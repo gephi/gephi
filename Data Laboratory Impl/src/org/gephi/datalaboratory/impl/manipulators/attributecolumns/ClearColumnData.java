@@ -60,14 +60,16 @@ public class ClearColumnData implements AttributeColumnsManipulator {
     }
 
     public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        if (table == ac.getModel().getNodeTable()) {
+        boolean result;
+        AttributesController ac = Lookup.getDefault().lookup(AttributesController.class);
+        if (ac.isNodeTable(table)) {
             //Can clear columns with DATA origin and label of nodes:
-            return column.getOrigin() == AttributeOrigin.DATA || column.getIndex() == PropertiesColumn.NODE_LABEL.getIndex();
+            result=column.getOrigin() == AttributeOrigin.DATA || column.getIndex() == PropertiesColumn.NODE_LABEL.getIndex();
         } else {
             //Can clear columns with DATA origin and label of edges:
-            return column.getOrigin() == AttributeOrigin.DATA || column.getIndex() == PropertiesColumn.EDGE_LABEL.getIndex();
+            result=column.getOrigin() == AttributeOrigin.DATA || column.getIndex() == PropertiesColumn.EDGE_LABEL.getIndex();
         }
+        return result&&ac.getTableRowsCount(table)>0;//Also make sure that there is at least 1 row
     }
 
     public AttributeColumnsManipulatorUI getUI() {

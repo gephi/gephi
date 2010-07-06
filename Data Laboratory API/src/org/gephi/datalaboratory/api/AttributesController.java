@@ -37,7 +37,7 @@ import org.gephi.graph.api.Node;
 public interface AttributesController {
 
     /**
-     * ADds a new column to the specified table with the given id, title and type of column.
+     * Adds a new column to the specified table with the given id, title and type of column.
      * The id of the column will be set to the number of columns.
      * The AttributeOrigin of the column will be set to DATA.
      * Default column value will be set to null.
@@ -132,4 +132,24 @@ public interface AttributesController {
      * @return Array of attribute rows of the table
      */
     Attributes[] getTableAttributeRows(AttributeTable table);
+
+    /**
+     * Counts the number of rows of a table (nodes or edges table) and returns the result.
+     * Uses <code>GraphElementsController</code> <code>getNodesCount</code> and <code>getEdgesCount</code> to calculate the result.
+     * @param table
+     * @return
+     */
+    int getTableRowsCount(AttributeTable table);
+
+    /**
+     * Checks if the given table is nodes table.
+     * @return True if the table is nodes table, false otherwise
+     */
+    boolean isNodeTable(AttributeTable table);
+
+    /**
+     * Checks if the given table is edges table.
+     * @return True if the table is edges table, false otherwise
+     */
+    boolean isEdgeTable(AttributeTable table);
 }

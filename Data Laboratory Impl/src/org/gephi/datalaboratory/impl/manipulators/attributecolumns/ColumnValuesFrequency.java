@@ -109,7 +109,8 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
     }
 
     public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
-        return true;
+        AttributesController ac = Lookup.getDefault().lookup(AttributesController.class);
+        return ac.getTableRowsCount(table)>0;//Make sure that there is at least 1 row
     }
 
     public AttributeColumnsManipulatorUI getUI() {

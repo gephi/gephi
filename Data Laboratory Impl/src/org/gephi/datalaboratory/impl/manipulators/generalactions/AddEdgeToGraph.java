@@ -21,10 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.generalactions;
 
 import javax.swing.Icon;
+import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.impl.manipulators.generalactions.ui.AddEdgeToGraphUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
@@ -57,11 +57,7 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
     }
 
     public boolean canExecute() {
-        Graph graph=Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
-        graph.readLock();
-        int nodes=graph.getNodeCount();
-        graph.readUnlock();
-        return nodes>1;
+        return Lookup.getDefault().lookup(GraphElementsController.class).getNodesCount()>1;//At least 2 nodes to link them
     }
 
     public ManipulatorUI getUI() {

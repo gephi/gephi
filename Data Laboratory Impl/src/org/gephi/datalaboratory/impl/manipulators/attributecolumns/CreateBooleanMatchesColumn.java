@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns;
 
 import java.awt.Image;
-import java.util.regex.Pattern;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.AttributesController;
@@ -56,7 +55,8 @@ public class CreateBooleanMatchesColumn extends GeneralCreateColumnFromRegex{
     }
 
     public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
-        return true;
+        AttributesController ac = Lookup.getDefault().lookup(AttributesController.class);
+        return ac.getTableRowsCount(table)>0;//Make sure that there is at least 1 row
     }
 
     public AttributeColumnsManipulatorUI getUI() {

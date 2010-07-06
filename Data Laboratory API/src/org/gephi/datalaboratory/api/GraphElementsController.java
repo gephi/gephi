@@ -217,6 +217,18 @@ public interface GraphElementsController {
      */
     Edge[] getNodeEdges(Node node);
 
+    /**
+     * Returns the number of nodes in the graph.
+     * @return Nodes count
+     */
+    int getNodesCount();
+
+    /**
+     * Returns the number of edges in the graph.
+     * @return Edges count
+     */
+    int getEdgesCount();
+
     /*****************
      * The next methods that check if nodes and edges are in the graph,
      * are necessary because the table in DataLaboratory is not refreshed

@@ -22,9 +22,9 @@ package org.gephi.datalaboratory.impl.manipulators.generalactions;
 
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
+import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -53,11 +53,7 @@ public class ClearGraph implements GeneralActionsManipulator {
     }
 
     public boolean canExecute() {
-        Graph graph=Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
-        graph.readLock();
-        int nodes=graph.getNodeCount();
-        graph.readUnlock();
-        return nodes>0;
+        return Lookup.getDefault().lookup(GraphElementsController.class).getNodesCount()>0;
     }
 
     public ManipulatorUI getUI() {

@@ -268,6 +268,22 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         return getGraph().getEdges(node).toArray();
     }
 
+    public int getNodesCount(){
+        Graph graph=getGraph();
+        graph.readLock();
+        int nodesCount=graph.getNodeCount();
+        graph.readUnlock();
+        return nodesCount;
+    }
+
+    public int getEdgesCount(){
+        Graph graph=getGraph();
+        graph.readLock();
+        int edgesCount=graph.getEdgeCount();
+        graph.readUnlock();
+        return edgesCount;
+    }
+
     public boolean isNodeInGraph(Node node) {
         return getGraph().contains(node);
     }

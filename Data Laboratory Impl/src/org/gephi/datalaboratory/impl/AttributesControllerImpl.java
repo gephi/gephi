@@ -210,16 +210,25 @@ public class AttributesControllerImpl implements AttributesController {
         return attributes;
     }
 
-    /************Private methods : ************/
-    /**
-     * Used for checking if a table is nodes table or edges table (assumed because data laboratory uses nodes table and edges table only).
-     * @return True if the table is nodes table, false otherwise
-     */
-    private boolean isNodeTable(AttributeTable table) {
+    public int getTableRowsCount(AttributeTable table){
+        if(isNodeTable(table)){
+            return Lookup.getDefault().lookup(GraphElementsController.class).getNodesCount();
+        }else{
+            return Lookup.getDefault().lookup(GraphElementsController.class).getEdgesCount();
+        }
+    }
+    
+    public boolean isNodeTable(AttributeTable table) {
         AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
         return table == ac.getModel().getNodeTable();
     }
 
+    public boolean isEdgeTable(AttributeTable table) {
+        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
+        return table == ac.getModel().getEdgeTable();
+    }
+
+    /************Private methods : ************/   
     /**
      * Used for iterating through all nodes of the graph
      * @return Array with all graph nodes
