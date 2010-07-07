@@ -57,6 +57,9 @@ import org.openide.util.Exceptions;
  */
 public class GraphDistance implements Statistics, LongTask {
 
+    public static final String BETWEENNESS = "betweenesscentrality";
+    public static final String CLOSENESS = "closnesscentrality";
+    public static final String ECCENTRICITY = "eccentricity";
     /** */
     private double[] mBetweenness;
     /** */
@@ -65,7 +68,6 @@ public class GraphDistance implements Statistics, LongTask {
     private double[] mEccentricity;
     /** */
     private int mDiameter;
-
     private int mRadius;
     /** */
     private double mAvgDist;
@@ -80,6 +82,7 @@ public class GraphDistance implements Statistics, LongTask {
     private String mGraphRevision;
     private int mShortestPaths;
     private boolean mRelativeValues;
+
     /**
      * 
      * @return
@@ -102,17 +105,17 @@ public class GraphDistance implements Statistics, LongTask {
      */
     public void brandes(GraphModel graphModel, AttributeModel attributeModel) {
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn eccentricityCol = nodeTable.getColumn("eccentricity");
-        AttributeColumn closenessCol = nodeTable.getColumn("closnesscentrality");
-        AttributeColumn betweenessCol = nodeTable.getColumn("betweenesscentrality");
+        AttributeColumn eccentricityCol = nodeTable.getColumn(ECCENTRICITY);
+        AttributeColumn closenessCol = nodeTable.getColumn(CLOSENESS);
+        AttributeColumn betweenessCol = nodeTable.getColumn(BETWEENNESS);
         if (eccentricityCol == null) {
-            eccentricityCol = nodeTable.addColumn("eccentricity", "Eccentricity", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+            eccentricityCol = nodeTable.addColumn(ECCENTRICITY, "Eccentricity", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
         if (closenessCol == null) {
-            closenessCol = nodeTable.addColumn("closnesscentrality", "Closeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+            closenessCol = nodeTable.addColumn(CLOSENESS, "Closeness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
         if (betweenessCol == null) {
-            betweenessCol = nodeTable.addColumn("betweenesscentrality", "Betweenness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+            betweenessCol = nodeTable.addColumn(BETWEENNESS, "Betweenness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
         Graph graph = null;
@@ -125,7 +128,7 @@ public class GraphDistance implements Statistics, LongTask {
         graph.readLock();
 
         this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
-        
+
         mN = graph.getNodeCount();
 
         mBetweenness = new double[mN];
@@ -197,18 +200,17 @@ public class GraphDistance implements Statistics, LongTask {
                     mCloseness[s_index] += d[i];
                     mDiameter = Math.max(mDiameter, d[i]);
                     reachable++;
-                }               
+                }
             }
 
-            mRadius = (int)Math.min(mEccentricity[s_index], mRadius);
+            mRadius = (int) Math.min(mEccentricity[s_index], mRadius);
 
-            if(reachable != 0)
-            {
+            if (reachable != 0) {
                 mCloseness[s_index] /= reachable;
             }
 
             mShortestPaths += reachable;
-            
+
             double[] delta = new double[mN];
             while (!S.empty()) {
                 Node w = S.pop();
@@ -237,12 +239,12 @@ public class GraphDistance implements Statistics, LongTask {
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
             int s_index = indicies.get(s);
 
-            if(!mDirected) {            
+            if (!mDirected) {
                 mBetweenness[s_index] /= 2;
             }
-            if(this.mRelativeValues){
+            if (this.mRelativeValues) {
                 mCloseness[s_index] = 1.0 / mCloseness[s_index];
-                mBetweenness[s_index] /= ((mN -1) * (mN - 2))/2;
+                mBetweenness[s_index] /= ((mN - 1) * (mN - 2)) / 2;
             }
             row.setValue(eccentricityCol, mEccentricity[s_index]);
             row.setValue(closenessCol, mCloseness[s_index]);
@@ -264,7 +266,7 @@ public class GraphDistance implements Statistics, LongTask {
      * 
      * @param pRelative
      */
-    public void setRelative(boolean pRelative){
+    public void setRelative(boolean pRelative) {
         this.mRelativeValues = pRelative;
     }
 
@@ -272,7 +274,7 @@ public class GraphDistance implements Statistics, LongTask {
      *
      * @param pRelative
      */
-    public boolean useRelative(){
+    public boolean useRelative() {
         return this.mRelativeValues;
     }
 

@@ -58,6 +58,7 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public class EigenvectorCentrality implements Statistics, LongTask {
 
+    public static final String EIGENVECTOR = "eigencentrality";
     private int mNumRuns = 100;
     private double[] mCentralities;
     private double mSumChange;
@@ -107,9 +108,9 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
 
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn eigenCol = nodeTable.getColumn("eigencentrality");
+        AttributeColumn eigenCol = nodeTable.getColumn(EIGENVECTOR);
         if (eigenCol == null) {
-            eigenCol = nodeTable.addColumn("eigencentrality", "Eigenvector Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+            eigenCol = nodeTable.addColumn(EIGENVECTOR, "Eigenvector Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
         Graph graph = null;
