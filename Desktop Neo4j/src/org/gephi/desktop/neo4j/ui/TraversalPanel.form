@@ -530,15 +530,8 @@
             </Container>
             <Component class="javax.swing.JComboBox" name="operatorComboBox">
               <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="6">
-                    <StringItem index="0" value="=="/>
-                    <StringItem index="1" value="!="/>
-                    <StringItem index="2" value="&gt;"/>
-                    <StringItem index="3" value="&gt;="/>
-                    <StringItem index="4" value="&lt;"/>
-                    <StringItem index="5" value="&lt;="/>
-                  </StringArray>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="new DefaultComboBoxModel(FilterOperator.getTextRepresentations())" type="code"/>
                 </Property>
               </Properties>
             </Component>

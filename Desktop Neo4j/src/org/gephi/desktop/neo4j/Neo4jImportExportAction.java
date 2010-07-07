@@ -89,7 +89,8 @@ public class Neo4jImportExportAction extends CallableSystemAction {
                                                              traversalPanel.getStartNodeId(),
                                                              traversalPanel.getOrder(),
                                                              traversalPanel.getMaxDepth(),
-                                                             traversalPanel.getRelationshipInfos());
+                                                             traversalPanel.getRelationshipDescriptions(),
+                                                             traversalPanel.getFilterDescriptions());
                             }
                         });
                     }
@@ -116,7 +117,11 @@ public class Neo4jImportExportAction extends CallableSystemAction {
                     executor.execute((LongTask) neo4jExporter, new Runnable() {
                         @Override
                         public void run() {
-                            neo4jExporter.exportLocal(neo4jDirectory);
+                            graphDB = Neo4jUtils.localDatabase(neo4jDirectory);
+
+                            neo4jExporter.exportDatabase(graphDB);
+
+                            graphDB.shutdown();
                         }
                     });
                 }
@@ -165,9 +170,13 @@ public class Neo4jImportExportAction extends CallableSystemAction {
                     executor.execute((LongTask) neo4jExporter, new Runnable() {
                         @Override
                         public void run() {
-                            neo4jExporter.exportRemote(databasePanel.getRemoteUrl(),
-                                                       databasePanel.getLogin(),
-                                                       databasePanel.getPassword());
+                            graphDB = Neo4jUtils.remoteDatabase(databasePanel.getRemoteUrl(),
+                                                                databasePanel.getLogin(),
+                                                                databasePanel.getPassword());
+
+                            neo4jExporter.exportDatabase(graphDB);
+
+                            graphDB.shutdown();
                         }
                     });
                 }

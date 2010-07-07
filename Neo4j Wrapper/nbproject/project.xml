@@ -7,6 +7,7 @@
             <suite-component/>
             <module-dependencies/>
             <public-packages>
+                <package>org.neo4j.commons</package>
                 <package>org.neo4j.graphdb</package>
                 <package>org.neo4j.graphdb.traversal</package>
                 <package>org.neo4j.index</package>

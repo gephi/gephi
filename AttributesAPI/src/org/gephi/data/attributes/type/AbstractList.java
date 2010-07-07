@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.data.attributes.type;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 
 /**

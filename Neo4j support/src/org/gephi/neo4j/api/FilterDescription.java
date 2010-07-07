@@ -4,20 +4,20 @@ package org.gephi.neo4j.api;
  *
  * @author Martin Škurla
  */
-public class FilterInfo {
+public class FilterDescription {
     private final String propertyKey;
-    private final String operator;
-    private final Object propertyValue;
+    private final FilterOperator operator;
+    private final String propertyValue;
 
     
-    public FilterInfo(String propertyKey, String operator, Object propertyValue) {
+    public FilterDescription(String propertyKey, FilterOperator operator, String propertyValue) {
         this.propertyKey = propertyKey;
         this.operator = operator;
         this.propertyValue = propertyValue;
     }
 
 
-    public String getOperator() {
+    public FilterOperator getOperator() {
         return operator;
     }
 
@@ -25,7 +25,7 @@ public class FilterInfo {
         return propertyKey;
     }
 
-    public Object getPropertyValue() {
+    public String getPropertyValue() {
         return propertyValue;
     }
 }

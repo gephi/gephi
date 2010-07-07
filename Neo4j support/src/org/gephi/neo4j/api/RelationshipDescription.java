@@ -9,12 +9,12 @@ import org.neo4j.graphdb.RelationshipType;
  *
  * @author Martin Škurla
  */
-public class RelationshipInfo {
+public class RelationshipDescription {
     private final RelationshipType relationshipType;
     private final Direction direction;
 
 
-    public RelationshipInfo(RelationshipType relationshipType, Direction direction) {
+    public RelationshipDescription(RelationshipType relationshipType, Direction direction) {
         this.relationshipType = relationshipType;
         this.direction = direction;
     }

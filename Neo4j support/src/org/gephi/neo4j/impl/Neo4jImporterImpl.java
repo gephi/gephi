@@ -1,11 +1,12 @@
 package org.gephi.neo4j.impl;
 
 
+import org.gephi.neo4j.impl.traversal.TraversalReturnFilter;
 import java.util.Collection;
 import java.util.Collections;
-import org.gephi.neo4j.api.FilterInfo;
+import org.gephi.neo4j.api.FilterDescription;
 import org.gephi.neo4j.api.Neo4jImporter;
-import org.gephi.neo4j.api.RelationshipInfo;
+import org.gephi.neo4j.api.RelationshipDescription;
 import org.gephi.neo4j.api.TraversalOrder;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -27,6 +28,9 @@ import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service=Neo4jImporter.class)
 public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
+    // when we want to iterate through whole graph
+    private static final int NO_START_NODE = -1;
+
     private GraphDatabaseService graphDB;
     private GraphModelConvertor graphModelConvertor;
     private Traverser traverser;
@@ -49,20 +53,23 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
 
     @Override
     public void importDatabase(GraphDatabaseService graphDB) {
-        importDatabase(graphDB, -1, TraversalOrder.DEPTH_FIRST, Integer.MAX_VALUE);
+        importDatabase(graphDB, NO_START_NODE, TraversalOrder.DEPTH_FIRST, Integer.MAX_VALUE);
     }
 
     @Override
     public void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth) {
-        importDatabase(graphDB, startNodeId, order, maxDepth, Collections.<RelationshipInfo>emptyList());
+        importDatabase(graphDB, startNodeId, order, maxDepth, Collections.<RelationshipDescription>emptyList());
     }
 
+    @Override
     public void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth,
-            Collection<RelationshipInfo> relationshipInfos) {
-        importDatabase(graphDB, startNodeId, order, maxDepth, relationshipInfos, Collections.<FilterInfo>emptyList());
+            Collection<RelationshipDescription> relationshipDescriptions) {
+        importDatabase(graphDB, startNodeId, order, maxDepth, relationshipDescriptions, Collections.<FilterDescription>emptyList());
     }
 
-    public void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth, Collection<RelationshipInfo> relationshipInfos, Collection<FilterInfo> filterInfos) {
+    @Override
+    public void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth,
+            Collection<RelationshipDescription> relationshipDescriptions, Collection<FilterDescription> filterDescriptions) {
         this.graphDB = graphDB;
 
         String longTaskMessage = (graphDB instanceof RemoteGraphDatabase)
@@ -72,17 +79,18 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
         progressTicket.setDisplayName(longTaskMessage);
         progressTicket.start();
 
-        if (startNodeId != -1) {
+        if (startNodeId != NO_START_NODE) {
             TraversalDescription traversalDescription = TraversalFactory.createTraversalDescription();
             PruneEvaluator pruneEvaluator = TraversalFactory.pruneAfterDepth(maxDepth);
 
             traversalDescription = order.update(traversalDescription);
 
-            for (RelationshipInfo relationshipInfo : relationshipInfos)
-                traversalDescription = traversalDescription.relationships(relationshipInfo.getRelationshipType(),
-                                                                          relationshipInfo.getDirection());
+            for (RelationshipDescription relationshipDescription : relationshipDescriptions)
+                traversalDescription = traversalDescription.relationships(relationshipDescription.getRelationshipType(),
+                                                                          relationshipDescription.getDirection());
 
-            //TODO create ReturnFilter, add support for array parsing, validation
+            if (!filterDescriptions.isEmpty())
+                traversalDescription = traversalDescription.filter(new TraversalReturnFilter(filterDescriptions));
 
             traverser = traversalDescription.prune(pruneEvaluator)
                                             .traverse(graphDB.getNodeById(startNodeId));

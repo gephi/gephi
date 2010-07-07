@@ -26,6 +26,7 @@ import org.openide.util.Lookup;
  * @author Martin Škurla
  */
 public class GraphModelConvertor {
+    private static final String DEFAULT_RELATIONSHIP_NAME = "";
 
     private static GraphModelConvertor singleton;
     private static GraphModel graphModel;
@@ -176,7 +177,8 @@ public class GraphModelConvertor {
 
     public void createNeoRelationship(org.neo4j.graphdb.Node startNeoNode, org.neo4j.graphdb.Node endNeoNode, Edge gephiEdge) {
         Relationship neoRelationship =
-                startNeoNode.createRelationshipTo(endNeoNode, DynamicRelationshipType.withName(""));
+                startNeoNode.createRelationshipTo(endNeoNode,
+                                                  DynamicRelationshipType.withName(getRelationshipName(gephiEdge)));
 
         fillNeoRelationshipDataFromGephiEdgeData(neoRelationship, gephiEdge);
     }
@@ -185,8 +187,20 @@ public class GraphModelConvertor {
         Attributes attributes = gephiEdge.getEdgeData().getAttributes();
 
         for (AttributeValue attributeValue : ((AttributeRow)attributes).getValues()) {
-            if (attributeValue.getValue() != null)
+            if (attributeValue.getValue() != null &&
+                    !attributeValue.getColumn().getId().equals(PropertiesColumn.NEO4J_RELATIONSHIP_TYPE.getId()))
                 neoRelationship.setProperty(attributeValue.getColumn().getId(), attributeValue.getValue());
         }
+    }
+
+    private String getRelationshipName(Edge gephiEdge) {
+        Attributes attributes = gephiEdge.getEdgeData().getAttributes();
+
+        for (AttributeValue attributeValue : ((AttributeRow) attributes).getValues()) {
+            if (attributeValue.getColumn().getId().equals(PropertiesColumn.NEO4J_RELATIONSHIP_TYPE.getId()))
+                return (String) attributeValue.getValue();
+        }
+
+        return DEFAULT_RELATIONSHIP_NAME;
     }
 }

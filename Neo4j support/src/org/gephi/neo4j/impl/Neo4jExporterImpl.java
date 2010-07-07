@@ -1,8 +1,6 @@
 package org.gephi.neo4j.impl;
 
 
-import java.io.File;
-import java.net.URISyntaxException;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -11,9 +9,9 @@ import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.remote.RemoteGraphDatabase;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 
@@ -42,33 +40,18 @@ public class Neo4jExporterImpl implements Neo4jExporter, LongTask {
         this.progressTicket = progressTicket;
     }
 
-    public void exportLocal(File neo4jDirectory) {
-        progressTicket.setDisplayName("Exporting data to local Neo4j database");
+    @Override
+    public void exportDatabase(GraphDatabaseService graphDB) {
+        this.graphDB = graphDB;
+
+        String longTaskMessage = (graphDB instanceof RemoteGraphDatabase)
+                ? NbBundle.getMessage(Neo4jExporterImpl.class, "CTL_Neo4j_RemoteExportMessage")
+                : NbBundle.getMessage(Neo4jExporterImpl.class, "CTL_Neo4j_LocalExportMessage");
+
+        progressTicket.setDisplayName(longTaskMessage);
         progressTicket.start();
 
-        graphDB = new EmbeddedGraphDatabase(neo4jDirectory.getAbsolutePath());
         doExport();
-    }
-
-    public void exportRemote(String resourceURI) {
-        exportRemote(resourceURI, null, null);
-    }
-
-    public void exportRemote(String resourceURI, String login, String password) {
-        progressTicket.setDisplayName("Exporting data to remote Neo4j database");
-        progressTicket.start();
-
-        try {
-            if (login == null && password == null)
-                graphDB = new RemoteGraphDatabase(resourceURI);
-            else
-                graphDB = new RemoteGraphDatabase(resourceURI, login, password);
-
-            doExport();
-        }
-        catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
     }
 
     private void doExport() {

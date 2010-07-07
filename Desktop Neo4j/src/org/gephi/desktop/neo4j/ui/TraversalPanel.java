@@ -1,5 +1,7 @@
 package org.gephi.desktop.neo4j.ui;
 
+import org.gephi.neo4j.api.RelationshipDescription;
+import org.gephi.neo4j.api.FilterDescription;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -9,8 +11,7 @@ import javax.swing.AbstractButton;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.AbstractTableModel;
 import org.gephi.desktop.neo4j.ui.util.Neo4jUtils;
-import org.gephi.neo4j.api.FilterInfo;
-import org.gephi.neo4j.api.RelationshipInfo;
+import org.gephi.neo4j.api.FilterOperator;
 import org.gephi.neo4j.api.TraversalOrder;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicRelationshipType;
@@ -284,7 +285,7 @@ public class TraversalPanel extends javax.swing.JPanel {
         });
         filterScrollPane.setViewportView(filterTable);
 
-        operatorComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "==", "!=", ">", ">=", "<", "<=" }));
+        operatorComboBox.setModel(new DefaultComboBoxModel(FilterOperator.getTextRepresentations()));
 
         javax.swing.GroupLayout filterPanelLayout = new javax.swing.GroupLayout(filterPanel);
         filterPanel.setLayout(filterPanelLayout);
@@ -509,7 +510,6 @@ public class TraversalPanel extends javax.swing.JPanel {
         this.filterSelectedRow = filterTable.getSelectedRow();
     }//GEN-LAST:event_filterTableMouseClicked
 
-//private boolean focusLost;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addFilterButton;
     private javax.swing.JButton addRelationshipsButton;
@@ -577,45 +577,24 @@ public class TraversalPanel extends javax.swing.JPanel {
         }
     }
 
-    public Collection<RelationshipInfo> getRelationshipInfos() {
-        List<RelationshipInfo> relationshipInfos = new LinkedList<RelationshipInfo>();
+    public Collection<RelationshipDescription> getRelationshipDescriptions() {
+        List<RelationshipDescription> relationshipDescriptions = new LinkedList<RelationshipDescription>();
 
         for (String[] data : relationshipsTableModel.data)
-            relationshipInfos.add(new RelationshipInfo(DynamicRelationshipType.withName(data[0]),
-                                                       Direction.valueOf(data[1].toUpperCase())));
+            relationshipDescriptions.add(new RelationshipDescription(DynamicRelationshipType.withName(data[0]),
+                                                              Direction.valueOf(data[1].toUpperCase())));
 
-        return relationshipInfos;
+        return relationshipDescriptions;
     }
 
-    public Collection<FilterInfo> getFilterInfos() {
-        List<FilterInfo> filterInfos = new LinkedList<FilterInfo>();
+    public Collection<FilterDescription> getFilterDescriptions() {
+        List<FilterDescription> filterDescriptions = new LinkedList<FilterDescription>();
 
         for (String[] data : filterTableModel.data) {
-            filterInfos.add(new FilterInfo(data[0], data[1], parseValue(data[2])));
+            filterDescriptions.add(new FilterDescription(data[0], FilterOperator.fromTextRepresentation(data[1]), data[2]));
         }
 
-        return filterInfos;
-    }
-
-    private Object parseValue(String value) {
-        value = value.trim().toLowerCase();
-
-        try {
-            return Long.parseLong(value);
-        }
-        catch (NumberFormatException nfe) {/* parse another type */}
-
-        try {
-            return Double.parseDouble(value);
-        }
-        catch (NumberFormatException nfe) {/* parse another type */}
-
-        if (value.equals("true"))
-            return true;
-        else if (value.equals("false"))
-            return false;
-//TODO array parsing
-        return value;
+        return filterDescriptions;
     }
 
     public ValidationPanel createValidationPanel() {
@@ -629,7 +608,7 @@ public class TraversalPanel extends javax.swing.JPanel {
 
         return validationPanel;
     }
-
+//TODO finish validation
 //    private class NodeIdValidator implements Validator<String>{
 //        private int counter = 0;
 //
@@ -671,12 +650,13 @@ public class TraversalPanel extends javax.swing.JPanel {
 //    }
 
     private class RelationshipsTableModel extends AbstractTableModel {
+        @SuppressWarnings("rawtypes")
         private final Class[]  columnTypes = {String.class,        String.class};
         private final String[] columnNames = {"Relationship type", "Direction"};
         private final List<String[]> data;
 
         
-        public RelationshipsTableModel() {
+        RelationshipsTableModel() {
             data = new ArrayList<String[]>();
         }
 
@@ -726,12 +706,13 @@ public class TraversalPanel extends javax.swing.JPanel {
     }
 
     private class FilterTableModel extends AbstractTableModel {
+        @SuppressWarnings("rawtypes")
         private final Class[]  columnTypes = {String.class,   String.class, String.class};
         private final String[] columnNames = {"Property key", "Operator",   "Property value"};
         private final List<String[]> data;
 
 
-        public FilterTableModel() {
+        FilterTableModel() {
             data = new ArrayList<String[]>();
         }
 

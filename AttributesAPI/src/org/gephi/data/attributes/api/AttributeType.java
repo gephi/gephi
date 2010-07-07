@@ -42,6 +42,7 @@ import org.gephi.data.attributes.type.TimeInterval;
  * @author Mathieu Bastian
  * @author Martin Škurla
  */
+@SuppressWarnings("rawtypes")
 public enum AttributeType {
 
     BYTE      (Byte.class),
@@ -106,6 +107,17 @@ public enum AttributeType {
         return type;
     }
 
+    /**
+     * Returns component types. These types can be used for parsing an array into
+     * List type. Every type defined as first constructor parameter must have constructor
+     * with one parameter of type array from every of component types.
+     * <p>
+     * For example we have constant <code>LIST_BYTE(ByteList.class,new Class[] {byte.class,
+     * Byte.class})</code>. This means type ByteList must have at least two constructors
+     * with one parameter of type byte[] and Byte[].
+     *
+     * @return component types
+     */
     public Class[] getComponentTypes() {
         return componentTypes;
     }
@@ -197,6 +209,15 @@ public enum AttributeType {
         return null;
     }
 
+    /**
+     * Build an <code>AttributeType</code> from the given <code>array</code> type.
+     * If the given <code>array</code> type match with component types within any
+     * AttributeType, appropriate List type will be returned. Returns <code>null</code>
+     * otherwise.
+     * 
+     * @param array the array that is to be parsed
+     * @return      the compatible List <code>AttributeType</code>, or <code>null</code>
+     */
     public static AttributeType parseFromArray(Object array) {
         Class<?> arrayComponentType = array.getClass().getComponentType();
 
