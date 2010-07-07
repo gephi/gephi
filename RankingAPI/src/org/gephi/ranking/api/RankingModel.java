@@ -21,12 +21,23 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ranking.api;
 
 import javax.swing.event.ChangeListener;
+import org.gephi.data.attributes.api.AttributeColumn;
 
 /**
  *
  * @author Mathieu Bastian
  */
 public interface RankingModel {
+
+    public NodeRanking getDegreeRanking();
+
+    public NodeRanking getInDegreeRanking();
+
+    public NodeRanking getOutDegreeRanking();
+
+    public NodeRanking getNodeAttributeRanking(AttributeColumn column);
+
+    public EdgeRanking getEdgeAttributeRanking(AttributeColumn column);
 
     public NodeRanking[] getNodeRanking();
 
