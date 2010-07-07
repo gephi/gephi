@@ -43,7 +43,7 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
         MATCHING_GROUPS
     }
     private Mode mode=Mode.BOOLEAN;
-    private static final Color invalidFilterColor = new Color(254, 242, 242);
+    private static final Color invalidRegexColor = new Color(254, 150, 150);
     private GeneralCreateColumnFromRegex manipulator;
     private Pattern pattern;
 
@@ -98,7 +98,7 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
             pattern = Pattern.compile(regexTextField.getText());
             regexTextField.setBackground(Color.WHITE);
         } catch (PatternSyntaxException ex) {
-            regexTextField.setBackground(invalidFilterColor);
+            regexTextField.setBackground(invalidRegexColor);
             pattern = null;
         }
     }

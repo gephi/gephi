@@ -105,7 +105,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
     private static final String PREFERRED_ID = "DataTableTopComponent";
     //Settings
     private static final String DATA_LABORATORY_DYNAMIC_FILTERING = "DataLaboratory_Dynamic_Filtering";
-    private static final Color invalidFilterColor = new Color(254, 242, 242);
+    private static final Color invalidFilterColor = new Color(254, 150, 150);
     private final boolean dynamicFiltering;
     //Data
     private GraphModel graphModel;

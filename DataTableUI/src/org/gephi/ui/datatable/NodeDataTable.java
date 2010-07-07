@@ -181,6 +181,7 @@ public class NodeDataTable {
                 outlineTable.addRowSelectionInterval(i, i);
             }
         }
+        //TODO: Scroll to first selected node
     }
 
     public boolean hasData() {

@@ -150,7 +150,7 @@ public class AttributesControllerImpl implements AttributesController {
                 }
             }
         }
-    }
+    }    
 
     public void clearNodeData(Node node) {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);

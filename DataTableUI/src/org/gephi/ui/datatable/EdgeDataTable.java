@@ -181,6 +181,7 @@ public class EdgeDataTable {
                 table.addRowSelectionInterval(i, i);
             }
         }
+        //TODO: Scroll to first selected edge
     }
 
     public boolean hasData() {
