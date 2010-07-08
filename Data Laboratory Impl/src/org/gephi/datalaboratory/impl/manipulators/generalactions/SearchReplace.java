@@ -50,7 +50,7 @@ public class SearchReplace implements GeneralActionsManipulator {
             ui.setMode(SearchReplaceUI.Mode.EDGES_TABLE);
         }
         DialogDescriptor dd=new DialogDescriptor(ui, getName());
-        dd.setModal(false);
+        dd.setModal(true);
         dd.setOptions(new Object[]{NbBundle.getMessage(SearchReplace.class, "SearchReplace.window.close")});
         DialogDisplayer.getDefault().notify(dd);
     }

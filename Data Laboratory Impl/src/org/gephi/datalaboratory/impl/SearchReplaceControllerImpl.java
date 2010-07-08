@@ -194,7 +194,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         if (found) {
             searchOptions.setStartingRow(rowIndex);//For next search
             searchOptions.setStartingColumn(columnIndex);//For next search
-            searchOptions.setRegionStart(matcher.end() + 1);//Start next search after this match in this value. (If it is greater than the length of the value, it will be discarded at the beginning of this method next time)
+            searchOptions.setRegionStart(matcher.end());//Start next search after this match in this value. (If it is greater than the length of the value, it will be discarded at the beginning of this method next time)
             return new SearchResult(searchOptions, null, null, rowIndex, columnIndex, matcher.start(), matcher.end());//Set node or edge values later
         } else {
             return null;
