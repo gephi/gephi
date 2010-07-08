@@ -26,10 +26,12 @@ import java.util.regex.PatternSyntaxException;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.api.SearchReplaceController;
 import org.gephi.datalaboratory.api.SearchReplaceController.SearchOptions;
 import org.gephi.datalaboratory.api.SearchReplaceController.SearchResult;
+import org.gephi.datalaboratory.impl.utils.HTMLEscape;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
@@ -179,20 +181,30 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
                 }
                 value=edge.getEdgeData().getAttributes().getValue(searchResult.getFoundColumnIndex());
             }
-            if(value!=null){
-                String text=value.toString();
-                StringBuilder sb=new StringBuilder();
-                sb.append("<html>");
-                sb.append(text.substring(0, searchResult.getStart()));
-                sb.append("<b>");
-                sb.append(text.substring(searchResult.getStart(), searchResult.getEnd()));
-                sb.append("</b>");
-                sb.append(text.substring(searchResult.getEnd()));
-                sb.append("</html>");
-                resultText.setText(sb.toString());
+
+            String columnName;
+            if(mode==Mode.NODES_TABLE){
+                columnName=Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumn(searchResult.getFoundColumnIndex()).getTitle();
             }else{
-                resultText.setText("<html><b>null</b></html>");
+                columnName=Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable().getColumn(searchResult.getFoundColumnIndex()).getTitle();
             }
+
+            StringBuilder sb=new StringBuilder();
+            sb.append("<html>");
+            sb.append(NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.column",HTMLEscape.stringToHTMLString(columnName)));
+            sb.append("<br>");
+            if(value!=null){
+                String text=value.toString();               
+                sb.append(HTMLEscape.stringToHTMLString(text.substring(0, searchResult.getStart())));
+                sb.append("<font color='blue'>");
+                sb.append(HTMLEscape.stringToHTMLString(text.substring(searchResult.getStart(), searchResult.getEnd())));
+                sb.append("</font>");
+                sb.append(HTMLEscape.stringToHTMLString(text.substring(searchResult.getEnd())));
+            }else{
+                sb.append("<font color='blue'>null</font>");
+            }
+            sb.append("</html>");
+            resultText.setText(sb.toString());
         } else {
             JOptionPane.showMessageDialog(null, NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.data.end"));
             resultText.setText("");
@@ -305,6 +317,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         descriptionLabel.setText(null);
 
         resultText.setContentType(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.resultText.contentType")); // NOI18N
+        resultText.setEditable(false);
         scroll.setViewportView(resultText);
 
         resultLabel.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.resultLabel.text")); // NOI18N
@@ -314,12 +327,10 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(matchWholeValueCheckBox)
                             .addGroup(layout.createSequentialGroup()
@@ -334,20 +345,15 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(searchText)
-                                    .addComponent(replaceText, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE))
-                                .addGap(9, 9, 9)))
+                                    .addComponent(replaceText, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(replaceAllButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(replaceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(findNextButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(startSearchButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(resultLabel)))
+                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
+                    .addComponent(resultLabel))
                 .addContainerGap())
             .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
         );
@@ -383,7 +389,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(caseSensitiveCheckBox)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(resultLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

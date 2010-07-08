@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.datatable;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -181,7 +182,14 @@ public class NodeDataTable {
                 outlineTable.addRowSelectionInterval(i, i);
             }
         }
-        //TODO: Scroll to first selected node
+    }
+
+    public void scrollToFirstNodeSelected() {
+        int row = outlineTable.getSelectedRow();
+        if (row != -1) {
+            Rectangle rect =outlineTable.getCellRect(row, 0, true);
+            outlineTable.scrollRectToVisible(rect);
+        }
     }
 
     public boolean hasData() {
@@ -298,12 +306,7 @@ public class NodeDataTable {
         }
 
         public Class getColumnClass() {
-            Class clazz = column.getType().getType();
-            if (clazz == Character.class) {
-                return String.class;//The table implementation does not allow to edit Character cells. Treat them as Strings.
-            } else {
-                return clazz;
-            }
+            return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
         }
 
         public String getColumnName() {
@@ -315,21 +318,14 @@ public class NodeDataTable {
             if (graphNode.getId() == -1) {
                 return null;
             }
-            return graphNode.getNodeData().getAttributes().getValue(column.getIndex());
+            Object value = graphNode.getNodeData().getAttributes().getValue(column.getIndex());
+            return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent
         }
 
         public void setValueFor(ImmutableTreeNode node, Object value) {
             Node graphNode = node.getNode();
-            if (column.getType().getType() == Character.class) {
-                //The table implementation does not allow to edit Character cells. Treat them as Strings and use first character of them:
-                String str = (String) value;
-                if (str != null && str.length() > 0) {
-                    value = new Character(str.charAt(0));
-                } else {
-                    value = null;
-                }
-            }
-            graphNode.getNodeData().getAttributes().setValue(column.getIndex(), value);
+            String str = (String) value;//Treat all columns as Strings
+            graphNode.getNodeData().getAttributes().setValue(column.getIndex(), column.getType().parse(str));
         }
 
         public boolean isEditable() {

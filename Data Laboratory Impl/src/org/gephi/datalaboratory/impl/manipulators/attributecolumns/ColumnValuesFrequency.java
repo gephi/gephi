@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.AttributesController;
+import org.gephi.datalaboratory.impl.utils.HTMLEscape;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.gephi.ui.components.SimpleHTMLReport;
@@ -82,7 +83,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
             sb.append("<li>");
             sb.append("<b>");
             if (value != null) {
-                sb.append(value.toString());
+                sb.append(HTMLEscape.stringToHTMLString(value.toString()));
             } else {
                 sb.append("null");
             }

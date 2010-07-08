@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.datatable;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -181,7 +182,14 @@ public class EdgeDataTable {
                 table.addRowSelectionInterval(i, i);
             }
         }
-        //TODO: Scroll to first selected edge
+    }
+
+    public void scrollToFirstEdgeSelected() {
+        int row = table.getSelectedRow();
+        if (row != -1) {
+            Rectangle rect =table.getCellRect(row, 0, true);
+            table.scrollRectToVisible(rect);
+        }
     }
 
     public boolean hasData() {
@@ -283,12 +291,7 @@ public class EdgeDataTable {
         }
 
         public Class getColumnClass() {
-            Class clazz = column.getType().getType();
-            if (clazz == Character.class) {
-                return String.class;//The table implementation does not allow to edit Character cells. Treat them as Strings.
-            } else {
-                return clazz;
-            }
+            return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
         }
 
         public String getColumnName() {
@@ -296,21 +299,13 @@ public class EdgeDataTable {
         }
 
         public Object getValueFor(Edge edge) {
-            return edge.getEdgeData().getAttributes().getValue(column.getIndex());
+            Object value = edge.getEdgeData().getAttributes().getValue(column.getIndex());
+            return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent
         }
 
         public void setValueFor(Edge edge, Object value) {
-            if (column.getType().getType() == Character.class) {
-                //The table implementation does not allow to edit Character cells. Treat them as Strings and use first character of them:
-                String str = (String) value;
-                if (str != null && str.length() > 0) {
-                    value = new Character(str.charAt(0));
-                } else {
-                    value = null;
-                }
-            }
-            edge.getEdgeData().getAttributes().setValue(column.getIndex(), value);
-
+            String str=(String) value;//Treat all columns as Strings
+            edge.getEdgeData().getAttributes().setValue(column.getIndex(), column.getType().parse(str));
         }
 
         public boolean isEditable() {

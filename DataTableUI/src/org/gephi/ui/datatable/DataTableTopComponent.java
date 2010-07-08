@@ -353,6 +353,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
                     refreshFilterColumns();
 
                     busylabel.setBusy(false);
+                    nodeTable.scrollToFirstNodeSelected();
                 } catch (Exception e) {
                     e.printStackTrace();
                     JLabel errorLabel = new JLabel(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.error"), SwingConstants.CENTER);
@@ -393,6 +394,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
                     refreshFilterColumns();
 
                     busylabel.setBusy(false);
+                    edgeTable.scrollToFirstEdgeSelected();
                 } catch (Exception e) {
                     e.printStackTrace();
                     JLabel errorLabel = new JLabel(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.error"), SwingConstants.CENTER);
@@ -498,6 +500,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
 
             public void run() {
                 nodeTable.setNodesSelection(nodes);
+                nodeTable.scrollToFirstNodeSelected();
             }
         });
     }
@@ -507,6 +510,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
 
             public void run() {
                 edgeTable.setEdgesSelection(edges);
+                edgeTable.scrollToFirstEdgeSelected();
             }
         });
     }
