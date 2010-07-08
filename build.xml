@@ -132,6 +132,8 @@
                 <include name="org-gephi-ranking-api.jar"/>
                 <include name="org-gephi-partition-api.jar"/>
                 <include name="org-gephi-partition-plugin.jar"/>
+                <include name="org-gephi-io-generator-api.jar"/>
+                <include name="org-gephi-io-generator-plugin.jar"/>
             </fileset>
         </copy>
         <copy todir="${toolkit.tempdir}">
