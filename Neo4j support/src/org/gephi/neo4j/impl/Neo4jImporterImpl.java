@@ -64,12 +64,16 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
     @Override
     public void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth,
             Collection<RelationshipDescription> relationshipDescriptions) {
-        importDatabase(graphDB, startNodeId, order, maxDepth, relationshipDescriptions, Collections.<FilterDescription>emptyList());
+        // last 2 boolean parameters are not important, because if we pass empty collection of filter descriptions, they
+        // are not needed
+        importDatabase(graphDB, startNodeId, order, maxDepth, relationshipDescriptions, Collections.<FilterDescription>emptyList(),
+                false, false);
     }
 
     @Override
     public void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth,
-            Collection<RelationshipDescription> relationshipDescriptions, Collection<FilterDescription> filterDescriptions) {
+            Collection<RelationshipDescription> relationshipDescriptions, Collection<FilterDescription> filterDescriptions,
+            boolean restrictMode, boolean matchCase) {
         this.graphDB = graphDB;
 
         String longTaskMessage = (graphDB instanceof RemoteGraphDatabase)
@@ -90,7 +94,9 @@ public final class Neo4jImporterImpl implements Neo4jImporter, LongTask {
                                                                           relationshipDescription.getDirection());
 
             if (!filterDescriptions.isEmpty())
-                traversalDescription = traversalDescription.filter(new TraversalReturnFilter(filterDescriptions));
+                traversalDescription = traversalDescription.filter(new TraversalReturnFilter(filterDescriptions,
+                                                                                             restrictMode,
+                                                                                             matchCase));
 
             traverser = traversalDescription.prune(pruneEvaluator)
                                             .traverse(graphDB.getNodeById(startNodeId));

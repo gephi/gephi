@@ -25,13 +25,15 @@ public enum FilterOperator {
         }
 
         @Override
-        public boolean executeOnCharacters(Character character1, Character character2) {
-            return character1.charValue() == character2.charValue();
+        public boolean executeOnCharacters(Character char1, Character char2, boolean matchCase) {
+            return matchCase ? char1.charValue() == char2.charValue()
+                             : Character.toLowerCase(char1) == Character.toLowerCase(char2);
         }
 
         @Override
-        public boolean executeOnStrings(String string1, String string2) {
-            return string1.equals(string2);
+        public boolean executeOnStrings(String str1, String str2, boolean matchCase) {
+            return matchCase ? str1.equals(str2)
+                             : str1.equalsIgnoreCase(str2);
         }
     },
     NOT_EQUALS("!=") {
@@ -51,13 +53,15 @@ public enum FilterOperator {
         }
 
         @Override
-        public boolean executeOnCharacters(Character character1, Character character2) {
-            return character1.charValue() != character2.charValue();
+        public boolean executeOnCharacters(Character char1, Character char2, boolean matchCase) {
+            return matchCase ? char1.charValue() != char2.charValue()
+                             : Character.toLowerCase(char1) != Character.toLowerCase(char2);
         }
 
         @Override
-        public boolean executeOnStrings(String string1, String string2) {
-            return !string1.equals(string2);
+        public boolean executeOnStrings(String str1, String str2, boolean matchCase) {
+            return matchCase ? !str1.equals(str2)
+                             : !str1.equalsIgnoreCase(str2);
         }
     },
     LESS("<") {
@@ -72,8 +76,9 @@ public enum FilterOperator {
         }
 
         @Override
-        public boolean executeOnCharacters(Character character1, Character character2) {
-            return character1.charValue() < character2.charValue();
+        public boolean executeOnCharacters(Character char1, Character char2, boolean matchCase) {
+            return matchCase ? char1.charValue() < char2.charValue()
+                             : Character.toLowerCase(char1) < Character.toLowerCase(char2);
         }
     },
     LESS_OR_EQUALS("<=") {
@@ -88,8 +93,9 @@ public enum FilterOperator {
         }
 
         @Override
-        public boolean executeOnCharacters(Character character1, Character character2) {
-            return character1.charValue() <= character2.charValue();
+        public boolean executeOnCharacters(Character char1, Character char2, boolean matchCase) {
+            return matchCase ? char1.charValue() <= char2.charValue()
+                             : Character.toLowerCase(char1) <= Character.toLowerCase(char2);
         }
     },
     GREATER(">") {
@@ -104,8 +110,9 @@ public enum FilterOperator {
         }
 
         @Override
-        public boolean executeOnCharacters(Character character1, Character character2) {
-            return character1.charValue() > character2.charValue();
+        public boolean executeOnCharacters(Character char1, Character char2, boolean matchCase) {
+            return matchCase ? char1.charValue() > char2.charValue()
+                             : Character.toLowerCase(char1) > Character.toLowerCase(char2);
         }
     },
     GREATER_OR_EQUALS(">=") {
@@ -120,8 +127,9 @@ public enum FilterOperator {
         }
 
         @Override
-        public boolean executeOnCharacters(Character character1, Character character2) {
-            return character1.charValue() >= character2.charValue();
+        public boolean executeOnCharacters(Character char1, Character char2, boolean matchCase) {
+            return matchCase ? char1.charValue() >= char2.charValue()
+                             : Character.toLowerCase(char1) >= Character.toLowerCase(char2);
         }
     };
 
@@ -147,11 +155,11 @@ public enum FilterOperator {
         return !RESTRICTIVE_MODE;
     }
 
-    public boolean executeOnCharacters(Character character1, Character character2) {
+    public boolean executeOnCharacters(Character char1, Character char2, boolean matchCase) {
         return !RESTRICTIVE_MODE;
     }
 
-    public boolean executeOnStrings(String string1, String string2) {
+    public boolean executeOnStrings(String str1, String str2, boolean matchCase) {
         return !RESTRICTIVE_MODE;
     }
 

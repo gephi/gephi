@@ -19,5 +19,6 @@ public interface Neo4jImporter {
             Collection<RelationshipDescription> relationshipDescriptions);
 
     void importDatabase(GraphDatabaseService graphDB, long startNodeId, TraversalOrder order, int maxDepth,
-            Collection<RelationshipDescription> relationshipDescriptions, Collection<FilterDescription> filterDescriptions);
+            Collection<RelationshipDescription> relationshipDescriptions, Collection<FilterDescription> filterDescriptions,
+            boolean restrictMode, boolean matchCase);
 }

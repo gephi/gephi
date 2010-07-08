@@ -90,7 +90,9 @@ public class Neo4jImportExportAction extends CallableSystemAction {
                                                              traversalPanel.getOrder(),
                                                              traversalPanel.getMaxDepth(),
                                                              traversalPanel.getRelationshipDescriptions(),
-                                                             traversalPanel.getFilterDescriptions());
+                                                             traversalPanel.getFilterDescriptions(),
+                                                             traversalPanel.isRestrictModeEnabled(),
+                                                             traversalPanel.isMatchCaseEnabled());
                             }
                         });
                     }

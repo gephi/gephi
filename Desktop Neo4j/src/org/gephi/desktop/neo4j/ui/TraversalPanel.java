@@ -80,6 +80,8 @@ public class TraversalPanel extends javax.swing.JPanel {
         filterScrollPane = new javax.swing.JScrollPane();
         filterTable = new javax.swing.JTable();
         operatorComboBox = new javax.swing.JComboBox();
+        restrictModeCheckBox = new javax.swing.JCheckBox();
+        matchCaseCheckBox = new javax.swing.JCheckBox();
         startNodePanel = new javax.swing.JPanel();
         idStartNodeRadioButton = new javax.swing.JRadioButton();
         indexStartNodeRadioButton = new javax.swing.JRadioButton();
@@ -287,11 +289,15 @@ public class TraversalPanel extends javax.swing.JPanel {
 
         operatorComboBox.setModel(new DefaultComboBoxModel(FilterOperator.getTextRepresentations()));
 
+        restrictModeCheckBox.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.restrictModeCheckBox.text")); // NOI18N
+
+        matchCaseCheckBox.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.matchCaseCheckBox.text")); // NOI18N
+
         javax.swing.GroupLayout filterPanelLayout = new javax.swing.GroupLayout(filterPanel);
         filterPanel.setLayout(filterPanelLayout);
         filterPanelLayout.setHorizontalGroup(
             filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(filterPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, filterPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(filterPanelLayout.createSequentialGroup()
@@ -307,7 +313,12 @@ public class TraversalPanel extends javax.swing.JPanel {
                             .addComponent(operatorComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, 118, Short.MAX_VALUE)))
                     .addComponent(removeFilterButton))
                 .addGap(10, 10, 10)
-                .addComponent(filterScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(filterScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(filterPanelLayout.createSequentialGroup()
+                        .addComponent(restrictModeCheckBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(matchCaseCheckBox)))
                 .addContainerGap())
         );
 
@@ -334,7 +345,10 @@ public class TraversalPanel extends javax.swing.JPanel {
                         .addComponent(addFilterButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(removeFilterButton)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(filterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(matchCaseCheckBox)
+                    .addComponent(restrictModeCheckBox)))
         );
 
         startNodePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.startNodePanel.border.title"))); // NOI18N
@@ -493,9 +507,9 @@ public class TraversalPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_relationshipsTableMouseClicked
 
     private void addFilterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFilterButtonActionPerformed
-        filterTableModel.addData(propertyKeyFilterTextField.getText(),
+        filterTableModel.addData(propertyKeyFilterTextField.getText().trim(),
                                  (String) operatorComboBox.getSelectedItem(),
-                                 propertyValueFilterTextField.getText());
+                                 propertyValueFilterTextField.getText().trim());
     }//GEN-LAST:event_addFilterButtonActionPerformed
 
     private void removeFilterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeFilterButtonActionPerformed
@@ -529,6 +543,7 @@ public class TraversalPanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton indexStartNodeRadioButton;
     private javax.swing.JLabel indexValueStartNodeLabel;
     private javax.swing.JTextField indexValueStartNodeTextField;
+    private javax.swing.JCheckBox matchCaseCheckBox;
     private javax.swing.ButtonGroup maxDepthButtonGroup;
     private javax.swing.JPanel maxDepthPanel;
     private javax.swing.JSpinner maxDepthSpinner;
@@ -549,6 +564,7 @@ public class TraversalPanel extends javax.swing.JPanel {
     private javax.swing.JTable relationshipsTable;
     private javax.swing.JButton removeFilterButton;
     private javax.swing.JButton removeRelationshipsButton;
+    private javax.swing.JCheckBox restrictModeCheckBox;
     private javax.swing.ButtonGroup startNodeButtonGroup;
     private javax.swing.JPanel startNodePanel;
     private javax.swing.JPanel traversePanel;
@@ -566,12 +582,12 @@ public class TraversalPanel extends javax.swing.JPanel {
 
     public long getStartNodeId() {
         if (idStartNodeRadioButton.isSelected())
-            return Integer.parseInt(idStartNodeTextField.getText());
+            return Integer.parseInt(idStartNodeTextField.getText().trim());
         else {
             IndexService indexService = new LuceneIndexService(graphDB);
 
-            Node node = indexService.getSingleNode(indexKeyStartNodeTextField.getText(),
-                                                   indexValueStartNodeTextField.getText());
+            Node node = indexService.getSingleNode(indexKeyStartNodeTextField.getText().trim(),
+                                                   indexValueStartNodeTextField.getText().trim());
 
             return node.getId();
         }
@@ -595,6 +611,14 @@ public class TraversalPanel extends javax.swing.JPanel {
         }
 
         return filterDescriptions;
+    }
+
+    public boolean isMatchCaseEnabled() {
+        return matchCaseCheckBox.isSelected();
+    }
+
+    public boolean isRestrictModeEnabled() {
+        return restrictModeCheckBox.isSelected();
     }
 
     public ValidationPanel createValidationPanel() {

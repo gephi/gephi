@@ -12,10 +12,14 @@ import org.neo4j.graphdb.traversal.Position;
  * @author Martin Škurla
  */
 public class TraversalReturnFilter implements Predicate<Position> {
-    Collection<FilterDescription> filterDescriptions;
+    private Collection<FilterDescription> filterDescriptions;
+    private boolean restrictMode;
+    private boolean matchCase;
 
-    public TraversalReturnFilter(Collection<FilterDescription> filterDescriptions) {
+    public TraversalReturnFilter(Collection<FilterDescription> filterDescriptions, boolean restrictMode, boolean matchCase) {
         this.filterDescriptions = filterDescriptions;
+        this.restrictMode = restrictMode;
+        this.matchCase = matchCase;
     }
 
     @Override
@@ -32,6 +36,8 @@ public class TraversalReturnFilter implements Predicate<Position> {
                 if (isValid == false)
                     return false;
             }
+            else
+                return !restrictMode;
         }
         return true;
     }
@@ -52,10 +58,15 @@ public class TraversalReturnFilter implements Predicate<Position> {
 
             else if (TypeHelper.isCharacter(nodePropertyValue))
                 return operator.executeOnCharacters((Character) nodePropertyValue,
-                                                     TypeHelper.parseCharacter(expectedValue));
+                                                     TypeHelper.parseCharacter(expectedValue),
+                                                     matchCase);
+
+            else if (TypeHelper.isArray(nodePropertyValue)) {
+                return false;//TODO finish
+            }
 
             else
-                throw new AssertionError();
+                return operator.executeOnStrings((String) nodePropertyValue, expectedValue, matchCase);
         }
         catch (NotParsableException npe) {
             return false;

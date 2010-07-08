@@ -118,14 +118,14 @@ public class RemoteDatabasePanel extends javax.swing.JPanel {
     }
 
     public String getRemoteUrl() {
-        return remoteDatabaseUrlTextField.getText();
+        return remoteDatabaseUrlTextField.getText().trim();
     }
 
     public String getLogin() {
-        return loginTextField.getText();
+        return loginTextField.getText().trim();
     }
 
     public String getPassword() {
-        return passwordTextField.getText();
+        return passwordTextField.getText().trim();
     }
 }
