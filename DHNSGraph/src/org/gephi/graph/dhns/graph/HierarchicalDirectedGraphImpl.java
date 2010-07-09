@@ -87,8 +87,7 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
     //Directed
     public boolean removeEdge(Edge edge) {
         AbstractEdge absEdge = checkEdge(edge);
-        AbstractEdge undirected = absEdge.getUndirected(view.getViewId());      //Ensure that the edge with the min id is removed before his mutual with a greater id
-        return view.getStructureModifier().deleteEdge(undirected);
+        return view.getStructureModifier().deleteEdge(absEdge);
     }
 
     //Directed

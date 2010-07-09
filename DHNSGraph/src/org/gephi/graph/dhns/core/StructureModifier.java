@@ -150,8 +150,10 @@ public class StructureModifier {
         AbstractEdge[] clearedEdges = business.clearEdges(node);
         if (clearedEdges != null) {
             for (int i = 0; i < clearedEdges.length; i++) {
-                dhns.getGraphStructure().removeFromDictionnary(clearedEdges[i]);
-                dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, clearedEdges[i], view));
+                if (clearedEdges[i] != null) {
+                    dhns.getGraphStructure().removeFromDictionnary(clearedEdges[i]);
+                    dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, clearedEdges[i], view));
+                }
             }
         }
         graphVersion.incEdgeVersion();
@@ -367,7 +369,7 @@ public class StructureModifier {
         }
 
         private AbstractNode[] deleteNode(AbstractNode node) {
-            AbstractNode[] descendants = new AbstractNode[node.size+1];
+            AbstractNode[] descendants = new AbstractNode[node.size + 1];
             int i = 0;
             for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, Tautology.instance); itr.hasNext();) {
                 AbstractNode descendant = itr.next();
@@ -442,7 +444,6 @@ public class StructureModifier {
 
         private void group(AbstractNode group, AbstractNode[] nodes) {
             group.setEnabled(true);
-            view.incNodesEnabled(1);
             AbstractNode parent = ((AbstractNode) nodes[0]).parent;
             //parent = parent.getInView(view.getViewId());
             group.parent = parent;

@@ -444,6 +444,34 @@ public class DhnsTestDirectedGraph {
     }
 
     @Test
+    public void testRemoveEdge2() {
+        DhnsGraphController controller = new DhnsGraphController();
+        Dhns dhns = new Dhns(controller, null);
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure().getMainView());
+        TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
+        GraphFactoryImpl factory = dhns.factory();
+
+        Node node1 = factory.newNode();
+        Node node2 = factory.newNode();
+        graph.addNode(node1);
+        graph.addNode(node2);
+
+        AbstractEdge edge1 = factory.newEdge(node1, node2, 3f, true);
+        graph.addEdge(edge1);
+        AbstractEdge edge2 = factory.newEdge(node2, node1, 1f, true);
+        graph.addEdge(edge2);
+
+        graph.removeEdge(edge2);
+
+        assertEquals(edge1, graph.getEdges().toArray()[0]);
+        assertFalse(graph.contains(edge2));
+
+        graph.removeEdge(edge1);
+        assertFalse(graph.contains(edge1));
+        assertEquals(0, graph.getEdgeCount());
+    }
+
+    @Test
     public void testGetEdges() {
 
         //Test1
