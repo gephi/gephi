@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -56,6 +57,7 @@ import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.api.DataTablesEventListener;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
+import org.gephi.datalaboratory.spi.generalactions.PluginGeneralActionsManipulator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphEvent;
@@ -71,6 +73,7 @@ import org.gephi.ui.general.actions.AddColumnPanel;
 import org.gephi.ui.utils.UIUtils;
 import org.jvnet.flamingo.common.CommandButtonDisplayState;
 import org.jvnet.flamingo.common.JCommandButton;
+import org.jvnet.flamingo.common.JCommandButtonPanel;
 import org.jvnet.flamingo.common.JCommandButtonStrip;
 import org.jvnet.flamingo.common.JCommandMenuButton;
 import org.jvnet.flamingo.common.RichTooltip;
@@ -115,7 +118,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
     private NodeDataTable nodeTable;
     private EdgeDataTable edgeTable;
     //General actions buttons
-    private ArrayList<JButton> generalActionsButtons = new ArrayList<JButton>();
+    private ArrayList<JComponent> generalActionsButtons = new ArrayList<JComponent>();
     //States
     ClassDisplayed classDisplayed = ClassDisplayed.NODE;//Display nodes by default at first.
     //Executor
@@ -515,20 +518,20 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         });
     }
 
-    public Node[] getNodeTableSelection(){
+    public Node[] getNodeTableSelection() {
         return nodeTable.getNodesFromSelectedRows();
     }
 
-    public Edge[] getEdgeTableSelection(){
+    public Edge[] getEdgeTableSelection() {
         return edgeTable.getEdgesFromSelectedRows();
     }
 
     public boolean isNodeTableMode() {
-        return classDisplayed==ClassDisplayed.NODE;
+        return classDisplayed == ClassDisplayed.NODE;
     }
 
     public boolean isEdgeTableMode() {
-        return classDisplayed==ClassDisplayed.EDGE;
+        return classDisplayed == ClassDisplayed.EDGE;
     }
 
     /*************Column manipulators related methods:*************/
@@ -686,7 +689,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
     }
 
     private void clearGeneralActionsButtons() {
-        for (JButton b : generalActionsButtons) {
+        for (JComponent b : generalActionsButtons) {
             controlToolbar.remove(b);
         }
         generalActionsButtons.clear();
@@ -701,9 +704,8 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         int index = controlToolbar.getComponentIndex(boxGlue);
 
         final DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
-        GeneralActionsManipulator[] manipulators = dlh.getGeneralActionsManipulators();
         JButton button;
-        for (final GeneralActionsManipulator m : manipulators) {
+        for (final GeneralActionsManipulator m : dlh.getGeneralActionsManipulators()) {
             button = new JButton(m.getName(), m.getIcon());
             if (m.getDescription() != null && !m.getDescription().isEmpty()) {
                 button.setToolTipText(m.getDescription());
@@ -722,7 +724,64 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
             index++;
             generalActionsButtons.add(button);
         }
+
+        //Add plugin general actions as a drop down list:
+        final PluginGeneralActionsManipulator[] plugins = dlh.getPluginGeneralActionsManipulators();
+        if (plugins != null && plugins.length > 0) {
+            JCommandButton pluginsButton = new JCommandButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.general.actions.plugins.button.text"), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("/org/gephi/ui/datatable/resources/puzzle--arrow.png", true), new Dimension(16, 16)));
+            pluginsButton.setDisplayState(CommandButtonDisplayState.MEDIUM);
+            pluginsButton.setCommandButtonKind(JCommandButton.CommandButtonKind.POPUP_ONLY);
+            pluginsButton.setPopupCallback(new PopupPanelCallback() {
+
+                public JPopupPanel getPopupPanel(JCommandButton jcb) {
+                    JCommandButtonPanel pluginsPanel = new JCommandButtonPanel(CommandButtonDisplayState.BIG);
+                    Integer lastManipulatorType = null;
+                    int group = 1;
+                    pluginsPanel.addButtonGroup(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.general.actions.plugins.group.name", group));
+                    for (final PluginGeneralActionsManipulator m : plugins) {
+                        if (lastManipulatorType == null) {
+                            lastManipulatorType = m.getType();
+                        }
+                        if (lastManipulatorType != m.getType()) {
+                            group++;
+                            pluginsPanel.addButtonGroup(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.general.actions.plugins.group.name", group));
+                        }
+                        lastManipulatorType = m.getType();
+                        pluginsPanel.addButtonToLastGroup(preparePluginGeneralActionsButton(m));
+                    }
+                    JCommandPopupMenu popup = new JCommandPopupMenu(pluginsPanel, 8, 8);
+                    return popup;
+                }
+            });
+            controlToolbar.add(pluginsButton, index);
+            generalActionsButtons.add(pluginsButton);
+        }
         controlToolbar.updateUI();
+    }
+
+    /**
+     * Prepare a button for the popup panel for plugin general actions.
+     * @param m PluginGeneralActionsManipulator for the button
+     * @return JCommandButton for the manipulator
+     */
+    private JCommandButton preparePluginGeneralActionsButton(final PluginGeneralActionsManipulator m) {
+        JCommandButton button = new JCommandButton(m.getName(), m.getIcon() != null ? ImageWrapperResizableIcon.getIcon(ImageUtilities.icon2Image(m.getIcon()), new Dimension(16, 16)) : null);//Convert icon to Image if it is not null
+        button.setDisplayState(CommandButtonDisplayState.BIG);
+        button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
+        if (m.getDescription() != null && !m.getDescription().isEmpty()) {
+            button.setToolTipText(m.getDescription());
+        }
+        if (m.canExecute()) {
+            button.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    Lookup.getDefault().lookup(DataLaboratoryHelper.class).executeManipulator(m);
+                }
+            });
+        } else {
+            button.setEnabled(false);
+        }
+        return button;
     }
 
     /**
@@ -730,7 +789,8 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
      * It takes care to only refresh the UI once (the last one) when a lot of events come in a short period of time.
      */
     class RefreshOnceHelperThread extends Thread {
-        private static final int CHECK_TIME_INTERVAL=50;//50 ms.
+
+        private static final int CHECK_TIME_INTERVAL = 50;//50 ms.
         private boolean moreEvents = false;
 
         @Override

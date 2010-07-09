@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -24,11 +23,11 @@ package org.gephi.datalaboratory.spi.generalactions;
 import org.gephi.datalaboratory.spi.Manipulator;
 
 /**
- * Manipulator for general actions that don't need to obtain any data before being executed.
- * They are added as buttons in Data table toolbar.
- * @see Manipulator
+ * This interface defines the same service as GeneralActionsManipulator, with one
+ * only change: the actions are shown in a drop down panel as plugins,
+ * to tell the difference between normal, basic general actions in data laboratory and plugins.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface GeneralActionsManipulator extends Manipulator {
+public interface PluginGeneralActionsManipulator extends Manipulator{
 
 }

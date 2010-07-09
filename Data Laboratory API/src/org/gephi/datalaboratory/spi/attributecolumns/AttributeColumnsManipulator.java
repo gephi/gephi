@@ -26,7 +26,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 
 /**
- * <p>Manipulation action to use for DataLaboratory column manipulator buttons.</p>
+ * <p>Manipulation action to use for Data Laboratory column manipulator buttons.</p>
  * <p>These are shown as drop down buttons and are able to:</p>
  * <ul>
  *  <li>Execute an action with 1 column</li>

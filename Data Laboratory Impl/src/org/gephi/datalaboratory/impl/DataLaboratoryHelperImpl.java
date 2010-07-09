@@ -36,6 +36,7 @@ import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulatorBuilder;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
+import org.gephi.datalaboratory.spi.generalactions.PluginGeneralActionsManipulator;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulatorBuilder;
 import org.openide.DialogDescriptor;
@@ -77,6 +78,13 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         generalActionsManipulators.addAll(Lookup.getDefault().lookupAll(GeneralActionsManipulator.class));
         sortManipulators(generalActionsManipulators);
         return generalActionsManipulators.toArray(new GeneralActionsManipulator[0]);
+    }
+
+    public PluginGeneralActionsManipulator[] getPluginGeneralActionsManipulators(){
+        ArrayList<PluginGeneralActionsManipulator> pluginGeneralActionsManipulators = new ArrayList<PluginGeneralActionsManipulator>();
+        pluginGeneralActionsManipulators.addAll(Lookup.getDefault().lookupAll(PluginGeneralActionsManipulator.class));
+        sortManipulators(pluginGeneralActionsManipulators);
+        return pluginGeneralActionsManipulators.toArray(new PluginGeneralActionsManipulator[0]);
     }
 
     public AttributeColumnsManipulator[] getAttributeColumnsManipulators(){
