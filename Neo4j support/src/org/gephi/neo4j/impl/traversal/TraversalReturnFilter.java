@@ -62,11 +62,37 @@ public class TraversalReturnFilter implements Predicate<Position> {
                                                      matchCase);
 
             else if (TypeHelper.isArray(nodePropertyValue)) {
-                return false;//TODO finish
+                if (TypeHelper.isWholeNumberArray(nodePropertyValue))
+                    return operator.executeOnWholeNumberArrays(nodePropertyValue,
+                                                               TypeHelper.parseWholeNumberArray(expectedValue));
+
+                else if (TypeHelper.isRealNumberArray(nodePropertyValue))
+                    return operator.executeOnRealNumberArrays(nodePropertyValue,
+                                                              TypeHelper.parseRealNumberArray(expectedValue));
+
+                else if (TypeHelper.isBooleanArray(nodePropertyValue))
+                    return operator.executeOnBooleanArrays(nodePropertyValue,
+                                                           TypeHelper.parseBooleanArray(expectedValue));
+
+                else if (TypeHelper.isCharacterArray(nodePropertyValue))
+                    return operator.executeOnCharacterArrays(nodePropertyValue,
+                                                             TypeHelper.parseCharacterArray(expectedValue),
+                                                             matchCase);
+
+                else if (TypeHelper.isStringArray(nodePropertyValue))
+                    return operator.executeOnStringArrays(nodePropertyValue,
+                                                          TypeHelper.parseStringArray(expectedValue),
+                                                          matchCase);
+
+                else
+                    throw new AssertionError();
             }
 
-            else
+            else if (TypeHelper.isString(nodePropertyValue))
                 return operator.executeOnStrings((String) nodePropertyValue, expectedValue, matchCase);
+
+            else
+                throw new AssertionError();
         }
         catch (NotParsableException npe) {
             return false;
