@@ -208,23 +208,23 @@ public class PartitionBuilder implements CategoryBuilder {
                 List<Part> newParts = new ArrayList<Part>(parts.size() + 1);
                 newParts.addAll(parts);
                 newParts.add(part);
-                filterProperties[1].setValue(newParts);
+                getProperties()[1].setValue(newParts);
             }
         }
 
         public void removePart(Part part) {
             List<Part> newParts = new ArrayList<Part>(parts);
             if (newParts.remove(part)) {
-                filterProperties[1].setValue(newParts);
+                getProperties()[1].setValue(newParts);
             }
         }
 
         public void unselectAll() {
-            filterProperties[1].setValue(new ArrayList<Part>());
+            getProperties()[1].setValue(new ArrayList<Part>());
         }
 
         public void selectAll() {
-            filterProperties[1].setValue(Arrays.asList(partition.getParts()));
+            getProperties()[1].setValue(Arrays.asList(partition.getParts()));
         }
 
         public FilterProperty[] getProperties() {
