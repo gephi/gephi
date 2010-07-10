@@ -133,6 +133,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 node = factory.newNodeDraft();
                 node.setId(id);
                 addNode(node);
+                node.setCreatedAuto(true);
                 report.logIssue(new Issue("Unknow Node id", Level.WARNING));
                 report.log("Automatic node creation from id=" + id);
             } else {
@@ -410,6 +411,21 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                         }
                         edgeMap.remove(opposite.getId());
                         edgeSourceTargetMap.remove(oppositekey);
+                    }
+                }
+            }
+        }
+
+        //Clean autoNode
+        if (!allowAutoNode()) {
+            for (NodeDraftImpl nodeDraftImpl : nodeMap.values().toArray(new NodeDraftImpl[0])) {
+                if (nodeDraftImpl.isCreatedAuto()) {
+                    nodeMap.remove(nodeDraftImpl.getId());
+                    for (Iterator<EdgeDraftImpl> itr = edgeMap.values().iterator(); itr.hasNext();) {
+                        EdgeDraftImpl edge = itr.next();
+                        if (edge.getSource() == nodeDraftImpl || edge.getTarget() == nodeDraftImpl) {
+                            itr.remove();
+                        }
                     }
                 }
             }

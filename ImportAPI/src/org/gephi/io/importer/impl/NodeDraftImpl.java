@@ -41,6 +41,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     private ImportContainerImpl container;
     //Flag
     private boolean autoId;
+    private boolean createdAuto = false;
     //Basic
     private String id;
     private String label;
@@ -72,6 +73,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     }
 
     //SETTERS
+    public void setCreatedAuto(boolean createdAuto) {
+        this.createdAuto = createdAuto;
+    }
+
     public void setColor(Color color) {
         this.color = color;
     }
@@ -262,6 +267,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     public List<String[]> getSlices() {
         return slices;
+    }
+
+    public boolean isCreatedAuto() {
+        return createdAuto;
     }
 
     @Override
