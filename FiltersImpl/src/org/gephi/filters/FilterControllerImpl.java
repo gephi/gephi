@@ -271,6 +271,10 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     public void setValue(FilterProperty property, Object value, Callback callback) {
         if (model != null) {
             Query query = model.getQuery(property.getFilter());
+            if (query == null) {
+                callback.setValue(value);
+                return;
+            }
             AbstractQueryImpl rootQuery = ((AbstractQueryImpl) query).getRoot();
             FilterThread filterThread = null;
             if ((filterThread = model.getFilterThread()) != null && model.getCurrentQuery() == rootQuery) {
