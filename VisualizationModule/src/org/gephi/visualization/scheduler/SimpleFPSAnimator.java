@@ -40,6 +40,7 @@ public class SimpleFPSAnimator extends Thread {
 
     public SimpleFPSAnimator(Scheduler scheduler, GraphDrawableImpl drawble, float fps) {
         super("SimpleFPSAnimator");
+        setDaemon(true);
         this.drawable = drawble;
         this.scheduler = scheduler;
         this.animating = new AtomicBoolean();

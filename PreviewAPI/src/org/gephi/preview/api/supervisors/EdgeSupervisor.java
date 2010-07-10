@@ -11,6 +11,10 @@ import org.gephi.preview.api.EdgeColorizer;
  */
 public interface EdgeSupervisor extends Supervisor {
 
+    public Float getEdgeScale();
+
+    public void setEdgeScale(Float scale);
+
     /**
      * Returns true if the edges must be displayed in the preview.
      *

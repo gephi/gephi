@@ -203,6 +203,7 @@ public class AttributeTableImpl implements AttributeTable {
 
         public AttributeEventDispatchThread() {
             super("AttributeEvent Dispatch Thread " + name);
+            setDaemon(true);
             this.eventQueue = new LinkedBlockingQueue<AttributeEvent>();
         }
 

@@ -384,6 +384,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 String oppositekey = edge.getTarget().getId() + "-" + edge.getSource().getId();
                 EdgeDraftImpl opposite = edgeSourceTargetMap.get(oppositekey);
                 if (opposite != null) {
+                    if (parameters.isUndirectedSumDirectedEdgesWeight()) {
+                        opposite.setWeight(edge.getWeight() + opposite.getWeight());
+                    } else {
+                        opposite.setWeight(Math.max(edge.getWeight(), opposite.getWeight()));
+                    }
                     itr.remove();
                     edgeSourceTargetMap.remove(edge.getSource().getId() + "-" + edge.getTarget().getId());
                 }
@@ -398,6 +403,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     String oppositekey = edge.getTarget().getId() + "-" + edge.getSource().getId();
                     EdgeDraftImpl opposite = edgeSourceTargetMap.get(oppositekey);
                     if (opposite != null) {
+                        if (parameters.isUndirectedSumDirectedEdgesWeight()) {
+                            edge.setWeight(edge.getWeight() + opposite.getWeight());
+                        } else {
+                            edge.setWeight(Math.max(edge.getWeight(), opposite.getWeight()));
+                        }
                         edgeMap.remove(opposite.getId());
                         edgeSourceTargetMap.remove(oppositekey);
                     }
@@ -492,6 +502,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public void setEdgeDefault(EdgeDefault edgeDefault) {
         parameters.setEdgeDefault(edgeDefault);
         report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Set_EdgeDefault", edgeDefault.toString()), Level.INFO));
+    }
+
+    public void setUndirectedSumDirectedEdgesWeight(boolean value) {
+        parameters.setUndirectedSumDirectedEdgesWeight(value);
     }
 
     public boolean allowAutoNode() {

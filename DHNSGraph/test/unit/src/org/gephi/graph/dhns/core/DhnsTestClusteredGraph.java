@@ -247,7 +247,7 @@ public class DhnsTestClusteredGraph {
 
         AbstractNode group = (AbstractNode) graphGlobal.groupNodes(groupArray);
 
-        assertEquals(oldSize + 1, graphGlobal.getNodeCount());
+        assertEquals(oldSize + 1 - groupArray.length, graphGlobal.getNodeCount());
         assertEquals(groupArray.length, group.size);
         assertEquals(graphGlobal.getHeight(), 1);
 
@@ -286,7 +286,7 @@ public class DhnsTestClusteredGraph {
             assertEquals(1, pn.level);
             assertSame(treeStructure.getRoot(), pn.parent);
         }
-
+        treeStructure.showTreeAsTable();
         assertEquals(oldSize, graphGlobal.getNodeCount());
 
         try {

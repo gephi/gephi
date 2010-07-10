@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.graph.dhns
 OpenIDE-Module-Localizing-Bundle: org/gephi/graph/dhns/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.1
+OpenIDE-Module-Specification-Version: 0.7.1.1
 

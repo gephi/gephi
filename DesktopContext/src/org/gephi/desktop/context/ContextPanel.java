@@ -61,7 +61,9 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         consumerThread = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(5), new ThreadFactory() {
 
             public Thread newThread(Runnable r) {
-                return new Thread(r, "Context Panel consumer thread");
+                Thread t = new Thread(r, "Context Panel consumer thread");
+                t.setDaemon(true);
+                return t;
             }
         }, new ThreadPoolExecutor.DiscardOldestPolicy());
     }

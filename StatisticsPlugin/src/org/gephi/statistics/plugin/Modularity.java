@@ -44,6 +44,7 @@ import org.gephi.utils.progress.ProgressTicket;
  */
 public class Modularity implements Statistics, LongTask {
 
+    public static final String MODULARITY_CLASS = "modularity_class";
     private ProgressTicket mProgress;
     private boolean mIsCanceled;
     private CommunityStructure mStructure;
@@ -551,9 +552,9 @@ public class Modularity implements Statistics, LongTask {
      */
     public double finalQ(int[] pStruct, double[] pDegrees, UndirectedGraph pGraph, AttributeModel attributeModel) {
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn modCol = nodeTable.getColumn("modularity_class");
+        AttributeColumn modCol = nodeTable.getColumn(MODULARITY_CLASS);
         if (modCol == null) {
-            modCol = nodeTable.addColumn("modularity_class", "Modularity Class", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+            modCol = nodeTable.addColumn(MODULARITY_CLASS, "Modularity Class", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
 
         double res = 0;

@@ -36,6 +36,8 @@ import org.gephi.utils.progress.ProgressTicket;
 
 public class InOutDegree implements Statistics, LongTask {
 
+    public static final String INDEGREE = "indegree";
+    public static final String OUTDEGREE = "outdegree";
     /** The Average Node In-Degree. */
     private double mAvgInDegree;
     /** The Average Node Out-Degree. */
@@ -67,13 +69,13 @@ public class InOutDegree implements Statistics, LongTask {
 
         //Attributes cols
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn inCol = nodeTable.getColumn("indegree");
-        AttributeColumn outCol = nodeTable.getColumn("outdegree");
+        AttributeColumn inCol = nodeTable.getColumn(INDEGREE);
+        AttributeColumn outCol = nodeTable.getColumn(OUTDEGREE);
         if (inCol == null) {
-            inCol = nodeTable.addColumn("indegree", "In Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+            inCol = nodeTable.addColumn(INDEGREE, "In Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
         }
         if (outCol == null) {
-            outCol = nodeTable.addColumn("outdegree", "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+            outCol = nodeTable.addColumn(OUTDEGREE, "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
         }
 
         DirectedGraph graph = graphModel.getDirectedGraphVisible();
@@ -95,7 +97,7 @@ public class InOutDegree implements Statistics, LongTask {
                 break;
             }
             i++;
-            mProgress.progress(i);
+            Progress.progress(mProgress, i);
         }
 
         mAvgDegree = mAvgInDegree + mAvgOutDegree;

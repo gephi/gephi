@@ -59,6 +59,7 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public class PageRank implements Statistics, LongTask {
 
+    public static final String PAGERANK = "pageranks";
     /** */
     private ProgressTicket mProgress;
     /** */
@@ -187,9 +188,9 @@ public class PageRank implements Statistics, LongTask {
         }
 
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn pangeRanksCol = nodeTable.getColumn("pageranks");
+        AttributeColumn pangeRanksCol = nodeTable.getColumn(PAGERANK);
         if (pangeRanksCol == null) {
-            pangeRanksCol = nodeTable.addColumn("pageranks", "PageRank", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+            pangeRanksCol = nodeTable.addColumn(PAGERANK, "PageRank", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
         for (Node s : graph.getNodes()) {

@@ -34,6 +34,7 @@ import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterable;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -44,6 +45,9 @@ import org.gephi.utils.progress.ProgressTicket;
  * @author pjmcswee
  */
 public class ConnectedComponents implements Statistics, LongTask {
+
+    public static final String WEAKLY = "componentnumber";
+    public static final String STRONG = "strongcompnum";
 
     private boolean mDirected;
     private ProgressTicket mProgress;
@@ -66,9 +70,9 @@ public class ConnectedComponents implements Statistics, LongTask {
         mIsCanceled = false;
         mComponentCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn componentCol = nodeTable.getColumn("componentnumber");
+        AttributeColumn componentCol = nodeTable.getColumn(WEAKLY);
         if (componentCol == null) {
-            componentCol = nodeTable.addColumn("componentnumber", "Component ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+            componentCol = nodeTable.addColumn(WEAKLY, "Component ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
 
         Graph graph = graphModel.getUndirectedGraphVisible();
@@ -99,10 +103,11 @@ public class ConnectedComponents implements Statistics, LongTask {
             LinkedList<Node> component = new LinkedList<Node>();
 
             //Seed the seach Q
-            for (Node first : graph.getNodes()) {
+            NodeIterable iter = graph.getNodes();
+            for (Node first : iter) {
                 if (color[indicies.get(first)] == 0) {
                     Q.add(first);
-
+                    iter.doBreak();
                     break;
                 }
             }
@@ -150,9 +155,9 @@ public class ConnectedComponents implements Statistics, LongTask {
         mIsCanceled = false;
         mStronglyCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn componentCol = nodeTable.getColumn("strongcompnum");
+        AttributeColumn componentCol = nodeTable.getColumn(STRONG);
         if (componentCol == null) {
-            componentCol = nodeTable.addColumn("strongcompnum", "Strongly-Connected ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+            componentCol = nodeTable.addColumn(STRONG, "Strongly-Connected ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
 
         DirectedGraph graph = graphModel.getDirectedGraphVisible();
@@ -176,13 +181,16 @@ public class ConnectedComponents implements Statistics, LongTask {
             LinkedList<Node> component = new LinkedList<Node>();
             //Seed the seach Q
             Node first = null;
-            for (Node u : graph.getNodes()) {
+            NodeIterable iter = graph.getNodes();
+            for (Node u : iter) {
                 if (index[indicies.get(u)] == 0) {
                     first = u;
+                    iter.doBreak();
                     break;
                 }
             }
             if (first == null) {
+                graph.readUnlockAll();
                 return;
             }
             tarjans(componentCol, S, graph, first, index, low_index, indicies);
@@ -248,7 +256,7 @@ public class ConnectedComponents implements Statistics, LongTask {
      * @return
      */
     public String getReport() {
-        String report = new String("<HTML> <BODY> <h1>Graph Distance  Report </h1> "
+        String report = new String("<HTML> <BODY> <h1>Connected Components Report </h1> "
                 + "<hr> <br> <h2>Network Revision Number:</h2>"
                 + mGraphRevision
                 + "<br>"

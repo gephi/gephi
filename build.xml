@@ -111,7 +111,6 @@
                 <include name="org-gephi-graph-dhns.jar"/>
                 <include name="org-gephi-io-database-drivers.jar"/>
                 <include name="org-gephi-utils-collection.jar"/>
-                <include name="org-gephi-utils-collection.jar"/>
                 <include name="org-gephi-io-exporter-api.jar"/>
                 <include name="org-gephi-io-exporter-plugin.jar"/>
                 <include name="org-gephi-io-importer-api.jar"/>
@@ -124,11 +123,14 @@
                 <include name="org-gephi-project-api.jar"/>
                 <include name="org-gephi-statistics-api.jar"/>
                 <include name="org-gephi-statistics-plugin.jar"/>
-                <include name="org-gephi-project-api.jar"/>
                 <include name="org-gephi-timeline.jar"/>
                 <include name="org-gephi-utils.jar"/>
                 <include name="org-gephi-utils-longtask.jar" />
-                <include name="org-gephi-utils-collection.jar"/>
+                <include name="org-gephi-ranking-api.jar"/>
+                <include name="org-gephi-partition-api.jar"/>
+                <include name="org-gephi-partition-plugin.jar"/>
+                <include name="org-gephi-io-generator-api.jar"/>
+                <include name="org-gephi-io-generator-plugin.jar"/>
             </fileset>
         </copy>
         <copy todir="${toolkit.tempdir}">
@@ -164,5 +166,45 @@
         <delete file="${toolkit.dir}/temp_final.jar"/>
         <delete dir="${platform.dir}"/>
 
+    </target>
+
+    <target name="toolkit-javadoc">
+        <javadoc destdir="${basedir}/toolkit/doc" windowtitle="Gephi Toolkit API Index" encoding="UTF-8" charset="UTF-8" stylesheetfile="stylesheet.css"  packagenames="org.gephi.*" overview="overview.html" classpath="build/public-package-jars/org-openide-util-lookup.jar">
+            <sourcepath>
+                <pathelement path="Algorithms/src"/>
+                <pathelement path="AttributesAPI/src"/>
+                <pathelement path="AttributesImpl/src"/>
+                <pathelement path="PreviewExport/src"/>
+                <pathelement path="FiltersAPI/src"/>
+                <pathelement path="FiltersImpl/src"/>
+                <pathelement path="FiltersPlugin/src"/>
+                <pathelement path="GraphAPI/src"/>
+                <pathelement path="DHNSGraph/src"/>
+                <pathelement path="DBDrivers/src"/>
+                <pathelement path="CollectionUtils/src"/>
+                <pathelement path="ExportAPI/src"/>
+                <pathelement path="ExportPlugin/src"/>
+                <pathelement path="ImportAPI/src"/>
+                <pathelement path="ImportPlugin/src"/>
+                <pathelement path="ProcessorPlugin/src"/>
+                <pathelement path="LayoutAPI/src"/>
+                <pathelement path="LayoutPlugin/src"/>
+                <pathelement path="PreviewAPI/src"/>
+                <pathelement path="PreviewImpl/src"/>
+                <pathelement path="ProjectAPI/src"/>
+                <pathelement path="StatisticsAPI/src"/>
+                <pathelement path="StatisticsPlugin/src"/>
+                <pathelement path="TimelineAPI/src"/>
+                <pathelement path="Utils/src"/>
+                <pathelement path="LongTaskAPI/src"/>
+                <pathelement path="RankingAPI/src"/>
+                <pathelement path="PartitionAPI/src"/>
+                <pathelement path="PartitionPlugin/src"/>
+                <pathelement path="GeneratorAPI/src"/>
+                <pathelement path="GeneratorPlugin/src"/>
+            </sourcepath>
+            <doctitle>Gephi Toolkit Javadoc</doctitle>
+            <header>Gephi Toolkit 0.7.1 Javadoc</header>
+        </javadoc>
     </target>
 </project>

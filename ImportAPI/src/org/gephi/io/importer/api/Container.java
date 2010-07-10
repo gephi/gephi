@@ -75,6 +75,8 @@ public interface Container {
 
     public void setAllowParallelEdge(boolean value);
 
+    public void setUndirectedSumDirectedEdgesWeight(boolean value);
+
     /**
      * Set a report this container can use to report issues detected when loading the container. Report
      * are used to log info and issues during import process. Only one report can be associated to a

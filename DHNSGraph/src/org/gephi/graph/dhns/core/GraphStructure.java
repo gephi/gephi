@@ -219,6 +219,7 @@ public class GraphStructure {
 
         public ViewDestructorThread(GraphStructure graphStructure) {
             super("DHNS View Destructor");
+            setDaemon(true);
             structureReference = new WeakReference<GraphStructure>(graphStructure);
         }
 

@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.partition.plugin;
+package org.gephi.ui.partition.plugin;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -34,8 +34,9 @@ import javax.swing.JPopupMenu;
 import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
+import org.gephi.partition.plugin.EdgeColorTransformer;
 import org.gephi.partition.spi.Transformer;
-import org.gephi.ui.utils.PaletteUtils;
+import org.gephi.utils.PaletteUtils;
 import org.openide.util.NbBundle;
 
 /**
@@ -52,7 +53,7 @@ public class EdgeColorTransformerPanel extends javax.swing.JPanel {
         net.miginfocom.swing.MigLayout migLayout1 = new net.miginfocom.swing.MigLayout();
         migLayout1.setColumnConstraints("[pref!]20[pref!]");
         setLayout(migLayout1);
-        
+
         initComponents();
         createPopup();
         addMouseListener(new MouseAdapter() {
