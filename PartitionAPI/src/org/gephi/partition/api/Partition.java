@@ -37,6 +37,8 @@ public interface Partition<Element> {
 
     public Part<Element> getPart(Element element);
 
+    public Part<Element> getPartFromValue(Object value);
+
     public int getElementsCount();
 
     @Override
