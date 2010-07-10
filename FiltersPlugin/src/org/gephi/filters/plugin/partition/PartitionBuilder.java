@@ -148,7 +148,7 @@ public class PartitionBuilder implements CategoryBuilder {
         }
     }
 
-    public static class PartitionFilter implements Filter {
+    public static abstract class PartitionFilter implements Filter {
 
         private Partition partition;
         private FilterProperty[] filterProperties;
