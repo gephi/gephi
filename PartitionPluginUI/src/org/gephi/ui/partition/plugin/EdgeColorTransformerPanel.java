@@ -36,7 +36,7 @@ import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.plugin.EdgeColorTransformer;
 import org.gephi.partition.spi.Transformer;
-import org.gephi.ui.utils.PaletteUtils;
+import org.gephi.utils.PaletteUtils;
 import org.openide.util.NbBundle;
 
 /**
