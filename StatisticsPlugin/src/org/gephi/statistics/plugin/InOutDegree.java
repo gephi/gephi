@@ -97,7 +97,7 @@ public class InOutDegree implements Statistics, LongTask {
                 break;
             }
             i++;
-            mProgress.progress(i);
+            Progress.progress(mProgress, i);
         }
 
         mAvgDegree = mAvgInDegree + mAvgOutDegree;
