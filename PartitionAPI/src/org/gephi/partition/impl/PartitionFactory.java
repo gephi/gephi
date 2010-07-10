@@ -145,17 +145,23 @@ public class PartitionFactory {
     private static class NodePartitionImpl implements NodePartition {
 
         private HashMap<NodeData, Part<Node>> nodeMap;
+        private HashMap<Object, Part<Node>> valueMap;
         private PartImpl<Node>[] parts;
         private AttributeColumn column;
 
         public NodePartitionImpl(AttributeColumn column) {
             this.column = column;
             nodeMap = new HashMap<NodeData, Part<Node>>();
+            valueMap = new HashMap<Object, Part<Node>>();
             parts = new PartImpl[0];
         }
 
         public int getPartsCount() {
             return parts.length;
+        }
+
+        public Part<Node> getPartFromValue(Object value) {
+            return valueMap.get(value);
         }
 
         public Part<Node>[] getParts() {
@@ -179,6 +185,7 @@ public class PartitionFactory {
                     nodeMap.put(n.getNodeData(), p);
                 }
                 p.setColor(colors.get(i));
+                valueMap.put(p.getValue(), p);
                 i++;
             }
         }
@@ -201,11 +208,13 @@ public class PartitionFactory {
 
         private HashMap<EdgeData, Part<Edge>> edgeMap;
         private PartImpl<Edge>[] parts;
+        private HashMap<Object, Part<Edge>> valueMap;
         private AttributeColumn column;
 
         public EdgePartitionImpl(AttributeColumn column) {
             this.column = column;
             edgeMap = new HashMap<EdgeData, Part<Edge>>();
+            valueMap = new HashMap<Object, Part<Edge>>();
             parts = new PartImpl[0];
         }
 
@@ -215,6 +224,10 @@ public class PartitionFactory {
 
         public Part<Edge>[] getParts() {
             return parts;
+        }
+
+        public Part<Edge> getPartFromValue(Object value) {
+            return valueMap.get(value);
         }
 
         public Map<EdgeData, Part<Edge>> getMap() {
@@ -234,6 +247,7 @@ public class PartitionFactory {
                     edgeMap.put(e.getEdgeData(), p);
                 }
                 p.setColor(colors.get(i));
+                valueMap.put(p.getValue(), p);
                 i++;
             }
         }
