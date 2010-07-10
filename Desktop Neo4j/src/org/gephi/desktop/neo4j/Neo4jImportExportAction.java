@@ -7,8 +7,9 @@ import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import org.gephi.desktop.neo4j.ui.ExportOptionsPanel;
 import org.gephi.desktop.neo4j.ui.RemoteDatabasePanel;
-import org.gephi.desktop.neo4j.ui.TraversalPanel;
+import org.gephi.desktop.neo4j.ui.TraversalImportPanel;
 import org.gephi.desktop.neo4j.ui.util.Neo4jUtils;
 import org.gephi.neo4j.api.Neo4jExporter;
 import org.gephi.neo4j.api.Neo4jImporter;
@@ -73,7 +74,7 @@ public class Neo4jImportExportAction extends CallableSystemAction {
                 graphDB = Neo4jUtils.localDatabase(neo4jDirectory);
 
                 String traversalDialogTitle = NbBundle.getMessage(Neo4jImportExportAction.class, "CTL_Neo4j_TraversalDialogTitle");
-                final TraversalPanel traversalPanel = new TraversalPanel(graphDB);
+                final TraversalImportPanel traversalPanel = new TraversalImportPanel(graphDB);
                 ValidationPanel validationPanel = traversalPanel.createValidationPanel();
 
                 if (validationPanel.showOkCancelDialog(traversalDialogTitle)) {
@@ -103,6 +104,11 @@ public class Neo4jImportExportAction extends CallableSystemAction {
         String localExportMessage = NbBundle.getMessage(Neo4jImportExportAction.class, "CTL_Neo4j_LocalExportMenuLabel");
         JMenuItem localExport = new JMenuItem(new AbstractAction(localExportMessage) {
             public void actionPerformed(ActionEvent e) {
+                String exportOptionsDialogTitle = NbBundle.getMessage(Neo4jImportExportAction.class, "CTL_Neo4j_ExportOptionsDialogTitle");
+                ValidationPanel vp = new ExportOptionsPanel().createValidationPanel();
+                vp.showOkCancelDialog(exportOptionsDialogTitle);
+
+
                 JFileChooser fileChooser = new JFileChooser();
                 String localExportDialogTitle = NbBundle.getMessage(Neo4jImportExportAction.class, "CTL_Neo4j_LocalExportDialogTitle");
                 fileChooser.setDialogTitle(localExportDialogTitle);
@@ -134,7 +140,7 @@ public class Neo4jImportExportAction extends CallableSystemAction {
         JMenuItem remoteImport = new JMenuItem(new AbstractAction(remoteImportMessage) {
             public void actionPerformed(ActionEvent e) {
                 final RemoteDatabasePanel databasePanel = new RemoteDatabasePanel();
-                final ValidationPanel validationPanel = RemoteDatabasePanel.createValidationPanel(databasePanel);
+                ValidationPanel validationPanel = databasePanel.createValidationPanel();
                 String remoteImportDialogTitle = NbBundle.getMessage(Neo4jImportExportAction.class, "CTL_Neo4j_RemoteImportDialogTitle");
 
                 if (validationPanel.showOkCancelDialog(remoteImportDialogTitle)) {
@@ -162,7 +168,7 @@ public class Neo4jImportExportAction extends CallableSystemAction {
         JMenuItem remoteExport = new JMenuItem(new AbstractAction(remoteExportMessage) {
             public void actionPerformed(ActionEvent e) {
                 final RemoteDatabasePanel databasePanel = new RemoteDatabasePanel();
-                final ValidationPanel validationPanel = RemoteDatabasePanel.createValidationPanel(databasePanel);
+                ValidationPanel validationPanel = databasePanel.createValidationPanel();
                 String remoteExportDialogTitle = NbBundle.getMessage(Neo4jImportExportAction.class, "CTL_Neo4j_RemoteExportDialogTitle");
 
                 if (validationPanel.showOkCancelDialog(remoteExportDialogTitle)) {

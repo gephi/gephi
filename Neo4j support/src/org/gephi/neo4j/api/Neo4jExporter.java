@@ -12,4 +12,5 @@ import org.neo4j.graphdb.GraphDatabaseService;
 public interface Neo4jExporter {
 
     void exportDatabase(GraphDatabaseService graphDB);
+    //TODO extend methods and implementations
 }

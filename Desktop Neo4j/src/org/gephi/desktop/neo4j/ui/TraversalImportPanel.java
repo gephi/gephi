@@ -26,7 +26,7 @@ import org.netbeans.validation.api.ui.ValidationPanel;
  *
  * @author Martin Škurla
  */
-public class TraversalPanel extends javax.swing.JPanel {
+public class TraversalImportPanel extends javax.swing.JPanel {
     private final GraphDatabaseService graphDB;
     private final RelationshipsTableModel relationshipsTableModel;
     private final FilterTableModel filterTableModel;
@@ -34,7 +34,7 @@ public class TraversalPanel extends javax.swing.JPanel {
     private int relationshipsSelectedRow;
     private int filterSelectedRow;
 
-    public TraversalPanel(GraphDatabaseService graphDB) {
+    public TraversalImportPanel(GraphDatabaseService graphDB) {
         this.graphDB = graphDB;
         this.relationshipsTableModel = new RelationshipsTableModel();
         this.filterTableModel = new FilterTableModel();
@@ -90,16 +90,16 @@ public class TraversalPanel extends javax.swing.JPanel {
         indexValueStartNodeLabel = new javax.swing.JLabel();
         idStartNodeTextField = new javax.swing.JTextField();
 
-        traversePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.traversePanel.border.title"))); // NOI18N
+        traversePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.traversePanel.border.title"))); // NOI18N
 
-        orderPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.orderPanel.border.title"))); // NOI18N
+        orderPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.orderPanel.border.title"))); // NOI18N
 
         orderButtonGroup.add(breadthFirstOrderRadioButton);
-        breadthFirstOrderRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.breadthFirstOrderRadioButton.text")); // NOI18N
+        breadthFirstOrderRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.breadthFirstOrderRadioButton.text")); // NOI18N
 
         orderButtonGroup.add(depthFirstOrderRadioButton);
         depthFirstOrderRadioButton.setSelected(true);
-        depthFirstOrderRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.depthFirstOrderRadioButton.text")); // NOI18N
+        depthFirstOrderRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.depthFirstOrderRadioButton.text")); // NOI18N
 
         javax.swing.GroupLayout orderPanelLayout = new javax.swing.GroupLayout(orderPanel);
         orderPanel.setLayout(orderPanelLayout);
@@ -122,14 +122,14 @@ public class TraversalPanel extends javax.swing.JPanel {
                 .addContainerGap(33, Short.MAX_VALUE))
         );
 
-        maxDepthPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.maxDepthPanel.border.title"))); // NOI18N
+        maxDepthPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.maxDepthPanel.border.title"))); // NOI18N
 
         maxDepthButtonGroup.add(concreteMaxDepthRadioButton);
-        concreteMaxDepthRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.concreteMaxDepthRadioButton.text")); // NOI18N
+        concreteMaxDepthRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.concreteMaxDepthRadioButton.text")); // NOI18N
 
         maxDepthButtonGroup.add(endOfGraphMaxDepthRadioButton);
         endOfGraphMaxDepthRadioButton.setSelected(true);
-        endOfGraphMaxDepthRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.endOfGraphMaxDepthRadioButton.text")); // NOI18N
+        endOfGraphMaxDepthRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.endOfGraphMaxDepthRadioButton.text")); // NOI18N
 
         javax.swing.GroupLayout maxDepthPanelLayout = new javax.swing.GroupLayout(maxDepthPanel);
         maxDepthPanel.setLayout(maxDepthPanelLayout);
@@ -157,20 +157,20 @@ public class TraversalPanel extends javax.swing.JPanel {
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
-        relationshipsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.relationshipsPanel.border.title"))); // NOI18N
+        relationshipsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.relationshipsPanel.border.title"))); // NOI18N
 
-        relationshipTypeLabel.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.relationshipTypeLabel.text")); // NOI18N
+        relationshipTypeLabel.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.relationshipTypeLabel.text")); // NOI18N
 
-        directionLabel.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.directionLabel.text")); // NOI18N
+        directionLabel.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.directionLabel.text")); // NOI18N
 
-        addRelationshipsButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.addRelationshipsButton.text")); // NOI18N
+        addRelationshipsButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.addRelationshipsButton.text")); // NOI18N
         addRelationshipsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addRelationshipsButtonActionPerformed(evt);
             }
         });
 
-        removeRelationshipsButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.removeRelationshipsButton.text")); // NOI18N
+        removeRelationshipsButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.removeRelationshipsButton.text")); // NOI18N
         removeRelationshipsButton.setEnabled(false);
         removeRelationshipsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -190,14 +190,14 @@ public class TraversalPanel extends javax.swing.JPanel {
         relationshipTypeComboBox.setModel(new DefaultComboBoxModel(Neo4jUtils.relationshipTypeNames(graphDB)));
 
         relationshipsButtonGroup.add(outcomingRelationshipsRadioButton);
-        outcomingRelationshipsRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.outcomingRelationshipsRadioButton.text")); // NOI18N
+        outcomingRelationshipsRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.outcomingRelationshipsRadioButton.text")); // NOI18N
 
         relationshipsButtonGroup.add(bothRelationshipsRadioButton);
         bothRelationshipsRadioButton.setSelected(true);
-        bothRelationshipsRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.bothRelationshipsRadioButton.text")); // NOI18N
+        bothRelationshipsRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.bothRelationshipsRadioButton.text")); // NOI18N
 
         relationshipsButtonGroup.add(incomingRelationshipsRadioButton);
-        incomingRelationshipsRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.incomingRelationshipsRadioButton.text")); // NOI18N
+        incomingRelationshipsRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.incomingRelationshipsRadioButton.text")); // NOI18N
 
         javax.swing.GroupLayout relationshipsPanelLayout = new javax.swing.GroupLayout(relationshipsPanel);
         relationshipsPanel.setLayout(relationshipsPanelLayout);
@@ -252,26 +252,26 @@ public class TraversalPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        filterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.filterPanel.border.title"))); // NOI18N
+        filterPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.filterPanel.border.title"))); // NOI18N
 
-        propertyKeyLabel.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.propertyKeyLabel.text")); // NOI18N
+        propertyKeyLabel.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.propertyKeyLabel.text")); // NOI18N
 
-        propertyValueLabel.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.propertyValueLabel.text")); // NOI18N
+        propertyValueLabel.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.propertyValueLabel.text")); // NOI18N
 
-        operatorLabel.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.operatorLabel.text")); // NOI18N
+        operatorLabel.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.operatorLabel.text")); // NOI18N
 
-        propertyKeyFilterTextField.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.propertyKeyFilterTextField.text")); // NOI18N
+        propertyKeyFilterTextField.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.propertyKeyFilterTextField.text")); // NOI18N
 
-        propertyValueFilterTextField.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.propertyValueFilterTextField.text")); // NOI18N
+        propertyValueFilterTextField.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.propertyValueFilterTextField.text")); // NOI18N
 
-        addFilterButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.addFilterButton.text")); // NOI18N
+        addFilterButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.addFilterButton.text")); // NOI18N
         addFilterButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addFilterButtonActionPerformed(evt);
             }
         });
 
-        removeFilterButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.removeFilterButton.text")); // NOI18N
+        removeFilterButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.removeFilterButton.text")); // NOI18N
         removeFilterButton.setEnabled(false);
         removeFilterButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -289,9 +289,9 @@ public class TraversalPanel extends javax.swing.JPanel {
 
         operatorComboBox.setModel(new DefaultComboBoxModel(FilterOperator.getTextRepresentations()));
 
-        restrictModeCheckBox.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.restrictModeCheckBox.text")); // NOI18N
+        restrictModeCheckBox.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.restrictModeCheckBox.text")); // NOI18N
 
-        matchCaseCheckBox.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.matchCaseCheckBox.text")); // NOI18N
+        matchCaseCheckBox.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.matchCaseCheckBox.text")); // NOI18N
 
         javax.swing.GroupLayout filterPanelLayout = new javax.swing.GroupLayout(filterPanel);
         filterPanel.setLayout(filterPanelLayout);
@@ -351,11 +351,11 @@ public class TraversalPanel extends javax.swing.JPanel {
                     .addComponent(restrictModeCheckBox)))
         );
 
-        startNodePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.startNodePanel.border.title"))); // NOI18N
+        startNodePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.startNodePanel.border.title"))); // NOI18N
 
         startNodeButtonGroup.add(idStartNodeRadioButton);
         idStartNodeRadioButton.setSelected(true);
-        idStartNodeRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.idStartNodeRadioButton.text")); // NOI18N
+        idStartNodeRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.idStartNodeRadioButton.text")); // NOI18N
         idStartNodeRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 idStartNodeRadioButtonActionPerformed(evt);
@@ -363,24 +363,24 @@ public class TraversalPanel extends javax.swing.JPanel {
         });
 
         startNodeButtonGroup.add(indexStartNodeRadioButton);
-        indexStartNodeRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.indexStartNodeRadioButton.text")); // NOI18N
+        indexStartNodeRadioButton.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.indexStartNodeRadioButton.text")); // NOI18N
         indexStartNodeRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 indexStartNodeRadioButtonActionPerformed(evt);
             }
         });
 
-        indexValueStartNodeTextField.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.index value.text")); // NOI18N
+        indexValueStartNodeTextField.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalPanel.index value.text")); // NOI18N
         indexValueStartNodeTextField.setEnabled(false);
         indexValueStartNodeTextField.setName("index value"); // NOI18N
 
-        indexKeyStartNodeTextField.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.index key.text")); // NOI18N
+        indexKeyStartNodeTextField.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalPanel.index key.text")); // NOI18N
         indexKeyStartNodeTextField.setEnabled(false);
         indexKeyStartNodeTextField.setName("index key"); // NOI18N
 
-        indexValueStartNodeLabel.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.indexValueStartNodeLabel.text")); // NOI18N
+        indexValueStartNodeLabel.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalImportPanel.indexValueStartNodeLabel.text")); // NOI18N
 
-        idStartNodeTextField.setText(org.openide.util.NbBundle.getMessage(TraversalPanel.class, "TraversalPanel.node id.text")); // NOI18N
+        idStartNodeTextField.setText(org.openide.util.NbBundle.getMessage(TraversalImportPanel.class, "TraversalPanel.node id.text")); // NOI18N
         idStartNodeTextField.setName("node id"); // NOI18N
 
         javax.swing.GroupLayout startNodePanelLayout = new javax.swing.GroupLayout(startNodePanel);
@@ -624,7 +624,7 @@ public class TraversalPanel extends javax.swing.JPanel {
     public ValidationPanel createValidationPanel() {
         ValidationPanel validationPanel = new ValidationPanel();
         validationPanel.setInnerComponent(this);
-        ValidationGroup group = validationPanel.getValidationGroup();
+//        ValidationGroup group = validationPanel.getValidationGroup();
 
         //Validators
 //        group.add(this.idStartNodeTextField, ValidationStrategy.ON_FOCUS_LOSS,       new NodeIdValidator());

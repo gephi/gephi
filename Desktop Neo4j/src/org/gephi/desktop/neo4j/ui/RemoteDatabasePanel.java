@@ -104,15 +104,15 @@ public class RemoteDatabasePanel extends javax.swing.JPanel {
     private javax.swing.JTextField remoteDatabaseUrlTextField;
     // End of variables declaration//GEN-END:variables
 
-    public static ValidationPanel createValidationPanel(RemoteDatabasePanel innerPanel) {
+    public ValidationPanel createValidationPanel() {
         ValidationPanel validationPanel = new ValidationPanel();
-        validationPanel.setInnerComponent(innerPanel);
+        validationPanel.setInnerComponent(this);
         ValidationGroup group = validationPanel.getValidationGroup();
 
         //Validators
-        group.add(innerPanel.remoteDatabaseUrlTextField, Validators.URL_MUST_BE_VALID);
-        group.add(innerPanel.loginTextField, Validators.REQUIRE_NON_EMPTY_STRING);
-        group.add(innerPanel.passwordTextField, Validators.REQUIRE_NON_EMPTY_STRING);
+        group.add(remoteDatabaseUrlTextField, Validators.URL_MUST_BE_VALID);
+        group.add(loginTextField, Validators.REQUIRE_NON_EMPTY_STRING);
+        group.add(passwordTextField, Validators.REQUIRE_NON_EMPTY_STRING);
 
         return validationPanel;
     }
