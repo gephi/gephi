@@ -206,5 +206,7 @@
             <doctitle>Gephi Toolkit Javadoc</doctitle>
             <header>Gephi Toolkit 0.7.1 Javadoc</header>
         </javadoc>
+        <zip destfile="${basedir}/toolkit/toolkit-javadoc.zip" basedir="${basedir}/toolkit/doc">
+        </zip>
     </target>
 </project>
