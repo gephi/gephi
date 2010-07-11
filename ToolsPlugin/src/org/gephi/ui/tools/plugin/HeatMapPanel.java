@@ -36,8 +36,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import org.gephi.ui.components.gradientslider.GradientSlider;
-import org.gephi.ui.utils.PaletteUtils;
-import org.gephi.ui.utils.PaletteUtils.Palette;
+import org.gephi.utils.PaletteUtils;
+import org.gephi.utils.PaletteUtils.Palette;
 
 /**
  *

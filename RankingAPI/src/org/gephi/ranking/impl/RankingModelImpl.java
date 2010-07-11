@@ -88,6 +88,60 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         fireChangeEvent();
     }
 
+    public NodeRanking getDegreeRanking() {
+        GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
+        Graph graph = model.getGraphVisible();
+        NodeRanking degreeRanking = RankingFactory.getNodeDegreeRanking(graph);
+        if (degreeRanking.getMinimumValue() != null && degreeRanking.getMaximumValue() != null && !degreeRanking.getMinimumValue().equals(degreeRanking.getMaximumValue())) {
+            return degreeRanking;
+        }
+        return null;
+    }
+
+    public NodeRanking getInDegreeRanking() {
+        GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
+        DirectedGraph graph = model.getDirectedGraphVisible();
+        NodeRanking degreeRanking = RankingFactory.getNodeInDegreeRanking(graph);
+        if (degreeRanking.getMinimumValue() != null && degreeRanking.getMaximumValue() != null && !degreeRanking.getMinimumValue().equals(degreeRanking.getMaximumValue())) {
+            return degreeRanking;
+        }
+        return null;
+    }
+
+    public NodeRanking getOutDegreeRanking() {
+        GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
+        DirectedGraph graph = model.getDirectedGraphVisible();
+        NodeRanking degreeRanking = RankingFactory.getNodeOutDegreeRanking(graph);
+        if (degreeRanking.getMinimumValue() != null && degreeRanking.getMaximumValue() != null && !degreeRanking.getMinimumValue().equals(degreeRanking.getMaximumValue())) {
+            return degreeRanking;
+        }
+        return null;
+    }
+
+    public NodeRanking getNodeAttributeRanking(AttributeColumn column) {
+        GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
+        Graph graph = model.getGraphVisible();
+        if (RankingFactory.isNumberColumn(column)) {
+            NodeRanking r = RankingFactory.getNodeAttributeRanking(column, graph);
+            if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    public EdgeRanking getEdgeAttributeRanking(AttributeColumn column) {
+        GraphModel model = Lookup.getDefault().lookup(GraphController.class).getModel();
+        Graph graph = model.getGraphVisible();
+        if (RankingFactory.isNumberColumn(column)) {
+            EdgeRanking r = RankingFactory.getEdgeAttributeRanking(column, graph);
+            if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
+                return r;
+            }
+        }
+        return null;
+    }
+
     public NodeRanking[] getNodeRanking() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
         List<Ranking> rankingList = new ArrayList<Ranking>();

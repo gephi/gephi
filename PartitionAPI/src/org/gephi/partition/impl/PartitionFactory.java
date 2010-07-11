@@ -23,11 +23,14 @@ package org.gephi.partition.impl;
 import com.google.common.collect.ArrayListMultimap;
 import java.awt.Color;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
@@ -40,7 +43,6 @@ import org.gephi.partition.api.EdgePartition;
 import org.gephi.partition.api.NodePartition;
 import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
-import org.gephi.ui.utils.PaletteUtils;
 
 /**
  *
@@ -143,17 +145,23 @@ public class PartitionFactory {
     private static class NodePartitionImpl implements NodePartition {
 
         private HashMap<NodeData, Part<Node>> nodeMap;
+        private HashMap<Object, Part<Node>> valueMap;
         private PartImpl<Node>[] parts;
         private AttributeColumn column;
 
         public NodePartitionImpl(AttributeColumn column) {
             this.column = column;
             nodeMap = new HashMap<NodeData, Part<Node>>();
+            valueMap = new HashMap<Object, Part<Node>>();
             parts = new PartImpl[0];
         }
 
         public int getPartsCount() {
             return parts.length;
+        }
+
+        public Part<Node> getPartFromValue(Object value) {
+            return valueMap.get(value);
         }
 
         public Part<Node>[] getParts() {
@@ -170,13 +178,14 @@ public class PartitionFactory {
 
         public void setParts(PartImpl<Node>[] parts) {
             this.parts = parts;
-            List<Color> colors = PaletteUtils.getSequenceColors(parts.length);
+            List<Color> colors = getSequenceColors(parts.length);
             int i = 0;
             for (PartImpl<Node> p : parts) {
                 for (Node n : p.objects) {
                     nodeMap.put(n.getNodeData(), p);
                 }
                 p.setColor(colors.get(i));
+                valueMap.put(p.getValue(), p);
                 i++;
             }
         }
@@ -199,11 +208,13 @@ public class PartitionFactory {
 
         private HashMap<EdgeData, Part<Edge>> edgeMap;
         private PartImpl<Edge>[] parts;
+        private HashMap<Object, Part<Edge>> valueMap;
         private AttributeColumn column;
 
         public EdgePartitionImpl(AttributeColumn column) {
             this.column = column;
             edgeMap = new HashMap<EdgeData, Part<Edge>>();
+            valueMap = new HashMap<Object, Part<Edge>>();
             parts = new PartImpl[0];
         }
 
@@ -213,6 +224,10 @@ public class PartitionFactory {
 
         public Part<Edge>[] getParts() {
             return parts;
+        }
+
+        public Part<Edge> getPartFromValue(Object value) {
+            return valueMap.get(value);
         }
 
         public Map<EdgeData, Part<Edge>> getMap() {
@@ -225,13 +240,14 @@ public class PartitionFactory {
 
         public void setParts(PartImpl<Edge>[] parts) {
             this.parts = parts;
-            List<Color> colors = PaletteUtils.getSequenceColors(parts.length);
+            List<Color> colors = getSequenceColors(parts.length);
             int i = 0;
             for (PartImpl<Edge> p : parts) {
                 for (Edge e : p.objects) {
                     edgeMap.put(e.getEdgeData(), p);
                 }
                 p.setColor(colors.get(i));
+                valueMap.put(p.getValue(), p);
                 i++;
             }
         }
@@ -306,5 +322,26 @@ public class PartitionFactory {
             int theirCount = ((PartImpl) o).objects.length;
             return thisCount == theirCount ? 0 : thisCount > theirCount ? 1 : -1;
         }
+    }
+
+    public static List<Color> getSequenceColors(int num) {
+        List<Color> colors = new LinkedList<Color>();
+
+        //On choisit H et S au random
+        Random random = new Random();
+        float B = random.nextFloat() * 2 / 5f + 0.6f;		//		0.6 <=   B   < 1
+        float S = random.nextFloat() * 2 / 5f + 0.6f;		//		0.6 <=   S   < 1
+        //System.out.println("B : "+B+"  S : "+S);
+
+        for (int i = 1; i <= num; i++) {
+            float H = i / (float) num;
+            //System.out.println(H);
+            Color c = Color.getHSBColor(H, S, B);
+            colors.add(c);
+        }
+
+        Collections.shuffle(colors);
+
+        return colors;
     }
 }

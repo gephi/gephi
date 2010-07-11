@@ -20,14 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.partition.plugin;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import org.gephi.partition.api.Partition;
+import org.gephi.partition.plugin.spi.NodeColorTransformerUI;
 import org.gephi.partition.spi.Transformer;
 import org.gephi.partition.spi.TransformerBuilder;
 import org.gephi.partition.spi.TransformerUI;
-import org.openide.util.NbBundle;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -42,32 +39,6 @@ public class NodeColorTransformerBuilder implements TransformerBuilder.Node {
     }
 
     public TransformerUI getUI() {
-        return new UI();
-    }
-
-    private static class UI implements TransformerUI {
-
-        private NodeColorTransformerPanel panel;
-
-        public Icon getIcon() {
-            return new ImageIcon(getClass().getResource("/org/gephi/partition/plugin/resources/color.png"));
-        }
-
-        public String getName() {
-            return NbBundle.getMessage(NodeColorTransformerBuilder.class, "NodeColorTransformerBuilder.ui.name");
-        }
-
-        public JPanel getPanel() {
-            panel = new NodeColorTransformerPanel();
-            return panel;
-        }
-
-        public void setup(Partition partition, Transformer transformer) {
-            panel.setup(partition, transformer);
-        }
-
-        public void unsetup() {
-            panel = null;
-        }
+        return Lookup.getDefault().lookup(NodeColorTransformerUI.class);
     }
 }

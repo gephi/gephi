@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -82,7 +83,14 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     private Runnable mouseClickSegment;
 
     private void initPools() {
-        pool1 = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>()) {
+        pool1 = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), new ThreadFactory() {
+
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r, "VisualizationThreadPool 1");
+                t.setDaemon(true);
+                return t;
+            }
+        }) {
 
             @Override
             protected void afterExecute(Runnable r, Throwable t) {
@@ -96,7 +104,14 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
             }
         };
 
-        pool2 = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>()) {
+        pool2 = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), new ThreadFactory() {
+
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r, "VisualizationThreadPool 2");
+                t.setDaemon(true);
+                return t;
+            }
+        }) {
 
             @Override
             protected void afterExecute(Runnable r, Throwable t) {
@@ -163,14 +178,14 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     }
 
     @Override
-    public synchronized  void start() {
+    public synchronized void start() {
         simpleFPSAnimator = new SimpleFPSAnimator(this, graphDrawable, fpsLimit);
         simpleFPSAnimator.start();
     }
 
     @Override
     public synchronized void stop() {
-        if(simpleFPSAnimator==null) {
+        if (simpleFPSAnimator == null) {
             return;
         }
         if (simpleFPSAnimator.isAnimating()) {

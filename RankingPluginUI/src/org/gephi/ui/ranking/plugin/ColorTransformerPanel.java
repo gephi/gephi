@@ -40,9 +40,8 @@ import org.gephi.ranking.api.Transformer;
 import org.gephi.ui.components.JRangeSlider;
 import org.gephi.ui.components.PaletteIcon;
 import org.gephi.ui.components.gradientslider.GradientSlider;
-import org.gephi.ui.utils.PaletteUtils;
-import org.gephi.ui.utils.PaletteUtils.Palette;
-import org.openide.util.Exceptions;
+import org.gephi.utils.PaletteUtils;
+import org.gephi.utils.PaletteUtils.Palette;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 

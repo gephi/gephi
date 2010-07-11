@@ -36,6 +36,7 @@ public class FilterThread extends Thread {
 
     public FilterThread(FilterModelImpl model) {
         super("Filter Thread");
+        setDaemon(true);
         this.model = model;
         this.filtering = model.isFiltering();
         rootQuery = new AtomicReference<AbstractQueryImpl>();

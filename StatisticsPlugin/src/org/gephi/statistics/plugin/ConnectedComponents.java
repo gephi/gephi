@@ -46,6 +46,9 @@ import org.gephi.utils.progress.ProgressTicket;
  */
 public class ConnectedComponents implements Statistics, LongTask {
 
+    public static final String WEAKLY = "componentnumber";
+    public static final String STRONG = "strongcompnum";
+
     private boolean mDirected;
     private ProgressTicket mProgress;
     private boolean mIsCanceled;
@@ -67,9 +70,9 @@ public class ConnectedComponents implements Statistics, LongTask {
         mIsCanceled = false;
         mComponentCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn componentCol = nodeTable.getColumn("componentnumber");
+        AttributeColumn componentCol = nodeTable.getColumn(WEAKLY);
         if (componentCol == null) {
-            componentCol = nodeTable.addColumn("componentnumber", "Component ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+            componentCol = nodeTable.addColumn(WEAKLY, "Component ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
 
         Graph graph = graphModel.getUndirectedGraphVisible();
@@ -152,9 +155,9 @@ public class ConnectedComponents implements Statistics, LongTask {
         mIsCanceled = false;
         mStronglyCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn componentCol = nodeTable.getColumn("strongcompnum");
+        AttributeColumn componentCol = nodeTable.getColumn(STRONG);
         if (componentCol == null) {
-            componentCol = nodeTable.addColumn("strongcompnum", "Strongly-Connected ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+            componentCol = nodeTable.addColumn(STRONG, "Strongly-Connected ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
 
         DirectedGraph graph = graphModel.getDirectedGraphVisible();

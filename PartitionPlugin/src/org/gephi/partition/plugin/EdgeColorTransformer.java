@@ -22,12 +22,14 @@ package org.gephi.partition.plugin;
 
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.gephi.graph.api.Edge;
 import org.gephi.partition.api.EdgePartition;
 import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.spi.Transformer;
+import org.gephi.utils.PaletteUtils;
 
 /**
  *
@@ -44,6 +46,15 @@ public class EdgeColorTransformer implements Transformer {
 
     public Map<Object, Color> getMap() {
         return map;
+    }
+
+    public void randomizeColors(Partition partition) {
+        List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
+        int i = 0;
+        for (Part p : partition.getParts()) {
+            getMap().put(p.getValue(), colors.get(i));
+            i++;
+        }
     }
 
     public void transform(Partition partition) {

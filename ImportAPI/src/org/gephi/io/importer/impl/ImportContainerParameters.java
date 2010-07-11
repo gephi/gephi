@@ -33,6 +33,7 @@ public class ImportContainerParameters {
     private boolean autoNode = true;
     private boolean autoScale = true;
     private boolean removeEdgeWithWeightZero = false;
+    private boolean undirectedSumDirectedEdgesWeight = false;
     private EdgeDefault edgeDefault = EdgeDefault.DIRECTED;
 
     public boolean isAutoNode() {
@@ -81,5 +82,13 @@ public class ImportContainerParameters {
 
     public void setRemoveEdgeWithWeightZero(boolean removeEdgeWithWeightZero) {
         this.removeEdgeWithWeightZero = removeEdgeWithWeightZero;
+    }
+
+    public boolean isUndirectedSumDirectedEdgesWeight() {
+        return undirectedSumDirectedEdgesWeight;
+    }
+
+    public void setUndirectedSumDirectedEdgesWeight(boolean undirectedSumDirectedEdgesWeight) {
+        this.undirectedSumDirectedEdgesWeight = undirectedSumDirectedEdgesWeight;
     }
 }

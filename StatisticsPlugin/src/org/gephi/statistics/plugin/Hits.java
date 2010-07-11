@@ -61,6 +61,8 @@ import org.openide.util.Exceptions;
  */
 public class Hits implements Statistics, LongTask {
 
+    public static final String AUTHORITY = "authority";
+    public static final String HUB = "hub";
     private boolean isCanceled;
     private ProgressTicket progress;
     private double[] authority;
@@ -221,13 +223,13 @@ public class Hits implements Statistics, LongTask {
         }
 
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn authorityCol = nodeTable.getColumn("authority");
-        AttributeColumn hubsCol = nodeTable.getColumn("hub");
+        AttributeColumn authorityCol = nodeTable.getColumn(AUTHORITY);
+        AttributeColumn hubsCol = nodeTable.getColumn(HUB);
         if (authorityCol == null) {
-            authorityCol = nodeTable.addColumn("authority", "Authority", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
+            authorityCol = nodeTable.addColumn(AUTHORITY, "Authority", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
         }
         if (hubsCol == null) {
-            hubsCol = nodeTable.addColumn("hub", "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
+            hubsCol = nodeTable.addColumn(HUB, "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
         }
 
         for (Node s : graph.getNodes()) {

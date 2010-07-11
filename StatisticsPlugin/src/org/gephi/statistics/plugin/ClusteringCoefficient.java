@@ -185,6 +185,7 @@ class ArrayWrapper implements Comparable {
  */
 public class ClusteringCoefficient implements Statistics, LongTask {
 
+    public static final String CLUSTERING_COEFF = "clustering";
     /** The avergage Clustering Coefficient.*/
     private double avgClusteringCoeff;
     /** Indicates to use the brute force approach.*/
@@ -220,13 +221,13 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         isCanceled = false;
         Graph graph = graphModel.getUndirectedGraph();
         this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
-       // if (bruteForce) {
-       //     bruteForce(graphModel, attributeModel);
-       //     return;
-       // } else {
-            triangles(graphModel, attributeModel);
+        // if (bruteForce) {
+        //     bruteForce(graphModel, attributeModel);
+        //     return;
+        // } else {
+        triangles(graphModel, attributeModel);
         //    return;
-       // }
+        // }
     }
 
     /**
@@ -339,7 +340,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         N = graph.getNodeCount();
         Node[] nodes = new Node[N];
         mNodeClustering = new double[N];
-        
+
         /** Create network for processing */
         mNetwork = new ArrayWrapper[N];
 
@@ -433,9 +434,9 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         avgClusteringCoeff = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn clusteringCol = nodeTable.getColumn("clustering");
+        AttributeColumn clusteringCol = nodeTable.getColumn(CLUSTERING_COEFF);
         if (clusteringCol == null) {
-            clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+            clusteringCol = nodeTable.addColumn(CLUSTERING_COEFF, "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
         for (Node s : graph.getNodes()) {
@@ -560,9 +561,9 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         double max = 0;
         XYSeries series1 = new XYSeries("Clustering Coefficient");
-        for (int i = 0; i <N; i++) {
+        for (int i = 0; i < N; i++) {
             series1.add(i, this.mNodeClustering[i]);
-            max =  Math.max(mNodeClustering[i], max);
+            max = Math.max(mNodeClustering[i], max);
         }
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series1);
@@ -612,9 +613,9 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                 + "<br>" + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.directed ? "directed" : "undirected") + "<br>"
                 + "Average Clustering Coefficient: " + avgClusteringCoeff + "<br>"
-                + "Total triangles: " + this.mTotalTriangles + "<br>"                 
+                + "Total triangles: " + this.mTotalTriangles + "<br>"
                 + imageFile + "<br>" + "</BODY> </HTML>");
-     }
+    }
 
     /**
      * 

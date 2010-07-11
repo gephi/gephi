@@ -133,6 +133,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 node = factory.newNodeDraft();
                 node.setId(id);
                 addNode(node);
+                node.setCreatedAuto(true);
                 report.logIssue(new Issue("Unknow Node id", Level.WARNING));
                 report.log("Automatic node creation from id=" + id);
             } else {
@@ -384,6 +385,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 String oppositekey = edge.getTarget().getId() + "-" + edge.getSource().getId();
                 EdgeDraftImpl opposite = edgeSourceTargetMap.get(oppositekey);
                 if (opposite != null) {
+                    if (parameters.isUndirectedSumDirectedEdgesWeight()) {
+                        opposite.setWeight(edge.getWeight() + opposite.getWeight());
+                    } else {
+                        opposite.setWeight(Math.max(edge.getWeight(), opposite.getWeight()));
+                    }
                     itr.remove();
                     edgeSourceTargetMap.remove(edge.getSource().getId() + "-" + edge.getTarget().getId());
                 }
@@ -398,8 +404,28 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     String oppositekey = edge.getTarget().getId() + "-" + edge.getSource().getId();
                     EdgeDraftImpl opposite = edgeSourceTargetMap.get(oppositekey);
                     if (opposite != null) {
+                        if (parameters.isUndirectedSumDirectedEdgesWeight()) {
+                            edge.setWeight(edge.getWeight() + opposite.getWeight());
+                        } else {
+                            edge.setWeight(Math.max(edge.getWeight(), opposite.getWeight()));
+                        }
                         edgeMap.remove(opposite.getId());
                         edgeSourceTargetMap.remove(oppositekey);
+                    }
+                }
+            }
+        }
+
+        //Clean autoNode
+        if (!allowAutoNode()) {
+            for (NodeDraftImpl nodeDraftImpl : nodeMap.values().toArray(new NodeDraftImpl[0])) {
+                if (nodeDraftImpl.isCreatedAuto()) {
+                    nodeMap.remove(nodeDraftImpl.getId());
+                    for (Iterator<EdgeDraftImpl> itr = edgeMap.values().iterator(); itr.hasNext();) {
+                        EdgeDraftImpl edge = itr.next();
+                        if (edge.getSource() == nodeDraftImpl || edge.getTarget() == nodeDraftImpl) {
+                            itr.remove();
+                        }
                     }
                 }
             }
@@ -492,6 +518,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public void setEdgeDefault(EdgeDefault edgeDefault) {
         parameters.setEdgeDefault(edgeDefault);
         report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Set_EdgeDefault", edgeDefault.toString()), Level.INFO));
+    }
+
+    public void setUndirectedSumDirectedEdgesWeight(boolean value) {
+        parameters.setUndirectedSumDirectedEdgesWeight(value);
     }
 
     public boolean allowAutoNode() {
