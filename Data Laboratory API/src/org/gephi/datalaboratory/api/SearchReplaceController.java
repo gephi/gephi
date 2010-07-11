@@ -60,7 +60,7 @@ public interface SearchReplaceController {
     /**
      * Replaces a SearchResult with the given replacement String.
      * Also tries to find next search result and returns it.
-     * Can throw IllegalArgumentException if the given SearchResult cannot be replaced, is null, or does not match the value.
+     * If the data has changed and the replacement can't be done it will just return next SearchResult.
      * @param result SearchResult to replace
      * @param replacement Replacement String
      * @return Next SearchResult or null if not successful
