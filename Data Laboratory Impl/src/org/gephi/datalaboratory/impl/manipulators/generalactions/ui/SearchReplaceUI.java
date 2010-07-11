@@ -66,7 +66,6 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         dataTablesController = Lookup.getDefault().lookup(DataTablesController.class);
         createSearchOptions();
         refreshSearchOptions();
-        fillDescriptionText();
 
         searchText.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -84,14 +83,6 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         });
     }
 
-    private void fillDescriptionText(){
-        if(mode==Mode.NODES_TABLE){
-            descriptionLabel.setText(NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.descriptionLabel.text.nodes"));
-        }else{
-            descriptionLabel.setText(NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.descriptionLabel.text.edges"));
-        }
-    }
-
     public Mode getMode() {
         return mode;
     }
@@ -99,8 +90,8 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
     public void setMode(Mode mode) {
         this.mode = mode;
         createSearchOptions();
+        resultText.setText("");
         refreshSearchOptions();
-        fillDescriptionText();
     }
 
     public void refreshSearchOptions() {
@@ -110,6 +101,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
     }
 
     private void createSearchOptions() {
+        searchResult=null;
         if (mode == Mode.NODES_TABLE) {
             searchOptions = new SearchOptions(new Node[0], null);//Use all nodes
         } else {
@@ -118,10 +110,6 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
     }
 
     private void refreshRegexPattern() {
-        if (searchText.getText().isEmpty()) {
-            regexPattern = null;//Do not allow empty string search
-            return;
-        }
         try {
             String text = searchText.getText();
             if (normalSearchModeRadioButton.isSelected()) {
@@ -137,29 +125,25 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
             searchText.setBackground(Color.WHITE);
         } catch (PatternSyntaxException ex) {
             searchText.setBackground(invalidRegexColor);
-            setButtonsEnabled(false);
             regexPattern = null;
         }
     }
 
     private void refreshControls() {
         if (searchResult == null) {
-            findNextButton.setEnabled(false);
             replaceButton.setEnabled(false);
             replaceAllButton.setEnabled(false);
         } else {
-            findNextButton.setEnabled(true);
             replaceButton.setEnabled(searchReplaceController.canReplace(searchResult));
             replaceAllButton.setEnabled(true);
         }
 
         if (regexPattern == null) {
-            startSearchButton.setEnabled(false);
             findNextButton.setEnabled(false);
             replaceButton.setEnabled(false);
             replaceAllButton.setEnabled(false);
         } else {
-            startSearchButton.setEnabled(true);
+            findNextButton.setEnabled(true);
         }
     }
 
@@ -167,55 +151,48 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         if (searchResult != null) {
             Object value;
             if (mode == Mode.NODES_TABLE) {
-                Node node=searchResult.getFoundNode();
+                Node node = searchResult.getFoundNode();
                 dataTablesController.setNodeTableSelection(new Node[]{node});
                 if (!dataTablesController.isNodeTableMode()) {
                     dataTablesController.selectNodesTable();
                 }
-                value=node.getNodeData().getAttributes().getValue(searchResult.getFoundColumnIndex());
+                value = node.getNodeData().getAttributes().getValue(searchResult.getFoundColumnIndex());
             } else {
-                Edge edge=searchResult.getFoundEdge();
+                Edge edge = searchResult.getFoundEdge();
                 dataTablesController.setEdgeTableSelection(new Edge[]{edge});
                 if (!dataTablesController.isEdgeTableMode()) {
                     dataTablesController.selectEdgesTable();
                 }
-                value=edge.getEdgeData().getAttributes().getValue(searchResult.getFoundColumnIndex());
+                value = edge.getEdgeData().getAttributes().getValue(searchResult.getFoundColumnIndex());
             }
 
             String columnName;
-            if(mode==Mode.NODES_TABLE){
-                columnName=Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumn(searchResult.getFoundColumnIndex()).getTitle();
-            }else{
-                columnName=Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable().getColumn(searchResult.getFoundColumnIndex()).getTitle();
+            if (mode == Mode.NODES_TABLE) {
+                columnName = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumn(searchResult.getFoundColumnIndex()).getTitle();
+            } else {
+                columnName = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable().getColumn(searchResult.getFoundColumnIndex()).getTitle();
             }
 
-            StringBuilder sb=new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.append("<html>");
-            sb.append(NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.column",HTMLEscape.stringToHTMLString(columnName)));
+            sb.append(NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.column", HTMLEscape.stringToHTMLString(columnName)));
             sb.append("<br>");
-            if(value!=null){
-                String text=value.toString();               
+            if (value != null) {
+                String text = value.toString();
                 sb.append(HTMLEscape.stringToHTMLString(text.substring(0, searchResult.getStart())));
                 sb.append("<font color='blue'>");
                 sb.append(HTMLEscape.stringToHTMLString(text.substring(searchResult.getStart(), searchResult.getEnd())));
                 sb.append("</font>");
                 sb.append(HTMLEscape.stringToHTMLString(text.substring(searchResult.getEnd())));
-            }else{
+            } else {
                 sb.append("<font color='blue'>null</font>");
             }
             sb.append("</html>");
             resultText.setText(sb.toString());
         } else {
-            JOptionPane.showMessageDialog(null, NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.data.end"));
+            JOptionPane.showMessageDialog(null, NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.not.found",searchText.getText()));
             resultText.setText("");
         }
-    }
-
-    private void setButtonsEnabled(boolean enabled) {
-        startSearchButton.setEnabled(enabled);
-        findNextButton.setEnabled(enabled);
-        replaceButton.setEnabled(enabled);
-        replaceAllButton.setEnabled(enabled);
     }
 
     /** This method is called from within the constructor to
@@ -234,13 +211,11 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         normalSearchModeRadioButton = new javax.swing.JRadioButton();
         regexSearchModeRadioButton = new javax.swing.JRadioButton();
         caseSensitiveCheckBox = new javax.swing.JCheckBox();
-        startSearchButton = new javax.swing.JButton();
         findNextButton = new javax.swing.JButton();
         replaceButton = new javax.swing.JButton();
         replaceAllButton = new javax.swing.JButton();
         searchText = new javax.swing.JTextField();
         replaceText = new javax.swing.JTextField();
-        descriptionLabel = new javax.swing.JLabel();
         scroll = new javax.swing.JScrollPane();
         resultText = new javax.swing.JTextPane();
         resultLabel = new javax.swing.JLabel();
@@ -281,13 +256,6 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
             }
         });
 
-        startSearchButton.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.startSearchButton.text")); // NOI18N
-        startSearchButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startSearchButtonActionPerformed(evt);
-            }
-        });
-
         findNextButton.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.findNextButton.text")); // NOI18N
         findNextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -313,9 +281,6 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
 
         replaceText.setText(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.replaceText.text")); // NOI18N
 
-        descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        descriptionLabel.setText(null);
-
         resultText.setContentType(org.openide.util.NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.resultText.contentType")); // NOI18N
         resultText.setEditable(false);
         scroll.setViewportView(resultText);
@@ -329,7 +294,6 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(matchWholeValueCheckBox)
@@ -350,8 +314,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(replaceAllButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(replaceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(findNextButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(startSearchButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(findNextButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
                     .addComponent(resultLabel))
                 .addContainerGap())
@@ -361,14 +324,10 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(startSearchButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(findNextButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(35, 35, 35)
                         .addComponent(replaceButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(replaceAllButton))
@@ -414,15 +373,8 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
         refreshSearchOptions();
     }//GEN-LAST:event_caseSensitiveCheckBoxItemStateChanged
 
-    private void startSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startSearchButtonActionPerformed
-        searchOptions.resetStatus();
-        searchResult = searchReplaceController.findNext(searchOptions);
-        refreshSearchOptions();
-        showSearchResult();
-    }//GEN-LAST:event_startSearchButtonActionPerformed
-
     private void findNextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findNextButtonActionPerformed
-        searchResult = searchReplaceController.findNext(searchResult);
+        searchResult = searchReplaceController.findNext(searchOptions);
         refreshSearchOptions();
         showSearchResult();
     }//GEN-LAST:event_findNextButtonActionPerformed
@@ -435,15 +387,15 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
     }//GEN-LAST:event_replaceButtonActionPerformed
 
     private void replaceAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_replaceAllButtonActionPerformed
-        searchReplaceController.replaceAll(searchOptions, replaceText.getText());
+        int replacementsCount = searchReplaceController.replaceAll(searchOptions, replaceText.getText());
         searchResult = null;
         refreshSearchOptions();
         dataTablesController.refreshCurrentTable();
-        showSearchResult();
+        JOptionPane.showMessageDialog(null, NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.replacements.count.message",replacementsCount));
+        resultText.setText("");
     }//GEN-LAST:event_replaceAllButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox caseSensitiveCheckBox;
-    private javax.swing.JLabel descriptionLabel;
     private javax.swing.JButton findNextButton;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JCheckBox matchWholeValueCheckBox;
@@ -459,6 +411,5 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
     private javax.swing.JLabel searchLabel;
     private javax.swing.ButtonGroup searchModeButtonGroup;
     private javax.swing.JTextField searchText;
-    private javax.swing.JButton startSearchButton;
     // End of variables declaration//GEN-END:variables
 }

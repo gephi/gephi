@@ -305,7 +305,12 @@ public class EdgeDataTable {
 
         public void setValueFor(Edge edge, Object value) {
             String str=(String) value;//Treat all columns as Strings
-            edge.getEdgeData().getAttributes().setValue(column.getIndex(), column.getType().parse(str));
+            try {
+                value = column.getType().parse(str);
+            } catch (Exception ex) {
+                value=null;//Could not parse
+            }
+            edge.getEdgeData().getAttributes().setValue(column.getIndex(), value);
         }
 
         public boolean isEditable() {

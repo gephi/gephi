@@ -71,8 +71,9 @@ public interface SearchReplaceController {
      * Replaces all SearchResults that can be replaced with the given search options.
      * @param searchOptions Search options for the searches
      * @param replacement Replacement String
+     * @return Count of made replacements
      */
-    void replaceAll(SearchOptions searchOptions, String replacement);
+    int replaceAll(SearchOptions searchOptions, String replacement);
 
     /**
      * Class that wraps the different possible options of search and provides various useful constructors.
@@ -83,6 +84,7 @@ public interface SearchReplaceController {
         private Node[] nodesToSearch;
         private Edge[] edgesToSearch;
         private Integer startingRow = null, startingColumn = null;
+        private boolean loopToBeginning=true;
         private Pattern regexPattern;
         private boolean useRegexReplaceMode = false;
         private int regionStart = 0;
@@ -200,6 +202,14 @@ public interface SearchReplaceController {
 
         public void setUseRegexReplaceMode(boolean useRegexReplaceMode) {
             this.useRegexReplaceMode = useRegexReplaceMode;
+        }
+
+        public boolean isLoopToBeginning() {
+            return loopToBeginning;
+        }
+
+        public void setLoopToBeginning(boolean loopToBeginning) {
+            this.loopToBeginning = loopToBeginning;
         }
     }
 

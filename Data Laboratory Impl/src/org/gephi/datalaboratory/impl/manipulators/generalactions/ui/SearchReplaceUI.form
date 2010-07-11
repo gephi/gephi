@@ -23,7 +23,6 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="descriptionLabel" alignment="0" pref="341" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="matchWholeValueCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -49,8 +48,7 @@
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="replaceAllButton" max="32767" attributes="1"/>
                           <Component id="replaceButton" max="32767" attributes="1"/>
-                          <Component id="findNextButton" max="32767" attributes="1"/>
-                          <Component id="startSearchButton" alignment="0" max="32767" attributes="1"/>
+                          <Component id="findNextButton" alignment="0" max="32767" attributes="1"/>
                       </Group>
                   </Group>
                   <Component id="scroll" alignment="0" pref="341" max="32767" attributes="0"/>
@@ -64,15 +62,11 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="descriptionLabel" min="-2" pref="22" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="startSearchButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="findNextButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                       <Component id="replaceButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="replaceAllButton" min="-2" max="-2" attributes="0"/>
@@ -171,16 +165,6 @@
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="caseSensitiveCheckBoxItemStateChanged"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="startSearchButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/generalactions/ui/Bundle.properties" key="SearchReplaceUI.startSearchButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="startSearchButtonActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JButton" name="findNextButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -222,14 +206,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/generalactions/ui/Bundle.properties" key="SearchReplaceUI.replaceText.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="descriptionLabel">
-      <Properties>
-        <Property name="horizontalAlignment" type="int" value="0"/>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="null" type="code"/>
         </Property>
       </Properties>
     </Component>

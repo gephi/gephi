@@ -51,10 +51,23 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         if (searchOptions.getStartingColumn() != null) {
             column = searchOptions.getStartingColumn();
         }
+        SearchResult result = null;
         if (searchOptions.isSearchNodes()) {
-            return findOnNodes(searchOptions, row, column);
+            result = findOnNodes(searchOptions, row, column);
+            if (result == null&&searchOptions.isLoopToBeginning()) {
+                searchOptions.resetStatus();
+                return findOnNodes(searchOptions, 0, 0);//If the end of data is reached with no success, try to search again from the beginning as a loop
+            } else {
+                return result;
+            }
         } else {
-            return findOnEdges(searchOptions, row, column);
+            result = findOnEdges(searchOptions, row, column);
+            if (result == null&&searchOptions.isLoopToBeginning()) {
+                searchOptions.resetStatus();
+                return findOnEdges(searchOptions, 0, 0);//If the end of data is reached with no success, try to search again from the beginning as a loop
+            } else {
+                return result;
+            }
         }
     }
 
@@ -84,8 +97,8 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         Attributes attributes;
         AttributeType type;
 
-        if(!result.getSearchOptions().isUseRegexReplaceMode()){
-            replacement=Matcher.quoteReplacement(replacement);//Avoid using groups and other regex aspects in the replacement
+        if (!result.getSearchOptions().isUseRegexReplaceMode()) {
+            replacement = Matcher.quoteReplacement(replacement);//Avoid using groups and other regex aspects in the replacement
         }
 
         //Get value to re-match and replace:
@@ -121,17 +134,22 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         }
     }
 
-    public void replaceAll(SearchOptions searchOptions, String replacement) {
+    public int replaceAll(SearchOptions searchOptions, String replacement) {
+        int replacementsCount = 0;
         searchOptions.resetStatus();
+        searchOptions.setLoopToBeginning(false);//To avoid infinite loop when the replacement parse makes it to match again.
         SearchResult result;
         result = findNext(searchOptions);
         while (result != null) {
             if (canReplace(result)) {
                 result = replace(result, replacement);
+                replacementsCount++;
             } else {
                 result = findNext(searchOptions);
             }
         }
+        searchOptions.setLoopToBeginning(true);//Restore loop behaviour
+        return replacementsCount;
     }
 
     private SearchResult findOnNodes(SearchOptions searchOptions, int rowIndex, int columnIndex) {
@@ -180,7 +198,11 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         boolean found;
         String str = value != null ? value.toString() : "";
         Matcher matcher = searchOptions.getRegexPattern().matcher(str);
-        if (searchOptions.getRegionStart() >= str.length()) {
+        if (str.isEmpty()) {
+            if (searchOptions.getRegionStart() > 0) {
+                return null;
+            }
+        } else if (searchOptions.getRegionStart() >= str.length()) {
             return null;//No more to search in this value, go to next
         }
 
@@ -194,7 +216,14 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         if (found) {
             searchOptions.setStartingRow(rowIndex);//For next search
             searchOptions.setStartingColumn(columnIndex);//For next search
-            searchOptions.setRegionStart(matcher.end());//Start next search after this match in this value. (If it is greater than the length of the value, it will be discarded at the beginning of this method next time)
+            int end=matcher.end();
+            if (matcher.start() == end && !str.isEmpty()) {
+                return null;//Do not match empty string in not empty values
+            }
+            if(str.isEmpty()){
+                end++;//To be able to search on next values when the value matched is null
+            }
+            searchOptions.setRegionStart(end);//Start next search after this match in this value. (If it is greater than the length of the value, it will be discarded at the beginning of this method next time)
             return new SearchResult(searchOptions, null, null, rowIndex, columnIndex, matcher.start(), matcher.end());//Set node or edge values later
         } else {
             return null;

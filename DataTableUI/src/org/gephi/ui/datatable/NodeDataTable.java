@@ -187,7 +187,7 @@ public class NodeDataTable {
     public void scrollToFirstNodeSelected() {
         int row = outlineTable.getSelectedRow();
         if (row != -1) {
-            Rectangle rect =outlineTable.getCellRect(row, 0, true);
+            Rectangle rect = outlineTable.getCellRect(row, 0, true);
             outlineTable.scrollRectToVisible(rect);
         }
     }
@@ -325,7 +325,12 @@ public class NodeDataTable {
         public void setValueFor(ImmutableTreeNode node, Object value) {
             Node graphNode = node.getNode();
             String str = (String) value;//Treat all columns as Strings
-            graphNode.getNodeData().getAttributes().setValue(column.getIndex(), column.getType().parse(str));
+            try {
+                value = column.getType().parse(str);
+            } catch (Exception ex) {
+                value=null;//Could not parse
+            }
+            graphNode.getNodeData().getAttributes().setValue(column.getIndex(), value);
         }
 
         public boolean isEditable() {
