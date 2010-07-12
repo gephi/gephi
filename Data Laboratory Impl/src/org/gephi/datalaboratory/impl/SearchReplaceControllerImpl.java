@@ -37,7 +37,9 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * Implementation of the SearchReplaceController interface
+ * declared in the Data Laboratory API.
+ * @see SearchReplaceController
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service = SearchReplaceController.class)

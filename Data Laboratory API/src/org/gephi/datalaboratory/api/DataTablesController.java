@@ -73,6 +73,13 @@ public interface DataTablesController {
     void setDataTablesEventListener(DataTablesEventListener listener);
 
     /**
+     * Returns the current registered DataTablesEventListener.
+     * It can be null if it is still not activated or there is no active workspace.
+     * @return Current listener or null
+     */
+     DataTablesEventListener getDataTablesEventListener();
+
+    /**
      * Request the tables implementation to provide the selected nodes in nodes table.
      * @return Array of selected nodes
      */

@@ -28,6 +28,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.impl.manipulators.edges.DeleteEdges;
+import org.gephi.datalaboratory.impl.manipulators.generalactions.SearchReplace;
 import org.gephi.datalaboratory.impl.manipulators.nodes.DeleteNodes;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
@@ -80,15 +81,15 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         return generalActionsManipulators.toArray(new GeneralActionsManipulator[0]);
     }
 
-    public PluginGeneralActionsManipulator[] getPluginGeneralActionsManipulators(){
+    public PluginGeneralActionsManipulator[] getPluginGeneralActionsManipulators() {
         ArrayList<PluginGeneralActionsManipulator> pluginGeneralActionsManipulators = new ArrayList<PluginGeneralActionsManipulator>();
         pluginGeneralActionsManipulators.addAll(Lookup.getDefault().lookupAll(PluginGeneralActionsManipulator.class));
         sortManipulators(pluginGeneralActionsManipulators);
         return pluginGeneralActionsManipulators.toArray(new PluginGeneralActionsManipulator[0]);
     }
 
-    public AttributeColumnsManipulator[] getAttributeColumnsManipulators(){
-        ArrayList<AttributeColumnsManipulator> attributeColumnsManipulators=new ArrayList<AttributeColumnsManipulator>();
+    public AttributeColumnsManipulator[] getAttributeColumnsManipulators() {
+        ArrayList<AttributeColumnsManipulator> attributeColumnsManipulators = new ArrayList<AttributeColumnsManipulator>();
         attributeColumnsManipulators.addAll(Lookup.getDefault().lookupAll(AttributeColumnsManipulator.class));
         sortAttributeColumnsManipulators(attributeColumnsManipulators);
         return attributeColumnsManipulators.toArray(new AttributeColumnsManipulator[0]);
@@ -123,49 +124,53 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
     }
 
     public void executeManipulator(final Manipulator m) {
-        new Thread(new Runnable() {
+        if (m.canExecute()) {
+            new Thread(new Runnable() {
 
-            public void run() {
-                ManipulatorUI ui = m.getUI();
-                //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
-                if (ui != null) {
-                    ui.setup(m);
-                    JPanel settingsPanel = ui.getSettingsPanel();
-                    DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()));
-                    if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                        ui.unSetup();
+                public void run() {
+                    ManipulatorUI ui = m.getUI();
+                    //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
+                    if (ui != null) {
+                        ui.setup(m);
+                        JPanel settingsPanel = ui.getSettingsPanel();
+                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()));
+                        if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                            ui.unSetup();
+                            m.execute();
+                        } else {
+                            ui.unSetup();
+                        }
+                    } else {
                         m.execute();
-                    }else{
-                        ui.unSetup();
                     }
-                } else {
-                    m.execute();
                 }
-            }
-        }).start();
+            }).start();
+        }
     }
 
     public void executeAttributeColumnsManipulator(final AttributeColumnsManipulator m, final AttributeTable table, final AttributeColumn column) {
-        new Thread(new Runnable() {
+        if (m.canManipulateColumn(table, column)) {
+            new Thread(new Runnable() {
 
-            public void run() {
-                AttributeColumnsManipulatorUI ui = m.getUI();
-                //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
-                if (ui != null) {
-                    ui.setup(m,table,column);
-                    JPanel settingsPanel = ui.getSettingsPanel();
-                    DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()));
-                    if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                        ui.unSetup();
-                        m.execute(table,column);
-                    }else{
-                        ui.unSetup();
+                public void run() {
+                    AttributeColumnsManipulatorUI ui = m.getUI();
+                    //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
+                    if (ui != null) {
+                        ui.setup(m, table, column);
+                        JPanel settingsPanel = ui.getSettingsPanel();
+                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()));
+                        if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                            ui.unSetup();
+                            m.execute(table, column);
+                        } else {
+                            ui.unSetup();
+                        }
+                    } else {
+                        m.execute(table, column);
                     }
-                } else {
-                    m.execute(table,column);
                 }
-            }
-        }).start();
+            }).start();
+        }
     }
 
     public NodesManipulator getDeleteNodesManipulator() {
@@ -174,5 +179,9 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
 
     public EdgesManipulator getDeleEdgesManipulator() {
         return new DeleteEdges();
+    }
+
+    public GeneralActionsManipulator getSearchReplaceManipulator() {
+        return new SearchReplace();
     }
 }

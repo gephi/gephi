@@ -101,4 +101,11 @@ public interface DataLaboratoryHelper {
      * @return DeleteEdges new instance
      */
     EdgesManipulator getDeleEdgesManipulator();
+
+    /**
+     * Special method for making public SearchReplace manipulator so it can be specifically retrieved from Data Table UI.
+     * It is used for reacting to Ctrl+F keys combination.
+     * @return SearchReplace new instance
+     */
+    GeneralActionsManipulator getSearchReplaceManipulator();
 }

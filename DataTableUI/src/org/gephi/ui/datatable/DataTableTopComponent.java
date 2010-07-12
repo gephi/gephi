@@ -20,12 +20,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.datatable;
 
+import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -97,7 +100,7 @@ import org.openide.windows.WindowManager;
  *
  * @author Mathieu Bastian
  */
-final class DataTableTopComponent extends TopComponent implements DataTablesEventListener, AttributeListener, GraphListener {
+final class DataTableTopComponent extends TopComponent implements AWTEventListener, DataTablesEventListener, AttributeListener, GraphListener {
 
     private enum ClassDisplayed {
 
@@ -166,8 +169,7 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
     }
 
     private void initEvents() {
-        //DataTablesEvent listener
-        Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(this);
+
         //Workspace Listener
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         final GraphController gc = Lookup.getDefault().lookup(GraphController.class);
@@ -175,6 +177,8 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
 
             public void initialize(Workspace workspace) {
                 workspace.add(new DataTablesModel());
+                //Prepare DataTablesEvent listener
+                Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(DataTableTopComponent.this);
             }
 
             public void select(Workspace workspace) {
@@ -209,6 +213,8 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
 
             public void disable() {
                 clearAll();
+                //No more workspaces active, disable the DataTablesEvent listener
+                Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(null);
             }
         });
         if (pc.getCurrentWorkspace() != null) {
@@ -811,6 +817,20 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
         }
     }
 
+    /**
+     * To react to Ctrl+F keys combination calling Search/Replace general action:
+     * @param event
+     */
+    public void eventDispatched(AWTEvent event) {
+        KeyEvent evt = (KeyEvent) event;
+
+        if (evt.getID() == KeyEvent.KEY_RELEASED && (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0 && evt.getKeyCode() == KeyEvent.VK_F) {
+            DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+            dlh.executeManipulator(dlh.getSearchReplaceManipulator());
+            evt.consume();
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -1033,6 +1053,18 @@ final class DataTableTopComponent extends TopComponent implements DataTablesEven
     @Override
     public void componentClosed() {
         // TODO add custom code on component closing
+    }
+
+    @Override
+    protected void componentActivated() {
+        super.componentActivated();
+        java.awt.Toolkit.getDefaultToolkit().addAWTEventListener(this, AWTEvent.KEY_EVENT_MASK);
+    }
+
+    @Override
+    protected void componentDeactivated() {
+        super.componentDeactivated();
+        java.awt.Toolkit.getDefaultToolkit().removeAWTEventListener(this);
     }
 
     /** replaces this in object stream */

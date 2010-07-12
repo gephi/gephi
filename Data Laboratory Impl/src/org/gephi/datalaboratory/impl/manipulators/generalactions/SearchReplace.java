@@ -39,20 +39,25 @@ import org.openide.util.lookup.ServiceProvider;
  * GeneralActionsManipulator that shows a UI for doing search/replace tasks with normal and regex features.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-@ServiceProvider(service=GeneralActionsManipulator.class)
+@ServiceProvider(service = GeneralActionsManipulator.class)
 public class SearchReplace implements GeneralActionsManipulator {
 
     public void execute() {
-        SearchReplaceUI ui=Lookup.getDefault().lookup(SearchReplaceUI.class);
-        if(Lookup.getDefault().lookup(DataTablesController.class).isNodeTableMode()){
+        SearchReplaceUI ui = Lookup.getDefault().lookup(SearchReplaceUI.class);
+        if (ui.isActive()) {
+            return;//Do not open more than one Search/Replace dialog
+        }
+        if (Lookup.getDefault().lookup(DataTablesController.class).isNodeTableMode()) {
             ui.setMode(SearchReplaceUI.Mode.NODES_TABLE);
-        }else{
+        } else {
             ui.setMode(SearchReplaceUI.Mode.EDGES_TABLE);
         }
-        DialogDescriptor dd=new DialogDescriptor(ui, getName());
+        DialogDescriptor dd = new DialogDescriptor(ui, getName());
         dd.setModal(true);
         dd.setOptions(new Object[]{NbBundle.getMessage(SearchReplace.class, "SearchReplace.window.close")});
+        ui.setActive(true);
         DialogDisplayer.getDefault().notify(dd);
+        ui.setActive(false);
     }
 
     public String getName() {
@@ -64,8 +69,8 @@ public class SearchReplace implements GeneralActionsManipulator {
     }
 
     public boolean canExecute() {
-        AttributeTable currentTable=getCurrentTable();
-        return Lookup.getDefault().lookup(AttributesController.class).getTableRowsCount(currentTable) > 0;//Make sure that there is at least 1 row
+        AttributeTable currentTable = getCurrentTable();
+        return currentTable!=null&&Lookup.getDefault().lookup(AttributesController.class).getTableRowsCount(currentTable) > 0;//Make sure that there is at least 1 row
     }
 
     public ManipulatorUI getUI() {
@@ -84,10 +89,14 @@ public class SearchReplace implements GeneralActionsManipulator {
         return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/binocular--pencil.png", true);
     }
 
-    private AttributeTable getCurrentTable(){
-        if(Lookup.getDefault().lookup(DataTablesController.class).isNodeTableMode()){
+    private AttributeTable getCurrentTable() {
+        DataTablesController dtc=Lookup.getDefault().lookup(DataTablesController.class);
+        if(dtc.getDataTablesEventListener()==null){
+            return null;
+        }
+        if (dtc.isNodeTableMode()) {
             return Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
-        }else{
+        } else {
             return Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
         }
     }

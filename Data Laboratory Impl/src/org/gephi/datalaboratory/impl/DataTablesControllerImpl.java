@@ -44,48 +44,80 @@ public class DataTablesControllerImpl implements DataTablesController {
         this.listener = listener;
     }
 
+    public DataTablesEventListener getDataTablesEventListener() {
+        return listener;
+    }
+
     public void selectNodesTable() {
-        listener.selectNodesTable();
+        if (listener != null) {
+            listener.selectNodesTable();
+        }
     }
 
     public void selectEdgesTable() {
-        listener.selectEdgesTable();
+        if (listener != null) {
+            listener.selectEdgesTable();
+        }
     }
 
     public void selectTable(AttributeTable table) {
-        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
-        if (ac.getModel().getNodeTable() == table) {
-            selectNodesTable();
-        } else {
-            selectEdgesTable();
+        if (listener != null) {
+            AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
+            if (ac.getModel().getNodeTable() == table) {
+                selectNodesTable();
+            } else {
+                selectEdgesTable();
+            }
         }
     }
 
     public void refreshCurrentTable() {
-        listener.refreshCurrentTable();
+        if (listener != null) {
+            listener.refreshCurrentTable();
+        }
     }
 
     public void setNodeTableSelection(Node[] nodes) {
-        listener.setNodeTableSelection(nodes);
+        if (listener != null) {
+            listener.setNodeTableSelection(nodes);
+        }
     }
 
     public void setEdgeTableSelection(Edge[] edges) {
-        listener.setEdgeTableSelection(edges);
+        if (listener != null) {
+            listener.setEdgeTableSelection(edges);
+        }
     }
 
     public Node[] getNodeTableSelection() {
-        return listener.getNodeTableSelection();
+        if (listener != null) {
+            return listener.getNodeTableSelection();
+        } else {
+            return null;
+        }
     }
 
     public Edge[] getEdgeTableSelection() {
-        return listener.getEdgeTableSelection();
+        if (listener != null) {
+            return listener.getEdgeTableSelection();
+        } else {
+            return null;
+        }
     }
 
     public boolean isNodeTableMode() {
-        return listener.isNodeTableMode();
+        if (listener != null) {
+            return listener.isNodeTableMode();
+        } else {
+            return false;
+        }
     }
 
     public boolean isEdgeTableMode() {
-        return listener.isEdgeTableMode();
+        if (listener != null) {
+            return listener.isEdgeTableMode();
+        } else {
+            return false;
+        }
     }
 }

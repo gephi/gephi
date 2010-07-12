@@ -57,6 +57,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
     private SearchOptions searchOptions;
     private SearchResult searchResult = null;
     private Pattern regexPattern;
+    private boolean active=false;
 
     /** Creates new form SearchReplaceUI */
     public SearchReplaceUI() {
@@ -193,6 +194,14 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, NbBundle.getMessage(SearchReplaceUI.class, "SearchReplaceUI.not.found",searchText.getText()));
             resultText.setText("");
         }
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     /** This method is called from within the constructor to

@@ -37,7 +37,7 @@ public interface SearchReplaceController {
      * Finds next (or first) ocurrence of the given search options.
      * Returns a SearchResult instance with the details or null if the search is not successful.
      * @param searchOptions Options of the search
-     * @return SearchResult with details of the match and options adapted to match the next result the next time <code>findNext</code> is called or null if search was not successful
+     * @return SearchResult with details of the match and modifies the given search options in ordert to match the next result the next time <code>findNext</code> is called. Returns null if search was not successful
      */
     SearchResult findNext(SearchOptions searchOptions);
 
@@ -45,7 +45,7 @@ public interface SearchReplaceController {
      * Finds next ocurrence of the given search options.
      * Returns a SearchResult instance with the details or null if the search is not successful.
      * @param result Last result of the search
-     * @return SearchResult with details of the match and options adapted to match the next result the next time <code>findNext</code> is called or null if search was not successful
+     * @return SearchResult with details of the match and modifies the given search options in ordert to match the next result the next time <code>findNext</code> is called. Returns null if search was not successful
      */
     SearchResult findNext(SearchResult result);
 
@@ -68,7 +68,7 @@ public interface SearchReplaceController {
     SearchResult replace(SearchResult result, String replacement);
 
     /**
-     * Replaces all SearchResults that can be replaced with the given search options.
+     * Replaces all SearchResults that can be replaced with the given search options from the beginning to the end of the data.
      * @param searchOptions Search options for the searches
      * @param replacement Replacement String
      * @return Count of made replacements
@@ -214,7 +214,9 @@ public interface SearchReplaceController {
     }
 
     /**
-     * Class that wraps the result of a search
+     * Class that wraps the result of a search contaning the search options used for this result
+     * and the node or edge, row, column and start-end index of the value where ocurrence was found.
+     *
      */
     class SearchResult {
 
