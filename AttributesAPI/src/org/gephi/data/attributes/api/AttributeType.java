@@ -171,9 +171,12 @@ public enum AttributeType {
      * <code>AttributeType.FLOAT</code>.
      *
      * @param obj   the object that is to be parsed
-     * @return      the compatible <code>AttributeType</code>, or <code>null</code>
+     * @return      the compatible <code>AttributeType</code>, or <code>null</code> if no type is found or the input object is null
      */
     public static AttributeType parse(Object obj) {
+        if(obj==null){
+            return null;
+        }
         Class<?> c = obj.getClass();
 
         for (AttributeType attributeType : AttributeType.values()) {
