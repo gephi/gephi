@@ -183,6 +183,9 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             }
 
             public void select(Workspace workspace) {
+                //Prepare DataTablesEvent listener
+                Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(DataTableTopComponent.this);
+                
                 hideTable();
                 enableTableControls();
                 bannerPanel.setVisible(false);
