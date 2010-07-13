@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.1draft"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.gexf.net/1.1draft http://www.gexf.net/1.1draft/gexf.xsd"
+      version="1.1">
+  <meta lastmodifieddate="2010-07-12">
+    <creator>Gexf.net</creator>
+    <description>A test graph</description>
+  </meta>
+  <graph mode="dynamic" defaultedgetype="directed"
+         start="2010-01-01" end="2010-12-31">
+    <attributes class="node" mode="dynamic">
+      <attribute id="0" title="number" type="double">
+        <default>0.0</default>
+      </attribute>
+    </attributes>
+    <nodes>
+      <node id="0" label="n1" start="2010-01-01" end="2010-08-31">
+        <attvalues>
+          <attvalue for="0" value="1.0" start="2010-01-01" end="2010-03-01" />
+          <attvalue for="0" value="2.0" start="2010-04-01" end="2010-06-01" />
+          <attvalue for="0" value="3.0" start="2010-07-01" end="2010-08-01" />
+        </attvalues>
+      </node>
+      <node id="1" label="n2" start="2010-05-01" end="2010-12-31" />
+    </nodes>
+    <edges>
+      <edge id="0" source="0" target="1" start="2010-05-01" end="2010-08-31" />
+    </edges>
+  </graph>
+</gexf>

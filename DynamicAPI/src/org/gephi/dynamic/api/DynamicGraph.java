@@ -21,6 +21,7 @@
 package org.gephi.dynamic.api;
 
 import org.gephi.data.attributes.api.Estimator;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
@@ -351,4 +352,26 @@ public interface DynamicGraph {
 	 * @return the wrapped graph.
 	 */
 	public Graph getUnderlyingGraph();
+
+	/**
+	 * Returns the time interval wrapped by this {@code DynamicGraph}.
+	 *
+	 * @return the time interval wrapped by this {@code DynamicGraph}.
+	 */
+	public TimeInterval getVisibleInterval();
+
+	/**
+	 * Sets the time interval wrapped by this {@code DynamicGraph}.
+	 *
+	 * @param interval an object to get endpoints from
+	 */
+	public void setVisibleInterval(TimeInterval interval);
+
+	/**
+	 * Sets the time interval wrapped by this {@code DynamicGraph}.
+	 *
+	 * @param low  the left endpoint
+	 * @param high the right endpoint
+	 */
+	public void setVisibleInterval(double low, double high);
 }

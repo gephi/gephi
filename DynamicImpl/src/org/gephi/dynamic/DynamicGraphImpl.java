@@ -59,6 +59,8 @@ public final class DynamicGraphImpl implements DynamicGraph {
 	 * and a time interval [{@code low}, {@code high}].
 	 *
 	 * @param graph wrapped {@code Graph}
+	 * @param low   the left endpoint of the interval
+	 * @param high  the right endpoint of the interval
 	 *
 	 * @throws IllegalArgumentException if {@code low} > {@code high}.
 	 */
@@ -276,6 +278,26 @@ public final class DynamicGraphImpl implements DynamicGraph {
 	@Override
 	public Graph getUnderlyingGraph() {
 		return model.getGraph();
+	}
+
+	@Override
+	public TimeInterval getVisibleInterval() {
+		return new TimeInterval(low, high);
+	}
+
+	@Override
+	public void setVisibleInterval(TimeInterval interval) {
+		setVisibleInterval(interval.getLow(), interval.getHigh());
+	}
+
+	@Override
+	public void setVisibleInterval(double low, double high) {
+		if (low > high)
+			throw new IllegalArgumentException(
+					"The left endpoint of the interval must be less than " +
+					"the right endpoint.");
+		this.low  = low;
+		this.high = high;
 	}
 
 	private void checkPoint(double point) {
