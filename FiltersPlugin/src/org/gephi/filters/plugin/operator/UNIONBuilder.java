@@ -68,7 +68,7 @@ public class UNIONBuilder implements FilterBuilder {
         return null;
     }
 
-    private static class UnionOperator implements Operator {
+    public static class UnionOperator implements Operator {
 
         public int getInputCount() {
             return Integer.MAX_VALUE;

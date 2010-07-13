@@ -68,7 +68,7 @@ public class INTERSECTIONBuilder implements FilterBuilder {
         return null;
     }
 
-    private static class IntersectionOperator implements Operator {
+    public static class IntersectionOperator implements Operator {
 
         public int getInputCount() {
             return Integer.MAX_VALUE;
