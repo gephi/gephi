@@ -34,6 +34,8 @@ import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
+import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategy;
+import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategyBuilder;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulatorBuilder;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
@@ -93,6 +95,15 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         attributeColumnsManipulators.addAll(Lookup.getDefault().lookupAll(AttributeColumnsManipulator.class));
         sortAttributeColumnsManipulators(attributeColumnsManipulators);
         return attributeColumnsManipulators.toArray(new AttributeColumnsManipulator[0]);
+    }
+
+    public AttributeColumnsMergeStrategy[] getAttributeColumnsMergeStrategies() {
+        ArrayList<AttributeColumnsMergeStrategy> strategies = new ArrayList<AttributeColumnsMergeStrategy>();
+        for (AttributeColumnsMergeStrategyBuilder cs : Lookup.getDefault().lookupAll(AttributeColumnsMergeStrategyBuilder.class)) {
+            strategies.add(cs.getAttributeColumnsMergeStrategy());
+        }
+        sortManipulators(strategies);
+        return strategies.toArray(new AttributeColumnsMergeStrategy[0]);
     }
 
     private void sortManipulators(ArrayList<? extends Manipulator> m) {

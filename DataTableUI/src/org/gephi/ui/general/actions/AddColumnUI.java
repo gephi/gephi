@@ -31,7 +31,7 @@ import org.openide.util.NbBundle;
  *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class AddColumnPanel extends javax.swing.JPanel {
+public class AddColumnUI extends javax.swing.JPanel {
     private AttributeType[] availableTypes;
     private AttributeTable table;
 
@@ -39,13 +39,13 @@ public class AddColumnPanel extends javax.swing.JPanel {
         NODES_TABLE,EDGES_TABLE;
     }
 
-    /** Creates new form AddColumnPanel */
-    public AddColumnPanel() {
+    /** Creates new form AddColumnUI */
+    public AddColumnUI() {
         initComponents();
     }
 
     public String getDisplayName(){
-        return NbBundle.getMessage(AddColumnPanel.class, "AddColumnPanel.title");
+        return NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.title");
     }
 
     /**
@@ -57,11 +57,11 @@ public class AddColumnPanel extends javax.swing.JPanel {
         //Set description text for the mode of column creation:
         switch(mode){
             case NODES_TABLE:
-                descriptionLabel.setText(NbBundle.getMessage(AddColumnPanel.class, "AddColumnPanel.descriptionLabel.text.nodes"));
+                descriptionLabel.setText(NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.descriptionLabel.text.nodes"));
                 table=ac.getModel().getNodeTable();
                 break;
             case EDGES_TABLE:
-                descriptionLabel.setText(NbBundle.getMessage(AddColumnPanel.class, "AddColumnPanel.descriptionLabel.text.edges"));
+                descriptionLabel.setText(NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.descriptionLabel.text.edges"));
                 table=ac.getModel().getEdgeTable();
                 break;
         }
@@ -98,11 +98,11 @@ public class AddColumnPanel extends javax.swing.JPanel {
         descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         descriptionLabel.setText(null);
 
-        titleLabel.setText(org.openide.util.NbBundle.getMessage(AddColumnPanel.class, "AddColumnPanel.titleLabel.text")); // NOI18N
+        titleLabel.setText(org.openide.util.NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.titleLabel.text")); // NOI18N
 
-        titleTextField.setText(org.openide.util.NbBundle.getMessage(AddColumnPanel.class, "AddColumnPanel.titleTextField.text")); // NOI18N
+        titleTextField.setText(org.openide.util.NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.titleTextField.text")); // NOI18N
 
-        typeLabel.setText(org.openide.util.NbBundle.getMessage(AddColumnPanel.class, "AddColumnPanel.typeLabel.text")); // NOI18N
+        typeLabel.setText(org.openide.util.NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.typeLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

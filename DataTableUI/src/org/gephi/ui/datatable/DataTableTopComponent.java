@@ -72,7 +72,8 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.BusyUtils;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
-import org.gephi.ui.general.actions.AddColumnPanel;
+import org.gephi.ui.general.actions.AddColumnUI;
+import org.gephi.ui.general.actions.MergeColumnsUI;
 import org.gephi.ui.utils.UIUtils;
 import org.jvnet.flamingo.common.CommandButtonDisplayState;
 import org.jvnet.flamingo.common.JCommandButton;
@@ -547,6 +548,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             public void run() {
                 clearColumnManipulators();
                 prepareAddColumnButton();
+                prepareMergeColumnsButton();
                 prepareColumnManipulatorsButtons();
                 columnManipulatorsPanel.updateUI();
             }
@@ -647,7 +649,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     /**
-     * Create the special Add new column buttons for nodes and edges table.
+     * Create the special Add new column button.
      */
     private void prepareAddColumnButton() {
         JCommandButtonStrip strip = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
@@ -659,14 +661,14 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             button.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    showAddColumnUI(AddColumnPanel.Mode.NODES_TABLE);
+                    showAddColumnUI(AddColumnUI.Mode.NODES_TABLE);
                 }
             });
         } else {
             button.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    showAddColumnUI(AddColumnPanel.Mode.EDGES_TABLE);
+                    showAddColumnUI(AddColumnUI.Mode.EDGES_TABLE);
                 }
             });
         }
@@ -674,12 +676,52 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         columnManipulatorsPanel.add(strip);
     }
 
-    private void showAddColumnUI(AddColumnPanel.Mode mode) {
-        AddColumnPanel panel = new AddColumnPanel();
-        panel.setup(mode);
-        DialogDescriptor dd = new DialogDescriptor(panel, panel.getDisplayName());
+    /**
+     * Create the special merge columns button.
+     */
+    private void prepareMergeColumnsButton(){
+        JCommandButtonStrip strip = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
+        strip.setDisplayState(CommandButtonDisplayState.BIG);
+        JCommandButton button = new JCommandButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.mergeColumnsButton.text"), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("/org/gephi/ui/datatable/resources/merge.png", true), new Dimension(16, 16)));
+        button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
+        button.setDisplayState(CommandButtonDisplayState.BIG);
+        if (classDisplayed == ClassDisplayed.NODE) {
+            button.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    showMergeColumnsUI(MergeColumnsUI.Mode.NODES_TABLE);
+                }
+            });
+        } else {
+            button.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    showMergeColumnsUI(MergeColumnsUI.Mode.EDGES_TABLE);
+                }
+            });
+        }
+        strip.add(button);
+        columnManipulatorsPanel.add(strip);
+    }
+
+    private void showAddColumnUI(AddColumnUI.Mode mode) {
+        AddColumnUI adcColumnUI = new AddColumnUI();
+        adcColumnUI.setup(mode);
+        DialogDescriptor dd = new DialogDescriptor(adcColumnUI, adcColumnUI.getDisplayName());
         if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-            panel.execute();
+            adcColumnUI.execute();
+        }
+    }
+
+    private void showMergeColumnsUI(MergeColumnsUI.Mode mode) {
+        JButton okButton=new JButton(NbBundle.getMessage(DataTableTopComponent.class, "MergeColumnsDialog.okButton.text"));
+        MergeColumnsUI mergeColumnsUI = new MergeColumnsUI();
+        mergeColumnsUI.setup(mode);
+        mergeColumnsUI.setOkButton(okButton);
+        DialogDescriptor dd = new DialogDescriptor(mergeColumnsUI, mergeColumnsUI.getDisplayName());
+        dd.setOptions(new Object[]{okButton,DialogDescriptor.CANCEL_OPTION});
+        if (DialogDisplayer.getDefault().notify(dd).equals(okButton)) {
+            mergeColumnsUI.execute();
         }
     }
 

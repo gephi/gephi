@@ -24,6 +24,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
+import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategy;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
 import org.gephi.datalaboratory.spi.generalactions.PluginGeneralActionsManipulator;
@@ -66,11 +67,19 @@ public interface DataLaboratoryHelper {
     PluginGeneralActionsManipulator[] getPluginGeneralActionsManipulators();
 
     /**
-     * Prepares an array that has one instance of every AttributeColumnsManipulator implementation that is registered.
+     * Prepares an array that has one instance of every AttributeColumnsManipulator implementation 
+     * that has a builder registered and returns it.
      * It also must ensure to return the manipulators ordered first by type and then by position.
      * @return Array of all AttributeColumnsManipulator implementations
      */
     AttributeColumnsManipulator[] getAttributeColumnsManipulators();
+
+    /**
+     * Prepares an array that has one new instance of every AttributeColumnsMergeStrategy implementation that is registered.
+     * It also must ensure to return the manipulators ordered first by type and then by position.
+     * @return
+     */
+    AttributeColumnsMergeStrategy[] getAttributeColumnsMergeStrategies();
 
     /**
      * Prepares the dialog UI of a manipulator if it has one and executes the manipulator in a separate
