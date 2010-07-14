@@ -5,7 +5,7 @@
 
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.builders;
 
-import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.Test;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.BooleanLogicOperations;
 import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategy;
 import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategyBuilder;
 import org.openide.util.lookup.ServiceProvider;
@@ -15,9 +15,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service=AttributeColumnsMergeStrategyBuilder.class)
-public class TestBuilder implements AttributeColumnsMergeStrategyBuilder{
+public class BooleanLogicOperationsBuilder implements AttributeColumnsMergeStrategyBuilder{
 
     public AttributeColumnsMergeStrategy getAttributeColumnsMergeStrategy() {
-        return new Test();
+        return new BooleanLogicOperations();
     }
 }

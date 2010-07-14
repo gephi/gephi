@@ -18,25 +18,25 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory.spi.attributecolumns.mergestrategies;
+package org.gephi.datalaboratory.api;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalaboratory.spi.Manipulator;
 
 /**
- * Service for defining strategies for merging attribute columns of a table.
- * Has the same interface as a manipulator.
- * @see Manipulator
+ * This interface defines part of the Data Laboratory API.
+ * It contains methods for applying different basic attribute columns merge strategies.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface AttributeColumnsMergeStrategy extends Manipulator{
+public interface AttributeColumnsMergeStrategiesController {
 
-    /**
-     * Prepare columns (with their table) for this merge strategy.
-     * At least <b>2</b> columns will be set up to merge always.
-     * @param table Table of the columns
-     * @param columns Columns to merge
-     */
-    void setup(AttributeTable table, AttributeColumn[] columns);
+    public enum BooleanOperations{
+        AND,
+        OR,
+        XOR,
+        NAND,
+        NOR
+    }
+
+    AttributeColumn booleanLogicOperationsMerge(AttributeTable table, AttributeColumn[] columnsToMerge, BooleanOperations[] booleanOperations, String newColumnTitle);
 }

@@ -19,7 +19,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="description" alignment="0" pref="385" max="32767" attributes="0"/>
+                  <Component id="description" alignment="0" pref="404" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="availableColumnsLabel" max="32767" attributes="1"/>
@@ -44,16 +44,16 @@
                                   </Group>
                               </Group>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="availableStrategiesComboBox" min="-2" pref="199" max="-2" attributes="0"/>
+                              <Component id="availableStrategiesComboBox" pref="218" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="infoLabel" pref="24" max="32767" attributes="0"/>
+                              <Component id="infoLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -83,10 +83,10 @@
                       <EmptySpace min="-2" pref="94" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="infoLabel" pref="20" max="32767" attributes="1"/>
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="availableStrategiesComboBox" alignment="1" max="32767" attributes="1"/>
                   <Component id="availableStrategiesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="infoLabel" pref="20" max="32767" attributes="1"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
