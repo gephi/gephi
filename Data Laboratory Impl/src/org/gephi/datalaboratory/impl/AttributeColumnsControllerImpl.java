@@ -34,7 +34,7 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.properties.PropertiesColumn;
-import org.gephi.datalaboratory.api.AttributesController;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
@@ -45,13 +45,13 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Implementation of the AttributesController interface
+ * Implementation of the AttributeColumnsController interface
  * declared in the Data Laboratory API.
  * @author Eduardo Ramos <eduramiba@gmail.com>
- * @see AttributesController
+ * @see AttributeColumnsController
  */
-@ServiceProvider(service = AttributesController.class)
-public class AttributesControllerImpl implements AttributesController {
+@ServiceProvider(service = AttributeColumnsController.class)
+public class AttributeColumnsControllerImpl implements AttributeColumnsController {
 
     public AttributeColumn addAttributeColumn(AttributeTable table, String title, AttributeType type) {
         String columnId = String.valueOf(table.countColumns() + 1);
@@ -59,7 +59,9 @@ public class AttributesControllerImpl implements AttributesController {
     }
 
     public void deleteAttributeColumn(AttributeTable table, AttributeColumn column) {
-        table.removeColumn(column);
+        if (canDeleteColumn(column)) {
+            table.removeColumn(column);
+        }
     }
 
     public AttributeColumn duplicateColumn(AttributeTable table, AttributeColumn column, String title, AttributeType type) {
@@ -88,9 +90,11 @@ public class AttributesControllerImpl implements AttributesController {
     }
 
     public void clearColumnData(AttributeTable table, AttributeColumn column) {
-        int columnIndex = column.getIndex();
-        for (Attributes attributes : getTableAttributeRows(table)) {
-            attributes.setValue(columnIndex, null);
+        if (canChangeColumnData(table, column)) {
+            int columnIndex = column.getIndex();
+            for (Attributes attributes : getTableAttributeRows(table)) {
+                attributes.setValue(columnIndex, null);
+            }
         }
     }
 
@@ -118,39 +122,39 @@ public class AttributesControllerImpl implements AttributesController {
                 value = attributes.getValue(column.getIndex());
                 if (value != null) {
                     matcher = pattern.matcher(value.toString());
-                }else{
-                    matcher=pattern.matcher("");
+                } else {
+                    matcher = pattern.matcher("");
                 }
                 attributes.setValue(newColumn.getIndex(), new Boolean(matcher.matches()));
             }
         }
     }
 
-    public void createFoundGroupsListColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern){
+    public void createFoundGroupsListColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern) {
         if (pattern != null) {
             AttributeColumn newColumn = addAttributeColumn(table, newColumnTitle, AttributeType.LIST_STRING);
             Matcher matcher;
             Object value;
-            ArrayList<String> foundGroups=new ArrayList<String>();
+            ArrayList<String> foundGroups = new ArrayList<String>();
             for (Attributes attributes : getTableAttributeRows(table)) {
                 value = attributes.getValue(column.getIndex());
                 if (value != null) {
                     matcher = pattern.matcher(value.toString());
-                }else{
-                    matcher=pattern.matcher("");
+                } else {
+                    matcher = pattern.matcher("");
                 }
-                while(matcher.find()){
+                while (matcher.find()) {
                     foundGroups.add(matcher.group());
                 }
-                if(foundGroups.size()>0){
+                if (foundGroups.size() > 0) {
                     attributes.setValue(newColumn.getIndex(), new StringList(foundGroups.toArray(new String[0])));
                     foundGroups.clear();
-                }else{
+                } else {
                     attributes.setValue(newColumn.getIndex(), null);
                 }
             }
         }
-    }    
+    }
 
     public void clearNodeData(Node node) {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
@@ -159,7 +163,7 @@ public class AttributesControllerImpl implements AttributesController {
             AttributeValue[] values = row.getValues();
             for (int i = 0; i < values.length; i++) {
                 //Clear all except id and computed attributes:
-                if (isNotComputedOrIDColumn(values[i].getColumn(), true)) {
+                if (canChangeColumnData(true, values[i].getColumn())) {
                     row.setValue(i, null);
                 }
             }
@@ -179,7 +183,7 @@ public class AttributesControllerImpl implements AttributesController {
             AttributeValue[] values = row.getValues();
             for (int i = 0; i < values.length; i++) {
                 //Clear all except id and computed attributes:
-                if (isNotComputedOrIDColumn(values[i].getColumn(), false)) {
+                if (canChangeColumnData(false, values[i].getColumn())) {
                     row.setValue(i, null);
                 }
             }
@@ -191,7 +195,7 @@ public class AttributesControllerImpl implements AttributesController {
             clearEdgeData(e);
         }
     }
-   
+
     public Attributes[] getTableAttributeRows(AttributeTable table) {
         Attributes[] attributes;
         if (isNodeTable(table)) {
@@ -210,14 +214,14 @@ public class AttributesControllerImpl implements AttributesController {
         return attributes;
     }
 
-    public int getTableRowsCount(AttributeTable table){
-        if(isNodeTable(table)){
+    public int getTableRowsCount(AttributeTable table) {
+        if (isNodeTable(table)) {
             return Lookup.getDefault().lookup(GraphElementsController.class).getNodesCount();
-        }else{
+        } else {
             return Lookup.getDefault().lookup(GraphElementsController.class).getEdgesCount();
         }
     }
-    
+
     public boolean isNodeTable(AttributeTable table) {
         AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
         return table == ac.getModel().getNodeTable();
@@ -228,7 +232,31 @@ public class AttributesControllerImpl implements AttributesController {
         return table == ac.getModel().getEdgeTable();
     }
 
-    /************Private methods : ************/   
+    public boolean canDeleteColumn(AttributeColumn column) {
+        return column.getOrigin() != AttributeOrigin.PROPERTY;
+    }
+
+    public boolean canChangeColumnData(AttributeTable table, AttributeColumn column) {
+        if (isNodeTable(table)) {
+            return canChangeColumnData(true, column);
+        } else if (isEdgeTable(table)) {
+            return canChangeColumnData(false, column);
+        } else {
+            return column.getOrigin() == AttributeOrigin.DATA;
+        }
+    }
+
+    public boolean canChangeColumnData(boolean isNodesTable, AttributeColumn column) {
+        if (isNodesTable) {
+            //Can change values of columns with DATA origin and label of nodes:
+            return column.getOrigin() == AttributeOrigin.DATA || column.getIndex() == PropertiesColumn.NODE_LABEL.getIndex();
+        } else {
+            //Can change values of columns with DATA origin and label of edges:
+            return column.getOrigin() == AttributeOrigin.DATA || column.getIndex() == PropertiesColumn.EDGE_LABEL.getIndex();
+        }
+    }
+
+    /************Private methods : ************/
     /**
      * Used for iterating through all nodes of the graph
      * @return Array with all graph nodes
@@ -245,18 +273,5 @@ public class AttributesControllerImpl implements AttributesController {
     private Edge[] getEdgesArray() {
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
         return graph.getEdges().toArray();
-    }    
-
-    /**
-     * Used for checking if a column is not a computed column or id column. Must indicate if the column is from nodes table or not.
-     * (Then assumes it is edges table column because data laboratory uses nodes table and edges table only)
-     * @return True if the column is not a computed column or id column, false otherwise
-     */
-    private boolean isNotComputedOrIDColumn(AttributeColumn column, boolean nodeTable) {
-        if (nodeTable) {
-            return column.getIndex() != PropertiesColumn.NODE_ID.getIndex() && column.getOrigin() != AttributeOrigin.COMPUTED;
-        } else {
-            return column.getIndex() != PropertiesColumn.EDGE_ID.getIndex() && column.getOrigin() != AttributeOrigin.COMPUTED;
-        }
     }
 }

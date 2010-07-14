@@ -23,10 +23,10 @@ package org.gephi.datalaboratory.impl;
 import java.util.regex.Matcher;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.api.SearchReplaceController;
 import org.gephi.datalaboratory.api.SearchReplaceController.SearchResult;
@@ -80,14 +80,16 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
 
     public boolean canReplace(SearchResult result) {
         AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
+        AttributeTable table;
         AttributeColumn column;
         if (result.getFoundNode() != null) {
-            column = ac.getModel().getNodeTable().getColumn(result.getFoundColumnIndex());
-            return column != null && column.getOrigin() != AttributeOrigin.COMPUTED && column.getIndex() != PropertiesColumn.NODE_ID.getIndex();
+            table= ac.getModel().getNodeTable();
+            column = table.getColumn(result.getFoundColumnIndex());
         } else {
-            column = ac.getModel().getEdgeTable().getColumn(result.getFoundColumnIndex());
-            return column != null && column.getOrigin() != AttributeOrigin.COMPUTED && column.getIndex() != PropertiesColumn.EDGE_ID.getIndex();
+            table= ac.getModel().getEdgeTable();
+            column = table.getColumn(result.getFoundColumnIndex());
         }
+        return Lookup.getDefault().lookup(AttributeColumnsController.class).canChangeColumnData(table, column);
     }
 
     public SearchResult replace(SearchResult result, String replacement) {

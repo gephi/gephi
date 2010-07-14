@@ -22,7 +22,7 @@ package org.gephi.datalaboratory.impl.manipulators.edges;
 
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
-import org.gephi.datalaboratory.api.AttributesController;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
@@ -46,7 +46,7 @@ public class ClearEdgesData implements EdgesManipulator {
 
     public void execute() {
         if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearEdgesData.class, "ClearEdgesData.confirmation.message"), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            AttributesController ac = Lookup.getDefault().lookup(AttributesController.class);
+            AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
             ac.clearEdgesData(edges);
             Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
         }

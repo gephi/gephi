@@ -28,7 +28,7 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalaboratory.api.AttributesController;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.impl.utils.HTMLEscape;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
@@ -47,7 +47,7 @@ import org.openide.windows.WindowManager;
 public class ColumnValuesFrequency implements AttributeColumnsManipulator {
 
     public void execute(AttributeTable table, AttributeColumn column) {
-        Map<Object, Integer> valuesFrequencies = Lookup.getDefault().lookup(AttributesController.class).calculateColumnValuesFrequencies(table, column);
+        Map<Object, Integer> valuesFrequencies = Lookup.getDefault().lookup(AttributeColumnsController.class).calculateColumnValuesFrequencies(table, column);
         ArrayList<Object> values = new ArrayList<Object>(valuesFrequencies.keySet());
 
         //Try to sort the values when they are comparable. (All objects of the set will have the same type) and not null:
@@ -110,7 +110,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
     }
 
     public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
-        AttributesController ac = Lookup.getDefault().lookup(AttributesController.class);
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         return ac.getTableRowsCount(table)>0;//Make sure that there is at least 1 row
     }
 

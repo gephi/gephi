@@ -24,7 +24,7 @@ import java.awt.Image;
 import java.util.regex.Pattern;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalaboratory.api.AttributesController;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.GeneralCreateColumnFromRegexUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
@@ -44,7 +44,7 @@ public class CreateFoundGroupsListColumn extends GeneralCreateColumnFromRegex {
 
     public void execute(AttributeTable table, AttributeColumn column) {
         if (pattern != null) {
-            Lookup.getDefault().lookup(AttributesController.class).createFoundGroupsListColumn(table, column, title, pattern);
+            Lookup.getDefault().lookup(AttributeColumnsController.class).createFoundGroupsListColumn(table, column, title, pattern);
         }
     }
 
@@ -57,7 +57,7 @@ public class CreateFoundGroupsListColumn extends GeneralCreateColumnFromRegex {
     }
 
     public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
-        AttributesController ac = Lookup.getDefault().lookup(AttributesController.class);
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         return ac.getTableRowsCount(table)>0;//Make sure that there is at least 1 row
     }
 

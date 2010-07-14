@@ -24,7 +24,7 @@ import java.awt.Image;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.datalaboratory.api.AttributesController;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.DuplicateColumnUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
@@ -44,7 +44,7 @@ public class DuplicateColumn implements AttributeColumnsManipulator {
     private AttributeType columnType;
 
     public void execute(AttributeTable table, AttributeColumn column) {
-        Lookup.getDefault().lookup(AttributesController.class).duplicateColumn(table, column, title, columnType);
+        Lookup.getDefault().lookup(AttributeColumnsController.class).duplicateColumn(table, column, title, columnType);
     }
 
     public String getName() {

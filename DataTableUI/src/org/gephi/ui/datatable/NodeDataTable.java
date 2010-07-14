@@ -45,8 +45,9 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
@@ -76,7 +77,11 @@ public class NodeDataTable {
     private DataTablesModel dataTablesModel;
     Node[] selectedNodes;
 
+    private AttributeColumnsController attributeColumnsController;
+
     public NodeDataTable() {
+        attributeColumnsController=Lookup.getDefault().lookup(AttributeColumnsController.class);
+
         outlineTable = new Outline();
 
         quickFilter = new QuickFilter() {
@@ -245,7 +250,7 @@ public class NodeDataTable {
         }
     }
 
-    private static class NodeRowModel implements RowModel {
+    private class NodeRowModel implements RowModel {
 
         private NodeDataColumn[] columns;
 
@@ -284,7 +289,7 @@ public class NodeDataTable {
         }
     }
 
-    private static interface NodeDataColumn {
+    private interface NodeDataColumn {
 
         public Class getColumnClass();
 
@@ -297,7 +302,7 @@ public class NodeDataTable {
         public boolean isEditable();
     }
 
-    private static class AttributeNodeDataColumn implements NodeDataColumn {
+    private class AttributeNodeDataColumn implements NodeDataColumn {
 
         private AttributeColumn column;
 
@@ -334,7 +339,7 @@ public class NodeDataTable {
         }
 
         public boolean isEditable() {
-            return column.getOrigin().equals(AttributeOrigin.DATA) || (column.getOrigin().equals(AttributeOrigin.PROPERTY) && column.getIndex() != PropertiesColumn.NODE_ID.getIndex());
+            return attributeColumnsController.canChangeColumnData(true, column);
         }
     }
 

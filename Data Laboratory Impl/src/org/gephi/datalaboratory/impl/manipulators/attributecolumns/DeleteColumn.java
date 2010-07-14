@@ -23,9 +23,8 @@ package org.gephi.datalaboratory.impl.manipulators.attributecolumns;
 import java.awt.Image;
 import javax.swing.JOptionPane;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalaboratory.api.AttributesController;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
@@ -44,7 +43,7 @@ public class DeleteColumn implements AttributeColumnsManipulator {
 
     public void execute(AttributeTable table, AttributeColumn column) {
         if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearColumnData.class, "ClearColumnData.confirmation.message", column.getTitle()), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            Lookup.getDefault().lookup(AttributesController.class).deleteAttributeColumn(table, column);
+            Lookup.getDefault().lookup(AttributeColumnsController.class).deleteAttributeColumn(table, column);
             Lookup.getDefault().lookup(DataTablesController.class).selectTable(table);
         }
     }
@@ -58,7 +57,7 @@ public class DeleteColumn implements AttributeColumnsManipulator {
     }
 
     public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
-        return column.getOrigin() != AttributeOrigin.PROPERTY;
+        return Lookup.getDefault().lookup(AttributeColumnsController.class).canDeleteColumn(column);
     }
 
     public AttributeColumnsManipulatorUI getUI() {

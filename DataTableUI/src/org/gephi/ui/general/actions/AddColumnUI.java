@@ -23,7 +23,7 @@ package org.gephi.ui.general.actions;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.datalaboratory.api.AttributesController;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -77,7 +77,7 @@ public class AddColumnUI extends javax.swing.JPanel {
      * Execute the creation of the column, with the given parameters in setup and with the interface itself.
      */
     public void execute(){
-        Lookup.getDefault().lookup(AttributesController.class).addAttributeColumn(table, titleTextField.getText(), availableTypes[typeComboBox.getSelectedIndex()]);
+        Lookup.getDefault().lookup(AttributeColumnsController.class).addAttributeColumn(table, titleTextField.getText(), availableTypes[typeComboBox.getSelectedIndex()]);
     }
 
     /** This method is called from within the constructor to

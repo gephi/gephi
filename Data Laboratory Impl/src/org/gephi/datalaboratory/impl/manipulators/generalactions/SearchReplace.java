@@ -23,7 +23,7 @@ package org.gephi.datalaboratory.impl.manipulators.generalactions;
 import javax.swing.Icon;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalaboratory.api.AttributesController;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.impl.manipulators.generalactions.ui.SearchReplaceUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
@@ -70,7 +70,7 @@ public class SearchReplace implements GeneralActionsManipulator {
 
     public boolean canExecute() {
         AttributeTable currentTable = getCurrentTable();
-        return currentTable!=null&&Lookup.getDefault().lookup(AttributesController.class).getTableRowsCount(currentTable) > 0;//Make sure that there is at least 1 row
+        return currentTable!=null&&Lookup.getDefault().lookup(AttributeColumnsController.class).getTableRowsCount(currentTable) > 0;//Make sure that there is at least 1 row
     }
 
     public ManipulatorUI getUI() {

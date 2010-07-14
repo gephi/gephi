@@ -34,7 +34,7 @@ import org.gephi.graph.api.Node;
  * It contains methods for manipulating the attributes and properties of nodes and edges.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface AttributesController {
+public interface AttributeColumnsController {
 
     /**
      * Adds a new column to the specified table with the given id, title and type of column.
@@ -60,7 +60,7 @@ public interface AttributesController {
     AttributeColumn duplicateColumn(AttributeTable table, AttributeColumn column, String title, AttributeType type);
 
     /**
-     * Deletes a specified column from a table if the table has the column.
+     * Deletes a specified column from a table if the table has the column and data laboratory behavious allows to delete it (see <code>canDeleteColumn</code>)
      * @param table Table to delete the column
      * @param column Column to delete
      */
@@ -152,4 +152,31 @@ public interface AttributesController {
      * @return True if the table is edges table, false otherwise
      */
     boolean isEdgeTable(AttributeTable table);
+
+    /**
+     * Indicates if the Data Laboratory API behavious allows to delete the given column of a table.
+     * The behaviour is: Any column that does not have a AttributeOrigin of type PROPERTY can be deleted.
+     * @param column Column to check if it can be deleted
+     * @return True if it can be deleted, false otherwise
+     */
+    boolean canDeleteColumn(AttributeColumn column);
+
+    /**
+     * Indicates if the Data Laboratory API behavious allows to change a value of the given column of a table.
+     * The behaviour is: Only values of columns with AttributeOrigin of type DATA or a node/edge label column can be changed.
+     * If table is not nodes or edges table, only will be checked that the type is DATA.
+     * @param table Table of the column
+     * @param column Column to theck its values can be changed
+     * @return True if the column values can be changed, false otherwise
+     */
+    boolean canChangeColumnData(AttributeTable table, AttributeColumn column);
+
+    /**
+     * Indicates if the Data Laboratory API behavious allows to change a value of the given column of a table.
+     * The behaviour is: Only values of columns with AttributeOrigin of type DATA or a node/edge label column can be changed.
+     * @param isNodesTable Indicates if the table of the column is nodes table, if it is not, it is assumed that the table is edges table
+     * @param column Column to theck its values can be changed
+     * @return True if the column values can be changed, false otherwise
+     */
+    boolean canChangeColumnData(boolean isNodesTable, AttributeColumn column);
 }

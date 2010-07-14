@@ -24,7 +24,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController;
-import org.gephi.datalaboratory.api.AttributesController;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.graph.api.Attributes;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -42,7 +42,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         if (table == null || columnsToMerge == null || booleanOperations == null || booleanOperations.length != columnsToMerge.length - 1) {
             throw new IllegalArgumentException();
         }
-        AttributesController ac = Lookup.getDefault().lookup(AttributesController.class);
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BOOLEAN);
 

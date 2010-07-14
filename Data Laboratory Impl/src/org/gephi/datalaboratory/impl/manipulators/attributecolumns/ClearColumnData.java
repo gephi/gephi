@@ -23,11 +23,8 @@ package org.gephi.datalaboratory.impl.manipulators.attributecolumns;
 import java.awt.Image;
 import javax.swing.JOptionPane;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.properties.PropertiesColumn;
-import org.gephi.datalaboratory.api.AttributesController;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
@@ -38,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * AttributeColumnsManipulator that clears all data of a AttributeColumn of a AttributeTable.
- * Only allows to clear columns with DATA AttributeOrigin or the label column.
+ * Only allows to clear columns with DATA AttributeOrigin or the label column of nodes and edges table.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
@@ -46,7 +43,7 @@ public class ClearColumnData implements AttributeColumnsManipulator {
 
     public void execute(AttributeTable table, AttributeColumn column) {
         if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearColumnData.class, "ClearColumnData.confirmation.message",column.getTitle()), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            Lookup.getDefault().lookup(AttributesController.class).clearColumnData(table, column);
+            Lookup.getDefault().lookup(AttributeColumnsController.class).clearColumnData(table, column);
             Lookup.getDefault().lookup(DataTablesController.class).selectTable(table);
         }
     }
@@ -61,14 +58,8 @@ public class ClearColumnData implements AttributeColumnsManipulator {
 
     public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
         boolean result;
-        AttributesController ac = Lookup.getDefault().lookup(AttributesController.class);
-        if (ac.isNodeTable(table)) {
-            //Can clear columns with DATA origin and label of nodes:
-            result=column.getOrigin() == AttributeOrigin.DATA || column.getIndex() == PropertiesColumn.NODE_LABEL.getIndex();
-        } else {
-            //Can clear columns with DATA origin and label of edges:
-            result=column.getOrigin() == AttributeOrigin.DATA || column.getIndex() == PropertiesColumn.EDGE_LABEL.getIndex();
-        }
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        result=ac.canChangeColumnData(table, column);
         return result&&ac.getTableRowsCount(table)>0;//Also make sure that there is at least 1 row
     }
 

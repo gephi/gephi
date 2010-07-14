@@ -39,9 +39,10 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
@@ -65,7 +66,11 @@ public class EdgeDataTable {
     private RowFilter rowFilter;
     private Edge[] selectedEdges;
 
+    private AttributeColumnsController attributeColumnsController;
+
     public EdgeDataTable() {
+        attributeColumnsController=Lookup.getDefault().lookup(AttributeColumnsController.class);
+
         table = new JXTable();
         table.setHighlighters(HighlighterFactory.createAlternateStriping());
         table.setColumnControlVisible(true);
@@ -269,7 +274,7 @@ public class EdgeDataTable {
         }
     }
 
-    private static interface EdgeDataColumn {
+    private interface EdgeDataColumn {
 
         public Class getColumnClass();
 
@@ -282,7 +287,7 @@ public class EdgeDataTable {
         public boolean isEditable();
     }
 
-    private static class AttributeEdgeDataColumn implements EdgeDataTable.EdgeDataColumn {
+    private class AttributeEdgeDataColumn implements EdgeDataTable.EdgeDataColumn {
 
         private AttributeColumn column;
 
@@ -314,11 +319,11 @@ public class EdgeDataTable {
         }
 
         public boolean isEditable() {
-            return column.getOrigin().equals(AttributeOrigin.DATA) || (column.getOrigin().equals(AttributeOrigin.PROPERTY) && column.getIndex() != PropertiesColumn.EDGE_ID.getIndex());
+            return attributeColumnsController.canChangeColumnData(false, column);
         }
     }
 
-    private static abstract class PropertyEdgeDataColumn implements EdgeDataTable.EdgeDataColumn {
+    private abstract class PropertyEdgeDataColumn implements EdgeDataTable.EdgeDataColumn {
 
         private String name;
 
