@@ -86,6 +86,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
     public void goAlgo() {
         this.graph = graphModel.getHierarchicalGraphVisible();
+        graph.readLock();
         Node[] nodes = graph.getNodes().toArray();
         Edge[] edges = graph.getEdgesAndMetaEdges().toArray();
 
@@ -205,6 +206,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                 nData.setY(y);
             }
         }
+        graph.readUnlock();
     }
 
     public void endAlgo() {

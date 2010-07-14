@@ -190,6 +190,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
     public void goAlgo() {
         graph = graphModel.getHierarchicalGraphVisible();
+        graph.readLock();
         Node[] nodes = graph.getNodes().toArray();
         for (Node n : nodes) {
             if (n.getNodeData().getLayoutData() == null || !(n.getNodeData().getLayoutData() instanceof ForceVector)) {
@@ -252,6 +253,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 //        springEnergy = energy - electricEnergy;
 //        System.out.println("electric: " + electricEnergy + "    spring: " + springEnergy);
 //        System.out.println("energy0 = " + energy0 + "   energy = " + energy);
+        graph.readUnlock();
     }
 
 

@@ -63,6 +63,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
     public void goAlgo() {
         boolean somethingMoved = false;
         this.graph = graphModel.getGraphVisible();
+        graph.readLock();
         Node[] nodes = graph.getNodes().toArray();
 
         //Reset Layout Data
@@ -237,6 +238,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         if (!somethingMoved) {
             setConverged(true);
         }
+        graph.readUnlock();
     }
 
     public void endAlgo() {
