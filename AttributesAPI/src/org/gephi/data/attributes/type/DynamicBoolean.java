@@ -1,6 +1,6 @@
 /*
  * Copyright 2008-2010 Gephi
- * Authors : Mathieu Bastian, Cezary Bartosiak
+ * Authors : Cezary Bartosiak
  * Website : http://www.gephi.org
  *
  * This file is part of Gephi.
@@ -20,49 +20,42 @@
  */
 package org.gephi.data.attributes.type;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import org.gephi.data.attributes.api.Estimator;
 
 /**
- * Complex type for specifying time interval. An, interval is two
- * <code>double</code> with <code>start</code> inferior or equal to
- * <code>end</code>. Thus intervals are inclusive.
- *
- * <p>
- * This type accepts multiple, overlapping intervals.
- *
- * @author Mathieu Bastian, Cezary Bartosiak
+ * Represents {@link Boolean} type which can have got different values in
+ * different time intervals.
+ * 
+ * @author Cezary Bartosiak
  */
-//Brute-force implementation
-public final class TimeInterval extends DynamicType<Double[]> {
+public final class DynamicBoolean extends DynamicType<Boolean> {
 	/**
 	 * Constructs a new {@code DynamicType} instance with no intervals.
 	 */
-	public TimeInterval() {
+	public DynamicBoolean() {
 		super();
 	}
 
 	/**
 	 * Constructs a new {@code DynamicType} instance that contains a given
-	 * {@code interval} [{@code low}, {@code high}].
-	 *
-	 * @param low  the left endpoint
-	 * @param high the right endpoint
+	 * {@code Interval<T>} in.
+	 * 
+	 * @param in interval to add (could be null)
 	 */
-	public TimeInterval(double low, double high) {
-		super(new Interval<Double[]>(low, high, new Double[] { low, high }));
+	public DynamicBoolean(Interval<Boolean> in) {
+		super(in);
 	}
 
 	/**
 	 * Constructs a new {@code DynamicType} instance with intervals given by
-	 * {@code List<Double[]>} in.
-	 *
+	 * {@code List<Interval<T>>} in.
+	 * 
 	 * @param in intervals to add (could be null)
 	 */
-	public TimeInterval(List<Double[]> in) {
-		super(getList(in));
+	public DynamicBoolean(List<Interval<Boolean>> in) {
+		super(in);
 	}
 
 	/**
@@ -71,87 +64,71 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	 * @param source an object to copy from (could be null, then completely new
 	 *               instance is created)
 	 */
-	public TimeInterval(TimeInterval source) {
+	public DynamicBoolean(DynamicBoolean source) {
 		super(source);
 	}
 
 	/**
 	 * Constructs a shallow copy of {@code source} that contains a given
-	 * {@code interval} [{@code low}, {@code high}].
+	 * {@code Interval<T>} in.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
 	 *               instance is created)
-	 * @param low    the left endpoint
-	 * @param high   the right endpoint
+	 * @param in     interval to add (could be null)
 	 */
-	public TimeInterval(TimeInterval source, double low, double high) {
-		super(source, new Interval<Double[]>(low, high, new Double[] {
-			low, high }));
+	public DynamicBoolean(DynamicBoolean source, Interval<Boolean> in) {
+		super(source, in);
 	}
 
 	/**
 	 * Constructs a shallow copy of {@code source} that contains a given
-	 * {@code interval} [{@code alow}, {@code ahigh}]. Before add it removes
-	 * from the newly created object all intervals that overlap with a given
-	 * {@code interval} [{@code rlow}, {@code rhigh}].
+	 * {@code Interval<T>} in. Before add it removes from the newly created
+	 * object all intervals that overlap with a given {@code Interval<T>} out.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
 	 *               instance is created)
-	 * @param alow   the left endpoint of the interval to add
-	 * @param ahigh  the right endpoint of the interval to add
-	 * @param rlow   the left endpoint of the interval to remove
-	 * @param rhigh  the right endpoint of the interval to remove
+	 * @param in     interval to add (could be null)
+	 * @param out    interval to remove (could be null)
 	 */
-	public TimeInterval(TimeInterval source, double alow, double ahigh, double rlow, double rhigh) {
-		super(source,
-			new Interval<Double[]>(alow, ahigh, new Double[] { alow, ahigh }),
-			new Interval<Double[]>(rlow, rhigh, new Double[] { rlow, rhigh }));
+	public DynamicBoolean(DynamicBoolean source, Interval<Boolean> in, Interval<Boolean> out) {
+		super(source, in, out);
 	}
 
 	/**
 	 * Constructs a shallow copy of {@code source} with additional intervals
-	 * given by {@code List<Double[]>} in.
+	 * given by {@code List<Interval<T>>} in.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
 	 *               instance is created)
 	 * @param in     intervals to add (could be null)
 	 */
-	public TimeInterval(TimeInterval source, List<Double[]> in) {
-		super(source, getList(in));
+	public DynamicBoolean(DynamicBoolean source, List<Interval<Boolean>> in) {
+		super(source, in);
 	}
 
 	/**
 	 * Constructs a shallow copy of {@code source} with additional intervals
-	 * given by {@code List<Double[]>} in. Before add it removes from the
+	 * given by {@code List<Interval<T>>} in. Before add it removes from the
 	 * newly created object all intervals that overlap with intervals given by
-	 * {@code List<Double[]>} out.
+	 * {@code List<Interval<T>>} out.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
 	 *               instance is created)
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public TimeInterval(TimeInterval source, List<Double[]> in, List<Double[]> out) {
-		super(source, getList(in), getList(out));
-	}
-
-	private static List<Interval<Double[]>> getList(List<Double[]> arg) {
-		if (arg == null)
-			return null;
-		List<Interval<Double[]>> list = new ArrayList<Interval<Double[]>>();
-		for (Double[] item : arg)
-			list.add(new Interval<Double[]>(item[0], item[1], item));
-		return list;
+	public DynamicBoolean(DynamicBoolean source, List<Interval<Boolean>> in, List<Interval<Boolean>> out) {
+		super(source, in, out);
 	}
 
 	@Override
-	public Double[] getValue(double low, double high, Estimator estimator) {
+	public Boolean getValue(double low, double high, Estimator estimator) {
 		if (low > high)
 			throw new IllegalArgumentException(
 						"The left endpoint of the interval must be less than " +
 						"the right endpoint.");
 
-		List<Double[]> values = getValues(low, high);
+		List<Boolean> values = getValues(low, high);
 		if (values.isEmpty())
 			return null;
 
@@ -184,11 +161,17 @@ public final class TimeInterval extends DynamicType<Double[]> {
 				throw new UnsupportedOperationException(
 							"Not supported estimator");
 			case MIN:
-				throw new UnsupportedOperationException(
-							"Not supported estimator");
+				Boolean minimum = values.get(0);
+				for (int i = 1; i < values.size(); ++i)
+					if (minimum.compareTo(values.get(i)) > 0)
+						minimum = values.get(i);
+				return minimum;
 			case MAX:
-				throw new UnsupportedOperationException(
-							"Not supported estimator");
+				Boolean maximum = values.get(0);
+				for (int i = 1; i < values.size(); ++i)
+					if (maximum.compareTo(values.get(i)) < 0)
+						maximum = values.get(i);
+				return maximum;
 			case FIRST:
 				return values.get(0);
 			case LAST:
@@ -196,28 +179,5 @@ public final class TimeInterval extends DynamicType<Double[]> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
-	}
-
-	/**
-	 * Returns a string representation of this instance in a format
-	 * {@code [[low, high], ..., [low, high]]}. Intervals are
-	 * ordered by its left endpoint.
-	 *
-	 * @return a string representation of this instance.
-	 */
-	@Override
-	public String toString() {
-		List<Double[]> list = getValues();
-		if (!list.isEmpty()) {
-			StringBuilder sb = new StringBuilder("[");
-			sb.append("[").append(list.get(0)[0]).append(", ").
-					append(list.get(0)[1]).append("]");
-			for (int i = 1; i < list.size(); ++i)
-				sb.append(", ").append("[").append(list.get(i)[0]).append(", ").
-						append(list.get(i)[1]).append("]");
-			sb.append("]");
-			return sb.toString();
-		}
-		return "[empty]";
 	}
 }
