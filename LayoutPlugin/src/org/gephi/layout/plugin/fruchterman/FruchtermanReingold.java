@@ -52,6 +52,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
 
     public void goAlgo() {
         this.graph = graphModel.getHierarchicalGraphVisible();
+        graph.readLock();
         Node[] nodes = graph.getNodes().toArray();
         Edge[] edges = graph.getEdgesAndMetaEdges().toArray();
 
@@ -132,6 +133,7 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
                 n.getNodeData().setY(n.getNodeData().y() + yDist / dist * limitedDist);
             }
         }
+        graph.readUnlock();
     }
 
     public void endAlgo() {
