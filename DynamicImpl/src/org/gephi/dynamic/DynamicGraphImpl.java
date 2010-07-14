@@ -62,9 +62,12 @@ public final class DynamicGraphImpl implements DynamicGraph {
 	 * @param low   the left endpoint of the interval
 	 * @param high  the right endpoint of the interval
 	 *
+	 * @throws NullPointerException     if {@code graph} is null.
 	 * @throws IllegalArgumentException if {@code low} > {@code high}.
 	 */
 	public DynamicGraphImpl(Graph graph, double low, double high) {
+		if (graph == null)
+			throw new NullPointerException("The graph cannot be null.");
 		if (low > high)
 			throw new IllegalArgumentException(
 					"The left endpoint of the interval must be less than " +
@@ -281,17 +284,17 @@ public final class DynamicGraphImpl implements DynamicGraph {
 	}
 
 	@Override
-	public TimeInterval getVisibleInterval() {
+	public TimeInterval getInterval() {
 		return new TimeInterval(low, high);
 	}
 
 	@Override
-	public void setVisibleInterval(TimeInterval interval) {
-		setVisibleInterval(interval.getLow(), interval.getHigh());
+	public void setInterval(TimeInterval interval) {
+		setInterval(interval.getLow(), interval.getHigh());
 	}
 
 	@Override
-	public void setVisibleInterval(double low, double high) {
+	public void setInterval(double low, double high) {
 		if (low > high)
 			throw new IllegalArgumentException(
 					"The left endpoint of the interval must be less than " +

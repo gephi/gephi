@@ -107,7 +107,7 @@ public class DynamicGraphImplTest {
 	public void testGetLow() {
 		System.out.println("getLow()");
 		DynamicGraphImpl instance = new DynamicGraphImpl(graphModel.getGraph());
-		instance.setVisibleInterval(1.0, 3.0);
+		instance.setInterval(1.0, 3.0);
 		assertEquals(instance.getLow(), 1.0, 0.01);
 		System.out.println();
 	}
@@ -116,7 +116,7 @@ public class DynamicGraphImplTest {
 	public void testGetHigh() {
 		System.out.println("getHigh()");
 		DynamicGraphImpl instance = new DynamicGraphImpl(graphModel.getGraph());
-		instance.setVisibleInterval(1.0, 3.0);
+		instance.setInterval(1.0, 3.0);
 		assertEquals(instance.getHigh(), 3.0, 0.01);
 		System.out.println();
 	}
@@ -145,13 +145,13 @@ public class DynamicGraphImplTest {
 	}
 
 	@Test
-	public void testGetVisibleInterval() {
-		System.out.println("getVisibleInterval()");
+	public void testGetInterval() {
+		System.out.println("getInterval()");
 		double low  = 1.0;
 		double high = 3.0;
 		DynamicGraphImpl instance = new DynamicGraphImpl(graphModel.getGraph());
-		instance.setVisibleInterval(low, high);
-		TimeInterval t1 = instance.getVisibleInterval();
+		instance.setInterval(low, high);
+		TimeInterval t1 = instance.getInterval();
 		TimeInterval t2 = new TimeInterval(1.0, 3.0);
 		assertEquals(t1, t2);
 		System.out.println();

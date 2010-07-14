@@ -358,14 +358,14 @@ public interface DynamicGraph {
 	 *
 	 * @return the time interval wrapped by this {@code DynamicGraph}.
 	 */
-	public TimeInterval getVisibleInterval();
+	public TimeInterval getInterval();
 
 	/**
 	 * Sets the time interval wrapped by this {@code DynamicGraph}.
 	 *
 	 * @param interval an object to get endpoints from
 	 */
-	public void setVisibleInterval(TimeInterval interval);
+	public void setInterval(TimeInterval interval);
 
 	/**
 	 * Sets the time interval wrapped by this {@code DynamicGraph}.
@@ -373,5 +373,5 @@ public interface DynamicGraph {
 	 * @param low  the left endpoint
 	 * @param high the right endpoint
 	 */
-	public void setVisibleInterval(double low, double high);
+	public void setInterval(double low, double high);
 }
