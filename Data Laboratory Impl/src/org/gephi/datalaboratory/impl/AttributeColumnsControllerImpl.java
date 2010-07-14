@@ -242,17 +242,17 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         } else if (isEdgeTable(table)) {
             return canChangeColumnData(false, column);
         } else {
-            return column.getOrigin() == AttributeOrigin.DATA;
+            return canChangeGenericColumnData(column);
         }
     }
 
     public boolean canChangeColumnData(boolean isNodesTable, AttributeColumn column) {
         if (isNodesTable) {
             //Can change values of columns with DATA origin and label of nodes:
-            return column.getOrigin() == AttributeOrigin.DATA || column.getIndex() == PropertiesColumn.NODE_LABEL.getIndex();
+            return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.NODE_LABEL.getIndex();
         } else {
             //Can change values of columns with DATA origin and label of edges:
-            return column.getOrigin() == AttributeOrigin.DATA || column.getIndex() == PropertiesColumn.EDGE_LABEL.getIndex();
+            return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.EDGE_LABEL.getIndex();
         }
     }
 
@@ -273,5 +273,15 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     private Edge[] getEdgesArray() {
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
         return graph.getEdges().toArray();
+    }
+
+    /**
+     * Only checks that a column is of type DATA and has a changeable AttributeType. (Does not check if it is the label of nodes/edges table)
+     * Used in various methods to not repeat code.
+     * @param column Column to check
+     * @return True if the column data can be changed, false otherwise
+     */
+    private boolean canChangeGenericColumnData(AttributeColumn column) {
+        return column.getOrigin() == AttributeOrigin.DATA && column.getType().canParseFromString();
     }
 }

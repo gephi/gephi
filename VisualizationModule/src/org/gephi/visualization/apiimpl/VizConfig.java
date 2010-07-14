@@ -125,7 +125,7 @@ public class VizConfig {
     public static final Color DEFAULT_NODE_SELECTED_UNIQUE_COLOR = new Color(0.8f, 0.2f, 0.2f);
     public static final Color DEFAULT_NODE_NEIGHBOR_SELECTED_UNIQUE_COLOR = new Color(0.2f, 1f, 0.3f);
     public static final int DEFAULT_OCTREE_DEPTH = 5;
-    public static final int DEFAULT_OCTREE_WIDTH = 10000;
+    public static final int DEFAULT_OCTREE_WIDTH = 50000;
     public static final boolean DEFAULT_CLEAN_DELETED_MODELS = true;
     public static final boolean DEFAULT_LABEL_MIPMAP = true;
     public static final boolean DEFAULT_LABEL_ANTIALIASED = true;

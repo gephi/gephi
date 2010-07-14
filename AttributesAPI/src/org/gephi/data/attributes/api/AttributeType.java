@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Cezary Bartosiak
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -20,26 +20,38 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.api;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import org.gephi.data.attributes.type.BigDecimalList;
-import org.gephi.data.attributes.type.BigIntegerList;
-import org.gephi.data.attributes.type.BooleanList;
+import java.math.BigDecimal;
+import org.gephi.data.attributes.type.DynamicByte;
+import org.gephi.data.attributes.type.DynamicShort;
+import org.gephi.data.attributes.type.DynamicInteger;
+import org.gephi.data.attributes.type.DynamicLong;
+import org.gephi.data.attributes.type.DynamicFloat;
+import org.gephi.data.attributes.type.DynamicDouble;
+import org.gephi.data.attributes.type.DynamicBoolean;
+import org.gephi.data.attributes.type.DynamicCharacter;
+import org.gephi.data.attributes.type.DynamicString;
+import org.gephi.data.attributes.type.DynamicBigInteger;
+import org.gephi.data.attributes.type.DynamicBigDecimal;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.data.attributes.type.ByteList;
-import org.gephi.data.attributes.type.CharacterList;
-import org.gephi.data.attributes.type.DoubleList;
-import org.gephi.data.attributes.type.FloatList;
+import org.gephi.data.attributes.type.ShortList;
 import org.gephi.data.attributes.type.IntegerList;
 import org.gephi.data.attributes.type.LongList;
-import org.gephi.data.attributes.type.ShortList;
+import org.gephi.data.attributes.type.FloatList;
+import org.gephi.data.attributes.type.DoubleList;
+import org.gephi.data.attributes.type.BooleanList;
+import org.gephi.data.attributes.type.CharacterList;
 import org.gephi.data.attributes.type.StringList;
-import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.data.attributes.type.BigIntegerList;
+import org.gephi.data.attributes.type.BigDecimalList;
 
 /**
  * The different type an {@link AttributeColumn} can have.
  *
  * @author Mathieu Bastian
  * @author Martin Škurla
+ * @author Cezary Bartosiak
  */
 public enum AttributeType {
 
@@ -54,8 +66,18 @@ public enum AttributeType {
     STRING(String.class),
     BIGINTEGER(BigInteger.class),
     BIGDECIMAL(BigDecimal.class),
+    DYNAMIC_BYTE(DynamicByte.class),
+    DYNAMIC_SHORT(DynamicShort.class),
+    DYNAMIC_INT(DynamicInteger.class),
+    DYNAMIC_LONG(DynamicLong.class),
+    DYNAMIC_FLOAT(DynamicFloat.class),
+    DYNAMIC_DOUBLE(DynamicDouble.class),
+    DYNAMIC_BOOLEAN(DynamicBoolean.class),
+    DYNAMIC_CHAR(DynamicCharacter.class),
+    DYNAMIC_STRING(DynamicString.class),
+    DYNAMIC_BIGINTEGER(DynamicBigInteger.class),
+    DYNAMIC_BIGDECIMAL(DynamicBigDecimal.class),
     TIME_INTERVAL(TimeInterval.class),
-
     LIST_BYTE(ByteList.class),
     LIST_SHORT(ShortList.class),
     LIST_INTEGER(IntegerList.class),
@@ -67,7 +89,6 @@ public enum AttributeType {
     LIST_STRING(StringList.class),
     LIST_BIGINTEGER(BigIntegerList.class),
     LIST_BIGDECIMAL(BigDecimalList.class);
-
     private final Class type;
 
     AttributeType(Class type) {
@@ -103,6 +124,8 @@ public enum AttributeType {
      * is <b>Boolean</b>, and <code>str</code> equals <code>true</code>, this
      * method will succeed to return a <code>Boolean</code> instance. May
      * throw <code>NumberFormatException</code>.
+     *
+     * <code>DYNAMIC</code> types and <code>TIME_INTERVAL</code> cannot be parsed with this method (see <code>canParseFromString</code> method) and a UnsupportedOperationException will be thrown if it is tried.
      * 
      * @param str   the string that is to be parsed
      * @return      an instance of the type of this  <code>AttributeType</code>.
@@ -125,15 +148,34 @@ public enum AttributeType {
                 return new Boolean(str);
             case CHAR:
                 return new Character(str.charAt(0));
-            case STRING:
-                return str;
             case BIGINTEGER:
                 return new BigInteger(str);
             case BIGDECIMAL:
                 return new BigDecimal(str);
+            case DYNAMIC_BYTE:
+                throw new UnsupportedOperationException("Not supported.");
+            case DYNAMIC_SHORT:
+                throw new UnsupportedOperationException("Not supported.");
+            case DYNAMIC_INT:
+                throw new UnsupportedOperationException("Not supported.");
+            case DYNAMIC_LONG:
+                throw new UnsupportedOperationException("Not supported.");
+            case DYNAMIC_FLOAT:
+                throw new UnsupportedOperationException("Not supported.");
+            case DYNAMIC_DOUBLE:
+                throw new UnsupportedOperationException("Not supported.");
+            case DYNAMIC_BOOLEAN:
+                throw new UnsupportedOperationException("Not supported.");
+            case DYNAMIC_CHAR:
+                throw new UnsupportedOperationException("Not supported.");
+            case DYNAMIC_STRING:
+                throw new UnsupportedOperationException("Not supported.");
+            case DYNAMIC_BIGINTEGER:
+                throw new UnsupportedOperationException("Not supported.");
+            case DYNAMIC_BIGDECIMAL:
+                throw new UnsupportedOperationException("Not supported.");
             case TIME_INTERVAL:
-                return new TimeInterval(str);
-
+                throw new UnsupportedOperationException("Not supported.");
             case LIST_BYTE:
                 return new ByteList(str);
             case LIST_SHORT:
@@ -161,6 +203,31 @@ public enum AttributeType {
     }
 
     /**
+     * Indicates if this AttributeType can be parsed from a String with <code>parse(String str)</code> method.
+     * All types except <code>DYNAMIC</code> types and <code>TIME_INTERVAL</code> can be parsed.
+     * @return
+     */
+    public boolean canParseFromString() {
+        switch (this) {
+            case DYNAMIC_BYTE:
+            case DYNAMIC_SHORT:
+            case DYNAMIC_INT:
+            case DYNAMIC_LONG:
+            case DYNAMIC_FLOAT:
+            case DYNAMIC_DOUBLE:
+            case DYNAMIC_BOOLEAN:
+            case DYNAMIC_CHAR:
+            case DYNAMIC_STRING:
+            case DYNAMIC_BIGINTEGER:
+            case DYNAMIC_BIGDECIMAL:
+            case TIME_INTERVAL:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    /**
      * Build an <code>AttributeType</code> from the given <code>obj</code> type.
      * If the given <code>obj</code> class match with an
      * <code>AttributeType</code> type, returns this type. Returns <code>null</code>
@@ -174,7 +241,7 @@ public enum AttributeType {
      * @return      the compatible <code>AttributeType</code>, or <code>null</code> if no type is found or the input object is null
      */
     public static AttributeType parse(Object obj) {
-        if(obj==null){
+        if (obj == null) {
             return null;
         }
         Class<?> c = obj.getClass();
@@ -183,6 +250,63 @@ public enum AttributeType {
             if (c.equals(attributeType.getType())) {
                 return attributeType;
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Build an dynamic <code>AttributeType</code> from the given <code>obj</code> type.
+     * If the given <code>obj</code> class match with an
+     * <code>AttributeType</code> type, returns this type. Returns <code>null</code>
+     * otherwise.
+     * <p>
+     * For instance if
+     * <b>obj instanceof Float</b> equals <b>true</b>, returns
+     * <code>AttributeType.DYNAMIC_FLOAT</code>.
+     *
+     * @param obj   the object that is to be parsed
+     * @return      the compatible <code>AttributeType</code>, or <code>null</code>
+     */
+    public static AttributeType parseDynamic(Object obj) {
+
+        if (obj == null) {
+            return null;
+        }
+        Class<?> c = obj.getClass();
+
+        if (c.equals(Byte.class)) {
+            return DYNAMIC_BYTE;
+        }
+        if (c.equals(Short.class)) {
+            return DYNAMIC_SHORT;
+        }
+        if (c.equals(Integer.class)) {
+            return DYNAMIC_INT;
+        }
+        if (c.equals(Long.class)) {
+            return DYNAMIC_LONG;
+        }
+        if (c.equals(Float.class)) {
+            return DYNAMIC_FLOAT;
+        }
+        if (c.equals(Double.class)) {
+            return DYNAMIC_DOUBLE;
+        }
+        if (c.equals(Boolean.class)) {
+            return DYNAMIC_BOOLEAN;
+        }
+        if (c.equals(Character.class)) {
+            return DYNAMIC_CHAR;
+        }
+        if (c.equals(String.class)) {
+            return DYNAMIC_STRING;
+        }
+        if (c.equals(BigInteger.class)) {
+            return DYNAMIC_BIGINTEGER;
+        }
+        if (c.equals(BigDecimal.class)) {
+            return DYNAMIC_BIGDECIMAL;
         }
 
         return null;

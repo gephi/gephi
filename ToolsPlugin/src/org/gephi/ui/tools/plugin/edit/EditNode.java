@@ -24,7 +24,6 @@ import java.awt.Color;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.EnumSet;
-import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
@@ -39,8 +38,7 @@ import org.gephi.data.attributes.type.IntegerList;
 import org.gephi.data.attributes.type.LongList;
 import org.gephi.data.attributes.type.ShortList;
 import org.gephi.data.attributes.type.StringList;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.openide.nodes.AbstractNode;
@@ -48,6 +46,7 @@ import org.openide.nodes.Children;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -77,6 +76,7 @@ public class EditNode extends AbstractNode {
      */
     private Sheet.Set prepareNodeAttributes() {
         try {
+            AttributeColumnsController ac=Lookup.getDefault().lookup(AttributeColumnsController.class);
             Sheet.Set set = new Sheet.Set();
             set.setName("attributes");
             set.setDisplayName(NbBundle.getMessage(EditNode.class, "Node.attributes.text", node.getNodeData().getLabel()));
@@ -86,14 +86,15 @@ public class EditNode extends AbstractNode {
                 AttributeValueWrapper wrap = new AttributeValueWrapper(row, value.getColumn().getIndex());
                 AttributeType type = value.getColumn().getType();
                 Property p;
-                if (value.getColumn().getOrigin() != AttributeOrigin.COMPUTED && value.getColumn().getIndex() != PropertiesColumn.NODE_ID.getIndex()) {
+                if (ac.canChangeColumnData(true, value.getColumn())) {
+                    //Editable column, provide "set" method:
                     if (!AttributeValueWrapper.notSupportedTypes.contains(type)) {//The AttributeType can be edited by default:
                         p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), "setValue" + type.getType().getSimpleName());
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", "setValue" + type.getType().getSimpleName());
                     }
                 } else {
-                    //Not editable because it is computed value or the node/edge id:
+                    //Not editable column, do not provide "set" method:
                     if (!AttributeValueWrapper.notSupportedTypes.contains(type)) {//The AttributeType can be edited by default:
                         p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), null);
                     } else {//Use the AttributeType as String:
@@ -181,7 +182,6 @@ public class EditNode extends AbstractNode {
         private static EnumSet<AttributeType> notSupportedTypes = EnumSet.of(
                 AttributeType.BIGINTEGER,
                 AttributeType.BIGDECIMAL,
-                AttributeType.TIME_INTERVAL,
                 AttributeType.LIST_BIGDECIMAL,
                 AttributeType.LIST_BIGINTEGER,
                 AttributeType.LIST_BOOLEAN,
@@ -192,7 +192,20 @@ public class EditNode extends AbstractNode {
                 AttributeType.LIST_INTEGER,
                 AttributeType.LIST_LONG,
                 AttributeType.LIST_SHORT,
-                AttributeType.LIST_STRING);
+                AttributeType.LIST_STRING,
+                AttributeType.TIME_INTERVAL,
+                AttributeType.DYNAMIC_BIGDECIMAL,
+                AttributeType.DYNAMIC_BIGINTEGER,
+                AttributeType.DYNAMIC_BOOLEAN,
+                AttributeType.DYNAMIC_BYTE,
+                AttributeType.DYNAMIC_CHAR,
+                AttributeType.DYNAMIC_DOUBLE,
+                AttributeType.DYNAMIC_FLOAT,
+                AttributeType.DYNAMIC_INT,
+                AttributeType.DYNAMIC_LONG,
+                AttributeType.DYNAMIC_SHORT,
+                AttributeType.DYNAMIC_STRING
+                );
         private AttributeRow row;
         private int index;
 
@@ -293,10 +306,6 @@ public class EditNode extends AbstractNode {
 
         public void setValueBigDecimal(String object) {
             row.setValue(index, new BigDecimal(object));
-        }
-
-        public void setValueTimeInterval(String object) {
-            row.setValue(index, new TimeInterval(object));
         }
 
         public void setValueByteList(String object) {

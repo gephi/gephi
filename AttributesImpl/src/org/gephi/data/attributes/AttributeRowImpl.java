@@ -1,6 +1,6 @@
 /*
 Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Cezary Bartosiak
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -28,6 +28,7 @@ import org.gephi.data.attributes.api.AttributeValue;
 /**
  *
  * @author Mathieu Bastian
+ * @author Cezary Bartosiak
  */
 public class AttributeRowImpl implements AttributeRow {
 
