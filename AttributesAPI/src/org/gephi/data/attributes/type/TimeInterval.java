@@ -220,4 +220,9 @@ public final class TimeInterval extends DynamicType<Double[]> {
 		}
 		return "[empty]";
 	}
+
+	@Override
+	public Class getUnderlyingType() {
+		return Double[].class;
+	}
 }

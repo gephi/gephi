@@ -187,4 +187,9 @@ public final class DynamicBigInteger extends DynamicType<BigInteger> {
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
 	}
+
+	@Override
+	public Class getUnderlyingType() {
+		return BigInteger.class;
+	}
 }

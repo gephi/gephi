@@ -181,4 +181,9 @@ public final class DynamicCharacter extends DynamicType<Character> {
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
 	}
+
+	@Override
+	public Class getUnderlyingType() {
+		return Character.class;
+	}
 }

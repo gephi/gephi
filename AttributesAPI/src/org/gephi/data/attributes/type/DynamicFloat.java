@@ -189,4 +189,9 @@ public final class DynamicFloat extends DynamicType<Float> {
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
 	}
+
+	@Override
+	public Class getUnderlyingType() {
+		return Float.class;
+	}
 }
