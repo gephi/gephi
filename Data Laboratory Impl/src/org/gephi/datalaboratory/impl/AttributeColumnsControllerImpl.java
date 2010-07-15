@@ -255,8 +255,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
      * @return Array with all graph nodes
      */
     private Node[] getNodesArray() {
-        Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
-        return graph.getNodes().toArray();
+        return Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph().getNodesTree().toArray();
     }
 
     /**
