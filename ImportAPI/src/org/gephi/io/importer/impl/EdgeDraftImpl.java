@@ -192,6 +192,9 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
                 }
             }
         }
+        if (start == null && end == null) {
+            throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
+        }
         Object sourceVal = attributeRow.getValue(column);
         if (sourceVal != null && sourceVal instanceof DynamicType) {
             value = DynamicUtilities.createDynamicObject(column.getType(), (DynamicType) sourceVal, new Interval(start, end, value));
@@ -208,7 +211,7 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
 
     public void addTimeInterval(String dateFrom, String dateTo) throws IllegalArgumentException {
         if (timeInterval == null) {
-            this.timeInterval = new TimeInterval();
+            timeInterval = new TimeInterval();
         }
         Double start = null;
         Double end = null;
@@ -234,7 +237,10 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
                 }
             }
         }
-        this.timeInterval = new TimeInterval(timeInterval, start, end);
+        if (start == null && end == null) {
+            throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
+        }
+        timeInterval = new TimeInterval(timeInterval, start, end);
     }
 
     //GETTERS

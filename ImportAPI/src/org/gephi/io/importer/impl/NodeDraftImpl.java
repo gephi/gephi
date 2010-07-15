@@ -218,7 +218,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
                 try {
                     start = Double.parseDouble(dateFrom);
                 } catch (Exception ex2) {
-                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
+                    throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
                 }
             }
         }
@@ -229,9 +229,12 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
                 try {
                     end = Double.parseDouble(dateTo);
                 } catch (Exception ex2) {
-                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
+                    throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
                 }
             }
+        }
+        if (start == null && end == null) {
+            throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
         }
         Object sourceVal = attributeRow.getValue(column);
         if (sourceVal != null && sourceVal instanceof DynamicType) {
@@ -249,7 +252,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     public void addTimeInterval(String dateFrom, String dateTo) throws IllegalArgumentException {
         if (timeInterval == null) {
-            this.timeInterval = new TimeInterval();
+            timeInterval = new TimeInterval();
         }
         Double start = null;
         Double end = null;
@@ -260,7 +263,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
                 try {
                     start = Double.parseDouble(dateFrom);
                 } catch (Exception ex2) {
-                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
+                    throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
                 }
             }
         }
@@ -271,11 +274,14 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
                 try {
                     end = Double.parseDouble(dateTo);
                 } catch (Exception ex2) {
-                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
+                    throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
                 }
             }
         }
-        this.timeInterval = new TimeInterval(timeInterval, start, end);
+        if (start == null && end == null) {
+            throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
+        }
+        timeInterval = new TimeInterval(timeInterval, start, end);
     }
 
     //GETTERS

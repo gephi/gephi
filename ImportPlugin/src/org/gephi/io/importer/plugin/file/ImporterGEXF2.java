@@ -197,7 +197,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
 
         //Dynamic
-        if (!slices && (startDate != null || endDate != null)) {
+        if (!slices && (!startDate.isEmpty() || !endDate.isEmpty())) {
             try {
                 node.addTimeInterval(startDate, endDate);
             } catch (IllegalArgumentException e) {
@@ -456,7 +456,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
         }
 
         //Dynamic
-        if (!slices && (startDate != null || endDate != null)) {
+        if (!slices && (!startDate.isEmpty() || !endDate.isEmpty())) {
             try {
                 edge.addTimeInterval(startDate, endDate);
             } catch (IllegalArgumentException e) {
