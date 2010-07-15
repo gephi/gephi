@@ -9,6 +9,12 @@
     <p>
     <h2>API Changes</h2>
     <ul>
+        <li>(July 15 2010) Changes in the way Import API deals with time intervals and dynamic data. Support for dynamic attributes has been
+            added with a new <code>addAttributeValue()</code> method in <code>NodeDraft</code> and <code>EdgeDraft</code>. For improving data
+            cleanup possibilities, <code>NodeDraftGetter</code> and <code>EdgeDraftgetter</code> now returns an <code>AttributeRow</code>
+            instead of a list of attribute values only. Finally to profit from latest improvements, draft elements returns directly a
+            <code>TimeInterval</code> type instead of the list of slices. Methods with 'Slice' have been renamed to 'Interval' for
+            consistency reasons.
         <li>(June 18 2010) Graph API event management improvements. The <code>GraphEvent</code> has now precise events, including
             <code>ADD_NODES</code>, <code>REMOVE_NODES</code>, <code>ADD_EDGES</code>, <code>REMOVE_EDGES</code> and
             <code>VISIBLE_VIEW</code>. A new <code>GraphEventData</code> interface has been created to retrieve elements related to

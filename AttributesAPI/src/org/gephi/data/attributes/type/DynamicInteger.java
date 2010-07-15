@@ -191,4 +191,9 @@ public final class DynamicInteger extends DynamicType<Integer> {
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
 	}
+
+	@Override
+	public Class getUnderlyingType() {
+		return Integer.class;
+	}
 }

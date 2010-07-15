@@ -55,7 +55,9 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>org.gephi.data.attributes.spi</package>
+            </public-packages>
         </data>
     </configuration>
 </project>

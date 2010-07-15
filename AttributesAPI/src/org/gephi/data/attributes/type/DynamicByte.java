@@ -191,4 +191,9 @@ public final class DynamicByte extends DynamicType<Byte> {
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
 	}
+
+	@Override
+	public Class getUnderlyingType() {
+		return Byte.class;
+	}
 }

@@ -69,10 +69,8 @@ import java.util.Arrays;
  *     </ol>
  * <li>{@link org.gephi.data.attributes.model.DataIndex DataIndex}:
  *     <ol>
- *     <li>add appropriate instance variables
- *     <li>initialize them in constructor
- *     <li>update {@link org.gephi.data.attributes.model.DataIndex#countEntries countEntries()} method
- *     <li>update {@link org.gephi.data.attributes.model.DataIndex#clear clear()} method
+ *     <li>add appropriate type represented by Class object into
+ *         {@link org.gephi.data.attributes.model.DataIndex#SUPPORTED_TYPES SUPPORTED_TYPES} array
  *     </ol>
  * </ol>
  *

@@ -41,6 +41,7 @@
                 </test-type>
             </test-dependencies>
             <public-packages>
+                <package>org.gephi.dynamic</package>
                 <package>org.gephi.dynamic.api</package>
             </public-packages>
         </data>

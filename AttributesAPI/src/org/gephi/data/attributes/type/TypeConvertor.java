@@ -17,12 +17,13 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.type;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import org.gephi.data.attributes.api.AttributeType;
 
 /**
  * Class responsible for type manipulation and creation needed in Attributes API.
@@ -30,9 +31,11 @@ import java.lang.reflect.Method;
  * @author Martin Škurla
  */
 public final class TypeConvertor {
+
     private static final String CONVERSION_METHOD_NAME = "valueOf";
 
-    private TypeConvertor() {}
+    private TypeConvertor() {
+    }
 
     /**
      * Creates array of given type from single String value. String value is always parsed by given

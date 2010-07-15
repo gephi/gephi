@@ -31,6 +31,7 @@ import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.properties.PropertiesColumn;
@@ -90,7 +91,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public void clearColumnData(AttributeTable table, AttributeColumn column) {
-        if (canChangeColumnData(table, column)) {
+        if (canChangeColumnData(column)) {
             int columnIndex = column.getIndex();
             for (Attributes attributes : getTableAttributeRows(table)) {
                 attributes.setValue(columnIndex, null);
@@ -163,7 +164,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             AttributeValue[] values = row.getValues();
             for (int i = 0; i < values.length; i++) {
                 //Clear all except id and computed attributes:
-                if (canChangeColumnData(true, values[i].getColumn())) {
+                if (canChangeColumnData(values[i].getColumn())) {
                     row.setValue(i, null);
                 }
             }
@@ -183,7 +184,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             AttributeValue[] values = row.getValues();
             for (int i = 0; i < values.length; i++) {
                 //Clear all except id and computed attributes:
-                if (canChangeColumnData(false, values[i].getColumn())) {
+                if (canChangeColumnData(values[i].getColumn())) {
                     row.setValue(i, null);
                 }
             }
@@ -236,23 +237,15 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         return column.getOrigin() != AttributeOrigin.PROPERTY;
     }
 
-    public boolean canChangeColumnData(AttributeTable table, AttributeColumn column) {
-        if (isNodeTable(table)) {
-            return canChangeColumnData(true, column);
-        } else if (isEdgeTable(table)) {
-            return canChangeColumnData(false, column);
-        } else {
-            return canChangeGenericColumnData(column);
-        }
-    }
-
-    public boolean canChangeColumnData(boolean isNodesTable, AttributeColumn column) {
-        if (isNodesTable) {
+    public boolean canChangeColumnData(AttributeColumn column) {
+        AttributeUtils au=Lookup.getDefault().lookup(AttributeUtils.class);
+        if (au.isNodeColumn(column)) {
             //Can change values of columns with DATA origin and label of nodes:
             return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.NODE_LABEL.getIndex();
-        } else {
-            //Can change values of columns with DATA origin and label of edges:
+        } else if (au.isEdgeColumn(column)) {
             return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.EDGE_LABEL.getIndex();
+        } else {
+            return canChangeGenericColumnData(column);
         }
     }
 

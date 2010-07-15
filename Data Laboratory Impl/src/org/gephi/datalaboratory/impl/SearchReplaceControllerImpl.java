@@ -89,7 +89,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
             table= ac.getModel().getEdgeTable();
             column = table.getColumn(result.getFoundColumnIndex());
         }
-        return Lookup.getDefault().lookup(AttributeColumnsController.class).canChangeColumnData(table, column);
+        return Lookup.getDefault().lookup(AttributeColumnsController.class).canChangeColumnData(column);
     }
 
     public SearchResult replace(SearchResult result, String replacement) {

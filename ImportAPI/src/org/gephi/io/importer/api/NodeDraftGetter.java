@@ -22,7 +22,8 @@ package org.gephi.io.importer.api;
 
 import java.awt.Color;
 import java.util.List;
-import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.graph.api.Node;
 
 /**
@@ -31,7 +32,7 @@ import org.gephi.graph.api.Node;
  */
 public interface NodeDraftGetter extends NodeDraft {
 
-    public List<AttributeValue> getAttributeValues();
+    public AttributeRow getAttributeRow();
 
     public Color getColor();
 
@@ -63,7 +64,7 @@ public interface NodeDraftGetter extends NodeDraft {
 
     public NodeDraftGetter[] getParents();
 
-    public List<String[]> getSlices();
+    public TimeInterval getTimeInterval();
 
     public int getHeight();
 }

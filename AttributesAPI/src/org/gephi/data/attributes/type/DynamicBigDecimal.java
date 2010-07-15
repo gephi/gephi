@@ -187,4 +187,9 @@ public final class DynamicBigDecimal extends DynamicType<BigDecimal> {
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
 	}
+
+	@Override
+	public Class getUnderlyingType() {
+		return BigDecimal.class;
+	}
 }

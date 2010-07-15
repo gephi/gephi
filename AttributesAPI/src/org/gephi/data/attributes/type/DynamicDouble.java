@@ -189,4 +189,9 @@ public final class DynamicDouble extends DynamicType<Double> {
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
 	}
+
+	@Override
+	public Class getUnderlyingType() {
+		return Double.class;
+	}
 }

@@ -45,8 +45,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
@@ -339,7 +337,7 @@ public class NodeDataTable {
         }
 
         public boolean isEditable() {
-            return attributeColumnsController.canChangeColumnData(true, column);
+            return attributeColumnsController.canChangeColumnData(column);
         }
     }
 

@@ -205,26 +205,11 @@ public enum AttributeType {
     /**
      * Indicates if this AttributeType can be parsed from a String with <code>parse(String str)</code> method.
      * All types except <code>DYNAMIC</code> types and <code>TIME_INTERVAL</code> can be parsed.
+     * See <code>isDynamicType</code> method.
      * @return
      */
     public boolean canParseFromString() {
-        switch (this) {
-            case DYNAMIC_BYTE:
-            case DYNAMIC_SHORT:
-            case DYNAMIC_INT:
-            case DYNAMIC_LONG:
-            case DYNAMIC_FLOAT:
-            case DYNAMIC_DOUBLE:
-            case DYNAMIC_BOOLEAN:
-            case DYNAMIC_CHAR:
-            case DYNAMIC_STRING:
-            case DYNAMIC_BIGINTEGER:
-            case DYNAMIC_BIGDECIMAL:
-            case TIME_INTERVAL:
-                return false;
-            default:
-                return true;
-        }
+        return !isDynamicType();
     }
 
     /**
@@ -310,5 +295,33 @@ public enum AttributeType {
         }
 
         return null;
+    }
+
+    /**
+     * Indicates if this type is a {@code DynamicType}.
+     *
+     * @param type an {@code AttributeType} to check
+     *
+     * @return {@code true} if this is a {@code DynamicType},
+     *         otherwise {@code false}.
+     */
+    public boolean isDynamicType() {
+        switch (this) {
+            case DYNAMIC_BYTE:
+            case DYNAMIC_SHORT:
+            case DYNAMIC_INT:
+            case DYNAMIC_LONG:
+            case DYNAMIC_FLOAT:
+            case DYNAMIC_DOUBLE:
+            case DYNAMIC_BOOLEAN:
+            case DYNAMIC_CHAR:
+            case DYNAMIC_STRING:
+            case DYNAMIC_BIGINTEGER:
+            case DYNAMIC_BIGDECIMAL:
+            case TIME_INTERVAL:
+                return true;
+            default:
+                return false;
+        }
     }
 }

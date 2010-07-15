@@ -180,4 +180,9 @@ public final class DynamicBoolean extends DynamicType<Boolean> {
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
 	}
+
+	@Override
+	public Class getUnderlyingType() {
+		return Boolean.class;
+	}
 }

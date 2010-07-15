@@ -28,13 +28,16 @@ package org.gephi.data.attributes.api;
  * <p>
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  */
 public enum AttributeOrigin {
 
     PROPERTY("AttributeOrigin_property"),
-    DATA("AttributeOrigin_data"),
-    COMPUTED("AttributeOrigin_computed");
-    final String label;
+    DATA    ("AttributeOrigin_data"),
+    COMPUTED("AttributeOrigin_computed"),
+    DELEGATE(null);  
+
+    private final String label;
 
     AttributeOrigin(String label) {
         this.label = label;

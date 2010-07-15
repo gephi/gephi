@@ -32,10 +32,13 @@ import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
+import org.gephi.data.properties.PropertiesColumn;
 
 /**
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  */
 public class AttributeTableImpl implements AttributeTable {
 
@@ -67,15 +70,31 @@ public class AttributeTableImpl implements AttributeTable {
         return columns.size();
     }
 
+    public AttributeColumn addPropertiesColumn(PropertiesColumn propertiesColumn) {
+        return addColumn(propertiesColumn.getId(),
+                         propertiesColumn.getTitle(),
+                         propertiesColumn.getType(),
+                         propertiesColumn.getOrigin(),
+                         propertiesColumn.getDefaultValue());
+    }
+
     public AttributeColumnImpl addColumn(String id, AttributeType type) {
-        return addColumn(id, id, type, AttributeOrigin.DATA, null);
+        return addColumn(id, id, type, AttributeOrigin.DATA, null, null);
     }
 
     public AttributeColumnImpl addColumn(String id, AttributeType type, AttributeOrigin origin) {
-        return addColumn(id, id, type, origin, null);
+        return addColumn(id, id, type, origin, null, null);
     }
 
-    public synchronized AttributeColumnImpl addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue) {
+    public AttributeColumnImpl addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue) {
+        return addColumn(id, title, type, origin, defaultValue, null);
+    }
+
+    public AttributeColumn addColumn(String id, String title, AttributeType type, AttributeValueDelegateProvider attributeValueDelegateProvider, Object defaultValue) {
+        return addColumn(id, title, type, AttributeOrigin.DELEGATE, defaultValue, attributeValueDelegateProvider);
+    }
+
+    private synchronized AttributeColumnImpl addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue, AttributeValueDelegateProvider attributeValueDelegateProvider) {
         if (defaultValue != null) {
             if (defaultValue.getClass() != type.getType()) {
                 if (defaultValue.getClass() == String.class) {
@@ -86,7 +105,7 @@ public class AttributeTableImpl implements AttributeTable {
             }
             defaultValue = model.getManagedValue(defaultValue, type);
         }
-        AttributeColumnImpl column = new AttributeColumnImpl(this, columns.size(), id, title, type, origin, defaultValue);
+        AttributeColumnImpl column = new AttributeColumnImpl(this, columns.size(), id, title, type, origin, defaultValue, attributeValueDelegateProvider);
         columns.add(column);
         columnsMap.put(id, column);
         if (title != null && !title.equals(id)) {

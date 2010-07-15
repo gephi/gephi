@@ -25,6 +25,7 @@ import org.openide.util.Lookup;
 /**
  *
  * @author Mathieu Bastian
+ * @author Martin  Škurla
  */
 public abstract class AttributeUtils {
 
@@ -40,9 +41,11 @@ public abstract class AttributeUtils {
 
     public abstract AttributeColumn[] getStringColumns(AttributeTable table);
 
-    public abstract Object getMin(AttributeColumn column, Object[] values);
+    @SuppressWarnings("rawtypes")
+    public abstract Comparable getMin(AttributeColumn column, Comparable[] values);
 
-    public abstract Object getMax(AttributeColumn column, Object[] values);
+    @SuppressWarnings("rawtypes")
+    public abstract Comparable getMax(AttributeColumn column, Comparable[] values);
 
     public static synchronized AttributeUtils getDefault() {
         return Lookup.getDefault().lookup(AttributeUtils.class);

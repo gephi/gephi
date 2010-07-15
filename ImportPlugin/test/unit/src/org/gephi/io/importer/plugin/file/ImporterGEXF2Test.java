@@ -1,6 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.plugin.file;
 
@@ -11,6 +27,7 @@ import java.util.List;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.type.StringList;
+import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerFactory;
 import org.gephi.io.importer.api.ContainerUnloader;
@@ -105,28 +122,31 @@ public class ImporterGEXF2Test {
         assertNotNull(n7);
         assertNotNull(n8);
         assertNotNull(n9);
+        try {
+            assertEquals("Node 1", n1.getLabel());
+            assertEquals("2000-01-01", DynamicUtilities.getXMLDateStringFromDouble(n1.getTimeInterval().getValues().get(0)[0]));
+            assertEquals("2000-12-31", DynamicUtilities.getXMLDateStringFromDouble(n1.getTimeInterval().getValues().get(0)[1]));
 
-        assertEquals("Node 1", n1.getLabel());
-        assertEquals("2000-01-01", n1.getSlices().get(0)[0]);
-        assertEquals("2000-12-31", n1.getSlices().get(0)[1]);
+            AttributeValue[] values1 = n1.getAttributeRow().getValues();
+            assertEquals("0", values1[0].getColumn().getId());
+            assertEquals("3", values1[1].getColumn().getId());
+            assertEquals("Author", values1[0].getValue());
+            assertEquals(new Float(1), values1[1].getValue());
 
-        List<AttributeValue> values1 = n1.getAttributeValues();
-        assertEquals("0", values1.get(0).getColumn().getId());
-        assertEquals("3", values1.get(1).getColumn().getId());
-        assertEquals("Author", values1.get(0).getValue());
-        assertEquals(new Float(1), values1.get(1).getValue());
+            AttributeValue[] values2 = n2.getAttributeRow().getValues();
+            assertEquals("0", values2[0].getColumn().getId());
+            assertEquals("2", values2[1].getColumn().getId());
+            assertEquals("Author", values2[0].getValue());
+            assertEquals(new StringList("String1, String2, String 3"), values2[1].getValue());
 
-        List<AttributeValue> values2 = n2.getAttributeValues();
-        assertEquals("0", values2.get(0).getColumn().getId());
-        assertEquals("2", values2.get(1).getColumn().getId());
-        assertEquals("Author", values2.get(0).getValue());
-        assertEquals(new StringList("String1, String2, String 3"), values2.get(1).getValue());
-
-        assertEquals("2000-01-01", n3.getSlices().get(0)[0]);
-        assertEquals("2000-01-15", n3.getSlices().get(0)[1]);
-        assertEquals("2001-01-30", n3.getSlices().get(1)[0]);
-        assertEquals("2001-02-01", n3.getSlices().get(1)[1]);
-        assertEquals(2, n3.getSlices().size());
+            assertEquals("2000-01-01", DynamicUtilities.getXMLDateStringFromDouble(n3.getTimeInterval().getValues().get(0)[0]));
+            assertEquals("2000-01-15", DynamicUtilities.getXMLDateStringFromDouble(n3.getTimeInterval().getValues().get(0)[1]));
+            assertEquals("2001-01-30", DynamicUtilities.getXMLDateStringFromDouble(n3.getTimeInterval().getValues().get(1)[0]));
+            assertEquals("2001-02-01", DynamicUtilities.getXMLDateStringFromDouble(n3.getTimeInterval().getValues().get(1)[1]));
+            assertEquals(2, n3.getTimeInterval().getValues().size());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
 
         container.closeLoader();
         System.out.println(container.getReport().getText());

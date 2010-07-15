@@ -86,7 +86,7 @@ public class EditNode extends AbstractNode {
                 AttributeValueWrapper wrap = new AttributeValueWrapper(row, value.getColumn().getIndex());
                 AttributeType type = value.getColumn().getType();
                 Property p;
-                if (ac.canChangeColumnData(true, value.getColumn())) {
+                if (ac.canChangeColumnData(value.getColumn())) {
                     //Editable column, provide "set" method:
                     if (!AttributeValueWrapper.notSupportedTypes.contains(type)) {//The AttributeType can be edited by default:
                         p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), "setValue" + type.getType().getSimpleName());

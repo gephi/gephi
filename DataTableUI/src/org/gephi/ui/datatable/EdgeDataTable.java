@@ -39,9 +39,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
@@ -319,7 +317,7 @@ public class EdgeDataTable {
         }
 
         public boolean isEditable() {
-            return attributeColumnsController.canChangeColumnData(false, column);
+            return attributeColumnsController.canChangeColumnData(column);
         }
     }
 

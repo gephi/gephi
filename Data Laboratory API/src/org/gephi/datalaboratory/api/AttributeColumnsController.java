@@ -166,19 +166,8 @@ public interface AttributeColumnsController {
      * The behaviour is: Only values of columns with AttributeOrigin of type DATA or a node/edge label column can be changed.
      * Also, columns with a <code>DYNAMIC</code> or <code>TIME_INTERVAL</code> AttributeType are not allowed to be changed since they are only used for dynamic attributes purposes.
      * If table is not nodes or edges table, it will not be checked if it is the label column.
-     * @param table Table of the column
      * @param column Column to theck its values can be changed
      * @return True if the column values can be changed, false otherwise
      */
-    boolean canChangeColumnData(AttributeTable table, AttributeColumn column);
-
-    /**
-     * Indicates if the Data Laboratory API behavious allows to change a value of the given column of a table.
-     * The behaviour is: Only values of columns with AttributeOrigin of type DATA or a node/edge label column can be changed.
-     * Also, columns with a <code>DYNAMIC</code> or <code>TIME_INTERVAL</code> AttributeType are not allowed to be changed since they are only used for dynamic attributes purposes.
-     * @param isNodesTable Indicates if the table of the column is nodes table, if false, it is assumed that the table is edges table
-     * @param column Column to theck its values can be changed
-     * @return True if the column values can be changed, false otherwise
-     */
-    boolean canChangeColumnData(boolean isNodesTable, AttributeColumn column);
+    boolean canChangeColumnData(AttributeColumn column);
 }

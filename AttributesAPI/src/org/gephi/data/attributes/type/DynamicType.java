@@ -277,8 +277,8 @@ public abstract class DynamicType<T> {
 	 * Returns a list of values whose time intervals overlap with a
 	 * [{@code low}, {@code high}] time interval.
 	 *
-	 * @param low   the left endpoint
-	 * @param high  the right endpoint
+	 * @param low  the left endpoint
+	 * @param high the right endpoint
 	 * 
 	 * @return a list of values whose time intervals overlap with a
 	 *         [{@code low}, {@code high}] time interval.
@@ -291,6 +291,29 @@ public abstract class DynamicType<T> {
 			result.add(i.getValue());
 		return result;
 	}
+
+	/**
+	 * Returns a list of intervals which overlap with a
+	 * [{@code low}, {@code high}] time interval.
+	 *
+	 * @param low  the left endpoint
+	 * @param high the right endpoint
+	 *
+	 * @return a list of intervals which overlap with a
+	 *         [{@code low}, {@code high}] time interval.
+	 *
+	 * @throws IllegalArgumentException if {@code low} > {@code high}.
+	 */
+	public List<Interval<T>> getIntervals(double low, double high) {
+		return intervalTree.search(low, high);
+	}
+
+	/**
+	 * Returns the underlying type {@code T}.
+	 *
+	 * @return the underlying type {@code T}.
+	 */
+	public abstract Class getUnderlyingType();
 
 	/**
 	 * Compares this instance with the specified object for equality.

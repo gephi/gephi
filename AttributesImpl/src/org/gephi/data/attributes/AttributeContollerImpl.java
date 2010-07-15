@@ -21,8 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeRowFactory;
-import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.model.IndexedAttributeModel;
 import org.gephi.data.attributes.model.TemporaryAttributeModel;

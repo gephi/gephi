@@ -388,7 +388,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 }
 
                 if (nodeStart != null || nodeEnd != null) {
-                    node.addTimeSlice(nodeStart, nodeEnd);
+                    node.addTimeInterval(nodeStart, nodeEnd);
                 }
             }
 
@@ -541,7 +541,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 }
 
                 if (edgeStart != null || edgeEnd != null) {
-                    edge.addTimeSlice(edgeStart, edgeEnd);
+                    edge.addTimeInterval(edgeStart, edgeEnd);
                 }
             }
 

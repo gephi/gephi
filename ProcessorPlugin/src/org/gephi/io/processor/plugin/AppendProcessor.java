@@ -1,7 +1,23 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package org.gephi.io.processor.plugin;
 
 import java.util.HashMap;
@@ -22,7 +38,6 @@ import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.timeline.api.TimelineController;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -54,7 +69,6 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
 
         //Architecture
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-        this.timelineController = Lookup.getDefault().lookup(TimelineController.class);
 
         HierarchicalGraph graph = null;
         switch (container.getEdgeDefault()) {
@@ -74,10 +88,10 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         GraphFactory factory = graphModel.factory();
 
         //Dynamic
-        if (timelineController != null) {
-            timelineController.setMin(workspace, container.getTimeIntervalMin());
-            timelineController.setMax(workspace, container.getTimeIntervalMax());
-        }
+//        if (timelineController != null) {
+//            timelineController.setMin(workspace, container.getTimeIntervalMin());
+//            timelineController.setMax(workspace, container.getTimeIntervalMax());
+//        }
 
         //Attributes - Creates columns for properties
         AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
@@ -148,7 +162,6 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         }
 
         System.out.println("# Nodes loaded: " + nodeCount + "\n# Edges loaded: " + edgeCount);
-        timelineController = null;
         workspace = null;
     }
 }

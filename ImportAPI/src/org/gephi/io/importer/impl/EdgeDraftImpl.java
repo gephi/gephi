@@ -24,10 +24,16 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.Interval;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.EdgeDraftGetter;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -36,7 +42,7 @@ import org.gephi.io.importer.api.EdgeDraftGetter;
 public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
 
     //Architecture
-    private ImportContainerImpl container;
+    private final ImportContainerImpl container;
     //Basic
     private String id;
     private String label;
@@ -55,14 +61,15 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     private float labelSize = -1f;
     private boolean labelVisible = true;
     //Attributes
-    private List<AttributeValue> attributeValues = new ArrayList<AttributeValue>();
+    private final AttributeRow attributeRow;
     //Dynamic
-    private List<String[]> slices;
+    private TimeInterval timeInterval;
 
     public EdgeDraftImpl(ImportContainerImpl container, String id) {
         this.container = container;
         this.id = id;
         this.autoId = true;
+        this.attributeRow = container.getAttributeModel().rowFactory().newEdgeRow();
     }
 
     //SETTERS
@@ -150,20 +157,95 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
     }
 
     public void addAttributeValue(AttributeColumn column, Object value) {
-        AttributeValue attValue = container.getFactory().newValue(column, value);
-        attributeValues.add(attValue);
+        if (column.getType().isDynamicType() && !(value instanceof DynamicType)) {
+            //Wrap value in a dynamic type
+            value = DynamicUtilities.createDynamicObject(column.getType(), new Interval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, value));
+        }
+        attributeRow.setValue(column, value);
     }
 
-    public void addTimeSlice(String dateFrom, String dateTo) {
-        if (slices == null) {
-            slices = new ArrayList<String[]>();
+    public void addAttributeValue(AttributeColumn column, Object value, String dateFrom, String dateTo) throws IllegalArgumentException {
+        if (!column.getType().isDynamicType()) {
+            throw new IllegalArgumentException("The column must be dynamic");
         }
-        slices.add(new String[]{dateFrom, dateTo});
+        Double start = null;
+        Double end = null;
+        if (dateFrom != null && !dateFrom.isEmpty()) {
+            try {
+                start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
+            } catch (Exception ex) {
+                try {
+                    start = Double.parseDouble(dateFrom);
+                } catch (Exception ex2) {
+                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
+                }
+            }
+        }
+        if (dateTo != null && !dateTo.isEmpty()) {
+            try {
+                end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
+            } catch (Exception ex) {
+                try {
+                    end = Double.parseDouble(dateTo);
+                } catch (Exception ex2) {
+                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
+                }
+            }
+        }
+        if (start == null && end == null) {
+            throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
+        }
+        Object sourceVal = attributeRow.getValue(column);
+        if (sourceVal != null && sourceVal instanceof DynamicType) {
+            value = DynamicUtilities.createDynamicObject(column.getType(), (DynamicType) sourceVal, new Interval(start, end, value));
+        } else if (sourceVal != null && !(sourceVal instanceof DynamicType)) {
+            List<Interval> intervals = new ArrayList<Interval>(2);
+            intervals.add(new Interval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, sourceVal));
+            intervals.add(new Interval(start, end, value));
+            value = DynamicUtilities.createDynamicObject(column.getType(), intervals);
+        } else {
+            value = DynamicUtilities.createDynamicObject(column.getType(), new Interval(start, end, value));
+        }
+        attributeRow.setValue(column, value);
+    }
+
+    public void addTimeInterval(String dateFrom, String dateTo) throws IllegalArgumentException {
+        if (timeInterval == null) {
+            timeInterval = new TimeInterval();
+        }
+        Double start = null;
+        Double end = null;
+        if (dateFrom != null && !dateFrom.isEmpty()) {
+            try {
+                start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
+            } catch (Exception ex) {
+                try {
+                    start = Double.parseDouble(dateFrom);
+                } catch (Exception ex2) {
+                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
+                }
+            }
+        }
+        if (dateTo != null && !dateTo.isEmpty()) {
+            try {
+                end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
+            } catch (Exception ex) {
+                try {
+                    end = Double.parseDouble(dateTo);
+                } catch (Exception ex2) {
+                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
+                }
+            }
+        }
+        if (start == null && end == null) {
+            throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
+        }
+        timeInterval = new TimeInterval(timeInterval, start, end);
     }
 
     //GETTERS
-    public List<AttributeValue> getAttributeValues() {
-        return attributeValues;
+    public AttributeRow getAttributeRow() {
+        return attributeRow;
     }
 
     public NodeDraftImpl getSource() {
@@ -210,8 +292,8 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         return visible;
     }
 
-    public List<String[]> getSlices() {
-        return slices;
+    public TimeInterval getTimeInterval() {
+        return timeInterval;
     }
 
     @Override
