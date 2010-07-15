@@ -20,6 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
@@ -48,17 +52,17 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     public Node createNode(String label) {
         Lookup.getDefault().lookup(AttributeController.class).getModel();//Make sure graph has AttributeModel, this can be first node.
         Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode();
-        newNode.getNodeData().setLabel(label);        
+        newNode.getNodeData().setLabel(label);
         getGraph().addNode(newNode);
         return newNode;
     }
 
     public Node duplicateNode(Node node) {
         if (isNodeInGraph(node)) {
-            Node copy=createNode(node.getNodeData().getLabel());
-            AttributeRow row=(AttributeRow) node.getNodeData().getAttributes();
+            Node copy = createNode(node.getNodeData().getLabel());
+            AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
             for (int i = 0; i < row.countValues(); i++) {
-                if(row.getValues()[i].getColumn().getOrigin()==AttributeOrigin.DATA){
+                if (row.getValues()[i].getColumn().getOrigin() == AttributeOrigin.DATA) {
                     copy.getNodeData().getAttributes().setValue(i, row.getValue(i));
                 }
             }
@@ -68,8 +72,8 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         }
     }
 
-    public void duplicateNodes(Node[] nodes){
-        for(Node n:nodes){
+    public void duplicateNodes(Node[] nodes) {
+        for (Node n : nodes) {
             duplicateNode(n);
         }
     }
@@ -77,9 +81,9 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     public boolean createEdge(Node source, Node target, boolean directed) {
         if (isNodeInGraph(source) && isNodeInGraph(target)) {
             if (source != target) {//Cannot create self-loop
-                if(directed){
+                if (directed) {
                     return getDirectedGraph().addEdge(source, target);//The edge will be created if it does not already exist.
-                }else{
+                } else {
                     return getUndirectedGraph().addEdge(source, target);//The edge will be created if it does not already exist.
                 }
             } else {
@@ -140,10 +144,8 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         if (canGroupNodes(nodes)) {
             HierarchicalGraph hg = getHierarchicalGraph();
             Node group = hg.groupNodes(nodes);
-            hg.readLock();
             //Set the group node label to the same used int visualization module:
-            group.getNodeData().setLabel(NbBundle.getMessage(GraphElementsControllerImpl.class, "Group.nodeCount.label", hg.getChildrenCount(group)));
-            hg.readUnlock();
+            group.getNodeData().setLabel(NbBundle.getMessage(GraphElementsControllerImpl.class, "Group.nodeCount.label", getNodeChildrenCount(hg, group)));
             return true;
         } else {
             return false;
@@ -206,10 +208,57 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         }
         boolean canUngroup;
         HierarchicalGraph hg = getHierarchicalGraph();
-        hg.readLock();
-        canUngroup = hg.getChildrenCount(node) > 0;//The node has children
-        hg.readUnlock();
+        canUngroup = getNodeChildrenCount(hg, node) > 0;//The node has children
         return canUngroup;
+    }
+
+    public boolean moveNodeToGroup(Node node, Node group) {
+        if (canMoveNodeToGroup(node, group)) {
+            getHierarchicalGraph().moveToGroup(node, group);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void moveNodesToGroup(Node[] nodes, Node group) {
+        for (Node n : nodes) {
+            moveNodeToGroup(n, group);
+        }
+    }
+
+    public Node[] getAvailableGroupsToMoveNodes(Node[] nodes) {
+        if (canGroupNodes(nodes)) {
+            HierarchicalGraph hg=getHierarchicalGraph();
+            Set<Node> nodesSet=new HashSet<Node>();
+            nodesSet.addAll(Arrays.asList(nodes));
+            
+            //All have the same parent, get children and check what of them are groups and are not in the nodes array:
+            Node parent=hg.getParent(nodes[0]);
+            Node[] possibleGroups;
+            //If no parent, get nodes at level 0:
+            if(parent!=null){
+                possibleGroups=hg.getChildren(parent).toArray();
+            }else{
+                possibleGroups=hg.getNodes(0).toArray();
+            }
+            ArrayList<Node> availableGroups=new ArrayList<Node>();
+
+            for(Node n:possibleGroups){
+                if(!nodesSet.contains(n)&&getNodeChildrenCount(hg, n)>0){
+                    availableGroups.add(n);
+                }
+            }
+
+            return availableGroups.toArray(new Node[0]);
+        } else {
+            return null;
+        }
+    }
+
+    public boolean canMoveNodeToGroup(Node node, Node group) {
+        HierarchicalGraph hg = getHierarchicalGraph();
+        return hg.getParent(node) == hg.getParent(group) && canUngroupNode(group)&&isNodeInGraph(node);
     }
 
     public boolean removeNodeFromGroup(Node node) {
@@ -268,18 +317,18 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         return getGraph().getEdges(node).toArray();
     }
 
-    public int getNodesCount(){
-        Graph graph=getGraph();
+    public int getNodesCount() {
+        Graph graph = getGraph();
         graph.readLock();
-        int nodesCount=graph.getNodeCount();
+        int nodesCount = graph.getNodeCount();
         graph.readUnlock();
         return nodesCount;
     }
 
-    public int getEdgesCount(){
-        Graph graph=getGraph();
+    public int getEdgesCount() {
+        Graph graph = getGraph();
         graph.readLock();
-        int edgesCount=graph.getEdgeCount();
+        int edgesCount = graph.getEdgeCount();
         graph.readUnlock();
         return edgesCount;
     }
@@ -321,11 +370,11 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         return Lookup.getDefault().lookup(GraphController.class).getModel().getMixedGraph();
     }
 
-    private DirectedGraph getDirectedGraph(){
+    private DirectedGraph getDirectedGraph() {
         return Lookup.getDefault().lookup(GraphController.class).getModel().getDirectedGraph();
     }
 
-    private UndirectedGraph getUndirectedGraph(){
+    private UndirectedGraph getUndirectedGraph() {
         return Lookup.getDefault().lookup(GraphController.class).getModel().getUndirectedGraph();
     }
 
@@ -343,5 +392,12 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         if (isEdgeInGraph(edge)) {
             graph.removeEdge(edge);
         }
+    }
+
+    private int getNodeChildrenCount(HierarchicalGraph hg, Node n) {
+        hg.readLock();
+        int childrenCount = hg.getChildrenCount(n);
+        hg.readUnlock();
+        return childrenCount;
     }
 }

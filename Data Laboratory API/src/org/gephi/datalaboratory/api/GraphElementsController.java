@@ -162,6 +162,39 @@ public interface GraphElementsController {
     boolean canUngroupNode(Node node);
 
     /**
+     * Moves a node to a group of nodes if it is possible.
+     * To move a node to a group, they must have the same parent and the group node has to be a group of nodes.
+     * @param node Node to move to group
+     * @param group Group of nodes to move the node
+     * @return True if the node was moved, false otherwise
+     */
+    boolean moveNodeToGroup(Node node, Node group);
+
+    /**
+     * Tries to move each node of the nodes array to the group node.
+     * @param nodes Array of nodes to move
+     * @param group Group node
+     */
+    void moveNodesToGroup(Node[] nodes, Node group);
+
+    /**
+     * Prepares and returns an array with the groups which the given nodes can be moved to.
+     * This groups are the nodes that have the same parent as the given nodes and are not in the given nodes array.
+     * @param nodes Nodes to get available groups to be moved
+     * @return Available groups array of null if the nodes don't all have the same parent
+     */
+    Node[] getAvailableGroupsToMoveNodes(Node[] nodes);
+
+    /**
+     * Indicates if a given node can be moved to a group node.
+     * To move a node to a group, they must have the same parent and the group node has to be a group of nodes.
+     * @param node Node to check if can be moved
+     * @param group Group node
+     * @return True if it can be moved, false otherwise
+     */
+    boolean canMoveNodeToGroup(Node node, Node group);
+
+    /**
      * Removes a node from its group if the node is in a group (has a parent).
      * Also breaks the group if the last node is removed.
      * @param node Node to remove from its group
