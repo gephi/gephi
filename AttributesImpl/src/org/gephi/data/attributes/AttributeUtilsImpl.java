@@ -31,6 +31,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  */
 @ServiceProvider(service = AttributeUtils.class)
 public class AttributeUtilsImpl extends AttributeUtils {
@@ -42,106 +43,60 @@ public class AttributeUtilsImpl extends AttributeUtils {
 
     @Override
     public boolean isNumberColumn(AttributeColumn column) {
-        AttributeType type = column.getType();
-        if (type == AttributeType.DOUBLE
-                || type == AttributeType.FLOAT
-                || type == AttributeType.INT
-                || type == AttributeType.LONG) {
-            return true;
-        }
-        return false;
+        AttributeType attributeType = column.getType();
+        return Number.class.isAssignableFrom(attributeType.getType());
     }
 
     @Override
-    public Object getMin(AttributeColumn column, Object[] values) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public Comparable getMin(AttributeColumn column, Comparable[] values) {
         if (!isNumberColumn(column)) {
             throw new IllegalArgumentException("Colun must be a number column");
         }
-        AttributeType type = column.getType();
-        if (type.equals(AttributeType.DOUBLE)) {
-            Double min = Double.POSITIVE_INFINITY;
-            for (Object o : values) {
-                Double ca = (Double) o;
-                if (ca.compareTo(min) < 0) {
-                    min = ca;
+
+        switch (values.length) {
+            case 0:
+                return null;
+            case 1:
+                return values[0];
+            // values.length > 1
+            default:
+                Comparable<?> min = values[0];
+
+                for (int index = 1; index < values.length; index++) {
+                    Comparable o = values[index];
+                    if (o.compareTo(min) < 0)
+                        min = o;
                 }
-            }
-            return min;
-        } else if (type.equals(AttributeType.FLOAT)) {
-            Float min = Float.POSITIVE_INFINITY;
-            for (Object o : values) {
-                Float ca = (Float) o;
-                if (ca.compareTo(min) < 0) {
-                    min = ca;
-                }
-            }
-            return min;
-        } else if (type.equals(AttributeType.INT)) {
-            Integer min = Integer.MAX_VALUE;
-            for (Object o : values) {
-                Integer ca = (Integer) o;
-                if (ca.compareTo(min) < 0) {
-                    min = ca;
-                }
-            }
-            return min;
-        } else if (type.equals(AttributeType.LONG)) {
-            Long min = Long.MAX_VALUE;
-            for (Object o : values) {
-                Long ca = (Long) o;
-                if (ca.compareTo(min) < 0) {
-                    min = ca;
-                }
-            }
-            return min;
+
+                return min;
         }
-        return null;
     }
 
     @Override
-    public Object getMax(AttributeColumn column, Object[] values) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public Comparable getMax(AttributeColumn column, Comparable[] values) {
         if (!isNumberColumn(column)) {
             throw new IllegalArgumentException("Colun must be a number column");
         }
-        AttributeType type = column.getType();
-        if (type.equals(AttributeType.DOUBLE)) {
-            Double max = Double.NEGATIVE_INFINITY;
-            for (Object o : values) {
-                Double ca = (Double) o;
-                if (ca.compareTo(max) > 0) {
-                    max = ca;
+
+        switch (values.length) {
+            case 0:
+                return null;
+            case 1:
+                return values[0];
+            // values.length > 1
+            default:
+                Comparable<?> max = values[0];
+
+                for (int index = 1; index < values.length; index++) {
+                    Comparable o = values[index];
+                    if (o.compareTo(max) > 0)
+                        max = o;
                 }
-            }
-            return max;
-        } else if (type.equals(AttributeType.FLOAT)) {
-            Float max = Float.NEGATIVE_INFINITY;
-            for (Object o : values) {
-                Float ca = (Float) o;
-                if (ca.compareTo(max) > 0) {
-                    max = ca;
-                }
-            }
-            return max;
-        } else if (type.equals(AttributeType.INT)) {
-            Integer max = Integer.MIN_VALUE;
-            for (Object o : values) {
-                Integer ca = (Integer) o;
-                if (ca.compareTo(max) > 0) {
-                    max = ca;
-                }
-            }
-            return max;
-        } else if (type.equals(AttributeType.LONG)) {
-            Long max = Long.MIN_VALUE;
-            for (Object o : values) {
-                Long ca = (Long) o;
-                if (ca.compareTo(max) > 0) {
-                    max = ca;
-                }
-            }
-            return max;
+
+                return max;
         }
-        return null;
     }
 
     @Override

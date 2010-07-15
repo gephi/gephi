@@ -80,6 +80,7 @@ public class AttributeRowImpl implements AttributeRow {
         } else {
             //add column
             AttributeType type = AttributeType.parse(value);
+            System.out.println("parsed value type: " + value.getClass());
             if (type != null) {
                 attributeColumn = attributeTable.addColumn(column, type);
                 setValue(attributeColumn, value);
@@ -91,6 +92,7 @@ public class AttributeRowImpl implements AttributeRow {
         if (column == null) {
             throw new NullPointerException("Column is null");
         }
+
         AttributeValue attValue = attributeTable.getFactory().newValue(column, value);
         setValue(attValue);
     }
@@ -104,11 +106,13 @@ public class AttributeRowImpl implements AttributeRow {
             }
             value = attributeTable.getFactory().newValue(column, value.getValue());
         }
+
         setValue(column.getIndex(), (AttributeValueImpl) value);
     }
 
     private void setValue(int index, AttributeValueImpl value) {
         updateColumns();
+
         this.values[index] = value;
     }
 

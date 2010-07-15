@@ -318,9 +318,11 @@ public class AttributeEqualBuilder implements CategoryBuilder {
                     }
                 }
             }
-            Object[] valuesArray = vals.toArray();
-            min = AttributeUtils.getDefault().getMin(column, valuesArray);
-            max = AttributeUtils.getDefault().getMax(column, valuesArray);
+            //Object[] valuesArray = vals.toArray();
+            Comparable[] comparableArray = ComparableArrayConverter.convert(vals);
+
+            min = AttributeUtils.getDefault().getMin(column, comparableArray /*valuesArray*/);
+            max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
         }
 
         public String getName() {
@@ -351,9 +353,11 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public void finish() {
-            Object[] valuesArray = values.toArray();
-            min = AttributeUtils.getDefault().getMin(column, valuesArray);
-            max = AttributeUtils.getDefault().getMax(column, valuesArray);
+            //Object[] valuesArray = values.toArray();
+            Comparable[] comparableArray = ComparableArrayConverter.convert(values);
+
+            min = AttributeUtils.getDefault().getMin(column, comparableArray /*valuesArray*/);
+            max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
             values = null;
         }
 

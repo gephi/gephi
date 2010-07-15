@@ -23,16 +23,17 @@ package org.gephi.data.attributes;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValueFactory;
+import org.gephi.data.properties.PropertiesColumn;
 import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  */
 public abstract class AbstractAttributeModel implements AttributeModel {
 
@@ -54,10 +55,18 @@ public abstract class AbstractAttributeModel implements AttributeModel {
     }
 
     protected void createPropertiesColumn() {
-        nodeTable.addColumn("id", "Id", AttributeType.STRING, AttributeOrigin.PROPERTY, null);
-        nodeTable.addColumn("label", "Label", AttributeType.STRING, AttributeOrigin.PROPERTY, null);
-        edgeTable.addColumn("id", "Id", AttributeType.STRING, AttributeOrigin.PROPERTY, null);
-        edgeTable.addColumn("label", "Label", AttributeType.STRING, AttributeOrigin.PROPERTY, null);
+        // !!! the position of PropertiesColumn enum constants in following arrays must be the same
+        // !!! as index in each constant
+        PropertiesColumn[] columnsForNodeTable = {PropertiesColumn.NODE_ID,
+                                                  PropertiesColumn.NODE_LABEL};
+        PropertiesColumn[] columnsForEdgeTable = {PropertiesColumn.EDGE_ID,
+                                                  PropertiesColumn.EDGE_LABEL};
+
+        for (PropertiesColumn columnForNodeTable : columnsForNodeTable)
+            nodeTable.addPropertiesColumn(columnForNodeTable);
+
+        for (PropertiesColumn columnForEdgeTable : columnsForEdgeTable)
+            edgeTable.addPropertiesColumn(columnForEdgeTable);
     }
 
     public abstract Object getManagedValue(Object obj, AttributeType attributeType);

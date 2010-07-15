@@ -20,11 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes;
 
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
 
 /**
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  */
 public final class AttributeValueImpl implements AttributeValue {
 
@@ -41,6 +44,27 @@ public final class AttributeValueImpl implements AttributeValue {
     }
 
     public Object getValue() {
-        return value;
+        if (column.getOrigin() != AttributeOrigin.DELEGATE) {
+            return value;
+        }
+        else {
+            if (value == null)
+                return null;
+
+            AttributeValueDelegateProvider attributeValueDelegateProvider = column.getProvider();
+
+            Object result;
+            if (AttributeUtilsImpl.getDefault().isEdgeColumn(column))
+                result = attributeValueDelegateProvider.getEdgeValue(column, value);
+            else if (AttributeUtilsImpl.getDefault().isNodeColumn(column))
+                result = attributeValueDelegateProvider.getNodeValue(column, value);
+            else
+                throw new AssertionError();
+
+            if (result.getClass().isArray())
+                result = ListFactory.fromArray(result);
+
+            return result;
+        }
     }
 }

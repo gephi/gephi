@@ -125,7 +125,7 @@ public enum AttributeType {
      * is <b>Boolean</b>, and <code>str</code> equals <code>true</code>, this
      * method will succeed to return a <code>Boolean</code> instance. May
      * throw <code>NumberFormatException</code>.
-     * 
+     *
      * @param str   the string that is to be parsed
      * @return      an instance of the type of this  <code>AttributeType</code>.
      */
@@ -244,7 +244,7 @@ public enum AttributeType {
      */
     public static AttributeType parseDynamic(Object obj) {
 		Class<?> c = obj.getClass();
-		
+
 		if (c.equals(Byte.class))
 			return DYNAMIC_BYTE;
 		if (c.equals(Short.class))
@@ -273,9 +273,9 @@ public enum AttributeType {
 
 	/**
 	 * Indicates if this type is a {@code DynamicType}.
-	 * 
+	 *
 	 * @param type an {@code AttributeType} to check
-	 * 
+	 *
 	 * @return {@code true} if this is a {@code DynamicType},
 	 *         otherwise {@code false}.
 	 */
