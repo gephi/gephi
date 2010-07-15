@@ -201,7 +201,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             try {
                 node.addTimeInterval(startDate, endDate);
             } catch (IllegalArgumentException e) {
-                //log
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_node_timeinterval_parseerror", id), Issue.Level.SEVERE));
             }
         }
     }
@@ -236,7 +236,13 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             if (column != null) {
                 if (!startDate.isEmpty() || !endDate.isEmpty()) {
                     //Dynamic
-                    node.addAttributeValue(column, value, startDate, endDate);
+                    try {
+                        node.addAttributeValue(column, value, startDate, endDate);
+                    } catch (IllegalArgumentException e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeattribute_timeinterval_parseerror", node), Issue.Level.SEVERE));
+                    } catch (Exception e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
+                    }
                 }
                 try {
                     Object val = column.getType().parse(value);
@@ -334,9 +340,9 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String attName = reader.getAttributeName(i).getLocalPart();
-            if ("start".equalsIgnoreCase(attName)) {
+            if (NODE_START.equalsIgnoreCase(attName)) {
                 start = reader.getAttributeValue(i);
-            } else if ("end".equalsIgnoreCase(attName)) {
+            } else if (NODE_END.equalsIgnoreCase(attName)) {
                 end = reader.getAttributeValue(i);
             }
         }
@@ -345,7 +351,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             try {
                 node.addTimeInterval(start, end);
             } catch (IllegalArgumentException e) {
-                //log
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_node_timeinterval_parseerror", node), Issue.Level.SEVERE));
             }
         }
     }
@@ -454,7 +460,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             try {
                 edge.addTimeInterval(startDate, endDate);
             } catch (IllegalArgumentException e) {
-                //log
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timeinterval_parseerror", edge), Issue.Level.SEVERE));
             }
         }
     }
@@ -489,7 +495,13 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             if (column != null) {
                 if (!startDate.isEmpty() || !endDate.isEmpty()) {
                     //Dynamic
-                    edge.addAttributeValue(column, value, startDate, endDate);
+                    try {
+                        edge.addAttributeValue(column, value, startDate, endDate);
+                    } catch (IllegalArgumentException e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeattribute_timeinterval_parseerror", edge), Issue.Level.SEVERE));
+                    } catch (Exception e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
+                    }
                 }
                 try {
                     Object val = column.getType().parse(value);
@@ -541,7 +553,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             try {
                 edge.addTimeInterval(start, end);
             } catch (IllegalArgumentException e) {
-                //log
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timeinterval_parseerror", edge), Issue.Level.SEVERE));
             }
         }
     }

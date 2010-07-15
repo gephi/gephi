@@ -21,10 +21,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.impl;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.graph.api.Node;
@@ -195,22 +198,51 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     }
 
     public void addAttributeValue(AttributeColumn column, Object value) {
-        if (DynamicType.class.isAssignableFrom(column.getType().getType()) && !(value instanceof DynamicType)) {
+        if (column.getType().isDynamicType() && !(value instanceof DynamicType)) {
             //Wrap value in a dynamic type
-            //value = 
+            value = DynamicUtilities.createDynamicObject(column.getType(), new Interval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, value));
         }
         attributeRow.setValue(column, value);
     }
 
-    public void addAttributeValue(AttributeColumn column, Object value, String start, String end) {
-        if (!DynamicType.class.isAssignableFrom(column.getType().getType())) {
+    public void addAttributeValue(AttributeColumn column, Object value, String dateFrom, String dateTo) throws IllegalArgumentException {
+        if (!column.getType().isDynamicType()) {
             throw new IllegalArgumentException("The column must be dynamic");
         }
-        Object source = attributeRow.getValue(column);
-        if (source != null) {
-            //Create new Dynamic Type value from source and interval
+        Double start = null;
+        Double end = null;
+        if (dateFrom != null && !dateFrom.isEmpty()) {
+            try {
+                start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
+            } catch (Exception ex) {
+                try {
+                    start = Double.parseDouble(dateFrom);
+                } catch (Exception ex2) {
+                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
+                }
+            }
+        }
+        if (dateTo != null && !dateTo.isEmpty()) {
+            try {
+                end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
+            } catch (Exception ex) {
+                try {
+                    end = Double.parseDouble(dateTo);
+                } catch (Exception ex2) {
+                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
+                }
+            }
+        }
+        Object sourceVal = attributeRow.getValue(column);
+        if (sourceVal != null && sourceVal instanceof DynamicType) {
+            value = DynamicUtilities.createDynamicObject(column.getType(), (DynamicType) sourceVal, new Interval(start, end, value));
+        } else if (sourceVal != null && !(sourceVal instanceof DynamicType)) {
+            List<Interval> intervals = new ArrayList<Interval>(2);
+            intervals.add(new Interval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, sourceVal));
+            intervals.add(new Interval(start, end, value));
+            value = DynamicUtilities.createDynamicObject(column.getType(), intervals);
         } else {
-            //Create new Dynamic Type value from Interval
+            value = DynamicUtilities.createDynamicObject(column.getType(), new Interval(start, end, value));
         }
         attributeRow.setValue(column, value);
     }
@@ -226,9 +258,9 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
                 start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
             } catch (Exception ex) {
                 try {
-                    start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
+                    start = Double.parseDouble(dateFrom);
                 } catch (Exception ex2) {
-                    throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
+                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
                 }
             }
         }
@@ -237,12 +269,13 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
                 end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
             } catch (Exception ex) {
                 try {
-                    end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
+                    end = Double.parseDouble(dateTo);
                 } catch (Exception ex2) {
-                    throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
+                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
                 }
             }
         }
+        this.timeInterval = new TimeInterval(timeInterval, start, end);
     }
 
     //GETTERS

@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.type.DynamicType;
@@ -412,8 +413,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
         if (!dynamicGraph) {
             for (AttributeColumn col : attributeModel.getNodeTable().getColumns()) {
+                dynamicGraph = col.getType().isDynamicType();
+                if (dynamicGraph) {
+                    break;
+                }
             }
             for (AttributeColumn col : attributeModel.getEdgeTable().getColumns()) {
+                dynamicGraph = col.getType().isDynamicType();
+                if (dynamicGraph) {
+                    break;
+                }
             }
         }
 
