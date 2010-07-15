@@ -21,8 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.api;
 
 import java.awt.Color;
-import java.util.List;
-import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.type.TimeInterval;
 
 /**
  *
@@ -30,7 +30,7 @@ import org.gephi.data.attributes.api.AttributeValue;
  */
 public interface EdgeDraftGetter extends EdgeDraft {
 
-    public List<AttributeValue> getAttributeValues();
+    public AttributeRow getAttributeRow();
 
     public float getWeight();
 
@@ -54,5 +54,5 @@ public interface EdgeDraftGetter extends EdgeDraft {
 
     public NodeDraftGetter getTarget();
 
-    public List<String[]> getSlices();
+    public TimeInterval getTimeInterval();
 }

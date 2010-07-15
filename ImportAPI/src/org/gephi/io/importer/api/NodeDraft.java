@@ -74,9 +74,11 @@ public interface NodeDraft {
 
     public void addAttributeValue(AttributeColumn column, Object value);
 
+    public void addAttributeValue(AttributeColumn column, Object value, String start, String end) throws IllegalArgumentException;
+
     public void addChild(NodeDraft child);
 
     public void setParent(NodeDraft draft);
 
-    public void addTimeSlice(String dateFrom, String dateTo);
+    public void addTimeInterval(String start, String end) throws IllegalArgumentException;
 }
