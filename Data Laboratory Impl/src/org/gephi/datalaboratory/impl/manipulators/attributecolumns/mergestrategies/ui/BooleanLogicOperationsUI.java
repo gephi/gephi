@@ -96,21 +96,18 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         descriptionLabel = new javax.swing.JLabel();
         scroll = new javax.swing.JScrollPane();
         panel = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        titleLabel = new javax.swing.JLabel();
         titleText = new javax.swing.JTextField();
-
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.jLabel1.text")); // NOI18N
 
         descriptionLabel.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.descriptionLabel.text")); // NOI18N
 
         panel.setLayout(new java.awt.GridLayout(0, 1, 0, 20));
         scroll.setViewportView(panel);
 
-        jLabel2.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.jLabel2.text")); // NOI18N
+        titleLabel.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.titleLabel.text")); // NOI18N
 
         titleText.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.titleText.text")); // NOI18N
 
@@ -124,7 +121,7 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
                     .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
                     .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                        .addComponent(titleLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(titleText, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -134,7 +131,7 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
+                    .addComponent(titleLabel)
                     .addComponent(titleText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -145,10 +142,9 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel panel;
     private javax.swing.JScrollPane scroll;
+    private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleText;
     // End of variables declaration//GEN-END:variables
 }

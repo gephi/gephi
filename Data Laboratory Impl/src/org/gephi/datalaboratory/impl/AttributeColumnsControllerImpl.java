@@ -56,6 +56,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     public AttributeColumn addAttributeColumn(AttributeTable table, String title, AttributeType type) {
         String columnId = String.valueOf(table.countColumns() + 1);
+        title=title!=null ? title : "";
         return table.addColumn(columnId, title, type, AttributeOrigin.DATA, null);
     }
 
@@ -247,6 +248,19 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         } else {
             return canChangeGenericColumnData(column);
         }
+    }
+
+    public boolean isColumnOfType(AttributeColumn column, AttributeType type){
+        return column.getType()==type;
+    }
+
+    public boolean areColumnsOfType(AttributeColumn[] columns, AttributeType type){
+        for(AttributeColumn column:columns){
+            if(!isColumnOfType(column, type)){
+                return false;
+            }
+        }
+        return true;
     }
 
     /************Private methods : ************/

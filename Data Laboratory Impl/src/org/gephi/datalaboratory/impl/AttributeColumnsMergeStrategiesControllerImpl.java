@@ -38,13 +38,50 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeColumnsMergeStrategiesController.class)
 public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeColumnsMergeStrategiesController {
 
-    public AttributeColumn booleanLogicOperationsMerge(AttributeTable table, AttributeColumn[] columnsToMerge, BooleanOperations[] booleanOperations, String newColumnTitle) {
-        if (table == null || columnsToMerge == null || booleanOperations == null || booleanOperations.length != columnsToMerge.length - 1) {
+    public AttributeColumn joinWithSeparatorMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle, String separator) {
+        if (table == null || columnsToMerge == null) {
             throw new IllegalArgumentException();
         }
+
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
+        newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.STRING);//Create as STRING column by default. Then it can be duplicated to other type.
+        final int newColumnIndex=newColumn.getIndex();
+
+        if (separator == null) {
+            separator = "";
+        }
+
+        Object value;
+        StringBuilder sb;
+        final int columnsCount = columnsToMerge.length;
+
+        for (Attributes row : ac.getTableAttributeRows(table)) {
+            sb = new StringBuilder();
+            for (int i = 0; i < columnsCount; i++) {
+                value = row.getValue(i);
+                if (value != null) {
+                    sb.append(value.toString());
+                    if (i < columnsCount - 1) {
+                        sb.append(separator);
+                    }
+                }
+            }
+            row.setValue(newColumnIndex, sb.toString());
+        }
+
+        return newColumn;
+    }
+
+    public AttributeColumn booleanLogicOperationsMerge(AttributeTable table, AttributeColumn[] columnsToMerge, BooleanOperations[] booleanOperations, String newColumnTitle) {
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        if (!ac.areColumnsOfType(columnsToMerge, AttributeType.BOOLEAN)||table == null || columnsToMerge == null || booleanOperations == null || booleanOperations.length != columnsToMerge.length - 1) {
+            throw new IllegalArgumentException();
+        }
+        
+        AttributeColumn newColumn;
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BOOLEAN);
+        final int newColumnIndex=newColumn.getIndex();
 
         Boolean value;
         Boolean secondValue;
@@ -73,9 +110,9 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
                         break;
                 }
             }
-            row.setValue(newColumn.getIndex(), value);
+            row.setValue(newColumnIndex, value);
         }
 
         return newColumn;
-    }
+    }    
 }

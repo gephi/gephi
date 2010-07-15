@@ -30,7 +30,7 @@ import org.gephi.data.attributes.api.AttributeTable;
  */
 public interface AttributeColumnsMergeStrategiesController {
 
-    public enum BooleanOperations{
+    public enum BooleanOperations {
         AND,
         OR,
         XOR,
@@ -38,5 +38,26 @@ public interface AttributeColumnsMergeStrategiesController {
         NOR
     }
 
+    /**
+     * Joins various columns of any type into a new column using the given separator string (or null).
+     * The new created column will have <code>STRING</code> type.
+     * @param table Table of the columns to merge
+     * @param columnsToMerge Columns to merge
+     * @param newColumnTitle Title for the new column
+     * @param separator Separator to put between each value
+     * @return The new created column
+     */
+    AttributeColumn joinWithSeparatorMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle, String separator);
+
+    /**
+     * AttributeColumnsMergeStrategy for only all boolean columns that merges various columns into a new boolean column
+     * allowing to define each operation to apply between each pair of columns to merge.
+     * The length of the operations array must be the length of the columns array-1, or IllegalArgumentException will be thrown.
+     * @param table Table of the columns to merge
+     * @param columnsToMerge Boolean columns to merge
+     * @param booleanOperations Boolean operations to apply
+     * @param newColumnTitle Title for the new column
+     * @return The new created column
+     */
     AttributeColumn booleanLogicOperationsMerge(AttributeTable table, AttributeColumn[] columnsToMerge, BooleanOperations[] booleanOperations, String newColumnTitle);
 }

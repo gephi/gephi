@@ -23,59 +23,52 @@ package org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrateg
 import javax.swing.Icon;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController;
-import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController.BooleanOperations;
-import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.ui.BooleanLogicOperationsUI;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.ui.JoinWithSeparatorUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategy;
-import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- * AttributeColumnsMergeStrategy for only all boolean columns that allows the user to select
- * each operation to apply between each pair of columns to merge.
+ * AttributeColumnsMergeStrategy that joins columns of any type into a new column
+ * using the separator string that the user provides.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class BooleanLogicOperations implements AttributeColumnsMergeStrategy{
+public class JoinWithSeparator implements AttributeColumnsMergeStrategy{
+    private static final String DEFAULT_SEPARATOR=",";
+
     private AttributeTable table;
     private AttributeColumn[] columns;
-    private String newColumnTitle;
-    private BooleanOperations[] booleanOperations;    
+    private String newColumnTitle, separator=DEFAULT_SEPARATOR;
 
     public void setup(AttributeTable table, AttributeColumn[] columns) {
-        this.columns=columns;
         this.table=table;
+        this.columns=columns;
     }
 
     public void execute() {
-        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).booleanLogicOperationsMerge(table, columns, booleanOperations, newColumnTitle);
+        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).joinWithSeparatorMerge(table, columns, newColumnTitle, separator);
     }
 
     public String getName() {
-        return NbBundle.getMessage(BooleanLogicOperations.class, "BooleanLogicOperations.name");
+        return NbBundle.getMessage(JoinWithSeparator.class, "JoinWithSeparator.name");
     }
 
     public String getDescription() {
-        return NbBundle.getMessage(BooleanLogicOperations.class, "BooleanLogicOperations.description");
+        return NbBundle.getMessage(JoinWithSeparator.class, "JoinWithSeparator.description");
     }
 
     public boolean canExecute() {
-        for(AttributeColumn column:columns){
-            if(column.getType()!=AttributeType.BOOLEAN){
-                return false;
-            }
-        }
         return true;
     }
 
     public ManipulatorUI getUI() {
-        return new BooleanLogicOperationsUI();
+        return new JoinWithSeparatorUI();
     }
 
     public int getType() {
-        return 100;
+        return 0;
     }
 
     public int getPosition() {
@@ -83,15 +76,7 @@ public class BooleanLogicOperations implements AttributeColumnsMergeStrategy{
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/script-binary.png",true);
-    }
-
-    public BooleanOperations[] getBooleanOperations() {
-        return booleanOperations;
-    }
-
-    public void setBooleanOperations(BooleanOperations[] booleanOperations) {
-        this.booleanOperations = booleanOperations;
+        return null;
     }
 
     public String getNewColumnTitle() {
@@ -102,7 +87,11 @@ public class BooleanLogicOperations implements AttributeColumnsMergeStrategy{
         this.newColumnTitle = newColumnTitle;
     }
 
-    public AttributeColumn[] getColumns() {
-        return columns;
+    public String getSeparator() {
+        return separator;
+    }
+
+    public void setSeparator(String separator) {
+        this.separator = separator;
     }
 }
