@@ -38,7 +38,6 @@ import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.gephi.timeline.api.TimelineController;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -70,7 +69,6 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
 
         //Architecture
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-        this.timelineController = Lookup.getDefault().lookup(TimelineController.class);
 
         HierarchicalGraph graph = null;
         switch (container.getEdgeDefault()) {
@@ -90,10 +88,10 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         GraphFactory factory = graphModel.factory();
 
         //Dynamic
-        if (timelineController != null) {
-            timelineController.setMin(workspace, container.getTimeIntervalMin());
-            timelineController.setMax(workspace, container.getTimeIntervalMax());
-        }
+//        if (timelineController != null) {
+//            timelineController.setMin(workspace, container.getTimeIntervalMin());
+//            timelineController.setMax(workspace, container.getTimeIntervalMax());
+//        }
 
         //Attributes - Creates columns for properties
         AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
@@ -164,7 +162,6 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         }
 
         System.out.println("# Nodes loaded: " + nodeCount + "\n# Edges loaded: " + edgeCount);
-        timelineController = null;
         workspace = null;
     }
 }

@@ -28,7 +28,6 @@ import org.gephi.graph.api.Node;
 import org.gephi.io.importer.api.EdgeDraftGetter;
 import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.project.api.Workspace;
-import org.gephi.timeline.api.TimelineController;
 
 /**
  *
@@ -36,7 +35,6 @@ import org.gephi.timeline.api.TimelineController;
  */
 public abstract class AbstractProcessor {
 
-    protected TimelineController timelineController;
     protected Workspace workspace;
 
     protected void flushToNode(NodeDraftGetter nodeDraft, Node node) {
@@ -85,14 +83,9 @@ public abstract class AbstractProcessor {
             node.getNodeData().setSize(10f);
         }
 
-        //Dynamic
-//        if (timelineController != null && nodeDraft.getSlices() != null) {
-//            for (String[] slice : nodeDraft.getSlices()) {
-//                String from = slice[0];
-//                String to = slice[1];
-//                timelineController.pushSlice(workspace, from, to, node);
-//            }
-//        }
+        if(nodeDraft.getTimeInterval()!=null) {
+            
+        }
 
         //Attributes
         if (node.getNodeData().getAttributes() != null) {
