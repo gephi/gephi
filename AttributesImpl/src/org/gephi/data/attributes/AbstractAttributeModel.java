@@ -58,9 +58,11 @@ public abstract class AbstractAttributeModel implements AttributeModel {
         // !!! the position of PropertiesColumn enum constants in following arrays must be the same
         // !!! as index in each constant
         PropertiesColumn[] columnsForNodeTable = {PropertiesColumn.NODE_ID,
-                                                  PropertiesColumn.NODE_LABEL};
+                                                  PropertiesColumn.NODE_LABEL,
+                                                  PropertiesColumn.NODE_TIMEINTERVAL};
         PropertiesColumn[] columnsForEdgeTable = {PropertiesColumn.EDGE_ID,
-                                                  PropertiesColumn.EDGE_LABEL};
+                                                  PropertiesColumn.EDGE_LABEL,
+                                                  PropertiesColumn.EDGE_TIMEINTERVAL};
 
         for (PropertiesColumn columnForNodeTable : columnsForNodeTable)
             nodeTable.addPropertiesColumn(columnForNodeTable);

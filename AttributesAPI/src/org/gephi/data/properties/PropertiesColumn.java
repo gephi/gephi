@@ -36,11 +36,13 @@ import org.gephi.data.attributes.api.AttributeType;
  */
 public enum PropertiesColumn {
 
-    NODE_ID                (0, "id",       AttributeType.STRING, AttributeOrigin.PROPERTY, null),
-    NODE_LABEL             (1, "label",    AttributeType.STRING, AttributeOrigin.PROPERTY, null),
-    EDGE_ID                (0, "id",       AttributeType.STRING, AttributeOrigin.PROPERTY, null),
-    EDGE_LABEL             (1, "label",    AttributeType.STRING, AttributeOrigin.PROPERTY, null),
-    NEO4J_RELATIONSHIP_TYPE(2, "neo4j_rt", AttributeType.STRING, AttributeOrigin.DELEGATE, null) {
+    NODE_ID                (0, "id",            AttributeType.STRING, AttributeOrigin.PROPERTY, null),
+    NODE_LABEL             (1, "label",         AttributeType.STRING, AttributeOrigin.PROPERTY, null),
+    NODE_TIMEINTERVAL      (2, "time interval", AttributeType.TIME_INTERVAL, AttributeOrigin.PROPERTY, null),
+    EDGE_ID                (0, "id",            AttributeType.STRING, AttributeOrigin.PROPERTY, null),
+    EDGE_LABEL             (1, "label",         AttributeType.STRING, AttributeOrigin.PROPERTY, null),
+    NEO4J_RELATIONSHIP_TYPE(2, "neo4j_rt",      AttributeType.STRING, AttributeOrigin.DELEGATE, null),
+    EDGE_TIMEINTERVAL      (3, "time interval", AttributeType.TIME_INTERVAL, AttributeOrigin.PROPERTY, null){
         @Override
         public String getTitle() {
             return "Neo4j Relationship Type";
