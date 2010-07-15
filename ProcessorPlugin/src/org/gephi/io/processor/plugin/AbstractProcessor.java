@@ -17,12 +17,14 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.processor.plugin;
 
 import java.awt.Color;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.io.importer.api.EdgeDraftGetter;
@@ -83,8 +85,8 @@ public abstract class AbstractProcessor {
             node.getNodeData().setSize(10f);
         }
 
-        if(nodeDraft.getTimeInterval()!=null) {
-            
+        if (nodeDraft.getTimeInterval() != null) {
+            node.getNodeData().getAttributes().setValue(PropertiesColumn.NODE_TIMEINTERVAL.getIndex(), nodeDraft.getTimeInterval());
         }
 
         //Attributes
@@ -126,6 +128,10 @@ public abstract class AbstractProcessor {
             edge.getEdgeData().getTextData().setColor(labelColor.getRed() / 255f, labelColor.getGreen() / 255f, labelColor.getBlue() / 255f, labelColor.getAlpha() / 255f);
         }
 
+        if (edgeDraft.getTimeInterval() != null) {
+            edge.getEdgeData().getAttributes().setValue(PropertiesColumn.EDGE_TIMEINTERVAL.getIndex(), edgeDraft.getTimeInterval());
+        }
+
         //Attributes
         if (edge.getEdgeData().getAttributes() != null) {
             AttributeRow row = (AttributeRow) edge.getEdgeData().getAttributes();
@@ -135,14 +141,5 @@ public abstract class AbstractProcessor {
                 }
             }
         }
-
-        //Dynamic
-//        if (timelineController != null && edgeDraft.getSlices() != null) {
-//            for (String[] slice : edgeDraft.getSlices()) {
-//                String from = slice[0];
-//                String to = slice[1];
-//                timelineController.pushSlice(workspace, from, to, edge);
-//            }
-//        }
     }
 }
