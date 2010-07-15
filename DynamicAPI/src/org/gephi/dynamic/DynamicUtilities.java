@@ -208,7 +208,7 @@ public final class DynamicUtilities {
 	 */
 	public static DynamicType createDynamicObject(AttributeType type, DynamicType source, List<Interval> in,
 			List<Interval> out) {
-		if (!AttributeType.isDynamicType(type))
+		if (!type.isDynamicType())
 			return null;
 
 		switch (type) {

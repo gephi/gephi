@@ -272,26 +272,26 @@ public enum AttributeType {
     }
 
 	/**
-	 * Indicates if the given {@code type} is a {@code DynamicType}.
+	 * Indicates if this type is a {@code DynamicType}.
 	 * 
 	 * @param type an {@code AttributeType} to check
 	 * 
-	 * @return {@code true} if the given {@code type} is a {@code DynamicType},
+	 * @return {@code true} if this is a {@code DynamicType},
 	 *         otherwise {@code false}.
 	 */
-	public static boolean isDynamicType(AttributeType type) {
-		if (type.equals(DYNAMIC_BYTE)       ||
-			type.equals(DYNAMIC_SHORT)      ||
-			type.equals(DYNAMIC_INT)        ||
-			type.equals(DYNAMIC_LONG)       ||
-			type.equals(DYNAMIC_FLOAT)      ||
-			type.equals(DYNAMIC_DOUBLE)     ||
-			type.equals(DYNAMIC_BOOLEAN)    ||
-			type.equals(DYNAMIC_CHAR)       ||
-			type.equals(DYNAMIC_STRING)     ||
-			type.equals(DYNAMIC_BIGINTEGER) ||
-			type.equals(DYNAMIC_BIGDECIMAL) ||
-			type.equals(TIME_INTERVAL))
+	public boolean isDynamicType() {
+		if (this.equals(DYNAMIC_BYTE)       ||
+			this.equals(DYNAMIC_SHORT)      ||
+			this.equals(DYNAMIC_INT)        ||
+			this.equals(DYNAMIC_LONG)       ||
+			this.equals(DYNAMIC_FLOAT)      ||
+			this.equals(DYNAMIC_DOUBLE)     ||
+			this.equals(DYNAMIC_BOOLEAN)    ||
+			this.equals(DYNAMIC_CHAR)       ||
+			this.equals(DYNAMIC_STRING)     ||
+			this.equals(DYNAMIC_BIGINTEGER) ||
+			this.equals(DYNAMIC_BIGDECIMAL) ||
+			this.equals(TIME_INTERVAL))
 				return true;
 		return false;
 	}
