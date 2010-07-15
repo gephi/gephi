@@ -180,4 +180,9 @@ public final class DynamicString extends DynamicType<String> {
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
 	}
+
+	@Override
+	public Class getUnderlyingType() {
+		return String.class;
+	}
 }

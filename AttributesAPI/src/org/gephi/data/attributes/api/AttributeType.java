@@ -270,4 +270,29 @@ public enum AttributeType {
 
         return null;
     }
+
+	/**
+	 * Indicates if the given {@code type} is a {@code DynamicType}.
+	 * 
+	 * @param type an {@code AttributeType} to check
+	 * 
+	 * @return {@code true} if the given {@code type} is a {@code DynamicType},
+	 *         otherwise {@code false}.
+	 */
+	public static boolean isDynamicType(AttributeType type) {
+		if (type.equals(DYNAMIC_BYTE)       ||
+			type.equals(DYNAMIC_SHORT)      ||
+			type.equals(DYNAMIC_INT)        ||
+			type.equals(DYNAMIC_LONG)       ||
+			type.equals(DYNAMIC_FLOAT)      ||
+			type.equals(DYNAMIC_DOUBLE)     ||
+			type.equals(DYNAMIC_BOOLEAN)    ||
+			type.equals(DYNAMIC_CHAR)       ||
+			type.equals(DYNAMIC_STRING)     ||
+			type.equals(DYNAMIC_BIGINTEGER) ||
+			type.equals(DYNAMIC_BIGDECIMAL) ||
+			type.equals(TIME_INTERVAL))
+				return true;
+		return false;
+	}
 }

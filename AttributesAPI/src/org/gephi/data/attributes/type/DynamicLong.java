@@ -191,4 +191,9 @@ public final class DynamicLong extends DynamicType<Long> {
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
 	}
+
+	@Override
+	public Class getUnderlyingType() {
+		return Long.class;
+	}
 }
