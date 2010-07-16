@@ -185,7 +185,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             public void select(Workspace workspace) {
                 //Prepare DataTablesEvent listener
                 Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(DataTableTopComponent.this);
-                
+
                 hideTable();
                 enableTableControls();
                 bannerPanel.setVisible(false);
@@ -222,6 +222,8 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             }
         });
         if (pc.getCurrentWorkspace() != null) {
+            //Prepare DataTablesEvent listener
+            Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(DataTableTopComponent.this);
             dataTablesModel = pc.getCurrentWorkspace().getLookup().lookup(DataTablesModel.class);
             graphModel = gc.getModel();
             graphModel.addGraphListener(DataTableTopComponent.this);
@@ -657,7 +659,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private void prepareAddColumnButton() {
         JCommandButtonStrip strip = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
         strip.setDisplayState(CommandButtonDisplayState.BIG);
-        JCommandButton button = new JCommandButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.addColumnButton.text"), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("/org/gephi/ui/datatable/resources/table-insert-column.png", true), new Dimension(16, 16)));
+        JCommandButton button = new JCommandButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.addColumnButton.text"), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("org/gephi/ui/datatable/resources/table-insert-column.png", true), new Dimension(16, 16)));
         button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
         button.setDisplayState(CommandButtonDisplayState.BIG);
         if (classDisplayed == ClassDisplayed.NODE) {
@@ -682,10 +684,10 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     /**
      * Create the special merge columns button.
      */
-    private void prepareMergeColumnsButton(){
+    private void prepareMergeColumnsButton() {
         JCommandButtonStrip strip = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
         strip.setDisplayState(CommandButtonDisplayState.BIG);
-        JCommandButton button = new JCommandButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.mergeColumnsButton.text"), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("/org/gephi/ui/datatable/resources/merge.png", true), new Dimension(16, 16)));
+        JCommandButton button = new JCommandButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.mergeColumnsButton.text"), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("org/gephi/ui/datatable/resources/merge.png", true), new Dimension(16, 16)));
         button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
         button.setDisplayState(CommandButtonDisplayState.BIG);
         if (classDisplayed == ClassDisplayed.NODE) {
@@ -717,12 +719,12 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     private void showMergeColumnsUI(MergeColumnsUI.Mode mode) {
-        JButton okButton=new JButton(NbBundle.getMessage(DataTableTopComponent.class, "MergeColumnsDialog.okButton.text"));
+        JButton okButton = new JButton(NbBundle.getMessage(DataTableTopComponent.class, "MergeColumnsDialog.okButton.text"));
         MergeColumnsUI mergeColumnsUI = new MergeColumnsUI();
         mergeColumnsUI.setup(mode);
         mergeColumnsUI.setOkButton(okButton);
         DialogDescriptor dd = new DialogDescriptor(mergeColumnsUI, mergeColumnsUI.getDisplayName());
-        dd.setOptions(new Object[]{okButton,DialogDescriptor.CANCEL_OPTION});
+        dd.setOptions(new Object[]{okButton, DialogDescriptor.CANCEL_OPTION});
         if (DialogDisplayer.getDefault().notify(dd).equals(okButton)) {
             mergeColumnsUI.execute();
         }
@@ -779,7 +781,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         //Add plugin general actions as a drop down list:
         final PluginGeneralActionsManipulator[] plugins = dlh.getPluginGeneralActionsManipulators();
         if (plugins != null && plugins.length > 0) {
-            JCommandButton pluginsButton = new JCommandButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.general.actions.plugins.button.text"), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("/org/gephi/ui/datatable/resources/puzzle--arrow.png", true), new Dimension(16, 16)));
+            JCommandButton pluginsButton = new JCommandButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.general.actions.plugins.button.text"), ImageWrapperResizableIcon.getIcon(ImageUtilities.loadImage("org/gephi/ui/datatable/resources/puzzle--arrow.png", true), new Dimension(16, 16)));
             pluginsButton.setDisplayState(CommandButtonDisplayState.MEDIUM);
             pluginsButton.setCommandButtonKind(JCommandButton.CommandButtonKind.POPUP_ONLY);
             pluginsButton.setPopupCallback(new PopupPanelCallback() {

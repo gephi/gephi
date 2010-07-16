@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
 import java.util.List;
+import javax.xml.datatype.DatatypeConfigurationException;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.type.StringList;
@@ -76,6 +77,18 @@ public class ImporterGEXF2Test {
     }
 
     @Test
+    public void testCalendar() {
+        String date = "2000-01-01";
+        try {
+            double d = DynamicUtilities.getDoubleFromXMLDateString(date);
+            String date2 = DynamicUtilities.getXMLDateStringFromDouble(d);
+            assertEquals(date, date2);
+        } catch (DatatypeConfigurationException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
     public void testAttributeModel() {
         final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
         container.setReport(new Report());
@@ -94,7 +107,7 @@ public class ImporterGEXF2Test {
         assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("Attribute 3", AttributeType.DYNAMIC_FLOAT));
         assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("Attribute 4", AttributeType.DYNAMIC_FLOAT));
 
-        assertNotNull(unloader.getAttributeModel().getEdgeTable().getColumn("weight", AttributeType.FLOAT));
+        assertNotNull(unloader.getAttributeModel().getEdgeTable().getColumn("weight", AttributeType.DYNAMIC_FLOAT));
     }
 
     @Test
