@@ -31,38 +31,41 @@ import org.gephi.data.attributes.type.TimeInterval;
  * @see DynamicController
  */
 public interface DynamicModel {
-	/**
-	 * Returns the {@code DynamicGraph} of the current workspace or
-	 * {@code null} if no graph exists.
-	 *
-	 * @return the {@code DynamicGraph} of the current workspace or
-	 * {@code null} if no graph exists.
-	 */
-	public DynamicGraph getDynamicGraph();
 
-	/**
-	 * Returns the time interval wrapped by the {@code DynamicGraph} of
-	 * the current workspace or {@code null} if no graph exists.
-	 *
-	 * @return the time interval wrapped by the {@code DynamicGraph} of
-	 * the current workspace or {@code null} if no graph exists.
-	 */
-	public TimeInterval getVisibleInterval();
+    public static final String TIMEINTERVAL_COLUMN = "time_interval";
 
-	/**
-	 * Sets the time interval wrapped by the {@code DynamicGraph} of
-	 * the current workspace.
-	 *
-	 * @param interval an object to get endpoints from
-	 */
-	public void setVisibleInterval(TimeInterval interval);
+    /**
+     * Returns the {@code DynamicGraph} of the current workspace or
+     * {@code null} if no graph exists.
+     *
+     * @return the {@code DynamicGraph} of the current workspace or
+     * {@code null} if no graph exists.
+     */
+    public DynamicGraph getDynamicGraph();
 
-	/**
-	 * Sets the time interval wrapped by the {@code DynamicGraph} of
-	 * the current workspace.
-	 *
-	 * @param low  the left endpoint
-	 * @param high the right endpoint
-	 */
-	public void setVisibleInterval(double low, double high);
+    /**
+     * Returns the time interval wrapped by the {@code DynamicGraph} of
+     * the current workspace or {@code null} if no graph exists.
+     *
+     * @return the time interval wrapped by the {@code DynamicGraph} of
+     * the current workspace or {@code null} if no graph exists.
+     */
+    public TimeInterval getVisibleInterval();
+
+    /**
+     * Sets the time interval wrapped by the {@code DynamicGraph} of
+     * the current workspace.
+     *
+     * @param interval an object to get endpoints from
+     */
+    public void setVisibleInterval(TimeInterval interval);
+
+    /**
+     * Sets the time interval wrapped by the {@code DynamicGraph} of
+     * the current workspace.
+     *
+     * @param low  the left endpoint
+     * @param high the right endpoint
+     */
+    public void setVisibleInterval(double low, double high);
 }

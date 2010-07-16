@@ -94,7 +94,7 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
 //        }
 
         //Attributes - Creates columns for properties
-        AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
+        attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         attributeModel.mergeModel(container.getAttributeModel());
 
         //Index existing graph

@@ -82,17 +82,17 @@ public class ImporterGEXF2Test {
         importer.execute(container.getLoader());
 
         ContainerUnloader unloader = container.getUnloader();
-        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("0", AttributeType.STRING));
-        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("1", AttributeType.FLOAT));
+        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("0", AttributeType.DYNAMIC_STRING));
+        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("1", AttributeType.DYNAMIC_FLOAT));
         assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("2", AttributeType.LIST_STRING));
-        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("3", AttributeType.FLOAT));
-        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("4", AttributeType.FLOAT));
+        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("3", AttributeType.DYNAMIC_FLOAT));
+        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("4", AttributeType.DYNAMIC_FLOAT));
 
-        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("type", AttributeType.STRING));
-        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("Attribute 1", AttributeType.FLOAT));
+        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("type", AttributeType.DYNAMIC_STRING));
+        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("Attribute 1", AttributeType.DYNAMIC_FLOAT));
         assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("Attribute 2", AttributeType.LIST_STRING));
-        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("Attribute 3", AttributeType.FLOAT));
-        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("Attribute 4", AttributeType.FLOAT));
+        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("Attribute 3", AttributeType.DYNAMIC_FLOAT));
+        assertNotNull(unloader.getAttributeModel().getNodeTable().getColumn("Attribute 4", AttributeType.DYNAMIC_FLOAT));
 
         assertNotNull(unloader.getAttributeModel().getEdgeTable().getColumn("weight", AttributeType.FLOAT));
     }

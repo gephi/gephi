@@ -22,9 +22,12 @@ package org.gephi.io.processor.plugin;
 
 import java.awt.Color;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
-import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.io.importer.api.EdgeDraftGetter;
@@ -38,6 +41,7 @@ import org.gephi.project.api.Workspace;
 public abstract class AbstractProcessor {
 
     protected Workspace workspace;
+    protected AttributeModel attributeModel;
 
     protected void flushToNode(NodeDraftGetter nodeDraft, Node node) {
 
@@ -86,7 +90,11 @@ public abstract class AbstractProcessor {
         }
 
         if (nodeDraft.getTimeInterval() != null) {
-            node.getNodeData().getAttributes().setValue(PropertiesColumn.NODE_TIMEINTERVAL.getIndex(), nodeDraft.getTimeInterval());
+            AttributeColumn col = attributeModel.getNodeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
+            if (col == null) {
+                col = attributeModel.getNodeTable().addColumn(DynamicModel.TIMEINTERVAL_COLUMN, "Time Interval", AttributeType.TIME_INTERVAL, AttributeOrigin.PROPERTY, null);
+            }
+            node.getNodeData().getAttributes().setValue(col.getIndex(), nodeDraft.getTimeInterval());
         }
 
         //Attributes
@@ -129,7 +137,11 @@ public abstract class AbstractProcessor {
         }
 
         if (edgeDraft.getTimeInterval() != null) {
-            edge.getEdgeData().getAttributes().setValue(PropertiesColumn.EDGE_TIMEINTERVAL.getIndex(), edgeDraft.getTimeInterval());
+            AttributeColumn col = attributeModel.getEdgeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
+            if (col == null) {
+                col = attributeModel.getEdgeTable().addColumn(DynamicModel.TIMEINTERVAL_COLUMN, "Time Interval", AttributeType.TIME_INTERVAL, AttributeOrigin.PROPERTY, null);
+            }
+            edge.getEdgeData().getAttributes().setValue(col.getIndex(), edgeDraft.getTimeInterval());
         }
 
         //Attributes
