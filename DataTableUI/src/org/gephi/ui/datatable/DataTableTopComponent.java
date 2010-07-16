@@ -723,7 +723,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         MergeColumnsUI mergeColumnsUI = new MergeColumnsUI();
         mergeColumnsUI.setup(mode);
         mergeColumnsUI.setOkButton(okButton);
-        DialogDescriptor dd = new DialogDescriptor(mergeColumnsUI, mergeColumnsUI.getDisplayName());
+        DialogDescriptor dd = new DialogDescriptor(MergeColumnsUI.createValidationPanel(mergeColumnsUI), mergeColumnsUI.getDisplayName());
         dd.setOptions(new Object[]{okButton, DialogDescriptor.CANCEL_OPTION});
         if (DialogDisplayer.getDefault().notify(dd).equals(okButton)) {
             mergeColumnsUI.execute();

@@ -288,6 +288,6 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
      * @return True if the column data can be changed, false otherwise
      */
     private boolean canChangeGenericColumnData(AttributeColumn column) {
-        return column.getOrigin() == AttributeOrigin.DATA && column.getType().canParseFromString();
+        return column.getOrigin() == AttributeOrigin.DATA && !column.getType().isDynamicType();
     }
 }

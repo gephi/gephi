@@ -85,8 +85,8 @@
               </Group>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="availableStrategiesComboBox" alignment="1" max="32767" attributes="1"/>
-                  <Component id="availableStrategiesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="infoLabel" pref="20" max="32767" attributes="1"/>
+                  <Component id="availableStrategiesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>

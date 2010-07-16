@@ -23,8 +23,10 @@ package org.gephi.ui.general.actions;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -34,6 +36,10 @@ import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategy;
 import org.gephi.ui.components.richtooltip.RichTooltip;
+import org.netbeans.validation.api.Problems;
+import org.netbeans.validation.api.Validator;
+import org.netbeans.validation.api.ui.ValidationGroup;
+import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -149,9 +155,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         ArrayList<AttributeColumnsMergeStrategy> availableStrategiesList = new ArrayList<AttributeColumnsMergeStrategy>();
         for (AttributeColumnsMergeStrategy strategy : strategies) {
             strategy.setup(table, columnsToMerge);
-            if (strategy.canExecute()) {
-                availableStrategiesList.add(strategy);
-            }
+            availableStrategiesList.add(strategy);//Add all but disallow executing the strategies that cannot be executed with given column
         }
 
         availableMergeStrategies = availableStrategiesList.toArray(new AttributeColumnsMergeStrategy[0]);
@@ -162,8 +166,19 @@ public class MergeColumnsUI extends javax.swing.JPanel {
 
     private void refreshOkButton() {
         if (okButton != null) {
-            okButton.setEnabled(availableStrategiesComboBox.getSelectedIndex() != -1);
+            okButton.setEnabled(canExecuteSelectedStrategy());
         }
+    }
+
+    public boolean canExecuteSelectedStrategy() {
+        int index = availableStrategiesComboBox.getSelectedIndex();
+        boolean result;
+        if (index != -1) {
+            result = availableMergeStrategies[index].canExecute();
+        } else {
+            result = false;
+        }
+        return result;
     }
 
     private AttributeColumn[] getColumnsToMerge() {
@@ -230,6 +245,42 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         for (Object element : selection) {
             sourceModel.removeElement(element);
             targetModel.addElement(element);
+        }
+    }
+
+    public static ValidationPanel createValidationPanel(MergeColumnsUI innerPanel) {
+        ValidationPanel validationPanel = new ValidationPanel();
+        if (innerPanel == null) {
+            innerPanel = new MergeColumnsUI();
+        }
+        validationPanel.setInnerComponent(innerPanel);
+
+        ValidationGroup group = validationPanel.getValidationGroup();
+
+        group.add(innerPanel.availableStrategiesComboBox, new MergeStrategyValidator(innerPanel));
+
+        return validationPanel;
+    }
+
+    private static class MergeStrategyValidator implements Validator<ComboBoxModel> {
+        private MergeColumnsUI ui;
+
+        public MergeStrategyValidator(MergeColumnsUI ui) {
+            this.ui = ui;
+        }
+
+        public boolean validate(Problems problems, String string, ComboBoxModel t) {
+            if (t.getSelectedItem() != null) {
+                if(ui.canExecuteSelectedStrategy()){
+                    return true;
+                }else{
+                    problems.add(NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.problems.not_executable_strategy"));
+                    return false;
+                }
+            } else {
+                problems.add(NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.problems.less_than_2_columns_selected"));
+                return false;
+            }
         }
     }
 
@@ -354,8 +405,8 @@ public class MergeColumnsUI extends javax.swing.JPanel {
                         .addGap(94, 94, 94)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(availableStrategiesComboBox, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(availableStrategiesLabel)
-                    .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE))
+                    .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
+                    .addComponent(availableStrategiesLabel))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -370,7 +421,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
 
     private void availableStrategiesComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_availableStrategiesComboBoxItemStateChanged
         refreshOkButton();
-        infoLabel.setEnabled(availableStrategiesComboBox.getSelectedIndex()!=-1);
+        infoLabel.setEnabled(availableStrategiesComboBox.getSelectedIndex() != -1);
     }//GEN-LAST:event_availableStrategiesComboBoxItemStateChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addColumnButton;

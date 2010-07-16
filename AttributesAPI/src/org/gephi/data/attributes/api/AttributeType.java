@@ -125,7 +125,7 @@ public enum AttributeType {
      * method will succeed to return a <code>Boolean</code> instance. May
      * throw <code>NumberFormatException</code>.
      *
-     * <code>DYNAMIC</code> types and <code>TIME_INTERVAL</code> cannot be parsed with this method (see <code>canParseFromString</code> method) and a UnsupportedOperationException will be thrown if it is tried.
+     * <code>DYNAMIC</code> types and <code>TIME_INTERVAL</code> cannot be parsed with this method (see <code>isDynamicType</code> method) and a UnsupportedOperationException will be thrown if it is tried.
      * 
      * @param str   the string that is to be parsed
      * @return      an instance of the type of this  <code>AttributeType</code>.
@@ -200,16 +200,6 @@ public enum AttributeType {
                 return new BigDecimalList(str);
         }
         return str;
-    }
-
-    /**
-     * Indicates if this AttributeType can be parsed from a String with <code>parse(String str)</code> method.
-     * All types except <code>DYNAMIC</code> types and <code>TIME_INTERVAL</code> can be parsed.
-     * See <code>isDynamicType</code> method.
-     * @return
-     */
-    public boolean canParseFromString() {
-        return !isDynamicType();
     }
 
     /**
