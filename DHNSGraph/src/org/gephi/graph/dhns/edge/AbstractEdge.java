@@ -35,7 +35,6 @@ public abstract class AbstractEdge implements Edge, AVLItem {
     protected final int ID;
     protected final AbstractNode source;
     protected final AbstractNode target;
-    protected float weight = 1f;
     protected EdgeDataImpl edgeData;
 
     public AbstractEdge(int ID, AbstractNode source, AbstractNode target) {
@@ -50,7 +49,6 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         this.target = target;
         this.ID = edge.ID;
         this.edgeData = edge.edgeData;
-        this.weight = edge.weight;
     }
 
     public AbstractNode getSource() {
@@ -70,11 +68,11 @@ public abstract class AbstractEdge implements Edge, AVLItem {
     }
 
     public float getWeight() {
-        return weight;
+        return edgeData.getWeight();
     }
 
     public void setWeight(float weight) {
-        this.weight = weight;
+        edgeData.setWeight(weight);
     }
 
     public int getNumber() {

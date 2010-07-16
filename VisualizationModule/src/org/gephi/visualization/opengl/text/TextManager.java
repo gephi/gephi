@@ -276,7 +276,7 @@ public class TextManager implements VizArchitecture {
             TextDataImpl textData = (TextDataImpl) renderable.getTextData();
             if (textData != null) {
                 model.colorMode.textColor(this, textData, objectModel);
-                model.sizeMode.setSizeFactor2d(model.edgeSizeFactor, textData, objectModel);
+                model.sizeMode.setSizeFactor3d(model.edgeSizeFactor, textData, objectModel);
                 if (edgeRefresh) {
                     builder.buildNodeText((NodeData) renderable, textData, model);
                 }

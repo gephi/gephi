@@ -44,7 +44,7 @@ public class SumMetaEdgeBuilder implements MetaEdgeBuilder {
     }
 
     public void pushEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge) {
-        float edgeWeight = edge.weight;
+        float edgeWeight = edge.getWeight();
         float metaWeight = metaEdge.getWeight();
         float div = 1f;
         if (edge.getSource() == metaEdge.getSource()
@@ -61,7 +61,7 @@ public class SumMetaEdgeBuilder implements MetaEdgeBuilder {
     }
 
     public void pullEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge) {
-        float edgeWeight = edge.weight;
+        float edgeWeight = edge.getWeight();
         float metaWeight = metaEdge.getWeight();
         float div = 1f;
         if (source == metaEdge.getSource()

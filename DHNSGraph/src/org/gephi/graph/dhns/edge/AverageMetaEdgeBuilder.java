@@ -44,7 +44,7 @@ public class AverageMetaEdgeBuilder implements MetaEdgeBuilder {
     }
 
     public void pushEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge) {
-        float edgeWeight = edge.weight;
+        float edgeWeight = edge.getWeight();
         float metaWeight = metaEdge.getWeight();
         float edgeCount = metaEdge.getCount();
         float div = 1f;
@@ -63,7 +63,7 @@ public class AverageMetaEdgeBuilder implements MetaEdgeBuilder {
     }
 
     public void pullEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge) {
-        float edgeWeight = edge.weight;
+        float edgeWeight = edge.getWeight();
         float metaWeight = metaEdge.getWeight();
         float edgeCount = metaEdge.getCount();
         float div = 1f;

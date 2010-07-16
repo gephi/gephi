@@ -60,7 +60,8 @@ public abstract class AbstractAttributeModel implements AttributeModel {
         PropertiesColumn[] columnsForNodeTable = {PropertiesColumn.NODE_ID,
                                                   PropertiesColumn.NODE_LABEL};
         PropertiesColumn[] columnsForEdgeTable = {PropertiesColumn.EDGE_ID,
-                                                  PropertiesColumn.EDGE_LABEL};
+                                                  PropertiesColumn.EDGE_LABEL,
+                                                  PropertiesColumn.EDGE_WEIGHT};
 
         for (PropertiesColumn columnForNodeTable : columnsForNodeTable)
             nodeTable.addPropertiesColumn(columnForNodeTable);
