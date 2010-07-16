@@ -27,6 +27,7 @@ import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.spi.Statistics;
@@ -38,6 +39,7 @@ public class InOutDegree implements Statistics, LongTask {
 
     public static final String INDEGREE = "indegree";
     public static final String OUTDEGREE = "outdegree";
+    public static final String DEGREE = "degree";
     /** The Average Node In-Degree. */
     private double mAvgInDegree;
     /** The Average Node Out-Degree. */
@@ -71,14 +73,21 @@ public class InOutDegree implements Statistics, LongTask {
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn inCol = nodeTable.getColumn(INDEGREE);
         AttributeColumn outCol = nodeTable.getColumn(OUTDEGREE);
-        if (inCol == null) {
-            inCol = nodeTable.addColumn(INDEGREE, "In Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+        AttributeColumn degCol = nodeTable.getColumn(DEGREE);
+        if (graphModel.isDirected()) {
+
+            if (inCol == null) {
+                inCol = nodeTable.addColumn(INDEGREE, "In Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+            }
+            if (outCol == null) {
+                outCol = nodeTable.addColumn(OUTDEGREE, "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+            }
         }
-        if (outCol == null) {
-            outCol = nodeTable.addColumn(OUTDEGREE, "Out Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
+        if (degCol == null) {
+            degCol = nodeTable.addColumn(DEGREE, "Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
         }
 
-        DirectedGraph graph = graphModel.getDirectedGraphVisible();
+        Graph graph = graphModel.getGraphVisible();
         int i = 0;
 
         graph.readLock();
@@ -89,10 +98,16 @@ public class InOutDegree implements Statistics, LongTask {
 
         for (Node n : graph.getNodes()) {
             AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
-            row.setValue(inCol, graph.getInDegree(n));
-            row.setValue(outCol, graph.getOutDegree(n));
-            mAvgInDegree += graph.getInDegree(n);
-            mAvgOutDegree += graph.getOutDegree(n);
+            if (graph instanceof DirectedGraph) {
+                DirectedGraph directedGraph = (DirectedGraph) graph;
+                row.setValue(inCol, directedGraph.getInDegree(n));
+                row.setValue(outCol, directedGraph.getOutDegree(n));
+                mAvgInDegree += directedGraph.getInDegree(n);
+                mAvgOutDegree += directedGraph.getOutDegree(n);
+            }
+            row.setValue(degCol, graph.getDegree(n));
+            mAvgDegree += graph.getDegree(n);
+
             if (mIsCanceled) {
                 break;
             }
@@ -100,7 +115,6 @@ public class InOutDegree implements Statistics, LongTask {
             Progress.progress(mProgress, i);
         }
 
-        mAvgDegree = mAvgInDegree + mAvgOutDegree;
         mAvgInDegree /= graph.getNodeCount();
         mAvgOutDegree /= graph.getNodeCount();
         mAvgDegree /= graph.getNodeCount();
@@ -122,8 +136,9 @@ public class InOutDegree implements Statistics, LongTask {
                 //+"<h2> Parameters: </h2>" +
                 //"Network Interpretation:  "  +(this. ? "directed": "undirected") +"<br>"
                 + "<br> <h2> Results: </h2>"
-                + "Average In Degree: " + mAvgInDegree
-                + "<br >Average out Degree: " + mAvgOutDegree
+                + "Average Degree: " + mAvgDegree
+                + "<br >Average In Degree: " + mAvgInDegree
+                + "<br >Average Out Degree: " + mAvgOutDegree
                 + "</BODY></HTML>");
 
         return report;
