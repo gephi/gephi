@@ -118,6 +118,15 @@ public class ReportPanel extends javax.swing.JPanel {
                 }
             }
         });
+
+        createMissingNodesCheckbox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                if (createMissingNodesCheckbox.isSelected() != container.getUnloader().allowAutoNode()) {
+                    container.setAllowAutoNode(createMissingNodesCheckbox.isSelected());
+                }
+            }
+        });
     }
 
     public void initIcons() {
@@ -223,13 +232,13 @@ public class ReportPanel extends javax.swing.JPanel {
             }
         });
     }
-
     private static final Object PROCESSOR_KEY = new Object();
+
     private void initProcessors() {
-        int i=0;
-        for(Processor processor : Lookup.getDefault().lookupAll(Processor.class)) {
+        int i = 0;
+        for (Processor processor : Lookup.getDefault().lookupAll(Processor.class)) {
             JRadioButton radio = new JRadioButton(processor.getDisplayName());
-            radio.setSelected(i==0);
+            radio.setSelected(i == 0);
             radio.putClientProperty(PROCESSOR_KEY, processor);
             processorGroup.add(radio);
             GridBagConstraints constraints = new GridBagConstraints(0, i++, 1, 1, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
@@ -242,10 +251,10 @@ public class ReportPanel extends javax.swing.JPanel {
     }
 
     public Processor getProcessor() {
-        for(Enumeration<AbstractButton> enumeration = processorGroup.getElements();enumeration.hasMoreElements();) {
+        for (Enumeration<AbstractButton> enumeration = processorGroup.getElements(); enumeration.hasMoreElements();) {
             AbstractButton radioButton = enumeration.nextElement();
-            if(radioButton.isSelected()) {
-                return (Processor)radioButton.getClientProperty(PROCESSOR_KEY);
+            if (radioButton.isSelected()) {
+                return (Processor) radioButton.getClientProperty(PROCESSOR_KEY);
             }
         }
         return null;
@@ -280,6 +289,7 @@ public class ReportPanel extends javax.swing.JPanel {
         hierarchicalLabel = new javax.swing.JLabel();
         autoscaleCheckbox = new javax.swing.JCheckBox();
         processorPanel = new javax.swing.JPanel();
+        createMissingNodesCheckbox = new javax.swing.JCheckBox();
 
         labelSrc.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelSrc.text")); // NOI18N
 
@@ -322,46 +332,53 @@ public class ReportPanel extends javax.swing.JPanel {
 
         processorPanel.setLayout(new java.awt.GridBagLayout());
 
+        createMissingNodesCheckbox.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.createMissingNodesCheckbox.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(labelSrc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sourceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE))
+                        .addComponent(sourceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(labelGraphType)
+                                .addGap(46, 46, 46)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(nodeCountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+                                            .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(edgeCountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                                        .addGap(66, 66, 66))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(labelNodeCount)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(createMissingNodesCheckbox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(autoscaleCheckbox, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(labelGraphType)
-                                        .addComponent(labelNodeCount)
-                                        .addComponent(labelEdgeCount))
-                                    .addGap(43, 43, 43))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(labelDynamic)
-                                    .addGap(27, 27, 27)))
-                            .addComponent(labelHierarchical))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(nodeCountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
-                                    .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(autoscaleCheckbox, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(hierarchicalLabel)
-                                    .addComponent(dynamicLabel)
-                                    .addComponent(edgeCountLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(processorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addComponent(labelHierarchical)
+                                    .addComponent(labelDynamic))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(hierarchicalLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(dynamicLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)))
+                            .addComponent(labelEdgeCount))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 188, Short.MAX_VALUE)
+                        .addComponent(processorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -372,22 +389,25 @@ public class ReportPanel extends javax.swing.JPanel {
                     .addComponent(labelSrc)
                     .addComponent(sourceLabel))
                 .addGap(18, 18, 18)
-                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelGraphType)
                     .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(autoscaleCheckbox))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelNodeCount)
-                    .addComponent(nodeCountLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labelEdgeCount)
-                            .addComponent(edgeCountLabel))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nodeCountLabel)
+                            .addComponent(createMissingNodesCheckbox))
+                        .addGap(16, 16, 16))
+                    .addComponent(labelNodeCount))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(edgeCountLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelEdgeCount)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(labelDynamic)
@@ -396,12 +416,13 @@ public class ReportPanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(labelHierarchical)
                             .addComponent(hierarchicalLabel)))
-                    .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE))
+                    .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox autoscaleCheckbox;
+    private javax.swing.JCheckBox createMissingNodesCheckbox;
     private javax.swing.JLabel dynamicLabel;
     private javax.swing.JLabel edgeCountLabel;
     private javax.swing.JComboBox graphTypeCombo;
