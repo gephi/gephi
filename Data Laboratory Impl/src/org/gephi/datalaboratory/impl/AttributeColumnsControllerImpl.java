@@ -33,6 +33,7 @@ import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.type.BooleanList;
 import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
@@ -56,7 +57,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     public AttributeColumn addAttributeColumn(AttributeTable table, String title, AttributeType type) {
         String columnId = String.valueOf(table.countColumns() + 1);
-        title=title!=null ? title : "";
+        title = title != null ? title : "";
         return table.addColumn(columnId, title, type, AttributeOrigin.DATA, null);
     }
 
@@ -72,8 +73,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         int newColumnIndex = newColumn.getIndex();
         if (type != column.getType()) {
             Object value;
-            for (Attributes attributes : getTableAttributeRows(table)) {
-                value = attributes.getValue(oldColumnIndex);
+            for (Attributes row : getTableAttributeRows(table)) {
+                value = row.getValue(oldColumnIndex);
                 if (value != null) {
                     try {
                         value = type.parse(value.toString());//Try to convert to new type
@@ -81,7 +82,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                         value = null;//Could not parse
                     }
                 }
-                attributes.setValue(newColumnIndex, value);
+                row.setValue(newColumnIndex, value);
             }
         } else {
             for (Attributes attributes : getTableAttributeRows(table)) {
@@ -103,8 +104,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     public Map<Object, Integer> calculateColumnValuesFrequencies(AttributeTable table, AttributeColumn column) {
         Map<Object, Integer> valuesFrequencies = new HashMap<Object, Integer>();
         Object value;
-        for (Attributes attributes : getTableAttributeRows(table)) {
-            value = attributes.getValue(column.getIndex());
+        for (Attributes row : getTableAttributeRows(table)) {
+            value = row.getValue(column.getIndex());
             if (valuesFrequencies.containsKey(value)) {
                 valuesFrequencies.put(value, new Integer(valuesFrequencies.get(value) + 1));
             } else {
@@ -120,15 +121,25 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             AttributeColumn newColumn = addAttributeColumn(table, newColumnTitle, AttributeType.BOOLEAN);
             Matcher matcher;
             Object value;
-            for (Attributes attributes : getTableAttributeRows(table)) {
-                value = attributes.getValue(column.getIndex());
+            for (Attributes row : getTableAttributeRows(table)) {
+                value = row.getValue(column.getIndex());
                 if (value != null) {
                     matcher = pattern.matcher(value.toString());
                 } else {
                     matcher = pattern.matcher("");
                 }
-                attributes.setValue(newColumn.getIndex(), new Boolean(matcher.matches()));
+                row.setValue(newColumn.getIndex(), new Boolean(matcher.matches()));
             }
+        }
+    }
+
+    public void NegateBooleanColumn(AttributeTable table, AttributeColumn column) {
+        if (isColumnOfType(column, AttributeType.BOOLEAN)) {
+            negateColumnBooleanType(table, column);
+        } else if (isColumnOfType(column, AttributeType.LIST_BOOLEAN)) {
+            negateColumnListBooleanType(table, column);
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 
@@ -239,7 +250,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public boolean canChangeColumnData(AttributeColumn column) {
-        AttributeUtils au=Lookup.getDefault().lookup(AttributeUtils.class);
+        AttributeUtils au = Lookup.getDefault().lookup(AttributeUtils.class);
         if (au.isNodeColumn(column)) {
             //Can change values of columns with DATA origin and label of nodes:
             return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.NODE_LABEL.getIndex();
@@ -250,13 +261,13 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
-    public boolean isColumnOfType(AttributeColumn column, AttributeType type){
-        return column.getType()==type;
+    public boolean isColumnOfType(AttributeColumn column, AttributeType type) {
+        return column.getType() == type;
     }
 
-    public boolean areColumnsOfType(AttributeColumn[] columns, AttributeType type){
-        for(AttributeColumn column:columns){
-            if(!isColumnOfType(column, type)){
+    public boolean areColumnsOfType(AttributeColumn[] columns, AttributeType type) {
+        for (AttributeColumn column : columns) {
+            if (!isColumnOfType(column, type)) {
                 return false;
             }
         }
@@ -289,5 +300,36 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
      */
     private boolean canChangeGenericColumnData(AttributeColumn column) {
         return column.getOrigin() == AttributeOrigin.DATA && !column.getType().isDynamicType();
+    }
+
+    private void negateColumnBooleanType(AttributeTable table, AttributeColumn column) {
+        final int columnIndex = column.getIndex();
+        Object value;
+        Boolean newValue;
+        for (Attributes row : getTableAttributeRows(table)) {
+            value = row.getValue(columnIndex);
+            if (value != null) {
+                newValue = !((Boolean) value);
+                row.setValue(columnIndex, newValue);
+            }
+        }
+    }
+
+    private void negateColumnListBooleanType(AttributeTable table, AttributeColumn column) {
+        final int columnIndex = column.getIndex();
+        Object value;
+        BooleanList list;
+        Boolean[] newValues;
+        for (Attributes row : getTableAttributeRows(table)) {
+            value = row.getValue(columnIndex);
+            if (value != null) {
+                list = (BooleanList) value;
+                newValues=new Boolean[list.size()];
+                for (int i = 0; i < list.size(); i++) {
+                    newValues[i]=!list.getItem(i);
+                }
+                row.setValue(columnIndex, new BooleanList(newValues));
+            }
+        }
     }
 }

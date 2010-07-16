@@ -92,6 +92,14 @@ public interface AttributeColumnsController {
     void createBooleanMatchesColumn(AttributeTable table, AttributeColumn column, String newColumnTitle,Pattern pattern);
 
     /**
+     * Negates not null values of a given <code>BOOLEAN</code> or <code>LIST_BOOLEAN</code>column.
+     * Throws IllegalArgumentException if the column does not have <code>BOOLEAN</code> or <code>LIST_BOOLEAN</code> AttributeType.
+     * @param table Table of the column to negate
+     * @param column Boolean column to negate
+     */
+    void NegateBooleanColumn(AttributeTable table, AttributeColumn column);
+
+    /**
      * Creates a new string list column from the given column and regular expression with values that are
      * the list of matching groups of the given regular expression.
      * @param table Table of the column to match
