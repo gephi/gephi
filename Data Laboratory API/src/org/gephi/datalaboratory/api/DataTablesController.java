@@ -77,7 +77,7 @@ public interface DataTablesController {
      * It can be null if it is still not activated or there is no active workspace.
      * @return Current listener or null
      */
-     DataTablesEventListener getDataTablesEventListener();
+    DataTablesEventListener getDataTablesEventListener();
 
     /**
      * Request the tables implementation to provide the selected nodes in nodes table.
@@ -102,4 +102,11 @@ public interface DataTablesController {
      * @return True if edges table is being shown, false otherwise
      */
     boolean isEdgeTableMode();
+
+    /**
+     * Checks if the data tables implementation is showing only visible elements (nodes or edges)
+     * in the graph at the moment.
+     * @return True if only visible elements are being shown, false otherwise
+     */
+    boolean isShowingOnlyVisible();
 }

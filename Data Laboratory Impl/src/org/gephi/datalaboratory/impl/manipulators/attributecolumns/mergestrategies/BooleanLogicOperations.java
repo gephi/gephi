@@ -24,6 +24,7 @@ import javax.swing.Icon;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController.BooleanOperations;
 import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.ui.BooleanLogicOperationsUI;
@@ -62,12 +63,8 @@ public class BooleanLogicOperations implements AttributeColumnsMergeStrategy{
     }
 
     public boolean canExecute() {
-        for(AttributeColumn column:columns){
-            if(column.getType()!=AttributeType.BOOLEAN){
-                return false;
-            }
-        }
-        return true;
+        AttributeUtils attributeUtils=AttributeUtils.getDefault();
+        return attributeUtils.areAllColumnsOfType(columns, AttributeType.BOOLEAN);
     }
 
     public ManipulatorUI getUI() {

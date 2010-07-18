@@ -101,7 +101,7 @@ public interface SearchReplaceController {
          */
         private void checkNodesToSearch() {
             if (nodesToSearch == null || nodesToSearch.length == 0) {
-                nodesToSearch = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph().getNodes().toArray();
+                nodesToSearch = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph().getNodesTree().toArray();
             }
         }
 
@@ -110,7 +110,7 @@ public interface SearchReplaceController {
          */
         private void checkEdgesToSearch() {
             if (edgesToSearch == null || edgesToSearch.length == 0) {
-                edgesToSearch = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph().getEdges().toArray();
+                edgesToSearch = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph().getEdges().toArray();
             }
         }
 

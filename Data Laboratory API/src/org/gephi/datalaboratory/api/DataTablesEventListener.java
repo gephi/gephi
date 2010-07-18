@@ -45,4 +45,6 @@ public interface DataTablesEventListener {
     boolean isNodeTableMode();
 
     boolean isEdgeTableMode();
+
+    boolean isShowingOnlyVisible();
 }

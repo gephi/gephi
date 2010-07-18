@@ -20,9 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl;
 
+import java.util.ArrayList;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.data.attributes.type.NumberList;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.graph.api.Attributes;
@@ -74,8 +77,9 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
     }
 
     public AttributeColumn booleanLogicOperationsMerge(AttributeTable table, AttributeColumn[] columnsToMerge, BooleanOperations[] booleanOperations, String newColumnTitle) {
+        AttributeUtils attributeUtils=AttributeUtils.getDefault();
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        if (!ac.areColumnsOfType(columnsToMerge, AttributeType.BOOLEAN)||table == null || columnsToMerge == null || booleanOperations == null || booleanOperations.length != columnsToMerge.length - 1) {
+        if (!attributeUtils.areAllColumnsOfType(columnsToMerge, AttributeType.BOOLEAN)||table == null || columnsToMerge == null || booleanOperations == null || booleanOperations.length != columnsToMerge.length - 1) {
             throw new IllegalArgumentException();
         }
         
@@ -114,5 +118,25 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         }
 
         return newColumn;
-    }    
+    }
+
+
+    /*************Private methods:*************/
+
+    private ArrayList<Number> getNumberListColumnNumbers(Attributes row,AttributeColumn column){
+        if(!AttributeUtils.getDefault().isNumberListColumn(column)){
+            throw new IllegalArgumentException("Column must be a number list column");
+        }
+
+        ArrayList<Number> numbers=new ArrayList<Number>();
+        NumberList list=(NumberList) row.getValue(column.getIndex());
+        Object obj;
+        for (int i = 0; i < list.size(); i++) {
+            obj=list.getItem(i);
+            if(obj!=null){
+                numbers.add((Number) obj);
+            }
+        }
+        return numbers;
+    }
 }

@@ -37,10 +37,11 @@ public class MathUtils {
      * @return Average as a BigDecimal
      */
     public static BigDecimal average(Number[] numbers) {
-        BigDecimal sum = new BigDecimal(0);
         if(numbers.length==0){
-            return sum;
+            return null;
         }
+        BigDecimal sum = new BigDecimal(0);
+        
         int numbersCount = 0;
         for (Number number : numbers) {
             if (number != null) {
@@ -63,12 +64,49 @@ public class MathUtils {
     }
 
     /**
+     * Calculate median of various numbers as a BigDecimal.
+     * They can't be null.
+     * All elements need to be the same type of number.
+     * They don't need to be sorted.
+     * @param numbers Not null numbers to calculate median
+     * @return Median as a BigDecimal
+     */
+    public static <T extends Number> BigDecimal median(T[] numbers){
+        if(numbers.length==0){
+            return null;
+        }
+        Arrays.sort(numbers);
+        if(numbers.length%2==1){
+            return new BigDecimal(numbers[(numbers.length+1)/2-1].toString());
+        }else{
+            BigDecimal result=new BigDecimal(numbers[(numbers.length)/2-1].toString());
+            result=result.add(new BigDecimal(numbers[(numbers.length)/2].toString()));
+            return result.divide(BigDecimal.valueOf(2));
+        }
+    }
+
+    /**
+     * Calculate median of various numbers as a BigDecimal.
+     * They can't be null.
+     * All elements need to be the same type of number.
+     * They don't need to be sorted.
+     * @param numbers Not null numbers to calculate median
+     * @return Median as a BigDecimal
+     */
+    public static <T extends Number> BigDecimal median(Collection<T> numbers){
+        return median((T[])numbers.toArray());
+    }
+
+    /**
      * Get sum calculation of various numbers as a BigDecimal
      * Null values will not be counted.
      * @param numbers Numbers to calculate sum
      * @return Sum as a BigDecimal
      */
     public static BigDecimal sum(Number[] numbers) {
+        if(numbers.length==0){
+            return null;
+        }
         BigDecimal sum = new BigDecimal(0);
         for (Number number : numbers) {
             if (number != null) {
@@ -97,6 +135,9 @@ public class MathUtils {
      * @return Minimum value
      */
     public static <T extends Number> T minValue(T[] numbers){
+        if(numbers.length==0){
+            return null;
+        }
         Arrays.sort(numbers);
         return numbers[0];
     }
@@ -120,6 +161,9 @@ public class MathUtils {
      * @return Maximum value
      */
     public static <T extends Number> T maxValue(T[] numbers){
+        if(numbers.length==0){
+            return null;
+        }
         Arrays.sort(numbers);
         return numbers[numbers.length-1];
     }

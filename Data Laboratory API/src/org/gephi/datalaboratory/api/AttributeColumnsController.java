@@ -178,20 +178,4 @@ public interface AttributeColumnsController {
      * @return True if the column values can be changed, false otherwise
      */
     boolean canChangeColumnData(AttributeColumn column);
-
-    /**
-     * Checks if the given columns has the specified type.
-     * @param column Column to check
-     * @param type Type
-     * @return True if the column has the type, false otherwise
-     */
-    boolean isColumnOfType(AttributeColumn column, AttributeType type);
-
-    /**
-     * Checks if all of the given columns have the specified type.
-     * @param columns Columns to check
-     * @param type Type
-     * @return True only if all the columns have the type, false otherwise
-     */
-    boolean areColumnsOfType(AttributeColumn[] columns, AttributeType type);
 }

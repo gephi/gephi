@@ -53,6 +53,13 @@ public class MathUtilsTest {
     }
 
     @Test
+    public void testMedian(){
+        assertEquals(MathUtils.median(new Integer[]{7,6,5,4,3,2,1}),new BigDecimal("4"));
+        assertEquals(MathUtils.median(new Integer[]{1,2,3,4}),new BigDecimal("2.5"));
+        assertEquals(MathUtils.median(new Integer[]{22}),new BigDecimal("22"));
+    }
+
+    @Test
     public void testSum(){
         assertEquals(MathUtils.sum(new Byte[]{10,20,30,40,60,27,-30,-25,-5}),new BigDecimal("127"));
     }
@@ -60,10 +67,12 @@ public class MathUtilsTest {
     @Test
     public void testMinValue(){
         assertEquals(MathUtils.minValue(new Long[]{34l,45l,2l,0l,34535l,6346l}),new Long(0l));
+        assertEquals(MathUtils.minValue(new Number[]{34l,45l,2l,0l,34535l,6346l}),new Long(0l));
     }
 
     @Test
     public void testMaxValue(){
         assertEquals(MathUtils.maxValue(Arrays.asList(new Long[]{34l,45l,2l,0l,34535l,6346l})),new Long(34535l));
+        assertEquals(MathUtils.maxValue(Arrays.asList(new Number[]{34l,45l,2l,0l,34535l,6346l})),new Long(34535l));
     }
 }

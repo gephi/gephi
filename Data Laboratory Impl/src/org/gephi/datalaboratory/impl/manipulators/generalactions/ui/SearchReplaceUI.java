@@ -33,6 +33,7 @@ import org.gephi.datalaboratory.api.SearchReplaceController.SearchOptions;
 import org.gephi.datalaboratory.api.SearchReplaceController.SearchResult;
 import org.gephi.datalaboratory.impl.utils.HTMLEscape;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -102,11 +103,26 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
     }
 
     private void createSearchOptions() {
+        boolean onlyVisibleElements=Lookup.getDefault().lookup(DataTablesController.class).isShowingOnlyVisible();
         searchResult=null;
         if (mode == Mode.NODES_TABLE) {
-            searchOptions = new SearchOptions(new Node[0], null);//Use all nodes
+            Node[] nodes;
+            if(onlyVisibleElements){
+                //Search on visible nodes:
+                nodes=Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraphVisible().getNodesTree().toArray();
+            }else{
+                nodes=new Node[0];//Search on all nodes
+            }
+            searchOptions = new SearchOptions(nodes, null);
         } else {
-            searchOptions = new SearchOptions(new Edge[0], null);//Use all edges
+            Edge[] edges;
+            if(onlyVisibleElements){
+                //Search on visible edges:
+                edges=Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraphVisible().getEdges().toArray();
+            }else{
+                edges=new Edge[0];//Search on all edges
+            }
+            searchOptions = new SearchOptions(edges, null);
         }
     }
 

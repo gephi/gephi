@@ -40,7 +40,6 @@ import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
@@ -134,9 +133,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public void NegateBooleanColumn(AttributeTable table, AttributeColumn column) {
-        if (isColumnOfType(column, AttributeType.BOOLEAN)) {
+        AttributeUtils attributeUtils = AttributeUtils.getDefault();
+        if (attributeUtils.isColumnOfType(column, AttributeType.BOOLEAN)) {
             negateColumnBooleanType(table, column);
-        } else if (isColumnOfType(column, AttributeType.LIST_BOOLEAN)) {
+        } else if (attributeUtils.isColumnOfType(column, AttributeType.LIST_BOOLEAN)) {
             negateColumnListBooleanType(table, column);
         } else {
             throw new IllegalArgumentException();
@@ -261,19 +261,6 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
-    public boolean isColumnOfType(AttributeColumn column, AttributeType type) {
-        return column.getType() == type;
-    }
-
-    public boolean areColumnsOfType(AttributeColumn[] columns, AttributeType type) {
-        for (AttributeColumn column : columns) {
-            if (!isColumnOfType(column, type)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     /************Private methods : ************/
     /**
      * Used for iterating through all nodes of the graph
@@ -288,8 +275,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
      * @return Array with all graph edges
      */
     private Edge[] getEdgesArray() {
-        Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
-        return graph.getEdges().toArray();
+        return Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph().getEdges().toArray();
     }
 
     /**
@@ -324,9 +310,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             value = row.getValue(columnIndex);
             if (value != null) {
                 list = (BooleanList) value;
-                newValues=new Boolean[list.size()];
+                newValues = new Boolean[list.size()];
                 for (int i = 0; i < list.size(); i++) {
-                    newValues[i]=!list.getItem(i);
+                    newValues[i] = !list.getItem(i);
                 }
                 row.setValue(columnIndex, new BooleanList(newValues));
             }

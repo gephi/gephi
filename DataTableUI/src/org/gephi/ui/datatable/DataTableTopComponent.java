@@ -546,6 +546,10 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         return classDisplayed == ClassDisplayed.EDGE;
     }
 
+    public boolean isShowingOnlyVisible(){
+        return visibleOnly;
+    }
+
     /*************Column manipulators related methods:*************/
     private void refreshColumnManipulators() {
         SwingUtilities.invokeLater(new Runnable() {

@@ -120,4 +120,12 @@ public class DataTablesControllerImpl implements DataTablesController {
             return false;
         }
     }
+
+    public boolean isShowingOnlyVisible(){
+        if (listener != null) {
+            return listener.isShowingOnlyVisible();
+        } else {
+            return false;
+        }
+    }
 }
