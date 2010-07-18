@@ -60,4 +60,6 @@ public interface AttributeColumnsMergeStrategiesController {
      * @return The new created column
      */
     AttributeColumn booleanLogicOperationsMerge(AttributeTable table, AttributeColumn[] columnsToMerge, BooleanOperations[] booleanOperations, String newColumnTitle);
+
+    AttributeColumn averageNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
 }

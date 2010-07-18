@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.utils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -50,7 +51,7 @@ public class MathUtils {
             }
         }
 
-        return sum.divide(new BigDecimal(numbersCount));
+        return sum.divide(new BigDecimal(numbersCount),RoundingMode.HALF_EVEN);
     }
 
     /**
