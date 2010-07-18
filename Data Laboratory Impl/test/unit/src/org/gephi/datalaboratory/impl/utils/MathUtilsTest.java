@@ -44,8 +44,8 @@ public class MathUtilsTest {
         BigInteger[] bigBigIntegerArrayTest=new BigInteger[420000];
         Arrays.fill(bigBigIntegerArrayTest, new BigInteger("42"));
         assertEquals(MathUtils.average(bigBigIntegerArrayTest), new BigDecimal("42"));
-        ArrayList<BigDecimal> bigBigDecimalCollectionTest=new ArrayList<BigDecimal>();
-        BigDecimal[] bigBigDecimalArrayTest=new BigDecimal[210000];
+        ArrayList<Number> bigBigDecimalCollectionTest=new ArrayList<Number>();
+        Number[] bigBigDecimalArrayTest=new Number[210000];
         Arrays.fill(bigBigDecimalArrayTest, new BigDecimal("2112"));
         bigBigDecimalCollectionTest.addAll(Arrays.asList(bigBigDecimalArrayTest));
         assertEquals(MathUtils.average(bigBigDecimalCollectionTest), new BigDecimal("2112"));
@@ -66,13 +66,14 @@ public class MathUtilsTest {
 
     @Test
     public void testMinValue(){
-        assertEquals(MathUtils.minValue(new Long[]{34l,45l,2l,0l,34535l,6346l}),new Long(0l));
-        assertEquals(MathUtils.minValue(new Number[]{34l,45l,2l,0l,34535l,6346l}),new Long(0l));
+        assertEquals(MathUtils.minValue(new Long[]{34l,45l,2l,0l,34535l,6346l}),new BigDecimal("0"));
+        assertEquals(MathUtils.minValue(new Integer[]{34,45,2,0,34535,6346}),new BigDecimal("0"));
+        assertEquals(MathUtils.minValue(new Number[]{34l,45l,2l,0l,34535l,6346l}),new BigDecimal("0"));
     }
 
     @Test
     public void testMaxValue(){
-        assertEquals(MathUtils.maxValue(Arrays.asList(new Long[]{34l,45l,2l,0l,34535l,6346l})),new Long(34535l));
-        assertEquals(MathUtils.maxValue(Arrays.asList(new Number[]{34l,45l,2l,0l,34535l,6346l})),new Long(34535l));
+        assertEquals(MathUtils.maxValue(Arrays.asList(new Number[]{34l,(byte)6,2l,0d,34535,BigInteger.valueOf(6346)})),new BigDecimal("34535"));
+        assertEquals(MathUtils.maxValue(new Number[]{34,45,2,0,34535.0,6346}),new BigDecimal("34535.0"));
     }
 }

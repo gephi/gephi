@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- *
+ * Class with some mathematic methods for calculating values such as the average, median and min of a list of numbers.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class MathUtils {
@@ -38,7 +38,7 @@ public class MathUtils {
      * @return Average as a BigDecimal
      */
     public static BigDecimal average(Number[] numbers) {
-        if(numbers.length==0){
+        if(numbers==null||numbers.length==0){
             return null;
         }
         BigDecimal sum = new BigDecimal(0);
@@ -51,7 +51,13 @@ public class MathUtils {
             }
         }
 
-        return sum.divide(new BigDecimal(numbersCount),RoundingMode.HALF_EVEN);
+        BigDecimal result;
+        try{
+            result=sum.divide(new BigDecimal(numbersCount));
+        }catch(ArithmeticException ex){
+            result=sum.divide(new BigDecimal(numbersCount),10,RoundingMode.HALF_EVEN);//Maximum of 10 decimal digits to avoid periodic number exception.
+        }
+        return result;
     }
 
     /**
@@ -60,42 +66,43 @@ public class MathUtils {
      * @param numbers Numbers to calculate average
      * @return Average as a BigDecimal
      */
-    public static BigDecimal average(Collection<? extends Number> numbers) {
+    public static BigDecimal average(Collection<Number> numbers) {
         return average(numbers.toArray(new Number[0]));
     }
 
     /**
      * Calculate median of various numbers as a BigDecimal.
-     * They can't be null.
-     * All elements need to be the same type of number.
-     * They don't need to be sorted.
+     * The elements can't be null.
+     * The elements don't need to be sorted.
      * @param numbers Not null numbers to calculate median
      * @return Median as a BigDecimal
      */
-    public static <T extends Number> BigDecimal median(T[] numbers){
-        if(numbers.length==0){
+    public static BigDecimal median(Number[] numbers){
+        if(numbers==null||numbers.length==0){
             return null;
         }
-        Arrays.sort(numbers);
-        if(numbers.length%2==1){
-            return new BigDecimal(numbers[(numbers.length+1)/2-1].toString());
+
+        BigDecimal[] bigDecimalNumbers=numbersArrayToBigDecimalArray(numbers);
+
+        Arrays.sort(bigDecimalNumbers);
+        if(bigDecimalNumbers.length%2==1){
+            return bigDecimalNumbers[(bigDecimalNumbers.length+1)/2-1];
         }else{
-            BigDecimal result=new BigDecimal(numbers[(numbers.length)/2-1].toString());
-            result=result.add(new BigDecimal(numbers[(numbers.length)/2].toString()));
+            BigDecimal result=bigDecimalNumbers[(bigDecimalNumbers.length)/2-1];
+            result=result.add(bigDecimalNumbers[(bigDecimalNumbers.length)/2]);
             return result.divide(BigDecimal.valueOf(2));
         }
     }
 
     /**
      * Calculate median of various numbers as a BigDecimal.
-     * They can't be null.
-     * All elements need to be the same type of number.
-     * They don't need to be sorted.
+     * The elements can't be null.
+     * The elements don't need to be sorted.
      * @param numbers Not null numbers to calculate median
      * @return Median as a BigDecimal
      */
-    public static <T extends Number> BigDecimal median(Collection<T> numbers){
-        return median((T[])numbers.toArray());
+    public static BigDecimal median(Collection<Number> numbers){
+        return median(numbers.toArray(new Number[0]));
     }
 
     /**
@@ -105,7 +112,7 @@ public class MathUtils {
      * @return Sum as a BigDecimal
      */
     public static BigDecimal sum(Number[] numbers) {
-        if(numbers.length==0){
+        if(numbers==null||numbers.length==0){
             return null;
         }
         BigDecimal sum = new BigDecimal(0);
@@ -124,59 +131,81 @@ public class MathUtils {
      * @param numbers Numbers to calculate sum
      * @return Sum as a BigDecimal
      */
-    public static BigDecimal sum(Collection<? extends Number> numbers) {
+    public static BigDecimal sum(Collection<Number> numbers) {
         return sum(numbers.toArray(new Number[0]));
     }
 
     /**
-     * Get the minimum value of an array of Number elements.
-     * All elements need to be the same type of number.
-     * Cannot handle null values.
+     * Get the minimum value of an array of Number elements as a BigDecimal.
+     * The elements can't be null.
      * @param numbers Numbers to get min
-     * @return Minimum value
+     * @return Minimum value as a BigDecimal
      */
-    public static <T extends Number> T minValue(T[] numbers){
-        if(numbers.length==0){
+    public static BigDecimal minValue(Number[] numbers){
+        if(numbers==null||numbers.length==0){
             return null;
         }
-        Arrays.sort(numbers);
-        return numbers[0];
+
+        BigDecimal[] bigDecimalNumbers=numbersArrayToBigDecimalArray(numbers);
+
+        Arrays.sort(bigDecimalNumbers);
+        return bigDecimalNumbers[0];
     }
 
     /**
-     * Get the minimum value of a collection of Number elements.
-     * All elements need to be the same type of number.
-     * Cannot handle null values.
+     * Get the minimum value of a collection of Number elements as a BigDecimal.
+     * The elements can't be null.
      * @param numbers Numbers to get min
-     * @return Minimum value
+     * @return Minimum value as a BigDecimal
      */
-    public static <T extends Number> T minValue(Collection<T> numbers){
-        return (T) minValue((T[])numbers.toArray());
+    public static BigDecimal minValue(Collection<Number> numbers){
+        return minValue(numbers.toArray(new BigDecimal[0]));
     }
 
      /**
-     * Get the maximum value of an array of Number elements.
-     * All elements need to be the same type of number.
-     * Cannot handle null values.
+     * Get the maximum value of an array of Number elements as a BigDecimal.
+     * The elements can't be null.
      * @param numbers Numbers to get max
-     * @return Maximum value
+     * @return Maximum value as a BigDecimal
      */
-    public static <T extends Number> T maxValue(T[] numbers){
-        if(numbers.length==0){
+    public static BigDecimal maxValue(Number[] numbers){
+        if(numbers==null||numbers.length==0){
             return null;
         }
-        Arrays.sort(numbers);
-        return numbers[numbers.length-1];
+
+        BigDecimal[] bigDecimalNumbers=numbersArrayToBigDecimalArray(numbers);
+
+        Arrays.sort(bigDecimalNumbers);
+        return bigDecimalNumbers[bigDecimalNumbers.length-1];
     }
 
     /**
-     * Get the maximum value of a collection of Number elements.
-     * All elements need to be the same type of number.
-     * Cannot handle null values.
+     * Get the maximum value of a collection of Number elements as a BigDecimal.
+     * The elements can't be null.
      * @param numbers Numbers to get max
-     * @return Maximum value
+     * @return Maximum value as a BigDecimal
      */
-    public static <T extends Number> T maxValue(Collection<T> numbers){
-        return (T) maxValue((T[])numbers.toArray());
+    public static BigDecimal maxValue(Collection<Number> numbers){
+        return maxValue(numbers.toArray(new Number[0]));
+    }
+
+    /**
+     * Takes an array of numbers of any type combination and returns
+     * an array with their BigDecimal equivalent numbers.
+     * @return BigDecimal array
+     */
+    private static BigDecimal[] numbersArrayToBigDecimalArray(Number[] numbers){
+        if(numbers==null){
+            return null;
+        }
+        BigDecimal[] result=new BigDecimal[numbers.length];
+        Number number;
+        for (int i = 0; i < result.length; i++) {
+            number=numbers[i];
+            if(number!=null){
+                result[i]=new BigDecimal(number.toString());
+            }
+        }
+        return result;
     }
 }

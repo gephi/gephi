@@ -61,5 +61,13 @@ public interface AttributeColumnsMergeStrategiesController {
      */
     AttributeColumn booleanLogicOperationsMerge(AttributeTable table, AttributeColumn[] columnsToMerge, BooleanOperations[] booleanOperations, String newColumnTitle);
 
+    /**
+     * Merges any combination of number or number list columns, calculating the average of all not null values
+     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
+     * @param table Table of the columns to merge
+     * @param columnsToMerge Number or number list columns
+     * @param newColumnTitle Title for the new column
+     * @return The new created column
+     */
     AttributeColumn averageNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
 }

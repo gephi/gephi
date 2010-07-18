@@ -123,7 +123,6 @@ public class AttributeTableImpl implements AttributeTable {
     }
 
     public synchronized void removeColumn(AttributeColumn column) {
-
         int index = columns.indexOf(column);
         if (index == -1) {
             return;

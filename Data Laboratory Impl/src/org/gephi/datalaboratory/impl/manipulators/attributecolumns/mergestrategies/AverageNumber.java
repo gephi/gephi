@@ -33,7 +33,8 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * AttributeColumnsMergeStrategy for any combination of number or number list columns that
+ * calculates the average of all the values and creates a new BigDecimal column with the result of each row.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class AverageNumber implements AttributeColumnsMergeStrategy{
