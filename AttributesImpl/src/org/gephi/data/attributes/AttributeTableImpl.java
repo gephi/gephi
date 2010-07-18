@@ -72,10 +72,10 @@ public class AttributeTableImpl implements AttributeTable {
 
     public AttributeColumn addPropertiesColumn(PropertiesColumn propertiesColumn) {
         return addColumn(propertiesColumn.getId(),
-                         propertiesColumn.getTitle(),
-                         propertiesColumn.getType(),
-                         propertiesColumn.getOrigin(),
-                         propertiesColumn.getDefaultValue());
+                propertiesColumn.getTitle(),
+                propertiesColumn.getType(),
+                propertiesColumn.getOrigin(),
+                propertiesColumn.getDefaultValue());
     }
 
     public AttributeColumnImpl addColumn(String id, AttributeType type) {
@@ -123,6 +123,19 @@ public class AttributeTableImpl implements AttributeTable {
     }
 
     public synchronized void removeColumn(AttributeColumn column) {
+
+        int index = columns.indexOf(column);
+        if (index == -1) {
+            return;
+        }
+
+        //update indexes of the next columns of the one to delete:
+        AttributeColumnImpl c;
+        for (index = index + 1; index < columns.size(); index++) {
+            c = columns.get(index);
+            c.index--;
+        }
+
         //Remove from collections
         columns.remove((AttributeColumnImpl) column);
         columnsMap.remove(column.getId());

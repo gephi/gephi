@@ -33,7 +33,7 @@ import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
 public class AttributeColumnImpl implements AttributeColumn {
 
     protected final AttributeTableImpl table;
-    protected final int index;
+    protected int index;
     protected final String id;
     protected final String title;
     protected final AttributeType type;
