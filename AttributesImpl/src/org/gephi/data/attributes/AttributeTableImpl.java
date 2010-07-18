@@ -123,6 +123,17 @@ public class AttributeTableImpl implements AttributeTable {
     }
 
     public synchronized void removeColumn(AttributeColumn column) {
+        int index = columns.indexOf(column);
+        if (index == -1) {
+            return;
+        }
+
+        //update indexes of the next columns of the one to delete:
+        AttributeColumnImpl c;
+        for (index = index + 1; index < columns.size(); index++) {
+            c = columns.get(index);
+            c.index--;
+        }
         //Remove from collections
         columns.remove((AttributeColumnImpl) column);
         columnsMap.remove(column.getId());
