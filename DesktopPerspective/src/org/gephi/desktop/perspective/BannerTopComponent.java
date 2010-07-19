@@ -114,6 +114,10 @@ public final class BannerTopComponent extends TopComponent {
                             tpg.close();
                         }
                     }
+                    
+                    //Open perspective
+                    TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(perspective.getName());
+                    tpg.open();
 
                     //Close members
                     Perspective closingPerspective = getPerspective(selectedPerspective);
@@ -124,10 +128,6 @@ public final class BannerTopComponent extends TopComponent {
                             }
                         }
                     }
-
-                    //Open perspective
-                    TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(perspective.getName());
-                    tpg.open();
 
                     //Open members
                     for (PerspectiveMember member : members) {
