@@ -35,7 +35,7 @@ public class MetaEdgeImpl extends AbstractEdge implements MetaEdge {
 
     public MetaEdgeImpl(int ID, AbstractNode source, AbstractNode target) {
         super(ID, source, target);
-        this.weight = 0f;
+        setWeight(0f);
     }
 
     public boolean addEdge(AbstractEdge edge) {

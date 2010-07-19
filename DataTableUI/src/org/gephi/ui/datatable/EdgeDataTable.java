@@ -40,6 +40,7 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
@@ -312,6 +313,10 @@ public class EdgeDataTable {
                 value = column.getType().parse(str);
             } catch (Exception ex) {
                 value=null;//Could not parse
+            }
+            
+            if(value==null&&column.getIndex()==PropertiesColumn.EDGE_WEIGHT.getIndex()){
+                return;//Do not set a null value to a edge weight. It will crash the visualization.
             }
             edge.getEdgeData().getAttributes().setValue(column.getIndex(), value);
         }

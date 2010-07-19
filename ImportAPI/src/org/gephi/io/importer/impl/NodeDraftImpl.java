@@ -284,6 +284,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         timeInterval = new TimeInterval(timeInterval, start, end);
     }
 
+    public void setTimeInterval(TimeInterval timeInterval) {
+        this.timeInterval = timeInterval;
+    }
+
     //GETTERS
     public AttributeRow getAttributeRow() {
         return attributeRow;

@@ -34,6 +34,7 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
@@ -427,9 +428,19 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
 
         //Dynamic attributes bounds
-        if (timeIntervalMin != null || timeIntervalMax != null) {
+        if (dynamicGraph && (timeIntervalMin != null || timeIntervalMax != null)) {
             for (NodeDraftImpl node : nodeMap.values()) {
                 boolean issue = false;
+
+                if (timeIntervalMin != null && node.getTimeInterval().getLow() < timeIntervalMin) {
+                    node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), timeIntervalMin, node.getTimeInterval().getHigh()));
+                    issue = true;
+                }
+                if (timeIntervalMax != null && node.getTimeInterval().getHigh() > timeIntervalMax) {
+                    node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), node.getTimeInterval().getLow(), timeIntervalMax));
+                    issue = true;
+                }
+
                 AttributeValue[] values = node.getAttributeRow().getValues();
                 for (int i = 0; i < values.length; i++) {
                     AttributeValue val = values[i];
@@ -437,13 +448,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                         DynamicType type = (DynamicType) val.getValue();
                         if (timeIntervalMin != null && type.getLow() < timeIntervalMin) {
                             issue = true;
-                            //fix type here
-                            node.getAttributeRow().setValue(val.getColumn(), type);
+                            node.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, timeIntervalMin, type.getHigh()));
                         }
                         if (timeIntervalMax != null && type.getHigh() > timeIntervalMax) {
                             issue = true;
-                            //fix type here
-                            node.getAttributeRow().setValue(val.getColumn(), type);
+                            node.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, type.getLow(), timeIntervalMax));
                         }
                     }
                 }
@@ -453,6 +462,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             }
             for (EdgeDraftImpl edge : edgeMap.values()) {
                 boolean issue = false;
+
+                if (timeIntervalMin != null && edge.getTimeInterval().getLow() < timeIntervalMin) {
+                    edge.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(edge.getTimeInterval(), timeIntervalMin, edge.getTimeInterval().getHigh()));
+                    issue = true;
+                }
+                if (timeIntervalMax != null && edge.getTimeInterval().getHigh() > timeIntervalMax) {
+                    edge.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(edge.getTimeInterval(), edge.getTimeInterval().getLow(), timeIntervalMax));
+                    issue = true;
+                }
+
                 AttributeValue[] values = edge.getAttributeRow().getValues();
                 for (int i = 0; i < values.length; i++) {
                     AttributeValue val = values[i];
@@ -460,13 +479,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                         DynamicType type = (DynamicType) val.getValue();
                         if (timeIntervalMin != null && type.getLow() < timeIntervalMin) {
                             issue = true;
-                            //fix type here
-                            edge.getAttributeRow().setValue(val.getColumn(), type);
+                            edge.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, timeIntervalMin, type.getHigh()));
                         }
                         if (timeIntervalMax != null && type.getHigh() > timeIntervalMax) {
                             issue = true;
-                            //fix type here
-                            edge.getAttributeRow().setValue(val.getColumn(), type);
+                            edge.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, type.getLow(), timeIntervalMax));
                         }
                     }
                 }

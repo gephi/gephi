@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.exporter.preview;
 
 import com.itextpdf.text.PageSize;
@@ -31,6 +31,7 @@ import java.text.ParseException;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import org.gephi.io.exporter.preview.PDFExporter;
+import org.gephi.lib.validation.ValidationClient;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
@@ -43,7 +44,7 @@ import org.openide.util.NbPreferences;
  *
  * @author Mathieu Bastian
  */
-public class UIExporterPDFPanel extends javax.swing.JPanel {
+public class UIExporterPDFPanel extends javax.swing.JPanel implements ValidationClient {
 
     private static final double INCH = 72.0;
     private static final double MM = 2.8346456692895527;
@@ -143,23 +144,27 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
 
         ValidationGroup group = validationPanel.getValidationGroup();
 
-        //Size
-        group.add(innerPanel.widthTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                new PositiveSizeValidator(innerPanel));
-        group.add(innerPanel.heightTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                new PositiveSizeValidator(innerPanel));
-
-        //Margins
-        group.add(innerPanel.topMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                Validators.REQUIRE_VALID_NUMBER);
-        group.add(innerPanel.bottomMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                Validators.REQUIRE_VALID_NUMBER);
-        group.add(innerPanel.leftMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                Validators.REQUIRE_VALID_NUMBER);
-        group.add(innerPanel.rightMargintextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                Validators.REQUIRE_VALID_NUMBER);
+        innerPanel.validate(group);
 
         return validationPanel;
+    }
+
+    public void validate(ValidationGroup group) {
+        //Size
+        group.add(widthTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                new PositiveSizeValidator(this));
+        group.add(heightTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                new PositiveSizeValidator(this));
+
+        //Margins
+        group.add(topMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_NUMBER);
+        group.add(bottomMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_NUMBER);
+        group.add(leftMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_NUMBER);
+        group.add(rightMargintextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_NUMBER);
     }
 
     public void setup(PDFExporter pdfExporter) {

@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Martin Škurla <bujacik@gmail.com>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.data.properties;
 
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -40,7 +40,8 @@ public enum PropertiesColumn {
     NODE_LABEL             (1, "label",         AttributeType.STRING, AttributeOrigin.PROPERTY, null),
     EDGE_ID                (0, "id",            AttributeType.STRING, AttributeOrigin.PROPERTY, null),
     EDGE_LABEL             (1, "label",         AttributeType.STRING, AttributeOrigin.PROPERTY, null),
-    NEO4J_RELATIONSHIP_TYPE(2, "neo4j_rt",      AttributeType.STRING, AttributeOrigin.DELEGATE, null){
+    EDGE_WEIGHT            (2, "weight",        AttributeType.FLOAT, AttributeOrigin.PROPERTY, 1f),
+    NEO4J_RELATIONSHIP_TYPE(3, "neo4j_rt",      AttributeType.STRING, AttributeOrigin.DELEGATE, null){
         @Override
         public String getTitle() {
             return "Neo4j Relationship Type";

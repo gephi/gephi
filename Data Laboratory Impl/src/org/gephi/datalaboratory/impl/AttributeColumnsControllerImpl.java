@@ -255,7 +255,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             //Can change values of columns with DATA origin and label of nodes:
             return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.NODE_LABEL.getIndex();
         } else if (au.isEdgeColumn(column)) {
-            return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.EDGE_LABEL.getIndex();
+            return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.EDGE_LABEL.getIndex() || column.getIndex() == PropertiesColumn.EDGE_WEIGHT.getIndex();
         } else {
             return canChangeGenericColumnData(column);
         }

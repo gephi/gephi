@@ -18,15 +18,16 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.gephi.ui.propertyeditor;
+
+package org.gephi.lib.validation;
+
+import org.netbeans.validation.api.ui.ValidationGroup;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class NodeColumnStringEditor extends AbstractAttributeColumnPropertyEditor {
+public interface ValidationClient {
 
-    public NodeColumnStringEditor() {
-        super(EditorClass.NODE, AttributeTypeClass.STRING);
-    }
+    public void validate(ValidationGroup group);
 }

@@ -199,4 +199,17 @@ public class EdgeDataImpl implements EdgeData {
         }
         return (String) attributes.getValue(PropertiesColumn.EDGE_ID.getIndex());
     }
+
+    public float getWeight() {
+        if (attributes == null) {
+            return 1f;
+        }
+        return (Float) attributes.getValue(PropertiesColumn.EDGE_WEIGHT.getIndex());
+    }
+
+    public void setWeight(float weight) {
+        if (attributes != null) {
+            attributes.setValue(PropertiesColumn.EDGE_WEIGHT.getIndex(), weight);
+        }
+    }
 }
