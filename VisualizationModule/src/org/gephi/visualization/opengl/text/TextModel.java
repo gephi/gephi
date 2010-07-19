@@ -268,10 +268,10 @@ public class TextModel {
         if (sizeModeClass.equals("FixedSizeMode")) {
 //            sizeMode = new FixedSizeMode(this);
             sizeMode = VizController.getInstance().getTextManager().getSizeModes()[0];
-        } else if (colorModeClass.equals("ProportionalSizeMode")) {
+        } else if (sizeModeClass.equals("ProportionalSizeMode")) {
 //            sizeMode = new ProportionalSizeMode(this);
             sizeMode = VizController.getInstance().getTextManager().getSizeModes()[2];
-        } else if (colorModeClass.equals("ScaledSizeMode")) {
+        } else if (sizeModeClass.equals("ScaledSizeMode")) {
 //            sizeMode = new ScaledSizeMode(this);
             sizeMode = VizController.getInstance().getTextManager().getSizeModes()[1];
         }
