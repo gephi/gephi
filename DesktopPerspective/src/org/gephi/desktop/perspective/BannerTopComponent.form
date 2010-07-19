@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
-    <Component class="javax.swing.ButtonGroup" name="groupsButtonGroup">
+    <Component class="javax.swing.ButtonGroup" name="perspectivesButtonGroup">
     </Component>
   </NonVisualComponents>
   <Properties>
@@ -45,10 +45,10 @@
         <Component class="javax.swing.JButton" name="logoButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/org/gephi/branding/desktop/resources/logo_std.png"/>
+              <Image iconType="3" name="/org/gephi/desktop/perspective/resources/logo_std.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gephi/branding/desktop/Bundle.properties" key="BannerTopComponent.logoButton.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gephi/desktop/perspective/Bundle.properties" key="BannerTopComponent.logoButton.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="null"/>
@@ -58,10 +58,10 @@
             <Property name="focusPainted" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="pressedIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/org/gephi/branding/desktop/resources/logo_glow.png"/>
+              <Image iconType="3" name="/org/gephi/desktop/perspective/resources/logo_glow.png"/>
             </Property>
             <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/org/gephi/branding/desktop/resources/logo_glow.png"/>
+              <Image iconType="3" name="/org/gephi/desktop/perspective/resources/logo_glow.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -110,10 +110,7 @@
             <Component class="javax.swing.JLabel" name="bannerBackground">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/org/gephi/branding/desktop/resources/bannerback.png"/>
-                </Property>
-                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="org/gephi/branding/desktop/Bundle.properties" key="BannerTopComponent.bannerBackground.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+                  <Image iconType="3" name="/org/gephi/desktop/perspective/resources/bannerback.png"/>
                 </Property>
               </Properties>
               <Constraints>

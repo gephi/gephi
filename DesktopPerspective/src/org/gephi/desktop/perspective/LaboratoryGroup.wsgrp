@@ -3,7 +3,7 @@
   "http://www.netbeans.org/dtds/group-properties2_0.dtd">
 
 <group version="2.0">
-    <module name="org.gephi.branding.desktop" spec="1.0" />
-    <name unique="PreviewGroup" />
+    <module name="org.gephi.desktop.perspective" spec="1.0" />
+    <name unique="LaboratoryGroup" />
     <state opened="false" />
 </group>
