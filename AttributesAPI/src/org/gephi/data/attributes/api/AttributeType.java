@@ -133,13 +133,13 @@ public enum AttributeType {
     public Object parse(String str) {
         switch (this) {
             case BYTE:
-                return new Byte(str);
+                return new Byte(removeDecimalDigitsFromString(str));
             case SHORT:
-                return new Short(str);
+                return new Short(removeDecimalDigitsFromString(str));
             case INT:
-                return new Integer(str);
+                return new Integer(removeDecimalDigitsFromString(str));
             case LONG:
-                return new Long(str);
+                return new Long(removeDecimalDigitsFromString(str));
             case FLOAT:
                 return new Float(str);
             case DOUBLE:
@@ -149,7 +149,7 @@ public enum AttributeType {
             case CHAR:
                 return new Character(str.charAt(0));
             case BIGINTEGER:
-                return new BigInteger(str);
+                return new BigInteger(removeDecimalDigitsFromString(str));
             case BIGDECIMAL:
                 return new BigDecimal(str);
             case DYNAMIC_BYTE:
@@ -177,13 +177,13 @@ public enum AttributeType {
             case TIME_INTERVAL:
                 throw new UnsupportedOperationException("Not supported.");
             case LIST_BYTE:
-                return new ByteList(str);
+                return new ByteList(removeDecimalDigitsFromString(str));
             case LIST_SHORT:
-                return new ShortList(str);
+                return new ShortList(removeDecimalDigitsFromString(str));
             case LIST_INTEGER:
-                return new IntegerList(str);
+                return new IntegerList(removeDecimalDigitsFromString(str));
             case LIST_LONG:
-                return new LongList(str);
+                return new LongList(removeDecimalDigitsFromString(str));
             case LIST_FLOAT:
                 return new FloatList(str);
             case LIST_DOUBLE:
@@ -195,7 +195,7 @@ public enum AttributeType {
             case LIST_STRING:
                 return new StringList(str);
             case LIST_BIGINTEGER:
-                return new BigIntegerList(str);
+                return new BigIntegerList(removeDecimalDigitsFromString(str));
             case LIST_BIGDECIMAL:
                 return new BigDecimalList(str);
         }
@@ -313,5 +313,16 @@ public enum AttributeType {
             default:
                 return false;
         }
+    }
+
+    /**
+     * Removes the decimal digits and point of the numbers of string when necessary.
+     * Used for trying to parse decimal numbers as not decimal.
+     * For example BigDecimal to BigInteger.
+     * @param s String to remove decimal digits
+     * @return String without dot and decimal digits.
+     */
+    private String removeDecimalDigitsFromString(String s){
+        return s.replaceAll("\\.[0-9]*", "");
     }
 }

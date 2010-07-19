@@ -68,26 +68,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     public AttributeColumn duplicateColumn(AttributeTable table, AttributeColumn column, String title, AttributeType type) {
         AttributeColumn newColumn = addAttributeColumn(table, title, type);
-        final int oldColumnIndex = column.getIndex();
-        final int newColumnIndex = newColumn.getIndex();
-        if (type != column.getType()) {
-            Object value;
-            for (Attributes row : getTableAttributeRows(table)) {
-                value = row.getValue(oldColumnIndex);
-                if (value != null) {
-                    try {
-                        value = type.parse(value.toString());//Try to convert to new type
-                    } catch (Exception ex) {
-                        value = null;//Could not parse
-                    }
-                }
-                row.setValue(newColumnIndex, value);
-            }
-        } else {
-            for (Attributes row : getTableAttributeRows(table)) {
-                row.setValue(newColumnIndex, row.getValue(oldColumnIndex));
-            }
-        }
+        copyColumnDataToOtherColumn(table, column, newColumn);
         return newColumn;
     }
 

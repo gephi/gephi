@@ -26,7 +26,6 @@ import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.CopyDataToOtherColumnUI;
-import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.DuplicateColumnUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.openide.util.ImageUtilities;
