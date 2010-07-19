@@ -342,6 +342,7 @@ public class FilterModelImpl implements FilterModel {
                             String textValue = paramE.getTextContent();
                             editor.setAsText(textValue);
                             property.setValue(editor.getValue());
+                            updateParameters(query);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

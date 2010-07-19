@@ -286,6 +286,8 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 callback.setValue(value);
                 model.updateParameters(query);
             }
+        } else {
+            callback.setValue(value);
         }
     }
 }
