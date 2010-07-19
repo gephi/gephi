@@ -17,17 +17,56 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 package org.gephi.desktop.perspective.spi;
 
+import org.gephi.desktop.perspective.plugin.LaboratoryPerspective;
+import org.gephi.desktop.perspective.plugin.OverviewPerspective;
+import org.gephi.desktop.perspective.plugin.PreviewPerspective;
+
 /**
- *
+ * Interface to put on <code>TopComponent</code> to say in which perspective it
+ * belongs. It has an <b>open</b> and <b>close</b> method to simply say if the
+ * component should open or close when asked.
+ * <h3>How to set to a TopComponent</h3>
+ * <ol><li>Implement this interface to the class that extends <code>TopComponent</code>.</li>
+ * <li>Fill <b>open</b> and <b>close</b> methods like explain below.</li>
+ * <li>Add the <code>@ServiceProvider</code> annotation to be registered in the system:</li></ol>
+ * <pre>
+ * <code>@ServiceProvider(service=PerspectiveMember.class)
+ * public class MyTopComponent extends TopComponent implements PerpectiveMember {
+ * ...
+ * </pre>
+ * <h3>How to code open and close methods</h3>
+ * The code below attach the component to the {@link LaboratoryPerspective}, works also
+ * for {@link OverviewPerspective} and {@link PreviewPerspective}:
+ * <pre>
+ * public boolean open(Perspective perspective) {
+ *    returns perspective instanceof LaboratoryPerspective;
+ * }
+ * public boolean close(Perspective perspective) {
+ *    returns true;
+ * }
+ * </pre>
  * @author Mathieu Bastian
  */
 public interface PerspectiveMember {
 
+    /**
+     * Returns <code>true</code> if this component opens when
+     * <code>perspective</code> opens.
+     * @param perspective   the perspective that is to be opened
+     * @return              <code>true</code> if this component opens,
+     * <code>false</code> otherwise
+     */
     public boolean open(Perspective perspective);
 
+    /**
+     * Returns <code>true</code> if this component closes when
+     * <code>perspective</code> closes.
+     * @param perspective   the perspective that is to be closed
+     * @return              <code>true</code> if this component closes,
+     * <code>false</code> otherwise
+     */
     public boolean close(Perspective perspective);
 }
