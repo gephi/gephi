@@ -40,7 +40,8 @@ public interface GraphElementsController {
 
     /**
      * Duplicates a node if it is in the graph, and returns the new node.
-     * Sets the same attributes for the node as the original node: id, label and AttributeColumns with DATA AttributeOrigin.
+     * If the node has children, they are also copied as children of the new node.
+     * Sets the same properties and attributes for the node as the original node: id, label and AttributeColumns with DATA AttributeOrigin.
      * Does not copy AttributeColumns with COMPUTED AttributeOrigin.
      * @param node Node to copy
      * @return New node

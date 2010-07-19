@@ -35,6 +35,7 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.UndirectedGraph;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -59,7 +60,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         if (isNodeInGraph(node)) {
             HierarchicalGraph hg = getHierarchicalGraph();
 
-            Node copy = copyNodeRecursively(node, hg.getParent(node));//Add copy to the same level as the original node
+            Node copy = copyNodeRecursively(node, hg.getParent(node),hg);//Add copy to the same level as the original node
             return copy;
         } else {
             return null;
@@ -381,15 +382,24 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         return newNode;
     }
 
-    private Node copyNodeRecursively(Node node, Node parent) {
-        HierarchicalGraph hg = getHierarchicalGraph();
+    private Node copyNodeRecursively(Node node, Node parent,HierarchicalGraph hg) {
+        NodeData nodeData=node.getNodeData();
+        Node copy = buildNode(nodeData.getLabel());        
+        NodeData copyData=copy.getNodeData();
 
-        Node copy = buildNode(node.getNodeData().getLabel());
+        //Copy properties (position, size and color):
+        copyData.setX(nodeData.x());
+        copyData.setY(nodeData.y());
+        copyData.setZ(nodeData.z());
+        copyData.setSize(nodeData.getSize());
+        copyData.setColor(nodeData.r(), nodeData.g(), nodeData.b());
+        copyData.setAlpha(nodeData.alpha());
 
-        AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
+        //Copy attributes:
+        AttributeRow row = (AttributeRow) nodeData.getAttributes();
         for (int i = 0; i < row.countValues(); i++) {
             if (row.getValues()[i].getColumn().getOrigin() == AttributeOrigin.DATA) {
-                copy.getNodeData().getAttributes().setValue(i, row.getValue(i));
+                copyData.getAttributes().setValue(i, row.getValue(i));
             }
         }
 
@@ -403,7 +413,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         Node[] children = hg.getChildren(node).toArray();
         if (children != null) {
             for (Node child : children) {
-                copyNodeRecursively(child,copy);
+                copyNodeRecursively(child,copy,hg);
             }
         }
 
