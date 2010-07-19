@@ -50,22 +50,16 @@ import org.openide.util.lookup.ServiceProvider;
 public class GraphElementsControllerImpl implements GraphElementsController {
 
     public Node createNode(String label) {
-        Lookup.getDefault().lookup(AttributeController.class).getModel();//Make sure graph has AttributeModel, this can be first node.
-        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode();
-        newNode.getNodeData().setLabel(label);
+        Node newNode = buildNode(label);
         getGraph().addNode(newNode);
         return newNode;
     }
 
     public Node duplicateNode(Node node) {
         if (isNodeInGraph(node)) {
-            Node copy = createNode(node.getNodeData().getLabel());
-            AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
-            for (int i = 0; i < row.countValues(); i++) {
-                if (row.getValues()[i].getColumn().getOrigin() == AttributeOrigin.DATA) {
-                    copy.getNodeData().getAttributes().setValue(i, row.getValue(i));
-                }
-            }
+            HierarchicalGraph hg = getHierarchicalGraph();
+
+            Node copy = copyNodeRecursively(node, hg.getParent(node));//Add copy to the same level as the original node
             return copy;
         } else {
             return null;
@@ -186,10 +180,8 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         if (canUngroupNode(node)) {
             HierarchicalGraph hg = getHierarchicalGraph();
             //We can get directly all descendant nodes withoud using recursion and break the groups:
-            for (Node n : hg.getDescendant(node).toArray()) {
-                ungroupNode(n);
-            }
-            hg.ungroupNodes(node);
+            ungroupNodes(hg.getDescendant(node).toArray());
+            ungroupNode(node);
             return true;
         } else {
             return false;
@@ -229,23 +221,23 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     public Node[] getAvailableGroupsToMoveNodes(Node[] nodes) {
         if (canGroupNodes(nodes)) {
-            HierarchicalGraph hg=getHierarchicalGraph();
-            Set<Node> nodesSet=new HashSet<Node>();
+            HierarchicalGraph hg = getHierarchicalGraph();
+            Set<Node> nodesSet = new HashSet<Node>();
             nodesSet.addAll(Arrays.asList(nodes));
-            
+
             //All have the same parent, get children and check what of them are groups and are not in the nodes array:
-            Node parent=hg.getParent(nodes[0]);
+            Node parent = hg.getParent(nodes[0]);
             Node[] possibleGroups;
             //If no parent, get nodes at level 0:
-            if(parent!=null){
-                possibleGroups=hg.getChildren(parent).toArray();
-            }else{
-                possibleGroups=hg.getNodes(0).toArray();
+            if (parent != null) {
+                possibleGroups = hg.getChildren(parent).toArray();
+            } else {
+                possibleGroups = hg.getNodes(0).toArray();
             }
-            ArrayList<Node> availableGroups=new ArrayList<Node>();
+            ArrayList<Node> availableGroups = new ArrayList<Node>();
 
-            for(Node n:possibleGroups){
-                if(!nodesSet.contains(n)&&getNodeChildrenCount(hg, n)>0){
+            for (Node n : possibleGroups) {
+                if (!nodesSet.contains(n) && getNodeChildrenCount(hg, n) > 0) {
                     availableGroups.add(n);
                 }
             }
@@ -258,7 +250,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     public boolean canMoveNodeToGroup(Node node, Node group) {
         HierarchicalGraph hg = getHierarchicalGraph();
-        return hg.getParent(node) == hg.getParent(group) && canUngroupNode(group)&&isNodeInGraph(node);
+        return hg.getParent(node) == hg.getParent(group) && canUngroupNode(group) && isNodeInGraph(node);
     }
 
     public boolean removeNodeFromGroup(Node node) {
@@ -380,6 +372,42 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     private HierarchicalGraph getHierarchicalGraph() {
         return Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
+    }
+
+    private Node buildNode(String label) {
+        Lookup.getDefault().lookup(AttributeController.class).getModel();//Make sure graph has AttributeModel, this can be first node.
+        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode();
+        newNode.getNodeData().setLabel(label);
+        return newNode;
+    }
+
+    private Node copyNodeRecursively(Node node, Node parent) {
+        HierarchicalGraph hg = getHierarchicalGraph();
+
+        Node copy = buildNode(node.getNodeData().getLabel());
+
+        AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
+        for (int i = 0; i < row.countValues(); i++) {
+            if (row.getValues()[i].getColumn().getOrigin() == AttributeOrigin.DATA) {
+                copy.getNodeData().getAttributes().setValue(i, row.getValue(i));
+            }
+        }
+
+        if(parent!=null){
+            hg.addNode(copy, parent);
+        }else{
+            hg.addNode(copy);
+        }
+
+        //Copy the children of the original node if any:
+        Node[] children = hg.getChildren(node).toArray();
+        if (children != null) {
+            for (Node child : children) {
+                copyNodeRecursively(child,copy);
+            }
+        }
+
+        return copy;
     }
 
     private void removeNode(Node node, Graph graph) {

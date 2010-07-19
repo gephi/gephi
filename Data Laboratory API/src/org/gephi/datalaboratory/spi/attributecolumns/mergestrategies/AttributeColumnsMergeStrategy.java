@@ -34,7 +34,7 @@ public interface AttributeColumnsMergeStrategy extends Manipulator{
 
     /**
      * Prepare columns (with their table) for this merge strategy.
-     * At least <b>2</b> columns will be set up to merge always.
+     * At least <b>1</b> column will be set up to merge always.
      * @param table Table of the columns
      * @param columns Columns to merge
      */

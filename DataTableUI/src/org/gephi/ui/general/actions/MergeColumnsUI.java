@@ -150,7 +150,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
 
         AttributeColumn[] columnsToMerge = getColumnsToMerge();
 
-        if (columnsToMerge.length < 2) {
+        if (columnsToMerge.length < 1) {
             return;
         }
         AttributeColumnsMergeStrategy[] strategies = Lookup.getDefault().lookup(DataLaboratoryHelper.class).getAttributeColumnsMergeStrategies();
