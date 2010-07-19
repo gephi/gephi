@@ -68,8 +68,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     public AttributeColumn duplicateColumn(AttributeTable table, AttributeColumn column, String title, AttributeType type) {
         AttributeColumn newColumn = addAttributeColumn(table, title, type);
-        int oldColumnIndex = column.getIndex();
-        int newColumnIndex = newColumn.getIndex();
+        final int oldColumnIndex = column.getIndex();
+        final int newColumnIndex = newColumn.getIndex();
         if (type != column.getType()) {
             Object value;
             for (Attributes row : getTableAttributeRows(table)) {
@@ -84,11 +84,39 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 row.setValue(newColumnIndex, value);
             }
         } else {
-            for (Attributes attributes : getTableAttributeRows(table)) {
-                attributes.setValue(newColumnIndex, attributes.getValue(oldColumnIndex));
+            for (Attributes row : getTableAttributeRows(table)) {
+                row.setValue(newColumnIndex, row.getValue(oldColumnIndex));
             }
         }
         return newColumn;
+    }
+
+    public void copyColumnDataToOtherColumn(AttributeTable table, AttributeColumn sourceColumn, AttributeColumn targetColumn){
+        if(sourceColumn==targetColumn){
+            throw new IllegalArgumentException("Source and target columns can't be equal");
+        }
+
+        final int sourceColumnIndex = sourceColumn.getIndex();
+        final int targetColumnIndex = targetColumn.getIndex();
+        AttributeType targetType=targetColumn.getType();
+        if (targetType != sourceColumn.getType()) {
+            Object value;
+            for (Attributes row : getTableAttributeRows(table)) {
+                value = row.getValue(sourceColumnIndex);
+                if (value != null) {
+                    try {
+                        value = targetType.parse(value.toString());//Try to convert to target type
+                    } catch (Exception ex) {
+                        value = null;//Could not parse
+                    }
+                }
+                row.setValue(targetColumnIndex, value);
+            }
+        } else {
+            for (Attributes row : getTableAttributeRows(table)) {
+                row.setValue(targetColumnIndex, row.getValue(sourceColumnIndex));
+            }
+        }
     }
 
     public void clearColumnData(AttributeTable table, AttributeColumn column) {

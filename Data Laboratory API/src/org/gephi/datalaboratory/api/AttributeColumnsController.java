@@ -58,6 +58,16 @@ public interface AttributeColumnsController {
      * @return The created column
      */
     AttributeColumn duplicateColumn(AttributeTable table, AttributeColumn column, String title, AttributeType type);
+    
+    /**
+     * Copies all row values of a column to another column.
+     * If the AttributeType for the target is different from the source column, it will try to parse each value. If it is not possible, the value will be set to null.
+     * Source and target columns must be different.
+     * @param table Table of the columns
+     * @param sourceColumn Source column
+     * @param targetColumn Target column
+     */
+    void copyColumnDataToOtherColumn(AttributeTable table, AttributeColumn sourceColumn, AttributeColumn targetColumn);
 
     /**
      * Deletes a specified column from a table if the table has the column and data laboratory behavious allows to delete it (see <code>canDeleteColumn</code>)
