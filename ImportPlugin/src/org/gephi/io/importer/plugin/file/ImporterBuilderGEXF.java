@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.plugin.file;
 
 import org.gephi.io.importer.api.FileType;
@@ -37,7 +37,7 @@ public class ImporterBuilderGEXF implements FileImporterBuilder {
     public static final String IDENTIFER = "gexf";
 
     public FileImporter buildImporter() {
-        return new ImporterGEXF();
+        return new ImporterGEXF2();
     }
 
     public String getName() {
