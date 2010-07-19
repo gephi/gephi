@@ -427,6 +427,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             }
         }
 
+        if(timeIntervalMin != null || timeIntervalMax != null) {
+            //Print values to report
+        }
+
         //Dynamic attributes bounds
         if (dynamicGraph && (timeIntervalMin != null || timeIntervalMax != null)) {
             for (NodeDraftImpl node : nodeMap.values()) {
