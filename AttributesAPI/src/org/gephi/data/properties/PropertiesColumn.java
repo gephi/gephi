@@ -40,7 +40,7 @@ public enum PropertiesColumn {
     NODE_LABEL             (1, "label",         AttributeType.STRING, AttributeOrigin.PROPERTY, null),
     EDGE_ID                (0, "id",            AttributeType.STRING, AttributeOrigin.PROPERTY, null),
     EDGE_LABEL             (1, "label",         AttributeType.STRING, AttributeOrigin.PROPERTY, null),
-    EDGE_WEIGHT            (2, "weight",        AttributeType.FLOAT, AttributeOrigin.PROPERTY, null),
+    EDGE_WEIGHT            (2, "weight",        AttributeType.FLOAT, AttributeOrigin.PROPERTY, 1f),
     NEO4J_RELATIONSHIP_TYPE(3, "neo4j_rt",      AttributeType.STRING, AttributeOrigin.DELEGATE, null){
         @Override
         public String getTitle() {
