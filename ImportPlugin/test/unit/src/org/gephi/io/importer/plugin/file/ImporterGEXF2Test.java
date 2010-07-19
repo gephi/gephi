@@ -164,4 +164,50 @@ public class ImporterGEXF2Test {
         container.closeLoader();
         System.out.println(container.getReport().getText());
     }
+
+    @Test
+    public void testHierarchy() {
+        final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
+        container.setReport(new Report());
+        importer.execute(container.getLoader());
+
+        NodeDraftGetter na = (NodeDraftGetter) container.getLoader().getNode("a");
+        NodeDraftGetter nb = (NodeDraftGetter) container.getLoader().getNode("b");
+        NodeDraftGetter nc = (NodeDraftGetter) container.getLoader().getNode("c");
+        NodeDraftGetter nd = (NodeDraftGetter) container.getLoader().getNode("d");
+        NodeDraftGetter ne = (NodeDraftGetter) container.getLoader().getNode("e");
+        NodeDraftGetter nf = (NodeDraftGetter) container.getLoader().getNode("f");
+        NodeDraftGetter ng = (NodeDraftGetter) container.getLoader().getNode("g");
+        NodeDraftGetter nh = (NodeDraftGetter) container.getLoader().getNode("h");
+        NodeDraftGetter ni = (NodeDraftGetter) container.getLoader().getNode("i");
+        NodeDraftGetter nj = (NodeDraftGetter) container.getLoader().getNode("j");
+
+        assertNotNull(na);
+        assertNotNull(nb);
+        assertNotNull(nc);
+        assertNotNull(nd);
+        assertNotNull(ne);
+        assertNotNull(nf);
+        assertNotNull(ng);
+
+        assertNull(na.getParents());
+        assertEquals(1, nb.getParents().length);
+        assertEquals(1, nc.getParents().length);
+        assertEquals(1, nd.getParents().length);
+        assertEquals(1, ne.getParents().length);
+        assertEquals(1, nf.getParents().length);
+        assertEquals(1, ng.getParents().length);
+
+        assertEquals(na, nb.getParents()[0]);
+        assertEquals(nb, nc.getParents()[0]);
+        assertEquals(nb, nd.getParents()[0]);
+        assertEquals(na, ne.getParents()[0]);
+        assertEquals(ne, nf.getParents()[0]);
+        assertEquals(ne, ng.getParents()[0]);
+
+        assertEquals(nf, nh.getParents()[0]);
+        assertEquals(nj, ni.getParents()[0]);
+
+        System.out.println(container.getReport().getText());
+    }
 }

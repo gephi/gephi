@@ -123,16 +123,21 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
                 Integer eventType = xmlReader.next();
                 if (eventType.equals(XMLEvent.START_ELEMENT)) {
-                    if (GEXF.equalsIgnoreCase(xmlReader.getLocalName())) {
+                    String name = xmlReader.getLocalName();
+                    if (GEXF.equalsIgnoreCase(name)) {
                         readGexf(xmlReader);
-                    } else if (GRAPH.equalsIgnoreCase(xmlReader.getLocalName())) {
+                    } else if (GRAPH.equalsIgnoreCase(name)) {
                         readGraph(xmlReader);
-                    } else if (NODE.equalsIgnoreCase(xmlReader.getLocalName())) {
-                        readNode(xmlReader);
-                    } else if (EDGE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                    } else if (NODE.equalsIgnoreCase(name)) {
+                        readNode(xmlReader, null);
+                    } else if (EDGE.equalsIgnoreCase(name)) {
                         readEdge(xmlReader);
-                    } else if (ATTRIBUTES.equalsIgnoreCase(xmlReader.getLocalName())) {
+                    } else if (ATTRIBUTES.equalsIgnoreCase(name)) {
                         readAttributes(xmlReader);
+                    }
+                } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                    String name = xmlReader.getLocalName();
+                    if (NODE.equalsIgnoreCase(name)) {
                     }
                 }
             }
@@ -205,11 +210,12 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
         }
     }
 
-    private void readNode(XMLStreamReader reader) throws Exception {
+    private void readNode(XMLStreamReader reader, NodeDraft parent) throws Exception {
         String id = "";
         String label = "";
         String startDate = "";
         String endDate = "";
+        String pid = "";
 
         //Attributes
         for (int i = 0; i < reader.getAttributeCount(); i++) {
@@ -222,6 +228,8 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
                 startDate = reader.getAttributeValue(i);
             } else if (NODE_END.equalsIgnoreCase(attName)) {
                 endDate = reader.getAttributeValue(i);
+            } else if (NODE_PID.equalsIgnoreCase(attName)) {
+                pid = reader.getAttributeValue(i);
             }
         }
 
@@ -230,12 +238,31 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             return;
         }
 
-        NodeDraft node = container.factory().newNodeDraft();
+        NodeDraft node = null;
+        if (container.nodeExists(id)) {
+            node = container.getNode(id);
+        } else {
+            node = container.factory().newNodeDraft();
+        }
         node.setId(id);
         node.setLabel(label);
 
-        container.addNode(node);
+        //Parent
+        if (parent != null) {
+            node.setParent(parent);
+        } else if (!pid.isEmpty()) {
+            NodeDraft parentNode = container.getNode(pid);
+            if (parentNode == null) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_pid_notfound", pid, id), Issue.Level.SEVERE));
+            } else {
+                node.setParent(parentNode);
+            }
+        }
 
+        if (!container.nodeExists(id)) {
+            container.addNode(node);
+        }
+        
         boolean end = false;
         boolean slices = false;
         while (reader.hasNext() && !end) {
@@ -254,6 +281,8 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
                     } else if (NODE_SLICE.equalsIgnoreCase(xmlReader.getLocalName())) {
                         readNodeSlice(reader, node);
                         slices = true;
+                    } else if (NODE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        readNode(reader, node);
                     }
                     break;
 
