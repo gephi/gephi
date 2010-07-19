@@ -64,7 +64,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         for (Attributes row : ac.getTableAttributeRows(table)) {
             sb = new StringBuilder();
             for (int i = 0; i < columnsCount; i++) {
-                value = row.getValue(i);
+                value = row.getValue(columnsToMerge[i].getIndex());
                 if (value != null) {
                     sb.append(value.toString());
                     if (i < columnsCount - 1) {
@@ -139,6 +139,23 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         return newColumn;
     }
 
+    public AttributeColumn medianNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle) {
+        checkTableAndColumnsAreNumberOrNumberList(table, columnsToMerge);
+
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        AttributeColumn newColumn;
+        newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        final int newColumnIndex = newColumn.getIndex();
+
+        BigDecimal median;
+        for (Attributes row : ac.getTableAttributeRows(table)) {
+            median = MathUtils.median(getRowNumbersForColumns(row, columnsToMerge));
+            row.setValue(newColumnIndex, median);
+        }
+
+        return newColumn;
+    }
+
     public AttributeColumn sumNumbersMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle) {
         checkTableAndColumnsAreNumberOrNumberList(table, columnsToMerge);
 
@@ -156,11 +173,46 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         return newColumn;
     }
 
+    public AttributeColumn minValueNumbersMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle) {
+        checkTableAndColumnsAreNumberOrNumberList(table, columnsToMerge);
+
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        AttributeColumn newColumn;
+        newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        final int newColumnIndex = newColumn.getIndex();
+
+        BigDecimal sum;
+        for (Attributes row : ac.getTableAttributeRows(table)) {
+            sum = MathUtils.minValue(getRowNumbersForColumns(row, columnsToMerge));
+            row.setValue(newColumnIndex, sum);
+        }
+
+        return newColumn;
+    }
+
+    public AttributeColumn maxValueNumbersMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle) {
+        checkTableAndColumnsAreNumberOrNumberList(table, columnsToMerge);
+
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        AttributeColumn newColumn;
+        newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        final int newColumnIndex = newColumn.getIndex();
+
+        BigDecimal sum;
+        for (Attributes row : ac.getTableAttributeRows(table)) {
+            sum = MathUtils.maxValue(getRowNumbersForColumns(row, columnsToMerge));
+            row.setValue(newColumnIndex, sum);
+        }
+
+        return newColumn;
+    }
+
     /*************Private methods:*************/
+
     private Number[] getRowNumbersForColumns(Attributes row, AttributeColumn[] columns) {
         AttributeUtils attributeUtils = AttributeUtils.getDefault();
         checkColumnsAreNumberOrNumberList(columns);
-        
+
         ArrayList<Number> numbers = new ArrayList<Number>();
         Number n;
         for (AttributeColumn column : columns) {
@@ -175,7 +227,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         }
 
         return numbers.toArray(new Number[0]);
-    }    
+    }
 
     private ArrayList<Number> getNumberListColumnNumbers(Attributes row, AttributeColumn column) {
         if (!AttributeUtils.getDefault().isNumberListColumn(column)) {
@@ -197,8 +249,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         return numbers;
     }
 
-    private void checkTableAndColumnsAreNumberOrNumberList(AttributeTable table, AttributeColumn[] columns){
-        if(table==null){
+    private void checkTableAndColumnsAreNumberOrNumberList(AttributeTable table, AttributeColumn[] columns) {
+        if (table == null) {
             throw new IllegalArgumentException("Table can't be null");
         }
         checkColumnsAreNumberOrNumberList(columns);

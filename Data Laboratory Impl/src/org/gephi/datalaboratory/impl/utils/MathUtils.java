@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * Class with some mathematic methods for calculating values such as the average, median and min of a list of numbers.
+ * Class with some mathematic methods for calculating values such as the average, median, sum, max and min of a list of numbers.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class MathUtils {
