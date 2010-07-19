@@ -381,8 +381,10 @@ public class StructureModifier {
                 AbstractEdge[] deletedEdges = edgeProcessor.clearEdges(descendant);
                 if (deletedEdges != null) {
                     for (int j = 0; j < deletedEdges.length; j++) {
-                        dhns.getGraphStructure().removeFromDictionnary(deletedEdges[j]);
-                        dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, deletedEdges[j], view));
+                        if (deletedEdges[j] != null) {
+                            dhns.getGraphStructure().removeFromDictionnary(deletedEdges[j]);
+                            dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, deletedEdges[j], view));
+                        }
                     }
                 }
                 if (node.countInViews() == 1) {
