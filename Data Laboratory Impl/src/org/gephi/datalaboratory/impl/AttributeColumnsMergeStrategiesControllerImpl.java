@@ -123,9 +123,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
     }
 
     public AttributeColumn averageNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle) {
-        if (!AttributeUtils.getDefault().areAllNumberOrNumberListColumns(columnsToMerge) || table == null || columnsToMerge == null) {
-            throw new IllegalArgumentException("All columns have to be number or number list and table or columns can't be null");
-        }
+        checkTableAndColumnsAreNumberOrNumberList(table, columnsToMerge);
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
@@ -141,12 +139,28 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         return newColumn;
     }
 
+    public AttributeColumn sumNumbersMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle) {
+        checkTableAndColumnsAreNumberOrNumberList(table, columnsToMerge);
+
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        AttributeColumn newColumn;
+        newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        final int newColumnIndex = newColumn.getIndex();
+
+        BigDecimal sum;
+        for (Attributes row : ac.getTableAttributeRows(table)) {
+            sum = MathUtils.sum(getRowNumbersForColumns(row, columnsToMerge));
+            row.setValue(newColumnIndex, sum);
+        }
+
+        return newColumn;
+    }
+
     /*************Private methods:*************/
     private Number[] getRowNumbersForColumns(Attributes row, AttributeColumn[] columns) {
         AttributeUtils attributeUtils = AttributeUtils.getDefault();
-        if (!attributeUtils.areAllNumberOrNumberListColumns(columns)) {
-            throw new IllegalArgumentException("All columns must be number or number list columns");
-        }
+        checkColumnsAreNumberOrNumberList(columns);
+        
         ArrayList<Number> numbers = new ArrayList<Number>();
         Number n;
         for (AttributeColumn column : columns) {
@@ -161,7 +175,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         }
 
         return numbers.toArray(new Number[0]);
-    }
+    }    
 
     private ArrayList<Number> getNumberListColumnNumbers(Attributes row, AttributeColumn column) {
         if (!AttributeUtils.getDefault().isNumberListColumn(column)) {
@@ -181,5 +195,18 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
             }
         }
         return numbers;
+    }
+
+    private void checkTableAndColumnsAreNumberOrNumberList(AttributeTable table, AttributeColumn[] columns){
+        if(table==null){
+            throw new IllegalArgumentException("Table can't be null");
+        }
+        checkColumnsAreNumberOrNumberList(columns);
+    }
+
+    private void checkColumnsAreNumberOrNumberList(AttributeColumn[] columns) {
+        if (columns == null || !AttributeUtils.getDefault().areAllNumberOrNumberListColumns(columns)) {
+            throw new IllegalArgumentException("All columns have to be number or number list and table or columns can't be null");
+        }
     }
 }

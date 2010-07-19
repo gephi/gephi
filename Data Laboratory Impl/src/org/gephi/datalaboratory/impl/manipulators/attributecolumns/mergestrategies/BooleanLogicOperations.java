@@ -72,7 +72,7 @@ public class BooleanLogicOperations implements AttributeColumnsMergeStrategy{
     }
 
     public int getType() {
-        return 100;
+        return 200;
     }
 
     public int getPosition() {

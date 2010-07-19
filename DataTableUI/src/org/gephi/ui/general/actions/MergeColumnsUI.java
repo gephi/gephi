@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -144,6 +143,9 @@ public class MergeColumnsUI extends javax.swing.JPanel {
     }
 
     private void refreshAvailableMergeStrategies() {
+        //Save currently selected strategy index:
+        int selectedStrategyIndex = availableStrategiesComboBox.getSelectedIndex();
+
         availableStrategiesComboBox.removeAllItems();
 
         AttributeColumn[] columnsToMerge = getColumnsToMerge();
@@ -161,6 +163,10 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         availableMergeStrategies = availableStrategiesList.toArray(new AttributeColumnsMergeStrategy[0]);
         for (AttributeColumnsMergeStrategy s : availableMergeStrategies) {
             availableStrategiesComboBox.addItem(s.getName());
+        }
+
+        if (selectedStrategyIndex >= 0 && selectedStrategyIndex < availableStrategiesComboBox.getItemCount()) {
+            availableStrategiesComboBox.setSelectedIndex(selectedStrategyIndex);
         }
     }
 
@@ -263,6 +269,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
     }
 
     private static class MergeStrategyValidator implements Validator<ComboBoxModel> {
+
         private MergeColumnsUI ui;
 
         public MergeStrategyValidator(MergeColumnsUI ui) {
@@ -271,9 +278,9 @@ public class MergeColumnsUI extends javax.swing.JPanel {
 
         public boolean validate(Problems problems, String string, ComboBoxModel t) {
             if (t.getSelectedItem() != null) {
-                if(ui.canExecuteSelectedStrategy()){
+                if (ui.canExecuteSelectedStrategy()) {
                     return true;
-                }else{
+                } else {
                     problems.add(NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.problems.not_executable_strategy"));
                     return false;
                 }

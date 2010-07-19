@@ -34,10 +34,10 @@ import org.openide.util.NbBundle;
 
 /**
  * AttributeColumnsMergeStrategy for any combination of number or number list columns that
- * calculates the average of all the values and creates a new BigDecimal column with the result of each row.
+ * calculates the sum of all the values and creates a new BigDecimal column with the result of each row.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class AverageNumber implements AttributeColumnsMergeStrategy{
+public class SumNumbers implements AttributeColumnsMergeStrategy{
     private AttributeTable table;
     private AttributeColumn[] columns;
 
@@ -47,18 +47,18 @@ public class AverageNumber implements AttributeColumnsMergeStrategy{
     }
 
     public void execute() {
-        String title=JOptionPane.showInputDialog(null, NbBundle.getMessage(AverageNumber.class, "Strategies.columnTitle.dialog.text"));
+        String title=JOptionPane.showInputDialog(null, NbBundle.getMessage(SumNumbers.class, "Strategies.columnTitle.dialog.text"));
         if(title!=null){
-            Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).averageNumberMerge(table, columns, title);
+            Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).sumNumbersMerge(table, columns, title);
         }
     }
 
     public String getName() {
-        return NbBundle.getMessage(AverageNumber.class, "AverageNumber.name");
+        return NbBundle.getMessage(SumNumbers.class, "SumNumbers.name");
     }
 
     public String getDescription() {
-        return NbBundle.getMessage(AverageNumber.class, "AverageNumber.description");
+        return NbBundle.getMessage(SumNumbers.class, "SumNumbers.description");
     }
 
     public boolean canExecute() {
@@ -74,11 +74,11 @@ public class AverageNumber implements AttributeColumnsMergeStrategy{
     }
 
     public int getPosition() {
-        return 0;
+        return 200;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/balance.png",true);
+        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/plus-circle.png",true);
     }
 
 }

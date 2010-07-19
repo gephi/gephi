@@ -20,19 +20,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.builders;
 
-import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.AverageNumber;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.SumNumbers;
 import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategy;
 import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategyBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Builder for AverageNumber AttributeColumnsMergeStrategyBuilder.
+ * Builder for SumNumbers AttributeColumnsMergeStrategyBuilder.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service=AttributeColumnsMergeStrategyBuilder.class)
-public class AverageNumberBuilder implements AttributeColumnsMergeStrategyBuilder{
+public class SumNumbersBuilder implements AttributeColumnsMergeStrategyBuilder{
 
     public AttributeColumnsMergeStrategy getAttributeColumnsMergeStrategy() {
-        return new AverageNumber();
+        return new SumNumbers();
     }
 }
