@@ -40,7 +40,8 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
@@ -53,6 +54,7 @@ import org.jdesktop.swingx.table.TableColumnModelExt;
 import org.openide.awt.MouseUtils;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import utils.PopupMenuUtils;
 
 /**
  *
@@ -396,6 +398,8 @@ public class EdgeDataTable {
             final Edge[] selectedEdges = getEdgesFromSelectedRows();
             final Edge clickedEdge = getEdgeFromRow(table.rowAtPoint(p));
             JPopupMenu contextMenu = new JPopupMenu();
+
+            //First add edges manipulators items:
             DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
             Integer lastManipulatorType = null;
             for (EdgesManipulator em : dlh.getEdgesManipulators()) {
@@ -407,30 +411,14 @@ public class EdgeDataTable {
                     contextMenu.addSeparator();
                 }
                 lastManipulatorType = em.getType();
-                contextMenu.add(createMenuItemFromEdgesManipulator(em));
+                contextMenu.add(PopupMenuUtils.createMenuItemFromManipulator(em));
             }
+
+            //Add AttributeValues manipulators submenu:
+            AttributeRow row=(AttributeRow) clickedEdge.getEdgeData().getAttributes();
+            AttributeColumn column=Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable().getColumn(table.convertColumnIndexToModel(table.columnAtPoint(p)));
+            contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
             return contextMenu;
-        }
-
-        private JMenuItem createMenuItemFromEdgesManipulator(final EdgesManipulator em) {
-            JMenuItem menuItem = new JMenuItem();
-            menuItem.setText(em.getName());
-            if (em.getDescription() != null && !em.getDescription().isEmpty()) {
-                menuItem.setToolTipText(em.getDescription());
-            }
-            menuItem.setIcon(em.getIcon());
-            if (em.canExecute()) {
-                menuItem.addActionListener(new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
-                        dlh.executeManipulator(em);
-                    }
-                });
-            } else {
-                menuItem.setEnabled(false);
-            }
-            return menuItem;
         }
     }
 

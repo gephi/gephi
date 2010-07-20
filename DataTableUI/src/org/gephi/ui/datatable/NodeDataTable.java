@@ -22,8 +22,6 @@ package org.gephi.ui.datatable;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -33,7 +31,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -45,6 +42,8 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
@@ -61,6 +60,7 @@ import org.openide.util.Lookup;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 import org.gephi.tools.api.EditWindowController;
+import utils.PopupMenuUtils;
 
 /**
  *
@@ -425,6 +425,8 @@ public class NodeDataTable {
             final Node[] selectedNodes = getNodesFromSelectedRows();
             final Node clickedNode = getNodeFromRow(outlineTable.rowAtPoint(p));
             JPopupMenu contextMenu = new JPopupMenu();
+
+            //First add nodes manipulators items:
             DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
             Integer lastManipulatorType = null;
             for (NodesManipulator nm : dlh.getNodesManipulators()) {
@@ -436,30 +438,14 @@ public class NodeDataTable {
                     contextMenu.addSeparator();
                 }
                 lastManipulatorType = nm.getType();
-                contextMenu.add(createMenuItemFromNodesManipulator(nm));
+                contextMenu.add(PopupMenuUtils.createMenuItemFromManipulator(nm));
             }
+
+            //Add AttributeValues manipulators submenu:
+            AttributeRow row=(AttributeRow) clickedNode.getNodeData().getAttributes();
+            AttributeColumn column=Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumn(outlineTable.convertColumnIndexToModel(outlineTable.columnAtPoint(p)));
+            contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
             return contextMenu;
-        }
-
-        private JMenuItem createMenuItemFromNodesManipulator(final NodesManipulator nm) {
-            JMenuItem menuItem = new JMenuItem();
-            menuItem.setText(nm.getName());
-            if (nm.getDescription() != null && !nm.getDescription().isEmpty()) {
-                menuItem.setToolTipText(nm.getDescription());
-            }
-            menuItem.setIcon(nm.getIcon());
-            if (nm.canExecute()) {
-                menuItem.addActionListener(new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
-                        dlh.executeManipulator(nm);
-                    }
-                });
-            } else {
-                menuItem.setEnabled(false);
-            }
-            return menuItem;
         }
     }
 

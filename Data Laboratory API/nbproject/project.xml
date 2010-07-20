@@ -36,6 +36,7 @@
                 <package>org.gephi.datalaboratory.spi</package>
                 <package>org.gephi.datalaboratory.spi.attributecolumns</package>
                 <package>org.gephi.datalaboratory.spi.attributecolumns.mergestrategies</package>
+                <package>org.gephi.datalaboratory.spi.attributevalues</package>
                 <package>org.gephi.datalaboratory.spi.edges</package>
                 <package>org.gephi.datalaboratory.spi.generalactions</package>
                 <package>org.gephi.datalaboratory.spi.nodes</package>
