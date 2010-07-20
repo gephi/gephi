@@ -101,7 +101,7 @@ public abstract class AbstractProcessor {
         if (node.getNodeData().getAttributes() != null) {
             AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
             for (AttributeValue val : nodeDraft.getAttributeRow().getValues()) {
-                if (val.getValue() != null) {
+                if (!val.getColumn().getOrigin().equals(AttributeOrigin.PROPERTY) && val.getValue() != null) {
                     row.setValue(val.getColumn(), val.getValue());
                 }
             }
@@ -148,7 +148,7 @@ public abstract class AbstractProcessor {
         if (edge.getEdgeData().getAttributes() != null) {
             AttributeRow row = (AttributeRow) edge.getEdgeData().getAttributes();
             for (AttributeValue val : edgeDraft.getAttributeRow().getValues()) {
-                if (val.getValue() != null) {
+                if (!val.getColumn().getOrigin().equals(AttributeOrigin.PROPERTY) && val.getValue() != null) {
                     row.setValue(val.getColumn(), val.getValue());
                 }
             }
