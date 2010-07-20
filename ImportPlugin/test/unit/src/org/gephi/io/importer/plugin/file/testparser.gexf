@@ -97,6 +97,25 @@
 					<attvalue for="4" value="1.0" start="2009-01-01" end="2009-12-31"/>
 				</attvalues>
 			</node>
+			<node id="a" label="Kevin Bacon">
+				<nodes>
+					<node id="b" label="God">
+						<nodes>
+							<node id="c" label="human1"/>
+							<node id="d" label="human2"/>
+						</nodes>
+					</node>
+					<node id="e" label="Me">
+						<nodes>
+							<node id="f" label="frog1"/>
+							<node id="g" label="frog2"/>
+						</nodes>
+					</node>
+				</nodes>
+			</node>
+			<node id="h" label="TestPid1" pid="f" />
+			<node id="i" label="TestPid2" pid="j" />
+			<node id="j" label="TestPid3"/>
 		</nodes>
 		<attributes class="edge" type="dynamic">
 			<attribute id="0" title="weight" type="float"/>

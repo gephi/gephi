@@ -117,7 +117,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (nodeMap.containsKey(nodeDraftImpl.getId())) {
             String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraftImpl.getId());
             report.logIssue(new Issue(message, Level.WARNING));
-            report.log("Duplicated node id=" + nodeDraftImpl.getId() + "label=" + nodeDraftImpl.getLabel() + " is ignored");
+            report.log("Duplicated node id='" + nodeDraftImpl.getId() + "' label='" + nodeDraftImpl.getLabel() + "' is ignored");
             return;
         }
 
@@ -136,8 +136,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 node.setId(id);
                 addNode(node);
                 node.setCreatedAuto(true);
-                report.logIssue(new Issue("Unknow Node id", Level.WARNING));
-                report.log("Automatic node creation from id=" + id);
+                report.logIssue(new Issue("Unknown node id, creates node from id='" + id+"'", Level.INFO));
             } else {
                 String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_UnknowNodeId", id);
                 report.logIssue(new Issue(message, Level.SEVERE));
@@ -425,6 +424,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     break;
                 }
             }
+        }
+
+        if (timeIntervalMin != null || timeIntervalMax != null) {
+            //Print values to report
         }
 
         //Dynamic attributes bounds

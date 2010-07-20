@@ -17,22 +17,18 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.gephi.branding.desktop;
+ */
+package org.gephi.desktop.perspective;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
-import org.gephi.branding.desktop.group.ComponentGroup;
-import org.gephi.branding.desktop.group.LaboratoryGroup;
-import org.gephi.branding.desktop.group.OverviewGroup;
-import org.gephi.branding.desktop.group.PreviewGroup;
+import org.gephi.desktop.perspective.spi.Perspective;
+import org.gephi.desktop.perspective.spi.PerspectiveMember;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -40,9 +36,10 @@ import org.openide.windows.WindowManager;
 //import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.windows.TopComponentGroup;
 
-@ConvertAsProperties(dtd = "-//org.gephi.branding.desktop//Banner//EN",
+@ConvertAsProperties(dtd = "-//org.gephi.desktop.perspective//Banner//EN",
 autostore = false)
 public final class BannerTopComponent extends TopComponent {
 
@@ -50,15 +47,12 @@ public final class BannerTopComponent extends TopComponent {
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "BannerTopComponent";
-    private String selectedGroup;
-    private transient ComponentGroup[] groups;
+    private String selectedPerspective;
     private transient JToggleButton[] buttons;
 
     public BannerTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(BannerTopComponent.class, "CTL_BannerTopComponent"));
-//        setToolTipText(NbBundle.getMessage(BannerTopComponent.class, "HINT_BannerTopComponent"));
-//        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
         putClientProperty(TopComponent.PROP_CLOSING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_DRAGGING_DISABLED, Boolean.TRUE);
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
@@ -70,6 +64,7 @@ public final class BannerTopComponent extends TopComponent {
 
         logoButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
 
@@ -99,72 +94,95 @@ public final class BannerTopComponent extends TopComponent {
     }
 
     private void addGroupTabs() {
+        final Perspective[] perspectives = Lookup.getDefault().lookupAll(Perspective.class).toArray(new Perspective[0]);
+        final PerspectiveMember[] members = Lookup.getDefault().lookupAll(PerspectiveMember.class).toArray(new PerspectiveMember[0]);
 
-        groups = new ComponentGroup[3];
-        groups[0] = new OverviewGroup();
-        groups[1] = new LaboratoryGroup();
-        groups[2] = new PreviewGroup();
-
-        //Sort by priority
-        Arrays.sort(groups, new Comparator<ComponentGroup>() {
-
-            public int compare(ComponentGroup o1, ComponentGroup o2) {
-                return ((Integer) o2.getPriority()).compareTo((Integer) o1.getPriority());
-            }
-        });
-        buttons = new JGroupButton[groups.length];
+        buttons = new JPerspectiveButton[perspectives.length];
         int i = 0;
 
         //Add tabs
-        for (final ComponentGroup group : groups) {
-            JGroupButton toggleButton = new JGroupButton(group.getDisplayName(), group.getIcon());
+        for (final Perspective perspective : perspectives) {
+            JPerspectiveButton toggleButton = new JPerspectiveButton(perspective.getDisplayName(), perspective.getIcon());
             toggleButton.addActionListener(new ActionListener() {
 
+                @Override
                 public void actionPerformed(ActionEvent e) {
-                    for (ComponentGroup g : groups) {
-                        if (g != group) {
-                            TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(g.getGroupName());
+                    //Close other perspective
+                    for (Perspective g : perspectives) {
+                        if (g != perspective) {
+                            TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(g.getName());
                             tpg.close();
                         }
                     }
-                    //Open selected
-                    TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(group.getGroupName());
+                    
+                    //Open perspective
+                    TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(perspective.getName());
                     tpg.open();
-                    selectedGroup = group.getGroupName();
+
+                    //Close members
+                    Perspective closingPerspective = getPerspective(selectedPerspective);
+                    for (PerspectiveMember member : members) {
+                        if (member.close(closingPerspective)) {
+                            if (member instanceof TopComponent) {
+                                ((TopComponent) member).close();
+                            }
+                        }
+                    }
+
+                    //Open members
+                    for (PerspectiveMember member : members) {
+                        if (member.open(perspective)) {
+                            if (member instanceof TopComponent) {
+                                ((TopComponent) member).open();
+                            }
+                        }
+                    }
+
+                    selectedPerspective = perspective.getName();
                 }
             });
-            groupsButtonGroup.add(toggleButton);
+            perspectivesButtonGroup.add(toggleButton);
             buttonsPanel.add(toggleButton);
             buttons[i++] = toggleButton;
         }
 
-        refreshSelectedGroup();
+        refreshSelectedPerspective();
     }
 
-    public void reset() {
-        refreshSelectedGroup();
-        for (final ComponentGroup group : groups) {
-            TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(group.getGroupName());
-            if (group.getGroupName().equals(selectedGroup)) {
-                tpg.open();
-            } else {
-                tpg.close();
-            }
-        }
+    //Not working
+    /*public void reset() {
+    refreshSelectedPerspective();
+    for (final Perspective group : Lookup.getDefault().lookupAll(Perspective.class).toArray(new Perspective[0])) {
+    TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(group.getName());
+    if (group.getName().equals(selectedPerspective)) {
+    tpg.open();
+    } else {
+    tpg.close();
     }
-
-    private void refreshSelectedGroup() {
-        if (selectedGroup == null) {
-            groupsButtonGroup.setSelected(buttons[0].getModel(), true);
-            selectedGroup = groups[0].getDisplayName();
+    }
+    }*/
+    private void refreshSelectedPerspective() {
+        Perspective[] perspectives = Lookup.getDefault().lookupAll(Perspective.class).toArray(new Perspective[0]);
+        if (selectedPerspective == null) {
+            perspectivesButtonGroup.setSelected(buttons[0].getModel(), true);
+            selectedPerspective = perspectives[0].getName();
         } else {
-            for (int j = 0; j < groups.length; j++) {
-                String groupName = groups[j].getGroupName();
-                if (selectedGroup.equals(groupName)) {
-                    groupsButtonGroup.setSelected(buttons[j].getModel(), true);
+            for (int j = 0; j < perspectives.length; j++) {
+                String groupName = perspectives[j].getName();
+                if (selectedPerspective.equals(groupName)) {
+                    perspectivesButtonGroup.setSelected(buttons[j].getModel(), true);
                 }
             }
         }
+    }
+
+    private Perspective getPerspective(String name) {
+        for (Perspective p : Lookup.getDefault().lookupAll(Perspective.class)) {
+            if (p.getName().equals(name)) {
+                return p;
+            }
+        }
+        return null;
     }
 
     /** This method is called from within the constructor to
@@ -176,7 +194,7 @@ public final class BannerTopComponent extends TopComponent {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        groupsButtonGroup = new javax.swing.ButtonGroup();
+        perspectivesButtonGroup = new javax.swing.ButtonGroup();
         mainPanel = new javax.swing.JPanel();
         logoButton = new javax.swing.JButton();
         groupsPanel = new javax.swing.JPanel();
@@ -190,15 +208,15 @@ public final class BannerTopComponent extends TopComponent {
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainPanel.setLayout(new java.awt.GridBagLayout());
 
-        logoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/logo_std.png"))); // NOI18N
+        logoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/perspective/resources/logo_std.png"))); // NOI18N
         logoButton.setToolTipText(org.openide.util.NbBundle.getMessage(BannerTopComponent.class, "BannerTopComponent.logoButton.toolTipText")); // NOI18N
         logoButton.setBorder(null);
         logoButton.setBorderPainted(false);
         logoButton.setContentAreaFilled(false);
         logoButton.setFocusPainted(false);
         logoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        logoButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/logo_glow.png"))); // NOI18N
-        logoButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/logo_glow.png"))); // NOI18N
+        logoButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/perspective/resources/logo_glow.png"))); // NOI18N
+        logoButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/perspective/resources/logo_glow.png"))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -221,8 +239,7 @@ public final class BannerTopComponent extends TopComponent {
         gridBagConstraints.weighty = 1.0;
         groupsPanel.add(buttonsPanel, gridBagConstraints);
 
-        bannerBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/branding/desktop/resources/bannerback.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(bannerBackground, org.openide.util.NbBundle.getMessage(BannerTopComponent.class, "BannerTopComponent.bannerBackground.text")); // NOI18N
+        bannerBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/perspective/resources/bannerback.png"))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -250,10 +267,10 @@ public final class BannerTopComponent extends TopComponent {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bannerBackground;
     private javax.swing.JPanel buttonsPanel;
-    private javax.swing.ButtonGroup groupsButtonGroup;
     private javax.swing.JPanel groupsPanel;
     private javax.swing.JButton logoButton;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.ButtonGroup perspectivesButtonGroup;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -306,7 +323,7 @@ public final class BannerTopComponent extends TopComponent {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
         p.setProperty("version", "1.0");
-        p.setProperty("selectedGroup", selectedGroup);
+        p.setProperty("selectedGroup", selectedPerspective);
     }
 
     Object readProperties(java.util.Properties p) {
@@ -319,8 +336,8 @@ public final class BannerTopComponent extends TopComponent {
 
     private void readPropertiesImpl(java.util.Properties p) {
         String version = p.getProperty("version");
-        selectedGroup = p.getProperty("selectedGroup");
-        refreshSelectedGroup();
+        selectedPerspective = p.getProperty("selectedGroup");
+        refreshSelectedPerspective();
     }
 
     @Override
@@ -328,9 +345,9 @@ public final class BannerTopComponent extends TopComponent {
         return PREFERRED_ID;
     }
 
-    private static class JGroupButton extends JToggleButton {
+    private static class JPerspectiveButton extends JToggleButton {
 
-        public JGroupButton(String text, Icon icon) {
+        public JPerspectiveButton(String text, Icon icon) {
             setText(text);
             setBorder(null);
             setBorderPainted(false);
@@ -340,25 +357,25 @@ public final class BannerTopComponent extends TopComponent {
             setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
             if (UIUtils.isWindowsLookAndFeel()) {
-                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/vista-enabled.png"),
+                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/perspective/resources/vista-enabled.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
-                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/vista-mousover.png"),
+                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/perspective/resources/vista-mousover.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
-                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/vista-selected.png"),
+                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/perspective/resources/vista-selected.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
             } else if (UIUtils.isAquaLookAndFeel()) {
-                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/aqua-enabled.png"),
+                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/perspective/resources/aqua-enabled.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
-                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/aqua-mouseover.png"),
+                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/perspective/resources/aqua-mouseover.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
-                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/aqua-selected.png"),
+                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/perspective/resources/aqua-selected.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
             } else {
-                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-enabled.png"),
+                setIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/perspective/resources/nimbus-enabled.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
-                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-mouseover.png"),
+                setRolloverIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/perspective/resources/nimbus-mouseover.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
-                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/branding/desktop/resources/nimbus-selected.png"),
+                setSelectedIcon(ImageUtilities.image2Icon(ImageUtilities.mergeImages(ImageUtilities.loadImage("org/gephi/desktop/perspective/resources/nimbus-selected.png"),
                         ImageUtilities.icon2Image(icon), 6, 3)));
             }
         }

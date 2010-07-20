@@ -59,7 +59,7 @@ public class ClearColumnData implements AttributeColumnsManipulator {
     public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
         boolean result;
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        result=ac.canChangeColumnData(column);
+        result=ac.canClearColumnData(column);
         return result&&ac.getTableRowsCount(table)>0;//Also make sure that there is at least 1 row
     }
 

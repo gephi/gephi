@@ -315,8 +315,8 @@ public class EdgeDataTable {
                 value=null;//Could not parse
             }
             
-            if(value==null&&column.getIndex()==PropertiesColumn.EDGE_WEIGHT.getIndex()){
-                return;//Do not set a null value to a edge weight. It will crash the visualization.
+            if(value==null&&!attributeColumnsController.canClearColumnData(column)){
+                return;//Do not set a null a value that can't be null (like edge weight).
             }
             edge.getEdgeData().getAttributes().setValue(column.getIndex(), value);
         }

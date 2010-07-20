@@ -1,5 +1,6 @@
 package org.gephi.io.exporter.preview;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
@@ -101,7 +102,7 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
         if (landscape) {
             size = new Rectangle(pageSize.rotate());
         }
-        //size.setBackgroundColor(new BaseColor(controller.getModel().getBackgroundColor()));
+        size.setBackgroundColor(new BaseColor(Lookup.getDefault().lookup(PreviewController.class).getModel().getBackgroundColor()));
         document = new Document(size);
         PdfWriter pdfWriter = PdfWriter.getInstance(document, stream);
         document.open();

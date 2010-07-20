@@ -17,13 +17,13 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
-package org.gephi.io.importer.plugin.file;
+*/
 
-import org.gephi.io.importer.api.FileType;
-import org.gephi.io.importer.spi.FileImporter;
-import org.gephi.io.importer.spi.FileImporterBuilder;
-import org.openide.filesystems.FileObject;
+package org.gephi.desktop.perspective.plugin;
+
+import javax.swing.Icon;
+import org.gephi.desktop.perspective.spi.Perspective;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -31,25 +31,21 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = FileImporterBuilder.class)
-public class ImporterBuilderGEXF implements FileImporterBuilder {
+@ServiceProvider(service = Perspective.class, position=100)
+public class OverviewPerspective implements Perspective {
 
-    public static final String IDENTIFER = "gexf";
-
-    public FileImporter buildImporter() {
-        return new ImporterGEXF2();
+    @Override
+    public Icon getIcon() {
+        return ImageUtilities.loadImageIcon("org/gephi/desktop/perspective/plugin/resources/overview.png", false);
     }
 
+    @Override
+    public String getDisplayName() {
+        return NbBundle.getMessage(PreviewPerspective.class, "OverviewPerspective.name");
+    }
+
+    @Override
     public String getName() {
-        return IDENTIFER;
-    }
-
-    public FileType[] getFileTypes() {
-        FileType ft = new FileType(".gexf", NbBundle.getMessage(getClass(), "fileType_GEXF_Name"));
-        return new FileType[]{ft};
-    }
-
-    public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.getExt().equalsIgnoreCase("gexf");
+        return "OverviewGroup";
     }
 }

@@ -17,16 +17,28 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.exporter.preview;
 
+import java.awt.Color;
 import java.io.File;
+import java.io.FileOutputStream;
+import org.gephi.io.generator.plugin.RandomGraph;
+import org.gephi.io.importer.api.Container;
+import org.gephi.io.importer.api.ContainerFactory;
+import org.gephi.io.importer.api.ImportController;
+import org.gephi.io.processor.plugin.DefaultProcessor;
+import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -55,9 +67,30 @@ public class PDFExporterTest {
 
     @Test
     public void testExport() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.newProject();
+        Workspace workspace = pc.getCurrentWorkspace();
+
+        Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
+        RandomGraph randomGraph = new RandomGraph();
+        randomGraph.generate(container.getLoader());
+
+        //Append container to graph structure
+        ImportController importController = Lookup.getDefault().lookup(ImportController.class);
+        importController.process(container, new DefaultProcessor(), workspace);
+
+        PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
+        Lookup.getDefault().lookup(PreviewController.class).setBackgroundColor(Color.GRAY);
+
         PDFExporter pDFExporter = new PDFExporter();
+
+        pDFExporter.setWorkspace(workspace);
         try {
-            //pDFExporter.exportData(new File("test2.pdf"), null);
+            File file = new File("test.pdf");
+            System.out.println(file.getAbsolutePath());
+            FileOutputStream fos = new FileOutputStream(file);
+            pDFExporter.setOutputStream(fos);
+            pDFExporter.execute();
         } catch (Exception ex) {
             ex.printStackTrace();
             Exceptions.printStackTrace(ex);

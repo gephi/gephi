@@ -72,14 +72,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         return newColumn;
     }
 
-    public void copyColumnDataToOtherColumn(AttributeTable table, AttributeColumn sourceColumn, AttributeColumn targetColumn){
-        if(sourceColumn==targetColumn){
+    public void copyColumnDataToOtherColumn(AttributeTable table, AttributeColumn sourceColumn, AttributeColumn targetColumn) {
+        if (sourceColumn == targetColumn) {
             throw new IllegalArgumentException("Source and target columns can't be equal");
         }
 
         final int sourceColumnIndex = sourceColumn.getIndex();
         final int targetColumnIndex = targetColumn.getIndex();
-        AttributeType targetType=targetColumn.getType();
+        AttributeType targetType = targetColumn.getType();
         if (targetType != sourceColumn.getType()) {
             Object value;
             for (Attributes row : getTableAttributeRows(table)) {
@@ -101,7 +101,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public void clearColumnData(AttributeTable table, AttributeColumn column) {
-        if (canChangeColumnData(column)) {
+        if (canClearColumnData(column)) {
             int columnIndex = column.getIndex();
             for (Attributes attributes : getTableAttributeRows(table)) {
                 attributes.setValue(columnIndex, null);
@@ -178,43 +178,29 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
-    public void clearNodeData(Node node) {
+    public void clearNodeData(Node node, AttributeColumn[] columnsToClear) {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         if (gec.isNodeInGraph(node)) {
-            AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
-            AttributeValue[] values = row.getValues();
-            for (int i = 0; i < values.length; i++) {
-                //Clear all except id and computed attributes:
-                if (canChangeColumnData(values[i].getColumn())) {
-                    row.setValue(i, null);
-                }
-            }
+            clearRowData((AttributeRow) node.getNodeData().getAttributes(), columnsToClear);
         }
     }
 
-    public void clearNodesData(Node[] nodes) {
+    public void clearNodesData(Node[] nodes, AttributeColumn[] columnsToClear) {
         for (Node n : nodes) {
-            clearNodeData(n);
+            clearNodeData(n, columnsToClear);
         }
     }
 
-    public void clearEdgeData(Edge edge) {
+    public void clearEdgeData(Edge edge, AttributeColumn[] columnsToClear) {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         if (gec.isEdgeInGraph(edge)) {
-            AttributeRow row = (AttributeRow) edge.getEdgeData().getAttributes();
-            AttributeValue[] values = row.getValues();
-            for (int i = 0; i < values.length; i++) {
-                //Clear all except id and computed attributes:
-                if (canChangeColumnData(values[i].getColumn())) {
-                    row.setValue(i, null);
-                }
-            }
+            clearRowData((AttributeRow) edge.getEdgeData().getAttributes(), columnsToClear);
         }
     }
 
-    public void clearEdgesData(Edge[] edges) {
+    public void clearEdgesData(Edge[] edges, AttributeColumn[] columnsToClear) {
         for (Edge e : edges) {
-            clearEdgeData(e);
+            clearEdgeData(e, columnsToClear);
         }
     }
 
@@ -270,6 +256,18 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
+    public boolean canClearColumnData(AttributeColumn column) {
+        AttributeUtils au = Lookup.getDefault().lookup(AttributeUtils.class);
+        if (au.isNodeColumn(column)) {
+            //Can clear values of columns with DATA origin and label of nodes:
+            return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.NODE_LABEL.getIndex();
+        } else if (au.isEdgeColumn(column)) {
+            return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.EDGE_LABEL.getIndex();
+        } else {
+            return canChangeGenericColumnData(column);
+        }
+    }
+
     /************Private methods : ************/
     /**
      * Used for iterating through all nodes of the graph
@@ -290,13 +288,37 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     /**
      * Only checks that a column is of type DATA and has a changeable AttributeType. (Does not check if it is the label of nodes/edges table)
      * Used in various methods to not repeat code.
-     * @param column Column to check
-     * @return True if the column data can be changed, false otherwise
      */
     private boolean canChangeGenericColumnData(AttributeColumn column) {
         return column.getOrigin() == AttributeOrigin.DATA && !column.getType().isDynamicType();
     }
 
+    /**
+     * Used to clear all data of a row being able to specify the columns to clear.
+     * Id and computed columns are never cleared.
+     */
+    private void clearRowData(AttributeRow row, AttributeColumn[] columnsToClear) {
+        if (columnsToClear != null) {
+            for (AttributeColumn column : columnsToClear) {
+                //Clear all except id and computed attributes:
+                if (canClearColumnData(column)) {
+                    row.setValue(column.getIndex(), null);
+                }
+            }
+        } else {
+            AttributeValue[] values = row.getValues();
+            for (int i = 0; i < values.length; i++) {
+                //Clear all except id and computed attributes:
+                if (canClearColumnData(values[i].getColumn())) {
+                    row.setValue(i, null);
+                }
+            }
+        }
+    }
+
+    /**
+     * Used to negate the values of a single boolean columns
+     */
     private void negateColumnBooleanType(AttributeTable table, AttributeColumn column) {
         final int columnIndex = column.getIndex();
         Object value;
@@ -310,6 +332,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
+    /**
+     * Used to negate all values of a list of boolean values column.
+     */
     private void negateColumnListBooleanType(AttributeTable table, AttributeColumn column) {
         final int columnIndex = column.getIndex();
         Object value;

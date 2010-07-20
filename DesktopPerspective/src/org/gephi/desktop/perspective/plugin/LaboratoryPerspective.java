@@ -18,40 +18,33 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.gephi.branding.desktop.actions;
+package org.gephi.desktop.perspective.plugin;
 
-import java.awt.event.ActionEvent;
-import org.gephi.branding.desktop.BannerTopComponent;
-import org.openide.util.HelpCtx;
+import javax.swing.Icon;
+import org.gephi.desktop.perspective.spi.Perspective;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.SystemAction;
-import org.openide.windows.WindowManager;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class ResetWindows extends SystemAction {
+@ServiceProvider(service = Perspective.class, position = 200)
+public class LaboratoryPerspective implements Perspective {
 
-    public void actionPerformed(ActionEvent e) {
-        BannerTopComponent banner = (BannerTopComponent) WindowManager.getDefault().findTopComponent("BannerTopComponent");
-        if (banner != null) {
-            banner.reset();
-        }
+    @Override
+    public Icon getIcon() {
+        return ImageUtilities.loadImageIcon("org/gephi/desktop/perspective/plugin/resources/laboratory.png", false);
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
+    public String getDisplayName() {
+        return NbBundle.getMessage(PreviewPerspective.class, "LaboratoryPerspective.name");
     }
 
     @Override
     public String getName() {
-        return NbBundle.getMessage(ResetWindows.class, "CTL_ResetWindows");
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
+        return "LaboratoryGroup";
     }
 }

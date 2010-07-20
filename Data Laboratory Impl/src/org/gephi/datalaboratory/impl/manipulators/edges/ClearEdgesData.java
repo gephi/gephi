@@ -47,7 +47,7 @@ public class ClearEdgesData implements EdgesManipulator {
     public void execute() {
         if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearEdgesData.class, "ClearEdgesData.confirmation.message"), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-            ac.clearEdgesData(edges);
+            ac.clearEdgesData(edges,null);
             Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
         }
     }

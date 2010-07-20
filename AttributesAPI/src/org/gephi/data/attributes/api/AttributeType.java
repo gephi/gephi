@@ -22,6 +22,7 @@ package org.gephi.data.attributes.api;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.util.regex.Pattern;
 import org.gephi.data.attributes.type.DynamicByte;
 import org.gephi.data.attributes.type.DynamicShort;
 import org.gephi.data.attributes.type.DynamicInteger;
@@ -323,6 +324,8 @@ public enum AttributeType {
      * @return String without dot and decimal digits.
      */
     private String removeDecimalDigitsFromString(String s){
-        return s.replaceAll("\\.[0-9]*", "");
+        return removeDecimalDigitsFromStringPattern.matcher(s).replaceAll("");
     }
+
+    private static final Pattern removeDecimalDigitsFromStringPattern=Pattern.compile("\\.[0-9]*");
 }

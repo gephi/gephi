@@ -47,7 +47,7 @@ public class ClearNodesData implements NodesManipulator {
     public void execute() {
         if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.confirmation.message"), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-            ac.clearNodesData(nodes);
+            ac.clearNodesData(nodes,null);
             Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
         }
     }

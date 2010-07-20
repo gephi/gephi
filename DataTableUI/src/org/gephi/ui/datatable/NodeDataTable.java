@@ -333,6 +333,9 @@ public class NodeDataTable {
             } catch (Exception ex) {
                 value=null;//Could not parse
             }
+            if(value==null&&!attributeColumnsController.canClearColumnData(column)){
+                return;//Do not set a null value that can't be null.
+            }
             graphNode.getNodeData().getAttributes().setValue(column.getIndex(), value);
         }
 

@@ -121,27 +121,35 @@ public interface AttributeColumnsController {
 
     /**
      * Clears all node attributes except computed attributes and id, checking first that the node is in the graph.
+     * Columns to clear can be specified, but id and computed columns will not be cleared.
      * @param node Node to clear data
+     * @param columnsToClear Columns of the node to clear. All columns will be cleared if it is null
      */
-    void clearNodeData(Node node);
+    void clearNodeData(Node node,AttributeColumn[] columnsToClear);
 
     /**
      * Clears all the nodes attributes except computed attributes and id, checking first that the nodes are in the graph.
+     * Columns to clear can be specified, but id and computed columns will not be cleared.
      * @param nodes Array of nodes to clear data
+     * @param columnsToClear Columns of the nodes to clear. All columns will be cleared if it is null
      */
-    void clearNodesData(Node[] nodes);
+    void clearNodesData(Node[] nodes,AttributeColumn[] columnsToClear);
 
     /**
      * Clears all edge attributes except computed attributes and id, checking first that the edge is in the graph.
+     * Columns to clear can be specified, but id and computed columns will not be cleared.
      * @param node Edge to clear data
+     * @param columnsToClear Columns of the edge to clear. All columns will be cleared if it is null
      */
-    void clearEdgeData(Edge edge);
+    void clearEdgeData(Edge edge,AttributeColumn[] columnsToClear);
 
     /**
      * Clears all the edges attributes except computed attributes and id, checking first that the edges are in the graph.
+     * Columns to clear can be specified, but id and computed columns will not be cleared.
      * @param nodes Array of edges to clear data
+     * @param columnsToClear Columns of the edges to clear. All columns will be cleared if it is null
      */
-    void clearEdgesData(Edge[] edges);
+    void clearEdgesData(Edge[] edges,AttributeColumn[] columnsToClear);
 
     /**
      * Returns all rows of a given table.
@@ -181,11 +189,21 @@ public interface AttributeColumnsController {
 
     /**
      * Indicates if the Data Laboratory API behavious allows to change a value of the given column of a table.
-     * The behaviour is: Only values of columns with AttributeOrigin of type DATA or a node/edge label column can be changed.
+     * The behaviour is: Only values of columns with AttributeOrigin of type DATA or a node/edge label and label weight column can be changed. (but weight can't be null. see <code>canClearColumnData</code> method).
      * Also, columns with a <code>DYNAMIC</code> or <code>TIME_INTERVAL</code> AttributeType are not allowed to be changed since they are only used for dynamic attributes purposes.
      * If table is not nodes or edges table, it will not be checked if it is the label column.
      * @param column Column to theck its values can be changed
      * @return True if the column values can be changed, false otherwise
      */
     boolean canChangeColumnData(AttributeColumn column);
+
+    /**
+     * Indicates if the Data Laboratory API behavious allows to set as null a value of the given column of a table.
+     * The behaviour is: Only values of columns with AttributeOrigin of type DATA or a node/edge label column can be set to null.
+     * Also, columns with a <code>DYNAMIC</code> or <code>TIME_INTERVAL</code> AttributeType are not allowed to be changed since they are only used for dynamic attributes purposes.
+     * If table is not nodes or edges table, it will not be checked if it is the label column.
+     * @param column Column to theck its values can be changed
+     * @return True if the column values can be changed, false otherwise
+     */
+    boolean canClearColumnData(AttributeColumn column);
 }
