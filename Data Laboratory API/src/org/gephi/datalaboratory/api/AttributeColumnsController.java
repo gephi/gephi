@@ -88,6 +88,15 @@ public interface AttributeColumnsController {
     void deleteAttributeColumn(AttributeTable table, AttributeColumn column);
 
     /**
+     * Fills the data values of a given column of a table with a value as a String,
+     * parsing it for the AttributeType of the column.
+     * @param table Table of the column
+     * @param column Column to fill
+     * @param value String representation of the value for each row of the column
+     */
+    void fillColumnWithValue(AttributeTable table, AttributeColumn column, String value);
+
+    /**
      * Clears all rows data for a given column of a table (nodes table or edges table)
      * @param table Table to clear column data
      * @param column Column to clear data

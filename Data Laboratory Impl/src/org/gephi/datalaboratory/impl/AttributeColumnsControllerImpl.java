@@ -109,6 +109,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
+    public void fillColumnWithValue(AttributeTable table, AttributeColumn column, String value){
+        if(canChangeColumnData(column)){
+            for(Attributes row:getTableAttributeRows(table)){
+                setAttributeValue(value, row, column);
+            }
+        }
+    }
+
     public void clearColumnData(AttributeTable table, AttributeColumn column) {
         if (canClearColumnData(column)) {
             int columnIndex = column.getIndex();

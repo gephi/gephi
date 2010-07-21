@@ -21,11 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns;
 
 import java.awt.Image;
+import javax.swing.JOptionPane;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataTablesController;
-import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.CopyDataToOtherColumnUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.openide.util.ImageUtilities;
@@ -34,24 +34,22 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * AttributeColumnsManipulator that copies data from a AttributeColumn of a AttributeTable to other AttributeColumn.
- * Allows the user to select the target column in the UI
+ * AttributeColumnsManipulator that fills an AttributeColumn with the value that the user provides in the UI.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service = AttributeColumnsManipulator.class)
-public class CopyDataToOtherColumn implements AttributeColumnsManipulator {
-
-    AttributeColumn targetColumn;
+public class FillColumnWithValue implements AttributeColumnsManipulator {
 
     public void execute(AttributeTable table, AttributeColumn column) {
-        if (targetColumn != null && targetColumn != column) {
-            Lookup.getDefault().lookup(AttributeColumnsController.class).copyColumnDataToOtherColumn(table, column, targetColumn);
+        String value = JOptionPane.showInputDialog(null,NbBundle.getMessage(FillColumnWithValue.class, "FillColumnWithValue.inputDialog.text"),getName(),JOptionPane.QUESTION_MESSAGE);
+        if (value != null) {
+            Lookup.getDefault().lookup(AttributeColumnsController.class).fillColumnWithValue(table, column, value);
             Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
         }
     }
 
     public String getName() {
-        return NbBundle.getMessage(CopyDataToOtherColumn.class, "CopyDataToOtherColumn.name");
+        return NbBundle.getMessage(FillColumnWithValue.class, "FillColumnWithValue.name");
     }
 
     public String getDescription() {
@@ -59,11 +57,11 @@ public class CopyDataToOtherColumn implements AttributeColumnsManipulator {
     }
 
     public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
-        return true;
+        return Lookup.getDefault().lookup(AttributeColumnsController.class).canChangeColumnData(column);
     }
 
     public AttributeColumnsManipulatorUI getUI() {
-        return new CopyDataToOtherColumnUI();
+        return null;
     }
 
     public int getType() {
@@ -71,18 +69,10 @@ public class CopyDataToOtherColumn implements AttributeColumnsManipulator {
     }
 
     public int getPosition() {
-        return 200;
+        return 300;
     }
 
     public Image getIcon() {
         return ImageUtilities.loadImage("org/gephi/datalaboratory/impl/manipulators/resources/table-duplicate-column.png");
-    }
-
-    public AttributeColumn getTargetColumn() {
-        return targetColumn;
-    }
-
-    public void setTargetColumn(AttributeColumn targetColumn) {
-        this.targetColumn = targetColumn;
     }
 }

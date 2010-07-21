@@ -68,7 +68,7 @@ public class DuplicateColumn implements AttributeColumnsManipulator {
     }
 
     public int getPosition() {
-        return 200;
+        return 400;
     }
 
     public Image getIcon() {
