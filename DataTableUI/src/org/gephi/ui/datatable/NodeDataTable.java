@@ -74,11 +74,11 @@ public class NodeDataTable {
     private Pattern pattern;
     private DataTablesModel dataTablesModel;
     Node[] selectedNodes;
-
     private AttributeColumnsController attributeColumnsController;
+    private static final int FAKE_COLUMNS_COUNT=1;
 
     public NodeDataTable() {
-        attributeColumnsController=Lookup.getDefault().lookup(AttributeColumnsController.class);
+        attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         outlineTable = new Outline();
 
@@ -327,16 +327,7 @@ public class NodeDataTable {
 
         public void setValueFor(ImmutableTreeNode node, Object value) {
             Node graphNode = node.getNode();
-            String str = (String) value;//Treat all columns as Strings
-            try {
-                value = column.getType().parse(str);
-            } catch (Exception ex) {
-                value=null;//Could not parse
-            }
-            if(value==null&&!attributeColumnsController.canClearColumnData(column)){
-                return;//Do not set a null value that can't be null.
-            }
-            graphNode.getNodeData().getAttributes().setValue(column.getIndex(), value);
+            attributeColumnsController.setAttributeValue(value, graphNode.getNodeData().getAttributes(), column);
         }
 
         public boolean isEditable() {
@@ -442,9 +433,12 @@ public class NodeDataTable {
             }
 
             //Add AttributeValues manipulators submenu:
-            AttributeRow row=(AttributeRow) clickedNode.getNodeData().getAttributes();
-            AttributeColumn column=Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumn(outlineTable.convertColumnIndexToModel(outlineTable.columnAtPoint(p)));
-            contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+            AttributeRow row = (AttributeRow) clickedNode.getNodeData().getAttributes();
+            int realColumnIndex=outlineTable.convertColumnIndexToModel(outlineTable.columnAtPoint(p))-FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
+            AttributeColumn column = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumn(realColumnIndex);
+            if (column != null) {
+                contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+            }
             return contextMenu;
         }
     }

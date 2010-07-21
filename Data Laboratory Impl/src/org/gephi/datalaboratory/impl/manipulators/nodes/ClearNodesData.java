@@ -22,7 +22,6 @@ package org.gephi.datalaboratory.impl.manipulators.nodes;
 
 import java.util.ArrayList;
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.datalaboratory.api.AttributeColumnsController;

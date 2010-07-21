@@ -54,6 +54,22 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeColumnsController.class)
 public class AttributeColumnsControllerImpl implements AttributeColumnsController {
 
+    public boolean setAttributeValue(Object value, Attributes row, AttributeColumn column) {
+        AttributeType targetType = column.getType();
+        try {
+            value = targetType.parse(value.toString());//Try to convert to target type
+        } catch (Exception ex) {
+            value = null;//Could not parse
+        }
+
+        if (value == null && !canClearColumnData(column)) {
+            return false;//Do not set a null value when the column can't have a null value.
+        } else {
+            row.setValue(column.getIndex(), value);
+            return true;
+        }
+    }
+
     public AttributeColumn addAttributeColumn(AttributeTable table, String title, AttributeType type) {
         String columnId = String.valueOf(table.countColumns() + 1);
         title = title != null ? title : "";
@@ -84,14 +100,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             Object value;
             for (Attributes row : getTableAttributeRows(table)) {
                 value = row.getValue(sourceColumnIndex);
-                if (value != null) {
-                    try {
-                        value = targetType.parse(value.toString());//Try to convert to target type
-                    } catch (Exception ex) {
-                        value = null;//Could not parse
-                    }
-                }
-                row.setValue(targetColumnIndex, value);
+                setAttributeValue(value, row, targetColumn);
             }
         } else {
             for (Attributes row : getTableAttributeRows(table)) {

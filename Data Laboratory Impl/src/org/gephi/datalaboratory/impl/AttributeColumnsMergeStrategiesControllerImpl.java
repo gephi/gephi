@@ -181,10 +181,10 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
         final int newColumnIndex = newColumn.getIndex();
 
-        BigDecimal sum;
+        BigDecimal min;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            sum = MathUtils.minValue(getRowNumbersForColumns(row, columnsToMerge));
-            row.setValue(newColumnIndex, sum);
+            min = MathUtils.minValue(getRowNumbersForColumns(row, columnsToMerge));
+            row.setValue(newColumnIndex, min);
         }
 
         return newColumn;
@@ -198,10 +198,10 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
         final int newColumnIndex = newColumn.getIndex();
 
-        BigDecimal sum;
+        BigDecimal max;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            sum = MathUtils.maxValue(getRowNumbersForColumns(row, columnsToMerge));
-            row.setValue(newColumnIndex, sum);
+            max = MathUtils.maxValue(getRowNumbersForColumns(row, columnsToMerge));
+            row.setValue(newColumnIndex, max);
         }
 
         return newColumn;

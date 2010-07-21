@@ -37,6 +37,17 @@ import org.gephi.graph.api.Node;
 public interface AttributeColumnsController {
 
     /**
+     * Sets a value to the given row,column using the toString representation of the object.
+     * Takes care to avoid parsing exceptions of the target column type.
+     * Also does not set a null value to a column that can't have null values if the given object is null or the parse fails.
+     * @param value Value to set
+     * @param row Row
+     * @param column Column
+     * @return True if the value was set, false otherwise
+     */
+    boolean setAttributeValue(Object value, Attributes row, AttributeColumn column);
+
+    /**
      * Adds a new column to the specified table with the given id, title and type of column.
      * The id of the column will be set to the number of columns.
      * The AttributeOrigin of the column will be set to DATA.

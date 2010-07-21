@@ -83,10 +83,10 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         AttributeTable table;
         AttributeColumn column;
         if (result.getFoundNode() != null) {
-            table= ac.getModel().getNodeTable();
+            table = ac.getModel().getNodeTable();
             column = table.getColumn(result.getFoundColumnIndex());
         } else {
-            table= ac.getModel().getEdgeTable();
+            table = ac.getModel().getEdgeTable();
             column = table.getColumn(result.getFoundColumnIndex());
         }
         return Lookup.getDefault().lookup(AttributeColumnsController.class).canChangeColumnData(column);
@@ -104,6 +104,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         Object value;
         String str;
         Attributes attributes;
+        AttributeColumn column;
         AttributeType type;
 
         if (!result.getSearchOptions().isUseRegexReplaceMode()) {
@@ -114,10 +115,12 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
             //Get value to re-match and replace:
             if (result.getFoundNode() != null) {
                 attributes = result.getFoundNode().getNodeData().getAttributes();
-                type = ac.getModel().getNodeTable().getColumn(result.getFoundColumnIndex()).getType();
+                column = ac.getModel().getNodeTable().getColumn(result.getFoundColumnIndex());
+                type = column.getType();
             } else {
                 attributes = result.getFoundEdge().getEdgeData().getAttributes();
-                type = ac.getModel().getEdgeTable().getColumn(result.getFoundColumnIndex()).getType();
+                column = ac.getModel().getEdgeTable().getColumn(result.getFoundColumnIndex());
+                type = column.getType();
             }
             value = attributes.getValue(result.getFoundColumnIndex());
             str = value != null ? value.toString() : "";
@@ -132,12 +135,7 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
                 str = str.substring(0, result.getStart()) + sb.toString();
 
                 result.getSearchOptions().setRegionStart(result.getStart() + replaceLong);
-                try {
-                    value = type.parse(str);
-                } catch (Exception ex) {
-                    value = null;
-                }
-                attributes.setValue(result.getFoundColumnIndex(), value);
+                Lookup.getDefault().lookup(AttributeColumnsController.class).setAttributeValue(str, attributes, column);
                 return findNext(result);//Go to next search result
             } else {
                 //Data has changed and the replacement can't be done, continue finding.

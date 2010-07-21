@@ -22,8 +22,6 @@ package org.gephi.ui.datatable;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -32,7 +30,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
-import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.RowFilter;
 import javax.swing.event.PopupMenuEvent;
@@ -66,11 +63,11 @@ public class EdgeDataTable {
     private PropertyEdgeDataColumn[] propertiesColumns;
     private RowFilter rowFilter;
     private Edge[] selectedEdges;
-
     private AttributeColumnsController attributeColumnsController;
+    private static final int FAKE_COLUMNS_COUNT=3;
 
     public EdgeDataTable() {
-        attributeColumnsController=Lookup.getDefault().lookup(AttributeColumnsController.class);
+        attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         table = new JXTable();
         table.setHighlighters(HighlighterFactory.createAlternateStriping());
@@ -79,7 +76,7 @@ public class EdgeDataTable {
         table.setRowFilter(rowFilter);
         table.setHorizontalScrollEnabled(true);
 
-        propertiesColumns = new PropertyEdgeDataColumn[3];
+        propertiesColumns = new PropertyEdgeDataColumn[FAKE_COLUMNS_COUNT];
 
         propertiesColumns[0] = new PropertyEdgeDataColumn(NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.source.column.text")) {
 
@@ -193,7 +190,7 @@ public class EdgeDataTable {
     public void scrollToFirstEdgeSelected() {
         int row = table.getSelectedRow();
         if (row != -1) {
-            Rectangle rect =table.getCellRect(row, 0, true);
+            Rectangle rect = table.getCellRect(row, 0, true);
             table.scrollRectToVisible(rect);
         }
     }
@@ -310,17 +307,7 @@ public class EdgeDataTable {
         }
 
         public void setValueFor(Edge edge, Object value) {
-            String str=(String) value;//Treat all columns as Strings
-            try {
-                value = column.getType().parse(str);
-            } catch (Exception ex) {
-                value=null;//Could not parse
-            }
-            
-            if(value==null&&!attributeColumnsController.canClearColumnData(column)){
-                return;//Do not set a null a value that can't be null (like edge weight).
-            }
-            edge.getEdgeData().getAttributes().setValue(column.getIndex(), value);
+            attributeColumnsController.setAttributeValue(value, edge.getEdgeData().getAttributes(), column);
         }
 
         public boolean isEditable() {
@@ -415,9 +402,12 @@ public class EdgeDataTable {
             }
 
             //Add AttributeValues manipulators submenu:
-            AttributeRow row=(AttributeRow) clickedEdge.getEdgeData().getAttributes();
-            AttributeColumn column=Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable().getColumn(table.convertColumnIndexToModel(table.columnAtPoint(p)));
-            contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+            AttributeRow row = (AttributeRow) clickedEdge.getEdgeData().getAttributes();
+            int realColumnIndex=table.convertColumnIndexToModel(table.columnAtPoint(p))-FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
+            AttributeColumn column = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable().getColumn(realColumnIndex);
+            if (column != null) {
+                contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+            }
             return contextMenu;
         }
     }

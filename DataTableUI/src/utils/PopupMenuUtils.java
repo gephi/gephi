@@ -29,6 +29,7 @@ import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.attributevalues.AttributeValueManipulator;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -62,6 +63,7 @@ public class PopupMenuUtils {
     public static JMenu createSubMenuFromRowColumn(AttributeRow row, AttributeColumn column) {
         DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
         JMenu subMenu = new JMenu(NbBundle.getMessage(PopupMenuUtils.class, "Cell.Popup.subMenu.text"));
+        subMenu.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/datatable/resources/table-select.png", true));
 
         Integer lastManipulatorType = null;
         for (AttributeValueManipulator am : dlh.getAttributeValueManipulators()) {
