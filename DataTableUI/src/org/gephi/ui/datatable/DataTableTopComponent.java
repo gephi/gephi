@@ -847,7 +847,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
      */
     class RefreshOnceHelperThread extends Thread {
 
-        private static final int CHECK_TIME_INTERVAL = 50;//50 ms.
+        private static final int CHECK_TIME_INTERVAL = 100;//100 ms.
         private boolean moreEvents = false;
 
         @Override

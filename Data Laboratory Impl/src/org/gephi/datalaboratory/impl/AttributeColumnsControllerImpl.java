@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,10 +35,12 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.type.BooleanList;
+import org.gephi.data.attributes.type.NumberList;
 import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.GraphElementsController;
+import org.gephi.datalaboratory.api.utils.MathUtils;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
@@ -285,7 +288,65 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
+    public BigDecimal[] getNumberOrNumberListColumnStatistics(AttributeTable table, AttributeColumn column){
+        BigDecimal[] statistics=new BigDecimal[5];
+        Number[] columnNumbers=getColumnNumbers(table, column);
+        statistics[0]=MathUtils.average(columnNumbers);
+        statistics[1]=MathUtils.median(columnNumbers);
+        statistics[2]=MathUtils.sum(columnNumbers);
+        statistics[3]=MathUtils.minValue(columnNumbers);
+        statistics[4]=MathUtils.maxValue(columnNumbers);
+        return statistics;
+    }
+
+    public Number[] getColumnNumbers(AttributeTable table, AttributeColumn column) {
+        AttributeUtils attributeUtils=AttributeUtils.getDefault();
+        if (!attributeUtils.isNumberOrNumberListColumn(column)) {
+            throw new IllegalArgumentException("The column has to be a number or number list column");
+        }
+
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        ArrayList<Number> numbers = new ArrayList<Number>();
+        final int columnIndex = column.getIndex();
+        Number number;
+        if (attributeUtils.isNumberColumn(column)) {//Number column
+            for (Attributes row : ac.getTableAttributeRows(table)) {
+                number = (Number) row.getValue(columnIndex);
+                if (number != null) {
+                    numbers.add(number);
+                }
+            }
+        } else {//Number list column
+            for (Attributes row : ac.getTableAttributeRows(table)) {
+                numbers.addAll(getNumberListColumnNumbers(row, column));
+            }
+        }
+
+        return numbers.toArray(new Number[0]);
+    }
+
+    public Number[] getRowNumbers(Attributes row, AttributeColumn[] columns) {
+        AttributeUtils attributeUtils = AttributeUtils.getDefault();
+        checkColumnsAreNumberOrNumberList(columns);
+
+        ArrayList<Number> numbers = new ArrayList<Number>();
+        Number number;
+        for (AttributeColumn column : columns) {
+            if (attributeUtils.isNumberColumn(column)) {//Single number column:
+                number = (Number) row.getValue(column.getIndex());
+                if (number != null) {
+                    numbers.add(number);
+                }
+            } else {//Number list column:
+                numbers.addAll(getNumberListColumnNumbers(row, column));
+            }
+        }
+
+        return numbers.toArray(new Number[0]);
+    }
+
     /************Private methods : ************/
+    
     /**
      * Used for iterating through all nodes of the graph
      * @return Array with all graph nodes
@@ -367,6 +428,35 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 }
                 row.setValue(columnIndex, new BooleanList(newValues));
             }
+        }
+    }
+
+    /**
+     * Used for obtaining a list of the numbers of row of a number list column.
+     */
+    private ArrayList<Number> getNumberListColumnNumbers(Attributes row, AttributeColumn column) {
+        if (!AttributeUtils.getDefault().isNumberListColumn(column)) {
+            throw new IllegalArgumentException("Column must be a number list column");
+        }
+
+        ArrayList<Number> numbers = new ArrayList<Number>();
+        NumberList list = (NumberList) row.getValue(column.getIndex());
+        if (list == null) {
+            return numbers;
+        }
+        Number n;
+        for (int i = 0; i < list.size(); i++) {
+            n = (Number) list.getItem(i);
+            if (n != null) {
+                numbers.add((Number) n);
+            }
+        }
+        return numbers;
+    }
+
+    private void checkColumnsAreNumberOrNumberList(AttributeColumn[] columns) {
+        if (columns == null || !AttributeUtils.getDefault().areAllNumberOrNumberListColumns(columns)) {
+            throw new IllegalArgumentException("All columns have to be number or number list columns and can't be null");
         }
     }
 }

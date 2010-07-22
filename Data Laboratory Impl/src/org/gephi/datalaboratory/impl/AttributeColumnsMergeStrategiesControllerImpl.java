@@ -21,15 +21,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
-import org.gephi.data.attributes.type.NumberList;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
-import org.gephi.datalaboratory.impl.utils.MathUtils;
+import org.gephi.datalaboratory.api.utils.MathUtils;
 import org.gephi.graph.api.Attributes;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -132,7 +130,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         BigDecimal average;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            average = MathUtils.average(getRowNumbersForColumns(row, columnsToMerge));
+            average = MathUtils.average(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, average);
         }
 
@@ -149,7 +147,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         BigDecimal median;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            median = MathUtils.median(getRowNumbersForColumns(row, columnsToMerge));
+            median = MathUtils.median(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, median);
         }
 
@@ -166,7 +164,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         BigDecimal sum;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            sum = MathUtils.sum(getRowNumbersForColumns(row, columnsToMerge));
+            sum = MathUtils.sum(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, sum);
         }
 
@@ -183,7 +181,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         BigDecimal min;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            min = MathUtils.minValue(getRowNumbersForColumns(row, columnsToMerge));
+            min = MathUtils.minValue(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, min);
         }
 
@@ -200,7 +198,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         BigDecimal max;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            max = MathUtils.maxValue(getRowNumbersForColumns(row, columnsToMerge));
+            max = MathUtils.maxValue(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, max);
         }
 
@@ -208,46 +206,6 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
     }
 
     /*************Private methods:*************/
-
-    private Number[] getRowNumbersForColumns(Attributes row, AttributeColumn[] columns) {
-        AttributeUtils attributeUtils = AttributeUtils.getDefault();
-        checkColumnsAreNumberOrNumberList(columns);
-
-        ArrayList<Number> numbers = new ArrayList<Number>();
-        Number n;
-        for (AttributeColumn column : columns) {
-            if (attributeUtils.isNumberColumn(column)) {//Single number column:
-                n = (Number) row.getValue(column.getIndex());
-                if (n != null) {
-                    numbers.add(n);
-                }
-            } else {//Number list column:
-                numbers.addAll(getNumberListColumnNumbers(row, column));
-            }
-        }
-
-        return numbers.toArray(new Number[0]);
-    }
-
-    private ArrayList<Number> getNumberListColumnNumbers(Attributes row, AttributeColumn column) {
-        if (!AttributeUtils.getDefault().isNumberListColumn(column)) {
-            throw new IllegalArgumentException("Column must be a number list column");
-        }
-
-        ArrayList<Number> numbers = new ArrayList<Number>();
-        NumberList list = (NumberList) row.getValue(column.getIndex());
-        if (list == null) {
-            return numbers;
-        }
-        Number n;
-        for (int i = 0; i < list.size(); i++) {
-            n = (Number) list.getItem(i);
-            if (n != null) {
-                numbers.add((Number) n);
-            }
-        }
-        return numbers;
-    }
 
     private void checkTableAndColumnsAreNumberOrNumberList(AttributeTable table, AttributeColumn[] columns) {
         if (table == null) {
@@ -258,7 +216,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
     private void checkColumnsAreNumberOrNumberList(AttributeColumn[] columns) {
         if (columns == null || !AttributeUtils.getDefault().areAllNumberOrNumberListColumns(columns)) {
-            throw new IllegalArgumentException("All columns have to be number or number list and table or columns can't be null");
+            throw new IllegalArgumentException("All columns have to be number or number list columns and can't be null");
         }
     }
 }

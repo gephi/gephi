@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.api;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -226,4 +227,35 @@ public interface AttributeColumnsController {
      * @return True if the column values can be changed, false otherwise
      */
     boolean canClearColumnData(AttributeColumn column);
+
+    /**
+     * Calculates all at once the average, median, sum, minimum and maximum values from a number/number list column using MathUtils class.
+     * Return an array with length=5 of BigDecimal numbers with the results in the following order: average, median, sum, minimumValue and maximumValue.
+     * The column can only be a number/number list column.
+     * Otherwise, a IllegalArgumentException will be thrown.
+     * @param table Table of the column
+     * @param column Column to get statistics
+     * @return Array with statistics
+     */
+    BigDecimal[] getNumberOrNumberListColumnStatistics(AttributeTable table, AttributeColumn column);
+
+    /**
+     * Prepares an array with all not null numbers of all the rows of a given column.
+     * The column can only be a number/number list column.
+     * Otherwise, a IllegalArgumentException will be thrown.
+     * @param table Table of the column to get numbers
+     * @param column Column to get numbers
+     * @return Array with all numbers.
+     */
+    public Number[] getColumnNumbers(AttributeTable table, AttributeColumn column);
+
+    /**
+     * Prepares an array with all not null numbers of a row using only the given columns.
+     * The columns can only be a number/number list columns (in any combination).
+     * Otherwise, a IllegalArgumentException will be thrown.
+     * @param row Row to get numbers
+     * @param columns Columns of the row to use
+     * @return Array with all numbers
+     */
+    public Number[] getRowNumbers(Attributes row, AttributeColumn[] columns);
 }

@@ -31,7 +31,7 @@ import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.api.SearchReplaceController;
 import org.gephi.datalaboratory.api.SearchReplaceController.SearchOptions;
 import org.gephi.datalaboratory.api.SearchReplaceController.SearchResult;
-import org.gephi.datalaboratory.impl.utils.HTMLEscape;
+import org.gephi.datalaboratory.api.utils.HTMLEscape;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;

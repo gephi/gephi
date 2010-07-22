@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl.utils;
 
+import org.gephi.datalaboratory.api.utils.MathUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.math.BigDecimal;
