@@ -103,7 +103,8 @@ public class GraphDistance implements Statistics, LongTask {
      * 
      * @param graphModel
      */
-    public void brandes(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(Graph graph, AttributeModel attributeModel) {
+        mIsCanceled = false;
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn eccentricityCol = nodeTable.getColumn(ECCENTRICITY);
         AttributeColumn closenessCol = nodeTable.getColumn(CLOSENESS);
@@ -116,13 +117,6 @@ public class GraphDistance implements Statistics, LongTask {
         }
         if (betweenessCol == null) {
             betweenessCol = nodeTable.addColumn(BETWEENNESS, "Betweenness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        }
-
-        Graph graph = null;
-        if (mDirected) {
-            graph = graphModel.getDirectedGraphVisible();
-        } else {
-            graph = graphModel.getUndirectedGraphVisible();
         }
 
         graph.readLock();
@@ -258,8 +252,13 @@ public class GraphDistance implements Statistics, LongTask {
      * @param graphModel
      */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        mIsCanceled = false;
-        brandes(graphModel, attributeModel);
+        Graph graph = null;
+        if (mDirected) {
+            graph = graphModel.getDirectedGraphVisible();
+        } else {
+            graph = graphModel.getUndirectedGraphVisible();
+        }
+        execute(graph, attributeModel);
     }
 
     /**

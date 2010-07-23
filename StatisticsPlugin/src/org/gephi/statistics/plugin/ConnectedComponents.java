@@ -35,6 +35,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -48,7 +49,6 @@ public class ConnectedComponents implements Statistics, LongTask {
 
     public static final String WEAKLY = "componentnumber";
     public static final String STRONG = "strongcompnum";
-
     private boolean mDirected;
     private ProgressTicket mProgress;
     private boolean mIsCanceled;
@@ -58,15 +58,16 @@ public class ConnectedComponents implements Statistics, LongTask {
     int count;
 
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        count = 1;
-       
-        weaklyConnected(graphModel, attributeModel);
+
+        UndirectedGraph undirectedGraph = graphModel.getUndirectedGraphVisible();
+        weaklyConnected(undirectedGraph, attributeModel);
         if (mDirected) {
-            top_tarjans(graphModel, attributeModel);
+            DirectedGraph directedGraph = graphModel.getDirectedGraphVisible();
+            top_tarjans(directedGraph, attributeModel);
         }
     }
 
-    public void weaklyConnected(GraphModel graphModel, AttributeModel attributeModel) {
+    public void weaklyConnected(UndirectedGraph graph, AttributeModel attributeModel) {
         mIsCanceled = false;
         mComponentCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
@@ -74,9 +75,6 @@ public class ConnectedComponents implements Statistics, LongTask {
         if (componentCol == null) {
             componentCol = nodeTable.addColumn(WEAKLY, "Component ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
-
-        Graph graph = graphModel.getUndirectedGraphVisible();
-        
 
         graph.readLock();
         mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
@@ -123,8 +121,8 @@ public class ConnectedComponents implements Statistics, LongTask {
                 component.add(u);
 
                 //Iterate over all of u's neighbors
-                EdgeIterable edgeIter =  graph.getEdges(u);
-                
+                EdgeIterable edgeIter = graph.getEdges(u);
+
                 //For each neighbor
                 for (Edge edge : edgeIter) {
                     Node reachable = graph.getOpposite(u, edge);
@@ -151,8 +149,8 @@ public class ConnectedComponents implements Statistics, LongTask {
         graph.readUnlock();
     }
 
-    public void top_tarjans(GraphModel graphModel, AttributeModel attributeModel) {
-        mIsCanceled = false;
+    public void top_tarjans(DirectedGraph graph, AttributeModel attributeModel) {
+        count = 1;
         mStronglyCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn componentCol = nodeTable.getColumn(STRONG);
@@ -160,7 +158,6 @@ public class ConnectedComponents implements Statistics, LongTask {
             componentCol = nodeTable.addColumn(STRONG, "Strongly-Connected ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
 
-        DirectedGraph graph = graphModel.getDirectedGraphVisible();
         graph.readLock();
         mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
@@ -207,7 +204,7 @@ public class ConnectedComponents implements Statistics, LongTask {
      * @param low_index
      * @param indicies
      */
-    public void tarjans(AttributeColumn col, LinkedList<Node> S,  DirectedGraph graph, Node f, int[] index, int[] low_index, Hashtable<Node, Integer> indicies) {
+    private void tarjans(AttributeColumn col, LinkedList<Node> S, DirectedGraph graph, Node f, int[] index, int[] low_index, Hashtable<Node, Integer> indicies) {
         int id = indicies.get(f);
         index[id] = count;
         low_index[id] = count;
@@ -264,8 +261,7 @@ public class ConnectedComponents implements Statistics, LongTask {
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
                 + "Weakly Connected Components: " + mComponentCount + "<br>"
-
-                + (mDirected?"Stronlgy Connected Components: " + this.mStronglyCount + "<br>":"")
+                + (mDirected ? "Stronlgy Connected Components: " + this.mStronglyCount + "<br>" : "")
                 + "</BODY></HTML>");
 
         return report;

@@ -29,7 +29,6 @@ import org.gephi.statistics.spi.Statistics;
 import org.gephi.graph.api.Node;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
@@ -54,7 +53,6 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -218,14 +216,25 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      * @param synchReader
      */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+        Graph graph = null;
+        if (!directed) {
+            graph = graphModel.getUndirectedGraphVisible();
+        } else {
+            graph = graphModel.getDirectedGraphVisible();
+        }
+
+        execute(graph, attributeModel);
+    }
+
+    public void execute(Graph graph, AttributeModel attributeModel) {
         isCanceled = false;
-        Graph graph = graphModel.getUndirectedGraph();
-        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
+        mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
+
         // if (bruteForce) {
         //     bruteForce(graphModel, attributeModel);
         //     return;
         // } else {
-        triangles(graphModel, attributeModel);
+        triangles(graph, attributeModel);
         //    return;
         // }
     }
@@ -324,16 +333,10 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      * 
      * @param graphModel
      */
-    public void triangles(GraphModel graphModel, AttributeModel attributeModel) {
-        Graph graph = graphModel.getUndirectedGraphVisible();
+    public void triangles(Graph graph, AttributeModel attributeModel) {
+
         int ProgressCount = 0;
         Progress.start(progress, 7 * graph.getNodeCount());
-
-        if (!directed) {
-            graph = graphModel.getUndirectedGraphVisible();
-        } else {
-            graph = graphModel.getDirectedGraphVisible();
-        }
 
         graph.readLock();
 

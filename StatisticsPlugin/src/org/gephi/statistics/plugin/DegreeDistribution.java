@@ -113,14 +113,10 @@ public class DegreeDistribution implements Statistics, LongTask {
      * Either a combined degree distribution or separate
      * in-degree distribution and out-degree distribution
      * is calculated based on the mDirected variable.
-     * 
+     *
      * @param graphModel
      */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-
-        //Mark this as not yet canceled.
-        this.mIsCanceled = false;
-
         //Get the graph from the graphController, based
         //on the mDirected variable.
         Graph graph;
@@ -129,6 +125,12 @@ public class DegreeDistribution implements Statistics, LongTask {
         } else {
             graph = graphModel.getUndirectedGraphVisible();
         }
+        execute(graph, attributeModel);
+    }
+
+    public void execute(Graph graph, AttributeModel attributeModel) {
+        //Mark this as not yet canceled.
+        this.mIsCanceled = false;
 
         graph.readLock();
 

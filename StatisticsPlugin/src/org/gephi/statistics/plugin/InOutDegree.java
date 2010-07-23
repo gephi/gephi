@@ -66,6 +66,11 @@ public class InOutDegree implements Statistics, LongTask {
      * @param graphModel
      */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+        Graph graph = graphModel.getGraphVisible();
+        execute(graph, attributeModel);
+    }
+
+    public void execute(Graph graph, AttributeModel attributeModel) {
         mIsCanceled = false;
         mAvgInDegree = mAvgOutDegree = 0.0;
 
@@ -74,7 +79,7 @@ public class InOutDegree implements Statistics, LongTask {
         AttributeColumn inCol = nodeTable.getColumn(INDEGREE);
         AttributeColumn outCol = nodeTable.getColumn(OUTDEGREE);
         AttributeColumn degCol = nodeTable.getColumn(DEGREE);
-        if (graphModel.isDirected()) {
+        if (graph instanceof DirectedGraph) {
 
             if (inCol == null) {
                 inCol = nodeTable.addColumn(INDEGREE, "In Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
@@ -87,7 +92,7 @@ public class InOutDegree implements Statistics, LongTask {
             degCol = nodeTable.addColumn(DEGREE, "Degree", AttributeType.INT, AttributeOrigin.COMPUTED, 0);
         }
 
-        Graph graph = graphModel.getGraphVisible();
+
         int i = 0;
 
         graph.readLock();
