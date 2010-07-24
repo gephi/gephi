@@ -49,6 +49,7 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         final StringBuilder sb = new StringBuilder();
         sb.append("<html>");
         sb.append(NbBundle.getMessage(NumberColumnStatisticsReport.class, "NumberColumnStatisticsReport.report.header",HTMLEscape.stringToHTMLString(column.getTitle())));
+        sb.append("<hr>");
         writeStatistic(sb,"NumberColumnStatisticsReport.report.average",statistics[0]);
         writeStatistic(sb,"NumberColumnStatisticsReport.report.median",statistics[1]);
         writeStatistic(sb,"NumberColumnStatisticsReport.report.sum",statistics[2]);
