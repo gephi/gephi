@@ -137,6 +137,23 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         return newColumn;
     }
 
+    public AttributeColumn firstQuartileNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle) {
+        checkTableAndColumnsAreNumberOrNumberList(table, columnsToMerge);
+
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        AttributeColumn newColumn;
+        newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        final int newColumnIndex = newColumn.getIndex();
+
+        BigDecimal Q1;
+        for (Attributes row : ac.getTableAttributeRows(table)) {
+            Q1 = MathUtils.quartile1(ac.getRowNumbers(row, columnsToMerge));
+            row.setValue(newColumnIndex, Q1);
+        }
+
+        return newColumn;
+    }
+
     public AttributeColumn medianNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle) {
         checkTableAndColumnsAreNumberOrNumberList(table, columnsToMerge);
 
@@ -149,6 +166,48 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         for (Attributes row : ac.getTableAttributeRows(table)) {
             median = MathUtils.median(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, median);
+        }
+
+        return newColumn;
+    }
+
+    public AttributeColumn thirdQuartileNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle) {
+        checkTableAndColumnsAreNumberOrNumberList(table, columnsToMerge);
+
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        AttributeColumn newColumn;
+        newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        final int newColumnIndex = newColumn.getIndex();
+
+        BigDecimal Q3;
+        for (Attributes row : ac.getTableAttributeRows(table)) {
+            Q3 = MathUtils.quartile3(ac.getRowNumbers(row, columnsToMerge));
+            row.setValue(newColumnIndex, Q3);
+        }
+
+        return newColumn;
+    }
+
+    public AttributeColumn interQuartileRangeNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle) {
+        checkTableAndColumnsAreNumberOrNumberList(table, columnsToMerge);
+
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        AttributeColumn newColumn;
+        newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        final int newColumnIndex = newColumn.getIndex();
+
+        BigDecimal IQR, Q1, Q3;
+        Number[] rowNumbers;
+        for (Attributes row : ac.getTableAttributeRows(table)) {
+            rowNumbers = ac.getRowNumbers(row, columnsToMerge);
+            Q3 = MathUtils.quartile3(rowNumbers);
+            Q1 = MathUtils.quartile1(rowNumbers);
+            if (Q3 != null && Q1 != null) {
+                IQR = Q3.subtract(Q1);
+            } else {
+                IQR = null;
+            }
+            row.setValue(newColumnIndex, IQR);
         }
 
         return newColumn;
@@ -206,7 +265,6 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
     }
 
     /*************Private methods:*************/
-
     private void checkTableAndColumnsAreNumberOrNumberList(AttributeTable table, AttributeColumn[] columns) {
         if (table == null) {
             throw new IllegalArgumentException("Table can't be null");

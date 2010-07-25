@@ -66,21 +66,25 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         sb.append("<html>");
         sb.append(NbBundle.getMessage(NumberColumnStatisticsReport.class, "NumberColumnStatisticsReport.report.header", HTMLEscape.stringToHTMLString(column.getTitle())));
         sb.append("<hr>");
-        sb.append("<ul>");
-        writeStatistic(sb, "NumberColumnStatisticsReport.report.average", statistics[0]);
-        writeStatistic(sb, "NumberColumnStatisticsReport.report.Q1", statistics[1]);
-        writeStatistic(sb, "NumberColumnStatisticsReport.report.median", statistics[2]);
-        writeStatistic(sb, "NumberColumnStatisticsReport.report.Q3", statistics[3]);
-        writeStatistic(sb, "NumberColumnStatisticsReport.report.IQR", statistics[4]);
-        writeStatistic(sb, "NumberColumnStatisticsReport.report.sum", statistics[5]);
-        writeStatistic(sb, "NumberColumnStatisticsReport.report.min", statistics[6]);
-        writeStatistic(sb, "NumberColumnStatisticsReport.report.max", statistics[7]);
-        sb.append("</ul>");
-        sb.append("<hr>");
-        try {
-            writeBoxPlot(sb, ac.getColumnNumbers(table, column), column.getTitle());
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        if (statistics != null) {//There are numbers in the column and statistics can be shown:
+            sb.append("<ul>");
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.average", statistics[0]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.Q1", statistics[1]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.median", statistics[2]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.Q3", statistics[3]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.IQR", statistics[4]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.sum", statistics[5]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.min", statistics[6]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.max", statistics[7]);
+            sb.append("</ul>");
+            sb.append("<hr>");
+            try {
+                writeBoxPlot(sb, ac.getColumnNumbers(table, column), column.getTitle());
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }else{
+            sb.append(getMessage("NumberColumnStatisticsReport.report.empty"));
         }
         sb.append("</html>");
 
@@ -142,7 +146,7 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         renderer.setFillBox(false);
         renderer.setMaximumBarWidth(0.5);
 
-        final CategoryAxis xAxis = new CategoryAxis(NbBundle.getMessage(NumberColumnStatisticsReport.class, "NumberColumnStatisticsReport.report.box-plot.column",columnTitle));
+        final CategoryAxis xAxis = new CategoryAxis(NbBundle.getMessage(NumberColumnStatisticsReport.class, "NumberColumnStatisticsReport.report.box-plot.column", columnTitle));
         final NumberAxis yAxis = new NumberAxis(getMessage("NumberColumnStatisticsReport.report.box-plot.values-range"));
         yAxis.setAutoRangeIncludesZero(false);
         renderer.setBaseToolTipGenerator(new BoxAndWhiskerToolTipGenerator());

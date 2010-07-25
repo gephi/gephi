@@ -74,7 +74,7 @@ public class MinimumNumber implements AttributeColumnsMergeStrategy{
     }
 
     public int getPosition() {
-        return 300;
+        return 600;
     }
 
     public Icon getIcon() {

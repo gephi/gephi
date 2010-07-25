@@ -28,16 +28,15 @@ import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategy;
-import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
  * AttributeColumnsMergeStrategy for any combination of number or number list columns that
- * calculates the maximum value of all the values and creates a new BigDecimal column with the result of each row.
+ * calculates the first quartile (Q1) of all the values and creates a new BigDecimal column with the result of each row.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class MaximumNumber implements AttributeColumnsMergeStrategy{
+public class FirstQuartileNumber implements AttributeColumnsMergeStrategy{
     private AttributeTable table;
     private AttributeColumn[] columns;
 
@@ -47,18 +46,18 @@ public class MaximumNumber implements AttributeColumnsMergeStrategy{
     }
 
     public void execute() {
-        String title=JOptionPane.showInputDialog(null, NbBundle.getMessage(MaximumNumber.class, "Strategies.columnTitle.dialog.text"));
+        String title=JOptionPane.showInputDialog(null, NbBundle.getMessage(FirstQuartileNumber.class, "Strategies.columnTitle.dialog.text"));
         if(title!=null){
-            Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).maxValueNumbersMerge(table, columns, title);
+            Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).firstQuartileNumberMerge(table, columns, title);
         }
     }
 
     public String getName() {
-        return NbBundle.getMessage(MaximumNumber.class, "MaximumNumber.name");
+        return NbBundle.getMessage(FirstQuartileNumber.class, "FirstQuartileNumber.name");
     }
 
     public String getDescription() {
-        return NbBundle.getMessage(MaximumNumber.class, "MaximumNumber.description");
+        return NbBundle.getMessage(FirstQuartileNumber.class, "FirstQuartileNumber.description");
     }
 
     public boolean canExecute() {
@@ -74,11 +73,10 @@ public class MaximumNumber implements AttributeColumnsMergeStrategy{
     }
 
     public int getPosition() {
-        return 700;
+        return 100;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/plus-white.png",true);
+        return null;
     }
-
 }

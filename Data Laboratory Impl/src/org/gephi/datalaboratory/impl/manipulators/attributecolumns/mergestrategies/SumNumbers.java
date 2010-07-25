@@ -74,7 +74,7 @@ public class SumNumbers implements AttributeColumnsMergeStrategy{
     }
 
     public int getPosition() {
-        return 200;
+        return 500;
     }
 
     public Icon getIcon() {

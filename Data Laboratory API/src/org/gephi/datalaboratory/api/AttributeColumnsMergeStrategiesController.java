@@ -73,6 +73,16 @@ public interface AttributeColumnsMergeStrategiesController {
     AttributeColumn averageNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
 
     /**
+     * Merges any combination of number or number list columns, calculating the first quartile (Q1) of all not null values
+     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
+     * @param table Table of the columns to merge
+     * @param columnsToMerge Number or number list columns
+     * @param newColumnTitle Title for the new column
+     * @return The new created column
+     */
+    AttributeColumn firstQuartileNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
+
+    /**
      * Merges any combination of number or number list columns, calculating the median of all not null values
      * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
      * @param table Table of the columns to merge
@@ -81,6 +91,26 @@ public interface AttributeColumnsMergeStrategiesController {
      * @return The new created column
      */
     AttributeColumn medianNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
+
+    /**
+     * Merges any combination of number or number list columns, calculating the third quartile (Q3) of all not null values
+     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
+     * @param table Table of the columns to merge
+     * @param columnsToMerge Number or number list columns
+     * @param newColumnTitle Title for the new column
+     * @return The new created column
+     */
+    AttributeColumn thirdQuartileNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
+
+    /**
+     * Merges any combination of number or number list columns, calculating the interquartile range (IQR) of all not null values
+     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
+     * @param table Table of the columns to merge
+     * @param columnsToMerge Number or number list columns
+     * @param newColumnTitle Title for the new column
+     * @return The new created column
+     */
+    AttributeColumn interQuartileRangeNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
 
     /**
      * Merges any combination of number or number list columns, calculating the sum of all not null values
