@@ -289,17 +289,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public BigDecimal[] getNumberOrNumberListColumnStatistics(AttributeTable table, AttributeColumn column){
-        BigDecimal[] statistics=new BigDecimal[8];
-        Number[] columnNumbers=getColumnNumbers(table, column);
-        statistics[0]=MathUtils.average(columnNumbers);
-        statistics[1]=MathUtils.quartile1(columnNumbers);
-        statistics[2]=MathUtils.median(columnNumbers);
-        statistics[3]=MathUtils.quartile3(columnNumbers);
-        statistics[4]=statistics[3].subtract(statistics[1]);
-        statistics[5]=MathUtils.sum(columnNumbers);
-        statistics[6]=MathUtils.minValue(columnNumbers);
-        statistics[7]=MathUtils.maxValue(columnNumbers);
-        return statistics;
+        return MathUtils.getAllStatistics(getColumnNumbers(table, column));
     }
 
     public Number[] getColumnNumbers(AttributeTable table, AttributeColumn column) {

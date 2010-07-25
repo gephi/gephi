@@ -77,4 +77,19 @@ public class MathUtilsTest {
         assertEquals(MathUtils.maxValue(Arrays.asList(new Number[]{34l,(byte)6,2l,0d,34535,BigInteger.valueOf(6346)})),new BigDecimal("34535"));
         assertEquals(MathUtils.maxValue(new Number[]{34,45,2,0,34535.0,6346}),new BigDecimal("34535.0"));
     }
+
+    @Test
+    public void testGetAllStatistics(){
+        assertNull(MathUtils.getAllStatistics(new Number[]{}));
+        Number[] numbers={7,5,3,2,4,6,1};
+        BigDecimal[] results=MathUtils.getAllStatistics(numbers);
+        assertEquals(results[0], new BigDecimal("4"));
+        assertEquals(results[1], new BigDecimal("2.5"));
+        assertEquals(results[2], new BigDecimal("4"));
+        assertEquals(results[3], new BigDecimal("5.5"));
+        assertEquals(results[4], new BigDecimal("3.0"));
+        assertEquals(results[5], new BigDecimal("28"));
+        assertEquals(results[6], new BigDecimal("1"));
+        assertEquals(results[7], new BigDecimal("7"));
+    }
 }

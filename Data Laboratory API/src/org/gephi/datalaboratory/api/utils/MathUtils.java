@@ -82,16 +82,8 @@ public class MathUtils {
             return null;
         }
 
-        BigDecimal[] bigDecimalNumbers = numbersArrayToBigDecimalArray(numbers);
-
-        Arrays.sort(bigDecimalNumbers);
-        if (bigDecimalNumbers.length % 2 == 1) {
-            return bigDecimalNumbers[(bigDecimalNumbers.length + 1) / 2 - 1];
-        } else {
-            BigDecimal result = bigDecimalNumbers[(bigDecimalNumbers.length) / 2 - 1];
-            result = result.add(bigDecimalNumbers[(bigDecimalNumbers.length) / 2]);
-            return result.divide(BigDecimal.valueOf(2));
-        }
+        BigDecimal[] bigDecimalNumbers = numbersArrayToSortedBigDecimalArray(numbers);
+        return median(bigDecimalNumbers);
     }
 
     /**
@@ -117,19 +109,8 @@ public class MathUtils {
             return null;
         }
 
-        BigDecimal[] bigDecimalNumbers = numbersArrayToBigDecimalArray(numbers);
-
-        Arrays.sort(bigDecimalNumbers);
-        final int size = bigDecimalNumbers.length;
-        if (size % 2 == 1) {
-            if (size > 1) {
-                return median(Arrays.copyOfRange(bigDecimalNumbers, 0, size / 2 + 1));
-            } else {
-                return median(Arrays.copyOfRange(bigDecimalNumbers, 0, 1));
-            }
-        } else {
-            return median(Arrays.copyOfRange(bigDecimalNumbers, 0, size / 2));
-        }
+        BigDecimal[] bigDecimalNumbers = numbersArrayToSortedBigDecimalArray(numbers);
+        return quartile1(bigDecimalNumbers);
     }
 
     /**
@@ -155,20 +136,8 @@ public class MathUtils {
             return null;
         }
 
-        BigDecimal[] bigDecimalNumbers = numbersArrayToBigDecimalArray(numbers);
-
-        Arrays.sort(bigDecimalNumbers);
-        final int size = bigDecimalNumbers.length;
-        if (size % 2 == 1) {
-            if (size > 1) {
-                return median(Arrays.copyOfRange(bigDecimalNumbers, size / 2, size));
-            } else {
-                return median(Arrays.copyOfRange(bigDecimalNumbers, 0, 1));
-            }
-        } else {
-            return median(Arrays.copyOfRange(bigDecimalNumbers, size / 2, size));
-        }
-
+        BigDecimal[] bigDecimalNumbers = numbersArrayToSortedBigDecimalArray(numbers);
+        return quartile3(bigDecimalNumbers);
     }
 
     /**
@@ -192,6 +161,7 @@ public class MathUtils {
         if (numbers == null || numbers.length == 0) {
             return null;
         }
+        
         BigDecimal sum = new BigDecimal(0);
         for (Number number : numbers) {
             if (number != null) {
@@ -215,6 +185,7 @@ public class MathUtils {
     /**
      * Get the minimum value of an array of Number elements as a BigDecimal.
      * The elements can't be null.
+     * The elements don't need to be sorted.
      * @param numbers Numbers to get min
      * @return Minimum value as a BigDecimal
      */
@@ -223,25 +194,25 @@ public class MathUtils {
             return null;
         }
 
-        BigDecimal[] bigDecimalNumbers = numbersArrayToBigDecimalArray(numbers);
-
-        Arrays.sort(bigDecimalNumbers);
+        BigDecimal[] bigDecimalNumbers = numbersArrayToSortedBigDecimalArray(numbers);
         return bigDecimalNumbers[0];
     }
 
     /**
      * Get the minimum value of a collection of Number elements as a BigDecimal.
      * The elements can't be null.
+     * The elements don't need to be sorted.
      * @param numbers Numbers to get min
      * @return Minimum value as a BigDecimal
      */
     public static BigDecimal minValue(Collection<Number> numbers) {
-        return minValue(numbers.toArray(new BigDecimal[0]));
+        return minValue(numbers.toArray(new Number[0]));
     }
 
     /**
      * Get the maximum value of an array of Number elements as a BigDecimal.
      * The elements can't be null.
+     * The elements don't need to be sorted.
      * @param numbers Numbers to get max
      * @return Maximum value as a BigDecimal
      */
@@ -250,15 +221,14 @@ public class MathUtils {
             return null;
         }
 
-        BigDecimal[] bigDecimalNumbers = numbersArrayToBigDecimalArray(numbers);
-
-        Arrays.sort(bigDecimalNumbers);
+        BigDecimal[] bigDecimalNumbers = numbersArrayToSortedBigDecimalArray(numbers);
         return bigDecimalNumbers[bigDecimalNumbers.length - 1];
     }
 
     /**
      * Get the maximum value of a collection of Number elements as a BigDecimal.
      * The elements can't be null.
+     * The elements don't need to be sorted.
      * @param numbers Numbers to get max
      * @return Maximum value as a BigDecimal
      */
@@ -267,11 +237,128 @@ public class MathUtils {
     }
 
     /**
+     * Calculates all statistics and returns them in a BigDecimal array.
+     * Using this will be faster than calling all statistics separately.
+     * Returns an array with length=8 of BigDecimal numbers with the results in the following order: average, first quartile (Q1), median, third quartile (Q3), interquartile range (IQR), sum, minimumValue and maximumValue.
+     * The elements can't be null.
+     * The elements don't need to be sorted.
+     * @param numbers Numbers to get all statistics
+     * @return Array with all statisctis
+     */
+    public static BigDecimal[] getAllStatistics(Number[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return null;
+        }
+
+        BigDecimal[] bigDecimalNumbers=numbersArrayToSortedBigDecimalArray(numbers);
+        BigDecimal sum=sum(bigDecimalNumbers);
+
+        BigDecimal[] statistics = new BigDecimal[8];
+        statistics[0]=average(sum, new BigDecimal(bigDecimalNumbers.length));
+        statistics[1]=quartile1(bigDecimalNumbers);
+        statistics[2]=median(bigDecimalNumbers);
+        statistics[3]=quartile3(bigDecimalNumbers);
+        statistics[4]=statistics[3].subtract(statistics[1]);
+        statistics[5]=sum;
+        statistics[6]=minValue(bigDecimalNumbers);
+        statistics[7]=maxValue(bigDecimalNumbers);
+        return statistics;
+    }
+
+    /**
+     * Calculates all statistics and returns them in a BigDecimal array.
+     * <b>Using this will be faster than calling all statistics separately.</b>
+     * Returns an array with length=8 of BigDecimal numbers with the results in the following order: average, first quartile (Q1), median, third quartile (Q3), interquartile range (IQR), sum, minimumValue and maximumValue.
+     * The elements can't be null.
+     * The elements don't need to be sorted.
+     * @param numbers Numbers to get all statistics
+     * @return Array with all statisctis
+     */
+    public static BigDecimal[] getAllStatistics(Collection<Number> numbers) {
+        return getAllStatistics(numbers.toArray(new Number[0]));
+    }
+
+    /***********Private methods:***********/
+    //Next methods need the number array already converted to BigDecimal and sorted.
+    //Used for faster calculating of all statistics, not repeating the sorting and conversion to BigDecimal array.
+    private static BigDecimal average(final BigDecimal sum, final BigDecimal numbersCount) {
+
+        BigDecimal result;
+        try {
+            result = sum.divide(numbersCount);
+        } catch (ArithmeticException ex) {
+            result = sum.divide(numbersCount, 10, RoundingMode.HALF_EVEN);//Maximum of 10 decimal digits to avoid periodic number exception.
+        }
+        return result;
+    }
+
+    private static BigDecimal median(final BigDecimal[] bigDecimalNumbers) {
+        return median(bigDecimalNumbers, 0, bigDecimalNumbers.length);
+    }
+
+    private static BigDecimal median(final BigDecimal[] bigDecimalNumbers, final int start, final int end) {
+        final int size = end - start;
+
+        if (size % 2 == 1) {
+            return bigDecimalNumbers[start + (size + 1) / 2 - 1];
+        } else {
+            BigDecimal result = bigDecimalNumbers[start + (size) / 2 - 1];
+            result = result.add(bigDecimalNumbers[start + (size) / 2]);
+            return result.divide(BigDecimal.valueOf(2));
+        }
+    }
+
+    private static BigDecimal quartile1(BigDecimal[] bigDecimalNumbers){
+        final int size = bigDecimalNumbers.length;
+        if (size % 2 == 1) {
+            if (size > 1) {
+                return median(bigDecimalNumbers, 0, size / 2 + 1);
+            } else {
+                return median(bigDecimalNumbers, 0, 1);
+            }
+        } else {
+            return median(bigDecimalNumbers, 0, size / 2);
+        }
+    }
+
+    private static BigDecimal quartile3(BigDecimal[] bigDecimalNumbers){
+        final int size = bigDecimalNumbers.length;
+        if (size % 2 == 1) {
+            if (size > 1) {
+                return median(bigDecimalNumbers, size / 2, size);
+            } else {
+                return median(bigDecimalNumbers, 0, 1);
+            }
+        } else {
+            return median(bigDecimalNumbers, size / 2, size);
+        }
+    }
+
+    private static BigDecimal sum(BigDecimal[] bigDecimalNumbers){
+        BigDecimal sum = new BigDecimal(0);
+        for (BigDecimal number : bigDecimalNumbers) {
+            if (number != null) {
+                sum = sum.add(number);
+            }
+        }
+
+        return sum;
+    }
+
+    private static BigDecimal minValue(BigDecimal[] bigDecimalNumbers) {
+        return bigDecimalNumbers[0];
+    }
+
+    private static BigDecimal maxValue(BigDecimal[] bigDecimalNumbers) {
+        return bigDecimalNumbers[bigDecimalNumbers.length - 1];
+    }
+
+    /**
      * Takes an array of numbers of any type combination and returns
      * an array with their BigDecimal equivalent numbers.
      * @return BigDecimal array
      */
-    public static BigDecimal[] numbersArrayToBigDecimalArray(Number[] numbers) {
+    private static BigDecimal[] numbersArrayToSortedBigDecimalArray(Number[] numbers) {
         if (numbers == null) {
             return null;
         }
@@ -283,6 +370,7 @@ public class MathUtils {
                 result[i] = new BigDecimal(number.toString());
             }
         }
+        Arrays.sort(result);
         return result;
     }
 }
