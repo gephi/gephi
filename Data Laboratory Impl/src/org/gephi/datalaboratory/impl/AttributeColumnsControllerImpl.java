@@ -122,7 +122,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     public void clearColumnData(AttributeTable table, AttributeColumn column) {
         if (canClearColumnData(column)) {
-            int columnIndex = column.getIndex();
+            final int columnIndex = column.getIndex();
             for (Attributes attributes : getTableAttributeRows(table)) {
                 attributes.setValue(columnIndex, null);
             }
@@ -289,13 +289,16 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public BigDecimal[] getNumberOrNumberListColumnStatistics(AttributeTable table, AttributeColumn column){
-        BigDecimal[] statistics=new BigDecimal[5];
+        BigDecimal[] statistics=new BigDecimal[8];
         Number[] columnNumbers=getColumnNumbers(table, column);
         statistics[0]=MathUtils.average(columnNumbers);
-        statistics[1]=MathUtils.median(columnNumbers);
-        statistics[2]=MathUtils.sum(columnNumbers);
-        statistics[3]=MathUtils.minValue(columnNumbers);
-        statistics[4]=MathUtils.maxValue(columnNumbers);
+        statistics[1]=MathUtils.quartile1(columnNumbers);
+        statistics[2]=MathUtils.median(columnNumbers);
+        statistics[3]=MathUtils.quartile3(columnNumbers);
+        statistics[4]=statistics[3].subtract(statistics[1]);
+        statistics[5]=MathUtils.sum(columnNumbers);
+        statistics[6]=MathUtils.minValue(columnNumbers);
+        statistics[7]=MathUtils.maxValue(columnNumbers);
         return statistics;
     }
 

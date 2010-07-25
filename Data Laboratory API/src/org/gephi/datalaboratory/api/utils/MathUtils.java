@@ -38,24 +38,24 @@ public class MathUtils {
      * @return Average as a BigDecimal
      */
     public static BigDecimal average(Number[] numbers) {
-        if(numbers==null||numbers.length==0){
+        if (numbers == null || numbers.length == 0) {
             return null;
         }
         BigDecimal sum = new BigDecimal(0);
-        
+
         int numbersCount = 0;
         for (Number number : numbers) {
             if (number != null) {
-                sum=sum.add(new BigDecimal(number.toString()));
+                sum = sum.add(new BigDecimal(number.toString()));
                 ++numbersCount;
             }
         }
 
         BigDecimal result;
-        try{
-            result=sum.divide(new BigDecimal(numbersCount));
-        }catch(ArithmeticException ex){
-            result=sum.divide(new BigDecimal(numbersCount),10,RoundingMode.HALF_EVEN);//Maximum of 10 decimal digits to avoid periodic number exception.
+        try {
+            result = sum.divide(new BigDecimal(numbersCount));
+        } catch (ArithmeticException ex) {
+            result = sum.divide(new BigDecimal(numbersCount), 10, RoundingMode.HALF_EVEN);//Maximum of 10 decimal digits to avoid periodic number exception.
         }
         return result;
     }
@@ -77,19 +77,19 @@ public class MathUtils {
      * @param numbers Not null numbers to calculate median
      * @return Median as a BigDecimal
      */
-    public static BigDecimal median(Number[] numbers){
-        if(numbers==null||numbers.length==0){
+    public static BigDecimal median(Number[] numbers) {
+        if (numbers == null || numbers.length == 0) {
             return null;
         }
 
-        BigDecimal[] bigDecimalNumbers=numbersArrayToBigDecimalArray(numbers);
+        BigDecimal[] bigDecimalNumbers = numbersArrayToBigDecimalArray(numbers);
 
         Arrays.sort(bigDecimalNumbers);
-        if(bigDecimalNumbers.length%2==1){
-            return bigDecimalNumbers[(bigDecimalNumbers.length+1)/2-1];
-        }else{
-            BigDecimal result=bigDecimalNumbers[(bigDecimalNumbers.length)/2-1];
-            result=result.add(bigDecimalNumbers[(bigDecimalNumbers.length)/2]);
+        if (bigDecimalNumbers.length % 2 == 1) {
+            return bigDecimalNumbers[(bigDecimalNumbers.length + 1) / 2 - 1];
+        } else {
+            BigDecimal result = bigDecimalNumbers[(bigDecimalNumbers.length) / 2 - 1];
+            result = result.add(bigDecimalNumbers[(bigDecimalNumbers.length) / 2]);
             return result.divide(BigDecimal.valueOf(2));
         }
     }
@@ -101,8 +101,85 @@ public class MathUtils {
      * @param numbers Not null numbers to calculate median
      * @return Median as a BigDecimal
      */
-    public static BigDecimal median(Collection<Number> numbers){
+    public static BigDecimal median(Collection<Number> numbers) {
         return median(numbers.toArray(new Number[0]));
+    }
+
+    /**
+     * Calculate first quartile (Q1) of various numbers as a BigDecimal.
+     * The elements can't be null.
+     * The elements don't need to be sorted.
+     * @param numbers Not null numbers to calculate Q1
+     * @return Q1 as a BigDecimal
+     */
+    public static BigDecimal quartile1(Number[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return null;
+        }
+
+        BigDecimal[] bigDecimalNumbers = numbersArrayToBigDecimalArray(numbers);
+
+        Arrays.sort(bigDecimalNumbers);
+        final int size = bigDecimalNumbers.length;
+        if (size % 2 == 1) {
+            if (size > 1) {
+                return median(Arrays.copyOfRange(bigDecimalNumbers, 0, size / 2 + 1));
+            } else {
+                return median(Arrays.copyOfRange(bigDecimalNumbers, 0, 1));
+            }
+        } else {
+            return median(Arrays.copyOfRange(bigDecimalNumbers, 0, size / 2));
+        }
+    }
+
+    /**
+     * Calculate first quartile (Q1) of various numbers as a BigDecimal.
+     * The elements can't be null.
+     * The elements don't need to be sorted.
+     * @param numbers Not null numbers to calculate Q1
+     * @return Q1 as a BigDecimal
+     */
+    public static BigDecimal quartile1(Collection<Number> numbers) {
+        return quartile1(numbers.toArray(new Number[0]));
+    }
+
+    /**
+     * Calculate third quartile (Q3) of various numbers as a BigDecimal.
+     * The elements can't be null.
+     * The elements don't need to be sorted.
+     * @param numbers Not null numbers to calculate Q3
+     * @return Q3 as a BigDecimal
+     */
+    public static BigDecimal quartile3(Number[] numbers) {
+        if (numbers == null || numbers.length == 0) {
+            return null;
+        }
+
+        BigDecimal[] bigDecimalNumbers = numbersArrayToBigDecimalArray(numbers);
+
+        Arrays.sort(bigDecimalNumbers);
+        final int size = bigDecimalNumbers.length;
+        if (size % 2 == 1) {
+            if (size > 1) {
+                return median(Arrays.copyOfRange(bigDecimalNumbers, size / 2, size));
+            } else {
+                return median(Arrays.copyOfRange(bigDecimalNumbers, 0, 1));
+            }
+        } else {
+            return median(Arrays.copyOfRange(bigDecimalNumbers, size / 2, size));
+        }
+
+    }
+
+    /**
+     * Calculate third quartile (Q3) of various numbers as a BigDecimal.
+     * The elements can't be null.
+     * The elements don't need to be sorted.
+     * @param numbers Not null numbers to calculate Q3
+     * @return Q3 as a BigDecimal
+     */
+    public static BigDecimal quartile3(Collection<Number> numbers) {
+        return quartile3(numbers.toArray(new Number[0]));
     }
 
     /**
@@ -112,13 +189,13 @@ public class MathUtils {
      * @return Sum as a BigDecimal
      */
     public static BigDecimal sum(Number[] numbers) {
-        if(numbers==null||numbers.length==0){
+        if (numbers == null || numbers.length == 0) {
             return null;
         }
         BigDecimal sum = new BigDecimal(0);
         for (Number number : numbers) {
             if (number != null) {
-                sum=sum.add(new BigDecimal(number.toString()));
+                sum = sum.add(new BigDecimal(number.toString()));
             }
         }
 
@@ -141,12 +218,12 @@ public class MathUtils {
      * @param numbers Numbers to get min
      * @return Minimum value as a BigDecimal
      */
-    public static BigDecimal minValue(Number[] numbers){
-        if(numbers==null||numbers.length==0){
+    public static BigDecimal minValue(Number[] numbers) {
+        if (numbers == null || numbers.length == 0) {
             return null;
         }
 
-        BigDecimal[] bigDecimalNumbers=numbersArrayToBigDecimalArray(numbers);
+        BigDecimal[] bigDecimalNumbers = numbersArrayToBigDecimalArray(numbers);
 
         Arrays.sort(bigDecimalNumbers);
         return bigDecimalNumbers[0];
@@ -158,25 +235,25 @@ public class MathUtils {
      * @param numbers Numbers to get min
      * @return Minimum value as a BigDecimal
      */
-    public static BigDecimal minValue(Collection<Number> numbers){
+    public static BigDecimal minValue(Collection<Number> numbers) {
         return minValue(numbers.toArray(new BigDecimal[0]));
     }
 
-     /**
+    /**
      * Get the maximum value of an array of Number elements as a BigDecimal.
      * The elements can't be null.
      * @param numbers Numbers to get max
      * @return Maximum value as a BigDecimal
      */
-    public static BigDecimal maxValue(Number[] numbers){
-        if(numbers==null||numbers.length==0){
+    public static BigDecimal maxValue(Number[] numbers) {
+        if (numbers == null || numbers.length == 0) {
             return null;
         }
 
-        BigDecimal[] bigDecimalNumbers=numbersArrayToBigDecimalArray(numbers);
+        BigDecimal[] bigDecimalNumbers = numbersArrayToBigDecimalArray(numbers);
 
         Arrays.sort(bigDecimalNumbers);
-        return bigDecimalNumbers[bigDecimalNumbers.length-1];
+        return bigDecimalNumbers[bigDecimalNumbers.length - 1];
     }
 
     /**
@@ -185,7 +262,7 @@ public class MathUtils {
      * @param numbers Numbers to get max
      * @return Maximum value as a BigDecimal
      */
-    public static BigDecimal maxValue(Collection<Number> numbers){
+    public static BigDecimal maxValue(Collection<Number> numbers) {
         return maxValue(numbers.toArray(new Number[0]));
     }
 
@@ -194,16 +271,16 @@ public class MathUtils {
      * an array with their BigDecimal equivalent numbers.
      * @return BigDecimal array
      */
-    private static BigDecimal[] numbersArrayToBigDecimalArray(Number[] numbers){
-        if(numbers==null){
+    public static BigDecimal[] numbersArrayToBigDecimalArray(Number[] numbers) {
+        if (numbers == null) {
             return null;
         }
-        BigDecimal[] result=new BigDecimal[numbers.length];
+        BigDecimal[] result = new BigDecimal[numbers.length];
         Number number;
         for (int i = 0; i < result.length; i++) {
-            number=numbers[i];
-            if(number!=null){
-                result[i]=new BigDecimal(number.toString());
+            number = numbers[i];
+            if (number != null) {
+                result[i] = new BigDecimal(number.toString());
             }
         }
         return result;

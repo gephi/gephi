@@ -230,7 +230,7 @@ public interface AttributeColumnsController {
 
     /**
      * Calculates all at once the average, median, sum, minimum and maximum values from a number/number list column using MathUtils class.
-     * Return an array with length=5 of BigDecimal numbers with the results in the following order: average, median, sum, minimumValue and maximumValue.
+     * Return an array with length=5 of BigDecimal numbers with the results in the following order: average, first quartile (Q1), median, third quartile (Q3), interquartile range (IQR), sum, minimumValue and maximumValue.
      * The column can only be a number/number list column.
      * Otherwise, a IllegalArgumentException will be thrown.
      * @param table Table of the column
