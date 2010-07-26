@@ -34,6 +34,7 @@ import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.utils.HTMLEscape;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
+import org.gephi.ui.components.JFreeChartDialog;
 import org.gephi.ui.components.SimpleHTMLReport;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
@@ -65,7 +66,7 @@ import org.openide.windows.WindowManager;
 @ServiceProvider(service = AttributeColumnsManipulator.class)
 public class NumberColumnStatisticsReport implements AttributeColumnsManipulator {
 
-    public void execute(AttributeTable table, AttributeColumn column) {
+    public void execute(AttributeTable table, final AttributeColumn column) {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         final BigDecimal[] statistics = ac.getNumberOrNumberListColumnStatistics(table, column);
         final StringBuilder sb = new StringBuilder();
@@ -103,6 +104,7 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
 
             public void run() {
                 SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), sb.toString());
+                JFreeChartDialog chartDialog = new JFreeChartDialog(WindowManager.getDefault().getMainWindow(), "test", buildBoxPlot(statistics, column.getTitle()), 300, 500);
             }
         });
     }
