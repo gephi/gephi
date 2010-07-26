@@ -161,7 +161,7 @@ public class MathUtils {
         if (numbers == null || numbers.length == 0) {
             return null;
         }
-        
+
         BigDecimal sum = new BigDecimal(0);
         for (Number number : numbers) {
             if (number != null) {
@@ -250,18 +250,18 @@ public class MathUtils {
             return null;
         }
 
-        BigDecimal[] bigDecimalNumbers=numbersArrayToSortedBigDecimalArray(numbers);
-        BigDecimal sum=sum(bigDecimalNumbers);
+        BigDecimal[] bigDecimalNumbers = numbersArrayToSortedBigDecimalArray(numbers);
+        BigDecimal sum = sum(bigDecimalNumbers);
 
         BigDecimal[] statistics = new BigDecimal[8];
-        statistics[0]=average(sum, new BigDecimal(bigDecimalNumbers.length));
-        statistics[1]=quartile1(bigDecimalNumbers);
-        statistics[2]=median(bigDecimalNumbers);
-        statistics[3]=quartile3(bigDecimalNumbers);
-        statistics[4]=statistics[3].subtract(statistics[1]);
-        statistics[5]=sum;
-        statistics[6]=minValue(bigDecimalNumbers);
-        statistics[7]=maxValue(bigDecimalNumbers);
+        statistics[0] = average(sum, new BigDecimal(bigDecimalNumbers.length));
+        statistics[1] = quartile1(bigDecimalNumbers);
+        statistics[2] = median(bigDecimalNumbers);
+        statistics[3] = quartile3(bigDecimalNumbers);
+        statistics[4] = statistics[3].subtract(statistics[1]);
+        statistics[5] = sum;
+        statistics[6] = minValue(bigDecimalNumbers);
+        statistics[7] = maxValue(bigDecimalNumbers);
         return statistics;
     }
 
@@ -276,6 +276,27 @@ public class MathUtils {
      */
     public static BigDecimal[] getAllStatistics(Collection<Number> numbers) {
         return getAllStatistics(numbers.toArray(new Number[0]));
+    }
+
+    /**
+     * Takes an array of numbers of any type combination and returns
+     * an array with their BigDecimal equivalent numbers.
+     * @return BigDecimal array
+     */
+    public static BigDecimal[] numbersArrayToSortedBigDecimalArray(Number[] numbers) {
+        if (numbers == null) {
+            return null;
+        }
+        BigDecimal[] result = new BigDecimal[numbers.length];
+        Number number;
+        for (int i = 0; i < result.length; i++) {
+            number = numbers[i];
+            if (number != null) {
+                result[i] = new BigDecimal(number.toString());
+            }
+        }
+        Arrays.sort(result);
+        return result;
     }
 
     /***********Private methods:***********/
@@ -308,7 +329,7 @@ public class MathUtils {
         }
     }
 
-    private static BigDecimal quartile1(BigDecimal[] bigDecimalNumbers){
+    private static BigDecimal quartile1(BigDecimal[] bigDecimalNumbers) {
         final int size = bigDecimalNumbers.length;
         if (size % 2 == 1) {
             if (size > 1) {
@@ -321,7 +342,7 @@ public class MathUtils {
         }
     }
 
-    private static BigDecimal quartile3(BigDecimal[] bigDecimalNumbers){
+    private static BigDecimal quartile3(BigDecimal[] bigDecimalNumbers) {
         final int size = bigDecimalNumbers.length;
         if (size % 2 == 1) {
             if (size > 1) {
@@ -334,7 +355,7 @@ public class MathUtils {
         }
     }
 
-    private static BigDecimal sum(BigDecimal[] bigDecimalNumbers){
+    private static BigDecimal sum(BigDecimal[] bigDecimalNumbers) {
         BigDecimal sum = new BigDecimal(0);
         for (BigDecimal number : bigDecimalNumbers) {
             if (number != null) {
@@ -351,26 +372,5 @@ public class MathUtils {
 
     private static BigDecimal maxValue(BigDecimal[] bigDecimalNumbers) {
         return bigDecimalNumbers[bigDecimalNumbers.length - 1];
-    }
-
-    /**
-     * Takes an array of numbers of any type combination and returns
-     * an array with their BigDecimal equivalent numbers.
-     * @return BigDecimal array
-     */
-    private static BigDecimal[] numbersArrayToSortedBigDecimalArray(Number[] numbers) {
-        if (numbers == null) {
-            return null;
-        }
-        BigDecimal[] result = new BigDecimal[numbers.length];
-        Number number;
-        for (int i = 0; i < result.length; i++) {
-            number = numbers[i];
-            if (number != null) {
-                result[i] = new BigDecimal(number.toString());
-            }
-        }
-        Arrays.sort(result);
-        return result;
     }
 }

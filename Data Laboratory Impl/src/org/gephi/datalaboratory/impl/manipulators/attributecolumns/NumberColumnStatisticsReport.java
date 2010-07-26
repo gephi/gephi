@@ -37,14 +37,20 @@ import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator
 import org.gephi.ui.components.SimpleHTMLReport;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
+import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.BoxAndWhiskerToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -79,11 +85,16 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
             sb.append("</ul>");
             sb.append("<hr>");
             try {
-                writeBoxPlot(sb, ac.getColumnNumbers(table, column), column.getTitle());
+                Number[] columnNumbers = ac.getColumnNumbers(table, column);
+                final JFreeChart boxPlot = buildBoxPlot(columnNumbers, column.getTitle());
+                writeBoxPlot(sb, boxPlot);
+                sb.append("<hr>");
+                final JFreeChart scatterPlot = buildScatterPlot(columnNumbers, column.getTitle());
+                writeScatterPlot(sb, scatterPlot);
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
-        }else{
+        } else {
             sb.append(getMessage("NumberColumnStatisticsReport.report.empty"));
         }
         sb.append("</html>");
@@ -133,7 +144,7 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         sb.append("</li>");
     }
 
-    private void writeBoxPlot(final StringBuilder sb, final Number[] numbers, final String columnTitle) throws IOException {
+    private JFreeChart buildBoxPlot(final Number[] numbers, final String columnTitle) {
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
         final ArrayList<Number> list = new ArrayList<Number>();
         list.addAll(Arrays.asList(numbers));
@@ -153,16 +164,59 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         final CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
         plot.setRenderer(renderer);
 
-        final JFreeChart chart = new JFreeChart(
-                getMessage("NumberColumnStatisticsReport.report.box-plot.title"),
-                plot);
+        JFreeChart boxPlot = new JFreeChart(getMessage("NumberColumnStatisticsReport.report.box-plot.title"), plot);
+        return boxPlot;
+    }
 
+    private void writeBoxPlot(final StringBuilder sb, JFreeChart boxPlot) throws IOException {
         TempDir tempDir = TempDirUtils.createTempDir();
         String imageFile = "";
         String fileName = "box-plot-chart.png";
         File file = tempDir.createFile(fileName);
         imageFile = "<center><img src=\"file:" + file.getAbsolutePath() + "\"</img></center>";
-        ChartUtilities.saveChartAsPNG(file, chart, 300, 500);
+        ChartUtilities.saveChartAsPNG(file, boxPlot, 300, 500);
+
+        sb.append(imageFile);
+    }
+
+    private JFreeChart buildScatterPlot(final Number[] numbers, final String columnTitle) {
+        XYSeriesCollection dataset = new XYSeriesCollection();
+
+        XYSeries series1 = new XYSeries(columnTitle);
+        for (int i = 0; i < numbers.length; i++) {
+            series1.add(i, numbers[i]);
+        }
+        dataset.addSeries(series1);
+        JFreeChart scatterPlot = ChartFactory.createXYLineChart(
+                getMessage("NumberColumnStatisticsReport.report.scatter-plot.title"),
+                getMessage("NumberColumnStatisticsReport.report.scatter-plot.xLabel"),
+                columnTitle,
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false);
+
+        XYPlot plot = (XYPlot) scatterPlot.getPlot();
+        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        renderer.setSeriesLinesVisible(0, false);
+        renderer.setSeriesShapesVisible(0, true);
+        renderer.setSeriesShape(0, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
+        plot.setBackgroundPaint(java.awt.Color.WHITE);
+        plot.setDomainGridlinePaint(java.awt.Color.GRAY);
+        plot.setRangeGridlinePaint(java.awt.Color.GRAY);
+        plot.setRenderer(renderer);
+
+        return scatterPlot;
+    }
+
+    private void writeScatterPlot(final StringBuilder sb, JFreeChart scatterPlot) throws IOException {
+        TempDir tempDir = TempDirUtils.createTempDir();
+        String imageFile = "";
+        String fileName = "scatter-plot-chart.png";
+        File file = tempDir.createFile(fileName);
+        imageFile = "<center><img src=\"file:" + file.getAbsolutePath() + "\"</img></center>";
+        ChartUtilities.saveChartAsPNG(file, scatterPlot, 600, 400);
 
         sb.append(imageFile);
     }
