@@ -20,8 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl;
 
+import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -168,7 +171,15 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                                 }
                             }
                         });
-                        DialogDisplayer.getDefault().notify(dd);
+                        Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
+                        dialog.addWindowListener(new WindowAdapter() {
+
+                            @Override
+                            public void windowClosing(WindowEvent e) {
+                                ui.unSetup();
+                            }
+                        });
+                        dialog.setVisible(true);
                     } else {
                         m.execute();
                     }
@@ -198,7 +209,15 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                                 }
                             }
                         });
-                        DialogDisplayer.getDefault().notify(dd);
+                        Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
+                        dialog.addWindowListener(new WindowAdapter() {
+
+                            @Override
+                            public void windowClosing(WindowEvent e) {
+                                ui.unSetup();
+                            }
+                        });
+                        dialog.setVisible(true);
                     } else {
                         m.execute(table, column);
                     }
