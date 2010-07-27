@@ -388,7 +388,7 @@ public class Dhns implements GraphModel {
         Dhns source = (Dhns) graphImpl.getGraphModel();
         source.getDuplicateManager().duplicate(this, (GraphViewImpl) graphImpl.getView());
         graphVersion.incNodeAndEdgeVersion();
-       // eventManager.fireEvent(EventType.NODES_AND_EDGES_UPDATED);
+        // eventManager.fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
     public void clear() {
@@ -409,6 +409,10 @@ public class Dhns implements GraphModel {
 
     public GraphView newView() {
         return graphStructure.getNewView();
+    }
+
+    public GraphView copyView(GraphView view) {
+        return graphStructure.copyView((GraphViewImpl) view);
     }
 
     public void destroyView(GraphView view) {
