@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<gexf xmlns="http://www.gexf.net/1.1draft" version="1.1">
+<gexf xmlns="http://www.gexf.net/1.1draft" xmlns:viz="http://www.gephi.org/gexf/viz" version="1.1">
 	<meta lastmodifieddate="2010-06-15">
 		<creator>Mathieu Bastian</creator>
 		<description>A full GEXF 1.1 example with dynamic topology and attributes</description>
@@ -14,6 +14,7 @@
 		</attributes>
 		<nodes>
 			<node id="4c175b4b2c9016b90d1b4bc2" label="Node 1" start="2000-01-01" end="2000-12-31">
+                                <viz:position x="273.16998" y="250.09683" z="0.0"/>
 				<attvalues>
 					<attvalue for="0" value="Author"/>
 					<attvalue for="3" value="1"/>
@@ -37,7 +38,7 @@
 					<attvalue for="4" value="3.0" start="2009-01-01" end="2009-12-31"/>
 				</attvalues>
 			</node>
-			<node id="4c175b4b2c9016b9101b4bc2" label="Node 4" start="2000-01-01" end="2000-12-31">
+			<node id="4c175b4b2c9016b9101b4bc2" label="Node 4">
 				<attvalues>
 					<attvalue for="0" value="Author"/>
 					<attvalue for="3" value="1"/>

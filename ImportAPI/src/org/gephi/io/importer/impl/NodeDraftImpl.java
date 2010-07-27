@@ -26,9 +26,12 @@ import java.util.Arrays;
 import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.type.DynamicLong;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.data.attributes.type.TypeConvertor;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.graph.api.Node;
 import org.gephi.io.importer.api.NodeDraft;
@@ -201,6 +204,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     public void addAttributeValue(AttributeColumn column, Object value) {
         if (column.getType().isDynamicType() && !(value instanceof DynamicType)) {
+            if (value instanceof String && !column.getType().equals(AttributeType.DYNAMIC_STRING)) {
+                //Value needs to be parsed
+                value = TypeConvertor.getStaticType(column.getType()).parse(value);
+            }
             //Wrap value in a dynamic type
             value = DynamicUtilities.createDynamicObject(column.getType(), new Interval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, value));
         }
@@ -237,6 +244,11 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         }
         if (start == null && end == null) {
             throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
+        }
+        if (value instanceof String && !column.getType().equals(AttributeType.DYNAMIC_STRING)) {
+            //Value needs to be parsed
+            AttributeType staticType = TypeConvertor.getStaticType(column.getType());
+            value = staticType.parse((String) value);
         }
         Object sourceVal = attributeRow.getValue(column);
         if (sourceVal != null && sourceVal instanceof DynamicType) {

@@ -29,6 +29,7 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.data.attributes.type.TypeConvertor;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
@@ -158,6 +159,10 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
 
     public void addAttributeValue(AttributeColumn column, Object value) {
         if (column.getType().isDynamicType() && !(value instanceof DynamicType)) {
+            if (value instanceof String && !column.getType().equals(AttributeType.DYNAMIC_STRING)) {
+                //Value needs to be parsed
+                value = TypeConvertor.getStaticType(column.getType()).parse(value);
+            }
             //Wrap value in a dynamic type
             value = DynamicUtilities.createDynamicObject(column.getType(), new Interval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, value));
         }
@@ -194,6 +199,10 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         }
         if (start == null && end == null) {
             throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
+        }
+        if (value instanceof String && !column.getType().equals(AttributeType.DYNAMIC_STRING)) {
+            //Value needs to be parsed
+            value = TypeConvertor.getStaticType(column.getType()).parse(value);
         }
         Object sourceVal = attributeRow.getValue(column);
         if (sourceVal != null && sourceVal instanceof DynamicType) {
