@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.api;
 
 import java.math.BigInteger;
@@ -45,6 +45,8 @@ import org.gephi.data.attributes.type.CharacterList;
 import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.attributes.type.BigIntegerList;
 import org.gephi.data.attributes.type.BigDecimalList;
+import org.gephi.data.attributes.type.Interval;
+import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte0;
 
 /**
  * The different type an {@link AttributeColumn} can have.
@@ -89,7 +91,6 @@ public enum AttributeType {
     LIST_STRING(StringList.class),
     LIST_BIGINTEGER(BigIntegerList.class),
     LIST_BIGDECIMAL(BigDecimalList.class);
-
     private final Class type;
 
     AttributeType(Class type) {
@@ -152,27 +153,27 @@ public enum AttributeType {
             case BIGDECIMAL:
                 return new BigDecimal(str);
             case DYNAMIC_BYTE:
-                throw new UnsupportedOperationException("Not supported.");
+                return new DynamicByte(new Interval<Byte>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Byte(str)));
             case DYNAMIC_SHORT:
-                throw new UnsupportedOperationException("Not supported.");
+                return new DynamicShort(new Interval<Short>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Short(str)));
             case DYNAMIC_INT:
-                throw new UnsupportedOperationException("Not supported.");
+                return new DynamicInteger(new Interval<Integer>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Integer(str)));
             case DYNAMIC_LONG:
-                throw new UnsupportedOperationException("Not supported.");
+                return new DynamicLong(new Interval<Long>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Long(str)));
             case DYNAMIC_FLOAT:
-                throw new UnsupportedOperationException("Not supported.");
+                return new DynamicFloat(new Interval<Float>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Float(str)));
             case DYNAMIC_DOUBLE:
-                throw new UnsupportedOperationException("Not supported.");
+                return new DynamicDouble(new Interval<Double>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Double(str)));
             case DYNAMIC_BOOLEAN:
-                throw new UnsupportedOperationException("Not supported.");
+                return new DynamicBoolean(new Interval<Boolean>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Boolean(str)));
             case DYNAMIC_CHAR:
-                throw new UnsupportedOperationException("Not supported.");
+                return new DynamicCharacter(new Interval<Character>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Character(str.charAt(0))));
             case DYNAMIC_STRING:
-                throw new UnsupportedOperationException("Not supported.");
+                return new DynamicString(new Interval<String>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, str));
             case DYNAMIC_BIGINTEGER:
-                throw new UnsupportedOperationException("Not supported.");
+                return new DynamicBigInteger(new Interval<BigInteger>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new BigInteger(str)));
             case DYNAMIC_BIGDECIMAL:
-                throw new UnsupportedOperationException("Not supported.");
+                return new DynamicBigDecimal(new Interval<BigDecimal>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new BigDecimal(str)));
             case TIME_INTERVAL:
                 throw new UnsupportedOperationException("Not supported.");
             case LIST_BYTE:
@@ -215,7 +216,7 @@ public enum AttributeType {
      * @return      the compatible <code>AttributeType</code>, or <code>null</code> if no type is found or the input object is null
      */
     public static AttributeType parse(Object obj) {
-        if(obj==null){
+        if (obj == null) {
             return null;
         }
         Class<?> c = obj.getClass();
@@ -229,7 +230,7 @@ public enum AttributeType {
         return null;
     }
 
-	/**
+    /**
      * Build an dynamic <code>AttributeType</code> from the given <code>obj</code> type.
      * If the given <code>obj</code> class match with an
      * <code>AttributeType</code> type, returns this type. Returns <code>null</code>
@@ -243,56 +244,68 @@ public enum AttributeType {
      * @return      the compatible <code>AttributeType</code>, or <code>null</code>
      */
     public static AttributeType parseDynamic(Object obj) {
-		Class<?> c = obj.getClass();
+        Class<?> c = obj.getClass();
 
-		if (c.equals(Byte.class))
-			return DYNAMIC_BYTE;
-		if (c.equals(Short.class))
-			return DYNAMIC_SHORT;
-		if (c.equals(Integer.class))
-			return DYNAMIC_INT;
-		if (c.equals(Long.class))
-			return DYNAMIC_LONG;
-		if (c.equals(Float.class))
-			return DYNAMIC_FLOAT;
-		if (c.equals(Double.class))
-			return DYNAMIC_DOUBLE;
-		if (c.equals(Boolean.class))
-			return DYNAMIC_BOOLEAN;
-		if (c.equals(Character.class))
-			return DYNAMIC_CHAR;
-		if (c.equals(String.class))
-			return DYNAMIC_STRING;
-		if (c.equals(BigInteger.class))
-			return DYNAMIC_BIGINTEGER;
-		if (c.equals(BigDecimal.class))
-			return DYNAMIC_BIGDECIMAL;
+        if (c.equals(Byte.class)) {
+            return DYNAMIC_BYTE;
+        }
+        if (c.equals(Short.class)) {
+            return DYNAMIC_SHORT;
+        }
+        if (c.equals(Integer.class)) {
+            return DYNAMIC_INT;
+        }
+        if (c.equals(Long.class)) {
+            return DYNAMIC_LONG;
+        }
+        if (c.equals(Float.class)) {
+            return DYNAMIC_FLOAT;
+        }
+        if (c.equals(Double.class)) {
+            return DYNAMIC_DOUBLE;
+        }
+        if (c.equals(Boolean.class)) {
+            return DYNAMIC_BOOLEAN;
+        }
+        if (c.equals(Character.class)) {
+            return DYNAMIC_CHAR;
+        }
+        if (c.equals(String.class)) {
+            return DYNAMIC_STRING;
+        }
+        if (c.equals(BigInteger.class)) {
+            return DYNAMIC_BIGINTEGER;
+        }
+        if (c.equals(BigDecimal.class)) {
+            return DYNAMIC_BIGDECIMAL;
+        }
 
         return null;
     }
 
-	/**
-	 * Indicates if this type is a {@code DynamicType}.
-	 *
-	 * @param type an {@code AttributeType} to check
-	 *
-	 * @return {@code true} if this is a {@code DynamicType},
-	 *         otherwise {@code false}.
-	 */
-	public boolean isDynamicType() {
-		if (this.equals(DYNAMIC_BYTE)       ||
-			this.equals(DYNAMIC_SHORT)      ||
-			this.equals(DYNAMIC_INT)        ||
-			this.equals(DYNAMIC_LONG)       ||
-			this.equals(DYNAMIC_FLOAT)      ||
-			this.equals(DYNAMIC_DOUBLE)     ||
-			this.equals(DYNAMIC_BOOLEAN)    ||
-			this.equals(DYNAMIC_CHAR)       ||
-			this.equals(DYNAMIC_STRING)     ||
-			this.equals(DYNAMIC_BIGINTEGER) ||
-			this.equals(DYNAMIC_BIGDECIMAL) ||
-			this.equals(TIME_INTERVAL))
-				return true;
-		return false;
-	}
+    /**
+     * Indicates if this type is a {@code DynamicType}.
+     *
+     * @param type an {@code AttributeType} to check
+     *
+     * @return {@code true} if this is a {@code DynamicType},
+     *         otherwise {@code false}.
+     */
+    public boolean isDynamicType() {
+        if (this.equals(DYNAMIC_BYTE)
+                || this.equals(DYNAMIC_SHORT)
+                || this.equals(DYNAMIC_INT)
+                || this.equals(DYNAMIC_LONG)
+                || this.equals(DYNAMIC_FLOAT)
+                || this.equals(DYNAMIC_DOUBLE)
+                || this.equals(DYNAMIC_BOOLEAN)
+                || this.equals(DYNAMIC_CHAR)
+                || this.equals(DYNAMIC_STRING)
+                || this.equals(DYNAMIC_BIGINTEGER)
+                || this.equals(DYNAMIC_BIGDECIMAL)
+                || this.equals(TIME_INTERVAL)) {
+            return true;
+        }
+        return false;
+    }
 }
