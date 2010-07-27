@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns;
 
+import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -27,14 +28,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
-import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.utils.HTMLEscape;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.ColumnValuesFrequencyUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
-import org.gephi.ui.components.SimpleHTMLReport;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
 import org.jfree.chart.ChartFactory;
@@ -46,7 +46,6 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.windows.WindowManager;
 
 /**
  * AttributeColumnsManipulator that shows a report with a list of the different values of a column and their frequency of appearance.
@@ -55,12 +54,43 @@ import org.openide.windows.WindowManager;
 @ServiceProvider(service = AttributeColumnsManipulator.class)
 public class ColumnValuesFrequency implements AttributeColumnsManipulator {
 
-    private static final int MAX_PIE_CHART_CATEGORIES = 100;
+    public static final int MAX_PIE_CHART_CATEGORIES = 100;
 
     public void execute(AttributeTable table, AttributeColumn column) {
+    }
+
+    public String getName() {
+        return NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.name");
+    }
+
+    public String getDescription() {
+        return NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.description");
+    }
+
+    public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        return ac.getTableRowsCount(table) > 0;//Make sure that there is at least 1 row
+    }
+
+    public AttributeColumnsManipulatorUI getUI() {
+        return new ColumnValuesFrequencyUI();
+    }
+
+    public int getType() {
+        return 100;
+    }
+
+    public int getPosition() {
+        return 0;
+    }
+
+    public Image getIcon() {
+        return ImageUtilities.loadImage("org/gephi/datalaboratory/impl/manipulators/resources/frequency-list.png");
+    }
+
+    public String getReportHTML(AttributeTable table, AttributeColumn column, Map<Object, Integer> valuesFrequencies, JFreeChart pieChart, Dimension dimension) {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         int totalValuesCount = ac.getTableRowsCount(table);
-        Map<Object, Integer> valuesFrequencies = ac.calculateColumnValuesFrequencies(table, column);
         ArrayList<Object> values = new ArrayList<Object>(valuesFrequencies.keySet());
 
         //Try to sort the values when they are comparable. (All objects of the set will have the same type) and not null:
@@ -103,7 +133,9 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
 
         if (!values.isEmpty() && values.size() <= MAX_PIE_CHART_CATEGORIES) {//Do not show pie chart if there are more than 100 different values
             try {
-                writePieChart(sb, values, valuesFrequencies);
+                if (pieChart != null) {
+                    writePieChart(sb, pieChart, dimension);
+                }
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -112,41 +144,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         }
 
         sb.append("</html>");
-        SwingUtilities.invokeLater(new Runnable() {
-
-            public void run() {
-                SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), sb.toString());
-            }
-        });
-    }
-
-    public String getName() {
-        return NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.name");
-    }
-
-    public String getDescription() {
-        return NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.description");
-    }
-
-    public boolean canManipulateColumn(AttributeTable table, AttributeColumn column) {
-        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        return ac.getTableRowsCount(table) > 0;//Make sure that there is at least 1 row
-    }
-
-    public AttributeColumnsManipulatorUI getUI() {
-        return null;
-    }
-
-    public int getType() {
-        return 100;
-    }
-
-    public int getPosition() {
-        return 0;
-    }
-
-    public Image getIcon() {
-        return ImageUtilities.loadImage("org/gephi/datalaboratory/impl/manipulators/resources/frequency-list.png");
+        return sb.toString();
     }
 
     private void writeValue(final StringBuilder sb, final Object value, final Map<Object, Integer> valuesFrequencies, final float totalValuesCount) {
@@ -168,7 +166,13 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         sb.append("</li>");
     }
 
-    private void writePieChart(final StringBuilder sb, final ArrayList<Object> values, final Map<Object, Integer> valuesFrequencies) throws IOException {
+    public Map<Object, Integer> buildValuesFrequencies(AttributeTable table, AttributeColumn column){
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        return ac.calculateColumnValuesFrequencies(table, column);
+    }
+
+    public JFreeChart buildPieChart(final Map<Object, Integer> valuesFrequencies) {
+        final ArrayList<Object> values= new ArrayList<Object>(valuesFrequencies.keySet());
         DefaultPieDataset pieDataset = new DefaultPieDataset();
 
         for (Object value : values) {
@@ -176,12 +180,17 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         }
 
         JFreeChart chart = ChartFactory.createPieChart(NbBundle.getMessage(ColumnValuesFrequency.class, "ColumnValuesFrequency.report.piechart.title"), pieDataset, false, true, false);
+        return chart;
+    }
+
+    private void writePieChart(final StringBuilder sb, JFreeChart chart, Dimension dimension) throws IOException {
+
         TempDir tempDir = TempDirUtils.createTempDir();
         String imageFile = "";
         String fileName = "frequencies-pie-chart.png";
         File file = tempDir.createFile(fileName);
         imageFile = "<img src=\"file:" + file.getAbsolutePath() + "\"</img>";
-        ChartUtilities.saveChartAsPNG(file, chart, 1000, 1000);
+        ChartUtilities.saveChartAsPNG(file, chart, dimension != null ? dimension.width : 1000, dimension != null ? dimension.height : 1000);
 
         sb.append(imageFile);
     }

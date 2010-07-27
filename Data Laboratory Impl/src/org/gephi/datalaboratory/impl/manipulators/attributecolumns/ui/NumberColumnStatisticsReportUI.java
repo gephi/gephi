@@ -39,7 +39,7 @@ import org.openide.windows.WindowManager;
  */
 public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
 
-    NumberColumnStatisticsReport manipulator;
+    private NumberColumnStatisticsReport manipulator;
     private AttributeColumn column;
     private Number[] columnNumbers;
     private BigDecimal[] statistics;
