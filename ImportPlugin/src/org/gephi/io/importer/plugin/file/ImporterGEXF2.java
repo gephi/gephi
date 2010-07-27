@@ -262,7 +262,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
         if (!container.nodeExists(id)) {
             container.addNode(node);
         }
-        
+
         boolean end = false;
         boolean slices = false;
         while (reader.hasNext() && !end) {
@@ -342,12 +342,13 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
                     } catch (Exception e) {
                         report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
                     }
-                }
-                try {
-                    Object val = column.getType().parse(value);
-                    node.addAttributeValue(column, val);
-                } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
+                } else {
+                    try {
+                        Object val = column.getType().parse(value);
+                        node.addAttributeValue(column, val);
+                    } catch (Exception e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
+                    }
                 }
             }
         }
@@ -601,12 +602,13 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
                     } catch (Exception e) {
                         report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
                     }
-                }
-                try {
-                    Object val = column.getType().parse(value);
-                    edge.addAttributeValue(column, val);
-                } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
+                } else {
+                    try {
+                        Object val = column.getType().parse(value);
+                        edge.addAttributeValue(column, val);
+                    } catch (Exception e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
+                    }
                 }
             }
         }

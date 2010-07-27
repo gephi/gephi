@@ -25,8 +25,10 @@ import java.io.FileReader;
 import java.net.URL;
 import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.StringList;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.io.importer.api.Container;
@@ -135,22 +137,36 @@ public class ImporterGEXF2Test {
         assertNotNull(n7);
         assertNotNull(n8);
         assertNotNull(n9);
+
+        ContainerUnloader unloader = container.getUnloader();
+        AttributeColumn col0 = unloader.getAttributeModel().getNodeTable().getColumn("0");
+        AttributeColumn col1 = unloader.getAttributeModel().getNodeTable().getColumn("1");
+        AttributeColumn col2 = unloader.getAttributeModel().getNodeTable().getColumn("2");
+        AttributeColumn col3 = unloader.getAttributeModel().getNodeTable().getColumn("3");
+        AttributeColumn col4 = unloader.getAttributeModel().getNodeTable().getColumn("4");
+
         try {
             assertEquals("Node 1", n1.getLabel());
             assertEquals("2000-01-01", DynamicUtilities.getXMLDateStringFromDouble(n1.getTimeInterval().getValues().get(0)[0]));
             assertEquals("2000-12-31", DynamicUtilities.getXMLDateStringFromDouble(n1.getTimeInterval().getValues().get(0)[1]));
 
             AttributeValue[] values1 = n1.getAttributeRow().getValues();
-            assertEquals("0", values1[0].getColumn().getId());
-            assertEquals("3", values1[1].getColumn().getId());
-            assertEquals("Author", values1[0].getValue());
-            assertEquals(new Float(1), values1[1].getValue());
+            assertEquals("0", values1[col0.getIndex()].getColumn().getId());
+            assertEquals("3", values1[col3.getIndex()].getColumn().getId());
+            assertEquals("Author", ((DynamicType) values1[col0.getIndex()].getValue()).getValue());
+            assertEquals(new Float(1), ((DynamicType) values1[col3.getIndex()].getValue()).getValue());
 
             AttributeValue[] values2 = n2.getAttributeRow().getValues();
-            assertEquals("0", values2[0].getColumn().getId());
-            assertEquals("2", values2[1].getColumn().getId());
-            assertEquals("Author", values2[0].getValue());
-            assertEquals(new StringList("String1, String2, String 3"), values2[1].getValue());
+            assertEquals("0", values2[col0.getIndex()].getColumn().getId());
+            assertEquals("2", values2[col2.getIndex()].getColumn().getId());
+            assertEquals("Author", ((DynamicType) values2[col0.getIndex()].getValue()).getValue());
+            assertEquals(new StringList("String1, String2, String 3"), values2[col2.getIndex()].getValue());
+
+            AttributeValue[] values3 = n3.getAttributeRow().getValues();
+            DynamicType val4 = (DynamicType) values3[col4.getIndex()].getValue();
+            double low = DynamicUtilities.getDoubleFromXMLDateString("2009-01-01");
+            double high = DynamicUtilities.getDoubleFromXMLDateString("2009-12-31");
+            assertEquals(new Float(3f), val4.getValue(low, high));
 
             assertEquals("2000-01-01", DynamicUtilities.getXMLDateStringFromDouble(n3.getTimeInterval().getValues().get(0)[0]));
             assertEquals("2000-01-15", DynamicUtilities.getXMLDateStringFromDouble(n3.getTimeInterval().getValues().get(0)[1]));
@@ -158,6 +174,7 @@ public class ImporterGEXF2Test {
             assertEquals("2001-02-01", DynamicUtilities.getXMLDateStringFromDouble(n3.getTimeInterval().getValues().get(1)[1]));
             assertEquals(2, n3.getTimeInterval().getValues().size());
         } catch (Exception e) {
+            e.printStackTrace();
             fail(e.getMessage());
         }
 
