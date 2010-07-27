@@ -82,6 +82,13 @@ public interface GraphModel {
     public GraphView newView();
 
     /**
+     * Copy <code>view</code> to a new graph view. The new view contains all
+     * nodes and edges present in <code>view</code>.
+     * @return  a new graph view, obtained from duplicating <code>view</code>
+     */
+    public GraphView copyView(GraphView view);
+
+    /**
      * Destroy <code>view</code>, if exists. Always destroy views that are not
      * needed anymore to avoid memory overhead.
      * @param view  the view that is to be destroyed

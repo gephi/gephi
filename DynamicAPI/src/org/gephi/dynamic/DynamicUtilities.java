@@ -23,6 +23,7 @@ package org.gephi.dynamic;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -83,10 +84,9 @@ public final class DynamicUtilities {
 		DatatypeFactory dateFactory = DatatypeFactory.newInstance();
 		if (Double.isInfinite(d))
 			throw new IllegalArgumentException("The passed double cannot be infinite.");
-		Duration             dur = dateFactory.newDuration((long)d);
-		XMLGregorianCalendar xgc = dateFactory.newXMLGregorianCalendar();
-		xgc.add(dur);
-		return xgc.toXMLFormat();
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTimeInMillis((long)d);
+		return dateFactory.newXMLGregorianCalendar(gc).toXMLFormat().substring(0, 10);
 	}
 
 	/**
@@ -232,13 +232,15 @@ public final class DynamicUtilities {
 				if (in != null) {
 					lin = new ArrayList<Interval<Short>>();
 					for (Interval interval : in)
-						lin.add(new Interval<Short>(interval.getLow(), interval.getHigh(), (Short)interval.getValue()));
+						lin.add(new Interval<Short>(interval.getLow(), interval.getHigh(),
+							(Short)interval.getValue()));
 				}
 				ArrayList<Interval<Short>> lout = null;
 				if (out != null) {
 					lout = new ArrayList<Interval<Short>>();
 					for (Interval interval : out)
-						lout.add(new Interval<Short>(interval.getLow(), interval.getHigh(), (Short)interval.getValue()));
+						lout.add(new Interval<Short>(interval.getLow(), interval.getHigh(),
+							(Short)interval.getValue()));
 				}
 				return new DynamicShort((DynamicShort)source, lin, lout);
 			}
@@ -247,13 +249,15 @@ public final class DynamicUtilities {
 				if (in != null) {
 					lin = new ArrayList<Interval<Integer>>();
 					for (Interval interval : in)
-						lin.add(new Interval<Integer>(interval.getLow(), interval.getHigh(), (Integer)interval.getValue()));
+						lin.add(new Interval<Integer>(interval.getLow(), interval.getHigh(),
+							(Integer)interval.getValue()));
 				}
 				ArrayList<Interval<Integer>> lout = null;
 				if (out != null) {
 					lout = new ArrayList<Interval<Integer>>();
 					for (Interval interval : out)
-						lout.add(new Interval<Integer>(interval.getLow(), interval.getHigh(), (Integer)interval.getValue()));
+						lout.add(new Interval<Integer>(interval.getLow(), interval.getHigh(),
+							(Integer)interval.getValue()));
 				}
 				return new DynamicInteger((DynamicInteger)source, lin, lout);
 			}
@@ -283,7 +287,8 @@ public final class DynamicUtilities {
 				if (out != null) {
 					lout = new ArrayList<Interval<Float>>();
 					for (Interval interval : out)
-						lout.add(new Interval<Float>(interval.getLow(), interval.getHigh(), (Float)interval.getValue()));
+						lout.add(new Interval<Float>(interval.getLow(), interval.getHigh(),
+							(Float)interval.getValue()));
 				}
 				return new DynamicFloat((DynamicFloat)source, lin, lout);
 			}
@@ -292,13 +297,15 @@ public final class DynamicUtilities {
 				if (in != null) {
 					lin = new ArrayList<Interval<Double>>();
 					for (Interval interval : in)
-						lin.add(new Interval<Double>(interval.getLow(), interval.getHigh(), (Double)interval.getValue()));
+						lin.add(new Interval<Double>(interval.getLow(), interval.getHigh(),
+							(Double)interval.getValue()));
 				}
 				ArrayList<Interval<Double>> lout = null;
 				if (out != null) {
 					lout = new ArrayList<Interval<Double>>();
 					for (Interval interval : out)
-						lout.add(new Interval<Double>(interval.getLow(), interval.getHigh(), (Double)interval.getValue()));
+						lout.add(new Interval<Double>(interval.getLow(), interval.getHigh(),
+							(Double)interval.getValue()));
 				}
 				return new DynamicDouble((DynamicDouble)source, lin, lout);
 			}
@@ -307,13 +314,15 @@ public final class DynamicUtilities {
 				if (in != null) {
 					lin = new ArrayList<Interval<Boolean>>();
 					for (Interval interval : in)
-						lin.add(new Interval<Boolean>(interval.getLow(), interval.getHigh(), (Boolean)interval.getValue()));
+						lin.add(new Interval<Boolean>(interval.getLow(), interval.getHigh(),
+							(Boolean)interval.getValue()));
 				}
 				ArrayList<Interval<Boolean>> lout = null;
 				if (out != null) {
 					lout = new ArrayList<Interval<Boolean>>();
 					for (Interval interval : out)
-						lout.add(new Interval<Boolean>(interval.getLow(), interval.getHigh(), (Boolean)interval.getValue()));
+						lout.add(new Interval<Boolean>(interval.getLow(), interval.getHigh(),
+							(Boolean)interval.getValue()));
 				}
 				return new DynamicBoolean((DynamicBoolean)source, lin, lout);
 			}
@@ -322,13 +331,15 @@ public final class DynamicUtilities {
 				if (in != null) {
 					lin = new ArrayList<Interval<Character>>();
 					for (Interval interval : in)
-						lin.add(new Interval<Character>(interval.getLow(), interval.getHigh(), (Character)interval.getValue()));
+						lin.add(new Interval<Character>(interval.getLow(), interval.getHigh(),
+							(Character)interval.getValue()));
 				}
 				ArrayList<Interval<Character>> lout = null;
 				if (out != null) {
 					lout = new ArrayList<Interval<Character>>();
 					for (Interval interval : out)
-						lout.add(new Interval<Character>(interval.getLow(), interval.getHigh(), (Character)interval.getValue()));
+						lout.add(new Interval<Character>(interval.getLow(), interval.getHigh(),
+							(Character)interval.getValue()));
 				}
 				return new DynamicCharacter((DynamicCharacter)source, lin, lout);
 			}
@@ -337,13 +348,15 @@ public final class DynamicUtilities {
 				if (in != null) {
 					lin = new ArrayList<Interval<String>>();
 					for (Interval interval : in)
-						lin.add(new Interval<String>(interval.getLow(), interval.getHigh(), (String)interval.getValue()));
+						lin.add(new Interval<String>(interval.getLow(), interval.getHigh(),
+							(String)interval.getValue()));
 				}
 				ArrayList<Interval<String>> lout = null;
 				if (out != null) {
 					lout = new ArrayList<Interval<String>>();
 					for (Interval interval : out)
-						lout.add(new Interval<String>(interval.getLow(), interval.getHigh(), (String)interval.getValue()));
+						lout.add(new Interval<String>(interval.getLow(), interval.getHigh(),
+							(String)interval.getValue()));
 				}
 				return new DynamicString((DynamicString)source, lin, lout);
 			}
@@ -352,13 +365,15 @@ public final class DynamicUtilities {
 				if (in != null) {
 					lin = new ArrayList<Interval<BigInteger>>();
 					for (Interval interval : in)
-						lin.add(new Interval<BigInteger>(interval.getLow(), interval.getHigh(), (BigInteger)interval.getValue()));
+						lin.add(new Interval<BigInteger>(interval.getLow(), interval.getHigh(),
+							(BigInteger)interval.getValue()));
 				}
 				ArrayList<Interval<BigInteger>> lout = null;
 				if (out != null) {
 					lout = new ArrayList<Interval<BigInteger>>();
 					for (Interval interval : out)
-						lout.add(new Interval<BigInteger>(interval.getLow(), interval.getHigh(), (BigInteger)interval.getValue()));
+						lout.add(new Interval<BigInteger>(interval.getLow(), interval.getHigh(),
+							(BigInteger)interval.getValue()));
 				}
 				return new DynamicBigInteger((DynamicBigInteger)source, lin, lout);
 			}
@@ -367,13 +382,15 @@ public final class DynamicUtilities {
 				if (in != null) {
 					lin = new ArrayList<Interval<BigDecimal>>();
 					for (Interval interval : in)
-						lin.add(new Interval<BigDecimal>(interval.getLow(), interval.getHigh(), (BigDecimal)interval.getValue()));
+						lin.add(new Interval<BigDecimal>(interval.getLow(), interval.getHigh(),
+							(BigDecimal)interval.getValue()));
 				}
 				ArrayList<Interval<BigDecimal>> lout = null;
 				if (out != null) {
 					lout = new ArrayList<Interval<BigDecimal>>();
 					for (Interval interval : out)
-						lout.add(new Interval<BigDecimal>(interval.getLow(), interval.getHigh(), (BigDecimal)interval.getValue()));
+						lout.add(new Interval<BigDecimal>(interval.getLow(), interval.getHigh(),
+							(BigDecimal)interval.getValue()));
 				}
 				return new DynamicBigDecimal((DynamicBigDecimal)source, lin, lout);
 			}

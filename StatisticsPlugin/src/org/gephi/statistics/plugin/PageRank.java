@@ -91,19 +91,18 @@ public class PageRank implements Statistics, LongTask {
         return mDirected;
     }
 
-    /**
-     *
-     * @param graphModel
-     */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        mIsCanceled = false;
-
         Graph graph;
         if (mDirected) {
             graph = graphModel.getUndirectedGraphVisible();
         } else {
             graph = graphModel.getDirectedGraphVisible();
         }
+        execute(graph, attributeModel);
+    }
+
+    public void execute(Graph graph, AttributeModel attributeModel) {
+        mIsCanceled = false;
 
         graph.readLock();
 

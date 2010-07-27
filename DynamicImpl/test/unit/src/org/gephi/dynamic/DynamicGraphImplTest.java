@@ -20,6 +20,7 @@
  */
 package org.gephi.dynamic;
 
+import javax.xml.datatype.DatatypeConfigurationException;
 import org.gephi.io.importer.plugin.file.ImporterGEXF2;
 import java.io.FileReader;
 import org.gephi.graph.api.GraphModel;
@@ -30,11 +31,8 @@ import org.gephi.io.importer.api.Container;
 import org.openide.util.Lookup;
 import org.gephi.io.importer.api.ImportController;
 import java.io.File;
-import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.Node;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -87,20 +85,18 @@ public class DynamicGraphImplTest {
 	public void tearDown() { }
 
 	@Test
-	public void testGetAttributesValues_4args_1() {
-		System.out.println("getLow()");
+	public void testGetAttributesValues() throws DatatypeConfigurationException {
+		System.out.println("getAttributesValues(Node, double)");
 		DynamicGraphImpl instance = new DynamicGraphImpl(graphModel.getGraph());
+		System.out.println("low:              " + DynamicUtilities.getXMLDateStringFromDouble(instance.getLow()));
+		System.out.println("high:             " + DynamicUtilities.getXMLDateStringFromDouble(instance.getHigh()));
+		System.out.println("(low + high) / 2: " + DynamicUtilities.getXMLDateStringFromDouble(
+				(instance.getLow() + instance.getHigh()) / 2));
 		Object[] values = instance.getAttributesValues(graphModel.getGraph().getNode(0),
-							(instance.getHigh() + instance.getLow()) / 2);
-		//assertEquals(instance.getLow(), 1.0, 0.01);
+							(instance.getLow() + instance.getHigh()) / 2);
 		for (Object value : values)
 			System.out.print(value + ", ");
 		System.out.println("\n");
-	}
-
-	@Test
-	public void testGetAttributesValues_4args_2() {
-		
 	}
 
 	@Test
@@ -123,22 +119,17 @@ public class DynamicGraphImplTest {
 
 	@Test
 	public void testGetSnapshotGraph_3args() {
-		
-	}
-
-	@Test
-	public void testGetWeakSnapshotGraph_double_double() {
-		
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Test
 	public void testGetStrongSnapshotGraph_double_double() {
-		
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Test
 	public void testGetUnderlyingGraph() {
-		System.out.println("getUnderlyingGraph");
+		System.out.println("getUnderlyingGraph()");
 		DynamicGraphImpl instance = new DynamicGraphImpl(graphModel.getGraph());
 		assertEquals(graphModel.getGraph(), instance.getUnderlyingGraph());
 		System.out.println();
@@ -159,7 +150,7 @@ public class DynamicGraphImplTest {
 
 	@Test
 	public void testEquals() {
-		System.out.println("equals()");
+		System.out.println("equals(Object)");
 		DynamicGraphImpl instance1 = new DynamicGraphImpl(graphModel.getGraph());
 		DynamicGraphImpl instance2 = new DynamicGraphImpl(graphModel.newView().getGraphModel().getGraph());
 		DynamicGraphImpl instance3 = new DynamicGraphImpl(makeGraph2());

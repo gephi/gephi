@@ -23,6 +23,7 @@ package org.gephi.dynamic;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicGraph;
 import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 
@@ -32,71 +33,60 @@ import org.gephi.project.api.Workspace;
  * @author Cezary Bartosiak
  */
 public final class DynamicModelImpl implements DynamicModel {
-	private Workspace    workspace;
-	private DynamicGraph dynamicGraph;
-	private double       low;
-	private double       high;
 
-	/**
-	 * The default constructor.
-	 *
-	 * @param workspace  workspace related to this model
-	 *
-	 * @throws NullPointerException if {@code workspace} is null.
-	 */
-	public DynamicModelImpl(Workspace workspace) {
-		this(workspace, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-	}
+    private GraphModel graphModel;
+    private TimeInterval visibleTimeInterval;
 
-	/**
-	 * Constructs a new {@code DynamicModel} for the {@code workspace}.
-	 *
-	 * @param workspace  workspace related to this model
-	 * @param low        the left endpoint of the visible time interval
-	 * @param high       the right endpoint of the visible time interval
-	 *
-	 * @throws NullPointerException if {@code workspace} is null.
-	 */
-	public DynamicModelImpl(Workspace workspace, double low, double high) {
-		if (workspace == null)
-			throw new NullPointerException("The workspace cannot be null.");
+    /**
+     * The default constructor.
+     *
+     * @param workspace  workspace related to this model
+     *
+     * @throws NullPointerException if {@code workspace} is null.
+     */
+    public DynamicModelImpl(Workspace workspace) {
+        this(workspace, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+    }
 
-		this.workspace = workspace;
-		this.low       = low;
-		this.high      = high;
+    /**
+     * Constructs a new {@code DynamicModel} for the {@code workspace}.
+     *
+     * @param workspace  workspace related to this model
+     * @param low        the left endpoint of the visible time interval
+     * @param high       the right endpoint of the visible time interval
+     *
+     * @throws NullPointerException if {@code workspace} is null or the graph model
+     *                              and/or its underlying graph are nulls.
+     */
+    public DynamicModelImpl(Workspace workspace, double low, double high) {
+        if (workspace == null) {
+            throw new NullPointerException("The workspace cannot be null.");
+        }
 
-		GraphModel gm = (GraphModel)workspace.getLookup().lookup(GraphModel.class);
-		if (gm != null && gm.getGraph() != null)
-			dynamicGraph = new DynamicGraphImpl(gm.getGraph(), low, high);
-	}
+        graphModel = workspace.getLookup().lookup(GraphModel.class);
+        if (graphModel == null || graphModel.getGraph() == null) {
+            throw new NullPointerException("The graph model and its underlying graph cannot be nulls.");
+        }
+        visibleTimeInterval = new TimeInterval(low, high);
+    }
 
-	@Override
-	public DynamicGraph getDynamicGraph() {
-		if (dynamicGraph == null) {
-			GraphModel gm = (GraphModel)workspace.getLookup().lookup(GraphModel.class);
-			if (gm != null && gm.getGraph() != null)
-				dynamicGraph = new DynamicGraphImpl(gm.getGraph(), low, high);
-		}
-		return dynamicGraph;
-	}
+    @Override
+    public DynamicGraph createDynamicGraph(Graph graph) {
+        return new DynamicGraphImpl(graph);
+    }
 
-	@Override
-	public TimeInterval getVisibleInterval() {
-		if (dynamicGraph != null)
-			return dynamicGraph.getInterval();
-		return null;
-	}
+    @Override
+    public DynamicGraph createDynamicGraph(Graph graph, TimeInterval interval) {
+        return new DynamicGraphImpl(graph, interval.getLow(), interval.getHigh());
+    }
 
-	@Override
-	public void setVisibleInterval(TimeInterval interval) {
-		setVisibleInterval(interval.getLow(), interval.getHigh());
-	}
+    @Override
+    public TimeInterval getVisibleInterval() {
+        return visibleTimeInterval;
+    }
 
-	@Override
-	public void setVisibleInterval(double low, double high) {
-		this.low  = low;
-		this.high = high;
-		if (dynamicGraph != null)
-			dynamicGraph.setInterval(low, high);
-	}
+    public void setVisibleTimeInterval(TimeInterval visibleTimeInterval) {
+        this.visibleTimeInterval = visibleTimeInterval;
+        //Trigger Event
+    }
 }

@@ -318,8 +318,50 @@ public class DynamicTypeTest {
 	}
 
 	@Test
+	public void testGetIntervals() {
+		System.out.println("getIntervals(double, double)");
+		DynamicDouble instance = makeTree1();
+		List<Interval<Double>> list = instance.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+		String result = "[empty]";
+		if (!list.isEmpty()) {
+			StringBuilder sb = new StringBuilder("[");
+			sb.append(list.get(0).toString());
+			for (int i = 1; i < list.size(); ++i)
+				sb.append(", ").append(list.get(i).toString());
+			sb.append("]");
+			result =  sb.toString();
+		}
+		String expResult = instance.toString();
+		assertEquals(result, expResult);
+		System.out.println("result:    " + result);
+		System.out.println("expResult: " + expResult);
+		System.out.println();
+	}
+
+	@Test
+	public void testGetUnderlyingType() {
+		System.out.println("getUnderlyingType");
+		DynamicType dInstance = makeTree1();
+		DynamicType nInstance = makeTreeInteger();
+		DynamicType bInstance = makeTreeBoolean();
+		DynamicType cInstance = makeTreeCharacter();
+		DynamicType sInstance = makeTreeString();
+		assertEquals(dInstance.getUnderlyingType(), Double.class);
+		assertEquals(nInstance.getUnderlyingType(), Integer.class);
+		assertEquals(bInstance.getUnderlyingType(), Boolean.class);
+		assertEquals(cInstance.getUnderlyingType(), Character.class);
+		assertEquals(sInstance.getUnderlyingType(), String.class);
+		System.out.println("dInstance: " + dInstance.getUnderlyingType());
+		System.out.println("nInstance: " + nInstance.getUnderlyingType());
+		System.out.println("bInstance: " + bInstance.getUnderlyingType());
+		System.out.println("cInstance: " + cInstance.getUnderlyingType());
+		System.out.println("sInstance: " + sInstance.getUnderlyingType());
+		System.out.println();
+	}
+
+	@Test
 	public void testEquals() {
-		System.out.println("equals()");
+		System.out.println("equals(Object)");
 		DynamicDouble instance1 = makeTree1();
 		DynamicDouble instance2 = makeTree1();
 		DynamicDouble instance3 = makeTree2();

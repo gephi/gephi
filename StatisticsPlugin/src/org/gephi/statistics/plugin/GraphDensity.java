@@ -61,12 +61,7 @@ public class GraphDensity implements Statistics {
         return mDensity;
     }
 
-    /**
-     * 
-     * @param graphModel
-     */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-
         Graph graph;
 
         if (mDirected) {
@@ -74,7 +69,10 @@ public class GraphDensity implements Statistics {
         } else {
             graph = graphModel.getUndirectedGraphVisible();
         }
+        execute(graph, attributeModel);
+    }
 
+    public void execute(Graph graph, AttributeModel attributeModel) {
         this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
         double edgesCount = graph.getEdgeCount();

@@ -101,11 +101,21 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     }
 
     /**
-     * 
+     *
      * @param graphModel
      * @param attributeModel
      */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+        Graph graph = null;
+        if (mDirected) {
+            graph = graphModel.getDirectedGraphVisible();
+        } else {
+            graph = graphModel.getUndirectedGraphVisible();
+        }
+        execute(graph, attributeModel);
+    }
+
+    public void execute(Graph graph, AttributeModel attributeModel) {
 
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn eigenCol = nodeTable.getColumn(EIGENVECTOR);
@@ -113,12 +123,6 @@ public class EigenvectorCentrality implements Statistics, LongTask {
             eigenCol = nodeTable.addColumn(EIGENVECTOR, "Eigenvector Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
-        Graph graph = null;
-        if (mDirected) {
-            graph = graphModel.getDirectedGraphVisible();
-        } else {
-            graph = graphModel.getUndirectedGraphVisible();
-        }
         this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
         int N = graph.getNodeCount();
         graph.readLock();

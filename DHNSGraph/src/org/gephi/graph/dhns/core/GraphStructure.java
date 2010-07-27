@@ -91,13 +91,17 @@ public class GraphStructure {
     }
 
     public GraphViewImpl getNewView() {
-        GraphViewImpl view = new GraphViewImpl(dhns, viewId.getAndIncrement());
-        TreeStructure newStructure = view.getStructure();
+        return copyView(mainView);
+    }
+
+    public GraphViewImpl copyView(GraphViewImpl view) {
+        GraphViewImpl viewCopy = new GraphViewImpl(dhns, viewId.getAndIncrement());
+        TreeStructure newStructure = viewCopy.getStructure();
         dhns.getReadLock().lock();
 
-        for (TreeListIterator itr = new TreeListIterator(mainView.getStructure().getTree(), 1); itr.hasNext();) {
+        for (TreeListIterator itr = new TreeListIterator(view.getStructure().getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
-            AbstractNode nodeCopy = new AbstractNode(node.getNodeData(), view.getViewId());
+            AbstractNode nodeCopy = new AbstractNode(node.getNodeData(), viewCopy.getViewId());
             nodeCopy.setEnabled(node.isEnabled());
             nodeCopy.setEnabledInDegree(node.getEnabledInDegree());
             nodeCopy.setEnabledOutDegree(node.getEnabledOutDegree());
@@ -108,7 +112,7 @@ public class GraphStructure {
 
         //Edges
         ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
-        for (TreeListIterator itr = new TreeListIterator(mainView.getStructure().getTree(), 1); itr.hasNext();) {
+        for (TreeListIterator itr = new TreeListIterator(view.getStructure().getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             if (!node.getEdgesOutTree().isEmpty()) {
                 for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
@@ -120,15 +124,15 @@ public class GraphStructure {
                 }
             }
         }
-        view.setNodesEnabled(mainView.getNodesEnabled());
-        view.setEdgesCountTotal(mainView.getEdgesCountTotal());
-        view.setEdgesCountEnabled(mainView.getEdgesCountEnabled());
-        view.setMutualEdgesTotal(mainView.getMutualEdgesTotal());
-        view.setMutualEdgesEnabled(mainView.getMutualEdgesEnabled());
-        views.add(view);
-        dhns.getEventManager().fireEvent(new ViewEvent(EventType.NEW_VIEW, view));
+        viewCopy.setNodesEnabled(view.getNodesEnabled());
+        viewCopy.setEdgesCountTotal(view.getEdgesCountTotal());
+        viewCopy.setEdgesCountEnabled(view.getEdgesCountEnabled());
+        viewCopy.setMutualEdgesTotal(view.getMutualEdgesTotal());
+        viewCopy.setMutualEdgesEnabled(view.getMutualEdgesEnabled());
+        views.add(viewCopy);
+        dhns.getEventManager().fireEvent(new ViewEvent(EventType.NEW_VIEW, viewCopy));
         dhns.getReadLock().unlock();
-        return view;
+        return viewCopy;
     }
 
     public void destroyView(final GraphViewImpl view) {

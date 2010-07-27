@@ -90,18 +90,18 @@ public class Hits implements Statistics, LongTask {
         return useUndirected;
     }
 
-    /**
-     * 
-     * @param graphModel
-     */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-
+        Graph graph = null;
         if (useUndirected) {
             graph = graphModel.getUndirectedGraphVisible();
         } else {
             graph = graphModel.getDirectedGraphVisible();
         }
+        execute(graph, attributeModel);
+    }
 
+    public void execute(Graph graph, AttributeModel attributeModel) {
+        this.graph = graph;
         graph.readLock();
 
         //DirectedGraph digraph = graphController.getDirectedGraph();

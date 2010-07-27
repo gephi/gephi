@@ -454,9 +454,14 @@ public class Modularity implements Statistics, LongTask {
      * @param graphModel
      */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+        UndirectedGraph graph = graphModel.getUndirectedGraphVisible();
+        execute(graph, attributeModel);
+    }
+
+    public void execute(UndirectedGraph graph, AttributeModel attributeModel) {
+        mIsCanceled = false;
         Progress.start(mProgress);
         Random rand = new Random();
-        UndirectedGraph graph = graphModel.getUndirectedGraphVisible();
 
         graph.readLock();
 

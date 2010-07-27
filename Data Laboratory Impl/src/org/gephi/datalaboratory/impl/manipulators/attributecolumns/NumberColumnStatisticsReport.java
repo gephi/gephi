@@ -66,7 +66,7 @@ import org.openide.windows.WindowManager;
 @ServiceProvider(service = AttributeColumnsManipulator.class)
 public class NumberColumnStatisticsReport implements AttributeColumnsManipulator {
 
-    public void execute(AttributeTable table, final AttributeColumn column) {
+    public void execute(AttributeTable table, AttributeColumn column) {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         final BigDecimal[] statistics = ac.getNumberOrNumberListColumnStatistics(table, column);
         final StringBuilder sb = new StringBuilder();
@@ -104,7 +104,6 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
 
             public void run() {
                 SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), sb.toString());
-                JFreeChartDialog chartDialog = new JFreeChartDialog(WindowManager.getDefault().getMainWindow(), "test", buildBoxPlot(statistics, column.getTitle()), 300, 500);
             }
         });
     }
