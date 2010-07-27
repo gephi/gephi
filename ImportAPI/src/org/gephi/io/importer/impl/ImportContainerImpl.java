@@ -136,7 +136,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 node.setId(id);
                 addNode(node);
                 node.setCreatedAuto(true);
-                report.logIssue(new Issue("Unknown node id, creates node from id='" + id+"'", Level.INFO));
+                report.logIssue(new Issue("Unknown node id, creates node from id='" + id + "'", Level.INFO));
             } else {
                 String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_UnknowNodeId", id);
                 report.logIssue(new Issue(message, Level.SEVERE));
@@ -435,11 +435,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             for (NodeDraftImpl node : nodeMap.values()) {
                 boolean issue = false;
 
-                if (timeIntervalMin != null && node.getTimeInterval().getLow() < timeIntervalMin) {
+                if (timeIntervalMin != null && node.getTimeInterval() != null && node.getTimeInterval().getLow() < timeIntervalMin) {
                     node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), timeIntervalMin, node.getTimeInterval().getHigh()));
                     issue = true;
                 }
-                if (timeIntervalMax != null && node.getTimeInterval().getHigh() > timeIntervalMax) {
+                if (timeIntervalMax != null && node.getTimeInterval() != null && node.getTimeInterval().getHigh() > timeIntervalMax) {
                     node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), node.getTimeInterval().getLow(), timeIntervalMax));
                     issue = true;
                 }
