@@ -40,12 +40,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="scroll" alignment="0" pref="220" max="32767" attributes="0"/>
+              <Component id="scroll" alignment="0" pref="256" max="32767" attributes="0"/>
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="14" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="zoomOutButton" min="-2" max="-2" attributes="0"/>
-                      <Component id="zoomInButton" min="-2" pref="75" max="-2" attributes="0"/>
+                      <Component id="zoomOutButton" pref="97" max="32767" attributes="0"/>
+                      <Component id="zoomInButton" pref="97" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -59,7 +59,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="scroll" pref="255" max="32767" attributes="0"/>
+                  <Component id="scroll" pref="251" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="resetButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -100,6 +100,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="resetButton">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/org/gephi/ui/components/resources/magnifier-history.png"/>
+            </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="org/gephi/ui/components/Bundle.properties" key="JFreeChartDialog.resetButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
@@ -110,6 +113,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="zoomOutButton">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/org/gephi/ui/components/resources/magnifier--minus.png"/>
+            </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="org/gephi/ui/components/Bundle.properties" key="JFreeChartDialog.zoomOutButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
@@ -120,6 +126,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="zoomInButton">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/org/gephi/ui/components/resources/magnifier--plus.png"/>
+            </Property>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="org/gephi/ui/components/Bundle.properties" key="JFreeChartDialog.zoomInButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>

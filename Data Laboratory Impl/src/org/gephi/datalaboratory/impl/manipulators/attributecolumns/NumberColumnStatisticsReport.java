@@ -20,22 +20,21 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns;
 
+import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.utils.HTMLEscape;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.NumberColumnStatisticsReportUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
-import org.gephi.ui.components.JFreeChartDialog;
-import org.gephi.ui.components.SimpleHTMLReport;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
 import org.jfree.chart.ChartFactory;
@@ -57,7 +56,6 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.windows.WindowManager;
 
 /**
  * AttributeColumnsManipulator that shows a report with statistics values of a number/number list column.
@@ -67,45 +65,6 @@ import org.openide.windows.WindowManager;
 public class NumberColumnStatisticsReport implements AttributeColumnsManipulator {
 
     public void execute(AttributeTable table, AttributeColumn column) {
-        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        final BigDecimal[] statistics = ac.getNumberOrNumberListColumnStatistics(table, column);
-        final StringBuilder sb = new StringBuilder();
-        sb.append("<html>");
-        sb.append(NbBundle.getMessage(NumberColumnStatisticsReport.class, "NumberColumnStatisticsReport.report.header", HTMLEscape.stringToHTMLString(column.getTitle())));
-        sb.append("<hr>");
-        if (statistics != null) {//There are numbers in the column and statistics can be shown:
-            sb.append("<ul>");
-            writeStatistic(sb, "NumberColumnStatisticsReport.report.average", statistics[0]);
-            writeStatistic(sb, "NumberColumnStatisticsReport.report.Q1", statistics[1]);
-            writeStatistic(sb, "NumberColumnStatisticsReport.report.median", statistics[2]);
-            writeStatistic(sb, "NumberColumnStatisticsReport.report.Q3", statistics[3]);
-            writeStatistic(sb, "NumberColumnStatisticsReport.report.IQR", statistics[4]);
-            writeStatistic(sb, "NumberColumnStatisticsReport.report.sum", statistics[5]);
-            writeStatistic(sb, "NumberColumnStatisticsReport.report.min", statistics[6]);
-            writeStatistic(sb, "NumberColumnStatisticsReport.report.max", statistics[7]);
-            sb.append("</ul>");
-            sb.append("<hr>");
-            try {
-                Number[] columnNumbers = ac.getColumnNumbers(table, column);
-                final JFreeChart boxPlot = buildBoxPlot(columnNumbers, column.getTitle());
-                writeBoxPlot(sb, boxPlot);
-                sb.append("<hr>");
-                final JFreeChart scatterPlot = buildScatterPlot(columnNumbers, column.getTitle());
-                writeScatterPlot(sb, scatterPlot);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        } else {
-            sb.append(getMessage("NumberColumnStatisticsReport.report.empty"));
-        }
-        sb.append("</html>");
-
-        SwingUtilities.invokeLater(new Runnable() {
-
-            public void run() {
-                SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), sb.toString());
-            }
-        });
     }
 
     public String getName() {
@@ -122,7 +81,7 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
     }
 
     public AttributeColumnsManipulatorUI getUI() {
-        return null;
+        return new NumberColumnStatisticsReportUI();
     }
 
     public int getType() {
@@ -137,6 +96,53 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         return ImageUtilities.loadImage("org/gephi/datalaboratory/impl/manipulators/resources/statistics.png");
     }
 
+    public String getReportHTML(final AttributeColumn column, final BigDecimal[] statistics, final JFreeChart boxPlot, final JFreeChart scatterPlot, final Dimension boxPlotDimension, final Dimension scatterPlotDimension) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("<html>");
+        sb.append(NbBundle.getMessage(NumberColumnStatisticsReport.class, "NumberColumnStatisticsReport.report.header", HTMLEscape.stringToHTMLString(column.getTitle())));
+        sb.append("<hr>");
+        if (statistics != null) {//There are numbers in the column and statistics can be shown:
+            sb.append("<ul>");
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.average", statistics[0]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.Q1", statistics[1]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.median", statistics[2]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.Q3", statistics[3]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.IQR", statistics[4]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.sum", statistics[5]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.min", statistics[6]);
+            writeStatistic(sb, "NumberColumnStatisticsReport.report.max", statistics[7]);
+            sb.append("</ul>");
+            try {
+                if (boxPlot != null) {
+                    sb.append("<hr>");
+                    writeBoxPlot(sb, boxPlot, boxPlotDimension);
+                }
+                if (scatterPlot != null) {
+                    sb.append("<hr>");
+                    writeScatterPlot(sb, scatterPlot, scatterPlotDimension);
+                }
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        } else {
+            sb.append(getMessage("NumberColumnStatisticsReport.report.empty"));
+        }
+        sb.append("</html>");
+        return sb.toString();
+    }
+
+    public Number[] getColumnNumbers(final AttributeTable table, final AttributeColumn column) {
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        Number[] columnNumbers = ac.getColumnNumbers(table, column);
+        return columnNumbers;
+    }
+
+    public BigDecimal[] buildStatistics(final AttributeTable table, final AttributeColumn column) {
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        final BigDecimal[] statistics = ac.getNumberOrNumberListColumnStatistics(table, column);
+        return statistics;
+    }
+
     private void writeStatistic(StringBuilder sb, String resName, BigDecimal number) {
         sb.append("<li>");
         sb.append(getMessage(resName));
@@ -145,7 +151,7 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         sb.append("</li>");
     }
 
-    private JFreeChart buildBoxPlot(final Number[] numbers, final String columnTitle) {
+    public JFreeChart buildBoxPlot(final Number[] numbers, final String columnTitle) {
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
         final ArrayList<Number> list = new ArrayList<Number>();
         list.addAll(Arrays.asList(numbers));
@@ -169,18 +175,18 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         return boxPlot;
     }
 
-    private void writeBoxPlot(final StringBuilder sb, JFreeChart boxPlot) throws IOException {
+    private void writeBoxPlot(final StringBuilder sb, JFreeChart boxPlot, Dimension dimension) throws IOException {
         TempDir tempDir = TempDirUtils.createTempDir();
         String imageFile = "";
         String fileName = "box-plot-chart.png";
         File file = tempDir.createFile(fileName);
         imageFile = "<center><img src=\"file:" + file.getAbsolutePath() + "\"</img></center>";
-        ChartUtilities.saveChartAsPNG(file, boxPlot, 300, 500);
+        ChartUtilities.saveChartAsPNG(file, boxPlot, dimension != null ? dimension.width : 300, dimension != null ? dimension.height : 500);
 
         sb.append(imageFile);
     }
 
-    private JFreeChart buildScatterPlot(final Number[] numbers, final String columnTitle) {
+    public JFreeChart buildScatterPlot(final Number[] numbers, final String columnTitle) {
         XYSeriesCollection dataset = new XYSeriesCollection();
 
         XYSeries series1 = new XYSeries(columnTitle);
@@ -211,13 +217,13 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         return scatterPlot;
     }
 
-    private void writeScatterPlot(final StringBuilder sb, JFreeChart scatterPlot) throws IOException {
+    private void writeScatterPlot(final StringBuilder sb, JFreeChart scatterPlot, Dimension dimension) throws IOException {
         TempDir tempDir = TempDirUtils.createTempDir();
         String imageFile = "";
         String fileName = "scatter-plot-chart.png";
         File file = tempDir.createFile(fileName);
         imageFile = "<center><img src=\"file:" + file.getAbsolutePath() + "\"</img></center>";
-        ChartUtilities.saveChartAsPNG(file, scatterPlot, 600, 400);
+        ChartUtilities.saveChartAsPNG(file, scatterPlot, dimension != null ? dimension.width : 600, dimension != null ? dimension.height : 400);
 
         sb.append(imageFile);
     }

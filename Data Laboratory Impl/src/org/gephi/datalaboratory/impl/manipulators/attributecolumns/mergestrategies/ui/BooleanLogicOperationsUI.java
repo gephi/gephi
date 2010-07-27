@@ -66,6 +66,10 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
         return this;
     }
 
+    public boolean isModal() {
+        return true;
+    }
+
     private void prepareColumnsAndOperations() {
         AttributeColumn[] columns = manipulator.getColumns();
         operationSelectors = new JComboBox[columns.length - 1];

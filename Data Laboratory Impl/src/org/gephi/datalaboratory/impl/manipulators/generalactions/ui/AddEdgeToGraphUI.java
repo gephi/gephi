@@ -77,6 +77,10 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         return this;
     }
 
+    public boolean isModal() {
+        return true;
+    }
+
     private void refreshAvailableTargetNodes() {
         if (nodes != null) {
             ArrayList<Node> availableTargetNodes = new ArrayList<Node>();

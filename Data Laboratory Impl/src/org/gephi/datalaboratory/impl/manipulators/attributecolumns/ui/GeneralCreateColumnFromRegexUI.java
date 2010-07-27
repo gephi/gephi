@@ -92,6 +92,10 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
         return this;
     }
 
+    public boolean isModal() {
+        return true;
+    }
+
     private void refreshPattern() {
         //Try to validate the regex and help the user:
         try {

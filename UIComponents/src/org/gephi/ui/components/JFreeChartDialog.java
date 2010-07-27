@@ -1,12 +1,31 @@
-package org.gephi.ui.components;
+/*
+Copyright 2008-2010 Gephi
+Authors : Eduardo Ramos <eduramiba@gmail.com>
+Website : http://www.gephi.org
 
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.gephi.ui.components;
 
 import java.awt.Dimension;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
 /**
- *
+ * UI for showing a JFreeChart with the advantages of ChartPanel and also allows to resize the chart up to a maximum dimension.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class JFreeChartDialog extends javax.swing.JDialog {
@@ -19,11 +38,13 @@ public class JFreeChartDialog extends javax.swing.JDialog {
         setTitle(title);
         initialize(chart);
         setSize(initialWidth, initialHeight);
+        setLocationRelativeTo(parent);
     }
 
     public JFreeChartDialog(java.awt.Frame parent, JFreeChart chart) {
         super(parent, false);
         initialize(chart);
+        setLocationRelativeTo(parent);
     }
 
     private void initialize(JFreeChart chart) {
@@ -95,6 +116,7 @@ public class JFreeChartDialog extends javax.swing.JDialog {
             }
         });
 
+        resetButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/magnifier-history.png"))); // NOI18N
         resetButton.setText(org.openide.util.NbBundle.getMessage(JFreeChartDialog.class, "JFreeChartDialog.resetButton.text")); // NOI18N
         resetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -102,6 +124,7 @@ public class JFreeChartDialog extends javax.swing.JDialog {
             }
         });
 
+        zoomOutButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/magnifier--minus.png"))); // NOI18N
         zoomOutButton.setText(org.openide.util.NbBundle.getMessage(JFreeChartDialog.class, "JFreeChartDialog.zoomOutButton.text")); // NOI18N
         zoomOutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -109,6 +132,7 @@ public class JFreeChartDialog extends javax.swing.JDialog {
             }
         });
 
+        zoomInButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/components/resources/magnifier--plus.png"))); // NOI18N
         zoomInButton.setText(org.openide.util.NbBundle.getMessage(JFreeChartDialog.class, "JFreeChartDialog.zoomInButton.text")); // NOI18N
         zoomInButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -120,12 +144,12 @@ public class JFreeChartDialog extends javax.swing.JDialog {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+            .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(14, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(zoomOutButton)
-                    .addComponent(zoomInButton, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(zoomOutButton, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
+                    .addComponent(zoomInButton, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(closeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -135,7 +159,7 @@ public class JFreeChartDialog extends javax.swing.JDialog {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(resetButton)

@@ -34,7 +34,7 @@ import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
  *  <li>Provide and UI or not</li>
  *  <li>Provide and icon or not</li>
  * </ul>
- * <p>Used for NodesManipulator and EdgesManipulator.</p>
+ * <p>Used for different manipulators such as NodesManipulator, EdgesManipulator and GeneralActionsManipulator.</p>
  * <p>The only methods that could be called before setting up a manipulator with the data are getType and getPosition</p>
  * @see NodesManipulator
  * @author Eduardo Ramos <eduramiba@gmail.com>

@@ -66,6 +66,10 @@ public class GeneralClearRowDataUI extends javax.swing.JPanel implements Manipul
         return this;
     }
 
+    public boolean isModal() {
+        return true;
+    }
+
     private void refreshColumns() {
         AttributeColumn[] columns=manipulator.getColumnsToClearData();
         columnsCheckBoxes=new ColumnCheckBox[columns.length];

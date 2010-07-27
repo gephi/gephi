@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -99,7 +101,7 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         return attributeColumnsManipulators.toArray(new AttributeColumnsManipulator[0]);
     }
 
-    public AttributeValueManipulator[] getAttributeValueManipulators(){
+    public AttributeValueManipulator[] getAttributeValueManipulators() {
         ArrayList<AttributeValueManipulator> attributeValueManipulators = new ArrayList<AttributeValueManipulator>();
         for (AttributeValueManipulatorBuilder am : Lookup.getDefault().lookupAll(AttributeValueManipulatorBuilder.class)) {
             attributeValueManipulators.add(am.getAttributeValueManipulator());
@@ -150,18 +152,23 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
             new Thread(new Runnable() {
 
                 public void run() {
-                    ManipulatorUI ui = m.getUI();
+                    final ManipulatorUI ui = m.getUI();
                     //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                     if (ui != null) {
                         ui.setup(m);
                         JPanel settingsPanel = ui.getSettingsPanel();
-                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()));
-                        if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                            ui.unSetup();
-                            m.execute();
-                        } else {
-                            ui.unSetup();
-                        }
+                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                if (e.getSource().equals(NotifyDescriptor.OK_OPTION)) {
+                                    ui.unSetup();
+                                    m.execute();
+                                } else {
+                                    ui.unSetup();
+                                }
+                            }
+                        });
+                        DialogDisplayer.getDefault().notify(dd);
                     } else {
                         m.execute();
                     }
@@ -175,18 +182,23 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
             new Thread(new Runnable() {
 
                 public void run() {
-                    AttributeColumnsManipulatorUI ui = m.getUI();
+                    final AttributeColumnsManipulatorUI ui = m.getUI();
                     //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                     if (ui != null) {
                         ui.setup(m, table, column);
                         JPanel settingsPanel = ui.getSettingsPanel();
-                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()));
-                        if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                            ui.unSetup();
-                            m.execute(table, column);
-                        } else {
-                            ui.unSetup();
-                        }
+                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                if (e.getSource().equals(NotifyDescriptor.OK_OPTION)) {
+                                    ui.unSetup();
+                                    m.execute(table, column);
+                                } else {
+                                    ui.unSetup();
+                                }
+                            }
+                        });
+                        DialogDisplayer.getDefault().notify(dd);
                     } else {
                         m.execute(table, column);
                     }

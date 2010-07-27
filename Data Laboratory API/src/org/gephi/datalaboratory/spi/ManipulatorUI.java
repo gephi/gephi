@@ -51,4 +51,10 @@ public interface ManipulatorUI {
      * @return Settings panel instance
      */
     public JPanel getSettingsPanel();
+
+    /**
+     * Indicates if the created dialog has to be modal
+     * @return True if modal, false otherwise
+     */
+    public boolean isModal();
 }
