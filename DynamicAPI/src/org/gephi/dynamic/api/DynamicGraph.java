@@ -285,39 +285,8 @@ public interface DynamicGraph {
 	public Graph getSnapshotGraph(double low, double high, Estimator estimator);
 
 	/**
-	 * Returns a "weak snapshot graph", i.e. a graph for the given point of
-	 * time. "Weak" means that if any time interval of considered node/edge
-	 * overlaps with the {@code point} it is considered as a part of snapshot.
-	 *
-	 * @param point the given point of time
-	 *
-	 * @return a "snapshot graph", i.e. a graph for the given point of time.
-	 *
-	 * @throws IllegalArgumentException if {@code point} is out of range
-	 *                                  wrapped by this {@code DynamicGraph}.
-	 */
-	public Graph getWeakSnapshotGraph(double point);
-
-	/**
-	 * Returns a "weak snapshot graph", i.e. a graph for the given time interval.
-	 * "Weak" means that if any time interval of considered node/edge overlaps
-	 * with the time interval [{@code low}, {@code high}] it is considered as
-	 * a part of snapshot.
-	 *
-	 * @param low  the left endpoint of the given time interval
-	 * @param high the right endpoint of the given time interval
-	 *
-	 * @return a "snapshot graph", i.e. a graph for the given time interval.
-	 *
-	 * @throws IllegalArgumentException if {@code low} > {@code high} or the
-	 *                                  time interval [{@code low}, {@code high}]
-	 *                                  is out of range wrapped by this DynamicGraph.
-	 */
-	public Graph getWeakSnapshotGraph(double low, double high);
-
-	/**
 	 * Returns a "strong snapshot graph", i.e. a graph for the given point of
-	 * time. "Strong" means that if every time interval of considered node/edge
+	 * time. "Strong" means that if EVERY time interval of considered node/edge
 	 * overlaps with the {@code point} it is considered as a part of snapshot.
 	 *
 	 * @param point the given point of time
@@ -331,7 +300,7 @@ public interface DynamicGraph {
 
 	/**
 	 * Returns a "strong snapshot graph", i.e. a graph for the given time interval.
-	 * "Strong" means that if every time interval of considered node/edge overlaps
+	 * "Strong" means that if EVERY time interval of considered node/edge overlaps
 	 * with the time interval [{@code low}, {@code high}] it is considered as
 	 * a part of snapshot.
 	 *

@@ -37,84 +37,87 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = DynamicController.class)
 public final class DynamicControllerImpl implements DynamicController {
-	private ProjectController projectController;
 
-	/**
-	 * The default constructor.
-	 */
-	public DynamicControllerImpl() {
-		projectController = Lookup.getDefault().lookup(ProjectController.class);
-		projectController.addWorkspaceListener(new WorkspaceListener() {
-			@Override
-			public void initialize(Workspace workspace) {
-				workspace.add(new DynamicModelImpl(workspace));
-			}
+    private DynamicModelImpl model;
 
-			@Override
-			public void select(Workspace workspace) { }
+    /**
+     * The default constructor.
+     */
+    public DynamicControllerImpl() {
+        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+        projectController.addWorkspaceListener(new WorkspaceListener() {
 
-			@Override
-			public void unselect(Workspace workspace) { }
+            @Override
+            public void initialize(Workspace workspace) {
+                workspace.add(new DynamicModelImpl(workspace));
+            }
 
-			@Override
-			public void close(Workspace workspace) { }
+            @Override
+            public void select(Workspace workspace) {
+                model = workspace.getLookup().lookup(DynamicModelImpl.class);
+                if (model == null) {
+                    model = new DynamicModelImpl(workspace);
+                    workspace.add(model);
+                }
+            }
 
-			@Override
-			public void disable() { }
-		});
-		if (projectController.getCurrentProject() != null) {
-			Workspace[] workspaces = projectController.getCurrentProject().getLookup().
-										lookup(WorkspaceProvider.class).getWorkspaces();
-			for (Workspace workspace : workspaces) {
-				DynamicModel m = workspace.getLookup().lookup(DynamicModel.class);
-				if (m == null)
-					workspace.add(new DynamicModelImpl(workspace));
-			}
-		}
-	}
+            @Override
+            public void unselect(Workspace workspace) {
+            }
 
-	@Override
-	public DynamicModel getModel() {
-		Workspace workspace = projectController.getCurrentWorkspace();
-		if (workspace != null) {
-			DynamicModel model = workspace.getLookup().lookup(DynamicModel.class);
-			if (model != null)
-				return model;
-			model = new DynamicModelImpl(workspace);
-			workspace.add(model);
-			return model;
-		}
-		return null;
-	}
+            @Override
+            public void close(Workspace workspace) {
+            }
 
-	@Override
-	public DynamicModel getModel(Workspace workspace) {
-		if (workspace != null) {
-			DynamicModel model = workspace.getLookup().lookup(DynamicModel.class);
-			if (model != null)
-				return model;
-			model = new DynamicModelImpl(workspace);
-			workspace.add(model);
-			return model;
-		}
-		return null;
-	}
+            @Override
+            public void disable() {
+                model = null;
+            }
+        });
+        if (projectController.getCurrentProject() != null) {
+            Workspace[] workspaces = projectController.getCurrentProject().getLookup().
+                    lookup(WorkspaceProvider.class).getWorkspaces();
+            for (Workspace workspace : workspaces) {
+                DynamicModelImpl m = (DynamicModelImpl) workspace.getLookup().lookup(DynamicModel.class);
+                if (m == null) {
+                    m = new DynamicModelImpl(workspace);
+                    workspace.add(m);
+                }
+                if (workspace == projectController.getCurrentWorkspace()) {
+                    model = m;
+                }
+            }
+        }
+    }
 
-	@Override
-	public void setVisibleInterval(TimeInterval interval) {
-		setVisibleInterval(interval.getLow(), interval.getHigh());
-	}
+    @Override
+    public DynamicModel getModel() {
+        return model;
+    }
 
-	@Override
-	public void setVisibleInterval(double low, double high) {
-		Workspace workspace = projectController.getCurrentWorkspace();
-		if (workspace != null) {
-			DynamicModel model = workspace.getLookup().lookup(DynamicModel.class);
-			if (model != null)
-				model.setVisibleInterval(low, high);
-			model = new DynamicModelImpl(workspace);
-			model.setVisibleInterval(low, high);
-			workspace.add(model);
-		}
-	}
+    @Override
+    public DynamicModel getModel(Workspace workspace) {
+        if (workspace != null) {
+            DynamicModel m = workspace.getLookup().lookup(DynamicModel.class);
+            if (m != null) {
+                return m;
+            }
+            m = new DynamicModelImpl(workspace);
+            workspace.add(m);
+            return m;
+        }
+        return null;
+    }
+
+    @Override
+    public void setVisibleInterval(TimeInterval interval) {
+        if (model != null) {
+            model.setVisibleTimeInterval(interval);
+        }
+    }
+
+    @Override
+    public void setVisibleInterval(double low, double high) {
+        setVisibleInterval(new TimeInterval(low, high));
+    }
 }
