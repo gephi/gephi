@@ -62,9 +62,9 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
     private static final String NODE_START = "start";
     private static final String NODE_END = "end";
     private static final String NODE_PID = "pid";
-    private static final String NODE_POSITION = "viz:position";
-    private static final String NODE_COLOR = "viz:color";
-    private static final String NODE_SIZE = "viz:size";
+    private static final String NODE_POSITION = "position";
+    private static final String NODE_COLOR = "color";
+    private static final String NODE_SIZE = "size";
     private static final String NODE_SLICE = "slice";
     private static final String EDGE = "edge";
     private static final String EDGE_ID = "id";
@@ -270,18 +270,19 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
             switch (type) {
                 case XMLStreamReader.START_ELEMENT:
+                    String name = xmlReader.getLocalName();
                     if (ATTVALUE.equalsIgnoreCase(xmlReader.getLocalName())) {
                         readNodeAttValue(reader, node);
-                    } else if (NODE_POSITION.equalsIgnoreCase(xmlReader.getLocalName())) {
+                    } else if (NODE_POSITION.equalsIgnoreCase(name)) {
                         readNodePosition(reader, node);
-                    } else if (NODE_COLOR.equalsIgnoreCase(xmlReader.getLocalName())) {
+                    } else if (NODE_COLOR.equalsIgnoreCase(name)) {
                         readNodeColor(reader, node);
-                    } else if (NODE_SIZE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                    } else if (NODE_SIZE.equalsIgnoreCase(name)) {
                         readNodeSize(reader, node);
-                    } else if (NODE_SLICE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                    } else if (NODE_SLICE.equalsIgnoreCase(name)) {
                         readNodeSlice(reader, node);
                         slices = true;
-                    } else if (NODE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                    } else if (NODE.equalsIgnoreCase(name)) {
                         readNode(reader, node);
                     }
                     break;
@@ -421,7 +422,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
     private void readNodeSize(XMLStreamReader reader, NodeDraft node) throws Exception {
         String attName = reader.getAttributeName(0).getLocalPart();
-        if ("size".equalsIgnoreCase(attName)) {
+        if ("value".equalsIgnoreCase(attName)) {
             String sizeStr = reader.getAttributeValue(0);
             if (!sizeStr.isEmpty()) {
                 try {
