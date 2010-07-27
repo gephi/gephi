@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -162,6 +163,11 @@ public final class WelcomeTopComponent extends TopComponent {
                 JXHyperlink fileLink = new JXHyperlink(new AbstractAction() {
 
                     public void actionPerformed(ActionEvent e) {
+                        try {
+                            stream.reset();
+                        } catch (IOException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
                         ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
                         importController.importStream(stream, importer);
                         WelcomeTopComponent.this.close();

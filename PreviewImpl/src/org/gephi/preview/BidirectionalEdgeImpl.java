@@ -41,7 +41,7 @@ public class BidirectionalEdgeImpl extends DirectedEdgeImpl
      * Generates a curve from node 1 to node 2 and a another one from node 2 to
      * node 1, then adds them to the curve list.
      */
-    @Override
+    /*@Override
     protected void genCurves() {
         super.genCurves();
 
@@ -68,5 +68,5 @@ public class BidirectionalEdgeImpl extends DirectedEdgeImpl
                 new PointImpl(v1),
                 new PointImpl(v2),
                 node2.getPosition()));
-    }
+    }*/
 }
