@@ -434,14 +434,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (dynamicGraph && (timeIntervalMin != null || timeIntervalMax != null)) {
             for (NodeDraftImpl node : nodeMap.values()) {
                 boolean issue = false;
-
-                if (timeIntervalMin != null && node.getTimeInterval() != null && node.getTimeInterval().getLow() < timeIntervalMin) {
-                    node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), timeIntervalMin, node.getTimeInterval().getHigh()));
-                    issue = true;
-                }
-                if (timeIntervalMax != null && node.getTimeInterval() != null && node.getTimeInterval().getHigh() > timeIntervalMax) {
-                    node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), node.getTimeInterval().getLow(), timeIntervalMax));
-                    issue = true;
+                if (timeIntervalMin != null || timeIntervalMax != null) {
+                    if (timeIntervalMin != null && node.getTimeInterval() != null && node.getTimeInterval().getLow() < timeIntervalMin) {
+                        node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), timeIntervalMin, node.getTimeInterval().getHigh()));
+                        issue = true;
+                    }
+                    if (timeIntervalMax != null && node.getTimeInterval() != null && node.getTimeInterval().getHigh() > timeIntervalMax) {
+                        node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), node.getTimeInterval().getLow(), timeIntervalMax));
+                        issue = true;
+                    }
+                    node.setTimeInterval(new TimeInterval(timeIntervalMin, timeIntervalMax));
                 }
 
                 AttributeValue[] values = node.getAttributeRow().getValues();
@@ -450,11 +452,15 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     if (val.getValue() != null && DynamicType.class.isAssignableFrom(val.getColumn().getType().getType())) {   //is Dynamic type
                         DynamicType type = (DynamicType) val.getValue();
                         if (timeIntervalMin != null && type.getLow() < timeIntervalMin) {
-                            issue = true;
+                            if (!Double.isInfinite(type.getLow())) {
+                                issue = true;
+                            }
                             node.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, timeIntervalMin, type.getHigh()));
                         }
                         if (timeIntervalMax != null && type.getHigh() > timeIntervalMax) {
-                            issue = true;
+                            if (!Double.isInfinite(type.getHigh())) {
+                                issue = true;
+                            }
                             node.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, type.getLow(), timeIntervalMax));
                         }
                     }
@@ -465,14 +471,16 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             }
             for (EdgeDraftImpl edge : edgeMap.values()) {
                 boolean issue = false;
-
-                if (timeIntervalMin != null && edge.getTimeInterval().getLow() < timeIntervalMin) {
-                    edge.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(edge.getTimeInterval(), timeIntervalMin, edge.getTimeInterval().getHigh()));
-                    issue = true;
-                }
-                if (timeIntervalMax != null && edge.getTimeInterval().getHigh() > timeIntervalMax) {
-                    edge.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(edge.getTimeInterval(), edge.getTimeInterval().getLow(), timeIntervalMax));
-                    issue = true;
+                if (timeIntervalMin != null || timeIntervalMax != null) {
+                    if (timeIntervalMin != null && edge.getTimeInterval() != null && edge.getTimeInterval().getLow() < timeIntervalMin) {
+                        edge.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(edge.getTimeInterval(), timeIntervalMin, edge.getTimeInterval().getHigh()));
+                        issue = true;
+                    }
+                    if (timeIntervalMax != null && edge.getTimeInterval() != null && edge.getTimeInterval().getHigh() > timeIntervalMax) {
+                        edge.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(edge.getTimeInterval(), edge.getTimeInterval().getLow(), timeIntervalMax));
+                        issue = true;
+                    }
+                    edge.setTimeInterval(new TimeInterval(timeIntervalMin, timeIntervalMax));
                 }
 
                 AttributeValue[] values = edge.getAttributeRow().getValues();
@@ -481,11 +489,15 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     if (val.getValue() != null && DynamicType.class.isAssignableFrom(val.getColumn().getType().getType())) {   //is Dynamic type
                         DynamicType type = (DynamicType) val.getValue();
                         if (timeIntervalMin != null && type.getLow() < timeIntervalMin) {
-                            issue = true;
+                            if (!Double.isInfinite(type.getLow())) {
+                                issue = true;
+                            }
                             edge.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, timeIntervalMin, type.getHigh()));
                         }
                         if (timeIntervalMax != null && type.getHigh() > timeIntervalMax) {
-                            issue = true;
+                            if (!Double.isInfinite(type.getHigh())) {
+                                issue = true;
+                            }
                             edge.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, type.getLow(), timeIntervalMax));
                         }
                     }

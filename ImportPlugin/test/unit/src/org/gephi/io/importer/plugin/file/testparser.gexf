@@ -38,7 +38,7 @@
 					<attvalue for="4" value="3.0" start="2009-01-01" end="2009-12-31"/>
 				</attvalues>
 			</node>
-			<node id="4c175b4b2c9016b9101b4bc2" label="Node 4" start="2000-01-01" end="2000-12-31">
+			<node id="4c175b4b2c9016b9101b4bc2" label="Node 4">
 				<attvalues>
 					<attvalue for="0" value="Author"/>
 					<attvalue for="3" value="1"/>
