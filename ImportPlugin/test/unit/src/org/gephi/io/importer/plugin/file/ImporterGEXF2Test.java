@@ -179,6 +179,11 @@ public class ImporterGEXF2Test {
             assertEquals("2000-01-01", DynamicUtilities.getXMLDateStringFromDouble(n4.getTimeInterval().getValues().get(0)[0]));
             assertEquals("2010-12-31", DynamicUtilities.getXMLDateStringFromDouble(n4.getTimeInterval().getValues().get(0)[1]));
 
+            assertEquals("2000-01-01", DynamicUtilities.getXMLDateStringFromDouble(n3.getTimeInterval().getValues().get(0)[0]));
+            assertEquals("2000-01-15", DynamicUtilities.getXMLDateStringFromDouble(n3.getTimeInterval().getValues().get(0)[1]));
+            assertEquals("2001-01-30", DynamicUtilities.getXMLDateStringFromDouble(n3.getTimeInterval().getValues().get(1)[0]));
+            assertEquals("2001-02-01", DynamicUtilities.getXMLDateStringFromDouble(n3.getTimeInterval().getValues().get(1)[1]));
+
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());

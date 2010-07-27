@@ -443,7 +443,9 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                         node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), node.getTimeInterval().getLow(), timeIntervalMax));
                         issue = true;
                     }
-                    node.setTimeInterval(new TimeInterval(timeIntervalMin, timeIntervalMax));
+                    if (node.getTimeInterval() == null) {
+                        node.setTimeInterval(new TimeInterval(timeIntervalMin, timeIntervalMax));
+                    }
                 }
 
                 AttributeValue[] values = node.getAttributeRow().getValues();
@@ -480,7 +482,9 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                         edge.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(edge.getTimeInterval(), edge.getTimeInterval().getLow(), timeIntervalMax));
                         issue = true;
                     }
-                    edge.setTimeInterval(new TimeInterval(timeIntervalMin, timeIntervalMax));
+                    if (edge.getTimeInterval() == null) {
+                        edge.setTimeInterval(new TimeInterval(timeIntervalMin, timeIntervalMax));
+                    }
                 }
 
                 AttributeValue[] values = edge.getAttributeRow().getValues();
