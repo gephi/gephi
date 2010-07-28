@@ -269,6 +269,14 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                 }
             }
         });
+        useSparklinesCheckBox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                nodeTable.setUseSparklines(useSparklinesCheckBox.isSelected());
+                edgeTable.setUseSparklines(useSparklinesCheckBox.isSelected());
+                refreshCurrentTable();
+            }
+        });
     }
 
     private void refreshAll() {
@@ -546,7 +554,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         return classDisplayed == ClassDisplayed.EDGE;
     }
 
-    public boolean isShowingOnlyVisible(){
+    public boolean isShowingOnlyVisible() {
         return visibleOnly;
     }
 
@@ -897,6 +905,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         edgesButton = new javax.swing.JToggleButton();
         separator = new javax.swing.JToolBar.Separator();
         visibleGraphCheckbox = new javax.swing.JCheckBox();
+        useSparklinesCheckBox = new javax.swing.JCheckBox();
         separator2 = new javax.swing.JToolBar.Separator();
         boxGlue = new javax.swing.JLabel();
         labelFilter = new org.jdesktop.swingx.JXLabel();
@@ -943,6 +952,12 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         visibleGraphCheckbox.setFocusable(false);
         visibleGraphCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         controlToolbar.add(visibleGraphCheckbox);
+
+        org.openide.awt.Mnemonics.setLocalizedText(useSparklinesCheckBox, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.useSparklinesCheckBox.text")); // NOI18N
+        useSparklinesCheckBox.setFocusable(false);
+        useSparklinesCheckBox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        useSparklinesCheckBox.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        controlToolbar.add(useSparklinesCheckBox);
         controlToolbar.add(separator2);
 
         org.openide.awt.Mnemonics.setLocalizedText(boxGlue, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.boxGlue.text")); // NOI18N
@@ -1057,6 +1072,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private javax.swing.JToolBar.Separator separator;
     private javax.swing.JToolBar.Separator separator2;
     private javax.swing.JScrollPane tableScrollPane;
+    private javax.swing.JCheckBox useSparklinesCheckBox;
     private javax.swing.JCheckBox visibleGraphCheckbox;
     // End of variables declaration//GEN-END:variables
 

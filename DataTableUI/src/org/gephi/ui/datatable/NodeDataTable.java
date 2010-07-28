@@ -31,7 +31,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -44,6 +46,8 @@ import javax.swing.tree.TreePath;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.data.attributes.type.NumberList;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
@@ -59,8 +63,10 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
+import org.gephi.graph.api.Attributes;
 import org.gephi.tools.api.EditWindowController;
 import utils.PopupMenuUtils;
+import utils.SparkLinesRenderer;
 
 /**
  *
@@ -69,13 +75,14 @@ import utils.PopupMenuUtils;
 public class NodeDataTable {
 
     private final boolean popupAllowed = true;
+    private boolean useSparklines = false;
     private Outline outlineTable;
     private QuickFilter quickFilter;
     private Pattern pattern;
     private DataTablesModel dataTablesModel;
     Node[] selectedNodes;
     private AttributeColumnsController attributeColumnsController;
-    private static final int FAKE_COLUMNS_COUNT=1;
+    private static final int FAKE_COLUMNS_COUNT = 1;
 
     public NodeDataTable() {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
@@ -100,6 +107,8 @@ public class NodeDataTable {
         };
 
         outlineTable.addMouseListener(new PopupAdapter());
+        outlineTable.setDefaultRenderer(NumberList.class, new SparkLinesRenderer());
+        outlineTable.setDefaultEditor(NumberList.class, new DefaultCellEditor(new JTextField()));
         outlineTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
             public void valueChanged(ListSelectionEvent e) {
@@ -197,6 +206,14 @@ public class NodeDataTable {
 
     public boolean hasData() {
         return outlineTable.getRowCount() > 0;
+    }
+
+    public boolean isUseSparklines() {
+        return useSparklines;
+    }
+
+    public void setUseSparklines(boolean useSparklines) {
+        this.useSparklines = useSparklines;
     }
 
     private static class NodeTreeModel implements TreeModel {
@@ -309,7 +326,11 @@ public class NodeDataTable {
         }
 
         public Class getColumnClass() {
-            return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
+            if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
+                return NumberList.class;
+            } else {
+                return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
+            }
         }
 
         public String getColumnName() {
@@ -321,8 +342,14 @@ public class NodeDataTable {
             if (graphNode.getId() == -1) {
                 return null;
             }
-            Object value = graphNode.getNodeData().getAttributes().getValue(column.getIndex());
-            return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent
+            Attributes row = graphNode.getNodeData().getAttributes();
+            Object value = row.getValue(column.getIndex());
+
+            if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
+                return value;
+            } else {
+                return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent
+            }
         }
 
         public void setValueFor(ImmutableTreeNode node, Object value) {
@@ -434,7 +461,7 @@ public class NodeDataTable {
 
             //Add AttributeValues manipulators submenu:
             AttributeRow row = (AttributeRow) clickedNode.getNodeData().getAttributes();
-            int realColumnIndex=outlineTable.convertColumnIndexToModel(outlineTable.columnAtPoint(p))-FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
+            int realColumnIndex = outlineTable.convertColumnIndexToModel(outlineTable.columnAtPoint(p)) - FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
             AttributeColumn column = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumn(realColumnIndex);
             if (column != null) {
                 contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));

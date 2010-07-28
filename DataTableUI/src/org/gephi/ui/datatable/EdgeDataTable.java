@@ -30,7 +30,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
@@ -39,6 +41,8 @@ import javax.swing.table.TableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.data.attributes.type.NumberList;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
@@ -52,6 +56,7 @@ import org.openide.awt.MouseUtils;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import utils.PopupMenuUtils;
+import utils.SparkLinesRenderer;
 
 /**
  *
@@ -59,17 +64,20 @@ import utils.PopupMenuUtils;
  */
 public class EdgeDataTable {
 
+    private boolean useSparklines = false;
     private JXTable table;
     private PropertyEdgeDataColumn[] propertiesColumns;
     private RowFilter rowFilter;
     private Edge[] selectedEdges;
     private AttributeColumnsController attributeColumnsController;
-    private static final int FAKE_COLUMNS_COUNT=3;
+    private static final int FAKE_COLUMNS_COUNT = 3;
 
     public EdgeDataTable() {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         table = new JXTable();
+        table.setDefaultRenderer(NumberList.class, new SparkLinesRenderer());
+        table.setDefaultEditor(NumberList.class, new DefaultCellEditor(new JTextField()));
         table.setHighlighters(HighlighterFactory.createAlternateStriping());
         table.setColumnControlVisible(true);
         table.setSortable(true);
@@ -199,6 +207,14 @@ public class EdgeDataTable {
         return table.getRowCount() > 0;
     }
 
+    public boolean isUseSparklines() {
+        return useSparklines;
+    }
+
+    public void setUseSparklines(boolean useSparklines) {
+        this.useSparklines = useSparklines;
+    }
+
     private String[] getHiddenColumns() {
         List<String> hiddenCols = new ArrayList<String>();
         TableColumnModelExt columnModel = (TableColumnModelExt) table.getColumnModel();
@@ -294,7 +310,11 @@ public class EdgeDataTable {
         }
 
         public Class getColumnClass() {
-            return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
+            if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
+                return NumberList.class;
+            } else {
+                return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
+            }
         }
 
         public String getColumnName() {
@@ -303,7 +323,11 @@ public class EdgeDataTable {
 
         public Object getValueFor(Edge edge) {
             Object value = edge.getEdgeData().getAttributes().getValue(column.getIndex());
-            return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent
+            if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
+                return value;
+            } else {
+                return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent
+            }
         }
 
         public void setValueFor(Edge edge, Object value) {
@@ -403,7 +427,7 @@ public class EdgeDataTable {
 
             //Add AttributeValues manipulators submenu:
             AttributeRow row = (AttributeRow) clickedEdge.getEdgeData().getAttributes();
-            int realColumnIndex=table.convertColumnIndexToModel(table.columnAtPoint(p))-FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
+            int realColumnIndex = table.convertColumnIndexToModel(table.columnAtPoint(p)) - FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
             AttributeColumn column = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable().getColumn(realColumnIndex);
             if (column != null) {
                 contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));

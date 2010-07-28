@@ -84,7 +84,7 @@ public class ShowNumberListScatterPlot implements AttributeValueManipulator {
     }
 
     public boolean canExecute() {
-        return numbers != null && numbers.length > 0;//Column is number list column and there is numbers to show
+        return numbers != null && numbers.length > 1;//Column is number list column and there is numbers to show
     }
 
     public ManipulatorUI getUI() {
