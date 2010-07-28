@@ -55,6 +55,10 @@ public abstract class AttributeUtils {
 
     public abstract boolean areAllNumberOrNumberListColumns(AttributeColumn[] columns);
 
+    public abstract boolean isDynamicNumberColumn(AttributeColumn column);
+
+    public abstract boolean areAllDynamicNumberColumns(AttributeColumn[] columns);
+
     public abstract AttributeColumn[] getNumberColumns(AttributeTable table);
 
     public abstract AttributeColumn[] getStringColumns(AttributeTable table);

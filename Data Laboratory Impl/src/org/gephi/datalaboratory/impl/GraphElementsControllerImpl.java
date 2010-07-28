@@ -251,7 +251,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     public boolean canMoveNodeToGroup(Node node, Node group) {
         HierarchicalGraph hg = getHierarchicalGraph();
-        return hg.getParent(node) == hg.getParent(group) && canUngroupNode(group) && isNodeInGraph(node);
+        return node!=group && hg.getParent(node) == hg.getParent(group) && canUngroupNode(group) && isNodeInGraph(node);
     }
 
     public boolean removeNodeFromGroup(Node node) {

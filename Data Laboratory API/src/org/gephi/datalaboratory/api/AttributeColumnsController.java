@@ -131,7 +131,7 @@ public interface AttributeColumnsController {
     void NegateBooleanColumn(AttributeTable table, AttributeColumn column);
 
     /**
-     * Creates a new string list column from the given column and regular expression with values that are
+     * Creates a new <code>LIST_STRING</code> column from the given column and regular expression with values that are
      * the list of matching groups of the given regular expression.
      * @param table Table of the column to match
      * @param column Column to match

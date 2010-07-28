@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes;
 
 import java.util.ArrayList;
@@ -54,10 +54,10 @@ public class AttributeUtilsImpl extends AttributeUtils {
 
     @Override
     public boolean areAllColumnsOfSameType(AttributeColumn[] columns) {
-        if(columns.length==0){
+        if (columns.length == 0) {
             return false;
         }
-        AttributeType type=columns[0].getType();
+        AttributeType type = columns[0].getType();
         return areAllColumnsOfType(columns, type);
     }
 
@@ -67,9 +67,9 @@ public class AttributeUtilsImpl extends AttributeUtils {
     }
 
     @Override
-    public boolean areAllStringColumns(AttributeColumn[] columns){
-        for(AttributeColumn column:columns){
-            if(!isStringColumn(column)){
+    public boolean areAllStringColumns(AttributeColumn[] columns) {
+        for (AttributeColumn column : columns) {
+            if (!isStringColumn(column)) {
                 return false;
             }
         }
@@ -83,9 +83,9 @@ public class AttributeUtilsImpl extends AttributeUtils {
     }
 
     @Override
-    public boolean areAllNumberColumns(AttributeColumn[] columns){
-        for(AttributeColumn column:columns){
-            if(!isNumberColumn(column)){
+    public boolean areAllNumberColumns(AttributeColumn[] columns) {
+        for (AttributeColumn column : columns) {
+            if (!isNumberColumn(column)) {
                 return false;
             }
         }
@@ -99,9 +99,9 @@ public class AttributeUtilsImpl extends AttributeUtils {
     }
 
     @Override
-    public boolean areAllNumberListColumns(AttributeColumn[] columns){
-        for(AttributeColumn column:columns){
-            if(!isNumberListColumn(column)){
+    public boolean areAllNumberListColumns(AttributeColumn[] columns) {
+        for (AttributeColumn column : columns) {
+            if (!isNumberListColumn(column)) {
                 return false;
             }
         }
@@ -110,13 +110,38 @@ public class AttributeUtilsImpl extends AttributeUtils {
 
     @Override
     public boolean isNumberOrNumberListColumn(AttributeColumn column) {
-        return isNumberColumn(column)||isNumberListColumn(column);
+        return isNumberColumn(column) || isNumberListColumn(column);
     }
 
     @Override
-    public boolean areAllNumberOrNumberListColumns(AttributeColumn[] columns){
-        for(AttributeColumn column:columns){
-            if(!isNumberOrNumberListColumn(column)){
+    public boolean areAllNumberOrNumberListColumns(AttributeColumn[] columns) {
+        for (AttributeColumn column : columns) {
+            if (!isNumberOrNumberListColumn(column)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isDynamicNumberColumn(AttributeColumn column) {
+        switch (column.getType()) {
+            case DYNAMIC_BIGDECIMAL:
+            case DYNAMIC_BIGINTEGER:
+            case DYNAMIC_BYTE:
+            case DYNAMIC_DOUBLE:
+            case DYNAMIC_FLOAT:
+            case DYNAMIC_INT:
+            case DYNAMIC_LONG:
+            case DYNAMIC_SHORT:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean areAllDynamicNumberColumns(AttributeColumn[] columns){
+        for (AttributeColumn column : columns) {
+            if (!isDynamicNumberColumn(column)) {
                 return false;
             }
         }
@@ -141,8 +166,9 @@ public class AttributeUtilsImpl extends AttributeUtils {
 
                 for (int index = 1; index < values.length; index++) {
                     Comparable o = values[index];
-                    if (o.compareTo(min) < 0)
+                    if (o.compareTo(min) < 0) {
                         min = o;
+                    }
                 }
 
                 return min;
@@ -167,8 +193,9 @@ public class AttributeUtilsImpl extends AttributeUtils {
 
                 for (int index = 1; index < values.length; index++) {
                     Comparable o = values[index];
-                    if (o.compareTo(max) > 0)
+                    if (o.compareTo(max) > 0) {
                         max = o;
+                    }
                 }
 
                 return max;

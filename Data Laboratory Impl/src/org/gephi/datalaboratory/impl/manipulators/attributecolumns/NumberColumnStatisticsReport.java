@@ -189,11 +189,11 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
     public JFreeChart buildScatterPlot(final Number[] numbers, final String columnTitle) {
         XYSeriesCollection dataset = new XYSeriesCollection();
 
-        XYSeries series1 = new XYSeries(columnTitle);
+        XYSeries series = new XYSeries(columnTitle);
         for (int i = 0; i < numbers.length; i++) {
-            series1.add(i, numbers[i]);
+            series.add(i, numbers[i]);
         }
-        dataset.addSeries(series1);
+        dataset.addSeries(series);
         JFreeChart scatterPlot = ChartFactory.createXYLineChart(
                 getMessage("NumberColumnStatisticsReport.report.scatter-plot.title"),
                 getMessage("NumberColumnStatisticsReport.report.scatter-plot.xLabel"),

@@ -164,7 +164,7 @@ public interface GraphElementsController {
 
     /**
      * Moves a node to a group of nodes if it is possible.
-     * To move a node to a group, they must have the same parent and the group node has to be a group of nodes.
+     * To move a node to a group node, they must be different, have the same parent and the group node has to be a group of nodes.
      * @param node Node to move to group
      * @param group Group of nodes to move the node
      * @return True if the node was moved, false otherwise
@@ -262,13 +262,7 @@ public interface GraphElementsController {
      * @return Edges count
      */
     int getEdgesCount();
-
-    /*****************
-     * The next methods that check if nodes and edges are in the graph,
-     * are necessary because the table in DataLaboratory is not refreshed
-     * automatically after changing the graph, so deleted nodes could be referenced.
-     * Manipulators should take care of this if they don't use this API (which does it in every action).
-     ****************/
+	
     /**
      * Checks if a node is contained in the graph.
      * @param node Node to check
