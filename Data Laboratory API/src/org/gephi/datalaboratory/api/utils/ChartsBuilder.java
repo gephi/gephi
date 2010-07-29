@@ -101,7 +101,6 @@ public class ChartsBuilder {
             StandardXYItemRenderer regressionRenderer = new StandardXYItemRenderer();
             regressionRenderer.setBaseSeriesVisibleInLegend(false);
             plot.setDataset(1, regress((XYSeriesCollection) plot.getDataset(0)));
-            regressionRenderer.setSeriesPaint(1, Color.blue);
             plot.setRenderer(1, regressionRenderer);
         } else {
             plot.setDataset(1, null);//Remove linear regression
