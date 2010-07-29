@@ -142,6 +142,7 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         divisionsLabel = new javax.swing.JLabel();
         divisionsComboBox = new javax.swing.JComboBox();
 
+        configureBoxPlotButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalaboratory/impl/manipulators/resources/wooden-box.png"))); // NOI18N
         configureBoxPlotButton.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.configureBoxPlotButton.text")); // NOI18N
         configureBoxPlotButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -149,6 +150,7 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
             }
         });
 
+        configureScatterPlotButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalaboratory/impl/manipulators/resources/chart-up.png"))); // NOI18N
         configureScatterPlotButton.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.configureScatterPlotButton.text")); // NOI18N
         configureScatterPlotButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -156,6 +158,7 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
             }
         });
 
+        showReportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalaboratory/impl/manipulators/resources/application-block.png"))); // NOI18N
         showReportButton.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.showReportButton.text")); // NOI18N
         showReportButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -177,6 +180,7 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
             }
         });
 
+        configureHistogramButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalaboratory/impl/manipulators/resources/chart.png"))); // NOI18N
         configureHistogramButton.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.configureHistogramButton.text")); // NOI18N
         configureHistogramButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -199,14 +203,13 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(showReportButton)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(showReportButton)
-                        .addContainerGap(285, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(configureHistogramButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(configureBoxPlotButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(configureScatterPlotButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(configureHistogramButton, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
+                            .addComponent(configureScatterPlotButton, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
+                            .addComponent(configureBoxPlotButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -217,16 +220,16 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
                                 .addGap(10, 10, 10)
                                 .addComponent(divisionsLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(divisionsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(25, Short.MAX_VALUE))))
-            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+                                .addComponent(divisionsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap())
+            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(configureBoxPlotButton)
-                .addGap(17, 17, 17)
+                .addComponent(configureBoxPlotButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(11, 11, 11)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(configureScatterPlotButton)
                     .addComponent(useLinesCheckBox)
@@ -237,7 +240,7 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
                     .addComponent(divisionsLabel)
                     .addComponent(divisionsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 10, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 1, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showReportButton)
                 .addContainerGap())

@@ -93,6 +93,7 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
         configurePieChartButton = new javax.swing.JButton();
         showReportButton = new javax.swing.JButton();
 
+        configurePieChartButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalaboratory/impl/manipulators/resources/category.png"))); // NOI18N
         configurePieChartButton.setText(org.openide.util.NbBundle.getMessage(ColumnValuesFrequencyUI.class, "ColumnValuesFrequencyUI.configurePieChartButton.text")); // NOI18N
         configurePieChartButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -100,6 +101,7 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
             }
         });
 
+        showReportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalaboratory/impl/manipulators/resources/application-block.png"))); // NOI18N
         showReportButton.setText(org.openide.util.NbBundle.getMessage(ColumnValuesFrequencyUI.class, "ColumnValuesFrequencyUI.showReportButton.text")); // NOI18N
         showReportButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -114,7 +116,7 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(configurePieChartButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addComponent(showReportButton)
                 .addContainerGap())
         );

@@ -189,7 +189,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         String imageFile = "";
         String fileName = "frequencies-pie-chart.png";
         File file = tempDir.createFile(fileName);
-        imageFile = "<img src=\"file:" + file.getAbsolutePath() + "\"</img>";
+        imageFile = "<center><img src=\"file:" + file.getAbsolutePath() + "\"</img></center>";
         ChartUtilities.saveChartAsPNG(file, chart, dimension != null ? dimension.width : 1000, dimension != null ? dimension.height : 1000);
 
         sb.append(imageFile);

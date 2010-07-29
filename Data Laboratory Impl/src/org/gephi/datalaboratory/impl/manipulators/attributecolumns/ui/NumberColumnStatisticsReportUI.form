@@ -19,16 +19,14 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="showReportButton" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="showReportButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="285" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="configureHistogramButton" alignment="0" max="32767" attributes="1"/>
-                          <Component id="configureBoxPlotButton" alignment="0" max="32767" attributes="1"/>
-                          <Component id="configureScatterPlotButton" alignment="0" max="32767" attributes="1"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="configureHistogramButton" pref="163" max="32767" attributes="1"/>
+                          <Component id="configureScatterPlotButton" pref="163" max="32767" attributes="1"/>
+                          <Component id="configureBoxPlotButton" alignment="1" pref="163" max="32767" attributes="1"/>
                       </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -43,19 +41,19 @@
                               <Component id="divisionsComboBox" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="25" max="32767" attributes="0"/>
                   </Group>
               </Group>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
-          <Component id="jSeparator1" alignment="1" pref="386" max="32767" attributes="0"/>
+          <Component id="jSeparator1" alignment="1" pref="393" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="configureBoxPlotButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+              <Component id="configureBoxPlotButton" min="-2" pref="25" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="configureScatterPlotButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="useLinesCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -68,7 +66,7 @@
                   <Component id="divisionsComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jSeparator1" pref="10" max="32767" attributes="0"/>
+              <Component id="jSeparator1" pref="1" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="showReportButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -79,6 +77,9 @@
   <SubComponents>
     <Component class="javax.swing.JButton" name="configureBoxPlotButton">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/org/gephi/datalaboratory/impl/manipulators/resources/wooden-box.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="NumberColumnStatisticsReportUI.configureBoxPlotButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
@@ -89,6 +90,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="configureScatterPlotButton">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/org/gephi/datalaboratory/impl/manipulators/resources/chart-up.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="NumberColumnStatisticsReportUI.configureScatterPlotButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
@@ -99,6 +103,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="showReportButton">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/org/gephi/datalaboratory/impl/manipulators/resources/application-block.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="NumberColumnStatisticsReportUI.showReportButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
@@ -131,6 +138,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="configureHistogramButton">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/org/gephi/datalaboratory/impl/manipulators/resources/chart.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="NumberColumnStatisticsReportUI.configureHistogramButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
