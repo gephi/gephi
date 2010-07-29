@@ -159,6 +159,9 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
     }
 
     public JFreeChart buildBoxPlot(final Number[] numbers, final String columnTitle) {
+        if(numbers==null||numbers.length==0){
+            return null;
+        }
         DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
         final ArrayList<Number> list = new ArrayList<Number>();
         list.addAll(Arrays.asList(numbers));
@@ -190,6 +193,9 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
     }
 
     public JFreeChart buildScatterPlot(final Number[] numbers, final String columnTitle, final boolean useLines, final boolean useLinearRegression) {
+        if(numbers==null||numbers.length==0){
+            return null;
+        }
         XYSeriesCollection dataset = new XYSeriesCollection();
 
         XYSeries series = new XYSeries(columnTitle);
@@ -215,6 +221,10 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
     }
 
     public JFreeChart buildHistogram(final Number[] numbers, final String columnTitle, final int divisions) {
+        if(numbers==null||numbers.length==0){
+            return null;
+        }
+
         HistogramDataset dataset = new HistogramDataset();
         dataset.setType(HistogramType.FREQUENCY);
         double[] doubleNumbers = new double[numbers.length];

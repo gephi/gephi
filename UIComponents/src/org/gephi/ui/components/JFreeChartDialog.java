@@ -33,6 +33,9 @@ public class JFreeChartDialog extends javax.swing.JDialog {
     private ChartPanel chartPanel;
     private static final int MAX_DIMENSION=5000;
 
+    /**
+     * Chart can't be null.
+     */
     public JFreeChartDialog(java.awt.Frame parent, String title, JFreeChart chart, int initialWidth, int initialHeight) {
         super(parent, false);
         setTitle(title);
@@ -41,6 +44,9 @@ public class JFreeChartDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
     }
 
+    /**
+     * Chart can't be null.
+     */
     public JFreeChartDialog(java.awt.Frame parent, JFreeChart chart) {
         super(parent, false);
         initialize(chart);
@@ -49,11 +55,11 @@ public class JFreeChartDialog extends javax.swing.JDialog {
 
     private void initialize(JFreeChart chart) {
         initComponents();
-        this.chartPanel = new ChartPanel(chart, true);
-
-        if (chartPanel == null) {
+        if (chart == null) {
             throw new IllegalArgumentException("Chart panel can't be null");
         }
+        this.chartPanel = new ChartPanel(chart, true);
+        
         scroll.setViewportView(chartPanel);
         adaptChartPanelSizeToScrollSize();
         scroll.revalidate();
@@ -84,6 +90,9 @@ public class JFreeChartDialog extends javax.swing.JDialog {
     }
 
     public void setChart(JFreeChart chart){
+        if (chart == null) {
+            throw new IllegalArgumentException("Chart panel can't be null");
+        }
         chartPanel.setChart(chart);
     }
 

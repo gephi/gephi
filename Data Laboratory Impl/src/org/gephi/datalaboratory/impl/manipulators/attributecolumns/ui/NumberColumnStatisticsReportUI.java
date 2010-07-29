@@ -65,8 +65,17 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         columnNumbers = manipulator.getColumnNumbers(table, column);
         statistics = manipulator.buildStatistics(table, column);
 
-        configureBoxPlotButton.setEnabled(statistics != null);
-        configureScatterPlotButton.setEnabled(statistics != null);
+        setChartControlsEnabled(statistics!=null);//Disable chart controls if no numbers available
+    }
+
+    private void setChartControlsEnabled(boolean enabled){
+        configureBoxPlotButton.setEnabled(enabled);
+        configureScatterPlotButton.setEnabled(enabled);
+        configureHistogramButton.setEnabled(enabled);
+        useLinearRegression.setEnabled(enabled);
+        useLinesCheckBox.setEnabled(enabled);
+        divisionsLabel.setEnabled(enabled);
+        divisionsComboBox.setEnabled(enabled);
     }
 
     public void unSetup() {
