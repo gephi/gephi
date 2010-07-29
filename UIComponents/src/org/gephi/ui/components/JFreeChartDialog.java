@@ -83,6 +83,10 @@ public class JFreeChartDialog extends javax.swing.JDialog {
         return chartPanel.getChart();
     }
 
+    public void setChart(JFreeChart chart){
+        chartPanel.setChart(chart);
+    }
+
     public Dimension getChartSize(){
         return chartPanel.getSize();
     }

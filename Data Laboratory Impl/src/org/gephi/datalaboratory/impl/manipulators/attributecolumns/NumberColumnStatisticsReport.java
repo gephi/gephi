@@ -38,14 +38,20 @@ import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
+import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.BoxAndWhiskerToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.category.BarRenderer3D;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import org.jfree.data.statistics.HistogramDataset;
+import org.jfree.data.statistics.HistogramType;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
@@ -93,7 +99,7 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         return ImageUtilities.loadImage("org/gephi/datalaboratory/impl/manipulators/resources/statistics.png");
     }
 
-    public String getReportHTML(final AttributeColumn column, final BigDecimal[] statistics, final JFreeChart boxPlot, final JFreeChart scatterPlot, final Dimension boxPlotDimension, final Dimension scatterPlotDimension) {
+    public String getReportHTML(final AttributeColumn column, final BigDecimal[] statistics, final JFreeChart boxPlot, final JFreeChart scatterPlot, final JFreeChart histogram, final Dimension boxPlotDimension, final Dimension scatterPlotDimension, final Dimension histogramDimension) {
         final StringBuilder sb = new StringBuilder();
         sb.append("<html>");
         sb.append(NbBundle.getMessage(NumberColumnStatisticsReport.class, "NumberColumnStatisticsReport.report.header", HTMLEscape.stringToHTMLString(column.getTitle())));
@@ -117,6 +123,10 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
                 if (scatterPlot != null) {
                     sb.append("<hr>");
                     writeScatterPlot(sb, scatterPlot, scatterPlotDimension);
+                }
+                if (histogram != null) {
+                    sb.append("<hr>");
+                    writeHistogram(sb, histogram, histogramDimension);
                 }
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
@@ -173,14 +183,10 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
     }
 
     private void writeBoxPlot(final StringBuilder sb, JFreeChart boxPlot, Dimension dimension) throws IOException {
-        TempDir tempDir = TempDirUtils.createTempDir();
-        String imageFile = "";
-        String fileName = "box-plot-chart.png";
-        File file = tempDir.createFile(fileName);
-        imageFile = "<center><img src=\"file:" + file.getAbsolutePath() + "\"</img></center>";
-        ChartUtilities.saveChartAsPNG(file, boxPlot, dimension != null ? dimension.width : 300, dimension != null ? dimension.height : 500);
-
-        sb.append(imageFile);
+        if (dimension == null) {
+            dimension = new Dimension(300, 500);
+        }
+        writeChart(sb, boxPlot, dimension, "box-plot.png");
     }
 
     public JFreeChart buildScatterPlot(final Number[] numbers, final String columnTitle, final boolean useLines, final boolean useLinearRegression) {
@@ -202,12 +208,48 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
     }
 
     private void writeScatterPlot(final StringBuilder sb, JFreeChart scatterPlot, Dimension dimension) throws IOException {
+        if (dimension == null) {
+            dimension = new Dimension(600, 400);
+        }
+        writeChart(sb, scatterPlot, dimension, "scatter-plot.png");
+    }
+
+    public JFreeChart buildHistogram(final Number[] numbers, final String columnTitle, final int divisions) {
+        HistogramDataset dataset = new HistogramDataset();
+        dataset.setType(HistogramType.FREQUENCY);
+        double[] doubleNumbers = new double[numbers.length];
+        for (int i = 0; i < doubleNumbers.length; i++) {
+            doubleNumbers[i] = numbers[i].doubleValue();
+        }
+
+        dataset.addSeries(columnTitle, doubleNumbers, divisions > 0 ? divisions : 10);//Use 10 divisions if divisions number is invalid.
+
+        JFreeChart histogram = ChartFactory.createHistogram(
+                getMessage("NumberColumnStatisticsReport.report.histogram.title"),
+                columnTitle,
+                getMessage("NumberColumnStatisticsReport.report.histogram.yLabel"),
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false);
+
+        return histogram;
+    }
+
+    private void writeHistogram(final StringBuilder sb, final JFreeChart histogram, Dimension dimension) throws IOException {
+        if (dimension == null) {
+            dimension = new Dimension(600, 400);
+        }
+        writeChart(sb, histogram, dimension, "histogram.png");
+    }
+
+    private void writeChart(final StringBuilder sb, final JFreeChart chart, final Dimension dimension, final String fileName) throws IOException {
         TempDir tempDir = TempDirUtils.createTempDir();
         String imageFile = "";
-        String fileName = "scatter-plot-chart.png";
         File file = tempDir.createFile(fileName);
         imageFile = "<center><img src=\"file:" + file.getAbsolutePath() + "\"</img></center>";
-        ChartUtilities.saveChartAsPNG(file, scatterPlot, dimension != null ? dimension.width : 600, dimension != null ? dimension.height : 400);
+        ChartUtilities.saveChartAsPNG(file, chart, dimension.width, dimension.height);
 
         sb.append(imageFile);
     }

@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui;
 
 import java.math.BigDecimal;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
@@ -44,13 +43,19 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
     private AttributeColumn column;
     private Number[] columnNumbers;
     private BigDecimal[] statistics;
-    private JFreeChart boxPlot, scatterPlot;
-    private JFreeChartDialog boxPlotDialog, scatterPlotDialog;
+    private JFreeChart boxPlot, scatterPlot, histogram;
+    private JFreeChartDialog boxPlotDialog, scatterPlotDialog, histogramDialog;
     private SimpleHTMLReport reportDialog;
+    private int histogramDivisions;
+    private static final int MIN_HISTOGRAM_DIVISIONS = 1, MAX_HISTOGRAM_DIVISIONS = 50;
 
     /** Creates new form NumberColumnStatisticsReportUI */
     public NumberColumnStatisticsReportUI() {
         initComponents();
+        for (int i = MIN_HISTOGRAM_DIVISIONS; i <= MAX_HISTOGRAM_DIVISIONS; i++) {
+            divisionsComboBox.addItem(i);
+        }
+        divisionsComboBox.setSelectedIndex(9);
     }
 
     public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column) {
@@ -73,6 +78,9 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         }
         if (scatterPlotDialog != null) {
             scatterPlotDialog.dispose();
+        }
+        if (histogramDialog != null) {
+            histogramDialog.dispose();
         }
     }
 
@@ -100,6 +108,12 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         }
     }
 
+    private void prepareHistogram() {
+        if (manipulator != null) {
+            histogram = manipulator.buildHistogram(columnNumbers, column.getTitle(), histogramDivisions);
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -115,6 +129,9 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         useLinesCheckBox = new javax.swing.JCheckBox();
         useLinearRegression = new javax.swing.JCheckBox();
         jSeparator1 = new javax.swing.JSeparator();
+        configureHistogramButton = new javax.swing.JButton();
+        divisionsLabel = new javax.swing.JLabel();
+        divisionsComboBox = new javax.swing.JComboBox();
 
         configureBoxPlotButton.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.configureBoxPlotButton.text")); // NOI18N
         configureBoxPlotButton.addActionListener(new java.awt.event.ActionListener() {
@@ -151,25 +168,49 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
             }
         });
 
+        configureHistogramButton.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.configureHistogramButton.text")); // NOI18N
+        configureHistogramButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                configureHistogramButtonActionPerformed(evt);
+            }
+        });
+
+        divisionsLabel.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.divisionsLabel.text")); // NOI18N
+
+        divisionsComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                divisionsComboBoxItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(configureBoxPlotButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(configureScatterPlotButton, javax.swing.GroupLayout.Alignment.LEADING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(useLinesCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(useLinearRegression)
-                .addContainerGap(10, Short.MAX_VALUE))
-            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(showReportButton)
-                .addContainerGap(270, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(showReportButton)
+                        .addContainerGap(285, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(configureHistogramButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(configureBoxPlotButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(configureScatterPlotButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(useLinesCheckBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(useLinearRegression))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(divisionsLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(divisionsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(25, Short.MAX_VALUE))))
+            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -182,8 +223,13 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
                     .addComponent(useLinesCheckBox)
                     .addComponent(useLinearRegression))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(configureHistogramButton)
+                    .addComponent(divisionsLabel)
+                    .addComponent(divisionsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 10, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showReportButton)
                 .addContainerGap())
         );
@@ -205,13 +251,15 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         } else {
             scatterPlotDialog = new JFreeChartDialog(WindowManager.getDefault().getMainWindow(), scatterPlot.getTitle().getText(), scatterPlot, 600, 400);
         }
-
     }//GEN-LAST:event_configureScatterPlotButtonActionPerformed
 
     private void showReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showReportButtonActionPerformed
         prepareBoxPlot();
         prepareScatterPlot();
-        final String html = manipulator.getReportHTML(column, statistics, boxPlot, scatterPlot, boxPlotDialog != null ? boxPlotDialog.getChartSize() : null, scatterPlotDialog != null ? scatterPlotDialog.getChartSize() : null);
+        if (histogram == null) {
+            prepareHistogram();
+        }
+        final String html = manipulator.getReportHTML(column, statistics, boxPlot, scatterPlot, histogram, boxPlotDialog != null ? boxPlotDialog.getChartSize() : null, scatterPlotDialog != null ? scatterPlotDialog.getChartSize() : null, histogramDialog != null ? histogramDialog.getChartSize() : null);
 
         if (reportDialog != null) {
             reportDialog.dispose();
@@ -230,9 +278,29 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
             ChartsBuilder.setScatterPlotLinearRegressionEnabled(scatterPlot, useLinearRegression.isSelected());
         }
     }//GEN-LAST:event_useLinearRegressionActionPerformed
+
+    private void divisionsComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_divisionsComboBoxItemStateChanged
+        this.histogramDivisions = divisionsComboBox.getSelectedIndex() + 1;
+        if (histogramDialog != null) {
+            prepareHistogram();
+            histogramDialog.setChart(histogram);
+        }
+    }//GEN-LAST:event_divisionsComboBoxItemStateChanged
+
+    private void configureHistogramButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_configureHistogramButtonActionPerformed
+        prepareHistogram();
+        if (histogramDialog != null) {
+            histogramDialog.setVisible(true);
+        } else {
+            histogramDialog = new JFreeChartDialog(WindowManager.getDefault().getMainWindow(), histogram.getTitle().getText(), histogram, 600, 400);
+        }
+    }//GEN-LAST:event_configureHistogramButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton configureBoxPlotButton;
+    private javax.swing.JButton configureHistogramButton;
     private javax.swing.JButton configureScatterPlotButton;
+    private javax.swing.JComboBox divisionsComboBox;
+    private javax.swing.JLabel divisionsLabel;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JButton showReportButton;
     private javax.swing.JCheckBox useLinearRegression;
