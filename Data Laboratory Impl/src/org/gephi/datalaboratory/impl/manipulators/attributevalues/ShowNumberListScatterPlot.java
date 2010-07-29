@@ -27,6 +27,7 @@ import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
+import org.gephi.datalaboratory.api.utils.ChartsBuilder;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.attributevalues.AttributeValueManipulator;
 import org.gephi.ui.components.JFreeChartDialog;
@@ -58,8 +59,8 @@ public class ShowNumberListScatterPlot implements AttributeValueManipulator {
             numbers = Lookup.getDefault().lookup(AttributeColumnsController.class).getRowNumbers(row, new AttributeColumn[]{column});
         } else if (attributeUtils.isDynamicNumberColumn(column)) {
             DynamicType dynamicList = (DynamicType) row.getValue(column.getIndex());
-            if(dynamicList!=null){
-                numbers=(Number[]) dynamicList.getValues().toArray(new Number[0]);
+            if (dynamicList != null) {
+                numbers = (Number[]) dynamicList.getValues().toArray(new Number[0]);
             }
         }
     }
@@ -111,24 +112,12 @@ public class ShowNumberListScatterPlot implements AttributeValueManipulator {
             series.add(i, numbers[i]);
         }
         dataset.addSeries(series);
-        JFreeChart scatterPlot = ChartFactory.createXYLineChart(
+        JFreeChart scatterPlot = ChartsBuilder.buildScatterPlot(dataset,
                 getMessage("ShowNumberListScatterPlot.scatter-plot.title"),
                 getMessage("ShowNumberListScatterPlot.scatter-plot.xLabel"),
                 columnTitle,
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
                 true,
                 false);
-
-        XYPlot plot = (XYPlot) scatterPlot.getPlot();
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesLinesVisible(0, true);
-        renderer.setSeriesShapesVisible(0, false);
-        plot.setBackgroundPaint(java.awt.Color.WHITE);
-        plot.setDomainGridlinePaint(java.awt.Color.GRAY);
-        plot.setRangeGridlinePaint(java.awt.Color.GRAY);
-        plot.setRenderer(renderer);
 
         return scatterPlot;
     }

@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.datalaboratory.api.utils.ChartsBuilder;
 import org.gephi.datalaboratory.impl.manipulators.attributecolumns.NumberColumnStatisticsReport;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
@@ -87,6 +88,18 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         return false;
     }
 
+    private void prepareBoxPlot() {
+        if (boxPlot == null) {
+            boxPlot = manipulator.buildBoxPlot(columnNumbers, column.getTitle());
+        }
+    }
+
+    private void prepareScatterPlot() {
+        if (scatterPlot == null) {
+            scatterPlot = manipulator.buildScatterPlot(columnNumbers, column.getTitle(), useLinesCheckBox.isSelected(), useLinearRegression.isSelected());
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -99,6 +112,9 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         configureBoxPlotButton = new javax.swing.JButton();
         configureScatterPlotButton = new javax.swing.JButton();
         showReportButton = new javax.swing.JButton();
+        useLinesCheckBox = new javax.swing.JCheckBox();
+        useLinearRegression = new javax.swing.JCheckBox();
+        jSeparator1 = new javax.swing.JSeparator();
 
         configureBoxPlotButton.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.configureBoxPlotButton.text")); // NOI18N
         configureBoxPlotButton.addActionListener(new java.awt.event.ActionListener() {
@@ -121,6 +137,20 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
             }
         });
 
+        useLinesCheckBox.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.useLinesCheckBox.text")); // NOI18N
+        useLinesCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                useLinesCheckBoxActionPerformed(evt);
+            }
+        });
+
+        useLinearRegression.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.useLinearRegression.text")); // NOI18N
+        useLinearRegression.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                useLinearRegressionActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -130,27 +160,37 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(configureBoxPlotButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(configureScatterPlotButton, javax.swing.GroupLayout.Alignment.LEADING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(useLinesCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(useLinearRegression)
+                .addContainerGap(10, Short.MAX_VALUE))
+            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(showReportButton)
-                .addContainerGap())
+                .addContainerGap(270, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(configureBoxPlotButton)
+                .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(configureBoxPlotButton)
-                    .addComponent(showReportButton))
+                    .addComponent(configureScatterPlotButton)
+                    .addComponent(useLinesCheckBox)
+                    .addComponent(useLinearRegression))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(configureScatterPlotButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(showReportButton)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void configureBoxPlotButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_configureBoxPlotButtonActionPerformed
-        if (boxPlot == null) {
-            boxPlot = manipulator.buildBoxPlot(columnNumbers, column.getTitle());
-        }
+        prepareBoxPlot();
         if (boxPlotDialog != null) {
             boxPlotDialog.setVisible(true);
         } else {
@@ -159,9 +199,7 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
     }//GEN-LAST:event_configureBoxPlotButtonActionPerformed
 
     private void configureScatterPlotButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_configureScatterPlotButtonActionPerformed
-        if (scatterPlot == null) {
-            scatterPlot = manipulator.buildScatterPlot(columnNumbers, column.getTitle());
-        }
+        prepareScatterPlot();
         if (scatterPlotDialog != null) {
             scatterPlotDialog.setVisible(true);
         } else {
@@ -171,12 +209,8 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
     }//GEN-LAST:event_configureScatterPlotButtonActionPerformed
 
     private void showReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showReportButtonActionPerformed
-        if (boxPlot == null) {
-            boxPlot = manipulator.buildBoxPlot(columnNumbers, column.getTitle());
-        }
-        if (scatterPlot == null) {
-            scatterPlot = manipulator.buildScatterPlot(columnNumbers, column.getTitle());
-        }
+        prepareBoxPlot();
+        prepareScatterPlot();
         final String html = manipulator.getReportHTML(column, statistics, boxPlot, scatterPlot, boxPlotDialog != null ? boxPlotDialog.getChartSize() : null, scatterPlotDialog != null ? scatterPlotDialog.getChartSize() : null);
 
         if (reportDialog != null) {
@@ -184,9 +218,24 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         }
         reportDialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), html);
     }//GEN-LAST:event_showReportButtonActionPerformed
+
+    private void useLinesCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useLinesCheckBoxActionPerformed
+        if (scatterPlot != null) {
+            ChartsBuilder.setScatterPlotLinesEnabled(scatterPlot, useLinesCheckBox.isSelected());
+        }
+    }//GEN-LAST:event_useLinesCheckBoxActionPerformed
+
+    private void useLinearRegressionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useLinearRegressionActionPerformed
+        if (scatterPlot != null) {
+            ChartsBuilder.setScatterPlotLinearRegressionEnabled(scatterPlot, useLinearRegression.isSelected());
+        }
+    }//GEN-LAST:event_useLinearRegressionActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton configureBoxPlotButton;
     private javax.swing.JButton configureScatterPlotButton;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JButton showReportButton;
+    private javax.swing.JCheckBox useLinearRegression;
+    private javax.swing.JCheckBox useLinesCheckBox;
     // End of variables declaration//GEN-END:variables
 }

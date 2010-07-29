@@ -31,23 +31,20 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
+import org.gephi.datalaboratory.api.utils.ChartsBuilder;
 import org.gephi.datalaboratory.api.utils.HTMLEscape;
 import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.NumberColumnStatisticsReportUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.BoxAndWhiskerToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -186,7 +183,7 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
         sb.append(imageFile);
     }
 
-    public JFreeChart buildScatterPlot(final Number[] numbers, final String columnTitle) {
+    public JFreeChart buildScatterPlot(final Number[] numbers, final String columnTitle, final boolean useLines, final boolean useLinearRegression) {
         XYSeriesCollection dataset = new XYSeriesCollection();
 
         XYSeries series = new XYSeries(columnTitle);
@@ -194,25 +191,12 @@ public class NumberColumnStatisticsReport implements AttributeColumnsManipulator
             series.add(i, numbers[i]);
         }
         dataset.addSeries(series);
-        JFreeChart scatterPlot = ChartFactory.createXYLineChart(
+        JFreeChart scatterPlot = ChartsBuilder.buildScatterPlot(dataset,
                 getMessage("NumberColumnStatisticsReport.report.scatter-plot.title"),
                 getMessage("NumberColumnStatisticsReport.report.scatter-plot.xLabel"),
                 columnTitle,
-                dataset,
-                PlotOrientation.VERTICAL,
-                true,
-                true,
-                false);
-
-        XYPlot plot = (XYPlot) scatterPlot.getPlot();
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesLinesVisible(0, false);
-        renderer.setSeriesShapesVisible(0, true);
-        renderer.setSeriesShape(0, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
-        plot.setBackgroundPaint(java.awt.Color.WHITE);
-        plot.setDomainGridlinePaint(java.awt.Color.GRAY);
-        plot.setRangeGridlinePaint(java.awt.Color.GRAY);
-        plot.setRenderer(renderer);
+                useLines,
+                useLinearRegression);
 
         return scatterPlot;
     }

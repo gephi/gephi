@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.JLabel;
@@ -71,6 +72,7 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
         final SizeParams size = new SizeParams(table.getColumnModel().getColumn(column).getWidth(), table.getRowHeight(row) - 1, 1);
         final BufferedImage i = LineGraph.createGraph(numbers.toArray(new Number[0]), size, Color.BLUE, background);
         label.setIcon(new ImageIcon(i));
+        label.setToolTipText(numberList.toString());
 
         return label;
     }
