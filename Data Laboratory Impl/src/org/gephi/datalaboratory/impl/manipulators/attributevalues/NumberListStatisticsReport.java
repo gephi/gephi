@@ -21,29 +21,22 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.attributevalues;
 
 import javax.swing.Icon;
-import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeUtils;
-import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
+import org.gephi.datalaboratory.impl.manipulators.ui.GeneralNumberListStatisticsReportUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.attributevalues.AttributeValueManipulator;
-import org.gephi.ui.components.JFreeChartDialog;
-import org.gephi.utils.ChartsUtils;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.windows.WindowManager;
 
 /**
- * AttributeValueManipulator that shows a scatter plot with the numbers of a number list column cell.
+ * AttributeValueManipulator that shows a report with statistics values and charts of a dynamic number/number list AttributeValue.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class ShowNumberListScatterPlot implements AttributeValueManipulator {
+public class NumberListStatisticsReport implements AttributeValueManipulator {
 
     private Number[] numbers;
     private AttributeColumn column;
@@ -51,33 +44,20 @@ public class ShowNumberListScatterPlot implements AttributeValueManipulator {
     public void setup(AttributeRow row, AttributeColumn column) {
         this.column = column;
         AttributeUtils attributeUtils = AttributeUtils.getDefault();
-        if (attributeUtils.isNumberListColumn(column)) {
+        if (attributeUtils.isNumberListColumn(column) || attributeUtils.isDynamicNumberColumn(column)) {
             numbers = Lookup.getDefault().lookup(AttributeColumnsController.class).getRowNumbers(row, new AttributeColumn[]{column});
-        } else if (attributeUtils.isDynamicNumberColumn(column)) {
-            DynamicType dynamicList = (DynamicType) row.getValue(column.getIndex());
-            if (dynamicList != null) {
-                numbers = (Number[]) dynamicList.getValues().toArray(new Number[0]);
-            }
         }
     }
 
     public void execute() {
-        final JFreeChart scatterPlot = buildScatterPlot(numbers, column.getTitle());
-        SwingUtilities.invokeLater(new Runnable() {
-
-            public void run() {
-                JFreeChartDialog scatterPlotDialog = new JFreeChartDialog(WindowManager.getDefault().getMainWindow(), scatterPlot.getTitle().getText(), scatterPlot, 600, 400);
-            }
-        });
-
     }
 
     public String getName() {
-        return NbBundle.getMessage(ShowNumberListScatterPlot.class, "ShowNumberListScatterPlot.name");
+        return getMessage("NumberListStatisticsReport.name");
     }
 
     public String getDescription() {
-        return NbBundle.getMessage(ShowNumberListScatterPlot.class, "ShowNumberListScatterPlot.description");
+        return getMessage("NumberListStatisticsReport.description");
     }
 
     public boolean canExecute() {
@@ -85,7 +65,7 @@ public class ShowNumberListScatterPlot implements AttributeValueManipulator {
     }
 
     public ManipulatorUI getUI() {
-        return null;
+        return new GeneralNumberListStatisticsReportUI(numbers, column.getTitle(), getName());
     }
 
     public int getType() {
@@ -100,25 +80,7 @@ public class ShowNumberListScatterPlot implements AttributeValueManipulator {
         return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/chart-up.png", true);
     }
 
-    private JFreeChart buildScatterPlot(final Number[] numbers, final String columnTitle) {
-        XYSeriesCollection dataset = new XYSeriesCollection();
-
-        XYSeries series = new XYSeries(columnTitle);
-        for (int i = 0; i < numbers.length; i++) {
-            series.add(i, numbers[i]);
-        }
-        dataset.addSeries(series);
-        JFreeChart scatterPlot = ChartsUtils.buildScatterPlot(dataset,
-                getMessage("ShowNumberListScatterPlot.scatter-plot.title"),
-                getMessage("ShowNumberListScatterPlot.scatter-plot.xLabel"),
-                columnTitle,
-                true,
-                false);
-
-        return scatterPlot;
-    }
-
     private String getMessage(String resName) {
-        return NbBundle.getMessage(ShowNumberListScatterPlot.class, resName);
+        return NbBundle.getMessage(NumberListStatisticsReport.class, resName);
     }
 }

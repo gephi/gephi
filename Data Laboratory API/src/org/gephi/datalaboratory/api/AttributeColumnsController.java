@@ -286,7 +286,8 @@ public interface AttributeColumnsController {
 
     /**
      * Prepares an array with all not null numbers of a row using only the given columns.
-     * The columns can only be a number/number list columns (in any combination).
+     * The columns can only be a number/dynamic number/number list columns (in any combination).
+     * <b>All</b> numbers intervals of a dynamic number column will be used.
      * Otherwise, a IllegalArgumentException will be thrown.
      * @param row Row to get numbers
      * @param columns Columns of the row to use

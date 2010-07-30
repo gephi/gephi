@@ -20,19 +20,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl.manipulators.attributevalues.builders;
 
-import org.gephi.datalaboratory.impl.manipulators.attributevalues.ShowNumberListScatterPlot;
+import org.gephi.datalaboratory.impl.manipulators.attributevalues.NumberListStatisticsReport;
 import org.gephi.datalaboratory.spi.attributevalues.AttributeValueManipulator;
 import org.gephi.datalaboratory.spi.attributevalues.AttributeValueManipulatorBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Builder for ShowNumberListScatterPlot AttributeValueManipulatorBuilder.
+ * Builder for NumberListStatisticsReport AttributeValueManipulatorBuilder.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service=AttributeValueManipulatorBuilder.class)
-public class ShowNumberListScatterPlotBuilder implements AttributeValueManipulatorBuilder{
+public class NumberListStatisticsReportBuilder implements AttributeValueManipulatorBuilder{
 
     public AttributeValueManipulator getAttributeValueManipulator() {
-        return new ShowNumberListScatterPlot();
+        return new NumberListStatisticsReport();
     }
 }

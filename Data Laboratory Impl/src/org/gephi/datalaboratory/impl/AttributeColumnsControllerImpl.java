@@ -35,6 +35,7 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.type.BooleanList;
+import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.NumberList;
 import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.properties.PropertiesColumn;
@@ -112,9 +113,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
-    public void fillColumnWithValue(AttributeTable table, AttributeColumn column, String value){
-        if(canChangeColumnData(column)){
-            for(Attributes row:getTableAttributeRows(table)){
+    public void fillColumnWithValue(AttributeTable table, AttributeColumn column, String value) {
+        if (canChangeColumnData(column)) {
+            for (Attributes row : getTableAttributeRows(table)) {
                 setAttributeValue(value, row, column);
             }
         }
@@ -223,9 +224,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             clearEdgeData(e, columnsToClear);
         }
     }
-    
+
     public void clearRowData(Attributes row, AttributeColumn[] columnsToClear) {
-        AttributeRow attributeRow=(AttributeRow) row;
+        AttributeRow attributeRow = (AttributeRow) row;
         if (columnsToClear != null) {
             for (AttributeColumn column : columnsToClear) {
                 //Clear all except id and computed attributes:
@@ -244,33 +245,33 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
-    public void copyNodeDataToOtherNodes(Node node, Node[] otherNodes, AttributeColumn[] columnsToCopy){
-        Attributes row=node.getNodeData().getAttributes();
-        Attributes[] otherRows=new Attributes[otherNodes.length];
+    public void copyNodeDataToOtherNodes(Node node, Node[] otherNodes, AttributeColumn[] columnsToCopy) {
+        Attributes row = node.getNodeData().getAttributes();
+        Attributes[] otherRows = new Attributes[otherNodes.length];
         for (int i = 0; i < otherNodes.length; i++) {
-            otherRows[i]=otherNodes[i].getNodeData().getAttributes();
+            otherRows[i] = otherNodes[i].getNodeData().getAttributes();
         }
 
         copyRowDataToOtherRows(row, otherRows, columnsToCopy);
     }
 
-    public void copyEdgeDataToOtherEdges(Edge edge, Edge[] otherEdges, AttributeColumn[] columnsToCopy){
-        Attributes row=edge.getEdgeData().getAttributes();
-        Attributes[] otherRows=new Attributes[otherEdges.length];
+    public void copyEdgeDataToOtherEdges(Edge edge, Edge[] otherEdges, AttributeColumn[] columnsToCopy) {
+        Attributes row = edge.getEdgeData().getAttributes();
+        Attributes[] otherRows = new Attributes[otherEdges.length];
         for (int i = 0; i < otherEdges.length; i++) {
-            otherRows[i]=otherEdges[i].getEdgeData().getAttributes();
+            otherRows[i] = otherEdges[i].getEdgeData().getAttributes();
         }
 
         copyRowDataToOtherRows(row, otherRows, columnsToCopy);
     }
 
-    public void copyRowDataToOtherRows(Attributes row, Attributes[] otherRows, AttributeColumn[] columnsToCopy){
-        AttributeRow attributeRow=(AttributeRow) row;
+    public void copyRowDataToOtherRows(Attributes row, Attributes[] otherRows, AttributeColumn[] columnsToCopy) {
+        AttributeRow attributeRow = (AttributeRow) row;
         if (columnsToCopy != null) {
             for (AttributeColumn column : columnsToCopy) {
                 //Copy all except id and computed attributes:
                 if (canChangeColumnData(column)) {
-                    for(Attributes otherRow: otherRows){
+                    for (Attributes otherRow : otherRows) {
                         otherRow.setValue(column.getIndex(), row.getValue(column.getIndex()));
                     }
                 }
@@ -279,10 +280,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             AttributeColumn column;
             AttributeValue[] values = attributeRow.getValues();
             for (int i = 0; i < values.length; i++) {
-                column=values[i].getColumn();
+                column = values[i].getColumn();
                 //Copy all except id and computed attributes:
                 if (canChangeColumnData(column)) {
-                    for(Attributes otherRow: otherRows){
+                    for (Attributes otherRow : otherRows) {
                         otherRow.setValue(column.getIndex(), row.getValue(column.getIndex()));
                     }
                 }
@@ -354,12 +355,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
-    public BigDecimal[] getNumberOrNumberListColumnStatistics(AttributeTable table, AttributeColumn column){
+    public BigDecimal[] getNumberOrNumberListColumnStatistics(AttributeTable table, AttributeColumn column) {
         return StatisticsUtils.getAllStatistics(getColumnNumbers(table, column));
     }
 
     public Number[] getColumnNumbers(AttributeTable table, AttributeColumn column) {
-        AttributeUtils attributeUtils=AttributeUtils.getDefault();
+        AttributeUtils attributeUtils = AttributeUtils.getDefault();
         if (!attributeUtils.isNumberOrNumberListColumn(column)) {
             throw new IllegalArgumentException("The column has to be a number or number list column");
         }
@@ -396,8 +397,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (number != null) {
                     numbers.add(number);
                 }
-            } else {//Number list column:
+            } else if(attributeUtils.isNumberListColumn(column)){//Number list column:
                 numbers.addAll(getNumberListColumnNumbers(row, column));
+            }else if(attributeUtils.isDynamicNumberColumn(column)){//Dynamic number column
+                numbers.addAll(getDynamicNumberColumnNumbers(row, column));
             }
         }
 
@@ -405,7 +408,6 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     /************Private methods : ************/
-    
     /**
      * Used for iterating through all nodes of the graph
      * @return Array with all graph nodes
@@ -428,7 +430,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
      */
     private boolean canChangeGenericColumnData(AttributeColumn column) {
         return column.getOrigin() == AttributeOrigin.DATA && !column.getType().isDynamicType();
-    }    
+    }
 
     /**
      * Used to negate the values of a single boolean columns
@@ -483,6 +485,30 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         Number n;
         for (int i = 0; i < list.size(); i++) {
             n = (Number) list.getItem(i);
+            if (n != null) {
+                numbers.add((Number) n);
+            }
+        }
+        return numbers;
+    }
+
+    /**
+     * Used for obtaining a list of the numbers of row of a dynamic number column.
+     */
+    private ArrayList<Number> getDynamicNumberColumnNumbers(Attributes row, AttributeColumn column) {
+        if (!AttributeUtils.getDefault().isDynamicNumberColumn(column)) {
+            throw new IllegalArgumentException("Column must be a dynamic number column");
+        }
+        ArrayList<Number> numbers = new ArrayList<Number>();
+        DynamicType dynamicList = (DynamicType) row.getValue(column.getIndex());
+        if (dynamicList == null) {
+            return numbers;
+        }
+        Number[] dynamicNumbers;
+        dynamicNumbers = (Number[]) dynamicList.getValues().toArray(new Number[0]);
+        Number n;
+        for (int i = 0; i < dynamicNumbers.length; i++) {
+            n = (Number) dynamicNumbers[i];
             if (n != null) {
                 numbers.add((Number) n);
             }
