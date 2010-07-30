@@ -60,7 +60,7 @@ public class CreateFoundGroupsListColumn extends GeneralCreateColumnFromRegex {
         return ac.getTableRowsCount(table)>0;//Make sure that there is at least 1 row
     }
 
-    public AttributeColumnsManipulatorUI getUI() {
+    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
         GeneralCreateColumnFromRegexUI ui = new GeneralCreateColumnFromRegexUI();
         ui.setMode(GeneralCreateColumnFromRegexUI.Mode.MATCHING_GROUPS);
         return ui;

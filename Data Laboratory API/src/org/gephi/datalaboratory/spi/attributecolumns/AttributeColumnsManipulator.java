@@ -66,9 +66,11 @@ public interface AttributeColumnsManipulator {
 
     /**
      * Returns a ManipulatorUI for this Manipulator if it needs one.
+     * @param table AttributeTable of the column
+     * @param column AttributeColumn of the table to manipulate
      * @return ManipulatorUI for this Manipulator or null
      */
-    AttributeColumnsManipulatorUI getUI();
+    AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column);
 
     /**
      * Type of manipulator. This is used for separating the manipulators

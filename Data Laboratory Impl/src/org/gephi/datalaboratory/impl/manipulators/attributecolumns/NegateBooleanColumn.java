@@ -57,7 +57,7 @@ public class NegateBooleanColumn implements AttributeColumnsManipulator {
         return column.getType()==AttributeType.BOOLEAN||column.getType()==AttributeType.LIST_BOOLEAN;
     }
 
-    public AttributeColumnsManipulatorUI getUI() {
+    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
         return null;
     }
 

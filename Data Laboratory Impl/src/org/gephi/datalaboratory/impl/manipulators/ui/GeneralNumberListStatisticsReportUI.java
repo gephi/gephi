@@ -18,18 +18,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui;
+package org.gephi.datalaboratory.impl.manipulators.ui;
 
 import java.math.BigDecimal;
 import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalaboratory.api.utils.ChartsBuilder;
-import org.gephi.datalaboratory.impl.manipulators.attributecolumns.NumberColumnStatisticsReport;
+import org.gephi.datalaboratory.spi.Manipulator;
+import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.gephi.ui.components.JFreeChartDialog;
 import org.gephi.ui.components.SimpleHTMLReport;
+import org.gephi.utils.ChartsUtils;
+import org.gephi.utils.StatisticsUtils;
 import org.jfree.chart.JFreeChart;
 import org.openide.windows.WindowManager;
 
@@ -37,11 +39,11 @@ import org.openide.windows.WindowManager;
  * UI for NumberColumnStatisticsReport AttributeColumnsManipulator.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
+public class GeneralNumberListStatisticsReportUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI, ManipulatorUI {
 
-    private NumberColumnStatisticsReport manipulator;
-    private AttributeColumn column;
-    private Number[] columnNumbers;
+    private Number[] numbers;
+    private String dataName;
+    private String dialogTitle;
     private BigDecimal[] statistics;
     private JFreeChart boxPlot, scatterPlot, histogram;
     private JFreeChartDialog boxPlotDialog, scatterPlotDialog, histogramDialog;
@@ -49,26 +51,32 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
     private int histogramDivisions;
     private static final int MIN_HISTOGRAM_DIVISIONS = 1, MAX_HISTOGRAM_DIVISIONS = 50;
 
-    /** Creates new form NumberColumnStatisticsReportUI */
-    public NumberColumnStatisticsReportUI() {
+    /**
+     * Constructor method to set all necessary information to build statistics, charts and dialog title.
+     * @param numbers Numbers to build statistics and charts
+     * @param dataName Name of the numbers data (column title for example)
+     * @param dialogTitle Title of the dialog window
+     */
+    public GeneralNumberListStatisticsReportUI(Number[] numbers, String dataName, String dialogTitle) {
         initComponents();
+        this.numbers = numbers;
+        this.dataName = dataName;
+        this.dialogTitle = dialogTitle;
+        statistics = StatisticsUtils.getAllStatistics(numbers);
         for (int i = MIN_HISTOGRAM_DIVISIONS; i <= MAX_HISTOGRAM_DIVISIONS; i++) {
             divisionsComboBox.addItem(i);
         }
         divisionsComboBox.setSelectedIndex(9);
+        setChartControlsEnabled(statistics != null);//Disable chart controls if no numbers available
     }
 
     public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column) {
-        this.manipulator = (NumberColumnStatisticsReport) m;
-        this.column = column;
-
-        columnNumbers = manipulator.getColumnNumbers(table, column);
-        statistics = manipulator.buildStatistics(table, column);
-
-        setChartControlsEnabled(statistics!=null);//Disable chart controls if no numbers available
     }
 
-    private void setChartControlsEnabled(boolean enabled){
+    public void setup(Manipulator m) {
+    }
+
+    private void setChartControlsEnabled(boolean enabled) {
         configureBoxPlotButton.setEnabled(enabled);
         configureScatterPlotButton.setEnabled(enabled);
         configureHistogramButton.setEnabled(enabled);
@@ -94,7 +102,7 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
     }
 
     public String getDisplayName() {
-        return manipulator.getName();
+        return dialogTitle;
     }
 
     public JPanel getSettingsPanel() {
@@ -107,20 +115,18 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
 
     private void prepareBoxPlot() {
         if (boxPlot == null) {
-            boxPlot = manipulator.buildBoxPlot(columnNumbers, column.getTitle());
+            boxPlot = ChartsUtils.buildBoxPlot(numbers, dataName);
         }
     }
 
     private void prepareScatterPlot() {
         if (scatterPlot == null) {
-            scatterPlot = manipulator.buildScatterPlot(columnNumbers, column.getTitle(), useLinesCheckBox.isSelected(), useLinearRegression.isSelected());
+            scatterPlot = ChartsUtils.buildScatterPlot(numbers, dataName, useLinesCheckBox.isSelected(), useLinearRegression.isSelected());
         }
     }
 
     private void prepareHistogram() {
-        if (manipulator != null) {
-            histogram = manipulator.buildHistogram(columnNumbers, column.getTitle(), histogramDivisions);
-        }
+        histogram = ChartsUtils.buildHistogram(numbers, dataName, histogramDivisions);
     }
 
     /** This method is called from within the constructor to
@@ -143,7 +149,7 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         divisionsComboBox = new javax.swing.JComboBox();
 
         configureBoxPlotButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalaboratory/impl/manipulators/resources/wooden-box.png"))); // NOI18N
-        configureBoxPlotButton.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.configureBoxPlotButton.text")); // NOI18N
+        configureBoxPlotButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.configureBoxPlotButton.text")); // NOI18N
         configureBoxPlotButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 configureBoxPlotButtonActionPerformed(evt);
@@ -151,7 +157,7 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         });
 
         configureScatterPlotButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalaboratory/impl/manipulators/resources/chart-up.png"))); // NOI18N
-        configureScatterPlotButton.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.configureScatterPlotButton.text")); // NOI18N
+        configureScatterPlotButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.configureScatterPlotButton.text_1")); // NOI18N
         configureScatterPlotButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 configureScatterPlotButtonActionPerformed(evt);
@@ -159,21 +165,21 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         });
 
         showReportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalaboratory/impl/manipulators/resources/application-block.png"))); // NOI18N
-        showReportButton.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.showReportButton.text")); // NOI18N
+        showReportButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.showReportButton.text")); // NOI18N
         showReportButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showReportButtonActionPerformed(evt);
             }
         });
 
-        useLinesCheckBox.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.useLinesCheckBox.text")); // NOI18N
+        useLinesCheckBox.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.useLinesCheckBox.text")); // NOI18N
         useLinesCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 useLinesCheckBoxActionPerformed(evt);
             }
         });
 
-        useLinearRegression.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.useLinearRegression.text")); // NOI18N
+        useLinearRegression.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.useLinearRegression.text")); // NOI18N
         useLinearRegression.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 useLinearRegressionActionPerformed(evt);
@@ -181,14 +187,14 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         });
 
         configureHistogramButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/datalaboratory/impl/manipulators/resources/chart.png"))); // NOI18N
-        configureHistogramButton.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.configureHistogramButton.text")); // NOI18N
+        configureHistogramButton.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.configureHistogramButton.text")); // NOI18N
         configureHistogramButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 configureHistogramButtonActionPerformed(evt);
             }
         });
 
-        divisionsLabel.setText(org.openide.util.NbBundle.getMessage(NumberColumnStatisticsReportUI.class, "NumberColumnStatisticsReportUI.divisionsLabel.text")); // NOI18N
+        divisionsLabel.setText(org.openide.util.NbBundle.getMessage(GeneralNumberListStatisticsReportUI.class, "GeneralNumberListStatisticsReportUI.divisionsLabel.text")); // NOI18N
 
         divisionsComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -212,7 +218,6 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(useLinesCheckBox)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(useLinearRegression))
@@ -271,7 +276,7 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
         if (histogram == null) {
             prepareHistogram();
         }
-        final String html = manipulator.getReportHTML(column, statistics, boxPlot, scatterPlot, histogram, boxPlotDialog != null ? boxPlotDialog.getChartSize() : null, scatterPlotDialog != null ? scatterPlotDialog.getChartSize() : null, histogramDialog != null ? histogramDialog.getChartSize() : null);
+        final String html = ChartsUtils.getStatisticsReportHTML(dataName, statistics, boxPlot, scatterPlot, histogram, boxPlotDialog != null ? boxPlotDialog.getChartSize() : null, scatterPlotDialog != null ? scatterPlotDialog.getChartSize() : null, histogramDialog != null ? histogramDialog.getChartSize() : null);
 
         if (reportDialog != null) {
             reportDialog.dispose();
@@ -281,13 +286,13 @@ public class NumberColumnStatisticsReportUI extends javax.swing.JPanel implement
 
     private void useLinesCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useLinesCheckBoxActionPerformed
         if (scatterPlot != null) {
-            ChartsBuilder.setScatterPlotLinesEnabled(scatterPlot, useLinesCheckBox.isSelected());
+            ChartsUtils.setScatterPlotLinesEnabled(scatterPlot, useLinesCheckBox.isSelected());
         }
     }//GEN-LAST:event_useLinesCheckBoxActionPerformed
 
     private void useLinearRegressionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useLinearRegressionActionPerformed
         if (scatterPlot != null) {
-            ChartsBuilder.setScatterPlotLinearRegressionEnabled(scatterPlot, useLinearRegression.isSelected());
+            ChartsUtils.setScatterPlotLinearRegressionEnabled(scatterPlot, useLinearRegression.isSelected());
         }
     }//GEN-LAST:event_useLinearRegressionActionPerformed
 

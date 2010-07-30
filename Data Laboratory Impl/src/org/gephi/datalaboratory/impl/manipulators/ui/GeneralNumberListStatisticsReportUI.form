@@ -29,7 +29,6 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="useLinesCheckBox" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="useLinearRegression" min="-2" max="-2" attributes="0"/>
@@ -81,7 +80,7 @@
           <Image iconType="3" name="/org/gephi/datalaboratory/impl/manipulators/resources/wooden-box.png"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="NumberColumnStatisticsReportUI.configureBoxPlotButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/ui/Bundle.properties" key="GeneralNumberListStatisticsReportUI.configureBoxPlotButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -94,7 +93,7 @@
           <Image iconType="3" name="/org/gephi/datalaboratory/impl/manipulators/resources/chart-up.png"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="NumberColumnStatisticsReportUI.configureScatterPlotButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/ui/Bundle.properties" key="GeneralNumberListStatisticsReportUI.configureScatterPlotButton.text_1" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -107,7 +106,7 @@
           <Image iconType="3" name="/org/gephi/datalaboratory/impl/manipulators/resources/application-block.png"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="NumberColumnStatisticsReportUI.showReportButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/ui/Bundle.properties" key="GeneralNumberListStatisticsReportUI.showReportButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -117,7 +116,7 @@
     <Component class="javax.swing.JCheckBox" name="useLinesCheckBox">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="NumberColumnStatisticsReportUI.useLinesCheckBox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/ui/Bundle.properties" key="GeneralNumberListStatisticsReportUI.useLinesCheckBox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -127,7 +126,7 @@
     <Component class="javax.swing.JCheckBox" name="useLinearRegression">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="NumberColumnStatisticsReportUI.useLinearRegression.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/ui/Bundle.properties" key="GeneralNumberListStatisticsReportUI.useLinearRegression.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -142,7 +141,7 @@
           <Image iconType="3" name="/org/gephi/datalaboratory/impl/manipulators/resources/chart.png"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="NumberColumnStatisticsReportUI.configureHistogramButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/ui/Bundle.properties" key="GeneralNumberListStatisticsReportUI.configureHistogramButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <Events>
@@ -152,7 +151,7 @@
     <Component class="javax.swing.JLabel" name="divisionsLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/ui/Bundle.properties" key="NumberColumnStatisticsReportUI.divisionsLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/ui/Bundle.properties" key="GeneralNumberListStatisticsReportUI.divisionsLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

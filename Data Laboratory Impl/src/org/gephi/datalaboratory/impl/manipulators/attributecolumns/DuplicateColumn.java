@@ -59,7 +59,7 @@ public class DuplicateColumn implements AttributeColumnsManipulator {
         return true;
     }
 
-    public AttributeColumnsManipulatorUI getUI() {
+    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
         return new DuplicateColumnUI();
     }
 

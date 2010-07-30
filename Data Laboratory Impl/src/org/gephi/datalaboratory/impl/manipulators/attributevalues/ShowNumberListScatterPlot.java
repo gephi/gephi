@@ -27,15 +27,11 @@ import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
-import org.gephi.datalaboratory.api.utils.ChartsBuilder;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.attributevalues.AttributeValueManipulator;
 import org.gephi.ui.components.JFreeChartDialog;
-import org.jfree.chart.ChartFactory;
+import org.gephi.utils.ChartsUtils;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.ImageUtilities;
@@ -112,7 +108,7 @@ public class ShowNumberListScatterPlot implements AttributeValueManipulator {
             series.add(i, numbers[i]);
         }
         dataset.addSeries(series);
-        JFreeChart scatterPlot = ChartsBuilder.buildScatterPlot(dataset,
+        JFreeChart scatterPlot = ChartsUtils.buildScatterPlot(dataset,
                 getMessage("ShowNumberListScatterPlot.scatter-plot.title"),
                 getMessage("ShowNumberListScatterPlot.scatter-plot.xLabel"),
                 columnTitle,

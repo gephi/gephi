@@ -82,7 +82,6 @@ public class EdgeDataTable {
         table.setColumnControlVisible(true);
         table.setSortable(true);
         table.setRowFilter(rowFilter);
-        table.setHorizontalScrollEnabled(true);
 
         propertiesColumns = new PropertyEdgeDataColumn[FAKE_COLUMNS_COUNT];
 

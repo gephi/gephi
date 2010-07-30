@@ -40,11 +40,11 @@ import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.GraphElementsController;
-import org.gephi.datalaboratory.api.utils.MathUtils;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
+import org.gephi.utils.StatisticsUtils;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -355,7 +355,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public BigDecimal[] getNumberOrNumberListColumnStatistics(AttributeTable table, AttributeColumn column){
-        return MathUtils.getAllStatistics(getColumnNumbers(table, column));
+        return StatisticsUtils.getAllStatistics(getColumnNumbers(table, column));
     }
 
     public Number[] getColumnNumbers(AttributeTable table, AttributeColumn column) {

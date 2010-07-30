@@ -60,7 +60,7 @@ public class DeleteColumn implements AttributeColumnsManipulator {
         return Lookup.getDefault().lookup(AttributeColumnsController.class).canDeleteColumn(column);
     }
 
-    public AttributeColumnsManipulatorUI getUI() {
+    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
         return null;
     }
 

@@ -63,7 +63,7 @@ public class ClearColumnData implements AttributeColumnsManipulator {
         return result&&ac.getTableRowsCount(table)>0;//Also make sure that there is at least 1 row
     }
 
-    public AttributeColumnsManipulatorUI getUI() {
+    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
         return null;
     }
 

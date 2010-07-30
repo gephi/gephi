@@ -31,10 +31,10 @@ import java.util.Map;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
-import org.gephi.datalaboratory.api.utils.HTMLEscape;
 import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui.ColumnValuesFrequencyUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
+import org.gephi.utils.HTMLEscape;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
 import org.jfree.chart.ChartFactory;
@@ -72,7 +72,7 @@ public class ColumnValuesFrequency implements AttributeColumnsManipulator {
         return ac.getTableRowsCount(table) > 0;//Make sure that there is at least 1 row
     }
 
-    public AttributeColumnsManipulatorUI getUI() {
+    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
         return new ColumnValuesFrequencyUI();
     }
 

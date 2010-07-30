@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory.api.utils;
+package org.gephi.utils;
 
 /**
  * Class for escaping html of a String to show it in a hrml report without problems

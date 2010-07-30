@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory.api.utils;
+package org.gephi.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -29,7 +29,7 @@ import java.util.Collection;
  * Class with some mathematic methods for calculating values such as the average, median, sum, max and min of a list of numbers.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class MathUtils {
+public class StatisticsUtils {
 
     /**
      * Get average calculation of various numbers as a BigDecimal

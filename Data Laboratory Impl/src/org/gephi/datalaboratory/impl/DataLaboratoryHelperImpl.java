@@ -193,7 +193,7 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
             new Thread(new Runnable() {
 
                 public void run() {
-                    final AttributeColumnsManipulatorUI ui = m.getUI();
+                    final AttributeColumnsManipulatorUI ui = m.getUI(table, column);
                     //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                     if (ui != null) {
                         ui.setup(m, table, column);

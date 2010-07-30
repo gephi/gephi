@@ -27,8 +27,8 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
-import org.gephi.datalaboratory.api.utils.MathUtils;
 import org.gephi.graph.api.Attributes;
+import org.gephi.utils.StatisticsUtils;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -130,7 +130,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         BigDecimal average;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            average = MathUtils.average(ac.getRowNumbers(row, columnsToMerge));
+            average = StatisticsUtils.average(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, average);
         }
 
@@ -147,7 +147,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         BigDecimal Q1;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            Q1 = MathUtils.quartile1(ac.getRowNumbers(row, columnsToMerge));
+            Q1 = StatisticsUtils.quartile1(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, Q1);
         }
 
@@ -164,7 +164,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         BigDecimal median;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            median = MathUtils.median(ac.getRowNumbers(row, columnsToMerge));
+            median = StatisticsUtils.median(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, median);
         }
 
@@ -181,7 +181,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         BigDecimal Q3;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            Q3 = MathUtils.quartile3(ac.getRowNumbers(row, columnsToMerge));
+            Q3 = StatisticsUtils.quartile3(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, Q3);
         }
 
@@ -200,8 +200,8 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         Number[] rowNumbers;
         for (Attributes row : ac.getTableAttributeRows(table)) {
             rowNumbers = ac.getRowNumbers(row, columnsToMerge);
-            Q3 = MathUtils.quartile3(rowNumbers);
-            Q1 = MathUtils.quartile1(rowNumbers);
+            Q3 = StatisticsUtils.quartile3(rowNumbers);
+            Q1 = StatisticsUtils.quartile1(rowNumbers);
             if (Q3 != null && Q1 != null) {
                 IQR = Q3.subtract(Q1);
             } else {
@@ -223,7 +223,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         BigDecimal sum;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            sum = MathUtils.sum(ac.getRowNumbers(row, columnsToMerge));
+            sum = StatisticsUtils.sum(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, sum);
         }
 
@@ -240,7 +240,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         BigDecimal min;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            min = MathUtils.minValue(ac.getRowNumbers(row, columnsToMerge));
+            min = StatisticsUtils.minValue(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, min);
         }
 
@@ -257,7 +257,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         BigDecimal max;
         for (Attributes row : ac.getTableAttributeRows(table)) {
-            max = MathUtils.maxValue(ac.getRowNumbers(row, columnsToMerge));
+            max = StatisticsUtils.maxValue(ac.getRowNumbers(row, columnsToMerge));
             row.setValue(newColumnIndex, max);
         }
 

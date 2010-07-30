@@ -62,7 +62,7 @@ public class CopyDataToOtherColumn implements AttributeColumnsManipulator {
         return true;
     }
 
-    public AttributeColumnsManipulatorUI getUI() {
+    public AttributeColumnsManipulatorUI getUI(AttributeTable table,AttributeColumn column) {
         return new CopyDataToOtherColumnUI();
     }
 
