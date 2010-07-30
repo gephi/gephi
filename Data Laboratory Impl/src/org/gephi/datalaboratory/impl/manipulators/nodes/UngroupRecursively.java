@@ -73,7 +73,7 @@ public class UngroupRecursively implements NodesManipulator {
     }
 
     public int getType() {
-        return 100;
+        return 300;
     }
 
     public int getPosition() {

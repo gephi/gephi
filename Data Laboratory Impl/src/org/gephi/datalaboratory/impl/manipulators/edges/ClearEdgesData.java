@@ -27,8 +27,8 @@ import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.api.GraphElementsController;
-import org.gephi.datalaboratory.impl.manipulators.GeneralClearRowData;
-import org.gephi.datalaboratory.impl.manipulators.ui.GeneralClearRowDataUI;
+import org.gephi.datalaboratory.impl.manipulators.GeneralColumnsChooser;
+import org.gephi.datalaboratory.impl.manipulators.ui.GeneralChooseColumnsUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
@@ -40,7 +40,7 @@ import org.openide.util.NbBundle;
  * Edges manipulator that clears the given columns data of one or more edges except the id and computed attributes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class ClearEdgesData implements EdgesManipulator, GeneralClearRowData {
+public class ClearEdgesData implements EdgesManipulator, GeneralColumnsChooser {
 
     private Edge[] edges;
     private AttributeColumn[] columnsToClearData;
@@ -78,30 +78,30 @@ public class ClearEdgesData implements EdgesManipulator, GeneralClearRowData {
     }
 
     public boolean canExecute() {
-        return Lookup.getDefault().lookup(GraphElementsController.class).areEdgesInGraph(edges);
+        return true;
     }
 
     public ManipulatorUI getUI() {
-        return new GeneralClearRowDataUI();
+        return new GeneralChooseColumnsUI(NbBundle.getMessage(ClearEdgesData.class, "ClearEdgesData.ui.description"));
     }
 
     public int getType() {
-        return 0;
+        return 100;
     }
 
     public int getPosition() {
-        return 500;
+        return 0;
     }
 
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/clear-data.png", true);
     }
 
-    public AttributeColumn[] getColumnsToClearData() {
+    public AttributeColumn[] getColumns() {
         return columnsToClearData;
     }
 
-    public void setColumnsToClearData(AttributeColumn[] columnsToClearData) {
+    public void setColumns(AttributeColumn[] columnsToClearData) {
         this.columnsToClearData = columnsToClearData;
     }
 }

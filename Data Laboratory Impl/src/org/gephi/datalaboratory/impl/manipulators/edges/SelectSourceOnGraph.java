@@ -21,14 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.edges;
 
 import javax.swing.Icon;
-import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
 import org.openide.util.ImageUtilities;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -57,8 +55,7 @@ public class SelectSourceOnGraph implements EdgesManipulator {
     }
 
     public boolean canExecute() {
-        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        return gec.isEdgeInGraph(clickedEdge);
+        return true;
     }
 
     public ManipulatorUI getUI() {

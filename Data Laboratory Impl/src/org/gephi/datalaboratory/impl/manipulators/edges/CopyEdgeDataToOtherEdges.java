@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalaboratory.impl.manipulators.nodes;
+package org.gephi.datalaboratory.impl.manipulators.edges;
 
 import java.util.ArrayList;
 import javax.swing.Icon;
@@ -26,82 +26,79 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataTablesController;
-import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.impl.manipulators.GeneralColumnsChooser;
 import org.gephi.datalaboratory.impl.manipulators.ui.GeneralChooseColumnsUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
-import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
-import org.gephi.graph.api.Node;
+import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
+import org.gephi.graph.api.Edge;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- * Nodes manipulator that clears the given columns data of one or more nodes except the id and computed attributes.
+ * Edges manipulator that copies the given columns data of one edge to the other selected edges.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class ClearNodesData implements NodesManipulator, GeneralColumnsChooser {
+public class CopyEdgeDataToOtherEdges implements EdgesManipulator, GeneralColumnsChooser {
 
-    private Node[] nodes;
-    private AttributeColumn[] columnsToClearData;
+    private Edge clickedEdge;
+    private Edge[] edges;
+    private AttributeColumn[] columnsToCopyData;
 
-    public void setup(Node[] nodes, Node clickedNode) {
-        this.nodes = nodes;
+    public void setup(Edge[] edges, Edge clickedEdge) {
+        this.clickedEdge = clickedEdge;
+        this.edges = edges;
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         ArrayList<AttributeColumn> columnsToClearDataList = new ArrayList<AttributeColumn>();
-        for (AttributeColumn column : Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumns()) {
-            if (ac.canClearColumnData(column)) {
+        for (AttributeColumn column : Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable().getColumns()) {
+            if (ac.canChangeColumnData(column)) {
                 columnsToClearDataList.add(column);
             }
         }
-        columnsToClearData = columnsToClearDataList.toArray(new AttributeColumn[0]);
+        columnsToCopyData = columnsToClearDataList.toArray(new AttributeColumn[0]);
     }
 
     public void execute() {
-        if (columnsToClearData.length >= 0) {
+        if (columnsToCopyData.length >= 0) {
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-            ac.clearNodesData(nodes, columnsToClearData);
+            ac.copyEdgeDataToOtherEdges(clickedEdge, edges, columnsToCopyData);
             Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
         }
     }
 
     public String getName() {
-        if (nodes.length > 1) {
-            return NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.name.multiple");
-        } else {
-            return NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.name.single");
-        }
+        return NbBundle.getMessage(CopyEdgeDataToOtherEdges.class, "CopyEdgeDataToOtherEdges.name");
     }
 
     public String getDescription() {
-        return NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.description");
+        return NbBundle.getMessage(CopyEdgeDataToOtherEdges.class, "CopyEdgeDataToOtherEdges.description");
     }
 
     public boolean canExecute() {
-        return true;
+        return edges.length>1;//At least 2 edges to copy data from one to the other.
     }
 
     public ManipulatorUI getUI() {
-        return new GeneralChooseColumnsUI(NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.ui.description"));
+        return new GeneralChooseColumnsUI(NbBundle.getMessage(CopyEdgeDataToOtherEdges.class, "CopyEdgeDataToOtherEdges.ui.description"));
     }
 
     public int getType() {
-        return 200;
+        return 100;
     }
 
     public int getPosition() {
-        return 0;
+        return 100;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/clear-data.png", true);
+        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/broom--arrow.png", true);
     }
 
     public AttributeColumn[] getColumns() {
-        return columnsToClearData;
+        return columnsToCopyData;
     }
 
     public void setColumns(AttributeColumn[] columnsToClearData) {
-        this.columnsToClearData = columnsToClearData;
+        this.columnsToCopyData = columnsToClearData;
     }
 }

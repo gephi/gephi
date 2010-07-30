@@ -61,7 +61,7 @@ public class DeleteEdgesWithNodes implements EdgesManipulator {
     }
 
     public boolean canExecute() {
-        return Lookup.getDefault().lookup(GraphElementsController.class).areEdgesInGraph(edges);
+        return true;
     }
 
     public ManipulatorUI getUI() {

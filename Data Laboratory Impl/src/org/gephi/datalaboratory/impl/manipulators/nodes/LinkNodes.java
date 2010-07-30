@@ -60,7 +60,7 @@ public class LinkNodes implements NodesManipulator{
     }
 
     public boolean canExecute() {
-        return nodes.length>1&&Lookup.getDefault().lookup(GraphElementsController.class).areNodesInGraph(nodes);
+        return nodes.length>1;
     }
 
     public ManipulatorUI getUI() {
@@ -68,7 +68,7 @@ public class LinkNodes implements NodesManipulator{
     }
 
     public int getType() {
-        return 300;
+        return 500;
     }
 
     public int getPosition() {

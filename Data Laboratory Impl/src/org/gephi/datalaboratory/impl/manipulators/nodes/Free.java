@@ -62,7 +62,7 @@ public class Free implements NodesManipulator {
 
     public boolean canExecute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        return gec.areNodesInGraph(nodes) && gec.isNodeFixed(clickedNode);
+        return gec.isNodeFixed(clickedNode);
     }
 
     public ManipulatorUI getUI() {
@@ -70,7 +70,7 @@ public class Free implements NodesManipulator {
     }
 
     public int getType() {
-        return 200;
+        return 400;
     }
 
     public int getPosition() {

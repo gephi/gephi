@@ -81,11 +81,11 @@ public class MoveNodeToGroup implements NodesManipulator {
     }
 
     public int getType() {
-        return 100;
+        return 300;
     }
 
     public int getPosition() {
-        return 250;
+        return 300;
     }
 
     public Icon getIcon() {

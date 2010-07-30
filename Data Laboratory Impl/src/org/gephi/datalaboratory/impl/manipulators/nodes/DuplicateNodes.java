@@ -59,7 +59,7 @@ public class DuplicateNodes implements NodesManipulator {
     }
 
     public boolean canExecute() {
-        return Lookup.getDefault().lookup(GraphElementsController.class).areNodesInGraph(nodes);
+        return true;
     }
 
     public ManipulatorUI getUI() {
@@ -67,7 +67,7 @@ public class DuplicateNodes implements NodesManipulator {
     }
 
     public int getType() {
-        return 300;
+        return 500;
     }
 
     public int getPosition() {

@@ -26,7 +26,6 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataTablesController;
-import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.impl.manipulators.GeneralColumnsChooser;
 import org.gephi.datalaboratory.impl.manipulators.ui.GeneralChooseColumnsUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
@@ -37,52 +36,50 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- * Nodes manipulator that clears the given columns data of one or more nodes except the id and computed attributes.
+ * Nodes manipulator that copies the given columns data of one node to the other selected nodes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class ClearNodesData implements NodesManipulator, GeneralColumnsChooser {
+public class CopyNodeDataToOtherNodes implements NodesManipulator, GeneralColumnsChooser {
 
+    private Node clickedNode;
     private Node[] nodes;
-    private AttributeColumn[] columnsToClearData;
+    private AttributeColumn[] columnsToCopyData;
 
     public void setup(Node[] nodes, Node clickedNode) {
+        this.clickedNode = clickedNode;
         this.nodes = nodes;
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         ArrayList<AttributeColumn> columnsToClearDataList = new ArrayList<AttributeColumn>();
         for (AttributeColumn column : Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumns()) {
-            if (ac.canClearColumnData(column)) {
+            if (ac.canChangeColumnData(column)) {
                 columnsToClearDataList.add(column);
             }
         }
-        columnsToClearData = columnsToClearDataList.toArray(new AttributeColumn[0]);
+        columnsToCopyData = columnsToClearDataList.toArray(new AttributeColumn[0]);
     }
 
     public void execute() {
-        if (columnsToClearData.length >= 0) {
+        if (columnsToCopyData.length >= 0) {
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-            ac.clearNodesData(nodes, columnsToClearData);
+            ac.copyNodeDataToOtherNodes(clickedNode, nodes, columnsToCopyData);
             Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
         }
     }
 
     public String getName() {
-        if (nodes.length > 1) {
-            return NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.name.multiple");
-        } else {
-            return NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.name.single");
-        }
+        return NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.name");
     }
 
     public String getDescription() {
-        return NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.description");
+        return NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.description");
     }
 
     public boolean canExecute() {
-        return true;
+        return nodes.length > 1;//At least 2 nodes to copy data from one to the other.
     }
 
     public ManipulatorUI getUI() {
-        return new GeneralChooseColumnsUI(NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.ui.description"));
+        return new GeneralChooseColumnsUI(NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.ui.description"));
     }
 
     public int getType() {
@@ -90,18 +87,18 @@ public class ClearNodesData implements NodesManipulator, GeneralColumnsChooser {
     }
 
     public int getPosition() {
-        return 0;
+        return 100;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/clear-data.png", true);
+        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/broom--arrow.png", true);
     }
 
     public AttributeColumn[] getColumns() {
-        return columnsToClearData;
+        return columnsToCopyData;
     }
 
     public void setColumns(AttributeColumn[] columnsToClearData) {
-        this.columnsToClearData = columnsToClearData;
+        this.columnsToCopyData = columnsToClearData;
     }
 }

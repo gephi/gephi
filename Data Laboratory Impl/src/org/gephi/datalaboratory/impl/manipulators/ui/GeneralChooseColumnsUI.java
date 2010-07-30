@@ -25,41 +25,36 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.datalaboratory.impl.manipulators.GeneralClearRowData;
+import org.gephi.datalaboratory.impl.manipulators.GeneralColumnsChooser;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 
 /**
- * UI for GeneralClearRowData (ClearNodesData and ClearEdgesData)
+ * UI for GeneralColumnsChooser (ClearNodesData and ClearEdgesData)
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class GeneralClearRowDataUI extends javax.swing.JPanel implements ManipulatorUI {
+public class GeneralChooseColumnsUI extends javax.swing.JPanel implements ManipulatorUI {
 
-    private GeneralClearRowData manipulator;
+    private GeneralColumnsChooser columnsChooser;
     private ColumnCheckBox[] columnsCheckBoxes;
 
-    /** Creates new form GeneralClearRowDataUI */
-    public GeneralClearRowDataUI() {
+    /** Creates new form GeneralChooseColumnsUI */
+    public GeneralChooseColumnsUI(String descriptionText) {
         initComponents();
+        descriptionLabel.setText(descriptionText);
     }
 
     public void setup(Manipulator m) {
-        this.manipulator = (GeneralClearRowData) m;
+        this.columnsChooser = (GeneralColumnsChooser) m;
         refreshColumns();
     }
 
     public void unSetup() {
-        ArrayList<AttributeColumn> columnsToClearDataList=new ArrayList<AttributeColumn>();
-        for(ColumnCheckBox c:columnsCheckBoxes){
-            if(c.isSelected()){
-                columnsToClearDataList.add(c.getColumn());
-            }
-        }
-        manipulator.setColumnsToClearData(columnsToClearDataList.toArray(new AttributeColumn[0]));
+        columnsChooser.setColumns(getChosenColumns());
     }
 
     public String getDisplayName() {
-        return ((Manipulator) manipulator).getName();
+        return columnsChooser.getName();
     }
 
     public JPanel getSettingsPanel() {
@@ -70,8 +65,18 @@ public class GeneralClearRowDataUI extends javax.swing.JPanel implements Manipul
         return true;
     }
 
+    public AttributeColumn[] getChosenColumns(){
+        ArrayList<AttributeColumn> columnsToClearDataList=new ArrayList<AttributeColumn>();
+        for(ColumnCheckBox c:columnsCheckBoxes){
+            if(c.isSelected()){
+                columnsToClearDataList.add(c.getColumn());
+            }
+        }
+        return columnsToClearDataList.toArray(new AttributeColumn[0]);
+    }
+
     private void refreshColumns() {
-        AttributeColumn[] columns=manipulator.getColumnsToClearData();
+        AttributeColumn[] columns=columnsChooser.getColumns();
         columnsCheckBoxes=new ColumnCheckBox[columns.length];
         contentPanel.removeAll();
         contentPanel.setLayout(new MigLayout("", "[pref!]"));
@@ -123,29 +128,29 @@ public class GeneralClearRowDataUI extends javax.swing.JPanel implements Manipul
         contentPanel = new javax.swing.JPanel();
         descriptionLabel = new javax.swing.JLabel();
 
-        contentPanel.setLayout(new java.awt.GridLayout());
+        contentPanel.setLayout(new java.awt.GridLayout(1, 0));
         contentScrollPane.setViewportView(contentPanel);
 
-        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(GeneralClearRowDataUI.class, "GeneralClearRowDataUI.descriptionLabel.text")); // NOI18N
+        descriptionLabel.setText(null);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(contentScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
-                    .addComponent(descriptionLabel))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+                    .addComponent(contentScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(descriptionLabel)
+                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(contentScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                .addComponent(contentScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

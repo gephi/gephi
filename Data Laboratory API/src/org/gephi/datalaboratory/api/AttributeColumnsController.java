@@ -173,6 +173,41 @@ public interface AttributeColumnsController {
     void clearEdgesData(Edge[] edges,AttributeColumn[] columnsToClear);
 
     /**
+     * Clears row attributes except computed attributes and id if node/edge.
+     * Columns to clear can be specified, but id of node/edge and computed columns will not be cleared.
+     * @param row Array of rows to clear data
+     * @param columnsToClear Columns of the row to clear. All columns will be cleared if it is null
+     */
+    void clearRowData(Attributes row, AttributeColumn[] columnsToClear);
+
+    /**
+     * Copies attributes data of the given node to the other rows except computed attributes and id.
+     * Columns to copy can be specified, but id node and computed columns will not be copied.
+     * @param node Node to copy data from
+     * @param otherNodes Nodes to copy data to
+     * @param columnsToCopy Columns of the node to copy. All columns will be copied if it is null
+     */
+    void copyNodeDataToOtherNodes(Node node, Node[] otherNodes, AttributeColumn[] columnsToCopy);
+
+    /**
+     * Copies attributes data of the given edge to the other rows except computed attributes and id.
+     * Columns to copy can be specified, but id edge and computed columns will not be copied.
+     * @param edge Edge to copy data from
+     * @param otherEdges Edges to copy data to
+     * @param columnsToCopy Columns of the edge to copy. All columns will be copied if it is null
+     */
+    void copyEdgeDataToOtherEdges(Edge edge, Edge[] otherEdges, AttributeColumn[] columnsToCopy);
+
+    /**
+     * Copies attributes data of the given row to the other rows except computed attributes and id if node/edge.
+     * Columns to copy can be specified, but id of node/edge and computed columns will not be copied.
+     * @param row Row to copy data from
+     * @param otherRows Rows to copy data to
+     * @param columnsToCopy Columns of the row to copy. All columns will be copied if it is null
+     */
+    void copyRowDataToOtherRows(Attributes row, Attributes[] otherRows, AttributeColumn[] columnsToCopy);
+
+    /**
      * Returns all rows of a given table.
      * Used for iterating through all attribute rows of a table
      * @param table Table to get attribute rows

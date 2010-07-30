@@ -72,11 +72,11 @@ public class RemoveNodeFromGroup implements NodesManipulator {
     }
 
     public int getType() {
-        return 100;
+        return 300;
     }
 
     public int getPosition() {
-        return 300;
+        return 400;
     }
 
     public Icon getIcon() {

@@ -62,7 +62,7 @@ public class DeleteNodes implements NodesManipulator {
     }
 
     public boolean canExecute() {
-        return Lookup.getDefault().lookup(GraphElementsController.class).areNodesInGraph(nodes);
+        return true;
     }
 
     public ManipulatorUI getUI() {
@@ -70,7 +70,7 @@ public class DeleteNodes implements NodesManipulator {
     }
 
     public int getType() {
-        return 0;
+        return 100;
     }
 
     public int getPosition() {

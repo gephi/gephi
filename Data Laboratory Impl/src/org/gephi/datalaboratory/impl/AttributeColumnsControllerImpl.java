@@ -223,6 +223,72 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             clearEdgeData(e, columnsToClear);
         }
     }
+    
+    public void clearRowData(Attributes row, AttributeColumn[] columnsToClear) {
+        AttributeRow attributeRow=(AttributeRow) row;
+        if (columnsToClear != null) {
+            for (AttributeColumn column : columnsToClear) {
+                //Clear all except id and computed attributes:
+                if (canClearColumnData(column)) {
+                    row.setValue(column.getIndex(), null);
+                }
+            }
+        } else {
+            AttributeValue[] values = attributeRow.getValues();
+            for (int i = 0; i < values.length; i++) {
+                //Clear all except id and computed attributes:
+                if (canClearColumnData(values[i].getColumn())) {
+                    row.setValue(i, null);
+                }
+            }
+        }
+    }
+
+    public void copyNodeDataToOtherNodes(Node node, Node[] otherNodes, AttributeColumn[] columnsToCopy){
+        Attributes row=node.getNodeData().getAttributes();
+        Attributes[] otherRows=new Attributes[otherNodes.length];
+        for (int i = 0; i < otherNodes.length; i++) {
+            otherRows[i]=otherNodes[i].getNodeData().getAttributes();
+        }
+
+        copyRowDataToOtherRows(row, otherRows, columnsToCopy);
+    }
+
+    public void copyEdgeDataToOtherEdges(Edge edge, Edge[] otherEdges, AttributeColumn[] columnsToCopy){
+        Attributes row=edge.getEdgeData().getAttributes();
+        Attributes[] otherRows=new Attributes[otherEdges.length];
+        for (int i = 0; i < otherEdges.length; i++) {
+            otherRows[i]=otherEdges[i].getEdgeData().getAttributes();
+        }
+
+        copyRowDataToOtherRows(row, otherRows, columnsToCopy);
+    }
+
+    public void copyRowDataToOtherRows(Attributes row, Attributes[] otherRows, AttributeColumn[] columnsToCopy){
+        AttributeRow attributeRow=(AttributeRow) row;
+        if (columnsToCopy != null) {
+            for (AttributeColumn column : columnsToCopy) {
+                //Copy all except id and computed attributes:
+                if (canChangeColumnData(column)) {
+                    for(Attributes otherRow: otherRows){
+                        otherRow.setValue(column.getIndex(), row.getValue(column.getIndex()));
+                    }
+                }
+            }
+        } else {
+            AttributeColumn column;
+            AttributeValue[] values = attributeRow.getValues();
+            for (int i = 0; i < values.length; i++) {
+                column=values[i].getColumn();
+                //Copy all except id and computed attributes:
+                if (canChangeColumnData(column)) {
+                    for(Attributes otherRow: otherRows){
+                        otherRow.setValue(column.getIndex(), row.getValue(column.getIndex()));
+                    }
+                }
+            }
+        }
+    }
 
     public Attributes[] getTableAttributeRows(AttributeTable table) {
         Attributes[] attributes;
@@ -362,30 +428,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
      */
     private boolean canChangeGenericColumnData(AttributeColumn column) {
         return column.getOrigin() == AttributeOrigin.DATA && !column.getType().isDynamicType();
-    }
-
-    /**
-     * Used to clear all data of a row being able to specify the columns to clear.
-     * Id and computed columns are never cleared.
-     */
-    private void clearRowData(AttributeRow row, AttributeColumn[] columnsToClear) {
-        if (columnsToClear != null) {
-            for (AttributeColumn column : columnsToClear) {
-                //Clear all except id and computed attributes:
-                if (canClearColumnData(column)) {
-                    row.setValue(column.getIndex(), null);
-                }
-            }
-        } else {
-            AttributeValue[] values = row.getValues();
-            for (int i = 0; i < values.length; i++) {
-                //Clear all except id and computed attributes:
-                if (canClearColumnData(values[i].getColumn())) {
-                    row.setValue(i, null);
-                }
-            }
-        }
-    }
+    }    
 
     /**
      * Used to negate the values of a single boolean columns

@@ -22,7 +22,6 @@ package org.gephi.datalaboratory.impl.manipulators.edges;
 
 import javax.swing.Icon;
 import org.gephi.datalaboratory.api.DataTablesController;
-import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
@@ -58,8 +57,7 @@ public class SelectNodesOnTable implements EdgesManipulator{
     }
 
     public boolean canExecute() {
-        GraphElementsController gec=Lookup.getDefault().lookup(GraphElementsController.class);
-        return gec.isEdgeInGraph(clickedEdge);
+        return true;
     }
 
     public ManipulatorUI getUI() {

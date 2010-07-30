@@ -24,23 +24,29 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.datalaboratory.impl.manipulators.nodes.ClearNodesData;
 
 /**
- * Interface in common for clearing a row data (node or edge).
- * Used to be able to get/set the columns to clear in the GeneralClearRowDataUI.
+ * Interface in common for choosing columns to manipulate.
+ * Used to be able to get/set the columns to clear in the GeneralChooseColumnsUI.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  * @see ClearNodesData
  */
-public interface GeneralClearRowData{
+public interface GeneralColumnsChooser{
 
     /**
-     * Provide columns to show in the UI to be selected or not to clear.
-     * Normally provide al table columns that can be cleared
+     * Provide columns to show in the UI to be selected or not.
+     * Normally provide all table columns that can be manipulated.
      * @return Columns to show in the GeneralClearRowDataUI
      */
-    AttributeColumn[] getColumnsToClearData();
+    AttributeColumn[] getColumns();
 
     /**
-     * The GeneralClearRowDataUI will use this method to set the columns to finally clear.
+     * The GeneralClearRowDataUI will use this method to set the columns to finally manipulate, after the GeneralChooseColumnsUI is closed.
      * @param columnsToClearData Columns to clear
      */
-    void setColumnsToClearData(AttributeColumn[] columnsToClearData);
+    void setColumns(AttributeColumn[] columnsToClearData);
+
+    /**
+     * Provide title for the GeneralColumnsChooserUI.
+     * @return Title name
+     */
+    String getName();
 }

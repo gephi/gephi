@@ -66,7 +66,7 @@ public class SelectNeighboursOnTable implements NodesManipulator {
     }
 
     public int getType() {
-        return 0;
+        return 100;
     }
 
     public int getPosition() {

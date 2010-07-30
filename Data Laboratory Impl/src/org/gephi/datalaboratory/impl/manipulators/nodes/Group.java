@@ -63,7 +63,7 @@ public class Group implements NodesManipulator{
     }
 
     public int getType() {
-        return 100;
+        return 300;
     }
 
     public int getPosition() {
