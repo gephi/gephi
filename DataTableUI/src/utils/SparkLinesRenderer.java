@@ -24,12 +24,14 @@ import com.representqueens.spark.LineGraph;
 import com.representqueens.spark.SizeParams;
 import java.awt.Component;
 import java.awt.Color;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.JLabel;
+import javax.swing.JViewport;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.gephi.data.attributes.type.NumberList;
 
@@ -37,8 +39,9 @@ import org.gephi.data.attributes.type.NumberList;
  * TableCellRenderer for drawing sparklines from cells that have a NumberList as their value.
  */
 public class SparkLinesRenderer extends DefaultTableCellRenderer {
-    private static final Color SELECTED_BACKGROUND=new Color(225,255,255);
-    private static final Color UNSELECTED_BACKGROUND=Color.white;
+
+    private static final Color SELECTED_BACKGROUND = new Color(225, 255, 255);
+    private static final Color UNSELECTED_BACKGROUND = Color.white;
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -50,17 +53,17 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
         } else if (numberList.size() < 2) {
             return super.getTableCellRendererComponent(table, numberList.toString(), isSelected, hasFocus, row, column);
         }
-        
+
+        JLabel label = new JLabel();
+
         ArrayList<Number> numbers = new ArrayList<Number>();
         Number n;
         for (int i = 0; i < numberList.size(); i++) {
             n = (Number) numberList.getItem(i);
-            if(n!=null){
+            if (n != null) {
                 numbers.add(n);
             }
-        }
-
-        JLabel label = new JLabel();
+        }        
 
         Color background;
         if (isSelected) {

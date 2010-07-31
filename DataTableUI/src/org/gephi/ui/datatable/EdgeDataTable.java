@@ -369,17 +369,17 @@ public class EdgeDataTable {
         }
 
         protected void showPopup(final MouseEvent e) {
-            new Thread(new Runnable() {
+            int selRow = table.rowAtPoint(e.getPoint());
 
-                public void run() {
-                    int selRow = table.rowAtPoint(e.getPoint());
+            if (selRow != -1) {
+                if (!table.getSelectionModel().isSelectedIndex(selRow)) {
+                    table.getSelectionModel().clearSelection();
+                    table.getSelectionModel().setSelectionInterval(selRow, selRow);
+                }
+                final Point p = e.getPoint();
+                new Thread(new Runnable() {
 
-                    if (selRow != -1) {
-                        if (!table.getSelectionModel().isSelectedIndex(selRow)) {
-                            table.getSelectionModel().clearSelection();
-                            table.getSelectionModel().setSelectionInterval(selRow, selRow);
-                        }
-                        final Point p = e.getPoint();
+                    public void run() {
                         final JPopupMenu pop = createPopup(p);
                         SwingUtilities.invokeLater(new Runnable() {
 
@@ -387,12 +387,12 @@ public class EdgeDataTable {
                                 showPopup(p.x, p.y, pop);
                             }
                         });
-                    } else {
-                        table.getSelectionModel().clearSelection();
                     }
-                    e.consume();
-                }
-            }).start();
+                }).start();
+            } else {
+                table.getSelectionModel().clearSelection();
+            }
+            e.consume();
 
         }
 

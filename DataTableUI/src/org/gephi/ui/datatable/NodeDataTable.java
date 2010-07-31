@@ -73,8 +73,6 @@ import utils.SparkLinesRenderer;
  * @author Mathieu Bastian
  */
 public class NodeDataTable {
-
-    private final boolean popupAllowed = true;
     private boolean useSparklines = false;
     private Outline outlineTable;
     private QuickFilter quickFilter;
@@ -401,34 +399,28 @@ public class NodeDataTable {
         }
 
         protected void showPopup(final MouseEvent e) {
-            new Thread(new Runnable() {
+            int selRow = outlineTable.rowAtPoint(e.getPoint());
 
-                public void run() {
-
-                    int selRow = outlineTable.rowAtPoint(e.getPoint());
-
-                    if (selRow != -1) {
-                        if (!outlineTable.getSelectionModel().isSelectedIndex(selRow)) {
-                            outlineTable.getSelectionModel().clearSelection();
-                            outlineTable.getSelectionModel().setSelectionInterval(selRow, selRow);
-                        }
-                        final Point p = e.getPoint();
-                        if (popupAllowed) {
-                            final JPopupMenu pop = createPopup(p);
-                            SwingUtilities.invokeLater(new Runnable() {
-
-                                public void run() {
-                                    showPopup(p.x, p.y, pop);
-                                }
-                            });
-                            
-                        } else {
-                            outlineTable.getSelectionModel().clearSelection();
-                        }
-                    }
-                    e.consume();
+            if (selRow != -1) {
+                if (!outlineTable.getSelectionModel().isSelectedIndex(selRow)) {
+                    outlineTable.getSelectionModel().clearSelection();
+                    outlineTable.getSelectionModel().setSelectionInterval(selRow, selRow);
                 }
-            }).start();
+                final Point p = e.getPoint();
+                new Thread(new Runnable() {
+
+                    public void run() {
+                        final JPopupMenu pop = createPopup(p);
+                        SwingUtilities.invokeLater(new Runnable() {
+
+                            public void run() {
+                                showPopup(p.x, p.y, pop);
+                            }
+                        });
+                    }
+                }).start();
+            }
+            e.consume();
         }
 
         private void showPopup(int xpos, int ypos, final JPopupMenu popup) {
