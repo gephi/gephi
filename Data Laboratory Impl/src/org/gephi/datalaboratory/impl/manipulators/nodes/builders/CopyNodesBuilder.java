@@ -20,20 +20,20 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.impl.manipulators.nodes.builders;
 
-import org.gephi.datalaboratory.impl.manipulators.nodes.DuplicateNodes;
+import org.gephi.datalaboratory.impl.manipulators.nodes.CopyNodes;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulatorBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Builder for DuplicateNodes nodes manipulator.
+ * Builder for CopyNodes nodes manipulator.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service=NodesManipulatorBuilder.class)
-public class DuplicateNodesBuilder implements NodesManipulatorBuilder{
+public class CopyNodesBuilder implements NodesManipulatorBuilder{
 
     public NodesManipulator getNodesManipulator() {
-        return new DuplicateNodes();
+        return new CopyNodes();
     }
 
 }

@@ -25,6 +25,7 @@ import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.impl.manipulators.generalactions.ui.AddEdgeToGraphUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
@@ -44,7 +45,7 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
 
     public void execute() {
         if (source != null && target != null) {
-            Lookup.getDefault().lookup(GraphController.class).getModel().getMixedGraph().addEdge(source, target, directed);
+            Lookup.getDefault().lookup(GraphElementsController.class).createEdge(source, target, directed);
         }
     }
 

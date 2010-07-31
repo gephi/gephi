@@ -34,6 +34,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TableModelListener;
@@ -367,21 +368,32 @@ public class EdgeDataTable {
         PopupAdapter() {
         }
 
-        protected void showPopup(MouseEvent e) {
-            int selRow = table.rowAtPoint(e.getPoint());
+        protected void showPopup(final MouseEvent e) {
+            new Thread(new Runnable() {
 
-            if (selRow != -1) {
-                if (!table.getSelectionModel().isSelectedIndex(selRow)) {
-                    table.getSelectionModel().clearSelection();
-                    table.getSelectionModel().setSelectionInterval(selRow, selRow);
+                public void run() {
+                    int selRow = table.rowAtPoint(e.getPoint());
+
+                    if (selRow != -1) {
+                        if (!table.getSelectionModel().isSelectedIndex(selRow)) {
+                            table.getSelectionModel().clearSelection();
+                            table.getSelectionModel().setSelectionInterval(selRow, selRow);
+                        }
+                        final Point p = e.getPoint();
+                        final JPopupMenu pop = createPopup(p);
+                        SwingUtilities.invokeLater(new Runnable() {
+
+                            public void run() {
+                                showPopup(p.x, p.y, pop);
+                            }
+                        });
+                    } else {
+                        table.getSelectionModel().clearSelection();
+                    }
+                    e.consume();
                 }
-                Point p = e.getPoint();
-                JPopupMenu pop = createPopup(p);
-                showPopup(p.x, p.y, pop);
-            } else {
-                table.getSelectionModel().clearSelection();
-            }
-            e.consume();
+            }).start();
+
         }
 
         private void showPopup(int xpos, int ypos, final JPopupMenu popup) {

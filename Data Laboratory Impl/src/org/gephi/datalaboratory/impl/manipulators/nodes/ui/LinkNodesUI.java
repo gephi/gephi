@@ -32,7 +32,7 @@ import org.gephi.graph.api.Node;
  */
 public class LinkNodesUI extends javax.swing.JPanel implements ManipulatorUI {
 
-    private LinkNodes ln;
+    private LinkNodes manipulator;
     private Node[] nodes;
 
     /** Creates new form LinkNodesUI */
@@ -41,15 +41,15 @@ public class LinkNodesUI extends javax.swing.JPanel implements ManipulatorUI {
     }
 
     public void setup(Manipulator m) {
-        ln = (LinkNodes) m;
-        nodes = ln.getNodes();
-        if(ln.isDirected()){
+        manipulator = (LinkNodes) m;
+        nodes = manipulator.getNodes();
+        if(manipulator.isDirected()){
             directedEdge.setSelected(true);
         }else{
             undirectedEdge.setSelected(true);
         }
 
-        Node sourceNode = ln.getSourceNode();
+        Node sourceNode = manipulator.getSourceNode();
         //Prepare combo box with nodes data:
         for (int i = 0; i < nodes.length; i++) {
             sourceNodeComboBox.addItem(nodes[i].getId() + " - " + nodes[i].getNodeData().getLabel());
@@ -60,12 +60,12 @@ public class LinkNodesUI extends javax.swing.JPanel implements ManipulatorUI {
     }
 
     public void unSetup() {
-        ln.setSourceNode(nodes[sourceNodeComboBox.getSelectedIndex()]);
-        ln.setDirected(directedEdge.isSelected());
+        manipulator.setSourceNode(nodes[sourceNodeComboBox.getSelectedIndex()]);
+        manipulator.setDirected(directedEdge.isSelected());
     }
 
     public String getDisplayName() {
-        return ln.getName();
+        return manipulator.getName();
     }
 
     public JPanel getSettingsPanel() {

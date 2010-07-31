@@ -400,23 +400,35 @@ public class NodeDataTable {
         PopupAdapter() {
         }
 
-        protected void showPopup(MouseEvent e) {
-            int selRow = outlineTable.rowAtPoint(e.getPoint());
+        protected void showPopup(final MouseEvent e) {
+            new Thread(new Runnable() {
 
-            if (selRow != -1) {
-                if (!outlineTable.getSelectionModel().isSelectedIndex(selRow)) {
-                    outlineTable.getSelectionModel().clearSelection();
-                    outlineTable.getSelectionModel().setSelectionInterval(selRow, selRow);
+                public void run() {
+
+                    int selRow = outlineTable.rowAtPoint(e.getPoint());
+
+                    if (selRow != -1) {
+                        if (!outlineTable.getSelectionModel().isSelectedIndex(selRow)) {
+                            outlineTable.getSelectionModel().clearSelection();
+                            outlineTable.getSelectionModel().setSelectionInterval(selRow, selRow);
+                        }
+                        final Point p = e.getPoint();
+                        if (popupAllowed) {
+                            final JPopupMenu pop = createPopup(p);
+                            SwingUtilities.invokeLater(new Runnable() {
+
+                                public void run() {
+                                    showPopup(p.x, p.y, pop);
+                                }
+                            });
+                            
+                        } else {
+                            outlineTable.getSelectionModel().clearSelection();
+                        }
+                    }
+                    e.consume();
                 }
-                Point p = e.getPoint();
-                if (popupAllowed) {
-                    JPopupMenu pop = createPopup(p);
-                    showPopup(p.x, p.y, pop);
-                } else {
-                    outlineTable.getSelectionModel().clearSelection();
-                }
-            }
-            e.consume();
+            }).start();
         }
 
         private void showPopup(int xpos, int ypos, final JPopupMenu popup) {

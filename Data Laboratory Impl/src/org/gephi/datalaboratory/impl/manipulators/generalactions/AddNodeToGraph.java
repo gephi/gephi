@@ -22,9 +22,11 @@ package org.gephi.datalaboratory.impl.manipulators.generalactions;
 
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
+import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
+import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -41,7 +43,8 @@ public class AddNodeToGraph implements GeneralActionsManipulator{
     public void execute() {
         String label = JOptionPane.showInputDialog(null, NbBundle.getMessage(AddNodeToGraph.class, "AddNodeToGraph.dialog.text"), NbBundle.getMessage(AddNodeToGraph.class, "AddNodeToGraph.name"), JOptionPane.QUESTION_MESSAGE);
         if (label != null) {
-            Lookup.getDefault().lookup(GraphElementsController.class).createNode(label);
+            Node node=Lookup.getDefault().lookup(GraphElementsController.class).createNode(label);
+            Lookup.getDefault().lookup(DataTablesController.class).setNodeTableSelection(new Node[]{node});
         }
     }
 

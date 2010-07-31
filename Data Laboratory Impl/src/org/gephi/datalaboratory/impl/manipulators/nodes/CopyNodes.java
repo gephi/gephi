@@ -22,6 +22,7 @@ package org.gephi.datalaboratory.impl.manipulators.nodes;
 
 import javax.swing.Icon;
 import org.gephi.datalaboratory.api.GraphElementsController;
+import org.gephi.datalaboratory.impl.manipulators.nodes.ui.CopyNodesUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
@@ -30,12 +31,13 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- * Nodes manipulator that duplicates one or more nodes.
+ * Nodes manipulator that copies one or more nodes one or more times.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class DuplicateNodes implements NodesManipulator {
+public class CopyNodes implements NodesManipulator {
 
     private Node[] nodes;
+    private int copies = 1;
 
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes = nodes;
@@ -43,14 +45,16 @@ public class DuplicateNodes implements NodesManipulator {
 
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        gec.duplicateNodes(nodes);
+        for (int i = 0; i < copies; i++) {
+            gec.duplicateNodes(nodes);
+        }
     }
 
     public String getName() {
         if (nodes.length > 1) {
-            return NbBundle.getMessage(DuplicateNodes.class, "DuplicateNodes.name.multiple");
+            return NbBundle.getMessage(CopyNodes.class, "CopyNodes.name.multiple");
         } else {
-            return NbBundle.getMessage(DuplicateNodes.class, "DuplicateNodes.name.single");
+            return NbBundle.getMessage(CopyNodes.class, "CopyNodes.name.single");
         }
     }
 
@@ -63,7 +67,7 @@ public class DuplicateNodes implements NodesManipulator {
     }
 
     public ManipulatorUI getUI() {
-        return null;
+        return new CopyNodesUI();
     }
 
     public int getType() {
@@ -76,5 +80,21 @@ public class DuplicateNodes implements NodesManipulator {
 
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/duplicate.png", true);
+    }
+
+    public int getCopies() {
+        return copies;
+    }
+
+    public void setCopies(int copies) {
+        this.copies = copies;
+    }
+
+    public Node[] getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(Node[] nodes) {
+        this.nodes = nodes;
     }
 }

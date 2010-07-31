@@ -118,6 +118,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private GraphModel graphModel;
     private DataTablesModel dataTablesModel;
     private boolean visibleOnly = false;
+    private boolean useSparklines = false;
     //Table
     private NodeDataTable nodeTable;
     private EdgeDataTable edgeTable;
@@ -262,18 +263,16 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
             public void itemStateChanged(ItemEvent e) {
                 visibleOnly = visibleGraphCheckbox.isSelected();
-                if (classDisplayed.equals(ClassDisplayed.NODE)) {
-                    initNodesView();
-                } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
-                    initEdgesView();
-                }
+                refreshTable();
             }
         });
+        useSparklinesCheckBox.setSelected(useSparklines);
         useSparklinesCheckBox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
-                nodeTable.setUseSparklines(useSparklinesCheckBox.isSelected());
-                edgeTable.setUseSparklines(useSparklinesCheckBox.isSelected());
+                useSparklines=useSparklinesCheckBox.isSelected();
+                nodeTable.setUseSparklines(useSparklines);
+                edgeTable.setUseSparklines(useSparklines);
                 refreshCurrentTable();
             }
         });
@@ -455,6 +454,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         filterTextField.setEnabled(true);
         labelFilter.setEnabled(true);
         visibleGraphCheckbox.setEnabled(true);
+        useSparklinesCheckBox.setEnabled(true);
     }
 
     private void clearTableControls() {
@@ -465,6 +465,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         labelFilter.setEnabled(false);
         bannerPanel.setVisible(false);
         visibleGraphCheckbox.setEnabled(false);
+        useSparklinesCheckBox.setEnabled(false);
         hideTable();
     }
 

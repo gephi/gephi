@@ -152,40 +152,45 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
 
     public void executeManipulator(final Manipulator m) {
         if (m.canExecute()) {
-            new Thread(new Runnable() {
+            final ManipulatorUI ui = m.getUI();
+            //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
+            if (ui != null) {
+                ui.setup(m);
+                JPanel settingsPanel = ui.getSettingsPanel();
+                DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
 
-                public void run() {
-                    final ManipulatorUI ui = m.getUI();
-                    //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
-                    if (ui != null) {
-                        ui.setup(m);
-                        JPanel settingsPanel = ui.getSettingsPanel();
-                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
-
-                            public void actionPerformed(ActionEvent e) {
-                                if (e.getSource().equals(NotifyDescriptor.OK_OPTION)) {
-                                    ui.unSetup();
-                                    m.execute();
-                                } else {
-                                    ui.unSetup();
-                                }
-                            }
-                        });
-                        Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
-                        dialog.addWindowListener(new WindowAdapter() {
-
-                            @Override
-                            public void windowClosing(WindowEvent e) {
-                                ui.unSetup();
-                            }
-                        });
-                        dialog.setVisible(true);
-                    } else {
-                        m.execute();
+                    public void actionPerformed(ActionEvent e) {
+                        if (e.getSource().equals(NotifyDescriptor.OK_OPTION)) {
+                            ui.unSetup();
+                            executeManipulatorInOtherThread(m);
+                        } else {
+                            ui.unSetup();
+                        }
                     }
-                }
-            }).start();
+                });
+                Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
+                dialog.addWindowListener(new WindowAdapter() {
+
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        ui.unSetup();
+                    }
+                });
+                dialog.setVisible(true);
+            } else {
+                executeManipulatorInOtherThread(m);
+            }
         }
+    }
+
+    private void executeManipulatorInOtherThread(final Manipulator m) {
+        new Thread() {
+
+            @Override
+            public void run() {
+                m.execute();
+            }
+        }.start();
     }
 
     public void executeAttributeColumnsManipulator(final AttributeColumnsManipulator m, final AttributeTable table, final AttributeColumn column) {
@@ -203,7 +208,7 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                             public void actionPerformed(ActionEvent e) {
                                 if (e.getSource().equals(NotifyDescriptor.OK_OPTION)) {
                                     ui.unSetup();
-                                    m.execute(table, column);
+                                    executeAttributeColumnsManipulatorInOtherThread(m, table, column);
                                 } else {
                                     ui.unSetup();
                                 }
@@ -219,11 +224,21 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                         });
                         dialog.setVisible(true);
                     } else {
-                        m.execute(table, column);
+                        executeAttributeColumnsManipulatorInOtherThread(m, table, column);
                     }
                 }
             }).start();
         }
+    }
+
+    private void executeAttributeColumnsManipulatorInOtherThread(final AttributeColumnsManipulator m, final AttributeTable table, final AttributeColumn column) {
+        new Thread() {
+
+            @Override
+            public void run() {
+                m.execute(table, column);
+            }
+        }.start();
     }
 
     public NodesManipulator getDeleteNodesManipulator() {
