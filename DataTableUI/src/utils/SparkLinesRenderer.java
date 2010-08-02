@@ -24,14 +24,11 @@ import com.representqueens.spark.LineGraph;
 import com.representqueens.spark.SizeParams;
 import java.awt.Component;
 import java.awt.Color;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.JLabel;
-import javax.swing.JViewport;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.gephi.data.attributes.type.NumberList;
 

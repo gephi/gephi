@@ -31,7 +31,7 @@ import org.jfree.chart.JFreeChart;
 public class JFreeChartDialog extends javax.swing.JDialog {
 
     private ChartPanel chartPanel;
-    private static final int MAX_DIMENSION=5000;
+    private static final int MAX_DIMENSION=3000;
 
     /**
      * Chart can't be null.
