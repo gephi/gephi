@@ -109,4 +109,10 @@ public interface DataTablesController {
      * @return True if only visible elements are being shown, false otherwise
      */
     boolean isShowingOnlyVisible();
+
+    public enum ExportMode{
+        CSV
+    }
+
+    void exportCurrentTable(ExportMode exportMode);
 }

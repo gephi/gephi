@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.api;
 
+import org.gephi.datalaboratory.api.DataTablesController.ExportMode;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
@@ -47,4 +48,6 @@ public interface DataTablesEventListener {
     boolean isEdgeTableMode();
 
     boolean isShowingOnlyVisible();
+
+    void exportCurrentTable(ExportMode exportMode);
 }

@@ -43,6 +43,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -57,6 +58,7 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.api.DataTablesController;
+import org.gephi.datalaboratory.api.DataTablesController.ExportMode;
 import org.gephi.datalaboratory.api.DataTablesEventListener;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
@@ -75,6 +77,7 @@ import org.gephi.project.api.WorkspaceListener;
 import org.gephi.ui.general.actions.AddColumnUI;
 import org.gephi.ui.general.actions.MergeColumnsUI;
 import org.gephi.ui.utils.UIUtils;
+import org.gephi.utils.TableCSVExporter;
 import org.jvnet.flamingo.common.CommandButtonDisplayState;
 import org.jvnet.flamingo.common.JCommandButton;
 import org.jvnet.flamingo.common.JCommandButtonPanel;
@@ -270,7 +273,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         useSparklinesCheckBox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
-                useSparklines=useSparklinesCheckBox.isSelected();
+                useSparklines = useSparklinesCheckBox.isSelected();
                 nodeTable.setUseSparklines(useSparklines);
                 edgeTable.setUseSparklines(useSparklines);
                 refreshCurrentTable();
@@ -557,6 +560,21 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
     public boolean isShowingOnlyVisible() {
         return visibleOnly;
+    }
+
+    public void exportCurrentTable(ExportMode exportMode) {
+        JTable table;
+        if (classDisplayed == classDisplayed.NODE) {
+            table = nodeTable.getOutlineTable();
+        } else {
+            table = edgeTable.getTable();
+        }
+
+        switch (exportMode) {
+            case CSV:
+                TableCSVExporter.exportTableAsCSV(this, table);
+                break;
+        }
     }
 
     /*************Column manipulators related methods:*************/

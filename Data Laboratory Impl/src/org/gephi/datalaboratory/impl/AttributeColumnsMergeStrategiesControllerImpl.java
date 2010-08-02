@@ -41,14 +41,14 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeColumnsMergeStrategiesController.class)
 public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeColumnsMergeStrategiesController {
 
-    public AttributeColumn joinWithSeparatorMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle, String separator) {
+    public AttributeColumn joinWithSeparatorMerge(AttributeTable table, AttributeColumn[] columnsToMerge, AttributeType newColumnType, String newColumnTitle, String separator) {
         if (table == null || columnsToMerge == null) {
             throw new IllegalArgumentException("Table or columns can't be null");
         }
 
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
-        newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.STRING);//Create as STRING column by default. Then it can be duplicated to other type.
+        newColumn = ac.addAttributeColumn(table, newColumnTitle, newColumnType != null ? newColumnType : AttributeType.STRING);//Create as STRING column by default. Then it can be duplicated to other type.
         final int newColumnIndex = newColumn.getIndex();
 
         if (separator == null) {

@@ -22,6 +22,7 @@ package org.gephi.datalaboratory.api;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.data.attributes.api.AttributeType;
 
 /**
  * This interface defines part of the Data Laboratory API.
@@ -41,14 +42,15 @@ public interface AttributeColumnsMergeStrategiesController {
 
     /**
      * Joins various columns of any type into a new column using the given separator string (or null).
-     * The new created column will have <code>STRING</code> type.
+     * If the specified column type is null, the new created column will have <code>STRING</code> type by default.
      * @param table Table of the columns to merge
      * @param columnsToMerge Columns to merge
+     * @param newColumnType Type for the new column. If null, <code>STRING</code> will be used by default
      * @param newColumnTitle Title for the new column
      * @param separator Separator to put between each value
      * @return The new created column
      */
-    AttributeColumn joinWithSeparatorMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle, String separator);
+    AttributeColumn joinWithSeparatorMerge(AttributeTable table, AttributeColumn[] columnsToMerge, AttributeType newColumnType, String newColumnTitle, String separator);
 
     /**
      * AttributeColumnsMergeStrategy for only all boolean columns that merges various columns into a new boolean column

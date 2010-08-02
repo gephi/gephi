@@ -121,11 +121,17 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
     }
 
-    public boolean isShowingOnlyVisible(){
+    public boolean isShowingOnlyVisible() {
         if (listener != null) {
             return listener.isShowingOnlyVisible();
         } else {
             return false;
+        }
+    }
+
+    public void exportCurrentTable(ExportMode exportMode) {
+        if (listener != null) {
+            listener.exportCurrentTable(exportMode);
         }
     }
 }
