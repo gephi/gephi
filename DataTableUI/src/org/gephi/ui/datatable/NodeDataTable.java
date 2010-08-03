@@ -47,6 +47,14 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.data.attributes.type.DynamicBigDecimal;
+import org.gephi.data.attributes.type.DynamicBigInteger;
+import org.gephi.data.attributes.type.DynamicByte;
+import org.gephi.data.attributes.type.DynamicDouble;
+import org.gephi.data.attributes.type.DynamicFloat;
+import org.gephi.data.attributes.type.DynamicInteger;
+import org.gephi.data.attributes.type.DynamicLong;
+import org.gephi.data.attributes.type.DynamicShort;
 import org.gephi.data.attributes.type.NumberList;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.graph.api.HierarchicalGraph;
@@ -105,8 +113,7 @@ public class NodeDataTable {
         };
 
         outlineTable.addMouseListener(new PopupAdapter());
-        outlineTable.setDefaultRenderer(NumberList.class, new SparkLinesRenderer());
-        outlineTable.setDefaultEditor(NumberList.class, new DefaultCellEditor(new JTextField()));
+        prepareSparklinesRenderers();
         outlineTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
             public void valueChanged(ListSelectionEvent e) {
@@ -140,6 +147,29 @@ public class NodeDataTable {
                 }
             }
         });
+    }
+
+    private void prepareSparklinesRenderers(){
+        outlineTable.setDefaultRenderer(NumberList.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicBigDecimal.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicBigInteger.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicByte.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicDouble.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicFloat.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicInteger.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicLong.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicShort.class, new SparkLinesRenderer());
+
+        //Use default string editor for them:
+        outlineTable.setDefaultEditor(NumberList.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicBigDecimal.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicBigInteger.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicByte.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicDouble.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicFloat.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicInteger.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicLong.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicShort.class, new DefaultCellEditor(new JTextField()));
     }
 
     public Outline getOutlineTable() {
@@ -326,7 +356,9 @@ public class NodeDataTable {
         public Class getColumnClass() {
             if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
                 return NumberList.class;
-            } else {
+            } else if(useSparklines && AttributeUtils.getDefault().isDynamicNumberColumn(column)){
+                return column.getType().getType();
+            }else {
                 return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
             }
         }

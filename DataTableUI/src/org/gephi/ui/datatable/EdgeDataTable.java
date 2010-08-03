@@ -43,6 +43,14 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.data.attributes.type.DynamicBigDecimal;
+import org.gephi.data.attributes.type.DynamicBigInteger;
+import org.gephi.data.attributes.type.DynamicByte;
+import org.gephi.data.attributes.type.DynamicDouble;
+import org.gephi.data.attributes.type.DynamicFloat;
+import org.gephi.data.attributes.type.DynamicInteger;
+import org.gephi.data.attributes.type.DynamicLong;
+import org.gephi.data.attributes.type.DynamicShort;
 import org.gephi.data.attributes.type.NumberList;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
@@ -77,8 +85,7 @@ public class EdgeDataTable {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         table = new JXTable();
-        table.setDefaultRenderer(NumberList.class, new SparkLinesRenderer());
-        table.setDefaultEditor(NumberList.class, new DefaultCellEditor(new JTextField()));
+        prepareSparklinesRenderers();
         table.setHighlighters(HighlighterFactory.createAlternateStriping());
         table.setColumnControlVisible(true);
         table.setSortable(true);
@@ -147,6 +154,29 @@ public class EdgeDataTable {
                 }
             }
         });
+    }
+
+    private void prepareSparklinesRenderers() {
+        table.setDefaultRenderer(NumberList.class, new SparkLinesRenderer());
+        table.setDefaultRenderer(DynamicBigDecimal.class, new SparkLinesRenderer());
+        table.setDefaultRenderer(DynamicBigInteger.class, new SparkLinesRenderer());
+        table.setDefaultRenderer(DynamicByte.class, new SparkLinesRenderer());
+        table.setDefaultRenderer(DynamicDouble.class, new SparkLinesRenderer());
+        table.setDefaultRenderer(DynamicFloat.class, new SparkLinesRenderer());
+        table.setDefaultRenderer(DynamicInteger.class, new SparkLinesRenderer());
+        table.setDefaultRenderer(DynamicLong.class, new SparkLinesRenderer());
+        table.setDefaultRenderer(DynamicShort.class, new SparkLinesRenderer());
+
+        //Use default string editor for them:
+        table.setDefaultEditor(NumberList.class, new DefaultCellEditor(new JTextField()));
+        table.setDefaultEditor(DynamicBigDecimal.class, new DefaultCellEditor(new JTextField()));
+        table.setDefaultEditor(DynamicBigInteger.class, new DefaultCellEditor(new JTextField()));
+        table.setDefaultEditor(DynamicByte.class, new DefaultCellEditor(new JTextField()));
+        table.setDefaultEditor(DynamicDouble.class, new DefaultCellEditor(new JTextField()));
+        table.setDefaultEditor(DynamicFloat.class, new DefaultCellEditor(new JTextField()));
+        table.setDefaultEditor(DynamicInteger.class, new DefaultCellEditor(new JTextField()));
+        table.setDefaultEditor(DynamicLong.class, new DefaultCellEditor(new JTextField()));
+        table.setDefaultEditor(DynamicShort.class, new DefaultCellEditor(new JTextField()));
     }
 
     public JXTable getTable() {
@@ -312,6 +342,8 @@ public class EdgeDataTable {
         public Class getColumnClass() {
             if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
                 return NumberList.class;
+            } else if (useSparklines && AttributeUtils.getDefault().isDynamicNumberColumn(column)) {
+                return column.getType().getType();
             } else {
                 return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
             }

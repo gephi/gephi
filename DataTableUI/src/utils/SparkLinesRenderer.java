@@ -30,10 +30,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
+import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.NumberList;
 
 /**
- * TableCellRenderer for drawing sparklines from cells that have a NumberList as their value.
+ * TableCellRenderer for drawing sparklines from cells that have a NumberList or DynamicNumber as their value.
  */
 public class SparkLinesRenderer extends DefaultTableCellRenderer {
 
@@ -42,25 +43,26 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        NumberList numberList = (NumberList) value;
+        if (value == null) {
+            //Render empty string when null
+            return super.getTableCellRendererComponent(table, "", isSelected, hasFocus, row, column);
+        }
+
+        Number[] numbers=null;
+        if (value instanceof NumberList) {
+            numbers = getNumberListNumbers((NumberList) value);
+        } else if(value instanceof DynamicType){
+            numbers=getDynamicNumberNumbers((DynamicType) value);
+        }else{
+            throw new IllegalArgumentException("Only number lists and dynamic numbers are supported for sparklines rendering");
+        }
 
         //If there is less than 2 elements, show as a String.
-        if (numberList == null) {
-            return super.getTableCellRendererComponent(table, "", isSelected, hasFocus, row, column);
-        } else if (numberList.size() < 2) {
-            return super.getTableCellRendererComponent(table, numberList.toString(), isSelected, hasFocus, row, column);
+        if (numbers.length < 2) {
+            return super.getTableCellRendererComponent(table, value.toString(), isSelected, hasFocus, row, column);
         }
 
         JLabel label = new JLabel();
-
-        ArrayList<Number> numbers = new ArrayList<Number>();
-        Number n;
-        for (int i = 0; i < numberList.size(); i++) {
-            n = (Number) numberList.getItem(i);
-            if (n != null) {
-                numbers.add(n);
-            }
-        }        
 
         Color background;
         if (isSelected) {
@@ -70,10 +72,39 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
         }
 
         final SizeParams size = new SizeParams(table.getColumnModel().getColumn(column).getWidth(), table.getRowHeight(row) - 1, 1);
-        final BufferedImage i = LineGraph.createGraph(numbers.toArray(new Number[0]), size, Color.BLUE, background);
+        final BufferedImage i = LineGraph.createGraph(numbers, size, Color.BLUE, background);
         label.setIcon(new ImageIcon(i));
-        label.setToolTipText(numberList.toString());
+        label.setToolTipText(value.toString());//String representation as tooltip
 
         return label;
+    }
+
+    private Number[] getNumberListNumbers(NumberList numberList) {
+        ArrayList<Number> numbers = new ArrayList<Number>();
+        Number n;
+        for (int i = 0; i < numberList.size(); i++) {
+            n = (Number) numberList.getItem(i);
+            if (n != null) {
+                numbers.add(n);
+            }
+        }
+        return numbers.toArray(new Number[0]);
+    }
+
+    private Number[] getDynamicNumberNumbers(DynamicType dynamicNumber){
+        ArrayList<Number> numbers = new ArrayList<Number>();
+        if (dynamicNumber == null) {
+            return new Number[0];
+        }
+        Number[] dynamicNumbers;
+        dynamicNumbers = (Number[]) dynamicNumber.getValues().toArray(new Number[0]);
+        Number n;
+        for (int i = 0; i < dynamicNumbers.length; i++) {
+            n = (Number) dynamicNumbers[i];
+            if (n != null) {
+                numbers.add((Number) n);
+            }
+        }
+        return numbers.toArray(new Number[0]);
     }
 }
