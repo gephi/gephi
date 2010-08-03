@@ -35,21 +35,35 @@ import org.openide.util.NbPreferences;
 
 public class TableCSVExporter {
 
+    private static final Character DEFAULT_SEPARATOR = ',';
+
     /**
      * Export a JTable to the specified file.
      * @param table Table to export
      * @param file File to write
+     * @param separator Separator to use for separating values of a row in the CSV file. If null ',' will be used.
+     * @param columnsToExport Indicates the indexes of the columns to export. All columns will be exported if null
      * @throws IOException When an error happens while writing the file
      */
-    public static void writeCSVFile(JTable table, File file) throws IOException {
+    public static void writeCSVFile(JTable table, File file, Character separator, Integer[] columnsToExport) throws IOException {
         TableModel model = table.getModel();
         FileWriter out = new FileWriter(file);
+        if (separator == null) {
+            separator = DEFAULT_SEPARATOR;
+        }
 
-        CsvWriter writer = new CsvWriter(out, ';');//Use ';' since excel seems to expect it instead of ','. TODO: Allow to select separator.
+        if(columnsToExport==null){
+            columnsToExport=new Integer[model.getColumnCount()];
+            for (int i = 0; i < columnsToExport.length; i++) {
+                columnsToExport[i]=i;
+            }
+        }
+
+        CsvWriter writer = new CsvWriter(out, separator);
 
         //Write column headers:
-        for (int column = 0; column < model.getColumnCount(); column++) {
-            writer.write(model.getColumnName(column), true);
+        for (int column = 0; column < columnsToExport.length; column++) {
+            writer.write(model.getColumnName(columnsToExport[column]), true);
         }
         writer.endRecord();
 
@@ -57,8 +71,8 @@ public class TableCSVExporter {
         Object value;
         String text;
         for (int row = 0; row < model.getRowCount(); row++) {
-            for (int column = 0; column < model.getColumnCount(); column++) {
-                value = model.getValueAt(row, column);
+            for (int column = 0; column < columnsToExport.length; column++) {
+                value = model.getValueAt(row, columnsToExport[column]);
                 if (value != null) {
                     text = value.toString();
                 } else {
@@ -75,8 +89,10 @@ public class TableCSVExporter {
      * Exports a JTable to a CSV file showing first a dialog to select the file to write.
      * @param parent Parent window
      * @param table Table to export
+     * @param separator Separator to use for separating values of a row in the CSV file. If null ',' will be used.
+     * @param columnsToExport Indicates the indexes of the columns to export. All columns will be exported if null
      */
-    public static void exportTableAsCSV(JComponent parent, JTable table) {
+    public static void exportTableAsCSV(JComponent parent, JTable table, Character separator, Integer[] columnsToExport) {
         String lastPath = NbPreferences.forModule(TableCSVExporter.class).get(LAST_PATH, null);
         final JFileChooser chooser = new JFileChooser(lastPath);
         chooser.setAcceptAllFileFilterUsed(false);
@@ -99,7 +115,7 @@ public class TableCSVExporter {
         String defaultDirectory = file.getParentFile().getAbsolutePath();
         NbPreferences.forModule(TableCSVExporter.class).put(LAST_PATH, defaultDirectory);
         try {
-            writeCSVFile(table, file);
+            writeCSVFile(table, file, separator, columnsToExport);
             JOptionPane.showMessageDialog(parent, NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.success"));
             java.awt.Desktop.getDesktop().open(file);//Try to open the created file
         } catch (IOException ex) {

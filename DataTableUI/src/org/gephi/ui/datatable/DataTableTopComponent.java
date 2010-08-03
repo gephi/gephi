@@ -75,6 +75,7 @@ import org.gephi.ui.utils.BusyUtils;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.ui.general.actions.AddColumnUI;
+import org.gephi.ui.general.actions.CSVExportUI;
 import org.gephi.ui.general.actions.MergeColumnsUI;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.utils.TableCSVExporter;
@@ -91,7 +92,6 @@ import org.jvnet.flamingo.common.popup.PopupPanelCallback;
 import org.netbeans.swing.etable.ETableColumnModel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -572,8 +572,16 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
         switch (exportMode) {
             case CSV:
-                TableCSVExporter.exportTableAsCSV(this, table);
+                showCSVExportUI(table);
                 break;
+        }
+    }
+
+    private void showCSVExportUI(JTable table){
+        CSVExportUI csvUI= new CSVExportUI(table);
+        DialogDescriptor dd=new DialogDescriptor(csvUI, csvUI.getDisplayName());
+        if(DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION)){
+            TableCSVExporter.exportTableAsCSV(this, table, csvUI.getSelectedSeparator(),csvUI.getSelectedColumnsIndexes());
         }
     }
 
