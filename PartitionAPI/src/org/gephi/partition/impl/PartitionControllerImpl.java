@@ -94,11 +94,12 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
             }
         });
         if (pc.getCurrentWorkspace() != null) {
+            refreshPartitions=true;
             model = pc.getCurrentWorkspace().getLookup().lookup(PartitionModelImpl.class);
             if (model == null) {
                 model = new PartitionModelImpl();
                 Workspace workspace = pc.getCurrentWorkspace();
-                pc.getCurrentWorkspace().add(new PartitionModelImpl());
+                pc.getCurrentWorkspace().add(model);
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
                 trachViewChange(gm);
 
