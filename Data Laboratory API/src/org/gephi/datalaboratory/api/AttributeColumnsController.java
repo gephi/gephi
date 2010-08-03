@@ -50,27 +50,29 @@ public interface AttributeColumnsController {
 
     /**
      * Adds a new column to the specified table with the given id, title and type of column.
-     * The id of the column will be set to the number of columns.
-     * The AttributeOrigin of the column will be set to DATA.
+     * The title can't be repeated in the table, null or empty string.
+     * The id of the column will be set to the number of columns counting the new column.
+     * The AttributeOrigin of the column will be set to <code>DATA</code>.
      * Default column value will be set to null.
-     * @param table Table to add the column.
-     * @param title Title for the new column
+     * @param table Table to add the column
+     * @param title Title for the new column, can't be repeated in the table, null or empty string
      * @param type Type for the new column
-     * @return The created column
+     * @return The created column or null if title is not correct
      */
     AttributeColumn addAttributeColumn(AttributeTable table, String title, AttributeType type);
 
     /**
      * Duplicates a given column of a table and copies al row values.
      * If the AttributeType for the new column is different from the old column, it will try to parse each value. If it is not possible, the value will be set to null.
+     * Title for the new column can't be repeated in the table, null or empty.
      * @param table Table of the column to duplicate
      * @param column Column to duplicate
      * @param title Title for the new column
      * @param type AttributeType for the new column
-     * @return The created column
+     * @return The created column or null if title is not correct
      */
     AttributeColumn duplicateColumn(AttributeTable table, AttributeColumn column, String title, AttributeType type);
-    
+
     /**
      * Copies all row values of a column to another column.
      * If the AttributeType for the target is different from the source column, it will try to parse each value. If it is not possible, the value will be set to null.
@@ -110,17 +112,19 @@ public interface AttributeColumnsController {
      * @param column Column to calculate values frequencies
      * @return Map containing each different value mapped to its frequency of appearance
      */
-    Map<Object,Integer> calculateColumnValuesFrequencies(AttributeTable table,AttributeColumn column);
+    Map<Object, Integer> calculateColumnValuesFrequencies(AttributeTable table, AttributeColumn column);
 
     /**
      * Creates a new boolean column from the given column and regular expression with boolean values that indicate if
      * each of the old column values match the regular expression.
+     * Title for the new column can't be repeated in the table, null or empty.
      * @param table Table of the column to match
      * @param column Column to match
      * @param newColumnTitle Title for the new boolean column
      * @param regex Regular expression to match
+     * @return New created column or null if title is not correct
      */
-    void createBooleanMatchesColumn(AttributeTable table, AttributeColumn column, String newColumnTitle,Pattern pattern);
+    AttributeColumn createBooleanMatchesColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern);
 
     /**
      * Negates not null values of a given <code>BOOLEAN</code> or <code>LIST_BOOLEAN</code>column.
@@ -133,12 +137,14 @@ public interface AttributeColumnsController {
     /**
      * Creates a new <code>LIST_STRING</code> column from the given column and regular expression with values that are
      * the list of matching groups of the given regular expression.
+     * Title for the new column can't be repeated in the table, null or empty.
      * @param table Table of the column to match
      * @param column Column to match
      * @param newColumnTitle Title for the new boolean column
      * @param regex Regular expression to match
+     * @return New created column or null if title is not correct
      */
-    void createFoundGroupsListColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern);
+    AttributeColumn createFoundGroupsListColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern);
 
     /**
      * Clears all node attributes except computed attributes and id, checking first that the node is in the graph.
@@ -146,7 +152,7 @@ public interface AttributeColumnsController {
      * @param node Node to clear data
      * @param columnsToClear Columns of the node to clear. All columns will be cleared if it is null
      */
-    void clearNodeData(Node node,AttributeColumn[] columnsToClear);
+    void clearNodeData(Node node, AttributeColumn[] columnsToClear);
 
     /**
      * Clears all the nodes attributes except computed attributes and id, checking first that the nodes are in the graph.
@@ -154,7 +160,7 @@ public interface AttributeColumnsController {
      * @param nodes Array of nodes to clear data
      * @param columnsToClear Columns of the nodes to clear. All columns will be cleared if it is null
      */
-    void clearNodesData(Node[] nodes,AttributeColumn[] columnsToClear);
+    void clearNodesData(Node[] nodes, AttributeColumn[] columnsToClear);
 
     /**
      * Clears all edge attributes except computed attributes and id, checking first that the edge is in the graph.
@@ -162,7 +168,7 @@ public interface AttributeColumnsController {
      * @param node Edge to clear data
      * @param columnsToClear Columns of the edge to clear. All columns will be cleared if it is null
      */
-    void clearEdgeData(Edge edge,AttributeColumn[] columnsToClear);
+    void clearEdgeData(Edge edge, AttributeColumn[] columnsToClear);
 
     /**
      * Clears all the edges attributes except computed attributes and id, checking first that the edges are in the graph.
@@ -170,7 +176,7 @@ public interface AttributeColumnsController {
      * @param nodes Array of edges to clear data
      * @param columnsToClear Columns of the edges to clear. All columns will be cleared if it is null
      */
-    void clearEdgesData(Edge[] edges,AttributeColumn[] columnsToClear);
+    void clearEdgesData(Edge[] edges, AttributeColumn[] columnsToClear);
 
     /**
      * Clears row attributes except computed attributes and id if node/edge.

@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.datalaboratory.impl.manipulators.GeneralColumnsChooser;
+import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 
@@ -44,7 +45,7 @@ public class GeneralChooseColumnsUI extends javax.swing.JPanel implements Manipu
         descriptionLabel.setText(descriptionText);
     }
 
-    public void setup(Manipulator m) {
+    public void setup(Manipulator m, DialogControls dialogControls) {
         this.columnsChooser = (GeneralColumnsChooser) m;
         refreshColumns();
     }

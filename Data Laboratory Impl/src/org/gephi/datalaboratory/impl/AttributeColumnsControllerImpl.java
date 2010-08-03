@@ -75,8 +75,13 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public AttributeColumn addAttributeColumn(AttributeTable table, String title, AttributeType type) {
+        if (title == null || title.isEmpty()) {
+            return null;
+        }
+        if (table.hasColumn(title)) {
+            return null;
+        }
         String columnId = String.valueOf(table.countColumns() + 1);
-        title = title != null ? title : "";
         return table.addColumn(columnId, title, type, AttributeOrigin.DATA, null);
     }
 
@@ -88,6 +93,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     public AttributeColumn duplicateColumn(AttributeTable table, AttributeColumn column, String title, AttributeType type) {
         AttributeColumn newColumn = addAttributeColumn(table, title, type);
+        if (newColumn == null) {
+            return null;
+        }
         copyColumnDataToOtherColumn(table, column, newColumn);
         return newColumn;
     }
@@ -145,9 +153,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         return valuesFrequencies;
     }
 
-    public void createBooleanMatchesColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern) {
+    public AttributeColumn createBooleanMatchesColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern) {
         if (pattern != null) {
             AttributeColumn newColumn = addAttributeColumn(table, newColumnTitle, AttributeType.BOOLEAN);
+            if (newColumn == null) {
+                return null;
+            }
             Matcher matcher;
             Object value;
             for (Attributes row : getTableAttributeRows(table)) {
@@ -159,6 +170,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 }
                 row.setValue(newColumn.getIndex(), new Boolean(matcher.matches()));
             }
+            return newColumn;
+        } else {
+            return null;
         }
     }
 
@@ -173,9 +187,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
-    public void createFoundGroupsListColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern) {
+    public AttributeColumn createFoundGroupsListColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern) {
         if (pattern != null) {
             AttributeColumn newColumn = addAttributeColumn(table, newColumnTitle, AttributeType.LIST_STRING);
+            if (newColumn == null) {
+                return null;
+            }
             Matcher matcher;
             Object value;
             ArrayList<String> foundGroups = new ArrayList<String>();
@@ -196,6 +213,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     attributes.setValue(newColumn.getIndex(), null);
                 }
             }
+            return newColumn;
+        } else {
+            return null;
         }
     }
 
@@ -397,9 +417,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 if (number != null) {
                     numbers.add(number);
                 }
-            } else if(attributeUtils.isNumberListColumn(column)){//Number list column:
+            } else if (attributeUtils.isNumberListColumn(column)) {//Number list column:
                 numbers.addAll(getNumberListColumnNumbers(row, column));
-            }else if(attributeUtils.isDynamicNumberColumn(column)){//Dynamic number column
+            } else if (attributeUtils.isDynamicNumberColumn(column)) {//Dynamic number column
                 numbers.addAll(getDynamicNumberColumnNumbers(row, column));
             }
         }

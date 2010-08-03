@@ -21,40 +21,72 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns.ui;
 
 import javax.swing.JPanel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.datalaboratory.impl.manipulators.attributecolumns.DuplicateColumn;
+import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
+import org.netbeans.validation.api.Problems;
+import org.netbeans.validation.api.Severity;
+import org.netbeans.validation.api.Validator;
+import org.netbeans.validation.api.ui.ValidationGroup;
+import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.NbBundle;
 
 /**
  * UI for DuplicateColumn AttributeColumnsManipulator.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI{
+public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
+
     private DuplicateColumn manipulator;
     private AttributeType[] availableTypes;
+    private AttributeTable table;
+    private DialogControls dialogControls;
 
     /** Creates new form DuplicateColumnUI */
     public DuplicateColumnUI() {
         initComponents();
+        titleTextField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void insertUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            private void refreshOkButton(){
+                String text=titleTextField.getText();
+                dialogControls.setOkButtonEnabled(text!=null&&!text.isEmpty()&&!table.hasColumn(text));//Title not empty and not repeated.
+            }
+        });
     }
 
-    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column) {
-        this.manipulator=(DuplicateColumn) m;
+    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls) {
+        this.table=table;
+        this.dialogControls=dialogControls;
+        this.manipulator = (DuplicateColumn) m;
 
         descriptionLabel.setText(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.descriptionLabel.text", column.getTitle()));
         titleTextField.setText(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.new.title", column.getTitle()));
 
-        availableTypes=AttributeType.values();
-        int oldColumnTypeIndex=0;
+        availableTypes = AttributeType.values();
+        int oldColumnTypeIndex = 0;
         for (int i = 0; i < availableTypes.length; i++) {
-            AttributeType type = availableTypes[i];     
+            AttributeType type = availableTypes[i];
             typeComboBox.addItem(type.getTypeString());
-            if(type==column.getType()){
-                oldColumnTypeIndex=i;
+            if (type == column.getType()) {
+                oldColumnTypeIndex = i;
             }
         }
         typeComboBox.setSelectedIndex(oldColumnTypeIndex);
@@ -70,11 +102,39 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
     }
 
     public JPanel getSettingsPanel() {
-        return this;
+        ValidationPanel validationPanel = new ValidationPanel();
+        validationPanel.setInnerComponent(this);
+
+        ValidationGroup group = validationPanel.getValidationGroup();
+
+        group.add(titleTextField, new ColumnTitleValidator(this));
+
+        return validationPanel;
     }
 
     public boolean isModal() {
         return true;
+    }
+
+    private static class ColumnTitleValidator implements Validator<String>{
+        private DuplicateColumnUI ui;
+
+        public ColumnTitleValidator(DuplicateColumnUI ui) {
+            this.ui = ui;
+        }
+
+        public boolean validate(Problems prblms, String string, String t) {
+            if(t==null||t.isEmpty()){
+                prblms.add(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.title.empty"), Severity.WARNING);
+                return false;
+            }else if(ui.table.hasColumn(t)){
+                prblms.add(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.title.repeated"), Severity.WARNING);
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
     }
 
     /** This method is called from within the constructor to
@@ -142,5 +202,4 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
     private javax.swing.JComboBox typeComboBox;
     private javax.swing.JLabel typeLabel;
     // End of variables declaration//GEN-END:variables
-
 }

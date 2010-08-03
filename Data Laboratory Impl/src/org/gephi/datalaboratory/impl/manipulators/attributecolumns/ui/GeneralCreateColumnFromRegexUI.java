@@ -29,6 +29,7 @@ import javax.swing.event.DocumentListener;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.impl.manipulators.attributecolumns.GeneralCreateColumnFromRegex;
+import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.openide.util.NbBundle;
@@ -66,7 +67,7 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
         });
     }
 
-    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column) {
+    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls) {
         this.manipulator = (GeneralCreateColumnFromRegex) m;
         switch(mode){
             case BOOLEAN:

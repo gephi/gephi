@@ -22,6 +22,7 @@ package org.gephi.datalaboratory.impl.manipulators.nodes.ui;
 
 import javax.swing.JPanel;
 import org.gephi.datalaboratory.impl.manipulators.nodes.LinkNodes;
+import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.graph.api.Node;
@@ -40,7 +41,7 @@ public class LinkNodesUI extends javax.swing.JPanel implements ManipulatorUI {
         initComponents();
     }
 
-    public void setup(Manipulator m) {
+    public void setup(Manipulator m, DialogControls dialogControls) {
         manipulator = (LinkNodes) m;
         nodes = manipulator.getNodes();
         if(manipulator.isDirected()){

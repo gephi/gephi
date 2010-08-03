@@ -13,6 +13,7 @@ package org.gephi.datalaboratory.impl.manipulators.edges.ui;
 
 import javax.swing.JPanel;
 import org.gephi.datalaboratory.impl.manipulators.edges.DeleteEdgesWithNodes;
+import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 
@@ -28,7 +29,7 @@ public class DeleteEdgesWithNodesUI extends javax.swing.JPanel implements Manipu
         initComponents();
     }
 
-    public void setup(Manipulator m) {
+    public void setup(Manipulator m, DialogControls dialogControls) {
         del=(DeleteEdgesWithNodes) m;
     }
 

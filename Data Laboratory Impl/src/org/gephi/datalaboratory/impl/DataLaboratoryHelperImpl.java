@@ -28,13 +28,17 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.impl.manipulators.edges.DeleteEdges;
 import org.gephi.datalaboratory.impl.manipulators.generalactions.SearchReplace;
 import org.gephi.datalaboratory.impl.manipulators.nodes.DeleteNodes;
+import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
@@ -152,34 +156,43 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
 
     public void executeManipulator(final Manipulator m) {
         if (m.canExecute()) {
-            final ManipulatorUI ui = m.getUI();
-            //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
-            if (ui != null) {
-                ui.setup(m);
-                JPanel settingsPanel = ui.getSettingsPanel();
-                DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
+            SwingUtilities.invokeLater(new Runnable() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        if (e.getSource().equals(NotifyDescriptor.OK_OPTION)) {
-                            ui.unSetup();
-                            executeManipulatorInOtherThread(m);
-                        } else {
-                            ui.unSetup();
-                        }
-                    }
-                });
-                Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
-                dialog.addWindowListener(new WindowAdapter() {
+                public void run() {
 
-                    @Override
-                    public void windowClosing(WindowEvent e) {
-                        ui.unSetup();
+                    final ManipulatorUI ui = m.getUI();
+                    //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
+                    if (ui != null) {
+                        JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelperImpl.class, "DataLaboratoryHelperImpl.ui.okButton.text"));
+                        DialogControls dialogControls = new DialogControlsImpl(okButton);
+                        ui.setup(m, dialogControls);
+                        JPanel settingsPanel = ui.getSettingsPanel();
+                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                if (e.getSource().equals(NotifyDescriptor.OK_OPTION)) {
+                                    ui.unSetup();
+                                    executeManipulatorInOtherThread(m);
+                                } else {
+                                    ui.unSetup();
+                                }
+                            }
+                        });
+                        dd.setOptions(new Object[]{okButton, DialogDescriptor.CANCEL_OPTION});
+                        Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
+                        dialog.addWindowListener(new WindowAdapter() {
+
+                            @Override
+                            public void windowClosing(WindowEvent e) {
+                                ui.unSetup();
+                            }
+                        });
+                        dialog.setVisible(true);
+                    } else {
+                        executeManipulatorInOtherThread(m);
                     }
-                });
-                dialog.setVisible(true);
-            } else {
-                executeManipulatorInOtherThread(m);
-            }
+                }
+            });
         }
     }
 
@@ -195,13 +208,15 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
 
     public void executeAttributeColumnsManipulator(final AttributeColumnsManipulator m, final AttributeTable table, final AttributeColumn column) {
         if (m.canManipulateColumn(table, column)) {
-            new Thread(new Runnable() {
+            SwingUtilities.invokeLater(new Runnable() {
 
                 public void run() {
                     final AttributeColumnsManipulatorUI ui = m.getUI(table, column);
                     //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                     if (ui != null) {
-                        ui.setup(m, table, column);
+                        JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelperImpl.class, "DataLaboratoryHelperImpl.ui.okButton.text"));
+                        DialogControls dialogControls = new DialogControlsImpl(okButton);
+                        ui.setup(m, table, column, dialogControls);
                         JPanel settingsPanel = ui.getSettingsPanel();
                         DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
 
@@ -214,6 +229,7 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                                 }
                             }
                         });
+                        dd.setOptions(new Object[]{okButton, DialogDescriptor.CANCEL_OPTION});
                         Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
                         dialog.addWindowListener(new WindowAdapter() {
 
@@ -227,7 +243,7 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                         executeAttributeColumnsManipulatorInOtherThread(m, table, column);
                     }
                 }
-            }).start();
+            });
         }
     }
 
@@ -251,5 +267,18 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
 
     public GeneralActionsManipulator getSearchReplaceManipulator() {
         return new SearchReplace();
+    }
+
+    class DialogControlsImpl implements DialogControls {
+
+        JComponent okButton;
+
+        public DialogControlsImpl(JComponent okButton) {
+            this.okButton = okButton;
+        }
+
+        public void setOkButtonEnabled(boolean enabled) {
+            okButton.setEnabled(enabled);
+        }
     }
 }

@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController.BooleanOperations;
 import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.BooleanLogicOperations;
+import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 
@@ -43,7 +44,7 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
         initComponents();
     }
 
-    public void setup(Manipulator m) {
+    public void setup(Manipulator m, DialogControls dialogControls) {
         manipulator = (BooleanLogicOperations) m;
         prepareColumnsAndOperations();
     }

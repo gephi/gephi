@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import org.gephi.datalaboratory.impl.manipulators.nodes.CopyNodes;
+import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 
@@ -44,7 +45,7 @@ public class CopyNodesUI extends javax.swing.JPanel implements ManipulatorUI {
         spinnerText.setEditable(false);//Not editable with keyboard
     }
 
-    public void setup(Manipulator m) {
+    public void setup(Manipulator m, DialogControls dialogControls) {
         this.manipulator = (CopyNodes) m;
         copiesSpinner.setValue(manipulator.getCopies());
     }

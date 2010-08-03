@@ -22,6 +22,7 @@ package org.gephi.datalaboratory.impl.manipulators.generalactions.ui;
 
 import javax.swing.JPanel;
 import org.gephi.datalaboratory.impl.manipulators.generalactions.ClearEdges;
+import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 
@@ -36,7 +37,7 @@ public class ClearEdgesUI extends javax.swing.JPanel implements ManipulatorUI {
         initComponents();
     }
 
-    public void setup(Manipulator m) {
+    public void setup(Manipulator m, DialogControls dialogControls) {
         manipulator=(ClearEdges) m;
         deleteDirectedCheckbox.setSelected(manipulator.isDeleteDirected());
         deleteUndirectedChekbox.setSelected(manipulator.isDeleteUndirected());

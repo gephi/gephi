@@ -24,10 +24,13 @@ package org.gephi.datalaboratory.spi.attributecolumns;
 import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.datalaboratory.spi.DialogControls;
 
 /**
- * UI AttributeColumnsManipulators can provide.
- * This itself provides a JPanel and a window name/title.
+ * <p>UI AttributeColumnsManipulators can provide.</p>
+ * <p>Must provide a JPanel, a window name/title and indictate if it is modal.</p>
+ * <p>The panel will be shown in a dialog with Ok/Cancel options only.</p>
+ * <p>The ok button can be enabled/disabled with the DialogControls instance passed at setup</p>
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface AttributeColumnsManipulatorUI {
@@ -37,8 +40,9 @@ public interface AttributeColumnsManipulatorUI {
      * @param m Manipulator for the UI
      * @param table Table of the column to manipulate
      * @param column Column to manipulate
+     * @param dialogControls Used to enable/disable the dialog controls
      */
-    void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column);
+    void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls);
 
     /**
      * Called when the window is closed or accepted.

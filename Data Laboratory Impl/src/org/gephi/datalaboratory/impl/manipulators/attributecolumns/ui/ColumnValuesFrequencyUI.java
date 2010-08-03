@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.impl.manipulators.attributecolumns.ColumnValuesFrequency;
+import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.gephi.ui.components.JFreeChartDialog;
@@ -51,7 +52,7 @@ public class ColumnValuesFrequencyUI extends javax.swing.JPanel implements Attri
         initComponents();
     }
 
-    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column) {
+    public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls) {
         this.table = table;
         this.column = column;
         this.manipulator = (ColumnValuesFrequency) m;

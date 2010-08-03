@@ -49,6 +49,10 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
         newColumn = ac.addAttributeColumn(table, newColumnTitle, newColumnType != null ? newColumnType : AttributeType.STRING);//Create as STRING column by default. Then it can be duplicated to other type.
+        if (newColumn == null) {
+            return null;
+        }
+        
         final int newColumnIndex = newColumn.getIndex();
 
         if (separator == null) {
@@ -85,6 +89,10 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
 
         AttributeColumn newColumn;
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BOOLEAN);
+        if (newColumn == null) {
+            return null;
+        }
+
         final int newColumnIndex = newColumn.getIndex();
 
         Boolean value;
@@ -126,6 +134,9 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        if (newColumn == null) {
+            return null;
+        }
         final int newColumnIndex = newColumn.getIndex();
 
         BigDecimal average;
@@ -143,6 +154,14 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        if (newColumn == null) {
+            return null;
+        }
+
+        if (newColumn == null) {
+            return null;
+        }
+
         final int newColumnIndex = newColumn.getIndex();
 
         BigDecimal Q1;
@@ -160,6 +179,10 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        if (newColumn == null) {
+            return null;
+        }
+
         final int newColumnIndex = newColumn.getIndex();
 
         BigDecimal median;
@@ -177,6 +200,10 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        if (newColumn == null) {
+            return null;
+        }
+
         final int newColumnIndex = newColumn.getIndex();
 
         BigDecimal Q3;
@@ -194,6 +221,10 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        if (newColumn == null) {
+            return null;
+        }
+
         final int newColumnIndex = newColumn.getIndex();
 
         BigDecimal IQR, Q1, Q3;
@@ -219,6 +250,10 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        if (newColumn == null) {
+            return null;
+        }
+
         final int newColumnIndex = newColumn.getIndex();
 
         BigDecimal sum;
@@ -236,6 +271,10 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        if (newColumn == null) {
+            return null;
+        }
+
         final int newColumnIndex = newColumn.getIndex();
 
         BigDecimal min;
@@ -253,6 +292,10 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         AttributeColumn newColumn;
         newColumn = ac.addAttributeColumn(table, newColumnTitle, AttributeType.BIGDECIMAL);//Create as BIGDECIMAL column by default. Then it can be duplicated to other type.
+        if (newColumn == null) {
+            return null;
+        }
+        
         final int newColumnIndex = newColumn.getIndex();
 
         BigDecimal max;

@@ -23,6 +23,7 @@ package org.gephi.datalaboratory.impl.manipulators.generalactions.ui;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import org.gephi.datalaboratory.impl.manipulators.generalactions.AddEdgeToGraph;
+import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.graph.api.Edge;
@@ -46,7 +47,7 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         initComponents();
     }
 
-    public void setup(Manipulator m) {
+    public void setup(Manipulator m, DialogControls dialogControls) {
         this.manipulator = (AddEdgeToGraph) m;
         if (manipulator.isDirected()) {
             directedRadioButton.setSelected(true);
