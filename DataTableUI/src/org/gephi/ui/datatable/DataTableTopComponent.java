@@ -741,16 +741,19 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     private void showAddColumnUI(AddColumnUI.Mode mode) {
-        AddColumnUI adcColumnUI = new AddColumnUI();
-        adcColumnUI.setup(mode);
-        DialogDescriptor dd = new DialogDescriptor(adcColumnUI, adcColumnUI.getDisplayName());
-        if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-            adcColumnUI.execute();
+        JButton okButton = new JButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.dialogs.okButton.text"));
+        AddColumnUI addColumnUI = new AddColumnUI();
+        addColumnUI.setup(mode);
+        addColumnUI.setOkButton(okButton);
+        DialogDescriptor dd = new DialogDescriptor(AddColumnUI.createValidationPanel(addColumnUI), addColumnUI.getDisplayName());
+        dd.setOptions(new Object[]{okButton, DialogDescriptor.CANCEL_OPTION});
+        if (DialogDisplayer.getDefault().notify(dd).equals(okButton)) {
+            addColumnUI.execute();
         }
     }
 
     private void showMergeColumnsUI(MergeColumnsUI.Mode mode) {
-        JButton okButton = new JButton(NbBundle.getMessage(DataTableTopComponent.class, "MergeColumnsDialog.okButton.text"));
+        JButton okButton = new JButton(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.dialogs.okButton.text"));
         MergeColumnsUI mergeColumnsUI = new MergeColumnsUI();
         mergeColumnsUI.setup(mode);
         mergeColumnsUI.setOkButton(okButton);

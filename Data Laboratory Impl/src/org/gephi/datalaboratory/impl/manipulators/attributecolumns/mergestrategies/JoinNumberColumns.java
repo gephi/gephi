@@ -21,12 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies;
 
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.ui.GeneralColumnTitleChooserUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategy;
 import org.openide.util.ImageUtilities;
@@ -37,11 +37,12 @@ import org.openide.util.NbBundle;
  * AttributeColumnsMergeStrategy that joins one or more number column into a number list column with AttributeType <code>LIST_BIGDECIMAL</code>
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class JoinNumberColumns implements AttributeColumnsMergeStrategy {
+public class JoinNumberColumns implements AttributeColumnsMergeStrategy, GeneralColumnTitleChooser {
 
     private static final String SEPARATOR = ",";
     private AttributeTable table;
     private AttributeColumn[] columns;
+    private String columnTitle;
 
     public void setup(AttributeTable table, AttributeColumn[] columns) {
         this.table = table;
@@ -49,10 +50,7 @@ public class JoinNumberColumns implements AttributeColumnsMergeStrategy {
     }
 
     public void execute() {
-        String title = JOptionPane.showInputDialog(null, NbBundle.getMessage(JoinNumberColumns.class, "Strategies.columnTitle.dialog.text"));
-        if (title != null) {
-            Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).joinWithSeparatorMerge(table, columns, AttributeType.LIST_BIGDECIMAL, title, SEPARATOR);
-        }
+        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).joinWithSeparatorMerge(table, columns, AttributeType.LIST_BIGDECIMAL, columnTitle, SEPARATOR);
     }
 
     public String getName() {
@@ -68,7 +66,7 @@ public class JoinNumberColumns implements AttributeColumnsMergeStrategy {
     }
 
     public ManipulatorUI getUI() {
-        return null;
+        return new GeneralColumnTitleChooserUI();
     }
 
     public int getType() {
@@ -80,6 +78,18 @@ public class JoinNumberColumns implements AttributeColumnsMergeStrategy {
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/join.png",true);
+        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/join.png", true);
+    }
+
+    public AttributeTable getTable() {
+        return table;
+    }
+
+    public String getColumnTitle() {
+        return columnTitle;
+    }
+
+    public void setColumnTitle(String columnTitle) {
+        this.columnTitle = columnTitle;
     }
 }

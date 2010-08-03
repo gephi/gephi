@@ -21,11 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies;
 
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.ui.GeneralColumnTitleChooserUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategy;
 import org.openide.util.ImageUtilities;
@@ -37,20 +37,19 @@ import org.openide.util.NbBundle;
  * calculates the sum of all the values and creates a new BigDecimal column with the result of each row.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class SumNumbers implements AttributeColumnsMergeStrategy{
+public class SumNumbers implements AttributeColumnsMergeStrategy {
+
     private AttributeTable table;
     private AttributeColumn[] columns;
+    private String columnTitle;
 
     public void setup(AttributeTable table, AttributeColumn[] columns) {
-        this.table=table;
-        this.columns=columns;
+        this.table = table;
+        this.columns = columns;
     }
 
     public void execute() {
-        String title=JOptionPane.showInputDialog(null, NbBundle.getMessage(SumNumbers.class, "Strategies.columnTitle.dialog.text"));
-        if(title!=null){
-            Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).sumNumbersMerge(table, columns, title);
-        }
+        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).sumNumbersMerge(table, columns, columnTitle);
     }
 
     public String getName() {
@@ -66,7 +65,7 @@ public class SumNumbers implements AttributeColumnsMergeStrategy{
     }
 
     public ManipulatorUI getUI() {
-        return null;
+        return new GeneralColumnTitleChooserUI();
     }
 
     public int getType() {
@@ -78,7 +77,18 @@ public class SumNumbers implements AttributeColumnsMergeStrategy{
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/plus-circle.png",true);
+        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/plus-circle.png", true);
     }
 
+    public AttributeTable getTable() {
+        return table;
+    }
+
+    public String getColumnTitle() {
+        return columnTitle;
+    }
+
+    public void setColumnTitle(String columnTitle) {
+        this.columnTitle = columnTitle;
+    }
 }

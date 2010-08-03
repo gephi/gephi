@@ -20,10 +20,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.general.actions;
 
+import javax.swing.JButton;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
+import org.gephi.ui.utils.ColumnTitleValidator;
+import org.netbeans.validation.api.ui.ValidationGroup;
+import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -32,19 +38,36 @@ import org.openide.util.NbBundle;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class AddColumnUI extends javax.swing.JPanel {
+
     private AttributeType[] availableTypes;
     private AttributeTable table;
+    private JButton okButton;
 
-    public enum Mode{
-        NODES_TABLE,EDGES_TABLE;
+    public enum Mode {
+
+        NODES_TABLE, EDGES_TABLE;
     }
 
     /** Creates new form AddColumnUI */
     public AddColumnUI() {
         initComponents();
+        titleTextField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void insertUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+        });
     }
 
-    public String getDisplayName(){
+    public String getDisplayName() {
         return NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.title");
     }
 
@@ -52,23 +75,23 @@ public class AddColumnUI extends javax.swing.JPanel {
      * Setup the mode of column creation: nodes table or edges table.
      * @param mode Mode
      */
-    public void setup(Mode mode){
-        AttributeController ac=Lookup.getDefault().lookup(AttributeController.class);
+    public void setup(Mode mode) {
+        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
         //Set description text for the mode of column creation:
-        switch(mode){
+        switch (mode) {
             case NODES_TABLE:
                 descriptionLabel.setText(NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.descriptionLabel.text.nodes"));
-                table=ac.getModel().getNodeTable();
+                table = ac.getModel().getNodeTable();
                 break;
             case EDGES_TABLE:
                 descriptionLabel.setText(NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.descriptionLabel.text.edges"));
-                table=ac.getModel().getEdgeTable();
+                table = ac.getModel().getEdgeTable();
                 break;
         }
-        
 
-        availableTypes=AttributeType.values();
-        for(AttributeType type:availableTypes){
+
+        availableTypes = AttributeType.values();
+        for (AttributeType type : availableTypes) {
             typeComboBox.addItem(type.getTypeString());
         }
     }
@@ -76,8 +99,34 @@ public class AddColumnUI extends javax.swing.JPanel {
     /**
      * Execute the creation of the column, with the given parameters in setup and with the interface itself.
      */
-    public void execute(){
+    public void execute() {
         Lookup.getDefault().lookup(AttributeColumnsController.class).addAttributeColumn(table, titleTextField.getText(), availableTypes[typeComboBox.getSelectedIndex()]);
+    }
+
+    public void setOkButton(JButton okButton) {
+        this.okButton = okButton;
+        refreshOkButton();
+    }
+
+    private void refreshOkButton() {
+        String title = titleTextField.getText();
+        if (okButton != null) {
+            okButton.setEnabled(title != null && !title.isEmpty() && !table.hasColumn(title));
+        }
+    }
+
+    public static ValidationPanel createValidationPanel(AddColumnUI innerPanel) {
+        ValidationPanel validationPanel = new ValidationPanel();
+        if (innerPanel == null) {
+            innerPanel = new AddColumnUI();
+        }
+        validationPanel.setInnerComponent(innerPanel);
+
+        ValidationGroup group = validationPanel.getValidationGroup();
+
+        group.add(innerPanel.titleTextField, new ColumnTitleValidator(innerPanel.table));
+
+        return validationPanel;
     }
 
     /** This method is called from within the constructor to
@@ -138,8 +187,6 @@ public class AddColumnUI extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JLabel titleLabel;
@@ -147,5 +194,4 @@ public class AddColumnUI extends javax.swing.JPanel {
     private javax.swing.JComboBox typeComboBox;
     private javax.swing.JLabel typeLabel;
     // End of variables declaration//GEN-END:variables
-
 }

@@ -30,9 +30,7 @@ import org.gephi.datalaboratory.impl.manipulators.attributecolumns.DuplicateColu
 import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
-import org.netbeans.validation.api.Problems;
-import org.netbeans.validation.api.Severity;
-import org.netbeans.validation.api.Validator;
+import org.gephi.ui.utils.ColumnTitleValidator;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.NbBundle;
@@ -107,34 +105,13 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
 
         ValidationGroup group = validationPanel.getValidationGroup();
 
-        group.add(titleTextField, new ColumnTitleValidator(this));
+        group.add(titleTextField, new ColumnTitleValidator(table));
 
         return validationPanel;
     }
 
     public boolean isModal() {
         return true;
-    }
-
-    private static class ColumnTitleValidator implements Validator<String>{
-        private DuplicateColumnUI ui;
-
-        public ColumnTitleValidator(DuplicateColumnUI ui) {
-            this.ui = ui;
-        }
-
-        public boolean validate(Problems prblms, String string, String t) {
-            if(t==null||t.isEmpty()){
-                prblms.add(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.title.empty"), Severity.WARNING);
-                return false;
-            }else if(ui.table.hasColumn(t)){
-                prblms.add(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.title.repeated"), Severity.WARNING);
-                return false;
-            }
-            else{
-                return true;
-            }
-        }
     }
 
     /** This method is called from within the constructor to

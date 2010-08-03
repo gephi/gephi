@@ -23,12 +23,18 @@ package org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrateg
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController.BooleanOperations;
 import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.BooleanLogicOperations;
 import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
+import org.gephi.ui.utils.ColumnTitleValidator;
+import org.netbeans.validation.api.ui.ValidationGroup;
+import org.netbeans.validation.api.ui.ValidationPanel;
 
 /**
  * UI for BooleanLogicOperations AttributeColumnsMergeStrategy
@@ -38,14 +44,37 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
 
     private BooleanLogicOperations manipulator;
     private JComboBox[] operationSelectors;
+    private AttributeTable table;
+    private DialogControls dialogControls;
 
     /** Creates new form BooleanLogicOperationsUI */
     public BooleanLogicOperationsUI() {
         initComponents();
+        titleTextField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void insertUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            private void refreshOkButton(){
+                String text=titleTextField.getText();
+                dialogControls.setOkButtonEnabled(text!=null&&!text.isEmpty()&&!table.hasColumn(text));//Title not empty and not repeated.
+            }
+        });
     }
 
     public void setup(Manipulator m, DialogControls dialogControls) {
         manipulator = (BooleanLogicOperations) m;
+        this.dialogControls=dialogControls;
+        this.table=manipulator.getTable();
         prepareColumnsAndOperations();
     }
 
@@ -56,7 +85,7 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
         }
 
         manipulator.setBooleanOperations(booleanOperations);
-        manipulator.setNewColumnTitle(titleText.getText());
+        manipulator.setNewColumnTitle(titleTextField.getText());
     }
 
     public String getDisplayName() {
@@ -64,7 +93,14 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
     }
 
     public JPanel getSettingsPanel() {
-        return this;
+        ValidationPanel validationPanel = new ValidationPanel();
+        validationPanel.setInnerComponent(this);
+
+        ValidationGroup group = validationPanel.getValidationGroup();
+
+        group.add(titleTextField, new ColumnTitleValidator(table));
+
+        return validationPanel;
     }
 
     public boolean isModal() {
@@ -105,7 +141,7 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
         scroll = new javax.swing.JScrollPane();
         panel = new javax.swing.JPanel();
         titleLabel = new javax.swing.JLabel();
-        titleText = new javax.swing.JTextField();
+        titleTextField = new javax.swing.JTextField();
 
         descriptionLabel.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.descriptionLabel.text")); // NOI18N
 
@@ -114,7 +150,7 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
 
         titleLabel.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.titleLabel.text")); // NOI18N
 
-        titleText.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.titleText.text")); // NOI18N
+        titleTextField.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.titleTextField.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -128,7 +164,7 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(titleLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(titleText, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)))
+                        .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -137,7 +173,7 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(titleLabel)
-                    .addComponent(titleText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -150,6 +186,6 @@ public class BooleanLogicOperationsUI extends javax.swing.JPanel implements Mani
     private javax.swing.JPanel panel;
     private javax.swing.JScrollPane scroll;
     private javax.swing.JLabel titleLabel;
-    private javax.swing.JTextField titleText;
+    private javax.swing.JTextField titleTextField;
     // End of variables declaration//GEN-END:variables
 }

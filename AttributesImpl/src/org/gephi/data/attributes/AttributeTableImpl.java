@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes;
 
 import java.util.ArrayList;
@@ -95,6 +95,10 @@ public class AttributeTableImpl implements AttributeTable {
     }
 
     private synchronized AttributeColumnImpl addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue, AttributeValueDelegateProvider attributeValueDelegateProvider) {
+        if (title == null || title.isEmpty() || hasColumn(title)) {
+            throw new IllegalArgumentException("The title can't be null, empty or already existing in the table");
+        }
+
         if (defaultValue != null) {
             if (defaultValue.getClass() != type.getType()) {
                 if (defaultValue.getClass() == String.class) {

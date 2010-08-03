@@ -21,11 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies;
 
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.ui.GeneralColumnTitleChooserUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategy;
 import org.openide.util.ImageUtilities;
@@ -37,9 +37,10 @@ import org.openide.util.NbBundle;
  * calculates the average of all the values and creates a new BigDecimal column with the result of each row.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class AverageNumber implements AttributeColumnsMergeStrategy{
+public class AverageNumber implements AttributeColumnsMergeStrategy, GeneralColumnTitleChooser{
     private AttributeTable table;
     private AttributeColumn[] columns;
+    private String columnTitle;
 
     public void setup(AttributeTable table, AttributeColumn[] columns) {
         this.table=table;
@@ -47,10 +48,7 @@ public class AverageNumber implements AttributeColumnsMergeStrategy{
     }
 
     public void execute() {
-        String title=JOptionPane.showInputDialog(null, NbBundle.getMessage(AverageNumber.class, "Strategies.columnTitle.dialog.text"));
-        if(title!=null){
-            Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).averageNumberMerge(table, columns, title);
-        }
+        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).averageNumberMerge(table, columns, columnTitle);
     }
 
     public String getName() {
@@ -66,7 +64,7 @@ public class AverageNumber implements AttributeColumnsMergeStrategy{
     }
 
     public ManipulatorUI getUI() {
-        return null;
+        return new GeneralColumnTitleChooserUI();
     }
 
     public int getType() {
@@ -81,4 +79,15 @@ public class AverageNumber implements AttributeColumnsMergeStrategy{
         return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/balance.png",true);
     }
 
+    public AttributeTable getTable() {
+        return table;
+    }
+
+    public String getColumnTitle() {
+        return columnTitle;
+    }
+
+    public void setColumnTitle(String columnTitle) {
+        this.columnTitle=columnTitle;
+    }
 }

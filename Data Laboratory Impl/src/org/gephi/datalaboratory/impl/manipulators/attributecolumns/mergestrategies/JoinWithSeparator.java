@@ -95,4 +95,8 @@ public class JoinWithSeparator implements AttributeColumnsMergeStrategy{
     public void setSeparator(String separator) {
         this.separator = separator;
     }
+
+    public AttributeTable getTable() {
+        return table;
+    }
 }

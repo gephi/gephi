@@ -102,4 +102,8 @@ public class BooleanLogicOperations implements AttributeColumnsMergeStrategy{
     public AttributeColumn[] getColumns() {
         return columns;
     }
+
+    public AttributeTable getTable() {
+        return table;
+    }
 }

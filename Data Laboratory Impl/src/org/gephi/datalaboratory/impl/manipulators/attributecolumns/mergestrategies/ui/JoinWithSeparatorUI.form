@@ -25,7 +25,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="separatorText" alignment="0" pref="135" max="32767" attributes="0"/>
-                  <Component id="titleText" alignment="0" pref="135" max="32767" attributes="0"/>
+                  <Component id="titleTextField" alignment="0" pref="135" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -37,7 +37,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="titleLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="titleText" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="titleTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -57,10 +57,10 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="titleText">
+    <Component class="javax.swing.JTextField" name="titleTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/mergestrategies/ui/Bundle.properties" key="JoinWithSeparatorUI.titleText.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/attributecolumns/mergestrategies/ui/Bundle.properties" key="JoinWithSeparatorUI.titleTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

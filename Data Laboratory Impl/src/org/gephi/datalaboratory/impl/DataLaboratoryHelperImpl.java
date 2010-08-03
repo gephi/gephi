@@ -163,14 +163,14 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                     final ManipulatorUI ui = m.getUI();
                     //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                     if (ui != null) {
-                        JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelperImpl.class, "DataLaboratoryHelperImpl.ui.okButton.text"));
+                        final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelperImpl.class, "DataLaboratoryHelperImpl.ui.okButton.text"));
                         DialogControls dialogControls = new DialogControlsImpl(okButton);
                         ui.setup(m, dialogControls);
                         JPanel settingsPanel = ui.getSettingsPanel();
                         DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
 
                             public void actionPerformed(ActionEvent e) {
-                                if (e.getSource().equals(NotifyDescriptor.OK_OPTION)) {
+                                if (e.getSource().equals(okButton)) {
                                     ui.unSetup();
                                     executeManipulatorInOtherThread(m);
                                 } else {
@@ -179,6 +179,7 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                             }
                         });
                         dd.setOptions(new Object[]{okButton, DialogDescriptor.CANCEL_OPTION});
+                        dd.setClosingOptions(null);//All options close
                         Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
                         dialog.addWindowListener(new WindowAdapter() {
 
@@ -214,14 +215,14 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                     final AttributeColumnsManipulatorUI ui = m.getUI(table, column);
                     //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                     if (ui != null) {
-                        JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelperImpl.class, "DataLaboratoryHelperImpl.ui.okButton.text"));
+                        final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelperImpl.class, "DataLaboratoryHelperImpl.ui.okButton.text"));
                         DialogControls dialogControls = new DialogControlsImpl(okButton);
                         ui.setup(m, table, column, dialogControls);
                         JPanel settingsPanel = ui.getSettingsPanel();
                         DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
 
                             public void actionPerformed(ActionEvent e) {
-                                if (e.getSource().equals(NotifyDescriptor.OK_OPTION)) {
+                                if (e.getSource().equals(okButton)) {
                                     ui.unSetup();
                                     executeAttributeColumnsManipulatorInOtherThread(m, table, column);
                                 } else {
@@ -230,6 +231,7 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                             }
                         });
                         dd.setOptions(new Object[]{okButton, DialogDescriptor.CANCEL_OPTION});
+                        dd.setClosingOptions(null);//All options close
                         Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
                         dialog.addWindowListener(new WindowAdapter() {
 

@@ -32,6 +32,9 @@ import org.gephi.datalaboratory.impl.manipulators.attributecolumns.GeneralCreate
 import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
+import org.gephi.ui.utils.ColumnTitleValidator;
+import org.netbeans.validation.api.ui.ValidationGroup;
+import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.NbBundle;
 
 /**
@@ -39,6 +42,8 @@ import org.openide.util.NbBundle;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
+    private DialogControls dialogControls;
+    private AttributeTable table;
     public enum Mode{
         BOOLEAN,
         MATCHING_GROUPS
@@ -65,10 +70,31 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
                 refreshPattern();
             }
         });
+        titleTextField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void insertUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            private void refreshOkButton(){
+                String text=titleTextField.getText();
+                dialogControls.setOkButtonEnabled(text!=null&&!text.isEmpty()&&!table.hasColumn(text));//Title not empty and not repeated.
+            }
+        });
     }
 
     public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls) {
         this.manipulator = (GeneralCreateColumnFromRegex) m;
+        this.table=table;
+        this.dialogControls=dialogControls;
         switch(mode){
             case BOOLEAN:
                 descriptionLabel.setText(NbBundle.getMessage(GeneralCreateColumnFromRegexUI.class, "GeneralCreateColumnFromRegexUI.descriptionLabel.text.boolean",column.getTitle()));
@@ -90,7 +116,14 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
     }
 
     public JPanel getSettingsPanel() {
-        return this;
+        ValidationPanel validationPanel = new ValidationPanel();
+        validationPanel.setInnerComponent(this);
+
+        ValidationGroup group = validationPanel.getValidationGroup();
+
+        group.add(titleTextField, new ColumnTitleValidator(table));
+
+        return validationPanel;
     }
 
     public boolean isModal() {
