@@ -5,7 +5,6 @@
 package org.gephi.datalaboratory.impl.manipulators.generalactions.ui;
 
 import java.awt.Component;
-import java.io.File;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -15,8 +14,8 @@ import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
 
 public class ImportCSVUIWizardPanel1 implements WizardDescriptor.Panel {
-    private WizardDescriptor wizardDescriptor;
 
+    private WizardDescriptor wizardDescriptor;
     /**
      * The visual component that displays this panel. If you need to access the
      * component from this class, just use getComponent().
@@ -42,10 +41,8 @@ public class ImportCSVUIWizardPanel1 implements WizardDescriptor.Panel {
     }
 
     public boolean isValid() {
-        File file=component.getSelectedFile();
-        return file!=null&&file.exists();
+        return component.isCSVValid();
     }
-
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1); // or can use ChangeSupport in NB 6.0
 
     public final void addChangeListener(ChangeListener l) {
@@ -76,12 +73,17 @@ public class ImportCSVUIWizardPanel1 implements WizardDescriptor.Panel {
     // WizardDescriptor.getProperty & putProperty to store information entered
     // by the user.
     public void readSettings(Object settings) {
+        component.refreshPreviewTable();
     }
 
     public void storeSettings(Object settings) {
         wizardDescriptor.putProperty("separator", component.getSelectedSeparator());
         wizardDescriptor.putProperty("file", component.getSelectedFile());
         wizardDescriptor.putProperty("mode", component.getMode());
+    }
+
+    public WizardDescriptor getWizardDescriptor() {
+        return wizardDescriptor;
     }
 
     public void setWizardDescriptor(WizardDescriptor wizardDescriptor) {

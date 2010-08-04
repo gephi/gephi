@@ -19,10 +19,10 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="scroll" alignment="0" pref="303" max="32767" attributes="0"/>
-                  <Component id="descriptionLabel" alignment="0" pref="303" max="32767" attributes="0"/>
+                  <Component id="scroll" alignment="0" pref="325" max="32767" attributes="0"/>
+                  <Component id="descriptionLabel" alignment="0" pref="325" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="pathTextField" pref="252" max="32767" attributes="0"/>
+                      <Component id="pathTextField" pref="274" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="fileButton" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -31,10 +31,15 @@
                           <Component id="separatorLabel" max="32767" attributes="1"/>
                           <Component id="separatorComboBox" alignment="0" pref="90" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="28" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="tableLabel" max="32767" attributes="1"/>
-                          <Component id="tableComboBox" alignment="1" pref="185" max="32767" attributes="1"/>
+                          <Component id="tableComboBox" alignment="0" pref="123" max="32767" attributes="1"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="charsetLabel" pref="96" max="32767" attributes="0"/>
+                          <Component id="charsetComboBox" alignment="0" pref="96" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="previewLabel" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -55,18 +60,25 @@
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="tableLabel" min="-2" max="-2" attributes="0"/>
-                  <Component id="separatorLabel" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
+                      <Component id="separatorLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="separatorComboBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="previewLabel" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="tableComboBox" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="tableLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="charsetLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="tableComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="charsetComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
               </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="previewLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="scroll" pref="147" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -144,9 +156,27 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="table">
+        <Component class="javax.swing.JTable" name="previewTable">
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JLabel" name="charsetLabel">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/generalactions/ui/Bundle.properties" key="ImportCSVUIVisualPanel1.charsetLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="charsetComboBox">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="0"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="charsetComboBoxItemStateChanged"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>

@@ -22,8 +22,9 @@ package org.gephi.utils;
 
 import com.csvreader.CsvWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -38,7 +39,8 @@ public class TableCSVExporter {
     private static final Character DEFAULT_SEPARATOR = ',';
 
     /**
-     * Export a JTable to the specified file.
+     * <p>Export a JTable to the specified file.</p>
+     * <p>Will be exported to a file with charset <b>UTF-8</b>.</p>
      * @param table Table to export
      * @param file File to write
      * @param separator Separator to use for separating values of a row in the CSV file. If null ',' will be used.
@@ -47,7 +49,7 @@ public class TableCSVExporter {
      */
     public static void writeCSVFile(JTable table, File file, Character separator, Integer[] columnsToExport) throws IOException {
         TableModel model = table.getModel();
-        FileWriter out = new FileWriter(file);
+        FileOutputStream out = new FileOutputStream(file);
         if (separator == null) {
             separator = DEFAULT_SEPARATOR;
         }
@@ -59,7 +61,7 @@ public class TableCSVExporter {
             }
         }
 
-        CsvWriter writer = new CsvWriter(out, separator);
+        CsvWriter writer = new CsvWriter(out, separator, Charset.forName("UTF-8"));
 
         //Write column headers:
         for (int column = 0; column < columnsToExport.length; column++) {
@@ -86,7 +88,8 @@ public class TableCSVExporter {
     }
 
     /**
-     * Exports a JTable to a CSV file showing first a dialog to select the file to write.
+     * <p>Exports a JTable to a CSV file showing first a dialog to select the file to write.</p>
+     * <p>Will be exported to a file with charset <b>UTF-8</b>.</p>
      * @param parent Parent window
      * @param table Table to export
      * @param separator Separator to use for separating values of a row in the CSV file. If null ',' will be used.

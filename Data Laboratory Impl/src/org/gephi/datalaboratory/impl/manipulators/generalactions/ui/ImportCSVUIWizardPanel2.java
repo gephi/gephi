@@ -101,6 +101,7 @@ public class ImportCSVUIWizardPanel2 implements WizardDescriptor.Panel {
         component.setSeparator((Character) wizardDescriptor.getProperty("separator"));
         component.setFile((File) wizardDescriptor.getProperty("file"));
         component.setMode((Mode) wizardDescriptor.getProperty("mode"));
+        component.reloadSettings();
     }
 
     public void storeSettings(Object settings) {

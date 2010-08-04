@@ -22,9 +22,10 @@ package org.gephi.datalaboratory.impl.manipulators.generalactions.ui;
 
 import com.csvreader.CsvReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.event.TableModelListener;
@@ -40,14 +41,15 @@ import org.openide.util.NbPreferences;
  */
 public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
 
-    private static final int MAX_ROWS_PREVIEW = 20;
+    private static final int MAX_ROWS_PREVIEW = 25;
     private File selectedFile = null;
-    private ImportCSVUIWizardPanel1 wizardDescriptor;
+    private ImportCSVUIWizardPanel1 wizard1;
+    private int columnCount = 0;
 
     /** Creates new form ImportCSVUIVisualPanel1 */
-    public ImportCSVUIVisualPanel1(ImportCSVUIWizardPanel1 wizardDescriptor) {
+    public ImportCSVUIVisualPanel1(ImportCSVUIWizardPanel1 wizard1) {
         initComponents();
-        this.wizardDescriptor = wizardDescriptor;
+        this.wizard1 = wizard1;
         separatorComboBox.addItem(new SeparatorWrapper((','), getMessage("ImportCSVUIVisualPanel1.comma")));
         separatorComboBox.addItem(new SeparatorWrapper((';'), getMessage("ImportCSVUIVisualPanel1.semicolon")));
         separatorComboBox.addItem(new SeparatorWrapper(('\t'), getMessage("ImportCSVUIVisualPanel1.tab")));
@@ -55,18 +57,29 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
 
         tableComboBox.addItem(getMessage("ImportCSVUIVisualPanel1.nodes-table"));
         tableComboBox.addItem(getMessage("ImportCSVUIVisualPanel1.edges-table"));
+
+        for (String charset : Charset.availableCharsets().keySet()) {
+            charsetComboBox.addItem(charset);
+        }
+        charsetComboBox.setSelectedItem(Charset.defaultCharset().name());
     }
 
-    private void refreshTable() {
+    public void refreshPreviewTable() {
         if (selectedFile != null && selectedFile.exists()) {
             try {
-                CsvReader reader = new CsvReader(new FileReader(selectedFile), getSelectedSeparator());
-                reader.readHeaders();
+                CsvReader reader = new CsvReader(new FileInputStream(selectedFile), getSelectedSeparator(), getSelectedCharset());
                 reader.setTrimWhitespace(false);
-                final String[] headers = reader.getHeaders();
+                String[] headers;
+                try {
+                    reader.readHeaders();
+                    headers = reader.getHeaders();
+                } catch (Exception ex) {
+                    headers = new String[0];//Some charsets can be problematic with unreal columns lenght. Don't show table when there are problems
+                }
+                columnCount = headers.length;
 
                 ArrayList<String[]> records = new ArrayList<String[]>();
-                if (headers.length > 0) {
+                if (columnCount > 0) {
                     String[] currentRecord;
                     while (reader.readRecord() && records.size() < MAX_ROWS_PREVIEW) {
                         currentRecord = new String[reader.getColumnCount()];
@@ -76,19 +89,20 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                         records.add(currentRecord);
                     }
                 }
+                final String[] columnNames = headers;
                 final String[][] values = records.toArray(new String[0][]);
-                table.setModel(new TableModel() {
+                previewTable.setModel(new TableModel() {
 
                     public int getRowCount() {
                         return values.length;
                     }
 
                     public int getColumnCount() {
-                        return headers.length;
+                        return columnNames.length;
                     }
 
                     public String getColumnName(int columnIndex) {
-                        return headers[columnIndex];
+                        return columnNames[columnIndex];
                     }
 
                     public Class<?> getColumnClass(int columnIndex) {
@@ -153,6 +167,18 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
         }
     }
 
+    public Charset getSelectedCharset() {
+        return Charset.forName(charsetComboBox.getSelectedItem().toString());
+    }
+
+    public int getColumnCount() {
+        return columnCount;
+    }
+
+    public boolean isCSVValid() {
+        return selectedFile != null && selectedFile.exists() && columnCount > 0;
+    }
+
     class SeparatorWrapper {
 
         private Character separator;
@@ -199,7 +225,9 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
         tableComboBox = new javax.swing.JComboBox();
         previewLabel = new javax.swing.JLabel();
         scroll = new javax.swing.JScrollPane();
-        table = new javax.swing.JTable();
+        previewTable = new javax.swing.JTable();
+        charsetLabel = new javax.swing.JLabel();
+        charsetComboBox = new javax.swing.JComboBox();
 
         descriptionLabel.setText(org.openide.util.NbBundle.getMessage(ImportCSVUIVisualPanel1.class, "ImportCSVUIVisualPanel1.descriptionLabel.text")); // NOI18N
 
@@ -227,7 +255,16 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
 
         previewLabel.setText(org.openide.util.NbBundle.getMessage(ImportCSVUIVisualPanel1.class, "ImportCSVUIVisualPanel1.previewLabel.text")); // NOI18N
 
-        scroll.setViewportView(table);
+        scroll.setViewportView(previewTable);
+
+        charsetLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        charsetLabel.setText(org.openide.util.NbBundle.getMessage(ImportCSVUIVisualPanel1.class, "ImportCSVUIVisualPanel1.charsetLabel.text")); // NOI18N
+
+        charsetComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                charsetComboBoxItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -236,20 +273,24 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(scroll, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
+                    .addComponent(scroll, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pathTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                        .addComponent(pathTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fileButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(separatorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(separatorComboBox, 0, 90, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(tableLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tableComboBox, 0, 185, Short.MAX_VALUE)))
+                            .addComponent(tableComboBox, 0, 123, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(charsetLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+                            .addComponent(charsetComboBox, 0, 96, Short.MAX_VALUE)))
                     .addComponent(previewLabel, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
@@ -264,15 +305,20 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                     .addComponent(fileButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(tableLabel)
-                    .addComponent(separatorLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(separatorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(previewLabel))
-                    .addComponent(tableComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(separatorLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(separatorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tableLabel)
+                            .addComponent(charsetLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tableComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(charsetComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
+                .addComponent(previewLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
                 .addContainerGap())
@@ -291,29 +337,40 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
         if (returnFile != JFileChooser.APPROVE_OPTION) {
             return;
         }
+
         selectedFile = chooser.getSelectedFile();
-        pathTextField.setText(selectedFile.getAbsolutePath());
+        String path = selectedFile.getAbsolutePath();
+
+        pathTextField.setText(path);
 
         //Save last path
         String defaultDirectory = selectedFile.getParentFile().getAbsolutePath();
         NbPreferences.forModule(ImportCSVUIVisualPanel1.class).put(LAST_PATH, defaultDirectory);
-        wizardDescriptor.fireChangeEvent();
-        refreshTable();
+        refreshPreviewTable();
+        wizard1.fireChangeEvent();
     }//GEN-LAST:event_fileButtonActionPerformed
 
     private void separatorComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_separatorComboBoxItemStateChanged
-        refreshTable();
+        refreshPreviewTable();
+        wizard1.fireChangeEvent();
     }//GEN-LAST:event_separatorComboBoxItemStateChanged
+
+    private void charsetComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_charsetComboBoxItemStateChanged
+        refreshPreviewTable();
+        wizard1.fireChangeEvent();
+    }//GEN-LAST:event_charsetComboBoxItemStateChanged
     private static final String LAST_PATH = "ImportCSVUIVisualPanel1_Save_Last_Path";
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox charsetComboBox;
+    private javax.swing.JLabel charsetLabel;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JButton fileButton;
     private javax.swing.JTextField pathTextField;
     private javax.swing.JLabel previewLabel;
+    private javax.swing.JTable previewTable;
     private javax.swing.JScrollPane scroll;
     private javax.swing.JComboBox separatorComboBox;
     private javax.swing.JLabel separatorLabel;
-    private javax.swing.JTable table;
     private javax.swing.JComboBox tableComboBox;
     private javax.swing.JLabel tableLabel;
     // End of variables declaration//GEN-END:variables
