@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.generalactions;
 
 import javax.swing.Icon;
-import org.gephi.datalaboratory.api.DataTablesController;
+import org.gephi.datalaboratory.impl.manipulators.generalactions.ui.ImportCSVUIWizardAction;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
 import org.openide.util.ImageUtilities;
@@ -30,19 +30,18 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * GeneralActionsManipulator that exports a table to CSV.
+ * GeneralActionsManipulator shows a wizard UI for importing a CSV file to nodes/edges table.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service=GeneralActionsManipulator.class)
-public class ExportTable implements GeneralActionsManipulator {
+public class ImportCSV implements GeneralActionsManipulator{
 
     public void execute() {
-        DataTablesController dtc=Lookup.getDefault().lookup(DataTablesController.class);
-        dtc.exportCurrentTable(DataTablesController.ExportMode.CSV);
+        Lookup.getDefault().lookup(ImportCSVUIWizardAction.class).performAction();
     }
 
     public String getName() {
-        return NbBundle.getMessage(ExportTable.class, "ExportTable.name");
+        return NbBundle.getMessage(ImportCSV.class, "ImportCSV.name");
     }
 
     public String getDescription() {
@@ -62,7 +61,7 @@ public class ExportTable implements GeneralActionsManipulator {
     }
 
     public int getPosition() {
-        return 200;
+        return 100;
     }
 
     public Icon getIcon() {

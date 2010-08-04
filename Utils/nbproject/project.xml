@@ -7,6 +7,14 @@
             <suite-component/>
             <module-dependencies>
                 <dependency>
+                    <code-name-base>org.gephi.javacsv</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.gephi.ui.utils</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -43,10 +51,6 @@
             <public-packages>
                 <package>org.gephi.utils</package>
             </public-packages>
-            <class-path-extension>
-                <runtime-relative-path>ext/javacsv.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/javacsv.jar</binary-origin>
-            </class-path-extension>
         </data>
     </configuration>
 </project>

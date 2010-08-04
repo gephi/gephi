@@ -23,7 +23,6 @@ package org.gephi.ui.general.actions;
 import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import net.miginfocom.swing.MigLayout;
 import org.openide.util.NbBundle;

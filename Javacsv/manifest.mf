@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.javacsv
+OpenIDE-Module-Localizing-Bundle: org/gephi/javacsv/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

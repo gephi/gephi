@@ -117,7 +117,6 @@ public class TableCSVExporter {
         try {
             writeCSVFile(table, file, separator, columnsToExport);
             JOptionPane.showMessageDialog(parent, NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.success"));
-            java.awt.Desktop.getDesktop().open(file);//Try to open the created file
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(parent, NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.error"), NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.error.title"), JOptionPane.ERROR_MESSAGE);
         }
