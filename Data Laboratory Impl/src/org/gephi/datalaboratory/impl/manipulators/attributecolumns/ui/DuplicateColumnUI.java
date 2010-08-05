@@ -42,7 +42,6 @@ import org.openide.util.NbBundle;
 public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
 
     private DuplicateColumn manipulator;
-    private AttributeType[] availableTypes;
     private AttributeTable table;
     private DialogControls dialogControls;
 
@@ -78,20 +77,14 @@ public class DuplicateColumnUI extends javax.swing.JPanel implements AttributeCo
         descriptionLabel.setText(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.descriptionLabel.text", column.getTitle()));
         titleTextField.setText(NbBundle.getMessage(DuplicateColumnUI.class, "DuplicateColumnUI.new.title", column.getTitle()));
 
-        availableTypes = AttributeType.values();
-        int oldColumnTypeIndex = 0;
-        for (int i = 0; i < availableTypes.length; i++) {
-            AttributeType type = availableTypes[i];
-            typeComboBox.addItem(type.getTypeString());
-            if (type == column.getType()) {
-                oldColumnTypeIndex = i;
-            }
+        for (AttributeType type : AttributeType.values()) {
+            typeComboBox.addItem(type);
         }
-        typeComboBox.setSelectedIndex(oldColumnTypeIndex);
+        typeComboBox.setSelectedItem(column.getType());
     }
 
     public void unSetup() {
-        manipulator.setColumnType(availableTypes[typeComboBox.getSelectedIndex()]);
+        manipulator.setColumnType((AttributeType) typeComboBox.getSelectedItem());
         manipulator.setTitle(titleTextField.getText());
     }
 

@@ -22,6 +22,7 @@ package org.gephi.datalaboratory.impl.manipulators.generalactions.ui;
 
 import java.awt.Component;
 import java.io.File;
+import java.nio.charset.Charset;
 import javax.swing.event.ChangeListener;
 import org.gephi.datalaboratory.impl.manipulators.generalactions.ui.ImportCSVUIWizardAction.Mode;
 import org.openide.WizardDescriptor;
@@ -101,6 +102,7 @@ public class ImportCSVUIWizardPanel2 implements WizardDescriptor.Panel {
         component.setSeparator((Character) wizardDescriptor.getProperty("separator"));
         component.setFile((File) wizardDescriptor.getProperty("file"));
         component.setMode((Mode) wizardDescriptor.getProperty("mode"));
+        component.setCharset((Charset) wizardDescriptor.getProperty("charset"));
         component.reloadSettings();
     }
 

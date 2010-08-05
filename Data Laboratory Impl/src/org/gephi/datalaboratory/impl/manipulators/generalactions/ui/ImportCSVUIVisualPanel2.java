@@ -22,8 +22,9 @@ package org.gephi.datalaboratory.impl.manipulators.generalactions.ui;
 
 import com.csvreader.CsvReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -44,6 +45,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     private JCheckBox[] columnsCheckBoxes;
     private JComboBox[] columnsComboBoxes;
     private AttributeTable table;
+    private Charset charset;
 
     /** Creates new form ImportCSVUIVisualPanel2 */
     public ImportCSVUIVisualPanel2() {
@@ -53,7 +55,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     }
 
     public void reloadSettings() {
-        if (separator != null && file != null && file.exists() && mode != null) {
+        if (separator != null && file != null && file.exists() && mode != null && charset != null) {
             switch (mode) {
                 case NODES_TABLE:
                     loadNodesSettings();
@@ -68,7 +70,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
 
     private void loadColumns() {
         try {
-            CsvReader reader = new CsvReader(new FileReader(file), separator);
+            CsvReader reader = new CsvReader(new FileInputStream(file), separator, charset);
             reader.setTrimWhitespace(false);
             reader.readHeaders();
             final String[] columns = reader.getHeaders();
@@ -93,11 +95,11 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
         for (AttributeType type : AttributeType.values()) {
             comboBox.addItem(type);
         }
-        if(table.hasColumn(column)){
+        if (table.hasColumn(column)) {
             //Set type of the already existing column in the table and disable the edition:
             comboBox.setSelectedItem(table.getColumn(column).getType());
             comboBox.setEnabled(false);
-        }else{
+        } else {
             comboBox.setSelectedItem(AttributeType.STRING);//Set STRING by default
         }
     }
@@ -105,7 +107,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     private void loadNodesSettings() {
         table = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
         descriptionLabel.setText(getMessage("ImportCSVUIVisualPanel2.nodes.description"));
-        
+
     }
 
     private void loadEdgesSettings() {
@@ -142,7 +144,15 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
         this.separator = separator;
     }
 
-    private String getMessage(String resName){
+    public Charset getCharset() {
+        return charset;
+    }
+
+    void setCharset(Charset charset) {
+        this.charset = charset;
+    }
+
+    private String getMessage(String resName) {
         return NbBundle.getMessage(ImportCSVUIVisualPanel2.class, resName);
     }
 

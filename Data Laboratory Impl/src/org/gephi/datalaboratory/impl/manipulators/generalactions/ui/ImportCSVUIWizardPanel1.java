@@ -80,6 +80,7 @@ public class ImportCSVUIWizardPanel1 implements WizardDescriptor.Panel {
         wizardDescriptor.putProperty("separator", component.getSelectedSeparator());
         wizardDescriptor.putProperty("file", component.getSelectedFile());
         wizardDescriptor.putProperty("mode", component.getMode());
+        wizardDescriptor.putProperty("charset", component.getSelectedCharset());
     }
 
     public WizardDescriptor getWizardDescriptor() {

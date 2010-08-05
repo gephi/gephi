@@ -91,6 +91,7 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+                prepareGradientTooltip();
             }
         });
         gradientPanel.add(gradientSlider, BorderLayout.CENTER);
@@ -108,12 +109,28 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
                 if (!source.getValueIsAdjusting()) {
                     setRangeValues();
                 }
+                prepareGradientTooltip();
             }
         });
         refreshRangeValues();
+        prepareGradientTooltip();
 
         //Context
         setComponentPopupMenu(getPalettePopupMenu());
+    }
+
+    private void prepareGradientTooltip(){
+        StringBuilder sb=new StringBuilder();
+        final double min=((Number)ranking.unNormalize(colorTransformer.getLowerBound())).doubleValue();
+        final double max=((Number)ranking.unNormalize(colorTransformer.getUpperBound())).doubleValue();
+        final double range=max-min;
+        float[] positions = gradientSlider.getThumbPositions();
+        for (int i = 0; i < positions.length-1; i++) {
+            sb.append(min+range*positions[i]);
+            sb.append(", ");
+        }
+        sb.append(min+range*positions[positions.length-1]);
+        gradientSlider.setToolTipText(sb.toString());
     }
 
     private void setRangeValues() {

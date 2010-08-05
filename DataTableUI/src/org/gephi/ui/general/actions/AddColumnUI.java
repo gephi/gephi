@@ -38,8 +38,6 @@ import org.openide.util.NbBundle;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class AddColumnUI extends javax.swing.JPanel {
-
-    private AttributeType[] availableTypes;
     private AttributeTable table;
     private JButton okButton;
 
@@ -89,10 +87,8 @@ public class AddColumnUI extends javax.swing.JPanel {
                 break;
         }
 
-
-        availableTypes = AttributeType.values();
-        for (AttributeType type : availableTypes) {
-            typeComboBox.addItem(type.getTypeString());
+        for (AttributeType type : AttributeType.values()) {
+            typeComboBox.addItem(type);
         }
     }
 
@@ -100,7 +96,7 @@ public class AddColumnUI extends javax.swing.JPanel {
      * Execute the creation of the column, with the given parameters in setup and with the interface itself.
      */
     public void execute() {
-        Lookup.getDefault().lookup(AttributeColumnsController.class).addAttributeColumn(table, titleTextField.getText(), availableTypes[typeComboBox.getSelectedIndex()]);
+        Lookup.getDefault().lookup(AttributeColumnsController.class).addAttributeColumn(table, titleTextField.getText(), (AttributeType) typeComboBox.getSelectedItem());
     }
 
     public void setOkButton(JButton okButton) {
