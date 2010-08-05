@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import org.gephi.data.attributes.api.AttributeController;
@@ -46,30 +47,53 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     private JComboBox[] columnsComboBoxes;
     private AttributeTable table;
     private Charset charset;
+    //Nodes table settings:
+    JCheckBox assignNewNodeIds;
 
     /** Creates new form ImportCSVUIVisualPanel2 */
     public ImportCSVUIVisualPanel2() {
         initComponents();
-        columnsPanel.setLayout(new MigLayout());
-        settingsPanel.setLayout(new MigLayout());
     }
 
     public void reloadSettings() {
         if (separator != null && file != null && file.exists() && mode != null && charset != null) {
+            JPanel settingsPanel = new JPanel();
+            settingsPanel.setLayout(new MigLayout());
+            loadDescription(settingsPanel);
             switch (mode) {
                 case NODES_TABLE:
-                    loadNodesSettings();
+                    table = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
+                    loadColumns(settingsPanel);
+                    loadNodesTableSettings(settingsPanel);
                     break;
                 case EDGES_TABLE:
-                    loadEdgesSettings();
+                    table = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
+                    loadColumns(settingsPanel);
                     break;
             }
-            loadColumns();
+
+            scroll.setViewportView(settingsPanel);
         }
     }
 
-    private void loadColumns() {
+    private void loadDescription(JPanel settingsPanel) {
+        JLabel descriptionLabel = new JLabel();
+        switch (mode) {
+            case NODES_TABLE:
+                descriptionLabel.setText(getMessage("ImportCSVUIVisualPanel2.nodes.description"));
+                break;
+            case EDGES_TABLE:
+                descriptionLabel.setText(getMessage("ImportCSVUIVisualPanel2.edges.description"));
+                break;
+        }
+        settingsPanel.add(descriptionLabel, "wrap 15px");
+    }
+
+    private void loadColumns(JPanel settingsPanel) {
         try {
+            JLabel columnsLabel = new JLabel(getMessage("ImportCSVUIVisualPanel2.columnsLabel.text"));
+            settingsPanel.add(columnsLabel, "wrap");
+
             CsvReader reader = new CsvReader(new FileInputStream(file), separator, charset);
             reader.setTrimWhitespace(false);
             reader.readHeaders();
@@ -77,13 +101,12 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
 
             columnsCheckBoxes = new JCheckBox[columns.length];
             columnsComboBoxes = new JComboBox[columns.length];
-            columnsPanel.removeAll();
             for (int i = 0; i < columns.length; i++) {
                 columnsCheckBoxes[i] = new JCheckBox(columns[i], true);
-                columnsPanel.add(columnsCheckBoxes[i]);
+                settingsPanel.add(columnsCheckBoxes[i], "wrap");
                 columnsComboBoxes[i] = new JComboBox();
                 fillComboBoxWithColumnTypes(columns[i], columnsComboBoxes[i]);
-                columnsPanel.add(columnsComboBoxes[i], "wrap");
+                settingsPanel.add(columnsComboBoxes[i], "wrap 15px");
             }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
@@ -104,15 +127,13 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
         }
     }
 
-    private void loadNodesSettings() {
-        table = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
-        descriptionLabel.setText(getMessage("ImportCSVUIVisualPanel2.nodes.description"));
-
+    private void loadNodesTableSettings(JPanel settingsPanel) {
+        assignNewNodeIds = new JCheckBox(getMessage("ImportCSVUIVisualPanel2.nodes.assign-ids-checkbox"), true);
+        settingsPanel.add(assignNewNodeIds, "wrap");
     }
 
-    private void loadEdgesSettings() {
-        table = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
-        descriptionLabel.setText(getMessage("ImportCSVUIVisualPanel2.edges.description"));
+    public boolean isValidCSV(){
+        return true;
     }
 
     @Override
@@ -164,54 +185,20 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        descriptionLabel = new javax.swing.JLabel();
         scroll = new javax.swing.JScrollPane();
-        columnsPanel = new javax.swing.JPanel();
-        settingsPanel = new javax.swing.JPanel();
-        columnsLabel = new javax.swing.JLabel();
-
-        descriptionLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        org.openide.awt.Mnemonics.setLocalizedText(descriptionLabel, null);
-
-        columnsPanel.setLayout(new java.awt.GridLayout(1, 0));
-        scroll.setViewportView(columnsPanel);
-
-        settingsPanel.setLayout(new java.awt.GridLayout());
-
-        org.openide.awt.Mnemonics.setLocalizedText(columnsLabel, org.openide.util.NbBundle.getMessage(ImportCSVUIVisualPanel2.class, "ImportCSVUIVisualPanel2.columnsLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                    .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                    .addComponent(columnsLabel))
-                .addContainerGap())
+            .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
-                .addComponent(columnsLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel columnsLabel;
-    private javax.swing.JPanel columnsPanel;
-    private javax.swing.JLabel descriptionLabel;
     private javax.swing.JScrollPane scroll;
-    private javax.swing.JPanel settingsPanel;
     // End of variables declaration//GEN-END:variables
 }
