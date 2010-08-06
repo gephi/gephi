@@ -51,7 +51,7 @@ public interface AttributeColumnsController {
     /**
      * Adds a new column to the specified table with the given id, title and type of column.
      * The title can't be repeated in the table, null or empty string.
-     * The id of the column will be set to the number of columns counting the new column.
+     * The id of the column will be set to the title.
      * The AttributeOrigin of the column will be set to <code>DATA</code>.
      * Default column value will be set to null.
      * @param table Table to add the column

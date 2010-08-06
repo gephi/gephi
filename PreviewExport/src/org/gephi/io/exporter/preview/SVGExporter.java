@@ -1,6 +1,8 @@
 package org.gephi.io.exporter.preview;
 
+import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Locale;
 import org.apache.batik.bridge.BridgeContext;
@@ -12,6 +14,7 @@ import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
+import org.apache.fop.util.WriterOutputStream;
 import org.gephi.io.exporter.preview.util.LengthUnit;
 import org.gephi.io.exporter.preview.util.SupportSize;
 import org.gephi.io.exporter.spi.CharacterExporter;
@@ -114,14 +117,14 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         // creates SVG-to-SVG transcoder
         SVGTranscoder t = new SVGTranscoder();
         t.addTranscodingHint(SVGTranscoder.KEY_XML_DECLARATION,
-                new String("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
+                new String("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
 
         // sets transcoder input and output
         TranscoderInput input = new TranscoderInput(doc);
 
         // performs transcoding
         try {
-            TranscoderOutput output = new TranscoderOutput(writer);
+            TranscoderOutput output = new TranscoderOutput(new OutputStreamWriter(new WriterOutputStream(writer),Charset.forName("UTF-8")));
             t.transcode(input, output);
         } finally {
             writer.close();

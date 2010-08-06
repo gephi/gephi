@@ -81,8 +81,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         if (table.hasColumn(title)) {
             return null;
         }
-        String columnId = String.valueOf(table.countColumns() + 1);
-        return table.addColumn(columnId, title, type, AttributeOrigin.DATA, null);
+        return table.addColumn(title, title, type, AttributeOrigin.DATA, null);
     }
 
     public void deleteAttributeColumn(AttributeTable table, AttributeColumn column) {
