@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.datalaboratory.api.GraphElementsController;
@@ -54,6 +53,15 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         Node newNode = buildNode(label);
         getGraph().addNode(newNode);
         return newNode;
+    }
+
+    public Node createNode(String label, String id) {
+        Graph graph=getGraph();
+        if(graph.getNode(id)==null){
+            Node newNode = buildNode(label, id);
+            graph.addNode(newNode);
+            return newNode;
+        }else return null;
     }
 
     public Node duplicateNode(Node node) {
@@ -376,8 +384,13 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     private Node buildNode(String label) {
-        Lookup.getDefault().lookup(AttributeController.class).getModel();//Make sure graph has AttributeModel, this can be first node.
         Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode();
+        newNode.getNodeData().setLabel(label);
+        return newNode;
+    }
+
+    private Node buildNode(String label, String id) {
+        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode(id);
         newNode.getNodeData().setLabel(label);
         return newNode;
     }

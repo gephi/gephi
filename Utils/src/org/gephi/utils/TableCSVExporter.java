@@ -40,14 +40,14 @@ public class TableCSVExporter {
 
     /**
      * <p>Export a JTable to the specified file.</p>
-     * <p>Will be exported to a file with charset <b>UTF-8</b>.</p>
      * @param table Table to export
      * @param file File to write
      * @param separator Separator to use for separating values of a row in the CSV file. If null ',' will be used.
+     * @param charset Charset encoding for the file
      * @param columnsToExport Indicates the indexes of the columns to export. All columns will be exported if null
      * @throws IOException When an error happens while writing the file
      */
-    public static void writeCSVFile(JTable table, File file, Character separator, Integer[] columnsToExport) throws IOException {
+    public static void writeCSVFile(JTable table, File file, Character separator, Charset charset, Integer[] columnsToExport) throws IOException {
         TableModel model = table.getModel();
         FileOutputStream out = new FileOutputStream(file);
         if (separator == null) {
@@ -61,7 +61,7 @@ public class TableCSVExporter {
             }
         }
 
-        CsvWriter writer = new CsvWriter(out, separator, Charset.forName("UTF-8"));
+        CsvWriter writer = new CsvWriter(out, separator, charset);
 
         //Write column headers:
         for (int column = 0; column < columnsToExport.length; column++) {
@@ -93,9 +93,10 @@ public class TableCSVExporter {
      * @param parent Parent window
      * @param table Table to export
      * @param separator Separator to use for separating values of a row in the CSV file. If null ',' will be used.
+     * @param charset Charset encoding for the file
      * @param columnsToExport Indicates the indexes of the columns to export. All columns will be exported if null
      */
-    public static void exportTableAsCSV(JComponent parent, JTable table, Character separator, Integer[] columnsToExport) {
+    public static void exportTableAsCSV(JComponent parent, JTable table, Character separator, Charset charset, Integer[] columnsToExport) {
         String lastPath = NbPreferences.forModule(TableCSVExporter.class).get(LAST_PATH, null);
         final JFileChooser chooser = new JFileChooser(lastPath);
         chooser.setAcceptAllFileFilterUsed(false);
@@ -118,7 +119,7 @@ public class TableCSVExporter {
         String defaultDirectory = file.getParentFile().getAbsolutePath();
         NbPreferences.forModule(TableCSVExporter.class).put(LAST_PATH, defaultDirectory);
         try {
-            writeCSVFile(table, file, separator, columnsToExport);
+            writeCSVFile(table, file, separator, charset, columnsToExport);
             JOptionPane.showMessageDialog(parent, NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.success"));
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(parent, NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.error"), NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.error.title"), JOptionPane.ERROR_MESSAGE);

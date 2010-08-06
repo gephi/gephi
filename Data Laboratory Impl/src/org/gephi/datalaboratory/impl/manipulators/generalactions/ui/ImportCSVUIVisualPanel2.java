@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -40,6 +41,7 @@ import org.openide.util.NbBundle;
 
 public final class ImportCSVUIVisualPanel2 extends JPanel {
 
+    private final ImportCSVUIWizardPanel2 wizard2;
     private Character separator;
     private File file;
     private ImportCSVUIWizardAction.Mode mode;
@@ -48,11 +50,12 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     private AttributeTable table;
     private Charset charset;
     //Nodes table settings:
-    JCheckBox assignNewNodeIds;
+    private JCheckBox assignNewNodeIds;
 
     /** Creates new form ImportCSVUIVisualPanel2 */
-    public ImportCSVUIVisualPanel2() {
+    public ImportCSVUIVisualPanel2(ImportCSVUIWizardPanel2 wizard2) {
         initComponents();
+        this.wizard2=wizard2;
     }
 
     public void reloadSettings() {
@@ -74,6 +77,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
 
             scroll.setViewportView(settingsPanel);
         }
+        wizard2.fireChangeEvent();//Enable/disable finish button
     }
 
     private void loadDescription(JPanel settingsPanel) {
@@ -98,6 +102,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
             reader.setTrimWhitespace(false);
             reader.readHeaders();
             final String[] columns = reader.getHeaders();
+            reader.close();
 
             columnsCheckBoxes = new JCheckBox[columns.length];
             columnsComboBoxes = new JComboBox[columns.length];
@@ -132,8 +137,38 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
         settingsPanel.add(assignNewNodeIds, "wrap");
     }
 
-    public boolean isValidCSV(){
-        return true;
+    public boolean isValidCSV() {
+        switch(mode){
+            case NODES_TABLE:
+                return true;
+            case EDGES_TABLE:
+                return false;//TODO
+        }
+        return false;
+    }
+
+    public String[] getColumnsToImport() {
+        ArrayList<String> columns = new ArrayList<String>();
+        for (JCheckBox columnCheckBox : columnsCheckBoxes) {
+            if (columnCheckBox.isSelected()) {
+                columns.add(columnCheckBox.getText());
+            }
+        }
+        return columns.toArray(new String[0]);
+    }
+
+    public AttributeType[] getColumnsToImportTypes() {
+        ArrayList<AttributeType> types = new ArrayList<AttributeType>();
+        for (int i = 0; i < columnsCheckBoxes.length; i++) {
+            if (columnsCheckBoxes[i].isSelected()) {
+                types.add((AttributeType) columnsComboBoxes[i].getSelectedItem());
+            }
+        }
+        return types.toArray(new AttributeType[0]);
+    }
+
+    public boolean getAssignNewNodeIds() {
+        return assignNewNodeIds != null ? assignNewNodeIds.isSelected() : false;
     }
 
     @Override

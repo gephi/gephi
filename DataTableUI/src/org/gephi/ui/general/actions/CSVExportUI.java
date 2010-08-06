@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.general.actions;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
@@ -43,6 +44,12 @@ public class CSVExportUI extends javax.swing.JPanel {
         separatorComboBox.addItem(new SeparatorWrapper((';'), getMessage("CSVExportUI.semicolon")));
         separatorComboBox.addItem(new SeparatorWrapper(('\t'), getMessage("CSVExportUI.tab")));
         separatorComboBox.addItem(new SeparatorWrapper((' '), getMessage("CSVExportUI.space")));
+
+        for (String charset : Charset.availableCharsets().keySet()) {
+            charsetComboBox.addItem(charset);
+        }
+        charsetComboBox.setSelectedItem(Charset.defaultCharset().name());
+
         refreshColumns();
     }
 
@@ -80,6 +87,10 @@ public class CSVExportUI extends javax.swing.JPanel {
             }
         }
         return columnsIndexes.toArray(new Integer[0]);
+    }
+
+    public Charset getSelectedCharset() {
+        return Charset.forName(charsetComboBox.getSelectedItem().toString());
     }
 
     class SeparatorWrapper {
@@ -125,6 +136,8 @@ public class CSVExportUI extends javax.swing.JPanel {
         columnsPanel = new javax.swing.JPanel();
         columnsLabel = new javax.swing.JLabel();
         descriptionLabel = new javax.swing.JLabel();
+        charsetLabel = new javax.swing.JLabel();
+        charsetComboBox = new javax.swing.JComboBox();
 
         separatorLabel.setText(org.openide.util.NbBundle.getMessage(CSVExportUI.class, "CSVExportUI.separatorLabel.text")); // NOI18N
 
@@ -134,6 +147,8 @@ public class CSVExportUI extends javax.swing.JPanel {
         columnsLabel.setText(org.openide.util.NbBundle.getMessage(CSVExportUI.class, "CSVExportUI.columnsLabel.text")); // NOI18N
 
         descriptionLabel.setText(org.openide.util.NbBundle.getMessage(CSVExportUI.class, "CSVExportUI.descriptionLabel.text")); // NOI18N
+
+        charsetLabel.setText(org.openide.util.NbBundle.getMessage(CSVExportUI.class, "CSVExportUI.charsetLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -148,7 +163,11 @@ public class CSVExportUI extends javax.swing.JPanel {
                         .addComponent(separatorLabel)
                         .addGap(18, 18, 18)
                         .addComponent(separatorComboBox, 0, 69, Short.MAX_VALUE))
-                    .addComponent(columnsLabel))
+                    .addComponent(columnsLabel)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(charsetLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(charsetComboBox, 0, 126, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -161,13 +180,19 @@ public class CSVExportUI extends javax.swing.JPanel {
                     .addComponent(separatorLabel)
                     .addComponent(separatorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(charsetLabel)
+                    .addComponent(charsetComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(columnsLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox charsetComboBox;
+    private javax.swing.JLabel charsetLabel;
     private javax.swing.JLabel columnsLabel;
     private javax.swing.JPanel columnsPanel;
     private javax.swing.JLabel descriptionLabel;

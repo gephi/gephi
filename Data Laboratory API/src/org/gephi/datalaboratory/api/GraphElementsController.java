@@ -39,6 +39,15 @@ public interface GraphElementsController {
     Node createNode(String label);
 
     /**
+     * Creates a node with the given id and label.
+     * If a node with that id already exists, no node will be created
+     * @param label Label for the node
+     * @param id Id for the node
+     * @return The new created node or null if a node with the given id already exists
+     */
+    Node createNode(String label, String id);
+
+    /**
      * Duplicates a node if it is in the graph, and returns the new node.
      * If the node has children, they are also copied as children of the new node.
      * Sets the same properties and attributes for the node as the original node: id, label and AttributeColumns with DATA AttributeOrigin.

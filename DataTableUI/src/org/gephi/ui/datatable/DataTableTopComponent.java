@@ -581,7 +581,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         CSVExportUI csvUI= new CSVExportUI(table);
         DialogDescriptor dd=new DialogDescriptor(csvUI, csvUI.getDisplayName());
         if(DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION)){
-            TableCSVExporter.exportTableAsCSV(this, table, csvUI.getSelectedSeparator(),csvUI.getSelectedColumnsIndexes());
+            TableCSVExporter.exportTableAsCSV(this, table, csvUI.getSelectedSeparator(), csvUI.getSelectedCharset(), csvUI.getSelectedColumnsIndexes());
         }
     }
 

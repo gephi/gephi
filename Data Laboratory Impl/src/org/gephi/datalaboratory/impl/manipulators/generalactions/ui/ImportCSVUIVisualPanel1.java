@@ -89,6 +89,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                         records.add(currentRecord);
                     }
                 }
+                reader.close();
                 final String[] columnNames = headers;
                 final String[][] values = records.toArray(new String[0][]);
                 previewTable.setModel(new TableModel() {
