@@ -22,7 +22,6 @@ package org.gephi.datalaboratory.impl.manipulators.generalactions.ui;
 
 import java.awt.Component;
 import java.io.File;
-import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -61,7 +60,7 @@ public class ImportCSVUIWizardPanel2 implements WizardDescriptor.Panel {
     }
 
     public boolean isValid() {
-        return component.isValid();
+        return component.isValidCSV();
     }
     
     private final Set<ChangeListener> listeners = new HashSet<ChangeListener>(1); // or can use ChangeSupport in NB 6.0

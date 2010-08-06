@@ -25,12 +25,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashSet;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import org.gephi.ui.utils.DialogFileFilter;
+import org.netbeans.validation.api.Problems;
+import org.netbeans.validation.api.Validator;
+import org.netbeans.validation.api.ui.ValidationGroup;
+import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -45,6 +53,8 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
     private File selectedFile = null;
     private ImportCSVUIWizardPanel1 wizard1;
     private int columnCount = 0;
+    private boolean columnNamesRepeated = false;
+    private ValidationPanel validationPanel;
 
     /** Creates new form ImportCSVUIVisualPanel1 */
     public ImportCSVUIVisualPanel1(ImportCSVUIWizardPanel1 wizard1) {
@@ -64,6 +74,48 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
         charsetComboBox.setSelectedItem(Charset.defaultCharset().name());
     }
 
+    public ValidationPanel getValidationPanel() {
+        if (validationPanel != null) {
+            return validationPanel;
+        }
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+
+                public void run() {
+                    validationPanel = new ValidationPanel();
+                    validationPanel.setInnerComponent(ImportCSVUIVisualPanel1.this);
+
+                    ValidationGroup validationGroup = validationPanel.getValidationGroup();
+
+                    validationGroup.add(pathTextField, new Validator<String>() {
+
+                        public boolean validate(Problems prblms, String string, String t) {
+                            if (!isValidFile()) {
+                                prblms.add(getMessage("ImportCSVUIVisualPanel1.validation.invalid-file"));
+                                return false;
+                            }
+                            if (!hasColumns()) {
+                                prblms.add(getMessage("ImportCSVUIVisualPanel1.validation.no-columns"));
+                                return false;
+                            }
+                            if (columnNamesRepeated) {
+                                prblms.add(getMessage("ImportCSVUIVisualPanel1.validation.repeated-columns"));
+                                return false;
+                            }
+                            return true;
+                        }
+                    });
+                }
+            });
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (InvocationTargetException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        return validationPanel;
+    }
+
     public void refreshPreviewTable() {
         if (selectedFile != null && selectedFile.exists()) {
             try {
@@ -77,6 +129,17 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                     headers = new String[0];//Some charsets can be problematic with unreal columns lenght. Don't show table when there are problems
                 }
                 columnCount = headers.length;
+
+                //Check for repeated column names:
+                HashSet<String> headersSet = new HashSet<String>();
+                columnNamesRepeated = false;
+                for (String header : headers) {
+                    if (headersSet.contains(header)) {
+                        columnNamesRepeated = true;
+                        break;
+                    }
+                    headersSet.add(header);
+                }
 
                 ArrayList<String[]> records = new ArrayList<String[]>();
                 if (columnCount > 0) {
@@ -134,9 +197,11 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
             } catch (FileNotFoundException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+                JOptionPane.showMessageDialog(this, getMessage("ImportCSVUIVisualPanel1.validation.error"), getMessage("ImportCSVUIVisualPanel1.validation.file-permissions-error"), JOptionPane.ERROR_MESSAGE);
             }
         }
+        wizard1.fireChangeEvent();
+        pathTextField.setText(pathTextField.getText());//To fire validation panel messages.
     }
 
     @Override
@@ -176,8 +241,20 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
         return columnCount;
     }
 
+    public boolean isColumnNamesRepeated() {
+        return columnNamesRepeated;
+    }
+
+    public boolean isValidFile() {
+        return selectedFile != null && selectedFile.exists();
+    }
+
+    public boolean hasColumns() {
+        return columnCount > 0;
+    }
+
     public boolean isCSVValid() {
-        return selectedFile != null && selectedFile.exists() && columnCount > 0;
+        return isValidFile() && hasColumns() && !columnNamesRepeated;
     }
 
     class SeparatorWrapper {
@@ -348,17 +425,14 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
         String defaultDirectory = selectedFile.getParentFile().getAbsolutePath();
         NbPreferences.forModule(ImportCSVUIVisualPanel1.class).put(LAST_PATH, defaultDirectory);
         refreshPreviewTable();
-        wizard1.fireChangeEvent();
     }//GEN-LAST:event_fileButtonActionPerformed
 
     private void separatorComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_separatorComboBoxItemStateChanged
         refreshPreviewTable();
-        wizard1.fireChangeEvent();
     }//GEN-LAST:event_separatorComboBoxItemStateChanged
 
     private void charsetComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_charsetComboBoxItemStateChanged
         refreshPreviewTable();
-        wizard1.fireChangeEvent();
     }//GEN-LAST:event_charsetComboBoxItemStateChanged
     private static final String LAST_PATH = "ImportCSVUIVisualPanel1_Save_Last_Path";
     // Variables declaration - do not modify//GEN-BEGIN:variables

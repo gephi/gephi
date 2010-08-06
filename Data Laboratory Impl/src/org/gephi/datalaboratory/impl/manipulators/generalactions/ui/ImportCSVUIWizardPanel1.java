@@ -30,7 +30,7 @@ public class ImportCSVUIWizardPanel1 implements WizardDescriptor.Panel {
         if (component == null) {
             component = new ImportCSVUIVisualPanel1(this);
         }
-        return component;
+        return component.getValidationPanel();
     }
 
     public HelpCtx getHelp() {
