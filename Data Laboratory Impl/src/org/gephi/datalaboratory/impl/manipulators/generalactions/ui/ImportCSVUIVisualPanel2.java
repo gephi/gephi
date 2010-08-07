@@ -107,7 +107,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
             final String[] columns = reader.getHeaders();
             reader.close();
 
-            boolean sourceFound = false, targetFound = false;//Only first source and target columns found will be used as source and target nodes ids.
+            boolean sourceFound = false, targetFound = false, typeFound=false;//Only first source and target columns found will be used as source and target nodes ids.
             columnsCheckBoxes = new JCheckBox[columns.length];
             columnsComboBoxes = new JComboBox[columns.length];
             for (int i = 0; i < columns.length; i++) {
@@ -124,9 +124,14 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
                     columnsComboBoxes[i].setEnabled(false);
                 }
                 if (mode == ImportCSVUIWizardAction.Mode.EDGES_TABLE && columns[i].equalsIgnoreCase("target") && !targetFound) {
-                    sourceFound = true;
+                    targetFound = true;
                     //Do not allow to not select source column:
                     columnsCheckBoxes[i].setEnabled(false);
+                    columnsComboBoxes[i].setEnabled(false);
+                }
+                if (mode == ImportCSVUIWizardAction.Mode.EDGES_TABLE && columns[i].equalsIgnoreCase("type") && !typeFound) {
+                    typeFound = true;
+                    //Do not allow to not select source column:
                     columnsComboBoxes[i].setEnabled(false);
                 }
             }

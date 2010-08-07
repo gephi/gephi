@@ -224,10 +224,10 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
                     continue;//Ignore this edge row, since no new nodes should be created.
                 } else {//Create new nodes when they don't exist already
                     if (source == null) {
-                        source = gec.createNode(null);
+                        source = gec.createNode(null,reader.get(sourceColumn));
                     }
                     if (target == null) {
-                        target = gec.createNode(null);
+                        target = gec.createNode(null,reader.get(targetColumn));
                     }
                 }
 
