@@ -26,7 +26,6 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataTablesController;
-import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.impl.manipulators.GeneralColumnsChooser;
 import org.gephi.datalaboratory.impl.manipulators.ui.GeneralChooseColumnsUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;

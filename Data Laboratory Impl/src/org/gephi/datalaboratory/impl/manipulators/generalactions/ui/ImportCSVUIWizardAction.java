@@ -99,6 +99,10 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
         AttributeType[] columnTypes = (AttributeType[]) wizardDescriptor.getProperty("columns-types");
         Boolean assignNewNodeIds = (Boolean) wizardDescriptor.getProperty("assign-new-node-ids");
 
+        if (columnNames.length == 0) {
+            return;
+        }
+
         try {
             //Prepare attribute columns for the names, creating the not already existing column:
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
