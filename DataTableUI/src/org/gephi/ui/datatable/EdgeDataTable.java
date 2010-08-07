@@ -102,7 +102,7 @@ public class EdgeDataTable {
 
             @Override
             public Object getValueFor(Edge edge) {
-                return edge.getSource().getId() + " - " + edge.getSource().getNodeData().getLabel();
+                return edge.getSource().getNodeData().getId();
             }
         };
 
@@ -115,7 +115,7 @@ public class EdgeDataTable {
 
             @Override
             public Object getValueFor(Edge edge) {
-                return edge.getTarget().getId() + " - " + edge.getTarget().getNodeData().getLabel();
+                return edge.getTarget().getNodeData().getId();
             }
         };
         propertiesColumns[2] = new PropertyEdgeDataColumn(NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.type.column.text")) {

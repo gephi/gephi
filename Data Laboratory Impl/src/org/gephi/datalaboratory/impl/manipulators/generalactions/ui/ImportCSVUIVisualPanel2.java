@@ -51,11 +51,13 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     private Charset charset;
     //Nodes table settings:
     private JCheckBox assignNewNodeIds;
+    //Edges table settings:
+    private JCheckBox createNewNodes;
 
     /** Creates new form ImportCSVUIVisualPanel2 */
     public ImportCSVUIVisualPanel2(ImportCSVUIWizardPanel2 wizard2) {
         initComponents();
-        this.wizard2=wizard2;
+        this.wizard2 = wizard2;
     }
 
     public void reloadSettings() {
@@ -72,6 +74,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
                 case EDGES_TABLE:
                     table = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
                     loadColumns(settingsPanel);
+                    loadEdgesTableSettings(settingsPanel);
                     break;
             }
 
@@ -104,6 +107,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
             final String[] columns = reader.getHeaders();
             reader.close();
 
+            boolean sourceFound = false, targetFound = false;//Only first source and target columns found will be used as source and target nodes ids.
             columnsCheckBoxes = new JCheckBox[columns.length];
             columnsComboBoxes = new JComboBox[columns.length];
             for (int i = 0; i < columns.length; i++) {
@@ -112,6 +116,19 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
                 columnsComboBoxes[i] = new JComboBox();
                 fillComboBoxWithColumnTypes(columns[i], columnsComboBoxes[i]);
                 settingsPanel.add(columnsComboBoxes[i], "wrap 15px");
+
+                if (mode == ImportCSVUIWizardAction.Mode.EDGES_TABLE && columns[i].equalsIgnoreCase("source") && !sourceFound) {
+                    sourceFound = true;
+                    //Do not allow to not select source column:
+                    columnsCheckBoxes[i].setEnabled(false);
+                    columnsComboBoxes[i].setEnabled(false);
+                }
+                if (mode == ImportCSVUIWizardAction.Mode.EDGES_TABLE && columns[i].equalsIgnoreCase("target") && !targetFound) {
+                    sourceFound = true;
+                    //Do not allow to not select source column:
+                    columnsCheckBoxes[i].setEnabled(false);
+                    columnsComboBoxes[i].setEnabled(false);
+                }
             }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
@@ -137,14 +154,13 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
         settingsPanel.add(assignNewNodeIds, "wrap");
     }
 
+    private void loadEdgesTableSettings(JPanel settingsPanel) {
+        createNewNodes = new JCheckBox(getMessage("ImportCSVUIVisualPanel2.edges.create-new-nodes-checkbox"), true);
+        settingsPanel.add(createNewNodes, "wrap");
+    }
+
     public boolean isValidCSV() {
-        switch(mode){
-            case NODES_TABLE:
-                return true;
-            case EDGES_TABLE:
-                return false;//TODO
-        }
-        return false;
+        return true;
     }
 
     public String[] getColumnsToImport() {
@@ -169,6 +185,10 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
 
     public boolean getAssignNewNodeIds() {
         return assignNewNodeIds != null ? assignNewNodeIds.isSelected() : false;
+    }
+
+    public boolean getCreateNewNodes() {
+        return createNewNodes != null ? createNewNodes.isSelected() : false;
     }
 
     @Override

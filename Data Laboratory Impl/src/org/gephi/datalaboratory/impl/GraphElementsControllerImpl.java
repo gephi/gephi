@@ -56,19 +56,21 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     public Node createNode(String label, String id) {
-        Graph graph=getGraph();
-        if(graph.getNode(id)==null){
+        Graph graph = getGraph();
+        if (graph.getNode(id) == null) {
             Node newNode = buildNode(label, id);
             graph.addNode(newNode);
             return newNode;
-        }else return null;
+        } else {
+            return null;
+        }
     }
 
     public Node duplicateNode(Node node) {
         if (isNodeInGraph(node)) {
             HierarchicalGraph hg = getHierarchicalGraph();
 
-            Node copy = copyNodeRecursively(node, hg.getParent(node),hg);//Add copy to the same level as the original node
+            Node copy = copyNodeRecursively(node, hg.getParent(node), hg);//Add copy to the same level as the original node
             return copy;
         } else {
             return null;
@@ -81,19 +83,53 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         }
     }
 
-    public boolean createEdge(Node source, Node target, boolean directed) {
-        if (isNodeInGraph(source) && isNodeInGraph(target)) {
-            if (source != target) {//Cannot create self-loop
-                if (directed) {
-                    return getDirectedGraph().addEdge(source, target);//The edge will be created if it does not already exist.
+    public Edge createEdge(Node source, Node target, boolean directed) {
+        Edge newEdge;
+        if (source != target) {//Cannot create self-loop
+            if (directed) {
+                newEdge = buildEdge(source, target, true);
+                if (getDirectedGraph().addEdge(newEdge)) {//The edge will be created if it does not already exist.
+                    return newEdge;
                 } else {
-                    return getUndirectedGraph().addEdge(source, target);//The edge will be created if it does not already exist.
+                    return null;
                 }
             } else {
-                return false;
+                newEdge = buildEdge(source, target, false);
+                if (getUndirectedGraph().addEdge(newEdge)) {//The edge will be created if it does not already exist.
+                    return newEdge;
+                } else {
+                    return null;
+                }
             }
         } else {
-            return false;
+            return null;
+        }
+    }
+
+    public Edge createEdge(String id, Node source, Node target, boolean directed) {
+        Edge newEdge;
+        if (getGraph().getEdge(id) == null) {
+            if (source != target) {//Cannot create self-loop
+                if (directed) {
+                    newEdge = buildEdge(id, source, target, true);
+                    if (getDirectedGraph().addEdge(newEdge)) {//The edge will be created if it does not already exist.
+                        return newEdge;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    newEdge = buildEdge(id, source, target, false);
+                    if (getUndirectedGraph().addEdge(newEdge)) {//The edge will be created if it does not already exist.
+                        return newEdge;
+                    } else {
+                        return null;
+                    }
+                }
+            } else {
+                return null;
+            }
+        } else {
+            return null;
         }
     }
 
@@ -259,7 +295,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     public boolean canMoveNodeToGroup(Node node, Node group) {
         HierarchicalGraph hg = getHierarchicalGraph();
-        return node!=group && hg.getParent(node) == hg.getParent(group) && canUngroupNode(group) && isNodeInGraph(node);
+        return node != group && hg.getParent(node) == hg.getParent(group) && canUngroupNode(group) && isNodeInGraph(node);
     }
 
     public boolean removeNodeFromGroup(Node node) {
@@ -391,14 +427,25 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     private Node buildNode(String label, String id) {
         Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode(id);
+        getGraph().setId(newNode, id);
         newNode.getNodeData().setLabel(label);
         return newNode;
     }
 
-    private Node copyNodeRecursively(Node node, Node parent,HierarchicalGraph hg) {
-        NodeData nodeData=node.getNodeData();
-        Node copy = buildNode(nodeData.getLabel());        
-        NodeData copyData=copy.getNodeData();
+    private Edge buildEdge(Node source, Node target, boolean directed) {
+        Edge newEdge = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newEdge(source, target, 1.0f, directed);
+        return newEdge;
+    }
+
+    private Edge buildEdge(String id, Node source, Node target, boolean directed) {
+        Edge newEdge = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newEdge(id, source, target, 1.0f, directed);
+        return newEdge;
+    }
+
+    private Node copyNodeRecursively(Node node, Node parent, HierarchicalGraph hg) {
+        NodeData nodeData = node.getNodeData();
+        Node copy = buildNode(nodeData.getLabel());
+        NodeData copyData = copy.getNodeData();
 
         //Copy properties (position, size and color):
         copyData.setX(nodeData.x());
@@ -416,9 +463,9 @@ public class GraphElementsControllerImpl implements GraphElementsController {
             }
         }
 
-        if(parent!=null){
+        if (parent != null) {
             hg.addNode(copy, parent);
-        }else{
+        } else {
             hg.addNode(copy);
         }
 
@@ -426,7 +473,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         Node[] children = hg.getChildren(node).toArray();
         if (children != null) {
             for (Node child : children) {
-                copyNodeRecursively(child,copy,hg);
+                copyNodeRecursively(child, copy, hg);
             }
         }
 

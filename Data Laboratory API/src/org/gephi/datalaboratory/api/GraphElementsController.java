@@ -69,9 +69,20 @@ public interface GraphElementsController {
      * @param source Source node
      * @param target Target node
      * @param directed Indicates if the edge has to be directed
-     * @return True if the edge was created succesfully, false otherwise
+     * @return New edge if the edge was created succesfully, null otherwise
      */
-    boolean createEdge(Node source, Node target, boolean directed);
+    Edge createEdge(Node source, Node target, boolean directed);
+
+    /**
+     * Creates and edge between source and target node (if does not already exist), directed or undirected.
+     * If a edge with the given id already exists, no edge will be created.
+     * This will not create a self-loop.
+     * @param source Source node
+     * @param target Target node
+     * @param directed Indicates if the edge has to be directed
+     * @return New edge if the edge was created succesfully, null otherwise
+     */
+    Edge createEdge(String id,Node source, Node target, boolean directed);
 
     /**
      * Tries to create edges between the source node and all other edges, directed or undirected.

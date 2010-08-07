@@ -39,6 +39,7 @@ import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.DataTablesController;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
@@ -82,6 +83,9 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
                 case NODES_TABLE:
                     importToNodesTable();
                     break;
+                case EDGES_TABLE:
+                    importToEdgesTable();
+                    break;
             }
             Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
         }
@@ -104,15 +108,17 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
         }
 
         try {
-            //Prepare attribute columns for the names, creating the not already existing column:
+            //Prepare attribute columns for the column names, creating the not already existing column:
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
             AttributeTable nodesTable = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
             String idColumn = null;
             ArrayList<AttributeColumn> columnsList = new ArrayList<AttributeColumn>();
             for (int i = 0; i < columnNames.length; i++) {
-                //Separate first id column from the list to use as id. If more are found later, the will not be in the list and be ignored.
-                if (columnNames[i].equalsIgnoreCase("id") && idColumn == null) {
-                    idColumn = columnNames[i];
+                //Separate first id column found from the list to use as id. If more are found later, the will not be in the list and be ignored.
+                if (columnNames[i].equalsIgnoreCase("id")) {
+                    if (idColumn == null) {
+                        idColumn = columnNames[i];
+                    }
                 } else if (nodesTable.hasColumn(columnNames[i])) {
                     columnsList.add(nodesTable.getColumn(columnNames[i]));
                 } else {
@@ -153,16 +159,117 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
                     ac.setAttributeValue(reader.get(column.getTitle()), nodeAttributes, column);
                 }
             }
-
-
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
-
-
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
+        }
+    }
 
+    /**
+     * Method for importing csv data to edges table.
+     * Special cases are id, source, target and type columns.
+     */
+    private void importToEdgesTable() {
+        File file = (File) wizardDescriptor.getProperty("file");
+        Character separator = (Character) wizardDescriptor.getProperty("separator");
+        Charset charset = (Charset) wizardDescriptor.getProperty("charset");
+        String[] columnNames = (String[]) wizardDescriptor.getProperty("columns-names");
+        AttributeType[] columnTypes = (AttributeType[]) wizardDescriptor.getProperty("columns-types");
+        Boolean createNewNodes = (Boolean) wizardDescriptor.getProperty("create-new-nodes");
 
+        try {
+            //Prepare attribute columns for the column names, creating the not already existing column:
+            AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+            AttributeTable edges = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
+            String idColumn = null;
+            String sourceColumn = null;
+            String targetColumn = null;
+            String typeColumn = null;
+            ArrayList<AttributeColumn> columnsList = new ArrayList<AttributeColumn>();
+            for (int i = 0; i < columnNames.length; i++) {
+                //Separate first id column found from the list to use as id. If more are found later, the will not be in the list and be ignored.
+                if (columnNames[i].equalsIgnoreCase("id")) {
+                    if (idColumn == null) {
+                        idColumn = columnNames[i];
+                    }
+                } else if (columnNames[i].equalsIgnoreCase("source") && sourceColumn == null) {//Separate first source column found from the list to use as source node id
+                    sourceColumn = columnNames[i];
+                } else if (columnNames[i].equalsIgnoreCase("target") && targetColumn == null) {//Separate first target column found from the list to use as target node id
+                    targetColumn = columnNames[i];
+                } else if (columnNames[i].equalsIgnoreCase("type") && typeColumn == null) {//Separate first type column found from the list to use as edge type (directed/undirected)
+                    typeColumn = columnNames[i];
+                } else if (edges.hasColumn(columnNames[i])) {
+                    columnsList.add(edges.getColumn(columnNames[i]));
+                } else {
+                    columnsList.add(ac.addAttributeColumn(edges, columnNames[i], columnTypes[i]));
+                }
+            }
+
+            //Create edges:
+            GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
+            Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+            String id = null;
+            Edge edge;
+            Node source, target;
+            String type;
+            boolean directed;
+            Attributes edgeAttributes;
+            CsvReader reader = new CsvReader(new FileInputStream(file), separator, charset);
+            reader.readHeaders();
+            while (reader.readRecord()) {
+                source = graph.getNode(reader.get(sourceColumn));
+                target = graph.getNode(reader.get(targetColumn));
+                if ((source == null || target == null) && !createNewNodes) {//Don't create new nodes when they don't exist already
+                    continue;//Ignore this edge row, since no new nodes should be created.
+                } else {//Create new nodes when they don't exist already
+                    if (source == null) {
+                        source = gec.createNode(null);
+                    }
+                    if (target == null) {
+                        target = gec.createNode(null);
+                    }
+                }
+
+                if (typeColumn != null) {
+                    type = reader.get(typeColumn);
+                    //Undirected if indicated correctly, otherwise always directed:
+                    if (type != null) {
+                        directed = !type.equalsIgnoreCase("undirected");
+                    } else {
+                        directed = true;
+                    }
+                } else {
+                    directed = true;//Directed by default when no indicated
+                }
+
+                //Prepare the correct edge to assign the attributes:
+                if (idColumn != null) {
+                    id = reader.get(idColumn);
+                    if (id == null || id.isEmpty()) {
+                        edge = gec.createEdge(source, target, directed);//id null or empty, assign one
+                    } else {
+                        edge = gec.createEdge(id, source, target, directed);
+                        if (edge == null) {//Edge with that id already in graph
+                            edge = gec.createEdge(source, target, directed);
+                        }
+                    }
+                } else {
+                    edge = gec.createEdge(source, target, directed);
+                }
+
+                if (edge != null) {//Edge could be created because it does not already exist:
+                    //Assign attributes to the current edge:
+                    edgeAttributes = edge.getEdgeData().getAttributes();
+                    for (AttributeColumn column : columnsList) {
+                        ac.setAttributeValue(reader.get(column.getTitle()), edgeAttributes, column);
+                    }
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
         }
     }
 
@@ -201,14 +308,10 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
                     jc.putClientProperty("WizardPanel_contentDisplayed", Boolean.TRUE);
                     // Turn on numbering of all steps
                     jc.putClientProperty("WizardPanel_contentNumbered", Boolean.TRUE);
-
-
                 }
             }
         }
         return panels;
-
-
     }
 
     public String getName() {
@@ -218,19 +321,14 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
     @Override
     public String iconResource() {
         return null;
-
-
     }
 
     public HelpCtx getHelpCtx() {
         return HelpCtx.DEFAULT_HELP;
-
-
     }
 
     @Override
     protected boolean asynchronous() {
         return false;
-
     }
 }

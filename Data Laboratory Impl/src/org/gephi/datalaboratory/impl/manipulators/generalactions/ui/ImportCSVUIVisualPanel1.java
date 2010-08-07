@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -53,6 +54,8 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
     private File selectedFile = null;
     private ImportCSVUIWizardPanel1 wizard1;
     private int columnCount = 0;
+    private boolean hasSourceNodeColumn = false;
+    private boolean hasTargetNodeColumn = false;
     private boolean columnNamesRepeated = false;
     private ValidationPanel validationPanel;
 
@@ -102,6 +105,10 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                                 prblms.add(getMessage("ImportCSVUIVisualPanel1.validation.repeated-columns"));
                                 return false;
                             }
+                            if (!areValidColumnsForTable()) {
+                                prblms.add(getMessage("ImportCSVUIVisualPanel1.validation.edges.no-source-target-columns"));
+                                return false;
+                            }
                             return true;
                         }
                     });
@@ -131,14 +138,22 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                 columnCount = headers.length;
 
                 //Check for repeated column names:
-                HashSet<String> headersSet = new HashSet<String>();
+                Set<String> columnNamesSet = new HashSet<String>();
                 columnNamesRepeated = false;
+                hasSourceNodeColumn = false;
+                hasTargetNodeColumn = false;
                 for (String header : headers) {
-                    if (headersSet.contains(header)) {
+                    if (header.equalsIgnoreCase("source")) {
+                        hasSourceNodeColumn = true;
+                    }
+                    if (header.equalsIgnoreCase("target")) {
+                        hasTargetNodeColumn = true;
+                    }
+                    if (columnNamesSet.contains(header)) {
                         columnNamesRepeated = true;
                         break;
                     }
-                    headersSet.add(header);
+                    columnNamesSet.add(header);
                 }
 
                 ArrayList<String[]> records = new ArrayList<String[]>();
@@ -253,8 +268,19 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
         return columnCount > 0;
     }
 
+    public boolean areValidColumnsForTable() {
+        switch (getMode()) {
+            case NODES_TABLE:
+                return true;
+            case EDGES_TABLE:
+                return hasSourceNodeColumn && hasTargetNodeColumn;
+            default:
+                return false;
+        }
+    }
+
     public boolean isCSVValid() {
-        return isValidFile() && hasColumns() && !columnNamesRepeated;
+        return isValidFile() && hasColumns() && !columnNamesRepeated && areValidColumnsForTable();
     }
 
     class SeparatorWrapper {
@@ -330,6 +356,12 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
 
         tableLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         tableLabel.setText(org.openide.util.NbBundle.getMessage(ImportCSVUIVisualPanel1.class, "ImportCSVUIVisualPanel1.tableLabel.text")); // NOI18N
+
+        tableComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                tableComboBoxItemStateChanged(evt);
+            }
+        });
 
         previewLabel.setText(org.openide.util.NbBundle.getMessage(ImportCSVUIVisualPanel1.class, "ImportCSVUIVisualPanel1.previewLabel.text")); // NOI18N
 
@@ -434,6 +466,10 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
     private void charsetComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_charsetComboBoxItemStateChanged
         refreshPreviewTable();
     }//GEN-LAST:event_charsetComboBoxItemStateChanged
+
+    private void tableComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_tableComboBoxItemStateChanged
+        refreshPreviewTable();
+    }//GEN-LAST:event_tableComboBoxItemStateChanged
     private static final String LAST_PATH = "ImportCSVUIVisualPanel1_Save_Last_Path";
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox charsetComboBox;

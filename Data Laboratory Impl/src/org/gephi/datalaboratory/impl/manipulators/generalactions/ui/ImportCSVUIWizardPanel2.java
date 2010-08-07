@@ -104,6 +104,7 @@ public class ImportCSVUIWizardPanel2 implements WizardDescriptor.Panel {
         wizardDescriptor.putProperty("columns-names", component.getColumnsToImport());
         wizardDescriptor.putProperty("columns-types", component.getColumnsToImportTypes());
         wizardDescriptor.putProperty("assign-new-node-ids", component.getAssignNewNodeIds());
+        wizardDescriptor.putProperty("create-new-nodes", component.getCreateNewNodes());
     }
 
     public void setWizardDescriptor(WizardDescriptor wizardDescriptor) {

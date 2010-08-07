@@ -26,6 +26,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 import net.miginfocom.swing.MigLayout;
+import org.netbeans.swing.outline.Outline;
 import org.openide.util.NbBundle;
 
 /**
@@ -33,13 +34,14 @@ import org.openide.util.NbBundle;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class CSVExportUI extends javax.swing.JPanel {
+
     private JTable table;
     private JCheckBox[] columnsCheckBoxes;
 
     /** Creates new form CSVExportUI */
     public CSVExportUI(JTable table) {
         initComponents();
-        this.table=table;
+        this.table = table;
         separatorComboBox.addItem(new SeparatorWrapper((','), getMessage("CSVExportUI.comma")));
         separatorComboBox.addItem(new SeparatorWrapper((';'), getMessage("CSVExportUI.semicolon")));
         separatorComboBox.addItem(new SeparatorWrapper(('\t'), getMessage("CSVExportUI.tab")));
@@ -54,11 +56,20 @@ public class CSVExportUI extends javax.swing.JPanel {
     }
 
     private void refreshColumns() {
+        boolean outlineTable = table instanceof Outline;
         TableModel model = table.getModel();
         columnsCheckBoxes = new JCheckBox[model.getColumnCount()];
         columnsPanel.removeAll();
         columnsPanel.setLayout(new MigLayout("", "[pref!]"));
-        for (int i = 0; i < model.getColumnCount(); i++) {
+
+        if (outlineTable) {//If outline table, hide nodes tree column from exporting (first column)
+            columnsCheckBoxes[0] = new JCheckBox(model.getColumnName(0), false);
+        } else {
+            columnsCheckBoxes[0] = new JCheckBox(model.getColumnName(0), true);
+            columnsPanel.add(columnsCheckBoxes[0], "wrap");
+        }
+        //Show rest of columns:
+        for (int i = 1; i < model.getColumnCount(); i++) {
             columnsCheckBoxes[i] = new JCheckBox(model.getColumnName(i), true);
             columnsPanel.add(columnsCheckBoxes[i], "wrap");
         }
@@ -79,10 +90,10 @@ public class CSVExportUI extends javax.swing.JPanel {
         }
     }
 
-    public Integer[] getSelectedColumnsIndexes(){
-        ArrayList<Integer> columnsIndexes=new ArrayList<Integer>();
+    public Integer[] getSelectedColumnsIndexes() {
+        ArrayList<Integer> columnsIndexes = new ArrayList<Integer>();
         for (int i = 0; i < columnsCheckBoxes.length; i++) {
-            if(columnsCheckBoxes[i].isSelected()){
+            if (columnsCheckBoxes[i].isSelected()) {
                 columnsIndexes.add(i);
             }
         }

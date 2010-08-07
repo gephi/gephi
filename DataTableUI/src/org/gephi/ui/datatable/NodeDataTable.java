@@ -81,6 +81,7 @@ import utils.SparkLinesRenderer;
  * @author Mathieu Bastian
  */
 public class NodeDataTable {
+
     private boolean useSparklines = false;
     private Outline outlineTable;
     private QuickFilter quickFilter;
@@ -149,7 +150,7 @@ public class NodeDataTable {
         });
     }
 
-    private void prepareSparklinesRenderers(){
+    private void prepareSparklinesRenderers() {
         outlineTable.setDefaultRenderer(NumberList.class, new SparkLinesRenderer());
         outlineTable.setDefaultRenderer(DynamicBigDecimal.class, new SparkLinesRenderer());
         outlineTable.setDefaultRenderer(DynamicBigInteger.class, new SparkLinesRenderer());
@@ -257,22 +258,30 @@ public class NodeDataTable {
         }
 
         public Object getChild(Object parent, int index) {
-            TreeNode node = (TreeNode) parent;
-            return node.getChildAt(index);
+            if (parent instanceof TreeNode) {
+                TreeNode node = (TreeNode) parent;
+                return node.getChildAt(index);
+            } else {
+                return null;
+            }
         }
 
         public int getChildCount(Object parent) {
-
-            TreeNode node = (TreeNode) parent;
-            return node.getChildCount();
-
+            if (parent instanceof TreeNode) {
+                TreeNode node = (TreeNode) parent;
+                return node.getChildCount();
+            } else {
+                return 0;
+            }
         }
 
         public boolean isLeaf(Object node) {
-
-            TreeNode n = (TreeNode) node;
-            return n.isLeaf();
-
+            if (node instanceof TreeNode) {
+                TreeNode n = (TreeNode) node;
+                return n.isLeaf();
+            } else {
+                return true;
+            }
         }
 
         public void valueForPathChanged(TreePath path, Object newValue) {
@@ -356,9 +365,9 @@ public class NodeDataTable {
         public Class getColumnClass() {
             if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
                 return NumberList.class;
-            } else if(useSparklines && AttributeUtils.getDefault().isDynamicNumberColumn(column)){
+            } else if (useSparklines && AttributeUtils.getDefault().isDynamicNumberColumn(column)) {
                 return column.getType().getType();
-            }else {
+            } else {
                 return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
             }
         }
@@ -401,7 +410,11 @@ public class NodeDataTable {
 
         @Override
         public String getDisplayName(Object o) {
-            return ((ImmutableTreeNode) o).getNode().getNodeData().getLabel();
+            if (o instanceof ImmutableTreeNode) {
+                return ((ImmutableTreeNode) o).getNode().getNodeData().getLabel();
+            } else {
+                return o.toString();
+            }
         }
 
         @Override
