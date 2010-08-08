@@ -21,7 +21,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -31,32 +31,37 @@
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="regexSearchModeRadioButton" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="caseSensitiveCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="caseSensitiveCheckBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="regexReplaceCheckBox" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="searchLabel" max="32767" attributes="1"/>
                                   <Component id="replaceLabel" alignment="0" pref="71" max="32767" attributes="1"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="searchText" max="32767" attributes="1"/>
-                                  <Component id="replaceText" alignment="0" pref="158" max="32767" attributes="1"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="searchText" pref="160" max="32767" attributes="2"/>
+                                  <Component id="replaceText" alignment="0" pref="160" max="32767" attributes="2"/>
                               </Group>
+                              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="replaceAllButton" max="32767" attributes="1"/>
                           <Component id="replaceButton" max="32767" attributes="1"/>
                           <Component id="findNextButton" alignment="0" max="32767" attributes="1"/>
                       </Group>
                   </Group>
-                  <Component id="scroll" alignment="0" pref="341" max="32767" attributes="0"/>
+                  <Component id="scroll" alignment="0" pref="359" max="32767" attributes="0"/>
                   <Component id="resultLabel" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
-          <Component id="jSeparator1" alignment="0" pref="361" max="32767" attributes="0"/>
+          <Component id="jSeparator1" alignment="0" pref="379" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -89,7 +94,10 @@
                           <Component id="regexSearchModeRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="caseSensitiveCheckBox" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="caseSensitiveCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="regexReplaceCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -231,6 +239,16 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JSeparator" name="jSeparator1">
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="regexReplaceCheckBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/datalaboratory/impl/manipulators/generalactions/ui/Bundle.properties" key="SearchReplaceUI.regexReplaceCheckBox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="regexReplaceCheckBoxItemStateChanged"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

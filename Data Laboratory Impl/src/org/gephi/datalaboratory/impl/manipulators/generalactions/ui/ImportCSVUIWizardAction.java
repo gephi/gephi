@@ -211,6 +211,7 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
             Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
             String id = null;
             Edge edge;
+            String sourceId, targetId;
             Node source, target;
             String type;
             boolean directed;
@@ -218,16 +219,24 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
             CsvReader reader = new CsvReader(new FileInputStream(file), separator, charset);
             reader.readHeaders();
             while (reader.readRecord()) {
-                source = graph.getNode(reader.get(sourceColumn));
-                target = graph.getNode(reader.get(targetColumn));
+                sourceId=reader.get(sourceColumn);
+                targetId=reader.get(targetColumn);
+
+                if(sourceId==null||sourceId.isEmpty()||targetId==null||targetId.isEmpty()){
+                    continue;//No correct source and target ids were provided, ignore row
+                }
+
+                source = graph.getNode(sourceId);
+                target = graph.getNode(targetId);
+
                 if ((source == null || target == null) && !createNewNodes) {//Don't create new nodes when they don't exist already
                     continue;//Ignore this edge row, since no new nodes should be created.
                 } else {//Create new nodes when they don't exist already
                     if (source == null) {
-                        source = gec.createNode(null,reader.get(sourceColumn));
+                        source = gec.createNode(null,sourceId);
                     }
                     if (target == null) {
-                        target = gec.createNode(null,reader.get(targetColumn));
+                        target = gec.createNode(null,targetId);
                     }
                 }
 

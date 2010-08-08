@@ -25,7 +25,6 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.api.SearchReplaceController;
@@ -105,7 +104,6 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
         String str;
         Attributes attributes;
         AttributeColumn column;
-        AttributeType type;
 
         if (!result.getSearchOptions().isUseRegexReplaceMode()) {
             replacement = Matcher.quoteReplacement(replacement);//Avoid using groups and other regex aspects in the replacement
@@ -116,11 +114,9 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
             if (result.getFoundNode() != null) {
                 attributes = result.getFoundNode().getNodeData().getAttributes();
                 column = ac.getModel().getNodeTable().getColumn(result.getFoundColumnIndex());
-                type = column.getType();
             } else {
                 attributes = result.getFoundEdge().getEdgeData().getAttributes();
                 column = ac.getModel().getEdgeTable().getColumn(result.getFoundColumnIndex());
-                type = column.getType();
             }
             value = attributes.getValue(result.getFoundColumnIndex());
             str = value != null ? value.toString() : "";
@@ -142,6 +138,9 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
                 return findNext(result);//Go to next search result
             }
         } catch (Exception ex) {
+            if (ex instanceof IndexOutOfBoundsException) {
+                throw new IndexOutOfBoundsException();//Rethrow the exception when it is caused by a bad regex replacement
+            }
             //Data has changed (a lot of different errors can happen) and the replacement can't be done, continue finding.
             return findNext(result);//Go to next search result
         }

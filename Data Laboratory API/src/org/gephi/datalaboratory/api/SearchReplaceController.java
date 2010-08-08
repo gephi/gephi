@@ -61,6 +61,7 @@ public interface SearchReplaceController {
      * Replaces a SearchResult with the given replacement String.
      * Also tries to find next search result and returns it.
      * If the data has changed and the replacement can't be done it will just return next SearchResult.
+     * If useRegexReplaceMode is enabled, IndexOutOfBoundsException can be thrown when the replacement is not correct for the regular expression.
      * @param result SearchResult to replace
      * @param replacement Replacement String
      * @return Next SearchResult or null if not successful
@@ -69,6 +70,7 @@ public interface SearchReplaceController {
 
     /**
      * Replaces all SearchResults that can be replaced with the given search options from the beginning to the end of the data.
+     * If useRegexReplaceMode is enabled, IndexOutOfBoundsException can be thrown when the replacement is not correct for the regular expression.
      * @param searchOptions Search options for the searches
      * @param replacement Replacement String
      * @return Count of made replacements
