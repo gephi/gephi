@@ -21,12 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.exporter.impl;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.api.FileType;
@@ -105,7 +104,7 @@ public class ExportControllerImpl implements ExportController {
             } catch (IOException ex) {
             }
         } else if (fileExporter instanceof CharacterExporter) {
-            Writer writer = new BufferedWriter(new FileWriter(file));
+            Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
             ((CharacterExporter) fileExporter).setWriter(writer);
             try {
                 fileExporter.execute();
