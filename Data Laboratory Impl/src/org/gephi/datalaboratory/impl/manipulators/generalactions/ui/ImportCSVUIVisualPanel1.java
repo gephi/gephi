@@ -114,6 +114,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
                     });
                 }
             });
+            validationPanel.setName(getName());
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         } catch (InvocationTargetException ex) {

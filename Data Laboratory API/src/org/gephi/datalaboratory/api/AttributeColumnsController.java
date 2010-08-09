@@ -20,7 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalaboratory.api;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -288,7 +290,7 @@ public interface AttributeColumnsController {
      * @param column Column to get numbers
      * @return Array with all numbers.
      */
-    public Number[] getColumnNumbers(AttributeTable table, AttributeColumn column);
+    Number[] getColumnNumbers(AttributeTable table, AttributeColumn column);
 
     /**
      * Prepares an array with all not null numbers of a row using only the given columns.
@@ -299,5 +301,43 @@ public interface AttributeColumnsController {
      * @param columns Columns of the row to use
      * @return Array with all numbers
      */
-    public Number[] getRowNumbers(Attributes row, AttributeColumn[] columns);
+    Number[] getRowNumbers(Attributes row, AttributeColumn[] columns);
+
+    /**
+     * <p>Method for importing CSV file data to nodes table.</p>
+     * <p>Only special case is treating columns is id columns: first column found named 'id' (case insensitive) will be used as node id, others will be ignored.</p>
+     * <p>No special column must be provided.</p>
+     * <p>If a column name is not already in nodes table, it will be created with the corresponding columnType index.</p>
+     * <p>If a node id already exists, depending on assignNewNodeIds, a new id will be assigned to it or instead, the already existing node attributes will be updated with the CSV data</p>
+     * @param file CSV file
+     * @param separator Separator of values of the CSV file
+     * @param charset Charset of the CSV file
+     * @param columnNames Names of the columns in the CSV file to use
+     * @param columnTypes Types of the columns in the CSV file to use when creating columns
+     * @param assignNewNodeIds Indicates if nodes should be assigned new ids when the ids are already in nodes table or not provided.
+     */
+    void importCSVToNodesTable(File file, Character separator, Charset charset, String[] columnNames, AttributeType[] columnTypes, boolean assignNewNodeIds);
+
+    /**
+     * <p>Method for importing csv data to edges table.</p>
+     * <p>Column named 'Source' and 'Target' (case insensitive) should be provided. Any row that does not provide a source and target nodes ids will be ignored.</p>
+     * <p>If no 'Type' (case insensitive) column is provided, all edges will be directed.</p>
+     * <p>If an edge already exists or cannot be created, it will be ignored, and no data will be updated.</p>
+     *
+     * <p>Special cases are id, source, target and type columns:
+     * <ul>
+     * <li>First column found named 'id' (case insensitive) will be used as node id, others will be ignored.</li>
+     * <li>First column named 'Source' (case insensitive) will be used as source node id. The next ones will be used as normal columns, and created if not already existing.</li>
+     * <li>First column named 'Target' (case insensitive) will be used as target node id. The next ones will be used as normal columns, and created if not already existing.</li>
+     * <li>First column named 'Type' (case insensitive) will be used as edge type, matching 'Directed' or 'Undirected' strings (case insensitive). The next ones will be used as normal columns, and created if not already existing.</li>
+     * </ul>
+     * </p>
+     * @param file CSV file
+     * @param separator Separator of values of the CSV file
+     * @param charset Charset of the CSV file
+     * @param columnNames Names of the columns in the CSV file to use
+     * @param columnTypes Types of the columns in the CSV file to use when creating columns
+     * @param createNewNodes Indicates if missing nodes should be created when an edge declares a source or target id not already existing
+     */
+    void importCSVToEdgesTable(File file, Character separator, Charset charset, String[] columnNames, AttributeType[] columnTypes, boolean createNewNodes);
 }
