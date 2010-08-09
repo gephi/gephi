@@ -37,8 +37,7 @@ import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import javax.swing.table.AbstractTableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
@@ -80,6 +79,7 @@ public class EdgeDataTable {
     private Edge[] selectedEdges;
     private AttributeColumnsController attributeColumnsController;
     private static final int FAKE_COLUMNS_COUNT = 3;
+    private EdgeDataTableModel model;
 
     public EdgeDataTable() {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
@@ -207,8 +207,14 @@ public class EdgeDataTable {
             columns.add(new AttributeEdgeDataColumn(c));
         }
 
-        EdgeDataTableModel model = new EdgeDataTableModel(graph.getEdges().toArray(), columns.toArray(new EdgeDataColumn[0]));
-        table.setModel(model);
+        if (model == null) {
+            model = new EdgeDataTableModel(graph.getEdges().toArray(), columns.toArray(new EdgeDataColumn[0]));
+            table.setModel(model);
+        } else {
+            model.setEdges(graph.getEdges().toArray());
+            model.setColumns(columns.toArray(new EdgeDataColumn[0]));
+        }
+
         setEdgesSelection(selectedEdges);//Keep row selection before refreshing.
         selectedEdges = null;
     }
@@ -269,7 +275,7 @@ public class EdgeDataTable {
         }
     }
 
-    private class EdgeDataTableModel implements TableModel {
+    private class EdgeDataTableModel extends AbstractTableModel {
 
         private Edge[] edges;
         private EdgeDataColumn[] columns;
@@ -287,14 +293,17 @@ public class EdgeDataTable {
             return columns.length;
         }
 
+        @Override
         public String getColumnName(int columnIndex) {
             return columns[columnIndex].getColumnName();
         }
 
+        @Override
         public Class<?> getColumnClass(int columnIndex) {
             return columns[columnIndex].getColumnClass();
         }
 
+        @Override
         public boolean isCellEditable(int rowIndex, int columnIndex) {
             return columns[columnIndex].isEditable();
         }
@@ -303,18 +312,33 @@ public class EdgeDataTable {
             return columns[columnIndex].getValueFor(edges[rowIndex]);
         }
 
+        @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
             columns[columnIndex].setValueFor(edges[rowIndex], aValue);
         }
 
-        public void addTableModelListener(TableModelListener l) {
-        }
-
-        public void removeTableModelListener(TableModelListener l) {
-        }
-
         public Edge getEdgeAtRow(int row) {
             return edges[row];
+        }
+
+        public EdgeDataColumn[] getColumns() {
+            return columns;
+        }
+
+        public void setColumns(EdgeDataColumn[] columns) {
+            boolean columnsChanged=columns.length != this.columns.length;
+            this.columns = columns;
+            if(columnsChanged){
+                fireTableStructureChanged();
+            }
+        }
+
+        public Edge[] getEdges() {
+            return edges;
+        }
+
+        public void setEdges(Edge[] edges) {
+            this.edges = edges;
         }
     }
 
