@@ -295,7 +295,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         if (start == null && end == null) {
             throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
         }
-        timeInterval = new TimeInterval(timeInterval, start, end);
+        timeInterval = new TimeInterval(timeInterval, start != null ? start : Double.NEGATIVE_INFINITY, end != null ? end : Double.POSITIVE_INFINITY);
     }
 
     public void setTimeInterval(TimeInterval timeInterval) {
