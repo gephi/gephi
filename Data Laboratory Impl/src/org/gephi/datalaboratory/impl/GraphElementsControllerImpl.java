@@ -32,7 +32,6 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.UndirectedGraph;
@@ -401,10 +400,6 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     /************Private methods : ************/
     private Graph getGraph() {
         return Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
-    }
-
-    private MixedGraph getMixedGraph() {
-        return Lookup.getDefault().lookup(GraphController.class).getModel().getMixedGraph();
     }
 
     private DirectedGraph getDirectedGraph() {

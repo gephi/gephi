@@ -23,6 +23,7 @@ package org.gephi.datalaboratory.api;
 import java.util.regex.Pattern;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 
@@ -86,7 +87,7 @@ public interface SearchReplaceController {
         private Node[] nodesToSearch;
         private Edge[] edgesToSearch;
         private Integer startingRow = null, startingColumn = null;
-        private boolean loopToBeginning=true;
+        private boolean loopToBeginning = true;
         private Pattern regexPattern;
         private boolean useRegexReplaceMode = false;
         private int regionStart = 0;
@@ -100,19 +101,33 @@ public interface SearchReplaceController {
 
         /**
          * Sets nodesToSearch as all nodes in the graph if they are null or empty array.
+         * Also only search on visible view if data table is showing visible only.
          */
         private void checkNodesToSearch() {
             if (nodesToSearch == null || nodesToSearch.length == 0) {
-                nodesToSearch = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph().getNodesTree().toArray();
+                HierarchicalGraph hg;
+                if (Lookup.getDefault().lookup(DataTablesController.class).isShowingOnlyVisible()) {
+                    hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraphVisible();
+                } else {
+                    hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
+                }
+                nodesToSearch = hg.getNodesTree().toArray();
             }
         }
 
         /**
          * Sets edgesToSearch as all edges in the graph if they are null or empty array.
+         * Also only search on visible view if data table is showing visible only.
          */
         private void checkEdgesToSearch() {
             if (edgesToSearch == null || edgesToSearch.length == 0) {
-                edgesToSearch = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph().getEdges().toArray();
+                HierarchicalGraph hg;
+                if (Lookup.getDefault().lookup(DataTablesController.class).isShowingOnlyVisible()) {
+                    hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraphVisible();
+                } else {
+                    hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
+                }
+                edgesToSearch = hg.getEdges().toArray();
             }
         }
 

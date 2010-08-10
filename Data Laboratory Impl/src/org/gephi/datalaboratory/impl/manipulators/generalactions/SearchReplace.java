@@ -70,7 +70,7 @@ public class SearchReplace implements GeneralActionsManipulator {
 
     public boolean canExecute() {
         AttributeTable currentTable = getCurrentTable();
-        return currentTable!=null&&Lookup.getDefault().lookup(AttributeColumnsController.class).getTableRowsCount(currentTable) > 0;//Make sure that there is at least 1 row
+        return currentTable != null && Lookup.getDefault().lookup(AttributeColumnsController.class).getTableRowsCount(currentTable) > 0;//Make sure that there is at least 1 row
     }
 
     public ManipulatorUI getUI() {
@@ -90,8 +90,8 @@ public class SearchReplace implements GeneralActionsManipulator {
     }
 
     private AttributeTable getCurrentTable() {
-        DataTablesController dtc=Lookup.getDefault().lookup(DataTablesController.class);
-        if(dtc.getDataTablesEventListener()==null){
+        DataTablesController dtc = Lookup.getDefault().lookup(DataTablesController.class);
+        if (dtc.getDataTablesEventListener() == null) {
             return null;
         }
         if (dtc.isNodeTableMode()) {

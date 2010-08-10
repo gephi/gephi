@@ -431,24 +431,29 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     private void refreshFilterColumns() {
-        if (classDisplayed.equals(ClassDisplayed.NODE)) {
-            ETableColumnModel columnModel = (ETableColumnModel) nodeTable.getOutlineTable().getColumnModel();
-            DefaultComboBoxModel model = new DefaultComboBoxModel();
-            for (int i = 0; i < columnModel.getColumnCount(); i++) {
-                if (!columnModel.isColumnHidden(columnModel.getColumn(i))) {
-                    model.addElement(columnModel.getColumn(i).getHeaderValue());
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                if (classDisplayed.equals(ClassDisplayed.NODE)) {
+                    ETableColumnModel columnModel = (ETableColumnModel) nodeTable.getOutlineTable().getColumnModel();
+                    DefaultComboBoxModel model = new DefaultComboBoxModel();
+                    for (int i = 0; i < columnModel.getColumnCount(); i++) {
+                        if (!columnModel.isColumnHidden(columnModel.getColumn(i))) {
+                            model.addElement(columnModel.getColumn(i).getHeaderValue());
+                        }
+                    }
+                    columnComboBox.setModel(model);
+                } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
+                    DefaultComboBoxModel model = new DefaultComboBoxModel();
+                    for (int i = 0; i < edgeTable.getTable().getColumnCount(); i++) {
+                        if (edgeTable.getTable().getColumnExt(i).isVisible()) {
+                            model.addElement(edgeTable.getTable().getColumnExt(i).getTitle());
+                        }
+                    }
+                    columnComboBox.setModel(model);
                 }
             }
-            columnComboBox.setModel(model);
-        } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
-            DefaultComboBoxModel model = new DefaultComboBoxModel();
-            for (int i = 0; i < edgeTable.getTable().getColumnCount(); i++) {
-                if (edgeTable.getTable().getColumnExt(i).isVisible()) {
-                    model.addElement(edgeTable.getTable().getColumnExt(i).getTitle());
-                }
-            }
-            columnComboBox.setModel(model);
-        }
+        });
     }
 
     private void enableTableControls() {
@@ -577,10 +582,10 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         }
     }
 
-    private void showCSVExportUI(JTable table){
-        CSVExportUI csvUI= new CSVExportUI(table);
-        DialogDescriptor dd=new DialogDescriptor(csvUI, csvUI.getDisplayName());
-        if(DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION)){
+    private void showCSVExportUI(JTable table) {
+        CSVExportUI csvUI = new CSVExportUI(table);
+        DialogDescriptor dd = new DialogDescriptor(csvUI, csvUI.getDisplayName());
+        if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION)) {
             TableCSVExporter.exportTableAsCSV(this, table, csvUI.getSelectedSeparator(), csvUI.getSelectedCharset(), csvUI.getSelectedColumnsIndexes());
         }
     }
