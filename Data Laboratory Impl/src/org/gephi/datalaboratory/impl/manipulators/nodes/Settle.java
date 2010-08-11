@@ -62,7 +62,7 @@ public class Settle implements NodesManipulator {
 
     public boolean canExecute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        return gec.isNodeFixed(clickedNode);
+        return !gec.isNodeFixed(clickedNode);
     }
 
     public ManipulatorUI getUI() {

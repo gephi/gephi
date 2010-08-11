@@ -74,6 +74,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.BusyUtils;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.ui.components.WrapLayout;
 import org.gephi.ui.general.actions.AddColumnUI;
 import org.gephi.ui.general.actions.CSVExportUI;
 import org.gephi.ui.general.actions.MergeColumnsUI;
@@ -146,6 +147,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         });
 
         initComponents();
+        columnManipulatorsPanel.setLayout(new WrapLayout(WrapLayout.CENTER, 25, 20));
         setName(NbBundle.getMessage(DataTableTopComponent.class, "CTL_DataTableTopComponent"));
 //        setToolTipText(NbBundle.getMessage(DataTableTopComponent.class, "HINT_DataTableTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
@@ -1068,7 +1070,6 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         attributeColumnsScrollPane.setPreferredSize(new java.awt.Dimension(200, 130));
 
         columnManipulatorsPanel.setMinimumSize(new java.awt.Dimension(200, 100));
-        columnManipulatorsPanel.setPreferredSize(new java.awt.Dimension(200, 100));
         columnManipulatorsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 20));
         attributeColumnsScrollPane.setViewportView(columnManipulatorsPanel);
 
