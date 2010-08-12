@@ -32,22 +32,36 @@ import org.gephi.graph.api.Graph;
  * @see DynamicController
  */
 public interface DynamicModel {
+	/**
+	 * The name of a column containing time intervals.
+	 */
+	public static final String TIMEINTERVAL_COLUMN = "time_interval";
 
-    /**
-     * The name of a column containing time intervals.
-     */
-    public static final String TIMEINTERVAL_COLUMN = "time_interval";
+	/**
+	 * Builds a new {@code DynamicGraph} from the given {@code Graph} instance.
+	 *
+	 * @param graph the underlying graph
+	 *
+	 * @return a new a new {@code DynamicGraph}.
+	 */
+	public DynamicGraph createDynamicGraph(Graph graph);
 
-    public DynamicGraph createDynamicGraph(Graph graph);
+	/**
+	 * Builds a new {@code DynamicGraph} from the given {@code Graph} instance
+	 * wrapping the given {@code TimeInterval}.
+	 *
+	 * @param graph the underlying graph
+	 *
+	 * @return a new a new {@code DynamicGraph}.
+	 */
+	public DynamicGraph createDynamicGraph(Graph graph, TimeInterval interval);
 
-    public DynamicGraph createDynamicGraph(Graph graph, TimeInterval interval);
-
-    /**
-     * Returns the time interval wrapped by the {@code DynamicGraph} of
-     * the current workspace.
-     *
-     * @return the time interval wrapped by the {@code DynamicGraph} of
-     * the current workspace.
-     */
-    public TimeInterval getVisibleInterval();
+	/**
+	 * Returns the time interval wrapped by the {@code DynamicGraph} of
+	 * the current workspace.
+	 *
+	 * @return the time interval wrapped by the {@code DynamicGraph} of
+	 * the current workspace.
+	 */
+	public TimeInterval getVisibleInterval();
 }

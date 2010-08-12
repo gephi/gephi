@@ -46,7 +46,6 @@ import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.attributes.type.BigIntegerList;
 import org.gephi.data.attributes.type.BigDecimalList;
 import org.gephi.data.attributes.type.Interval;
-import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte0;
 
 /**
  * The different type an {@link AttributeColumn} can have.

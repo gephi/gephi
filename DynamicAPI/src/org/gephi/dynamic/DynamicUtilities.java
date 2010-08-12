@@ -27,8 +27,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
-import javax.xml.datatype.XMLGregorianCalendar;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.type.DynamicBigDecimal;
 import org.gephi.data.attributes.type.DynamicBigInteger;
@@ -66,7 +64,8 @@ public final class DynamicUtilities {
 	 */
 	public static double getDoubleFromXMLDateString(String str) throws DatatypeConfigurationException {
 		DatatypeFactory dateFactory = DatatypeFactory.newInstance();
-		return dateFactory.newXMLGregorianCalendar(str).toGregorianCalendar().getTimeInMillis();
+		return dateFactory.newXMLGregorianCalendar(str.length() > 23 ? str.substring(0, 23) : str).
+				toGregorianCalendar().getTimeInMillis();
 	}
 	
 	/**
@@ -86,7 +85,7 @@ public final class DynamicUtilities {
 			throw new IllegalArgumentException("The passed double cannot be infinite.");
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTimeInMillis((long)d);
-		return dateFactory.newXMLGregorianCalendar(gc).toXMLFormat().substring(0, 10);
+		return dateFactory.newXMLGregorianCalendar(gc).toXMLFormat().substring(0, 23);
 	}
 
 	/**

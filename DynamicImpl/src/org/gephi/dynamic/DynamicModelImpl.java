@@ -33,60 +33,57 @@ import org.gephi.project.api.Workspace;
  * @author Cezary Bartosiak
  */
 public final class DynamicModelImpl implements DynamicModel {
+	private GraphModel   graphModel;
+	private TimeInterval visibleTimeInterval;
 
-    private GraphModel graphModel;
-    private TimeInterval visibleTimeInterval;
+	/**
+	 * The default constructor.
+	 *
+	 * @param workspace  workspace related to this model
+	 *
+	 * @throws NullPointerException if {@code workspace} is null.
+	 */
+	public DynamicModelImpl(Workspace workspace) {
+		this(workspace, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+	}
 
-    /**
-     * The default constructor.
-     *
-     * @param workspace  workspace related to this model
-     *
-     * @throws NullPointerException if {@code workspace} is null.
-     */
-    public DynamicModelImpl(Workspace workspace) {
-        this(workspace, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-    }
+	/**
+	 * Constructs a new {@code DynamicModel} for the {@code workspace}.
+	 *
+	 * @param workspace  workspace related to this model
+	 * @param low        the left endpoint of the visible time interval
+	 * @param high       the right endpoint of the visible time interval
+	 *
+	 * @throws NullPointerException if {@code workspace} is null or the graph model
+	 *                              and/or its underlying graph are nulls.
+	 */
+	public DynamicModelImpl(Workspace workspace, double low, double high) {
+		if (workspace == null)
+			throw new NullPointerException("The workspace cannot be null.");
 
-    /**
-     * Constructs a new {@code DynamicModel} for the {@code workspace}.
-     *
-     * @param workspace  workspace related to this model
-     * @param low        the left endpoint of the visible time interval
-     * @param high       the right endpoint of the visible time interval
-     *
-     * @throws NullPointerException if {@code workspace} is null or the graph model
-     *                              and/or its underlying graph are nulls.
-     */
-    public DynamicModelImpl(Workspace workspace, double low, double high) {
-        if (workspace == null) {
-            throw new NullPointerException("The workspace cannot be null.");
-        }
+		graphModel = workspace.getLookup().lookup(GraphModel.class);
+		if (graphModel == null || graphModel.getGraph() == null)
+			throw new NullPointerException("The graph model and its underlying graph cannot be nulls.");
+		visibleTimeInterval = new TimeInterval(low, high);
+	}
 
-        graphModel = workspace.getLookup().lookup(GraphModel.class);
-        if (graphModel == null || graphModel.getGraph() == null) {
-            throw new NullPointerException("The graph model and its underlying graph cannot be nulls.");
-        }
-        visibleTimeInterval = new TimeInterval(low, high);
-    }
+	@Override
+	public DynamicGraph createDynamicGraph(Graph graph) {
+		return new DynamicGraphImpl(graph);
+	}
 
-    @Override
-    public DynamicGraph createDynamicGraph(Graph graph) {
-        return new DynamicGraphImpl(graph);
-    }
+	@Override
+	public DynamicGraph createDynamicGraph(Graph graph, TimeInterval interval) {
+		return new DynamicGraphImpl(graph, interval.getLow(), interval.getHigh());
+	}
 
-    @Override
-    public DynamicGraph createDynamicGraph(Graph graph, TimeInterval interval) {
-        return new DynamicGraphImpl(graph, interval.getLow(), interval.getHigh());
-    }
+	@Override
+	public TimeInterval getVisibleInterval() {
+		return visibleTimeInterval;
+	}
 
-    @Override
-    public TimeInterval getVisibleInterval() {
-        return visibleTimeInterval;
-    }
-
-    public void setVisibleTimeInterval(TimeInterval visibleTimeInterval) {
-        this.visibleTimeInterval = visibleTimeInterval;
-        //Trigger Event
-    }
+	public void setVisibleTimeInterval(TimeInterval visibleTimeInterval) {
+		this.visibleTimeInterval = visibleTimeInterval;
+		// Trigger Event
+	}
 }
