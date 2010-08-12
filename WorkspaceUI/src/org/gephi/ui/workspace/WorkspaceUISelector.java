@@ -59,6 +59,7 @@ public class WorkspaceUISelector implements StatusLineElementProvider, Workspace
     }
 
     public void close(Workspace workspace) {
+        panel.refreshList();
     }
 
     public void disable() {
