@@ -25,8 +25,9 @@ import javax.swing.Icon;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 
 /**
- * <p>General and abstract manipulation action to use for DataLaboratory tables.</p>
- * <p>These are shown on right click on one or more elements of a table and are able to:</p>
+ * <p>General and abstract manipulation action to use for Data Laboratory table UI.</p>
+ * <p>Different subtypes of manipulators are defined for every type of action in the UI.</p>
+ * <p>All manipulator types are able to:</p>
  * <ul>
  *  <li>Execute an action</li>
  *  <li>Provide a name, description, type and order of appearance (position in group of its type)</li>
@@ -35,7 +36,8 @@ import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
  *  <li>Provide and icon or not</li>
  * </ul>
  * <p>Used for different manipulators such as NodesManipulator, EdgesManipulator and GeneralActionsManipulator.</p>
- * <p>The only methods that could be called before setting up a manipulator with the data are getType and getPosition</p>
+ * <p>The only methods that are called before setting up a manipulator (subtypes have special setup methods) with the data are getType and getPosition.
+ * This way, the other methods behaviour can depend on the data that has been setup before</p>
  * @see NodesManipulator
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
@@ -43,14 +45,14 @@ public interface Manipulator {
 
     /**
      * Execute this Manipulator.
-     * It will operate with data like nodes and edge previously set up.
+     * It will operate with data like nodes and edges previously setup for the type of manipulator.
      */
     void execute();
 
     /**
-     * Return name to show for this Manipulator on the ui.
-     * Implementations should provide different names depending on the data this
-     * Manipulator has (for example depending on the number of nodes in a NodeManipulator).
+     * <p>Return name to show for this Manipulator on the ui.</p>
+     * <p>Implementations can provide different names depending on the data this
+     * Manipulator has (for example depending on the number of nodes in a NodesManipulator).</p>
      * @return Name to show at current time and conditions
      */
     String getName();

@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.spi;
 
 /**
- * <p>An instance of this interface is passed to any type of UI manipulators, allowing the
+ * <p>An instance of this interface is passed to any type of manipulator UI, allowing the
  * UIs to enable/disable the dialog controls</p>
  * <p>For now allows to enable/disable the Ok button of the dialog</p>
  * @author Eduardo Ramos <eduramiba@gmail.com>

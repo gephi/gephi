@@ -21,10 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.spi.edges;
 
 /**
- * This interface is used for providing EdgesManipulator instances
- * using the Netbeans Lookup but avoiding the singleton it causes.
- * Each EdgesManipulator should have a EdgesManipulatorBuilder
- * with @ServiceProvider annotation to be public.
+ * <p>This interface is used for providing EdgesManipulator instances
+ * using the Netbeans Lookup but avoiding the singleton it causes.</p>
+ * <p>Each EdgesManipulator should have a EdgesManipulatorBuilder
+ * with <code>@ServiceProvider(service=EdgesManipulatorBuilder.class)</code> annotation to be public.</p>
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface EdgesManipulatorBuilder {

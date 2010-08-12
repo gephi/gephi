@@ -22,7 +22,6 @@ package org.gephi.ui.utils;
 
 import org.gephi.data.attributes.api.AttributeTable;
 import org.netbeans.validation.api.Problems;
-import org.netbeans.validation.api.Severity;
 import org.netbeans.validation.api.Validator;
 import org.openide.util.NbBundle;
 

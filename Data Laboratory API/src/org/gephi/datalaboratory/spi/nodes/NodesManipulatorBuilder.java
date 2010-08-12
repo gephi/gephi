@@ -21,10 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.spi.nodes;
 
 /**
- * This interface is used for providing NodesManipulator instances
- * using the Netbeans Lookup but avoiding the singleton it causes.
- * Each NodesManipulator should have a NodesManipulatorBuilder
- * with @ServiceProvider annotation to be public.
+ * <p>This interface is used for providing NodesManipulator instances
+ * using the Netbeans Lookup but avoiding the singleton it causes.</p>
+ * <p>Each NodesManipulator should have a NodesManipulatorBuilder
+ * with <code>@ServiceProvider(service=NodesManipulatorBuilder.class)</code> annotation to be public.</p>
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface NodesManipulatorBuilder {

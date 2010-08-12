@@ -25,7 +25,9 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
 /**
- * This is the interface for a listener of DataTablesController requests.
+ * <p>This is the interface for a listener of <code>DataTablesController</code> requests.</p>
+ * <p><b>Only data table UI should be an implementation of this listener</b></p>
+ * @see DataTablesController
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface DataTablesEventListener {

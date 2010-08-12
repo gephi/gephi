@@ -30,7 +30,7 @@ import org.netbeans.swing.outline.Outline;
 import org.openide.util.NbBundle;
 
 /**
- * UI for selecting CSV export options.
+ * UI for selecting CSV export options of a JTable.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class CSVExportUI extends javax.swing.JPanel {

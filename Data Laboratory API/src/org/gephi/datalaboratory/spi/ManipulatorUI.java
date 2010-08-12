@@ -24,9 +24,9 @@ import javax.swing.JPanel;
 
 /**
  * <p>UI Manipulators can provide.</p>
- * <p>Must provide a JPanel, a window name/title and indictate if it is modal.</p>
+ * <p>Must provide a JPanel, a window name/title and indicate if it is modal.</p>
  * <p>The panel will be shown in a dialog with Ok/Cancel options only.</p>
- * <p>The ok button can be enabled/disabled with the DialogControls instance passed at setup</p>
+ * <p>The ok button can be enabled/disabled with the <code>DialogControls</code> instance passed at setup</p>
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface ManipulatorUI {
@@ -39,7 +39,7 @@ public interface ManipulatorUI {
     void setup(Manipulator m, DialogControls dialogControls);
 
     /**
-     * Called when the window is closed or accepted.
+     * Called when the dialog is closed, canceled or accepted.
      */
     void unSetup();
 

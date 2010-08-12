@@ -89,7 +89,6 @@ public class TableCSVExporter {
 
     /**
      * <p>Exports a JTable to a CSV file showing first a dialog to select the file to write.</p>
-     * <p>Will be exported to a file with charset <b>UTF-8</b>.</p>
      * @param parent Parent window
      * @param table Table to export
      * @param separator Separator to use for separating values of a row in the CSV file. If null ',' will be used.

@@ -22,7 +22,6 @@ package org.gephi.datalaboratory.api;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeColumnsMergeStrategy;
@@ -33,60 +32,60 @@ import org.gephi.datalaboratory.spi.generalactions.PluginGeneralActionsManipulat
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 
 /**
- * Interface for simplifying the implementation of Data Laboratory.
+ * Helper class for simplifying the implementation of Data Laboratory.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface DataLaboratoryHelper {
 
     /**
-     * Prepares an array with one new instance of every NodesManipulator
-     * that has a builder registered and returns it.
-     * It also must ensure to return the manipulators ordered first by type and then by position.
+     * <p>Prepares an array with one new instance of every NodesManipulator
+     * that has a builder registered and returns it.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
      * @return Array of all NodesManipulator implementations
      */
     NodesManipulator[] getNodesManipulators();
 
     /**
-     * Prepares an array with one new instance of every EdgesManipulator
-     * that has a builder registered and returns it.
-     * It also must ensure to return the manipulators ordered first by type and then by position.
+     * <p>Prepares an array with one new instance of every EdgesManipulator
+     * that has a builder registered and returns it.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
      * @return Array of all EdgesManipulator implementations
      */
     EdgesManipulator[] getEdgesManipulators();
 
     /**
-     * Prepares an array with one instance of every GeneralActionsManipulator that is registered.
-     * It also must ensure to return the manipulators ordered first by type and then by position.
+     * <p>Prepares an array with one instance of every GeneralActionsManipulator that is registered.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
      * @return Array of all GeneralActionsManipulator implementations
      */
     GeneralActionsManipulator[] getGeneralActionsManipulators();
 
     /**
-     * Prepares an array with one instance of every PluginGeneralActionsManipulator that is registered.
-     * It also must ensure to return the manipulators ordered first by type and then by position.
+     * <p>Prepares an array with one instance of every PluginGeneralActionsManipulator that is registered.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
      * @return Array of all PluginGeneralActionsManipulator implementations
      */
     PluginGeneralActionsManipulator[] getPluginGeneralActionsManipulators();
 
     /**
-     * Prepares an array that has one instance of every AttributeColumnsManipulator implementation 
-     * that has a builder registered and returns it.
-     * It also must ensure to return the manipulators ordered first by type and then by position.
+     * <p>Prepares an array that has one instance of every AttributeColumnsManipulator implementation
+     * that has a builder registered and returns it.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
      * @return Array of all AttributeColumnsManipulator implementations
      */
     AttributeColumnsManipulator[] getAttributeColumnsManipulators();
 
     /**
-     * Prepares an array with one new instance of every AttributeValueManipulator
-     * that has a builder registered and returns it.
-     * It also must ensure to return the manipulators ordered first by type and then by position.
+     * <p>Prepares an array with one new instance of every AttributeValueManipulator
+     * that has a builder registered and returns it.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
      * @return Array of all AttributeValueManipulator implementations
      */
     AttributeValueManipulator[] getAttributeValueManipulators();
 
     /**
-     * Prepares an array that has one new instance of every AttributeColumnsMergeStrategy implementation that is registered.
-     * It also must ensure to return the manipulators ordered first by type and then by position.
+     * <p>Prepares an array that has one new instance of every AttributeColumnsMergeStrategy implementation that is registered.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
      * @return
      */
     AttributeColumnsMergeStrategy[] getAttributeColumnsMergeStrategies();

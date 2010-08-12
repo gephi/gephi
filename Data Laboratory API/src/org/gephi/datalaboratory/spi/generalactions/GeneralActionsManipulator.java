@@ -24,8 +24,9 @@ package org.gephi.datalaboratory.spi.generalactions;
 import org.gephi.datalaboratory.spi.Manipulator;
 
 /**
- * Manipulator for general actions that don't need to obtain any data before being executed.
- * They are added as buttons in Data table toolbar.
+ * <p>Manipulator for general actions that don't need to obtain any data before being executed.</p>
+ * <p>They are added as buttons in Data table toolbar.</p>
+ * <p>The implementations don't need a builder and can simply be published with <code>@ServiceProvider(service = GeneralActionsManipulator.class)</code> annotation</p>
  * @see Manipulator
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */

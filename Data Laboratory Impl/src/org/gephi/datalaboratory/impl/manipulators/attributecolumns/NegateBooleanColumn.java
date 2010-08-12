@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class NegateBooleanColumn implements AttributeColumnsManipulator {
 
     public void execute(AttributeTable table, AttributeColumn column) {
-        Lookup.getDefault().lookup(AttributeColumnsController.class).NegateBooleanColumn(table, column);
+        Lookup.getDefault().lookup(AttributeColumnsController.class).negateBooleanColumn(table, column);
         Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
     }
 

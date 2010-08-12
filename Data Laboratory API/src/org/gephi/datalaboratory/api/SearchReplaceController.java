@@ -28,41 +28,43 @@ import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 
 /**
- * Independent controller for search/replace features only.
- * Operates with SearchOptions and SearchResult objects.
+ * <p>Independent controller for search/replace feature.</p>
+ * <p>Operates with <code>SearchOptions</code> and <code>SearchResult</code> objects.</p>
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface SearchReplaceController {
 
     /**
-     * Finds next (or first) ocurrence of the given search options.
-     * Returns a SearchResult instance with the details or null if the search is not successful.
+     * <p>Finds next (or first) ocurrence for the given search options.</p>
+     * <p>Returns a <code>SearchResult</code> instance with the details or null if the search was not successful.</p>
+     * <p>Modifies the given search options in order to match the next result the next time <code>findNext</code> is called</p>
      * @param searchOptions Options of the search
-     * @return SearchResult with details of the match and modifies the given search options in ordert to match the next result the next time <code>findNext</code> is called. Returns null if search was not successful
+     * @return SearchResult with details of the match or null
      */
     SearchResult findNext(SearchOptions searchOptions);
 
     /**
-     * Finds next ocurrence of the given search options.
-     * Returns a SearchResult instance with the details or null if the search is not successful.
+     * <p>Finds next ocurrence for the given search options contained in a SearchResult.</p>
+     * <p>Returns a <code>SearchResult</code> instance with the details or null if the search was not successful.</p>
+     * <p>Modifies the given search options in order to match the next result the next time <code>findNext</code> is called</p>
      * @param result Last result of the search
-     * @return SearchResult with details of the match and modifies the given search options in ordert to match the next result the next time <code>findNext</code> is called. Returns null if search was not successful
+     * @return SearchResult with details of the match or null 
      */
     SearchResult findNext(SearchResult result);
 
     /**
-     * Indicates if a SearchResult can be replaced or not.
-     * Computed columns and id columns cannot be replaced.
+     * <p>Indicates if a <code>SearchResult</code> can be replaced or not.</p>
+     * <p>Computed columns and id columns cannot be replaced.</p>
      * @param result SearchResult to check before replacing
      * @return True if it can be replaced, false otherwise
      */
     boolean canReplace(SearchResult result);
 
     /**
-     * Replaces a SearchResult with the given replacement String.
-     * Also tries to find next search result and returns it.
-     * If the data has changed and the replacement can't be done it will just return next SearchResult.
-     * If useRegexReplaceMode is enabled, IndexOutOfBoundsException can be thrown when the replacement is not correct for the regular expression.
+     * <p>Replaces a <code>SearchResult</code> with the given replacement String.</p>
+     * <p>Also tries to find next search result and returns it.</p>
+     * <p>If the data has changed and the replacement can't be done it will just return next <code>SearchResult</code> calling <code>findNext</code>.</p>
+     * <p>If useRegexReplaceMode is enabled, IndexOutOfBoundsException can be thrown when the replacement is not correct for the regular expression.</p>
      * @param result SearchResult to replace
      * @param replacement Replacement String
      * @return Next SearchResult or null if not successful
@@ -70,8 +72,8 @@ public interface SearchReplaceController {
     SearchResult replace(SearchResult result, String replacement);
 
     /**
-     * Replaces all SearchResults that can be replaced with the given search options from the beginning to the end of the data.
-     * If useRegexReplaceMode is enabled, IndexOutOfBoundsException can be thrown when the replacement is not correct for the regular expression.
+     * <p>Replaces all SearchResults that can be replaced with the given search options from the beginning to the end of the data.</p>
+     * <p>If useRegexReplaceMode is enabled, IndexOutOfBoundsException can be thrown when the replacement is not correct for the regular expression.</p>
      * @param searchOptions Search options for the searches
      * @param replacement Replacement String
      * @return Count of made replacements
@@ -231,9 +233,8 @@ public interface SearchReplaceController {
     }
 
     /**
-     * Class that wraps the result of a search contaning the search options used for this result
-     * and the node or edge, row, column and start-end index of the value where ocurrence was found.
-     *
+     * <p>Class that wraps the result of a search contaning the search options used for this result
+     * and the node or edge, row, column and start-end index of the value where ocurrence was found.</p>
      */
     class SearchResult {
 

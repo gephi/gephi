@@ -23,9 +23,9 @@ package org.gephi.datalaboratory.spi.generalactions;
 import org.gephi.datalaboratory.spi.Manipulator;
 
 /**
- * This interface defines the same service as GeneralActionsManipulator, with one
+ * <p>This interface defines the same service as GeneralActionsManipulator, with one
  * only change: the actions are shown in a drop down panel as plugins,
- * to tell the difference between normal, basic general actions in data laboratory and plugins.
+ * to tell the difference between normal, basic general actions in data laboratory and plugins.</p>
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface PluginGeneralActionsManipulator extends Manipulator{

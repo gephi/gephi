@@ -183,7 +183,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
-    public void NegateBooleanColumn(AttributeTable table, AttributeColumn column) {
+    public void negateBooleanColumn(AttributeTable table, AttributeColumn column) {
         AttributeUtils attributeUtils = AttributeUtils.getDefault();
         if (attributeUtils.isColumnOfType(column, AttributeType.BOOLEAN)) {
             negateColumnBooleanType(table, column);
@@ -227,10 +227,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public void clearNodeData(Node node, AttributeColumn[] columnsToClear) {
-        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        if (gec.isNodeInGraph(node)) {
-            clearRowData((AttributeRow) node.getNodeData().getAttributes(), columnsToClear);
-        }
+        clearRowData((AttributeRow) node.getNodeData().getAttributes(), columnsToClear);
     }
 
     public void clearNodesData(Node[] nodes, AttributeColumn[] columnsToClear) {
@@ -240,10 +237,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public void clearEdgeData(Edge edge, AttributeColumn[] columnsToClear) {
-        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        if (gec.isEdgeInGraph(edge)) {
-            clearRowData((AttributeRow) edge.getEdgeData().getAttributes(), columnsToClear);
-        }
+        clearRowData((AttributeRow) edge.getEdgeData().getAttributes(), columnsToClear);
     }
 
     public void clearEdgesData(Edge[] edges, AttributeColumn[] columnsToClear) {
@@ -646,7 +640,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     /**
-     * Used to negate the values of a single boolean columns
+     * Used to negate the values of a single boolean column.
      */
     private void negateColumnBooleanType(AttributeTable table, AttributeColumn column) {
         final int columnIndex = column.getIndex();

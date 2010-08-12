@@ -26,14 +26,14 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * Class with some mathematic methods for calculating values such as the average, median, sum, max and min of a list of numbers.
+ * Class with some statistics methods for calculating values such as the average, median, sum, max and min of a list of numbers.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class StatisticsUtils {
 
     /**
-     * Get average calculation of various numbers as a BigDecimal
-     * Null values will not be counted.
+     * <p>Get average calculation of various numbers as a BigDecimal</p>
+     * <p>Null values will not be counted.</p>
      * @param numbers Numbers to calculate average
      * @return Average as a BigDecimal
      */
@@ -61,8 +61,8 @@ public class StatisticsUtils {
     }
 
     /**
-     * Get average calculation of various numbers as a BigDecimal
-     * Null values will not be counted.
+     * <p>Get average calculation of various numbers as a BigDecimal</p>
+     * <p>Null values will not be counted.</p>
      * @param numbers Numbers to calculate average
      * @return Average as a BigDecimal
      */
@@ -71,9 +71,9 @@ public class StatisticsUtils {
     }
 
     /**
-     * Calculate median of various numbers as a BigDecimal.
-     * The elements can't be null.
-     * The elements don't need to be sorted.
+     * <p>Calculate median of various numbers as a BigDecimal.</p>
+     * <p>The elements can't be null.</p>
+     * <p>The elements don't need to be sorted.</p>
      * @param numbers Not null numbers to calculate median
      * @return Median as a BigDecimal
      */
@@ -87,9 +87,9 @@ public class StatisticsUtils {
     }
 
     /**
-     * Calculate median of various numbers as a BigDecimal.
-     * The elements can't be null.
-     * The elements don't need to be sorted.
+     * <p>Calculate median of various numbers as a BigDecimal.</p>
+     * <p>The elements can't be null.</p>
+     * <p>The elements don't need to be sorted.</p>
      * @param numbers Not null numbers to calculate median
      * @return Median as a BigDecimal
      */
@@ -98,9 +98,9 @@ public class StatisticsUtils {
     }
 
     /**
-     * Calculate first quartile (Q1) of various numbers as a BigDecimal.
-     * The elements can't be null.
-     * The elements don't need to be sorted.
+     * <p>Calculate first quartile (Q1) of various numbers as a BigDecimal.</p>
+     * <p>The elements can't be null.</p>
+     * <p>The elements don't need to be sorted.</p>
      * @param numbers Not null numbers to calculate Q1
      * @return Q1 as a BigDecimal
      */
@@ -114,9 +114,9 @@ public class StatisticsUtils {
     }
 
     /**
-     * Calculate first quartile (Q1) of various numbers as a BigDecimal.
-     * The elements can't be null.
-     * The elements don't need to be sorted.
+     * <p>Calculate first quartile (Q1) of various numbers as a BigDecimal.</p>
+     * <p>The elements can't be null.</p>
+     * <p>The elements don't need to be sorted.</p>
      * @param numbers Not null numbers to calculate Q1
      * @return Q1 as a BigDecimal
      */
@@ -125,9 +125,9 @@ public class StatisticsUtils {
     }
 
     /**
-     * Calculate third quartile (Q3) of various numbers as a BigDecimal.
-     * The elements can't be null.
-     * The elements don't need to be sorted.
+     * <p>Calculate third quartile (Q3) of various numbers as a BigDecimal.</p>
+     * <p>The elements can't be null.</p>
+     * <p>The elements don't need to be sorted.</p>
      * @param numbers Not null numbers to calculate Q3
      * @return Q3 as a BigDecimal
      */
@@ -141,9 +141,9 @@ public class StatisticsUtils {
     }
 
     /**
-     * Calculate third quartile (Q3) of various numbers as a BigDecimal.
-     * The elements can't be null.
-     * The elements don't need to be sorted.
+     * <p>Calculate third quartile (Q3) of various numbers as a BigDecimal.</p>
+     * <p>The elements can't be null.</p>
+     * <p>The elements don't need to be sorted.</p>
      * @param numbers Not null numbers to calculate Q3
      * @return Q3 as a BigDecimal
      */
@@ -152,8 +152,8 @@ public class StatisticsUtils {
     }
 
     /**
-     * Get sum calculation of various numbers as a BigDecimal
-     * Null values will not be counted.
+     * <p>Get sum of various numbers as a BigDecimal</p>
+     * <p>Null values will not be counted.</p>
      * @param numbers Numbers to calculate sum
      * @return Sum as a BigDecimal
      */
@@ -173,8 +173,8 @@ public class StatisticsUtils {
     }
 
     /**
-     * Get sum calculation of various numbers as a BigDecimal
-     * Null values will not be counted.
+     * <p>Get sum of various numbers as a BigDecimal</p>
+     * <p>Null values will not be counted.</p>
      * @param numbers Numbers to calculate sum
      * @return Sum as a BigDecimal
      */
@@ -183,9 +183,9 @@ public class StatisticsUtils {
     }
 
     /**
-     * Get the minimum value of an array of Number elements as a BigDecimal.
-     * The elements can't be null.
-     * The elements don't need to be sorted.
+     * <p>Get the minimum value of an array of Number elements as a BigDecimal.</p>
+     * <p>The elements can't be null.</p>
+     * <p>The elements don't need to be sorted.</p>
      * @param numbers Numbers to get min
      * @return Minimum value as a BigDecimal
      */
@@ -199,9 +199,9 @@ public class StatisticsUtils {
     }
 
     /**
-     * Get the minimum value of a collection of Number elements as a BigDecimal.
-     * The elements can't be null.
-     * The elements don't need to be sorted.
+     * <p>Get the minimum value of a collection of Number elements as a BigDecimal.</p>
+     * <p>The elements can't be null.</p>
+     * <p>The elements don't need to be sorted.</p>
      * @param numbers Numbers to get min
      * @return Minimum value as a BigDecimal
      */
@@ -210,9 +210,9 @@ public class StatisticsUtils {
     }
 
     /**
-     * Get the maximum value of an array of Number elements as a BigDecimal.
-     * The elements can't be null.
-     * The elements don't need to be sorted.
+     * <p>Get the maximum value of an array of Number elements as a BigDecimal.</p>
+     * <p>The elements can't be null.</p>
+     * <p>The elements don't need to be sorted.</p>
      * @param numbers Numbers to get max
      * @return Maximum value as a BigDecimal
      */
@@ -226,9 +226,9 @@ public class StatisticsUtils {
     }
 
     /**
-     * Get the maximum value of a collection of Number elements as a BigDecimal.
-     * The elements can't be null.
-     * The elements don't need to be sorted.
+     * <p>Get the maximum value of a collection of Number elements as a BigDecimal.</p>
+     * <p>The elements can't be null.</p>
+     * <p>The elements don't need to be sorted.</p>
      * @param numbers Numbers to get max
      * @return Maximum value as a BigDecimal
      */
@@ -237,11 +237,22 @@ public class StatisticsUtils {
     }
 
     /**
-     * Calculates all statistics and returns them in a BigDecimal array.
-     * Using this will be faster than calling all statistics separately.
-     * Returns an array with length=8 of BigDecimal numbers with the results in the following order: average, first quartile (Q1), median, third quartile (Q3), interquartile range (IQR), sum, minimumValue and maximumValue.
-     * The elements can't be null.
-     * The elements don't need to be sorted.
+     * <p>Calculates all statistics and returns them in a <code>BigDecimal</code> numbers array.</p>
+     * <p>Using this will be faster than calling all statistics separately.</p>
+     * <p>Returns an array of <b>length=8</b> of <code>BigDecimal</code> numbers with the results in the following order:
+     * <ol>
+     * <li>average</li>
+     * <li>first quartile (Q1)</li>
+     * <li>median</li>
+     * <li>third quartile (Q3)</li>
+     * <li>interquartile range (IQR)</li>
+     * <li>sum</li>
+     * <li>minimumValue</li>
+     * <li>maximumValue</li>
+     * </ol>
+     * </p>
+     * <p>The elements can't be null.</p>
+     * <p>The elements don't need to be sorted.</p>
      * @param numbers Numbers to get all statistics
      * @return Array with all statisctis
      */
@@ -266,11 +277,22 @@ public class StatisticsUtils {
     }
 
     /**
-     * Calculates all statistics and returns them in a BigDecimal array.
-     * <b>Using this will be faster than calling all statistics separately.</b>
-     * Returns an array with length=8 of BigDecimal numbers with the results in the following order: average, first quartile (Q1), median, third quartile (Q3), interquartile range (IQR), sum, minimumValue and maximumValue.
-     * The elements can't be null.
-     * The elements don't need to be sorted.
+     * <p>Calculates all statistics and returns them in a <code>BigDecimal</code> numbers array.</p>
+     * <p>Using this will be faster than calling all statistics separately.</p>
+     * <p>Returns an array of <b>length=8</b> of <code>BigDecimal</code> numbers with the results in the following order:
+     * <ol>
+     * <li>average</li>
+     * <li>first quartile (Q1)</li>
+     * <li>median</li>
+     * <li>third quartile (Q3)</li>
+     * <li>interquartile range (IQR)</li>
+     * <li>sum</li>
+     * <li>minimumValue</li>
+     * <li>maximumValue</li>
+     * </ol>
+     * </p>
+     * <p>The elements can't be null.</p>
+     * <p>The elements don't need to be sorted.</p>
      * @param numbers Numbers to get all statistics
      * @return Array with all statisctis
      */
@@ -279,8 +301,8 @@ public class StatisticsUtils {
     }
 
     /**
-     * Takes an array of numbers of any type combination and returns
-     * an array with their BigDecimal equivalent numbers.
+     * <p>Takes an array of numbers of any type combination and returns
+     * an array with their BigDecimal equivalent numbers.</p>
      * @return BigDecimal array
      */
     public static BigDecimal[] numbersArrayToSortedBigDecimalArray(Number[] numbers) {

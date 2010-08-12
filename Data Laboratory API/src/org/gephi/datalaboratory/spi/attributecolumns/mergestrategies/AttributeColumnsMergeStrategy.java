@@ -25,8 +25,8 @@ import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.spi.Manipulator;
 
 /**
- * Service for defining strategies for merging attribute columns of a table.
- * Has the same interface as a manipulator.
+ * <p>Service for defining strategies for merging attribute columns of a table.</p>
+ * <p>Has the same interface as a manipulator.</p>
  * @see Manipulator
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */

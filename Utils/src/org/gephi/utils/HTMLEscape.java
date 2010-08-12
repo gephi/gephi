@@ -26,7 +26,7 @@ package org.gephi.utils;
  */
 public class HTMLEscape {
 
-    /**Code previously used in my web applications, adapted from google search**/
+    /**Code previously used in web applications, adapted from a google search**/
 
     /**
      * Escape html from a string to make it safe to show.

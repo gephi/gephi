@@ -21,10 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.spi.attributevalues;
 
 /**
- * This interface is used for providing AttributeValueManipulator instances
- * using the Netbeans Lookup but avoiding the singleton it causes.
- * Each AttributeValueManipulator should have a AttributeValueManipulatorBuilder
- * with @ServiceProvider annotation to be public.
+ * <p>This interface is used for providing AttributeValueManipulator instances
+ * using the Netbeans Lookup but avoiding the singleton it causes.</p>
+ * <p>Each AttributeValueManipulator should have a AttributeValueManipulatorBuilder
+ * with <code>@ServiceProvider(service=AttributeValueManipulatorBuilder.class)</code> annotation to be public.</p>
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface AttributeValueManipulatorBuilder {

@@ -25,14 +25,16 @@ import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 
 /**
- * This interface defines part of the Data Laboratory API.
+ * This interface defines part of the Data Laboratory API basic actions.
  * It contains methods for applying different basic attribute columns merge strategies.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface AttributeColumnsMergeStrategiesController {
 
+    /**
+     * Enumeration that defines the supported logic operations for a merge with <code>booleanLogicOperationsMerge</code> strategy.
+     */
     public enum BooleanOperations {
-
         AND,
         OR,
         XOR,
@@ -41,8 +43,8 @@ public interface AttributeColumnsMergeStrategiesController {
     }
 
     /**
-     * Joins various columns of any type into a new column using the given separator string (or null).
-     * If the specified column type is null, the new created column will have <code>STRING</code> type by default.
+     * <p>Joins various columns of any type into a new column using the given separator string (or null).</p>
+     * <p>If the specified column type is null, the new created column will have <code>STRING</code> <code>AttributeType</code> by default.</p>
      * @param table Table of the columns to merge
      * @param columnsToMerge Columns to merge
      * @param newColumnType Type for the new column. If null, <code>STRING</code> will be used by default
@@ -53,9 +55,9 @@ public interface AttributeColumnsMergeStrategiesController {
     AttributeColumn joinWithSeparatorMerge(AttributeTable table, AttributeColumn[] columnsToMerge, AttributeType newColumnType, String newColumnTitle, String separator);
 
     /**
-     * AttributeColumnsMergeStrategy for only all boolean columns that merges various columns into a new boolean column
-     * allowing to define each operation to apply between each pair of columns to merge.
-     * The length of the operations array must be the length of the columns array-1, or IllegalArgumentException will be thrown.
+     * <p>Strategy to apply only to all boolean columns. Merges various columns into a new boolean column
+     * allowing to define each operation to apply between each pair of columns to merge.</p>
+     * <p>The length of the operations array must be the length of the columns array-1, or IllegalArgumentException will be thrown.</p>
      * @param table Table of the columns to merge
      * @param columnsToMerge Boolean columns to merge
      * @param booleanOperations Boolean operations to apply
@@ -65,8 +67,8 @@ public interface AttributeColumnsMergeStrategiesController {
     AttributeColumn booleanLogicOperationsMerge(AttributeTable table, AttributeColumn[] columnsToMerge, BooleanOperations[] booleanOperations, String newColumnTitle);
 
     /**
-     * Merges any combination of number or number list columns, calculating the average of all not null values
-     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
+     * <p>Merges any combination of number or number list columns, calculating the average of all not null values
+     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> <code>AttributeType</code>.</p>
      * @param table Table of the columns to merge
      * @param columnsToMerge Number or number list columns
      * @param newColumnTitle Title for the new column
@@ -75,8 +77,8 @@ public interface AttributeColumnsMergeStrategiesController {
     AttributeColumn averageNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
 
     /**
-     * Merges any combination of number or number list columns, calculating the first quartile (Q1) of all not null values
-     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
+     * <p>Merges any combination of number or number list columns, calculating the first quartile (Q1) of all not null values
+     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> <code>AttributeType</code>.</p>
      * @param table Table of the columns to merge
      * @param columnsToMerge Number or number list columns
      * @param newColumnTitle Title for the new column
@@ -85,8 +87,8 @@ public interface AttributeColumnsMergeStrategiesController {
     AttributeColumn firstQuartileNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
 
     /**
-     * Merges any combination of number or number list columns, calculating the median of all not null values
-     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
+     * <p>Merges any combination of number or number list columns, calculating the median of all not null values
+     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> <code>AttributeType</code>.</p>
      * @param table Table of the columns to merge
      * @param columnsToMerge Number or number list columns
      * @param newColumnTitle Title for the new column
@@ -95,8 +97,8 @@ public interface AttributeColumnsMergeStrategiesController {
     AttributeColumn medianNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
 
     /**
-     * Merges any combination of number or number list columns, calculating the third quartile (Q3) of all not null values
-     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
+     * <p>Merges any combination of number or number list columns, calculating the third quartile (Q3) of all not null values
+     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> <code>AttributeType</code>.</p>
      * @param table Table of the columns to merge
      * @param columnsToMerge Number or number list columns
      * @param newColumnTitle Title for the new column
@@ -105,8 +107,8 @@ public interface AttributeColumnsMergeStrategiesController {
     AttributeColumn thirdQuartileNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
 
     /**
-     * Merges any combination of number or number list columns, calculating the interquartile range (IQR) of all not null values
-     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
+     * <p>Merges any combination of number or number list columns, calculating the interquartile range (IQR) of all not null values
+     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> <code>AttributeType</code>.</p>
      * @param table Table of the columns to merge
      * @param columnsToMerge Number or number list columns
      * @param newColumnTitle Title for the new column
@@ -115,8 +117,8 @@ public interface AttributeColumnsMergeStrategiesController {
     AttributeColumn interQuartileRangeNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
 
     /**
-     * Merges any combination of number or number list columns, calculating the sum of all not null values
-     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
+     * <p>Merges any combination of number or number list columns, calculating the sum of all not null values
+     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> <code>AttributeType</code>.</p>
      * @param table Table of the columns to merge
      * @param columnsToMerge Number or number list columns
      * @param newColumnTitle Title for the new column
@@ -126,7 +128,7 @@ public interface AttributeColumnsMergeStrategiesController {
 
     /**
      * Merges any combination of number or number list columns, calculating the minimum value of all not null values
-     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
+     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> <code>AttributeType</code>.
      * @param table Table of the columns to merge
      * @param columnsToMerge Number or number list columns
      * @param newColumnTitle Title for the new column
@@ -135,8 +137,8 @@ public interface AttributeColumnsMergeStrategiesController {
     AttributeColumn minValueNumbersMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle);
 
     /**
-     * Merges any combination of number or number list columns, calculating the maximum value of all not null values
-     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> AttributeType.
+     * <p>Merges any combination of number or number list columns, calculating the maximum value of all not null values
+     * and puts the result of each row in a new column of <code>BIGDECIMAL</code> <code>AttributeType</code>.</p>
      * @param table Table of the columns to merge
      * @param columnsToMerge Number or number list columns
      * @param newColumnTitle Title for the new column

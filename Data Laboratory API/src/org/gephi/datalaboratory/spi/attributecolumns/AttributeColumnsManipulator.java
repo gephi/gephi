@@ -27,6 +27,7 @@ import org.gephi.data.attributes.api.AttributeTable;
 
 /**
  * <p>Manipulation action to use for Data Laboratory column manipulator buttons.</p>
+ * <p>This special type of manipulator does not need any builder, implementations can be published simply with <code>@ServiceProvider(service = AttributeColumnsManipulator.class)</code> annotation</p>
  * <p>These are shown as drop down buttons and are able to:</p>
  * <ul>
  *  <li>Execute an action with 1 column</li>

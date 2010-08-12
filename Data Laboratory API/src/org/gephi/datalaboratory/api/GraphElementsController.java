@@ -24,9 +24,9 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
 /**
- * This interface defines part of the Data Laboratory API. It contains methods for manipulating
- * the nodes and edges of the graph.
- * All the provided methods take care to check first that the nodes and edges to manipulate are in the graph.
+ * <p>This interface defines part of the Data Laboratory API basic actions.</p>
+ * <p>It contains methods for manipulating the nodes and edges of the graph.</p>
+ * <p>All the provided methods take care to check first that the nodes and edges to manipulate are in the graph.</p>
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public interface GraphElementsController {
@@ -39,8 +39,8 @@ public interface GraphElementsController {
     Node createNode(String label);
 
     /**
-     * Creates a node with the given id and label.
-     * If a node with that id already exists, no node will be created
+     * <p>Creates a node with the given id and label.</p>
+     * <p>If a node with that id already exists, no node will be created</p>
      * @param label Label for the node
      * @param id Id for the node
      * @return The new created node or null if a node with the given id already exists
@@ -48,23 +48,23 @@ public interface GraphElementsController {
     Node createNode(String label, String id);
 
     /**
-     * Duplicates a node if it is in the graph, and returns the new node.
-     * If the node has children, they are also copied as children of the new node.
-     * Sets the same properties and attributes for the node as the original node: id, label and AttributeColumns with DATA AttributeOrigin.
-     * Does not copy AttributeColumns with COMPUTED AttributeOrigin.
+     * <p>Duplicates a node if it is in the graph, and returns the new node.</p>
+     * <p>If the node has children, they are also copied as children of the new node.</p>
+     * <p>Sets the same properties and attributes for the node as the original node: id, label and <code>AttributeColumns</code> with <code>DATA</code> <code>AttributeOrigin</code>.
+     * Does not copy <code>AttributeColumns</code> with <code>COMPUTED</code> <code>AttributeOrigin</code>.</p>
      * @param node Node to copy
      * @return New node
      */
     Node duplicateNode(Node node);
 
     /**
-     * Tries to duplicate an array of nodes with the same behavious as <code>duplicateNode</code> method.
+     * Tries to duplicate an array of nodes with the same behaviour as <code>duplicateNode</code> method.
      * @param nodes Array of nodes to duplicate
      */
     void duplicateNodes(Node[] nodes);
 
     /**
-     * Creates and edge between source and target node (if does not already exist), directed or undirected.
+     * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
      * This will not create a self-loop.
      * @param source Source node
      * @param target Target node
@@ -74,9 +74,9 @@ public interface GraphElementsController {
     Edge createEdge(Node source, Node target, boolean directed);
 
     /**
-     * Creates and edge between source and target node (if does not already exist), directed or undirected.
-     * If a edge with the given id already exists, no edge will be created.
-     * This will not create a self-loop.
+     * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
+     * <p>If a edge with the given id already exists, no edge will be created.</p>
+     * <p>This will not create a self-loop.</p>
      * @param source Source node
      * @param target Target node
      * @param directed Indicates if the edge has to be directed
@@ -85,8 +85,8 @@ public interface GraphElementsController {
     Edge createEdge(String id,Node source, Node target, boolean directed);
 
     /**
-     * Tries to create edges between the source node and all other edges, directed or undirected.
-     * An edge won't be created if it already exists or is a self-loop.
+     * <p>Tries to create edges between the source node and all other edges, directed or undirected.</p>
+     * <p>An edge won't be created if it already exists or is a self-loop.</p>
      * @param source Source node
      * @param allNodes All edges
      * @param directed Indicates if the edges have to be directed
@@ -184,7 +184,7 @@ public interface GraphElementsController {
 
     /**
      * Moves a node to a group of nodes if it is possible.
-     * To move a node to a group node, they must be different, have the same parent and the group node has to be a group of nodes.
+     * To move a node to a group node, they must be different, have the same parent and the node to be the group has to be a group of nodes.
      * @param node Node to move to group
      * @param group Group of nodes to move the node
      * @return True if the node was moved, false otherwise
@@ -199,8 +199,8 @@ public interface GraphElementsController {
     void moveNodesToGroup(Node[] nodes, Node group);
 
     /**
-     * Prepares and returns an array with the groups which the given nodes can be moved to.
-     * This groups are the nodes that have the same parent as the given nodes and are not in the given nodes array.
+     * <p>Prepares and returns an array with the groups that the given nodes can be moved to.</p>
+     * <p>These groups are the nodes that have the same parent as the given nodes and are not in the given nodes array.</p>
      * @param nodes Nodes to get available groups to be moved
      * @return Available groups array of null if the nodes don't all have the same parent
      */
@@ -237,14 +237,14 @@ public interface GraphElementsController {
     boolean isNodeInGroup(Node node);
 
     /**
-     * Sets a fixed state of a node to the indicated.
+     * Sets the fixed state of a node to the indicated.
      * @param node Node to set fixed state
      * @param fixed Fixed state for the node
      */
     void setNodeFixed(Node node, boolean fixed);
 
     /**
-     * Sets a fixed state of an array of nodes to the indicated.
+     * Sets the fixed state of an array of nodes to the indicated.
      * @param nodes Array of nodes to set fixed state
      * @param fixed Fixed state for the nodes
      */
@@ -284,28 +284,28 @@ public interface GraphElementsController {
     int getEdgesCount();
 	
     /**
-     * Checks if a node is contained in the graph.
+     * Checks if a node is contained in the main view graph.
      * @param node Node to check
      * @return True if the node is in the graph, false otherwise
      */
     boolean isNodeInGraph(Node node);
 
     /**
-     * Checks if an array of nodes are contained in the graph.
+     * Checks if an array of nodes are contained in the main view graph.
      * @param nodes Array of nodes to check
      * @return True if all the nodes are in the graph, false otherwise
      */
     boolean areNodesInGraph(Node[] nodes);
 
     /**
-     * Checks if an edge is contained in the graph.
+     * Checks if an edge is contained in the main view graph.
      * @param edge Edge to check
      * @return True if the edge is in the graph, false otherwise
      */
     boolean isEdgeInGraph(Edge edge);
 
     /**
-     * Checks if an array of edges are contained in the graph.
+     * Checks if an array of edges are contained in the main view graph.
      * @param edges Edges to check
      * @return True if all the edges are in the graph, false otherwise
      */
