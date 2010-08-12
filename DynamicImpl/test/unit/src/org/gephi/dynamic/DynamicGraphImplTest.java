@@ -21,8 +21,6 @@
 package org.gephi.dynamic;
 
 import javax.xml.datatype.DatatypeConfigurationException;
-import org.gephi.io.importer.plugin.file.ImporterGEXF2;
-import java.io.FileReader;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphController;
 import org.gephi.project.api.ProjectController;
@@ -59,7 +57,7 @@ public class DynamicGraphImplTest {
 		Container container;
 		try {
 			File file = new File(getClass().getResource("/org/gephi/dynamic/test_graph.gexf").toURI());
-			container = importController.importFile(new FileReader(file), new ImporterGEXF2());
+			container = importController.importFile(file);
 		}
 		catch (Exception ex) {
 			Exceptions.printStackTrace(ex);
