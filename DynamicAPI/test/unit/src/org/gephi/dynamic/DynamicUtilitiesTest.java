@@ -55,7 +55,7 @@ public class DynamicUtilitiesTest {
 	@Test
 	public void testCalendar() {
 		System.out.println("testCalendar()");
-		String date = "2000-01-01";
+		String date = "2000-01-01T00:00:00.000";
 		try {
 			double d     = DynamicUtilities.getDoubleFromXMLDateString(date);
 			String date2 = DynamicUtilities.getXMLDateStringFromDouble(d);

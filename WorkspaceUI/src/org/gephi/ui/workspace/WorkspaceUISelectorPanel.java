@@ -122,7 +122,8 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
     private Workspace getPrecedentWorkspace(Workspace workspace) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         Workspace prec = null;
-        for (Workspace w : pc.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
+        Workspace[] workspaces = pc.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces();
+        for (Workspace w : workspaces) {
             if (w == workspace) {
                 break;
             }
@@ -133,12 +134,13 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
 
     private Workspace getNextWorkspace(Workspace workspace) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace prec = null;
-        for (Workspace w : pc.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
-            if (prec == workspace) {
+        Workspace next = null;
+        Workspace[] workspaces = pc.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces();
+        for (Workspace w : workspaces) {
+            if (next == workspace) {
                 return w;
             }
-            prec = w;
+            next = w;
         }
         return null;
     }

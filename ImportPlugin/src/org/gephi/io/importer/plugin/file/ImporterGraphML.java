@@ -73,6 +73,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
     public ImporterGraphML() {
         //Default node associations
         properties.addNodePropertyAssociation(NodeProperties.LABEL, "label");
+        properties.addNodePropertyAssociation(NodeProperties.LABEL, "d3");  // Default node label used by yEd from yworks.com.
         properties.addNodePropertyAssociation(NodeProperties.X, "x");
         properties.addNodePropertyAssociation(NodeProperties.Y, "y");
         properties.addNodePropertyAssociation(NodeProperties.Z, "z");
@@ -81,6 +82,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
         //Default edge associations
         properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "label");
         properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "edgelabel");
+        properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "d7");  // Default edge label used by yEd from yworks.com.
         properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "weight");
         properties.addEdgePropertyAssociation(EdgeProperties.ID, "id");
         properties.addEdgePropertyAssociation(EdgeProperties.ID, "edgeid");
