@@ -76,20 +76,20 @@ public final class DynamicGraphImpl implements DynamicGraph {
 
 		model       = graph.getGraphModel();
 		sourceView  = graph.getView();
-		currentView = graph.getView().getGraphModel().copyView(sourceView);
+		currentView = model.copyView(sourceView);
 
 		this.low  = low;
 		this.high = high;
 
 		if (low != Double.NEGATIVE_INFINITY || high != Double.POSITIVE_INFINITY) {
 			Graph vgraph = model.getGraph(currentView);
-			for (Node n : vgraph.getNodes()) {
+			for (Node n : vgraph.getNodes().toArray()) {
 				TimeInterval ti = (TimeInterval)n.getNodeData().getAttributes().getValue(
 						DynamicModel.TIMEINTERVAL_COLUMN);
 				if (!ti.isInRange(low, high))
 					vgraph.removeNode(n);
 			}
-			for (Edge e : vgraph.getEdges()) {
+			for (Edge e : vgraph.getEdges().toArray()) {
 				TimeInterval ti = (TimeInterval)e.getEdgeData().getAttributes().getValue(
 						DynamicModel.TIMEINTERVAL_COLUMN);
 				if (!ti.isInRange(low, high))
@@ -211,18 +211,19 @@ public final class DynamicGraphImpl implements DynamicGraph {
 		checkLowHigh(low, high);
 		Graph graph  = model.getGraph(sourceView);
 		Graph vgraph = model.getGraph(currentView);
-		for (Node n : graph.getNodes()) {
+		for (Node n : graph.getNodes().toArray()) {
 			TimeInterval ti = (TimeInterval)n.getNodeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
 			if (ti.getValue(low, high, estimator) == null && vgraph.contains(n))
 				vgraph.removeNode(n);
 			else if (ti.getValue(low, high, estimator) != null && !vgraph.contains(n))
 				vgraph.addNode(n);
 		}
-		for (Edge e : graph.getEdges()) {
+		for (Edge e : graph.getEdges().toArray()) {
 			TimeInterval ti = (TimeInterval)e.getEdgeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
 			if (ti.getValue(low, high, estimator) == null && vgraph.contains(e))
 				vgraph.removeEdge(e);
-			else if (ti.getValue(low, high, estimator) != null && !vgraph.contains(e))
+			else if (ti.getValue(low, high, estimator) != null && !vgraph.contains(e) &&
+					vgraph.contains(e.getSource()) && vgraph.contains(e.getTarget()))
 				vgraph.addEdge(e);
 		}
 		return vgraph;
@@ -239,18 +240,19 @@ public final class DynamicGraphImpl implements DynamicGraph {
 		checkLowHigh(low, high);
 		Graph graph  = model.getGraph(sourceView);
 		Graph vgraph = model.getGraph(currentView);
-		for (Node n : graph.getNodes()) {
+		for (Node n : graph.getNodes().toArray()) {
 			TimeInterval ti = (TimeInterval)n.getNodeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
 			if (ti.getValues(low, high).size() < ti.getValues().size() && vgraph.contains(n))
 				vgraph.removeNode(n);
 			else if (ti.getValues(low, high).size() == ti.getValues().size() && !vgraph.contains(n))
 				vgraph.addNode(n);
 		}
-		for (Edge e : graph.getEdges()) {
+		for (Edge e : graph.getEdges().toArray()) {
 			TimeInterval ti = (TimeInterval)e.getEdgeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
 			if (ti.getValues(low, high).size() < ti.getValues().size() && vgraph.contains(e))
 				vgraph.removeEdge(e);
-			else if (ti.getValues(low, high).size() == ti.getValues().size() && !vgraph.contains(e))
+			else if (ti.getValues(low, high).size() == ti.getValues().size() && !vgraph.contains(e) &&
+					vgraph.contains(e.getSource()) && vgraph.contains(e.getTarget()))
 				vgraph.addEdge(e);
 		}
 		return vgraph;
