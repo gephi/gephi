@@ -91,6 +91,15 @@ public interface Query {
     public Object getPropertyValue(int index);
 
     /**
+     * Utility method that returns all queries in this query hierarchy that are
+     * <code>filterClass</code> instance.
+     * @param filterClass the filter class that is to be queried
+     * @return      all queries, including self that are <code>filterClass</code>
+     * instance
+     */
+    public Query[] getQueries(Class<? extends Filter> filterClass);
+
+    /**
      * Returns the filter this query is wrapping.
      * @return      the filter
      */

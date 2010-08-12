@@ -22,9 +22,13 @@ package org.gephi.filters;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import org.gephi.filters.api.Query;
+import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Graph;
 
@@ -131,5 +135,23 @@ public abstract class AbstractQueryImpl implements Query {
         }
 
         return copy;
+    }
+
+    public Query[] getQueries(Class<? extends Filter> filterClass) {
+        List<Query> r = new LinkedList<Query>();
+        LinkedList<Query> stack = new LinkedList<Query>();
+        stack.add(this);
+        while (!stack.isEmpty()) {
+            Query q = stack.pop();
+            r.add(q);
+            stack.addAll(Arrays.asList(q.getChildren()));
+        }
+        for (Iterator<Query> itr = r.iterator(); itr.hasNext();) {
+            Query q = itr.next();
+            if (!q.getFilter().getClass().equals(filterClass)) {
+                itr.remove();
+            }
+        }
+        return r.toArray(new Query[0]);
     }
 }
