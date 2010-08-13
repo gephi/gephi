@@ -168,8 +168,8 @@ public class DynamicRangeBuilder implements CategoryBuilder {
 
         public boolean init(Graph graph) {
             visibleInterval = dynamicModel.getVisibleInterval();
-            min = Double.NEGATIVE_INFINITY;
-            max = Double.POSITIVE_INFINITY;
+            min = Double.POSITIVE_INFINITY;
+            max = Double.NEGATIVE_INFINITY;
             return true;
         }
 
@@ -178,8 +178,8 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                 Object obj = node.getNodeData().getAttributes().getValue(nodeColumn.getIndex());
                 if (obj != null) {
                     TimeInterval timeInterval = (TimeInterval) obj;
-                    min = Math.min(min, timeInterval.getLow());
-                    max = Math.max(max, timeInterval.getHigh());
+                    min = Math.min(min, Double.isInfinite(timeInterval.getLow()) ? min : timeInterval.getLow());
+                    max = Math.max(max, Double.isInfinite(timeInterval.getHigh()) ? max : timeInterval.getHigh());
                     return timeInterval.isInRange(visibleInterval.getLow(), visibleInterval.getHigh());
                 }
             }
@@ -191,8 +191,8 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                 Object obj = edge.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
                 if (obj != null) {
                     TimeInterval timeInterval = (TimeInterval) obj;
-                    min = Math.min(min, timeInterval.getLow());
-                    max = Math.max(max, timeInterval.getHigh());
+                    min = Math.min(min, Double.isInfinite(timeInterval.getLow()) ? min : timeInterval.getLow());
+                    max = Math.max(max, Double.isInfinite(timeInterval.getHigh()) ? max : timeInterval.getHigh());
                     return timeInterval.isInRange(visibleInterval.getLow(), visibleInterval.getHigh());
                 }
             }
@@ -200,8 +200,12 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         }
 
         public void finish() {
-            timelineController.setMin(min);
-            timelineController.setMax(max);
+            if (!Double.isInfinite(min)) {
+                timelineController.setMin(min);
+            }
+            if (!Double.isInfinite(max)) {
+                timelineController.setMax(max);
+            }
         }
 
         public String getName() {
