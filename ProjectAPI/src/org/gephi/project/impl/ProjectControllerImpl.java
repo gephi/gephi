@@ -102,10 +102,6 @@ public class ProjectControllerImpl implements ProjectController {
         if (projects.hasCurrentProject()) {
             ProjectImpl currentProject = projects.getCurrentProject();
 
-            //Close
-            currentProject.getLookup().lookup(ProjectInformationImpl.class).close();
-            projects.closeCurrentProject();
-
             //Event
             if (currentProject.getLookup().lookup(WorkspaceProvider.class).hasCurrentWorkspace()) {
                 fireWorkspaceEvent(EventType.UNSELECT, currentProject.getLookup().lookup(WorkspaceProvider.class).getCurrentWorkspace());
@@ -113,6 +109,11 @@ public class ProjectControllerImpl implements ProjectController {
             for (Workspace ws : currentProject.getLookup().lookup(WorkspaceProviderImpl.class).getWorkspaces()) {
                 fireWorkspaceEvent(EventType.CLOSE, ws);
             }
+
+            //Close
+            currentProject.getLookup().lookup(ProjectInformationImpl.class).close();
+            projects.closeCurrentProject();
+
             fireWorkspaceEvent(EventType.DISABLE, null);
         }
     }
