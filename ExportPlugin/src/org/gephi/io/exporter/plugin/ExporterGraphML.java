@@ -202,7 +202,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
             positionKey2E.setAttribute("attr.type", "float");
             positionKey2E.setAttribute("for", "node");
             root.appendChild(positionKey2E);
-            if (minZ != 0f && maxZ != 0f) {
+            if (minZ != 0f || maxZ != 0f) {
                 Element positionKey3E = document.createElement("key");
                 positionKey3E.setAttribute("id", "z");
                 positionKey3E.setAttribute("attr.name", "z");
@@ -388,7 +388,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
             nodeE.appendChild(positionXE);
             Element positionYE = createNodePositionY(document, n);
             nodeE.appendChild(positionYE);
-            if (minZ != 0f && maxZ != 0f) {
+            if (minZ != 0f || maxZ != 0f) {
                 Element positionZE = createNodePositionZ(document, n);
                 nodeE.appendChild(positionZE);
             }
