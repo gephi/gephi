@@ -37,7 +37,7 @@ public class ImporterBuilderGraphML implements FileImporterBuilder {
     public static final String IDENTIFER = "graphml";
 
     public FileImporter buildImporter() {
-        return new ImporterGraphML();
+        return new ImporterGraphML2();
     }
 
     public String getName() {
