@@ -42,6 +42,8 @@ public interface NodeDraft {
 
     public void setColor(String color);
 
+    public Color getColor();
+
     public void setLabel(String label);
 
     public void setSize(float size);
