@@ -88,7 +88,8 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
 
         public String getName() {
             return "<font color='#000000'>" + column.getTitle() + "</font> "
-                    + "<font color='#999999'><i>" + column.getType().toString() + "</i></font>";
+                    + "<font color='#999999'><i>" + column.getType().toString() + " "
+                    + (AttributeUtils.getDefault().isNodeColumn(column) ? "(Node)" : "(Edge)") + "</i></font>";
         }
 
         public Icon getIcon() {

@@ -42,13 +42,16 @@ import org.openide.util.NbBundle;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implements AttributeColumnsManipulatorUI {
+
     private DialogControls dialogControls;
     private AttributeTable table;
-    public enum Mode{
+
+    public enum Mode {
+
         BOOLEAN,
         MATCHING_GROUPS
     }
-    private Mode mode=Mode.BOOLEAN;
+    private Mode mode = Mode.BOOLEAN;
     private static final Color invalidRegexColor = new Color(254, 150, 150);
     private GeneralCreateColumnFromRegex manipulator;
     private Pattern pattern;
@@ -83,24 +86,19 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
             public void changedUpdate(DocumentEvent e) {
                 refreshOkButton();
             }
-
-            private void refreshOkButton(){
-                String text=titleTextField.getText();
-                dialogControls.setOkButtonEnabled(text!=null&&!text.isEmpty()&&!table.hasColumn(text));//Title not empty and not repeated.
-            }
         });
     }
 
     public void setup(AttributeColumnsManipulator m, AttributeTable table, AttributeColumn column, DialogControls dialogControls) {
         this.manipulator = (GeneralCreateColumnFromRegex) m;
-        this.table=table;
-        this.dialogControls=dialogControls;
-        switch(mode){
+        this.table = table;
+        this.dialogControls = dialogControls;
+        switch (mode) {
             case BOOLEAN:
-                descriptionLabel.setText(NbBundle.getMessage(GeneralCreateColumnFromRegexUI.class, "GeneralCreateColumnFromRegexUI.descriptionLabel.text.boolean",column.getTitle()));
+                descriptionLabel.setText(NbBundle.getMessage(GeneralCreateColumnFromRegexUI.class, "GeneralCreateColumnFromRegexUI.descriptionLabel.text.boolean", column.getTitle()));
                 break;
             case MATCHING_GROUPS:
-                descriptionLabel.setText(NbBundle.getMessage(GeneralCreateColumnFromRegexUI.class, "GeneralCreateColumnFromRegexUI.descriptionLabel.text.matching_groups",column.getTitle()));
+                descriptionLabel.setText(NbBundle.getMessage(GeneralCreateColumnFromRegexUI.class, "GeneralCreateColumnFromRegexUI.descriptionLabel.text.matching_groups", column.getTitle()));
                 break;
         }
         refreshPattern();
@@ -130,6 +128,11 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
         return true;
     }
 
+    private void refreshOkButton() {
+        String text = titleTextField.getText();
+        dialogControls.setOkButtonEnabled(pattern != null && text != null && !text.isEmpty() && !table.hasColumn(text));//Valid regex and title not empty and not repeated.
+    }
+
     private void refreshPattern() {
         //Try to validate the regex and help the user:
         try {
@@ -139,6 +142,7 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
             regexTextField.setBackground(invalidRegexColor);
             pattern = null;
         }
+        refreshOkButton();
     }
 
     public Mode getMode() {
@@ -147,7 +151,7 @@ public class GeneralCreateColumnFromRegexUI extends javax.swing.JPanel implement
 
     public void setMode(Mode mode) {
         this.mode = mode;
-    }  
+    }
 
     /** This method is called from within the constructor to
      * initialize the form.

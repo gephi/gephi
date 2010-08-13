@@ -53,6 +53,8 @@ public interface EdgeDraft {
 
     public void setColor(String color);
 
+    public Color getColor();
+
     public void setLabel(String label);
 
     public void setLabelVisible(boolean labelVisible);

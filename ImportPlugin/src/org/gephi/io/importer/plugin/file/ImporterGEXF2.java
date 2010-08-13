@@ -748,9 +748,9 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
             //Type
             AttributeType attributeType = AttributeType.STRING;
-            if (type.equalsIgnoreCase("boolean")) {
+            if (type.equalsIgnoreCase("boolean") || type.equalsIgnoreCase("bool")) {
                 attributeType = dynamic ? AttributeType.DYNAMIC_BOOLEAN : AttributeType.BOOLEAN;
-            } else if (type.equalsIgnoreCase("integer")) {
+            } else if (type.equalsIgnoreCase("integer") || type.equalsIgnoreCase("int")) {
                 attributeType = dynamic ? AttributeType.DYNAMIC_INT : AttributeType.INT;
             } else if (type.equalsIgnoreCase("long")) {
                 attributeType = dynamic ? AttributeType.DYNAMIC_LONG : AttributeType.LONG;

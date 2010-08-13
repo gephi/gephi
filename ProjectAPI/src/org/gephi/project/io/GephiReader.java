@@ -47,6 +47,7 @@ import org.w3c.dom.NodeList;
 public class GephiReader implements Cancellable {
 
     private ProjectImpl project;
+    private boolean cancel = false;
     private Map<String, WorkspacePersistenceProvider> providers;
 
     public GephiReader() {
@@ -63,6 +64,7 @@ public class GephiReader implements Cancellable {
     }
 
     public boolean cancel() {
+        cancel = true;
         return true;
     }
 
@@ -70,7 +72,7 @@ public class GephiReader implements Cancellable {
         //XPath
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
-        
+
         //Calculate the task max
         readCore(xpath, root);
 
@@ -99,7 +101,7 @@ public class GephiReader implements Cancellable {
         XPathExpression exp = xpath.compile("./workspaces/workspace");
         NodeList workSpaceList = (NodeList) exp.evaluate(projectE, XPathConstants.NODESET);
 
-        for (int i = 0; i < workSpaceList.getLength(); i++) {
+        for (int i = 0; i < workSpaceList.getLength() && !cancel; i++) {
             Element workspaceE = (Element) workSpaceList.item(i);
             Workspace workspace = readWorkspace(xpath, workspaceE);
 
@@ -135,7 +137,7 @@ public class GephiReader implements Cancellable {
 
     public void readWorkspaceChildren(Workspace workspace, Element workspaceE) throws Exception {
         NodeList children = workspaceE.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
+        for (int i = 0; i < children.getLength() && !cancel; i++) {
             Node child = children.item(i);
             if (child.getNodeType() == Node.ELEMENT_NODE) {
                 Element childE = (Element) child;
