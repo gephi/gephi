@@ -66,24 +66,26 @@ public class LoadTask implements LongTask, Runnable {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(fileObject.getInputStream());
 
-            //Project instance
-            Project project = new ProjectImpl();
-            project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
-
-            //Version
-            String version = doc.getDocumentElement().getAttribute("version");
-            if (version == null || version.isEmpty() || Double.parseDouble(version) != 0.7) {
-                throw new GephiFormatException("Gephi project file version must be at least 0.7");
-            }
-
-            //GephiReader
-            gephiReader = new GephiReader();
-            project = gephiReader.readAll(doc.getDocumentElement(), project);
-
-            //Add project
             if (!cancel) {
-                ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-                pc.openProject(project);
+                //Project instance
+                Project project = new ProjectImpl();
+                project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
+
+                //Version
+                String version = doc.getDocumentElement().getAttribute("version");
+                if (version == null || version.isEmpty() || Double.parseDouble(version) != 0.7) {
+                    throw new GephiFormatException("Gephi project file version must be at least 0.7");
+                }
+
+                //GephiReader
+                gephiReader = new GephiReader();
+                project = gephiReader.readAll(doc.getDocumentElement(), project);
+
+                //Add project
+                if (!cancel) {
+                    ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+                    pc.openProject(project);
+                }
             }
             Progress.finish(progressTicket);
         } catch (Exception ex) {
@@ -97,7 +99,9 @@ public class LoadTask implements LongTask, Runnable {
 
     public boolean cancel() {
         cancel = true;
-        gephiReader.cancel();
+        if (gephiReader != null) {
+            gephiReader.cancel();
+        }
         return true;
     }
 
