@@ -32,36 +32,55 @@ import org.gephi.graph.api.Graph;
  * @see DynamicController
  */
 public interface DynamicModel {
-	/**
-	 * The name of a column containing time intervals.
-	 */
-	public static final String TIMEINTERVAL_COLUMN = "time_interval";
 
-	/**
-	 * Builds a new {@code DynamicGraph} from the given {@code Graph} instance.
-	 *
-	 * @param graph the underlying graph
-	 *
-	 * @return a new a new {@code DynamicGraph}.
-	 */
-	public DynamicGraph createDynamicGraph(Graph graph);
+    /**
+     * The name of a column containing time intervals.
+     */
+    public static final String TIMEINTERVAL_COLUMN = "time_interval";
 
-	/**
-	 * Builds a new {@code DynamicGraph} from the given {@code Graph} instance
-	 * wrapping the given {@code TimeInterval}.
-	 *
-	 * @param graph the underlying graph
-	 *
-	 * @return a new a new {@code DynamicGraph}.
-	 */
-	public DynamicGraph createDynamicGraph(Graph graph, TimeInterval interval);
+    /**
+     * Builds a new {@code DynamicGraph} from the given {@code Graph} instance.
+     *
+     * @param graph the underlying graph
+     *
+     * @return a new a new {@code DynamicGraph}.
+     */
+    public DynamicGraph createDynamicGraph(Graph graph);
 
-	/**
-	 * Returns the time interval wrapped by the {@code DynamicGraph} of
-	 * the current workspace.
-	 *
-	 * @return the time interval wrapped by the {@code DynamicGraph} of
-	 * the current workspace.
-	 */
-	public TimeInterval getVisibleInterval();
+    /**
+     * Builds a new {@code DynamicGraph} from the given {@code Graph} instance
+     * wrapping the given {@code TimeInterval}.
+     *
+     * @param graph the underlying graph
+     *
+     * @return a new a new {@code DynamicGraph}.
+     */
+    public DynamicGraph createDynamicGraph(Graph graph, TimeInterval interval);
+
+    /**
+     * Returns the time interval wrapped by the {@code DynamicGraph} of
+     * the current workspace.
+     *
+     * @return the time interval wrapped by the {@code DynamicGraph} of
+     * the current workspace.
+     */
+    public TimeInterval getVisibleInterval();
+
+    /**
+     * Returns the minimum of the time intervals defined in elements (i.e. nodes
+     * and edges) in the current workspace. This minimum is updated when data
+     * change and excludes <code>Double.NEGATIVE_INFINITY</code>.
+     *
+     * @return the minimum time in the current workspace
+     */
+    public double getMin();
+
+    /**
+     * Returns the maximum of the time intervals defined in elements (i.e. nodes
+     * and edges) in the current workspace. This maximum is updated when data
+     * change and excludes <code>Double.POSITIVE_INFINITY</code>.
+     *
+     * @return the maximum time in the current workspace
+     */
+    public double getMax();
 }
