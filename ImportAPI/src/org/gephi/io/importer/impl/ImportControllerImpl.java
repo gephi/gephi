@@ -213,7 +213,9 @@ public class ImportControllerImpl implements ImportController {
                 scaler.doScale(container);
             }
         }
-        processor.process(container.getUnloader(), workspace);
+        processor.setContainer(container.getUnloader());
+        processor.setWorkspace(workspace);
+        processor.process();
     }
 
     private FileObject getArchivedFile(FileObject fileObject) {

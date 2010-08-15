@@ -45,6 +45,7 @@ import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.processor.spi.Processor;
+import org.gephi.io.processor.spi.ProcessorUI;
 import org.gephi.ui.utils.BusyUtils;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
@@ -138,6 +139,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
     public void setData(Report report, Container container) {
         this.container = container;
+        initProcessorsUI();
         fillIssues(report);
         fillReport(report);
         fillStats(container);
@@ -248,6 +250,18 @@ public class ReportPanel extends javax.swing.JPanel {
         }
     }
 
+    private void initProcessorsUI() {
+        for (Enumeration<AbstractButton> enumeration = processorGroup.getElements(); enumeration.hasMoreElements();) {
+            AbstractButton radioButton = enumeration.nextElement();
+            Processor p = (Processor) radioButton.getClientProperty(PROCESSOR_KEY);
+            //Enabled
+            ProcessorUI pui = getProcessorUI(p);
+            if (pui != null) {
+                radioButton.setEnabled(pui.isValid(container));
+            }
+        }
+    }
+
     public void destroy() {
         fillingThreads.interrupt();
     }
@@ -257,6 +271,15 @@ public class ReportPanel extends javax.swing.JPanel {
             AbstractButton radioButton = enumeration.nextElement();
             if (radioButton.isSelected()) {
                 return (Processor) radioButton.getClientProperty(PROCESSOR_KEY);
+            }
+        }
+        return null;
+    }
+
+    private ProcessorUI getProcessorUI(Processor processor) {
+        for (ProcessorUI pui : Lookup.getDefault().lookupAll(ProcessorUI.class)) {
+            if (pui.isUIFoProcessor(processor)) {
+                return pui;
             }
         }
         return null;

@@ -42,11 +42,23 @@ public interface Processor {
     /**
      * Process data <b>from</b> the container <b>to</b> the workspace. This task
      * is done after an importer pushed data to the container.
-     * @param container the container where data are
-     * @param workspace the workspace where data are to be pushed
      * @see Importer
      */
-    public void process(ContainerUnloader container, Workspace workspace);
+    public void process();
+
+    /**
+     * Sets the data container. The processor's job is to get data from the container
+     * and append it to the workspace.
+     * @param container the container where data are
+     */
+    public void setContainer(ContainerUnloader container);
+
+    /**
+     * Sets the destination workspace for the data in the container. If no workspace
+     * is provided, the current workspace will be used.
+     * @param workspace the workspace where data are to be pushed
+     */
+    public void setWorkspace(Workspace workspace);
 
     /**
      * Returns the processor name.

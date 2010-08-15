@@ -30,6 +30,7 @@ import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDraftGetter;
 import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.project.api.Workspace;
@@ -41,6 +42,7 @@ import org.gephi.project.api.Workspace;
 public abstract class AbstractProcessor {
 
     protected Workspace workspace;
+    protected ContainerUnloader container;
     protected AttributeModel attributeModel;
 
     protected void flushToNode(NodeDraftGetter nodeDraft, Node node) {
@@ -153,5 +155,13 @@ public abstract class AbstractProcessor {
                 }
             }
         }
+    }
+
+    public void setWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
+
+    public void setContainer(ContainerUnloader container) {
+        this.container = container;
     }
 }

@@ -31,7 +31,7 @@ import org.gephi.io.generator.spi.GeneratorUI;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerFactory;
 import org.gephi.io.importer.api.Report;
-import org.gephi.io.processor.spi.Processor;
+import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
@@ -126,6 +126,9 @@ public class DesktopGeneratorController implements GeneratorController {
             pc.setSource(workspace, container.getSource());
         }
 
-        Lookup.getDefault().lookup(Processor.class).process(container.getUnloader(), workspace);
+        DefaultProcessor defaultProcessor = new DefaultProcessor();
+        defaultProcessor.setContainer(container.getUnloader());
+        defaultProcessor.setWorkspace(workspace);
+        defaultProcessor.process();
     }
 }
