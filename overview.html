@@ -9,12 +9,19 @@
     <p>
     <h2>API Changes</h2>
     <ul>
+        <li>(July 19 2010) Define the "Overview, "Data Laboratory" and "Preview" as perspectives. Create a new SPI for perspecives and
+            perspective members. Members are simply the <code>TopComponent</code> that belong to a perspective. Plugins can implement
+            <code>PerspectiveMember</code> to define the open and close behaviour.</li>
+        <li>(July 16 2010) Add list/array types in Attributes API. All native types has now a related list type, except dynamic types. The list
+            types inherits from <code>AbstractList</code>.</li>
         <li>(July 15 2010) Changes in the way Import API deals with time intervals and dynamic data. Support for dynamic attributes has been
             added with a new <code>addAttributeValue()</code> method in <code>NodeDraft</code> and <code>EdgeDraft</code>. For improving data
             cleanup possibilities, <code>NodeDraftGetter</code> and <code>EdgeDraftgetter</code> now returns an <code>AttributeRow</code>
             instead of a list of attribute values only. Finally to profit from latest improvements, draft elements returns directly a
             <code>TimeInterval</code> type instead of the list of slices. Methods with 'Slice' have been renamed to 'Interval' for
             consistency reasons.
+        <li>(July 14 2010) Add dynamic types into Attributes API. Dynamic types store values with a time interval and query can
+            be customized with estimators. All dynamic types inherit from <code>DynamicType</code></li>
         <li>(June 18 2010) Graph API event management improvements. The <code>GraphEvent</code> has now precise events, including
             <code>ADD_NODES</code>, <code>REMOVE_NODES</code>, <code>ADD_EDGES</code>, <code>REMOVE_EDGES</code> and
             <code>VISIBLE_VIEW</code>. A new <code>GraphEventData</code> interface has been created to retrieve elements related to
@@ -37,21 +44,21 @@
             <code>java.io.Reader</code> also. The main improvement on these modules in the support of UI components for importers.
             The aim is to let importers define an <code>ImporterUI</code> implementation to manage settings of these importers.
         <li>(June 04 2010) Improvements in the GraphAPI identifiers management. The system is now storing String
-        identifiers coming from users. New getters and setters methods have been created in <code>Graph</code>:
-        <ul><li><code>Graph.setId(Node, String)</code></li>
-            <li><code>Graph.setId(Edge, String)</code></li>
-            <li><code>Graph.getNode(String)</code></li>
-            <li><code>Graph.getEdge(String)</code></li></ul>
-        The <code>NodeData.setId()</code> and <code>EdgeData.setId()</code> methods have been removed, compatibility can't be kept.
-        Factory has also be changed to allow to create elements with String ID directly, as it's not possible anymore to
-        do it from <code>NodeData</code>.
+            identifiers coming from users. New getters and setters methods have been created in <code>Graph</code>:
+            <ul><li><code>Graph.setId(Node, String)</code></li>
+                <li><code>Graph.setId(Edge, String)</code></li>
+                <li><code>Graph.getNode(String)</code></li>
+                <li><code>Graph.getEdge(String)</code></li></ul>
+            The <code>NodeData.setId()</code> and <code>EdgeData.setId()</code> methods have been removed, compatibility can't be kept.
+            Factory has also be changed to allow to create elements with String ID directly, as it's not possible anymore to
+            do it from <code>NodeData</code>.
         <li>(June 02 2010) Changes in AttributesAPI with event management. The lookup system in <code>AttributeTable</code>
-        has been replaced by a more traditional event management system, with new <code>AttributeEvent</code> and
-        <code>AttributeListener</code> interfaces. The dispatch implementation is also now on a separate thread.</li>
+            has been replaced by a more traditional event management system, with new <code>AttributeEvent</code> and
+            <code>AttributeListener</code> interfaces. The dispatch implementation is also now on a separate thread.</li>
         <li>(May 08 2010) Changes in Import modules to separate core and user interfaces. The <code>ImportController</code> is now
-        doing import task only and a new <code>ImportControllerUI</code> is displaying the user interface (Report Panel). The
-        <code>ImportControllerUI</code> interface is located in the DesktopProject module and should be user to properly
-        import file from Plugins. The <code>ImportController</code> methods could be used from the toolkit.</li>
+            doing import task only and a new <code>ImportControllerUI</code> is displaying the user interface (Report Panel). The
+            <code>ImportControllerUI</code> interface is located in the DesktopProject module and should be user to properly
+            import file from Plugins. The <code>ImportController</code> methods could be used from the toolkit.</li>
         <li>(April 30 2010) Change FilterController.filter() to FilterController.filterVisible()  and FilterController.select()
             to FilterController.selectVisible(). The controller is managing this process in a separate thread, with progress,
             and takes care of properties change. A more simple direct way to filter is required for headless access.
