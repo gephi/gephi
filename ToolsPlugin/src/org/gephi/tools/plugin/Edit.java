@@ -44,7 +44,7 @@ public class Edit implements Tool {
     private EditToolTopComponent topComponent;
 
     public void select() {
-        topComponent = (EditToolTopComponent) WindowManager.getDefault().findTopComponent("EditToolTopComponent");
+        topComponent = EditToolTopComponent.findInstance();
         topComponent.open();
         topComponent.requestActive();
     }

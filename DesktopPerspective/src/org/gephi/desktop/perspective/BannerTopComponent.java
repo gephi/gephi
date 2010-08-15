@@ -95,7 +95,6 @@ public final class BannerTopComponent extends TopComponent {
 
     private void addGroupTabs() {
         final Perspective[] perspectives = Lookup.getDefault().lookupAll(Perspective.class).toArray(new Perspective[0]);
-        final PerspectiveMember[] members = Lookup.getDefault().lookupAll(PerspectiveMember.class).toArray(new PerspectiveMember[0]);
 
         buttons = new JPerspectiveButton[perspectives.length];
         int i = 0;
@@ -119,12 +118,15 @@ public final class BannerTopComponent extends TopComponent {
                     TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(perspective.getName());
                     tpg.open();
 
+                    PerspectiveMember[] members = Lookup.getDefault().lookupAll(PerspectiveMember.class).toArray(new PerspectiveMember[0]);
+
                     //Close members
                     Perspective closingPerspective = getPerspective(selectedPerspective);
                     for (PerspectiveMember member : members) {
                         if (member.close(closingPerspective)) {
                             if (member instanceof TopComponent) {
-                                ((TopComponent) member).close();
+                                boolean closed = ((TopComponent) member).close();
+                                System.out.println("Close "+member+" : "+closed);
                             }
                         }
                     }
@@ -132,8 +134,9 @@ public final class BannerTopComponent extends TopComponent {
                     //Open members
                     for (PerspectiveMember member : members) {
                         if (member.open(perspective)) {
-                            if (member instanceof TopComponent) {
+                            if (member instanceof TopComponent && !((TopComponent) member).isOpened()) {
                                 ((TopComponent) member).open();
+                                System.out.println("Open "+member);
                             }
                         }
                     }

@@ -17,10 +17,14 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.tools.plugin.edit;
 
 import java.util.logging.Logger;
+import org.gephi.desktop.perspective.plugin.LaboratoryPerspective;
+import org.gephi.desktop.perspective.plugin.OverviewPerspective;
+import org.gephi.desktop.perspective.spi.Perspective;
+import org.gephi.desktop.perspective.spi.PerspectiveMember;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -32,15 +36,18 @@ import org.openide.windows.WindowManager;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 @ConvertAsProperties(dtd = "-//org.gephi.ui.tools.plugin.edit//EditTool//EN",
 autostore = false)
-public final class EditToolTopComponent extends TopComponent {
+@ServiceProvider(service = PerspectiveMember.class)
+public final class EditToolTopComponent extends TopComponent implements PerspectiveMember {
 
     private static EditToolTopComponent instance;
     /** path to the icon used by the component and its open action */
 //    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
     private static final String PREFERRED_ID = "EditToolTopComponent";
+    private boolean disabledEdit = true;
 
     public EditToolTopComponent() {
         initComponents();
@@ -74,10 +81,20 @@ public final class EditToolTopComponent extends TopComponent {
 
     public void editNode(Node node) {
         ((PropertySheet) propertySheet).setNodes(new org.openide.nodes.Node[]{new EditNode(node)});
+        disabledEdit = false;
     }
 
     public void disableEdit() {
         ((PropertySheet) propertySheet).setNodes(new org.openide.nodes.Node[]{});
+        disabledEdit = true;
+    }
+
+    public boolean open(Perspective perspective) {
+        return !disabledEdit && perspective instanceof OverviewPerspective;
+    }
+
+    public boolean close(Perspective perspective) {
+        return true;
     }
 
     /** This method is called from within the constructor to
@@ -138,7 +155,7 @@ public final class EditToolTopComponent extends TopComponent {
 
     @Override
     public int getPersistenceType() {
-        return TopComponent.PERSISTENCE_ALWAYS;
+        return TopComponent.PERSISTENCE_NEVER;
     }
 
     @Override
@@ -149,6 +166,7 @@ public final class EditToolTopComponent extends TopComponent {
     @Override
     public void componentClosed() {
         // TODO add custom code on component closing
+        System.out.println("closing");
     }
 
     void writeProperties(java.util.Properties p) {
