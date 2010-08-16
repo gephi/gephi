@@ -22,9 +22,11 @@ package org.gephi.desktop.importer;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.desktop.importer.api.ImportControllerUI;
@@ -52,6 +54,7 @@ import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -398,7 +401,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     private void finishImport(Container container) {
         if (container.verify()) {
             Report report = container.getReport();
-            Processor processor = null;
+
 
             //Report panel
             ReportPanel reportPanel = new ReportPanel();
@@ -409,7 +412,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 return;
             }
             reportPanel.destroy();
-            processor = reportPanel.getProcessor();
+            final Processor processor = reportPanel.getProcessor();
 
             //Project
             Workspace workspace = null;
@@ -421,29 +424,39 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Process
-            ProcessorUI pui = getProcessorUI(processor);
+            final ProcessorUI pui = getProcessorUI(processor);
             if (pui != null) {
                 if (pui != null) {
-                    String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.processor.ui.dialog.title");
-                    JPanel panel = pui.getPanel();
-                    pui.setup(processor);
-                    final DialogDescriptor dd2 = new DialogDescriptor(panel, title);
-                    if (panel instanceof ValidationPanel) {
-                        ValidationPanel vp = (ValidationPanel) panel;
-                        vp.addChangeListener(new ChangeListener() {
+                    try {
+                        SwingUtilities.invokeAndWait(new Runnable() {
 
-                            public void stateChanged(ChangeEvent e) {
-                                dd2.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                            public void run() {
+                                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.processor.ui.dialog.title");
+                                JPanel panel = pui.getPanel();
+                                pui.setup(processor);
+                                final DialogDescriptor dd2 = new DialogDescriptor(panel, title);
+                                if (panel instanceof ValidationPanel) {
+                                    ValidationPanel vp = (ValidationPanel) panel;
+                                    vp.addChangeListener(new ChangeListener() {
+
+                                        public void stateChanged(ChangeEvent e) {
+                                            dd2.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                                        }
+                                    });
+                                }
+                                Object result = DialogDisplayer.getDefault().notify(dd2);
+                                if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
+                                    pui.unsetup(); //false
+                                    return;
+                                }
+                                pui.unsetup(); //true
                             }
                         });
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } catch (InvocationTargetException ex) {
+                        Exceptions.printStackTrace(ex);
                     }
-
-                    Object result = DialogDisplayer.getDefault().notify(dd);
-                    if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
-                        pui.unsetup();//false
-                        return;
-                    }
-                    pui.unsetup();//true
                 }
             }
             controller.process(container, processor, workspace);

@@ -38,13 +38,13 @@
                           </Group>
                           <Component id="jPanel1" pref="216" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="122" max="32767" attributes="0"/>
+                      <EmptySpace pref="154" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="createMissingNodesCheckbox" alignment="1" max="32767" attributes="1"/>
                               <Component id="autoscaleCheckbox" alignment="1" pref="145" max="32767" attributes="1"/>
                           </Group>
-                          <Component id="processorPanel" min="-2" pref="207" max="-2" attributes="0"/>
+                          <Component id="processorPanel" min="-2" pref="175" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
