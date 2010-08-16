@@ -89,10 +89,9 @@ public class Dhns implements GraphModel {
         eventManager.start();
 
         //AttributeFactory
-        Lookup.getDefault().lookup(AttributeController.class);  //be sure AC is inited
         AttributeRowFactory attributeRowFactory = null;
         if (workspace != null) {
-            AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+            AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel(workspace);
             if (attributeModel != null) {
                 attributeRowFactory = attributeModel.rowFactory();
             }

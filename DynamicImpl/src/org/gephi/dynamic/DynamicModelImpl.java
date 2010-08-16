@@ -23,6 +23,7 @@ package org.gephi.dynamic;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -32,11 +33,13 @@ import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.dynamic.api.DynamicModelEvent;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
+import org.openide.util.Lookup;
 
 /**
  * The default implementation of {@code DynamicModel}.
@@ -79,14 +82,14 @@ public final class DynamicModelImpl implements DynamicModel {
         }
 
         this.controller = controller;
-        graphModel = workspace.getLookup().lookup(GraphModel.class);
+        graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
         if (graphModel == null || graphModel.getGraph() == null) {
             throw new NullPointerException("The graph model and its underlying graph cannot be nulls.");
         }
 
         //Index intervals
         timeIntervalIndex = new TimeIntervalIndex();
-        AttributeModel attModel = workspace.getLookup().lookup(AttributeModel.class);
+        AttributeModel attModel = Lookup.getDefault().lookup(AttributeController.class).getModel(workspace);
         nodeColumn = attModel.getNodeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
         edgeColumn = attModel.getEdgeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
         Graph graph = graphModel.getGraph();
@@ -106,6 +109,7 @@ public final class DynamicModelImpl implements DynamicModel {
                 }
             }
         }
+
 
         //Visible interval
         visibleTimeInterval = new TimeInterval(timeIntervalIndex.getMin(), timeIntervalIndex.getMax());
