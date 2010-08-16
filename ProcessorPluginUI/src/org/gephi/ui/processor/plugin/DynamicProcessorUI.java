@@ -34,17 +34,29 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ProcessorUI.class)
 public class DynamicProcessorUI implements ProcessorUI {
 
+    private DynamicProcessor dynamicProcessor;
+    private DynamicProcessorSettings settings = new DynamicProcessorSettings();
+    private DynamicProcessorPanel panel;
+
     @Override
     public void setup(Processor processor) {
+        dynamicProcessor = (DynamicProcessor) processor;
+        settings.load(dynamicProcessor);
+        panel.setup(dynamicProcessor);
     }
 
     @Override
     public JPanel getPanel() {
-        return new JPanel();
+        panel = new DynamicProcessorPanel();
+        return DynamicProcessorPanel.createValidationPanel(panel);
     }
 
     @Override
     public void unsetup() {
+        panel.unsetup(dynamicProcessor);
+        settings.save(dynamicProcessor);
+        panel = null;
+        dynamicProcessor = null;
     }
 
     @Override
@@ -55,5 +67,21 @@ public class DynamicProcessorUI implements ProcessorUI {
     @Override
     public boolean isValid(Container container) {
         return !container.isDynamicGraph();
+    }
+
+    private static class DynamicProcessorSettings {
+
+        private boolean dateMode = true;
+        private String date = "";
+
+        private void save(DynamicProcessor dynamicProcessor) {
+            this.dateMode = dynamicProcessor.isDateMode();
+            this.date = dynamicProcessor.getDate();
+        }
+
+        private void load(DynamicProcessor dynamicProcessor) {
+            dynamicProcessor.setDateMode(dateMode);
+            dynamicProcessor.setDate(date);
+        }
     }
 }

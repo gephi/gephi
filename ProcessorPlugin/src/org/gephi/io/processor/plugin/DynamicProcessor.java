@@ -30,10 +30,29 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Processor.class)
 public class DynamicProcessor extends AbstractProcessor implements Processor {
 
+    private boolean dateMode = true;
+    private String date = "";
+
     public void process() {
     }
 
     public String getDisplayName() {
         return "Time frame";
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public boolean isDateMode() {
+        return dateMode;
+    }
+
+    public void setDateMode(boolean dateMode) {
+        this.dateMode = dateMode;
     }
 }
