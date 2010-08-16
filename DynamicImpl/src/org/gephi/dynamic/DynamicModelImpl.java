@@ -29,6 +29,7 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicGraph;
 import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.dynamic.api.DynamicModelEvent;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphEvent;
@@ -44,6 +45,7 @@ import org.gephi.project.api.Workspace;
  */
 public final class DynamicModelImpl implements DynamicModel {
 
+    private DynamicControllerImpl controller;
     private GraphModel graphModel;
     private TimeInterval visibleTimeInterval;
     private TimeIntervalIndex timeIntervalIndex;
@@ -57,8 +59,8 @@ public final class DynamicModelImpl implements DynamicModel {
      *
      * @throws NullPointerException if {@code workspace} is null.
      */
-    public DynamicModelImpl(Workspace workspace) {
-        this(workspace, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+    public DynamicModelImpl(DynamicControllerImpl controller, Workspace workspace) {
+        this(controller, workspace, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
 
     /**
@@ -71,11 +73,12 @@ public final class DynamicModelImpl implements DynamicModel {
      * @throws NullPointerException if {@code workspace} is null or the graph model
      *                              and/or its underlying graph are nulls.
      */
-    public DynamicModelImpl(Workspace workspace, double low, double high) {
+    public DynamicModelImpl(DynamicControllerImpl controller, Workspace workspace, double low, double high) {
         if (workspace == null) {
             throw new NullPointerException("The workspace cannot be null.");
         }
 
+        this.controller = controller;
         graphModel = workspace.getLookup().lookup(GraphModel.class);
         if (graphModel == null || graphModel.getGraph() == null) {
             throw new NullPointerException("The graph model and its underlying graph cannot be nulls.");
@@ -229,6 +232,7 @@ public final class DynamicModelImpl implements DynamicModel {
     public void setVisibleTimeInterval(TimeInterval visibleTimeInterval) {
         this.visibleTimeInterval = visibleTimeInterval;
         // Trigger Event
+        controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.VISIBLE_INTERVAL_CHANGED, this, visibleTimeInterval));
     }
 
     @Override
