@@ -335,6 +335,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         //Refresh
         engine.getScheduler().requireUpdateVisible();
 
+        vizController.getVizModel().setCameraDistance(graphDrawable.getCameraVector().length());
+
         /* float[] graphLimits = engine.getGraphLimits();
         float graphWidth = Math.abs(graphLimits[1]-graphLimits[0]);
         float graphHeight = Math.abs(graphLimits[3]-graphLimits[2]);
@@ -366,6 +368,23 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         graphDrawable.rotationX = (float)Math.atan(((graphDrawable.cameraLocation[1]-graphDrawable.cameraTarget[1])/(graphDrawable.cameraLocation[2]-graphDrawable.cameraTarget[2])));
         engine.getScheduler().requireUpdateVisible();
         }*/
+    }
+
+    public void setCameraDistance(float distance) {
+        float cameraLocation[] = graphDrawable.getCameraLocation();
+        float cameraTarget[] = graphDrawable.getCameraTarget();
+        Vec3f camVect = new Vec3f(cameraTarget[0] - cameraLocation[0], cameraTarget[1] - cameraLocation[1], cameraTarget[2] - cameraLocation[2]);
+
+        float diff = camVect.length() - distance;
+        if (Math.abs(diff) > 1f) {
+            camVect.normalize();
+            cameraLocation[0] += camVect.x() * diff;
+            cameraLocation[1] += camVect.y() * diff;
+            cameraLocation[2] += camVect.z() * diff;
+            cameraLocation[2] = Math.max(0.5f, cameraLocation[2]);
+
+            engine.getScheduler().requireUpdateVisible();
+        }
     }
 
     public float[] getMousePosition3d() {
@@ -418,6 +437,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
         //Refresh
         engine.getScheduler().requireUpdateVisible();
+
+        vizController.getVizModel().setCameraDistance(graphDrawable.getCameraVector().length());
     }
 
     public void centerOnGraph() {
@@ -440,6 +461,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
         //Refresh
         engine.getScheduler().requireUpdateVisible();
+
+        vizController.getVizModel().setCameraDistance(graphDrawable.getCameraVector().length());
     }
 
     public void centerOnCoordinate(float x, float y, float z) {
@@ -450,5 +473,7 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         graphDrawable.cameraLocation[0] = x;
         graphDrawable.cameraLocation[1] = y;
         graphDrawable.cameraLocation[2] = z + 100;
+
+        vizController.getVizModel().setCameraDistance(graphDrawable.getCameraVector().length());
     }
 }
