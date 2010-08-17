@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.filters;
 
 import java.util.Iterator;
@@ -73,7 +73,7 @@ public class FilterThread extends Thread {
                     Exceptions.printStackTrace(ex);
                 }
             }
-            if(!running) {
+            if (!running) {
                 return;
             }
             Query modifiedQuery = null;
@@ -153,10 +153,12 @@ public class FilterThread extends Thread {
                 visController.selectNodes(result.getNodes().toArray());
                 visController.selectEdges(result.getEdges().toArray());
             }
+            GraphView view = result.getView();
+            model.setCurrentResult(view);
         } else {
-            //destroy view 
+            //destroy view
+            graphModel.destroyView(result.getView());
         }
-        graphModel.destroyView(result.getView());
     }
 
     public void setRootQuery(AbstractQueryImpl rootQuery) {
