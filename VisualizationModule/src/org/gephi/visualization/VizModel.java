@@ -29,6 +29,7 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.apiimpl.GraphDrawable;
+import org.gephi.visualization.apiimpl.GraphIO;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.text.TextModel;
 import org.w3c.dom.Document;
@@ -329,6 +330,15 @@ public class VizModel {
 
     public GraphLimits getLimits() {
         return limits;
+    }
+
+    public float getCameraDistance() {
+        GraphDrawable drawable = VizController.getInstance().getDrawable();
+        return drawable.getCameraVector().length();
+    }
+
+    public void setCameraDistance(float distance) {
+        fireProperyChange("cameraDistance", null, distance);
     }
 
     //EVENTS

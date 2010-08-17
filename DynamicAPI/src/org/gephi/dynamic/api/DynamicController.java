@@ -34,37 +34,51 @@ import org.gephi.project.api.Workspace;
  * @author Cezary Bartosiak
  */
 public interface DynamicController {
-	/**
-	 * Returns the dynamic model for the current workspace, or {@code null}
-	 * if the project is empty.
-	 *
-	 * @return the current dynamic model.
-	 */
-	public DynamicModel getModel();
 
-	/**
-	 * Returns the dynamic model for the given {@code workspace}.
-	 * 
-	 * @param workspace the workspace that dynamic model is to be returned
-	 *
-	 * @return the {@code workspace}'s dynamic model.
-	 */
-	public DynamicModel getModel(Workspace workspace);
+    /**
+     * Returns the dynamic model for the current workspace, or {@code null}
+     * if the project is empty.
+     *
+     * @return the current dynamic model.
+     */
+    public DynamicModel getModel();
 
-	/**
-	 * Sets the time interval wrapped by the {@code DynamicGraph} of
-	 * the current workspace.
-	 *
-	 * @param interval an object to get endpoints from
-	 */
-	public void setVisibleInterval(TimeInterval interval);
+    /**
+     * Returns the dynamic model for the given {@code workspace}.
+     *
+     * @param workspace the workspace that dynamic model is to be returned
+     *
+     * @return the {@code workspace}'s dynamic model.
+     */
+    public DynamicModel getModel(Workspace workspace);
 
-	/**
-	 * Sets the time interval wrapped by the {@code DynamicGraph} of
-	 * the current workspace.
-	 *
-	 * @param low  the left endpoint
-	 * @param high the right endpoint
-	 */
-	public void setVisibleInterval(double low, double high);
+    /**
+     * Sets the time interval wrapped by the {@code DynamicGraph} of
+     * the current workspace.
+     *
+     * @param interval an object to get endpoints from
+     */
+    public void setVisibleInterval(TimeInterval interval);
+
+    /**
+     * Sets the time interval wrapped by the {@code DynamicGraph} of
+     * the current workspace.
+     *
+     * @param low  the left endpoint
+     * @param high the right endpoint
+     */
+    public void setVisibleInterval(double low, double high);
+
+    /**
+     * Adds <code>listener</code> to the listeners of this model. It receives
+     * events when model is changed.
+     * @param listener      the listener that is to be added
+     */
+    public void addModelListener(DynamicModelListener listener);
+
+    /**
+     * Removes <code>listener</code> to the listeners of this model.
+     * @param listener      the listener that is to be removed
+     */
+    public void removeModelListener(DynamicModelListener listener);
 }

@@ -37,7 +37,7 @@ public class EditWindowControllerImpl implements EditWindowController {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                EditToolTopComponent topComponent = (EditToolTopComponent) WindowManager.getDefault().findTopComponent("EditToolTopComponent");
+                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
                 topComponent.open();
                 topComponent.requestActive();
             }
@@ -49,7 +49,7 @@ public class EditWindowControllerImpl implements EditWindowController {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                EditToolTopComponent topComponent = (EditToolTopComponent) WindowManager.getDefault().findTopComponent("EditToolTopComponent");
+                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
                 topComponent.disableEdit();
                 topComponent.close();
             }
@@ -57,7 +57,7 @@ public class EditWindowControllerImpl implements EditWindowController {
     }
 
     public boolean isOpen(){
-        EditToolTopComponent topComponent = (EditToolTopComponent) WindowManager.getDefault().findTopComponent("EditToolTopComponent");
+        EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
         return topComponent.isOpened();
     }
 
@@ -65,7 +65,7 @@ public class EditWindowControllerImpl implements EditWindowController {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                EditToolTopComponent topComponent = (EditToolTopComponent) WindowManager.getDefault().findTopComponent("EditToolTopComponent");
+                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
                 topComponent.editNode(node);
             }
         });
@@ -75,7 +75,7 @@ public class EditWindowControllerImpl implements EditWindowController {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                EditToolTopComponent topComponent = (EditToolTopComponent) WindowManager.getDefault().findTopComponent("EditToolTopComponent");
+                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
                 topComponent.disableEdit();
             }
         });

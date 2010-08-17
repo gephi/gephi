@@ -45,6 +45,7 @@ import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.processor.spi.Processor;
+import org.gephi.io.processor.spi.ProcessorUI;
 import org.gephi.ui.utils.BusyUtils;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.OutlineModel;
@@ -138,6 +139,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
     public void setData(Report report, Container container) {
         this.container = container;
+        initProcessorsUI();
         fillIssues(report);
         fillReport(report);
         fillStats(container);
@@ -243,8 +245,20 @@ public class ReportPanel extends javax.swing.JPanel {
             radio.setSelected(i == 0);
             radio.putClientProperty(PROCESSOR_KEY, processor);
             processorGroup.add(radio);
-            GridBagConstraints constraints = new GridBagConstraints(0, i++, 1, 1, 1, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
+            GridBagConstraints constraints = new GridBagConstraints(0, i++, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
             processorPanel.add(radio, constraints);
+        }
+    }
+
+    private void initProcessorsUI() {
+        for (Enumeration<AbstractButton> enumeration = processorGroup.getElements(); enumeration.hasMoreElements();) {
+            AbstractButton radioButton = enumeration.nextElement();
+            Processor p = (Processor) radioButton.getClientProperty(PROCESSOR_KEY);
+            //Enabled
+            ProcessorUI pui = getProcessorUI(p);
+            if (pui != null) {
+                radioButton.setEnabled(pui.isValid(container));
+            }
         }
     }
 
@@ -257,6 +271,15 @@ public class ReportPanel extends javax.swing.JPanel {
             AbstractButton radioButton = enumeration.nextElement();
             if (radioButton.isSelected()) {
                 return (Processor) radioButton.getClientProperty(PROCESSOR_KEY);
+            }
+        }
+        return null;
+    }
+
+    private ProcessorUI getProcessorUI(Processor processor) {
+        for (ProcessorUI pui : Lookup.getDefault().lookupAll(ProcessorUI.class)) {
+            if (pui.isUIFoProcessor(processor)) {
+                return pui;
             }
         }
         return null;
@@ -321,7 +344,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
-        labelNodeCount.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labelNodeCount.setFont(new java.awt.Font("Tahoma", 1, 11));
         labelNodeCount.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelNodeCount.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -330,7 +353,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 6, 0);
         jPanel1.add(labelNodeCount, gridBagConstraints);
 
-        labelEdgeCount.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labelEdgeCount.setFont(new java.awt.Font("Tahoma", 1, 11));
         labelEdgeCount.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelEdgeCount.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -339,7 +362,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
         jPanel1.add(labelEdgeCount, gridBagConstraints);
 
-        nodeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        nodeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
         nodeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.nodeCountLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -349,7 +372,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 6, 0);
         jPanel1.add(nodeCountLabel, gridBagConstraints);
 
-        edgeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        edgeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
         edgeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.edgeCountLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -419,13 +442,13 @@ public class ReportPanel extends javax.swing.JPanel {
                                 .addComponent(labelGraphType)
                                 .addGap(49, 49, 49)
                                 .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 154, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(createMissingNodesCheckbox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(autoscaleCheckbox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
-                            .addComponent(processorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(processorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

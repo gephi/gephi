@@ -21,6 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.opengl.text;
 
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.Estimator;
+import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.TextData;
@@ -38,7 +41,7 @@ public class TextDataBuilderImpl implements TextDataFactory {
         return new TextDataImpl();
     }
 
-    public void buildNodeText(NodeData nodeData, TextDataImpl textDataImpl, TextModel model) {
+    public void buildNodeText(NodeData nodeData, TextDataImpl textDataImpl, TextModel model, TimeInterval timeInterval) {
         if (model.getNodeTextColumns() != null) {
             String str = "";
             int i = 0;
@@ -46,13 +49,23 @@ public class TextDataBuilderImpl implements TextDataFactory {
                 if (i++ > 0) {
                     str += " - ";
                 }
-                str += nodeData.getAttributes().getValue(c.getIndex());
+                Object val = nodeData.getAttributes().getValue(c.getIndex());
+                if (val instanceof DynamicType) {
+                    DynamicType dynamicType = (DynamicType) val;
+                    if (timeInterval != null) {
+                        str += dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh());
+                    } else {
+                        str += dynamicType.getValue(Estimator.AVERAGE);
+                    }
+                } else {
+                    str += val;
+                }
             }
             textDataImpl.setLine(str);
         }
     }
 
-    public void buildEdgeText(EdgeData edgeData, TextDataImpl textDataImpl, TextModel model) {
+    public void buildEdgeText(EdgeData edgeData, TextDataImpl textDataImpl, TextModel model, TimeInterval timeInterval) {
         if (model.getEdgeTextColumns() != null) {
             String str = "";
             int i = 0;
@@ -60,7 +73,17 @@ public class TextDataBuilderImpl implements TextDataFactory {
                 if (i++ > 0) {
                     str += " - ";
                 }
-                str += edgeData.getAttributes().getValue(c.getIndex());
+                Object val = edgeData.getAttributes().getValue(c.getIndex());
+                if (val instanceof DynamicType) {
+                    DynamicType dynamicType = (DynamicType) val;
+                    if (timeInterval != null) {
+                        str += dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh());
+                    } else {
+                        str += dynamicType.getValue(Estimator.AVERAGE);
+                    }
+                } else {
+                    str += val;
+                }
             }
             textDataImpl.setLine(str);
         }

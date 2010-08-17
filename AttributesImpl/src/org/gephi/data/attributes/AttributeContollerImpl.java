@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeController;
@@ -82,6 +82,16 @@ public class AttributeContollerImpl implements AttributeController {
             return model;
         }
         return null;
+    }
+
+    public AttributeModel getModel(Workspace workspace) {
+        AttributeModel model = workspace.getLookup().lookup(AttributeModel.class);
+        if (model != null) {
+            return model;
+        }
+        model = new IndexedAttributeModel();
+        workspace.add(model);
+        return model;
     }
 
     public AttributeModel newModel() {

@@ -40,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Tool.class)
 public class Edit implements Tool {
-    EditWindowController edc;
+    private EditWindowController edc;
 
     public void select() {
         edc=Lookup.getDefault().lookup(EditWindowController.class);

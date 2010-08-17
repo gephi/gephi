@@ -17,8 +17,10 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.api;
+
+import org.gephi.project.api.Workspace;
 
 /**
  * This controller is the access door to {@link AttributeModel}, that contains
@@ -48,6 +50,19 @@ public interface AttributeController {
      * @return the currently active model
      */
     public AttributeModel getModel();
+
+    /**
+     * Returns the model for the given <code>Workspace</code>.
+     * <p>
+     * The controller maintains the current project status and is responsible of
+     * maintaining one <code>AttributeModel</code> instance per <code>Workspace</code>.
+     * Hence, the model can also be accessed by using the following code:
+     * <pre>
+     * Workspace.getLookup().get(AttributeModel.class);
+     * </pre>
+     * @return the attribute model for <code>workspace</code>.
+     */
+    public AttributeModel getModel(Workspace workspace);
 
     /**
      * Create a new model independent from any <code>Workspace</code>. The model

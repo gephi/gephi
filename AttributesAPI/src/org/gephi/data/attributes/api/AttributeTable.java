@@ -165,7 +165,7 @@ public interface AttributeTable {
 
     /**
      * Removes <code>listener</code> to the listeners of this table.
-     * @param listener      the listener that is to be added
+     * @param listener      the listener that is to be removed
      */
     public void removeAttributeListener(AttributeListener listener);
 

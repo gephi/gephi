@@ -17,14 +17,16 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.importer;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.desktop.importer.api.ImportControllerUI;
@@ -39,6 +41,7 @@ import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.io.importer.spi.ImporterUI;
 import org.gephi.io.importer.spi.SpigotImporter;
 import org.gephi.io.processor.spi.Processor;
+import org.gephi.io.processor.spi.ProcessorUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
@@ -51,6 +54,7 @@ import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -283,7 +287,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             ImporterUI ui = controller.getUI(importer);
-            if (ui != null) { 
+            if (ui != null) {
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.database.ui.dialog.title");
                 JPanel panel = ui.getPanel();
                 ui.setup(importer);
@@ -397,7 +401,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     private void finishImport(Container container) {
         if (container.verify()) {
             Report report = container.getReport();
-            Processor processor = null;
+
 
             //Report panel
             ReportPanel reportPanel = new ReportPanel();
@@ -408,7 +412,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 return;
             }
             reportPanel.destroy();
-            processor = reportPanel.getProcessor();
+            final Processor processor = reportPanel.getProcessor();
 
             //Project
             Workspace workspace = null;
@@ -419,6 +423,42 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 workspace = pc.getCurrentWorkspace();
             }
 
+            //Process
+            final ProcessorUI pui = getProcessorUI(processor);
+            if (pui != null) {
+                if (pui != null) {
+                    try {
+                        SwingUtilities.invokeAndWait(new Runnable() {
+
+                            public void run() {
+                                String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.processor.ui.dialog.title");
+                                JPanel panel = pui.getPanel();
+                                pui.setup(processor);
+                                final DialogDescriptor dd2 = new DialogDescriptor(panel, title);
+                                if (panel instanceof ValidationPanel) {
+                                    ValidationPanel vp = (ValidationPanel) panel;
+                                    vp.addChangeListener(new ChangeListener() {
+
+                                        public void stateChanged(ChangeEvent e) {
+                                            dd2.setValid(!((ValidationPanel) e.getSource()).isProblem());
+                                        }
+                                    });
+                                }
+                                Object result = DialogDisplayer.getDefault().notify(dd2);
+                                if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
+                                    pui.unsetup(); //false
+                                    return;
+                                }
+                                pui.unsetup(); //true
+                            }
+                        });
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } catch (InvocationTargetException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+            }
             controller.process(container, processor, workspace);
 
             //StatusLine notify
@@ -442,5 +482,14 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
     public ImportController getImportController() {
         return controller;
+    }
+
+    private ProcessorUI getProcessorUI(Processor processor) {
+        for (ProcessorUI pui : Lookup.getDefault().lookupAll(ProcessorUI.class)) {
+            if (pui.isUIFoProcessor(processor)) {
+                return pui;
+            }
+        }
+        return null;
     }
 }
