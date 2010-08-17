@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.plugin.file;
 
 import java.io.LineNumberReader;
@@ -132,6 +132,7 @@ public class ImporterDL implements FileImporter, LongTask {
     }
 
     private void readHeaderLine(String line) {
+        line = line.replaceAll(" = ", "=");
         StringTokenizer firstLineTokenizer = new StringTokenizer(line, " ,;");
         while (firstLineTokenizer.hasMoreTokens()) {
             String tag = firstLineTokenizer.nextToken().toLowerCase();
@@ -271,14 +272,15 @@ public class ImporterDL implements FileImporter, LongTask {
         // should have three entries, int from, int to, weight
         String from = rowkonizer.nextToken();
         String to = rowkonizer.nextToken();
-        double weight = -1;
+        double weight = 1.0;
 
-        String weightParse = rowkonizer.nextToken();
-        weight = 1.0;
-        try {
-            weight = Double.parseDouble(weightParse);
-        } catch (Exception e) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_edgeparseweight", weightParse, getLineNumber(pointer)), Issue.Level.WARNING));
+        if (rowkonizer.hasMoreTokens()) {
+            String weightParse = rowkonizer.nextToken();
+            try {
+                weight = Double.parseDouble(weightParse);
+            } catch (Exception e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_edgeparseweight", weightParse, getLineNumber(pointer)), Issue.Level.WARNING));
+            }
         }
 
         NodeDraft sourceNode = container.getNode(from);
