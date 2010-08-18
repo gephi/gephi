@@ -443,6 +443,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                                             dd2.setValid(!((ValidationPanel) e.getSource()).isProblem());
                                         }
                                     });
+                                    dd2.setValid(!vp.isProblem());
                                 }
                                 Object result = DialogDisplayer.getDefault().notify(dd2);
                                 if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
