@@ -20,14 +20,23 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.processor.plugin;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.xml.datatype.DatatypeConfigurationException;
+import org.gephi.dynamic.DynamicUtilities;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.io.processor.plugin.DynamicProcessor;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
 import org.netbeans.validation.api.ui.ValidationGroup;
+import org.netbeans.validation.api.ui.ValidationListener;
 import org.netbeans.validation.api.ui.ValidationPanel;
+import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -35,11 +44,20 @@ import org.netbeans.validation.api.ui.ValidationPanel;
  */
 public class DynamicProcessorPanel extends javax.swing.JPanel {
 
+    private double lastFrame = Double.POSITIVE_INFINITY;
+
     public DynamicProcessorPanel() {
         initComponents();
     }
 
     public void setup(DynamicProcessor processor) {
+        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        DynamicModel dynamicModel = dynamicController.getModel();
+        if (dynamicModel != null) {
+            lastFrame = dynamicModel.getMax();
+        }
+        initLastFrame();
+
         dateRadio.setSelected(processor.isDateMode());
         if (processor.isDateMode()) {
             try {
@@ -64,25 +82,115 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
         }
     }
 
+    private void initLastFrame() {
+        if (Double.isInfinite(lastFrame)) {
+            lastFrameLabel.setText("None");
+        } else {
+            lastFrameLabel.setText(Double.toString(lastFrame));
+            try {
+                lastFrameLabel.setText(DynamicUtilities.getXMLDateStringFromDouble(lastFrame));
+            } catch (DatatypeConfigurationException ex) {
+            }
+        }
+    }
+
     public static ValidationPanel createValidationPanel(DynamicProcessorPanel innerPanel) {
         ValidationPanel validationPanel = new ValidationPanel();
         validationPanel.setInnerComponent(innerPanel);
 
         ValidationGroup group = validationPanel.getValidationGroup();
 
-        //Node field
-        group.add(innerPanel.timestampField, new Validator<String>() {
+
+        group.add(innerPanel.timestampField, Validators.merge(new LastFrameValidator(innerPanel), new Validator<String>() {
 
             @Override
             public boolean validate(Problems problems, String compName, String model) {
                 if (model.isEmpty()) {
                     return true;
                 }
-                return Validators.REQUIRE_VALID_NUMBER.validate(problems, compName, model);
+                return Validators.REQUIRE_VALID_NUMBER.validate(problems, "time stamp", model);
             }
-        });
+        }));
+
+        final DatePickerValidationListener datePickerValidationListener = new DatePickerValidationListener(innerPanel);
+        group.add(datePickerValidationListener);
+
+        PropertyChangeListener listener = new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent e) {
+                if ("date".equals(e.getPropertyName())) {
+                    datePickerValidationListener.dateEvent();
+                }
+            }
+        };
+        innerPanel.datePicker.addPropertyChangeListener(listener);
+
 
         return validationPanel;
+    }
+
+    private static class DatePickerValidationListener extends ValidationListener {
+
+        LastFrameValidator lastFrameValidator;
+
+        public DatePickerValidationListener(DynamicProcessorPanel panel) {
+            lastFrameValidator = new LastFrameValidator((panel));
+        }
+
+        @Override
+        protected boolean validate(Problems problems) {
+            return lastFrameValidator.validate(problems, "", "");
+        }
+
+        public void dateEvent() {
+            this.validate();
+        }
+    }
+
+    private static class LastFrameValidator implements Validator<String> {
+
+        private DynamicProcessorPanel panel;
+
+        public LastFrameValidator(DynamicProcessorPanel panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public boolean validate(Problems problems, String compName, String model) {
+            if (Double.isInfinite(panel.lastFrame)) {
+                return true;
+            }
+            if (panel.dateRadio.isSelected()) {
+                //Date
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String begin = sdf.format(panel.datePicker.getDate());
+                    double d = DynamicUtilities.getDoubleFromXMLDateString(begin);
+                    if (d <= panel.lastFrame) {
+                        problems.add("The new date must be later than the last current date");
+                        return false;
+                    }
+                } catch (DatatypeConfigurationException ex) {
+                    Exceptions.printStackTrace(ex);
+                    return false;
+                }
+            } else {
+                if (model.isEmpty()) {
+                    return true;
+                }
+                try {
+                    Double.parseDouble(panel.timestampField.getText());
+                } catch (Exception e) {
+                    return false;
+                }
+                if (Double.parseDouble(panel.timestampField.getText()) <= panel.lastFrame) {
+                    problems.add("The new time stamp must be greater than the last frame");
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     /** This method is called from within the constructor to
@@ -103,6 +211,8 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
         timeStampRadio = new javax.swing.JRadioButton();
         labelTime = new javax.swing.JLabel();
         timestampField = new javax.swing.JTextField();
+        labelLastFrame = new javax.swing.JLabel();
+        lastFrameLabel = new javax.swing.JLabel();
 
         header.setDescription(org.openide.util.NbBundle.getMessage(DynamicProcessorPanel.class, "DynamicProcessorPanel.header.description")); // NOI18N
         header.setTitle(org.openide.util.NbBundle.getMessage(DynamicProcessorPanel.class, "DynamicProcessorPanel.header.title")); // NOI18N
@@ -129,37 +239,49 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, timeStampRadio, org.jdesktop.beansbinding.ELProperty.create("${selected}"), timestampField, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
+        labelLastFrame.setFont(labelLastFrame.getFont().deriveFont(labelLastFrame.getFont().getStyle() | java.awt.Font.BOLD));
+        labelLastFrame.setText(org.openide.util.NbBundle.getMessage(DynamicProcessorPanel.class, "DynamicProcessorPanel.labelLastFrame.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
+            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labelLastFrame)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lastFrameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(labelDate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(datePicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(dateRadio))
-                .addContainerGap(273, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(labelDate)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(datePicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(dateRadio))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(21, 21, 21)
                         .addComponent(labelTime)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(timestampField, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(timeStampRadio))
-                .addContainerGap(181, Short.MAX_VALUE))
+                .addContainerGap(185, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelLastFrame)
+                    .addComponent(lastFrameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(dateRadio)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -171,7 +293,7 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelTime)
                     .addComponent(timestampField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -182,7 +304,9 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton dateRadio;
     private org.jdesktop.swingx.JXHeader header;
     private javax.swing.JLabel labelDate;
+    private javax.swing.JLabel labelLastFrame;
     private javax.swing.JLabel labelTime;
+    private javax.swing.JLabel lastFrameLabel;
     private javax.swing.JRadioButton timeStampRadio;
     private javax.swing.JTextField timestampField;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
