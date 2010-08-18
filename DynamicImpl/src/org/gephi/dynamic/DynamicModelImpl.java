@@ -22,6 +22,7 @@ package org.gephi.dynamic;
 
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeEvent;
@@ -249,10 +250,20 @@ public final class DynamicModelImpl implements DynamicModel {
         return timeIntervalIndex.getMax();
     }
 
+    public double[] getPoints() {
+        Double[] points = timeIntervalIndex.getPoints();
+        double[] d = new double[points.length];
+        for (int i = 0; i < d.length; i++) {
+            d[i] = (double) points[i];
+        }
+        return d;
+    }
+
     private static class TimeIntervalIndex {
 
         private SortedMap<Double, Integer> lowMap = new TreeMap<Double, Integer>();
         private SortedMap<Double, Integer> highMap = new TreeMap<Double, Integer>();
+        private TreeSet<Double> pointsSet = new TreeSet<Double>();
 
         public void add(TimeInterval interval) {
             Double low = interval.getLow();
@@ -261,6 +272,7 @@ public final class DynamicModelImpl implements DynamicModel {
                 Integer c = lowMap.get((Double) interval.getLow());
                 if (c == null) {
                     lowMap.put(low, 1);
+                    pointsSet.add(low);
                 } else {
                     lowMap.put(low, c + 1);
                 }
@@ -268,9 +280,10 @@ public final class DynamicModelImpl implements DynamicModel {
             if (high != Double.POSITIVE_INFINITY) {
                 Integer c = highMap.get((Double) interval.getHigh());
                 if (c == null) {
-                    highMap.put(low, 1);
+                    highMap.put(high, 1);
+                    pointsSet.add(high);
                 } else {
-                    highMap.put(low, c + 1);
+                    highMap.put(high, c + 1);
                 }
             }
         }
@@ -283,6 +296,7 @@ public final class DynamicModelImpl implements DynamicModel {
                 if (c != null) {
                     if (c - 1 == 0) {
                         lowMap.remove(low);
+                        pointsSet.remove(low);
                     } else {
                         lowMap.put(low, c - 1);
                     }
@@ -295,6 +309,7 @@ public final class DynamicModelImpl implements DynamicModel {
                 if (c != null) {
                     if (c - 1 == 0) {
                         highMap.remove(high);
+                        pointsSet.remove(high);
                     } else {
                         highMap.put(high, c - 1);
                     }
@@ -327,6 +342,10 @@ public final class DynamicModelImpl implements DynamicModel {
             } else {
                 return highMap.lastKey();
             }
+        }
+
+        public Double[] getPoints() {
+            return pointsSet.toArray(new Double[0]);
         }
     }
 }
