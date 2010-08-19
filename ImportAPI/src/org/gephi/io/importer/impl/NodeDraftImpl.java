@@ -77,7 +77,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         this.container = container;
         this.id = id;
         this.autoId = true;
-        this.attributeRow = container.getAttributeModel().rowFactory().newNodeRow();
+        this.attributeRow = container.getAttributeModel().rowFactory().newNodeRow(null);
     }
 
     //SETTERS

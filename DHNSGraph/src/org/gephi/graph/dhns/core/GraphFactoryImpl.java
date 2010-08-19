@@ -23,8 +23,10 @@ package org.gephi.graph.dhns.core;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.TextData;
 import org.gephi.graph.spi.TextDataFactory;
 import org.gephi.graph.dhns.edge.AbstractEdge;
@@ -54,18 +56,18 @@ public class GraphFactoryImpl implements GraphFactory {
         this.textDataFactory = Lookup.getDefault().lookup(TextDataFactory.class);
     }
 
-    public AttributeRow newNodeAttributes() {
+    public AttributeRow newNodeAttributes(NodeData nodeData) {
         if (attributesFactory == null) {
             return null;
         }
-        return attributesFactory.newNodeRow();
+        return attributesFactory.newNodeRow(nodeData);
     }
 
-    public AttributeRow newEdgeAttributes() {
+    public AttributeRow newEdgeAttributes(EdgeData edgeData) {
         if (attributesFactory == null) {
             return null;
         }
-        return attributesFactory.newEdgeRow();
+        return attributesFactory.newEdgeRow(edgeData);
     }
 
     public TextData newTextData() {
@@ -85,7 +87,7 @@ public class GraphFactoryImpl implements GraphFactory {
 
     public AbstractNode newNode(String id, int viewId) {
         AbstractNode node = new AbstractNode(idGen.newNodeId(), viewId, 0, 0, 0, null);  //with wiew = 0
-        node.getNodeData().setAttributes(newNodeAttributes());
+        node.getNodeData().setAttributes(newNodeAttributes(node.getNodeData()));
         node.getNodeData().setTextData(newTextData());
         if (id != null) {
             node.getNodeData().setId(id);
@@ -111,7 +113,7 @@ public class GraphFactoryImpl implements GraphFactory {
         } else {
             edge = new ProperEdgeImpl(idGen.newEdgeId(), nodeSource, nodeTarget);
         }
-        edge.setAttributes(newEdgeAttributes());
+        edge.setAttributes(newEdgeAttributes(edge.getEdgeData()));
         edge.getEdgeData().setTextData(newTextData());
         edge.getEdgeData().setId("" + edge.getId());
         return edge;
@@ -134,7 +136,7 @@ public class GraphFactoryImpl implements GraphFactory {
             edge = new MixedEdgeImpl(idGen.newEdgeId(), nodeSource, nodeTarget, directed);
         }
 
-        edge.setAttributes(newEdgeAttributes());
+        edge.setAttributes(newEdgeAttributes(edge.getEdgeData()));
         edge.setWeight(weight);
         edge.getEdgeData().setTextData(newTextData());
         if (id != null) {
@@ -152,7 +154,7 @@ public class GraphFactoryImpl implements GraphFactory {
         AbstractNode nodeSource = (AbstractNode) source;
         AbstractNode nodeTarget = (AbstractNode) target;
         MetaEdgeImpl edge = new MetaEdgeImpl(idGen.newEdgeId(), nodeSource, nodeTarget);
-        edge.setAttributes(newEdgeAttributes());
+        edge.setAttributes(newEdgeAttributes(edge.getEdgeData()));
         edge.getEdgeData().setTextData(newTextData());
         edge.getEdgeData().setId("" + edge.getId());
         return edge;

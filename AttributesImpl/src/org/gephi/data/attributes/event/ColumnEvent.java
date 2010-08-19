@@ -17,36 +17,20 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.gephi.data.attributes;
+ */
+package org.gephi.data.attributes.event;
 
-import org.gephi.data.attributes.api.AttributeEvent;
+import org.gephi.data.attributes.AttributeColumnImpl;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeEvent.EventType;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public final class AttributeEventImpl implements AttributeEvent {
+public class ColumnEvent extends AbstractEvent<AttributeColumn> {
 
-    private final EventType type;
-    private final Object source;
-    private final Object data;
-
-    public AttributeEventImpl(EventType type, Object source, Object data) {
-        this.type = type;
-        this.source = source;
-        this.data = data;
-    }
-
-    public EventType getEventType() {
-        return type;
-    }
-
-    public Object getSource() {
-        return source;
-    }
-
-    public Object getData() {
-        return data;
+    public ColumnEvent(EventType eventType, AttributeColumnImpl data) {
+        super(eventType, data.getTable(), data);
     }
 }

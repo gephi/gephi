@@ -21,9 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeEvent.EventType;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.event.ValueEvent;
 
 /**
  *
@@ -32,12 +34,14 @@ import org.gephi.data.attributes.api.AttributeValue;
  */
 public class AttributeRowImpl implements AttributeRow {
 
-    protected AttributeTableImpl attributeTable;
+    protected final Object object;
+    protected final AttributeTableImpl attributeTable;
     protected AttributeValueImpl[] values;
     protected int rowVersion = -1;
 
-    public AttributeRowImpl(AttributeTableImpl attributeClass) {
-        this.attributeTable = attributeClass;
+    public AttributeRowImpl(AttributeTableImpl attributeTable, Object object) {
+        this.attributeTable = attributeTable;
+        this.object = object;
         reset();
     }
 
@@ -114,6 +118,8 @@ public class AttributeRowImpl implements AttributeRow {
         updateColumns();
 
         this.values[index] = value;
+
+        attributeTable.model.fireAttributeEvent(new ValueEvent(EventType.SET_VALUE, attributeTable, object, value));
     }
 
     public Object getValue(AttributeColumn column) {
@@ -156,6 +162,10 @@ public class AttributeRowImpl implements AttributeRow {
     public int countValues() {
         updateColumns();
         return values.length;
+    }
+
+    public Object getObject() {
+        return object;
     }
 
     private void updateColumns() {

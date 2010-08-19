@@ -89,6 +89,19 @@ public interface AttributeModel {
     public AttributeRowFactory rowFactory();
 
     /**
+     * Adds <code>listener</code> to the listeners of this table. It receives
+     * events when columns are added or removed, as well as when values are set.
+     * @param listener      the listener that is to be added
+     */
+    public void addAttributeListener(AttributeListener listener);
+
+    /**
+     * Removes <code>listener</code> to the listeners of this table.
+     * @param listener      the listener that is to be removed
+     */
+    public void removeAttributeListener(AttributeListener listener);
+
+    /**
      * Merge <code>model</code> in this model. Makes the union of tables and
      * columns of both models. Copy tables this model don't
      * have and merge existing ones. For existing tables, call

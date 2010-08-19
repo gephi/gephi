@@ -61,14 +61,12 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
 
             public void select(Workspace workspace) {
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-                attributeModel.getNodeTable().addAttributeListener(RankingModelImpl.this);
-                attributeModel.getEdgeTable().addAttributeListener(RankingModelImpl.this);
+                attributeModel.addAttributeListener(RankingModelImpl.this);
             }
 
             public void unselect(Workspace workspace) {
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-                attributeModel.getNodeTable().removeAttributeListener(RankingModelImpl.this);
-                attributeModel.getEdgeTable().removeAttributeListener(RankingModelImpl.this);
+                attributeModel.removeAttributeListener(RankingModelImpl.this);
             }
 
             public void close(Workspace workspace) {
@@ -79,8 +77,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         });
         if (pc.getCurrentWorkspace() != null) {
             AttributeModel attributeModel = pc.getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
-            attributeModel.getNodeTable().addAttributeListener(RankingModelImpl.this);
-            attributeModel.getEdgeTable().addAttributeListener(RankingModelImpl.this);
+            attributeModel.addAttributeListener(RankingModelImpl.this);
         }
     }
 

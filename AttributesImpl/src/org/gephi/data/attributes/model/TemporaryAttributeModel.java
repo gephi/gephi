@@ -17,10 +17,11 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.model;
 
 import org.gephi.data.attributes.AbstractAttributeModel;
+import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeType;
 
 /**
@@ -41,5 +42,14 @@ public class TemporaryAttributeModel extends AbstractAttributeModel {
     public Object getManagedValue(Object obj, AttributeType attributeType) {
         return obj;
     }
-}
 
+    @Override
+    public void addAttributeListener(AttributeListener listener) {
+        throw new UnsupportedOperationException("Temporary Attribute Model doens't supper events");
+    }
+
+    @Override
+    public void removeAttributeListener(AttributeListener listener) {
+        throw new UnsupportedOperationException("Temporary Attribute Model doens't supper events");
+    }
+}

@@ -70,7 +70,7 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         this.container = container;
         this.id = id;
         this.autoId = true;
-        this.attributeRow = container.getAttributeModel().rowFactory().newEdgeRow();
+        this.attributeRow = container.getAttributeModel().rowFactory().newEdgeRow(null);
     }
 
     //SETTERS

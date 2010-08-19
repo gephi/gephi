@@ -59,7 +59,8 @@ public class AttributeModelSerializerTest {
         nodeTableImpl.addColumn("position", "Position&<>\"'$*", AttributeType.FLOAT, AttributeOrigin.PROPERTY, new Float(0));
         nodeTableImpl.addColumn("cats", "Catégories", AttributeType.LIST_STRING, AttributeOrigin.DATA, new StringList("a,b,c,d"));
         AttributeTableImpl edgeTableImpl = model.getEdgeTable();
-        edgeTableImpl.addColumn("weight", AttributeType.DOUBLE, AttributeOrigin.DATA);
+        edgeTableImpl.addColumn("name", AttributeType.STRING, AttributeOrigin.DATA);
+        //edgeTableImpl.addColumn("weight", AttributeType.DOUBLE, AttributeOrigin.DATA);
     }
 
     @After
@@ -71,10 +72,12 @@ public class AttributeModelSerializerTest {
         AttributeModelSerializer serializer = new AttributeModelSerializer();
         Element e1 = serializer.writeModel(serializer.createDocument(), model);
         String s1 = printXML(e1);
+        System.out.println(s1);
         IndexedAttributeModel model2 = new IndexedAttributeModel();
         serializer.readModel(e1, model2);
         Element e2 = serializer.writeModel(serializer.createDocument(), model2);
         String s2 = printXML(e2);
+        System.out.println(s2);
         assertEquals(s1, s2);
     }
 
