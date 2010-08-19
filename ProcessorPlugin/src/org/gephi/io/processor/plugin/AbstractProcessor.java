@@ -70,20 +70,9 @@ public abstract class AbstractProcessor {
             node.getNodeData().getTextData().setSize(nodeDraft.getLabelSize());
         }
 
-        if (nodeDraft.getX() != 0 && !Float.isNaN(nodeDraft.getX())) {
-            node.getNodeData().setX(nodeDraft.getX());
-        } else {
-            node.getNodeData().setX((float) ((0.01 + Math.random()) * 1000) - 500);
-        }
-        if (nodeDraft.getY() != 0 && !Float.isNaN(nodeDraft.getY())) {
-            node.getNodeData().setY(nodeDraft.getY());
-        } else {
-            node.getNodeData().setY((float) ((0.01 + Math.random()) * 1000) - 500);
-        }
-
-        if (nodeDraft.getZ() != 0 && !Float.isNaN(nodeDraft.getZ())) {
-            node.getNodeData().setZ(nodeDraft.getZ());
-        }
+        node.getNodeData().setX(nodeDraft.getX());
+        node.getNodeData().setY(nodeDraft.getY());
+        node.getNodeData().setZ(nodeDraft.getZ());
 
         if (nodeDraft.getSize() != 0 && !Float.isNaN(nodeDraft.getSize())) {
             node.getNodeData().setSize(nodeDraft.getSize());
