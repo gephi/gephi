@@ -76,7 +76,8 @@ public abstract class DynamicType<T> {
 	public DynamicType(DynamicType<T> source) {
 		if (source == null)
 			intervalTree = new IntervalTree<T>();
-		else intervalTree = source.intervalTree;
+		else 
+                    intervalTree = new IntervalTree<T>(source.intervalTree);
 	}
 
 	/**

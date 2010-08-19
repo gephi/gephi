@@ -61,6 +61,21 @@ public final class IntervalTree<T> {
 		root = nil;
 	}
 
+        public IntervalTree(IntervalTree intervalTree) {
+            nil = new Node();
+            nil.left = nil.right = nil.p = nil;
+            root = nil;
+            copy(intervalTree.root.left, intervalTree.nil);
+        }
+
+        private void copy(Node x, Node nil) {
+		if (x != nil) {
+			copy(x.left, nil);
+			insert(x.i);
+			copy(x.right, nil);
+		}
+	}
+
 	/**
 	 * Inserts the {@code interval} into this {@code IntervalTree}.
 	 * 
