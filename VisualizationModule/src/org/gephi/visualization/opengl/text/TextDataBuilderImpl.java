@@ -53,7 +53,7 @@ public class TextDataBuilderImpl implements TextDataFactory {
                 if (val instanceof DynamicType) {
                     DynamicType dynamicType = (DynamicType) val;
                     if (timeInterval != null) {
-                        str += dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh());
+                        str += dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh(), Estimator.LAST);
                     } else {
                         str += dynamicType.getValue(Estimator.AVERAGE);
                     }
