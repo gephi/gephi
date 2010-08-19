@@ -231,7 +231,7 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
 
             Double[] toAdd = new Double[]{toRemove[0], excludingPoint};
 
-            return new TimeInterval(source, toAdd[0], toAdd[1], toRemove[0], toRemove[0]);
+            return new TimeInterval(source, toAdd[0], toAdd[1], toRemove[0], toRemove[1]);
         }
         return source;
 
