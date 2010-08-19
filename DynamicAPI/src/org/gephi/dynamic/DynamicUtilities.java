@@ -42,6 +42,7 @@ import org.gephi.data.attributes.type.DynamicString;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
+import org.openide.util.Exceptions;
 
 /**
  * Contains only static, and toolkit functions, like type conversion
@@ -57,15 +58,19 @@ public final class DynamicUtilities {
 	 *
 	 * @return date as a double.
 	 *
-	 * @throws DatatypeConfigurationException if the implementation of {@code DatatypeFactory}
-	 *                                        is not available or cannot be instantiated.
-	 * @throws IllegalArgumentException       if {@code str} is not a valid {@code XMLGregorianCalendar}.
-	 * @throws NullPointerException           if {@code str} is null.
+	 * @throws IllegalArgumentException if {@code str} is not a valid {@code XMLGregorianCalendar}.
+	 * @throws NullPointerException     if {@code str} is null.
 	 */
-	public static double getDoubleFromXMLDateString(String str) throws DatatypeConfigurationException {
-		DatatypeFactory dateFactory = DatatypeFactory.newInstance();
-		return dateFactory.newXMLGregorianCalendar(str.length() > 23 ? str.substring(0, 23) : str).
-				toGregorianCalendar().getTimeInMillis();
+	public static double getDoubleFromXMLDateString(String str) {
+		try {
+			DatatypeFactory dateFactory = DatatypeFactory.newInstance();
+			return dateFactory.newXMLGregorianCalendar(str.length() > 23 ? str.substring(0, 23) : str).
+					toGregorianCalendar().getTimeInMillis();
+		}
+		catch (DatatypeConfigurationException ex) {
+			Exceptions.printStackTrace(ex);
+			return 0.0;
+		}
 	}
 	
 	/**
@@ -75,17 +80,21 @@ public final class DynamicUtilities {
 	 *
 	 * @return an XML date string.
 	 *
-	 * @throws DatatypeConfigurationException if the implementation of {@code DatatypeFactory}
-	 *                                        is not available or cannot be instantiated.
-	 * @throws IllegalArgumentException       if {@code d} is infinite.
+	 * @throws IllegalArgumentException if {@code d} is infinite.
 	 */
-	public static String getXMLDateStringFromDouble(double d) throws DatatypeConfigurationException {
-		DatatypeFactory dateFactory = DatatypeFactory.newInstance();
-		if (Double.isInfinite(d))
-			throw new IllegalArgumentException("The passed double cannot be infinite.");
-		GregorianCalendar gc = new GregorianCalendar();
-		gc.setTimeInMillis((long)d);
-		return dateFactory.newXMLGregorianCalendar(gc).toXMLFormat().substring(0, 23);
+	public static String getXMLDateStringFromDouble(double d) {
+		try {
+			DatatypeFactory dateFactory = DatatypeFactory.newInstance();
+			if (Double.isInfinite(d))
+				throw new IllegalArgumentException("The passed double cannot be infinite.");
+			GregorianCalendar gc = new GregorianCalendar();
+			gc.setTimeInMillis((long) d);
+			return dateFactory.newXMLGregorianCalendar(gc).toXMLFormat().substring(0, 23);
+		}
+		catch (DatatypeConfigurationException ex) {
+			Exceptions.printStackTrace(ex);
+			return "";
+		}
 	}
 
 	/**
@@ -431,14 +440,18 @@ public final class DynamicUtilities {
 		if (source == null)
 			throw new NullPointerException("The source cannot be null.");
 		
-		List<Interval> intervals = source.getIntervals(low, high);
-		for (Interval interval : intervals) {
+		List<Interval> sIntervals = source.getIntervals(low, high);
+		List<Interval> tIntervals = new ArrayList<Interval>();
+		for (Interval interval : sIntervals) {
+			double iLow  = interval.getLow();
+			double iHigh = interval.getHigh();
 			if (interval.getLow() < low)
-				interval.setLow(low);
+				iLow = low;
 			if (interval.getHigh() > high)
-				interval.setHigh(high);
+				iHigh = high;
+			tIntervals.add(new Interval(iLow, iHigh, interval.getValue()));
 		}
 
-		return createDynamicObject(AttributeType.parse(source), intervals);
+		return createDynamicObject(AttributeType.parse(source), tIntervals);
 	}
 }
