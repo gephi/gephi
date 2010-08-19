@@ -136,7 +136,6 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
 
             //Add Point
             node.getNodeData().getAttributes().setValue(nodeDynamicColumn.getIndex(), addPoint(timeInterval, point));
-            System.out.println("node " + node.getNodeData().getId() + "  " + node.getNodeData().getAttributes().getValue(nodeDynamicColumn.getIndex()));
         }
 
         //Push nodes in data structure
@@ -156,7 +155,6 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
         //Remove point from all nodes not in draft
         for (Node node : graph.getNodes()) {
             if (!nodesInDraft.contains(node)) {
-                System.out.println("Node " + node.getNodeData().getId() + " remove point "+point);
                 TimeInterval timeInterval = (TimeInterval) node.getNodeData().getAttributes().getValue(nodeDynamicColumn.getIndex());
                 node.getNodeData().getAttributes().setValue(nodeDynamicColumn.getIndex(), removePoint(timeInterval, point));
             }
@@ -193,19 +191,17 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
 
             //Add Point
             edge.getEdgeData().getAttributes().setValue(edgeDynamicColumn.getIndex(), addPoint(timeInterval, point));
-            System.out.println("edge " + edge.getSource().getNodeData().getId()+"-"+edge.getTarget().getNodeData().getId() + "  " + edge.getEdgeData().getAttributes().getValue(edgeDynamicColumn.getIndex()));
         }
 
         //Remove point from all edges not in draft
         for (Edge edge : graph.getEdges()) {
             if (!edgesInDraft.contains(edge)) {
-                System.out.println("Edge " + edge.getSource().getNodeData().getId()+"-"+edge.getTarget().getNodeData().getId() + " remove point "+point);
                 TimeInterval timeInterval = (TimeInterval) edge.getEdgeData().getAttributes().getValue(edgeDynamicColumn.getIndex());
                 edge.getEdgeData().getAttributes().setValue(edgeDynamicColumn.getIndex(), removePoint(timeInterval, point));
             }
         }
 
-        System.out.println("# Nodes loaded: " + newNodeCount + "\n# Edges loaded: " + newEdgeCount);
+        System.out.println("# New Nodes loaded: " + newNodeCount + "\n# New Edges loaded: " + newEdgeCount);
         workspace = null;
     }
 
