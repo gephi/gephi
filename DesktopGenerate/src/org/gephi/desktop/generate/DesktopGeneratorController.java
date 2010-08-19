@@ -126,6 +126,8 @@ public class DesktopGeneratorController implements GeneratorController {
             pc.setSource(workspace, container.getSource());
         }
 
+        container.closeLoader();
+
         DefaultProcessor defaultProcessor = new DefaultProcessor();
         defaultProcessor.setContainer(container.getUnloader());
         defaultProcessor.setWorkspace(workspace);
