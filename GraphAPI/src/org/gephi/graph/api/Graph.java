@@ -166,6 +166,20 @@ public interface Graph {
     public Edge getEdge(String id);
 
     /**
+     * Finds and returns a <b>directed</b> or <b>undirected</b> edge that connects <code>node1</code> and
+     * <code>node2</code>. Returns <code>null</code> if no such edge is found.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
+     * @param node1 the first incident node of the queried edge
+     * @param node2 thge second incident node of the queried edge
+     * @return an edge that connects <code>node1</code> and <code>node2</code>
+     * or <code>null</code> if no such edge exists
+     * @throws IllegalArgumentException if <code>node1</code> or <code>node2</code>
+     * is <code>null</code> or not legal nodes in the graph
+    */
+    public Edge getEdge(Node node1, Node node2);
+
+    /**
      * Returns nodes contained in the graph.
      * @return a node iterable of nodes contained in the graph.
      */

@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 OpenIDE-Module: org.gephi.desktop.perspective
 OpenIDE-Module-Layer: org/gephi/desktop/perspective/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/perspective/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7
+OpenIDE-Module-Specification-Version: 0.7.1
 

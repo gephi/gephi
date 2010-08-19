@@ -3,5 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.visualization
 OpenIDE-Module-Layer: org/gephi/visualization/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/visualization/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.13
+OpenIDE-Module-Specification-Version: 0.7.1
 

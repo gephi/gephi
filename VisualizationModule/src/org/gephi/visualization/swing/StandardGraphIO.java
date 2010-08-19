@@ -335,7 +335,8 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         //Refresh
         engine.getScheduler().requireUpdateVisible();
 
-        vizController.getVizModel().setCameraDistance(graphDrawable.getCameraVector().length());
+        //Too slow as it triggers many events later
+        //vizController.getVizModel().setCameraDistance(graphDrawable.getCameraVector().length());
 
         /* float[] graphLimits = engine.getGraphLimits();
         float graphWidth = Math.abs(graphLimits[1]-graphLimits[0]);

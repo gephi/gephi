@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.partition.api
 OpenIDE-Module-Localizing-Bundle: org/gephi/partition/api/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.6
+OpenIDE-Module-Specification-Version: 0.7.1
 

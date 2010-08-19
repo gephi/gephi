@@ -3,5 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.desktop.ranking
 OpenIDE-Module-Layer: org/gephi/desktop/ranking/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/ranking/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.2
+OpenIDE-Module-Specification-Version: 0.7.1
 

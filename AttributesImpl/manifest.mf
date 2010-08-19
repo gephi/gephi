@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.data.attributes
 OpenIDE-Module-Localizing-Bundle: org/gephi/data/attributes/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.1.1
+OpenIDE-Module-Specification-Version: 0.7.1.2
 

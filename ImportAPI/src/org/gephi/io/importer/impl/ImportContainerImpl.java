@@ -589,6 +589,29 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 node.setLabel(node.getId());
             }
         }
+
+        //Set random position
+        boolean customPosition = false;
+        for (NodeDraftImpl node : nodeMap.values()) {
+            if (Float.isNaN(node.getX())) {
+                node.setX(0);
+            }
+            if (Float.isNaN(node.getY())) {
+                node.setY(0);
+            }
+            if (Float.isNaN(node.getZ())) {
+                node.setZ(0);
+            }
+            if (node.getX() != 0f || node.getY() != 0) {
+                customPosition = true;
+            }
+        }
+        if (!customPosition) {
+            for (NodeDraftImpl node : nodeMap.values()) {
+                node.setX((float) ((0.01 + Math.random()) * 1000) - 500);
+                node.setY((float) ((0.01 + Math.random()) * 1000) - 500);
+            }
+        }
     }
 
     /**

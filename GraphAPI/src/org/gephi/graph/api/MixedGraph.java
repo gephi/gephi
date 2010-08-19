@@ -44,7 +44,7 @@ public interface MixedGraph extends Graph {
     public boolean addEdge(Node source, Node target, boolean directed);
 
     /**
-     * Find and returns a <b>directed</b> or <b>undirected</b> edge that connects <code>node1</code> and
+     * Finds and returns a <b>directed</b> or <b>undirected</b> edge that connects <code>node1</code> and
      * <code>node2</code>. Returns <code>null</code> if no such edge is found.
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
      * statement.

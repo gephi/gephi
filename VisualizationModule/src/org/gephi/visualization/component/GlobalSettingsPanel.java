@@ -90,7 +90,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
 
             public void stateChanged(ChangeEvent e) {
                 int cam = (int) VizController.getInstance().getVizModel().getCameraDistance();
-                if (zoomSlider.getValue() != cam) {
+                if (zoomSlider.getValue() != cam && cam < zoomSlider.getMaximum()) {
                     GraphIO io = VizController.getInstance().getGraphIO();
                     io.setCameraDistance(zoomSlider.getValue());
                 }
@@ -125,6 +125,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
     private void refreshZoom() {
         int zoomValue = (int) VizController.getInstance().getVizModel().getCameraDistance();
         if (zoomSlider.getValue() != zoomValue) {
+            System.out.println("refresh zoom " + zoomValue);
             zoomSlider.setValue(zoomValue);
         }
     }

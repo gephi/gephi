@@ -3,5 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.desktop.io.export
 OpenIDE-Module-Layer: org/gephi/desktop/io/export/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/io/export/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.1
+OpenIDE-Module-Specification-Version: 0.7.1.1
 

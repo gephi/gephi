@@ -139,6 +139,15 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 }
             }
         });
+        exportLabelVisible.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (uiModel.getSelectedQuery() != null) {
+                    FilterController controller = Lookup.getDefault().lookup(FilterController.class);
+                    controller.exportToLabelVisible(uiModel.getSelectedRoot());
+                }
+            }
+        });
         updateEnabled(false);
     }
 
@@ -183,6 +192,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 filterButton.setEnabled(enabled);
                 exportColumnButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
                 exportWorkspaceButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
+                exportLabelVisible.setEnabled(enabled && uiModel.getSelectedQuery() != null);
             }
         });
     }
@@ -250,6 +260,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         separator = new javax.swing.JToolBar.Separator();
         exportColumnButton = new javax.swing.JButton();
         exportWorkspaceButton = new javax.swing.JButton();
+        exportLabelVisible = new javax.swing.JButton();
         splitPane = new javax.swing.JSplitPane();
         libraryTree = new FiltersExplorer();
         southPanel = new javax.swing.JPanel();
@@ -286,6 +297,13 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         exportWorkspaceButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         exportWorkspaceButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(exportWorkspaceButton);
+
+        exportLabelVisible.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/labelvisible_export.png"))); // NOI18N
+        exportLabelVisible.setToolTipText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportLabelVisible.toolTipText")); // NOI18N
+        exportLabelVisible.setFocusable(false);
+        exportLabelVisible.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        exportLabelVisible.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolbar.add(exportLabelVisible);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -358,6 +376,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.JButton exportColumnButton;
+    private javax.swing.JButton exportLabelVisible;
     private javax.swing.JButton exportWorkspaceButton;
     private javax.swing.JToggleButton filterButton;
     private javax.swing.JPanel filtersUIPanel;

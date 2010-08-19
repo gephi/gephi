@@ -149,6 +149,15 @@ public interface FilterController {
     public void exportToNewWorkspace(Query query);
 
     /**
+     * Exports <code>query</code> result to visible/hidden labels. Each node and
+     * edge not present in the query result has its label set hidden. Label
+     * visibility is controlled from <code>TextData</code> object, accessible from
+     * <code>NodeData</code> or <code>EdgeData</code>.
+     * @param query         the query that is to be used to hide labels
+     */
+    public void exportToLabelVisible(Query query);
+
+    /**
      * Returns the filter's model.
      * @return              the filter's model
      */

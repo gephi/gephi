@@ -28,8 +28,9 @@ package org.gephi.graph.api;
 public interface Node {
 
     /**
-     * Returns the unique identifier.
-     * @return  the node id
+     * Returns the unique identifier. This id is created by the system, use
+     * <b><code>NodeData.getId()</code></b> to get the string id from import.
+     * @return  the node id, created by the system
      */
     public int getId();
 

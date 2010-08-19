@@ -205,7 +205,11 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         Graph result;
         if (model.getCurrentQuery() == query) {
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-            result = graphModel.getGraphVisible();
+            GraphView view = model.getCurrentResult();
+            if (view != null) {
+                return;
+            }
+            result = graphModel.getGraph(view);
         } else {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
@@ -235,7 +239,11 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         Graph result;
         if (model.getCurrentQuery() == query) {
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-            result = graphModel.getGraphVisible();
+            GraphView view = model.getCurrentResult();
+            if (view == null) {
+                return;
+            }
+            result = graphModel.getGraph(view);
         } else {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
@@ -262,6 +270,32 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 //StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(FilterControllerImpl.class, "FilterController.exportToNewWorkspace.status", workspaceName));
             }
         }, "Export filter to workspace").start();
+    }
+
+    public void exportToLabelVisible(Query query) {
+        Graph result;
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        if (model.getCurrentQuery() == query) {
+            GraphView view = model.getCurrentResult();
+            if (view == null) {
+                return;
+            }
+            result = graphModel.getGraph(view);
+        } else {
+            FilterProcessor processor = new FilterProcessor();
+            result = processor.process((AbstractQueryImpl) query, graphModel);
+        }
+        Graph fullGraph = graphModel.getGraph();
+        fullGraph.readLock();
+        for (Node n : fullGraph.getNodes()) {
+            boolean inView = n.getNodeData().getNode(result.getView().getViewId()) != null;
+            n.getNodeData().getTextData().setVisible(inView);
+        }
+        for (Edge e : fullGraph.getEdges()) {
+            boolean inView = result.contains(e);
+            e.getEdgeData().getTextData().setVisible(inView);
+        }
+        fullGraph.readUnlock();
     }
 
     public FilterModel getModel() {
