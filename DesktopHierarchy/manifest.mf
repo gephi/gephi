@@ -3,5 +3,5 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.desktop.hierarchy
 OpenIDE-Module-Layer: org/gephi/desktop/hierarchy/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/hierarchy/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.0.3
+OpenIDE-Module-Specification-Version: 0.7.1
 

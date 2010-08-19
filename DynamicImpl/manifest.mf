@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 OpenIDE-Module: org.gephi.dynamic
 OpenIDE-Module-Localizing-Bundle: org/gephi/dynamic/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7
+OpenIDE-Module-Specification-Version: 0.7.1
 

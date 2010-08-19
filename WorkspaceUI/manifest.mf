@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.ui.workspace
 OpenIDE-Module-Localizing-Bundle: org/gephi/ui/workspace/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7
+OpenIDE-Module-Specification-Version: 0.7.1
 

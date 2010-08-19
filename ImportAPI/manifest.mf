@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.io.importer.api
 OpenIDE-Module-Localizing-Bundle: org/gephi/io/importer/api/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.7.1.1
+OpenIDE-Module-Specification-Version: 0.7.1.2
 
