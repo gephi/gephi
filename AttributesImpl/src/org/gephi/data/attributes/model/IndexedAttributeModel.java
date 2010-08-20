@@ -37,6 +37,8 @@ public class IndexedAttributeModel extends AbstractAttributeModel {
         dataIndex = new DataIndex();
         eventManager = new AttributeEventManager(this);
         createPropertiesColumn();
+
+        eventManager.start();
     }
 
     @Override

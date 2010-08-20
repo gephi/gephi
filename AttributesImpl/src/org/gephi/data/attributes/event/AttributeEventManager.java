@@ -111,7 +111,7 @@ public class AttributeEventManager implements Runnable {
 
     private AttributeEvent createEvent(AbstractEvent event, List<Object> compress, List<Object> compressObjects) {
         final AttributeEventDataImpl eventData = new AttributeEventDataImpl();
-        final AttributeEventImpl attributeEvent = new AttributeEventImpl(event.getEventType(), null, eventData);
+        final AttributeEventImpl attributeEvent = new AttributeEventImpl(event.getEventType(), event.getAttributeTable(), eventData);
         if (event instanceof ValueEvent) {
             AttributeValue[] values;
             Object[] objects;
