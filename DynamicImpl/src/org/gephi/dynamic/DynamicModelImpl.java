@@ -127,21 +127,28 @@ public final class DynamicModelImpl implements DynamicModel {
                 switch (event.getEventType()) {
                     case ADD_COLUMN:
                         if (nodeColumn == null) {
-                            AttributeColumn col = (AttributeColumn) event.getData();
-                            if (col.getId().equals(TIMEINTERVAL_COLUMN)) {
-                                if(attUtils.isNodeColumn(col)) {
-                                    nodeColumn = col;
-                                } else {
-                                    edgeColumn = col;
+                            AttributeColumn[] addedColumns = event.getData().getAddedColumns();
+                            for (int i = 0; i < addedColumns.length; i++) {
+                                AttributeColumn col = addedColumns[i];
+                                if (col.getId().equals(TIMEINTERVAL_COLUMN)) {
+                                    if (attUtils.isNodeColumn(col)) {
+                                        nodeColumn = col;
+                                    } else {
+                                        edgeColumn = col;
+                                    }
                                 }
                             }
                         }
                         break;
                     case REMOVE_COLUMN:
-                        if (nodeColumn != null && nodeColumn == event.getData()) {
-                            nodeColumn = null;
-                        } else if(edgeColumn!=null && edgeColumn == event.getData()) {
-                            edgeColumn = null;
+                        AttributeColumn[] addedColumns = event.getData().getAddedColumns();
+                        for (int i = 0; i < addedColumns.length; i++) {
+                            AttributeColumn col = addedColumns[i];
+                            if (nodeColumn != null && nodeColumn == col) {
+                                nodeColumn = null;
+                            } else if (edgeColumn != null && edgeColumn == col) {
+                                edgeColumn = null;
+                            }
                         }
                         break;
                     default:

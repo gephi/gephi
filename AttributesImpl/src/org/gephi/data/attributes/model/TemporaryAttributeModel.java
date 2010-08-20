@@ -23,6 +23,7 @@ package org.gephi.data.attributes.model;
 import org.gephi.data.attributes.AbstractAttributeModel;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.event.AbstractEvent;
 
 /**
  * Specific manager for temporary storing of attributes. This is typically used when new attributes are
@@ -51,5 +52,9 @@ public class TemporaryAttributeModel extends AbstractAttributeModel {
     @Override
     public void removeAttributeListener(AttributeListener listener) {
         throw new UnsupportedOperationException("Temporary Attribute Model doens't supper events");
+    }
+
+    @Override
+    public void fireAttributeEvent(AbstractEvent event) {
     }
 }
