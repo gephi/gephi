@@ -384,7 +384,7 @@ public class NodeDataTable {
             Attributes row = graphNode.getNodeData().getAttributes();
             Object value = row.getValue(column.getIndex());
 
-            if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
+            if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column)||AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
                 return value;
             } else {
                 return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent
