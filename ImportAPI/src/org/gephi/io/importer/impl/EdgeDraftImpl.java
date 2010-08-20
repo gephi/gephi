@@ -70,7 +70,7 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         this.container = container;
         this.id = id;
         this.autoId = true;
-        this.attributeRow = container.getAttributeModel().rowFactory().newEdgeRow();
+        this.attributeRow = container.getAttributeModel().rowFactory().newEdgeRow(null);
     }
 
     //SETTERS
@@ -173,8 +173,8 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         if (!column.getType().isDynamicType()) {
             throw new IllegalArgumentException("The column must be dynamic");
         }
-        Double start = null;
-        Double end = null;
+        Double start = Double.NEGATIVE_INFINITY;
+        Double end = Double.POSITIVE_INFINITY;
         if (dateFrom != null && !dateFrom.isEmpty()) {
             try {
                 start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
@@ -197,7 +197,7 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
                 }
             }
         }
-        if (start == null && end == null) {
+        if ((start == null && end == null) || (start == Double.NEGATIVE_INFINITY && end == Double.POSITIVE_INFINITY)) {
             throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
         }
         if (value instanceof String && !column.getType().equals(AttributeType.DYNAMIC_STRING)) {

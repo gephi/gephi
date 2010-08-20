@@ -189,7 +189,7 @@ public class DHNSSerializer {
                     edge = new SelfLoopImpl(id, source);
                 }
                 edge.setWeight(Float.parseFloat(edgeE.getAttribute("weight")));
-                edge.getEdgeData().setAttributes(factory.newEdgeAttributes());
+                edge.getEdgeData().setAttributes(factory.newEdgeAttributes(edge.getEdgeData()));
                 edge.getEdgeData().setTextData(factory.newTextData());
                 source.getEdgesOutTree().add(edge);
                 target.getEdgesInTree().add(edge);
@@ -257,7 +257,7 @@ public class DHNSSerializer {
                     absNode.setEnabledInDegree(inDegree);
                     absNode.setEnabledOutDegree(outDegree);
                     absNode.setEnabledMutualDegree(mutualDegree);
-                    absNode.getNodeData().setAttributes(factory.newNodeAttributes());
+                    absNode.getNodeData().setAttributes(factory.newNodeAttributes(absNode.getNodeData()));
                     absNode.getNodeData().setTextData(factory.newTextData());
                     treeStructure.insertAsChild(absNode, parentNode);
                     graphStructure.addToDictionnary(absNode);

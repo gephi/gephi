@@ -77,7 +77,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         this.container = container;
         this.id = id;
         this.autoId = true;
-        this.attributeRow = container.getAttributeModel().rowFactory().newNodeRow();
+        this.attributeRow = container.getAttributeModel().rowFactory().newNodeRow(null);
     }
 
     //SETTERS
@@ -218,8 +218,8 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         if (!column.getType().isDynamicType()) {
             throw new IllegalArgumentException("The column must be dynamic");
         }
-        Double start = null;
-        Double end = null;
+        Double start = Double.NEGATIVE_INFINITY;
+        Double end = Double.POSITIVE_INFINITY;
         if (dateFrom != null && !dateFrom.isEmpty()) {
             try {
                 start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
@@ -242,7 +242,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
                 }
             }
         }
-        if (start == null && end == null) {
+        if ((start == null && end == null) || (start == Double.NEGATIVE_INFINITY && end == Double.POSITIVE_INFINITY)) {
             throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
         }
         if (value instanceof String && !column.getType().equals(AttributeType.DYNAMIC_STRING)) {

@@ -24,6 +24,8 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.NodeData;
 
 /**
  *
@@ -49,18 +51,18 @@ public class AttributeFactoryImpl implements AttributeValueFactory, AttributeRow
         return new AttributeValueImpl((AttributeColumnImpl) column, managedValue);
     }
 
-    public AttributeRowImpl newNodeRow() {
-        return new AttributeRowImpl(model.getNodeTable());
+    public AttributeRowImpl newNodeRow(NodeData nodeData) {
+        return new AttributeRowImpl(model.getNodeTable(), nodeData);
     }
 
-    public AttributeRowImpl newEdgeRow() {
-        return new AttributeRowImpl(model.getEdgeTable());
+    public AttributeRowImpl newEdgeRow(EdgeData edgeData) {
+        return new AttributeRowImpl(model.getEdgeTable(), edgeData);
     }
 
-    public AttributeRowImpl newRowForTable(String tableName) {
+    public AttributeRowImpl newRowForTable(String tableName, Object object) {
         AttributeTableImpl attTable = model.getTable(tableName);
         if (attTable != null) {
-            return new AttributeRowImpl(attTable);
+            return new AttributeRowImpl(attTable, object);
         }
         return null;
     }

@@ -75,15 +75,13 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
                 trachViewChange(gm);
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-                attributeModel.getNodeTable().addAttributeListener(PartitionControllerImpl.this);
-                attributeModel.getEdgeTable().addAttributeListener(PartitionControllerImpl.this);
+                attributeModel.addAttributeListener(PartitionControllerImpl.this);
             }
 
             public void unselect(Workspace workspace) {
                 model = null;
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-                attributeModel.getNodeTable().removeAttributeListener(PartitionControllerImpl.this);
-                attributeModel.getEdgeTable().removeAttributeListener(PartitionControllerImpl.this);
+                attributeModel.removeAttributeListener(PartitionControllerImpl.this);
             }
 
             public void close(Workspace workspace) {
@@ -104,8 +102,7 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
                 trachViewChange(gm);
 
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-                attributeModel.getNodeTable().addAttributeListener(PartitionControllerImpl.this);
-                attributeModel.getEdgeTable().addAttributeListener(PartitionControllerImpl.this);
+                attributeModel.addAttributeListener(PartitionControllerImpl.this);
             }
         }
     }

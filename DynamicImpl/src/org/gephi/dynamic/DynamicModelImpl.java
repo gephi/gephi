@@ -28,6 +28,7 @@ import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicGraph;
 import org.gephi.dynamic.api.DynamicModel;
@@ -115,46 +116,39 @@ public final class DynamicModelImpl implements DynamicModel {
         //Visible interval
         visibleTimeInterval = new TimeInterval(timeIntervalIndex.getMin(), timeIntervalIndex.getMax());
 
+        //AttUtils
+        final AttributeUtils attUtils = AttributeUtils.getDefault();
+
         //Listen columns
-        attModel.getNodeTable().addAttributeListener(new AttributeListener() {
+        attModel.addAttributeListener(new AttributeListener() {
 
             @Override
             public void attributesChanged(AttributeEvent event) {
                 switch (event.getEventType()) {
                     case ADD_COLUMN:
                         if (nodeColumn == null) {
-                            AttributeColumn col = (AttributeColumn) event.getData();
-                            if (col.getId().equals(TIMEINTERVAL_COLUMN)) {
-                                nodeColumn = col;
+                            AttributeColumn[] addedColumns = event.getData().getAddedColumns();
+                            for (int i = 0; i < addedColumns.length; i++) {
+                                AttributeColumn col = addedColumns[i];
+                                if (col.getId().equals(TIMEINTERVAL_COLUMN)) {
+                                    if (attUtils.isNodeColumn(col)) {
+                                        nodeColumn = col;
+                                    } else {
+                                        edgeColumn = col;
+                                    }
+                                }
                             }
                         }
                         break;
                     case REMOVE_COLUMN:
-                        if (nodeColumn != null && nodeColumn == event.getData()) {
-                            nodeColumn = null;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-        attModel.getEdgeTable().addAttributeListener(new AttributeListener() {
-
-            @Override
-            public void attributesChanged(AttributeEvent event) {
-                switch (event.getEventType()) {
-                    case ADD_COLUMN:
-                        if (edgeColumn == null) {
-                            AttributeColumn col = (AttributeColumn) event.getData();
-                            if (col.getId().equals(TIMEINTERVAL_COLUMN)) {
-                                edgeColumn = col;
+                        AttributeColumn[] addedColumns = event.getData().getAddedColumns();
+                        for (int i = 0; i < addedColumns.length; i++) {
+                            AttributeColumn col = addedColumns[i];
+                            if (nodeColumn != null && nodeColumn == col) {
+                                nodeColumn = null;
+                            } else if (edgeColumn != null && edgeColumn == col) {
+                                edgeColumn = null;
                             }
-                        }
-                        break;
-                    case REMOVE_COLUMN:
-                        if (edgeColumn != null && edgeColumn == event.getData()) {
-                            edgeColumn = null;
                         }
                         break;
                     default:

@@ -338,7 +338,7 @@ public class VizModel {
     }
 
     public void setCameraDistance(float distance) {
-        fireProperyChange("cameraDistance", null, distance);
+        
     }
 
     //EVENTS

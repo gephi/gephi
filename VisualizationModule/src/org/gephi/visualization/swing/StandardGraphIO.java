@@ -438,8 +438,6 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
         //Refresh
         engine.getScheduler().requireUpdateVisible();
-
-        vizController.getVizModel().setCameraDistance(graphDrawable.getCameraVector().length());
     }
 
     public void centerOnGraph() {
@@ -462,8 +460,6 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
         //Refresh
         engine.getScheduler().requireUpdateVisible();
-
-        vizController.getVizModel().setCameraDistance(graphDrawable.getCameraVector().length());
     }
 
     public void centerOnCoordinate(float x, float y, float z) {
@@ -474,7 +470,5 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         graphDrawable.cameraLocation[0] = x;
         graphDrawable.cameraLocation[1] = y;
         graphDrawable.cameraLocation[2] = z + 100;
-
-        vizController.getVizModel().setCameraDistance(graphDrawable.getCameraVector().length());
     }
 }

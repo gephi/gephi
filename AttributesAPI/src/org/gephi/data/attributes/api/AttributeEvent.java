@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.api;
 
 /**
@@ -36,12 +36,20 @@ public interface AttributeEvent {
      */
     public enum EventType {
 
-        ADD_COLUMN, REMOVE_COLUMN,
+        ADD_COLUMN, REMOVE_COLUMN, SET_VALUE
     };
 
     public EventType getEventType();
 
-    public Object getSource();
+    public AttributeTable getSource();
 
-    public Object getData();
+    public AttributeEventData getData();
+
+    /**
+     * Returns <code>true</code> if this event is one of these in parameters.
+     * @param type  the event types that are to be compared with this event
+     * @return      <code>true</code> if this event is <code>type</code>,
+     *              <code>false</code> otherwise
+     */
+    public boolean is(EventType... type);
 }

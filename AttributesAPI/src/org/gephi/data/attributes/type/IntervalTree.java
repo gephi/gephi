@@ -62,6 +62,24 @@ public final class IntervalTree<T> {
 	}
 
 	/**
+	 * Constructs a copy of the given {@code IntervalTree}.
+	 *
+	 * @param intervalTree a copied {@code IntervalTree}
+	 */
+	public IntervalTree(IntervalTree intervalTree) {
+		this();
+		copy(intervalTree.root.left, intervalTree.nil);
+	}
+
+	private void copy(Node x, Node nil) {
+		if (x != nil) {
+			copy(x.left, nil);
+			insert(x.i);
+			copy(x.right, nil);
+		}
+	}
+
+	/**
 	 * Inserts the {@code interval} into this {@code IntervalTree}.
 	 * 
 	 * @param interval an interval to be inserted

@@ -85,7 +85,7 @@ public class AttributeClassTest {
 
         //Rows
         for (int i = 0; i < 10; i++) {
-            AttributeRowImpl r = factory.newNodeRow();
+            AttributeRowImpl r = factory.newNodeRow(null);
             r.setValue(co1, "col1value " + i);
             r.setValue("col2", i);
             r.setValue("Column 3", null);

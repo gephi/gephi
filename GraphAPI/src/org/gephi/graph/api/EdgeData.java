@@ -55,6 +55,8 @@ public interface EdgeData extends Renderable {
      * Returns the string identifier of this edge. This identifier can be set
      * by users, in contrario of {@link Edge#getId()} which is set by the system.
      * <p>
+     * Use <code>Graph.getEdge(String)</code> to find edges from this id.
+     * <p>
      * If no identifier has been set, returns the system integer identifier.
      * @return              the node identifier
      */

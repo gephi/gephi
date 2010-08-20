@@ -144,33 +144,6 @@ public final class Interval<T> implements Comparable<Interval<T>> {
 	}
 
 	/**
-	 * Sets the left endpoint.
-	 *
-	 * @param low the left endpoint
-	 */
-	public void setLow(double low) {
-		this.low = low;
-	}
-
-	/**
-	 * Sets the right endpoint.
-	 *
-	 * @param high the right endpoint
-	 */
-	public void setHigh(double high) {
-		this.high = high;
-	}
-
-	/**
-	 * Sets the value stored in this interval.
-	 *
-	 * @param value an object of type {@code T} to be stored in
-	 */
-	public void setValue(T value) {
-		this.value = value;
-	}
-
-	/**
 	 * Compares this interval with the specified object for equality.
 	 * 
 	 * <p>Note that two intervals are equal if {@code i.low = i'.low} and

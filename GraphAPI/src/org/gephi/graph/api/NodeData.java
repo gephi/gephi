@@ -70,6 +70,8 @@ public interface NodeData extends Renderable {
      * Returns the string identifier of this node. This identifier can be set
      * by users, in contrario of {@link Node#getId()} which is set by the system.
      * <p>
+     * Use <code>Graph.getNode(String)</code> to find nodes from this id.
+     * <p>
      * If no identifier has been set, returns the system integer identifier.
      * @return              the node identifier
      */

@@ -74,7 +74,7 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
             return false;
         }
         if (!absEdge.hasAttributes()) {
-            absEdge.setAttributes(dhns.factory().newEdgeAttributes());
+            absEdge.setAttributes(dhns.factory().newEdgeAttributes(edge.getEdgeData()));
         }
         view.getStructureModifier().addEdge(absEdge);
         if (absEdge.isDirected()) {

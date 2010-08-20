@@ -21,17 +21,15 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeEvent;
-import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.event.ColumnEvent;
 import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
 import org.gephi.data.properties.PropertiesColumn;
 
@@ -45,8 +43,6 @@ public class AttributeTableImpl implements AttributeTable {
     protected String name;
     protected final AbstractAttributeModel model;
     //Listeners
-    protected final List<AttributeListener> listeners;
-    protected final AttributeEventDispatchThread eventDispatchThread;
     //Columns
     protected final List<AttributeColumnImpl> columns = new ArrayList<AttributeColumnImpl>();
     protected final Map<AttributeColumn, AttributeColumn> columnsSet = new HashMap<AttributeColumn, AttributeColumn>();
@@ -57,9 +53,6 @@ public class AttributeTableImpl implements AttributeTable {
     public AttributeTableImpl(AbstractAttributeModel model, String name) {
         this.name = name;
         this.model = model;
-        this.listeners = Collections.synchronizedList(new ArrayList<AttributeListener>());
-        this.eventDispatchThread = new AttributeEventDispatchThread();
-        eventDispatchThread.start();
     }
 
     public synchronized AttributeColumnImpl[] getColumns() {
@@ -120,8 +113,8 @@ public class AttributeTableImpl implements AttributeTable {
         //Version
         version++;
 
-        fireAttributeEvent(
-                new AttributeEventImpl(AttributeEvent.EventType.ADD_COLUMN, this, column));
+        model.fireAttributeEvent(
+                new ColumnEvent(AttributeEvent.EventType.ADD_COLUMN, column));
 
         return column;
     }
@@ -146,8 +139,8 @@ public class AttributeTableImpl implements AttributeTable {
         }
         columnsSet.remove(column);
 
-        fireAttributeEvent(
-                new AttributeEventImpl(AttributeEvent.EventType.REMOVE_COLUMN, this, column));
+        model.fireAttributeEvent(
+                new ColumnEvent(AttributeEvent.EventType.REMOVE_COLUMN, (AttributeColumnImpl) column));
 
         //Version
         version++;
@@ -211,65 +204,6 @@ public class AttributeTableImpl implements AttributeTable {
             AttributeColumn existingCol = getColumn(column);
             if (existingCol == null) {
                 addColumn(column.getId(), column.getTitle(), column.getType(), column.getOrigin(), column.getDefaultValue());
-            }
-        }
-    }
-
-    public void addAttributeListener(AttributeListener listener) {
-        if (!listeners.contains(listener)) {
-            listeners.add(listener);
-        }
-    }
-
-    public void removeAttributeListener(AttributeListener listener) {
-        listeners.remove(listener);
-    }
-
-    private void fireAttributeEvent(AttributeEvent event) {
-        eventDispatchThread.fireEvent(event);
-    }
-
-    protected class AttributeEventDispatchThread extends Thread {
-
-        private boolean stop;
-        private final LinkedBlockingQueue<AttributeEvent> eventQueue;
-        private final Object lock = new Object();
-
-        public AttributeEventDispatchThread() {
-            super("AttributeEvent Dispatch Thread " + name);
-            setDaemon(true);
-            this.eventQueue = new LinkedBlockingQueue<AttributeEvent>();
-        }
-
-        @Override
-        public void run() {
-            while (!stop) {
-                AttributeEvent evt;
-                while ((evt = eventQueue.poll()) != null) {
-                    for (AttributeListener l : listeners.toArray(new AttributeListener[0])) {
-                        l.attributesChanged(evt);
-                    }
-                }
-
-                while (eventQueue.isEmpty()) {
-                    try {
-                        synchronized (lock) {
-                            lock.wait();
-                        }
-                    } catch (InterruptedException e) {
-                    }
-                }
-            }
-        }
-
-        public void stop(boolean stop) {
-            this.stop = stop;
-        }
-
-        public void fireEvent(AttributeEvent event) {
-            eventQueue.add(event);
-            synchronized (lock) {
-                lock.notifyAll();
             }
         }
     }

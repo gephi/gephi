@@ -196,22 +196,19 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                 enableTableControls();
                 bannerPanel.setVisible(false);
 
-                AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
-                attributeModel.getNodeTable().addAttributeListener(DataTableTopComponent.this);
-                attributeModel.getEdgeTable().addAttributeListener(DataTableTopComponent.this);
+                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+                attributeModel.addAttributeListener(DataTableTopComponent.this);
 
                 graphModel = gc.getModel();
                 graphModel.addGraphListener(DataTableTopComponent.this);
                 dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
-
                 refreshAll();
             }
 
             public void unselect(Workspace workspace) {
                 graphModel.removeGraphListener(DataTableTopComponent.this);
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-                attributeModel.getNodeTable().removeAttributeListener(DataTableTopComponent.this);
-                attributeModel.getEdgeTable().removeAttributeListener(DataTableTopComponent.this);
+                attributeModel.removeAttributeListener(DataTableTopComponent.this);
                 graphModel = null;
                 dataTablesModel = null;
                 clearAll();
@@ -235,8 +232,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             graphModel.addGraphListener(DataTableTopComponent.this);
 
             AttributeModel attributeModel = pc.getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
-            attributeModel.getNodeTable().addAttributeListener(DataTableTopComponent.this);
-            attributeModel.getEdgeTable().addAttributeListener(DataTableTopComponent.this);
+            attributeModel.addAttributeListener(DataTableTopComponent.this);
         }
 
         //Filter

@@ -62,7 +62,7 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
             return false;
         }
         if (!absEdge.hasAttributes()) {
-            absEdge.setAttributes(dhns.factory().newEdgeAttributes());
+            absEdge.setAttributes(dhns.factory().newEdgeAttributes(edge.getEdgeData()));
         }
         view.getStructureModifier().addEdge(absEdge);
         dhns.touchUndirected();

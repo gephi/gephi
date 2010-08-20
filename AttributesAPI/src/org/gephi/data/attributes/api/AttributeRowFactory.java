@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.data.attributes.api;
 
+import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.NodeData;
+
 /**
  * Factory which is building exclusively {@link AttributeRow}. It can be get
  * from the {@link AttributeModel#rowFactory()}.
@@ -34,7 +37,7 @@ public interface AttributeRowFactory {
      * @return  a newly created row for the node table
      * @see     AttributeModel#getNodeTable()
      */
-    public AttributeRow newNodeRow();
+    public AttributeRow newNodeRow(NodeData nodeData);
 
     /**
      * Returns a new row for the <b>edge</b> table.
@@ -42,7 +45,7 @@ public interface AttributeRowFactory {
      * @return  a newly created row for the edge table
      * @see     AttributeModel#getEdgeTable()
      */
-    public AttributeRow newEdgeRow();
+    public AttributeRow newEdgeRow(EdgeData edgeData);
 
     /**
      * Returns a new row for the given <code>tableName</code>, or <code>null</code>
@@ -52,5 +55,5 @@ public interface AttributeRowFactory {
      *          otherwise
      * @see AttributeModel#getTable(java.lang.String) 
      */
-    public AttributeRow newRowForTable(String tableName);
+    public AttributeRow newRowForTable(String tableName, Object object);
 }

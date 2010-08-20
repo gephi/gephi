@@ -87,10 +87,7 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
             lastFrameLabel.setText("None");
         } else {
             lastFrameLabel.setText(Double.toString(lastFrame));
-            try {
-                lastFrameLabel.setText(DynamicUtilities.getXMLDateStringFromDouble(lastFrame));
-            } catch (DatatypeConfigurationException ex) {
-            }
+            lastFrameLabel.setText(DynamicUtilities.getXMLDateStringFromDouble(lastFrame));
         }
     }
 
@@ -163,18 +160,13 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
             }
             if (panel.dateRadio.isSelected()) {
                 //Date
-                try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    String begin = sdf.format(panel.datePicker.getDate());
-                    double d = DynamicUtilities.getDoubleFromXMLDateString(begin);
-                    if (d <= panel.lastFrame) {
-                        problems.add("The new date must be later than the last current date");
-                        return false;
-                    }
-                } catch (DatatypeConfigurationException ex) {
-                    Exceptions.printStackTrace(ex);
-                    return false;
-                }
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				String begin = sdf.format(panel.datePicker.getDate());
+				double d = DynamicUtilities.getDoubleFromXMLDateString(begin);
+				if (d <= panel.lastFrame) {
+					problems.add("The new date must be later than the last current date");
+					return false;
+				}
             } else {
                 if (model.isEmpty()) {
                     return true;

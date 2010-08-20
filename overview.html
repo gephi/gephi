@@ -9,6 +9,18 @@
     <p>
     <h2>API Changes</h2>
     <ul>
+        <li>(August 19 2010) Simplify and improve attribute events management. Event listeners now subscribe directly from the
+            <code>AttributeModel</code> instead of <code>AttributeTable</code> and will receive events for all tables. Refactoring of the
+            <code>AttributeEvent</code> class with <code>AttributeTable</code> as source and a new <code>AttributeEventData</code> object as data.
+            A new <code>SET_VALUE</code> has been implemented for getting events when attribute values are set.</li>
+        <li>(August 18 2010) Changes in <code>AttributeRowFactory</code>, the <code>newNodeRow()</code> method now takes the owner object
+            <code>NodeData</code> as a parameter. Similarly for <code>newEdgeRow()</code> and <code>newRowForTable()</code>.
+        <li>(August 17 2010) Add <code>getEdge(Node, Node)</code> in GraphAPI for consistency reasons.</li>
+        <li>(August 15 2010) Changes in Processor SPI. The <code>Processor</code> has now setters instead of a <code>process()</code> method
+            with parameters. How processors are created remains the same. Creation of a <code>ProcessorUI</code> interface for processors settings
+            configuration. A <code>ProcessorUI</code> implementation provides a panel, which is shown when the import report is closing. The
+            <code>ProcessorUI</code> also allows to disable a processor with some conditions.</li>
+        <li>(August 13 2010) Add <code>getColor()</code> method in <code>NodeDraft</code> and <code>EdgeDraft</code>.</li>
         <li>(July 19 2010) Define the "Overview, "Data Laboratory" and "Preview" as perspectives. Create a new SPI for perspecives and
             perspective members. Members are simply the <code>TopComponent</code> that belong to a perspective. Plugins can implement
             <code>PerspectiveMember</code> to define the open and close behaviour.</li>
@@ -92,7 +104,7 @@
 <ul><li><b>Attributes API</b> - Provides access to attributes values through an efficient column/row system.</li>
     <li><span class="unstable"><b>Clustering API</b></span> - API/SPI for clustering algorithms (experimental).</li>
 <li><b>Export API</b>  - Export API/SPI provides the infrastructure for exporting data to any support and define new exporters.</li>
-<li><span class="unstable"><b>Filters API</b></span>  - API/SPI for filters, define and control current filtering.</li>
+<li><b>Filters API</b>  - API/SPI for filters, define and control current filtering.</li>
 <li><b>Generator API</b> -  Generator API/SPI provides the way to create and execute graph generators.</li>
 <li><b>Graph API</b> - API for accessing the graph.</li>
 <li><b>Import API</b> - Import API/SPI provides the import workflow to import data form any support.</li>

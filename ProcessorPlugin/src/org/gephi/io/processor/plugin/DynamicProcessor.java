@@ -201,7 +201,7 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
             }
         }
 
-        System.out.println("# Nodes loaded: " + newNodeCount + "\n# Edges loaded: " + newEdgeCount);
+        System.out.println("# New Nodes loaded: " + newNodeCount + "\n# New Edges loaded: " + newEdgeCount);
         workspace = null;
     }
 
@@ -225,6 +225,9 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
             throw new RuntimeException("DynamicProcessor doesn't support overlapping intervals.");
         } else if (!intervals.isEmpty()) {
             Double[] toRemove = intervals.get(0).getValue();
+            if (toRemove[0] >= point) {
+                return source;
+            }
 
             //Excluding point
             double excludingPoint = point - 0.01;

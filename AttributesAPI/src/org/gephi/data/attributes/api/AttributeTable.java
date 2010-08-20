@@ -157,19 +157,6 @@ public interface AttributeTable {
     public boolean hasColumn(String title);
 
     /**
-     * Adds <code>listener</code> to the listeners of this table. It receives
-     * events when columns are added or removed.
-     * @param listener      the listener that is to be added
-     */
-    public void addAttributeListener(AttributeListener listener);
-
-    /**
-     * Removes <code>listener</code> to the listeners of this table.
-     * @param listener      the listener that is to be removed
-     */
-    public void removeAttributeListener(AttributeListener listener);
-
-    /**
      * Merge this table with the given <code>table</code> given. New columns from
      * <code>table</code> are added to this table. 
      * <p>
