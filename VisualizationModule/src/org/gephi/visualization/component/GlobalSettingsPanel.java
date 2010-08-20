@@ -50,7 +50,6 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("init")) {
                     refreshSharedConfig();
-                    refreshZoom();
                 } else if (evt.getPropertyName().equals("backgroundColor")) {
                     refreshSharedConfig();
                 } else if (evt.getPropertyName().equals("autoSelectNeighbor")) {
@@ -59,8 +58,6 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
                     refreshSharedConfig();
                 } else if (evt.getPropertyName().equals("use3d")) {
                     refreshSharedConfig();
-                } else if (evt.getPropertyName().equals("cameraDistance")) {
-                    refreshZoom();
                 }
             }
         });
