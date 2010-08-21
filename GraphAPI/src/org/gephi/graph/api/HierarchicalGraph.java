@@ -116,6 +116,8 @@ public interface HierarchicalGraph extends Graph {
 
     public NodeIterable getNodesTree();
 
+    public EdgeIterable getEdgesTree();
+
     /**
      * Returns nodes at the given <code>level</code> in the hierarchy. Top nodes
      * have the level <code>zero</code> and leaves' level is the height of the tree.

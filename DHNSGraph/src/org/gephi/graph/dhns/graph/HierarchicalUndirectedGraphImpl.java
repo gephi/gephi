@@ -109,6 +109,11 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
         return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true, enabledNodePredicate, Tautology.instance));
     }
 
+    public EdgeIterable getEdgesTree() {
+        readLock();
+        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true, Tautology.instance, Tautology.instance));
+    }
+
     public EdgeIterable getEdges(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);

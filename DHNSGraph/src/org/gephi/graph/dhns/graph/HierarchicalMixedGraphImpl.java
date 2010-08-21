@@ -157,6 +157,11 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
         return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, Tautology.instance, Tautology.instance));
     }
 
+    public EdgeIterable getEdgesTree() {
+        readLock();
+        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, Tautology.instance, Tautology.instance));
+    }
+
     public NodeIterable getNeighbors(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
