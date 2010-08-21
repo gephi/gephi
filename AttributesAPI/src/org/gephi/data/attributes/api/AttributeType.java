@@ -307,4 +307,21 @@ public enum AttributeType {
         }
         return false;
     }
+
+    public boolean isListType() {
+        if (this.equals(LIST_BIGDECIMAL)
+                || this.equals(LIST_BIGINTEGER)
+                || this.equals(LIST_BOOLEAN)
+                || this.equals(LIST_BYTE)
+                || this.equals(LIST_CHARACTER)
+                || this.equals(LIST_DOUBLE)
+                || this.equals(LIST_FLOAT)
+                || this.equals(LIST_INTEGER)
+                || this.equals(LIST_LONG)
+                || this.equals(LIST_SHORT)
+                || this.equals(LIST_STRING)) {
+            return true;
+        }
+        return false;
+    }
 }
