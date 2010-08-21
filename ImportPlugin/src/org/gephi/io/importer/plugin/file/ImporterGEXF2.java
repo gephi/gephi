@@ -74,7 +74,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
     private static final String EDGE_TYPE = "type";
     private static final String EDGE_WEIGHT = "weight";
     private static final String EDGE_START = "start";
-    private static final String EDGE_COLOR = "viz:color";
+    private static final String EDGE_COLOR = "color";
     private static final String EDGE_END = "end";
     private static final String EDGE_SLICE = "slice";
     private static final String ATTRIBUTE = "attribute";
