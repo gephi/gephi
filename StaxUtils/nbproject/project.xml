@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.gephi.lib.staxutils</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>javanet.staxutils</package>
+                <package>javanet.staxutils.error</package>
+                <package>javanet.staxutils.events</package>
+                <package>javanet.staxutils.helpers</package>
+                <package>javanet.staxutils.io</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/stax-utils.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/stax-utils.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>

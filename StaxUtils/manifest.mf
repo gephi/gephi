@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.lib.staxutils
+OpenIDE-Module-Localizing-Bundle: org/gephi/lib/staxutils/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+AutoUpdate-Essential-Module: true
