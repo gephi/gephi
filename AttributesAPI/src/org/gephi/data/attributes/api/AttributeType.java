@@ -285,10 +285,8 @@ public enum AttributeType {
     /**
      * Indicates if this type is a {@code DynamicType}.
      *
-     * @param type an {@code AttributeType} to check
-     *
-     * @return {@code true} if this is a {@code DynamicType},
-     *         otherwise {@code false}.
+     * @return {@code true} if this is a {@code DynamicType}, {@code false}
+     * otherwise 
      */
     public boolean isDynamicType() {
         if (this.equals(DYNAMIC_BYTE)

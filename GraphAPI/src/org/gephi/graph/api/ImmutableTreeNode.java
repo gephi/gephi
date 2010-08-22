@@ -31,9 +31,5 @@ import javax.swing.tree.TreeNode;
  */
 public interface ImmutableTreeNode extends TreeNode {
 
-    /**
-     *
-     * @return
-     */
     public Node getNode();
 }
