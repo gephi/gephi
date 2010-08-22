@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
@@ -150,6 +150,30 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
             graph = graphModel.getHierarchicalGraph();
         }
         Progress.start(progress);
+        graph.readLock();
+
+        //Options
+        if (normalize) {
+            calculateMinMax(graph);
+        }
+
+        //Calculate progress units count
+        int max = 0;
+        if (exportHierarchy) {
+            for (Node n : graph.getNodesTree()) {
+                max++;
+            }
+            for (Edge e : graph.getEdgesTree()) {
+                max++;
+            }
+        } else {
+            max = graph.getNodeCount();
+            for (Edge e : graph.getEdgesAndMetaEdges()) {
+                max++;
+            }
+        }
+        Progress.switchToDeterminate(progress, max);
+
         try {
             XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
             outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
@@ -285,6 +309,9 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
     }
 
     private void writeNodes(XMLStreamWriter xmlWriter, HierarchicalGraph graph) throws Exception {
+        if(cancel) {
+            return;
+        }
         xmlWriter.writeStartElement(NODES);
 
         AttributeColumn dynamicCol = dynamicCol = attributeModel.getNodeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
@@ -331,6 +358,10 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
             }
 
             xmlWriter.writeEndElement();
+            Progress.progress(progress);
+            if (cancel) {
+                break;
+            }
         }
 
         xmlWriter.writeEndElement();
@@ -452,6 +483,9 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
     }
 
     private void writeEdges(XMLStreamWriter xmlWriter, HierarchicalGraph graph) throws Exception {
+        if(cancel) {
+            return;
+        }
         xmlWriter.writeStartElement(EDGES);
 
         AttributeColumn dynamicCol = dynamicCol = attributeModel.getEdgeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
@@ -497,6 +531,10 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
             }
 
             xmlWriter.writeEndElement();
+            Progress.progress(progress);
+            if (cancel) {
+                break;
+            }
         }
 
         xmlWriter.writeEndElement();
