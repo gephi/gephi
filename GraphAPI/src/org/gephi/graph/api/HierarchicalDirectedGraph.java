@@ -21,7 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
- *
+ * Hierarchical directed graph.
+ * 
  * @author Mathieu Bastian
  * @see GraphModel
  */
@@ -31,7 +32,7 @@ public interface HierarchicalDirectedGraph extends HierarchicalGraph, DirectedGr
      * Returns incoming meta edges incident to <code>node</code>.
      * @param node the node whose incoming meta edges are to be returned
      * @return an edge iterable of <code>node</code>'s incoming meta edges
-     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in
      * the graph
      */
     public EdgeIterable getMetaInEdges(Node node);
@@ -40,7 +41,7 @@ public interface HierarchicalDirectedGraph extends HierarchicalGraph, DirectedGr
      * Returns outgoing meta edges incident to <code>node</code>.
      * @param node the node whose outgoing meta edges are to be returned
      * @return an edge iterable of <code>node</code>'s outgoing meta edges
-     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in
      * the graph
      */
     public EdgeIterable getMetaOutEdges(Node node);
@@ -51,7 +52,7 @@ public interface HierarchicalDirectedGraph extends HierarchicalGraph, DirectedGr
      * statement.
      * @param node the node whose meta in-degree is queried
      * @return the number of meta edges incoming to <code>node</code>
-     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in
      * the graph.
      */
     public int getMetaInDegree(Node node);
@@ -62,10 +63,22 @@ public interface HierarchicalDirectedGraph extends HierarchicalGraph, DirectedGr
      * statement.
      * @param node the node whose meta out-degree is queried
      * @return the number of meta edges outgoing from <code>node</code>
-     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in
      * the graph.
      */
     public int getMetaOutDegree(Node node);
 
+    /**
+     * Finds and returns a meta-edge that connects <code>source</code> and
+     * <code>target</code>. Returns <code>null</code> if no such meta-edge is found.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
+     * @param source the first incident node of the queried edge
+     * @param target thge second incident node of the queried edge
+     * @return an edge that connects <code>source</code> and <code>target</code>
+     * or <code>null</code> if no such edge exists
+     * @throws IllegalArgumentException if <code>source</code> or <code>target</code>
+     * are <code>null</code> or not legal nodes in the graph
+    */
     public MetaEdge getMetaEdge(Node source, Node target);
 }

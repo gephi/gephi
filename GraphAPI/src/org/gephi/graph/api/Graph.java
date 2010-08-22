@@ -175,7 +175,7 @@ public interface Graph {
      * @return an edge that connects <code>node1</code> and <code>node2</code>
      * or <code>null</code> if no such edge exists
      * @throws IllegalArgumentException if <code>node1</code> or <code>node2</code>
-     * is <code>null</code> or not legal nodes in the graph
+     * are <code>null</code> or not legal nodes in the graph
     */
     public Edge getEdge(Node node1, Node node2);
 

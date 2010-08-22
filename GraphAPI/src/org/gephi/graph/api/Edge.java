@@ -23,7 +23,15 @@ package org.gephi.graph.api;
 /**
  * Edge interface. An edge connects two nodes and can be <b>directed</b> or
  * not.
- *
+ * <p>
+ * If working with several {@link GraphView}, note that <code>source</code> and
+ * <code>target</code> are always nodes in the <b>main</b> view. To obtain nodes
+ * in other views, do:
+ * <pre>
+ * GraphView view = ...;
+ * Node node = node.getNodeData().getNode(view.getViewId());
+ * </pre>
+ * 
  * @author Mathieu Bastian
  */
 public interface Edge {

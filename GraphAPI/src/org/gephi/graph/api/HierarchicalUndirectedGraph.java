@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
+ * Hierarchical undirected graph.
  *
  * @author Mathieu Bastian
  */

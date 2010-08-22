@@ -29,7 +29,10 @@ package org.gephi.graph.api;
  * means calling <code>break</code> before the iterator terminates won't unlock
  * the graph. The <code>doBreak()</code> method will properly unlock the graph.
  * Note that calling <code>toArray()</code> avoid this issue.
- *
+ *<p>
+ * If you're not sure if the graph is properly unlocked, for instance when
+ * exception are thrown within the loop, use {@link Graph#readUnlockAll()}.
+ * 
  * @author Mathieu Bastian
  * @see Graph#readLock() 
  */
@@ -48,9 +51,10 @@ public interface EdgeIterable extends Iterable<Edge> {
     public void doBreak();
 
     /**
-     * Returns all the iterated elements in an array. Equivalent to running
-     * the iterator to the end.
-     * @return  the iterator content as an array
+     * Returns the content of the iterable directly as an array. It reads the
+     * iterable until its end and returns the array. <b>Use this method to avoid
+     * the automatic lock when using the iterator</b>.
+     * @return the iterator content as an array
      */
     public Edge[] toArray();
 }
