@@ -203,8 +203,9 @@ public final class TypeConvertor {
     /**
      * Returns the underlying static type from <code>dynamicType</code> For example
      * returns <code>FLOAT</code> if given type is <code>DYNAMIC_FLOAT</code>.
-     * @param dynamicType
-     * @return
+     * @param dynamicType a dynamic type
+     * @return the underlying static type
+     * @throws IllegalArgumentException if <code>dynamicType</code> is not dynamic
      */
     public static AttributeType getStaticType(AttributeType dynamicType) {
         if (!dynamicType.isDynamicType()) {

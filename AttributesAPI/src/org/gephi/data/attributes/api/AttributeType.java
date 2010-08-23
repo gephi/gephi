@@ -292,10 +292,8 @@ public enum AttributeType {
     /**
      * Indicates if this type is a {@code DynamicType}.
      *
-     * @param type an {@code AttributeType} to check
-     *
-     * @return {@code true} if this is a {@code DynamicType},
-     *         otherwise {@code false}.
+     * @return {@code true} if this is a {@code DynamicType}, {@code false}
+     * otherwise 
      */
     public boolean isDynamicType() {
         switch (this) {
@@ -315,6 +313,23 @@ public enum AttributeType {
             default:
                 return false;
         }
+    }    
+	
+	public boolean isListType() {
+        if (this.equals(LIST_BIGDECIMAL)
+                || this.equals(LIST_BIGINTEGER)
+                || this.equals(LIST_BOOLEAN)
+                || this.equals(LIST_BYTE)
+                || this.equals(LIST_CHARACTER)
+                || this.equals(LIST_DOUBLE)
+                || this.equals(LIST_FLOAT)
+                || this.equals(LIST_INTEGER)
+                || this.equals(LIST_LONG)
+                || this.equals(LIST_SHORT)
+                || this.equals(LIST_STRING)) {
+            return true;
+        }
+        return false;
     }
 
     /**
