@@ -386,19 +386,18 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             throw new IllegalArgumentException("The column has to be a number or number list column");
         }
 
-        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         ArrayList<Number> numbers = new ArrayList<Number>();
         final int columnIndex = column.getIndex();
         Number number;
         if (attributeUtils.isNumberColumn(column)) {//Number column
-            for (Attributes row : ac.getTableAttributeRows(table)) {
+            for (Attributes row : getTableAttributeRows(table)) {
                 number = (Number) row.getValue(columnIndex);
                 if (number != null) {
                     numbers.add(number);
                 }
             }
         } else {//Number list column
-            for (Attributes row : ac.getTableAttributeRows(table)) {
+            for (Attributes row : getTableAttributeRows(table)) {
                 numbers.addAll(getNumberListColumnNumbers(row, column));
             }
         }
@@ -510,7 +509,6 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         CsvReader reader = null;
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
-            AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
             AttributeTable edges = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
             String idColumn = null;
             String sourceColumn = null;
@@ -532,7 +530,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 } else if (edges.hasColumn(columnNames[i])) {
                     columnsList.add(edges.getColumn(columnNames[i]));
                 } else {
-                    columnsList.add(ac.addAttributeColumn(edges, columnNames[i], columnTypes[i]));
+                    columnsList.add(addAttributeColumn(edges, columnNames[i], columnTypes[i]));
                 }
             }
 
@@ -601,7 +599,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     //Assign attributes to the current edge:
                     edgeAttributes = edge.getEdgeData().getAttributes();
                     for (AttributeColumn column : columnsList) {
-                        ac.setAttributeValue(reader.get(column.getTitle()), edgeAttributes, column);
+                        setAttributeValue(reader.get(column.getTitle()), edgeAttributes, column);
                     }
                 }
             }

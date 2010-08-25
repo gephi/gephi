@@ -55,7 +55,6 @@ import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulatorBuilder;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
