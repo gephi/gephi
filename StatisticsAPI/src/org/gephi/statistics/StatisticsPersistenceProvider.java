@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.statistics;
 
 import org.gephi.statistics.StatisticsModelImpl;
@@ -35,14 +35,21 @@ import org.w3c.dom.Element;
 public class StatisticsPersistenceProvider implements WorkspacePersistenceProvider {
 
     public Element writeXML(Document document, Workspace workspace) {
-        return document.createElement("statistics");
+        StatisticsModelImpl statModel = workspace.getLookup().lookup(StatisticsModelImpl.class);
+        if (statModel != null) {
+            Element statModelE = statModel.writeXML(document);
+            return statModelE;
+        }
+        return null;
     }
 
     public void readXML(Element element, Workspace workspace) {
-        workspace.add(new StatisticsModelImpl());
+        StatisticsModelImpl statModel = new StatisticsModelImpl();
+        statModel.readXML(element);
+        workspace.add(statModel);
     }
 
     public String getIdentifier() {
-        return "statistics";
+        return "statisticsmodel";
     }
 }

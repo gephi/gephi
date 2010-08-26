@@ -22,6 +22,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.statistics;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +31,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.api.StatisticsModel;
+import org.gephi.statistics.spi.StatisticsBuilder;
 import org.gephi.statistics.spi.StatisticsUI;
+import org.openide.util.Lookup;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -136,5 +143,94 @@ public class StatisticsModelImpl implements StatisticsModel {
         for (ChangeListener listener : listeners) {
             listener.stateChanged(evt);
         }
+    }
+
+    public Element writeXML(Document document) {
+        Element modelE = document.createElement("statisticsmodel");
+
+        Element resultsE = document.createElement("results");
+        for (Map.Entry<StatisticsUI, String> entry : resultMap.entrySet()) {
+            if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                Element resultE = document.createElement("result");
+                resultE.setAttribute("class", entry.getKey().getClass().getName());
+                resultE.setAttribute("value", entry.getValue());
+                resultsE.appendChild(resultE);
+            }
+        }
+        modelE.appendChild(resultsE);
+
+        Element reportsE = document.createElement("reports");
+        for (Map.Entry<Class, String> entry : reportMap.entrySet()) {
+            if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                Element reportE = document.createElement("report");
+                reportE.setAttribute("class", entry.getKey().getName());
+                reportE.setAttribute("value", entry.getValue());
+                resultsE.appendChild(reportE);
+            }
+        }
+        modelE.appendChild(reportsE);
+
+        return modelE;
+    }
+
+    public void readXML(Element modelE) {
+        Element resultsE = getNextElementByTagName(modelE, "results");
+        if (resultsE != null) {
+            Collection<? extends StatisticsUI> uis = Lookup.getDefault().lookupAll(StatisticsUI.class);
+            for (Element resultE : getElementsByTagName(resultsE, "result")) {
+                String classStr = resultE.getAttribute("class");
+                StatisticsUI resultUI = null;
+                for (StatisticsUI ui : uis) {
+                    if (ui.getClass().getName().equals(classStr)) {
+                        resultUI = ui;
+                    }
+                }
+                if (resultUI != null) {
+                    String value = resultE.getAttribute("value");
+                    resultMap.put(resultUI, value);
+                }
+            }
+        }
+
+        Element reportsE = getNextElementByTagName(modelE, "reports");
+        if (reportsE != null) {
+            Collection<? extends StatisticsBuilder> builders = Lookup.getDefault().lookupAll(StatisticsBuilder.class);
+            for (Element reportE : getElementsByTagName(reportsE, "report")) {
+                String classStr = reportE.getAttribute("class");
+                Class reportClass = null;
+                for (StatisticsBuilder builder : builders) {
+                    if (builder.getStatisticsClass().getName().equals(classStr)) {
+                        reportClass = builder.getStatisticsClass();
+                    }
+                }
+                if (reportClass != null) {
+                    String value = reportE.getAttribute("value");
+                    reportMap.put(reportClass, value);
+                }
+            }
+        }
+    }
+
+    private Element getNextElementByTagName(Element node, String name) {
+        NodeList list = node.getChildNodes();
+        for (int i = 0; i < list.getLength(); i++) {
+            Node n = list.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase(name)) {
+                return (Element) n;
+            }
+        }
+        return null;
+    }
+
+    private Element[] getElementsByTagName(Element node, String name) {
+        NodeList list = node.getElementsByTagName(name);
+        Element[] res = new Element[list.getLength()];
+        for (int i = 0; i < list.getLength(); i++) {
+            Node n = list.item(i);
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                res[i] = (Element) n;
+            }
+        }
+        return res;
     }
 }
