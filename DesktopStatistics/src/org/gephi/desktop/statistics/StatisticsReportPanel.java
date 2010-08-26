@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.desktop.statistics;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -51,6 +50,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.WindowConstants;
 import javax.swing.text.View;
+import org.apache.commons.codec.binary.Base64;
 import org.gephi.ui.components.JHTMLEditorPane;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbBundle;
@@ -102,7 +102,7 @@ class ReportSelection implements Transferable {
                     e.printStackTrace();
                 }
                 byte[] imageBytes = out.toByteArray();
-                String base64String = Base64.encode(imageBytes);
+                String base64String = Base64.encodeBase64String(imageBytes);
                 if (!first) {
 
                     newHTML += "\"";
@@ -116,7 +116,7 @@ class ReportSelection implements Transferable {
                 newHTML += result[i];
             }
         }
-        this.html = new String(newHTML);
+        this.html = newHTML;
     }
 
     /**
