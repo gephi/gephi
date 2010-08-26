@@ -33,6 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsUI.class)
 public class EigenvectorCentralityUI implements StatisticsUI {
 
+    private final StatSettings settings = new StatSettings();
     private EigenvectorCentralityPanel panel;
     private EigenvectorCentrality eigen;
 
@@ -44,6 +45,7 @@ public class EigenvectorCentralityUI implements StatisticsUI {
     public void setup(Statistics statistics) {
         this.eigen = (EigenvectorCentrality) statistics;
         if (panel != null) {
+            settings.load(eigen);
             panel.setNumRuns(eigen.getNumRuns());
             panel.setDirected(eigen.isDirected());
         }
@@ -53,6 +55,7 @@ public class EigenvectorCentralityUI implements StatisticsUI {
         if (panel != null) {
             eigen.setNumRuns(panel.getNumRuns());
             eigen.setDirected(panel.isDirected());
+            settings.save(eigen);
         }
         panel = null;
         eigen = null;
@@ -76,5 +79,18 @@ public class EigenvectorCentralityUI implements StatisticsUI {
 
     public int getPosition() {
         return 1000;
+    }
+
+    private static class StatSettings {
+
+        private int mNumRuns = 100;
+
+        private void save(EigenvectorCentrality stat) {
+            this.mNumRuns = stat.getNumRuns();
+        }
+
+        private void load(EigenvectorCentrality stat) {
+            stat.setNumRuns(mNumRuns);
+        }
     }
 }

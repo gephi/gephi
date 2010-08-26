@@ -23,7 +23,6 @@ package org.gephi.statistics.plugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Hashtable;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.graph.api.*;
 import java.util.LinkedList;
@@ -51,6 +50,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -83,10 +83,13 @@ public class GraphDistance implements Statistics, LongTask {
     private int mShortestPaths;
     private boolean mRelativeValues;
 
-    /**
-     * 
-     * @return
-     */
+    public GraphDistance() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            mDirected = graphController.getModel().isDirected();
+        }
+    }
+
     public double getPathLength() {
         return mAvgDist;
     }

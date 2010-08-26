@@ -30,6 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsUI.class)
 public class ModularityUI implements StatisticsUI {
 
+    private final StatSettings settings = new StatSettings();
     private ModularityPanel panel;
     private Modularity mod;
 
@@ -41,6 +42,7 @@ public class ModularityUI implements StatisticsUI {
     public void setup(Statistics statistics) {
         this.mod = (Modularity) statistics;
         if (panel != null) {
+            settings.load(mod);
             panel.setRandomize(mod.getRandom());
         }
     }
@@ -48,6 +50,7 @@ public class ModularityUI implements StatisticsUI {
     public void unsetup() {
         if (panel != null) {
             mod.setRandom(panel.isRandomize());
+            settings.save(mod);
         }
         mod = null;
         panel = null;
@@ -72,5 +75,18 @@ public class ModularityUI implements StatisticsUI {
 
     public int getPosition() {
         return 600;
+    }
+
+    private static class StatSettings {
+
+        private boolean randomize = true;
+
+        private void save(Modularity stat) {
+            this.randomize = stat.getRandom();
+        }
+
+        private void load(Modularity stat) {
+            stat.setRandom(randomize);
+        }
     }
 }

@@ -33,6 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsUI.class)
 public class HitsUI implements StatisticsUI {
 
+    private final StatSettings settings = new StatSettings();
     private HitsPanel panel;
     private Hits hits;
 
@@ -44,6 +45,7 @@ public class HitsUI implements StatisticsUI {
     public void setup(Statistics statistics) {
         this.hits = (Hits) statistics;
         if (panel != null) {
+            settings.load(hits);
             panel.setEpsilon(hits.getEpsilon());
             panel.setDirected(!hits.getUndirected());
         }
@@ -53,6 +55,7 @@ public class HitsUI implements StatisticsUI {
         if (panel != null) {
             hits.setEpsilon(panel.getEpsilon());
             hits.setUndirected(!panel.isDirected());
+            settings.save(hits);
         }
         panel = null;
         hits = null;
@@ -76,5 +79,18 @@ public class HitsUI implements StatisticsUI {
 
     public int getPosition() {
         return 500;
+    }
+
+    private static class StatSettings {
+
+        private double epsilon = 0.0001;
+
+        private void save(Hits stat) {
+            this.epsilon = stat.getEpsilon();
+        }
+
+        private void load(Hits stat) {
+            stat.setEpsilon(epsilon);
+        }
     }
 }

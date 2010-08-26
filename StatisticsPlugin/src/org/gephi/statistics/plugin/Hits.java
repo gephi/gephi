@@ -34,6 +34,7 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
@@ -54,6 +55,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -73,10 +75,13 @@ public class Hits implements Statistics, LongTask {
     private LinkedList<Node> auth_list;
     private HashMap<Node, Integer> indicies;
 
-    /**
-     *
-     * @param pUndirected
-     */
+    public Hits() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            useUndirected = graphController.getModel().isUndirected();
+        }
+    }
+
     public void setUndirected(boolean pUndirected) {
         useUndirected = pUndirected;
     }

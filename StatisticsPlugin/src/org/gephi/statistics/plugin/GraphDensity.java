@@ -22,8 +22,10 @@ package org.gephi.statistics.plugin;
 
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.statistics.spi.Statistics;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -35,6 +37,13 @@ public class GraphDensity implements Statistics {
     private double mDensity;
     /** */
     private boolean mDirected;
+
+    public GraphDensity() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            mDirected = graphController.getModel().isDirected();
+        }
+    }
 
     public void setDirected(boolean pDirected) {
         mDirected = pDirected;

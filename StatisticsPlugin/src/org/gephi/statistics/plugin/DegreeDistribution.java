@@ -41,6 +41,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  * This class measures how closely the degree distribution of a
@@ -74,6 +75,13 @@ public class DegreeDistribution implements Statistics, LongTask {
     private double mInBeta;
     /** The powerlaw value for the out-degree of this network. */
     private double mOutBeta;
+
+    public DegreeDistribution() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            mDirected = graphController.getModel().isDirected();
+        }
+    }
 
     /**
      * @param pDirected Indicates the metric's interpretation of this network. 

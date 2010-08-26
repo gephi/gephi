@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Hashtable;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.graph.api.Node;
 import org.gephi.data.attributes.api.AttributeTable;
@@ -37,8 +36,8 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.NodeIterable;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -54,6 +53,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -200,18 +200,17 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     private double[] mNodeClustering;
     private int mTotalTriangles;
 
-    /**
-     *
-     * @return
-     */
+    public ClusteringCoefficient() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            directed = graphController.getModel().isDirected();
+        }
+    }
+    
     public double getAverageClusteringCoefficient() {
         return this.avgClusteringCoeff;
     }
 
-    /**
-     *
-     * @param synchReader
-     */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         Graph graph = null;
         if (!directed) {
