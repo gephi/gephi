@@ -46,8 +46,7 @@ public class DegreeDistributionUI implements StatisticsUI {
     }
 
     public void unsetup() {
-        //Set params
-        degreeDistribution.setDirected(panel.isDirected());
+        degreeDistribution = null;
         panel = null;
     }
 

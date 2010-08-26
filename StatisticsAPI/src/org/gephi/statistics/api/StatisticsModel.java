@@ -34,18 +34,9 @@ import org.gephi.statistics.spi.StatisticsUI;
  */
 public interface StatisticsModel {
 
-    /**
-     * Returns all <code>Statistics</code> instances that were successfully executed.
-     * @return                  statistics instances, containing results
-     */
-    public Statistics[] getStatistics();
+    public String getReport(StatisticsUI statisticsUI);
 
-    /**
-     * Returns the statistics instance for the given UI, if exists.
-     * @param statisticsUI      an UI instance
-     * @return                  the UI statistics relative, or <code>null</code>
-     */
-    public Statistics getStatistics(StatisticsUI statisticsUI);
+    public String getResult(StatisticsUI statisticsUI);
 
     /**
      * Returns <code>true</code> if the statistics front-end is visible, <code>
@@ -64,6 +55,8 @@ public interface StatisticsModel {
      *                          <code>false</code> otherwise
      */
     public boolean isRunning(StatisticsUI statisticsUI);
+
+    public Statistics getRunning(StatisticsUI statisticsUI);
 
     public void addChangeListener(ChangeListener changeListener);
 

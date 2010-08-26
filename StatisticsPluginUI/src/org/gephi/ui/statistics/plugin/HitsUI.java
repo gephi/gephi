@@ -50,9 +50,8 @@ public class HitsUI implements StatisticsUI {
     }
 
     public void unsetup() {
-        //Set params
-        hits.setEpsilon(panel.getEpsilon());
-        hits.setUndirected(!panel.isDirected());
+        panel = null;
+        hits = null;
     }
 
     public Class<? extends Statistics> getStatisticsClass() {

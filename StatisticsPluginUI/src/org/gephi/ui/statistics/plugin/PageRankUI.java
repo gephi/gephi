@@ -47,11 +47,8 @@ public class PageRankUI implements StatisticsUI {
     }
 
     public void unsetup() {
-        //Set params
-        pageRank.setEpsilon(panel.getEpsilon());
-        pageRank.setProbability(panel.getProbability());
-        pageRank.setUndirected(!panel.isDirected());
-
+        panel = null;
+        pageRank = null;
     }
 
     public Class<? extends Statistics> getStatisticsClass() {

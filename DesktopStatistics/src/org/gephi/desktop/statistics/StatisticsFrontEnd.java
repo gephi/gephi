@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2010 Gephi
 Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, 
-          Patick J. McSweeney <pjmcswee@syr.edu>
+Patick J. McSweeney <pjmcswee@syr.edu>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,7 +18,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.statistics;
 
 import java.awt.Dimension;
@@ -108,7 +108,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
             reportButton.setEnabled(false);
             resultLabel.setText("");
             if (currentStatistics == null) {
-                currentStatistics = currentModel.getStatistics(statisticsUI);
+                currentStatistics = currentModel.getRunning(statisticsUI);
             }
         } else {
             runButton.setText(RUN);
@@ -121,11 +121,10 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
     private void refreshResult(StatisticsModel model) {
         //Find a computed stats
-        Statistics statistics = model.getStatistics(statisticsUI);
+        String result = model.getResult(statisticsUI);
 
-        if (statistics != null) {
-            statisticsUI.setup(statistics);     //TODO doing this here may not be appropriate, move it to controller?
-            resultLabel.setText(statisticsUI.getValue());
+        if (result != null) {
+            resultLabel.setText(result);
             reportButton.setEnabled(true);
         } else {
             resultLabel.setText("");
@@ -137,33 +136,27 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         //Create Statistics
         StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
         StatisticsBuilder builder = controller.getBuilder(statisticsUI.getStatisticsClass());
-        Statistics statistics = currentModel.getStatistics(statisticsUI);
-        if (statistics != null) //If a Statistic instance for that particular StatisticUI has already been created, use it
-        {
-            currentStatistics = statistics;
-        } else //If not, create a new Statistic instance
-        {
-            currentStatistics = builder.getStatistics();
-        }
+        currentStatistics = builder.getStatistics();
+        if (currentStatistics != null) {
+            LongTaskListener listener = new LongTaskListener() {
 
-        LongTaskListener listener = new LongTaskListener() {
+                public void taskFinished(LongTask task) {
+                    showReport();
+                }
+            };
 
-            public void taskFinished(LongTask task) {
-                showReport();
-            }
-        };
-
-        JPanel settingsPanel = statisticsUI.getSettingsPanel();
-        if (settingsPanel != null) {
-            statisticsUI.setup(currentStatistics);
-            DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title", builder.getName()));
-            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                statisticsUI.unsetup();
+            JPanel settingsPanel = statisticsUI.getSettingsPanel();
+            if (settingsPanel != null) {
+                statisticsUI.setup(currentStatistics);
+                DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title", builder.getName()));
+                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                    statisticsUI.unsetup();
+                    controller.execute(currentStatistics, listener);
+                }
+            } else {
+                statisticsUI.setup(currentStatistics);
                 controller.execute(currentStatistics, listener);
             }
-        } else {
-            statisticsUI.setup(currentStatistics);
-            controller.execute(currentStatistics, listener);
         }
     }
 
@@ -175,19 +168,15 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     }
 
     private void showReport() {
-        Statistics statistics = currentModel.getStatistics(statisticsUI);
-        if (statistics != null) {
-            final String report = statistics.getReport();
-            if (report != null) {
-                SwingUtilities.invokeLater(new Runnable() {
+        final String report = currentModel.getReport(statisticsUI);
+        if (report != null) {
+            SwingUtilities.invokeLater(new Runnable() {
 
-                    public void run() {
-                        SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), report);
-                    }
-                });
-            }
+                public void run() {
+                    SimpleHTMLReport dialog = new SimpleHTMLReport(WindowManager.getDefault().getMainWindow(), report);
+                }
+            });
         }
-
     }
 
     /** This method is called from within the constructor to

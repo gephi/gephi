@@ -47,9 +47,7 @@ public class PathLengthUI implements StatisticsUI {
     }
 
     public void unsetup() {
-        //Set params
-        graphDistance.setDirected(panel.isDirected());
-        graphDistance.setRelative(panel.normalize());
+        graphDistance = null;
         panel = null;
     }
 

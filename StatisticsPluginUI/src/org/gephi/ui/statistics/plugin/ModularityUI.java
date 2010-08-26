@@ -46,7 +46,7 @@ public class ModularityUI implements StatisticsUI {
     }
 
     public void unsetup() {
-        mod.setRandom(panel.isRandomize());
+        mod = null;
         panel = null;
     }
 

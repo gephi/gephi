@@ -209,7 +209,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
                     arrowObj.setCacheMarker(cacheMarker);
                 }
             } else {
-                if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop()) {
+                if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop() && edge.isDirected()) {
                     ModelImpl arrowObj = ((Edge2dModel) obj).getArrow();
                     arrowObj.setCacheMarker(cacheMarker);
                 }

@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2010 Gephi
 Authors : Patick J. McSweeney <pjmcswee@syr.edu>,
-          Mathieu Bastian <mathieu.bastian@gephi.org>
+Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,11 +18,14 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.statistics;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.statistics.spi.Statistics;
@@ -37,38 +40,41 @@ import org.gephi.statistics.spi.StatisticsUI;
 public class StatisticsModelImpl implements StatisticsModel {
 
     //Model
-    private List<StatisticsUI> invisibleList;
-    private List<StatisticsUI> runningList;
-    private List<Statistics> statisticsList;
+    private final List<StatisticsUI> invisibleList;
+    private final List<Statistics> runningList;
+    private final Map<StatisticsUI, String> resultMap;
+    private final Map<Class, String> reportMap;
     //Listeners
-    private List<ChangeListener> listeners;
+    private final List<ChangeListener> listeners;
 
     public StatisticsModelImpl() {
         invisibleList = new ArrayList<StatisticsUI>();
-        runningList = new ArrayList<StatisticsUI>();
+        runningList = Collections.synchronizedList(new ArrayList<Statistics>());
         listeners = new ArrayList<ChangeListener>();
-        statisticsList = new ArrayList<Statistics>();
+        resultMap = new HashMap<StatisticsUI, String>();
+        reportMap = new HashMap<Class, String>();
     }
 
-    public Statistics[] getStatistics() {
-        return statisticsList.toArray(new Statistics[0]);
-    }
-
-    public void addStatistics(Statistics statistics) {
-        if (!statisticsList.contains(statistics)) { //Add the Statistic instance to statisticsList only if it not already in there
-            statisticsList.add(statistics);
+    public void addReport(Statistics statistics) {
+        if (!reportMap.containsKey(statistics.getClass())) {
+            reportMap.put(statistics.getClass(), statistics.getReport());
             fireChangeEvent();
         }
     }
 
-    public Statistics getStatistics(StatisticsUI statisticsUI) {
-        Class c = statisticsUI.getStatisticsClass();
-        for (Statistics b : statisticsList) {
-            if (b.getClass().equals(c)) {
-                return b;
-            }
+    public void addResult(StatisticsUI ui) {
+        if (!resultMap.containsKey(ui) && ui.getValue() != null) {
+            resultMap.put(ui, ui.getValue());
+            fireChangeEvent();
         }
-        return null;
+    }
+
+    public String getReport(StatisticsUI statisticsUI) {
+        return reportMap.get(statisticsUI.getStatisticsClass());
+    }
+
+    public String getResult(StatisticsUI statisticsUI) {
+        return resultMap.get(statisticsUI);
     }
 
     public boolean isStatisticsUIVisible(StatisticsUI statisticsUI) {
@@ -76,18 +82,32 @@ public class StatisticsModelImpl implements StatisticsModel {
     }
 
     public boolean isRunning(StatisticsUI statisticsUI) {
-        return runningList.contains(statisticsUI);
+        for (Statistics s : runningList.toArray(new Statistics[0])) {
+            if (statisticsUI.getStatisticsClass().equals(s.getClass())) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void setRunning(StatisticsUI statisticsUI, boolean running) {
+    public void setRunning(Statistics statistics, boolean running) {
         if (!running) {
-            if (runningList.remove(statisticsUI)) {
+            if (runningList.remove(statistics)) {
                 fireChangeEvent();
             }
-        } else if (!runningList.contains(statisticsUI)) {
-            runningList.add(statisticsUI);
+        } else if (!runningList.contains(statistics)) {
+            runningList.add(statistics);
             fireChangeEvent();
         }
+    }
+
+    public Statistics getRunning(StatisticsUI statisticsUI) {
+        for (Statistics s : runningList.toArray(new Statistics[0])) {
+            if (statisticsUI.getStatisticsClass().equals(s)) {
+                return s;
+            }
+        }
+        return null;
     }
 
     public void setVisible(StatisticsUI statisticsUI, boolean visible) {

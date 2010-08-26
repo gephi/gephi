@@ -50,8 +50,7 @@ public class ConnectedComponentUI  implements StatisticsUI {
     }
 
     public void unsetup() {
-        //Set params
-        connectedComponents.setDirected(panel.isDirected());
+        connectedComponents = null;
         panel = null;
     }
 
