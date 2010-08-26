@@ -21,12 +21,15 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
 import org.gephi.statistics.plugin.ClusteringCoefficient;
+import org.gephi.statistics.plugin.GraphDensity;
+import org.gephi.statistics.plugin.GraphDistance;
 import org.gephi.ui.statistics.plugin.ClusteringCoefficientUI;
 import org.junit.Test;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -44,6 +47,7 @@ public class StatisticsPersistenceProviderTest {
         GraphModel graphModel = graphController.getModel();
 
         StatisticsModelImpl model = new StatisticsModelImpl();
+
         ClusteringCoefficient clusteringCoefficient = new ClusteringCoefficient();
         ClusteringCoefficientUI clusteringCoefficientUI = new ClusteringCoefficientUI();
         clusteringCoefficient.execute(graphModel, attributeModel);
@@ -51,9 +55,22 @@ public class StatisticsPersistenceProviderTest {
         clusteringCoefficientUI.setup(clusteringCoefficient);
         model.addResult(clusteringCoefficientUI);
 
+        GraphDensity graphDensity = new GraphDensity();
+        graphDensity.execute(graphModel, attributeModel);
+        model.addReport(graphDensity);
+
+        GraphDistance graphDistance = new GraphDistance();
+        graphDistance.execute(graphModel, attributeModel);
+        model.addReport(graphDistance);
+
         Element e1 = model.writeXML(createDocument());
         String s1 = printXML(e1);
         System.out.println(s1);
+        StatisticsModelImpl model2 = new StatisticsModelImpl();
+        model2.readXML(e1);
+        Element e2 = model2.writeXML(createDocument());
+        String s2 = printXML(e2);
+        assertEquals(s1, s2);
     }
 
     private String printXML(org.w3c.dom.Node node) {

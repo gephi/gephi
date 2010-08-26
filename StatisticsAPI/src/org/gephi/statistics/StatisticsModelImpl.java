@@ -21,18 +21,30 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.imageio.ImageIO;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.apache.commons.codec.binary.Base64;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.api.StatisticsModel;
 import org.gephi.statistics.spi.StatisticsBuilder;
 import org.gephi.statistics.spi.StatisticsUI;
+import org.gephi.utils.TempDirUtils;
+import org.gephi.utils.TempDirUtils.TempDir;
 import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -163,8 +175,10 @@ public class StatisticsModelImpl implements StatisticsModel {
         for (Map.Entry<Class, String> entry : reportMap.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
                 Element reportE = document.createElement("report");
+                String report = entry.getValue();
+                report = embedImages(report);
                 reportE.setAttribute("class", entry.getKey().getName());
-                reportE.setAttribute("value", entry.getValue());
+                reportE.setAttribute("value", report);
                 reportsE.appendChild(reportE);
             }
         }
@@ -204,8 +218,9 @@ public class StatisticsModelImpl implements StatisticsModel {
                     }
                 }
                 if (reportClass != null) {
-                    String value = reportE.getAttribute("value");
-                    reportMap.put(reportClass, value);
+                    String report = reportE.getAttribute("value");
+                    report = unembedImages(report);
+                    reportMap.put(reportClass, report);
                 }
             }
         }
@@ -232,5 +247,80 @@ public class StatisticsModelImpl implements StatisticsModel {
             }
         }
         return res;
+    }
+
+    private String unembedImages(String report) {
+        StringBuilder builder = new StringBuilder();
+        String[] result = report.split("data:image/png;base64");
+        if (result.length == 0) {
+            return report;
+        }
+        boolean first = true;
+        try {
+            TempDir tempDir = TempDirUtils.createTempDir();
+
+            for (int i = 0; i < result.length; i++) {
+                if (result[i].contains("</IMG>")) {
+                    String next = result[i];
+                    int endIndex = next.indexOf('\"');
+                    String pngStr = next.substring(0, endIndex);
+                    byte[] imageBytes = Base64.decodeBase64(pngStr);
+                    String fileName = "image" + i + ".png";
+                    File file = tempDir.createFile(fileName);
+
+                    FileOutputStream fos = new FileOutputStream(file);
+                    fos.write(imageBytes);
+
+                    String path = "file:" + file.getAbsolutePath();
+                    builder.append(path);
+
+                    builder.append(next.substring(endIndex, next.length()));
+                } else {
+                    builder.append(result[i]);
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return builder.toString();
+    }
+
+    private String embedImages(String report) {
+        StringBuilder builder = new StringBuilder();
+        String[] result = report.split("file:");
+        boolean first = true;
+        for (int i = 0; i < result.length; i++) {
+            if (result[i].contains("</IMG>")) {
+                String next = result[i];
+                String[] elements = next.split("\"");
+                String filename = elements[0];
+
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+                File file = new File(filename);
+                try {
+                    BufferedImage image = ImageIO.read(file);
+                    ImageIO.write((RenderedImage) image, "PNG", out);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                byte[] imageBytes = out.toByteArray();
+                String base64String = Base64.encodeBase64String(imageBytes);
+                if (!first) {
+
+                    builder.append("\"");
+                }
+                first = false;
+                builder.append("data:image/png;base64,");
+                builder.append(base64String);
+                for (int j = 1; j < elements.length; j++) {
+                    builder.append("\"");
+                    builder.append(elements[j]);
+                }
+            } else {
+                builder.append(result[i]);
+            }
+        }
+        return builder.toString();
     }
 }
