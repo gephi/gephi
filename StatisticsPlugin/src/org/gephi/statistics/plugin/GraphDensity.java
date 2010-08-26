@@ -98,7 +98,8 @@ public class GraphDensity implements Statistics {
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
-                + "Density: " + mDensity);
+                + "Density: " + mDensity
+                + "</BODY></HTML>");
         return report;
     }
 }
