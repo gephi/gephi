@@ -74,7 +74,6 @@ public class DegreeDistribution implements Statistics, LongTask {
     private double mInBeta;
     /** The powerlaw value for the out-degree of this network. */
     private double mOutBeta;
-    private String mGraphRevision;
 
     /**
      * @param pDirected Indicates the metric's interpretation of this network. 
@@ -133,8 +132,6 @@ public class DegreeDistribution implements Statistics, LongTask {
         this.mIsCanceled = false;
 
         graph.readLock();
-
-        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
         //Start 
         Progress.start(mProgress, graph.getNodeCount());
@@ -239,13 +236,6 @@ public class DegreeDistribution implements Statistics, LongTask {
         //Compute and return the results
         res[0] = SSxy / SSxx;
         res[1] = avgY - res[0] * avgX;
-    }
-
-    /**
-     * @return Indicates that this metric accepts parameters.
-     */
-    public boolean isParamerizable() {
-        return true;
     }
 
     /**
@@ -373,16 +363,15 @@ public class DegreeDistribution implements Statistics, LongTask {
 
 
 
-        String report = new String("<HTML> <BODY> <h1>Degree Distribution Metric Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+        String report = "<HTML> <BODY> <h1>Degree Distribution Metric Report </h1> "
+                + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
                 + "In-Degree Power Law: -" + this.mInAlpha + "\n <BR>"
                 + inImageFile + "<br>Out-Degree Power Law: -" + this.mOutAlpha + "\n <BR>"
-                + outImageFile + "</BODY> </HTML>");
+                + outImageFile + "</BODY> </HTML>";
 
 
         return report;
@@ -451,8 +440,7 @@ public class DegreeDistribution implements Statistics, LongTask {
 
 
         String report = new String("<HTML> <BODY> <h1>Degree Distribution Metric Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+                + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"

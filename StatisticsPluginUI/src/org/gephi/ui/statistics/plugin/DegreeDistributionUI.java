@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.statistics.plugin;
 
 import java.text.DecimalFormat;
@@ -27,7 +27,7 @@ import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.openide.util.lookup.ServiceProvider;
 
-@ServiceProvider(service=StatisticsUI.class)
+@ServiceProvider(service = StatisticsUI.class)
 public class DegreeDistributionUI implements StatisticsUI {
 
     private DegreeDistributionPanel panel;
@@ -40,12 +40,15 @@ public class DegreeDistributionUI implements StatisticsUI {
 
     public void setup(Statistics statistics) {
         this.degreeDistribution = (DegreeDistribution) statistics;
-        if(panel!=null) {
+        if (panel != null) {
             panel.setDirected(degreeDistribution.isDirected());
         }
     }
 
     public void unsetup() {
+        if (panel != null) {
+            degreeDistribution.setDirected(panel.isDirected());
+        }
         degreeDistribution = null;
         panel = null;
     }

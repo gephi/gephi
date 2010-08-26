@@ -22,7 +22,7 @@ package org.gephi.statistics.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -72,8 +72,6 @@ public class PageRank implements Statistics, LongTask {
     private double[] mPageranks;
     /** */
     private boolean mDirected;
-    /** */
-    private String mGraphRevision;
 
     /**
      *
@@ -106,12 +104,10 @@ public class PageRank implements Statistics, LongTask {
 
         graph.readLock();
 
-        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
-        //DirectedGraph digraph = graphController.getDirectedGraph();
         int N = graph.getNodeCount();
         mPageranks = new double[N];
         double[] temp = new double[N];
-        Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
 
         Progress.start(mProgress);
@@ -252,15 +248,14 @@ public class PageRank implements Statistics, LongTask {
         } catch (IOException e) {
             System.out.println(e.toString());
         }
-        String report = new String("<HTML> <BODY> <h1>PageRank Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+        String report = "<HTML> <BODY> <h1>PageRank Report </h1> "
+                + "<hr> <br>"
                 + "<h2> Parameters: </h2>"
                 + "Epsilon = " + this.mEpsilon + "<br>"
                 + "Probability = " + this.mProbability
                 + "<br> <h2> Results: </h2>"
                 + imageFile
-                + "</BODY></HTML>");
+                + "</BODY></HTML>";
 
         return report;
 

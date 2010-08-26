@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.statistics.plugin;
 
 import javax.swing.JPanel;
@@ -50,6 +50,10 @@ public class HitsUI implements StatisticsUI {
     }
 
     public void unsetup() {
+        if (panel != null) {
+            hits.setEpsilon(panel.getEpsilon());
+            hits.setUndirected(!panel.isDirected());
+        }
         panel = null;
         hits = null;
     }

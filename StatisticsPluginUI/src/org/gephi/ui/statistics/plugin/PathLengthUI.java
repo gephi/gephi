@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.statistics.plugin;
 
 import java.text.DecimalFormat;
@@ -47,6 +47,10 @@ public class PathLengthUI implements StatisticsUI {
     }
 
     public void unsetup() {
+        if (panel != null) {
+            graphDistance.setDirected(panel.isDirected());
+            graphDistance.setRelative(panel.normalize());
+        }
         graphDistance = null;
         panel = null;
     }

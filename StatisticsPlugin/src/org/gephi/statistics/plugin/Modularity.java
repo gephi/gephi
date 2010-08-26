@@ -21,9 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.statistics.plugin;
 
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.Set;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -50,7 +51,6 @@ public class Modularity implements Statistics, LongTask {
     private CommunityStructure mStructure;
     private double mModularity;
     private boolean mRandomize = false;
-    private String mGraphRevision;
 
     /**
      *
@@ -110,9 +110,9 @@ public class Modularity implements Statistics, LongTask {
     class CommunityStructure {
 
         /**   */
-        Hashtable<Community, Integer>[] nodeConnections;
+        HashMap<Community, Integer>[] nodeConnections;
         /** */
-        Hashtable<Node, Integer> map;
+        HashMap<Node, Integer> map;
         /**   */
         Community[] nodeCommunities;
         /** */
@@ -123,7 +123,7 @@ public class Modularity implements Statistics, LongTask {
         LinkedList<ModEdge>[] topology;
         LinkedList<Community> mCommunities;
         int N;
-        Hashtable<Integer, Community> invMap;
+        HashMap<Integer, Community> invMap;
 
         /**
          * 
@@ -132,10 +132,10 @@ public class Modularity implements Statistics, LongTask {
         CommunityStructure(UndirectedGraph graph) {
             mGraph = graph;
             N = graph.getNodeCount();
-            invMap = new Hashtable<Integer, Community>();
-            nodeConnections = new Hashtable[N];
+            invMap = new HashMap<Integer, Community>();
+            nodeConnections = new HashMap[N];
             nodeCommunities = new Community[N];
-            map = new Hashtable<Node, Integer>();
+            map = new HashMap<Node, Integer>();
             topology = new LinkedList[N];
             mCommunities = new LinkedList<Community>();
             int index = 0;
@@ -143,7 +143,7 @@ public class Modularity implements Statistics, LongTask {
             for (Node node : graph.getNodes()) {
                 map.put(node, index);
                 nodeCommunities[index] = new Community(this);
-                nodeConnections[index] = new Hashtable<Community, Integer>();
+                nodeConnections[index] = new HashMap<Community, Integer>();
                 weights[index] = graph.getDegree(node);
                 nodeCommunities[index].seed(index);
                 Community hidden = new Community(mStructure);
@@ -309,14 +309,14 @@ public class Modularity implements Statistics, LongTask {
             LinkedList<ModEdge>[] newTopology = new LinkedList[M];
             int index = 0;
             nodeCommunities = new Community[M];
-            nodeConnections = new Hashtable[M];
-            Hashtable<Integer, Community> newInvMap = new Hashtable<Integer, Community>();
+            nodeConnections = new HashMap[M];
+            HashMap<Integer, Community> newInvMap = new HashMap<Integer, Community>();
             for (int i = 0; i < mCommunities.size(); i++) {//Community com : mCommunities) {
                 Community com = mCommunities.get(i);
-                nodeConnections[index] = new Hashtable<Community, Integer>();
+                nodeConnections[index] = new HashMap<Community, Integer>();
                 newTopology[index] = new LinkedList<ModEdge>();
                 nodeCommunities[index] = new Community(com);
-                Enumeration<Community> iter = com.connections.keys();
+                Set<Community> iter = com.connections.keySet();
                 double weightSum = 0;
 
                 Community hidden = new Community(mStructure);
@@ -325,8 +325,7 @@ public class Modularity implements Statistics, LongTask {
                     hidden.mNodes.addAll(oldHidden.mNodes);
                 }
                 newInvMap.put(index, hidden);
-                while (iter.hasMoreElements()) {
-                    Community adjCom = iter.nextElement();
+                for(Community adjCom : iter) {
                     int target = mCommunities.indexOf(adjCom);
                     int weight = com.connections.get(adjCom);
 
@@ -365,7 +364,7 @@ public class Modularity implements Statistics, LongTask {
         double weightSum;
         CommunityStructure mStructure;
         LinkedList<Integer> mNodes;
-        Hashtable<Community, Integer> connections;
+        HashMap<Community, Integer> connections;
         Integer min;
 
         /**
@@ -382,7 +381,7 @@ public class Modularity implements Statistics, LongTask {
          */
         public Community(Community pCom) {
             mStructure = pCom.mStructure;
-            connections = new Hashtable<Community, Integer>();
+            connections = new HashMap<Community, Integer>();
             mNodes = new LinkedList<Integer>();
             min = Integer.MAX_VALUE;
             //mHidden = pCom.mHidden;
@@ -394,7 +393,7 @@ public class Modularity implements Statistics, LongTask {
          */
         public Community(CommunityStructure pStructure) {
             mStructure = pStructure;
-            connections = new Hashtable<Community, Integer>();
+            connections = new HashMap<Community, Integer>();
             mNodes = new LinkedList<Integer>();
         }
 
@@ -465,8 +464,6 @@ public class Modularity implements Statistics, LongTask {
 
         graph.readLock();
 
-        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
-
         mStructure = new CommunityStructure(graph);
         if (mIsCanceled) {
             graph.readUnlockAll();
@@ -491,9 +488,8 @@ public class Modularity implements Statistics, LongTask {
                     double current = q(i, mStructure.nodeCommunities[i]);
                     Community bestCommunity = null;
                     int smallest = Integer.MAX_VALUE;
-                    Enumeration<Community> iter = mStructure.nodeConnections[i].keys();
-                    while (iter.hasMoreElements()) {
-                        Community com = iter.nextElement();
+                    Set<Community> iter = mStructure.nodeConnections[i].keySet();
+                    for(Community com : iter) {
                         double qValue = q(i, com) - current;
                         if (qValue > best) {
                             best = qValue;
@@ -599,15 +595,14 @@ public class Modularity implements Statistics, LongTask {
      */
     public String getReport() {
 
-        String report = new String("<HTML> <BODY> <h1>Modularity Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+        String report = "<HTML> <BODY> <h1>Modularity Report </h1> "
+                + "<hr>"
                 + "<h2> Parameters: </h2>"
                 + "Randomize:  " + (this.mRandomize ? "On" : "Off") + "<br>"
                 + "<br> <h2> Results: </h2>"
                 + "Modularity: " + mModularity + "<br>"
                 + "Number of Communities: " + mStructure.mCommunities.size()
-                + "</BODY></HTML>");
+                + "</BODY></HTML>";
 
         return report;
     }

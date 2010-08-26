@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.statistics.plugin;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -31,7 +31,6 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
@@ -52,7 +51,6 @@ public class ConnectedComponents implements Statistics, LongTask {
     private boolean mDirected;
     private ProgressTicket mProgress;
     private boolean mIsCanceled;
-    private String mGraphRevision;
     private int mComponentCount;
     private int mStronglyCount;
     int count;
@@ -77,9 +75,8 @@ public class ConnectedComponents implements Statistics, LongTask {
         }
 
         graph.readLock();
-        mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
-        Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
         for (Node s : graph.getNodes()) {
             indicies.put(s, index);
@@ -159,9 +156,8 @@ public class ConnectedComponents implements Statistics, LongTask {
         }
 
         graph.readLock();
-        mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
-        Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int v = 0;
         for (Node s : graph.getNodes()) {
             indicies.put(s, v);
@@ -204,7 +200,7 @@ public class ConnectedComponents implements Statistics, LongTask {
      * @param low_index
      * @param indicies
      */
-    private void tarjans(AttributeColumn col, LinkedList<Node> S, DirectedGraph graph, Node f, int[] index, int[] low_index, Hashtable<Node, Integer> indicies) {
+    private void tarjans(AttributeColumn col, LinkedList<Node> S, DirectedGraph graph, Node f, int[] index, int[] low_index, HashMap<Node, Integer> indicies) {
         int id = indicies.get(f);
         index[id] = count;
         low_index[id] = count;
@@ -236,10 +232,6 @@ public class ConnectedComponents implements Statistics, LongTask {
         return mComponentCount;
     }
 
-    /**
-     *
-     * @param pDirected
-     */
     public void setDirected(boolean pDirected) {
         this.mDirected = pDirected;
     }
@@ -248,38 +240,25 @@ public class ConnectedComponents implements Statistics, LongTask {
         return mDirected;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getReport() {
-        String report = new String("<HTML> <BODY> <h1>Connected Components Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+        String report = "<HTML> <BODY> <h1>Connected Components Report </h1> "
+                + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
                 + "Weakly Connected Components: " + mComponentCount + "<br>"
                 + (mDirected ? "Stronlgy Connected Components: " + this.mStronglyCount + "<br>" : "")
-                + "</BODY></HTML>");
+                + "</BODY></HTML>";
 
         return report;
     }
 
-    /**
-     *
-     * @return
-     */
     public boolean cancel() {
         mIsCanceled = true;
         return true;
     }
 
-    /**
-     *
-     * @param progressTicket
-     */
     public void setProgressTicket(ProgressTicket progressTicket) {
         mProgress = progressTicket;
     }

@@ -22,7 +22,7 @@ package org.gephi.statistics.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -71,8 +71,7 @@ public class Hits implements Statistics, LongTask {
     private double epsilon = 0.0001;
     private LinkedList<Node> hub_list;
     private LinkedList<Node> auth_list;
-    private Hashtable<Node, Integer> indicies;
-    private Graph graph;
+    private HashMap<Node, Integer> indicies;
 
     /**
      *
@@ -101,7 +100,6 @@ public class Hits implements Statistics, LongTask {
     }
 
     public void execute(Graph graph, AttributeModel attributeModel) {
-        this.graph = graph;
         graph.readLock();
 
         //DirectedGraph digraph = graphController.getDirectedGraph();
@@ -116,7 +114,7 @@ public class Hits implements Statistics, LongTask {
 
         Progress.start(progress);
 
-        indicies = new Hashtable<Node, Integer>();
+        indicies = new HashMap<Node, Integer>();
         int index = 0;
         for (Node node : graph.getNodes()) {
             indicies.put(node, new Integer(index));
@@ -332,8 +330,8 @@ public class Hits implements Statistics, LongTask {
         }
 
         String report = "<HTML> <BODY> <h1> HITS Metric Report </h1> <br> "
-                + "<hr> <br> <h2>Network Revision Number:</h2> ("
-                + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")<br>"
+                + "<hr>"
+                + "<br>"
                 + "<h2> Parameters: </h2>  <br> &#917; = " + this.epsilon
                 + "<br> <h2> Results: </h2><br>"
                 + imageFile1 + "<br>" + imageFile2 + "</BODY> </HTML>";

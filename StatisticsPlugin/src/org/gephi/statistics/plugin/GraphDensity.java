@@ -35,28 +35,15 @@ public class GraphDensity implements Statistics {
     private double mDensity;
     /** */
     private boolean mDirected;
-    /** */
-    private String mGraphRevision;
 
-    /**
-     *
-     * @param pDirected
-     */
     public void setDirected(boolean pDirected) {
         mDirected = pDirected;
     }
 
-    /**
-     * 
-     * @return
-     */
     public boolean getDirected() {
         return mDirected;
     }
 
-    /**
-     *
-     */
     public double getDensity() {
         return mDensity;
     }
@@ -73,8 +60,6 @@ public class GraphDensity implements Statistics {
     }
 
     public void execute(Graph graph, AttributeModel attributeModel) {
-        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
-
         double edgesCount = graph.getEdgeCount();
         double nodesCount = graph.getNodeCount();
         double multiplier = 1;
@@ -83,7 +68,6 @@ public class GraphDensity implements Statistics {
             multiplier = 2;
         }
         mDensity = (multiplier * edgesCount) / (nodesCount * nodesCount - nodesCount);
-
     }
 
     /**
@@ -91,15 +75,14 @@ public class GraphDensity implements Statistics {
      * @return
      */
     public String getReport() {
-        String report = new String("<HTML> <BODY> <h1>Graph Density  Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+        String report = "<HTML> <BODY> <h1>Graph Density  Report </h1> "
+                + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
                 + "Density: " + mDensity
-                + "</BODY></HTML>");
+                + "</BODY></HTML>";
         return report;
     }
 }
