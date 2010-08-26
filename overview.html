@@ -9,6 +9,9 @@
     <p>
     <h2>API Changes</h2>
     <ul>
+        <li>(August 26 2010) Modify <code>StatisticsModel</code> to store reports directly instead of <code>Statistics</code> instance. As a
+            consequence, the model has now a <code>getReport()</code> and a <code>getResult()</code> method that UI can use. The currently
+            running statistics can now be get with a new <code>getRunning()</code> method.
         <li>(August 19 2010) Simplify and improve attribute events management. Event listeners now subscribe directly from the
             <code>AttributeModel</code> instead of <code>AttributeTable</code> and will receive events for all tables. Refactoring of the
             <code>AttributeEvent</code> class with <code>AttributeTable</code> as source and a new <code>AttributeEventData</code> object as data.
