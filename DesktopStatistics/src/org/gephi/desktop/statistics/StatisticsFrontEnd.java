@@ -24,6 +24,7 @@ package org.gephi.desktop.statistics;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.gephi.statistics.spi.Statistics;
@@ -36,6 +37,7 @@ import org.gephi.utils.longtask.api.LongTaskListener;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
@@ -50,8 +52,13 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     private StatisticsUI statisticsUI;
     private final String RUN;
     private final String CANCEL;
+    private final ImageIcon RUN_ICON;
+    private final ImageIcon STOP_ICON;
     private Statistics currentStatistics;
     private StatisticsModel currentModel;
+
+    //Img
+    ;
 
     public StatisticsFrontEnd(StatisticsUI ui) {
         initComponents();
@@ -76,6 +83,9 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
                 showReport();
             }
         });
+
+        RUN_ICON = ImageUtilities.loadImageIcon("org/gephi/desktop/statistics/resources/run.png", false);
+        STOP_ICON = ImageUtilities.loadImageIcon("org/gephi/desktop/statistics/resources/stop.png", false);
     }
 
     private void initUI(StatisticsUI ui) {
@@ -84,6 +94,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         busyLabel.setVisible(false);
         runButton.setEnabled(false);
         runButton.setText(RUN);
+        //runButton.setIcon(RUN_ICON);
         reportButton.setEnabled(false);
     }
 
@@ -91,6 +102,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         currentModel = model;
         if (model == null) {
             runButton.setText(RUN);
+            //runButton.setIcon(RUN_ICON);
             runButton.setEnabled(false);
             busyLabel.setBusy(false);
             busyLabel.setVisible(false);
@@ -102,6 +114,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         runButton.setEnabled(true);
         if (model.isRunning(statisticsUI)) {
             runButton.setText(CANCEL);
+            //runButton.setIcon(STOP_ICON);
             busyLabel.setVisible(true);
             busyLabel.setBusy(true);
             reportButton.setEnabled(false);
@@ -111,6 +124,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
             }
         } else {
             runButton.setText(RUN);
+            //runButton.setIcon(RUN_ICON);
             busyLabel.setBusy(false);
             busyLabel.setVisible(false);
             currentStatistics = null;
@@ -236,7 +250,8 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         runButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(runButton);
 
-        reportButton.setText(org.openide.util.NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.reportButton.text")); // NOI18N
+        reportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/statistics/resources/report.png"))); // NOI18N
+        reportButton.setToolTipText(org.openide.util.NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.reportButton.toolTipText")); // NOI18N
         reportButton.setFocusable(false);
         reportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         reportButton.setOpaque(false);
