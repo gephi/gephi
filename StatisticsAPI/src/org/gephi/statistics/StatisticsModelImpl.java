@@ -165,7 +165,7 @@ public class StatisticsModelImpl implements StatisticsModel {
                 Element reportE = document.createElement("report");
                 reportE.setAttribute("class", entry.getKey().getName());
                 reportE.setAttribute("value", entry.getValue());
-                resultsE.appendChild(reportE);
+                reportsE.appendChild(reportE);
             }
         }
         modelE.appendChild(reportsE);
