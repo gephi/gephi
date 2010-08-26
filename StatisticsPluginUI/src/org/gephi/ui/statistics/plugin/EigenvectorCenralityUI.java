@@ -51,9 +51,8 @@ public class EigenvectorCenralityUI implements StatisticsUI {
     }
 
     public void unsetup() {
-        //Set params
-        eigen.setNumRuns(panel.getNumRuns());
-        eigen.setDirected(panel.isDirected());
+        panel = null;
+        eigen = null;
     }
 
     public Class<? extends Statistics> getStatisticsClass() {

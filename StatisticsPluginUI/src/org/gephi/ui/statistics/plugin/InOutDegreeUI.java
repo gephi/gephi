@@ -45,6 +45,7 @@ public class InOutDegreeUI implements StatisticsUI {
     }
 
     public void unsetup() {
+        inOutDegree = null;
     }
 
     public Class<? extends Statistics> getStatisticsClass() {

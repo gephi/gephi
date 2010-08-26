@@ -39,12 +39,6 @@ import org.gephi.utils.longtask.api.LongTaskListener;
 public interface StatisticsController {
 
     /**
-     * Returns the lists of <code>StatisticsBuilder</code> in the system.
-     * @return              the builders list
-     */
-    public List<StatisticsBuilder> getStatistics();
-
-    /**
      * Execute the statistics algorithm. If <code>statistics</code> implements
      * <code>LongTask</code>, execution is performed in a background thread and
      * therefore this method returns immedialtely.

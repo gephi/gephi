@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2010 Gephi
 Authors : Patick J. McSweeney <pjmcswee@syr.edu>,
-          Mathieu Bastian <mathieu.bastian@gephi.org>
+Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,7 +18,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.statistics;
 
 import org.gephi.statistics.spi.StatisticsBuilder;
@@ -101,11 +101,10 @@ public class StatisticsControllerImpl implements StatisticsController {
         StatisticsBuilder builder = getBuilder(pStatistics.getClass());
         final StatisticsUI[] uis = getUI(pStatistics);
 
-        model.addStatistics(pStatistics);
         for (StatisticsUI s : uis) {
             s.setup(pStatistics);
-            model.setRunning(s, true);
         }
+        model.setRunning(pStatistics, true);
 
         if (pStatistics instanceof LongTask) {
             LongTaskExecutor executor = new LongTaskExecutor(true, builder.getName(), 10);
@@ -117,9 +116,12 @@ public class StatisticsControllerImpl implements StatisticsController {
 
                 public void run() {
                     pStatistics.execute(graphModel, attributeModel);
+                    model.setRunning(pStatistics, false);
                     for (StatisticsUI s : uis) {
-                        model.setRunning(s, false);
+                        model.addResult(s);
+                        s.unsetup();
                     }
+                    model.addReport(pStatistics);
                 }
             }, builder.getName(), null);
         } else {
@@ -127,18 +129,13 @@ public class StatisticsControllerImpl implements StatisticsController {
             if (listener != null) {
                 listener.taskFinished(null);
             }
-            for (StatisticsUI s : uis) {
-                model.setRunning(s, false);
+            model.setRunning(pStatistics, false);
+            for (StatisticsUI s : uis) {              
+                model.addResult(s);
+                s.unsetup();
             }
+            model.addReport(pStatistics);
         }
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public List<StatisticsBuilder> getStatistics() {
-        return null;
     }
 
     public StatisticsUI[] getUI(Statistics statistics) {

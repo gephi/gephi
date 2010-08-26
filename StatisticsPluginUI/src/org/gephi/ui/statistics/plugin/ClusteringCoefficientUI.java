@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.statistics.plugin;
 
 import java.text.DecimalFormat;
@@ -46,14 +46,11 @@ public class ClusteringCoefficientUI implements StatisticsUI {
         this.clusteringCoefficient = (ClusteringCoefficient) statistics;
         if (panel != null) {
             panel.setDirected(clusteringCoefficient.isDirected());
-           // panel.setBruteForce(clusteringCoefficient.isBruteForce());
         }
     }
 
     public void unsetup() {
-        //Set params
-        clusteringCoefficient.setDirected(panel.isDirected());
-        //clusteringCoefficient.setBruteForce(panel.isBruteForce());
+        clusteringCoefficient = null;
         panel = null;
     }
 
