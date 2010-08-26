@@ -124,11 +124,12 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
         if (result != null) {
             resultLabel.setText(result);
-            reportButton.setEnabled(true);
         } else {
             resultLabel.setText("");
-            reportButton.setEnabled(false);
         }
+
+        String report = model.getReport(statisticsUI);
+        reportButton.setEnabled(report != null);
     }
 
     private void run() {

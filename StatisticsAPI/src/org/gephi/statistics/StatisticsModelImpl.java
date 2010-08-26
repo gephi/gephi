@@ -255,7 +255,6 @@ public class StatisticsModelImpl implements StatisticsModel {
         if (result.length == 0) {
             return report;
         }
-        boolean first = true;
         try {
             TempDir tempDir = TempDirUtils.createTempDir();
 
