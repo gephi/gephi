@@ -83,7 +83,7 @@ public class StatisticsModelImpl implements StatisticsModel {
 
     public boolean isRunning(StatisticsUI statisticsUI) {
         for (Statistics s : runningList.toArray(new Statistics[0])) {
-            if (statisticsUI.getStatisticsClass().equals(s)) {
+            if (statisticsUI.getStatisticsClass().equals(s.getClass())) {
                 return true;
             }
         }
