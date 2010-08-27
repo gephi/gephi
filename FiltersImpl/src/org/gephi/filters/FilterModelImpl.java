@@ -187,8 +187,10 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public void updateParameters(Query query) {
-        ((FilterQueryImpl) query).updateParameters();
-        fireChangeEvent();
+        if (query instanceof FilterQueryImpl) {
+            ((FilterQueryImpl) query).updateParameters();
+            fireChangeEvent();
+        }
     }
 
     public Query getQuery(Filter filter) {
