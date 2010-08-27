@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.filters.api;
 
 import org.gephi.filters.spi.Filter;
@@ -156,6 +156,8 @@ public interface FilterController {
      * @param query         the query that is to be used to hide labels
      */
     public void exportToLabelVisible(Query query);
+
+    public void setAutoRefresh(boolean autoRefresh);
 
     /**
      * Returns the filter's model.

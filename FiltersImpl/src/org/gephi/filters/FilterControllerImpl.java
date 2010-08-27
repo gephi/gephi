@@ -73,13 +73,13 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
-                workspace.add(new FilterModelImpl());
+                workspace.add(new FilterModelImpl(workspace));
             }
 
             public void select(Workspace workspace) {
                 model = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
                 if (model == null) {
-                    model = new FilterModelImpl();
+                    model = new FilterModelImpl(workspace);
                     workspace.add(model);
                 }
             }
@@ -88,6 +88,10 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             }
 
             public void close(Workspace workspace) {
+                FilterModelImpl m = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
+                if(m!=null) {
+                    m.destroy();
+                }
             }
 
             public void disable() {
@@ -103,7 +107,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             Workspace workspace = pc.getCurrentWorkspace();
             model = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
             if (model == null) {
-                model = new FilterModelImpl();
+                model = new FilterModelImpl(workspace);
                 workspace.add(model);
             }
         }
@@ -296,6 +300,12 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             e.getEdgeData().getTextData().setVisible(inView);
         }
         fullGraph.readUnlock();
+    }
+
+    public void setAutoRefresh(boolean autoRefresh) {
+        if(model!=null) {
+            model.setAutoRefresh(autoRefresh);
+        }
     }
 
     public FilterModel getModel() {
