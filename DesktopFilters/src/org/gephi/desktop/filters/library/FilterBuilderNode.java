@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.filters.library;
 
 import java.awt.Image;
@@ -45,6 +45,9 @@ public class FilterBuilderNode extends AbstractNode {
         this.filterBuilder = filterBuilder;
         setName(filterBuilder.getName());
         transferable = new FilterTransferable();
+        if (filterBuilder.getDescription() != null) {
+            setShortDescription(filterBuilder.getDescription());
+        }
     }
 
     @Override
