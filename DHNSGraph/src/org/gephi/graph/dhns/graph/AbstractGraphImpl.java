@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.graph;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -171,6 +171,12 @@ public abstract class AbstractGraphImpl {
     }
 
     protected boolean checkEdgeExist(AbstractNode source, AbstractNode target) {
+        if (source == null) {
+            throw new IllegalArgumentException("Source node must be in the graph");
+        }
+        if (target == null) {
+            throw new IllegalArgumentException("Target node must be in the graph");
+        }
         return source.getEdgesOutTree().hasNeighbour(target);
     }
 
