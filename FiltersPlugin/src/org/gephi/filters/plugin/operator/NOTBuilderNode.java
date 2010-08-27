@@ -32,6 +32,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -46,7 +47,7 @@ public class NOTBuilderNode implements FilterBuilder {
     }
 
     public String getName() {
-        return "NOT (Nodes)";
+        return NbBundle.getMessage(NOTBuilderNode.class, "NOTBuilderNode.name");
     }
 
     public Icon getIcon() {
@@ -54,7 +55,7 @@ public class NOTBuilderNode implements FilterBuilder {
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(NOTBuilderNode.class, "NOTBuilderNode.description");
     }
 
     public Filter getFilter() {
@@ -72,7 +73,7 @@ public class NOTBuilderNode implements FilterBuilder {
         }
 
         public String getName() {
-            return "NOT (Nodes)";
+            return NbBundle.getMessage(NOTBuilderNode.class, "NOTBuilderNode.name");
         }
 
         public FilterProperty[] getProperties() {

@@ -61,7 +61,7 @@ public class DegreeRangeBuilder implements FilterBuilder {
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(DegreeRangeBuilder.class, "DegreeRangeBuilder.description");
     }
 
     public DegreeRangeFilter getFilter() {

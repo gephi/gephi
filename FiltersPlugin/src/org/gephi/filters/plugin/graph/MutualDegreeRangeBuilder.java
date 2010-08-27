@@ -62,7 +62,7 @@ public class MutualDegreeRangeBuilder implements FilterBuilder {
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(MutualDegreeRangeBuilder.class, "MutualDegreeRangeBuilder.description");
     }
 
     public MutualDegreeRangeFilter getFilter() {

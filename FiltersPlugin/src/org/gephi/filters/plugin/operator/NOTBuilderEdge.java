@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.filters.plugin.operator;
 
 import javax.swing.Icon;
@@ -32,6 +32,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -46,7 +47,7 @@ public class NOTBuilderEdge implements FilterBuilder {
     }
 
     public String getName() {
-        return "NOT (Edges)";
+        return NbBundle.getMessage(NOTBuilderEdge.class, "NOTBuilderEdge.name");
     }
 
     public Icon getIcon() {
@@ -54,7 +55,7 @@ public class NOTBuilderEdge implements FilterBuilder {
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(NOTBuilderEdge.class, "NOTBuilderEdge.description");
     }
 
     public Filter getFilter() {
@@ -72,7 +73,7 @@ public class NOTBuilderEdge implements FilterBuilder {
         }
 
         public String getName() {
-            return "NOT (Edges)";
+            return NbBundle.getMessage(NOTBuilderEdge.class, "NOTBuilderEdge.name");
         }
 
         public FilterProperty[] getProperties() {

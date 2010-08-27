@@ -62,7 +62,7 @@ public class InDegreeRangeBuilder implements FilterBuilder {
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(InDegreeRangeBuilder.class, "InDegreeRangeBuilder.description");
     }
 
     public InDegreeRangeFilter getFilter() {
