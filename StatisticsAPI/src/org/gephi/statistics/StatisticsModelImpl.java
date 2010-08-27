@@ -88,8 +88,8 @@ public class StatisticsModelImpl implements StatisticsModel {
         }
     }
 
-    public String getReport(StatisticsUI statisticsUI) {
-        return reportMap.get(statisticsUI.getStatisticsClass());
+    public String getReport(Class<? extends Statistics> statisticsClass) {
+        return reportMap.get(statisticsClass);
     }
 
     public String getResult(StatisticsUI statisticsUI) {

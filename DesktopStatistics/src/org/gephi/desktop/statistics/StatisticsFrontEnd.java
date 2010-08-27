@@ -142,7 +142,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
             resultLabel.setText("");
         }
 
-        String report = model.getReport(statisticsUI);
+        String report = model.getReport(statisticsUI.getStatisticsClass());
         reportButton.setEnabled(report != null);
     }
 
@@ -182,7 +182,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     }
 
     private void showReport() {
-        final String report = currentModel.getReport(statisticsUI);
+        final String report = currentModel.getReport(statisticsUI.getStatisticsClass());
         if (report != null) {
             SwingUtilities.invokeLater(new Runnable() {
 
