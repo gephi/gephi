@@ -48,6 +48,9 @@ public class GraphDensityUI implements StatisticsUI {
     }
 
     public void unsetup() {
+        if (panel != null) {
+            graphDensity.setDirected(panel.isDirected());
+        }
         graphDensity = null;
         panel = null;
     }

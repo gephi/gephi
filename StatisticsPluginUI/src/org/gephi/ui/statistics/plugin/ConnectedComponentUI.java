@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.statistics.plugin;
 
 import java.text.DecimalFormat;
@@ -32,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Patrick McSweeney
  */
 @ServiceProvider(service = StatisticsUI.class)
-public class ConnectedComponentUI  implements StatisticsUI {
+public class ConnectedComponentUI implements StatisticsUI {
 
     private ConnectedComponentPanel panel;
     private ConnectedComponents connectedComponents;
@@ -50,6 +50,9 @@ public class ConnectedComponentUI  implements StatisticsUI {
     }
 
     public void unsetup() {
+        if (panel != null) {
+            connectedComponents.setDirected(panel.isDirected());
+        }
         connectedComponents = null;
         panel = null;
     }

@@ -97,7 +97,7 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
         }
 
         public String getDescription() {
-            return null;
+            return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeNonNullBuilder.description");
         }
 
         public AttributeNonNullFilter getFilter() {

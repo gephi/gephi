@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.statistics.plugin;
 
 import org.gephi.data.attributes.api.AttributeTable;
@@ -50,8 +50,6 @@ public class InOutDegree implements Statistics, LongTask {
     private ProgressTicket mProgress;
     /**     */
     private double mAvgDegree;
-    /**  */
-    private String mGraphRevision;
 
     /**
      *
@@ -97,8 +95,6 @@ public class InOutDegree implements Statistics, LongTask {
 
         graph.readLock();
 
-        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
-
         Progress.start(mProgress, graph.getNodeCount());
 
         for (Node n : graph.getNodes()) {
@@ -134,20 +130,16 @@ public class InOutDegree implements Statistics, LongTask {
     public String getReport() {
 
 
-        String report = new String("<HTML> <BODY> <h1>In-Out Degree Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+        String report = "<HTML> <BODY> <h1>Degree Report </h1> "
+                + "<hr>"
                 + "<br>"
-                //+"<h2> Parameters: </h2>" +
-                //"Network Interpretation:  "  +(this. ? "directed": "undirected") +"<br>"
                 + "<br> <h2> Results: </h2>"
                 + "Average Degree: " + mAvgDegree
-                + "<br >Average In Degree: " + mAvgInDegree
-                + "<br >Average Out Degree: " + mAvgOutDegree
-                + "</BODY></HTML>");
+                + (mAvgDegree > 0 ? ("<br >Average In Degree: " + mAvgInDegree) : "")
+                + (mAvgOutDegree > 0 ? ("<br >Average Out Degree: " + mAvgOutDegree) : "")
+                + "</BODY></HTML>";
 
         return report;
-        //return new String("Average In Degree: " + mAvgInDegree + "<br> Average out Degree: " + mAvgOutDegree);
     }
 
     /**

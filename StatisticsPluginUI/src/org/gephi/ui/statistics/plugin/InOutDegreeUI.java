@@ -58,7 +58,7 @@ public class InOutDegreeUI implements StatisticsUI {
     }
 
     public String getDisplayName() {
-        return "In/Out Degree";
+        return "Average Degree";
     }
 
     public String getCategory() {

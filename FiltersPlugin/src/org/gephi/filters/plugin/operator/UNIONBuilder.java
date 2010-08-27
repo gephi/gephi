@@ -35,6 +35,7 @@ import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -49,7 +50,7 @@ public class UNIONBuilder implements FilterBuilder {
     }
 
     public String getName() {
-        return "UNION";
+        return NbBundle.getMessage(UNIONBuilder.class, "UNIONBuilder.name");
     }
 
     public Icon getIcon() {
@@ -57,7 +58,7 @@ public class UNIONBuilder implements FilterBuilder {
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(UNIONBuilder.class, "UNIONBuilder.description");
     }
 
     public Filter getFilter() {
@@ -75,7 +76,7 @@ public class UNIONBuilder implements FilterBuilder {
         }
 
         public String getName() {
-            return "Union";
+            return NbBundle.getMessage(UNIONBuilder.class, "UNIONBuilder.name");
         }
 
         public FilterProperty[] getProperties() {

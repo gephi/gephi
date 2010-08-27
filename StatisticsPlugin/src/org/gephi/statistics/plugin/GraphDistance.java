@@ -22,7 +22,7 @@ package org.gephi.statistics.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.graph.api.*;
 import java.util.LinkedList;
@@ -50,6 +50,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -79,14 +80,16 @@ public class GraphDistance implements Statistics, LongTask {
     private ProgressTicket mProgress;
     /** */
     private boolean mIsCanceled;
-    private String mGraphRevision;
     private int mShortestPaths;
     private boolean mRelativeValues;
 
-    /**
-     * 
-     * @return
-     */
+    public GraphDistance() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            mDirected = graphController.getModel().isDirected();
+        }
+    }
+
     public double getPathLength() {
         return mAvgDist;
     }
@@ -121,8 +124,6 @@ public class GraphDistance implements Statistics, LongTask {
 
         graph.readLock();
 
-        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
-
         mN = graph.getNodeCount();
 
         mBetweenness = new double[mN];
@@ -132,7 +133,7 @@ public class GraphDistance implements Statistics, LongTask {
         mAvgDist = 0;
         mShortestPaths = 0;
         mRadius = Integer.MAX_VALUE;
-        Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
         for (Node s : graph.getNodes()) {
             indicies.put(s, index);
@@ -353,9 +354,8 @@ public class GraphDistance implements Statistics, LongTask {
             Exceptions.printStackTrace(ex);
         }
 
-        String report = new String("<HTML> <BODY> <h1>Graph Distance  Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+        String report = "<HTML> <BODY> <h1>Graph Distance  Report </h1> "
+                + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
@@ -367,7 +367,7 @@ public class GraphDistance implements Statistics, LongTask {
                 + htmlIMG1 + "<br>"
                 + htmlIMG2 + "<br>"
                 + htmlIMG3
-                + "</BODY></HTML>");
+                + "</BODY></HTML>";
 
         return report;
     }

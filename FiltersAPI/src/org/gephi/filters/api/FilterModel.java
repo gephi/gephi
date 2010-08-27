@@ -67,6 +67,8 @@ public interface FilterModel {
      */
     public boolean isSelecting();
 
+    public boolean isAutoRefresh();
+
     public void addChangeListener(ChangeListener listener);
 
     public void removeChangeListener(ChangeListener listener);

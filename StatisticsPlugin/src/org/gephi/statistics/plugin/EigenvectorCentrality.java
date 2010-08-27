@@ -17,12 +17,12 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.statistics.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -33,6 +33,7 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.spi.Statistics;
@@ -51,6 +52,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -66,12 +68,14 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     /** */
     private boolean mIsCanceled;
     private boolean mDirected;
-    private String mGraphRevision;
 
-    /**
-     * 
-     * @param pNumRuns
-     */
+    public EigenvectorCentrality() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            mDirected = graphController.getModel().isDirected();
+        }
+    }
+
     public void setNumRuns(int pNumRuns) {
         mNumRuns = pNumRuns;
     }
@@ -123,7 +127,6 @@ public class EigenvectorCentrality implements Statistics, LongTask {
             eigenCol = nodeTable.addColumn(EIGENVECTOR, "Eigenvector Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
-        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
         int N = graph.getNodeCount();
         graph.readLock();
 
@@ -132,8 +135,8 @@ public class EigenvectorCentrality implements Statistics, LongTask {
 
         Progress.start(mProgress, mNumRuns);
 
-        Hashtable<Integer, Node> indicies = new Hashtable<Integer, Node>();
-        Hashtable<Node, Integer> invIndicies = new Hashtable<Node, Integer>();
+        HashMap<Integer, Node> indicies = new HashMap<Integer, Node>();
+        HashMap<Node, Integer> invIndicies = new HashMap<Node, Integer>();
         int count = 0;
         for (Node u : graph.getNodes()) {
             indicies.put(count, u);
@@ -242,16 +245,15 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         } catch (IOException e) {
             System.out.println(e.toString());
         }
-        String report = new String("<HTML> <BODY> <h1>Eigenvector Centrality Report</h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+        String report = "<HTML> <BODY> <h1>Eigenvector Centrality Report</h1> "
+                + "<hr>"
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
                 + "Number of iterations: " + this.mNumRuns + "<br>"
                 + "Sum change: " + this.mSumChange
                 + "<br> <h2> Results: </h2>"
                 + imageFile
-                + "</BODY></HTML>");
+                + "</BODY></HTML>";
 
         return report;
 

@@ -59,7 +59,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class PartitionCountBuilder implements CategoryBuilder {
 
     private final static Category PARTITION_COUNT = new Category(
-            NbBundle.getMessage(PartitionBuilder.class, "PartitionCountBuilder.name"),
+            NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.name"),
             null,
             FilterLibrary.ATTRIBUTES);
 
@@ -115,7 +115,7 @@ public class PartitionCountBuilder implements CategoryBuilder {
         }
 
         public String getDescription() {
-            return null;
+            return NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.description");
         }
 
         public PartitionCountFilter getFilter() {
@@ -203,7 +203,7 @@ public class PartitionCountBuilder implements CategoryBuilder {
         }
 
         public String getName() {
-            return NbBundle.getMessage(PartitionBuilder.class, "PartitionCountBuilder.name");
+            return NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.name");
         }
 
         public FilterProperty[] getProperties() {

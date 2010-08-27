@@ -106,7 +106,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
 
         public String getDescription() {
-            return null;
+            return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeRangeBuilder.description");
         }
 
         public AttributeRangeFilter getFilter() {

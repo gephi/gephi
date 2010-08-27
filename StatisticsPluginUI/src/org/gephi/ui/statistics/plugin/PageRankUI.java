@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.statistics.plugin;
 
 import javax.swing.JPanel;
@@ -29,6 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsUI.class)
 public class PageRankUI implements StatisticsUI {
 
+    private final StatSettings settings = new StatSettings();
     private PageRankPanel panel;
     private PageRank pageRank;
 
@@ -40,6 +41,7 @@ public class PageRankUI implements StatisticsUI {
     public void setup(Statistics statistics) {
         this.pageRank = (PageRank) statistics;
         if (panel != null) {
+            settings.load(pageRank);
             panel.setEpsilon(pageRank.getEpsilon());
             panel.setProbability(pageRank.getProbability());
             panel.setDirected(!pageRank.getUndirected());
@@ -47,6 +49,12 @@ public class PageRankUI implements StatisticsUI {
     }
 
     public void unsetup() {
+        if (panel != null) {
+            pageRank.setEpsilon(panel.getEpsilon());
+            pageRank.setProbability(panel.getProbability());
+            pageRank.setUndirected(!panel.isDirected());
+            settings.save(pageRank);
+        }
         panel = null;
         pageRank = null;
     }
@@ -69,5 +77,21 @@ public class PageRankUI implements StatisticsUI {
 
     public int getPosition() {
         return 800;
+    }
+
+    private static class StatSettings {
+
+        private double epsilon = 0.001;
+        private double probability = 0.85;
+
+        private void save(PageRank stat) {
+            this.epsilon = stat.getEpsilon();
+            this.probability = stat.getProbability();
+        }
+
+        private void load(PageRank stat) {
+            stat.setEpsilon(epsilon);
+            stat.setProbability(probability);
+        }
     }
 }

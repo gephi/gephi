@@ -114,7 +114,7 @@ public class PartitionBuilder implements CategoryBuilder {
         }
 
         public String getDescription() {
-            return null;
+            return NbBundle.getMessage(PartitionBuilder.class, "PartitionBuilder.description");
         }
 
         public PartitionFilter getFilter() {

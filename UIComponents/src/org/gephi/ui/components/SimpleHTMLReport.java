@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Eduardo Ramos <eduramiba@gmail.com>
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, 
+          Patick J. McSweeney <pjmcswee@syr.edu>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -17,10 +18,9 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.ui.components;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -50,14 +50,16 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.WindowConstants;
 import javax.swing.text.View;
+import org.apache.commons.codec.binary.Base64;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
 
 /**
- * 
- * @author pjmcswee
+ *
+ * @author Mathieu Bastian
+ * @author Patick J. McSweeney
  */
 class ReportSelection implements Transferable {
 
@@ -99,7 +101,7 @@ class ReportSelection implements Transferable {
                     e.printStackTrace();
                 }
                 byte[] imageBytes = out.toByteArray();
-                String base64String = Base64.encode(imageBytes);
+                String base64String = Base64.encodeBase64String(imageBytes);
                 if (!first) {
 
                     newHTML += "\"";
@@ -113,7 +115,7 @@ class ReportSelection implements Transferable {
                 newHTML += result[i];
             }
         }
-        this.html = new String(newHTML);
+        this.html = newHTML;
     }
 
     /**
@@ -164,6 +166,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
         Dimension dimension = new Dimension(700, 600);
         setPreferredSize(dimension);
         displayPane.setCaretPosition(0);
+        setTitle("HTML Report");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         pack();
         setLocationRelativeTo(parent);
@@ -235,7 +238,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, Short.MAX_VALUE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(closeButton)
                 .addContainerGap())
@@ -275,7 +278,8 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
         final String path = NbPreferences.forModule(SimpleHTMLReport.class).get(LAST_PATH, null);
         JFileChooser fileChooser = new JFileChooser(path);
-        int result = fileChooser.showSaveDialog(WindowManager.getDefault().getMainWindow());
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int result = fileChooser.showOpenDialog(WindowManager.getDefault().getMainWindow());
         if (result == JFileChooser.APPROVE_OPTION) {
             final File destinationFolder = fileChooser.getSelectedFile();
             NbPreferences.forModule(SimpleHTMLReport.class).put(LAST_PATH, destinationFolder.getAbsolutePath());
@@ -355,7 +359,7 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
     public static void main(String args[]) {
     java.awt.EventQueue.invokeLater(new Runnable() {
     public void run() {
-    StatisticsReportPanel dialog = new StatisticsReportPanel(new javax.swing.JFrame(), true);
+    SimpleHTMLReport dialog = new SimpleHTMLReport(new javax.swing.JFrame(), true);
     dialog.addWindowListener(new java.awt.event.WindowAdapter() {
     public void windowClosing(java.awt.event.WindowEvent e) {
     System.exit(0);

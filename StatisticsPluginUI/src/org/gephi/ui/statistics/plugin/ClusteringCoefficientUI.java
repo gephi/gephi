@@ -50,6 +50,9 @@ public class ClusteringCoefficientUI implements StatisticsUI {
     }
 
     public void unsetup() {
+        if (panel != null) {
+            clusteringCoefficient.setDirected(panel.isDirected());
+        }
         clusteringCoefficient = null;
         panel = null;
     }

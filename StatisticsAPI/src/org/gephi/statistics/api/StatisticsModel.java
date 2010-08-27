@@ -34,8 +34,20 @@ import org.gephi.statistics.spi.StatisticsUI;
  */
 public interface StatisticsModel {
 
-    public String getReport(StatisticsUI statisticsUI);
+    /**
+     * Returns the report for the given statistics class or <code>null</code> if no report
+     * exists for this statistics.
+     * @param statistics        a statistics class
+     * @return                  the report or <code>null</code> if not found
+     */
+    public String getReport(Class<? extends Statistics> statistics);
 
+    /**
+     * Returns the result string for the given <code>StatisticsUI</code> class or
+     * <code>null</code> if no result string exists for this statistics.
+     * @param statisticsUI      a statisticsUI class
+     * @return                  the result or <code>null</code> if not found
+     */
     public String getResult(StatisticsUI statisticsUI);
 
     /**
@@ -56,6 +68,14 @@ public interface StatisticsModel {
      */
     public boolean isRunning(StatisticsUI statisticsUI);
 
+    /**
+     * Returns the <code>Statistics</code> instance currently running for the
+     * particular <code>StatisticsUI</code> registered or <code>null</code> if
+     * the statistics is not running.
+     * @param statisticsUI      an UI instance
+     * @return                  the statistics instance if it is running, or
+     *                          <code>null</code> if not running
+     */
     public Statistics getRunning(StatisticsUI statisticsUI);
 
     public void addChangeListener(ChangeListener changeListener);

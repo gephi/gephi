@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.statistics.plugin;
 
 import java.text.DecimalFormat;
@@ -30,6 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsUI.class)
 public class ModularityUI implements StatisticsUI {
 
+    private final StatSettings settings = new StatSettings();
     private ModularityPanel panel;
     private Modularity mod;
 
@@ -41,11 +42,16 @@ public class ModularityUI implements StatisticsUI {
     public void setup(Statistics statistics) {
         this.mod = (Modularity) statistics;
         if (panel != null) {
+            settings.load(mod);
             panel.setRandomize(mod.getRandom());
         }
     }
 
     public void unsetup() {
+        if (panel != null) {
+            mod.setRandom(panel.isRandomize());
+            settings.save(mod);
+        }
         mod = null;
         panel = null;
     }
@@ -69,5 +75,18 @@ public class ModularityUI implements StatisticsUI {
 
     public int getPosition() {
         return 600;
+    }
+
+    private static class StatSettings {
+
+        private boolean randomize = true;
+
+        private void save(Modularity stat) {
+            this.randomize = stat.getRandom();
+        }
+
+        private void load(Modularity stat) {
+            stat.setRandom(randomize);
+        }
     }
 }

@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.filters.plugin.operator;
 
 import javax.swing.Icon;
@@ -28,9 +28,11 @@ import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.NodeFilter;
 import org.gephi.filters.spi.Operator;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -45,7 +47,7 @@ public class NOTBuilderNode implements FilterBuilder {
     }
 
     public String getName() {
-        return "NOT (Nodes)";
+        return NbBundle.getMessage(NOTBuilderNode.class, "NOTBuilderNode.name");
     }
 
     public Icon getIcon() {
@@ -53,7 +55,7 @@ public class NOTBuilderNode implements FilterBuilder {
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(NOTBuilderNode.class, "NOTBuilderNode.description");
     }
 
     public Filter getFilter() {
@@ -71,7 +73,7 @@ public class NOTBuilderNode implements FilterBuilder {
         }
 
         public String getName() {
-            return "NOT (Nodes)";
+            return NbBundle.getMessage(NOTBuilderNode.class, "NOTBuilderNode.name");
         }
 
         public FilterProperty[] getProperties() {
@@ -94,6 +96,18 @@ public class NOTBuilderNode implements FilterBuilder {
                     graph.removeNode(n);
                 }
             }
+
+            for (Node n : graph.getNodes().toArray()) {
+                Node mainNode = n.getNodeData().getNode(mainGraph.getView().getViewId());
+                Edge[] edges = mainGraph.getEdges(mainNode).toArray();
+                for (Edge e : edges) {
+                    if (e.getSource().getNodeData().getNode(graphView.getViewId()) != null
+                            && e.getTarget().getNodeData().getNode(graphView.getViewId()) != null) {
+                        graph.addEdge(e);
+                    }
+                }
+            }
+
             return graph;
         }
 

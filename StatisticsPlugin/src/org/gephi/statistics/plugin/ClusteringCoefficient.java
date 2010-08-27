@@ -24,7 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Hashtable;
+import java.util.HashMap;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.graph.api.Node;
 import org.gephi.data.attributes.api.AttributeTable;
@@ -36,8 +36,8 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.NodeIterable;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -53,6 +53,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -186,8 +187,6 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     public static final String CLUSTERING_COEFF = "clustering";
     /** The avergage Clustering Coefficient.*/
     private double avgClusteringCoeff;
-    /** Indicates to use the brute force approach.*/
-    private boolean bruteForce;
     /**Indicates should treat graph as undirected.*/
     private boolean directed;
     /** Indicates statistics should stop processing/*/
@@ -200,21 +199,18 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     private int N;
     private double[] mNodeClustering;
     private int mTotalTriangles;
-    /** */
-    private String mGraphRevision;
 
-    /**
-     *
-     * @return
-     */
+    public ClusteringCoefficient() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            directed = graphController.getModel().isDirected();
+        }
+    }
+    
     public double getAverageClusteringCoefficient() {
         return this.avgClusteringCoeff;
     }
 
-    /**
-     *
-     * @param synchReader
-     */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         Graph graph = null;
         if (!directed) {
@@ -228,15 +224,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
     public void execute(Graph graph, AttributeModel attributeModel) {
         isCanceled = false;
-        mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
-        // if (bruteForce) {
-        //     bruteForce(graphModel, attributeModel);
-        //     return;
-        // } else {
         triangles(graph, attributeModel);
-        //    return;
-        // }
     }
 
     /**
@@ -329,10 +318,6 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
     }
 
-    /**
-     * 
-     * @param graphModel
-     */
     public void triangles(Graph graph, AttributeModel attributeModel) {
 
         int ProgressCount = 0;
@@ -341,14 +326,13 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         graph.readLock();
 
         N = graph.getNodeCount();
-        Node[] nodes = new Node[N];
         mNodeClustering = new double[N];
 
         /** Create network for processing */
         mNetwork = new ArrayWrapper[N];
 
         /**  */
-        Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
         for (Node s : graph.getNodes()) {
             indicies.put(s, index);
@@ -359,7 +343,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         index = 0;
         for (Node node : graph.getNodes()) {
-            Hashtable<Node, EdgeWrapper> neighborTable = new Hashtable<Node, EdgeWrapper>();
+            HashMap<Node, EdgeWrapper> neighborTable = new HashMap<Node, EdgeWrapper>();
 
             if (!directed) {
                 for (Node neighbor : graph.getNeighbors(node)) {
@@ -469,11 +453,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         graph.readUnlock();
     }
 
-    /**
-     * 
-     * @param graphModel
-     */
-    public void bruteForce(GraphModel graphModel, AttributeModel attributeModel) {
+
+    /*public void bruteForce(GraphModel graphModel, AttributeModel attributeModel) {
         //The atrributes computed by the statistics
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn clusteringCol = nodeTable.getColumn("clustering");
@@ -546,20 +527,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         avgClusteringCoeff = totalCC / graph.getNodeCount();
 
         graph.readUnlockAll();
-    }
+    }*/
 
-    /**
-     * 
-     * @return
-     */
-    public boolean isParamerizable() {
-        return true;
-    }
-
-    /**
-     * 
-     * @return
-     */
     public String getReport() {
 
         double max = 0;
@@ -611,8 +580,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
 
         return new String("<HTML> <BODY> <h1> Clustering Coefficient Metric Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+                + "<hr>"
                 + "<br>" + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.directed ? "directed" : "undirected") + "<br>"
                 + "Average Clustering Coefficient: " + avgClusteringCoeff + "<br>"
@@ -620,10 +588,6 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                 + imageFile + "<br>" + "</BODY> </HTML>");
     }
 
-    /**
-     * 
-     * @param pDirected
-     */
     public void setDirected(boolean pDirected) {
         directed = pDirected;
     }
@@ -632,31 +596,11 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         return directed;
     }
 
-    public boolean isBruteForce() {
-        return bruteForce;
-    }
-
-    /**
-     * 
-     * @param brute
-     */
-    public void setBruteForce(boolean brute) {
-        bruteForce = brute;
-    }
-
-    /**
-     * 
-     * @return
-     */
     public boolean cancel() {
         isCanceled = true;
         return true;
     }
 
-    /**
-     *
-     * @param ProgressTicket
-     */
     public void setProgressTicket(ProgressTicket ProgressTicket) {
         progress = ProgressTicket;
     }

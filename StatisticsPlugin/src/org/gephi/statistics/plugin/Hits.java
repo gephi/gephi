@@ -22,7 +22,7 @@ package org.gephi.statistics.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -34,6 +34,7 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
@@ -54,6 +55,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -71,13 +73,15 @@ public class Hits implements Statistics, LongTask {
     private double epsilon = 0.0001;
     private LinkedList<Node> hub_list;
     private LinkedList<Node> auth_list;
-    private Hashtable<Node, Integer> indicies;
-    private Graph graph;
+    private HashMap<Node, Integer> indicies;
 
-    /**
-     *
-     * @param pUndirected
-     */
+    public Hits() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            useUndirected = graphController.getModel().isUndirected();
+        }
+    }
+
     public void setUndirected(boolean pUndirected) {
         useUndirected = pUndirected;
     }
@@ -101,7 +105,6 @@ public class Hits implements Statistics, LongTask {
     }
 
     public void execute(Graph graph, AttributeModel attributeModel) {
-        this.graph = graph;
         graph.readLock();
 
         //DirectedGraph digraph = graphController.getDirectedGraph();
@@ -116,7 +119,7 @@ public class Hits implements Statistics, LongTask {
 
         Progress.start(progress);
 
-        indicies = new Hashtable<Node, Integer>();
+        indicies = new HashMap<Node, Integer>();
         int index = 0;
         for (Node node : graph.getNodes()) {
             indicies.put(node, new Integer(index));
@@ -332,8 +335,8 @@ public class Hits implements Statistics, LongTask {
         }
 
         String report = "<HTML> <BODY> <h1> HITS Metric Report </h1> <br> "
-                + "<hr> <br> <h2>Network Revision Number:</h2> ("
-                + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")<br>"
+                + "<hr>"
+                + "<br>"
                 + "<h2> Parameters: </h2>  <br> &#917; = " + this.epsilon
                 + "<br> <h2> Results: </h2><br>"
                 + imageFile1 + "<br>" + imageFile2 + "</BODY> </HTML>";

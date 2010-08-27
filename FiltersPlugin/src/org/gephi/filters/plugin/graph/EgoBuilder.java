@@ -50,7 +50,7 @@ public class EgoBuilder implements FilterBuilder {
     }
 
     public String getName() {
-        return NbBundle.getMessage(DegreeRangeBuilder.class, "EgoBuilder.name");
+        return NbBundle.getMessage(EgoBuilder.class, "EgoBuilder.name");
     }
 
     public Icon getIcon() {
@@ -58,7 +58,7 @@ public class EgoBuilder implements FilterBuilder {
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(EgoBuilder.class, "EgoBuilder.description");
     }
 
     public Filter getFilter() {

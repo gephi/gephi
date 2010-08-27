@@ -117,7 +117,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public String getDescription() {
-            return null;
+            return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.description");
         }
 
         public EqualStringFilter getFilter() {
@@ -254,7 +254,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public String getDescription() {
-            return null;
+            return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.description");
         }
 
         public EqualNumberFilter getFilter() {
@@ -425,7 +425,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public String getDescription() {
-            return null;
+            return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.description");
         }
 
         public EqualBooleanFilter getFilter() {

@@ -63,7 +63,7 @@ public class EdgeWeightBuilder implements FilterBuilder {
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(EdgeWeightBuilder.class, "EdgeWeightBuilder.description");
     }
 
     public Filter getFilter() {

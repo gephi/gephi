@@ -43,7 +43,7 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
     }
 
     public void readXML(Element element, Workspace workspace) {
-        FilterModelImpl filterModel = new FilterModelImpl();
+        FilterModelImpl filterModel = new FilterModelImpl(workspace);
         filterModel.readXML(element);
         workspace.add(filterModel);
     }
