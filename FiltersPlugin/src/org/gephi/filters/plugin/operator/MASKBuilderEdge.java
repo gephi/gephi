@@ -36,6 +36,7 @@ import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -43,14 +44,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = FilterBuilder.class)
-public class EDGESBuilder implements FilterBuilder {
+public class MASKBuilderEdge implements FilterBuilder {
 
     public Category getCategory() {
         return new Category("Operator");
     }
 
     public String getName() {
-        return "EDGES";
+        return NbBundle.getMessage(MASKBuilderEdge.class, "MASKBuilderEdge.name");
     }
 
     public Icon getIcon() {
@@ -58,22 +59,22 @@ public class EDGESBuilder implements FilterBuilder {
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(MASKBuilderEdge.class, "MASKBuilderEdge.description");
     }
 
     public Filter getFilter() {
-        return new EdgesOperator();
+        return new MaskEdgesOperator();
     }
 
     public JPanel getPanel(Filter filter) {
-        EDGESUi ui = Lookup.getDefault().lookup(EDGESUi.class);
+        MASKEdgeUI ui = Lookup.getDefault().lookup(MASKEdgeUI.class);
         if (ui != null) {
-            return ui.getPanel((EdgesOperator) filter);
+            return ui.getPanel((MaskEdgesOperator) filter);
         }
         return null;
     }
 
-    public static class EdgesOperator implements Operator {
+    public static class MaskEdgesOperator implements Operator {
 
         public enum EdgesOptions {
 
@@ -87,7 +88,7 @@ public class EDGESBuilder implements FilterBuilder {
         }
 
         public String getName() {
-            return "EDGES";
+            return NbBundle.getMessage(MASKBuilderEdge.class, "MASKBuilderEdge.name");
         }
 
         public FilterProperty[] getProperties() {

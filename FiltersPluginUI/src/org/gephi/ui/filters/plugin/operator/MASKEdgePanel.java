@@ -22,17 +22,17 @@ package org.gephi.ui.filters.plugin.operator;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import org.gephi.filters.plugin.operator.EDGESBuilder;
+import org.gephi.filters.plugin.operator.MASKBuilderEdge;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class EdgesPanel extends javax.swing.JPanel implements ActionListener {
+public class MASKEdgePanel extends javax.swing.JPanel implements ActionListener {
 
-    private EDGESBuilder.EdgesOperator operator;
+    private MASKBuilderEdge.MaskEdgesOperator operator;
 
-    public EdgesPanel() {
+    public MASKEdgePanel() {
         initComponents();
         anyButton.addActionListener(this);
         bothButton.addActionListener(this);
@@ -42,21 +42,21 @@ public class EdgesPanel extends javax.swing.JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (operator != null) {
-            EDGESBuilder.EdgesOperator.EdgesOptions option = EDGESBuilder.EdgesOperator.EdgesOptions.ANY;
+            MASKBuilderEdge.MaskEdgesOperator.EdgesOptions option = MASKBuilderEdge.MaskEdgesOperator.EdgesOptions.ANY;
             if (bothButton.isSelected()) {
-                option = EDGESBuilder.EdgesOperator.EdgesOptions.BOTH;
+                option = MASKBuilderEdge.MaskEdgesOperator.EdgesOptions.BOTH;
             } else if (sourceButton.isSelected()) {
-                option = EDGESBuilder.EdgesOperator.EdgesOptions.SOURCE;
+                option = MASKBuilderEdge.MaskEdgesOperator.EdgesOptions.SOURCE;
             } else if (targetButton.isSelected()) {
-                option = EDGESBuilder.EdgesOperator.EdgesOptions.TARGET;
+                option = MASKBuilderEdge.MaskEdgesOperator.EdgesOptions.TARGET;
             }
             operator.getProperties()[0].setValue(option.toString());
         }
     }
 
-    public void setup(EDGESBuilder.EdgesOperator operator) {
+    public void setup(MASKBuilderEdge.MaskEdgesOperator operator) {
         this.operator = operator;
-        EDGESBuilder.EdgesOperator.EdgesOptions option = EDGESBuilder.EdgesOperator.EdgesOptions.valueOf(operator.getOption());
+        MASKBuilderEdge.MaskEdgesOperator.EdgesOptions option = MASKBuilderEdge.MaskEdgesOperator.EdgesOptions.valueOf(operator.getOption());
         switch(option) {
             case ANY:
                 anyButton.setSelected(true);
@@ -92,7 +92,7 @@ public class EdgesPanel extends javax.swing.JPanel implements ActionListener {
         setLayout(new java.awt.GridBagLayout());
 
         group.add(sourceButton);
-        sourceButton.setText(org.openide.util.NbBundle.getMessage(EdgesPanel.class, "EdgesPanel.sourceButton.text")); // NOI18N
+        sourceButton.setText(org.openide.util.NbBundle.getMessage(MASKEdgePanel.class, "MASKEdgePanel.sourceButton.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -100,7 +100,7 @@ public class EdgesPanel extends javax.swing.JPanel implements ActionListener {
         add(sourceButton, gridBagConstraints);
 
         group.add(targetButton);
-        targetButton.setText(org.openide.util.NbBundle.getMessage(EdgesPanel.class, "EdgesPanel.targetButton.text")); // NOI18N
+        targetButton.setText(org.openide.util.NbBundle.getMessage(MASKEdgePanel.class, "MASKEdgePanel.targetButton.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -109,7 +109,7 @@ public class EdgesPanel extends javax.swing.JPanel implements ActionListener {
 
         group.add(anyButton);
         anyButton.setSelected(true);
-        anyButton.setText(org.openide.util.NbBundle.getMessage(EdgesPanel.class, "EdgesPanel.anyButton.text")); // NOI18N
+        anyButton.setText(org.openide.util.NbBundle.getMessage(MASKEdgePanel.class, "MASKEdgePanel.anyButton.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -118,7 +118,7 @@ public class EdgesPanel extends javax.swing.JPanel implements ActionListener {
         add(anyButton, gridBagConstraints);
 
         group.add(bothButton);
-        bothButton.setText(org.openide.util.NbBundle.getMessage(EdgesPanel.class, "EdgesPanel.bothButton.text")); // NOI18N
+        bothButton.setText(org.openide.util.NbBundle.getMessage(MASKEdgePanel.class, "MASKEdgePanel.bothButton.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;

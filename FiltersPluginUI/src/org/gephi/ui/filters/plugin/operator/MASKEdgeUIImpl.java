@@ -22,19 +22,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.filters.plugin.operator;
 
 import javax.swing.JPanel;
-import org.gephi.filters.plugin.operator.EDGESBuilder.EdgesOperator;
-import org.gephi.filters.plugin.operator.EDGESUi;
+import org.gephi.filters.plugin.operator.MASKBuilderEdge.MaskEdgesOperator;
+import org.gephi.filters.plugin.operator.MASKEdgeUI;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = EDGESUi.class)
-public class EdgesUIImpl implements EDGESUi {
+@ServiceProvider(service = MASKEdgeUI.class)
+public class MASKEdgeUIImpl implements MASKEdgeUI {
 
-    public JPanel getPanel(EdgesOperator filter) {
-        EdgesPanel panel = new EdgesPanel();
+    public JPanel getPanel(MaskEdgesOperator filter) {
+        MASKEdgePanel panel = new MASKEdgePanel();
         panel.setup(filter);
         return panel;
     }
