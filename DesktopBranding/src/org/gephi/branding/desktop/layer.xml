@@ -16,8 +16,6 @@
     <attr name="Menu\File\org-netbeans-core-actions-SystemExit.instance\position" intvalue="2150"/>
     <attr name="Menu\Window\ProjectAction.shadow\position" intvalue="250"/>
     <attr name="Menu\Window\org-netbeans-core-windows-actions-ResetWindowsAction.shadow\position" intvalue="2750"/>
-    <folder name="Actions">
-    </folder>
     <folder name="Menu">
         <folder name="Edit">
             <file name="org-gephi-branding-desktop-actions-CleanWorkspace.instance">
@@ -78,6 +76,9 @@
         </folder>
         <file name="GoTo_hidden"/>
         <folder name="Tools">
+            <!--<file name="org-gephi-branding-desktop-multilingual-LanguageAction.instance">
+                <attr name="position" intvalue="10000"/>
+            </file>-->
             <file name="org-netbeans-modules-favorites-templates-TemplatesAction.shadow_hidden"/>
         </folder>
         <folder name="View">
