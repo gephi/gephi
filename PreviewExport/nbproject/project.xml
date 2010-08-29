@@ -83,6 +83,10 @@
                         <compile-dependency/>
                     </test-dependency>
                     <test-dependency>
+                        <code-name-base>org.gephi.desktop.welcome</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
+                    <test-dependency>
                         <code-name-base>org.gephi.graph.api</code-name-base>
                         <compile-dependency/>
                     </test-dependency>
@@ -103,6 +107,10 @@
                         <compile-dependency/>
                     </test-dependency>
                     <test-dependency>
+                        <code-name-base>org.gephi.io.importer.plugin</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
+                    <test-dependency>
                         <code-name-base>org.gephi.io.processor.plugin</code-name-base>
                         <compile-dependency/>
                     </test-dependency>
@@ -119,7 +127,15 @@
                         <compile-dependency/>
                     </test-dependency>
                     <test-dependency>
+                        <code-name-base>org.gephi.utils</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
+                    <test-dependency>
                         <code-name-base>org.gephi.utils.collection</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
+                    <test-dependency>
+                        <code-name-base>org.openide.windows</code-name-base>
                         <compile-dependency/>
                     </test-dependency>
                 </test-type>
