@@ -28,5 +28,5 @@ import javax.swing.JPanel;
  */
 public interface MASKEdgeUI {
 
-    public JPanel getPanel(MASKBuilderEdge.MaskEdgesOperator edgesOperator);
+    public JPanel getPanel(MASKBuilderEdge.MaskEdgeOperator edgesOperator);
 }

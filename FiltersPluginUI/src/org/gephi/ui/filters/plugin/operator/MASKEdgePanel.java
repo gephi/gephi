@@ -30,7 +30,7 @@ import org.gephi.filters.plugin.operator.MASKBuilderEdge;
  */
 public class MASKEdgePanel extends javax.swing.JPanel implements ActionListener {
 
-    private MASKBuilderEdge.MaskEdgesOperator operator;
+    private MASKBuilderEdge.MaskEdgeOperator operator;
 
     public MASKEdgePanel() {
         initComponents();
@@ -42,21 +42,21 @@ public class MASKEdgePanel extends javax.swing.JPanel implements ActionListener 
 
     public void actionPerformed(ActionEvent e) {
         if (operator != null) {
-            MASKBuilderEdge.MaskEdgesOperator.EdgesOptions option = MASKBuilderEdge.MaskEdgesOperator.EdgesOptions.ANY;
+            MASKBuilderEdge.MaskEdgeOperator.EdgesOptions option = MASKBuilderEdge.MaskEdgeOperator.EdgesOptions.ANY;
             if (bothButton.isSelected()) {
-                option = MASKBuilderEdge.MaskEdgesOperator.EdgesOptions.BOTH;
+                option = MASKBuilderEdge.MaskEdgeOperator.EdgesOptions.BOTH;
             } else if (sourceButton.isSelected()) {
-                option = MASKBuilderEdge.MaskEdgesOperator.EdgesOptions.SOURCE;
+                option = MASKBuilderEdge.MaskEdgeOperator.EdgesOptions.SOURCE;
             } else if (targetButton.isSelected()) {
-                option = MASKBuilderEdge.MaskEdgesOperator.EdgesOptions.TARGET;
+                option = MASKBuilderEdge.MaskEdgeOperator.EdgesOptions.TARGET;
             }
             operator.getProperties()[0].setValue(option.toString());
         }
     }
 
-    public void setup(MASKBuilderEdge.MaskEdgesOperator operator) {
+    public void setup(MASKBuilderEdge.MaskEdgeOperator operator) {
         this.operator = operator;
-        MASKBuilderEdge.MaskEdgesOperator.EdgesOptions option = MASKBuilderEdge.MaskEdgesOperator.EdgesOptions.valueOf(operator.getOption());
+        MASKBuilderEdge.MaskEdgeOperator.EdgesOptions option = MASKBuilderEdge.MaskEdgeOperator.EdgesOptions.valueOf(operator.getOption());
         switch(option) {
             case ANY:
                 anyButton.setSelected(true);

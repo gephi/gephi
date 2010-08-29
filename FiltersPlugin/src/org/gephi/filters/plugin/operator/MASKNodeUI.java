@@ -18,24 +18,15 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package org.gephi.ui.filters.plugin.operator;
+package org.gephi.filters.plugin.operator;
 
 import javax.swing.JPanel;
-import org.gephi.filters.plugin.operator.MASKBuilderEdge.MaskEdgeOperator;
-import org.gephi.filters.plugin.operator.MASKEdgeUI;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = MASKEdgeUI.class)
-public class MASKEdgeUIImpl implements MASKEdgeUI {
+public interface MASKNodeUI {
 
-    public JPanel getPanel(MaskEdgeOperator filter) {
-        MASKEdgePanel panel = new MASKEdgePanel();
-        panel.setup(filter);
-        return panel;
-    }
+    public JPanel getPanel(MASKBuilderNode.MaskNodeOperator nodesOperator);
 }

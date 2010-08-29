@@ -63,18 +63,18 @@ public class MASKBuilderEdge implements FilterBuilder {
     }
 
     public Filter getFilter() {
-        return new MaskEdgesOperator();
+        return new MaskEdgeOperator();
     }
 
     public JPanel getPanel(Filter filter) {
         MASKEdgeUI ui = Lookup.getDefault().lookup(MASKEdgeUI.class);
         if (ui != null) {
-            return ui.getPanel((MaskEdgesOperator) filter);
+            return ui.getPanel((MaskEdgeOperator) filter);
         }
         return null;
     }
 
-    public static class MaskEdgesOperator implements Operator {
+    public static class MaskEdgeOperator implements Operator {
 
         public enum EdgesOptions {
 
