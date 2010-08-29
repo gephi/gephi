@@ -30,6 +30,10 @@
                 <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-NewWorkspace.instance"/>
                 <attr name="position" intvalue="2500"/>
             </file>
+            <file name="org-gephi-branding-desktop-actions-RenameWorkspace.instance">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-RenameWorkspace.instance"/>
+                <attr name="position" intvalue="2800"/>
+            </file>
             <file name="Separator2_1.instance" url="Separator2_1.instance">
                 <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
                 <attr name="position" intvalue="2400"/>

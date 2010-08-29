@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.workspace;
 
 import java.awt.Component;
@@ -27,6 +27,7 @@ import org.gephi.project.api.WorkspaceListener;
 import org.openide.awt.StatusLineElementProvider;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.WindowManager;
 
 /**
  *
@@ -38,8 +39,18 @@ public class WorkspaceUISelector implements StatusLineElementProvider, Workspace
     private WorkspaceUISelectorPanel panel;
 
     public Component getStatusLineElement() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(this);
+        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+
+            public void run() {
+                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                pc.addWorkspaceListener(WorkspaceUISelector.this);
+                if (pc.getCurrentWorkspace() != null) {
+                    initialize(pc.getCurrentWorkspace());
+                    select(pc.getCurrentWorkspace());
+                }
+            }
+        });
+
         panel = new WorkspaceUISelectorPanel();
         return panel;
     }

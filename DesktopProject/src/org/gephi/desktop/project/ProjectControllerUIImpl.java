@@ -496,4 +496,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     public void deleteWorkspace() {
         controller.deleteWorkspace(controller.getCurrentWorkspace());
     }
+
+    public void renameWorkspace(String name) {
+        controller.renameWorkspace(controller.getCurrentWorkspace(), name);
+    }
 }
