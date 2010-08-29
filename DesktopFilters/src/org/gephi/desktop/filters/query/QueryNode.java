@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.filters.query;
 
 import java.awt.event.ActionEvent;
@@ -53,7 +53,9 @@ public class QueryNode extends AbstractNode {
     }
 
     private boolean isSelected() {
-        return FiltersTopComponent.findInstance().getUiModel().getSelectedRoot() == query;
+        FilterController fc = Lookup.getDefault().lookup(FilterController.class);
+        return fc.getModel().getCurrentQuery() == query;
+        //return FiltersTopComponent.findInstance().getUiModel().getSelectedRoot() == query;
     }
 
 
