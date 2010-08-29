@@ -95,7 +95,7 @@ public class QueryNode extends AbstractNode {
         return new Action[]{new RemoveAction(), new RenameAction()};
     }
 
-    public Query qetQuery() {
+    public Query getQuery() {
         return query;
     }
 

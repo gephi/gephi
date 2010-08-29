@@ -90,7 +90,7 @@ public class CategoryNode extends AbstractNode {
                     QueryNode queryNode = (QueryNode) dropNode;
                     FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
                     FilterLibrary library = filterController.getModel().getLibrary();
-                    library.saveQuery(queryNode.qetQuery());
+                    library.saveQuery(queryNode.getQuery());
                     return null;
                 }
             };

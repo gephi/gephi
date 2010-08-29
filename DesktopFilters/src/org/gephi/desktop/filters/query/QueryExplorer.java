@@ -114,7 +114,7 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
                     }
                 }
                 QueryNode queryNode = (QueryNode) node;
-                final Query query = queryNode.qetQuery();
+                final Query query = queryNode.getQuery();
                 new Thread(new Runnable() {
 
                     public void run() {
@@ -155,12 +155,12 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
             }
         } else if (node instanceof QueryNode) {
             QueryNode queryNode = (QueryNode) node;
-            if (uiModel.isExpanded(queryNode.qetQuery())) {
+            if (uiModel.isExpanded(queryNode.getQuery())) {
                 expandNode(queryNode);
             }
             Node firstChild = queryNode.getChildren().getNodeAt(0);
             if (firstChild != null && firstChild instanceof ParameterNode) {
-                if (uiModel.isParametersExpanded(queryNode.qetQuery())) {
+                if (uiModel.isParametersExpanded(queryNode.getQuery())) {
                     expandNode(firstChild);
                 }
             }
@@ -183,7 +183,7 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
             if (firstChild != null && firstChild instanceof ParameterNode) {
                 parameterExpanded = isExpanded(firstChild);
             }
-            uiModel.setExpand(queryNode.qetQuery(), isExpanded(queryNode), parameterExpanded);
+            uiModel.setExpand(queryNode.getQuery(), isExpanded(queryNode), parameterExpanded);
             for (Node n : queryNode.getChildren().getNodes()) {
                 saveExpandStatus(n);
             }
