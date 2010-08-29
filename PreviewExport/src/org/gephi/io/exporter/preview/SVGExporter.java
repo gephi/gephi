@@ -534,4 +534,12 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
+
+    public void setScaleStrokes(boolean scaleStrokes) {
+        this.scaleStrokes = scaleStrokes;
+    }
+
+    public boolean isScaleStrokes() {
+        return scaleStrokes;
+    }
 }
