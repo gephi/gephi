@@ -127,6 +127,7 @@ public class FilterModelImpl implements FilterModel {
         AbstractQueryImpl impl = (AbstractQueryImpl) query;
         impl.addSubQuery(subQuery);
         fireChangeEvent();
+        autoRefreshor.manualRefresh();
     }
 
     public void removeSubQuery(Query query, Query parent) {
@@ -134,6 +135,7 @@ public class FilterModelImpl implements FilterModel {
         impl.removeSubQuery(query);
         ((AbstractQueryImpl) query).setParent(null);
         fireChangeEvent();
+        autoRefreshor.manualRefresh();
     }
 
     public int getIndex(Query function) {
