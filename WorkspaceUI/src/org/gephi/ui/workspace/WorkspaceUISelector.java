@@ -37,12 +37,9 @@ public class WorkspaceUISelector implements StatusLineElementProvider, Workspace
 
     private WorkspaceUISelectorPanel panel;
 
-    public WorkspaceUISelector() {
+    public Component getStatusLineElement() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(this);
-    }
-
-    public Component getStatusLineElement() {
         panel = new WorkspaceUISelectorPanel();
         return panel;
     }
