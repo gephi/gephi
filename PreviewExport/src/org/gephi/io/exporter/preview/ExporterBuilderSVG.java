@@ -38,7 +38,7 @@ public class ExporterBuilderSVG implements VectorFileExporterBuilder {
     }
 
     public FileType[] getFileTypes() {
-        FileType ft = new FileType(".SVG", NbBundle.getMessage(ExporterBuilderSVG.class, "fileType_SVG_Name"));
+        FileType ft = new FileType(".svg", NbBundle.getMessage(ExporterBuilderSVG.class, "fileType_SVG_Name"));
         return new FileType[]{ft};
     }
 
