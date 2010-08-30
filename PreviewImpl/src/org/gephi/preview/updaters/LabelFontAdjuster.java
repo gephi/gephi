@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.preview.updaters;
 
 import java.awt.Font;
@@ -36,9 +36,10 @@ public abstract class LabelFontAdjuster {
      */
     public static void adjustFont(LabelFontAdjusterClient client) {
         Font baseFont = client.getBaseFont();
-        int newSize = (int) (baseFont.getSize() * client.getSizeFactor());
-        Font font = new Font(baseFont.getName(), baseFont.getStyle(), newSize);
-
-        client.setFont(font);
+        int newSize = Math.round(baseFont.getSize() * client.getSizeFactor());
+        if (newSize > 0) {
+            Font font = new Font(baseFont.getName(), baseFont.getStyle(), newSize);
+            client.setFont(font);
+        }
     }
 }

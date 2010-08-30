@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2010 Gephi
 Authors : Jeremy Subtil <jeremy.subtil@gephi.org>,
-          Mathieu Bastian <mathieu.bastian@gephi.org>
+Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,7 +18,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.exporter.preview;
 
 import com.itextpdf.text.BaseColor;
@@ -230,7 +230,7 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
     public void renderGraphLabels(Graph graph) {
         for (UnidirectionalEdge e : graph.getUnidirectionalEdges()) {
             if (!e.isCurved()) {
-                if (e.showLabel() && e.hasLabel()) {
+                if (e.showLabel() && e.hasLabel() && e.getLabel().getFont() != null) {
                     renderEdgeLabel(e.getLabel());
                 }
 
@@ -242,7 +242,7 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
 
         for (BidirectionalEdge e : graph.getBidirectionalEdges()) {
             if (!e.isCurved()) {
-                if (e.showLabel() && e.hasLabel()) {
+                if (e.showLabel() && e.hasLabel() && e.getLabel().getFont() != null) {
                     renderEdgeLabel(e.getLabel());
                 }
 
@@ -253,13 +253,13 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
         }
 
         for (UndirectedEdge e : graph.getUndirectedEdges()) {
-            if (e.showLabel() && !e.isCurved() && e.hasLabel()) {
+            if (e.showLabel() && !e.isCurved() && e.hasLabel() && e.getLabel().getFont() != null) {
                 renderEdgeLabel(e.getLabel());
             }
         }
 
         for (Node n : graph.getNodes()) {
-            if (n.showLabel() && n.hasLabel()) {
+            if (n.showLabel() && n.hasLabel() && n.getLabel().getFont() != null) {
                 renderNodeLabel(n.getLabel());
             }
         }

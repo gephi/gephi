@@ -217,7 +217,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
 
         for (UnidirectionalEdge e : graph.getUnidirectionalEdges()) {
             if (!e.isCurved()) {
-                if (e.showLabel() && e.hasLabel()) {
+                if (e.showLabel() && e.hasLabel() && e.getLabel().getFont() != null) {
                     renderEdgeLabel(e.getLabel());
                 }
 
@@ -229,7 +229,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
 
         for (BidirectionalEdge e : graph.getBidirectionalEdges()) {
             if (!e.isCurved()) {
-                if (e.showLabel() && e.hasLabel()) {
+                if (e.showLabel() && e.hasLabel() && e.getLabel().getFont() != null) {
                     renderEdgeLabel(e.getLabel());
                 }
 
@@ -240,13 +240,13 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         }
 
         for (UndirectedEdge e : graph.getUndirectedEdges()) {
-            if (e.showLabel() && !e.isCurved() && e.hasLabel()) {
+            if (e.showLabel() && !e.isCurved() && e.hasLabel() && e.getLabel().getFont() != null) {
                 renderEdgeLabel(e.getLabel());
             }
         }
 
         for (Node n : graph.getNodes()) {
-            if (n.showLabel() && n.hasLabel()) {
+            if (n.showLabel() && n.hasLabel() && n.getLabel().getFont() != null) {
                 renderNodeLabel(n.getLabel());
             }
         }
@@ -257,7 +257,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         svgRoot.insertBefore(labelBorderGroupElem, labelGroupElem);
 
         for (Node n : graph.getNodes()) {
-            if (n.showLabel() && n.hasLabel() && n.showLabelBorders()) {
+            if (n.showLabel() && n.hasLabel() && n.showLabelBorders() && n.getLabel().getFont() != null) {
                 renderNodeLabelBorder(n.getLabelBorder());
             }
         }
@@ -471,10 +471,10 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
                 height));
 
         //Scale & ratio
-        if(scaleStrokes) {
-            scaleRatio = supportSize.getWidthInt() / (float)width;
+        if (scaleStrokes) {
+            scaleRatio = supportSize.getWidthInt() / (float) width;
         }
-        
+
         // draws the graph exporting it into the DOM
         renderGraph(graphSheet.getGraph());
         return doc;
