@@ -260,7 +260,9 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public void removeChangeListener(ChangeListener listener) {
-        listeners.remove(listener);
+        if (listeners != null) {
+            listeners.remove(listener);
+        }
     }
 
     private void fireChangeEvent() {
