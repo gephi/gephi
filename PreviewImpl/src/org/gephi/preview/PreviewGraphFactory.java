@@ -167,7 +167,7 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.TextData sourceNodeTextData = sourceNodeData.getTextData();
 
         String label = sourceNodeData.getLabel();
-        if (sourceNodeTextData != null && sourceNodeTextData.getText() != null && sourceNodeTextData.getText().isEmpty()) {
+        if (sourceNodeTextData != null && sourceNodeTextData.getText() != null && !sourceNodeTextData.getText().isEmpty()) {
             label = sourceNodeTextData.getText();
         }
 
