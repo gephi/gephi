@@ -31,6 +31,7 @@ import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.ui.utils.ColumnTitleValidator;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
+import org.openide.util.NbPreferences;
 
 /**
  * UI for JoinWithSeparator AttributeColumnsMergeStrategy
@@ -75,6 +76,7 @@ public class JoinWithSeparatorUI extends javax.swing.JPanel implements Manipulat
     public void unSetup() {
         manipulator.setNewColumnTitle(titleTextField.getText());
         manipulator.setSeparator(separatorText.getText());
+        NbPreferences.forModule(JoinWithSeparator.class).put(JoinWithSeparator.SEPARATOR_SAVED_PREFERENCES, separatorText.getText());
     }
 
     public String getDisplayName() {

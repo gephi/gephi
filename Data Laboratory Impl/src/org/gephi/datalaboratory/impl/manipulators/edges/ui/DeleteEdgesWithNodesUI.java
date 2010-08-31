@@ -16,12 +16,15 @@ import org.gephi.datalaboratory.impl.manipulators.edges.DeleteEdgesWithNodes;
 import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
+import org.openide.util.NbPreferences;
 
 /**
  * UI for DeleteEdgesWithNodes edges manipulator.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class DeleteEdgesWithNodesUI extends javax.swing.JPanel implements ManipulatorUI {
+    private static final String DELETE_SOURCE_SAVED_PREFERENCES = "DeleteEdgesWithNodesUI_deleteSource";
+    private static final String DELETE_TARGET_SAVED_PREFERENCES = "DeleteEdgesWithNodesUI_deleteTarget";
     private DeleteEdgesWithNodes del;
 
     /** Creates new form DeleteEdgesWithNodesUI */
@@ -31,11 +34,15 @@ public class DeleteEdgesWithNodesUI extends javax.swing.JPanel implements Manipu
 
     public void setup(Manipulator m, DialogControls dialogControls) {
         del=(DeleteEdgesWithNodes) m;
+        deleteSource.setSelected(NbPreferences.forModule(DeleteEdgesWithNodesUI.class).getBoolean(DELETE_SOURCE_SAVED_PREFERENCES, true));
+        deleteTarget.setSelected(NbPreferences.forModule(DeleteEdgesWithNodesUI.class).getBoolean(DELETE_TARGET_SAVED_PREFERENCES, true));
     }
 
     public void unSetup() {
         del.setDeleteSource(deleteSource.isSelected());
         del.setDeleteTarget(deleteTarget.isSelected());
+        NbPreferences.forModule(DeleteEdgesWithNodesUI.class).putBoolean(DELETE_SOURCE_SAVED_PREFERENCES, deleteSource.isSelected());
+        NbPreferences.forModule(DeleteEdgesWithNodesUI.class).putBoolean(DELETE_TARGET_SAVED_PREFERENCES, deleteTarget.isSelected());
     }
 
     public String getDisplayName() {

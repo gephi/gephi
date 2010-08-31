@@ -25,6 +25,8 @@ import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.impl.manipulators.nodes.ui.LinkNodesUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -39,11 +41,18 @@ import org.openide.util.NbBundle;
 public class LinkNodes implements NodesManipulator{
     private Node[] nodes;
     private Node sourceNode;
-    private boolean directed=false;//TODO: Maybe keep these values across calls.
+    private static boolean directed;
+    private static GraphModel graphModel;
 
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes=nodes;
-        this.sourceNode=clickedNode;//Choos clicked node as source by default (but the user will select it or other in the UI)
+        this.sourceNode=clickedNode;//Choose clicked node as source by default (but the user can select it or other one in the UI)
+
+        GraphModel currentGraphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        if(graphModel!=currentGraphModel){//If graph model has changed since last execution, change default mode for edges to create in UI, else keep this parameter across calls
+            directed=currentGraphModel.isDirected()||graphModel.isMixed();//Get graph directed state. Set to true if graph is directed or mixed
+            graphModel=currentGraphModel;
+        }
     }
 
     public void execute() {
@@ -96,6 +105,6 @@ public class LinkNodes implements NodesManipulator{
     }
 
     public void setDirected(boolean directed) {
-        this.directed = directed;
+        LinkNodes.directed = directed;
     }
 }

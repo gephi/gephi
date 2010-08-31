@@ -30,22 +30,25 @@ import org.gephi.datalaboratory.spi.attributecolumns.mergestrategies.AttributeCo
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 
 /**
  * AttributeColumnsMergeStrategy that joins columns of any type into a new column
  * using the separator string that the user provides.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class JoinWithSeparator implements AttributeColumnsMergeStrategy{
-    private static final String DEFAULT_SEPARATOR=",";
+public class JoinWithSeparator implements AttributeColumnsMergeStrategy {
 
+    public static final String SEPARATOR_SAVED_PREFERENCES = "JoinWithSeparator_Separator";
+    private static final String DEFAULT_SEPARATOR = ",";
     private AttributeTable table;
     private AttributeColumn[] columns;
-    private String newColumnTitle, separator=DEFAULT_SEPARATOR;
+    private String newColumnTitle, separator;
 
     public void setup(AttributeTable table, AttributeColumn[] columns) {
-        this.table=table;
-        this.columns=columns;
+        this.table = table;
+        this.columns = columns;
+        separator=NbPreferences.forModule(JoinWithSeparator.class).get(SEPARATOR_SAVED_PREFERENCES, DEFAULT_SEPARATOR);
     }
 
     public void execute() {
@@ -77,7 +80,7 @@ public class JoinWithSeparator implements AttributeColumnsMergeStrategy{
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/join.png",true);
+        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/join.png", true);
     }
 
     public String getNewColumnTitle() {

@@ -25,6 +25,7 @@ import org.gephi.datalaboratory.impl.manipulators.generalactions.ClearEdges;
 import org.gephi.datalaboratory.spi.DialogControls;
 import org.gephi.datalaboratory.spi.Manipulator;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
+import org.openide.util.NbPreferences;
 
 /**
  * UI for ClearEdges GeneralActionsManipulator
@@ -46,6 +47,8 @@ public class ClearEdgesUI extends javax.swing.JPanel implements ManipulatorUI {
     public void unSetup() {
         manipulator.setDeleteDirected(deleteDirectedCheckbox.isSelected());
         manipulator.setDeleteUndirected(deleteUndirectedChekbox.isSelected());
+        NbPreferences.forModule(ClearEdges.class).putBoolean(ClearEdges.DELETE_DIRECTED_SAVED_PREFERENCES, deleteDirectedCheckbox.isSelected());
+        NbPreferences.forModule(ClearEdges.class).putBoolean(ClearEdges.DELETE_UNDIRECTED_SAVED_PREFERENCES, deleteUndirectedChekbox.isSelected());
     }
 
     public String getDisplayName() {

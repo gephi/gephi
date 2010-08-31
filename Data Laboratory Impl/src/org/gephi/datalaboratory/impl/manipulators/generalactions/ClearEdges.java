@@ -30,6 +30,7 @@ import org.gephi.graph.api.MixedGraph;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,7 +39,14 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GeneralActionsManipulator.class)
 public class ClearEdges implements GeneralActionsManipulator {
-    private boolean deleteDirected=true,deleteUndirected=true;//TODO: Maybe keep these values across calls.
+    public static final String DELETE_DIRECTED_SAVED_PREFERENCES = "ClearEdges_deleteDirected";
+    public static final String DELETE_UNDIRECTED_SAVED_PREFERENCES = "ClearEdges_deleteUndirected";
+    private boolean deleteDirected,deleteUndirected;
+
+    public ClearEdges() {
+        deleteDirected=NbPreferences.forModule(ClearEdges.class).getBoolean(DELETE_DIRECTED_SAVED_PREFERENCES, true);
+        deleteUndirected=NbPreferences.forModule(ClearEdges.class).getBoolean(DELETE_UNDIRECTED_SAVED_PREFERENCES, true);
+    }
 
     public void execute() {
         GraphElementsController gec=Lookup.getDefault().lookup(GraphElementsController.class);
