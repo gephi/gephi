@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.graph.dhns.core;
 
 import java.lang.ref.WeakReference;
@@ -91,13 +91,17 @@ public class GraphStructure {
     }
 
     public GraphViewImpl getNewView() {
-        GraphViewImpl view = new GraphViewImpl(dhns, viewId.getAndIncrement());
-        TreeStructure newStructure = view.getStructure();
+        return copyView(mainView);
+    }
+
+    public GraphViewImpl copyView(GraphViewImpl view) {
+        GraphViewImpl viewCopy = new GraphViewImpl(dhns, viewId.getAndIncrement());
+        TreeStructure newStructure = viewCopy.getStructure();
         dhns.getReadLock().lock();
 
-        for (TreeListIterator itr = new TreeListIterator(mainView.getStructure().getTree(), 1); itr.hasNext();) {
+        for (TreeListIterator itr = new TreeListIterator(view.getStructure().getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
-            AbstractNode nodeCopy = new AbstractNode(node.getNodeData(), view.getViewId());
+            AbstractNode nodeCopy = new AbstractNode(node.getNodeData(), viewCopy.getViewId());
             nodeCopy.setEnabled(node.isEnabled());
             nodeCopy.setEnabledInDegree(node.getEnabledInDegree());
             nodeCopy.setEnabledOutDegree(node.getEnabledOutDegree());
@@ -108,7 +112,7 @@ public class GraphStructure {
 
         //Edges
         ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
-        for (TreeListIterator itr = new TreeListIterator(mainView.getStructure().getTree(), 1); itr.hasNext();) {
+        for (TreeListIterator itr = new TreeListIterator(view.getStructure().getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             if (!node.getEdgesOutTree().isEmpty()) {
                 for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
@@ -120,15 +124,15 @@ public class GraphStructure {
                 }
             }
         }
-        view.setNodesEnabled(mainView.getNodesEnabled());
-        view.setEdgesCountTotal(mainView.getEdgesCountTotal());
-        view.setEdgesCountEnabled(mainView.getEdgesCountEnabled());
-        view.setMutualEdgesTotal(mainView.getMutualEdgesTotal());
-        view.setMutualEdgesEnabled(mainView.getMutualEdgesEnabled());
-        views.add(view);
-        dhns.getEventManager().fireEvent(new ViewEvent(EventType.NEW_VIEW, view));
+        viewCopy.setNodesEnabled(view.getNodesEnabled());
+        viewCopy.setEdgesCountTotal(view.getEdgesCountTotal());
+        viewCopy.setEdgesCountEnabled(view.getEdgesCountEnabled());
+        viewCopy.setMutualEdgesTotal(view.getMutualEdgesTotal());
+        viewCopy.setMutualEdgesEnabled(view.getMutualEdgesEnabled());
+        views.add(viewCopy);
+        dhns.getEventManager().fireEvent(new ViewEvent(EventType.NEW_VIEW, viewCopy));
         dhns.getReadLock().unlock();
-        return view;
+        return viewCopy;
     }
 
     public void destroyView(final GraphViewImpl view) {
@@ -219,6 +223,7 @@ public class GraphStructure {
 
         public ViewDestructorThread(GraphStructure graphStructure) {
             super("DHNS View Destructor");
+            setDaemon(true);
             structureReference = new WeakReference<GraphStructure>(graphStructure);
         }
 

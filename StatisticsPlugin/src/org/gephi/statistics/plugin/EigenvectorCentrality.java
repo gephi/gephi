@@ -1,28 +1,28 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
+Copyright 2008-2010 Gephi
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -33,6 +33,7 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.spi.Statistics;
@@ -51,6 +52,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -58,6 +60,7 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public class EigenvectorCentrality implements Statistics, LongTask {
 
+    public static final String EIGENVECTOR = "eigencentrality";
     private int mNumRuns = 100;
     private double[] mCentralities;
     private double mSumChange;
@@ -65,12 +68,14 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     /** */
     private boolean mIsCanceled;
     private boolean mDirected;
-    private String mGraphRevision;
 
-    /**
-     * 
-     * @param pNumRuns
-     */
+    public EigenvectorCentrality() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            mDirected = graphController.getModel().isDirected();
+        }
+    }
+
     public void setNumRuns(int pNumRuns) {
         mNumRuns = pNumRuns;
     }
@@ -100,25 +105,28 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     }
 
     /**
-     * 
+     *
      * @param graphModel
      * @param attributeModel
      */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-
-        AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn eigenCol = nodeTable.getColumn("eigencentrality");
-        if (eigenCol == null) {
-            eigenCol = nodeTable.addColumn("eigencentrality", "Eigenvector Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        }
-
         Graph graph = null;
         if (mDirected) {
             graph = graphModel.getDirectedGraphVisible();
         } else {
             graph = graphModel.getUndirectedGraphVisible();
         }
-        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
+        execute(graph, attributeModel);
+    }
+
+    public void execute(Graph graph, AttributeModel attributeModel) {
+
+        AttributeTable nodeTable = attributeModel.getNodeTable();
+        AttributeColumn eigenCol = nodeTable.getColumn(EIGENVECTOR);
+        if (eigenCol == null) {
+            eigenCol = nodeTable.addColumn(EIGENVECTOR, "Eigenvector Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+        }
+
         int N = graph.getNodeCount();
         graph.readLock();
 
@@ -127,8 +135,8 @@ public class EigenvectorCentrality implements Statistics, LongTask {
 
         Progress.start(mProgress, mNumRuns);
 
-        Hashtable<Integer, Node> indicies = new Hashtable<Integer, Node>();
-        Hashtable<Node, Integer> invIndicies = new Hashtable<Node, Integer>();
+        HashMap<Integer, Node> indicies = new HashMap<Integer, Node>();
+        HashMap<Node, Integer> invIndicies = new HashMap<Node, Integer>();
         int count = 0;
         for (Node u : graph.getNodes()) {
             indicies.put(count, u);
@@ -237,16 +245,15 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         } catch (IOException e) {
             System.out.println(e.toString());
         }
-        String report = new String("<HTML> <BODY> <h1>Eigenvector Centrality Report</h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+        String report = "<HTML> <BODY> <h1>Eigenvector Centrality Report</h1> "
+                + "<hr>"
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
                 + "Number of iterations: " + this.mNumRuns + "<br>"
                 + "Sum change: " + this.mSumChange
                 + "<br> <h2> Results: </h2>"
                 + imageFile
-                + "</BODY></HTML>");
+                + "</BODY></HTML>";
 
         return report;
 

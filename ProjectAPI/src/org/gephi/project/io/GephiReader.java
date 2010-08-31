@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.project.io;
 
 import java.util.LinkedHashMap;
@@ -47,6 +47,7 @@ import org.w3c.dom.NodeList;
 public class GephiReader implements Cancellable {
 
     private ProjectImpl project;
+    private boolean cancel = false;
     private Map<String, WorkspacePersistenceProvider> providers;
 
     public GephiReader() {
@@ -63,6 +64,7 @@ public class GephiReader implements Cancellable {
     }
 
     public boolean cancel() {
+        cancel = true;
         return true;
     }
 
@@ -70,7 +72,7 @@ public class GephiReader implements Cancellable {
         //XPath
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
-        
+
         //Calculate the task max
         readCore(xpath, root);
 
@@ -99,7 +101,7 @@ public class GephiReader implements Cancellable {
         XPathExpression exp = xpath.compile("./workspaces/workspace");
         NodeList workSpaceList = (NodeList) exp.evaluate(projectE, XPathConstants.NODESET);
 
-        for (int i = 0; i < workSpaceList.getLength(); i++) {
+        for (int i = 0; i < workSpaceList.getLength() && !cancel; i++) {
             Element workspaceE = (Element) workSpaceList.item(i);
             Workspace workspace = readWorkspace(xpath, workspaceE);
 
@@ -135,7 +137,7 @@ public class GephiReader implements Cancellable {
 
     public void readWorkspaceChildren(Workspace workspace, Element workspaceE) throws Exception {
         NodeList children = workspaceE.getChildNodes();
-        for (int i = 0; i < children.getLength(); i++) {
+        for (int i = 0; i < children.getLength() && !cancel; i++) {
             Node child = children.item(i);
             if (child.getNodeType() == Node.ELEMENT_NODE) {
                 Element childE = (Element) child;

@@ -1,24 +1,26 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.data.attributes.api;
+
+import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
 
 /**
  * Column is the header of a data column. It belongs to an <code>AttributeTable</code>
@@ -26,6 +28,9 @@ package org.gephi.data.attributes.api;
  * <p>
  * It contains its index that may be used to get the appropriate value in the
  * <code>AttributeRow</code> values array.
+ * <p>
+ * For Gephi internal implementation purposes, names of columns are restricted. They can have any name
+ * except these defined in {@link org.gephi.data.properties.PropertiesColumn PropertiesColumn} enum.
  * <h2>Iterate rows values</h2>
  * <pre>
  * Attribute row = ...;
@@ -35,6 +40,7 @@ package org.gephi.data.attributes.api;
  * </pre>
  * 
  * @author Mathieu Bastian
+ * @author Martin Škurla
  * @see AttributeRow
  * @see AttributeTable
  */
@@ -92,4 +98,12 @@ public interface AttributeColumn {
      * @return  the default value, or <code>null</code>
      */
     public Object getDefaultValue();
+
+    /**
+     * Returns the attribute value delegate provider. The Provider is always set if the origin of the
+     * current attribute column is AttributeOrigin.DELEGATE.
+     *
+     * @return attribute value delegate provider
+     */
+    public AttributeValueDelegateProvider getProvider();
 }

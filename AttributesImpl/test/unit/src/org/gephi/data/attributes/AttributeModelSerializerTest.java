@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.serialization.AttributeModelSerializer;
@@ -59,7 +59,8 @@ public class AttributeModelSerializerTest {
         nodeTableImpl.addColumn("position", "Position&<>\"'$*", AttributeType.FLOAT, AttributeOrigin.PROPERTY, new Float(0));
         nodeTableImpl.addColumn("cats", "Catégories", AttributeType.LIST_STRING, AttributeOrigin.DATA, new StringList("a,b,c,d"));
         AttributeTableImpl edgeTableImpl = model.getEdgeTable();
-        edgeTableImpl.addColumn("weight", AttributeType.DOUBLE, AttributeOrigin.DATA);
+        edgeTableImpl.addColumn("name", AttributeType.STRING, AttributeOrigin.DATA);
+        //edgeTableImpl.addColumn("weight", AttributeType.DOUBLE, AttributeOrigin.DATA);
     }
 
     @After
@@ -71,10 +72,12 @@ public class AttributeModelSerializerTest {
         AttributeModelSerializer serializer = new AttributeModelSerializer();
         Element e1 = serializer.writeModel(serializer.createDocument(), model);
         String s1 = printXML(e1);
+        System.out.println(s1);
         IndexedAttributeModel model2 = new IndexedAttributeModel();
         serializer.readModel(e1, model2);
         Element e2 = serializer.writeModel(serializer.createDocument(), model2);
         String s2 = printXML(e2);
+        System.out.println(s2);
         assertEquals(s1, s2);
     }
 

@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
 package org.gephi.graph.api;
 
@@ -44,7 +44,7 @@ public interface MixedGraph extends Graph {
     public boolean addEdge(Node source, Node target, boolean directed);
 
     /**
-     * Find and returns a <b>directed</b> or <b>undirected</b> edge that connects <code>node1</code> and
+     * Finds and returns a <b>directed</b> or <b>undirected</b> edge that connects <code>node1</code> and
      * <code>node2</code>. Returns <code>null</code> if no such edge is found.
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
      * statement.

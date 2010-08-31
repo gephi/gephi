@@ -1,28 +1,41 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.graph.api;
 
 /**
  * Implementation of graphs within graphs concept, by proposing methods to manipulate
  * the hierarchy of nodes.
+ * <p>
+ * The hierarchical graph maintains a tree of all nodes, it's the hierarchy and a
+ * <b>in-view</b> flag for each. Note that 'view' means something else than for
+ * <code>GraphView</code>.
+ * <p>
+ * A node in the hierarchy view means it is visible and none of its ancestors or
+ * descendants are. If this node is expanded, it's children become 'in-view'. If it is
+ * retracted, its parent becomes 'in-view'. The hierarchy view can be modified with
+ * <code>expand()</code>, <code>retract()</code>, <code>resetViewToLeaves()</code>,
+ * <code>resetViewToTopNodes()</code> and <code>resetViewToLevel()</code>. Note that
+ * the nodes and edges returns by <code>getNodes()</code> or <code>getEdges()</code>
+ * use only nodes in the current view. To get all nodes in the hierarchy, see
+ * <code>getNodesTree()</code>.
  *
  * @author Mathieu Bastian
  * @see GraphModel
@@ -114,7 +127,18 @@ public interface HierarchicalGraph extends Graph {
      */
     public NodeIterable getTopNodes();
 
+    /**
+     * Similar as {@link #getNodes()} but all nodes are visited, not only those in the current view.
+     * @return  a node iterable of all nodes in the hierarchy
+     */
     public NodeIterable getNodesTree();
+
+    /**
+     * Similar as {@link #getEdges()} but all nodes are visited in the hierarchy, so
+     * it returns edges for all possible nodes.
+     * @return  an edge iterable of all edges
+     */
+    public EdgeIterable getEdgesTree();
 
     /**
      * Returns nodes at the given <code>level</code> in the hierarchy. Top nodes
@@ -262,6 +286,10 @@ public interface HierarchicalGraph extends Graph {
 
     public EdgeIterable getHierarchyEdges();
 
+    /**
+     * Returns the hierarchy tree of all nodes in the form of a <code>TreeNode</code>.
+     * @return a Java <code>TreeNode</code> wrapper of all nodes in the hierarchy tree
+     */
     public ImmutableTreeNode wrapToTreeNode();
 
     /**
@@ -344,6 +372,11 @@ public interface HierarchicalGraph extends Graph {
      */
     public EdgeIterable getMetaEdges();
 
+    /**
+     * Return a unique <code>EdgeIterable</code> for edges and meta edges. The content is the
+     * union of <code>getEdges()</code> and <code>getMetaEdges()</code>.
+     * @return an edge iterable of all edges and meta edges in the current graph view
+     */
     public EdgeIterable getEdgesAndMetaEdges();
 
     /**

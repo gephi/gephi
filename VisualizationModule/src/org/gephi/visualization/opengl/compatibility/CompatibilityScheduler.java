@@ -1,29 +1,30 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.visualization.opengl.compatibility;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -82,7 +83,14 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     private Runnable mouseClickSegment;
 
     private void initPools() {
-        pool1 = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>()) {
+        pool1 = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), new ThreadFactory() {
+
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r, "VisualizationThreadPool 1");
+                t.setDaemon(true);
+                return t;
+            }
+        }) {
 
             @Override
             protected void afterExecute(Runnable r, Throwable t) {
@@ -96,7 +104,14 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
             }
         };
 
-        pool2 = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>()) {
+        pool2 = new ThreadPoolExecutor(0, 4, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), new ThreadFactory() {
+
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r, "VisualizationThreadPool 2");
+                t.setDaemon(true);
+                return t;
+            }
+        }) {
 
             @Override
             protected void afterExecute(Runnable r, Throwable t) {
@@ -163,14 +178,14 @@ public class CompatibilityScheduler implements Scheduler, VizArchitecture {
     }
 
     @Override
-    public synchronized  void start() {
+    public synchronized void start() {
         simpleFPSAnimator = new SimpleFPSAnimator(this, graphDrawable, fpsLimit);
         simpleFPSAnimator.start();
     }
 
     @Override
     public synchronized void stop() {
-        if(simpleFPSAnimator==null) {
+        if (simpleFPSAnimator == null) {
             return;
         }
         if (simpleFPSAnimator.isAnimating()) {

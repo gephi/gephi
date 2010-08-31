@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
+Copyright 2008-2010 Gephi
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.statistics.plugin;
 
 import java.io.File;
@@ -41,6 +41,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  * This class measures how closely the degree distribution of a
@@ -74,7 +75,13 @@ public class DegreeDistribution implements Statistics, LongTask {
     private double mInBeta;
     /** The powerlaw value for the out-degree of this network. */
     private double mOutBeta;
-    private String mGraphRevision;
+
+    public DegreeDistribution() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            mDirected = graphController.getModel().isDirected();
+        }
+    }
 
     /**
      * @param pDirected Indicates the metric's interpretation of this network. 
@@ -113,14 +120,10 @@ public class DegreeDistribution implements Statistics, LongTask {
      * Either a combined degree distribution or separate
      * in-degree distribution and out-degree distribution
      * is calculated based on the mDirected variable.
-     * 
+     *
      * @param graphModel
      */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-
-        //Mark this as not yet canceled.
-        this.mIsCanceled = false;
-
         //Get the graph from the graphController, based
         //on the mDirected variable.
         Graph graph;
@@ -129,10 +132,14 @@ public class DegreeDistribution implements Statistics, LongTask {
         } else {
             graph = graphModel.getUndirectedGraphVisible();
         }
+        execute(graph, attributeModel);
+    }
+
+    public void execute(Graph graph, AttributeModel attributeModel) {
+        //Mark this as not yet canceled.
+        this.mIsCanceled = false;
 
         graph.readLock();
-
-        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
         //Start 
         Progress.start(mProgress, graph.getNodeCount());
@@ -237,13 +244,6 @@ public class DegreeDistribution implements Statistics, LongTask {
         //Compute and return the results
         res[0] = SSxy / SSxx;
         res[1] = avgY - res[0] * avgX;
-    }
-
-    /**
-     * @return Indicates that this metric accepts parameters.
-     */
-    public boolean isParamerizable() {
-        return true;
     }
 
     /**
@@ -371,16 +371,15 @@ public class DegreeDistribution implements Statistics, LongTask {
 
 
 
-        String report = new String("<HTML> <BODY> <h1>Degree Distribution Metric Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+        String report = "<HTML> <BODY> <h1>Degree Distribution Metric Report </h1> "
+                + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
                 + "In-Degree Power Law: -" + this.mInAlpha + "\n <BR>"
                 + inImageFile + "<br>Out-Degree Power Law: -" + this.mOutAlpha + "\n <BR>"
-                + outImageFile + "</BODY> </HTML>");
+                + outImageFile + "</BODY> </HTML>";
 
 
         return report;
@@ -449,8 +448,7 @@ public class DegreeDistribution implements Statistics, LongTask {
 
 
         String report = new String("<HTML> <BODY> <h1>Degree Distribution Metric Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+                + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"

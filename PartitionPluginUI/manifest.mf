@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Essential-Module: true
+OpenIDE-Module: org.gephi.ui.partition.plugin
+OpenIDE-Module-Localizing-Bundle: org/gephi/ui/partition/plugin/Bundle.properties
+OpenIDE-Module-Specification-Version: 0.7.1
+

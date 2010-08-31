@@ -1,28 +1,28 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
+Copyright 2008-2010 Gephi
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.statistics.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -34,6 +34,7 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
@@ -54,6 +55,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -61,6 +63,8 @@ import org.openide.util.Exceptions;
  */
 public class Hits implements Statistics, LongTask {
 
+    public static final String AUTHORITY = "authority";
+    public static final String HUB = "hub";
     private boolean isCanceled;
     private ProgressTicket progress;
     private double[] authority;
@@ -69,13 +73,15 @@ public class Hits implements Statistics, LongTask {
     private double epsilon = 0.0001;
     private LinkedList<Node> hub_list;
     private LinkedList<Node> auth_list;
-    private Hashtable<Node, Integer> indicies;
-    private Graph graph;
+    private HashMap<Node, Integer> indicies;
 
-    /**
-     *
-     * @param pUndirected
-     */
+    public Hits() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            useUndirected = graphController.getModel().isUndirected();
+        }
+    }
+
     public void setUndirected(boolean pUndirected) {
         useUndirected = pUndirected;
     }
@@ -88,18 +94,17 @@ public class Hits implements Statistics, LongTask {
         return useUndirected;
     }
 
-    /**
-     * 
-     * @param graphModel
-     */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-
+        Graph graph = null;
         if (useUndirected) {
             graph = graphModel.getUndirectedGraphVisible();
         } else {
             graph = graphModel.getDirectedGraphVisible();
         }
+        execute(graph, attributeModel);
+    }
 
+    public void execute(Graph graph, AttributeModel attributeModel) {
         graph.readLock();
 
         //DirectedGraph digraph = graphController.getDirectedGraph();
@@ -114,7 +119,7 @@ public class Hits implements Statistics, LongTask {
 
         Progress.start(progress);
 
-        indicies = new Hashtable<Node, Integer>();
+        indicies = new HashMap<Node, Integer>();
         int index = 0;
         for (Node node : graph.getNodes()) {
             indicies.put(node, new Integer(index));
@@ -221,13 +226,13 @@ public class Hits implements Statistics, LongTask {
         }
 
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn authorityCol = nodeTable.getColumn("authority");
-        AttributeColumn hubsCol = nodeTable.getColumn("hub");
+        AttributeColumn authorityCol = nodeTable.getColumn(AUTHORITY);
+        AttributeColumn hubsCol = nodeTable.getColumn(HUB);
         if (authorityCol == null) {
-            authorityCol = nodeTable.addColumn("authority", "Authority", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
+            authorityCol = nodeTable.addColumn(AUTHORITY, "Authority", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
         }
         if (hubsCol == null) {
-            hubsCol = nodeTable.addColumn("hub", "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
+            hubsCol = nodeTable.addColumn(HUB, "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
         }
 
         for (Node s : graph.getNodes()) {
@@ -330,8 +335,8 @@ public class Hits implements Statistics, LongTask {
         }
 
         String report = "<HTML> <BODY> <h1> HITS Metric Report </h1> <br> "
-                + "<hr> <br> <h2>Network Revision Number:</h2> ("
-                + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")<br>"
+                + "<hr>"
+                + "<br>"
                 + "<h2> Parameters: </h2>  <br> &#917; = " + this.epsilon
                 + "<br> <h2> Results: </h2><br>"
                 + imageFile1 + "<br>" + imageFile2 + "</BODY> </HTML>";

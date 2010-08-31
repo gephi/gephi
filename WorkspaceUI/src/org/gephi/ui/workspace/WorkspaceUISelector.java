@@ -1,21 +1,21 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.workspace;
@@ -27,6 +27,7 @@ import org.gephi.project.api.WorkspaceListener;
 import org.openide.awt.StatusLineElementProvider;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.WindowManager;
 
 /**
  *
@@ -37,12 +38,19 @@ public class WorkspaceUISelector implements StatusLineElementProvider, Workspace
 
     private WorkspaceUISelectorPanel panel;
 
-    public WorkspaceUISelector() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(this);
-    }
-
     public Component getStatusLineElement() {
+        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+
+            public void run() {
+                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                pc.addWorkspaceListener(WorkspaceUISelector.this);
+                if (pc.getCurrentWorkspace() != null) {
+                    initialize(pc.getCurrentWorkspace());
+                    select(pc.getCurrentWorkspace());
+                }
+            }
+        });
+
         panel = new WorkspaceUISelectorPanel();
         return panel;
     }
@@ -59,6 +67,7 @@ public class WorkspaceUISelector implements StatusLineElementProvider, Workspace
     }
 
     public void close(Workspace workspace) {
+        panel.refreshList();
     }
 
     public void disable() {

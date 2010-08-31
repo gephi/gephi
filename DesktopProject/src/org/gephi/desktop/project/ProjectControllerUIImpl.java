@@ -1,6 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.project;
 
@@ -72,11 +88,13 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
             public void fatalError(Throwable t) {
                 unlockProjectActions();
-                if (t.getCause() == null) {
-                    NotifyDescriptor.Message msg = new NotifyDescriptor.Message(t.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
-                    DialogDisplayer.getDefault().notify(msg);
+                String txt = NbBundle.getMessage(ProjectControllerUIImpl.class, "ProjectControllerUI.error.open");
+                String message = txt + "\n\n" + t.getMessage();
+                if (t.getCause() != null) {
+                    message = txt + "\n\n" + t.getCause().getClass().getSimpleName() + " - " + t.getCause().getMessage();
                 }
-                Logger.getLogger("").log(Level.WARNING, "", t.getCause());
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(message, NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
             }
         });
         longTaskExecutor.setLongTaskListener(new LongTaskListener() {
@@ -438,7 +456,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
             //Save last path
             NbPreferences.forModule(ProjectControllerUIImpl.class).put(LAST_PATH, file.getAbsolutePath());
-            
+
             importController.importFile(fileObject);
         }
     }
@@ -477,5 +495,9 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
     public void deleteWorkspace() {
         controller.deleteWorkspace(controller.getCurrentWorkspace());
+    }
+
+    public void renameWorkspace(String name) {
+        controller.renameWorkspace(controller.getCurrentWorkspace(), name);
     }
 }

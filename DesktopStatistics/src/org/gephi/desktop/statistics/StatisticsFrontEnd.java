@@ -1,21 +1,22 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, 
+Patick J. McSweeney <pjmcswee@syr.edu>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.statistics;
@@ -23,6 +24,7 @@ package org.gephi.desktop.statistics;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.gephi.statistics.spi.Statistics;
@@ -35,17 +37,28 @@ import org.gephi.utils.longtask.api.LongTaskListener;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;
 
+/**
+ *
+ * @author Mathieu Bastian
+ * @author Patick J. McSweeney
+ */
 public class StatisticsFrontEnd extends javax.swing.JPanel {
 
     private StatisticsUI statisticsUI;
     private final String RUN;
     private final String CANCEL;
+    private final ImageIcon RUN_ICON;
+    private final ImageIcon STOP_ICON;
     private Statistics currentStatistics;
     private StatisticsModel currentModel;
+
+    //Img
+    ;
 
     public StatisticsFrontEnd(StatisticsUI ui) {
         initComponents();
@@ -70,6 +83,9 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
                 showReport();
             }
         });
+
+        RUN_ICON = ImageUtilities.loadImageIcon("org/gephi/desktop/statistics/resources/run.png", false);
+        STOP_ICON = ImageUtilities.loadImageIcon("org/gephi/desktop/statistics/resources/stop.png", false);
     }
 
     private void initUI(StatisticsUI ui) {
@@ -78,6 +94,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         busyLabel.setVisible(false);
         runButton.setEnabled(false);
         runButton.setText(RUN);
+        //runButton.setIcon(RUN_ICON);
         reportButton.setEnabled(false);
     }
 
@@ -85,6 +102,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         currentModel = model;
         if (model == null) {
             runButton.setText(RUN);
+            //runButton.setIcon(RUN_ICON);
             runButton.setEnabled(false);
             busyLabel.setBusy(false);
             busyLabel.setVisible(false);
@@ -96,15 +114,17 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         runButton.setEnabled(true);
         if (model.isRunning(statisticsUI)) {
             runButton.setText(CANCEL);
+            //runButton.setIcon(STOP_ICON);
             busyLabel.setVisible(true);
             busyLabel.setBusy(true);
             reportButton.setEnabled(false);
             resultLabel.setText("");
             if (currentStatistics == null) {
-                currentStatistics = currentModel.getStatistics(statisticsUI);
+                currentStatistics = currentModel.getRunning(statisticsUI);
             }
         } else {
             runButton.setText(RUN);
+            //runButton.setIcon(RUN_ICON);
             busyLabel.setBusy(false);
             busyLabel.setVisible(false);
             currentStatistics = null;
@@ -114,49 +134,43 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
 
     private void refreshResult(StatisticsModel model) {
         //Find a computed stats
-        Statistics statistics = model.getStatistics(statisticsUI);
+        String result = model.getResult(statisticsUI);
 
-        if (statistics != null) {
-            statisticsUI.setup(statistics);     //TODO doing this here may not be appropriate, move it to controller?
-            resultLabel.setText(statisticsUI.getValue());
-            reportButton.setEnabled(true);
+        if (result != null) {
+            resultLabel.setText(result);
         } else {
             resultLabel.setText("");
-            reportButton.setEnabled(false);
         }
+
+        String report = model.getReport(statisticsUI.getStatisticsClass());
+        reportButton.setEnabled(report != null);
     }
 
     private void run() {
         //Create Statistics
         StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
         StatisticsBuilder builder = controller.getBuilder(statisticsUI.getStatisticsClass());
-        Statistics statistics = currentModel.getStatistics(statisticsUI);
-        if (statistics != null) //If a Statistic instance for that particular StatisticUI has already been created, use it
-        {
-            currentStatistics = statistics;
-        } else //If not, create a new Statistic instance
-        {
-            currentStatistics = builder.getStatistics();
-        }
+        currentStatistics = builder.getStatistics();
+        if (currentStatistics != null) {
+            LongTaskListener listener = new LongTaskListener() {
 
-        LongTaskListener listener = new LongTaskListener() {
+                public void taskFinished(LongTask task) {
+                    showReport();
+                }
+            };
 
-            public void taskFinished(LongTask task) {
-                showReport();
-            }
-        };
-
-        JPanel settingsPanel = statisticsUI.getSettingsPanel();
-        if (settingsPanel != null) {
-            statisticsUI.setup(currentStatistics);
-            DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title", builder.getName()));
-            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                statisticsUI.unsetup();
+            JPanel settingsPanel = statisticsUI.getSettingsPanel();
+            if (settingsPanel != null) {
+                statisticsUI.setup(currentStatistics);
+                DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title", builder.getName()));
+                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                    statisticsUI.unsetup();
+                    controller.execute(currentStatistics, listener);
+                }
+            } else {
+                statisticsUI.setup(currentStatistics);
                 controller.execute(currentStatistics, listener);
             }
-        } else {
-            statisticsUI.setup(currentStatistics);
-            controller.execute(currentStatistics, listener);
         }
     }
 
@@ -168,17 +182,14 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     }
 
     private void showReport() {
-        Statistics statistics = currentModel.getStatistics(statisticsUI);
-        if (statistics != null) {
-            final String report = statistics.getReport();
-            if (report != null) {
-                SwingUtilities.invokeLater(new Runnable() {
+        final String report = currentModel.getReport(statisticsUI.getStatisticsClass());
+        if (report != null) {
+            SwingUtilities.invokeLater(new Runnable() {
 
-                    public void run() {
-                        StatisticsReportPanel dialog = new StatisticsReportPanel(WindowManager.getDefault().getMainWindow(), report);
-                    }
-                });
-            }
+                public void run() {
+                    StatisticsReportPanel dialog = new StatisticsReportPanel(WindowManager.getDefault().getMainWindow(), report);
+                }
+            });
         }
 
     }
@@ -239,7 +250,8 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         runButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(runButton);
 
-        reportButton.setText(org.openide.util.NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.reportButton.text")); // NOI18N
+        reportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/statistics/resources/report.png"))); // NOI18N
+        reportButton.setToolTipText(org.openide.util.NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.reportButton.toolTipText")); // NOI18N
         reportButton.setFocusable(false);
         reportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         reportButton.setOpaque(false);

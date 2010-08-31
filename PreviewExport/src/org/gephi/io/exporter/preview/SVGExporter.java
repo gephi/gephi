@@ -1,3 +1,23 @@
+/*
+Copyright 2008-2010 Gephi
+Authors : Jeremy Subtil <jeremy.subtil@gephi.org>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.gephi.io.exporter.preview;
 
 import java.io.Writer;
@@ -63,6 +83,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
     //Settings
     private final static float MARGIN = 25f;
     private final String namespaceURI = SVGDOMImplementation.SVG_NAMESPACE_URI;
+    private boolean scaleStrokes = false;
     //Helper
     private final HashMap<NodeLabel, SVGLocatable> nodeLabelMap = new HashMap<NodeLabel, SVGLocatable>();
     private Element svgRoot;
@@ -70,6 +91,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
     private Element edgeGroupElem;
     private Element labelGroupElem;
     private Element labelBorderGroupElem;
+    private float scaleRatio = 1f;
 
     public boolean execute() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
@@ -91,7 +113,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
      * @throws Exception
      */
     private void exportData(GraphSheet graphSheet) throws Exception {
-        SupportSize supportSize = new SupportSize(210, 297, LengthUnit.MILLIMETER);
+        SupportSize supportSize = new SupportSize(595, 841, LengthUnit.PIXELS);
         Progress.start(progress);
         Graph graph = graphSheet.getGraph();
 
@@ -113,8 +135,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
 
         // creates SVG-to-SVG transcoder
         SVGTranscoder t = new SVGTranscoder();
-        t.addTranscodingHint(SVGTranscoder.KEY_XML_DECLARATION,
-                new String("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
+        t.addTranscodingHint(SVGTranscoder.KEY_XML_DECLARATION, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
         // sets transcoder input and output
         TranscoderInput input = new TranscoderInput(doc);
@@ -196,7 +217,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
 
         for (UnidirectionalEdge e : graph.getUnidirectionalEdges()) {
             if (!e.isCurved()) {
-                if (e.showLabel() && e.hasLabel()) {
+                if (e.showLabel() && e.hasLabel() && e.getLabel().getFont() != null) {
                     renderEdgeLabel(e.getLabel());
                 }
 
@@ -208,7 +229,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
 
         for (BidirectionalEdge e : graph.getBidirectionalEdges()) {
             if (!e.isCurved()) {
-                if (e.showLabel() && e.hasLabel()) {
+                if (e.showLabel() && e.hasLabel() && e.getLabel().getFont() != null) {
                     renderEdgeLabel(e.getLabel());
                 }
 
@@ -219,13 +240,13 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         }
 
         for (UndirectedEdge e : graph.getUndirectedEdges()) {
-            if (e.showLabel() && !e.isCurved() && e.hasLabel()) {
+            if (e.showLabel() && !e.isCurved() && e.hasLabel() && e.getLabel().getFont() != null) {
                 renderEdgeLabel(e.getLabel());
             }
         }
 
         for (Node n : graph.getNodes()) {
-            if (n.showLabel() && n.hasLabel()) {
+            if (n.showLabel() && n.hasLabel() && n.getLabel().getFont() != null) {
                 renderNodeLabel(n.getLabel());
             }
         }
@@ -236,7 +257,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         svgRoot.insertBefore(labelBorderGroupElem, labelGroupElem);
 
         for (Node n : graph.getNodes()) {
-            if (n.showLabel() && n.hasLabel() && n.showLabelBorders()) {
+            if (n.showLabel() && n.hasLabel() && n.showLabelBorders() && n.getLabel().getFont() != null) {
                 renderNodeLabelBorder(n.getLabelBorder());
             }
         }
@@ -249,7 +270,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         nodeElem.setAttribute("r", node.getRadius().toString());
         nodeElem.setAttribute("fill", node.getColor().toHexString());
         nodeElem.setAttribute("stroke", node.getBorderColor().toHexString());
-        nodeElem.setAttribute("stroke-width", node.getBorderWidth().toString());
+        nodeElem.setAttribute("stroke-width", new Float(node.getBorderWidth() * scaleRatio).toString());
         nodeGroupElem.appendChild(nodeElem);
 
         Progress.progress(progress);
@@ -295,7 +316,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
                 curve.getPt3().getX(), curve.getPt3().getY(),
                 curve.getPt4().getX(), curve.getPt4().getY()));
         selfLoopElem.setAttribute("stroke", selfLoop.getColor().toHexString());
-        selfLoopElem.setAttribute("stroke-width", Float.toString(selfLoop.getThickness() * selfLoop.getScale()));
+        selfLoopElem.setAttribute("stroke-width", Float.toString(selfLoop.getThickness() * selfLoop.getScale() * scaleRatio));
         selfLoopElem.setAttribute("fill", "none");
         edgeGroupElem.appendChild(selfLoopElem);
     }
@@ -327,7 +348,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
                 boundary1.getX(), boundary1.getY(),
                 boundary2.getX(), boundary2.getY()));
         edgeElem.setAttribute("stroke", edge.getColor().toHexString());
-        edgeElem.setAttribute("stroke-width", Float.toString(edge.getThickness() * edge.getScale()));
+        edgeElem.setAttribute("stroke-width", Float.toString(edge.getThickness() * edge.getScale() * scaleRatio));
         edgeGroupElem.appendChild(edgeElem);
     }
 
@@ -340,7 +361,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
                     curve.getPt3().getX(), curve.getPt3().getY(),
                     curve.getPt4().getX(), curve.getPt4().getY()));
             curveElem.setAttribute("stroke", edge.getColor().toHexString());
-            curveElem.setAttribute("stroke-width", Float.toString(edge.getThickness() * edge.getScale()));
+            curveElem.setAttribute("stroke-width", Float.toString(edge.getThickness() * edge.getScale() * scaleRatio));
             curveElem.setAttribute("fill", "none");
             edgeGroupElem.appendChild(curveElem);
         }
@@ -429,6 +450,15 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         // image margin
         graphSheet.setMargin(MARGIN);
 
+        //Dimension
+        int width = graphSheet.getWidth().intValue();
+        int height = graphSheet.getHeight().intValue();
+        if (width > height) {
+            supportSize = new SupportSize(width * supportSize.getHeightInt() / height, supportSize.getHeightInt(), LengthUnit.PIXELS);
+        } else if (height > width) {
+            supportSize = new SupportSize(supportSize.getWidthInt(), height * supportSize.getWidthInt() / width, LengthUnit.PIXELS);
+        }
+
         // root element
         svgRoot = doc.getDocumentElement();
         svgRoot.setAttributeNS(null, "width", supportSize.getWidth());
@@ -437,8 +467,13 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         svgRoot.setAttributeNS(null, "viewBox", String.format(Locale.ENGLISH, "%d %d %d %d",
                 graphSheet.getTopLeftPosition().getX().intValue(),
                 graphSheet.getTopLeftPosition().getY().intValue(),
-                graphSheet.getWidth().intValue(),
-                graphSheet.getHeight().intValue()));
+                width,
+                height));
+
+        //Scale & ratio
+        if (scaleStrokes) {
+            scaleRatio = supportSize.getWidthInt() / (float) width;
+        }
 
         // draws the graph exporting it into the DOM
         renderGraph(graphSheet.getGraph());
@@ -498,5 +533,13 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
 
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
+    }
+
+    public void setScaleStrokes(boolean scaleStrokes) {
+        this.scaleStrokes = scaleStrokes;
+    }
+
+    public boolean isScaleStrokes() {
+        return scaleStrokes;
     }
 }

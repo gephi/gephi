@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.graph.dhns.core;
 
 import org.gephi.graph.api.GraphEvent.EventType;
@@ -150,8 +150,10 @@ public class StructureModifier {
         AbstractEdge[] clearedEdges = business.clearEdges(node);
         if (clearedEdges != null) {
             for (int i = 0; i < clearedEdges.length; i++) {
-                dhns.getGraphStructure().removeFromDictionnary(clearedEdges[i]);
-                dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, clearedEdges[i], view));
+                if (clearedEdges[i] != null) {
+                    dhns.getGraphStructure().removeFromDictionnary(clearedEdges[i]);
+                    dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, clearedEdges[i], view));
+                }
             }
         }
         graphVersion.incEdgeVersion();
@@ -367,7 +369,7 @@ public class StructureModifier {
         }
 
         private AbstractNode[] deleteNode(AbstractNode node) {
-            AbstractNode[] descendants = new AbstractNode[node.size+1];
+            AbstractNode[] descendants = new AbstractNode[node.size + 1];
             int i = 0;
             for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, Tautology.instance); itr.hasNext();) {
                 AbstractNode descendant = itr.next();
@@ -376,8 +378,15 @@ public class StructureModifier {
                     edgeProcessor.clearMetaEdges(descendant);
                     view.decNodesEnabled(1);
                 }
-                edgeProcessor.clearEdges(descendant);
-
+                AbstractEdge[] deletedEdges = edgeProcessor.clearEdges(descendant);
+                if (deletedEdges != null) {
+                    for (int j = 0; j < deletedEdges.length; j++) {
+                        if (deletedEdges[j] != null) {
+                            dhns.getGraphStructure().removeFromDictionnary(deletedEdges[j]);
+                            dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, deletedEdges[j], view));
+                        }
+                    }
+                }
                 if (node.countInViews() == 1) {
                     dhns.getGraphStructure().removeFromDictionnary(descendant);
                 }
@@ -442,7 +451,6 @@ public class StructureModifier {
 
         private void group(AbstractNode group, AbstractNode[] nodes) {
             group.setEnabled(true);
-            view.incNodesEnabled(1);
             AbstractNode parent = ((AbstractNode) nodes[0]).parent;
             //parent = parent.getInView(view.getViewId());
             group.parent = parent;

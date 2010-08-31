@@ -1,30 +1,34 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.filters;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import org.gephi.filters.api.Query;
+import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Graph;
 
@@ -131,5 +135,23 @@ public abstract class AbstractQueryImpl implements Query {
         }
 
         return copy;
+    }
+
+    public Query[] getQueries(Class<? extends Filter> filterClass) {
+        List<Query> r = new LinkedList<Query>();
+        LinkedList<Query> stack = new LinkedList<Query>();
+        stack.add(this);
+        while (!stack.isEmpty()) {
+            Query q = stack.pop();
+            r.add(q);
+            stack.addAll(Arrays.asList(q.getChildren()));
+        }
+        for (Iterator<Query> itr = r.iterator(); itr.hasNext();) {
+            Query q = itr.next();
+            if (!q.getFilter().getClass().equals(filterClass)) {
+                itr.remove();
+            }
+        }
+        return r.toArray(new Query[0]);
     }
 }

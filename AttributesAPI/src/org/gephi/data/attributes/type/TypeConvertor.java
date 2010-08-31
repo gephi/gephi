@@ -1,38 +1,42 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Martin Škurla <bujacik@gmail.com>
+Authors : Martin Škurla <bujacik@gmail.com>, Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.type;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import org.gephi.data.attributes.api.AttributeType;
 
 /**
  * Class responsible for type manipulation and creation needed in Attributes API.
  *
  * @author Martin Škurla
+ * @author Mathieu Bastian
  */
 public final class TypeConvertor {
+
     private static final String CONVERSION_METHOD_NAME = "valueOf";
 
-    private TypeConvertor() {}
+    private TypeConvertor() {
+    }
 
     /**
      * Creates array of given type from single String value. String value is always parsed by given
@@ -196,5 +200,44 @@ public final class TypeConvertor {
         }
 
         throw new IllegalArgumentException("Given type '" + primitiveType + "' is not primitive...");
+    }
+
+    /**
+     * Returns the underlying static type from <code>dynamicType</code> For example
+     * returns <code>FLOAT</code> if given type is <code>DYNAMIC_FLOAT</code>.
+     * @param dynamicType a dynamic type
+     * @return the underlying static type
+     * @throws IllegalArgumentException if <code>dynamicType</code> is not dynamic
+     */
+    public static AttributeType getStaticType(AttributeType dynamicType) {
+        if (!dynamicType.isDynamicType()) {
+            throw new IllegalArgumentException("Given type '" + dynamicType + "' is not dynamic.");
+        }
+        switch (dynamicType) {
+            case DYNAMIC_BIGDECIMAL:
+                return AttributeType.BIGDECIMAL;
+            case DYNAMIC_BIGINTEGER:
+                return AttributeType.BIGINTEGER;
+            case DYNAMIC_BOOLEAN:
+                return AttributeType.BOOLEAN;
+            case DYNAMIC_BYTE:
+                return AttributeType.BYTE;
+            case DYNAMIC_CHAR:
+                return AttributeType.CHAR;
+            case DYNAMIC_DOUBLE:
+                return AttributeType.DOUBLE;
+            case DYNAMIC_FLOAT:
+                return AttributeType.FLOAT;
+            case DYNAMIC_INT:
+                return AttributeType.INT;
+            case DYNAMIC_LONG:
+                return AttributeType.LONG;
+            case DYNAMIC_SHORT:
+                return AttributeType.SHORT;
+            case DYNAMIC_STRING:
+                return AttributeType.STRING;
+            default:
+                return null;
+        }
     }
 }

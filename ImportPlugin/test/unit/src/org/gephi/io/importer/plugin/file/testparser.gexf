@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.1draft" xmlns:viz="http://www.gephi.org/gexf/viz" version="1.1">
+	<meta lastmodifieddate="2010-06-15">
+		<creator>Mathieu Bastian</creator>
+		<description>A full GEXF 1.1 example with dynamic topology and attributes</description>
+	</meta>
+	<graph mode="dynamic" type="dynamic" defaultedgetype="undirected" start="2000-01-01" end="2010-12-31">
+		<attributes class="node" type="dynamic">
+			<attribute id="0" title="type" type="string"/>
+			<attribute id="1" title="Attribute 1" type="float"/>
+			<attribute id="2" title="Attribute 2" type="liststring"/>
+			<attribute id="3" title="Attribute 3" type="float"/>
+			<attribute id="4" title="Attribute 4" type="float"/>
+		</attributes>
+		<nodes>
+			<node id="4c175b4b2c9016b90d1b4bc2" label="Node 1" start="2000-01-01" end="2000-12-31">
+                                <viz:position x="273.16998" y="250.09683" z="0.0"/>
+				<attvalues>
+					<attvalue for="0" value="Author"/>
+					<attvalue for="3" value="1"/>
+				</attvalues>
+			</node>
+			<node id="4c175b542c9016b9ce1b4bc2" label="Node 2">
+				<attvalues>
+					<attvalue for="0" value="Author"/>
+					<attvalue for="2" value="String1, String2, String 3"/>
+				</attvalues>
+			</node>
+			<node id="4c175b4b2c9016b9071b4bc2" label="Node 3" start="2000-01-01" end="2003-12-31">
+				<slices>
+					<slice start="2000-01-01" end="2000-01-15" />
+					<slice start="2001-01-30" end="2001-02-01" />
+				</slices>
+				<attvalues>
+					<attvalue for="0" value="Author"/>
+					<attvalue for="1" value="3.0"/>
+					<attvalue for="3" value="3"/>
+					<attvalue for="4" value="3.0" start="2009-01-01" end="2009-12-31"/>
+				</attvalues>
+			</node>
+			<node id="4c175b4b2c9016b9101b4bc2" label="Node 4">
+				<attvalues>
+					<attvalue for="0" value="Author"/>
+					<attvalue for="3" value="1"/>
+				</attvalues>
+			</node>
+			<node id="4c175b4b2c9016b93a1b4bc2" label="Node 5" start="2000-01-01" end="2000-12-31">
+				<attvalues>
+					<attvalue for="0" value="Author"/>
+					<attvalue for="3" value="1"/>
+				</attvalues>
+			</node>
+			<node id="4c175b4a2c9016b9a51a4bc2" label="Node 6" start="2001-01-01" end="2009-12-31">
+				<attvalues>
+					<attvalue for="0" value="Author"/>
+					<attvalue for="1" value="73.0"/>
+					<attvalue for="3" value="31"/>
+					<attvalue for="4" value="3.0" start="2002-01-01" end="2002-12-31"/>
+					<attvalue for="4" value="6.0" start="2003-01-01" end="2003-12-31"/>
+					<attvalue for="4" value="11.0" start="2004-01-01" end="2004-12-31"/>
+					<attvalue for="4" value="10.0" start="2005-01-01" end="2005-12-31"/>
+					<attvalue for="4" value="10.0" start="2006-01-01" end="2006-12-31"/>
+					<attvalue for="4" value="3.0" start="2007-01-01" end="2007-12-31"/>
+					<attvalue for="4" value="14.0" start="2008-01-01" end="2008-12-31"/>
+					<attvalue for="4" value="14.0" start="2009-01-01" end="2009-12-31"/>
+					<attvalue for="4" value="2.0" start="2010-01-01" end="2010-12-31"/>
+				</attvalues>
+			</node>
+			<node id="4c175b4b2c9016b9ba1a4bc2" label="Node 7" start="2001-01-01" end="2006-12-31">
+				<attvalues>
+					<attvalue for="0" value="Author"/>
+					<attvalue for="1" value="10.0"/>
+					<attvalue for="3" value="4"/>
+					<attvalue for="4" value="1.0" start="2006-01-01" end="2006-12-31"/>
+					<attvalue for="4" value="6.0" start="2007-01-01" end="2007-12-31"/>
+					<attvalue for="4" value="2.0" start="2008-01-01" end="2008-12-31"/>
+					<attvalue for="4" value="1.0" start="2009-01-01" end="2009-12-31"/>
+				</attvalues>
+			</node>
+			<node id="4c175b4b2c9016b9ed1a4bc2" label="Node 8" start="2005-01-01" end="2009-12-31">
+				<attvalues>
+					<attvalue for="0" value="Author"/>
+					<attvalue for="1" value="5.0"/>
+					<attvalue for="3" value="3"/>
+					<attvalue for="4" value="2.0" start="2006-01-01" end="2006-12-31"/>
+					<attvalue for="4" value="2.0" start="2008-01-01" end="2008-12-31"/>
+					<attvalue for="4" value="1.0" start="2009-01-01" end="2009-12-31"/>
+				</attvalues>
+			</node>
+			<node id="4c175b4b2c9016b9f61a4bc2" label="Node 9" start="2000-01-01" end="2009-12-31">
+				<attvalues>
+					<attvalue for="0" value="Author"/>
+					<attvalue for="1" value="5.0"/>
+					<attvalue for="3" value="2"/>
+					<attvalue for="4" value="2.0" start="2001-01-01" end="2001-12-31"/>
+					<attvalue for="4" value="1.0" start="2003-01-01" end="2003-12-31"/>
+					<attvalue for="4" value="1.0" start="2005-01-01" end="2005-12-31"/>
+					<attvalue for="4" value="1.0" start="2009-01-01" end="2009-12-31"/>
+				</attvalues>
+			</node>
+			<node id="a" label="Kevin Bacon">
+				<nodes>
+					<node id="b" label="God">
+						<nodes>
+							<node id="c" label="human1"/>
+							<node id="d" label="human2"/>
+						</nodes>
+					</node>
+					<node id="e" label="Me">
+						<nodes>
+							<node id="f" label="frog1"/>
+							<node id="g" label="frog2"/>
+						</nodes>
+					</node>
+				</nodes>
+			</node>
+			<node id="h" label="TestPid1" pid="f" />
+			<node id="i" label="TestPid2" pid="j" />
+			<node id="j" label="TestPid3"/>
+		</nodes>
+		<attributes class="edge" type="dynamic">
+			<attribute id="0" title="weight2" type="float"/>
+		</attributes>
+		<edges>
+			<edge id="0" source="4c175b4b2c9016b90d1b4bc2" target="4c175b4b2c9016b9f61a4bc2" start="2002-01-01" end="2002-12-31" weight="1.0">
+				<attvalues>
+					<attvalue for="0" value="1.0" start="2002-01-01" end="2002-12-31"/>
+				</attvalues>
+			</edge>
+			<edge id="1" source="4c175b542c9016b9ce1b4bc2" target="4c175b4b2c9016b9071b4bc2" start="2001-01-01" end="2001-12-31" weight="1.0">
+				<attvalues>
+					<attvalue for="0" value="1.0" start="2001-01-01" end="2001-12-31"/>
+				</attvalues>
+			</edge>
+			<edge id="2" source="4c175b4b2c9016b9071b4bc2" target="4c175b4b2c9016b9ed1a4bc2" start="2001-01-01" end="2001-12-31" weight="1.0">
+				<attvalues>
+					<attvalue for="0" value="1.0" start="2001-01-01" end="2001-12-31"/>
+				</attvalues>
+			</edge>
+			<edge id="3" source="4c175b4b2c9016b9f61a4bc2" target="4c175b4b2c9016b9ed1a4bc2" start="2008-01-01" end="2008-12-31" weight="1.0">
+				<attvalues>
+					<attvalue for="0" value="1.0" start="2008-01-01" end="2008-12-31"/>
+				</attvalues>
+			</edge>
+			<edge id="4" source="4c175b4b2c9016b9ba1a4bc2" target="4c175b4b2c9016b9ba1a4bc2" start="2001-01-01" end="2008-12-31" weight="5.0">
+				<attvalues>
+					<attvalue for="0" value="1.0" start="2001-01-01" end="2001-12-31"/>
+					<attvalue for="0" value="2.0" start="2002-01-01" end="2002-12-31"/>
+					<attvalue for="0" value="1.0" start="2005-01-01" end="2005-12-31"/>
+					<attvalue for="0" value="1.0" start="2008-01-01" end="2008-12-31"/>
+				</attvalues>
+			</edge>
+			<edge id="5" source="4c175b4b2c9016b93a1b4bc2" target="4c175b4b2c9016b9ed1a4bc2" start="2000-01-01" end="2000-12-31" weight="1.0">
+				<attvalues>
+					<attvalue for="0" value="1.0" start="2000-01-01" end="2000-12-31"/>
+				</attvalues>
+			</edge>
+			<edge id="6" source="4c175b4b2c9016b90d1b4bc2" target="4c175b4a2c9016b9a51a4bc2" start="2003-01-01" end="2005-12-31" weight="2.0">
+				<attvalues>
+					<attvalue for="0" value="1.0" start="2003-01-01" end="2003-12-31"/>
+					<attvalue for="0" value="1.0" start="2005-01-01" end="2005-12-31"/>
+				</attvalues>
+			</edge>
+			<edge id="7" source="4c175b4b2c9016b9071b4bc2" target="4c175b4b2c9016b9f61a4bc2" start="2004-01-01" end="2004-12-31" weight="1.0">
+				<attvalues>
+					<attvalue for="0" value="1.0" start="2004-01-01" end="2004-12-31"/>
+				</attvalues>
+			</edge>
+			<edge id="8" source="4c175b4b2c9016b9ba1a4bc2" target="4c175b4b2c9016b9f61a4bc2" start="2000-01-01" end="2000-12-31" weight="1.0">
+				<attvalues>
+					<attvalue for="0" value="1.0" start="2000-01-01" end="2000-12-31"/>
+				</attvalues>
+			</edge>
+			<edge id="9" source="4c175b4b2c9016b9ed1a4bc2" target="4c175b492c9016b9ad194bc2" start="2000-01-01" end="2003-12-31" weight="4.0">
+				<attvalues>
+					<attvalue for="0" value="2.0" start="2000-01-01" end="2000-12-31"/>
+					<attvalue for="0" value="1.0" start="2001-01-01" end="2001-12-31"/>
+					<attvalue for="0" value="1.0" start="2003-01-01" end="2003-12-31"/>
+				</attvalues>
+			</edge>
+		</edges>
+	</graph>
+</gexf>

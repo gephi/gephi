@@ -24,6 +24,14 @@ public class SupportSize {
         this.lengthUnit = lengthUnit;
     }
 
+    public Integer getWidthInt() {
+        return width;
+    }
+
+    public Integer getHeightInt() {
+        return height;
+    }
+
     /**
      * Returns the support's width.
      *

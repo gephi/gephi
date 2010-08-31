@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.ui.ranking.plugin;
 
 import java.awt.BorderLayout;
@@ -40,9 +40,8 @@ import org.gephi.ranking.api.Transformer;
 import org.gephi.ui.components.JRangeSlider;
 import org.gephi.ui.components.PaletteIcon;
 import org.gephi.ui.components.gradientslider.GradientSlider;
-import org.gephi.ui.utils.PaletteUtils;
-import org.gephi.ui.utils.PaletteUtils.Palette;
-import org.openide.util.Exceptions;
+import org.gephi.utils.PaletteUtils;
+import org.gephi.utils.PaletteUtils.Palette;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
@@ -92,6 +91,7 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+                prepareGradientTooltip();
             }
         });
         gradientPanel.add(gradientSlider, BorderLayout.CENTER);
@@ -109,12 +109,28 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
                 if (!source.getValueIsAdjusting()) {
                     setRangeValues();
                 }
+                prepareGradientTooltip();
             }
         });
         refreshRangeValues();
+        prepareGradientTooltip();
 
         //Context
         setComponentPopupMenu(getPalettePopupMenu());
+    }
+
+    private void prepareGradientTooltip(){
+        StringBuilder sb=new StringBuilder();
+        final double min=((Number)ranking.unNormalize(colorTransformer.getLowerBound())).doubleValue();
+        final double max=((Number)ranking.unNormalize(colorTransformer.getUpperBound())).doubleValue();
+        final double range=max-min;
+        float[] positions = gradientSlider.getThumbPositions();
+        for (int i = 0; i < positions.length-1; i++) {
+            sb.append(min+range*positions[i]);
+            sb.append(", ");
+        }
+        sb.append(min+range*positions[positions.length-1]);
+        gradientSlider.setToolTipText(sb.toString());
     }
 
     private void setRangeValues() {

@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.filters.plugin.operator;
 
 import java.util.ArrayList;
@@ -35,6 +35,7 @@ import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -49,7 +50,7 @@ public class INTERSECTIONBuilder implements FilterBuilder {
     }
 
     public String getName() {
-        return "INTERSECTION";
+        return NbBundle.getMessage(INTERSECTIONBuilder.class, "INTERSECTIONBuilder.name");
     }
 
     public Icon getIcon() {
@@ -57,7 +58,7 @@ public class INTERSECTIONBuilder implements FilterBuilder {
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(INTERSECTIONBuilder.class, "INTERSECTIONBuilder.description");
     }
 
     public Filter getFilter() {
@@ -68,14 +69,14 @@ public class INTERSECTIONBuilder implements FilterBuilder {
         return null;
     }
 
-    private static class IntersectionOperator implements Operator {
+    public static class IntersectionOperator implements Operator {
 
         public int getInputCount() {
             return Integer.MAX_VALUE;
         }
 
         public String getName() {
-            return "INTERSECTION";
+            return NbBundle.getMessage(INTERSECTIONBuilder.class, "INTERSECTIONBuilder.name");
         }
 
         public FilterProperty[] getProperties() {

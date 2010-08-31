@@ -1,13 +1,28 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package org.gephi.io.processor.plugin;
 
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
@@ -15,14 +30,11 @@ import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
-import org.gephi.io.importer.api.ContainerUnloader;
 import org.gephi.io.importer.api.EdgeDraft.EdgeType;
 import org.gephi.io.importer.api.EdgeDraftGetter;
 import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
-import org.gephi.timeline.api.TimelineController;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -37,7 +49,7 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         return "Append graph";
     }
 
-    public void process(ContainerUnloader container, Workspace workspace) {
+    public void process() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         //Workspace
         if (workspace == null) {
@@ -54,7 +66,6 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
 
         //Architecture
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-        this.timelineController = Lookup.getDefault().lookup(TimelineController.class);
 
         HierarchicalGraph graph = null;
         switch (container.getEdgeDefault()) {
@@ -74,13 +85,13 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         GraphFactory factory = graphModel.factory();
 
         //Dynamic
-        if (timelineController != null) {
-            timelineController.setMin(workspace, container.getTimeIntervalMin());
-            timelineController.setMax(workspace, container.getTimeIntervalMax());
-        }
+//        if (timelineController != null) {
+//            timelineController.setMin(workspace, container.getTimeIntervalMin());
+//            timelineController.setMax(workspace, container.getTimeIntervalMax());
+//        }
 
         //Attributes - Creates columns for properties
-        AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
+        attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         attributeModel.mergeModel(container.getAttributeModel());
 
         //Index existing graph
@@ -148,7 +159,6 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         }
 
         System.out.println("# Nodes loaded: " + nodeCount + "\n# Edges loaded: " + edgeCount);
-        timelineController = null;
         workspace = null;
     }
 }

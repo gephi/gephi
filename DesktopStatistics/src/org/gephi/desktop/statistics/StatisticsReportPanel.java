@@ -1,26 +1,26 @@
-/**
-Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
+/*
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, 
+          Patick J. McSweeney <pjmcswee@syr.edu>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.desktop.statistics;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -50,6 +50,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.WindowConstants;
 import javax.swing.text.View;
+import org.apache.commons.codec.binary.Base64;
 import org.gephi.ui.components.JHTMLEditorPane;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbBundle;
@@ -57,8 +58,9 @@ import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
 
 /**
- * 
- * @author pjmcswee
+ *
+ * @author Mathieu Bastian
+ * @author Patick J. McSweeney
  */
 class ReportSelection implements Transferable {
 
@@ -100,7 +102,7 @@ class ReportSelection implements Transferable {
                     e.printStackTrace();
                 }
                 byte[] imageBytes = out.toByteArray();
-                String base64String = Base64.encode(imageBytes);
+                String base64String = Base64.encodeBase64String(imageBytes);
                 if (!first) {
 
                     newHTML += "\"";
@@ -114,7 +116,7 @@ class ReportSelection implements Transferable {
                 newHTML += result[i];
             }
         }
-        this.html = new String(newHTML);
+        this.html = newHTML;
     }
 
     /**

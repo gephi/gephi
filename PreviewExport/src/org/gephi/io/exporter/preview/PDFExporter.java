@@ -1,5 +1,27 @@
+/*
+Copyright 2008-2010 Gephi
+Authors : Jeremy Subtil <jeremy.subtil@gephi.org>,
+Mathieu Bastian <mathieu.bastian@gephi.org>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.gephi.io.exporter.preview;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
@@ -101,7 +123,7 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
         if (landscape) {
             size = new Rectangle(pageSize.rotate());
         }
-        //size.setBackgroundColor(new BaseColor(controller.getModel().getBackgroundColor()));
+        size.setBackgroundColor(new BaseColor(Lookup.getDefault().lookup(PreviewController.class).getModel().getBackgroundColor()));
         document = new Document(size);
         PdfWriter pdfWriter = PdfWriter.getInstance(document, stream);
         document.open();
@@ -208,7 +230,7 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
     public void renderGraphLabels(Graph graph) {
         for (UnidirectionalEdge e : graph.getUnidirectionalEdges()) {
             if (!e.isCurved()) {
-                if (e.showLabel() && e.hasLabel()) {
+                if (e.showLabel() && e.hasLabel() && e.getLabel().getFont() != null) {
                     renderEdgeLabel(e.getLabel());
                 }
 
@@ -220,7 +242,7 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
 
         for (BidirectionalEdge e : graph.getBidirectionalEdges()) {
             if (!e.isCurved()) {
-                if (e.showLabel() && e.hasLabel()) {
+                if (e.showLabel() && e.hasLabel() && e.getLabel().getFont() != null) {
                     renderEdgeLabel(e.getLabel());
                 }
 
@@ -231,13 +253,13 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
         }
 
         for (UndirectedEdge e : graph.getUndirectedEdges()) {
-            if (e.showLabel() && !e.isCurved() && e.hasLabel()) {
+            if (e.showLabel() && !e.isCurved() && e.hasLabel() && e.getLabel().getFont() != null) {
                 renderEdgeLabel(e.getLabel());
             }
         }
 
         for (Node n : graph.getNodes()) {
-            if (n.showLabel() && n.hasLabel()) {
+            if (n.showLabel() && n.hasLabel() && n.getLabel().getFont() != null) {
                 renderNodeLabel(n.getLabel());
             }
         }

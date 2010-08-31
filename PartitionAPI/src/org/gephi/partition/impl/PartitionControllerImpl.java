@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.partition.impl;
 
 import java.util.ArrayList;
@@ -75,15 +75,13 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
                 trachViewChange(gm);
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-                attributeModel.getNodeTable().addAttributeListener(PartitionControllerImpl.this);
-                attributeModel.getEdgeTable().addAttributeListener(PartitionControllerImpl.this);
+                attributeModel.addAttributeListener(PartitionControllerImpl.this);
             }
 
             public void unselect(Workspace workspace) {
                 model = null;
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-                attributeModel.getNodeTable().removeAttributeListener(PartitionControllerImpl.this);
-                attributeModel.getEdgeTable().removeAttributeListener(PartitionControllerImpl.this);
+                attributeModel.removeAttributeListener(PartitionControllerImpl.this);
             }
 
             public void close(Workspace workspace) {
@@ -94,17 +92,17 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
             }
         });
         if (pc.getCurrentWorkspace() != null) {
+            refreshPartitions=true;
             model = pc.getCurrentWorkspace().getLookup().lookup(PartitionModelImpl.class);
             if (model == null) {
                 model = new PartitionModelImpl();
                 Workspace workspace = pc.getCurrentWorkspace();
-                pc.getCurrentWorkspace().add(new PartitionModelImpl());
+                pc.getCurrentWorkspace().add(model);
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
                 trachViewChange(gm);
 
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-                attributeModel.getNodeTable().addAttributeListener(PartitionControllerImpl.this);
-                attributeModel.getEdgeTable().addAttributeListener(PartitionControllerImpl.this);
+                attributeModel.addAttributeListener(PartitionControllerImpl.this);
             }
         }
     }

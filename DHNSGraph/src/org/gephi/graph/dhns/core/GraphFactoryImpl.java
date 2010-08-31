@@ -1,30 +1,32 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.graph.dhns.core;
 
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.TextData;
 import org.gephi.graph.spi.TextDataFactory;
 import org.gephi.graph.dhns.edge.AbstractEdge;
@@ -54,18 +56,18 @@ public class GraphFactoryImpl implements GraphFactory {
         this.textDataFactory = Lookup.getDefault().lookup(TextDataFactory.class);
     }
 
-    public AttributeRow newNodeAttributes() {
+    public AttributeRow newNodeAttributes(NodeData nodeData) {
         if (attributesFactory == null) {
             return null;
         }
-        return attributesFactory.newNodeRow();
+        return attributesFactory.newNodeRow(nodeData);
     }
 
-    public AttributeRow newEdgeAttributes() {
+    public AttributeRow newEdgeAttributes(EdgeData edgeData) {
         if (attributesFactory == null) {
             return null;
         }
-        return attributesFactory.newEdgeRow();
+        return attributesFactory.newEdgeRow(edgeData);
     }
 
     public TextData newTextData() {
@@ -85,7 +87,7 @@ public class GraphFactoryImpl implements GraphFactory {
 
     public AbstractNode newNode(String id, int viewId) {
         AbstractNode node = new AbstractNode(idGen.newNodeId(), viewId, 0, 0, 0, null);  //with wiew = 0
-        node.getNodeData().setAttributes(newNodeAttributes());
+        node.getNodeData().setAttributes(newNodeAttributes(node.getNodeData()));
         node.getNodeData().setTextData(newTextData());
         if (id != null) {
             node.getNodeData().setId(id);
@@ -111,7 +113,7 @@ public class GraphFactoryImpl implements GraphFactory {
         } else {
             edge = new ProperEdgeImpl(idGen.newEdgeId(), nodeSource, nodeTarget);
         }
-        edge.setAttributes(newEdgeAttributes());
+        edge.setAttributes(newEdgeAttributes(edge.getEdgeData()));
         edge.getEdgeData().setTextData(newTextData());
         edge.getEdgeData().setId("" + edge.getId());
         return edge;
@@ -133,9 +135,9 @@ public class GraphFactoryImpl implements GraphFactory {
         } else {
             edge = new MixedEdgeImpl(idGen.newEdgeId(), nodeSource, nodeTarget, directed);
         }
-        edge.setWeight(weight);
 
-        edge.setAttributes(newEdgeAttributes());
+        edge.setAttributes(newEdgeAttributes(edge.getEdgeData()));
+        edge.setWeight(weight);
         edge.getEdgeData().setTextData(newTextData());
         if (id != null) {
             edge.getEdgeData().setId(id);
@@ -152,7 +154,7 @@ public class GraphFactoryImpl implements GraphFactory {
         AbstractNode nodeSource = (AbstractNode) source;
         AbstractNode nodeTarget = (AbstractNode) target;
         MetaEdgeImpl edge = new MetaEdgeImpl(idGen.newEdgeId(), nodeSource, nodeTarget);
-        edge.setAttributes(newEdgeAttributes());
+        edge.setAttributes(newEdgeAttributes(edge.getEdgeData()));
         edge.getEdgeData().setTextData(newTextData());
         edge.getEdgeData().setId("" + edge.getId());
         return edge;

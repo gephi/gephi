@@ -1,26 +1,26 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
+Copyright 2008-2010 Gephi
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.plugin;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -31,14 +31,16 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
-import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -46,39 +48,44 @@ import org.gephi.utils.progress.ProgressTicket;
  */
 public class ConnectedComponents implements Statistics, LongTask {
 
+    public static final String WEAKLY = "componentnumber";
+    public static final String STRONG = "strongcompnum";
     private boolean mDirected;
     private ProgressTicket mProgress;
     private boolean mIsCanceled;
-    private String mGraphRevision;
     private int mComponentCount;
     private int mStronglyCount;
     int count;
 
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        count = 1;
-       
-        weaklyConnected(graphModel, attributeModel);
-        if (mDirected) {
-            top_tarjans(graphModel, attributeModel);
+    public ConnectedComponents() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            mDirected = graphController.getModel().isDirected();
         }
     }
 
-    public void weaklyConnected(GraphModel graphModel, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+
+        UndirectedGraph undirectedGraph = graphModel.getUndirectedGraphVisible();
+        weaklyConnected(undirectedGraph, attributeModel);
+        if (mDirected) {
+            DirectedGraph directedGraph = graphModel.getDirectedGraphVisible();
+            top_tarjans(directedGraph, attributeModel);
+        }
+    }
+
+    public void weaklyConnected(UndirectedGraph graph, AttributeModel attributeModel) {
         mIsCanceled = false;
         mComponentCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn componentCol = nodeTable.getColumn("componentnumber");
+        AttributeColumn componentCol = nodeTable.getColumn(WEAKLY);
         if (componentCol == null) {
-            componentCol = nodeTable.addColumn("componentnumber", "Component ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+            componentCol = nodeTable.addColumn(WEAKLY, "Component ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
 
-        Graph graph = graphModel.getUndirectedGraphVisible();
-        
-
         graph.readLock();
-        mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
-        Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
         for (Node s : graph.getNodes()) {
             indicies.put(s, index);
@@ -120,8 +127,8 @@ public class ConnectedComponents implements Statistics, LongTask {
                 component.add(u);
 
                 //Iterate over all of u's neighbors
-                EdgeIterable edgeIter =  graph.getEdges(u);
-                
+                EdgeIterable edgeIter = graph.getEdges(u);
+
                 //For each neighbor
                 for (Edge edge : edgeIter) {
                     Node reachable = graph.getOpposite(u, edge);
@@ -148,20 +155,18 @@ public class ConnectedComponents implements Statistics, LongTask {
         graph.readUnlock();
     }
 
-    public void top_tarjans(GraphModel graphModel, AttributeModel attributeModel) {
-        mIsCanceled = false;
+    public void top_tarjans(DirectedGraph graph, AttributeModel attributeModel) {
+        count = 1;
         mStronglyCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn componentCol = nodeTable.getColumn("strongcompnum");
+        AttributeColumn componentCol = nodeTable.getColumn(STRONG);
         if (componentCol == null) {
-            componentCol = nodeTable.addColumn("strongcompnum", "Strongly-Connected ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+            componentCol = nodeTable.addColumn(STRONG, "Strongly-Connected ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
 
-        DirectedGraph graph = graphModel.getDirectedGraphVisible();
         graph.readLock();
-        mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
 
-        Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int v = 0;
         for (Node s : graph.getNodes()) {
             indicies.put(s, v);
@@ -204,7 +209,7 @@ public class ConnectedComponents implements Statistics, LongTask {
      * @param low_index
      * @param indicies
      */
-    public void tarjans(AttributeColumn col, LinkedList<Node> S,  DirectedGraph graph, Node f, int[] index, int[] low_index, Hashtable<Node, Integer> indicies) {
+    private void tarjans(AttributeColumn col, LinkedList<Node> S, DirectedGraph graph, Node f, int[] index, int[] low_index, HashMap<Node, Integer> indicies) {
         int id = indicies.get(f);
         index[id] = count;
         low_index[id] = count;
@@ -236,10 +241,6 @@ public class ConnectedComponents implements Statistics, LongTask {
         return mComponentCount;
     }
 
-    /**
-     *
-     * @param pDirected
-     */
     public void setDirected(boolean pDirected) {
         this.mDirected = pDirected;
     }
@@ -248,39 +249,25 @@ public class ConnectedComponents implements Statistics, LongTask {
         return mDirected;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getReport() {
-        String report = new String("<HTML> <BODY> <h1>Connected Components Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+        String report = "<HTML> <BODY> <h1>Connected Components Report </h1> "
+                + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
                 + "Weakly Connected Components: " + mComponentCount + "<br>"
-
-                + (mDirected?"Stronlgy Connected Components: " + this.mStronglyCount + "<br>":"")
-                + "</BODY></HTML>");
+                + (mDirected ? "Stronlgy Connected Components: " + this.mStronglyCount + "<br>" : "")
+                + "</BODY></HTML>";
 
         return report;
     }
 
-    /**
-     *
-     * @return
-     */
     public boolean cancel() {
         mIsCanceled = true;
         return true;
     }
 
-    /**
-     *
-     * @param progressTicket
-     */
     public void setProgressTicket(ProgressTicket progressTicket) {
         mProgress = progressTicket;
     }

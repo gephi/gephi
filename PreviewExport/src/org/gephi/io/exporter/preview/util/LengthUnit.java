@@ -10,6 +10,7 @@ public enum LengthUnit {
     CENTIMETER,
     MILLIMETER,
     INCH,
+    PIXELS,
     PERCENTAGE;
 
     @Override
@@ -21,6 +22,8 @@ public enum LengthUnit {
                 return "mm";
             case INCH:
                 return "in";
+            case PIXELS:
+                return "px";
             default:
             case PERCENTAGE:
                 return "%";

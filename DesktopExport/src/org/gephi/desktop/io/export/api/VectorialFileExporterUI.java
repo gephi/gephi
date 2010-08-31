@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.desktop.io.export.api;
 
 import java.awt.BorderLayout;
@@ -152,10 +152,11 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
 
                 //Selected file extension change
                 if (selectedFile != null && fileFilter != null) {
-                    String filePath = selectedFile.getAbsolutePath();
-                    filePath = filePath.substring(0, filePath.lastIndexOf("."));
-                    filePath = filePath.concat(fileFilter.getExtensions().get(0));
-                    selectedFile = new File(filePath);
+                    String fileName = selectedFile.getName();
+                    String directoryPath = chooser.getCurrentDirectory().getAbsolutePath();
+                    fileName = fileName.substring(0, fileName.lastIndexOf("."));
+                    fileName = fileName.concat(fileFilter.getExtensions().get(0));
+                    selectedFile = new File(directoryPath, fileName);
                     chooser.setSelectedFile(selectedFile);
                 }
             }
@@ -183,7 +184,7 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
         }
         chooser.setAcceptAllFileFilterUsed(false);
         chooser.setFileFilter(defaultFilter);
-        selectedFile = new File(chooser.getCurrentDirectory(), "Untilted" + defaultFilter.getExtensions().get(0));
+        selectedFile = new File(chooser.getCurrentDirectory(), "Untitled" + defaultFilter.getExtensions().get(0));
         chooser.setSelectedFile(selectedFile);
 
         //Show

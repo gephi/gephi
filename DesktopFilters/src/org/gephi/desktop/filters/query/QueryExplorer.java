@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.desktop.filters.query;
 
 import java.beans.PropertyChangeEvent;
@@ -114,7 +114,7 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
                     }
                 }
                 QueryNode queryNode = (QueryNode) node;
-                final Query query = queryNode.qetQuery();
+                final Query query = queryNode.getQuery();
                 new Thread(new Runnable() {
 
                     public void run() {
@@ -155,12 +155,12 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
             }
         } else if (node instanceof QueryNode) {
             QueryNode queryNode = (QueryNode) node;
-            if (uiModel.isExpanded(queryNode.qetQuery())) {
+            if (uiModel.isExpanded(queryNode.getQuery())) {
                 expandNode(queryNode);
             }
             Node firstChild = queryNode.getChildren().getNodeAt(0);
             if (firstChild != null && firstChild instanceof ParameterNode) {
-                if (uiModel.isParametersExpanded(queryNode.qetQuery())) {
+                if (uiModel.isParametersExpanded(queryNode.getQuery())) {
                     expandNode(firstChild);
                 }
             }
@@ -183,7 +183,7 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
             if (firstChild != null && firstChild instanceof ParameterNode) {
                 parameterExpanded = isExpanded(firstChild);
             }
-            uiModel.setExpand(queryNode.qetQuery(), isExpanded(queryNode), parameterExpanded);
+            uiModel.setExpand(queryNode.getQuery(), isExpanded(queryNode), parameterExpanded);
             for (Node n : queryNode.getChildren().getNodes()) {
                 saveExpandStatus(n);
             }

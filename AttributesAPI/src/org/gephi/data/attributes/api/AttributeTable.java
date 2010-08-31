@@ -1,24 +1,27 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Martin Škurla
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.data.attributes.api;
+
+import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
+import org.gephi.data.properties.PropertiesColumn;
 
 /**
  * Table hosts columns and permits all manipulation on them. Columns can be
@@ -29,6 +32,7 @@ package org.gephi.data.attributes.api;
  * {@link AttributeListener} to this table.
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  * @see AttributeColumn
  * @see AttributeRow
  */
@@ -91,6 +95,27 @@ public interface AttributeTable {
     public AttributeColumn addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue);
 
     /**
+     * Creates and add a new column to this table. Attribute origin will be set to AttributeOrigin.DELEGATE.
+     *
+     * @param id                             the identifier of the column
+     * @param title                          the title of the column
+     * @param type                           the type of the column
+     * @param attributeValueDelegateProvider the attribute value delegate provider of the column
+     * @param defaultValue                   the default value of the column
+     * @return                               the newly created column
+     */
+    public AttributeColumn addColumn(String id, String title, AttributeType type, AttributeValueDelegateProvider attributeValueDelegateProvider, Object defaultValue);
+
+    /**
+     * Creates and add a new properties column to this table. All needed informations are set in
+     * PropertiesColumn enum instance.
+     *
+     * @param propertiesColumn the properties column
+     * @return                 the newly created column
+     */
+    public AttributeColumn addPropertiesColumn(PropertiesColumn propertiesColumn);
+
+    /**
      * If exists, remove the column and all rows values.
      *
      * @param column        the column that is to be removed
@@ -134,19 +159,6 @@ public interface AttributeTable {
      *                      otherwise
      */
     public boolean hasColumn(String title);
-
-    /**
-     * Adds <code>listener</code> to the listeners of this table. It receives
-     * events when columns are added or removed.
-     * @param listener      the listener that is to be added
-     */
-    public void addAttributeListener(AttributeListener listener);
-
-    /**
-     * Removes <code>listener</code> to the listeners of this table.
-     * @param listener      the listener that is to be added
-     */
-    public void removeAttributeListener(AttributeListener listener);
 
     /**
      * Merge this table with the given <code>table</code> given. New columns from

@@ -1,28 +1,28 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Patrick J. McSweeney (pjmcswee@syr.edu)
+Copyright 2008-2010 Gephi
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.statistics.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -33,6 +33,7 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
@@ -52,6 +53,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -59,6 +61,7 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public class PageRank implements Statistics, LongTask {
 
+    public static final String PAGERANK = "pageranks";
     /** */
     private ProgressTicket mProgress;
     /** */
@@ -71,13 +74,14 @@ public class PageRank implements Statistics, LongTask {
     private double[] mPageranks;
     /** */
     private boolean mDirected;
-    /** */
-    private String mGraphRevision;
 
-    /**
-     *
-     * @param pUndirected
-     */
+    public PageRank() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            mDirected = graphController.getModel().isDirected();
+        }
+    }
+    
     public void setUndirected(boolean pUndirected) {
         mDirected = pUndirected;
     }
@@ -90,28 +94,25 @@ public class PageRank implements Statistics, LongTask {
         return mDirected;
     }
 
-    /**
-     *
-     * @param graphModel
-     */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        mIsCanceled = false;
-
         Graph graph;
         if (mDirected) {
             graph = graphModel.getUndirectedGraphVisible();
         } else {
             graph = graphModel.getDirectedGraphVisible();
         }
+        execute(graph, attributeModel);
+    }
+
+    public void execute(Graph graph, AttributeModel attributeModel) {
+        mIsCanceled = false;
 
         graph.readLock();
 
-        this.mGraphRevision = "(" + graph.getNodeVersion() + ", " + graph.getEdgeVersion() + ")";
-        //DirectedGraph digraph = graphController.getDirectedGraph();
         int N = graph.getNodeCount();
         mPageranks = new double[N];
         double[] temp = new double[N];
-        Hashtable<Node, Integer> indicies = new Hashtable<Node, Integer>();
+        HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
 
         Progress.start(mProgress);
@@ -187,9 +188,9 @@ public class PageRank implements Statistics, LongTask {
         }
 
         AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn pangeRanksCol = nodeTable.getColumn("pageranks");
+        AttributeColumn pangeRanksCol = nodeTable.getColumn(PAGERANK);
         if (pangeRanksCol == null) {
-            pangeRanksCol = nodeTable.addColumn("pageranks", "PageRank", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+            pangeRanksCol = nodeTable.addColumn(PAGERANK, "PageRank", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
         for (Node s : graph.getNodes()) {
@@ -252,15 +253,14 @@ public class PageRank implements Statistics, LongTask {
         } catch (IOException e) {
             System.out.println(e.toString());
         }
-        String report = new String("<HTML> <BODY> <h1>PageRank Report </h1> "
-                + "<hr> <br> <h2>Network Revision Number:</h2>"
-                + mGraphRevision
+        String report = "<HTML> <BODY> <h1>PageRank Report </h1> "
+                + "<hr> <br>"
                 + "<h2> Parameters: </h2>"
                 + "Epsilon = " + this.mEpsilon + "<br>"
                 + "Probability = " + this.mProbability
                 + "<br> <h2> Results: </h2>"
                 + imageFile
-                + "</BODY></HTML>");
+                + "</BODY></HTML>";
 
         return report;
 

@@ -1,16 +1,31 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package org.gephi.io.exporter.impl;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.api.FileType;
@@ -19,10 +34,10 @@ import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.FileExporterBuilder;
+import org.gephi.io.exporter.spi.GraphFileExporterBuilder;
+import org.gephi.io.exporter.spi.VectorFileExporterBuilder;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -38,6 +53,8 @@ public class ExportControllerImpl implements ExportController {
     private final ExporterUI[] uis;
 
     public ExportControllerImpl() {
+        Lookup.getDefault().lookupAll(GraphFileExporterBuilder.class);
+        Lookup.getDefault().lookupAll(VectorFileExporterBuilder.class);
         fileExporterBuilders = Lookup.getDefault().lookupAll(FileExporterBuilder.class).toArray(new FileExporterBuilder[0]);
         uis = Lookup.getDefault().lookupAll(ExporterUI.class).toArray(new ExporterUI[0]);
     }
@@ -87,7 +104,7 @@ public class ExportControllerImpl implements ExportController {
             } catch (IOException ex) {
             }
         } else if (fileExporter instanceof CharacterExporter) {
-            Writer writer = new BufferedWriter(new FileWriter(file));
+            Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
             ((CharacterExporter) fileExporter).setWriter(writer);
             try {
                 fileExporter.execute();
@@ -165,11 +182,10 @@ public class ExportControllerImpl implements ExportController {
     }
 
     public Exporter getFileExporter(File file) {
-        FileObject fileObject = FileUtil.toFileObject(file);
         for (FileExporterBuilder im : fileExporterBuilders) {
             for (FileType ft : im.getFileTypes()) {
                 for (String ex : ft.getExtensions()) {
-                    if (fileObject.hasExt(ex)) {
+                    if (hasExt(file, ex)) {
                         return im.buildExporter();
                     }
                 }
@@ -203,5 +219,24 @@ public class ExportControllerImpl implements ExportController {
             }
         }
         return null;
+    }
+
+    private boolean hasExt(File file, String ext) {
+        if (ext == null || ext.isEmpty()) {
+            return false;
+        }
+
+        /** period at first position is not considered as extension-separator */
+        if ((file.getName().length() - ext.length()) <= 1) {
+            return false;
+        }
+
+        boolean ret = file.getName().endsWith(ext);
+
+        if (!ret) {
+            return false;
+        }
+
+        return true;
     }
 }

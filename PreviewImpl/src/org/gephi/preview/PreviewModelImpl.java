@@ -1,7 +1,23 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package org.gephi.preview;
 
 import java.awt.Color;
@@ -189,14 +205,16 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
                 if (editor != null) {
                     String valueStr = propertiesMap.get(p.getName());
                     if (valueStr != null && !valueStr.isEmpty()) {
-                        editor.setAsText(valueStr);
                         if (p.getValueType().equals(Font.class)) { //bug 551877
-                            editor.setValue(Font.decode(valueStr));
+                            p.setValue(Font.decode(valueStr));
+                        } else {
+                            editor.setAsText(valueStr);
+                            Object value = editor.getValue();
+                            if (value != null) {
+                                p.setValue(value);
+                            }
                         }
-                        Object value = editor.getValue();
-                        if (value != null) {
-                            p.setValue(value);
-                        }
+
                     }
                 }
 

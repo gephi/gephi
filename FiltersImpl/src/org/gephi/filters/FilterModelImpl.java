@@ -1,21 +1,21 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters;
@@ -36,7 +36,10 @@ import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
+import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,13 +58,19 @@ public class FilterModelImpl implements FilterModel {
     private Query currentQuery;
     private boolean filtering;
     private GraphView currentResult;
+    private boolean autoRefresh;
+    private FilterAutoRefreshor autoRefreshor;
     //Listeners
     private List<ChangeListener> listeners;
 
-    public FilterModelImpl() {
+    public FilterModelImpl(Workspace workspace) {
         filterLibraryImpl = new FilterLibraryImpl();
         queries = new LinkedList<Query>();
         listeners = new ArrayList<ChangeListener>();
+        autoRefresh = true;
+
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
+        autoRefreshor = new FilterAutoRefreshor(this, graphModel);
     }
 
     public FilterLibrary getLibrary() {
@@ -118,6 +127,7 @@ public class FilterModelImpl implements FilterModel {
         AbstractQueryImpl impl = (AbstractQueryImpl) query;
         impl.addSubQuery(subQuery);
         fireChangeEvent();
+        autoRefreshor.manualRefresh();
     }
 
     public void removeSubQuery(Query query, Query parent) {
@@ -125,6 +135,7 @@ public class FilterModelImpl implements FilterModel {
         impl.removeSubQuery(query);
         ((AbstractQueryImpl) query).setParent(null);
         fireChangeEvent();
+        autoRefreshor.manualRefresh();
     }
 
     public int getIndex(Query function) {
@@ -150,8 +161,22 @@ public class FilterModelImpl implements FilterModel {
         this.filtering = filtering;
     }
 
-    public void setSelecting(boolean filtering) {
-        this.filtering = filtering;
+    public void setSelecting(boolean selecting) {
+        this.filtering = !selecting;
+    }
+
+    public boolean isAutoRefresh() {
+        return autoRefresh;
+    }
+
+    public void setAutoRefresh(boolean autoRefresh) {
+        this.autoRefresh = autoRefresh;
+        fireChangeEvent();
+        if (!autoRefresh) {
+            autoRefreshor.setEnable(false);
+        } else if (autoRefresh && currentResult != null) {
+            autoRefreshor.setEnable(true);
+        }
     }
 
     public Query getCurrentQuery() {
@@ -164,8 +189,10 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public void updateParameters(Query query) {
-        ((FilterQueryImpl) query).updateParameters();
-        fireChangeEvent();
+        if (query instanceof FilterQueryImpl) {
+            ((FilterQueryImpl) query).updateParameters();
+            fireChangeEvent();
+        }
     }
 
     public Query getQuery(Filter filter) {
@@ -195,16 +222,34 @@ public class FilterModelImpl implements FilterModel {
         return filterThread;
     }
 
+    public FilterAutoRefreshor getAutoRefreshor() {
+        return autoRefreshor;
+    }
+
     public void setFilterThread(FilterThread filterThread) {
         this.filterThread = filterThread;
     }
 
     public void setCurrentResult(GraphView currentResult) {
         this.currentResult = currentResult;
+        if (currentResult != null && autoRefresh) {
+            autoRefreshor.setEnable(true);
+        } else if (currentResult == null && autoRefresh) {
+            autoRefreshor.setEnable(false);
+        }
     }
 
     public GraphView getCurrentResult() {
         return currentResult;
+    }
+
+    public void destroy() {
+        if (filterThread != null) {
+            filterThread.setRunning(false);
+        }
+        autoRefreshor.setRunning(false);
+        currentResult = null;
+        listeners = null;
     }
 
     //EVENTS
@@ -215,7 +260,9 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public void removeChangeListener(ChangeListener listener) {
-        listeners.remove(listener);
+        if (listeners != null) {
+            listeners.remove(listener);
+        }
     }
 
     private void fireChangeEvent() {
@@ -229,6 +276,7 @@ public class FilterModelImpl implements FilterModel {
 
     public Element writeXML(Document document) {
         Element filterModelE = document.createElement("filtermodel");
+        filterModelE.setAttribute("autorefresh", String.valueOf(autoRefresh));
 
         //Queries
         Element queriesE = document.createElement("queries");
@@ -287,6 +335,11 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public void readXML(Element filterModelE) {
+        String autofresh = filterModelE.getAttribute("autorefresh");
+        if (autofresh != null && !autofresh.isEmpty()) {
+            autoRefresh = Boolean.parseBoolean(autofresh);
+        }
+
         queries.clear();
 
         Map<Integer, Query> idMap = new HashMap<Integer, Query>();
@@ -342,6 +395,7 @@ public class FilterModelImpl implements FilterModel {
                             String textValue = paramE.getTextContent();
                             editor.setAsText(textValue);
                             property.setValue(editor.getValue());
+                            updateParameters(query);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

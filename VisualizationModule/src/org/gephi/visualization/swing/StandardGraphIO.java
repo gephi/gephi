@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.visualization.swing;
 
 import java.awt.Cursor;
@@ -335,6 +335,9 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         //Refresh
         engine.getScheduler().requireUpdateVisible();
 
+        //Too slow as it triggers many events later
+        //vizController.getVizModel().setCameraDistance(graphDrawable.getCameraVector().length());
+
         /* float[] graphLimits = engine.getGraphLimits();
         float graphWidth = Math.abs(graphLimits[1]-graphLimits[0]);
         float graphHeight = Math.abs(graphLimits[3]-graphLimits[2]);
@@ -366,6 +369,23 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
         graphDrawable.rotationX = (float)Math.atan(((graphDrawable.cameraLocation[1]-graphDrawable.cameraTarget[1])/(graphDrawable.cameraLocation[2]-graphDrawable.cameraTarget[2])));
         engine.getScheduler().requireUpdateVisible();
         }*/
+    }
+
+    public void setCameraDistance(float distance) {
+        float cameraLocation[] = graphDrawable.getCameraLocation();
+        float cameraTarget[] = graphDrawable.getCameraTarget();
+        Vec3f camVect = new Vec3f(cameraTarget[0] - cameraLocation[0], cameraTarget[1] - cameraLocation[1], cameraTarget[2] - cameraLocation[2]);
+
+        float diff = camVect.length() - distance;
+        if (Math.abs(diff) > 1f) {
+            camVect.normalize();
+            cameraLocation[0] += camVect.x() * diff;
+            cameraLocation[1] += camVect.y() * diff;
+            cameraLocation[2] += camVect.z() * diff;
+            cameraLocation[2] = Math.max(0.5f, cameraLocation[2]);
+
+            engine.getScheduler().requireUpdateVisible();
+        }
     }
 
     public float[] getMousePosition3d() {

@@ -1,38 +1,42 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Martin Škurla <bujacik@gmail.com>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.data.attributes;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValueFactory;
+import org.gephi.data.attributes.event.AbstractEvent;
+import org.gephi.data.attributes.event.AttributeEventManager;
+import org.gephi.data.properties.PropertiesColumn;
 import org.openide.util.NbBundle;
 
 /**
  *
  * @author Mathieu Bastian
+ * @author Martin Škurla
  */
 public abstract class AbstractAttributeModel implements AttributeModel {
 
@@ -42,6 +46,8 @@ public abstract class AbstractAttributeModel implements AttributeModel {
     private AttributeTableImpl edgeTable;
     //Factory
     private AttributeFactoryImpl factory;
+    //Events
+    protected AttributeEventManager eventManager;
 
     //Data API
     public AbstractAttributeModel() {
@@ -54,10 +60,19 @@ public abstract class AbstractAttributeModel implements AttributeModel {
     }
 
     protected void createPropertiesColumn() {
-        nodeTable.addColumn("id", "Id", AttributeType.STRING, AttributeOrigin.PROPERTY, null);
-        nodeTable.addColumn("label", "Label", AttributeType.STRING, AttributeOrigin.PROPERTY, null);
-        edgeTable.addColumn("id", "Id", AttributeType.STRING, AttributeOrigin.PROPERTY, null);
-        edgeTable.addColumn("label", "Label", AttributeType.STRING, AttributeOrigin.PROPERTY, null);
+        // !!! the position of PropertiesColumn enum constants in following arrays must be the same
+        // !!! as index in each constant
+        PropertiesColumn[] columnsForNodeTable = {PropertiesColumn.NODE_ID,
+                                                  PropertiesColumn.NODE_LABEL};
+        PropertiesColumn[] columnsForEdgeTable = {PropertiesColumn.EDGE_ID,
+                                                  PropertiesColumn.EDGE_LABEL,
+                                                  PropertiesColumn.EDGE_WEIGHT};
+
+        for (PropertiesColumn columnForNodeTable : columnsForNodeTable)
+            nodeTable.addPropertiesColumn(columnForNodeTable);
+
+        for (PropertiesColumn columnForEdgeTable : columnsForEdgeTable)
+            edgeTable.addPropertiesColumn(columnForEdgeTable);
     }
 
     public abstract Object getManagedValue(Object obj, AttributeType attributeType);
@@ -99,6 +114,18 @@ public abstract class AbstractAttributeModel implements AttributeModel {
 
     public void addTable(AttributeTableImpl table) {
         tableMap.put(table.getName(), table);
+    }
+
+    public void addAttributeListener(AttributeListener listener) {
+        eventManager.addAttributeListener(listener);
+    }
+
+    public void removeAttributeListener(AttributeListener listener) {
+        eventManager.removeAttributeListener(listener);
+    }
+
+    public void fireAttributeEvent(AbstractEvent event) {
+        eventManager.fireEvent(event);
     }
 
     public void mergeModel(AttributeModel model) {

@@ -16,8 +16,6 @@
     <attr name="Menu\File\org-netbeans-core-actions-SystemExit.instance\position" intvalue="2150"/>
     <attr name="Menu\Window\ProjectAction.shadow\position" intvalue="250"/>
     <attr name="Menu\Window\org-netbeans-core-windows-actions-ResetWindowsAction.shadow\position" intvalue="2750"/>
-    <folder name="Actions">
-    </folder>
     <folder name="Menu">
         <folder name="Edit">
             <file name="org-gephi-branding-desktop-actions-CleanWorkspace.instance">
@@ -31,6 +29,10 @@
             <file name="org-gephi-branding-desktop-actions-NewWorkspace.instance">
                 <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-NewWorkspace.instance"/>
                 <attr name="position" intvalue="2500"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-RenameWorkspace.instance">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-RenameWorkspace.instance"/>
+                <attr name="position" intvalue="2800"/>
             </file>
             <file name="Separator2_1.instance" url="Separator2_1.instance">
                 <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
@@ -78,6 +80,13 @@
         </folder>
         <file name="GoTo_hidden"/>
         <folder name="Tools">
+            <file name="Separator3_1.instance" url="Separator3_1.instance">
+                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                <attr name="position" intvalue="9900"/>
+            </file>
+            <file name="org-gephi-branding-desktop-multilingual-LanguageAction.instance">
+                <attr name="position" intvalue="10000"/>
+            </file>
             <file name="org-netbeans-modules-favorites-templates-TemplatesAction.shadow_hidden"/>
         </folder>
         <folder name="View">
@@ -104,9 +113,6 @@
             <file name="ViewFavoritesTabAction.shadow_hidden"/>
             <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
             <file name="org-netbeans-core-windows-actions-GlobalPropertiesAction.shadow_hidden"/>
-            <file name="org-gephi-branding-desktop-actions-ResetWindows.instance">
-                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-branding-desktop-actions-ResetWindows.instance"/>
-            </file>
             <file name="org-netbeans-core-windows-actions-ResetWindowsAction.shadow_hidden"/>
         </folder>
     </folder>
@@ -148,39 +154,4 @@
         </file>
     </folder>
     <file name="Toolbars_hidden"/>
-    <folder name="Windows2">
-        <folder name="Components">
-            <file name="BannerTopComponent.settings" url="BannerTopComponentSettings.xml"/>
-        </folder>
-        <folder name="Groups">
-            <file name="LaboratoryGroup.wsgrp" url="LaboratoryGroup.wsgrp"/>
-            <folder name="LaboratoryGroup">
-                <file name="DataTableTopComponent.wstcgrp" url="DataTableTopComponent.wstcgrp"/>
-            </folder>
-            <file name="OverviewGroup.wsgrp" url="OverviewGroup.wsgrp"/>
-            <folder name="OverviewGroup">
-                <file name="GraphTopComponent.wstcgrp" url="GraphTopComponent.wstcgrp"/>
-                <file name="LayoutTopComponent.wstcgrp" url="LayoutTopComponent.wstcgrp"/>
-                <file name="StatisticsTopComponent.wstcgrp" url="StatisticsTopComponent.wstcgrp"/>
-                <file name="FiltersTopComponent.wstcgrp" url="FiltersTopComponent.wstcgrp"/>
-                <file name="RankingTopComponent.wstcgrp" url="RankingTopComponent.wstcgrp"/>
-                <file name="PartitionTopComponent.wstcgrp" url="PartitionTopComponent.wstcgrp"/>
-                <file name="HierarchyTopComponent.wstcgrp" url="HierarchyTopComponent.wstcgrp"/>
-                <file name="ClusteringTopComponent.wstcgrp" url="ClusteringTopComponent.wstcgrp"/>
-                <file name="ContextTopComponent.wstcgrp" url="ContextTopComponent.wstcgrp"/>
-                <file name="TimelineTopComponent.wstcgrp" url="TimelineTopComponent.wstcgrp"/>
-            </folder>
-            <file name="PreviewGroup.wsgrp" url="PreviewGroup.wsgrp"/>
-            <folder name="PreviewGroup">
-                <file name="PreviewTopComponent.wstcgrp" url="PreviewTopComponent.wstcgrp"/>
-                <file name="PreviewSettingsTopComponent.wstcgrp" url="PreviewSettingsTopComponent.wstcgrp"/>
-            </folder>
-        </folder>
-        <folder name="Modes">
-            <folder name="bannermode">
-                <file name="BannerTopComponent.wstcref" url="BannerTopComponentWstcref.xml"/>
-            </folder>
-             <file name="bannermode.wsmode" url="bannermodeWsmode.xml"/>
-        </folder>
-    </folder>
 </filesystem>

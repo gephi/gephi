@@ -1,6 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.plugin.file;
 
@@ -192,6 +208,31 @@ public class ImporterDOT implements FileImporter, LongTask {
                     }
                 } else {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_colorunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                    streamTokenizer.pushBack();
+                }
+            } else if (streamTokenizer.sval.equalsIgnoreCase("pos")) {
+                streamTokenizer.nextToken();
+                if (streamTokenizer.ttype == '=') {
+                    streamTokenizer.nextToken();
+                    if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
+                        try {
+                            String[] positions = streamTokenizer.sval.split(",");
+                            if (positions.length == 2) {
+                                nodeDraft.setX(Float.parseFloat(positions[0]));
+                                nodeDraft.setY(Float.parseFloat(positions[1]));
+                            } else if (positions.length == 3) {
+                                nodeDraft.setX(Float.parseFloat(positions[0]));
+                                nodeDraft.setY(Float.parseFloat(positions[1]));
+                                nodeDraft.setZ(Float.parseFloat(positions[2]));
+                            }
+                        } catch (Exception e) {
+                        }
+                    } else {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_posunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                        streamTokenizer.pushBack();
+                    }
+                } else {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_posunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
                     streamTokenizer.pushBack();
                 }
             } else if (streamTokenizer.sval.equalsIgnoreCase("style")) {

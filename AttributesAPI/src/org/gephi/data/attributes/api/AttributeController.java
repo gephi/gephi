@@ -1,24 +1,26 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.api;
+
+import org.gephi.project.api.Workspace;
 
 /**
  * This controller is the access door to {@link AttributeModel}, that contains
@@ -48,6 +50,19 @@ public interface AttributeController {
      * @return the currently active model
      */
     public AttributeModel getModel();
+
+    /**
+     * Returns the model for the given <code>Workspace</code>.
+     * <p>
+     * The controller maintains the current project status and is responsible of
+     * maintaining one <code>AttributeModel</code> instance per <code>Workspace</code>.
+     * Hence, the model can also be accessed by using the following code:
+     * <pre>
+     * Workspace.getLookup().get(AttributeModel.class);
+     * </pre>
+     * @return the attribute model for <code>workspace</code>.
+     */
+    public AttributeModel getModel(Workspace workspace);
 
     /**
      * Create a new model independent from any <code>Workspace</code>. The model

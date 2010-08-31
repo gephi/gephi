@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.visualization.opengl.text;
 
 import com.sun.opengl.util.j2d.TextRenderer;
@@ -30,7 +30,11 @@ import javax.swing.event.ChangeListener;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModelEvent;
+import org.gephi.dynamic.api.DynamicModelListener;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
@@ -63,6 +67,7 @@ public class TextManager implements VizArchitecture {
     private TextModel model;
     private boolean nodeRefresh = true;
     private boolean edgeRefresh = true;
+    private TimeInterval currentTimeInterval;
     //Preferences
     private boolean renderer3d;
     private boolean mipmap;
@@ -128,6 +133,9 @@ public class TextManager implements VizArchitecture {
                             model.setTextColumns(nodeCols, edgeCols);
                         }
                     }
+
+                    DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+                    currentTimeInterval = dynamicController.getModel().getVisibleInterval();
                 }
             }
         });
@@ -137,6 +145,15 @@ public class TextManager implements VizArchitecture {
         mipmap = vizConfig.isLabelMipMap();
         fractionalMetrics = vizConfig.isLabelFractionalMetrics();
         renderer3d = false;
+
+        //Dynamic change
+        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        dynamicController.addModelListener(new DynamicModelListener() {
+
+            public void dynamicModelChanged(DynamicModelEvent event) {
+                currentTimeInterval = (TimeInterval) event.getData();
+            }
+        });
     }
 
     private void initRenderer() {
@@ -258,7 +275,7 @@ public class TextManager implements VizArchitecture {
                 model.colorMode.textColor(this, textData, objectModel);
                 model.sizeMode.setSizeFactor3d(model.nodeSizeFactor, textData, objectModel);
                 if (nodeRefresh) {
-                    builder.buildNodeText((NodeData) renderable, textData, model);
+                    builder.buildNodeText((NodeData) renderable, textData, model, currentTimeInterval);
                 }
                 String txt = textData.line.text;
                 Rectangle2D r = renderer.getBounds(txt);
@@ -276,9 +293,9 @@ public class TextManager implements VizArchitecture {
             TextDataImpl textData = (TextDataImpl) renderable.getTextData();
             if (textData != null) {
                 model.colorMode.textColor(this, textData, objectModel);
-                model.sizeMode.setSizeFactor2d(model.edgeSizeFactor, textData, objectModel);
+                model.sizeMode.setSizeFactor3d(model.edgeSizeFactor, textData, objectModel);
                 if (edgeRefresh) {
-                    builder.buildNodeText((NodeData) renderable, textData, model);
+                    builder.buildNodeText((NodeData) renderable, textData, model, currentTimeInterval);
                 }
 
                 String txt = textData.line.text;
@@ -342,7 +359,7 @@ public class TextManager implements VizArchitecture {
                 model.colorMode.textColor(this, textData, objectModel);
                 model.sizeMode.setSizeFactor2d(model.nodeSizeFactor, textData, objectModel);
                 if (nodeRefresh) {
-                    builder.buildNodeText((NodeData) renderable, textData, model);
+                    builder.buildNodeText((NodeData) renderable, textData, model, currentTimeInterval);
                 }
                 if (textData.sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
                     return;
@@ -365,7 +382,7 @@ public class TextManager implements VizArchitecture {
                 model.colorMode.textColor(this, textData, objectModel);
                 model.sizeMode.setSizeFactor2d(model.edgeSizeFactor, textData, objectModel);
                 if (edgeRefresh) {
-                    builder.buildEdgeText((EdgeData) renderable, textData, model);
+                    builder.buildEdgeText((EdgeData) renderable, textData, model, currentTimeInterval);
                 }
                 if (textData.sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
                     return;

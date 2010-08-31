@@ -34,6 +34,15 @@
         <!-- Replace the icns file. -->
         <delete file="${nbdist-resources.dir}/${app.name}.icns"/>
         <copy tofile="${nbdist-resources.dir}/${app.name}.icns" file="${app.name}.icns" />
+
+        <!-- Unzip Netbeans Platform Localization JARs -->
+        <antcall target="merge-l10n-mac"/>
+    </target>
+
+    <!-- Override to add localization JARs. -->
+    <target name="build-zip" depends="suite.build-zip" description="Replace ZIP target">
+        <!-- Unzip Netbeans Platform Localization JARs -->
+        <antcall target="merge-l10n-zip"/>
     </target>
 
     <target name="javadoc">
@@ -61,6 +70,34 @@
         </javadoc>
     </target>
 
+    <target name="download-l10n-jars" description="Download Netbeans Platform Localization JARs on the website">
+        <property name="l10n.url" value="http://netbeans.org/project_downloads/nblocalization/6.9/"/>
+        <property name="l10n.file" value="nb69_platform_l10n.zip"/>
+        <property name="l10n.dir" value="l10n"/>
+        <get src="${l10n.url}${l10n.file}" dest="${dist.dir}" verbose="true" skipexisting="true"/>
+    </target>
+
+    <target name="unzip-l10n" depends="download-l10n-jars" description="Unzip Netbeans Platform Localization JARs">
+        <unzip src="${dist.dir}/${l10n.file}" dest="${dist.dir}/${l10n.dir}/${app.name}"/>
+    </target>
+    
+    <target name="merge-l10n-zip" depends="unzip-l10n" description="Merge Localization JARs on ZIP distribution">
+        <zip destfile="${dist.dir}/${app.name}.zip" basedir="${dist.dir}/${l10n.dir}" update="true"/>
+        <antcall target="clean-l10n"/>
+    </target>
+
+    <target name="merge-l10n-mac" depends="unzip-l10n" description="Merge Localization JARs on MAC distribution">
+        <copy todir="${dist.dir}/${app.name}.app/Contents/Resources">
+            <fileset dir="${dist.dir}/${l10n.dir}"/>
+        </copy>
+        <antcall target="clean-l10n"/>
+    </target>
+
+    <target name="clean-l10n" description="Clean l10n targets files and directories">
+        <delete dir="${dist.dir}/${l10n.dir}" />
+        <delete file="${dist.dir}/${l10n.file}"/>
+    </target>
+
     <target name="clean-toolkit" description="Clean Toolkit dir">
         <delete failonerror="false" includeemptydirs="true">
             <fileset dir="toolkit"/>
@@ -74,7 +111,7 @@
         <property name="toolkit.jar.name" value="gephi-toolkit"/>
         <property name="toolkit.dir" value="${basedir}/toolkit"/>
         <property name="toolkit.jar" value="${toolkit.dir}/${toolkit.jar.name}.jar"/>
-        <property name="platform.dir" value="${toolkit.dir}/platform11"/>
+        <property name="platform.dir" value="${toolkit.dir}/platform"/>
         <mkdir dir="${toolkit.dir}"/>
 
         <echo message="Packaging ${app.name} into a single JAR at ${toolkit.jar}"/>
@@ -91,6 +128,7 @@
         <property name="toolkit.platformdir" value="${platform.dir}"/>
         <copy file="${toolkit.platformdir}/core/org-openide-filesystems.jar" todir="${toolkit.tempdir}"/>
         <copy file="${toolkit.platformdir}/lib/org-openide-util.jar" todir="${toolkit.tempdir}"/>
+        <copy file="${toolkit.platformdir}/lib/org-openide-util-lookup.jar" todir="${toolkit.tempdir}"/>
         <copy todir="${toolkit.tempdir}">
             <fileset dir="${toolkit.platformdir}/modules">
                 <include name="org-openide-nodes.jar"/>
@@ -102,15 +140,13 @@
                 <include name="org-gephi-algorithms.jar"/>
                 <include name="org-gephi-data-attributes.jar"/>
                 <include name="org-gephi-data-attributes-api.jar"/>
-                <include name="org-gephi-io-exporter-api.jar"/>
-                <include name="org-gephi-io-exporter-plugin.jar"/>
+                <include name="org-gephi-io-exporter-preview.jar"/>
                 <include name="org-gephi-filters.jar"/>
                 <include name="org-gephi-filters-api.jar"/>
                 <include name="org-gephi-filters-plugin.jar"/>
                 <include name="org-gephi-graph-api.jar"/>
                 <include name="org-gephi-graph-dhns.jar"/>
                 <include name="org-gephi-io-database-drivers.jar"/>
-                <include name="org-gephi-utils-collection.jar"/>
                 <include name="org-gephi-utils-collection.jar"/>
                 <include name="org-gephi-io-exporter-api.jar"/>
                 <include name="org-gephi-io-exporter-plugin.jar"/>
@@ -119,14 +155,19 @@
                 <include name="org-gephi-io-processor-plugin.jar"/>
                 <include name="org-gephi-layout-api.jar"/>
                 <include name="org-gephi-layout-plugin.jar"/>
+                <include name="org-gephi-preview-api.jar"/>
+                <include name="org-gephi-preview.jar"/>
                 <include name="org-gephi-project-api.jar"/>
                 <include name="org-gephi-statistics-api.jar"/>
                 <include name="org-gephi-statistics-plugin.jar"/>
-                <include name="org-gephi-project-api.jar"/>
                 <include name="org-gephi-timeline.jar"/>
                 <include name="org-gephi-utils.jar"/>
                 <include name="org-gephi-utils-longtask.jar" />
-                <include name="org-gephi-utils-collection.jar"/>
+                <include name="org-gephi-ranking-api.jar"/>
+                <include name="org-gephi-partition-api.jar"/>
+                <include name="org-gephi-partition-plugin.jar"/>
+                <include name="org-gephi-io-generator-api.jar"/>
+                <include name="org-gephi-io-generator-plugin.jar"/>
             </fileset>
         </copy>
         <copy todir="${toolkit.tempdir}">
@@ -162,5 +203,47 @@
         <delete file="${toolkit.dir}/temp_final.jar"/>
         <delete dir="${platform.dir}"/>
 
+    </target>
+
+    <target name="toolkit-javadoc">
+        <javadoc destdir="${basedir}/toolkit/doc" windowtitle="Gephi Toolkit API Index" encoding="UTF-8" charset="UTF-8" stylesheetfile="stylesheet.css"  packagenames="org.gephi.*" overview="overview.html" classpath="build/public-package-jars/org-openide-util-lookup.jar">
+            <sourcepath>
+                <pathelement path="Algorithms/src"/>
+                <pathelement path="AttributesAPI/src"/>
+                <pathelement path="AttributesImpl/src"/>
+                <pathelement path="PreviewExport/src"/>
+                <pathelement path="FiltersAPI/src"/>
+                <pathelement path="FiltersImpl/src"/>
+                <pathelement path="FiltersPlugin/src"/>
+                <pathelement path="GraphAPI/src"/>
+                <pathelement path="DHNSGraph/src"/>
+                <pathelement path="DBDrivers/src"/>
+                <pathelement path="CollectionUtils/src"/>
+                <pathelement path="ExportAPI/src"/>
+                <pathelement path="ExportPlugin/src"/>
+                <pathelement path="ImportAPI/src"/>
+                <pathelement path="ImportPlugin/src"/>
+                <pathelement path="ProcessorPlugin/src"/>
+                <pathelement path="LayoutAPI/src"/>
+                <pathelement path="LayoutPlugin/src"/>
+                <pathelement path="PreviewAPI/src"/>
+                <pathelement path="PreviewImpl/src"/>
+                <pathelement path="ProjectAPI/src"/>
+                <pathelement path="StatisticsAPI/src"/>
+                <pathelement path="StatisticsPlugin/src"/>
+                <pathelement path="TimelineAPI/src"/>
+                <pathelement path="Utils/src"/>
+                <pathelement path="LongTaskAPI/src"/>
+                <pathelement path="RankingAPI/src"/>
+                <pathelement path="PartitionAPI/src"/>
+                <pathelement path="PartitionPlugin/src"/>
+                <pathelement path="GeneratorAPI/src"/>
+                <pathelement path="GeneratorPlugin/src"/>
+            </sourcepath>
+            <doctitle>Gephi Toolkit Javadoc</doctitle>
+            <header>Gephi Toolkit 0.7.1 Javadoc</header>
+        </javadoc>
+        <zip destfile="${basedir}/toolkit/toolkit-javadoc.zip" basedir="${basedir}/toolkit/doc">
+        </zip>
     </target>
 </project>

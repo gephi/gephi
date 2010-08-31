@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.filters;
 
 import java.beans.PropertyEditorManager;
@@ -73,13 +73,13 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
-                workspace.add(new FilterModelImpl());
+                workspace.add(new FilterModelImpl(workspace));
             }
 
             public void select(Workspace workspace) {
                 model = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
                 if (model == null) {
-                    model = new FilterModelImpl();
+                    model = new FilterModelImpl(workspace);
                     workspace.add(model);
                 }
             }
@@ -88,6 +88,10 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             }
 
             public void close(Workspace workspace) {
+                FilterModelImpl m = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
+                if(m!=null) {
+                    m.destroy();
+                }
             }
 
             public void disable() {
@@ -103,7 +107,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             Workspace workspace = pc.getCurrentWorkspace();
             model = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
             if (model == null) {
-                model = new FilterModelImpl();
+                model = new FilterModelImpl(workspace);
                 workspace.add(model);
             }
         }
@@ -205,7 +209,11 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         Graph result;
         if (model.getCurrentQuery() == query) {
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-            result = graphModel.getGraphVisible();
+            GraphView view = model.getCurrentResult();
+            if (view != null) {
+                return;
+            }
+            result = graphModel.getGraph(view);
         } else {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
@@ -235,7 +243,11 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         Graph result;
         if (model.getCurrentQuery() == query) {
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-            result = graphModel.getGraphVisible();
+            GraphView view = model.getCurrentResult();
+            if (view == null) {
+                return;
+            }
+            result = graphModel.getGraph(view);
         } else {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
@@ -264,6 +276,38 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         }, "Export filter to workspace").start();
     }
 
+    public void exportToLabelVisible(Query query) {
+        Graph result;
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        if (model.getCurrentQuery() == query) {
+            GraphView view = model.getCurrentResult();
+            if (view == null) {
+                return;
+            }
+            result = graphModel.getGraph(view);
+        } else {
+            FilterProcessor processor = new FilterProcessor();
+            result = processor.process((AbstractQueryImpl) query, graphModel);
+        }
+        Graph fullGraph = graphModel.getGraph();
+        fullGraph.readLock();
+        for (Node n : fullGraph.getNodes()) {
+            boolean inView = n.getNodeData().getNode(result.getView().getViewId()) != null;
+            n.getNodeData().getTextData().setVisible(inView);
+        }
+        for (Edge e : fullGraph.getEdges()) {
+            boolean inView = result.contains(e);
+            e.getEdgeData().getTextData().setVisible(inView);
+        }
+        fullGraph.readUnlock();
+    }
+
+    public void setAutoRefresh(boolean autoRefresh) {
+        if(model!=null) {
+            model.setAutoRefresh(autoRefresh);
+        }
+    }
+
     public FilterModel getModel() {
         return model;
     }
@@ -271,6 +315,10 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     public void setValue(FilterProperty property, Object value, Callback callback) {
         if (model != null) {
             Query query = model.getQuery(property.getFilter());
+            if (query == null) {
+                callback.setValue(value);
+                return;
+            }
             AbstractQueryImpl rootQuery = ((AbstractQueryImpl) query).getRoot();
             FilterThread filterThread = null;
             if ((filterThread = model.getFilterThread()) != null && model.getCurrentQuery() == rootQuery) {
@@ -282,6 +330,8 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 callback.setValue(value);
                 model.updateParameters(query);
             }
+        } else {
+            callback.setValue(value);
         }
     }
 }

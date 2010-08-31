@@ -1,27 +1,29 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.visualization.bridge;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -77,7 +79,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         for (ModelImpl metaModelImpl : selectedNodeModels) {
             NodeData nodeData = (NodeData) metaModelImpl.getObj();
             Node node = nodeData.getNode(graph.getView().getViewId());
-            if (graph.getDescendantCount(node) > 0) {
+            if (node != null && graph.getDescendantCount(node) > 0) {
                 return true;
             }
         }
@@ -94,7 +96,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         for (ModelImpl metaModelImpl : selectedNodeModels) {
             NodeData nodeData = (NodeData) metaModelImpl.getObj();
             Node node = nodeData.getNode(graph.getView().getViewId());
-            if (graph.getParent(node) != null) {
+            if (node != null && graph.getParent(node) != null) {
                 return true;
             }
         }
@@ -106,8 +108,17 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         if (graphModel == null) {
             return false;
         }
+        this.graph = graphController.getModel().getHierarchicalGraphVisible();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-        return selectedNodeModels.length >= 1;
+        int nodesReallyPresent = 0;
+        for (ModelImpl metaModelImpl : selectedNodeModels) {
+            NodeData nodeData = (NodeData) metaModelImpl.getObj();
+            Node node = nodeData.getNode(graph.getView().getViewId());
+            if (node != null) {
+                nodesReallyPresent++;
+            }
+        }
+        return nodesReallyPresent >= 1;
     }
 
     public boolean canUngroup() {
@@ -129,7 +140,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
                 try {
                     for (ModelImpl metaModelImpl : models) {
                         Node node = ((NodeData) metaModelImpl.getObj()).getNode(graph.getView().getViewId());
-                        if (graph.getDescendantCount(node) > 0) {
+                        if (node != null && graph.getDescendantCount(node) > 0) {
                             expandPositioning(node);
                             graph.expand(node);
                         }
@@ -154,9 +165,11 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
                     for (ModelImpl metaModelImpl : models) {
                         NodeData nodeData = (NodeData) metaModelImpl.getObj();
                         Node node = nodeData.getNode(graph.getView().getViewId());
-                        Node nodeParent = graph.getParent(node);
-                        if (nodeParent != null) {
-                            parents.add(nodeParent);
+                        if (node != null) {
+                            Node nodeParent = graph.getParent(node);
+                            if (nodeParent != null) {
+                                parents.add(nodeParent);
+                            }
                         }
                     }
 
@@ -179,9 +192,12 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
     public void group() {
         this.graph = graphController.getModel().getHierarchicalGraphVisible();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-        final Node[] newGroup = new Node[selectedNodeModels.length];
+        final List<Node> newGroup = new ArrayList<Node>();
         for (int i = 0; i < selectedNodeModels.length; i++) {
-            newGroup[i] = ((NodeData) selectedNodeModels[i].getObj()).getNode(graph.getView().getViewId());
+            Node node = ((NodeData) selectedNodeModels[i].getObj()).getNode(graph.getView().getViewId());
+            if (node != null) {
+                newGroup.add(node);
+            }
         }
         new Thread(new Runnable() {
 
@@ -194,8 +210,8 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
                     float r = 0;
                     float g = 0;
                     float b = 0;
-                    Node group = graph.groupNodes(newGroup);
-                    group.getNodeData().setLabel("Group (" + newGroup.length + " nodes)");
+                    Node group = graph.groupNodes(newGroup.toArray(new Node[0]));
+                    group.getNodeData().setLabel("Group (" + newGroup.size() + " nodes)");
                     group.getNodeData().setSize(10f);
                     for (Node child : newGroup) {
                         centroidX += child.getNodeData().x();
@@ -233,9 +249,9 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
                     for (ModelImpl metaModelImpl : models) {
                         NodeData nodeData = (NodeData) metaModelImpl.getObj();
                         Node node = nodeData.getNode(graph.getView().getViewId());
-                        if (graph.getDescendantCount(node) > 0) {
+                        if (node != null && graph.getDescendantCount(node) > 0) {
                             parents.add(node);
-                        } else if (graph.getParent(node) != null) {
+                        } else if (node != null && graph.getParent(node) != null) {
                             parents.add(graph.getParent(node));
                         }
                     }
@@ -341,16 +357,28 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         if (graphModel == null) {
             return false;
         }
+        this.graph = graphController.getModel().getHierarchicalGraphVisible();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-        return selectedNodeModels.length >= 1;
+        int nodesReallyPresent = 0;
+        for (ModelImpl metaModelImpl : selectedNodeModels) {
+            NodeData nodeData = (NodeData) metaModelImpl.getObj();
+            Node node = nodeData.getNode(graph.getView().getViewId());
+            if (node != null) {
+                nodesReallyPresent++;
+            }
+        }
+        return nodesReallyPresent >= 1;
     }
 
     public void delete() {
         this.graph = graphController.getModel().getHierarchicalGraph();
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-        for (ModelImpl metaModelImpl : selectedNodeModels) {
-            NodeData nodeData = (NodeData) metaModelImpl.getObj();
-            graph.removeNode(nodeData.getRootNode());
+        for (ModelImpl model : selectedNodeModels) {
+            NodeData nodeData = (NodeData) model.getObj();
+            Node node = nodeData.getRootNode();
+            if (node != null) {
+                graph.removeNode(node);
+            }
         }
     }
 

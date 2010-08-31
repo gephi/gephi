@@ -1,21 +1,21 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.statistics.plugin;
@@ -29,6 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsUI.class)
 public class PageRankUI implements StatisticsUI {
 
+    private final StatSettings settings = new StatSettings();
     private PageRankPanel panel;
     private PageRank pageRank;
 
@@ -40,6 +41,7 @@ public class PageRankUI implements StatisticsUI {
     public void setup(Statistics statistics) {
         this.pageRank = (PageRank) statistics;
         if (panel != null) {
+            settings.load(pageRank);
             panel.setEpsilon(pageRank.getEpsilon());
             panel.setProbability(pageRank.getProbability());
             panel.setDirected(!pageRank.getUndirected());
@@ -47,11 +49,14 @@ public class PageRankUI implements StatisticsUI {
     }
 
     public void unsetup() {
-        //Set params
-        pageRank.setEpsilon(panel.getEpsilon());
-        pageRank.setProbability(panel.getProbability());
-        pageRank.setUndirected(!panel.isDirected());
-
+        if (panel != null) {
+            pageRank.setEpsilon(panel.getEpsilon());
+            pageRank.setProbability(panel.getProbability());
+            pageRank.setUndirected(!panel.isDirected());
+            settings.save(pageRank);
+        }
+        panel = null;
+        pageRank = null;
     }
 
     public Class<? extends Statistics> getStatisticsClass() {
@@ -72,5 +77,21 @@ public class PageRankUI implements StatisticsUI {
 
     public int getPosition() {
         return 800;
+    }
+
+    private static class StatSettings {
+
+        private double epsilon = 0.001;
+        private double probability = 0.85;
+
+        private void save(PageRank stat) {
+            this.epsilon = stat.getEpsilon();
+            this.probability = stat.getProbability();
+        }
+
+        private void load(PageRank stat) {
+            stat.setEpsilon(epsilon);
+            stat.setProbability(probability);
+        }
     }
 }

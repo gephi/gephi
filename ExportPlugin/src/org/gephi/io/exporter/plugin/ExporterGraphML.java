@@ -1,3 +1,24 @@
+/*
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, 
+          Sebastien Heymann <sebastien.heymann@gephi.org>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package org.gephi.io.exporter.plugin;
 
 import java.awt.Color;
@@ -202,7 +223,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
             positionKey2E.setAttribute("attr.type", "float");
             positionKey2E.setAttribute("for", "node");
             root.appendChild(positionKey2E);
-            if (minZ != 0f && maxZ != 0f) {
+            if (minZ != 0f || maxZ != 0f) {
                 Element positionKey3E = document.createElement("key");
                 positionKey3E.setAttribute("id", "z");
                 positionKey3E.setAttribute("attr.name", "z");
@@ -388,7 +409,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
             nodeE.appendChild(positionXE);
             Element positionYE = createNodePositionY(document, n);
             nodeE.appendChild(positionYE);
-            if (minZ != 0f && maxZ != 0f) {
+            if (minZ != 0f || maxZ != 0f) {
                 Element positionZE = createNodePositionZ(document, n);
                 nodeE.appendChild(positionZE);
             }

@@ -1,23 +1,24 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>,
+          Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.statistics.api;
 
 import org.gephi.statistics.spi.Statistics;
@@ -34,17 +35,20 @@ import org.gephi.statistics.spi.StatisticsUI;
 public interface StatisticsModel {
 
     /**
-     * Returns all <code>Statistics</code> instances that were successfully executed.
-     * @return                  statistics instances, containing results
+     * Returns the report for the given statistics class or <code>null</code> if no report
+     * exists for this statistics.
+     * @param statistics        a statistics class
+     * @return                  the report or <code>null</code> if not found
      */
-    public Statistics[] getStatistics();
+    public String getReport(Class<? extends Statistics> statistics);
 
     /**
-     * Returns the statistics instance for the given UI, if exists.
-     * @param statisticsUI      an UI instance
-     * @return                  the UI statistics relative, or <code>null</code>
+     * Returns the result string for the given <code>StatisticsUI</code> class or
+     * <code>null</code> if no result string exists for this statistics.
+     * @param statisticsUI      a statisticsUI class
+     * @return                  the result or <code>null</code> if not found
      */
-    public Statistics getStatistics(StatisticsUI statisticsUI);
+    public String getResult(StatisticsUI statisticsUI);
 
     /**
      * Returns <code>true</code> if the statistics front-end is visible, <code>
@@ -63,6 +67,16 @@ public interface StatisticsModel {
      *                          <code>false</code> otherwise
      */
     public boolean isRunning(StatisticsUI statisticsUI);
+
+    /**
+     * Returns the <code>Statistics</code> instance currently running for the
+     * particular <code>StatisticsUI</code> registered or <code>null</code> if
+     * the statistics is not running.
+     * @param statisticsUI      an UI instance
+     * @return                  the statistics instance if it is running, or
+     *                          <code>null</code> if not running
+     */
+    public Statistics getRunning(StatisticsUI statisticsUI);
 
     public void addChangeListener(ChangeListener changeListener);
 

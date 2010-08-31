@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.io.importer.impl;
 
 import java.util.ArrayList;
@@ -27,9 +27,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.api.AttributeValueFactory;
+import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.Container;
@@ -70,8 +76,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private int directedEdgesCount = 0;
     private int undirectedEdgesCount = 0;
     //Dynamic
-    private String timeIntervalMin;
-    private String timeIntervalMax;
+    private Double timeIntervalMin;
+    private Double timeIntervalMax;
 
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
@@ -111,12 +117,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (nodeMap.containsKey(nodeDraftImpl.getId())) {
             String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraftImpl.getId());
             report.logIssue(new Issue(message, Level.WARNING));
-            report.log("Duplicated node id=" + nodeDraftImpl.getId() + "label=" + nodeDraftImpl.getLabel() + " is ignored");
+            report.log("Duplicated node id='" + nodeDraftImpl.getId() + "' label='" + nodeDraftImpl.getLabel() + "' is ignored");
             return;
-        }
-
-        if (nodeDraftImpl.getSlices() != null) {
-            dynamicGraph = true;
         }
 
         nodeMap.put(nodeDraftImpl.getId(), nodeDraftImpl);
@@ -133,8 +135,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 node = factory.newNodeDraft();
                 node.setId(id);
                 addNode(node);
-                report.logIssue(new Issue("Unknow Node id", Level.WARNING));
-                report.log("Automatic node creation from id=" + id);
+                node.setCreatedAuto(true);
+                report.logIssue(new Issue("Unknown node id, creates node from id='" + id + "'", Level.INFO));
             } else {
                 String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_UnknowNodeId", id);
                 report.logIssue(new Issue(message, Level.SEVERE));
@@ -332,20 +334,40 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return attributeModel.valueFactory();
     }
 
-    public String getTimeIntervalMin() {
+    public Double getTimeIntervalMin() {
         return timeIntervalMin;
     }
 
-    public String getTimeIntervalMax() {
+    public Double getTimeIntervalMax() {
         return timeIntervalMax;
     }
 
     public void setTimeIntervalMax(String timeIntervalMax) {
-        this.timeIntervalMax = timeIntervalMax;
+        try {
+            this.timeIntervalMax = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMax);
+        } catch (Exception ex) {
+            try {
+                this.timeIntervalMax = Double.parseDouble(timeIntervalMax);
+            } catch (Exception ex2) {
+            }
+        }
+        if (this.timeIntervalMax == null) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMax), Level.SEVERE));
+        }
     }
 
     public void setTimeIntervalMin(String timeIntervalMin) {
-        this.timeIntervalMin = timeIntervalMin;
+        try {
+            this.timeIntervalMin = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMin);
+        } catch (Exception ex) {
+            try {
+                this.timeIntervalMin = Double.parseDouble(timeIntervalMin);
+            } catch (Exception ex2) {
+            }
+        }
+        if (this.timeIntervalMin == null) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMin), Level.SEVERE));
+        }
     }
 
     public boolean verify() {
@@ -373,6 +395,123 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         } else if (directedEdgesCount > 0 && undirectedEdgesCount > 0) {
             parameters.setEdgeDefault(EdgeDefault.MIXED);
         }
+
+        //Is dynamic graph
+        for (NodeDraftImpl node : nodeMap.values()) {
+            dynamicGraph = node.getTimeInterval() != null;
+            if (dynamicGraph) {
+                break;
+            }
+        }
+        if (!dynamicGraph) {
+            for (EdgeDraftImpl edge : edgeMap.values()) {
+                dynamicGraph = edge.getTimeInterval() != null;
+                if (dynamicGraph) {
+                    break;
+                }
+            }
+        }
+        if (!dynamicGraph) {
+            for (AttributeColumn col : attributeModel.getNodeTable().getColumns()) {
+                dynamicGraph = col.getType().isDynamicType();
+                if (dynamicGraph) {
+                    break;
+                }
+            }
+            for (AttributeColumn col : attributeModel.getEdgeTable().getColumns()) {
+                dynamicGraph = col.getType().isDynamicType();
+                if (dynamicGraph) {
+                    break;
+                }
+            }
+        }
+
+        if (timeIntervalMin != null || timeIntervalMax != null) {
+            //Print values to report
+        }
+
+        //Dynamic attributes bounds
+        if (dynamicGraph && (timeIntervalMin != null || timeIntervalMax != null)) {
+            for (NodeDraftImpl node : nodeMap.values()) {
+                boolean issue = false;
+                if (timeIntervalMin != null || timeIntervalMax != null) {
+                    if (timeIntervalMin != null && node.getTimeInterval() != null && node.getTimeInterval().getLow() < timeIntervalMin) {
+                        node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), timeIntervalMin, node.getTimeInterval().getHigh()));
+                        issue = true;
+                    }
+                    if (timeIntervalMax != null && node.getTimeInterval() != null && node.getTimeInterval().getHigh() > timeIntervalMax) {
+                        node.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(node.getTimeInterval(), node.getTimeInterval().getLow(), timeIntervalMax));
+                        issue = true;
+                    }
+                    if (node.getTimeInterval() == null) {
+                        node.setTimeInterval(new TimeInterval(timeIntervalMin, timeIntervalMax));
+                    }
+                }
+
+                AttributeValue[] values = node.getAttributeRow().getValues();
+                for (int i = 0; i < values.length; i++) {
+                    AttributeValue val = values[i];
+                    if (val.getValue() != null && DynamicType.class.isAssignableFrom(val.getColumn().getType().getType())) {   //is Dynamic type
+                        DynamicType type = (DynamicType) val.getValue();
+                        if (timeIntervalMin != null && type.getLow() < timeIntervalMin) {
+                            if (!Double.isInfinite(type.getLow())) {
+                                issue = true;
+                            }
+                            node.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, timeIntervalMin, type.getHigh()));
+                        }
+                        if (timeIntervalMax != null && type.getHigh() > timeIntervalMax) {
+                            if (!Double.isInfinite(type.getHigh())) {
+                                issue = true;
+                            }
+                            node.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, type.getLow(), timeIntervalMax));
+                        }
+                    }
+                }
+                if (issue) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeIntervalVerify_Node_OutOfBound", node.getId()), Level.WARNING));
+                }
+            }
+            for (EdgeDraftImpl edge : edgeMap.values()) {
+                boolean issue = false;
+                if (timeIntervalMin != null || timeIntervalMax != null) {
+                    if (timeIntervalMin != null && edge.getTimeInterval() != null && edge.getTimeInterval().getLow() < timeIntervalMin) {
+                        edge.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(edge.getTimeInterval(), timeIntervalMin, edge.getTimeInterval().getHigh()));
+                        issue = true;
+                    }
+                    if (timeIntervalMax != null && edge.getTimeInterval() != null && edge.getTimeInterval().getHigh() > timeIntervalMax) {
+                        edge.setTimeInterval((TimeInterval) DynamicUtilities.fitToInterval(edge.getTimeInterval(), edge.getTimeInterval().getLow(), timeIntervalMax));
+                        issue = true;
+                    }
+                    if (edge.getTimeInterval() == null) {
+                        edge.setTimeInterval(new TimeInterval(timeIntervalMin, timeIntervalMax));
+                    }
+                }
+
+                AttributeValue[] values = edge.getAttributeRow().getValues();
+                for (int i = 0; i < values.length; i++) {
+                    AttributeValue val = values[i];
+                    if (val.getValue() != null && DynamicType.class.isAssignableFrom(val.getColumn().getType().getType())) {   //is Dynamic type
+                        DynamicType type = (DynamicType) val.getValue();
+                        if (timeIntervalMin != null && type.getLow() < timeIntervalMin) {
+                            if (!Double.isInfinite(type.getLow())) {
+                                issue = true;
+                            }
+                            edge.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, timeIntervalMin, type.getHigh()));
+                        }
+                        if (timeIntervalMax != null && type.getHigh() > timeIntervalMax) {
+                            if (!Double.isInfinite(type.getHigh())) {
+                                issue = true;
+                            }
+                            edge.getAttributeRow().setValue(val.getColumn(), DynamicUtilities.fitToInterval(type, type.getLow(), timeIntervalMax));
+                        }
+                    }
+                }
+                if (issue) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeIntervalVerify_Edge_OutOfBound", edge.getId()), Level.WARNING));
+                }
+            }
+        }
+
         return true;
     }
 
@@ -384,6 +523,11 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 String oppositekey = edge.getTarget().getId() + "-" + edge.getSource().getId();
                 EdgeDraftImpl opposite = edgeSourceTargetMap.get(oppositekey);
                 if (opposite != null) {
+                    if (parameters.isUndirectedSumDirectedEdgesWeight()) {
+                        opposite.setWeight(edge.getWeight() + opposite.getWeight());
+                    } else {
+                        opposite.setWeight(Math.max(edge.getWeight(), opposite.getWeight()));
+                    }
                     itr.remove();
                     edgeSourceTargetMap.remove(edge.getSource().getId() + "-" + edge.getTarget().getId());
                 }
@@ -398,8 +542,28 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     String oppositekey = edge.getTarget().getId() + "-" + edge.getSource().getId();
                     EdgeDraftImpl opposite = edgeSourceTargetMap.get(oppositekey);
                     if (opposite != null) {
+                        if (parameters.isUndirectedSumDirectedEdgesWeight()) {
+                            edge.setWeight(edge.getWeight() + opposite.getWeight());
+                        } else {
+                            edge.setWeight(Math.max(edge.getWeight(), opposite.getWeight()));
+                        }
                         edgeMap.remove(opposite.getId());
                         edgeSourceTargetMap.remove(oppositekey);
+                    }
+                }
+            }
+        }
+
+        //Clean autoNode
+        if (!allowAutoNode()) {
+            for (NodeDraftImpl nodeDraftImpl : nodeMap.values().toArray(new NodeDraftImpl[0])) {
+                if (nodeDraftImpl.isCreatedAuto()) {
+                    nodeMap.remove(nodeDraftImpl.getId());
+                    for (Iterator<EdgeDraftImpl> itr = edgeMap.values().iterator(); itr.hasNext();) {
+                        EdgeDraftImpl edge = itr.next();
+                        if (edge.getSource() == nodeDraftImpl || edge.getTarget() == nodeDraftImpl) {
+                            itr.remove();
+                        }
                     }
                 }
             }
@@ -423,6 +587,29 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         for (NodeDraftImpl node : nodeMap.values()) {
             if (node.getLabel() == null) {
                 node.setLabel(node.getId());
+            }
+        }
+
+        //Set random position
+        boolean customPosition = false;
+        for (NodeDraftImpl node : nodeMap.values()) {
+            if (Float.isNaN(node.getX())) {
+                node.setX(0);
+            }
+            if (Float.isNaN(node.getY())) {
+                node.setY(0);
+            }
+            if (Float.isNaN(node.getZ())) {
+                node.setZ(0);
+            }
+            if (node.getX() != 0f || node.getY() != 0) {
+                customPosition = true;
+            }
+        }
+        if (!customPosition) {
+            for (NodeDraftImpl node : nodeMap.values()) {
+                node.setX((float) ((0.01 + Math.random()) * 1000) - 500);
+                node.setY((float) ((0.01 + Math.random()) * 1000) - 500);
             }
         }
     }
@@ -492,6 +679,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public void setEdgeDefault(EdgeDefault edgeDefault) {
         parameters.setEdgeDefault(edgeDefault);
         report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Set_EdgeDefault", edgeDefault.toString()), Level.INFO));
+    }
+
+    public void setUndirectedSumDirectedEdgesWeight(boolean value) {
+        parameters.setUndirectedSumDirectedEdgesWeight(value);
     }
 
     public boolean allowAutoNode() {

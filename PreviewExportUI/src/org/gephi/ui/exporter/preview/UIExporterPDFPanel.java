@@ -1,12 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Website : http://www.gephi.org
 
-/*
- * UIExporterPDFPanel.java
- *
- * Created on 13 avr. 2010, 18:21:09
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.exporter.preview;
 
@@ -21,6 +31,7 @@ import java.text.ParseException;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import org.gephi.io.exporter.preview.PDFExporter;
+import org.gephi.lib.validation.ValidationClient;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
@@ -33,7 +44,7 @@ import org.openide.util.NbPreferences;
  *
  * @author Mathieu Bastian
  */
-public class UIExporterPDFPanel extends javax.swing.JPanel {
+public class UIExporterPDFPanel extends javax.swing.JPanel implements ValidationClient {
 
     private static final double INCH = 72.0;
     private static final double MM = 2.8346456692895527;
@@ -133,23 +144,27 @@ public class UIExporterPDFPanel extends javax.swing.JPanel {
 
         ValidationGroup group = validationPanel.getValidationGroup();
 
-        //Size
-        group.add(innerPanel.widthTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                new PositiveSizeValidator(innerPanel));
-        group.add(innerPanel.heightTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                new PositiveSizeValidator(innerPanel));
-
-        //Margins
-        group.add(innerPanel.topMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                Validators.REQUIRE_VALID_NUMBER);
-        group.add(innerPanel.bottomMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                Validators.REQUIRE_VALID_NUMBER);
-        group.add(innerPanel.leftMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                Validators.REQUIRE_VALID_NUMBER);
-        group.add(innerPanel.rightMargintextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                Validators.REQUIRE_VALID_NUMBER);
+        innerPanel.validate(group);
 
         return validationPanel;
+    }
+
+    public void validate(ValidationGroup group) {
+        //Size
+        group.add(widthTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                new PositiveSizeValidator(this));
+        group.add(heightTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                new PositiveSizeValidator(this));
+
+        //Margins
+        group.add(topMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_NUMBER);
+        group.add(bottomMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_NUMBER);
+        group.add(leftMarginTextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_NUMBER);
+        group.add(rightMargintextField, Validators.REQUIRE_NON_EMPTY_STRING,
+                Validators.REQUIRE_VALID_NUMBER);
     }
 
     public void setup(PDFExporter pdfExporter) {

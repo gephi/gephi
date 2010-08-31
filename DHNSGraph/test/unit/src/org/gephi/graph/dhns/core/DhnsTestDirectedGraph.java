@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.graph.dhns.core;
 
 import java.util.ArrayList;
@@ -441,6 +441,34 @@ public class DhnsTestDirectedGraph {
         assertTrue(graphGlobal.contains(edge7));
         graphGlobal.removeEdge(edge7);
         assertFalse(graphGlobal.contains(edge7));
+    }
+
+    @Test
+    public void testRemoveEdge2() {
+        DhnsGraphController controller = new DhnsGraphController();
+        Dhns dhns = new Dhns(controller, null);
+        HierarchicalDirectedGraphImpl graph = new HierarchicalDirectedGraphImpl(dhns, dhns.getGraphStructure().getMainView());
+        TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
+        GraphFactoryImpl factory = dhns.factory();
+
+        Node node1 = factory.newNode();
+        Node node2 = factory.newNode();
+        graph.addNode(node1);
+        graph.addNode(node2);
+
+        AbstractEdge edge1 = factory.newEdge(node1, node2, 3f, true);
+        graph.addEdge(edge1);
+        AbstractEdge edge2 = factory.newEdge(node2, node1, 1f, true);
+        graph.addEdge(edge2);
+
+        graph.removeEdge(edge2);
+
+        assertEquals(edge1, graph.getEdges().toArray()[0]);
+        assertFalse(graph.contains(edge2));
+
+        graph.removeEdge(edge1);
+        assertFalse(graph.contains(edge1));
+        assertEquals(0, graph.getEdgeCount());
     }
 
     @Test

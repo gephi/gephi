@@ -1,33 +1,35 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.partition.plugin;
 
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.gephi.graph.api.Node;
 import org.gephi.partition.api.NodePartition;
 import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.spi.Transformer;
+import org.gephi.utils.PaletteUtils;
 
 /**
  *
@@ -44,6 +46,15 @@ public class NodeColorTransformer implements Transformer {
 
     public Map<Object, Color> getMap() {
         return map;
+    }
+
+    public void randomizeColors(Partition partition) {
+        List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
+        int i = 0;
+        for (Part p : partition.getParts()) {
+            getMap().put(p.getValue(), colors.get(i));
+            i++;
+        }
     }
 
     public void transform(Partition partition) {

@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.filters.api;
 
 import org.gephi.filters.spi.Filter;
@@ -89,6 +89,15 @@ public interface Query {
      * bounds
      */
     public Object getPropertyValue(int index);
+
+    /**
+     * Utility method that returns all queries in this query hierarchy that are
+     * <code>filterClass</code> instance.
+     * @param filterClass the filter class that is to be queried
+     * @return      all queries, including self that are <code>filterClass</code>
+     * instance
+     */
+    public Query[] getQueries(Class<? extends Filter> filterClass);
 
     /**
      * Returns the filter this query is wrapping.

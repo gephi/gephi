@@ -1,21 +1,22 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Patrick J. McSweeney (pjmcswee@syr.edu)
+Copyright 2008-2010 Gephi
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>,
+Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics;
@@ -41,7 +42,8 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * @author Mathieu Bastian, Patrick J. McSweeney
+ * @author Mathieu Bastian
+ * @author Patrick J. McSweeney
  */
 @ServiceProvider(service = StatisticsController.class)
 public class StatisticsControllerImpl implements StatisticsController {
@@ -99,11 +101,10 @@ public class StatisticsControllerImpl implements StatisticsController {
         StatisticsBuilder builder = getBuilder(pStatistics.getClass());
         final StatisticsUI[] uis = getUI(pStatistics);
 
-        model.addStatistics(pStatistics);
         for (StatisticsUI s : uis) {
             s.setup(pStatistics);
-            model.setRunning(s, true);
         }
+        model.setRunning(pStatistics, true);
 
         if (pStatistics instanceof LongTask) {
             LongTaskExecutor executor = new LongTaskExecutor(true, builder.getName(), 10);
@@ -115,9 +116,12 @@ public class StatisticsControllerImpl implements StatisticsController {
 
                 public void run() {
                     pStatistics.execute(graphModel, attributeModel);
+                    model.setRunning(pStatistics, false);
                     for (StatisticsUI s : uis) {
-                        model.setRunning(s, false);
+                        model.addResult(s);
+                        s.unsetup();
                     }
+                    model.addReport(pStatistics);
                 }
             }, builder.getName(), null);
         } else {
@@ -125,18 +129,13 @@ public class StatisticsControllerImpl implements StatisticsController {
             if (listener != null) {
                 listener.taskFinished(null);
             }
-            for (StatisticsUI s : uis) {
-                model.setRunning(s, false);
+            model.setRunning(pStatistics, false);
+            for (StatisticsUI s : uis) {              
+                model.addResult(s);
+                s.unsetup();
             }
+            model.addReport(pStatistics);
         }
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public List<StatisticsBuilder> getStatistics() {
-        return null;
     }
 
     public StatisticsUI[] getUI(Statistics statistics) {

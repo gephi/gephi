@@ -1,39 +1,26 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.graph.api;
 
 /**
- * Graph event interface, for listening to global changes.
- * <ul>
- * <li><b>NODES_UPDATED:</b> Nodes have been added or removed</li>
- * <li><b>EDGES_UPDATED:</b> Edges have been added or removed</li>
- * <li><b>NODES_AND_EDGES_UPDATED:</b> Nodes and edges have been added or removed</li>
- * <li><b>VIEWS_UPDATED:</b> The current visible view changed</li>
- * </ul>
- * @author Mathieu Bastian
- * @see GraphListener
- */
-public interface GraphEvent {
-
-    /**
      * Graph event interface, that {@link GraphListener} receives when the graph is
      * modified. Each event is specific to a particular view, which can be get
      * from the <code>getSource()</code> method.
@@ -52,9 +39,27 @@ public interface GraphEvent {
      * <tr><td><b>- EXPAND:</b></td><td>Expand nodes in the hierarchy</td></tr>
      * <tr><td><b>- RETRACT:</b></td><td>Retract nodes in the hierarchy</td></tr>
      * <tr><td><b>- META_EDGES_UPDATE</b></td><td>Meta-Edges are updated</td></tr></table>
-     * 
+     *
      * @author Mathieu Bastian
      * @see GraphView
+     */
+public interface GraphEvent {
+
+    /**
+     * <table>
+     * <tr><td><b>- ADD_NODES:</b></td><td>Add nodes to the graph</td></tr>
+     * <tr><td><b>- REMOVE_NODES:</b></td><td>Remove nodes from the graph, with their edges</td></tr>
+     * <tr><td><b>- ADD_EDGES:</b></td><td>Add edges to the graph</td></tr>
+     * <tr><td><b>- REMOVE_EDGES:</b></td><td>Remove edges from the graph</td></tr>
+     * <tr><td><b>- MOVE_NODE:</b></td><td>Move nodes on the hierarchy, parent node is changed</td></tr>
+     * <tr><td><b>- VISIBLE_VIEW:</b></td><td>Current visible view is changed</td></tr>
+     * <tr><td><b>- NEW_VIEW:</b></td><td>A new view is created</td></tr>
+     * <tr><td><b>- DESTROY_VIEW:</b></td><td>A view is destroyed</td></tr>
+     * <tr><td><b>- CLEAR_NODES:</b></td><td>Clear all nodes in the graph, and all edges</td></tr>
+     * <tr><td><b>- CLEAR_EDGES:</b></td>Clear all edges in the graph<td></td></tr>
+     * <tr><td><b>- EXPAND:</b></td><td>Expand nodes in the hierarchy</td></tr>
+     * <tr><td><b>- RETRACT:</b></td><td>Retract nodes in the hierarchy</td></tr>
+     * <tr><td><b>- META_EDGES_UPDATE</b></td><td>Meta-Edges are updated</td></tr></table>
      */
     public enum EventType {
 

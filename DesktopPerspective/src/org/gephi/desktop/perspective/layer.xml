@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="BannerTopComponent.settings" url="BannerTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Groups">
+            <file name="LaboratoryGroup.wsgrp" url="LaboratoryGroup.wsgrp"/>
+            <folder name="LaboratoryGroup">
+                <file name="DataTableTopComponent.wstcgrp" url="DataTableTopComponent.wstcgrp"/>
+            </folder>
+            <file name="OverviewGroup.wsgrp" url="OverviewGroup.wsgrp"/>
+            <folder name="OverviewGroup">
+                <file name="GraphTopComponent.wstcgrp" url="GraphTopComponent.wstcgrp"/>
+                <file name="LayoutTopComponent.wstcgrp" url="LayoutTopComponent.wstcgrp"/>
+                <file name="StatisticsTopComponent.wstcgrp" url="StatisticsTopComponent.wstcgrp"/>
+                <file name="FiltersTopComponent.wstcgrp" url="FiltersTopComponent.wstcgrp"/>
+                <file name="RankingTopComponent.wstcgrp" url="RankingTopComponent.wstcgrp"/>
+                <file name="PartitionTopComponent.wstcgrp" url="PartitionTopComponent.wstcgrp"/>
+                <file name="HierarchyTopComponent.wstcgrp" url="HierarchyTopComponent.wstcgrp"/>
+                <file name="ClusteringTopComponent.wstcgrp" url="ClusteringTopComponent.wstcgrp"/>
+                <file name="ContextTopComponent.wstcgrp" url="ContextTopComponent.wstcgrp"/>
+                <file name="TimelineTopComponent.wstcgrp" url="TimelineTopComponent.wstcgrp"/>
+            </folder>
+            <file name="PreviewGroup.wsgrp" url="PreviewGroup.wsgrp"/>
+            <folder name="PreviewGroup">
+                <file name="PreviewTopComponent.wstcgrp" url="PreviewTopComponent.wstcgrp"/>
+                <file name="PreviewSettingsTopComponent.wstcgrp" url="PreviewSettingsTopComponent.wstcgrp"/>
+            </folder>
+        </folder>
+        <folder name="Modes">
+            <folder name="bannermode">
+                <file name="BannerTopComponent.wstcref" url="BannerTopComponentWstcref.xml"/>
+            </folder>
+            <file name="bannermode.wsmode" url="bannermodeWsmode.xml"/>
+        </folder>
+    </folder>
+</filesystem>
+

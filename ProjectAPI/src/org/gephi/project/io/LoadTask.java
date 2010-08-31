@@ -1,23 +1,23 @@
 /*
-Copyright 2008 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.project.io;
 
 import java.io.File;
@@ -66,24 +66,26 @@ public class LoadTask implements LongTask, Runnable {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(fileObject.getInputStream());
 
-            //Project instance
-            Project project = new ProjectImpl();
-            project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
-
-            //Version
-            String version = doc.getDocumentElement().getAttribute("version");
-            if (version == null || version.isEmpty() || Double.parseDouble(version) != 0.7) {
-                throw new GephiFormatException("Gephi project file version must be at least 0.7");
-            }
-
-            //GephiReader
-            gephiReader = new GephiReader();
-            project = gephiReader.readAll(doc.getDocumentElement(), project);
-
-            //Add project
             if (!cancel) {
-                ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
-                pc.openProject(project);
+                //Project instance
+                Project project = new ProjectImpl();
+                project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
+
+                //Version
+                String version = doc.getDocumentElement().getAttribute("version");
+                if (version == null || version.isEmpty() || Double.parseDouble(version) != 0.7) {
+                    throw new GephiFormatException("Gephi project file version must be at least 0.7");
+                }
+
+                //GephiReader
+                gephiReader = new GephiReader();
+                project = gephiReader.readAll(doc.getDocumentElement(), project);
+
+                //Add project
+                if (!cancel) {
+                    ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+                    pc.openProject(project);
+                }
             }
             Progress.finish(progressTicket);
         } catch (Exception ex) {
@@ -97,7 +99,9 @@ public class LoadTask implements LongTask, Runnable {
 
     public boolean cancel() {
         cancel = true;
-        gephiReader.cancel();
+        if (gephiReader != null) {
+            gephiReader.cancel();
+        }
         return true;
     }
 

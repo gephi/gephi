@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <AuxValues>
@@ -165,13 +165,13 @@
             </DimensionLayout>
           </Layout>
         </Container>
-        <Container class="net.java.dev.colorchooser.ColorChooser" name="edgeBothSelectionColorChooser">
+        <Container class="net.java.dev.colorchooser.ColorChooser" name="edgeOutSelectionColorChooser">
           <Properties>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[14, 14]"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gephi/visualization/component/Bundle.properties" key="EdgeSettingsPanel.edgeBothSelectionColorChooser.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gephi/visualization/component/Bundle.properties" key="EdgeSettingsPanel.edgeOutSelectionColorChooser.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>
@@ -193,13 +193,13 @@
             </DimensionLayout>
           </Layout>
         </Container>
-        <Container class="net.java.dev.colorchooser.ColorChooser" name="edgeOutSelectionColorChooser">
+        <Container class="net.java.dev.colorchooser.ColorChooser" name="edgeBothSelectionColorChooser">
           <Properties>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[14, 14]"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/gephi/visualization/component/Bundle.properties" key="EdgeSettingsPanel.edgeOutSelectionColorChooser.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="org/gephi/visualization/component/Bundle.properties" key="EdgeSettingsPanel.edgeBothSelectionColorChooser.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
           <Constraints>

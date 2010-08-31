@@ -1,6 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+Copyright 2008-2010 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.plugin.file;
 
@@ -116,6 +132,7 @@ public class ImporterDL implements FileImporter, LongTask {
     }
 
     private void readHeaderLine(String line) {
+        line = line.replaceAll(" = ", "=");
         StringTokenizer firstLineTokenizer = new StringTokenizer(line, " ,;");
         while (firstLineTokenizer.hasMoreTokens()) {
             String tag = firstLineTokenizer.nextToken().toLowerCase();
@@ -255,14 +272,15 @@ public class ImporterDL implements FileImporter, LongTask {
         // should have three entries, int from, int to, weight
         String from = rowkonizer.nextToken();
         String to = rowkonizer.nextToken();
-        double weight = -1;
+        double weight = 1.0;
 
-        String weightParse = rowkonizer.nextToken();
-        weight = 1.0;
-        try {
-            weight = Double.parseDouble(weightParse);
-        } catch (Exception e) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_edgeparseweight", weightParse, getLineNumber(pointer)), Issue.Level.WARNING));
+        if (rowkonizer.hasMoreTokens()) {
+            String weightParse = rowkonizer.nextToken();
+            try {
+                weight = Double.parseDouble(weightParse);
+            } catch (Exception e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterDL.class, "importerDL_error_edgeparseweight", weightParse, getLineNumber(pointer)), Issue.Level.WARNING));
+            }
         }
 
         NodeDraft sourceNode = container.getNode(from);

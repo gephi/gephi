@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.lib.commons.codec
+OpenIDE-Module-Localizing-Bundle: org/gephi/lib/commons/codec/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.4
+
