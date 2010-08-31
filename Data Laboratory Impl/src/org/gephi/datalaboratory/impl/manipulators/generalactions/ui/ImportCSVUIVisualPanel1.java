@@ -50,6 +50,10 @@ import org.openide.util.NbPreferences;
  */
 public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
 
+    private static final String CHARSET_SAVED_PREFERENCES = "ImportCSVUIVisualPanel1_Charset";
+    private static final String SEPARATOR_SAVED_PREFERENCES = "ImportCSVUIVisualPanel1_Separator";
+    private static final String TABLE_SAVED_PREFERENCES = "ImportCSVUIVisualPanel1_Table";
+
     private static final int MAX_ROWS_PREVIEW = 25;
     private File selectedFile = null;
     private ImportCSVUIWizardPanel1 wizard1;
@@ -68,13 +72,28 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
         separatorComboBox.addItem(new SeparatorWrapper(('\t'), getMessage("ImportCSVUIVisualPanel1.tab")));
         separatorComboBox.addItem(new SeparatorWrapper((' '), getMessage("ImportCSVUIVisualPanel1.space")));
 
+        separatorComboBox.setSelectedIndex(NbPreferences.forModule(ImportCSVUIVisualPanel1.class).getInt(SEPARATOR_SAVED_PREFERENCES, 0));//Use saved separator or comma if not saved yet
+
         tableComboBox.addItem(getMessage("ImportCSVUIVisualPanel1.nodes-table"));
         tableComboBox.addItem(getMessage("ImportCSVUIVisualPanel1.edges-table"));
+
+        tableComboBox.setSelectedIndex(NbPreferences.forModule(ImportCSVUIVisualPanel1.class).getInt(TABLE_SAVED_PREFERENCES, 0));//Use saved table or nodes table if not saved yet
 
         for (String charset : Charset.availableCharsets().keySet()) {
             charsetComboBox.addItem(charset);
         }
-        charsetComboBox.setSelectedItem(Charset.defaultCharset().name());
+        String savedCharset = NbPreferences.forModule(ImportCSVUIVisualPanel1.class).get(CHARSET_SAVED_PREFERENCES, null);
+        if (savedCharset != null) {
+            charsetComboBox.setSelectedItem(savedCharset);
+        }else{
+            charsetComboBox.setSelectedItem(Charset.forName("UTF-8").name());//UTF-8 by default, not system default charset
+        }
+    }
+
+    public void unSetup(){
+        NbPreferences.forModule(ImportCSVUIVisualPanel1.class).put(CHARSET_SAVED_PREFERENCES, charsetComboBox.getSelectedItem().toString());
+        NbPreferences.forModule(ImportCSVUIVisualPanel1.class).putInt(SEPARATOR_SAVED_PREFERENCES, separatorComboBox.getSelectedIndex());
+        NbPreferences.forModule(ImportCSVUIVisualPanel1.class).putInt(TABLE_SAVED_PREFERENCES, tableComboBox.getSelectedIndex());
     }
 
     public ValidationPanel getValidationPanel() {

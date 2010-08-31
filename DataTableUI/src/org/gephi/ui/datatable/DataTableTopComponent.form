@@ -201,13 +201,6 @@
     </Container>
     <Container class="javax.swing.JScrollPane" name="attributeColumnsScrollPane">
       <Properties>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Attribute columns">
-              <ResourceString PropertyName="titleX" bundle="org/gephi/ui/datatable/Bundle.properties" key="DataTableTopComponent.attributeColumnsPanel.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-            </TitledBorder>
-          </Border>
-        </Property>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[200, 130]"/>
         </Property>

@@ -100,6 +100,10 @@ public class ImportCSVUIWizardPanel2 implements WizardDescriptor.Panel {
         component.reloadSettings();
     }
 
+    public void unSetup() {
+        component.unSetup();
+    }
+
     public void storeSettings(Object settings) {
         wizardDescriptor.putProperty("columns-names", component.getColumnsToImport());
         wizardDescriptor.putProperty("columns-types", component.getColumnsToImportTypes());

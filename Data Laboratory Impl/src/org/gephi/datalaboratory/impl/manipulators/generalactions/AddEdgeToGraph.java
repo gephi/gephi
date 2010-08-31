@@ -25,6 +25,8 @@ import org.gephi.datalaboratory.api.GraphElementsController;
 import org.gephi.datalaboratory.impl.manipulators.generalactions.ui.AddEdgeToGraphUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -40,6 +42,7 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
 
     private Node source=null, target=null;
     private boolean directed;
+    private GraphModel graphModel=null;
 
     public void execute() {
         if (source != null && target != null) {
@@ -60,6 +63,11 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
     }
 
     public ManipulatorUI getUI() {
+        GraphModel currentGraphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
+        if(graphModel!=currentGraphModel){//If graph model has changed since last execution, change default mode for edges to create in UI, else keep this parameter across calls
+            directed=currentGraphModel.isDirected()||graphModel.isMixed();//Get graph directed state. Set to true if graph is directed or mixed
+            graphModel=currentGraphModel;
+        }
         return new AddEdgeToGraphUI();
     }
 

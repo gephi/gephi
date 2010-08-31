@@ -32,12 +32,15 @@ import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 
 /**
  *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class AddColumnUI extends javax.swing.JPanel {
+
+    private static final String COLUMN_TYPE_SAVED_PREFERENCES = "AddColumnUI_type";
     private AttributeTable table;
     private JButton okButton;
 
@@ -65,6 +68,10 @@ public class AddColumnUI extends javax.swing.JPanel {
         });
     }
 
+    public void unSetup(){
+        NbPreferences.forModule(AddColumnUI.class).putInt(COLUMN_TYPE_SAVED_PREFERENCES, typeComboBox.getSelectedIndex());
+    }
+
     public String getDisplayName() {
         return NbBundle.getMessage(AddColumnUI.class, "AddColumnUI.title");
     }
@@ -89,6 +96,14 @@ public class AddColumnUI extends javax.swing.JPanel {
 
         for (AttributeType type : AttributeType.values()) {
             typeComboBox.addItem(type);
+        }
+
+        int savedType=NbPreferences.forModule(AddColumnUI.class).getInt(COLUMN_TYPE_SAVED_PREFERENCES, -1);
+        //Set last saved type or String by default:
+        if (savedType != -1) {
+            typeComboBox.setSelectedIndex(savedType);
+        } else {
+            typeComboBox.setSelectedItem(AttributeType.STRING);
         }
     }
 

@@ -87,6 +87,8 @@ public final class ImportCSVUIWizardAction extends CallableSystemAction {
             }
             Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
         }
+        step1.unSetup();
+        step2.unSetup();
     }
 
     /**

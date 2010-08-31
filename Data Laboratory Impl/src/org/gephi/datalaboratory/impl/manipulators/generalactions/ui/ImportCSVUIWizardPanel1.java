@@ -83,6 +83,10 @@ public class ImportCSVUIWizardPanel1 implements WizardDescriptor.Panel {
         wizardDescriptor.putProperty("charset", component.getSelectedCharset());
     }
 
+    public void unSetup(){
+        component.unSetup();
+    }
+
     public WizardDescriptor getWizardDescriptor() {
         return wizardDescriptor;
     }

@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.datatable;
 
 import java.awt.AWTEvent;
@@ -53,6 +53,7 @@ import javax.swing.event.DocumentListener;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeEvent;
+import org.gephi.data.attributes.api.AttributeEvent.EventType;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeTable;
@@ -292,41 +293,20 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     public void attributesChanged(AttributeEvent event) {
-        if (refreshOnceHelperThread == null || !refreshOnceHelperThread.isAlive()) {
-            refreshOnceHelperThread = new RefreshOnceHelperThread();
-            refreshOnceHelperThread.start();
-        } else {
-            refreshOnceHelperThread.eventAttended();
-        }
-//        if (!bannerPanel.isVisible() && classDisplayed != ClassDisplayed.NONE) {
-//            SwingUtilities.invokeLater(new Runnable() {
-//
-//                public void run() {
-//                    bannerPanel.setVisible(true);
-//                }
-//            });
-//        }
-//        refreshColumnManipulators();
-//        refreshGeneralActionsButtons();
+        refreshOnce(event.is(EventType.SET_VALUE));
     }
 
     public void graphChanged(GraphEvent event) {
+        refreshOnce(false);
+    }
+
+    private void refreshOnce(boolean refreshTableOnly) {
         if (refreshOnceHelperThread == null || !refreshOnceHelperThread.isAlive()) {
-            refreshOnceHelperThread = new RefreshOnceHelperThread();
+            refreshOnceHelperThread = new RefreshOnceHelperThread(refreshTableOnly);
             refreshOnceHelperThread.start();
         } else {
             refreshOnceHelperThread.eventAttended();
         }
-//        if (!bannerPanel.isVisible() && classDisplayed != ClassDisplayed.NONE) {
-//            SwingUtilities.invokeLater(new Runnable() {
-//
-//                public void run() {
-//                    bannerPanel.setVisible(true);
-//                }
-//            });
-//        }
-//        refreshColumnManipulators();
-//        refreshGeneralActionsButtons();
     }
 
     /****************Table related methods:*****************/
@@ -586,6 +566,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION)) {
             TableCSVExporter.exportTableAsCSV(this, table, csvUI.getSelectedSeparator(), csvUI.getSelectedCharset(), csvUI.getSelectedColumnsIndexes());
         }
+        csvUI.unSetup();
     }
 
     /*************Column manipulators related methods:*************/
@@ -761,6 +742,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         if (DialogDisplayer.getDefault().notify(dd).equals(okButton)) {
             addColumnUI.execute();
         }
+        addColumnUI.unSetup();
     }
 
     private void showMergeColumnsUI(MergeColumnsUI.Mode mode) {
@@ -890,6 +872,15 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
         private static final int CHECK_TIME_INTERVAL = 100;//100 ms.
         private volatile boolean moreEvents = false;
+        private boolean refreshTableOnly;
+
+        public RefreshOnceHelperThread() {
+            refreshTableOnly = false;
+        }
+
+        public RefreshOnceHelperThread(boolean refreshTableOnly) {
+            this.refreshTableOnly = refreshTableOnly;
+        }
 
         @Override
         public void run() {
@@ -898,7 +889,11 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                     moreEvents = false;
                     Thread.sleep(CHECK_TIME_INTERVAL);
                 } while (moreEvents);
-                DataTableTopComponent.this.refreshAll();
+                if (refreshTableOnly) {
+                    DataTableTopComponent.this.refreshTable();
+                }else{
+                    DataTableTopComponent.this.refreshAll();
+                }
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -1061,7 +1056,6 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         gridBagConstraints.weightx = 1.0;
         add(bannerPanel, gridBagConstraints);
 
-        attributeColumnsScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.attributeColumnsPanel.title"))); // NOI18N
         attributeColumnsScrollPane.setMinimumSize(new java.awt.Dimension(200, 130));
         attributeColumnsScrollPane.setPreferredSize(new java.awt.Dimension(200, 130));
 

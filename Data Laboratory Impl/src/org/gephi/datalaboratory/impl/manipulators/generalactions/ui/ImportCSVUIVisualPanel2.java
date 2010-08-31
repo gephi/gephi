@@ -38,8 +38,12 @@ import org.gephi.datalaboratory.impl.manipulators.generalactions.ui.ImportCSVUIW
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 
 public final class ImportCSVUIVisualPanel2 extends JPanel {
+
+    private static final String ASSIGN_NEW_NODES_IDS_SAVED_PREFERENCES = "ImportCSVUIVisualPanel2_assign_new_nodes_ids";
+    private static final String CREATE_NEW_NODES_SAVED_PREFERENCES = "ImportCSVUIVisualPanel2_create_new_nodes";
 
     private final ImportCSVUIWizardPanel2 wizard2;
     private Character separator;
@@ -58,6 +62,15 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     public ImportCSVUIVisualPanel2(ImportCSVUIWizardPanel2 wizard2) {
         initComponents();
         this.wizard2 = wizard2;
+    }
+
+    public void unSetup(){
+        if(assignNewNodeIds!=null){
+            NbPreferences.forModule(ImportCSVUIVisualPanel1.class).putBoolean(ASSIGN_NEW_NODES_IDS_SAVED_PREFERENCES, assignNewNodeIds.isSelected());
+        }
+        if(createNewNodes!=null){
+            NbPreferences.forModule(ImportCSVUIVisualPanel1.class).putBoolean(CREATE_NEW_NODES_SAVED_PREFERENCES, createNewNodes.isSelected());
+        }
     }
 
     public void reloadSettings() {
@@ -125,13 +138,13 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
                 }
                 if (mode == ImportCSVUIWizardAction.Mode.EDGES_TABLE && columns[i].equalsIgnoreCase("target") && !targetFound) {
                     targetFound = true;
-                    //Do not allow to not select source column:
+                    //Do not allow to not select target column:
                     columnsCheckBoxes[i].setEnabled(false);
                     columnsComboBoxes[i].setEnabled(false);
                 }
                 if (mode == ImportCSVUIWizardAction.Mode.EDGES_TABLE && columns[i].equalsIgnoreCase("type") && !typeFound) {
                     typeFound = true;
-                    //Do not allow to not select source column:
+                    //Do not allow to change type column type:
                     columnsComboBoxes[i].setEnabled(false);
                 }
             }
@@ -155,12 +168,16 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     }
 
     private void loadNodesTableSettings(JPanel settingsPanel) {
-        assignNewNodeIds = new JCheckBox(getMessage("ImportCSVUIVisualPanel2.nodes.assign-ids-checkbox"), true);
+        //Create assignNewNodeIds checkbox and set its selection with saved preferences or true by default:
+        assignNewNodeIds = new JCheckBox(getMessage("ImportCSVUIVisualPanel2.nodes.assign-ids-checkbox"), 
+                NbPreferences.forModule(ImportCSVUIVisualPanel1.class).getBoolean(ASSIGN_NEW_NODES_IDS_SAVED_PREFERENCES, true));
         settingsPanel.add(assignNewNodeIds, "wrap");
     }
 
     private void loadEdgesTableSettings(JPanel settingsPanel) {
-        createNewNodes = new JCheckBox(getMessage("ImportCSVUIVisualPanel2.edges.create-new-nodes-checkbox"), true);
+        //Create createNewNodes checkbox and set its selection with saved preferences or true by default:
+        createNewNodes = new JCheckBox(getMessage("ImportCSVUIVisualPanel2.edges.create-new-nodes-checkbox"),
+                NbPreferences.forModule(ImportCSVUIVisualPanel1.class).getBoolean(CREATE_NEW_NODES_SAVED_PREFERENCES, true));
         settingsPanel.add(createNewNodes, "wrap");
     }
 

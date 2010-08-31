@@ -28,6 +28,7 @@ import javax.swing.table.TableModel;
 import net.miginfocom.swing.MigLayout;
 import org.netbeans.swing.outline.Outline;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 
 /**
  * UI for selecting CSV export options of a JTable.
@@ -35,6 +36,8 @@ import org.openide.util.NbBundle;
  */
 public class CSVExportUI extends javax.swing.JPanel {
 
+    private static final String CHARSET_SAVED_PREFERENCES = "CSVExportUI_Charset";
+    private static final String SEPARATOR_SAVED_PREFERENCES = "CSVExportUI_Separator";
     private JTable table;
     private JCheckBox[] columnsCheckBoxes;
 
@@ -47,12 +50,23 @@ public class CSVExportUI extends javax.swing.JPanel {
         separatorComboBox.addItem(new SeparatorWrapper(('\t'), getMessage("CSVExportUI.tab")));
         separatorComboBox.addItem(new SeparatorWrapper((' '), getMessage("CSVExportUI.space")));
 
+        separatorComboBox.setSelectedIndex(NbPreferences.forModule(CSVExportUI.class).getInt(SEPARATOR_SAVED_PREFERENCES, 0));//Use saved separator or comma if not saved
+
         for (String charset : Charset.availableCharsets().keySet()) {
             charsetComboBox.addItem(charset);
         }
-        charsetComboBox.setSelectedItem(Charset.defaultCharset().name());
-
+        String savedCharset = NbPreferences.forModule(CSVExportUI.class).get(CHARSET_SAVED_PREFERENCES, null);
+        if (savedCharset != null) {
+            charsetComboBox.setSelectedItem(savedCharset);
+        }else{
+            charsetComboBox.setSelectedItem(Charset.forName("UTF-8").name());//UTF-8 by default, not system default charset
+        }
         refreshColumns();
+    }
+
+    public void unSetup(){
+        NbPreferences.forModule(CSVExportUI.class).put(CHARSET_SAVED_PREFERENCES, charsetComboBox.getSelectedItem().toString());
+        NbPreferences.forModule(CSVExportUI.class).putInt(SEPARATOR_SAVED_PREFERENCES, separatorComboBox.getSelectedIndex());
     }
 
     private void refreshColumns() {
@@ -168,17 +182,17 @@ public class CSVExportUI extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
-                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(separatorLabel)
                         .addGap(18, 18, 18)
-                        .addComponent(separatorComboBox, 0, 69, Short.MAX_VALUE))
+                        .addComponent(separatorComboBox, 0, 77, Short.MAX_VALUE))
                     .addComponent(columnsLabel)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(charsetLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(charsetComboBox, 0, 126, Short.MAX_VALUE)))
+                        .addComponent(charsetComboBox, 0, 134, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
