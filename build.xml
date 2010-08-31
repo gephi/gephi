@@ -34,6 +34,15 @@
         <!-- Replace the icns file. -->
         <delete file="${nbdist-resources.dir}/${app.name}.icns"/>
         <copy tofile="${nbdist-resources.dir}/${app.name}.icns" file="${app.name}.icns" />
+
+        <!-- Unzip Netbeans Platform Localization JARs -->
+        <antcall target="merge-l10n-mac"/>
+    </target>
+
+    <!-- Override to add localization JARs. -->
+    <target name="build-zip" depends="suite.build-zip" description="Replace ZIP target">
+        <!-- Unzip Netbeans Platform Localization JARs -->
+        <antcall target="merge-l10n-zip"/>
     </target>
 
     <target name="javadoc">
@@ -59,6 +68,34 @@
             <doctitle>Gephi 0.7alpha4 API Index</doctitle>
             <header>Gephi 0.7alpha4 Javadoc</header>
         </javadoc>
+    </target>
+
+    <target name="download-l10n-jars" description="Download Netbeans Platform Localization JARs on the website">
+        <property name="l10n.url" value="http://netbeans.org/project_downloads/nblocalization/6.9/"/>
+        <property name="l10n.file" value="nb69_platform_l10n.zip"/>
+        <property name="l10n.dir" value="l10n"/>
+        <get src="${l10n.url}${l10n.file}" dest="${dist.dir}" verbose="true" skipexisting="true"/>
+    </target>
+
+    <target name="unzip-l10n" depends="download-l10n-jars" description="Unzip Netbeans Platform Localization JARs">
+        <unzip src="${dist.dir}/${l10n.file}" dest="${dist.dir}/${l10n.dir}/${app.name}"/>
+    </target>
+    
+    <target name="merge-l10n-zip" depends="unzip-l10n" description="Merge Localization JARs on ZIP distribution">
+        <zip destfile="${dist.dir}/${app.name}.zip" basedir="${dist.dir}/${l10n.dir}" update="true"/>
+        <antcall target="clean-l10n"/>
+    </target>
+
+    <target name="merge-l10n-mac" depends="unzip-l10n" description="Merge Localization JARs on MAC distribution">
+        <copy todir="${dist.dir}/${app.name}.app/Contents/Resources">
+            <fileset dir="${dist.dir}/${l10n.dir}"/>
+        </copy>
+        <antcall target="clean-l10n"/>
+    </target>
+
+    <target name="clean-l10n" description="Clean l10n targets files and directories">
+        <delete dir="${dist.dir}/${l10n.dir}" />
+        <delete file="${dist.dir}/${l10n.file}"/>
     </target>
 
     <target name="clean-toolkit" description="Clean Toolkit dir">
