@@ -51,10 +51,7 @@ public class FilterAutoRefreshor extends Thread implements GraphListener {
         while (running) {
             try {
                 if (refresh.compareAndSet(true, false)) {
-                    if (filterModel.getFilterThread() != null && filterModel.getCurrentQuery() != null) {
-                        filterModel.getFilterThread().setRootQuery((AbstractQueryImpl) filterModel.getCurrentQuery());
-                        System.out.println("Refresh");
-                    }
+                    manualRefresh();
                 }
                 Thread.sleep(TIMER);
             } catch (InterruptedException ex) {
@@ -64,7 +61,6 @@ public class FilterAutoRefreshor extends Thread implements GraphListener {
     }
 
     public void setEnable(boolean enable) {
-        System.out.println("setEnable"+enable);
         if (enable) {
             graphModel.addGraphListener(this);
         } else {
@@ -94,6 +90,12 @@ public class FilterAutoRefreshor extends Thread implements GraphListener {
         if (!running) {
             graphModel.removeGraphListener(this);
             refresh.set(false);
+        }
+    }
+
+    public void manualRefresh() {
+        if (filterModel.getFilterThread() != null && filterModel.getCurrentQuery() != null) {
+            filterModel.getFilterThread().setRootQuery((AbstractQueryImpl) filterModel.getCurrentQuery());
         }
     }
 }

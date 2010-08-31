@@ -72,7 +72,7 @@ public class SlotNode extends AbstractNode {
                 public Transferable paste() throws IOException {
                     QueryNode queryNode = (QueryNode) dropNode;
                     FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-                    filterController.setSubQuery(parent, queryNode.qetQuery());
+                    filterController.setSubQuery(parent, queryNode.getQuery());
                     return null;
                 }
             };

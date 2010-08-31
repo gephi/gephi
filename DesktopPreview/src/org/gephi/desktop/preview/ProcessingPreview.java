@@ -264,7 +264,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
         textFont(uniEdgeMiniLabelFont);
         for (UnidirectionalEdge e : graph.getUnidirectionalEdges()) {
             if (!e.isCurved()) {
-                if (e.showLabel() && e.hasLabel()) {
+                if (e.showLabel() && e.hasLabel() && e.getLabel().getFont() != null) {
                     renderEdgeLabel(e.getLabel());
                 }
 
@@ -277,7 +277,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
         textFont(biEdgeMiniLabelFont);
         for (BidirectionalEdge e : graph.getBidirectionalEdges()) {
             if (!e.isCurved()) {
-                if (e.showLabel() && e.hasLabel()) {
+                if (e.showLabel() && e.hasLabel() && e.getLabel().getFont() != null) {
                     renderEdgeLabel(e.getLabel());
                 }
 
@@ -288,13 +288,13 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
         }
 
         for (UndirectedEdge e : graph.getUndirectedEdges()) {
-            if (e.showLabel() && !e.isCurved() && e.hasLabel()) {
+            if (e.showLabel() && !e.isCurved() && e.hasLabel() && e.getLabel().getFont() != null) {
                 renderEdgeLabel(e.getLabel());
             }
         }
 
         for (Node n : graph.getNodes()) {
-            if (n.showLabel() && n.hasLabel()) {
+            if (n.showLabel() && n.hasLabel() && n.getLabel().getFont() != null) {
                 renderNodeLabel(n.getLabel());
             }
         }
@@ -302,7 +302,7 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
 
     public void renderGraphLabelBorders(Graph graph) {
         for (Node n : graph.getNodes()) {
-            if (n.showLabel() && n.hasLabel() && n.showLabelBorders()) {
+            if (n.showLabel() && n.hasLabel() && n.showLabelBorders() && n.getLabel().getFont() != null) {
                 renderNodeLabelBorder(n.getLabelBorder());
             }
         }

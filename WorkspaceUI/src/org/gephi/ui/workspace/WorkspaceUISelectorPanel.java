@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.workspace;
 
 import java.awt.Cursor;
@@ -25,6 +25,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.ui.components.JPopupPane;
@@ -36,7 +39,7 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
+public class WorkspaceUISelectorPanel extends javax.swing.JPanel implements ChangeListener {
 
     private JPopupPane pane;
     private Workspace workspace;
@@ -94,6 +97,9 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
     }
 
     public void setSelectedWorkspace(Workspace workspace) {
+        if (this.workspace != null) {
+            this.workspace.getLookup().lookup(WorkspaceInformation.class).removeChangeListener(this);
+        }
         workspaceLabel.setFont(new java.awt.Font("Tahoma", 0, 11));
         workspaceLabel.setText(workspace.getLookup().lookup(WorkspaceInformation.class).getName());
         workspaceLabel.setEnabled(true);
@@ -103,6 +109,7 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
             pane.hidePopup();
         }
         this.workspace = workspace;
+        this.workspace.getLookup().lookup(WorkspaceInformation.class).addChangeListener(this);
     }
 
     public void noSelectedWorkspace() {
@@ -111,12 +118,24 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel {
         workspaceLabel.setEnabled(false);
         leftArrowButton.setEnabled(false);
         rightArrowButton.setEnabled(false);
+        if (workspace != null) {
+            workspace.getLookup().lookup(WorkspaceInformation.class).removeChangeListener(this);
+        }
         workspace = null;
     }
 
     public void refreshList() {
         leftArrowButton.setEnabled(getPrecedentWorkspace(workspace) != null);
         rightArrowButton.setEnabled(getNextWorkspace(workspace) != null);
+    }
+
+    public void stateChanged(ChangeEvent e) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                workspaceLabel.setText(workspace.getLookup().lookup(WorkspaceInformation.class).getName());
+            }
+        });
     }
 
     private Workspace getPrecedentWorkspace(Workspace workspace) {

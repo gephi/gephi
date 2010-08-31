@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Jeremy Subtil <jeremy.subtil@gephi.org>
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,28 +18,15 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.preview.updaters;
+package org.gephi.filters.plugin.operator;
 
-import java.awt.Font;
+import javax.swing.JPanel;
 
 /**
- * Class to adjust label fonts.
  *
- * @author Jérémy Subtil <jeremy.subtil@gephi.org>
+ * @author Mathieu Bastian
  */
-public abstract class LabelFontAdjuster {
+public interface MASKEdgeUI {
 
-    /**
-     * Adjusts the font of the given label client.
-     *
-     * @param client   the label to adjust the font
-     */
-    public static void adjustFont(LabelFontAdjusterClient client) {
-        Font baseFont = client.getBaseFont();
-        int newSize = Math.round(baseFont.getSize() * client.getSizeFactor());
-        if (newSize > 0) {
-            Font font = new Font(baseFont.getName(), baseFont.getStyle(), newSize);
-            client.setFont(font);
-        }
-    }
+    public JPanel getPanel(MASKBuilderEdge.MaskEdgeOperator edgesOperator);
 }

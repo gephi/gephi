@@ -26,7 +26,7 @@ import javax.swing.JPanel;
  *
  * @author Mathieu Bastian
  */
-public interface EDGESUi {
+public interface MASKNodeUI {
 
-    public JPanel getPanel(EDGESBuilder.EdgesOperator edgesOperator);
+    public JPanel getPanel(MASKBuilderNode.MaskNodeOperator nodesOperator);
 }

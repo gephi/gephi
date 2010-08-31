@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.filters.query;
 
 import java.awt.datatransfer.Transferable;
@@ -80,6 +80,18 @@ public class RootNode extends AbstractNode {
                     SavedQueryNode node = (SavedQueryNode) dropNode;
                     FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
                     filterController.add(node.getQuery());
+                    return null;
+                }
+            };
+        } else if (dropNode != null && dropNode instanceof QueryNode && ((QueryNode) dropNode).getQuery().getParent() != null) {
+            return new PasteType() {
+
+                @Override
+                public Transferable paste() throws IOException {
+                    QueryNode queryNode = (QueryNode) dropNode;
+                    FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
+                    filterController.removeSubQuery(queryNode.getQuery(), queryNode.getQuery().getParent());
+                    filterController.add(queryNode.getQuery());
                     return null;
                 }
             };

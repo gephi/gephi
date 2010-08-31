@@ -52,6 +52,8 @@ public interface ProjectControllerUI {
 
     public void cleanWorkspace();
 
+    public void renameWorkspace(final String name);
+
     public boolean canNewProject();
 
     public boolean canOpenProject();

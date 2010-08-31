@@ -53,9 +53,9 @@ public class DialogFileFilter extends javax.swing.filechooser.FileFilter
 		if(file.isDirectory() || extensions.size()==0) {
 			return true;
 		}
-		String nomFichier = file.getName().toLowerCase();
+		String fileName = file.getName().toLowerCase();
 		for(String extension : extensions){
-			if(nomFichier.endsWith(extension)){
+			if(fileName.endsWith(extension)){
 				return true;
 			}
 		}
