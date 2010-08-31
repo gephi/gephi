@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import javax.swing.AbstractAction;
+import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.openide.DialogDescriptor;
@@ -33,6 +34,7 @@ import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.CallableSystemAction;
 
@@ -89,6 +91,11 @@ public final class LanguageAction extends CallableSystemAction {
                     }
                 }
             });
+            //Flag icons from http://www.famfamfam.com
+            Icon icon = ImageUtilities.loadImageIcon("org/gephi/branding/desktop/multilingual/resources/" + lang.getLocale() + ".png", false);
+            if (icon != null) {
+                menuItem.setIcon(icon);
+            }
             menu.add(menuItem);
         }
 
