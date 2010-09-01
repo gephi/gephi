@@ -17,10 +17,13 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.edge;
 
-import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.MetaEdge;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.spi.MetaEdgeBuilder;
 
 /**
  *
@@ -28,8 +31,6 @@ import org.gephi.graph.dhns.node.AbstractNode;
  */
 public class SumMetaEdgeBuilder implements MetaEdgeBuilder {
 
-    private float weightMinimum = Float.NEGATIVE_INFINITY;
-    private float weightLimit = Float.POSITIVE_INFINITY;
     //If the edge pushed to the metaEdge has a common adjacent node with the metaEdge, it is called
     //a non-deep edge and should be considered less important and thus less weighted
     private float nonDeepDivisor = 1f;
@@ -37,13 +38,11 @@ public class SumMetaEdgeBuilder implements MetaEdgeBuilder {
     public SumMetaEdgeBuilder() {
     }
 
-    public SumMetaEdgeBuilder(float minimum, float limit, float divisor) {
-        this.weightMinimum = minimum;
-        this.weightLimit = limit;
+    public SumMetaEdgeBuilder(float divisor) {
         this.nonDeepDivisor = divisor;
     }
 
-    public void pushEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge) {
+    public void pushEdge(Edge edge, Node source, Node target, MetaEdge metaEdge) {
         float edgeWeight = edge.getWeight();
         float metaWeight = metaEdge.getWeight();
         float div = 1f;
@@ -54,13 +53,10 @@ public class SumMetaEdgeBuilder implements MetaEdgeBuilder {
             div = nonDeepDivisor;
         }
         metaWeight += edgeWeight / div;
-        if (metaWeight > weightLimit) {
-            metaWeight = weightLimit;
-        }
         metaEdge.setWeight(metaWeight);
     }
 
-    public void pullEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge) {
+    public void pullEdge(Edge edge, Node source, Node target, MetaEdge metaEdge) {
         float edgeWeight = edge.getWeight();
         float metaWeight = metaEdge.getWeight();
         float div = 1f;
@@ -71,9 +67,6 @@ public class SumMetaEdgeBuilder implements MetaEdgeBuilder {
             div = nonDeepDivisor;
         }
         metaWeight -= edgeWeight / div;
-        if (metaWeight < weightMinimum) {
-            metaWeight = weightMinimum;
-        }
         metaEdge.setWeight(metaWeight);
     }
 }

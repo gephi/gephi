@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
 import java.util.HashMap;
@@ -26,9 +26,9 @@ import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.GraphSettings;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.dhns.edge.AverageMetaEdgeBuilder;
-import org.gephi.graph.dhns.edge.MetaEdgeBuilder;
 import org.gephi.graph.dhns.edge.SumMetaEdgeBuilder;
 import org.gephi.graph.dhns.event.GeneralEvent;
+import org.gephi.graph.spi.MetaEdgeBuilder;
 
 /**
  *
@@ -40,11 +40,7 @@ public class SettingsManager implements GraphSettings {
     //Settings
     private Boolean allowMultilevel;
     private Boolean autoMetaEdgeCreation;
-    private Boolean interClusterEdges;
-    private Boolean intraClusterEdges;
     private MetaEdgeBuilder metaEdgeBuilder;
-    private Float metaEdgeBuilderMinimum;
-    private Float metaEdgeBuilderLimit;
     private Float metaEdgeBuilderNonDeepDivisor;
 
     public SettingsManager(Dhns dhns) {
@@ -55,12 +51,8 @@ public class SettingsManager implements GraphSettings {
     private void defaultSettings() {
         allowMultilevel = Boolean.TRUE;
         autoMetaEdgeCreation = Boolean.TRUE;
-        interClusterEdges = Boolean.TRUE;
-        intraClusterEdges = Boolean.TRUE;
-        metaEdgeBuilderMinimum = Float.valueOf(0.1f);
-        metaEdgeBuilderLimit = Float.valueOf(10f);
         metaEdgeBuilderNonDeepDivisor = Float.valueOf(10f);
-        metaEdgeBuilder = new SumMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
+        metaEdgeBuilder = new SumMetaEdgeBuilder(metaEdgeBuilderNonDeepDivisor);
     }
 
     public boolean isAllowMultilevel() {
@@ -71,16 +63,12 @@ public class SettingsManager implements GraphSettings {
         return autoMetaEdgeCreation;
     }
 
-    public boolean isInterClusterEdges() {
-        return interClusterEdges;
-    }
-
-    public boolean isIntraClusterEdges() {
-        return intraClusterEdges;
-    }
-
     public MetaEdgeBuilder getMetaEdgeBuilder() {
         return metaEdgeBuilder;
+    }
+
+    public void setMetaEdgeBuilder(MetaEdgeBuilder metaEdgeBuilder) {
+        putClientProperty("metaEdgeBuilder", metaEdgeBuilder);
     }
 
     public void putClientProperty(String key, Object value) {
@@ -94,40 +82,18 @@ public class SettingsManager implements GraphSettings {
                 metaEdgeBuilder = (MetaEdgeBuilder) value;
             }
             if (value.equals("average")) {
-                metaEdgeBuilder = new AverageMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
+                metaEdgeBuilder = new AverageMetaEdgeBuilder(metaEdgeBuilderNonDeepDivisor);
             } else if (value.equals("sum")) {
-                metaEdgeBuilder = new SumMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
-            }
-            fireUpdate();
-        } else if (key.equals("metaEdgeBuilderMinimum")) {
-            metaEdgeBuilderMinimum = (Float) value;
-            if (metaEdgeBuilder instanceof SumMetaEdgeBuilder) {
-                metaEdgeBuilder = new SumMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
-            } else if (metaEdgeBuilder instanceof AverageMetaEdgeBuilder) {
-                metaEdgeBuilder = new AverageMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
-            }
-            fireUpdate();
-        } else if (key.equals("metaEdgeBuilderLimit")) {
-            metaEdgeBuilderLimit = (Float) value;
-            if (metaEdgeBuilder instanceof SumMetaEdgeBuilder) {
-                metaEdgeBuilder = new SumMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
-            } else if (metaEdgeBuilder instanceof AverageMetaEdgeBuilder) {
-                metaEdgeBuilder = new AverageMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
+                metaEdgeBuilder = new SumMetaEdgeBuilder(metaEdgeBuilderNonDeepDivisor);
             }
             fireUpdate();
         } else if (key.equals("metaEdgeBuilderNonDeepDivisor")) {
             metaEdgeBuilderNonDeepDivisor = (Float) value;
             if (metaEdgeBuilder instanceof SumMetaEdgeBuilder) {
-                metaEdgeBuilder = new SumMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
+                metaEdgeBuilder = new SumMetaEdgeBuilder(metaEdgeBuilderNonDeepDivisor);
             } else if (metaEdgeBuilder instanceof AverageMetaEdgeBuilder) {
-                metaEdgeBuilder = new AverageMetaEdgeBuilder(metaEdgeBuilderMinimum, metaEdgeBuilderLimit, metaEdgeBuilderNonDeepDivisor);
+                metaEdgeBuilder = new AverageMetaEdgeBuilder(metaEdgeBuilderNonDeepDivisor);
             }
-            fireUpdate();
-        } else if (key.equals("interClusterEdges")) {
-            interClusterEdges = (Boolean) value;
-            fireUpdate();
-        } else if (key.equals("intraClusterEdges")) {
-            intraClusterEdges = (Boolean) value;
             fireUpdate();
         }
     }
@@ -145,16 +111,8 @@ public class SettingsManager implements GraphSettings {
             } else {
                 return metaEdgeBuilder.getClass().getName();
             }
-        } else if (key.equals("metaEdgeBuilderMinimum")) {
-            return metaEdgeBuilderMinimum;
-        } else if (key.equals("metaEdgeBuilderLimit")) {
-            return metaEdgeBuilderLimit;
         } else if (key.equals("metaEdgeBuilderNonDeepDivisor")) {
             return metaEdgeBuilderNonDeepDivisor;
-        } else if (key.equals("interClusterEdges")) {
-            return interClusterEdges;
-        } else if (key.equals("intraClusterEdges")) {
-            return intraClusterEdges;
         }
         return null;
     }
@@ -171,8 +129,6 @@ public class SettingsManager implements GraphSettings {
         map.put("allowMultilevel", getClientProperty("allowMultilevel"));
         map.put("autoMetaEdgeCreation", getClientProperty("autoMetaEdgeCreation"));
         map.put("metaEdgeBuilder", getClientProperty("metaEdgeBuilder"));
-        map.put("metaEdgeBuilderMinimum", getClientProperty("metaEdgeBuilderMinimum"));
-        map.put("metaEdgeBuilderLimit", getClientProperty("metaEdgeBuilderLimit"));
         map.put("metaEdgeBuilderNonDeepDivisor", getClientProperty("metaEdgeBuilderNonDeepDivisor"));
         return map;
     }
