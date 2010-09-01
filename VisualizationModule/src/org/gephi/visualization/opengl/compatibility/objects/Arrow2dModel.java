@@ -210,6 +210,9 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
 
     @Override
     public boolean isInOctreeLeaf(Octant leaf) {
+        if (obj.getModel() == null) {
+            return false;
+        }
         return ((ModelImpl) obj.getModel()).getOctants()[0] == leaf;
     }
 
