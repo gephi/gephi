@@ -25,7 +25,6 @@ import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.HierarchicalMixedGraph;
 import org.gephi.graph.api.HierarchicalUndirectedGraph;
-import org.gephi.graph.api.MetaEdge;
 import org.gephi.preview.api.PreviewModel;
 
 /**
@@ -56,10 +55,6 @@ public class PreviewGraphFactory {
 
         // creates edges
         for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdgesAndMetaEdges()) {
-
-            if (sourceEdge.getWeight() <= 0) {
-                continue;
-            }
 
             if (sourceEdge.isSelfLoop()) {
                 createPreviewSelfLoop(previewGraph, sourceEdge);
@@ -94,10 +89,6 @@ public class PreviewGraphFactory {
 
         // creates edges
         for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdgesAndMetaEdges()) {
-
-            if (sourceEdge.getWeight() <= 0) {
-                continue;
-            }
 
             if (sourceEdge.isSelfLoop()) {
                 createPreviewSelfLoop(previewGraph, sourceEdge);
@@ -136,10 +127,6 @@ public class PreviewGraphFactory {
 
         // creates edges
         for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdgesAndMetaEdges()) {
-
-            if (sourceEdge.getWeight() <= 0) {
-                continue;
-            }
 
             if (sourceEdge.isSelfLoop()) {
                 createPreviewSelfLoop(previewGraph, sourceEdge);
