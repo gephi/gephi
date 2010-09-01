@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.preview;
 
+import java.awt.Color;
+import org.gephi.graph.api.Edge;
 import org.gephi.preview.api.CubicBezierCurve;
 import org.gephi.preview.api.SelfLoop;
 import org.gephi.preview.supervisors.SelfLoopSupervisorImpl;
@@ -34,6 +36,7 @@ public class SelfLoopImpl extends AbstractEdge implements SelfLoop {
 
     private final NodeImpl node;
     private CubicBezierCurveImpl curve;
+    protected final Color originalColor;
 
     /**
      * Constructor.
@@ -42,9 +45,16 @@ public class SelfLoopImpl extends AbstractEdge implements SelfLoop {
      * @param thickness  the self-loop's thickness
      * @param node       the self-loop's related node
      */
-    public SelfLoopImpl(GraphImpl parent, float thickness, NodeImpl node) {
-        super(parent, thickness);
+    public SelfLoopImpl(GraphImpl parent, Edge edge, NodeImpl node) {
+        super(parent, edge.getWeight());
         this.node = node;
+
+        //Color
+        if(edge.getEdgeData().r()!=-1) {
+            originalColor = new Color(edge.getEdgeData().r(), edge.getEdgeData().g(), edge.getEdgeData().b(), edge.getEdgeData().alpha());
+        } else {
+            originalColor = null;
+        }
 
         // generate the self-loop's curve
         genCurve();
@@ -106,6 +116,10 @@ public class SelfLoopImpl extends AbstractEdge implements SelfLoop {
      */
     public CubicBezierCurve getCurve() {
         return curve;
+    }
+
+    public Color getOriginalColor() {
+        return originalColor;
     }
 
     /**

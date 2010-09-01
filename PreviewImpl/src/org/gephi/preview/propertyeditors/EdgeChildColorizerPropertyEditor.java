@@ -48,6 +48,7 @@ public class EdgeChildColorizerPropertyEditor extends GenericColorizerPropertyEd
         ColorModePanel p;
         p = (ColorModePanel) super.getCustomEditor();
         p = new EdgeBothBColorModePanelDecorator(this, p);
+        p = new EdgeOriginalColorModePanelDecorator(this, p);
         p = new EdgeB2ColorModePanelDecorator(this, p);
         p = new EdgeB1ColorModePanelDecorator(this, p);
         p = new ParentColorModePanelDecorator(this, p);

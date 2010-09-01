@@ -81,6 +81,8 @@ public interface ColorizerFactory {
      */
     public boolean matchEdgeBothBColorMode(String s);
 
+    public boolean matchEdgeOriginalColorMode(String s);
+
     /**
      * Returns whether or not the given colorizer is a CustomColorMode.
      *
@@ -128,6 +130,8 @@ public interface ColorizerFactory {
      * @return           true if the given colorizer is a EdgeBothBColorMode
      */
     public boolean isEdgeBothBColorMode(Colorizer colorizer);
+
+    public boolean isEdgeOriginalColorMode(Colorizer colorizer);
 
     /**
      * Creates a CustomColorMode colorizer from the given color components.
@@ -181,4 +185,6 @@ public interface ColorizerFactory {
      * @return a EdgeBothBColorMode colorizer
      */
     public Colorizer createEdgeBothBColorMode();
+
+    public Colorizer createEdgeOriginalColorMode();
 }
