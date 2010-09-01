@@ -153,4 +153,19 @@ public interface AttributeRow extends Attributes {
      * @return          the value array of this row
      */
     public AttributeValue[] getValues();
+
+    /**
+     * Returns the value at given index or null if the index is not valid. Each <code>AttributeValue</code> is a pair between
+     * a data and the column it belongs.
+     * @param index
+     * @return AttributeValue at given index or null if the index is not valid
+     */
+    public AttributeValue getAttributeValueAt(int index);
+
+    /**
+     * Returns the column at given index or null if the index is not valid
+     * @param index
+     * @return AttributeColumn at given index or null if the index is not valid
+     */
+    public AttributeColumn getColumnAt(int index);
 }

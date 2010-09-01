@@ -73,7 +73,11 @@ public final class EditToolTopComponent extends TopComponent {
     }
 
     public void editNode(Node node) {
-        ((PropertySheet) propertySheet).setNodes(new org.openide.nodes.Node[]{new EditNode(node)});
+        ((PropertySheet) propertySheet).setNodes(new org.openide.nodes.Node[]{new EditNodes(node)});
+    }
+
+    public void editNodes(Node[] nodes) {
+        ((PropertySheet) propertySheet).setNodes(new org.openide.nodes.Node[]{new EditNodes(nodes)});
     }
 
     public void disableEdit() {

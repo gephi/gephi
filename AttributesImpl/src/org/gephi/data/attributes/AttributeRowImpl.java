@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -159,10 +159,22 @@ public class AttributeRowImpl implements AttributeRow {
         return values;
     }
 
+    public AttributeValue getAttributeValueAt(int index) {
+        if (checkIndexRange(index)) {
+            return values[index];
+        }
+        return null;
+    }
+
     public int countValues() {
         updateColumns();
         return values.length;
     }
+
+     public AttributeColumn getColumnAt(int index){
+         updateColumns();
+         return attributeTable.getColumn(index);
+     }
 
     public Object getObject() {
         return object;
@@ -197,7 +209,7 @@ public class AttributeRowImpl implements AttributeRow {
     }
 
     private boolean checkIndexRange(int index) {
-        return index < values.length;
+        return index < values.length && index >= 0;
     }
 
     public int getRowVersion() {

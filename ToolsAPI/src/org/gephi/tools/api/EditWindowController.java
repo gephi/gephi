@@ -35,5 +35,7 @@ public interface  EditWindowController {
 
     void editNode(Node node);
 
+    void editNodes(final Node[] nodes);
+
     void disableEdit();
 }

@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.datatable;
 
 import java.awt.Point;
@@ -35,8 +35,6 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TreeModelListener;
@@ -72,7 +70,6 @@ import org.openide.util.Lookup;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Attributes;
-import org.gephi.tools.api.EditWindowController;
 import utils.PopupMenuUtils;
 import utils.SparkLinesRenderer;
 
@@ -115,20 +112,21 @@ public class NodeDataTable {
 
         outlineTable.addMouseListener(new PopupAdapter());
         prepareSparklinesRenderers();
-        outlineTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
-            public void valueChanged(ListSelectionEvent e) {
-                EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
-                if (edc.isOpen()) {
-                    if (outlineTable.getSelectedRow() != -1) {
-                        Node node = getNodeFromRow(outlineTable.getSelectedRow());
-                        edc.editNode(node);
-                    } else {
-                        edc.disableEdit();
-                    }
-                }
-            }
-        });
+//        //Add listener of table selection to refresh edit window when the selection changes (and if only 1 row is selected)
+//        outlineTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+//
+//            public void valueChanged(ListSelectionEvent e) {
+//                EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
+//                if (edc.isOpen()) {
+//                    if (outlineTable.getSelectedRow() != -1) {
+//                        Node node = getNodeFromRow(outlineTable.getSelectedRow());
+//                        edc.editNode(node);
+//                    } else {
+//                        edc.disableEdit();
+//                    }
+//                }
+//            }
+//        });
         outlineTable.addKeyListener(new KeyAdapter() {
 
             @Override
@@ -384,7 +382,7 @@ public class NodeDataTable {
             Attributes row = graphNode.getNodeData().getAttributes();
             Object value = row.getValue(column.getIndex());
 
-            if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column)||AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
+            if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column) || AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
                 return value;
             } else {
                 return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent

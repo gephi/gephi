@@ -33,21 +33,26 @@ import org.openide.util.NbBundle;
  *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class OpenInEditNodeWindow implements NodesManipulator{
-    private Node node;
+public class OpenInEditNodeWindow implements NodesManipulator {
+
+    private Node[] nodes;
 
     public void setup(Node[] nodes, Node clickedNode) {
-        this.node=clickedNode;
+        this.nodes = nodes;
     }
 
     public void execute() {
-        EditWindowController edc=Lookup.getDefault().lookup(EditWindowController.class);
+        EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
         edc.openEditWindow();
-        edc.editNode(node);
+        edc.editNodes(nodes);
     }
 
     public String getName() {
-        return NbBundle.getMessage(OpenInEditNodeWindow.class, "OpenInEditNodeWindow.name");
+        if (nodes.length > 1) {
+            return NbBundle.getMessage(OpenInEditNodeWindow.class, "OpenInEditNodeWindow.name.multiple");
+        } else {
+            return NbBundle.getMessage(OpenInEditNodeWindow.class, "OpenInEditNodeWindow.name");
+        }
     }
 
     public String getDescription() {
@@ -73,5 +78,4 @@ public class OpenInEditNodeWindow implements NodesManipulator{
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/edit.png", true);
     }
-
 }

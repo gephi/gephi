@@ -70,6 +70,16 @@ public class EditWindowControllerImpl implements EditWindowController {
         });
     }
 
+    public void editNodes(final Node[] nodes) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
+                topComponent.editNodes(nodes);
+            }
+        });
+    }
+
     public void disableEdit() {
         SwingUtilities.invokeLater(new Runnable() {
 
