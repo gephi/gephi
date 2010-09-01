@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.exporter.plugin;
 
 import org.gephi.io.exporter.api.FileType;
@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ExporterBuilderGEXF implements GraphFileExporterBuilder {
 
     public GraphExporter buildExporter() {
-        return new ExporterGEXF();
+        return new ExporterGEXF2();
     }
 
     public FileType[] getFileTypes() {

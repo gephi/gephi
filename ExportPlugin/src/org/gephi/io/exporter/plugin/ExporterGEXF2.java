@@ -70,6 +70,7 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
     //GEXF
     private static final String GEXF = "gexf";
     private static final String GEXF_NAMESPACE = "http://www.gexf.net/1.1draft";
+    private static final String GEXF_NAMESPACE_LOCATION = "http://www.gexf.net/1.1draft http://www.gexf.net/1.1draft/gexf.xsd";
     private static final String VIZ = "viz";
     private static final String VIZ_NAMESPACE = "http://www.gexf.net/1.1draft/viz";
     private static final String GEXF_VERSION = "version";
@@ -190,6 +191,7 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
             if (exportColors || exportPosition || exportSize) {
                 xmlWriter.writeNamespace(VIZ, VIZ_NAMESPACE);
             }
+            xmlWriter.writeAttribute("xsi:schemaLocation", GEXF_NAMESPACE_LOCATION);
 
             if (exportDynamic) {
                 DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
@@ -309,7 +311,7 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
     }
 
     private void writeNodes(XMLStreamWriter xmlWriter, HierarchicalGraph graph) throws Exception {
-        if(cancel) {
+        if (cancel) {
             return;
         }
         xmlWriter.writeStartElement(NODES);
@@ -483,7 +485,7 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
     }
 
     private void writeEdges(XMLStreamWriter xmlWriter, HierarchicalGraph graph) throws Exception {
-        if(cancel) {
+        if (cancel) {
             return;
         }
         xmlWriter.writeStartElement(EDGES);
@@ -625,6 +627,14 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
         this.normalize = normalize;
     }
 
+    public void setExportDynamic(boolean exportDynamic) {
+        this.exportDynamic = exportDynamic;
+    }
+
+    public void setExportHierarchy(boolean exportHierarchy) {
+        this.exportHierarchy = exportHierarchy;
+    }
+
     public boolean isExportAttributes() {
         return exportAttributes;
     }
@@ -647,6 +657,14 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
 
     public boolean isExportVisible() {
         return exportVisible;
+    }
+
+    public boolean isExportDynamic() {
+        return exportDynamic;
+    }
+
+    public boolean isExportHierarchy() {
+        return exportHierarchy;
     }
 
     public void setExportVisible(boolean exportVisible) {

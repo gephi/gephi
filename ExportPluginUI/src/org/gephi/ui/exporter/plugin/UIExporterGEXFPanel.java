@@ -17,11 +17,13 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 package org.gephi.ui.exporter.plugin;
 
-import org.gephi.io.exporter.plugin.ExporterGEXF;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.io.exporter.plugin.ExporterGEXF2;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -34,20 +36,27 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void setup(ExporterGEXF exporterGEXF) {
+    public void setup(ExporterGEXF2 exporterGEXF) {
         colorsExportCheckbox.setSelected(exporterGEXF.isExportColors());
         positionExportCheckbox.setSelected(exporterGEXF.isExportPosition());
         sizeExportCheckbox.setSelected(exporterGEXF.isExportSize());
         attributesExportCheckbox.setSelected(exporterGEXF.isExportAttributes());
         normalizeCheckbox.setSelected(exporterGEXF.isNormalize());
+        dynamicExportCheckbox.setSelected(exporterGEXF.isExportDynamic());
+        hierarchyCheckbox.setSelected(exporterGEXF.isExportHierarchy());
+
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+        hierarchyCheckbox.setEnabled(graphModel.isHierarchical());
     }
 
-    public void unsetup(ExporterGEXF exporterGEXF) {
+    public void unsetup(ExporterGEXF2 exporterGEXF) {
         exporterGEXF.setExportAttributes(attributesExportCheckbox.isSelected());
         exporterGEXF.setExportColors(colorsExportCheckbox.isSelected());
         exporterGEXF.setExportSize(sizeExportCheckbox.isSelected());
         exporterGEXF.setExportPosition(positionExportCheckbox.isSelected());
         exporterGEXF.setNormalize(normalizeCheckbox.isSelected());
+        exporterGEXF.setExportDynamic(dynamicExportCheckbox.isSelected());
+        exporterGEXF.setExportHierarchy(hierarchyCheckbox.isSelected());
     }
 
     /** This method is called from within the constructor to
@@ -66,6 +75,9 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
         sizeExportCheckbox = new javax.swing.JCheckBox();
         labelNormalize = new javax.swing.JLabel();
         normalizeCheckbox = new javax.swing.JCheckBox();
+        dynamicExportCheckbox = new javax.swing.JCheckBox();
+        hierarchyCheckbox = new javax.swing.JCheckBox();
+        labelNormalize1 = new javax.swing.JLabel();
 
         labelExport.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.labelExport.text")); // NOI18N
 
@@ -83,6 +95,14 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
 
         normalizeCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.normalizeCheckbox.text")); // NOI18N
 
+        dynamicExportCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.dynamicExportCheckbox.text")); // NOI18N
+
+        hierarchyCheckbox.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.hierarchyCheckbox.text")); // NOI18N
+
+        labelNormalize1.setFont(new java.awt.Font("Tahoma", 0, 10));
+        labelNormalize1.setForeground(new java.awt.Color(102, 102, 102));
+        labelNormalize1.setText(org.openide.util.NbBundle.getMessage(UIExporterGEXFPanel.class, "UIExporterGEXFPanel.labelNormalize1.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -91,18 +111,23 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(hierarchyCheckbox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(labelNormalize1, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(labelExport)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(attributesExportCheckbox)
                             .addComponent(sizeExportCheckbox)
                             .addComponent(colorsExportCheckbox)
-                            .addComponent(positionExportCheckbox)))
+                            .addComponent(positionExportCheckbox)
+                            .addComponent(dynamicExportCheckbox)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(normalizeCheckbox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(labelNormalize)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(labelNormalize, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -118,22 +143,28 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(attributesExportCheckbox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(dynamicExportCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(normalizeCheckbox)
                     .addComponent(labelNormalize))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(hierarchyCheckbox)
+                    .addComponent(labelNormalize1))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox attributesExportCheckbox;
     private javax.swing.JCheckBox colorsExportCheckbox;
+    private javax.swing.JCheckBox dynamicExportCheckbox;
+    private javax.swing.JCheckBox hierarchyCheckbox;
     private javax.swing.JLabel labelExport;
     private javax.swing.JLabel labelNormalize;
+    private javax.swing.JLabel labelNormalize1;
     private javax.swing.JCheckBox normalizeCheckbox;
     private javax.swing.JCheckBox positionExportCheckbox;
     private javax.swing.JCheckBox sizeExportCheckbox;
     // End of variables declaration//GEN-END:variables
-
 }
