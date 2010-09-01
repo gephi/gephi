@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.tools.api;
 
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
 /**
@@ -36,6 +37,10 @@ public interface  EditWindowController {
     void editNode(Node node);
 
     void editNodes(final Node[] nodes);
+
+    void editEdge(final Edge edge);
+
+    void editEdges(final Edge[] edges);
 
     void disableEdit();
 }

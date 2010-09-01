@@ -27,8 +27,8 @@ import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.datalaboratory.api.AttributeColumnsController;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeData;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.PropertySupport;
@@ -38,72 +38,72 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- * PropertySheet that allows to edit one or more nodes.
+ * PropertySheet that allows to edit one or more edges.
  * If multiple node edition mode is used at first all values will be shown as blank
- * but will change with the editions and all nodes will be set the values that the user inputs.
+ * but will change with the editions and all edges will be set the values that the user inputs.
  * @author Mathieu Bastian
  */
-public class EditNodes extends AbstractNode {
+public class EditEdges extends AbstractNode {
 
     private PropertySet[] propertySets;
-    private Node[] nodes;
-    private boolean multipleNodes;
+    private Edge[] edges;
+    private boolean multipleEdges;
 
     /**
      * Single node edition mode will always be enabled with this single node constructor
      * @param node
      */
-    public EditNodes(Node node) {
+    public EditEdges(Edge edge) {
         super(Children.LEAF);
-        this.nodes = new Node[]{node};
-        setName(node.getNodeData().getLabel());
-        multipleNodes = false;
+        this.edges = new Edge[]{edge};
+        setName(edge.getEdgeData().getLabel());
+        multipleEdges = false;
     }
 
     /**
-     * If the nodes array has more than one element, multiple nodes edition mode will be enabled.
-     * @param nodes
+     * If the edges array has more than one element, multiple edges edition mode will be enabled.
+     * @param edges
      */
-    public EditNodes(Node[] nodes) {
+    public EditEdges(Edge[] edges) {
         super(Children.LEAF);
-        this.nodes = nodes;
-        multipleNodes = nodes.length > 1;
-        if (multipleNodes) {
-            setName(NbBundle.getMessage(EditNodes.class, "EditNodes.multiple.edges"));
+        this.edges = edges;
+        multipleEdges = edges.length > 1;
+        if (multipleEdges) {
+            setName(NbBundle.getMessage(EditEdges.class, "EditEdges.multiple.elements"));
         } else {
-            setName(nodes[0].getNodeData().getLabel());
+            setName(edges[0].getEdgeData().getLabel());
         }
     }
 
     @Override
     public PropertySet[] getPropertySets() {
-        propertySets = new PropertySet[]{prepareNodesProperties(), prepareNodesAttributes()};
+        propertySets = new PropertySet[]{prepareEdgesProperties(), prepareEdgesAttributes()};
         return propertySets;
     }
 
     /**
-     * Prepare set of attributes of the node(s).
+     * Prepare set of attributes of the edges.
      * @return Set of these attributes
      */
-    private Sheet.Set prepareNodesAttributes() {
+    private Sheet.Set prepareEdgesAttributes() {
         try {
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
             Sheet.Set set = new Sheet.Set();
             set.setName("attributes");
-            if (nodes.length > 1) {
-                set.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.attributes.text.multiple"));
+            if (edges.length > 1) {
+                set.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.attributes.text.multiple"));
             } else {
-                set.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.attributes.text", nodes[0].getNodeData().getLabel()));
+                set.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.attributes.text", edges[0].getEdgeData().getLabel()));
             }
 
-            AttributeRow row = (AttributeRow) nodes[0].getNodeData().getAttributes();
+            AttributeRow row = (AttributeRow) edges[0].getEdgeData().getAttributes();
             AttributeValueWrapper wrap;
             for (AttributeValue value : row.getValues()) {
 
-                if (multipleNodes) {
-                    wrap = new MultipleNodesAttributeValueWrapper(nodes, value.getColumn());
+                if (multipleEdges) {
+                    wrap = new MultipleEdgesAttributeValueWrapper(edges, value.getColumn());
                 } else {
-                    wrap = new SingleNodeAttributeValueWrapper(row, value.getColumn());
+                    wrap = new SingleEdgeAttributeValueWrapper(row, value.getColumn());
                 }
                 AttributeType type = value.getColumn().getType();
                 Property p;
@@ -137,56 +137,35 @@ public class EditNodes extends AbstractNode {
      * Prepare set of editable properties of the node(s): size, position.
      * @return Set of these properties
      */
-    private Sheet.Set prepareNodesProperties() {
+    private Sheet.Set prepareEdgesProperties() {
         try {
-            if (multipleNodes) {
-                MultipleNodesPropertiesWrapper nodesWrapper = new MultipleNodesPropertiesWrapper(nodes);
+            if (multipleEdges) {
+                MultipleEdgesPropertiesWrapper EdgesWrapper = new MultipleEdgesPropertiesWrapper(edges);
                 Sheet.Set set = new Sheet.Set();
                 set.setName("properties");
-                set.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.properties.text.multiple"));
+                set.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.properties.text.multiple"));
 
                 Property p;
-                //Size:
-                p = new PropertySupport.Reflection(nodesWrapper, Float.class, "getNodesSize", "setNodesSize");
-                p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.size.text"));
-                p.setName("size");
-                set.put(p);
-
-                //All position coordinates:
-                set.put(buildMultipleNodesGeneralPositionProperty(nodesWrapper, "x"));
-                set.put(buildMultipleNodesGeneralPositionProperty(nodesWrapper, "y"));
-                set.put(buildMultipleNodesGeneralPositionProperty(nodesWrapper, "z"));
 
                 //Color:
-                p = new PropertySupport.Reflection(nodesWrapper, Color.class, "getNodesColor", "setNodesColor");
-                p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.color.text"));
+                p = new PropertySupport.Reflection(EdgesWrapper, Color.class, "getEdgesColor", "setEdgesColor");
+                p.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.color.text"));
                 p.setName("color");
                 set.put(p);
 
                 return set;
             } else {
-                Node node = nodes[0];
+                Edge edge = edges[0];
                 Sheet.Set set = new Sheet.Set();
                 set.setName("properties");
-                set.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.properties.text", node.getNodeData().getLabel()));
-                NodeData data = node.getNodeData();
+                set.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.properties.text", edge.getEdgeData().getLabel()));
 
                 Property p;
-                //Size:
-                p = new PropertySupport.Reflection(data, Float.TYPE, "getSize", "setSize");
-                p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.size.text"));
-                p.setName("size");
-                set.put(p);
-
-                //All position coordinates:
-                set.put(buildGeneralPositionProperty(data, "x"));
-                set.put(buildGeneralPositionProperty(data, "y"));
-                set.put(buildGeneralPositionProperty(data, "z"));
 
                 //Color:
-                SingleNodePropertiesWrapper nodeWrapper = new SingleNodePropertiesWrapper(node);
-                p = new PropertySupport.Reflection(nodeWrapper, Color.class, "getNodeColor", "setNodeColor");
-                p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.color.text"));
+                SingleEdgePropertiesWrapper EdgeWrapper = new SingleEdgePropertiesWrapper(edge);
+                p = new PropertySupport.Reflection(EdgeWrapper, Color.class, "getEdgeColor", "setEdgeColor");
+                p.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.color.text"));
                 p.setName("color");
                 set.put(p);
 
@@ -198,22 +177,26 @@ public class EditNodes extends AbstractNode {
         }
     }
 
-    public class SingleNodePropertiesWrapper {
+    public class SingleEdgePropertiesWrapper {
 
-        private Node node;
+        private Edge edge;
 
-        public SingleNodePropertiesWrapper(Node node) {
-            this.node = node;
+        public SingleEdgePropertiesWrapper(Edge Edge) {
+            this.edge = Edge;
         }
 
-        public Color getNodeColor() {
-            NodeData data = node.getNodeData();
+        public Color getEdgeColor() {
+            EdgeData data = edge.getEdgeData();
+            if(data.r()<0||data.g()<0||data.b()<0||data.alpha()<0){
+                return null;//Not specific color for edge
+            }
+
             return new Color(data.r(), data.g(), data.b(), data.alpha());
         }
 
-        public void setNodeColor(Color c) {
+        public void setEdgeColor(Color c) {
             if (c != null) {
-                NodeData data = node.getNodeData();
+                EdgeData data = edge.getEdgeData();
                 data.setR(c.getRed() / 255f);
                 data.setG(c.getGreen() / 255f);
                 data.setB(c.getBlue() / 255f);
@@ -222,63 +205,26 @@ public class EditNodes extends AbstractNode {
         }
     }
 
-    public class MultipleNodesPropertiesWrapper {
+    public class MultipleEdgesPropertiesWrapper {
 
-        Node[] nodes;
+        Edge[] edges;
 
-        public MultipleNodesPropertiesWrapper(Node[] nodes) {
-            this.nodes = nodes;
+        public MultipleEdgesPropertiesWrapper(Edge[] Edges) {
+            this.edges = Edges;
         }
-        //Methods and fields for multiple nodes editing:
-        private Float nodesX = null;
-        private Float nodesY = null;
-        private Float nodesZ = null;
-        private Float nodesSize = null;
-        private Color nodesColor = null;
+        //Methods and fields for multiple edges editing:
+        private Color EdgesColor = null;
 
-        public Float getNodesX() {
-            return nodesX;
+        public Color getEdgesColor() {
+            return EdgesColor;
         }
 
-        public void setNodesX(Float x) {
-            nodesX = x;
-            for (Node node : nodes) {
-                node.getNodeData().setX(x);
-            }
-        }
-
-        public Float getNodesY() {
-            return nodesY;
-        }
-
-        public void setNodesY(Float y) {
-            nodesY = y;
-            for (Node node : nodes) {
-                node.getNodeData().setY(y);
-            }
-        }
-
-        public Float getNodesZ() {
-            return nodesZ;
-        }
-
-        public void setNodesZ(Float z) {
-            nodesZ = z;
-            for (Node node : nodes) {
-                node.getNodeData().setZ(z);
-            }
-        }
-
-        public Color getNodesColor() {
-            return nodesColor;
-        }
-
-        public void setNodesColor(Color c) {
+        public void setEdgesColor(Color c) {
             if (c != null) {
-                nodesColor = c;
-                NodeData data;
-                for (Node node : nodes) {
-                    data = node.getNodeData();
+                EdgesColor = c;
+                EdgeData data;
+                for (Edge edge : edges) {
+                    data = edge.getEdgeData();
                     data.setR(c.getRed() / 255f);
                     data.setG(c.getGreen() / 255f);
                     data.setB(c.getBlue() / 255f);
@@ -286,42 +232,8 @@ public class EditNodes extends AbstractNode {
                 }
             }
         }
-
-        public Float getNodesSize() {
-            return nodesSize;
-        }
-
-        public void setNodesSize(Float size) {
-            nodesSize = size;
-            for (Node node : nodes) {
-                node.getNodeData().setSize(size);
-            }
-        }
     }
-
-    /**
-     * Used to build property for each position coordinate (x,y,z) in the same way.
-     * @return Property for that coordinate
-     */
-    private Property buildGeneralPositionProperty(NodeData data, String coordinate) throws NoSuchMethodException {
-        //Position:
-        Property p = new PropertySupport.Reflection(data, Float.TYPE, coordinate, "set" + coordinate.toUpperCase());
-        p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.position.text", coordinate));
-        p.setName(coordinate);
-        return p;
-    }
-
-    /**
-     * Used to build property for each position coordinate of various nodes (x,y,z) in the same way.
-     * @return Property for that coordinate
-     */
-    private Property buildMultipleNodesGeneralPositionProperty(MultipleNodesPropertiesWrapper nodesWrapper, String coordinate) throws NoSuchMethodException {
-        //Position:
-        Property p = new PropertySupport.Reflection(nodesWrapper, Float.class, "getNodes" + coordinate.toUpperCase(), "setNodes" + coordinate.toUpperCase());
-        p.setDisplayName(NbBundle.getMessage(EditNodes.class, "EditNodes.position.text", coordinate));
-        p.setName(coordinate);
-        return p;
-    }
+    
     /**
      * These AttributeTypes are not supported by default by netbeans property editor.
      * We will use attributes of these types as Strings and parse them.
@@ -397,12 +309,12 @@ public class EditNodes extends AbstractNode {
         public void setValueAsString(String value);
     }
 
-    public class SingleNodeAttributeValueWrapper implements AttributeValueWrapper {
+    public class SingleEdgeAttributeValueWrapper implements AttributeValueWrapper {
 
         private AttributeRow row;
         private AttributeColumn column;
 
-        public SingleNodeAttributeValueWrapper(AttributeRow row, AttributeColumn column) {
+        public SingleEdgeAttributeValueWrapper(AttributeRow row, AttributeColumn column) {
             this.row = row;
             this.column = column;
         }
@@ -497,14 +409,14 @@ public class EditNodes extends AbstractNode {
         }
     }
 
-    public static class MultipleNodesAttributeValueWrapper implements AttributeValueWrapper {
+    public static class MultipleEdgesAttributeValueWrapper implements AttributeValueWrapper {
 
-        private Node[] nodes;
+        private Edge[] edges;
         private AttributeColumn column;
         private Object value;
 
-        public MultipleNodesAttributeValueWrapper(Node[] nodes, AttributeColumn column) {
-            this.nodes = nodes;
+        public MultipleEdgesAttributeValueWrapper(Edge[] edges, AttributeColumn column) {
+            this.edges = edges;
             this.column = column;
             this.value = null;
         }
@@ -517,10 +429,10 @@ public class EditNodes extends AbstractNode {
             }
         }
 
-        private void setValueToAllNodes(Object object) {
+        private void setValueToAllEdges(Object object) {
             this.value = object;
-            for (Node node : nodes) {
-                node.getNodeData().getAttributes().setValue(column.getIndex(), value);
+            for (Edge edge : edges) {
+                edge.getEdgeData().getAttributes().setValue(column.getIndex(), value);
             }
         }
 
@@ -529,7 +441,7 @@ public class EditNodes extends AbstractNode {
         }
 
         public void setValueByte(Byte object) {
-            setValueToAllNodes(object);
+            setValueToAllEdges(object);
         }
 
         public Short getValueShort() {
@@ -537,7 +449,7 @@ public class EditNodes extends AbstractNode {
         }
 
         public void setValueShort(Short object) {
-            setValueToAllNodes(object);
+            setValueToAllEdges(object);
         }
 
         public Character getValueCharacter() {
@@ -545,7 +457,7 @@ public class EditNodes extends AbstractNode {
         }
 
         public void setValueCharacter(Character object) {
-            setValueToAllNodes(object);
+            setValueToAllEdges(object);
         }
 
         public String getValueString() {
@@ -553,7 +465,7 @@ public class EditNodes extends AbstractNode {
         }
 
         public void setValueString(String object) {
-            setValueToAllNodes(object);
+            setValueToAllEdges(object);
         }
 
         public Double getValueDouble() {
@@ -561,7 +473,7 @@ public class EditNodes extends AbstractNode {
         }
 
         public void setValueDouble(Double object) {
-            setValueToAllNodes(object);
+            setValueToAllEdges(object);
         }
 
         public Float getValueFloat() {
@@ -569,7 +481,7 @@ public class EditNodes extends AbstractNode {
         }
 
         public void setValueFloat(Float object) {
-            setValueToAllNodes(object);
+            setValueToAllEdges(object);
         }
 
         public Integer getValueInteger() {
@@ -577,7 +489,7 @@ public class EditNodes extends AbstractNode {
         }
 
         public void setValueInteger(Integer object) {
-            setValueToAllNodes(object);
+            setValueToAllEdges(object);
         }
 
         public Boolean getValueBoolean() {
@@ -585,7 +497,7 @@ public class EditNodes extends AbstractNode {
         }
 
         public void setValueBoolean(Boolean object) {
-            setValueToAllNodes(object);
+            setValueToAllEdges(object);
         }
 
         public Long getValueLong() {
@@ -593,7 +505,7 @@ public class EditNodes extends AbstractNode {
         }
 
         public void setValueLong(Long object) {
-            setValueToAllNodes(object);
+            setValueToAllEdges(object);
         }
 
         public String getValueAsString() {
@@ -601,7 +513,7 @@ public class EditNodes extends AbstractNode {
         }
 
         public void setValueAsString(String value) {
-            setValueToAllNodes(column.getType().parse(value));
+            setValueToAllEdges(column.getType().parse(value));
         }
     }
 }

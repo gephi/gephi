@@ -21,43 +21,45 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalaboratory.impl.manipulators.edges;
 
 import javax.swing.Icon;
-import org.gephi.datalaboratory.api.GraphElementsController;
-import org.gephi.datalaboratory.impl.manipulators.edges.ui.DeleteEdgesWithNodesUI;
 import org.gephi.datalaboratory.spi.ManipulatorUI;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
+import org.gephi.tools.api.EditWindowController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- * Edges manipulator that deletes one or more edges and allows the user to choose what of their nodes to delete at the same time.
+ * Opens the selected edge(s) one or various in Edit window.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class DeleteEdgesWithNodes implements EdgesManipulator {
-
-    private Edge[] edges;
-    private boolean deleteSource,deleteTarget;
+public class OpenInEditEdgeWindow implements EdgesManipulator {
+    Edge[] edges;
 
     public void setup(Edge[] edges, Edge clickedEdge) {
-        this.edges = edges;
+        this.edges=edges;
     }
 
     public void execute() {
-        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        gec.deleteEdgesWithNodes(edges,deleteSource,deleteTarget);
+        EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
+        edc.openEditWindow();
+        edc.editEdges(edges);
     }
 
     public String getName() {
         if (edges.length > 1) {
-            return NbBundle.getMessage(DeleteEdgesWithNodes.class, "DeleteEdgesWithNodes.name.multiple");
+            return NbBundle.getMessage(OpenInEditEdgeWindow.class, "OpenInEditEdgeWindow.name.multiple");
         } else {
-            return NbBundle.getMessage(DeleteEdgesWithNodes.class, "DeleteEdgesWithNodes.name.single");
+            return NbBundle.getMessage(OpenInEditEdgeWindow.class, "OpenInEditEdgeWindow.name");
         }
     }
 
     public String getDescription() {
-        return "";
+        if (edges.length > 1) {
+            return NbBundle.getMessage(OpenInEditEdgeWindow.class, "OpenInEditEdgeWindow.description.multiple");
+        } else {
+            return NbBundle.getMessage(OpenInEditEdgeWindow.class, "OpenInEditEdgeWindow.description");
+        }
     }
 
     public boolean canExecute() {
@@ -65,26 +67,18 @@ public class DeleteEdgesWithNodes implements EdgesManipulator {
     }
 
     public ManipulatorUI getUI() {
-        return new DeleteEdgesWithNodesUI();
+        return null;
     }
 
     public int getType() {
-        return 100;
+        return 0;
     }
 
     public int getPosition() {
-        return 400;
+        return 0;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/cross.png", true);
-    }
-
-    public void setDeleteSource(boolean deleteSource) {
-        this.deleteSource = deleteSource;
-    }
-
-    public void setDeleteTarget(boolean deleteTarget) {
-        this.deleteTarget = deleteTarget;
+        return ImageUtilities.loadImageIcon("org/gephi/datalaboratory/impl/manipulators/resources/edit.png", true);
     }
 }

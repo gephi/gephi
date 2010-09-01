@@ -86,7 +86,7 @@ public class ClearEdgesData implements EdgesManipulator, GeneralColumnsChooser {
     }
 
     public int getType() {
-        return 100;
+        return 200;
     }
 
     public int getPosition() {

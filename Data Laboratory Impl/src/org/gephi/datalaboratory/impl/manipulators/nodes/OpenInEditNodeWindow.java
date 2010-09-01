@@ -30,7 +30,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * Opens the selected node(s) one or various in Edit window.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class OpenInEditNodeWindow implements NodesManipulator {
@@ -56,7 +56,11 @@ public class OpenInEditNodeWindow implements NodesManipulator {
     }
 
     public String getDescription() {
-        return NbBundle.getMessage(OpenInEditNodeWindow.class, "OpenInEditNodeWindow.description");
+        if (nodes.length > 1) {
+            return NbBundle.getMessage(OpenInEditNodeWindow.class, "OpenInEditNodeWindow.description.multiple");
+        } else {
+            return NbBundle.getMessage(OpenInEditNodeWindow.class, "OpenInEditNodeWindow.description");
+        }
     }
 
     public boolean canExecute() {

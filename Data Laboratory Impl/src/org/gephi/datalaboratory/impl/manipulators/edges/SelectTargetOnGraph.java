@@ -62,7 +62,7 @@ public class SelectTargetOnGraph implements EdgesManipulator{
     }
 
     public int getType() {
-        return 0;
+        return 100;
     }
 
     public int getPosition() {

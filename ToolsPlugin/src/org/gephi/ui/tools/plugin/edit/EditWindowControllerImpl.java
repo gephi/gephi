@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.tools.plugin.edit;
 
 import javax.swing.SwingUtilities;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.api.EditWindowController;
 import org.openide.util.lookup.ServiceProvider;
@@ -76,6 +77,26 @@ public class EditWindowControllerImpl implements EditWindowController {
             public void run() {
                 EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
                 topComponent.editNodes(nodes);
+            }
+        });
+    }
+
+    public void editEdge(final Edge edge) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
+                topComponent.editEdge(edge);
+            }
+        });
+    }
+
+    public void editEdges(final Edge[] edges) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
+                topComponent.editEdges(edges);
             }
         });
     }

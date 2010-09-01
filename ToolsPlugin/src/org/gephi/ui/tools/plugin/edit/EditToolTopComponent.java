@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.tools.plugin.edit;
 
 import java.util.logging.Logger;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -78,6 +79,14 @@ public final class EditToolTopComponent extends TopComponent {
 
     public void editNodes(Node[] nodes) {
         ((PropertySheet) propertySheet).setNodes(new org.openide.nodes.Node[]{new EditNodes(nodes)});
+    }
+
+    public void editEdge(Edge edge) {
+        ((PropertySheet) propertySheet).setNodes(new org.openide.nodes.Node[]{new EditEdges(edge)});
+    }
+
+    public void editEdges(Edge[] edges) {
+        ((PropertySheet) propertySheet).setNodes(new org.openide.nodes.Node[]{new EditEdges(edges)});
     }
 
     public void disableEdit() {
