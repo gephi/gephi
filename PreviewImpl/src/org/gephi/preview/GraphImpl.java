@@ -36,12 +36,18 @@ import org.gephi.preview.api.UnidirectionalEdge;
  */
 public class GraphImpl implements Graph {
 
+    public static final float WEIGHT_MINIMUM = 0.4f;
+    public static final float WEIGHT_MAXIMUM = 8f;
     private final PreviewModel model;
     private final ArrayList<Node> nodes = new ArrayList<Node>();
     private final ArrayList<SelfLoop> selfLoops = new ArrayList<SelfLoop>();
     private final ArrayList<UnidirectionalEdge> uniEdges = new ArrayList<UnidirectionalEdge>();
     private final ArrayList<BidirectionalEdge> biEdges = new ArrayList<BidirectionalEdge>();
     private final ArrayList<UndirectedEdge> undirectedEdges = new ArrayList<UndirectedEdge>();
+    private float minWeight;
+    private float maxWeight;
+    private float minMetaWeight;
+    private float maxMetaWeight;
 
     public GraphImpl(PreviewModel model) {
         this.model = model;
@@ -146,5 +152,37 @@ public class GraphImpl implements Graph {
 
     public PreviewModel getModel() {
         return model;
+    }
+
+    public float getMaxWeight() {
+        return maxWeight;
+    }
+
+    public void setMaxWeight(float maxWeight) {
+        this.maxWeight = maxWeight;
+    }
+
+    public float getMinWeight() {
+        return minWeight;
+    }
+
+    public void setMinWeight(float minWeight) {
+        this.minWeight = minWeight;
+    }
+
+    public float getMinMetaWeight() {
+        return minMetaWeight;
+    }
+
+    public void setMinMetaWeight(float minMetaWeight) {
+        this.minMetaWeight = minMetaWeight;
+    }
+
+    public float getMaxMetaWeight() {
+        return maxMetaWeight;
+    }
+
+    public void setMaxMetaWeight(float maxMetaWeight) {
+        this.maxMetaWeight = maxMetaWeight;
     }
 }

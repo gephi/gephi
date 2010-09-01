@@ -17,13 +17,14 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.preview.supervisors;
 
 import java.awt.Font;
 import java.util.Set;
 import org.gephi.preview.EdgeImpl;
 import org.gephi.preview.EdgeLabelImpl;
+import org.gephi.preview.GraphImpl;
 import org.gephi.preview.api.EdgeChildColorizer;
 import org.gephi.preview.api.EdgeColorizer;
 import org.gephi.preview.api.PreviewController;
@@ -48,6 +49,7 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
     protected Font baseLabelFont;
     protected EdgeChildColorizer labelColorizer;
     protected Float edgeScale;
+    protected Boolean rescaleWeight;
 
     /**
      * Adds the given edge to the list of the supervised edges.
@@ -62,6 +64,15 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
         colorEdgeLabel(edge);
         updateEdgeLabelValue(edge);
         adjustEdgeLabelFont(edge);
+
+        if (rescaleWeight) {
+            float min = edge.getMetaEdge() ? edge.getGraph().getMinMetaWeight() : edge.getGraph().getMinWeight();
+            float max = edge.getMetaEdge() ? edge.getGraph().getMaxMetaWeight() : edge.getGraph().getMaxWeight();
+            float ratio = (GraphImpl.WEIGHT_MAXIMUM - GraphImpl.WEIGHT_MINIMUM) / (max - min);
+            float weight = (edge.getThickness() - min) * ratio + GraphImpl.WEIGHT_MINIMUM;
+
+            edge.setThickness(weight);
+        }
     }
 
     public void clearSupervised() {
@@ -149,6 +160,14 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
     public void setLabelColorizer(EdgeChildColorizer value) {
         labelColorizer = value;
         colorEdgeLabels();
+    }
+
+    public Boolean getRescaleWeight() {
+        return rescaleWeight;
+    }
+
+    public void setRescaleWeight(Boolean rescaleWeight) {
+        this.rescaleWeight = rescaleWeight;
     }
 
     /**

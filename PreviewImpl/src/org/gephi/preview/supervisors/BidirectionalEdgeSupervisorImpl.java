@@ -64,6 +64,7 @@ public class BidirectionalEdgeSupervisorImpl extends DirectedEdgeSupervisorImpl 
         arrowSize = 20f;
         arrowColorizer = new ParentColorMode();
         edgeScale = new Float(1f);
+        rescaleWeight = Boolean.TRUE;
     }
 
     @Override
@@ -73,6 +74,7 @@ public class BidirectionalEdgeSupervisorImpl extends DirectedEdgeSupervisorImpl 
             return new SupervisorPropery[]{
                         SupervisorPropery.createProperty(this, Boolean.class, "Bidirectional_curvedFlag", CATEGORY, "Curved", "getCurvedFlag", "setCurvedFlag"),
                         SupervisorPropery.createProperty(this, Float.class, "Bidirectional_edgeScale", CATEGORY, "Thickness", "getEdgeScale", "setEdgeScale"),
+                        SupervisorPropery.createProperty(this, Boolean.class, "Bidirectional_rescaleWeight", CATEGORY, "Rescale Weight", "getRescaleWeight", "setRescaleWeight"),
                         SupervisorPropery.createProperty(this, EdgeColorizer.class, "Bidirectional_colorizer", CATEGORY, "Color", "getColorizer", "setColorizer", EdgeColorizerPropertyEditor.class),
                         SupervisorPropery.createProperty(this, Boolean.class, "Bidirectional_showLabelsFlag", CATEGORY, "Labels", "getShowLabelsFlag", "setShowLabelsFlag"),
                         SupervisorPropery.createProperty(this, Boolean.class, "Bidirectional_shortenLabelsFlag", CATEGORY, "Shorten labels", "getShortenLabelsFlag", "setShortenLabelsFlag"),

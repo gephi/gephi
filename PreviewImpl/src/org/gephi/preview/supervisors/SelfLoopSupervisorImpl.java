@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.preview.supervisors;
 
 import java.util.HashSet;
@@ -40,6 +40,7 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
     private Boolean show;
     private EdgeColorizer colorizer;
     private Float edgeScale;
+    protected Boolean rescaleWeight;
     //Architecture
     private final Set<SelfLoopImpl> supervisedSelfLoops = new HashSet<SelfLoopImpl>();
 
@@ -47,10 +48,19 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
         defaultValues();
     }
 
+    public Boolean getRescaleWeight() {
+        return rescaleWeight;
+    }
+
+    public void setRescaleWeight(Boolean rescaleWeight) {
+        this.rescaleWeight = rescaleWeight;
+    }
+
     public void defaultValues() {
         show = true;
         colorizer = new CustomColorMode(0, 0, 0);
         edgeScale = new Float(1f);
+        rescaleWeight = Boolean.TRUE;
     }
 
     public Float getEdgeScale() {
@@ -142,6 +152,7 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
             return new SupervisorPropery[]{
                         SupervisorPropery.createProperty(this, Boolean.class, "SelfLoop_showFlag", CATEGORY, "Show", "getShowFlag", "setShowFlag"),
                         SupervisorPropery.createProperty(this, Float.class, "SelfLoop_edgeScale", CATEGORY, "Thickness", "getEdgeScale", "setEdgeScale"),
+                        SupervisorPropery.createProperty(this, Boolean.class, "SelfLoop_rescaleWeight", CATEGORY, "Rescale Weight", "getRescaleWeight", "setRescaleWeight"),
                         SupervisorPropery.createProperty(this, EdgeColorizer.class, "SelfLoop_colorizer", CATEGORY, "Color", "getColorizer", "setColorizer", EdgeColorizerPropertyEditor.class)};
         } catch (Exception e) {
             e.printStackTrace();

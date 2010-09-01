@@ -35,6 +35,10 @@ public interface EdgeSupervisor extends Supervisor {
 
     public void setEdgeScale(Float scale);
 
+    public Boolean getRescaleWeight();
+
+    public void setRescaleWeight(Boolean rescaleWeight);
+
     /**
      * Returns true if the edges must be displayed in the preview.
      *

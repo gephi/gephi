@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.MetaEdge;
 import org.gephi.preview.api.CubicBezierCurve;
 import org.gephi.preview.api.Point;
 import org.gephi.preview.api.supervisors.EdgeSupervisor;
@@ -45,6 +46,7 @@ public abstract class EdgeImpl extends AbstractEdge implements org.gephi.preview
     private final EdgeLabelImpl label;
     protected static final float BEZIER_CURVE_FACTOR = 0.2f;
     protected final Color originalColor;
+    protected Boolean metaEdge;
 
     /**
      * Constructor.
@@ -60,6 +62,7 @@ public abstract class EdgeImpl extends AbstractEdge implements org.gephi.preview
         super(parent, edge.getWeight());
         this.node1 = node1;
         this.node2 = node2;
+        this.metaEdge = edge instanceof MetaEdge;
 
         // edge direction vector + edge length
         direction = new Vector(this.node2.getPosition());
@@ -158,6 +161,14 @@ public abstract class EdgeImpl extends AbstractEdge implements org.gephi.preview
      */
     public Vector getDirection() {
         return direction;
+    }
+
+    public Boolean getMetaEdge() {
+        return metaEdge;
+    }
+
+    public void setMetaEdge(Boolean metaEdge) {
+        this.metaEdge = metaEdge;
     }
 
     /**
