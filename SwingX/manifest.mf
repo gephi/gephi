@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.jdesktop.swingx
 OpenIDE-Module-Localizing-Bundle: org/jdesktop/swingx/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.6
+OpenIDE-Module-Specification-Version: 1.6.1
 
