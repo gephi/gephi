@@ -148,7 +148,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         String nodesStr = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.linkLevel.nodes");
         String leavesStr = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.linkLevel.leaves");
 
-        //Level links
+        //Level links    
         for (int i = 0; i < height + 1; i++) {
             graph.readLock();
             int levelSize = graph.getLevelSize(i);
@@ -334,8 +334,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labelView)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(levelViewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(137, Short.MAX_VALUE))
+                .addComponent(levelViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
