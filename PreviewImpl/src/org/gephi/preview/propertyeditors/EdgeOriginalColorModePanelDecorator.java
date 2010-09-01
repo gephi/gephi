@@ -17,18 +17,30 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.gephi.graph.dhns.edge;
+ */
+package org.gephi.preview.propertyeditors;
 
-import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.preview.api.Colorizer;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public interface MetaEdgeBuilder {
+class EdgeOriginalColorModePanelDecorator extends ColorModePanelDecorator {
 
-    public void pushEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge);
+    public EdgeOriginalColorModePanelDecorator(AbstractColorizerPropertyEditor propertyEditor, ColorModePanel decoratedPanel) {
+        super(propertyEditor, decoratedPanel);
+    }
 
-    public void pullEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge);
+    protected String getRadioButtonLabel() {
+        return "Original";
+    }
+
+    protected boolean isSelectedRadioButton() {
+        return factory.isEdgeOriginalColorMode((Colorizer) propertyEditor.getValue());
+    }
+
+    protected Colorizer createColorizer() {
+        return factory.createEdgeOriginalColorMode();
+    }
 }

@@ -55,6 +55,7 @@ public class VizConfig {
     public static final String SELECTEDEDGE_BOTH_COLOR = "VizConfig.defaultEdgeBothSelectedColor";
     public static final String SHOW_HULLS = "VizConfig.defaultShowHulls";
     public static final String EDGE_SCALE = "VizConfig.defaultEdgeScale";
+    public static final String META_EDGE_SCALE = "VizConfig.defaultMetaEdgeScale";
     //Const Prefs
     public static final String ANTIALIASING = "VizConfig.antialiasing";
     public static final String BLENDING = "VizConfig.blending";
@@ -139,6 +140,7 @@ public class VizConfig {
     public static final boolean DEFAULT_DISABLE_LOD = false;
     public static final boolean DEFAULT_SHOW_HULLS = true;
     public static final float DEFAULT_EDGE_SCALE = 1f;
+    public static final float DEFAULT_META_EDGE_SCALE = 1f;
     //Default config - loaded in the VizModel
     protected boolean defaultUse3d = NbPreferences.forModule(VizConfig.class).getBoolean(USE_3D, DEFAULT_USE_3D);
     protected boolean defaultLighting = false;  //Overriden by use3d
@@ -170,6 +172,7 @@ public class VizConfig {
     protected Color defaultEdgeBothSelectedColor = ColorUtils.decode(NbPreferences.forModule(VizConfig.class).get(SELECTEDEDGE_BOTH_COLOR, ColorUtils.encode(DEFAULT_SELECTEDEDGE_BOTH_COLOR)));
     protected boolean defaultShowHulls = NbPreferences.forModule(VizConfig.class).getBoolean(SHOW_HULLS, DEFAULT_SHOW_HULLS);
     protected float defaultEdgeScale = NbPreferences.forModule(VizConfig.class).getFloat(EDGE_SCALE, DEFAULT_EDGE_SCALE);
+    protected float defaultMetaEdgeScale = NbPreferences.forModule(VizConfig.class).getFloat(META_EDGE_SCALE, DEFAULT_META_EDGE_SCALE);
     //Preferences
     protected int antialiasing = NbPreferences.forModule(VizConfig.class).getInt(ANTIALIASING, DEFAULT_ANTIALIASING);
     protected boolean lineSmooth = false;       //Not useful, GL_LINES
@@ -541,5 +544,9 @@ public class VizConfig {
 
     public float getDefaultEdgeScale() {
         return defaultEdgeScale;
+    }
+
+    public float getDefaultMetaEdgeScale() {
+        return defaultMetaEdgeScale;
     }
 }

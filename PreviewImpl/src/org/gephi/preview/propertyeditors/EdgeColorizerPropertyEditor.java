@@ -44,13 +44,19 @@ public class EdgeColorizerPropertyEditor extends GenericColorizerPropertyEditor 
     }
 
     @Override
+    public boolean supportEdgeOriginalColorMode() {
+        return true;
+    }
+
+    @Override
     public Component getCustomEditor() {
         ColorModePanel p;
         p = (ColorModePanel) super.getCustomEditor();
+        p = new EdgeOriginalColorModePanelDecorator(this, p);
         p = new EdgeBothBColorModePanelDecorator(this, p);
         p = new EdgeB2ColorModePanelDecorator(this, p);
         p = new EdgeB1ColorModePanelDecorator(this, p);
-
+        
         return p;
     }
 }

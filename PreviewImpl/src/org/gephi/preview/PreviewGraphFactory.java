@@ -17,13 +17,15 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.preview;
 
 import java.util.HashMap;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.HierarchicalMixedGraph;
 import org.gephi.graph.api.HierarchicalUndirectedGraph;
+import org.gephi.graph.api.MetaEdge;
 import org.gephi.preview.api.PreviewModel;
 
 /**
@@ -49,6 +51,8 @@ public class PreviewGraphFactory {
         for (org.gephi.graph.api.Node sourceNode : sourceGraph.getNodes()) {
             createPreviewNode(previewGraph, sourceNode);
         }
+
+        calculateMinMaxWeight(sourceGraph, previewGraph);
 
         // creates edges
         for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdgesAndMetaEdges()) {
@@ -85,6 +89,8 @@ public class PreviewGraphFactory {
         for (org.gephi.graph.api.Node sourceNode : sourceGraph.getNodes()) {
             createPreviewNode(previewGraph, sourceNode);
         }
+
+        calculateMinMaxWeight(sourceGraph, previewGraph);
 
         // creates edges
         for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdgesAndMetaEdges()) {
@@ -126,6 +132,8 @@ public class PreviewGraphFactory {
             createPreviewNode(previewGraph, sourceNode);
         }
 
+        calculateMinMaxWeight(sourceGraph, previewGraph);
+
         // creates edges
         for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdgesAndMetaEdges()) {
 
@@ -155,6 +163,28 @@ public class PreviewGraphFactory {
         return previewGraph;
     }
 
+    private void calculateMinMaxWeight(HierarchicalGraph sourceGraph, GraphImpl previewGraph) {
+        //Min/Max weight
+        float minWeight = Float.POSITIVE_INFINITY;
+        float maxWeight = Float.NEGATIVE_INFINITY;
+        float minMetaWeight = Float.POSITIVE_INFINITY;
+        float maxMetaWeight = Float.NEGATIVE_INFINITY;
+
+        for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getEdges()) {
+            minWeight = Math.min(minWeight, sourceEdge.getWeight());
+            maxWeight = Math.max(maxWeight, sourceEdge.getWeight());
+        }
+
+        for (org.gephi.graph.api.Edge sourceEdge : sourceGraph.getMetaEdges()) {
+            minMetaWeight = Math.min(minMetaWeight, sourceEdge.getWeight());
+            maxMetaWeight = Math.max(maxMetaWeight, sourceEdge.getWeight());
+        }
+        previewGraph.setMinWeight(minWeight);
+        previewGraph.setMaxWeight(maxWeight);
+        previewGraph.setMinMetaWeight(minMetaWeight);
+        previewGraph.setMaxMetaWeight(maxMetaWeight);
+    }
+
     /**
      * Creates a preview node from the given source node.
      *
@@ -167,7 +197,7 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.TextData sourceNodeTextData = sourceNodeData.getTextData();
 
         String label = sourceNodeData.getLabel();
-        if (sourceNodeTextData != null && sourceNodeTextData.getText() != null && sourceNodeTextData.getText().isEmpty()) {
+        if (sourceNodeTextData != null && sourceNodeTextData.getText() != null && !sourceNodeTextData.getText().isEmpty()) {
             label = sourceNodeTextData.getText();
         }
 
@@ -211,7 +241,7 @@ public class PreviewGraphFactory {
 
         SelfLoopImpl previewSelfLoop = new SelfLoopImpl(
                 previewGraph,
-                sourceEdge.getWeight(),
+                sourceEdge,
                 nodeMap.get(sourceEdge.getSource().getId()));
 
         previewGraph.addSelfLoop(previewSelfLoop);
@@ -242,7 +272,7 @@ public class PreviewGraphFactory {
 
         UnidirectionalEdgeImpl previewEdge = new UnidirectionalEdgeImpl(
                 previewGraph,
-                sourceEdge.getWeight(),
+                sourceEdge,
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
                 label,
@@ -276,7 +306,7 @@ public class PreviewGraphFactory {
 
         BidirectionalEdgeImpl previewEdge = new BidirectionalEdgeImpl(
                 previewGraph,
-                sourceEdge.getWeight(),
+                sourceEdge,
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
                 label,
@@ -310,7 +340,7 @@ public class PreviewGraphFactory {
 
         UndirectedEdgeImpl previewEdge = new UndirectedEdgeImpl(
                 previewGraph,
-                sourceEdge.getWeight(),
+                sourceEdge,
                 nodeMap.get(sourceEdge.getSource().getId()),
                 nodeMap.get(sourceEdge.getTarget().getId()),
                 label,

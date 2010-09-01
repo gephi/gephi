@@ -22,6 +22,7 @@ package org.gephi.visualization.opengl.compatibility.objects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
+import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizController;
@@ -58,15 +59,28 @@ public class Edge3dModel extends Edge2dModel {
 
         //Edge weight
         GraphLimits limits = vizModel.getLimits();
-        float weightRatio;
-        if (limits.getMinWeight() == limits.getMaxWeight()) {
-            weightRatio = Edge2dModel.WEIGHT_MINIMUM / limits.getMinWeight();
+        float weight;
+        if (obj.getEdge() instanceof MetaEdge) {
+            float weightRatio;
+            if (limits.getMinMetaWeight() == limits.getMaxMetaWeight()) {
+                weightRatio = WEIGHT_MINIMUM / limits.getMinMetaWeight();
+            } else {
+                weightRatio = Math.abs((WEIGHT_MAXIMUM - WEIGHT_MINIMUM) / (limits.getMaxMetaWeight() - limits.getMinMetaWeight()));
+            }
+            float edgeScale = vizModel.getEdgeScale() * vizModel.getMetaEdgeScale();
+            weight = obj.getEdge().getWeight();
+            weight = ((weight - limits.getMinMetaWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
         } else {
-            weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+            float weightRatio;
+            if (limits.getMinWeight() == limits.getMaxWeight()) {
+                weightRatio = WEIGHT_MINIMUM / limits.getMinWeight();
+            } else {
+                weightRatio = Math.abs((WEIGHT_MAXIMUM - WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+            }
+            float edgeScale = vizModel.getEdgeScale();
+            weight = obj.getEdge().getWeight();
+            weight = ((weight - limits.getMinWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
         }
-        float weight = obj.getEdge().getWeight();
-        float edgeScale = vizModel.getEdgeScale();
-        weight = ((weight - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
         //
 
         float x1 = obj.getSource().x();

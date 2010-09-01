@@ -29,7 +29,6 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.apiimpl.GraphDrawable;
-import org.gephi.visualization.apiimpl.GraphIO;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.text.TextModel;
 import org.w3c.dom.Document;
@@ -68,6 +67,7 @@ public class VizModel {
     protected String nodeModeler;
     protected boolean showHulls;
     protected float edgeScale;
+    protected float metaEdgeScale;
     //Listener
     protected List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
     private boolean defaultModel = false;
@@ -134,6 +134,7 @@ public class VizModel {
         edgeBothSelectionColor = config.getDefaultEdgeBothSelectedColor().getRGBComponents(null);
         showHulls = config.isDefaultShowHulls();
         edgeScale = config.getDefaultEdgeScale();
+        metaEdgeScale = config.getDefaultMetaEdgeScale();
     }
 
     //GETTERS
@@ -237,6 +238,10 @@ public class VizModel {
         return edgeScale;
     }
 
+    public float getMetaEdgeScale() {
+        return metaEdgeScale;
+    }
+
     //SETTERS
     public void setAdjustByText(boolean adjustByText) {
         this.adjustByText = adjustByText;
@@ -326,6 +331,11 @@ public class VizModel {
     public void setEdgeScale(float edgeScale) {
         this.edgeScale = edgeScale;
         fireProperyChange("edgeScale", null, edgeScale);
+    }
+
+    public void setMetaEdgeScale(float metaEdgeScale) {
+        this.metaEdgeScale = metaEdgeScale;
+        fireProperyChange("metaEdgeScale", null, metaEdgeScale);
     }
 
     public GraphLimits getLimits() {
@@ -482,6 +492,11 @@ public class VizModel {
             Element edgeScaleE = (Element) vizModelElement.getElementsByTagName("edgeScale").item(0);
             edgeScale = Float.parseFloat(edgeScaleE.getAttribute("value"));
         }
+
+        if (vizModelElement.getElementsByTagName("metaEdgeScale").getLength() > 0) {
+            Element metaEdgeScaleE = (Element) vizModelElement.getElementsByTagName("metaEdgeScale").item(0);
+            metaEdgeScale = Float.parseFloat(metaEdgeScaleE.getAttribute("value"));
+        }
     }
 
     public Element writeXML(Document document) {
@@ -595,6 +610,10 @@ public class VizModel {
         Element edgeScaleE = document.createElement("edgeScale");
         edgeScaleE.setAttribute("value", String.valueOf(edgeScale));
         vizModelE.appendChild(edgeScaleE);
+
+        Element metaEdgeScaleE = document.createElement("metaEdgeScale");
+        metaEdgeScaleE.setAttribute("value", String.valueOf(metaEdgeScale));
+        vizModelE.appendChild(metaEdgeScaleE);
 
         return vizModelE;
     }

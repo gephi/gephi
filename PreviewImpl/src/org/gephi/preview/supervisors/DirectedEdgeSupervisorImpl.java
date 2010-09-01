@@ -364,6 +364,7 @@ public abstract class DirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
             return new SupervisorPropery[]{
                         SupervisorPropery.createProperty(this, Boolean.class, "Directed_curvedFlag", CATEGORY, "Curved", "getCurvedFlag", "setCurvedFlag"),
                         SupervisorPropery.createProperty(this, Float.class, "Directed_edgeScale", CATEGORY, "Thickness", "getEdgeScale", "setEdgeScale"),
+                        SupervisorPropery.createProperty(this, Boolean.class, "Directed_rescaleWeight", CATEGORY, "Rescale Weight", "getRescaleWeight", "setRescaleWeight"),
                         SupervisorPropery.createProperty(this, EdgeColorizer.class, "Directed_colorizer", CATEGORY, "Color", "getColorizer", "setColorizer", EdgeColorizerPropertyEditor.class),
                         SupervisorPropery.createProperty(this, Boolean.class, "Directed_showLabelsFlag", CATEGORY, "Labels", "getShowLabelsFlag", "setShowLabelsFlag"),
                         SupervisorPropery.createProperty(this, Boolean.class, "Directed_shortenLabelsFlag", CATEGORY, "Shorten labels", "getShortenLabelsFlag", "setShortenLabelsFlag"),

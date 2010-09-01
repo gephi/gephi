@@ -41,6 +41,9 @@ public class Installer extends ModuleInstall {
         //TopTab
         UIManager.put("ViewTabDisplayerUI", "org.gephi.branding.desktop.NoTabsTabDisplayerUI");
 
+        //GTK Slider issue #529913
+        UIManager.put("Slider.paintValue", Boolean.FALSE);
+
         //Handler
         Logger.getLogger("").addHandler(new ReporterHandler());
     }

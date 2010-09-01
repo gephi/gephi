@@ -28,6 +28,7 @@ import org.gephi.preview.updaters.CustomColorMode;
 import org.gephi.preview.updaters.EdgeB1ColorMode;
 import org.gephi.preview.updaters.EdgeB2ColorMode;
 import org.gephi.preview.updaters.EdgeBothBColorMode;
+import org.gephi.preview.updaters.EdgeOriginalColorMode;
 import org.gephi.preview.updaters.NodeOriginalColorMode;
 import org.gephi.preview.updaters.ParentColorMode;
 import org.openide.util.lookup.ServiceProvider;
@@ -121,6 +122,10 @@ public class ColorizerFactoryImpl implements ColorizerFactory {
         return matchColorMode(s, EdgeBothBColorMode.getIdentifier());
     }
 
+    public boolean matchEdgeOriginalColorMode(String s) {
+        return matchColorMode(s, EdgeOriginalColorMode.getIdentifier());
+    }
+
     /**
      * Returns whether or not the given colorizer is a CustomColorMode.
      *
@@ -179,6 +184,10 @@ public class ColorizerFactoryImpl implements ColorizerFactory {
      */
     public boolean isEdgeBothBColorMode(Colorizer colorizer) {
         return matchEdgeBothBColorMode(colorizer.toString());
+    }
+
+    public boolean isEdgeOriginalColorMode(Colorizer colorizer) {
+        return matchEdgeOriginalColorMode(colorizer.toString());
     }
 
     /**
@@ -246,5 +255,9 @@ public class ColorizerFactoryImpl implements ColorizerFactory {
      */
     public Colorizer createEdgeBothBColorMode() {
         return new EdgeBothBColorMode();
+    }
+
+    public Colorizer createEdgeOriginalColorMode() {
+        return new EdgeOriginalColorMode();
     }
 }

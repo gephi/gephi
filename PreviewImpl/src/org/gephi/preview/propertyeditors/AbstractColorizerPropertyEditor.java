@@ -64,6 +64,8 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
             setValue(colorizerFactory.createEdgeB2ColorMode());
         } else if (supportsEdgeBothBColorMode() && colorizerFactory.matchEdgeBothBColorMode(s)) {
             setValue(colorizerFactory.createEdgeBothBColorMode());
+        } else if(supportEdgeOriginalColorMode() && colorizerFactory.matchEdgeOriginalColorMode(s)) {
+            setValue(colorizerFactory.createEdgeOriginalColorMode());
         }
     }
 
@@ -88,6 +90,10 @@ public abstract class AbstractColorizerPropertyEditor extends PropertyEditorSupp
     }
 
     public boolean supportsEdgeBothBColorMode() {
+        return false;
+    }
+
+    public boolean supportEdgeOriginalColorMode() {
         return false;
     }
 

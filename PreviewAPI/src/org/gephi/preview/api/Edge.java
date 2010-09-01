@@ -55,6 +55,8 @@ public interface Edge {
      */
     public Color getColor();
 
+    public java.awt.Color getOriginalColor();
+
     /**
      * Returns the edge's label.
      *
