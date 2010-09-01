@@ -17,12 +17,13 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.opengl.compatibility.objects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizModel;
@@ -107,7 +108,7 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     public boolean isInOctreeLeaf(Octant leaf) {
         NodeData nodeFrom = obj.getSource();
         NodeData nodeTo = obj.getTarget();
-        if(nodeFrom.getModel()==null || nodeTo.getModel()==null) {
+        if (nodeFrom.getModel() == null || nodeTo.getModel() == null) {
             return false;
         }
         boolean res = true;
@@ -147,15 +148,28 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
         //Edge weight
         GraphLimits limits = vizModel.getLimits();
-        float weightRatio;
-        if (limits.getMinWeight() == limits.getMaxWeight()) {
-            weightRatio = WEIGHT_MINIMUM / limits.getMinWeight();
+        float weight;
+        if (obj.getEdge() instanceof MetaEdge) {
+            float weightRatio;
+            if (limits.getMinMetaWeight() == limits.getMaxMetaWeight()) {
+                weightRatio = WEIGHT_MINIMUM / limits.getMinMetaWeight();
+            } else {
+                weightRatio = Math.abs((WEIGHT_MAXIMUM - WEIGHT_MINIMUM) / (limits.getMaxMetaWeight() - limits.getMinMetaWeight()));
+            }
+            float edgeScale = vizModel.getEdgeScale() * vizModel.getMetaEdgeScale();
+            weight = obj.getEdge().getWeight();
+            weight = ((weight - limits.getMinMetaWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
         } else {
-            weightRatio = Math.abs((WEIGHT_MAXIMUM - WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+            float weightRatio;
+            if (limits.getMinWeight() == limits.getMaxWeight()) {
+                weightRatio = WEIGHT_MINIMUM / limits.getMinWeight();
+            } else {
+                weightRatio = Math.abs((WEIGHT_MAXIMUM - WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+            }
+            float edgeScale = vizModel.getEdgeScale();
+            weight = obj.getEdge().getWeight();
+            weight = ((weight - limits.getMinWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
         }
-        float weight = obj.getEdge().getWeight();
-        float edgeScale = vizModel.getEdgeScale();
-        weight = ((weight - limits.getMinWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
         //
 
         float x1 = obj.getSource().x();

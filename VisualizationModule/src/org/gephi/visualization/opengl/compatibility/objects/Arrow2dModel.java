@@ -17,12 +17,13 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.opengl.compatibility.objects;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
@@ -64,15 +65,28 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
 
         //Edge weight
         GraphLimits limits = vizModel.getLimits();
-        float weightRatio;
-        if (limits.getMinWeight() == limits.getMaxWeight()) {
-            weightRatio = Edge2dModel.WEIGHT_MINIMUM / limits.getMinWeight();
+        float weight;
+        if (edge.getEdge() instanceof MetaEdge) {
+            float weightRatio;
+            if (limits.getMinMetaWeight() == limits.getMaxMetaWeight()) {
+                weightRatio = Edge2dModel.WEIGHT_MINIMUM / limits.getMinMetaWeight();
+            } else {
+                weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxMetaWeight() - limits.getMinMetaWeight()));
+            }
+            float edgeScale = vizModel.getEdgeScale() * vizModel.getMetaEdgeScale();
+            weight = edge.getEdge().getWeight();
+            weight = ((weight - limits.getMinMetaWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
         } else {
-            weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+            float weightRatio;
+            if (limits.getMinWeight() == limits.getMaxWeight()) {
+                weightRatio = Edge2dModel.WEIGHT_MINIMUM / limits.getMinWeight();
+            } else {
+                weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
+            }
+            float edgeScale = vizModel.getEdgeScale();
+            weight = edge.getEdge().getWeight();
+            weight = ((weight - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
         }
-        float weight = edge.getEdge().getWeight();
-        float edgeScale = vizModel.getEdgeScale();
-        weight = ((weight - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
         //
 
         //Edge size
