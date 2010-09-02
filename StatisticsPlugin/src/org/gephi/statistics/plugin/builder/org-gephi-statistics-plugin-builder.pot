@@ -41,3 +41,6 @@ msgstr "InOut Degree"
 
 msgid "ConnectedComponents.name"
 msgstr "Connected Components"
+
+msgid "EigenvectorCentrality.name"
+msgstr "Eigenvector Centrality"

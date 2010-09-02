@@ -16,7 +16,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "OpenIDE-Module-Long-Description"
-msgstr "Vectorial exporters implementations"
+msgstr "Vector exporters implementations"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Vectorial exporters implementations"
+msgstr "Vector exporters implementations"
+
+msgid "fileType_PDF_Name"
+msgstr "PDF Files"
+
+msgid "ExporterPDF_name"
+msgstr "PDF"
+
+msgid "fileType_SVG_Name"
+msgstr "SVG Files"
+
+msgid "ExporterSVG_name"
+msgstr "SVG"

@@ -93,6 +93,11 @@ msgstr "Syntax error, the file must start with the <graphml> markup."
 msgid "importerGraphML_error_syntax2"
 msgstr "Syntax error, node ''{0}'' must be nested in a <graph> markup."
 
+msgid "importerGraphML_error_attributeclass"
+msgstr ""
+"Attribute class not found or unknown for attribute ''{0}''. The attribute is "
+"ignored."
+
 msgid "importerGraphML_error_attributefor"
 msgstr ""
 "Attribute ''for'' not found or unknown for attribute ''{0}''. The attribute "
@@ -108,6 +113,12 @@ msgstr ""
 msgid "importerGraphML_error_attributedefault"
 msgstr "Attribute ''{0}'' default value cannot be cast to the ''{1}'' type."
 
+msgid "importerGraphML_error_attributecolumn_exist"
+msgstr "Attribute with id ''{0}'' already exists, the attribute is ignored"
+
+msgid "importerGraphML_error_attributeempty"
+msgstr "Attribute parse error, id is missing."
+
 msgid "importerGraphML_log_nodeproperty"
 msgstr "Node property found: {0}"
 
@@ -120,21 +131,26 @@ msgstr "Node attribute found ''{0}'' ({1})"
 msgid "importerGraphML_log_edgeattribute"
 msgstr "Edge attribute found ''{0}'' ({1})"
 
+msgid "importerGraphML_log_default"
+msgstr "Default attribute value found: ''{0}'' ({1})"
+
 msgid "importerGraphML_error_datakey"
 msgstr "Data key is missing for element id={0}"
 
-msgid "importerGraphML_error_datavalue1"
-msgstr ""
-"Data value {0} type error for element id={1}. The value cannot be set as "
-"''{2}'' property."
-
-msgid "importerGraphML_error_datavalue2"
+msgid "importerGraphML_error_datavalue"
 msgstr ""
 "Data value {0} type error for element id={1}. The value cannot be set as "
 "''{2}'' attribute."
 
 msgid "importerGraphML_error_nodeid"
 msgstr "Node id is missing. The node is ignored."
+
+msgid "importerGraphML_error_defaultedgetype"
+msgstr "Default edge type ''{0}'' is not recognized. Set to default ''mixed''."
+
+msgid "importerGraphML_error_edgetype"
+msgstr ""
+"Type ''{0}'' of the edge ''{1}'' is not recognized. Set to default value."
 
 msgid "importerGML_error_listtoken"
 msgstr "Unexpected token type at line {0}"
@@ -159,11 +175,17 @@ msgstr ""
 "Attribute ''class'' not found or unknown for attribute ''{0}''. The "
 "attribute is ignored."
 
+msgid "importerGEXF_error_attributeempty"
+msgstr "Attribute parse error, id or type is missing."
+
 msgid "importerGEXF_error_attributedefault"
 msgstr "Attribute ''{0}'' default value cannot be cast to the ''{1}'' type."
 
 msgid "importerGEXF_error_attributeoptions"
 msgstr "Attribute ''{0}'' option values cannot be cast to the ''{1}'' type."
+
+msgid "importerGEXF_error_attributecolumn_exist"
+msgstr "Attribute with id ''{0}'' already exists, the attribute is ignored"
 
 msgid "importerGEXF_error_attributetype1"
 msgstr "Attribute type not found for attribute ''{0}''. Set to default string."
@@ -185,12 +207,11 @@ msgstr ""
 
 msgid "importerGEXF_error_datavalue"
 msgstr ""
-"Data value ''{0}'' type error for element id={1}. The value cannot be set as "
+"Data value ''{0}'' type error for element {1}. The value cannot be set as "
 "''{2}'' attribute."
 
 msgid "importerGEXF_error_defaultedgetype"
-msgstr ""
-"Default edge type ''{0}'' is not recognized. Set to default ''undirected''."
+msgstr "Default edge type ''{0}'' is not recognized. Set to default ''mixed''."
 
 msgid "importerGEXF_error_edgedouble"
 msgstr ""
@@ -221,11 +242,34 @@ msgstr "Node ''{0}'' has a wrong size (not a float)."
 msgid "importerGEXF_error_notnode"
 msgstr "Element ''{0}'' is not a node. The element is ignored."
 
+msgid "importerGEXF_error_pid_notfound"
+msgstr "The parent pid ''{0}'' could not be found for node ''{1}''."
+
 msgid "importerGEXF_error_parsingdatetype"
 msgstr "Date type ''{0}'' is not recognized. Set to default ''date''."
 
 msgid "importerGEXF_error_parsingmode"
 msgstr "Parsing mode ''{0}'' is not recognized. Set to default ''static''."
+
+msgid "importerGEXF_error_node_timeinterval_parseerror"
+msgstr ""
+"The time interval for node ''{0}'' could not be parsed. Use Date or Double "
+"formatting."
+
+msgid "importerGEXF_error_edge_timeinterval_parseerror"
+msgstr ""
+"The time interval for edge ''{0}'' could not be parsed. Use Date or Double "
+"formatting."
+
+msgid "importerGEXF_error_nodeattribute_timeinterval_parseerror"
+msgstr ""
+"The time interval for node ''{0}'' attribute could not be parsed. Use Date "
+"or Double formatting."
+
+msgid "importerGEXF_error_edgeattribute_timeinterval_parseerror"
+msgstr ""
+"The time interval for edge ''{0}'' attribute could not be parsed. Use Date "
+"or Double formatting."
 
 msgid "importerGEXF_log_edgeeproperty"
 msgstr "Edge property found: {0}"
@@ -314,3 +358,6 @@ msgstr "Unable to find color at line {0}"
 
 msgid "importerDOT_error_edgeparsing"
 msgstr "Unable to parse edge at line {0}"
+
+msgid "importerDOT_error_posunreachable"
+msgstr "Unable to parse position of node at line {0}. Must be pos=\"x, y\"."

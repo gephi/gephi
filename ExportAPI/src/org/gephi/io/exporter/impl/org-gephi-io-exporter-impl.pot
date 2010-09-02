@@ -15,8 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "EdgeWeightBuilder.name"
-msgstr "Edge Weight"
-
-msgid "EdgeWeightBuilder.description"
-msgstr "Keep edges within a particular weight range"
+msgid "ExportControllerImpl.error.nomatchingexporter"
+msgstr ""
+"Impossible to find a compatible Exporter.\n"
+"The file format is not supported."

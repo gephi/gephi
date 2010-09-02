@@ -85,3 +85,15 @@ msgid "DesktopImportControllerUI.error_no_matching_db_importer"
 msgstr ""
 "Impossible to find a compatible Importer.\n"
 "The database is not supported."
+
+msgid "DesktopImportControllerUI.file.ui.dialog.title"
+msgstr "{0} settings"
+
+msgid "DesktopImportControllerUI.spigot.ui.dialog.title"
+msgstr "{0} settings"
+
+msgid "DesktopImportControllerUI.processor.ui.dialog.title"
+msgstr "Processor settings"
+
+msgid "ReportPanel.createMissingNodesCheckbox.text"
+msgstr "Create missing nodes"

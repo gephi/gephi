@@ -1,0 +1,47 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Provide settings panels for processors"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Provide settings panels for processors"
+
+msgid "DynamicProcessorPanel.header.title"
+msgstr "Time Frame"
+
+msgid "DynamicProcessorPanel.header.description"
+msgstr ""
+"Append data as a new time frame. Use dynamic analysis features by importing "
+"the same network at different time. Time could be dates or timestamps. Be "
+"careful to use same node identifiers to be able to recognize nodes between "
+"files."
+
+msgid "DynamicProcessorPanel.dateRadio.text"
+msgstr "Date"
+
+msgid "DynamicProcessorPanel.labelDate.text"
+msgstr "Select date"
+
+msgid "DynamicProcessorPanel.timeStampRadio.text"
+msgstr "Timestamp"
+
+msgid "DynamicProcessorPanel.labelTime.text"
+msgstr "Select natural or real number"
+
+msgid "DynamicProcessorPanel.labelLastFrame.text"
+msgstr "Last frame found:"
