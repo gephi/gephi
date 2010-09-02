@@ -244,8 +244,6 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
 
     public String getDate() {
         return date;
-
-
     }
 
     public void setDate(String date) {

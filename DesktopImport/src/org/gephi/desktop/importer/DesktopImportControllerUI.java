@@ -425,6 +425,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
             //Process
             final ProcessorUI pui = getProcessorUI(processor);
+            final ValidResult validResult = new ValidResult();
             if (pui != null) {
                 if (pui != null) {
                     try {
@@ -447,10 +448,11 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                                 }
                                 Object result = DialogDisplayer.getDefault().notify(dd2);
                                 if (result.equals(NotifyDescriptor.CANCEL_OPTION) || result.equals(NotifyDescriptor.CLOSED_OPTION)) {
-                                    pui.unsetup(); //false
-                                    return;
+                                    validResult.setResult(false);
+                                } else {
+                                    pui.unsetup(); //true
+                                    validResult.setResult(true);
                                 }
-                                pui.unsetup(); //true
                             }
                         });
                     } catch (InterruptedException ex) {
@@ -460,16 +462,31 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                     }
                 }
             }
-            controller.process(container, processor, workspace);
+            if (validResult.isResult()) {
+                controller.process(container, processor, workspace);
 
-            //StatusLine notify
-            String source = container.getSource();
-            if (source.isEmpty()) {
-                source = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.status.importSuccess.default");
+                //StatusLine notify
+                String source = container.getSource();
+                if (source.isEmpty()) {
+                    source = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.status.importSuccess.default");
+                }
+                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.status.importSuccess", source));
             }
-            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.status.importSuccess", source));
         } else {
             System.err.println("Bad container");
+        }
+    }
+
+    private static class ValidResult {
+
+        private boolean result = false;
+
+        public void setResult(boolean result) {
+            this.result = result;
+        }
+
+        public boolean isResult() {
+            return result;
         }
     }
 
