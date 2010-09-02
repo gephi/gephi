@@ -56,6 +56,7 @@ public final class DynamicModelImpl implements DynamicModel {
     private TimeIntervalIndex timeIntervalIndex;
     private AttributeColumn nodeColumn;
     private AttributeColumn edgeColumn;
+    private TimeFormat timeFormat;
 
     /**
      * The default constructor.
@@ -83,6 +84,7 @@ public final class DynamicModelImpl implements DynamicModel {
             throw new NullPointerException("The workspace cannot be null.");
         }
 
+        this.timeFormat = TimeFormat.DOUBLE;
         this.controller = controller;
         graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
         if (graphModel == null || graphModel.getGraph() == null) {
@@ -235,6 +237,15 @@ public final class DynamicModelImpl implements DynamicModel {
     }
 
     @Override
+    public TimeFormat getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(TimeFormat timeFormat) {
+        this.timeFormat = timeFormat;
+    }
+
+    @Override
     public double getMin() {
         return timeIntervalIndex.getMin();
     }
@@ -255,7 +266,7 @@ public final class DynamicModelImpl implements DynamicModel {
 
     private static class TimeIntervalIndex {
 
-        private SortedMap<Double, Integer> lowMap = new TreeMap<Double, Integer>();
+        private SortedMap<Double, Integer> lowMap  = new TreeMap<Double, Integer>();
         private SortedMap<Double, Integer> highMap = new TreeMap<Double, Integer>();
         private TreeSet<Double> pointsSet = new TreeSet<Double>();
 

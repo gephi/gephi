@@ -423,6 +423,43 @@ public final class DynamicUtilities {
 	}
 
 	/**
+	 * It checks intervals of the {@code source} and make it fit to the given interval,
+	 * possibly removing intervals out of the window and
+	 * changing low or high of intervals to fit.
+	 *
+	 * @param source a {@code DynamicType} to be performed
+	 * @param interval a given interval
+	 *
+	 * @return a fitted {@code DynamicType} instance.
+	 *
+	 * @throws NullPointerException if {@code source} is null.
+	 */
+	public static DynamicType fitToInterval(DynamicType source, Interval interval) {
+		if (source == null)
+			throw new NullPointerException("The source cannot be null.");
+		
+		List<Interval> sIntervals = source.getIntervals(interval);
+		List<Interval> tIntervals = new ArrayList<Interval>();
+		for (Interval i : sIntervals) {
+			double  iLow   = i.getLow();
+			double  iHigh  = i.getHigh();
+			boolean ilopen = i.isLowExcluded();
+			boolean iropen = i.isHighExcluded();
+			if (i.getLow() < interval.getLow())
+				iLow = interval.getLow();
+			if (i.getHigh() > interval.getHigh())
+				iHigh = interval.getHigh();
+			if (interval.isLowExcluded())
+				ilopen = true;
+			if (interval.isHighExcluded())
+				iropen = true;
+			tIntervals.add(new Interval(iLow, iHigh, ilopen, iropen, i.getValue()));
+		}
+
+		return createDynamicObject(AttributeType.parse(source), tIntervals);
+	}
+
+	/**
 	 * It checks intervals of the {@code source} and make it fit to the given interval
 	 * [{@code low}, {@code high}], possibly removing intervals out of the window and
 	 * changing low or high of intervals to fit.
@@ -437,21 +474,6 @@ public final class DynamicUtilities {
 	 * @throws IllegalArgumentException if {@code low} > {@code high}.
 	 */
 	public static DynamicType fitToInterval(DynamicType source, double low, double high) {
-		if (source == null)
-			throw new NullPointerException("The source cannot be null.");
-		
-		List<Interval> sIntervals = source.getIntervals(low, high);
-		List<Interval> tIntervals = new ArrayList<Interval>();
-		for (Interval interval : sIntervals) {
-			double iLow  = interval.getLow();
-			double iHigh = interval.getHigh();
-			if (interval.getLow() < low)
-				iLow = low;
-			if (interval.getHigh() > high)
-				iHigh = high;
-			tIntervals.add(new Interval(iLow, iHigh, interval.getValue()));
-		}
-
-		return createDynamicObject(AttributeType.parse(source), tIntervals);
+		return fitToInterval(source, new Interval(low, high, false, false));
 	}
 }

@@ -123,13 +123,8 @@ public final class DynamicInteger extends DynamicType<Integer> {
 	}
 
 	@Override
-	public Integer getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		List<Integer> values = getValues(low, high);
+	public Integer getValue(Interval<Integer> interval, Estimator estimator) {
+		List<Integer> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
 
@@ -190,6 +185,16 @@ public final class DynamicInteger extends DynamicType<Integer> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
+	}
+
+	@Override
+	public Integer getValue(double low, double high, Estimator estimator) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		return getValue(new Interval<Integer>(low, high, false, false), estimator);
 	}
 
 	@Override

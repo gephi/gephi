@@ -123,13 +123,8 @@ public final class DynamicShort extends DynamicType<Short> {
 	}
 
 	@Override
-	public Short getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		List<Short> values = getValues(low, high);
+	public Short getValue(Interval<Short> interval, Estimator estimator) {
+		List<Short> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
 
@@ -190,6 +185,16 @@ public final class DynamicShort extends DynamicType<Short> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
+	}
+
+	@Override
+	public Short getValue(double low, double high, Estimator estimator) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		return getValue(new Interval<Short>(low, high, false, false), estimator);
 	}
 
 	@Override

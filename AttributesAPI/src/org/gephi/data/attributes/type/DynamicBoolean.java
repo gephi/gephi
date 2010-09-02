@@ -122,13 +122,8 @@ public final class DynamicBoolean extends DynamicType<Boolean> {
 	}
 
 	@Override
-	public Boolean getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		List<Boolean> values = getValues(low, high);
+	public Boolean getValue(Interval<Boolean> interval, Estimator estimator) {
+		List<Boolean> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
 
@@ -179,6 +174,16 @@ public final class DynamicBoolean extends DynamicType<Boolean> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
+	}
+
+	@Override
+	public Boolean getValue(double low, double high, Estimator estimator) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		return getValue(new Interval<Boolean>(low, high, false, false), estimator);
 	}
 
 	@Override

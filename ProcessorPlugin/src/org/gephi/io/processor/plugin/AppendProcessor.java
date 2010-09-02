@@ -36,6 +36,7 @@ import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -46,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class AppendProcessor extends AbstractProcessor implements Processor {
 
     public String getDisplayName() {
-        return "Append graph";
+        return NbBundle.getMessage(AppendProcessor.class, "AppendProcessor.displayName");
     }
 
     public void process() {

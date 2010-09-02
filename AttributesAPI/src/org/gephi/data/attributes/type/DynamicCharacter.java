@@ -123,13 +123,8 @@ public final class DynamicCharacter extends DynamicType<Character> {
 	}
 
 	@Override
-	public Character getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		List<Character> values = getValues(low, high);
+	public Character getValue(Interval<Character> interval, Estimator estimator) {
+		List<Character> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
 
@@ -180,6 +175,16 @@ public final class DynamicCharacter extends DynamicType<Character> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
+	}
+
+	@Override
+	public Character getValue(double low, double high, Estimator estimator) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		return getValue(new Interval<Character>(low, high, false, false), estimator);
 	}
 
 	@Override

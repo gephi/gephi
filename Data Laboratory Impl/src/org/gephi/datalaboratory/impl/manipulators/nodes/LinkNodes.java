@@ -50,7 +50,7 @@ public class LinkNodes implements NodesManipulator{
 
         GraphModel currentGraphModel=Lookup.getDefault().lookup(GraphController.class).getModel();
         if(graphModel!=currentGraphModel){//If graph model has changed since last execution, change default mode for edges to create in UI, else keep this parameter across calls
-            directed=currentGraphModel.isDirected()||graphModel.isMixed();//Get graph directed state. Set to true if graph is directed or mixed
+            directed=currentGraphModel.isDirected()||currentGraphModel.isMixed();//Get graph directed state. Set to true if graph is directed or mixed
             graphModel=currentGraphModel;
         }
     }

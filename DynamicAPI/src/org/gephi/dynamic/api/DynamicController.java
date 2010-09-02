@@ -70,6 +70,12 @@ public interface DynamicController {
     public void setVisibleInterval(double low, double high);
 
     /**
+     * Sets the current time format. This should be done when the model is inited.
+     * @param timeFormat the time format that is to be set as current
+     */
+    public void setTimeFormat(DynamicModel.TimeFormat timeFormat);
+
+    /**
      * Adds <code>listener</code> to the listeners of this model. It receives
      * events when model is changed.
      * @param listener      the listener that is to be added

@@ -76,8 +76,7 @@ public abstract class DynamicType<T> {
 	public DynamicType(DynamicType<T> source) {
 		if (source == null)
 			intervalTree = new IntervalTree<T>();
-		else 
-                    intervalTree = new IntervalTree<T>(source.intervalTree);
+		else intervalTree = new IntervalTree<T>(source.intervalTree);
 	}
 
 	/**
@@ -169,6 +168,40 @@ public abstract class DynamicType<T> {
 	}
 
 	/**
+	 * Indicates if the leftmost point is excluded.
+	 *
+	 * @return {@code true} if the leftmost point is excluded,
+	 *         {@code false} otherwise.
+	 */
+	public boolean isLowExcluded() {
+		return intervalTree.isLowExcluded();
+	}
+
+	/**
+	 * Indicates if the rightmost point is excluded.
+	 *
+	 * @return {@code true} if the rightmost point is excluded,
+	 *         {@code false} otherwise.
+	 */
+	public boolean isHighExcluded() {
+		return intervalTree.isHighExcluded();
+	}
+
+	/**
+	 * Indicates if this instance is included in a given time interval.
+	 *
+	 * @param interval a given time interval
+	 *
+	 * @return {@code true} if and only if this instance.low >= interval.low and
+	 *         this instance.right <= interval.high and bounds are properly
+	 *         excluded/included, otherwise {@code false}.
+	 */
+	public boolean isInRange(Interval<T> interval) {
+		return getLow()  >= interval.getLow()  && (isLowExcluded()  || !interval.isLowExcluded()) &&
+			   getHigh() <= interval.getHigh() && (isHighExcluded() || !interval.isHighExcluded());
+	}
+
+	/**
 	 * Indicates if this instance is included in a [{@code low}, {@code high}]
 	 * time interval.
 	 *
@@ -177,7 +210,7 @@ public abstract class DynamicType<T> {
 	 *
 	 * @return {@code true} if and only if this instance.low >= low and
 	 *         this instance.right <= high, otherwise {@code false}.
-	 * 
+	 *
 	 * @throws IllegalArgumentException if {@code low} > {@code high}.
 	 */
 	public boolean isInRange(double low, double high) {
@@ -185,7 +218,7 @@ public abstract class DynamicType<T> {
 			throw new IllegalArgumentException(
 						"The left endpoint of the interval must be less than " +
 						"the right endpoint.");
-		
+
 		return getLow() >= low && getHigh() <= high;
 	}
 
@@ -206,6 +239,23 @@ public abstract class DynamicType<T> {
 
 	/**
 	 * Returns the estimated value of a set of values whose time intervals
+	 * overlap with a given time interval.
+	 * {@code Estimator.FIRST} is used.
+	 *
+	 * @param interval a given time interval
+	 *
+	 * @return the estimated value of a set of values whose time intervals
+	 *         overlap with a given time interval or
+	 *         {@code null} if there are no intervals.
+	 * 
+	 * @see Estimator
+	 */
+	public T getValue(double low, double high) {
+		return getValue(low, high, Estimator.FIRST);
+	}
+
+	/**
+	 * Returns the estimated value of a set of values whose time intervals
 	 * overlap with a [{@code low}, {@code high}] time interval.
 	 * {@code Estimator.FIRST} is used.
 	 *
@@ -217,11 +267,11 @@ public abstract class DynamicType<T> {
 	 *         {@code null} if there are no intervals.
 	 *
 	 * @throws IllegalArgumentException if {@code low} > {@code high}.
-	 * 
+	 *
 	 * @see Estimator
 	 */
-	public T getValue(double low, double high) {
-		return getValue(low, high, Estimator.FIRST);
+	public T getValue(Interval<T> interval) {
+		return getValue(interval, Estimator.FIRST);
 	}
 
 	/**
@@ -247,6 +297,24 @@ public abstract class DynamicType<T> {
 
 	/**
 	 * Returns the estimated value of a set of values whose time intervals
+	 * overlap with a given time interval.
+	 *
+	 * @param interval  a given time interval
+	 * @param estimator used to estimate the result
+	 *
+	 * @return the estimated value of a set of values whose time intervals
+	 *         overlap with a given time interval or
+	 *         {@code null} if there are no intervals.
+	 *
+	 * @throws UnsupportedOperationException if type {@code T} doesn't support
+	 *                                       the given {@code estimator}.
+	 *
+	 * @see Estimator
+	 */
+	public abstract T getValue(Interval<T> interval, Estimator estimator);
+
+	/**
+	 * Returns the estimated value of a set of values whose time intervals
 	 * overlap with a [{@code low}, {@code high}] time interval.
 	 *
 	 * @param low       the left endpoint
@@ -256,11 +324,11 @@ public abstract class DynamicType<T> {
 	 * @return the estimated value of a set of values whose time intervals
 	 *         overlap with a [{@code low}, {@code high}] time interval or
 	 *         {@code null} if there are no intervals.
-	 * 
+	 *
 	 * @throws IllegalArgumentException      if {@code low} > {@code high}.
 	 * @throws UnsupportedOperationException if type {@code T} doesn't support
 	 *                                       the given {@code estimator}.
-	 * 
+	 *
 	 * @see Estimator
 	 */
 	public abstract T getValue(double low, double high, Estimator estimator);
@@ -276,11 +344,27 @@ public abstract class DynamicType<T> {
 
 	/**
 	 * Returns a list of values whose time intervals overlap with a
+	 * given time interval.
+	 *
+	 * @param interval a given time interval
+	 *
+	 * @return a list of values whose time intervals overlap with a
+	 *         given time interval.
+	 */
+	public List<T> getValues(Interval<T> interval) {
+		List<T> result = new ArrayList<T>();
+		for (Interval<T> i : intervalTree.search(interval))
+			result.add(i.getValue());
+		return result;
+	}
+
+	/**
+	 * Returns a list of values whose time intervals overlap with a
 	 * [{@code low}, {@code high}] time interval.
 	 *
 	 * @param low  the left endpoint
 	 * @param high the right endpoint
-	 * 
+	 *
 	 * @return a list of values whose time intervals overlap with a
 	 *         [{@code low}, {@code high}] time interval.
 	 *
@@ -291,6 +375,17 @@ public abstract class DynamicType<T> {
 		for (Interval<T> i : intervalTree.search(low, high))
 			result.add(i.getValue());
 		return result;
+	}
+
+	/**
+	 * Returns a list of intervals which overlap with a given time interval.
+	 *
+	 * @param interval a given time interval
+	 *
+	 * @return a list of intervals which overlap with a given time interval.
+	 */
+	public List<Interval<T>> getIntervals(Interval<T> interval) {
+		return intervalTree.search(interval);
 	}
 
 	/**
@@ -350,7 +445,7 @@ public abstract class DynamicType<T> {
 
 	/**
 	 * Returns a string representation of this instance in a format
-	 * {@code [[low, high, value], ..., [low, high, value]]}. Intervals are
+	 * {@code <[low, high, value], ..., [low, high, value]>}. Intervals are
 	 * ordered by its left endpoint.
 	 * 
 	 * @return a string representation of this instance.

@@ -122,13 +122,8 @@ public final class DynamicString extends DynamicType<String> {
 	}
 
 	@Override
-	public String getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		List<String> values = getValues(low, high);
+	public String getValue(Interval<String> interval, Estimator estimator) {
+		List<String> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
 
@@ -179,6 +174,16 @@ public final class DynamicString extends DynamicType<String> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
+	}
+
+	@Override
+	public String getValue(double low, double high, Estimator estimator) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		return getValue(new Interval<String>(low, high, false, false), estimator);
 	}
 
 	@Override

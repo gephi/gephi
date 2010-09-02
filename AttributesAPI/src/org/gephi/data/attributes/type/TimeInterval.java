@@ -46,6 +46,19 @@ public final class TimeInterval extends DynamicType<Double[]> {
 
 	/**
 	 * Constructs a new {@code DynamicType} instance that contains a given
+	 * {@code interval}.
+	 *
+	 * @param low   the left endpoint
+	 * @param high  the right endpoint
+	 * @param lopen indicates if the left endpoint is excluded (true in this case)
+	 * @param ropen indicates if the right endpoint is excluded (true in this case)
+	 */
+	public TimeInterval(double low, double high, boolean lopen, boolean ropen) {
+		super(new Interval<Double[]>(low, high, lopen, ropen, new Double[] { low, high }));
+	}
+
+	/**
+	 * Constructs a new {@code DynamicType} instance that contains a given
 	 * {@code interval} [{@code low}, {@code high}].
 	 *
 	 * @param low  the left endpoint
@@ -77,6 +90,21 @@ public final class TimeInterval extends DynamicType<Double[]> {
 
 	/**
 	 * Constructs a shallow copy of {@code source} that contains a given
+	 * {@code interval}.
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param low    the left endpoint
+	 * @param high   the right endpoint
+	 * @param lopen  indicates if the left endpoint is excluded (true in this case)
+	 * @param ropen  indicates if the right endpoint is excluded (true in this case)
+	 */
+	public TimeInterval(TimeInterval source, double low, double high, boolean lopen, boolean ropen) {
+		super(source, new Interval<Double[]>(low, high, lopen, ropen, new Double[] { low, high }));
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} that contains a given
 	 * {@code interval} [{@code low}, {@code high}].
 	 *
 	 * @param source an object to copy from (could be null, then completely new
@@ -85,8 +113,31 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	 * @param high   the right endpoint
 	 */
 	public TimeInterval(TimeInterval source, double low, double high) {
-		super(source, new Interval<Double[]>(low, high, new Double[] {
-			low, high }));
+		super(source, new Interval<Double[]>(low, high, new Double[] { low, high }));
+	}
+
+	/**
+	 * Constructs a shallow copy of {@code source} that contains a given
+	 * {@code interval} [{@code alow}, {@code ahigh}]. Before add it removes
+	 * from the newly created object all intervals that overlap with a given
+	 * {@code interval} [{@code rlow}, {@code rhigh}].
+	 *
+	 * @param source an object to copy from (could be null, then completely new
+	 *               instance is created)
+	 * @param alow   the left endpoint of the interval to add
+	 * @param ahigh  the right endpoint of the interval to add
+	 * @param alopen indicates if the left endpoint of the interval to add is excluded (true in this case)
+	 * @param aropen indicates if the right endpoint of the interval to add is excluded (true in this case)
+	 * @param rlow   the left endpoint of the interval to remove
+	 * @param rhigh  the right endpoint of the interval to remove
+	 * @param blopen indicates if the left endpoint of the interval to remove is excluded (true in this case)
+	 * @param bropen indicates if the right endpoint of the interval to remove is excluded (true in this case)
+	 */
+	public TimeInterval(TimeInterval source, double alow, double ahigh, boolean alopen, boolean aropen,
+			double rlow, double rhigh, boolean blopen, boolean bropen) {
+		super(source,
+			new Interval<Double[]>(alow, ahigh, alopen, aropen, new Double[] { alow, ahigh }),
+			new Interval<Double[]>(rlow, rhigh, blopen, bropen, new Double[] { rlow, rhigh }));
 	}
 
 	/**
@@ -145,13 +196,8 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	}
 
 	@Override
-	public Double[] getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		List<Double[]> values = getValues(low, high);
+	public Double[] getValue(Interval<Double[]> interval, Estimator estimator) {
+		List<Double[]> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
 
@@ -198,27 +244,37 @@ public final class TimeInterval extends DynamicType<Double[]> {
 		}
 	}
 
+	@Override
+	public Double[] getValue(double low, double high, Estimator estimator) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		return getValue(new Interval<Double[]>(low, high, false, false), estimator);
+	}
+
 	/**
 	 * Returns a string representation of this instance in a format
-	 * {@code [[low, high], ..., [low, high]]}. Intervals are
+	 * {@code <[low, high], ..., [low, high]>}. Intervals are
 	 * ordered by its left endpoint.
 	 *
 	 * @return a string representation of this instance.
 	 */
 	@Override
 	public String toString() {
-		List<Double[]> list = getValues();
+		List<Interval<Double[]>> list = getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 		if (!list.isEmpty()) {
-			StringBuilder sb = new StringBuilder("[");
-			sb.append("[").append(list.get(0)[0]).append(", ").
-					append(list.get(0)[1]).append("]");
+			StringBuilder sb = new StringBuilder("<");
+			sb.append(list.get(0).isLowExcluded()?"]":"[").append(list.get(0).getLow()).append(", ").
+					append(list.get(0).getHigh()).append(list.get(0).isHighExcluded()?"[":"]");
 			for (int i = 1; i < list.size(); ++i)
-				sb.append(", ").append("[").append(list.get(i)[0]).append(", ").
-						append(list.get(i)[1]).append("]");
-			sb.append("]");
+				sb.append(", ").append(list.get(i).isLowExcluded()?"]":"[").append(list.get(i).getLow()).append(", ").
+						append(list.get(i).getHigh()).append(list.get(i).isHighExcluded()?"[":"]");
+			sb.append(">");
 			return sb.toString();
 		}
-		return "[empty]";
+		return "<empty>";
 	}
 
 	@Override

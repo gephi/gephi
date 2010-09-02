@@ -469,7 +469,10 @@ public class NodeDataTable {
                         });
                     }
                 }).start();
+            } else {
+                outlineTable.getSelectionModel().clearSelection();
             }
+            outlineTable.repaint();
             e.consume();
         }
 

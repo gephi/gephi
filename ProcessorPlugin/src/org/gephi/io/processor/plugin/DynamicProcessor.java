@@ -43,6 +43,7 @@ import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -224,26 +225,21 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
         if (intervals.size() > 1) {
             throw new RuntimeException("DynamicProcessor doesn't support overlapping intervals.");
         } else if (!intervals.isEmpty()) {
-            Double[] toRemove = intervals.get(0).getValue();
-            if (toRemove[0] >= point) {
+            Interval<Double[]> toRemove = intervals.get(0);
+            if (toRemove.getLow() >= point) {
                 return source;
             }
 
-            //Excluding point
-            double excludingPoint = point - 0.01;
+            Double[] toAdd = new Double[]{toRemove.getLow(), point};
 
-            Double[] toAdd = new Double[]{toRemove[0], excludingPoint};
-
-            return new TimeInterval(source, toAdd[0], toAdd[1], toRemove[0], toRemove[1]);
+            return new TimeInterval(source, toAdd[0], toAdd[1], toRemove.isLowExcluded(), true, toRemove.getLow(), toRemove.getHigh(), toRemove.isLowExcluded(), toRemove.isHighExcluded());
         }
         return source;
 
     }
 
     public String getDisplayName() {
-        return "Time frame";
-
-
+        return NbBundle.getMessage(DynamicProcessor.class, "DynamicProcessor.displayName");
     }
 
     public String getDate() {
