@@ -41,6 +41,7 @@
                 <package>org.jdesktop.swingx.plaf.nimbus</package>
                 <package>org.jdesktop.swingx.plaf.synth</package>
                 <package>org.jdesktop.swingx.plaf.windows</package>
+                <package>org.jdesktop.swingx.prompt</package>
                 <package>org.jdesktop.swingx.renderer</package>
                 <package>org.jdesktop.swingx.rollover</package>
                 <package>org.jdesktop.swingx.search</package>
@@ -52,12 +53,12 @@
                 <package>org.jdesktop.swingx.util</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/swingx-1.6.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/swingx-1.6.jar</binary-origin>
+                <runtime-relative-path>ext/swingx-1.6.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/swingx-1.6.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/swingx-beaninfo-1.6.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/swingx-beaninfo-1.6.jar</binary-origin>
+                <runtime-relative-path>ext/swingx-beaninfo-1.6.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/swingx-beaninfo-1.6.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/MultipleGradientPaint.jar</runtime-relative-path>

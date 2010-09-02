@@ -35,6 +35,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
@@ -56,6 +58,7 @@ import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.tools.api.EditWindowController;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.jdesktop.swingx.table.TableColumnExt;
@@ -78,6 +81,7 @@ public class EdgeDataTable {
     private RowFilter rowFilter;
     private Edge[] selectedEdges;
     private AttributeColumnsController attributeColumnsController;
+    private boolean refreshingTable=false;
     private static final int FAKE_COLUMNS_COUNT = 3;
     private EdgeDataTableModel model;
 
@@ -134,6 +138,22 @@ public class EdgeDataTable {
                 }
             }
         };
+        //Add listener of table selection to refresh edit window when the selection changes (and if the table is not being refreshed):
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent e) {
+                if (!refreshingTable) {
+                    EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
+                    if (edc.isOpen()) {
+                        if (table.getSelectedRow() != -1) {
+                            edc.editEdges(getEdgesFromSelectedRows());
+                        } else {
+                            edc.disableEdit();
+                        }
+                    }
+                }
+            }
+        });
         table.addMouseListener(new PopupAdapter());
         table.addKeyListener(new KeyAdapter() {
 
@@ -197,6 +217,7 @@ public class EdgeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, DataTablesModel dataTablesModel) {
+        refreshingTable=true;
         if (selectedEdges == null) {
             selectedEdges = getEdgesFromSelectedRows();
         }
@@ -217,6 +238,7 @@ public class EdgeDataTable {
 
         setEdgesSelection(selectedEdges);//Keep row selection before refreshing.
         selectedEdges = null;
+        refreshingTable=false;
     }
 
     public void setEdgesSelection(Edge[] edges) {

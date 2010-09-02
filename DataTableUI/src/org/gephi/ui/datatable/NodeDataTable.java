@@ -35,6 +35,8 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TreeModelListener;
@@ -70,6 +72,7 @@ import org.openide.util.Lookup;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Attributes;
+import org.gephi.tools.api.EditWindowController;
 import utils.PopupMenuUtils;
 import utils.SparkLinesRenderer;
 
@@ -84,8 +87,9 @@ public class NodeDataTable {
     private QuickFilter quickFilter;
     private Pattern pattern;
     private DataTablesModel dataTablesModel;
-    Node[] selectedNodes;
+    private Node[] selectedNodes;
     private AttributeColumnsController attributeColumnsController;
+    private boolean refreshingTable = false;
     private static final int FAKE_COLUMNS_COUNT = 1;
 
     public NodeDataTable() {
@@ -112,21 +116,22 @@ public class NodeDataTable {
 
         outlineTable.addMouseListener(new PopupAdapter());
         prepareSparklinesRenderers();
-//        //Add listener of table selection to refresh edit window when the selection changes (and if only 1 row is selected)
-//        outlineTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-//
-//            public void valueChanged(ListSelectionEvent e) {
-//                EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
-//                if (edc.isOpen()) {
-//                    if (outlineTable.getSelectedRow() != -1) {
-//                        Node node = getNodeFromRow(outlineTable.getSelectedRow());
-//                        edc.editNode(node);
-//                    } else {
-//                        edc.disableEdit();
-//                    }
-//                }
-//            }
-//        });
+        //Add listener of table selection to refresh edit window when the selection changes (and if the table is not being refreshed):
+        outlineTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent e) {
+                if (!refreshingTable) {
+                    EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
+                    if (edc.isOpen()) {
+                        if (outlineTable.getSelectedRow() != -1) {
+                            edc.editNodes(getNodesFromSelectedRows());
+                        } else {
+                            edc.disableEdit();
+                        }
+                    }
+                }
+            }
+        });
         outlineTable.addKeyListener(new KeyAdapter() {
 
             @Override
@@ -186,6 +191,7 @@ public class NodeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, final DataTablesModel dataTablesModel) {
+        refreshingTable = true;
         if (selectedNodes == null) {
             selectedNodes = getNodesFromSelectedRows();
         }
@@ -209,6 +215,7 @@ public class NodeDataTable {
         } catch (InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
+        refreshingTable = false ;
     }
 
     public void setNodesSelection(Node[] nodes) {

@@ -69,7 +69,7 @@ public class EditNodes extends AbstractNode {
         this.nodes = nodes;
         multipleNodes = nodes.length > 1;
         if (multipleNodes) {
-            setName(NbBundle.getMessage(EditNodes.class, "EditNodes.multiple.edges"));
+            setName(NbBundle.getMessage(EditNodes.class, "EditNodes.multiple.elements"));
         } else {
             setName(nodes[0].getNodeData().getLabel());
         }

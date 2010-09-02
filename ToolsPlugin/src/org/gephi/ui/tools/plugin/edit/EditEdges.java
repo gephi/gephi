@@ -50,8 +50,8 @@ public class EditEdges extends AbstractNode {
     private boolean multipleEdges;
 
     /**
-     * Single node edition mode will always be enabled with this single node constructor
-     * @param node
+     * Single edge edition mode will always be enabled with this single node constructor
+     * @param edge
      */
     public EditEdges(Edge edge) {
         super(Children.LEAF);
