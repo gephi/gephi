@@ -266,11 +266,11 @@ public final class TimeInterval extends DynamicType<Double[]> {
 		List<Interval<Double[]>> list = getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 		if (!list.isEmpty()) {
 			StringBuilder sb = new StringBuilder("<");
-			sb.append(list.get(0).isLowExcluded()?"]":"[").append(list.get(0).getLow()).append(", ").
-					append(list.get(0).getHigh()).append(list.get(0).isHighExcluded()?"[":"]");
+			sb.append(list.get(0).isLowExcluded() ? "(" : "[").append(list.get(0).getLow()).append(", ").
+					append(list.get(0).getHigh()).append(list.get(0).isHighExcluded() ? ")" : "]");
 			for (int i = 1; i < list.size(); ++i)
-				sb.append(", ").append(list.get(i).isLowExcluded()?"]":"[").append(list.get(i).getLow()).append(", ").
-						append(list.get(i).getHigh()).append(list.get(i).isHighExcluded()?"[":"]");
+				sb.append(", ").append(list.get(i).isLowExcluded()? "(" :"[").append(list.get(i).getLow()).append(", ").
+						append(list.get(i).getHigh()).append(list.get(i).isHighExcluded() ? ")" : "]");
 			sb.append(">");
 			return sb.toString();
 		}
