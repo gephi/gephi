@@ -56,6 +56,7 @@ public final class DynamicModelImpl implements DynamicModel {
     private TimeIntervalIndex timeIntervalIndex;
     private AttributeColumn nodeColumn;
     private AttributeColumn edgeColumn;
+    private TimeFormat timeFormat;
 
     /**
      * The default constructor.
@@ -83,6 +84,7 @@ public final class DynamicModelImpl implements DynamicModel {
             throw new NullPointerException("The workspace cannot be null.");
         }
 
+        this.timeFormat = TimeFormat.DOUBLE;
         this.controller = controller;
         graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
         if (graphModel == null || graphModel.getGraph() == null) {
@@ -232,6 +234,15 @@ public final class DynamicModelImpl implements DynamicModel {
         this.visibleTimeInterval = visibleTimeInterval;
         // Trigger Event
         controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.VISIBLE_INTERVAL_CHANGED, this, visibleTimeInterval));
+    }
+
+    @Override
+    public TimeFormat getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(TimeFormat timeFormat) {
+        this.timeFormat = timeFormat;
     }
 
     @Override

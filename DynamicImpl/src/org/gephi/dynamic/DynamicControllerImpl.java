@@ -27,6 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.dynamic.api.DynamicModelEvent;
 import org.gephi.dynamic.api.DynamicModelListener;
 import org.gephi.project.api.ProjectController;
@@ -43,6 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = DynamicController.class)
 public final class DynamicControllerImpl implements DynamicController {
+
     private DynamicModelImpl model;
     private List<DynamicModelListener> listeners;
     private DynamicModelEventDispatchThread eventThread;
@@ -51,12 +53,13 @@ public final class DynamicControllerImpl implements DynamicController {
      * The default constructor.
      */
     public DynamicControllerImpl() {
-        listeners   = Collections.synchronizedList(new ArrayList<DynamicModelListener>());
+        listeners = Collections.synchronizedList(new ArrayList<DynamicModelListener>());
         eventThread = new DynamicModelEventDispatchThread();
         eventThread.start();
 
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
         projectController.addWorkspaceListener(new WorkspaceListener() {
+
             @Override
             public void initialize(Workspace workspace) {
                 workspace.add(new DynamicModelImpl(DynamicControllerImpl.this, workspace));
@@ -129,6 +132,13 @@ public final class DynamicControllerImpl implements DynamicController {
     @Override
     public void setVisibleInterval(double low, double high) {
         setVisibleInterval(new TimeInterval(low, high));
+    }
+
+    @Override
+    public void setTimeFormat(TimeFormat timeFormat) {
+        if (model != null) {
+            model.setTimeFormat(timeFormat);
+        }
     }
 
     @Override
