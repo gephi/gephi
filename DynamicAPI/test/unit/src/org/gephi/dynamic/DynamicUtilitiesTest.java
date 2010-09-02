@@ -21,7 +21,6 @@
 package org.gephi.dynamic;
 
 import org.gephi.data.attributes.type.DynamicDouble;
-import javax.xml.datatype.DatatypeConfigurationException;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;

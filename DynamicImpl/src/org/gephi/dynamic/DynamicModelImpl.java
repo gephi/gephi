@@ -255,7 +255,7 @@ public final class DynamicModelImpl implements DynamicModel {
 
     private static class TimeIntervalIndex {
 
-        private SortedMap<Double, Integer> lowMap = new TreeMap<Double, Integer>();
+        private SortedMap<Double, Integer> lowMap  = new TreeMap<Double, Integer>();
         private SortedMap<Double, Integer> highMap = new TreeMap<Double, Integer>();
         private TreeSet<Double> pointsSet = new TreeSet<Double>();
 

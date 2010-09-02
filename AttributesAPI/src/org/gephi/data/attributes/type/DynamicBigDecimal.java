@@ -123,13 +123,8 @@ public final class DynamicBigDecimal extends DynamicType<BigDecimal> {
 	}
 	
 	@Override
-	public BigDecimal getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		List<BigDecimal> values = getValues(low, high);
+	public BigDecimal getValue(Interval<BigDecimal> interval, Estimator estimator) {
+		List<BigDecimal> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
 
@@ -186,6 +181,16 @@ public final class DynamicBigDecimal extends DynamicType<BigDecimal> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
+	}
+
+	@Override
+	public BigDecimal getValue(double low, double high, Estimator estimator) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		return getValue(new Interval<BigDecimal>(low, high, false, false), estimator);
 	}
 
 	@Override

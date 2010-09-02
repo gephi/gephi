@@ -123,13 +123,8 @@ public final class DynamicByte extends DynamicType<Byte> {
 	}
 
 	@Override
-	public Byte getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		List<Byte> values = getValues(low, high);
+	public Byte getValue(Interval<Byte> interval, Estimator estimator) {
+		List<Byte> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
 
@@ -190,6 +185,16 @@ public final class DynamicByte extends DynamicType<Byte> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
+	}
+
+	@Override
+	public Byte getValue(double low, double high, Estimator estimator) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		return getValue(new Interval<Byte>(low, high, false, false), estimator);
 	}
 
 	@Override

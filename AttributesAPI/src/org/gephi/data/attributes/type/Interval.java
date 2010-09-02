@@ -28,12 +28,57 @@ package org.gephi.data.attributes.type;
  * @param <T> type of data
  */
 public final class Interval<T> implements Comparable<Interval<T>> {
-	private double low;   // the left endpoint
-	private double high;  // the right endpoint
-	private T      value; // the value stored in this interval
+	private double  low;   // the left endpoint
+	private double  high;  // the right endpoint
+	private boolean lopen; // indicates if the left endpoint is excluded
+	private boolean ropen; // indicates if the right endpoint is excluded
+	private T       value; // the value stored in this interval
 
 	/**
 	 * Constructs a new interval instance.
+	 *
+	 * <p>Note that {@code value} cannot be null if you want use this
+	 * {@code interval} as a value storage. If it is null some estimators
+	 * could not work and generate exceptions.
+	 *
+	 * @param low   the left endpoint
+	 * @param high  the right endpoint
+	 * @param lopen indicates if the left endpoint is excluded (true in this case)
+	 * @param ropen indicates if the right endpoint is excluded (true in this case)
+	 * @param value the value stored in this interval
+	 *
+	 * @throws IllegalArgumentException if {@code low} > {@code high}.
+	 */
+	public Interval(double low, double high, boolean lopen, boolean ropen, T value) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		this.low   = low;
+		this.high  = high;
+		this.lopen = lopen;
+		this.ropen = ropen;
+		this.value = value;
+	}
+
+	/**
+	 * Constructs a new interval instance with no value.
+	 *
+	 * @param low  the left endpoint
+	 * @param high the right endpoint
+	 * @param lopen indicates if the left endpoint is excluded (true in this case)
+	 * @param ropen indicates if the right endpoint is excluded (true in this case)
+	 *
+	 * @throws IllegalArgumentException if {@code low} > {@code high}.
+	 */
+	public Interval(double low, double high, boolean lopen, boolean ropen) {
+		this(low, high, lopen, ropen, null);
+	}
+
+	/**
+	 * Constructs a new interval instance with left and right endpoints included
+	 * by default.
 	 *
 	 * <p>Note that {@code value} cannot be null if you want use this
 	 * {@code interval} as a value storage. If it is null some estimators
@@ -46,18 +91,12 @@ public final class Interval<T> implements Comparable<Interval<T>> {
 	 * @throws IllegalArgumentException if {@code low} > {@code high}.
 	 */
 	public Interval(double low, double high, T value) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		this.low   = low;
-		this.high  = high;
-		this.value = value;
+		this(low, high, false, false, value);
 	}
 
 	/**
-	 * Constructs a new interval instance with no value.
+	 * Constructs a new interval instance with no value and left and right
+	 * endpoints included by default.
 	 *
 	 * @param low  the left endpoint
 	 * @param high the right endpoint
@@ -65,16 +104,9 @@ public final class Interval<T> implements Comparable<Interval<T>> {
 	 * @throws IllegalArgumentException if {@code low} > {@code high}.
 	 */
 	public Interval(double low, double high) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		this.low   = low;
-		this.high  = high;
-		this.value = null;
+		this(low, high, false, false, null);
 	}
-
+	
 	/**
 	 * Compares this interval with the specified interval for order.
 	 *
@@ -95,7 +127,8 @@ public final class Interval<T> implements Comparable<Interval<T>> {
 	 * <p>Note that if two intervals are equal ({@code i.low = i'.low} and
 	 * {@code i.high = i'.high}), they overlap as well. But if they simply
 	 * overlap (for instance {@code i.low < i'.low} and {@code i.high >
-	 * i'.high}) they aren't equal.
+	 * i'.high}) they aren't equal. Remember that if two intervals are equal,
+	 * they have got the same bounds excluded or included.
 	 * 
 	 * @param interval the interval to be compared
 	 * 
@@ -109,9 +142,9 @@ public final class Interval<T> implements Comparable<Interval<T>> {
 		if (interval == null)
 			throw new NullPointerException("Interval cannot be null.");
 
-		if (high < interval.low)
+		if (high < interval.low || high <= interval.low && (ropen || interval.lopen))
 			return -1;
-		if (interval.high < low)
+		if (interval.high < low || interval.high <= low && (interval.ropen || lopen))
 			return 1;
 		return 0;
 	}
@@ -127,11 +160,31 @@ public final class Interval<T> implements Comparable<Interval<T>> {
 
 	/**
 	 * Returns the right endpoint.
-	 * 
+	 *
 	 * @return the right endpoint.
 	 */
 	public double getHigh() {
 		return high;
+	}
+
+	/**
+	 * Indicates if the left endpoint is excluded.
+	 *
+	 * @return {@code true} if the left endpoint is excluded,
+	 *         {@code false} otherwise.
+	 */
+	public boolean isLowExcluded() {
+		return lopen;
+	}
+
+	/**
+	 * Indicates if the right endpoint is excluded.
+	 *
+	 * @return {@code true} if the right endpoint is excluded,
+	 *         {@code false} otherwise.
+	 */
+	public boolean isHighExcluded() {
+		return ropen;
 	}
 
 	/**
@@ -147,7 +200,7 @@ public final class Interval<T> implements Comparable<Interval<T>> {
 	 * Compares this interval with the specified object for equality.
 	 * 
 	 * <p>Note that two intervals are equal if {@code i.low = i'.low} and
-	 * {@code i.high = i'.high}.
+	 * {@code i.high = i'.high} and they have got the bounds excluded/included.
 	 *
 	 * @param obj object to which this interval is to be compared
 	 *
@@ -162,7 +215,8 @@ public final class Interval<T> implements Comparable<Interval<T>> {
 	public boolean equals(Object obj) {
 		if (obj != null && obj.getClass().equals(this.getClass())) {
 			Interval<T> interval = (Interval<T>)obj;
-			if (low == interval.low && high == interval.high)
+			if (low == interval.low && high == interval.high &&
+					lopen == interval.lopen && ropen == interval.ropen)
 				return true;
 		}
 		return false;
@@ -180,13 +234,22 @@ public final class Interval<T> implements Comparable<Interval<T>> {
 	}
 
 	/**
-	 * Returns a string representation of this interval in a format
-	 * {@code [low, high, value]}.
+	 * Returns a string representation of this interval in one of the formats:
+	 * <ol>
+	 * <li>
+	 * {@code [low, high, value]}
+	 * <li>
+	 * {@code (low, high, value]}
+	 * <li>
+	 * {@code [low, high, value)}
+	 * <li>
+	 * {@code (low, high, value)}
+	 * </ol>
 	 * 
 	 * @return a string representation of this interval.
 	 */
 	@Override
 	public String toString() {
-		return "[" + low + ", " + high + ", " + value + "]";
+		return (lopen ? "(" : "[") + low + ", " + high + ", " + value + (ropen ? ")" : "]");
 	}
 }
