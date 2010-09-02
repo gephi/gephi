@@ -479,7 +479,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
     private static class ValidResult {
 
-        private boolean result = false;
+        private boolean result = true;
 
         public void setResult(boolean result) {
             this.result = result;
