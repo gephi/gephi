@@ -97,4 +97,12 @@ public interface DynamicModel {
      * @return the current time format
      */
     public TimeFormat getTimeFormat();
+
+    /**
+     * Returns <code>true</code> if the graph in the current workspace is dynamic,
+     * i.e. when the graph has either dynamic topology, attribute sor both.
+     * @return <code>true</code> if the graph is dynamic, <code>false</code>
+     * otherwise
+     */
+    public boolean isDynamicGraph();
 }

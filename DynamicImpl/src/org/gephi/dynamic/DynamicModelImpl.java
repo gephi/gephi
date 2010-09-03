@@ -231,9 +231,16 @@ public final class DynamicModelImpl implements DynamicModel {
     }
 
     public void setVisibleTimeInterval(TimeInterval visibleTimeInterval) {
-        this.visibleTimeInterval = visibleTimeInterval;
-        // Trigger Event
-        controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.VISIBLE_INTERVAL_CHANGED, this, visibleTimeInterval));
+        if (!Double.isNaN(visibleTimeInterval.getLow()) && !Double.isNaN(visibleTimeInterval.getHigh())) {
+            this.visibleTimeInterval = visibleTimeInterval;
+            // Trigger Event
+            controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.VISIBLE_INTERVAL, this, visibleTimeInterval));
+        }
+    }
+
+    @Override
+    public boolean isDynamicGraph() {
+        return !Double.isInfinite(timeIntervalIndex.getMax()) || !Double.isInfinite(timeIntervalIndex.getMin());
     }
 
     @Override
@@ -264,13 +271,17 @@ public final class DynamicModelImpl implements DynamicModel {
         return d;
     }
 
-    private static class TimeIntervalIndex {
+    private class TimeIntervalIndex {
 
-        private SortedMap<Double, Integer> lowMap  = new TreeMap<Double, Integer>();
+        private SortedMap<Double, Integer> lowMap = new TreeMap<Double, Integer>();
         private SortedMap<Double, Integer> highMap = new TreeMap<Double, Integer>();
         private TreeSet<Double> pointsSet = new TreeSet<Double>();
 
         public void add(TimeInterval interval) {
+            boolean newDynamic = false;
+            if (lowMap.isEmpty() && highMap.isEmpty()) {
+                newDynamic = true;
+            }
             Double low = interval.getLow();
             Double high = interval.getHigh();
             if (low != Double.NEGATIVE_INFINITY) {
@@ -290,6 +301,9 @@ public final class DynamicModelImpl implements DynamicModel {
                 } else {
                     highMap.put(high, c + 1);
                 }
+            }
+            if (newDynamic) {
+                setDynamic(true);
             }
         }
 
@@ -322,6 +336,10 @@ public final class DynamicModelImpl implements DynamicModel {
                     System.err.println("Problem, the interval is not there");
                 }
             }
+
+            if (lowMap.isEmpty() && highMap.isEmpty()) {
+                setDynamic(false);
+            }
         }
 
         public void clear() {
@@ -351,6 +369,10 @@ public final class DynamicModelImpl implements DynamicModel {
 
         public Double[] getPoints() {
             return pointsSet.toArray(new Double[0]);
+        }
+
+        private void setDynamic(boolean dynamic) {
+            controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.IS_DYNAMIC, DynamicModelImpl.this, dynamic));
         }
     }
 }

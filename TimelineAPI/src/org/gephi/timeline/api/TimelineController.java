@@ -20,9 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.timeline.api;
 
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Node;
 import org.gephi.project.api.Workspace;
 
 /**
@@ -31,79 +28,7 @@ import org.gephi.project.api.Workspace;
  */
 public interface TimelineController {
 
-    /**
-     *
-     * @param workspace
-     * @param from
-     * @param to
-     * @param node
-     */
-    public void pushSlice(Workspace workspace, String from, String to, Node node);
-
-    /**
-     *
-     * @param workspace
-     * @param from
-     * @param to
-     * @param edge
-     */
-    public void pushSlice(Workspace workspace, String from, String to, Edge edge);
-
-    /**
-     *
-     * @param workspace
-     * @return
-     */
     public TimelineModel getModel(Workspace workspace);
-
-    /**
-     *
-     * @param workspace
-     * @return
-     */
-    public double getFrom(Workspace workspace);
-
-    /**
-     *
-     * @param workspace
-     * @return
-     */
-    public double getTo(Workspace workspace);
-
-    /**
-     *
-     * @param workspace
-     * @param min
-     */
-    public void setMin(Workspace workspace, String min);
-
-    /**
-     *
-     * @param workspace
-     * @param max
-     */
-    public void setMax(Workspace workspace, String max);
-
-    /**
-     *
-     * @param workspace
-     * @param min
-     */
-    public void setMin(Workspace workspace, double min);
-
-    /**
-     *
-     * @param workspace
-     * @param max
-     */
-    public void setMax(Workspace workspace, double max);
-
-    /**
-     *
-     * @param workspace
-     * @return
-     */
-    public TimeInterval getTimeInterval(Workspace workspace);
 
     /**
      * Get the current TimelineModel of the active Workspace's TimelineModel
@@ -113,51 +38,14 @@ public interface TimelineController {
     public TimelineModel getModel();
 
     /**
-     * Get the current TimeInterval of the active Workspace's TimelineModel
      *
-     * @return the current TimeInterval
+     * @param listener
      */
-    public TimeInterval getTimeInterval();
+    public void addListener(TimelineModelListener listener);
 
     /**
-     * Get the current lower selection cursor of the active Workspace's TimelineModel
      *
-     * @return a double
+     * @param listener
      */
-    public double getFrom();
-
-    /**
-     * Get the current upper selection cursor of the active Workspace's TimelineModel
-     *
-     * @return a double
-     */
-    public double getTo();
-
-    /**
-     * Set the minimum value of the active Workspace's TimelineModel, from a string
-     *
-     * @param min
-     */
-    public void setMin(String min);
-
-    /**
-     * Set the maximum value  of the active Workspace's TimelineModel, from a string
-     *
-     * @param max
-     */
-    public void setMax(String max);
-
-    /**
-     * Set the minimum value of the active Workspace's TimelineModel, from a double
-     *
-     * @param min
-     */
-    public void setMin(double min);
-
-    /**
-     * Set the maximum value of the active Workspace's TimelineModel, from a double
-     *
-     * @param max
-     */
-    public void setMax(double max);
+    public void removeListener(TimelineModelListener listener);
 }

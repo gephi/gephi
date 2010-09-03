@@ -17,24 +17,18 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.timeline;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import org.gephi.project.api.ProjectController;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.spi.TimelineDrawer;
-import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceListener;
-import org.gephi.timeline.api.TimelineAnimator;
 import org.gephi.timeline.api.TimelineAnimatorListener;
+import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModelListener;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -50,10 +44,7 @@ import org.openide.util.Lookup;
  */
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.timeline//Timeline//EN",
 autostore = false)
-public final class TimelineTopComponent
-        extends TopComponent
-        implements TimelineModelListener,
-        TimelineAnimatorListener {
+public final class TimelineTopComponent extends TopComponent implements TimelineAnimatorListener {
 
     private static TimelineTopComponent instance;
     /** path to the icon used by the component and its open action */
@@ -62,6 +53,7 @@ public final class TimelineTopComponent
     private TimelineModel model;
     private JPanel drawerPanel;
     private TimelineAnimatorImpl animator;
+    private TimelineController timelineController;
 
     public TimelineTopComponent() {
         initComponents();
@@ -71,7 +63,6 @@ public final class TimelineTopComponent
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
 
-        model = (TimelineModel) Lookup.getDefault().lookup(TimelineModelImpl.class);
         TimelineDrawer drawer = Lookup.getDefault().lookup(TimelineDrawer.class);
         drawerPanel = (JPanel) drawer;
         timelinePanel.add(drawerPanel);
@@ -79,45 +70,19 @@ public final class TimelineTopComponent
         animator = new TimelineAnimatorImpl();
         animator.addListener(this);
 
+        timelineController = Lookup.getDefault().lookup(TimelineController.class);
+        model = timelineController.getModel();
         refreshModel(model);
-        //Workspace events
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(new WorkspaceListener() {
+        timelineController.addListener(new TimelineModelListener() {
 
-            public void initialize(Workspace workspace) {
-                workspace.add(new TimelineModelImpl());
-            }
-
-            public void select(Workspace workspace) {
-                TimelineModelImpl m = workspace.getLookup().lookup(TimelineModelImpl.class);
-                if (m == null) {
-                    m = new TimelineModelImpl();
-                    workspace.add(m);
+            public void timelineModelChanged(ChangeEvent event) {
+                TimelineModel m = timelineController.getModel();
+                if (m != model) {
+                    model = m;                
                 }
                 refreshModel(m);
             }
-
-            public void unselect(Workspace workspace) {
-            }
-
-            public void close(Workspace workspace) {
-            }
-
-            public void disable() {
-                refreshModel(null);
-            }
         });
-
-        if (pc.getCurrentWorkspace() != null) {
-            TimelineModelImpl m = pc.getCurrentWorkspace().getLookup().lookup(TimelineModelImpl.class);
-            if (m == null) {
-                m = new TimelineModelImpl();
-                pc.getCurrentWorkspace().add(m);
-            }
-            refreshModel(m);
-        } else {
-            refreshModel(null);
-        }
 
         //Settings
         settingsButton.addActionListener(new ActionListener() {
@@ -248,14 +213,7 @@ public final class TimelineTopComponent
             return;
         }
 
-        if (model != this.model) {
-            if (this.model != null) {
-                this.model.removeListener(this);
-            }
-            model.addListener(this);
-            this.model = model;
-            ((TimelineDrawer) drawerPanel).setModel(model);
-        }
+        ((TimelineDrawer) drawerPanel).setModel(model);
 
         refreshEnable(true);
 
@@ -276,10 +234,6 @@ public final class TimelineTopComponent
         if (!settingsButton.isEnabled()) {
             settingsButton.setEnabled(enable);
         }
-    }
-
-    public void timelineModelChanged(ChangeEvent event) {
-        // ..
     }
 
     public void timelineAnimatorChanged(ChangeEvent event) {

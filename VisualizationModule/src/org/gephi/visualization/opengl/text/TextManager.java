@@ -157,7 +157,9 @@ public class TextManager implements VizArchitecture {
         dynamicController.addModelListener(new DynamicModelListener() {
 
             public void dynamicModelChanged(DynamicModelEvent event) {
-                currentTimeInterval = (TimeInterval) event.getData();
+                if(event.getEventType().equals(DynamicModelEvent.EventType.VISIBLE_INTERVAL)) {
+                    currentTimeInterval = (TimeInterval) event.getData();
+                }
             }
         });
     }

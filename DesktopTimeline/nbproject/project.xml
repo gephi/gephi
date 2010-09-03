@@ -15,6 +15,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.gephi.dynamic.api</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.7.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.gephi.filters.api</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -86,6 +94,14 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>7.23.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.modules</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.17.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

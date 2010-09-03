@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.timeline.api;
 
 import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.filters.spi.FilterProperty;
 
 /**
@@ -29,72 +30,11 @@ import org.gephi.filters.spi.FilterProperty;
  */
 public interface TimelineModel {
 
-    /**
-     *
-     * @param listener
-     */
-    public void addListener(TimelineModelListener listener);
+    public void setup(DynamicModel dynamicModel);
 
-    /**
-     *
-     * @param listener
-     */
-    public void removeListener(TimelineModelListener listener);
+    public void unsetup();
 
-    /**
-     * Set the FilterProperty
-     */
-    public void setFilterProperty(FilterProperty filter);
-
-    /**
-     * Get the FilterProperty
-     *
-     * @return a FilterProperty
-     */
-    public FilterProperty getFilterProperty();
-
-    /**
-     * Get the FilterProperty
-     *
-     * @return a FilterProperty
-     */
-    public String getFirstAttributeLabel();
-
-    /**
-     *
-     * @return
-     */
-    public String getLastAttributeLabel();
-
-    /**
-     *
-     * @param i
-     * @return
-     */
-    public String getAttributeLabel(int i);
-
-    /**
-     *
-     * @param from
-     * @param to
-     * @return
-     */
-    public String getAttributeLabel(int from, int to);
-
-    /**
-     *
-     * @param i
-     * @return
-     */
-    public double getAttributeValue(int i);
-
-    /**
-     *
-     * @param from
-     * @param to
-     * @return
-     */
-    public double getAttributeValue(int from, int to);
+    public boolean isEnabled();
 
     /**
      *
@@ -217,12 +157,6 @@ public interface TimelineModel {
      * @return
      */
     public double getValueFromFloat(double position);
-
-    /**
-     *
-     * @return
-     */
-    public TimeInterval getTimeInterval();
 
     public void setUnit(Class cl);
 

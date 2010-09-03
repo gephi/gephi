@@ -125,6 +125,7 @@ public final class DynamicControllerImpl implements DynamicController {
     @Override
     public void setVisibleInterval(TimeInterval interval) {
         if (model != null) {
+            System.out.println("set visible interval "+interval);
             model.setVisibleTimeInterval(interval);
         }
     }
