@@ -33,6 +33,7 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.dynamic.api.DynamicModelEvent;
 import org.gephi.dynamic.api.DynamicModelListener;
 import org.gephi.graph.api.EdgeData;
@@ -55,6 +56,7 @@ public class TextManager implements VizArchitecture {
     //Architecture
     private VizConfig vizConfig;
     private GraphDrawable drawable;
+    private DynamicController dynamicController;
     //Configuration
     private SizeMode[] sizeModes;
     private ColorMode[] colorModes;
@@ -134,8 +136,12 @@ public class TextManager implements VizArchitecture {
                         }
                     }
 
-                    DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-                    currentTimeInterval = dynamicController.getModel().getVisibleInterval();
+                    DynamicModel dynamicModel = dynamicController.getModel();
+                    if(dynamicModel!=null) {
+                        currentTimeInterval = dynamicModel.getVisibleInterval();
+                    } else {
+                        currentTimeInterval = null;
+                    }
                 }
             }
         });
@@ -147,7 +153,7 @@ public class TextManager implements VizArchitecture {
         renderer3d = false;
 
         //Dynamic change
-        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        dynamicController = Lookup.getDefault().lookup(DynamicController.class);
         dynamicController.addModelListener(new DynamicModelListener() {
 
             public void dynamicModelChanged(DynamicModelEvent event) {
