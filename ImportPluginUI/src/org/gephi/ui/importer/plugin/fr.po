@@ -66,19 +66,29 @@ msgid "EdgeListPanel.edgeQueryTextField.text"
 msgstr "SELECT * FROM edges"
 
 msgid "EdgeListPanel.configNameLabel.text"
-msgstr "EdgeListPanel.configNameLabel.text"
+msgstr "Nom de configuration :"
 
 msgid "EdgeListPanel.alert.connection_successful"
-msgstr "EdgeListPanel.alert.connection_successful"
+msgstr "Connecté !"
 
 msgid "EdgeListPanel.alert.configuration_removed"
-msgstr "EdgeListPanel.alert.configuration_removed"
+msgstr "Configuration {0} supprimée."
 
 msgid "EdgeListPanel.alert.configuration_unsaved"
-msgstr "EdgeListPanel.alert.configuration_unsaved"
+msgstr "Cette configuration n'est pas enregistrée."
 
 msgid "EdgeListPanel.template.name"
-msgstr "EdgeListPanel.template.name"
+msgstr "Nouvelle configuration"
 
 msgid "EdgeListPanel.removeConfigurationButton.toolTipText"
-msgstr "EdgeListPanel.removeConfigurationButton.toolTipText"
+msgstr "Supprime la configuration sélectionnée."
+
+msgid "EdgeListPanel.jXHeader1.title"
+msgstr "Base de données de liens"
+
+msgid "EdgeListPanel.header"
+msgstr ""
+"Base de données de noeuds et de liens dont une table de liens a deux colonnes : source et "
+"target. Nommez la colonne de clé primaire des noeuds \"id\" et celle des liens \"source\" and "
+"\"target\". Les colonnes \"label\", \"x\", \"y\" et \"size\" pour les noeuds, et "
+"\"label\" et \"weight\" pour les liens sont optionnelles."
