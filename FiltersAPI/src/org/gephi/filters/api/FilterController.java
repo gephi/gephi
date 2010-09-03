@@ -22,6 +22,7 @@ package org.gephi.filters.api;
 
 import org.gephi.filters.spi.Filter;
 import org.gephi.graph.api.GraphView;
+import org.gephi.project.api.Workspace;
 
 /**
  * Use filters and queries for filtering the Graph. This controller manages
@@ -164,4 +165,10 @@ public interface FilterController {
      * @return              the filter's model
      */
     public FilterModel getModel();
+
+    /**
+     * Returns the filter's model for <code>workspace</code>.
+     * @return              the filter's model in the given workspace
+     */
+    public FilterModel getModel(Workspace workspace);
 }
