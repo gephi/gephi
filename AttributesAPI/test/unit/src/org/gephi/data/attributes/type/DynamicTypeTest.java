@@ -322,14 +322,14 @@ public class DynamicTypeTest {
 		System.out.println("getIntervals(double, double)");
 		DynamicDouble instance = makeTree1();
 		List<Interval<Double>> list = instance.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-		String result = "[empty]";
+		String result = "<empty>";
 		if (!list.isEmpty()) {
-			StringBuilder sb = new StringBuilder("[");
+			StringBuilder sb = new StringBuilder("<");
 			sb.append(list.get(0).toString());
 			for (int i = 1; i < list.size(); ++i)
 				sb.append(", ").append(list.get(i).toString());
-			sb.append("]");
-			result =  sb.toString();
+			sb.append(">");
+			result = sb.toString();
 		}
 		String expResult = instance.toString();
 		assertEquals(result, expResult);
@@ -396,24 +396,25 @@ public class DynamicTypeTest {
 	@Test
 	public void testToString() {
 		System.out.println("toString()");
-		DynamicDouble instance  = makeTree1();
-		StringBuilder expResult = new StringBuilder("[");
-		expResult.append("[0.0, 3.0, 0.0], ");
-		expResult.append("[5.0, 8.0, 1.0], ");
-		expResult.append("[6.0, 10.0, 2.0], ");
-		expResult.append("[8.0, 9.0, 3.0], ");
-		expResult.append("[15.0, 23.0, 4.0], ");
-		expResult.append("[16.0, 21.0, 5.0], ");
-		expResult.append("[17.0, 19.0, 6.0], ");
-		expResult.append("[19.0, 20.0, 7.0], ");
-		expResult.append("[25.0, 30.0, 8.0], ");
-		expResult.append("[26.0, 26.0, 9.0]");
-		expResult.append("]");
+		DynamicDouble instance  = makeELboundsTree();
+		StringBuilder expResult = new StringBuilder("<");
+		expResult.append("[0.1, 0.2, 1.0), ");
+		expResult.append("[0.2, 0.3, 2.0), ");
+		expResult.append("(0.3, 0.4, 3.0)");
+		expResult.append(">");
 		String result = instance.toString();
 		assertEquals(expResult.toString(), result);
 		System.out.println("expResult: " + expResult);
 		System.out.println("result:    " + result);
 		System.out.println();
+	}
+
+	private DynamicDouble makeELboundsTree() {
+		List<Interval<Double>> intervals = new ArrayList<Interval<Double>>();
+		intervals.add(new Interval<Double>(0.1, 0.2, false, true, 1.0));
+		intervals.add(new Interval<Double>(0.2, 0.3, false, true, 2.0));
+		intervals.add(new Interval<Double>(0.3, 0.4, true,  true, 3.0));
+		return new DynamicDouble(intervals);
 	}
 
 	private DynamicDouble makeTree1() {
@@ -541,7 +542,7 @@ public class DynamicTypeTest {
 		intervals.add(new Interval<String>(25.0, 30.0, "8"));
 		intervals.add(new Interval<String>(26.0, 26.0, "9"));
 		intervals.add(new Interval<String>(26.0, 26.0, "0_repeat"));
-		intervals.add(new Interval<String>(26.0, 26.0, "0_repeat"));
+		intervals.add(new Interval<String>(27.0, 27.0, "0_repeat"));
 		return new DynamicString(intervals);
 	}
 }

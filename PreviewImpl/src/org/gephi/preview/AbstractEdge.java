@@ -33,7 +33,7 @@ import org.gephi.preview.util.HolderImpl;
 public abstract class AbstractEdge implements EdgeColorizerClient {
 
     protected final GraphImpl parent;
-    private final Float thickness;
+    private Float thickness;
     protected final HolderImpl<Color> colorHolder = new HolderImpl<Color>();
 
     /**
@@ -45,6 +45,10 @@ public abstract class AbstractEdge implements EdgeColorizerClient {
     public AbstractEdge(GraphImpl parent, float thickness) {
         this.parent = parent;
         this.thickness = thickness;
+    }
+
+    public GraphImpl getGraph() {
+        return parent;
     }
 
     /**
@@ -72,6 +76,10 @@ public abstract class AbstractEdge implements EdgeColorizerClient {
      */
     public Float getThickness() {
         return thickness;
+    }
+
+    public void setThickness(Float thickness) {
+        this.thickness = thickness;
     }
 
     /**

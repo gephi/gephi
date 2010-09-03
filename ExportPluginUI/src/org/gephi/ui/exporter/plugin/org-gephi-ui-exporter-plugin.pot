@@ -79,7 +79,7 @@ msgid "UIExporterGEXFPanel.colorsExportCheckbox.text"
 msgstr "Colors"
 
 msgid "UIExporterGEXFPanel.positionExportCheckbox.text"
-msgstr "Position (x,y)"
+msgstr "Position (x,y,z)"
 
 msgid "UIExporterGEXFPanel.sizeExportCheckbox.text"
 msgstr "Size"
@@ -128,3 +128,12 @@ msgstr "Matrix"
 
 msgid "UIExporterCSVPanel.zeroEdgeCheckbox.text"
 msgstr "Zero when no edge"
+
+msgid "UIExporterGEXFPanel.dynamicExportCheckbox.text"
+msgstr "Dynamic"
+
+msgid "UIExporterGEXFPanel.labelNormalize1.text"
+msgstr "Complete node tree without meta edges"
+
+msgid "UIExporterGEXFPanel.hierarchyCheckbox.text"
+msgstr "Export hierarchy"

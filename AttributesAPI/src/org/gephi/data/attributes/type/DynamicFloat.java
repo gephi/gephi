@@ -123,13 +123,8 @@ public final class DynamicFloat extends DynamicType<Float> {
 	}
 
 	@Override
-	public Float getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		List<Float> values = getValues(low, high);
+	public Float getValue(Interval<Float> interval, Estimator estimator) {
+		List<Float> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
 
@@ -188,6 +183,16 @@ public final class DynamicFloat extends DynamicType<Float> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
+	}
+
+	@Override
+	public Float getValue(double low, double high, Estimator estimator) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		return getValue(new Interval<Float>(low, high, false, false), estimator);
 	}
 
 	@Override

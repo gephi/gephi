@@ -18,31 +18,29 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.io.exporter.plugin;
+package org.gephi.preview.propertyeditors;
 
-import org.gephi.io.exporter.api.FileType;
-import org.gephi.io.exporter.spi.GraphExporter;
-import org.gephi.io.exporter.spi.GraphFileExporterBuilder;
-import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
+import org.gephi.preview.api.Colorizer;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = GraphFileExporterBuilder.class)
-public class ExporterBuilderGEXF implements GraphFileExporterBuilder {
+class EdgeOriginalColorModePanelDecorator extends ColorModePanelDecorator {
 
-    public GraphExporter buildExporter() {
-        return new ExporterGEXF2();
+    public EdgeOriginalColorModePanelDecorator(AbstractColorizerPropertyEditor propertyEditor, ColorModePanel decoratedPanel) {
+        super(propertyEditor, decoratedPanel);
     }
 
-    public FileType[] getFileTypes() {
-        FileType ft = new FileType(".gexf", NbBundle.getMessage(ExporterBuilderGEXF.class, "fileType_GEXF_Name"));
-        return new FileType[]{ft};
+    protected String getRadioButtonLabel() {
+        return "Original";
     }
 
-    public String getName() {
-        return NbBundle.getMessage(ExporterBuilderGEXF.class, "ExporterGEXF_name");
+    protected boolean isSelectedRadioButton() {
+        return factory.isEdgeOriginalColorMode((Colorizer) propertyEditor.getValue());
+    }
+
+    protected Colorizer createColorizer() {
+        return factory.createEdgeOriginalColorMode();
     }
 }

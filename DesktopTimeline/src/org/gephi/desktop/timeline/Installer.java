@@ -18,17 +18,26 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.gephi.graph.dhns.edge;
+package org.gephi.desktop.timeline;
 
-import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.timeline.api.TimelineController;
+import org.openide.modules.ModuleInstall;
+import org.openide.util.Lookup;
+import org.openide.windows.WindowManager;
 
 /**
- *
- * @author Mathieu Bastian
+ * Manages a module's lifecycle. Remember that an installer is optional and
+ * often not needed at all.
  */
-public interface MetaEdgeBuilder {
+public class Installer extends ModuleInstall {
 
-    public void pushEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge);
+    @Override
+    public void restored() {
+         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
 
-    public void pullEdge(AbstractEdge edge, AbstractNode source, AbstractNode target, MetaEdgeImpl metaEdge);
+            public void run() {
+                TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
+            }
+        });
+    }
 }

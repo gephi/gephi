@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 import java.util.Map;
+import org.gephi.graph.spi.MetaEdgeBuilder;
 
 /**
  *
@@ -40,4 +41,8 @@ public interface GraphSettings {
      public Object getClientProperty(String key);
 
      public Map<String, Object> getClientProperties();
+
+     public MetaEdgeBuilder getMetaEdgeBuilder();
+
+     public void setMetaEdgeBuilder(MetaEdgeBuilder metaEdgeBuilder);
 }

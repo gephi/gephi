@@ -123,13 +123,8 @@ public final class DynamicDouble extends DynamicType<Double> {
 	}
 
 	@Override
-	public Double getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		List<Double> values = getValues(low, high);
+	public Double getValue(Interval<Double> interval, Estimator estimator) {
+		List<Double> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
 
@@ -188,6 +183,16 @@ public final class DynamicDouble extends DynamicType<Double> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
+	}
+
+	@Override
+	public Double getValue(double low, double high, Estimator estimator) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		return getValue(new Interval<Double>(low, high, false, false), estimator);
 	}
 
 	@Override

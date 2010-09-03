@@ -9,6 +9,8 @@
     <p>
     <h2>API Changes</h2>
     <ul>
+        <li>(September 01 2010) Add <code>MetaEdgeBuilder</code> in Graph SPI to allow custom builders. Add <code>GraphSettings.setMetaEdgeBuilder()</code>
+            in the graph model settings.</li>
         <li>(August 26 2010) Modify <code>StatisticsModel</code> to store reports directly instead of <code>Statistics</code> instance. As a
             consequence, the model has now a <code>getReport()</code> and a <code>getResult()</code> method that UI can use. The currently
             running statistics can now be get with a new <code>getRunning()</code> method.

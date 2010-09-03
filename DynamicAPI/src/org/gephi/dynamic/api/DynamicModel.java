@@ -39,6 +39,12 @@ public interface DynamicModel {
     public static final String TIMEINTERVAL_COLUMN = "time_interval";
 
     /**
+     * The way the time is represented, either a simple real value (DOUBLE) or
+     * a date.
+     */
+    public enum TimeFormat { DATE, DOUBLE};
+
+    /**
      * Builds a new {@code DynamicGraph} from the given {@code Graph} instance.
      *
      * @param graph the underlying graph
@@ -83,4 +89,20 @@ public interface DynamicModel {
      * @return the maximum time in the current workspace
      */
     public double getMax();
+
+    /**
+     * Get the current time format for this model. Though all time values are stored
+     * in double numbers, the time format inform how this values should be
+     * converted to display to users.
+     * @return the current time format
+     */
+    public TimeFormat getTimeFormat();
+
+    /**
+     * Returns <code>true</code> if the graph in the current workspace is dynamic,
+     * i.e. when the graph has either dynamic topology, attribute sor both.
+     * @return <code>true</code> if the graph is dynamic, <code>false</code>
+     * otherwise
+     */
+    public boolean isDynamicGraph();
 }

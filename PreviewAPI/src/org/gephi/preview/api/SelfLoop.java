@@ -55,6 +55,8 @@ public interface SelfLoop {
      */
     public Color getColor();
 
+    public java.awt.Color getOriginalColor();
+
     /**
      * Returns the self-loop's curve.
      *

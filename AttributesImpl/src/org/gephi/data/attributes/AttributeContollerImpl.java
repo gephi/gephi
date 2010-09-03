@@ -45,7 +45,10 @@ public class AttributeContollerImpl implements AttributeController {
         projectController.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
-                workspace.add(new IndexedAttributeModel());
+                AttributeModel m = workspace.getLookup().lookup(AttributeModel.class);
+                if (m == null) {
+                    workspace.add(new IndexedAttributeModel());
+                }
             }
 
             public void select(Workspace workspace) {

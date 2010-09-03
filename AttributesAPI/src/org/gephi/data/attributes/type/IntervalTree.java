@@ -79,6 +79,13 @@ public final class IntervalTree<T> {
 		}
 	}
 
+	private boolean compareLow(Interval a, Interval b) {
+		if (a.getLow() < b.getLow() || a.getLow() == b.getLow() &&
+				(!a.isLowExcluded() || b.isHighExcluded()))
+			return true;
+		return false;
+	}
+
 	/**
 	 * Inserts the {@code interval} into this {@code IntervalTree}.
 	 * 
@@ -100,13 +107,13 @@ public final class IntervalTree<T> {
 		Node x = root.left;
 		while (x != nil) {
 			y = x;
-			if (z.i.getLow() < x.i.getLow())
+			if (compareLow(z.i, y.i))
 				x = x.left;
 			else x = x.right;
 			y.max = Math.max(z.max, y.max);
 		}
 		z.p = y;
-		if (y == root || z.i.getLow() < y.i.getLow())
+		if (y == root || compareLow(z.i, y.i))
 			y.left = z;
 		else y.right = z;
 		insertFixup(z);
@@ -378,6 +385,30 @@ public final class IntervalTree<T> {
 	}
 
 	/**
+	 * Indicates if the leftmost point is excluded.
+	 *
+	 * @return {@code true} if the leftmost point is excluded,
+	 *         {@code false} otherwise.
+	 */
+	public boolean isLowExcluded() {
+		if (isEmpty())
+			return true;
+		return minimum().isLowExcluded();
+	}
+
+	/**
+	 * Indicates if the rightmost point is excluded.
+	 *
+	 * @return {@code true} if the rightmost point is excluded,
+	 *         {@code false} otherwise.
+	 */
+	public boolean isHighExcluded() {
+		if (isEmpty())
+			return true;
+		return maximum().isHighExcluded();
+	}
+
+	/**
 	 * Indicates if this {@code IntervalTree} contains 0 intervals.
 	 * 
 	 * @return {@code true} if this {@code IntervalTree} is empty,
@@ -408,10 +439,10 @@ public final class IntervalTree<T> {
 
 	/**
 	 * Returns all intervals overlapping with an interval given by {@code low}
-	 * and {@code high}.
+	 * and {@code high}. They are considered as included by default.
 	 *
-	 * @param low   the left endpoint of an interval to be searched for overlaps
-	 * @param high  the right endpoint an interval to be searched for overlaps
+	 * @param low  the left endpoint of an interval to be searched for overlaps
+	 * @param high the right endpoint an interval to be searched for overlaps
 	 *
 	 * @return all intervals overlapping with an interval given by {@code low}
 	 * and {@code high}.
@@ -518,7 +549,7 @@ public final class IntervalTree<T> {
 
 	/**
 	 * Returns a string representation of this interval tree in a format
-	 * {@code [[low, high, value], ..., [low, high, value]]}. Nodes are visited
+	 * {@code <[low, high, value], ..., [low, high, value]>}. Nodes are visited
 	 * in {@code inorder}.
 	 *
 	 * @return a string representation of this interval tree.
@@ -528,14 +559,14 @@ public final class IntervalTree<T> {
 		List<Interval<T>> list = new ArrayList<Interval<T>>();
 		inorderTreeWalk(root.left, list);
 		if (!list.isEmpty()) {
-			StringBuilder sb = new StringBuilder("[");
+			StringBuilder sb = new StringBuilder("<");
 			sb.append(list.get(0).toString());
 			for (int i = 1; i < list.size(); ++i)
 				sb.append(", ").append(list.get(i).toString());
-			sb.append("]");
+			sb.append(">");
 			return sb.toString();
 		}
-		return "[empty]";
+		return "<empty>]";
 	}
 
 	private class Node {

@@ -61,6 +61,7 @@ public class UndirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
         baseLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
         labelColorizer = new ParentColorMode();
         edgeScale = new Float(1f);
+        rescaleWeight = Boolean.TRUE;
     }
 
     @Override
@@ -74,6 +75,7 @@ public class UndirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
             return new SupervisorPropery[]{
                         SupervisorPropery.createProperty(this, Boolean.class, "Undirected_curvedFlag", CATEGORY, "Curved", "getCurvedFlag", "setCurvedFlag"),
                         SupervisorPropery.createProperty(this, Float.class, "Undirected_edgeScale", CATEGORY, "Thickness", "getEdgeScale", "setEdgeScale"),
+                        SupervisorPropery.createProperty(this, Boolean.class, "Undirected_rescaleWeight", CATEGORY, "Rescale Weight", "getRescaleWeight", "setRescaleWeight"),
                         SupervisorPropery.createProperty(this, EdgeColorizer.class, "Undirected_colorizer", CATEGORY, "Color", "getColorizer", "setColorizer", EdgeColorizerPropertyEditor.class),
                         SupervisorPropery.createProperty(this, Boolean.class, "Undirected_showLabelsFlag", CATEGORY, "Show labels", "getShowLabelsFlag", "setShowLabelsFlag"),
                         SupervisorPropery.createProperty(this, Boolean.class, "Undirected_shortenLabelsFlag", CATEGORY, "Shorten labels", "getShortenLabelsFlag", "setShortenLabelsFlag"),

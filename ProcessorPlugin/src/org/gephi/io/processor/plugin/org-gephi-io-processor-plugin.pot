@@ -18,3 +18,12 @@ msgstr ""
 msgid "OpenIDE-Module-Short-Description"
 msgstr ""
 "Processor implementations, control how data are appened from Import to Graph"
+
+msgid "AppendProcessor.displayName"
+msgstr "Append Graph"
+
+msgid "DefaultProcessor.displayName"
+msgstr "Add full graph"
+
+msgid "DynamicProcessor.displayName"
+msgstr "Time frame"

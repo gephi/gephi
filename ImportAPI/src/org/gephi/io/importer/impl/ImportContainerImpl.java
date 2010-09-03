@@ -381,8 +381,6 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     edgeMap.remove(id);
                     edgeSourceTargetMap.remove(sourceTargetId);
                     report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Weight_Zero_Ignored", id), Level.SEVERE));
-                } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Weight_Zero", id), Level.WARNING));
                 }
             }
         }

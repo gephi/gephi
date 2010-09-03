@@ -27,6 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.dynamic.api.DynamicModelEvent;
 import org.gephi.dynamic.api.DynamicModelListener;
 import org.gephi.project.api.ProjectController;
@@ -124,6 +125,7 @@ public final class DynamicControllerImpl implements DynamicController {
     @Override
     public void setVisibleInterval(TimeInterval interval) {
         if (model != null) {
+            System.out.println("set visible interval "+interval);
             model.setVisibleTimeInterval(interval);
         }
     }
@@ -131,6 +133,13 @@ public final class DynamicControllerImpl implements DynamicController {
     @Override
     public void setVisibleInterval(double low, double high) {
         setVisibleInterval(new TimeInterval(low, high));
+    }
+
+    @Override
+    public void setTimeFormat(TimeFormat timeFormat) {
+        if (model != null) {
+            model.setTimeFormat(timeFormat);
+        }
     }
 
     @Override

@@ -30,6 +30,7 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.DynamicUtilities;
+import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
@@ -43,6 +44,7 @@ import org.gephi.io.importer.api.NodeDraftGetter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.project.api.ProjectController;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -110,11 +112,13 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
             try {
                 point = DynamicUtilities.getDoubleFromXMLDateString(date);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("The entered date can't be parsed");
             }
         } else {
             point = Double.parseDouble(date);
         }
+        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        dynamicController.setTimeFormat(dateMode ? DynamicModel.TimeFormat.DATE : DynamicModel.TimeFormat.DOUBLE);
 
         //Create all nodes
         Set<Node> nodesInDraft = new HashSet<Node>();
@@ -224,32 +228,25 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
         if (intervals.size() > 1) {
             throw new RuntimeException("DynamicProcessor doesn't support overlapping intervals.");
         } else if (!intervals.isEmpty()) {
-            Double[] toRemove = intervals.get(0).getValue();
-            if (toRemove[0] >= point) {
+            Interval<Double[]> toRemove = intervals.get(0);
+            if (toRemove.getLow() >= point) {
                 return source;
             }
 
-            //Excluding point
-            double excludingPoint = point - 0.01;
+            Double[] toAdd = new Double[]{toRemove.getLow(), point};
 
-            Double[] toAdd = new Double[]{toRemove[0], excludingPoint};
-
-            return new TimeInterval(source, toAdd[0], toAdd[1], toRemove[0], toRemove[1]);
+            return new TimeInterval(source, toAdd[0], toAdd[1], toRemove.isLowExcluded(), true, toRemove.getLow(), toRemove.getHigh(), toRemove.isLowExcluded(), toRemove.isHighExcluded());
         }
         return source;
 
     }
 
     public String getDisplayName() {
-        return "Time frame";
-
-
+        return NbBundle.getMessage(DynamicProcessor.class, "DynamicProcessor.displayName");
     }
 
     public String getDate() {
         return date;
-
-
     }
 
     public void setDate(String date) {

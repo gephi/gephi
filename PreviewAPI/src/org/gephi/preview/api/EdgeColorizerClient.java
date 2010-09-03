@@ -29,4 +29,6 @@ public interface EdgeColorizerClient extends ColorizerClient {
     public Node getNode1();
 
     public Node getNode2();
+
+    public java.awt.Color getOriginalColor();
 }

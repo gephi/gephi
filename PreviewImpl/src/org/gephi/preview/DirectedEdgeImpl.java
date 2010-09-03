@@ -22,6 +22,7 @@ package org.gephi.preview;
 
 import java.awt.Font;
 import java.util.ArrayList;
+import org.gephi.graph.api.Edge;
 import org.gephi.preview.api.DirectedEdge;
 import org.gephi.preview.api.EdgeArrow;
 import org.gephi.preview.api.EdgeMiniLabel;
@@ -49,8 +50,8 @@ public abstract class DirectedEdgeImpl extends EdgeImpl implements DirectedEdge 
      * @param label      the edge's label
      * @param labelSize  the edge's label size
      */
-    protected DirectedEdgeImpl(GraphImpl parent, float thickness, NodeImpl node1, NodeImpl node2, String label, float labelSize) {
-        super(parent, thickness, node1, node2, label, labelSize);
+    protected DirectedEdgeImpl(GraphImpl parent, Edge edge, NodeImpl node1, NodeImpl node2, String label, float labelSize) {
+        super(parent, edge, node1, node2, label, labelSize);
 
         // generate arrows
         arrows.add(new EdgeArrowB1Out(this));

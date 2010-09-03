@@ -245,8 +245,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             obj.setCacheMarker(cacheMarker);
         }
 
-        limits.setMinWeight(Math.min(minWeight, limits.getMinWeight()));
-        limits.setMaxWeight(Math.max(maxWeight, limits.getMaxWeight()));
+        limits.setMinMetaWeight(minWeight);
+        limits.setMaxMetaWeight(maxWeight);
     }
 
     public void updatePotatoes(HierarchicalGraph graph) {

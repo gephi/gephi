@@ -48,9 +48,6 @@ msgstr "Default edge type set as {0}"
 msgid "ImportContainerException_Weight_Zero_Ignored"
 msgstr "Edge weight is 0 or negative, edge id=''{0}'' is ignored"
 
-msgid "ImportContainerException_Weight_Zero"
-msgstr "Edge weight is 0 or negative, it may not be visible"
-
 msgid "ImportContainerException_TimeInterval_ParseError"
 msgstr ""
 "The Time Interval ''{0}'' could not be parsed. Use Date or Double formatting"

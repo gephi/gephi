@@ -20,22 +20,23 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ui.processor.plugin;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.xml.datatype.DatatypeConfigurationException;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.io.processor.plugin.DynamicProcessor;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
-import org.netbeans.validation.api.builtin.Validators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationListener;
 import org.netbeans.validation.api.ui.ValidationPanel;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -56,38 +57,42 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
         if (dynamicModel != null) {
             lastFrame = dynamicModel.getMax();
         }
-        initLastFrame();
+        lastFrameLabel.setText("None");
 
-        dateRadio.setSelected(processor.isDateMode());
-        if (processor.isDateMode()) {
-            try {
+        if (dynamicModel != null && !(dynamicModel.getMin() == Double.NEGATIVE_INFINITY && dynamicModel.getMax() == Double.POSITIVE_INFINITY)) {
+            //Select only the current time format
+            DynamicModel.TimeFormat timeFormat = dynamicModel.getTimeFormat();
+            if (timeFormat.equals(DynamicModel.TimeFormat.DATE)) {
+                dateRadio.setSelected(true);
+                timeStampRadio.setEnabled(false);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                datePicker.setDate(sdf.parse(processor.getDate()));
-            } catch (Exception e) {
-                datePicker.setDate(new Date());
+                try {
+                    datePicker.setDate(sdf.parse(processor.getDate()));
+                } catch (Exception e) {
+                    datePicker.setDate(new Date());
+                }
+                lastFrameLabel.setText(DynamicUtilities.getXMLDateStringFromDouble(lastFrame));
+            } else {
+                timeStampRadio.setSelected(true);
+                dateRadio.setEnabled(false);
+
+                lastFrameLabel.setText(Double.toString(lastFrame));
             }
-        } else {
-            //Timestamp
         }
     }
 
     public void unsetup(DynamicProcessor processor) {
         processor.setDateMode(dateRadio.isSelected());
         if (dateRadio.isSelected()) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String begin = sdf.format(datePicker.getDate());
-            processor.setDate(begin);
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String begin = sdf.format(datePicker.getDate());
+                processor.setDate(begin);
+            } catch (Exception e) {
+                //Exception catched later in processor
+            }
         } else {
             processor.setDate(timestampField.getText());
-        }
-    }
-
-    private void initLastFrame() {
-        if (Double.isInfinite(lastFrame)) {
-            lastFrameLabel.setText("None");
-        } else {
-            lastFrameLabel.setText(Double.toString(lastFrame));
-            lastFrameLabel.setText(DynamicUtilities.getXMLDateStringFromDouble(lastFrame));
         }
     }
 
@@ -97,42 +102,61 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
 
         ValidationGroup group = validationPanel.getValidationGroup();
 
-
-        group.add(innerPanel.timestampField, Validators.merge(new LastFrameValidator(innerPanel), new Validator<String>() {
-
-            @Override
-            public boolean validate(Problems problems, String compName, String model) {
-                if (model.isEmpty()) {
-                    return true;
-                }
-                return Validators.REQUIRE_VALID_NUMBER.validate(problems, "time stamp", model);
-            }
-        }));
-
-        final DatePickerValidationListener datePickerValidationListener = new DatePickerValidationListener(innerPanel);
-        group.add(datePickerValidationListener);
+        final FullValidationListener fullValidationListener = new FullValidationListener(innerPanel);
+        group.add(fullValidationListener);
 
         PropertyChangeListener listener = new PropertyChangeListener() {
 
             @Override
             public void propertyChange(PropertyChangeEvent e) {
+                System.out.println(e.getPropertyName());
                 if ("date".equals(e.getPropertyName())) {
-                    datePickerValidationListener.dateEvent();
+                    fullValidationListener.event();
                 }
             }
         };
         innerPanel.datePicker.addPropertyChangeListener(listener);
 
+        innerPanel.timestampField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void insertUpdate(DocumentEvent e) {
+                fullValidationListener.event();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                fullValidationListener.event();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+
+        innerPanel.dateRadio.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fullValidationListener.event();
+            }
+        });
+
+        innerPanel.timeStampRadio.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fullValidationListener.event();
+            }
+        });
+
 
         return validationPanel;
     }
 
-    private static class DatePickerValidationListener extends ValidationListener {
+    private static class FullValidationListener extends ValidationListener {
 
-        LastFrameValidator lastFrameValidator;
+        FullValidator lastFrameValidator;
 
-        public DatePickerValidationListener(DynamicProcessorPanel panel) {
-            lastFrameValidator = new LastFrameValidator((panel));
+        public FullValidationListener(DynamicProcessorPanel panel) {
+            lastFrameValidator = new FullValidator((panel));
         }
 
         @Override
@@ -140,43 +164,49 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
             return lastFrameValidator.validate(problems, "", "");
         }
 
-        public void dateEvent() {
+        public void event() {
             this.validate();
         }
     }
 
-    private static class LastFrameValidator implements Validator<String> {
+    private static class FullValidator implements Validator<String> {
 
         private DynamicProcessorPanel panel;
 
-        public LastFrameValidator(DynamicProcessorPanel panel) {
+        public FullValidator(DynamicProcessorPanel panel) {
             this.panel = panel;
         }
 
         @Override
         public boolean validate(Problems problems, String compName, String model) {
-            if (Double.isInfinite(panel.lastFrame)) {
-                return true;
-            }
             if (panel.dateRadio.isSelected()) {
-                //Date
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				String begin = sdf.format(panel.datePicker.getDate());
-				double d = DynamicUtilities.getDoubleFromXMLDateString(begin);
-				if (d <= panel.lastFrame) {
-					problems.add("The new date must be later than the last current date");
-					return false;
-				}
+                if (panel.datePicker.getDate() == null) {
+                    problems.add("The date can't be empty");
+                    return false;
+                } else if (!Double.isInfinite(panel.lastFrame)) {
+                    //Date
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    String begin = sdf.format(panel.datePicker.getDate());
+                    double d = DynamicUtilities.getDoubleFromXMLDateString(begin);
+                    if (d <= panel.lastFrame) {
+                        problems.add("The new date must be later than the last current date");
+                        return false;
+                    }
+                }
+
             } else {
-                if (model.isEmpty()) {
-                    return true;
+                String t = panel.timestampField.getText();
+                if (t.isEmpty()) {
+                    problems.add("The time stamp can't be empty");
+                    return false;
                 }
                 try {
                     Double.parseDouble(panel.timestampField.getText());
                 } catch (Exception e) {
+                    problems.add("The time stamp must be a number");
                     return false;
                 }
-                if (Double.parseDouble(panel.timestampField.getText()) <= panel.lastFrame) {
+                if (!Double.isInfinite(panel.lastFrame) && Double.parseDouble(panel.timestampField.getText()) <= panel.lastFrame) {
                     problems.add("The new time stamp must be greater than the last frame");
                     return false;
                 }
@@ -210,6 +240,7 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
         header.setTitle(org.openide.util.NbBundle.getMessage(DynamicProcessorPanel.class, "DynamicProcessorPanel.header.title")); // NOI18N
 
         buttongroup.add(dateRadio);
+        dateRadio.setSelected(true);
         dateRadio.setText(org.openide.util.NbBundle.getMessage(DynamicProcessorPanel.class, "DynamicProcessorPanel.dateRadio.text")); // NOI18N
 
         labelDate.setText(org.openide.util.NbBundle.getMessage(DynamicProcessorPanel.class, "DynamicProcessorPanel.labelDate.text")); // NOI18N
@@ -249,14 +280,11 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(21, 21, 21)
-                                .addComponent(labelDate)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(datePicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(dateRadio))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(21, 21, 21)
+                        .addComponent(labelDate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(datePicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(dateRadio)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(21, 21, 21)
                         .addComponent(labelTime)

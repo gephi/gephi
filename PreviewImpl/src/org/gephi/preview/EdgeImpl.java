@@ -20,10 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.MetaEdge;
 import org.gephi.preview.api.CubicBezierCurve;
-import org.gephi.preview.api.Edge;
 import org.gephi.preview.api.Point;
 import org.gephi.preview.api.supervisors.EdgeSupervisor;
 import org.gephi.preview.supervisors.EdgeSupervisorImpl;
@@ -34,7 +36,7 @@ import org.gephi.preview.util.Vector;
  *
  * @author Jérémy Subtil <jeremy.subtil@gephi.org>
  */
-public abstract class EdgeImpl extends AbstractEdge implements Edge {
+public abstract class EdgeImpl extends AbstractEdge implements org.gephi.preview.api.Edge {
 
     protected final NodeImpl node1;
     protected final NodeImpl node2;
@@ -43,6 +45,8 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
     protected final ArrayList<CubicBezierCurve> curves = new ArrayList<CubicBezierCurve>();
     private final EdgeLabelImpl label;
     protected static final float BEZIER_CURVE_FACTOR = 0.2f;
+    protected final Color originalColor;
+    protected Boolean metaEdge;
 
     /**
      * Constructor.
@@ -54,16 +58,24 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
      * @param label      the edge's label
      * @param labelSize  the edge's label size
      */
-    protected EdgeImpl(GraphImpl parent, float thickness, NodeImpl node1, NodeImpl node2, String label, float labelSize) {
-        super(parent, thickness);
+    protected EdgeImpl(GraphImpl parent, Edge edge, NodeImpl node1, NodeImpl node2, String label, float labelSize) {
+        super(parent, edge.getWeight());
         this.node1 = node1;
         this.node2 = node2;
+        this.metaEdge = edge instanceof MetaEdge;
 
         // edge direction vector + edge length
         direction = new Vector(this.node2.getPosition());
         direction.sub(new Vector(this.node1.getPosition()));
         length = direction.mag();
         direction.normalize();
+
+        //Color
+        if(edge.getEdgeData().r()!=-1) {
+            originalColor = new Color(edge.getEdgeData().r(), edge.getEdgeData().g(), edge.getEdgeData().b(), edge.getEdgeData().alpha());
+        } else {
+            originalColor = null;
+        }
 
         // curved edge (cubic Bézier curve)
         genCurves();
@@ -121,6 +133,10 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
         return node2;
     }
 
+    public Color getOriginalColor() {
+        return originalColor;
+    }
+
     public EdgeLabelImpl getLabel() {
         return label;
     }
@@ -145,6 +161,14 @@ public abstract class EdgeImpl extends AbstractEdge implements Edge {
      */
     public Vector getDirection() {
         return direction;
+    }
+
+    public Boolean getMetaEdge() {
+        return metaEdge;
+    }
+
+    public void setMetaEdge(Boolean metaEdge) {
+        this.metaEdge = metaEdge;
     }
 
     /**

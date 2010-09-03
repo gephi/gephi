@@ -63,34 +63,31 @@ msgstr "0"
 msgid "HierarchyControlPanel.metaEdgesSettings.title"
 msgstr "Meta-edges settings"
 
-msgid "MetaEdgesSettingsPanel.jXHeader1.title"
-msgstr "Meta-edges settings"
+msgid "HierarchyControlPanel.info.title"
+msgstr "Meta-edges"
 
-msgid "MetaEdgesSettingsPanel.jXHeader1.description"
+msgid "HierarchyControlPanel.info.description"
 msgstr ""
 "Meta edges are edges between a group and a node or between two groups. They "
 "represents proper edges between groups' descendants."
 
-msgid "HierarchyControlPanel.jLabel1.text"
-msgstr "Auto meta-edges creation"
-
-msgid "MetaEdgesSettingsPanel.sumRadio.text"
-msgstr "Sum of edges weight"
-
-msgid "MetaEdgesSettingsPanel.avgRadio.text"
-msgstr "Average of edge weight"
-
-msgid "MetaEdgesSettingsPanel.labelMax.text"
-msgstr "Maximum weight"
-
-msgid "MetaEdgesSettingsPanel.labelMin.text"
-msgstr "Minimum weight"
-
-msgid "MetaEdgesSettingsPanel.labelBuilding.text"
-msgstr "Building"
-
-msgid "MetaEdgesSettingsPanel.labelEnable.text"
-msgstr "Enable Auto meta-edges"
-
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Visualization addon for hierarchy navigation"
+
+msgid "HierarchyControlPanel.labelAuto.text"
+msgstr "Auto meta-edges creation"
+
+msgid "HierarchyControlPanel.labelWeight.text"
+msgstr "Meta-Edges weight:"
+
+msgid "HierarchyControlPanel.sumRadio.label"
+msgstr "Sum"
+
+msgid "HierarchyControlPanel.avgRadio.label"
+msgstr "Average"
+
+msgid "HierarchyControlPanel.sumRadio.toolTipText"
+msgstr "Sum of edges weight"
+
+msgid "HierarchyControlPanel.avgRadio.toolTipText"
+msgstr "Average of edge weight"

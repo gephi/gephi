@@ -225,3 +225,6 @@ msgstr "Edge Both<-> Color"
 
 msgid "GlobalSettingsPanel.labelZoom.text"
 msgstr "Zoom"
+
+msgid "EdgeSettingsPanel.labelMetaScale.text"
+msgstr "Scale (meta-edge)"

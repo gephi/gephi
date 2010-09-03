@@ -17,12 +17,12 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.exporter.plugin;
 
 import javax.swing.JPanel;
+import org.gephi.io.exporter.plugin.ExporterGEXF2;
 import org.gephi.io.exporter.spi.Exporter;
-import org.gephi.io.exporter.plugin.ExporterGEXF;
 import org.gephi.io.exporter.spi.ExporterUI;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -35,11 +35,11 @@ import org.openide.util.lookup.ServiceProvider;
 public class UIExporterGEXF implements ExporterUI {
 
     private UIExporterGEXFPanel panel;
-    private ExporterGEXF exporterGEXF;
-    private ExporterGEXFSettings settings =  new ExporterGEXFSettings();
+    private ExporterGEXF2 exporterGEXF;
+    private ExporterGEXFSettings settings = new ExporterGEXFSettings();
 
     public void setup(Exporter exporter) {
-        exporterGEXF = (ExporterGEXF) exporter;
+        exporterGEXF = (ExporterGEXF2) exporter;
         settings.load(exporterGEXF);
         panel.setup(exporterGEXF);
     }
@@ -59,7 +59,7 @@ public class UIExporterGEXF implements ExporterUI {
     }
 
     public boolean isUIForExporter(Exporter exporter) {
-        return exporter instanceof ExporterGEXF;
+        return exporter instanceof ExporterGEXF2;
     }
 
     public String getDisplayName() {
@@ -73,21 +73,27 @@ public class UIExporterGEXF implements ExporterUI {
         private boolean exportPosition = true;
         private boolean exportSize = true;
         private boolean exportAttributes = true;
+        private boolean exportDynamics = true;
+        private boolean exportHierarchy = false;
 
-        private void save(ExporterGEXF exporterGEXF) {
+        private void save(ExporterGEXF2 exporterGEXF) {
             this.normalize = exporterGEXF.isNormalize();
             this.exportColors = exporterGEXF.isExportColors();
             this.exportPosition = exporterGEXF.isExportPosition();
             this.exportSize = exporterGEXF.isExportSize();
             this.exportAttributes = exporterGEXF.isExportAttributes();
+            this.exportDynamics = exporterGEXF.isExportAttributes();
+            this.exportHierarchy = exporterGEXF.isExportDynamic();
         }
 
-        private void load(ExporterGEXF exporterGEXF) {
+        private void load(ExporterGEXF2 exporterGEXF) {
             exporterGEXF.setNormalize(normalize);
             exporterGEXF.setExportColors(exportColors);
             exporterGEXF.setExportAttributes(exportAttributes);
             exporterGEXF.setExportPosition(exportPosition);
             exporterGEXF.setExportSize(exportSize);
+            exporterGEXF.setExportDynamic(exportDynamics);
+            exporterGEXF.setExportHierarchy(exportHierarchy);
         }
     }
 }
