@@ -48,6 +48,10 @@ public class DataTablesControllerImpl implements DataTablesController {
         return listener;
     }
 
+    public boolean isDataTablesReady() {
+        return listener!=null;
+    }
+
     public void selectNodesTable() {
         if (listener != null) {
             listener.selectNodesTable();
@@ -121,17 +125,51 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
     }
 
-    public boolean isShowingOnlyVisible() {
+    public boolean isShowOnlyVisible() {
         if (listener != null) {
-            return listener.isShowingOnlyVisible();
+            return listener.isShowOnlyVisible();
         } else {
             return false;
+        }
+    }
+
+    public void setShowOnlyVisible(boolean showOnlyVisible){
+        if (listener != null) {
+            listener.setShowOnlyVisible(showOnlyVisible);
         }
     }
 
     public void exportCurrentTable(ExportMode exportMode) {
         if (listener != null) {
             listener.exportCurrentTable(exportMode);
+        }
+    }
+
+    public boolean isUseSparklines() {
+        if (listener != null) {
+            return listener.isUseSparklines();
+        } else {
+            return false;
+        }
+    }
+
+    public void setUseSparklines(boolean useSparklines) {
+        if (listener != null) {
+            listener.setUseSparklines(useSparklines);
+        }
+    }
+
+    public boolean isShowEdgesNodesLabels() {
+        if (listener != null) {
+            return listener.isShowEdgesNodesLabels();
+        } else {
+            return false;
+        }
+    }
+
+    public void setShowEdgesNodesLabels(boolean showEdgesNodesLabels) {
+        if (listener != null) {
+            listener.setShowEdgesNodesLabels(showEdgesNodesLabels);
         }
     }
 }

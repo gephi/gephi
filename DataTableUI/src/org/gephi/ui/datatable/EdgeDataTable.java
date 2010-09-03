@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.datatable;
 
 import java.awt.Point;
@@ -76,12 +76,13 @@ import utils.SparkLinesRenderer;
 public class EdgeDataTable {
 
     private boolean useSparklines = false;
+    private boolean showEdgesNodesLabels = false;
     private JXTable table;
     private PropertyEdgeDataColumn[] propertiesColumns;
     private RowFilter rowFilter;
     private Edge[] selectedEdges;
     private AttributeColumnsController attributeColumnsController;
-    private boolean refreshingTable=false;
+    private boolean refreshingTable = false;
     private static final int FAKE_COLUMNS_COUNT = 3;
     private EdgeDataTableModel model;
 
@@ -106,7 +107,11 @@ public class EdgeDataTable {
 
             @Override
             public Object getValueFor(Edge edge) {
-                return edge.getSource().getNodeData().getId();
+                if (showEdgesNodesLabels) {
+                    return edge.getSource().getNodeData().getId()+" - "+edge.getSource().getNodeData().getLabel();
+                } else {
+                    return edge.getSource().getNodeData().getId();
+                }
             }
         };
 
@@ -119,7 +124,11 @@ public class EdgeDataTable {
 
             @Override
             public Object getValueFor(Edge edge) {
-                return edge.getTarget().getNodeData().getId();
+                if (showEdgesNodesLabels) {
+                    return edge.getTarget().getNodeData().getId()+" - "+edge.getTarget().getNodeData().getLabel();
+                } else {
+                    return edge.getTarget().getNodeData().getId();
+                }
             }
         };
         propertiesColumns[2] = new PropertyEdgeDataColumn(NbBundle.getMessage(EdgeDataTable.class, "EdgeDataTable.type.column.text")) {
@@ -217,7 +226,7 @@ public class EdgeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, DataTablesModel dataTablesModel) {
-        refreshingTable=true;
+        refreshingTable = true;
         if (selectedEdges == null) {
             selectedEdges = getEdgesFromSelectedRows();
         }
@@ -238,7 +247,7 @@ public class EdgeDataTable {
 
         setEdgesSelection(selectedEdges);//Keep row selection before refreshing.
         selectedEdges = null;
-        refreshingTable=false;
+        refreshingTable = false;
     }
 
     public void setEdgesSelection(Edge[] edges) {
@@ -271,6 +280,14 @@ public class EdgeDataTable {
 
     public void setUseSparklines(boolean useSparklines) {
         this.useSparklines = useSparklines;
+    }
+
+    public boolean isShowEdgesNodesLabels() {
+        return showEdgesNodesLabels;
+    }
+
+    public void setShowEdgesNodesLabels(boolean showEdgesNodesLabels) {
+        this.showEdgesNodesLabels = showEdgesNodesLabels;
     }
 
     private String[] getHiddenColumns() {
@@ -348,9 +365,9 @@ public class EdgeDataTable {
         }
 
         public void setColumns(EdgeDataColumn[] columns) {
-            boolean columnsChanged=columns.length != this.columns.length;
+            boolean columnsChanged = columns.length != this.columns.length;
             this.columns = columns;
-            if(columnsChanged){
+            if (columnsChanged) {
                 fireTableStructureChanged();
             }
         }
@@ -401,7 +418,7 @@ public class EdgeDataTable {
 
         public Object getValueFor(Edge edge) {
             Object value = edge.getEdgeData().getAttributes().getValue(column.getIndex());
-            if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column)||AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
+            if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column) || AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
                 return value;
             } else {
                 return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent

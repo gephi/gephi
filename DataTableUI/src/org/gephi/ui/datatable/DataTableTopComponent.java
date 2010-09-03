@@ -26,8 +26,6 @@ import java.awt.Dimension;
 import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -59,7 +57,6 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalaboratory.api.DataLaboratoryHelper;
 import org.gephi.datalaboratory.api.DataTablesController;
-import org.gephi.datalaboratory.api.DataTablesController.ExportMode;
 import org.gephi.datalaboratory.api.DataTablesEventListener;
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator;
 import org.gephi.datalaboratory.spi.generalactions.GeneralActionsManipulator;
@@ -117,6 +114,9 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private static final String PREFERRED_ID = "DataTableTopComponent";
     //Settings
     private static final String DATA_LABORATORY_DYNAMIC_FILTERING = "DataLaboratory_Dynamic_Filtering";
+    private static final String DATA_LABORATORY_ONLY_VISIBLE = "DataLaboratory_visibleOnly";
+    private static final String DATA_LABORATORY_SPARKLINES = "DataLaboratory_useSparklines";
+    private static final String DATA_LABORATORY_EDGES_NODES_LABELS = "DataLaboratory_showEdgesNodesLabels";
     private static final Color invalidFilterColor = new Color(254, 150, 150);
     private final boolean dynamicFiltering;
     //Data
@@ -124,6 +124,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private DataTablesModel dataTablesModel;
     private boolean visibleOnly = false;
     private boolean useSparklines = false;
+    private boolean showEdgesNodesLabels = false;
     //Table
     private NodeDataTable nodeTable;
     private EdgeDataTable edgeTable;
@@ -137,8 +138,11 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
     private DataTableTopComponent() {
 
-        //Settings
+        //Get saved preferences if existing:
         dynamicFiltering = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_DYNAMIC_FILTERING, true);
+        visibleOnly = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_ONLY_VISIBLE, false);
+        useSparklines = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_SPARKLINES, false);
+        showEdgesNodesLabels = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_EDGES_NODES_LABELS, false);
 
         taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(20), new ThreadFactory() {
 
@@ -147,10 +151,10 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             }
         });
 
-        initComponents();
+        initComponents();       
+
         columnManipulatorsPanel.setLayout(new WrapLayout(WrapLayout.CENTER, 25, 20));
         setName(NbBundle.getMessage(DataTableTopComponent.class, "CTL_DataTableTopComponent"));
-//        setToolTipText(NbBundle.getMessage(DataTableTopComponent.class, "HINT_DataTableTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
 
         //toolbar
@@ -197,7 +201,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                 enableTableControls();
                 bannerPanel.setVisible(false);
 
-                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+                AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
                 attributeModel.addAttributeListener(DataTableTopComponent.this);
 
                 graphModel = gc.getModel();
@@ -208,6 +212,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
             public void unselect(Workspace workspace) {
                 graphModel.removeGraphListener(DataTableTopComponent.this);
+
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
                 attributeModel.removeAttributeListener(DataTableTopComponent.this);
                 graphModel = null;
@@ -259,25 +264,6 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                 }
             });
         }
-
-        visibleGraphCheckbox.setSelected(visibleOnly);
-        visibleGraphCheckbox.addItemListener(new ItemListener() {
-
-            public void itemStateChanged(ItemEvent e) {
-                visibleOnly = visibleGraphCheckbox.isSelected();
-                refreshTable();
-            }
-        });
-        useSparklinesCheckBox.setSelected(useSparklines);
-        useSparklinesCheckBox.addItemListener(new ItemListener() {
-
-            public void itemStateChanged(ItemEvent e) {
-                useSparklines = useSparklinesCheckBox.isSelected();
-                nodeTable.setUseSparklines(useSparklines);
-                edgeTable.setUseSparklines(useSparklines);
-                refreshCurrentTable();
-            }
-        });
     }
 
     private void refreshAll() {
@@ -437,21 +423,19 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private void enableTableControls() {
         nodesButton.setEnabled(true);
         edgesButton.setEnabled(true);
+        configurationButton.setEnabled(true);
         filterTextField.setEnabled(true);
         labelFilter.setEnabled(true);
-        visibleGraphCheckbox.setEnabled(true);
-        useSparklinesCheckBox.setEnabled(true);
     }
 
     private void clearTableControls() {
         elementGroup.clearSelection();
         nodesButton.setEnabled(false);
         edgesButton.setEnabled(false);
+        configurationButton.setEnabled(false);
         filterTextField.setEnabled(false);
         labelFilter.setEnabled(false);
         bannerPanel.setVisible(false);
-        visibleGraphCheckbox.setEnabled(false);
-        useSparklinesCheckBox.setEnabled(false);
         hideTable();
     }
 
@@ -541,9 +525,35 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         return classDisplayed == ClassDisplayed.EDGE;
     }
 
-    public boolean isShowingOnlyVisible() {
+    public boolean isShowOnlyVisible() {
         return visibleOnly;
     }
+
+    public void setShowOnlyVisible(boolean showOnlyVisible) {
+        visibleOnly = showOnlyVisible;
+        refreshCurrentTable();
+    }
+
+    public boolean isUseSparklines() {
+        return useSparklines;
+    }
+
+    public void setUseSparklines(boolean useSparklines) {
+        this.useSparklines = useSparklines;
+        nodeTable.setUseSparklines(useSparklines);
+        edgeTable.setUseSparklines(useSparklines);
+        refreshCurrentTable();
+    }
+
+    public boolean isShowEdgesNodesLabels() {
+        return showEdgesNodesLabels;
+    }
+
+    public void setShowEdgesNodesLabels(boolean showEdgesNodesLabels) {
+        this.showEdgesNodesLabels = showEdgesNodesLabels;
+        edgeTable.setShowEdgesNodesLabels(showEdgesNodesLabels);
+        refreshCurrentTable();
+    }    
 
     public void exportCurrentTable(ExportMode exportMode) {
         JTable table;
@@ -891,7 +901,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                 } while (moreEvents);
                 if (refreshTableOnly) {
                     DataTableTopComponent.this.refreshTable();
-                }else{
+                } else {
                     DataTableTopComponent.this.refreshAll();
                 }
             } catch (InterruptedException ex) {
@@ -932,8 +942,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         nodesButton = new javax.swing.JToggleButton();
         edgesButton = new javax.swing.JToggleButton();
         separator = new javax.swing.JToolBar.Separator();
-        visibleGraphCheckbox = new javax.swing.JCheckBox();
-        useSparklinesCheckBox = new javax.swing.JCheckBox();
+        configurationButton = new javax.swing.JButton();
         separator2 = new javax.swing.JToolBar.Separator();
         boxGlue = new javax.swing.JLabel();
         labelFilter = new org.jdesktop.swingx.JXLabel();
@@ -976,16 +985,16 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         controlToolbar.add(edgesButton);
         controlToolbar.add(separator);
 
-        org.openide.awt.Mnemonics.setLocalizedText(visibleGraphCheckbox, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.visibleGraphCheckbox.text")); // NOI18N
-        visibleGraphCheckbox.setFocusable(false);
-        visibleGraphCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        controlToolbar.add(visibleGraphCheckbox);
-
-        org.openide.awt.Mnemonics.setLocalizedText(useSparklinesCheckBox, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.useSparklinesCheckBox.text")); // NOI18N
-        useSparklinesCheckBox.setFocusable(false);
-        useSparklinesCheckBox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        useSparklinesCheckBox.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        controlToolbar.add(useSparklinesCheckBox);
+        org.openide.awt.Mnemonics.setLocalizedText(configurationButton, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.configurationButton.text")); // NOI18N
+        configurationButton.setFocusable(false);
+        configurationButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        configurationButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        configurationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                configurationButtonActionPerformed(evt);
+            }
+        });
+        controlToolbar.add(configurationButton);
         controlToolbar.add(separator2);
 
         org.openide.awt.Mnemonics.setLocalizedText(boxGlue, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.boxGlue.text")); // NOI18N
@@ -1081,12 +1090,25 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private void nodesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nodesButtonActionPerformed
         selectNodesTable();
 }//GEN-LAST:event_nodesButtonActionPerformed
+
+    private void configurationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_configurationButtonActionPerformed
+        DialogDescriptor dd = new DialogDescriptor(new ConfigurationPanel(this), NbBundle.getMessage(DataTableTopComponent.class, "ConfigurationPanel.title"));
+        dd.setOptions(new Object[]{DialogDescriptor.OK_OPTION});
+        DialogDisplayer.getDefault().notify(dd);
+        
+        //Save preferences:
+        NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_ONLY_VISIBLE, visibleOnly);
+        NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_SPARKLINES, useSparklines);
+        NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_EDGES_NODES_LABELS, showEdgesNodesLabels);
+    }//GEN-LAST:event_configurationButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane attributeColumnsScrollPane;
     private javax.swing.JPanel bannerPanel;
     private javax.swing.JLabel boxGlue;
     private javax.swing.JComboBox columnComboBox;
     private javax.swing.JPanel columnManipulatorsPanel;
+    private javax.swing.JButton configurationButton;
     private javax.swing.JToolBar controlToolbar;
     private javax.swing.JToggleButton edgesButton;
     private javax.swing.ButtonGroup elementGroup;
@@ -1098,8 +1120,6 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private javax.swing.JToolBar.Separator separator;
     private javax.swing.JToolBar.Separator separator2;
     private javax.swing.JScrollPane tableScrollPane;
-    private javax.swing.JCheckBox useSparklinesCheckBox;
-    private javax.swing.JCheckBox visibleGraphCheckbox;
     // End of variables declaration//GEN-END:variables
 
     /**

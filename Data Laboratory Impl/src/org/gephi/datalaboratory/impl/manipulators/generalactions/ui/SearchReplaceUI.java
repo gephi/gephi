@@ -104,7 +104,7 @@ public final class SearchReplaceUI extends javax.swing.JPanel {
     }
 
     private void createSearchOptions() {
-        boolean onlyVisibleElements = Lookup.getDefault().lookup(DataTablesController.class).isShowingOnlyVisible();
+        boolean onlyVisibleElements = Lookup.getDefault().lookup(DataTablesController.class).isShowOnlyVisible();
         searchResult = null;
         if (mode == Mode.NODES_TABLE) {
             Node[] nodes;

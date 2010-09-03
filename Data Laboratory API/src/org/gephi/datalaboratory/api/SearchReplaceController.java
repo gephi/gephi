@@ -108,7 +108,7 @@ public interface SearchReplaceController {
         private void checkNodesToSearch() {
             if (nodesToSearch == null || nodesToSearch.length == 0) {
                 HierarchicalGraph hg;
-                if (Lookup.getDefault().lookup(DataTablesController.class).isShowingOnlyVisible()) {
+                if (Lookup.getDefault().lookup(DataTablesController.class).isShowOnlyVisible()) {
                     hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraphVisible();
                 } else {
                     hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
@@ -124,7 +124,7 @@ public interface SearchReplaceController {
         private void checkEdgesToSearch() {
             if (edgesToSearch == null || edgesToSearch.length == 0) {
                 HierarchicalGraph hg;
-                if (Lookup.getDefault().lookup(DataTablesController.class).isShowingOnlyVisible()) {
+                if (Lookup.getDefault().lookup(DataTablesController.class).isShowOnlyVisible()) {
                     hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraphVisible();
                 } else {
                     hg = Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
