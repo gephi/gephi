@@ -28,7 +28,9 @@ import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicGraph;
 import org.gephi.dynamic.api.DynamicModel;
@@ -167,6 +169,23 @@ public final class DynamicModelImpl implements DynamicModel {
                             }
                         }
                         break;
+                    case SET_VALUE:
+                        AttributeValue[] values = event.getData().getTouchedValues();
+                        for (int i = 0; i < values.length; i++) {
+                            AttributeValue val = values[i];
+                            if (val.getValue() != null) {
+                                AttributeColumn col = values[i].getColumn();
+                                if (col.getType().equals(AttributeType.TIME_INTERVAL)) {
+                                    if (nodeColumn == null && attUtils.isNodeColumn(col) && col.getId().equals(TIMEINTERVAL_COLUMN)) {
+                                        nodeColumn = col;
+                                    } else if (edgeColumn == null && attUtils.isEdgeColumn(col) && col.getId().equals(TIMEINTERVAL_COLUMN)) {
+                                        edgeColumn = col;
+                                    }
+                                    timeIntervalIndex.add((TimeInterval) val.getValue());
+                                }
+                            }
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -179,26 +198,6 @@ public final class DynamicModelImpl implements DynamicModel {
             public void graphChanged(GraphEvent event) {
                 if (event.getSource().isMainView()) {
                     switch (event.getEventType()) {
-                        case ADD_EDGES:
-                            if (edgeColumn != null) {
-                                for (Edge e : event.getData().addedEdges()) {
-                                    TimeInterval ti = (TimeInterval) e.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
-                                    if (ti != null) {
-                                        timeIntervalIndex.add(ti);
-                                    }
-                                }
-                            }
-                            break;
-                        case ADD_NODES:
-                            if (nodeColumn != null) {
-                                for (Node n : event.getData().addedNodes()) {
-                                    TimeInterval ti = (TimeInterval) n.getNodeData().getAttributes().getValue(nodeColumn.getIndex());
-                                    if (ti != null) {
-                                        timeIntervalIndex.add(ti);
-                                    }
-                                }
-                            }
-                            break;
                         case REMOVE_EDGES:
                             if (edgeColumn != null) {
                                 for (Edge e : event.getData().removedEdges()) {
@@ -266,10 +265,11 @@ public final class DynamicModelImpl implements DynamicModel {
                 if (fb.length > 0) {
                     DynamicRangeFilter filter = (DynamicRangeFilter) fb[0].getFilter();
                     dynamicQuery = filterController.createQuery(filter);
+                    filterController.add(dynamicQuery);
                 }
             }
-            if(dynamicQuery!=null) {
-                if(selecting) {
+            if (dynamicQuery != null) {
+                if (selecting) {
                     filterController.selectVisible(dynamicQuery);
                 } else {
                     filterController.filterVisible(dynamicQuery);
