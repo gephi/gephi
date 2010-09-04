@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -117,9 +117,13 @@ public class AttributeRowImpl implements AttributeRow {
     private void setValue(int index, AttributeValueImpl value) {
         updateColumns();
 
+        AttributeValueImpl oldValue = this.values[index];
+
         this.values[index] = value;
 
-        attributeTable.model.fireAttributeEvent(new ValueEvent(EventType.SET_VALUE, attributeTable, object, value));
+        if (!((oldValue == null && value == null) || (oldValue != null && oldValue.equals(value.getValue())))) {
+            attributeTable.model.fireAttributeEvent(new ValueEvent(EventType.SET_VALUE, attributeTable, object, value));
+        }
     }
 
     public Object getValue(AttributeColumn column) {
