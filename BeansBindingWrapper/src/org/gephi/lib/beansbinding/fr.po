@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-09-03 19:16+0000\n"
+"PO-Revision-Date: 2010-09-03 19:50+0000\n"
 "Last-Translator: Sébastien Heymann <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,23 +17,8 @@ msgstr ""
 "X-Launchpad-Export-Date: 2010-09-04 04:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-msgid "GraphContextMenu_Group"
-msgstr "Grouper"
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Binding Beans pour les composants Swing"
 
-msgid "GraphContextMenu_Ungroup"
-msgstr "Dégrouper"
-
-msgid "GraphContextMenu_Expand"
-msgstr "Étendre"
-
-msgid "GraphContextMenu_Contract"
-msgstr "Contracter"
-
-msgid "GraphContextMenu_Settle"
-msgstr "Fixer"
-
-msgid "GraphContextMenu_Free"
-msgstr "Libérer"
-
-msgid "GraphContextMenu_Delete"
-msgstr "Supprimer"
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Binding Beans pour les composants Swing"
