@@ -105,8 +105,9 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         }
 
         public DynamicRangeFilter getFilter() {
+            TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
             DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-            return new DynamicRangeFilter(dynamicController, nodeColumn, edgeColumn);
+            return new DynamicRangeFilter(timelineController, dynamicController, nodeColumn, edgeColumn);
         }
 
         public JPanel getPanel(Filter filter) {
@@ -114,10 +115,6 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             JPanel panel = new JPanel();
             final TopComponent topComponent = WindowManager.getDefault().findTopComponent("TimelineTopComponent");
             final JButton button = new JButton(topComponent.isOpened() ? "Close Timeline" : "Open Timeline");
-            if (topComponent.isOpened()) {
-                TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
-                //timelineController.getModel().setFilterProperty(dynamicRangeFilter.getRangeProperty());
-            }
             button.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -126,9 +123,6 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                         topComponent.open();
                         topComponent.requestActive();
                         button.setText("Close Timeline");
-                        //topComponent.close();
-                        TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
-                        //timelineController.getModel().setFilterProperty(dynamicRangeFilter.getRangeProperty());
                     } else {
                         topComponent.close();
                         button.setText("Open Timeline");
@@ -146,16 +140,22 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         private AttributeColumn edgeColumn;
         private DynamicController dynamicController;
         private DynamicModel dynamicModel;
+        private TimelineController timelineController;
         private TimeInterval visibleInterval;
         private FilterProperty[] filterProperties;
         private Double min;
         private Double max;
 
-        public DynamicRangeFilter(DynamicController dynamicController, AttributeColumn nodeColumn, AttributeColumn edgeColumn) {
+        public DynamicRangeFilter(TimelineController timelineController, DynamicController dynamicController, AttributeColumn nodeColumn, AttributeColumn edgeColumn) {
             this.nodeColumn = nodeColumn;
             this.edgeColumn = edgeColumn;
             this.dynamicController = dynamicController;
             this.dynamicModel = dynamicController.getModel();
+            this.timelineController = timelineController;
+            min = dynamicModel.getMin();
+            max = dynamicModel.getMax();
+            timelineController.setMin(min);
+            timelineController.setMax(max);
             visibleInterval = dynamicModel.getVisibleInterval();
         }
 
@@ -193,7 +193,12 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         }
 
         public void finish() {
-            
+            if (!Double.isInfinite(min)) {
+                timelineController.setMin(min);
+            }
+            if (!Double.isInfinite(max)) {
+                timelineController.setMax(max);
+            }
         }
 
         public String getName() {

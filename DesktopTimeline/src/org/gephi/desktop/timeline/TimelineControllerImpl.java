@@ -107,6 +107,18 @@ public class TimelineControllerImpl implements TimelineController {
         return workspace.getLookup().lookup(TimelineModel.class);
     }
 
+    public void setMin(double min) {
+        if (model != null) {
+            model.setMinValue(min);
+        }
+    }
+
+    public void setMax(double max) {
+        if (model != null) {
+            model.setMaxValue(max);
+        }
+    }
+
     public void setDynamicEnabled(boolean enabled) {
         setTimeLineVisible(enabled);
         fireChangeEvent();

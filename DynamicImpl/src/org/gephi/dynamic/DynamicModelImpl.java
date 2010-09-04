@@ -33,6 +33,12 @@ import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicGraph;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.dynamic.api.DynamicModelEvent;
+import org.gephi.filters.api.FilterController;
+import org.gephi.filters.api.FilterModel;
+import org.gephi.filters.api.Query;
+import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder;
+import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder.DynamicRangeFilter;
+import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -52,6 +58,8 @@ public final class DynamicModelImpl implements DynamicModel {
 
     private DynamicControllerImpl controller;
     private GraphModel graphModel;
+    private FilterController filterController;
+    private FilterModel filterModel;
     private TimeInterval visibleTimeInterval;
     private TimeIntervalIndex timeIntervalIndex;
     private AttributeColumn nodeColumn;
@@ -89,6 +97,12 @@ public final class DynamicModelImpl implements DynamicModel {
         graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
         if (graphModel == null || graphModel.getGraph() == null) {
             throw new NullPointerException("The graph model and its underlying graph cannot be nulls.");
+        }
+
+        filterController = Lookup.getDefault().lookup(FilterController.class);
+        filterModel = filterController.getModel(workspace);
+        if (filterModel == null) {
+            throw new NullPointerException("The filter model.");
         }
 
         //Index intervals
@@ -233,6 +247,35 @@ public final class DynamicModelImpl implements DynamicModel {
     public void setVisibleTimeInterval(TimeInterval visibleTimeInterval) {
         if (!Double.isNaN(visibleTimeInterval.getLow()) && !Double.isNaN(visibleTimeInterval.getHigh())) {
             this.visibleTimeInterval = visibleTimeInterval;
+
+            //Filters
+            Query dynamicQuery = null;
+            boolean selecting = false;
+            if (filterModel.getCurrentQuery() != null) {
+                Query query = filterModel.getCurrentQuery();
+                Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
+                if (dynamicQueries.length > 0) {
+                    dynamicQuery = dynamicQueries[0];
+                    selecting = filterModel.isSelecting();
+                }
+            }
+            if (dynamicQuery == null) {
+                //Create dynamic filter
+                DynamicRangeBuilder rangeBuilder = filterModel.getLibrary().getLookup().lookup(DynamicRangeBuilder.class);
+                FilterBuilder[] fb = rangeBuilder.getBuilders();
+                if (fb.length > 0) {
+                    DynamicRangeFilter filter = (DynamicRangeFilter) fb[0].getFilter();
+                    dynamicQuery = filterController.createQuery(filter);
+                }
+            }
+            if(dynamicQuery!=null) {
+                if(selecting) {
+                    filterController.selectVisible(dynamicQuery);
+                } else {
+                    filterController.filterVisible(dynamicQuery);
+                }
+            }
+
             // Trigger Event
             controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.VISIBLE_INTERVAL, this, visibleTimeInterval));
         }
