@@ -258,23 +258,30 @@ public final class DynamicModelImpl implements DynamicModel {
                     selecting = filterModel.isSelecting();
                 }
             }
-            if (dynamicQuery == null) {
-                //Create dynamic filter
-                DynamicRangeBuilder rangeBuilder = filterModel.getLibrary().getLookup().lookup(DynamicRangeBuilder.class);
-                FilterBuilder[] fb = rangeBuilder.getBuilders();
-                if (fb.length > 0) {
-                    DynamicRangeFilter filter = (DynamicRangeFilter) fb[0].getFilter();
-                    dynamicQuery = filterController.createQuery(filter);
-                    filterController.add(dynamicQuery);
+            if (Double.isInfinite(visibleTimeInterval.getLow()) && Double.isInfinite(visibleTimeInterval.getHigh())) {
+                if(dynamicQuery!=null) {
+                    filterController.remove(dynamicQuery);
+                }
+            } else {
+                if (dynamicQuery == null) {
+                    //Create dynamic filter
+                    DynamicRangeBuilder rangeBuilder = filterModel.getLibrary().getLookup().lookup(DynamicRangeBuilder.class);
+                    FilterBuilder[] fb = rangeBuilder.getBuilders();
+                    if (fb.length > 0) {
+                        DynamicRangeFilter filter = (DynamicRangeFilter) fb[0].getFilter();
+                        dynamicQuery = filterController.createQuery(filter);
+                        filterController.add(dynamicQuery);
+                    }
+                }
+                if (dynamicQuery != null) {
+                    if (selecting) {
+                        filterController.selectVisible(dynamicQuery);
+                    } else {
+                        filterController.filterVisible(dynamicQuery);
+                    }
                 }
             }
-            if (dynamicQuery != null) {
-                if (selecting) {
-                    filterController.selectVisible(dynamicQuery);
-                } else {
-                    filterController.filterVisible(dynamicQuery);
-                }
-            }
+
 
             // Trigger Event
             controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.VISIBLE_INTERVAL, this, visibleTimeInterval));
