@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.filters.plugin.partition;
 
 import java.util.ArrayList;
@@ -131,6 +131,9 @@ public class PartitionBuilder implements CategoryBuilder {
                 return ui.getPanel((PartitionFilter) filter);
             }
             return null;
+        }
+
+        public void destroy(Filter filter) {
         }
     }
 

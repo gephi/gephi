@@ -132,6 +132,10 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             panel.add(button);
             return panel;
         }
+
+        public void destroy(Filter filter) {
+            System.out.println("filter destroyed");
+        }
     }
 
     public static class DynamicRangeFilter implements NodeFilter, EdgeFilter {

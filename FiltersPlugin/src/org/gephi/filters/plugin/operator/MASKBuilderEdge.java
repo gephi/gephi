@@ -74,6 +74,9 @@ public class MASKBuilderEdge implements FilterBuilder {
         return null;
     }
 
+    public void destroy(Filter filter) {
+    }
+
     public static class MaskEdgeOperator implements Operator {
 
         public enum EdgesOptions {

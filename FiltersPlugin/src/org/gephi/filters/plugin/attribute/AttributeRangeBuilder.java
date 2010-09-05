@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.filters.plugin.attribute;
 
 import java.util.ArrayList;
@@ -123,6 +123,9 @@ public class AttributeRangeBuilder implements CategoryBuilder {
                 return ui.getPanel((AttributeRangeFilter) filter);
             }
             return null;
+        }
+
+        public void destroy(Filter filter) {
         }
     }
 
@@ -278,4 +281,3 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
     }
 }
-
