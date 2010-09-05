@@ -229,7 +229,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             switch (event.getEventType()) {
                 case VISIBLE_INTERVAL:
                     TimeInterval interval = (TimeInterval) event.getData();
-                    setRange(new Range(interval.getLow(), interval.getHigh()));
+                    filterProperties[0].setValue(new Range(interval.getLow(), interval.getHigh()));
                     break;
             }
         }
