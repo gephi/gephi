@@ -44,7 +44,7 @@ public class DynamicIndex {
             if (existingInterval.getValue().intValue() == 1) {
                 intervalTree.delete(existingInterval);
             } else {
-                Integer counter = new Integer(1 - existingInterval.getValue());
+                Integer counter = new Integer(existingInterval.getValue() - 1);
                 intervalTree.delete(existingInterval);
                 existingInterval = new Interval<Integer>(existingInterval.getLow(), existingInterval.getHigh(), existingInterval.isLowExcluded(), existingInterval.isHighExcluded(), counter);
                 intervalTree.insert(existingInterval);

@@ -7,6 +7,7 @@ package org.gephi.dynamic;
 import java.util.List;
 import org.gephi.data.attributes.type.Interval;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -30,6 +31,11 @@ public class DynamicModeltest {
         dynamicIndex.add(interval3);
         dynamicIndex.add(interval4);
         dynamicIndex.add(interval5);
+
+        List<Interval<Integer>> intervals = dynamicIndex.getIntervals();
+        assertEquals(3, intervals.size());
+
+        dynamicIndex.remove(interval1);
 
         printIntervals(dynamicIndex.getIntervals());
     }
