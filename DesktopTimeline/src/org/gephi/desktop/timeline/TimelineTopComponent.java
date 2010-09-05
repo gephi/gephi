@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
+import javax.swing.plaf.metal.MetalBorders.ToolBarBorder;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.spi.TimelineDrawer;
 import org.gephi.timeline.api.TimelineAnimatorListener;
@@ -55,7 +56,6 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
     private JPanel drawerPanel;
     private TimelineAnimatorImpl animator;
 
-
     public TimelineTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(TimelineTopComponent.class, "CTL_TimelineTopComponent"));
@@ -67,6 +67,8 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         TimelineDrawer drawer = Lookup.getDefault().lookup(TimelineDrawer.class);
         drawerPanel = (JPanel) drawer;
         timelinePanel.add(drawerPanel);
+
+        drawerPanel.setEnabled(false);
 
         animator = new TimelineAnimatorImpl();
         animator.addListener(this);
@@ -83,23 +85,21 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
                         refreshModel(model);
                         break;
                     case MIN_CHANGED:
+                        // TODO update the min
                         break;
                     case MAX_CHANGED:
+                        // TODO update the max
                         break;
                     case VISIBLE_INTERVAL:
+
                         break;
                 }
             }
         });
 
-        //Settings
-        settingsButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                //
-            }
-        });
-        settingsButton.setVisible(false);
+        //enableButton.setVisible(true);
+
     }
 
     /** This method is called from within the constructor to
@@ -111,7 +111,7 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
     private void initComponents() {
 
         timelineToolbar = new javax.swing.JToolBar();
-        settingsButton = new javax.swing.JButton();
+        enableButton = new javax.swing.JButton();
         timelinePanel = new javax.swing.JPanel();
 
         setMaximumSize(new java.awt.Dimension(2147483647, 27));
@@ -125,20 +125,32 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         timelineToolbar.setRollover(true);
         timelineToolbar.setMaximumSize(new java.awt.Dimension(0, 32767));
 
-        org.openide.awt.Mnemonics.setLocalizedText(settingsButton, org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settingsButton.text")); // NOI18N
-        settingsButton.setFocusable(false);
-        settingsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        settingsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        timelineToolbar.add(settingsButton);
+        org.openide.awt.Mnemonics.setLocalizedText(enableButton, org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.enableButton.text")); // NOI18N
+        enableButton.setFocusable(false);
+        enableButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        enableButton.setSelected(true);
+        enableButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        enableButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableButtonActionPerformed(evt);
+            }
+        });
+        timelineToolbar.add(enableButton);
 
         add(timelineToolbar);
 
+        timelinePanel.setEnabled(false);
         timelinePanel.setMinimumSize(new java.awt.Dimension(300, 28));
         timelinePanel.setLayout(new java.awt.BorderLayout());
         add(timelinePanel);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void enableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableButtonActionPerformed
+
+        setActivated(!drawerPanel.isEnabled());
+    }//GEN-LAST:event_enableButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton settingsButton;
+    private javax.swing.JButton enableButton;
     private javax.swing.JPanel timelinePanel;
     private javax.swing.JToolBar timelineToolbar;
     // End of variables declaration//GEN-END:variables
@@ -216,26 +228,29 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
     private void refreshModel(TimelineModel model) {
         if (model == null) {
-            refreshEnable(false);
+            setEnabled(false);
+            setActivated(false);
             return;
         }
+        setEnabled(true);
+        setActivated(false); // auto-enable the timeline if a model is loaded
         ((TimelineDrawer) drawerPanel).setModel(model);
-        refreshEnable(true);
     }
 
-    private void refreshEnable(boolean enable) {
-        if (!((JPanel) drawerPanel).isEnabled()) {
-            ((JPanel) drawerPanel).setEnabled(enable);
-        }
-        if (!timelinePanel.isEnabled()) {
+
+    public void setActivated(boolean activated) {
+        drawerPanel.setEnabled(activated);
+        timelinePanel.setEnabled(activated);
+       timelineToolbar.setEnabled(activated);
+        enableButton.setSelected(activated);
+    }
+
+    @Override
+    public void setEnabled(boolean enable) {
+            drawerPanel.setEnabled(enable);
             timelinePanel.setEnabled(enable);
-        }
-        if (!timelineToolbar.isEnabled()) {
             timelineToolbar.setEnabled(enable);
-        }
-        if (!settingsButton.isEnabled()) {
-            settingsButton.setEnabled(enable);
-        }
+            enableButton.setEnabled(enable);
     }
 
     public void timelineAnimatorChanged(ChangeEvent event) {
