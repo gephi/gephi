@@ -42,7 +42,7 @@ public interface DynamicModel {
      * The way the time is represented, either a simple real value (DOUBLE) or
      * a date.
      */
-    public enum TimeFormat { DATE, DOUBLE};
+    public enum TimeFormat { DATE, DOUBLE };
 
     /**
      * Builds a new {@code DynamicGraph} from the given {@code Graph} instance.
