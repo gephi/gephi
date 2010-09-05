@@ -33,6 +33,8 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.dynamic.api.DynamicModelEvent;
+import org.gephi.dynamic.api.DynamicModelListener;
 import org.gephi.filters.api.Range;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
@@ -134,11 +136,11 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         }
 
         public void destroy(Filter filter) {
-            System.out.println("filter destroyed");
+            ((DynamicRangeFilter) filter).destroy();
         }
     }
 
-    public static class DynamicRangeFilter implements NodeFilter, EdgeFilter {
+    public static class DynamicRangeFilter implements NodeFilter, EdgeFilter, DynamicModelListener {
 
         private AttributeColumn nodeColumn;
         private AttributeColumn edgeColumn;
@@ -161,6 +163,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             timelineController.setMin(min);
             timelineController.setMax(max);
             visibleInterval = dynamicModel.getVisibleInterval();
+            dynamicController.addModelListener(this);
         }
 
         public boolean init(Graph graph) {
@@ -222,6 +225,15 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             return filterProperties;
         }
 
+        public void dynamicModelChanged(DynamicModelEvent event) {
+            switch (event.getEventType()) {
+                case VISIBLE_INTERVAL:
+                    TimeInterval interval = (TimeInterval) event.getData();
+                    setRange(new Range(interval.getLow(), interval.getHigh()));
+                    break;
+            }
+        }
+
         public FilterProperty getRangeProperty() {
             return getProperties()[0];
         }
@@ -240,6 +252,10 @@ public class DynamicRangeBuilder implements CategoryBuilder {
 
         public void setRange(Range range) {
             dynamicController.setVisibleInterval(range.getLowerDouble(), range.getUpperDouble());
+        }
+
+        public void destroy() {
+            dynamicController.removeModelListener(this);
         }
     }
 }
