@@ -54,7 +54,7 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
     private TimelineModel model;
     private JPanel drawerPanel;
     private TimelineAnimatorImpl animator;
-    private TimelineController timelineController;
+
 
     public TimelineTopComponent() {
         initComponents();
@@ -71,8 +71,8 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         animator = new TimelineAnimatorImpl();
         animator.addListener(this);
 
-        timelineController = Lookup.getDefault().lookup(TimelineController.class);
-        model = timelineController.getModel();
+        TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
+        model = Lookup.getDefault().lookup(TimelineController.class).getModel();
         refreshModel(model);
         timelineController.addListener(new TimelineModelListener() {
 
@@ -215,18 +215,12 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
     }
 
     private void refreshModel(TimelineModel model) {
-
         if (model == null) {
             refreshEnable(false);
             return;
         }
-
         ((TimelineDrawer) drawerPanel).setModel(model);
-
         refreshEnable(true);
-
-        // repaint(); // drawerPanel will call the model itself
-        // TODO repaint ?
     }
 
     private void refreshEnable(boolean enable) {
