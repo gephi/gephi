@@ -251,11 +251,18 @@ public final class DynamicModelImpl implements DynamicModel {
             Query dynamicQuery = null;
             boolean selecting = false;
             if (filterModel.getCurrentQuery() != null) {
+                //Look if current query is dynamic - filtering must be active
                 Query query = filterModel.getCurrentQuery();
                 Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
                 if (dynamicQueries.length > 0) {
                     dynamicQuery = dynamicQueries[0];
                     selecting = filterModel.isSelecting();
+                }
+            } else if (filterModel.getQueries().length == 1) {
+                //Look if a dynamic query alone exists
+                Query query = filterModel.getQueries()[0];
+                if (query.getChildren().length == 0 && query.getQueries(DynamicRangeFilter.class).length == 1) {
+                    dynamicQuery = query;
                 }
             }
             if (Double.isInfinite(visibleTimeInterval.getLow()) && Double.isInfinite(visibleTimeInterval.getHigh())) {

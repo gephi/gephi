@@ -163,10 +163,10 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             timelineController.setMin(min);
             timelineController.setMax(max);
             visibleInterval = dynamicModel.getVisibleInterval();
-            dynamicController.addModelListener(this);
         }
 
         public boolean init(Graph graph) {
+            dynamicController.addModelListener(this);
             visibleInterval = dynamicModel.getVisibleInterval();
             min = Double.POSITIVE_INFINITY;
             max = Double.NEGATIVE_INFINITY;
@@ -229,7 +229,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             switch (event.getEventType()) {
                 case VISIBLE_INTERVAL:
                     TimeInterval interval = (TimeInterval) event.getData();
-                    filterProperties[0].setValue(new Range(interval.getLow(), interval.getHigh()));
+                    getProperties()[0].setValue(new Range(interval.getLow(), interval.getHigh()));
                     break;
             }
         }
