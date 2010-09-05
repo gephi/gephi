@@ -29,6 +29,7 @@ import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.spi.TimelineDrawer;
 import org.gephi.timeline.api.TimelineAnimatorListener;
 import org.gephi.timeline.api.TimelineController;
+import org.gephi.timeline.api.TimelineModelEvent;
 import org.gephi.timeline.api.TimelineModelListener;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -75,12 +76,19 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         refreshModel(model);
         timelineController.addListener(new TimelineModelListener() {
 
-            public void timelineModelChanged(ChangeEvent event) {
-                TimelineModel m = timelineController.getModel();
-                if (m != model) {
-                    model = m;                
+            public void timelineModelChanged(TimelineModelEvent event) {
+                switch (event.getEventType()) {
+                    case INIT:
+                        model = event.getSource();
+                        refreshModel(model);
+                        break;
+                    case MIN_CHANGED:
+                        break;
+                    case MAX_CHANGED:
+                        break;
+                    case VISIBLE_INTERVAL:
+                        break;
                 }
-                refreshModel(m);
             }
         });
 

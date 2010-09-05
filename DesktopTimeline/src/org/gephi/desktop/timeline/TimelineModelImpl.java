@@ -27,6 +27,7 @@ import org.gephi.dynamic.api.DynamicModelListener;
 import org.gephi.filters.api.Range;
 
 import org.gephi.timeline.api.TimelineModel;
+import org.gephi.timeline.api.TimelineModelEvent;
 import org.openide.util.Lookup;
 
 /**
@@ -36,7 +37,6 @@ import org.openide.util.Lookup;
 public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
 
     //Variable
-    private boolean enabled = false;
     private double fromFloat = 0.0f;
     private double toFloat = 1.0f;
     private double fromValue = 0.0f;
@@ -56,9 +56,8 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
 
     public void setup(DynamicModel dynamicModel) {
         this.dynamicModel = dynamicModel;
-        enabled = dynamicModel.isDynamicGraph();
         dynamicController.addModelListener(this);
-        System.out.println("TimelineModelImpl setup: "+enabled);
+        fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.INIT, this, this));
     }
 
     public void unsetup() {
@@ -72,13 +71,19 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
             switch (event.getEventType()) {
                 case IS_DYNAMIC:
                     Boolean isDynamic = (Boolean) event.getData();
-                    if (isDynamic.booleanValue() != enabled) {
-                        this.enabled = isDynamic.booleanValue();
-                        controller.setDynamicEnabled(enabled);
-                    }
+                    
                     break;
                 case VISIBLE_INTERVAL:
                     System.out.println("get back visible interval " + event.getData());
+                    fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.VISIBLE_INTERVAL, this, event.getData()));
+                    break;
+                case MIN_CHANGED:
+                    setMinValue((Double)event.getData());
+                    fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MIN_CHANGED, this, event.getData()));
+                    break;
+                case MAX_CHANGED:
+                    setMaxValue((Double)event.getData());
+                    fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MAX_CHANGED, this, event.getData()));
                     break;
             }
         }
@@ -88,10 +93,6 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
         if (dynamicModel != null) {
             dynamicController.setVisibleInterval(range.getLowerDouble(), range.getUpperDouble());
         }
-    }
-
-    public boolean isEnabled() {
-        return enabled;
     }
 
     // Not used for the moment (will be used to generate charts)
@@ -241,5 +242,9 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
 
     public Class getUnit() {
         return unit;
+    }
+
+    private void fireTimelineModelEvent(TimelineModelEvent event) {
+        controller.fireTimelineModelEvent(event);
     }
 }

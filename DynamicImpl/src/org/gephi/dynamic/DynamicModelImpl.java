@@ -322,6 +322,8 @@ public final class DynamicModelImpl implements DynamicModel {
 
         public void add(TimeInterval interval) {
             boolean newDynamic = false;
+            double min = getMin();
+            double max = getMax();
             if (lowMap.isEmpty() && highMap.isEmpty()) {
                 newDynamic = true;
             }
@@ -347,10 +349,21 @@ public final class DynamicModelImpl implements DynamicModel {
             }
             if (newDynamic) {
                 setDynamic(true);
+            } else {
+                double newMin = getMin();
+                double newMax = getMax();
+                if (newMin != min) {
+                    setNewMin(min);
+                }
+                if (newMax != max) {
+                    setNewMax(max);
+                }
             }
         }
 
         public void remove(TimeInterval interval) {
+            double min = getMin();
+            double max = getMax();
             Double low = interval.getLow();
             Double high = interval.getHigh();
             if (low != Double.NEGATIVE_INFINITY) {
@@ -382,6 +395,15 @@ public final class DynamicModelImpl implements DynamicModel {
 
             if (lowMap.isEmpty() && highMap.isEmpty()) {
                 setDynamic(false);
+            } else {
+                double newMin = getMin();
+                double newMax = getMax();
+                if (newMin != min) {
+                    setNewMin(min);
+                }
+                if (newMax != max) {
+                    setNewMax(max);
+                }
             }
         }
 
@@ -416,6 +438,14 @@ public final class DynamicModelImpl implements DynamicModel {
 
         private void setDynamic(boolean dynamic) {
             controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.IS_DYNAMIC, DynamicModelImpl.this, dynamic));
+        }
+
+        private void setNewMin(double min) {
+            controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MIN_CHANGED, DynamicModelImpl.this, min));
+        }
+
+        private void setNewMax(double max) {
+            controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MAX_CHANGED, DynamicModelImpl.this, max));
         }
     }
 }

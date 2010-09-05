@@ -59,8 +59,7 @@ public class MinimalDrawer extends JPanel
         implements TimelineDrawer,
         MouseListener,
         MouseMotionListener,
-        TimelineAnimatorListener,
-        TimelineModelListener {
+        TimelineAnimatorListener {
 
     private static final long serialVersionUID = 1L;
     private MinimalDrawerSettings settings = new MinimalDrawerSettings();
@@ -647,13 +646,6 @@ public class MinimalDrawer extends JPanel
 
     public void timelineAnimatorChanged(ChangeEvent event) {
         repaint();
-    }
-
-    public void timelineModelChanged(ChangeEvent event) {
-
-        if (event != null && event.getSource() != null) {
-            repaint();
-        }
     }
 
     public void mouseReleased(MouseEvent evt) {
