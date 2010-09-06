@@ -21,7 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.desktop.hierarchy;
 
 import java.awt.Cursor;
+import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -97,6 +99,27 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
             }
         });
 
+        metaWeightInfoLabel.addMouseListener(new MouseAdapter() {
+
+            RichTooltip richTooltip;
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                String description = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.weightinfo.description");
+                String title = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.weightinfo.title");
+                richTooltip = new RichTooltip(title, description);
+                richTooltip.showTooltip(metaWeightInfoLabel);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (richTooltip != null) {
+                    richTooltip.hideTooltip();
+                    richTooltip = null;
+                }
+            }
+        });
+
         ActionListener radioListener = new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -141,21 +164,27 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
     }
 
     private void initLevelsLinks(HierarchicalGraph graph) {
-        int height = graph.getHeight();
-        levelViewPanel.setLayout(new GridLayout(height + 2, 1));
+
         levelViewPanel.removeAll();
         String levelStr = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.linkLevel");
         String nodesStr = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.linkLevel.nodes");
         String leavesStr = NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.linkLevel.leaves");
 
-        //Level links    
+        int[] levelSize;
+        graph.readLock();
+        int height = graph.getHeight();
+        levelSize = new int[height + 1];
         for (int i = 0; i < height + 1; i++) {
-            graph.readLock();
-            int levelSize = graph.getLevelSize(i);
-            graph.readUnlock();
+            levelSize[i] = graph.getLevelSize(i);
+        }
+        graph.readUnlock();
+
+        //Level links    
+        for (int i = 0; i < levelSize.length; i++) {
+
             JXHyperlink link = new JXHyperlink();
             link.setClickedColor(new java.awt.Color(0, 51, 255));
-            link.setText(levelStr + " " + i + " (" + levelSize + " " + nodesStr + ")");
+            link.setText(levelStr + " " + i + " (" + levelSize[i] + " " + nodesStr + ")");
             link.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
             final int lvl = i;
             link.addActionListener(new ActionListener() {
@@ -166,7 +195,8 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                     graph.resetViewToLevel(lvl);
                 }
             });
-            levelViewPanel.add(link);
+            GridBagConstraints gdc = new GridBagConstraints(0, i, 1, 1, 1, 0, GridBagConstraints.PAGE_START, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0);
+            levelViewPanel.add(link, gdc);
         }
 
         //Leaves
@@ -182,7 +212,8 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                 graph.resetViewToLeaves();
             }
         });
-        levelViewPanel.add(link);
+        GridBagConstraints gdc = new GridBagConstraints(0, height + 1, 1, 1, 1, 1, GridBagConstraints.PAGE_START, GridBagConstraints.HORIZONTAL, new Insets(0, 4, 0, 0), 0, 0);
+        levelViewPanel.add(link, gdc);
     }
 
     /** This method is called from within the constructor to
@@ -208,8 +239,10 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         sumRadio = new javax.swing.JRadioButton();
         avgRadio = new javax.swing.JRadioButton();
         jLabel2 = new javax.swing.JLabel();
+        metaWeightInfoLabel = new javax.swing.JLabel();
         labelView = new javax.swing.JLabel();
         levelViewPanel = new javax.swing.JPanel();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setPreferredSize(new java.awt.Dimension(214, 300));
 
@@ -221,15 +254,16 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         labelHeight.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         labelHeight.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.labelHeight.text")); // NOI18N
 
-        heightLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
+        heightLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         heightLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         heightLabel.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.heightLabel.text")); // NOI18N
+        heightLabel.setToolTipText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.heightLabel.toolTipText")); // NOI18N
 
         settingsPanel.setLayout(new java.awt.GridBagLayout());
 
         labelAuto.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.labelAuto.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -238,9 +272,10 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
 
         metaEdgeInfoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/hierarchy/resources/information-small.png"))); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
         settingsPanel.add(metaEdgeInfoLabel, gridBagConstraints);
 
         autoMetaEdgeCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -252,8 +287,9 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         settingsPanel.add(autoMetaEdgeCheckbox, gridBagConstraints);
 
         labelWeight.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.labelWeight.text")); // NOI18N
+        labelWeight.setToolTipText(""); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -269,7 +305,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 0);
         settingsPanel.add(sumRadio, gridBagConstraints);
 
         weightGroup.add(avgRadio);
@@ -280,7 +316,7 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 0);
         settingsPanel.add(avgRadio, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -290,10 +326,17 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         settingsPanel.add(jLabel2, gridBagConstraints);
 
+        metaWeightInfoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/hierarchy/resources/information-small.png"))); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 5);
+        settingsPanel.add(metaWeightInfoLabel, gridBagConstraints);
+
         labelView.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         labelView.setText(org.openide.util.NbBundle.getMessage(HierarchyControlPanel.class, "HierarchyControlPanel.labelView.text")); // NOI18N
 
-        levelViewPanel.setLayout(new java.awt.GridLayout());
+        levelViewPanel.setLayout(new java.awt.GridBagLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -307,13 +350,20 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 198, Short.MAX_VALUE)
+                    .addComponent(settingsPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(labelHeight)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(heightLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(labelView, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addComponent(heightLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labelView)
+                .addContainerGap(179, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(levelViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
@@ -332,9 +382,11 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
                 .addGap(9, 9, 9)
                 .addComponent(settingsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labelView)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(levelViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))
+                .addComponent(levelViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -342,12 +394,14 @@ public class HierarchyControlPanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton avgRadio;
     private javax.swing.JLabel heightLabel;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel labelAuto;
     private javax.swing.JLabel labelHeight;
     private javax.swing.JLabel labelView;
     private javax.swing.JLabel labelWeight;
     private javax.swing.JPanel levelViewPanel;
     private javax.swing.JLabel metaEdgeInfoLabel;
+    private javax.swing.JLabel metaWeightInfoLabel;
     private javax.swing.JSeparator separator1;
     private javax.swing.JPanel settingsPanel;
     private javax.swing.JLabel showTreeLabel;
