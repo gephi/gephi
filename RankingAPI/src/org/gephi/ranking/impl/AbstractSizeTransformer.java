@@ -64,6 +64,6 @@ public abstract class AbstractSizeTransformer<Target> extends AbstractTransforme
         if (interpolator != null) {
             normalizedValue = interpolator.interpolate(normalizedValue);
         }
-        return normalizedValue * maxSize + minSize;
+        return normalizedValue * (maxSize - minSize) + minSize;
     }
 }
