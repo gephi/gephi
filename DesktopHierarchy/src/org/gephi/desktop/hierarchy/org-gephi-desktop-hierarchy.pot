@@ -71,6 +71,15 @@ msgstr ""
 "Meta edges are edges between a group and a node or between two groups. They "
 "represents proper edges between groups' descendants."
 
+msgid "HierarchyControlPanel.weightinfo.title"
+msgstr "Meta-edges weight"
+
+msgid "HierarchyControlPanel.weightinfo.description"
+msgstr ""
+"Meta-edges are created from the aggregation of regular edges, the weight  of "
+"meta edges can be the sum or the average of the edges' weight. Note the "
+"weight is not changed on existing edges if you change the parameter."
+
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Visualization addon for hierarchy navigation"
 
@@ -91,3 +100,8 @@ msgstr "Sum of edges weight"
 
 msgid "HierarchyControlPanel.avgRadio.toolTipText"
 msgstr "Average of edge weight"
+
+msgid "HierarchyControlPanel.heightLabel.toolTipText"
+msgstr ""
+"The height of the hierarchy. Values greater than 'one' means the graph is "
+"hierarchical."

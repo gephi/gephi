@@ -166,6 +166,9 @@ msgstr "Reset colors"
 msgid "ActionsToolbar.resetSizes"
 msgstr "Reset size"
 
+msgid "ActionsToolbar.resetSizes.dialog"
+msgstr "Set size"
+
 msgid "ActionsToolbar.resetLabelColors"
 msgstr "Reset label color"
 

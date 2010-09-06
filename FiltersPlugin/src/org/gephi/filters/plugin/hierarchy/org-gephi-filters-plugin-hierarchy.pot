@@ -17,3 +17,11 @@ msgstr ""
 
 msgid "LevelBuilder.name"
 msgstr "Level"
+
+msgid "FlattenBuilder.name"
+msgstr "Flatten"
+
+msgid "FlattenBuilder.description"
+msgstr ""
+"Keep only the current view in the hierarchy and transform meta edges in "
+"normal edges. The graph is no more hierarchic."
