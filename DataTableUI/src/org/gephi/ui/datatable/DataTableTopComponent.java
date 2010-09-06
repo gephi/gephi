@@ -151,7 +151,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             }
         });
 
-        initComponents();       
+        initComponents();
 
         columnManipulatorsPanel.setLayout(new WrapLayout(WrapLayout.CENTER, 25, 20));
         setName(NbBundle.getMessage(DataTableTopComponent.class, "CTL_DataTableTopComponent"));
@@ -287,7 +287,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     private void refreshOnce(boolean refreshTableOnly) {
-        if (refreshOnceHelperThread == null || !refreshOnceHelperThread.isAlive()) {
+        if (refreshOnceHelperThread == null || !refreshOnceHelperThread.isAlive() || (refreshOnceHelperThread.refreshTableOnly && !refreshTableOnly)) {
             refreshOnceHelperThread = new RefreshOnceHelperThread(refreshTableOnly);
             refreshOnceHelperThread.start();
         } else {
@@ -553,7 +553,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         this.showEdgesNodesLabels = showEdgesNodesLabels;
         edgeTable.setShowEdgesNodesLabels(showEdgesNodesLabels);
         refreshCurrentTable();
-    }    
+    }
 
     public void exportCurrentTable(ExportMode exportMode) {
         JTable table;
@@ -1095,13 +1095,12 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         DialogDescriptor dd = new DialogDescriptor(new ConfigurationPanel(this), NbBundle.getMessage(DataTableTopComponent.class, "ConfigurationPanel.title"));
         dd.setOptions(new Object[]{DialogDescriptor.OK_OPTION});
         DialogDisplayer.getDefault().notify(dd);
-        
+
         //Save preferences:
         NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_ONLY_VISIBLE, visibleOnly);
         NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_SPARKLINES, useSparklines);
         NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_EDGES_NODES_LABELS, showEdgesNodesLabels);
     }//GEN-LAST:event_configurationButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane attributeColumnsScrollPane;
     private javax.swing.JPanel bannerPanel;

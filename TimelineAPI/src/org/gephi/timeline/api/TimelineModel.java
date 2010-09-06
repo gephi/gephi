@@ -34,8 +34,6 @@ public interface TimelineModel {
 
     public void unsetup();
 
-    public boolean isEnabled();
-
     /**
      *
      * @return

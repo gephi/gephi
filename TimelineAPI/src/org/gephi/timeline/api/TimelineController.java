@@ -37,6 +37,10 @@ public interface TimelineController {
      */
     public TimelineModel getModel();
 
+    public void setMin(double min);
+
+    public void setMax(double max);
+
     /**
      *
      * @param listener

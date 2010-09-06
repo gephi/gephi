@@ -24,14 +24,12 @@ import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.spi.Category;
+import org.gephi.filters.spi.ComplexFilter;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
-import org.gephi.filters.spi.NodeFilter;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.graph.api.Node;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -39,15 +37,15 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-//@ServiceProvider(service = FilterBuilder.class)
-public class LevelBuilder implements FilterBuilder {
+@ServiceProvider(service = FilterBuilder.class)
+public class FlattenBuilder implements FilterBuilder {
 
     public Category getCategory() {
         return FilterLibrary.HIERARCHY;
     }
 
     public String getName() {
-        return NbBundle.getMessage(LevelBuilder.class, "LevelBuilder.name");
+        return NbBundle.getMessage(FlattenBuilder.class, "FlattenBuilder.name");
     }
 
     public Icon getIcon() {
@@ -55,68 +53,41 @@ public class LevelBuilder implements FilterBuilder {
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(FlattenBuilder.class, "FlattenBuilder.description");
     }
 
-    public LevelFilter getFilter() {
-        return new LevelFilter();
+    public FlattenFilter getFilter() {
+        return new FlattenFilter();
     }
 
     public JPanel getPanel(Filter filter) {
-        LevelUI ui = Lookup.getDefault().lookup(LevelUI.class);
-        if (ui != null) {
-            return ui.getPanel((LevelFilter) filter);
-        }
         return null;
     }
 
     public void destroy(Filter filter) {
     }
 
-    public static class LevelFilter implements NodeFilter {
-
-        private Integer level = 0;
-        private int height;
+    public static class FlattenFilter implements ComplexFilter {
 
         public boolean init(Graph graph) {
-            HierarchicalGraph hg = (HierarchicalGraph) graph;
-            height = hg.getHeight();
             return true;
         }
 
-        public boolean evaluate(Graph graph, Node node) {
-            HierarchicalGraph hg = (HierarchicalGraph) graph;
-            return hg.getLevel(node) == level.intValue();
+        public Graph filter(Graph graph) {
+            HierarchicalGraph hierarchicalGraph = (HierarchicalGraph) graph;
+            hierarchicalGraph.flatten();
+            return hierarchicalGraph;
         }
 
         public void finish() {
         }
 
-        public int getHeight() {
-            return height;
-        }
-
         public String getName() {
-            return NbBundle.getMessage(LevelBuilder.class, "LevelBuilder.name");
+            return NbBundle.getMessage(FlattenBuilder.class, "FlattenBuilder.name");
         }
 
         public FilterProperty[] getProperties() {
-            try {
-                return new FilterProperty[]{
-                            FilterProperty.createProperty(this, Integer.class, "level")
-                        };
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
             return new FilterProperty[0];
-        }
-
-        public Integer getLevel() {
-            return level;
-        }
-
-        public void setLevel(Integer level) {
-            this.level = level;
         }
     }
 }

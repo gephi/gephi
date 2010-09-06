@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.timeline.plugin.drawers.minimal;
+package org.gephi.desktop.timeline;
 
 import java.awt.Cursor;
 import java.awt.Graphics;
@@ -59,8 +59,7 @@ public class MinimalDrawer extends JPanel
         implements TimelineDrawer,
         MouseListener,
         MouseMotionListener,
-        TimelineAnimatorListener,
-        TimelineModelListener {
+        TimelineAnimatorListener {
 
     private static final long serialVersionUID = 1L;
     private MinimalDrawerSettings settings = new MinimalDrawerSettings();
@@ -108,6 +107,7 @@ public class MinimalDrawer extends JPanel
             }
         }
     };
+    private boolean mouseInside = false;
 
     public enum TimelineLevel {
 
@@ -359,7 +359,7 @@ public class MinimalDrawer extends JPanel
                 }
             } else {
                 str = new Double(v).toString();
-                strw = (int) (settings.tip.fontMetrics.getStringBounds(str, null)).getWidth() + 14;
+                strw = (int) (settings.tip.fontMetrics.getStringBounds(str, null)).getWidth() + 4;
             }
 
             int px = currentMousePositionX;
@@ -367,12 +367,14 @@ public class MinimalDrawer extends JPanel
                 px = width - strw;
             }
 
-            g2d.setPaint(settings.tip.backgroundColor);
-            g2d.fillRect(px, 1, strw, 18);
-            g2d.setPaint(settings.tip.fontColor);
-            g2d.drawRect(px, 1, strw, 18);
-            g2d.setColor(settings.tip.fontColor);
-            g2d.drawString(str, px + 2, 16);
+            if (mouseInside) {
+                g2d.setPaint(settings.tip.backgroundColor);
+                g2d.fillRect(px, 1, strw, 18);
+                g2d.setPaint(settings.tip.fontColor);
+                g2d.drawRect(px, 1, strw, 18);
+                g2d.setColor(settings.tip.fontColor);
+                g2d.drawString(str, px + 4, 16);
+            }
 
         }
     }
@@ -635,25 +637,20 @@ public class MinimalDrawer extends JPanel
         //throw new UnsupportedOperationException("Not supported yet.");
         latestMousePositionX = e.getX();
         currentMousePositionX = latestMousePositionX;
+        mouseInside = true;
     }
 
     public void mouseExited(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet.");
         if (currentState == TimelineState.IDLE) {
             highlightedComponent = HighlightedComponent.NONE;
-            repaint();
         }
+        mouseInside = false;
+        repaint();
     }
 
     public void timelineAnimatorChanged(ChangeEvent event) {
         repaint();
-    }
-
-    public void timelineModelChanged(ChangeEvent event) {
-
-        if (event != null && event.getSource() != null) {
-            repaint();
-        }
     }
 
     public void mouseReleased(MouseEvent evt) {

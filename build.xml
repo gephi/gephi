@@ -160,7 +160,8 @@
                 <include name="org-gephi-project-api.jar"/>
                 <include name="org-gephi-statistics-api.jar"/>
                 <include name="org-gephi-statistics-plugin.jar"/>
-                <include name="org-gephi-timeline.jar"/>
+                <include name="org-gephi-dynamic-api.jar"/>
+                <include name="org-gephi-dynamic.jar"/>
                 <include name="org-gephi-utils.jar"/>
                 <include name="org-gephi-utils-longtask.jar" />
                 <include name="org-gephi-ranking-api.jar"/>
@@ -176,12 +177,14 @@
                 <include name="core.jar"/><!-- Processing -->
                 <include name="iText*.jar"/>
                 <include name="jcommon*.jar"/>
+                <include name="commons*.jar"/>
                 <include name="jfreechart*.jar"/>
                 <include name="joda-time*.jar"/>
                 <include name="mysql-connector*.jar"/>
                 <include name="postgresql*.jar"/>
                 <include name="sqljdbc*.jar"/>
                 <include name="google-collect*.jar"/>
+                <include name="stax-utils.jar"/>
                 <include name="trove*.jar"/>
                 <include name="xml-apis-ext*.jar"/>
             </fileset>
@@ -210,15 +213,11 @@
             <sourcepath>
                 <pathelement path="Algorithms/src"/>
                 <pathelement path="AttributesAPI/src"/>
-                <pathelement path="AttributesImpl/src"/>
                 <pathelement path="PreviewExport/src"/>
                 <pathelement path="FiltersAPI/src"/>
-                <pathelement path="FiltersImpl/src"/>
                 <pathelement path="FiltersPlugin/src"/>
                 <pathelement path="GraphAPI/src"/>
-                <pathelement path="DHNSGraph/src"/>
                 <pathelement path="DBDrivers/src"/>
-                <pathelement path="CollectionUtils/src"/>
                 <pathelement path="ExportAPI/src"/>
                 <pathelement path="ExportPlugin/src"/>
                 <pathelement path="ImportAPI/src"/>
@@ -227,11 +226,10 @@
                 <pathelement path="LayoutAPI/src"/>
                 <pathelement path="LayoutPlugin/src"/>
                 <pathelement path="PreviewAPI/src"/>
-                <pathelement path="PreviewImpl/src"/>
                 <pathelement path="ProjectAPI/src"/>
                 <pathelement path="StatisticsAPI/src"/>
                 <pathelement path="StatisticsPlugin/src"/>
-                <pathelement path="TimelineAPI/src"/>
+                <pathelement path="DynamicAPI/src"/>
                 <pathelement path="Utils/src"/>
                 <pathelement path="LongTaskAPI/src"/>
                 <pathelement path="RankingAPI/src"/>

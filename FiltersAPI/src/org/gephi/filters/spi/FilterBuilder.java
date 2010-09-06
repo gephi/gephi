@@ -80,4 +80,9 @@ public interface FilterBuilder {
      * @return          the filter's settings panel
      */
     public JPanel getPanel(Filter filter);
+
+    /**
+     * Notification when the filter is destroyed, to perform clean-up tasks.
+     */
+    public void destroy(Filter filter);
 }

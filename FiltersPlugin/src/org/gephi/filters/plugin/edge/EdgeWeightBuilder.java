@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.filters.plugin.edge;
 
 import java.util.ArrayList;
@@ -76,6 +76,9 @@ public class EdgeWeightBuilder implements FilterBuilder {
             return ui.getPanel((EdgeWeightFilter) filter);
         }
         return null;
+    }
+
+    public void destroy(Filter filter) {
     }
 
     public static class EdgeWeightFilter implements RangeFilter, EdgeFilter {

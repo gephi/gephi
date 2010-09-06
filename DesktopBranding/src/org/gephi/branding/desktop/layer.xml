@@ -18,6 +18,8 @@
     <attr name="Menu\Window\org-netbeans-core-windows-actions-ResetWindowsAction.shadow\position" intvalue="2750"/>
     <folder name="Menu">
         <folder name="Edit">
+            <file name="Separator1.instance_hidden"/>
+            <file name="Separator2.instance_hidden"/>
             <file name="org-gephi-branding-desktop-actions-CleanWorkspace.instance">
                 <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-CleanWorkspace.instance"/>
                 <attr name="position" intvalue="2700"/>
@@ -34,10 +36,14 @@
                 <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-RenameWorkspace.instance"/>
                 <attr name="position" intvalue="2800"/>
             </file>
-            <file name="Separator2_1.instance" url="Separator2_1.instance">
-                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
-                <attr name="position" intvalue="2400"/>
-            </file>
+            <file name="org-openide-actions-CopyAction.shadow_hidden"/>
+            <file name="org-openide-actions-CutAction.shadow_hidden"/>
+            <file name="org-openide-actions-DeleteAction.shadow_hidden"/>
+            <file name="org-openide-actions-FindAction.shadow_hidden"/>
+            <file name="org-openide-actions-PasteAction.shadow_hidden"/>
+            <file name="org-openide-actions-RedoAction.shadow_hidden"/>
+            <file name="org-openide-actions-ReplaceAction.shadow_hidden"/>
+            <file name="org-openide-actions-UndoAction.shadow_hidden"/>
         </folder>
         <folder name="File">
             <file name="org-gephi-branding-desktop-actions-CloseProject.instance">

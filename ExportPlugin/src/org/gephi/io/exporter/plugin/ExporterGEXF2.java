@@ -191,6 +191,7 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
             if (exportColors || exportPosition || exportSize) {
                 xmlWriter.writeNamespace(VIZ, VIZ_NAMESPACE);
             }
+            xmlWriter.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
             xmlWriter.writeAttribute("xsi:schemaLocation", GEXF_NAMESPACE_LOCATION);
 
             if (exportDynamic) {

@@ -17,9 +17,11 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.filters;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.Category;
@@ -27,6 +29,8 @@ import org.gephi.filters.spi.CategoryBuilder;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterLibraryMask;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -39,6 +43,7 @@ public class FilterLibraryImpl implements FilterLibrary {
 
     private AbstractLookup lookup;
     private InstanceContent content;
+    private Map<Class<? extends Filter>, FilterBuilder> buildersMap;
 
     public FilterLibraryImpl() {
         content = new InstanceContent();
@@ -57,6 +62,28 @@ public class FilterLibraryImpl implements FilterLibrary {
         }
 
         content.add(new HierarchicalGraphMask());
+    }
+
+    private void buildBuildersMap() {
+        buildersMap = new HashMap<Class<? extends Filter>, FilterBuilder>();
+        for (FilterBuilder builder : lookup.lookupAll(FilterBuilder.class)) {
+            try {
+                Filter f = builder.getFilter();
+                buildersMap.put(f.getClass(), builder);
+                builder.destroy(f);
+            } catch (Exception e) {
+            }
+        }
+        for (CategoryBuilder catBuilder : Lookup.getDefault().lookupAll(CategoryBuilder.class)) {
+            for (FilterBuilder builder : catBuilder.getBuilders()) {
+                try {
+                    Filter f = builder.getFilter();
+                    buildersMap.put(f.getClass(), builder);
+                    builder.destroy(f);
+                } catch (Exception e) {
+                }
+            }
+        }
     }
 
     public Lookup getLookup() {
@@ -80,23 +107,15 @@ public class FilterLibraryImpl implements FilterLibrary {
     }
 
     public FilterBuilder getBuilder(Filter filter) {
-        for (FilterBuilder builder : lookup.lookupAll(FilterBuilder.class)) {
-            try {
-                if (builder.getFilter().getClass() == filter.getClass()) {
-                    return builder;
-                }
-            } catch (Exception e) {
-            }
+        if (buildersMap == null) {
+            buildBuildersMap();
         }
-        for (CategoryBuilder catBuilder : Lookup.getDefault().lookupAll(CategoryBuilder.class)) {
-            for (FilterBuilder builder : catBuilder.getBuilders()) {
-                try {
-                    if (builder.getFilter().getClass() == filter.getClass()) {
-                        return builder;
-                    }
-                } catch (Exception e) {
-                }
-            }
+        if (buildersMap.get(filter.getClass()) != null) {
+            return buildersMap.get(filter.getClass());
+        }
+        buildBuildersMap();
+        if (buildersMap.get(filter.getClass()) != null) {
+            return buildersMap.get(filter.getClass());
         }
         return null;
     }
@@ -112,7 +131,8 @@ public class FilterLibraryImpl implements FilterLibrary {
         }
 
         public boolean isValid() {
-            return true;
+            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+            return graphModel.isHierarchical();
         }
     }
 }

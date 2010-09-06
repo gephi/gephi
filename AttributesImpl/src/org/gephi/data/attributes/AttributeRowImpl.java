@@ -117,9 +117,13 @@ public class AttributeRowImpl implements AttributeRow {
     private void setValue(int index, AttributeValueImpl value) {
         updateColumns();
 
+        AttributeValueImpl oldValue = this.values[index];
+
         this.values[index] = value;
 
-        attributeTable.model.fireAttributeEvent(new ValueEvent(EventType.SET_VALUE, attributeTable, object, value));
+        if (!((oldValue == null && value == null) || (oldValue != null && oldValue.equals(value.getValue())))) {
+            attributeTable.model.fireAttributeEvent(new ValueEvent(EventType.SET_VALUE, attributeTable, object, value));
+        }
     }
 
     public Object getValue(AttributeColumn column) {

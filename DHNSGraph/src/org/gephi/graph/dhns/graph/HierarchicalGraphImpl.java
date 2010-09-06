@@ -428,4 +428,8 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     public void resetViewToTopNodes() {
         view.getStructureModifier().resetViewToTopNodes();
     }
+
+    public void flatten() {
+        view.getStructureModifier().flatten();
+    }
 }

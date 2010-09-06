@@ -74,6 +74,9 @@ public class MASKBuilderNode implements FilterBuilder {
         return null;
     }
 
+    public void destroy(Filter filter) {
+    }
+
     public static class MaskNodeOperator implements Operator {
 
         public enum NodesOptions {
@@ -110,7 +113,7 @@ public class MASKBuilderNode implements FilterBuilder {
                 throw new IllegalArgumentException("Filter accepts a single graph in parameter");
             }
 
-           
+
 
             return null;
         }
@@ -119,7 +122,7 @@ public class MASKBuilderNode implements FilterBuilder {
             if (filters.length > 1) {
                 throw new IllegalArgumentException("Filter accepts a single filter in parameter");
             }
-           
+
             return graph;
         }
 

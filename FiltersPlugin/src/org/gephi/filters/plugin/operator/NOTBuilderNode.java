@@ -66,6 +66,9 @@ public class NOTBuilderNode implements FilterBuilder {
         return null;
     }
 
+    public void destroy(Filter filter) {
+    }
+
     public static class NOTOperatorNode implements Operator {
 
         public int getInputCount() {
