@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -119,6 +119,13 @@ public class TreeStructure {
         incrementAncestorsSize(node);
     }
 
+    public void resetLevelSize(int firstLevel) {
+        tree.levelsSize = new int[1 + (firstLevel > 0 ? 1 : 0)];
+        if (firstLevel > 0) {
+            tree.levelsSize[1] = firstLevel;
+        }
+    }
+
     public void move(AbstractNode node, AbstractNode newParent) {
 
         AbstractNode sourceParent = node.parent;
@@ -175,6 +182,12 @@ public class TreeStructure {
     public void deleteDescendantAndSelf(AbstractNode node) {
         decrementAncestorSize(node, node.size + 1);
         deleteAtPre(node);
+    }
+
+    public void deleteOnlySelf(AbstractNode node) {
+        int pre = node.getPre();
+        AbstractNode n = tree.remove(pre);
+        n.removeFromView(viewId);
     }
 
     public void incrementAncestorsSize(AbstractNode node) {

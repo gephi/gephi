@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.api;
 
 /**
@@ -284,6 +284,12 @@ public interface HierarchicalGraph extends Graph {
      */
     public void ungroupNodes(Node nodeGroup);
 
+    /**
+     * Flatten the hierarchy by keeping only nodes in the view and by transforming meta edges into edges. All nodes not in the
+     * view are removed from the graph. New edges are created from meta edges, with same attributes and weight.
+     */
+    public void flatten();
+
     public EdgeIterable getHierarchyEdges();
 
     /**
@@ -387,7 +393,6 @@ public interface HierarchicalGraph extends Graph {
      * the graph
      */
     public EdgeIterable getMetaEdges(Node nodeGroup);
-
 
     /**
      * Returns the number of <code>node</code>'s incident meta edges.

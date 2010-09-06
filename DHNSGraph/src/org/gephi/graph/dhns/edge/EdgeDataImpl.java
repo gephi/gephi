@@ -17,9 +17,10 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.edge;
 
+import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.EdgeData;
@@ -210,6 +211,18 @@ public class EdgeDataImpl implements EdgeData {
     public void setWeight(float weight) {
         if (attributes != null) {
             attributes.setValue(PropertiesColumn.EDGE_WEIGHT.getIndex(), weight);
+        }
+    }
+
+    public void moveFrom(EdgeData edgeData) {
+        this.r = edgeData.r();
+        this.g = edgeData.g();
+        this.b = edgeData.b();
+        this.alpha = edgeData.alpha();
+        this.label = edgeData.getLabel();
+        this.textData = edgeData.getTextData();
+        if (attributes != null) {
+            ((AttributeRow) attributes).setValues((AttributeRow) edgeData.getAttributes());
         }
     }
 }

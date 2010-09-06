@@ -17,9 +17,11 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
@@ -271,6 +273,70 @@ public class StructureModifier {
         for (int i = 0; i < ungroupedNodes.length; i++) {
             dhns.getEventManager().fireEvent(new NodeEvent(EventType.MOVE_NODES, ungroupedNodes[i], view));
         }
+    }
+
+    public void flatten() {
+        dhns.getWriteLock().lock();
+        if (treeStructure.getTreeHeight() > 1) {
+            TreeIterator nodesIterator = new TreeIterator(treeStructure, true, Tautology.instance);
+            for (; nodesIterator.hasNext();) {
+                AbstractNode node = nodesIterator.next();
+                AbstractEdge[] newEdges = edgeProcessor.flattenNode(node);
+                if (newEdges != null) {
+                    for (int i = 0; i < newEdges.length; i++) {
+                        AbstractEdge e = newEdges[i];
+                        if (e != null) {
+                            dhns.getEventManager().fireEvent(new EdgeEvent(EventType.ADD_EDGES, e, view));
+                        }
+                    }
+                }
+            }
+
+            List<AbstractNode> nodesToDelete = new ArrayList<AbstractNode>();
+            List<AbstractNode> nodesToKeep = new ArrayList<AbstractNode>();
+
+            for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
+                AbstractNode node = itr.next();
+                if (!node.isEnabled()) {
+                    nodesToDelete.add(node);
+                } else {
+                    nodesToKeep.add(node);
+                }
+            }
+
+            for (AbstractNode node : nodesToDelete) {
+                //Del edges
+                AbstractEdge[] deletedEdges = edgeProcessor.clearEdges(node);
+                if (deletedEdges != null) {
+                    for (int j = 0; j < deletedEdges.length; j++) {
+                        if (deletedEdges[j] != null) {
+                            dhns.getGraphStructure().removeFromDictionnary(deletedEdges[j]);
+                            dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, deletedEdges[j], view));
+                        }
+                    }
+                }
+                if (node.countInViews() == 1) {
+                    dhns.getGraphStructure().removeFromDictionnary(node);
+                }
+
+                treeStructure.deleteOnlySelf(node);
+                dhns.getEventManager().fireEvent(new NodeEvent(EventType.REMOVE_NODES, node, view));
+            }
+
+            for (AbstractNode node : nodesToKeep) {
+                node.size = 0;
+                node.parent = treeStructure.root;
+                node.level = 1;
+                node.getPost();
+            }
+            treeStructure.root.size = nodesToKeep.size();
+            treeStructure.root.getPost();
+            treeStructure.resetLevelSize(nodesToKeep.size());
+
+            graphVersion.incNodeAndEdgeVersion();
+        }
+        dhns.getWriteLock().unlock();
+        dhns.getEventManager().fireEvent(new GeneralEvent(EventType.META_EDGES_UPDATE, view));
     }
 
     //------------------------------------------

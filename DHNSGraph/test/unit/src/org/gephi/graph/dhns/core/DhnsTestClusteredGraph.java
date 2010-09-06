@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
 import java.util.ArrayList;
@@ -286,7 +286,7 @@ public class DhnsTestClusteredGraph {
             assertEquals(1, pn.level);
             assertSame(treeStructure.getRoot(), pn.parent);
         }
-        treeStructure.showTreeAsTable();
+        //treeStructure.showTreeAsTable();
         assertEquals(oldSize, graphGlobal.getNodeCount());
 
         try {
@@ -319,7 +319,7 @@ public class DhnsTestClusteredGraph {
             graph.addNode(newC, n);
         }
 
-        treeStructure.showTreeAsTable();
+        //treeStructure.showTreeAsTable();
 
         //Test getNodes()
         for (Node n : graph.getNodes()) {
@@ -808,7 +808,7 @@ public class DhnsTestClusteredGraph {
 
     @Test
     public void testEdgesAndMetaEdges() {
-        dhnsGlobal2.getGraphStructure().getMainView().getStructure().showTreeAsTable();
+        //dhnsGlobal2.getGraphStructure().getMainView().getStructure().showTreeAsTable();
         Edge[] metaedges = graphGlobal2Directed.getMetaEdges().toArray();
         int metaEdgesCount = metaedges.length;
         assertEquals(3, metaEdgesCount);
@@ -822,6 +822,60 @@ public class DhnsTestClusteredGraph {
         assertSame(nodeMap.get("Leaf 0"), uniqueEdge.getTarget());
         assertSame(nodeMap.get("Leaf 1"), uniqueEdge.getSource());
         assertEquals(5, graphGlobal2Directed.getEdgesAndMetaEdges().toArray().length);
+    }
+
+    @Test
+    public void testFlattenTopNodes() {
+        GraphViewImpl view = dhnsGlobal2.getGraphStructure().getMainView();
+        //view.getStructure().showTreeAsTable();
+
+        view.getStructureModifier().flatten();
+
+        assertEquals(0, graphGlobal2Directed.getHeight());
+
+        assertEquals(3, view.getEdgesCountTotal());
+        assertEquals(3, view.getEdgesCountEnabled());
+        assertEquals(1, view.getMutualEdgesEnabled());
+        assertEquals(1, view.getMutualEdgesTotal());
+        assertEquals(3, view.getNodesEnabled());
+
+        Node n1 = graphGlobal2Directed.getTopNodes().toArray()[0];
+        Node n4 = graphGlobal2Directed.getTopNodes().toArray()[1];
+        Node n7 = graphGlobal2Directed.getTopNodes().toArray()[2];
+
+        AbstractEdge edge14 = (AbstractEdge) graphGlobal.getEdge(n1, n4);
+        AbstractEdge edge47 = (AbstractEdge) graphGlobal.getEdge(n4, n7);
+        AbstractEdge edge74 = (AbstractEdge) graphGlobal.getEdge(n7, n4);
+        assertNotNull(edge14);
+        assertNotNull(edge47);
+        assertNotNull(edge74);
+
+        assertEquals(0, graphGlobal2Directed.getMetaEdges().toArray().length);
+        assertEquals(3, graphGlobal2Directed.getLevelSize(0));
+
+        //dhnsGlobal2.getGraphStructure().getMainView().getStructure().showTreeAsTable();
+    }
+
+    @Test
+    public void testFlattenLeaves() {
+        GraphViewImpl view = dhnsGlobal2.getGraphStructure().getMainView();
+        Node n1 = graphGlobal2Directed.getTopNodes().toArray()[0];
+        Node n4 = graphGlobal2Directed.getTopNodes().toArray()[1];
+        Node n7 = graphGlobal2Directed.getTopNodes().toArray()[2];
+
+        graphGlobal2Directed.expand(n1);
+        graphGlobal2Directed.expand(n4);
+        graphGlobal2Directed.expand(n7);
+
+        view.getStructure().showTreeAsTable();
+
+        view.getStructureModifier().flatten();
+
+        assertEquals(0, graphGlobal2Directed.getHeight());
+        assertEquals(6, graphGlobal2Directed.getLevelSize(0));
+        assertEquals(6, view.getNodesEnabled());
+
+        dhnsGlobal2.getGraphStructure().getMainView().getStructure().showTreeAsTable();
     }
 
     @Test
@@ -935,7 +989,7 @@ public class DhnsTestClusteredGraph {
         graphGlobal2Directed.ungroupNodes(n1);
         assertEquals(0, view.getMutualEdgesEnabled());
         assertEquals(1, view.getEdgesCountEnabled());
-        graphGlobal2Directed.groupNodes(new Node[] {nodeMap.get("Leaf 0"), nodeMap.get("Leaf 1")});
+        graphGlobal2Directed.groupNodes(new Node[]{nodeMap.get("Leaf 0"), nodeMap.get("Leaf 1")});
         n1 = graphGlobal2Directed.getTopNodes().toArray()[2];
         graphGlobal2Directed.expand(n1);
         assertEquals(0, view.getMutualEdgesEnabled());
