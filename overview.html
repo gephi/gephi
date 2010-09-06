@@ -9,7 +9,9 @@
     <p>
     <h2>API Changes</h2>
     <ul>
-        <li>(September 06 2010) Add <code>destroy(Filter filter)</code> in <code>FilterBuilder</code> to receive notification when a filter
+        <li>(September 06 2010) Add a <code>flatten()</code> method to <code>HierarchicalGraph</code> to flatten the hierarchical graph and transform
+            meta edges into regular edges.</li>
+        <li>(September 05 2010) Add <code>destroy(Filter filter)</code> in <code>FilterBuilder</code> to receive notification when a filter
             query is removed and clean-up.</li>
         <li>(September 01 2010) Add <code>MetaEdgeBuilder</code> in Graph SPI to allow custom builders. Add <code>GraphSettings.setMetaEdgeBuilder()</code>
             in the graph model settings.</li>
