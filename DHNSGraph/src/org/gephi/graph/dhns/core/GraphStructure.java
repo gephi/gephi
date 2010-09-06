@@ -129,6 +129,10 @@ public class GraphStructure {
         viewCopy.setEdgesCountEnabled(view.getEdgesCountEnabled());
         viewCopy.setMutualEdgesTotal(view.getMutualEdgesTotal());
         viewCopy.setMutualEdgesEnabled(view.getMutualEdgesEnabled());
+
+        //Metaedges
+        viewCopy.getStructureModifier().getEdgeProcessor().computeMetaEdges();
+        
         views.add(viewCopy);
         dhns.getEventManager().fireEvent(new ViewEvent(EventType.NEW_VIEW, viewCopy));
         dhns.getReadLock().unlock();
