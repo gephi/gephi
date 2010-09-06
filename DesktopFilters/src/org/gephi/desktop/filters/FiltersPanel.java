@@ -85,6 +85,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 uiModel.setSelectedQuery(null);
                 controller.selectVisible(null);
                 controller.filterVisible(null);
+                ((FiltersExplorer) libraryTree).setup(manager, filterModel, uiModel);
             }
         });
         filterButton.addActionListener(new ActionListener() {
