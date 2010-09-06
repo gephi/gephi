@@ -17,15 +17,18 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.component;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import org.gephi.graph.api.Edge;
@@ -105,7 +108,7 @@ public class ActionsToolbar extends JToolBar {
         add(resetColorButton);
 
         //Reset sizes
-        JButton resetSizeButton = new JButton();
+        final JButton resetSizeButton = new JButton();
         resetSizeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/resetSize.png")));
         resetSizeButton.setToolTipText(NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetSizes"));
         resetSizeButton.addActionListener(new ActionListener() {
@@ -115,6 +118,22 @@ public class ActionsToolbar extends JToolBar {
                 Graph graph = gc.getModel().getGraphVisible();
                 for (Node n : graph.getNodes().toArray()) {
                     n.getNodeData().setSize(size);
+                }
+            }
+        });
+        resetSizeButton.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    Object res = JOptionPane.showInputDialog(resetSizeButton, NbBundle.getMessage(ActionsToolbar.class, "ActionsToolbar.resetSizes.dialog"), "" + size);
+                    if (res != null) {
+                        try {
+                            size = Float.parseFloat((String) res);
+                        } catch (Exception ex) {
+                        }
+                    }
                 }
             }
         });

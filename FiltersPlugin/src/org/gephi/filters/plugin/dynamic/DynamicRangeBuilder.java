@@ -151,6 +151,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         private FilterProperty[] filterProperties;
         private Double min;
         private Double max;
+        private boolean keepNonDynamic = true;
 
         public DynamicRangeFilter(TimelineController timelineController, DynamicController dynamicController, AttributeColumn nodeColumn, AttributeColumn edgeColumn) {
             this.nodeColumn = nodeColumn;
@@ -183,7 +184,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                     return timeInterval.isInRange(visibleInterval.getLow(), visibleInterval.getHigh());
                 }
             }
-            return true;
+            return keepNonDynamic;
         }
 
         public boolean evaluate(Graph graph, Edge edge) {
@@ -196,7 +197,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                     return timeInterval.isInRange(visibleInterval.getLow(), visibleInterval.getHigh());
                 }
             }
-            return true;
+            return keepNonDynamic;
         }
 
         public void finish() {
