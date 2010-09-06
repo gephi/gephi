@@ -184,6 +184,7 @@
                 <include name="postgresql*.jar"/>
                 <include name="sqljdbc*.jar"/>
                 <include name="google-collect*.jar"/>
+                <include name="stax-utils.jar"/>
                 <include name="trove*.jar"/>
                 <include name="xml-apis-ext*.jar"/>
             </fileset>
