@@ -18,8 +18,17 @@ msgstr ""
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Standard exporters UI"
 
-msgid "UIExporterGEXFPanel.labelExport.text"
-msgstr "Export:"
+msgid "UIExporterGDF.name"
+msgstr "GDF"
+
+msgid "UIExporterGEXF.name"
+msgstr "GEXF"
+
+msgid "UIExporterGraphML.name"
+msgstr "GraphML"
+
+msgid "UIExporterCSV.name"
+msgstr "CSV"
 
 msgid "UIExporterGDFPanel.jRadioButton1.text"
 msgstr "Simple quotes"
@@ -51,6 +60,18 @@ msgstr "Field encapsulation use double quotes by default"
 msgid "UIExporterGDFPanel.labelNormalize.text"
 msgstr "Scale position and size between 0 and 1"
 
+msgid "UIExporterGDFPanel.simpleQuotesCheckbox.text"
+msgstr "Simple quotes"
+
+msgid "UIExporterGDFPanel.labelQuotes1.text"
+msgstr "Use simple quotes instead of double quotes"
+
+msgid "UIExporterGDFPanel.visibilityCheckbox.text"
+msgstr "Visibility (visible, label visible)"
+
+msgid "UIExporterGEXFPanel.labelExport.text"
+msgstr "Export:"
+
 msgid "UIExporterGEXFPanel.attributesExportCheckbox.text"
 msgstr "Attributes"
 
@@ -58,7 +79,7 @@ msgid "UIExporterGEXFPanel.colorsExportCheckbox.text"
 msgstr "Colors"
 
 msgid "UIExporterGEXFPanel.positionExportCheckbox.text"
-msgstr "Position (x,y)"
+msgstr "Position (x,y,z)"
 
 msgid "UIExporterGEXFPanel.sizeExportCheckbox.text"
 msgstr "Size"
@@ -68,15 +89,6 @@ msgstr "Normalize"
 
 msgid "UIExporterGEXFPanel.labelNormalize.text"
 msgstr "Scale position and size between 0 and 1"
-
-msgid "UIExporterGDFPanel.simpleQuotesCheckbox.text"
-msgstr "Simple quotes"
-
-msgid "UIExporterGDFPanel.labelQuotes1.text"
-msgstr "Use simple quotes instead of double quotes"
-
-msgid "UIExporterGDFPanel.visibilityCheckbox.text"
-msgstr "Visibility (visible, label visible)"
 
 msgid "UIExporterGraphMLPanel.labelExport.text"
 msgstr "Export:"
@@ -116,3 +128,12 @@ msgstr "Matrix"
 
 msgid "UIExporterCSVPanel.zeroEdgeCheckbox.text"
 msgstr "Zero when no edge"
+
+msgid "UIExporterGEXFPanel.dynamicExportCheckbox.text"
+msgstr "Dynamic"
+
+msgid "UIExporterGEXFPanel.labelNormalize1.text"
+msgstr "Complete node tree without meta edges"
+
+msgid "UIExporterGEXFPanel.hierarchyCheckbox.text"
+msgstr "Export hierarchy"

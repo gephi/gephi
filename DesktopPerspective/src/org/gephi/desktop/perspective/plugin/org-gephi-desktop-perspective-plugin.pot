@@ -15,8 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "EdgeWeightBuilder.name"
-msgstr "Edge Weight"
+msgid "OverviewPerspective.name"
+msgstr "Overview"
 
-msgid "EdgeWeightBuilder.description"
-msgstr "Keep edges within a particular weight range"
+msgid "LaboratoryPerspective.name"
+msgstr "Data Laboratory"
+
+msgid "PreviewPerspective.name"
+msgstr "Preview"

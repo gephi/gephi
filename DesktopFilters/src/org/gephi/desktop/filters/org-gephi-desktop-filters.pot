@@ -47,3 +47,9 @@ msgstr "Column title"
 
 msgid "FiltersPanel.exportColumn.input.title"
 msgstr "Export to Column"
+
+msgid "FiltersPanel.exportLabelVisible.toolTipText"
+msgstr "Hide nodes/edges labels if not in filtered graph"
+
+msgid "FiltersPanel.autoRefreshButton.toolTipText"
+msgstr "Auto Refresh"

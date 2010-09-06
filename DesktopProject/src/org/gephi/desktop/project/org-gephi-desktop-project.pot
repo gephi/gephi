@@ -67,3 +67,8 @@ msgstr "Graph Files"
 
 msgid "OpenFile_filechooser_zipfilter"
 msgstr "Archived ZIP Files"
+
+msgid "ProjectControllerUI.error.open"
+msgstr ""
+"The project file couldn't be opened. Please check the file has .gephi "
+"extension."

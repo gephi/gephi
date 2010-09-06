@@ -166,6 +166,9 @@ msgstr "Reset colors"
 msgid "ActionsToolbar.resetSizes"
 msgstr "Reset size"
 
+msgid "ActionsToolbar.resetSizes.dialog"
+msgstr "Set size"
+
 msgid "ActionsToolbar.resetLabelColors"
 msgstr "Reset label color"
 
@@ -202,12 +205,6 @@ msgstr "Selection color"
 msgid "EdgeSettingsPanel.edgeInSelectionColorChooser.toolTipText"
 msgstr "Edge IN<- Color"
 
-msgid "EdgeSettingsPanel.edgeOutSelectionColorChooser.toolTipText"
-msgstr "Edge Out-> Color"
-
-msgid "EdgeSettingsPanel.edgeBothSelectionColorChooser.toolTipText"
-msgstr "Edge Both<-> Color"
-
 msgid "NodeSettingsPanel.showHullsCheckbox.text"
 msgstr "Show hulls"
 
@@ -222,3 +219,15 @@ msgstr "Out:"
 
 msgid "EdgeSettingsPanel.labelBoth.text"
 msgstr "Both:"
+
+msgid "EdgeSettingsPanel.edgeOutSelectionColorChooser.toolTipText"
+msgstr "Edge Out-> Color"
+
+msgid "EdgeSettingsPanel.edgeBothSelectionColorChooser.toolTipText"
+msgstr "Edge Both<-> Color"
+
+msgid "GlobalSettingsPanel.labelZoom.text"
+msgstr "Zoom"
+
+msgid "EdgeSettingsPanel.labelMetaScale.text"
+msgstr "Scale (meta-edge)"

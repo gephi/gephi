@@ -15,8 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "EdgeWeightBuilder.name"
-msgstr "Edge Weight"
+msgid "CTL_LanguageAction"
+msgstr "Language"
 
-msgid "EdgeWeightBuilder.description"
-msgstr "Keep edges within a particular weight range"
+msgid "ChangeLang.Confirm.message"
+msgstr "The language will be changed. Do you want to restart Gephi?"
+
+msgid "ChangeLang.Confirm.title"
+msgstr "Language"

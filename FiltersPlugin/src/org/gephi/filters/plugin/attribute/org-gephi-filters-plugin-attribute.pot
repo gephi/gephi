@@ -18,11 +18,18 @@ msgstr ""
 msgid "AttributeRangeBuilder.name"
 msgstr "Range"
 
+msgid "AttributeRangeBuilder.description"
+msgstr "Keep nodes/edges with number values within a range (inclusive)"
+
 msgid "AttributeEqualBuilder.name"
 msgstr "Equal"
 
-msgid "PartitionBuilder.name"
-msgstr "Partition"
+msgid "AttributeEqualBuilder.description"
+msgstr ""
+"Keep nodes/edges with particular value (String, Number, Boolean) for a column"
 
 msgid "AttributeNonNullBuilder.name"
 msgstr "Non-null"
+
+msgid "AttributeNonNullBuilder.description"
+msgstr "Keep nodes/edges with non-null values for a particular column"

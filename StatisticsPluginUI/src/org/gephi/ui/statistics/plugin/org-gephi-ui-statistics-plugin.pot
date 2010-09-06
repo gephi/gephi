@@ -30,12 +30,6 @@ msgstr "Directed"
 msgid "ClusteringCoefficientPanel.undirectedRadioButton.text"
 msgstr "UnDirected"
 
-msgid "ClusteringCoefficientPanel.triangleRadioButton.text"
-msgstr "Fast Triangle"
-
-msgid "ClusteringCoefficientPanel.bruteRadioButton.text"
-msgstr "Brute Force"
-
 msgid "DegreeDistributionPanel.directedRadioButton.text"
 msgstr "Directed"
 
@@ -92,9 +86,6 @@ msgstr ""
 "a \"small-world\" effect. It indicates how nodes are embedded in their "
 "neighborhood. The average give an overall indication of the clustering in "
 "the network."
-
-msgid "ClusteringCoefficientPanel.labelAlgorithm.text_1"
-msgstr "Algorithm:"
 
 msgid "DegreeDistributionPanel.header.title"
 msgstr "Degree Distribution"
@@ -174,3 +165,43 @@ msgstr ""
 "considered meaningful. Randomizing the algorithm can produce a better "
 "decomposition resulting in a higher modularity score, however randomizing "
 "will increase computation time."
+
+msgid "ConnectedComponentPanel.header.description"
+msgstr "Determines the number of connected components in the network."
+
+msgid "ConnectedComponentPanel.undirectedRadioButton.text"
+msgstr "UnDirected"
+
+msgid "ConnectedComponentPanel.directedRadioButton.text"
+msgstr "Directed"
+
+msgid "ConnectedComponentPanel.header.title"
+msgstr "Connected Components"
+
+msgid "ConnectedComponentPanel.jLabel1.text"
+msgstr "(Will detect strongly & weakly connected components)"
+
+msgid "ConnectedComponentPanel.jLabel2.text"
+msgstr "(Will detect only weakly connected components)"
+
+msgid "EigenvectorCentralityPanel.header.description"
+msgstr ""
+"A measure of node importance in a network based on a node's connections."
+
+msgid "EigenvectorCentralityPanel.header.title"
+msgstr "Eigenvector Centrality"
+
+msgid "EigenvectorCentralityPanel.iterationsTextField.text"
+msgstr "jTextField1"
+
+msgid "EigenvectorCentralityPanel.labeliterations.text"
+msgstr "Number of iterations:"
+
+msgid "EigenvectorCentralityPanel.directedButton.text"
+msgstr "Directed"
+
+msgid "EigenvectorCentralityPanel.undirectedButton.text"
+msgstr "UnDirected"
+
+msgid "GraphDistancePanel.normalizeButton.text"
+msgstr "Normalize Centralities in [0,1]"

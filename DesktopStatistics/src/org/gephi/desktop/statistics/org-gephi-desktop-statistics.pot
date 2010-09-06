@@ -39,12 +39,6 @@ msgstr "Run"
 msgid "StatisticsDisplayPanel.name.text"
 msgstr "name"
 
-msgid "StatisticsFrontEnd.runButton.text"
-msgstr "Run"
-
-msgid "StatisticsFrontEnd.reportButton.text"
-msgstr "View"
-
 msgid "StatisticsFrontEnd.displayLabel.text"
 msgstr "Display Name"
 
@@ -74,3 +68,9 @@ msgstr "Save"
 
 msgid "StatisticsReportPanel.status.saveSuccess"
 msgstr "Report saved to {0} directory"
+
+msgid "StatisticsFrontEnd.reportButton.toolTipText"
+msgstr "View report"
+
+msgid "StatisticsFrontEnd.runButton.text"
+msgstr "Run"

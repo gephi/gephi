@@ -15,8 +15,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "EdgeWeightBuilder.name"
-msgstr "Edge Weight"
+msgid "MASKEdgePanel.bothButton.text"
+msgstr "both"
 
-msgid "EdgeWeightBuilder.description"
-msgstr "Keep edges within a particular weight range"
+msgid "MASKEdgePanel.sourceButton.text"
+msgstr "source"
+
+msgid "MASKEdgePanel.targetButton.text"
+msgstr "target"
+
+msgid "MASKEdgePanel.anyButton.text"
+msgstr "any"

@@ -18,6 +18,12 @@ msgstr ""
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Vectorial exporters user interfaces"
 
+msgid "UIExporterPDF.name"
+msgstr "PDF"
+
+msgid "UIExporterSVG.name"
+msgstr "SVG"
+
 msgid "UIExporterPDFPanel.labelPageSize.text"
 msgstr "Page size:"
 
@@ -74,3 +80,9 @@ msgstr "{0} must be positive"
 
 msgid "UIExporterPDFPanel.unitLink.toolTipText"
 msgstr "Change Unit Millimeter/Inches"
+
+msgid "UIExporterSVGPanel.strokeScaleCheckbox.text"
+msgstr "Scale stroke-width"
+
+msgid "UIExporterSVGPanel.labelStrokeScale.text"
+msgstr "Recommended for Adobe Illustrator"

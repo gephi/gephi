@@ -15,32 +15,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "OpenIDE-Module-Long-Description"
-msgstr "Standard exporters implementations"
-
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Standard exporters"
+msgstr "Partition transformers UI"
 
-msgid "fileType_GDF_Name"
-msgstr "GDF Files (GUESS)"
+msgid "NodeColorTransformerBuilder.ui.name"
+msgstr "Color"
 
-msgid "fileType_GEXF_Name"
-msgstr "GEXF Files"
+msgid "NodeColorTransformerPanel.action.randomize"
+msgstr "Randomize colors"
 
-msgid "fileType_GraphML_Name"
-msgstr "GraphML Files"
+msgid "NodeColorTransformerPanel.action.allBlacks"
+msgstr "All Blacks"
 
-msgid "fileType_CSV_Name"
-msgstr "CSV Files"
+msgid "NodeSizeTransformerBuilder.ui.name"
+msgstr "Size"
 
-msgid "ExporterGDF_name"
-msgstr "GDF"
+msgid "NodeSizeTransformerBuilder.action.randomize"
+msgstr "Randomize"
 
-msgid "ExporterGEXF_name"
-msgstr "GEXF"
+msgid "EdgeColorTransformerBuilder.ui.name"
+msgstr "Color"
 
-msgid "ExporterGraphML_name"
-msgstr "GraphML"
+msgid "EdgeColorTransformerPanel.action.randomize"
+msgstr "Randomize"
 
-msgid "ExporterCSV_name"
-msgstr "CSV"
+msgid "EdgeColorTransformerPanel.action.allBlacks"
+msgstr "All Blacks"
+
+msgid "NodeGroupTransformerBuilder.ui.name"
+msgstr "Group"

@@ -18,14 +18,31 @@ msgstr ""
 msgid "DegreeRangeBuilder.name"
 msgstr "Degree Range"
 
+msgid "DegreeRangeBuilder.description"
+msgstr "Keep nodes with its degree value within a range"
+
 msgid "InDegreeRangeBuilder.name"
 msgstr "In Degree Range"
+
+msgid "InDegreeRangeBuilder.description"
+msgstr "Keep nodes with its in-degree value within a range"
 
 msgid "OutDegreeRangeBuilder.name"
 msgstr "Out Degree Range"
 
+msgid "OutDegreeRangeBuilder.description"
+msgstr "Keep nodes with its out-degree value within a range"
+
 msgid "MutualDegreeRangeBuilder.name"
 msgstr "Mutual Degree Range"
 
+msgid "MutualDegreeRangeBuilder.description"
+msgstr "Keep nodes with its mutual degree value within a range"
+
 msgid "EgoBuilder.name"
 msgstr "Ego Network"
+
+msgid "EgoBuilder.description"
+msgstr ""
+"Keep neighbors at depth 1, 2, 3 or Max from a particular node. Node is found "
+"with regex on ID and LABEL."

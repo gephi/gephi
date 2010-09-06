@@ -18,16 +18,14 @@ msgstr ""
 msgid "OpenIDE-Module-Long-Description"
 msgstr "Integrate and manage export features in UI."
 
-msgid "CTL_Export"
-msgstr "Export"
-
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Integrate export"
 
-msgid "error_no_matching_file_exporter"
-msgstr ""
-"Impossible to find a compatible Exporter.\n"
-"The file format is not supported."
+msgid "CTL_Export"
+msgstr "Export"
+
+msgid "CTL_ExportGraphAction"
+msgstr "Graph file..."
 
 msgid "error_missing_document_instance_factory"
 msgstr "Impossible to obtain an instance of DocumentBuilder"

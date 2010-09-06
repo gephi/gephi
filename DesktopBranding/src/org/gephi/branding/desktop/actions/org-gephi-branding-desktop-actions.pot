@@ -45,5 +45,8 @@ msgstr "Delete workspace"
 msgid "CTL_CleanWorkspace"
 msgstr "Clean workspace"
 
-msgid "CTL_ResetWindows"
-msgstr "Reset Windows"
+msgid "CTL_RenameWorkspace"
+msgstr "Rename workspace"
+
+msgid "RenameWorkspace.dialog.title"
+msgstr "Rename Workspace"

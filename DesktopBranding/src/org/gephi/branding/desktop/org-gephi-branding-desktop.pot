@@ -15,12 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "CTL_BannerAction"
-msgstr "Banner"
-
-msgid "CTL_BannerTopComponent"
-msgstr "Banner"
-
 msgid "OpenIDE-Module-Long-Description"
 msgstr "Desktop initialization and management"
 
@@ -84,8 +78,14 @@ msgstr "Save As..."
 msgid "Actions/File/org-gephi-branding-desktop-actions-SaveProject.instance"
 msgstr "Save Project"
 
-msgid "BannerTopComponent.logoButton.toolTipText"
-msgstr "Go on Gephi website www.gephi.org"
-
 msgid "DragNDropFrameAdapter.openGephiError"
 msgstr "Impossible to open this file. It must he a compatible '.gephi' file."
+
+msgid "CommandLineProcessor.openGephiError"
+msgstr "Impossible to open this file. It must he a compatible '.gephi' file."
+
+msgid "CommandLineProcessor.fileNotFound"
+msgstr "The file ''{0}'' has not been found, please check if the file exists"
+
+msgid "CommandLineProcessor.fileNotSupported"
+msgstr "The file format is not supported"

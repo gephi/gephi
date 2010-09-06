@@ -18,5 +18,12 @@ msgstr ""
 msgid "PartitionBuilder.name"
 msgstr "Partition"
 
+msgid "PartitionBuilder.description"
+msgstr "Keep nodes/edges that belongs to a set of values from a partition"
+
 msgid "PartitionCountBuilder.name"
 msgstr "Partition Count"
+
+msgid "PartitionCountBuilder.count"
+msgstr ""
+"Keep nodes/edges that belongs to parts with a particular number of elements"
