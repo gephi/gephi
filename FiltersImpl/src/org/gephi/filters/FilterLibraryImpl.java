@@ -60,9 +60,6 @@ public class FilterLibraryImpl implements FilterLibrary {
         }
 
         content.add(new HierarchicalGraphMask());
-
-        //Put in map
-        buildBuildersMap();
     }
 
     private void buildBuildersMap() {
@@ -108,6 +105,9 @@ public class FilterLibraryImpl implements FilterLibrary {
     }
 
     public FilterBuilder getBuilder(Filter filter) {
+        if (buildersMap == null) {
+            buildBuildersMap();
+        }
         if (buildersMap.get(filter.getClass()) != null) {
             return buildersMap.get(filter.getClass());
         }
