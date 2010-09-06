@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.project.api.ProjectController;
@@ -32,6 +31,7 @@ import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.timeline.api.TimelineModelEvent;
 import org.gephi.timeline.api.TimelineModelListener;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -69,8 +69,6 @@ public class TimelineControllerImpl implements TimelineController {
 
                 DynamicModel dynamicModel = dynamicController.getModel(workspace);
                 model.setup(dynamicModel);
-                setTimeLineVisible(model.isEnabled());
-                fireChangeEvent();
             }
 
             public void unselect(Workspace workspace) {
@@ -94,9 +92,10 @@ public class TimelineControllerImpl implements TimelineController {
             }
             DynamicModel dynamicModel = dynamicController.getModel(pc.getCurrentWorkspace());
             model.setup(dynamicModel);
-            setTimeLineVisible(model.isEnabled());
-            fireChangeEvent();
         }
+
+        //TODO remove this force
+        setTimeLineVisible(true);
     }
 
     public TimelineModel getModel() {
@@ -107,9 +106,16 @@ public class TimelineControllerImpl implements TimelineController {
         return workspace.getLookup().lookup(TimelineModel.class);
     }
 
-    public void setDynamicEnabled(boolean enabled) {
-        setTimeLineVisible(enabled);
-        fireChangeEvent();
+    public void setMin(double min) {
+        if (model != null) {
+            model.setMinValue(min);
+        }
+    }
+
+    public void setMax(double max) {
+        if (model != null) {
+            model.setMaxValue(max);
+        }
     }
 
     private void setTimeLineVisible(final boolean visible) {
@@ -127,10 +133,9 @@ public class TimelineControllerImpl implements TimelineController {
         });
     }
 
-    protected void fireChangeEvent() {
-        ChangeEvent evt = new ChangeEvent(this);
-        for (TimelineModelListener listener : listeners) {
-            listener.timelineModelChanged(evt);
+    protected void fireTimelineModelEvent(TimelineModelEvent event) {
+        for (TimelineModelListener listener : listeners.toArray(new TimelineModelListener[0])) {
+            listener.timelineModelChanged(event);
         }
     }
 

@@ -17,14 +17,14 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
-import org.gephi.graph.api.GraphEvent.EventType;
+import java.util.ArrayList;
+import java.util.List;
 import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
-import org.gephi.graph.dhns.event.EdgeEvent;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.TreeIterator;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
@@ -373,6 +373,79 @@ public class EdgeProcessor {
             return getMetaEdge(sourceParent, targetParent);
         }
         return null;
+    }
+
+    public AbstractEdge[] flattenNode(AbstractNode node) {
+        AbstractEdge[] newEdges = null;
+        if (!node.getMetaEdgesInTree().isEmpty() || !node.getMetaEdgesOutTree().isEmpty()) {
+            newEdges = new AbstractEdge[node.getMetaEdgesInTree().getCount() + node.getMetaEdgesOutTree().getCount()];
+        }
+        int i = 0;
+        if (!node.getMetaEdgesInTree().isEmpty()) {
+            for (edgeIterator.setNode(node.getMetaEdgesInTree()); edgeIterator.hasNext();) {
+                AbstractEdge edge = edgeIterator.next();
+                AbstractNode source = edge.getSource(viewId);
+                edgeIterator.remove();
+                source.getMetaEdgesOutTree().remove((MetaEdgeImpl) edge);
+
+                if (!node.getEdgesInTree().hasNeighbour(source)) {
+                    AbstractEdge realEdge = dhns.factory().newEdge(source, node, edge.getWeight(), edge.isDirected());
+                    realEdge.getEdgeData().moveFrom(edge.getEdgeData());
+                    realEdge.setWeight(edge.getWeight());
+                    newEdges[i] = realEdge;
+
+                    source.getEdgesOutTree().add(realEdge);
+                    node.getEdgesInTree().add(realEdge);
+
+                    source.incEnabledOutDegree();
+                    node.incEnabledInDegree();
+                    view.incEdgesCountEnabled(1);
+                    view.incEdgesCountTotal(1);
+
+                    if (source.getEdgesInTree().hasNeighbour(node)) {
+                        //Mutual
+                        source.incEnabledMutualDegree();
+                        node.incEnabledMutualDegree();
+                        view.incMutualEdgesEnabled(1);
+                        view.incMutualEdgesTotal(1);
+                    }
+                }
+                i++;
+            }
+        }
+        if (!node.getMetaEdgesOutTree().isEmpty()) {
+            for (edgeIterator.setNode(node.getMetaEdgesOutTree()); edgeIterator.hasNext();) {
+                AbstractEdge edge = edgeIterator.next();
+                AbstractNode target = edge.getTarget(viewId);
+                edgeIterator.remove();
+                target.getMetaEdgesInTree().remove((MetaEdgeImpl) edge);
+
+                if (!node.getEdgesOutTree().hasNeighbour(target)) {
+                    AbstractEdge realEdge = dhns.factory().newEdge(node, target, edge.getWeight(), edge.isDirected());
+                    realEdge.getEdgeData().moveFrom(edge.getEdgeData());
+                    realEdge.setWeight(edge.getWeight());
+                    newEdges[i] = realEdge;
+
+                    node.getEdgesOutTree().add(realEdge);
+                    target.getEdgesInTree().add(realEdge);
+
+                    node.incEnabledOutDegree();
+                    target.incEnabledInDegree();
+                    view.incEdgesCountEnabled(1);
+                    view.incEdgesCountTotal(1);
+
+                    if (target.getEdgesOutTree().hasNeighbour(node)) {
+                        //Mutual
+                        node.incEnabledMutualDegree();
+                        target.incEnabledMutualDegree();
+                        view.incMutualEdgesEnabled(1);
+                        view.incMutualEdgesTotal(1);
+                    }
+                }
+                i++;
+            }
+        }
+        return newEdges;
     }
 
     public void incrementEdgesCounting(AbstractNode enabledNode, AbstractNode parent) {

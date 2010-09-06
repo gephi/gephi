@@ -106,6 +106,7 @@ public class FilterModelImpl implements FilterModel {
 
     public void remove(Query query) {
         queries.remove(query);
+        destroyQuery(query);
         fireChangeEvent();
     }
 
@@ -250,6 +251,24 @@ public class FilterModelImpl implements FilterModel {
         autoRefreshor.setRunning(false);
         currentResult = null;
         listeners = null;
+        for (Query q : queries) {
+            destroyQuery(q);
+        }
+    }
+
+    private void destroyQuery(Query query) {
+        if (query instanceof AbstractQueryImpl) {
+            AbstractQueryImpl absQuery = (AbstractQueryImpl) query;
+            for (Query q : absQuery.getQueriesAndSelf()) {
+                if (q instanceof FilterQueryImpl) {
+                    Filter f = ((FilterQueryImpl) q).getFilter();
+                    FilterBuilder builder = filterLibraryImpl.getBuilder(f);
+                    if (builder != null) {
+                        builder.destroy(f);
+                    }
+                }
+            }
+        }
     }
 
     //EVENTS

@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -46,25 +46,45 @@ public final class AttributeValueImpl implements AttributeValue {
     public Object getValue() {
         if (column.getOrigin() != AttributeOrigin.DELEGATE) {
             return value;
-        }
-        else {
-            if (value == null)
+        } else {
+            if (value == null) {
                 return null;
+            }
 
             AttributeValueDelegateProvider attributeValueDelegateProvider = column.getProvider();
 
             Object result;
-            if (AttributeUtilsImpl.getDefault().isEdgeColumn(column))
+            if (AttributeUtilsImpl.getDefault().isEdgeColumn(column)) {
                 result = attributeValueDelegateProvider.getEdgeValue(column, value);
-            else if (AttributeUtilsImpl.getDefault().isNodeColumn(column))
+            } else if (AttributeUtilsImpl.getDefault().isNodeColumn(column)) {
                 result = attributeValueDelegateProvider.getNodeValue(column, value);
-            else
+            } else {
                 throw new AssertionError();
+            }
 
-            if (result.getClass().isArray())
+            if (result.getClass().isArray()) {
                 result = ListFactory.fromArray(result);
+            }
 
             return result;
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof AttributeValue) {
+            if (this == obj) {
+                return true;
+            }
+            Object thisVal = this.getValue();
+            Object objVal = ((AttributeValue) obj).getValue();
+            if (thisVal == null && objVal == null) {
+                return true;
+            }
+            if (thisVal != null && objVal != null && thisVal.equals(objVal)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

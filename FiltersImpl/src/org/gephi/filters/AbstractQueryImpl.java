@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.filters;
 
 import java.util.ArrayDeque;
@@ -151,6 +151,18 @@ public abstract class AbstractQueryImpl implements Query {
             if (!q.getFilter().getClass().equals(filterClass)) {
                 itr.remove();
             }
+        }
+        return r.toArray(new Query[0]);
+    }
+
+    public Query[] getQueriesAndSelf() {
+        List<Query> r = new LinkedList<Query>();
+        LinkedList<Query> stack = new LinkedList<Query>();
+        stack.add(this);
+        while (!stack.isEmpty()) {
+            Query q = stack.pop();
+            r.add(q);
+            stack.addAll(Arrays.asList(q.getChildren()));
         }
         return r.toArray(new Query[0]);
     }

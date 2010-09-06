@@ -66,6 +66,9 @@ public class NOTBuilderEdge implements FilterBuilder {
         return null;
     }
 
+    public void destroy(Filter filter) {
+    }
+
     public static class NotOperatorEdge implements Operator {
 
         public int getInputCount() {

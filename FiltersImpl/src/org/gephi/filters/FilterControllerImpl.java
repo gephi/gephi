@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.filters;
 
 import java.beans.PropertyEditorManager;
@@ -89,7 +89,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
             public void close(Workspace workspace) {
                 FilterModelImpl m = (FilterModelImpl) workspace.getLookup().lookup(FilterModel.class);
-                if(m!=null) {
+                if (m != null) {
                     m.destroy();
                 }
             }
@@ -303,13 +303,22 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     public void setAutoRefresh(boolean autoRefresh) {
-        if(model!=null) {
+        if (model != null) {
             model.setAutoRefresh(autoRefresh);
         }
     }
 
     public FilterModel getModel() {
         return model;
+    }
+
+    public synchronized FilterModel getModel(Workspace workspace) {
+        FilterModel filterModel = workspace.getLookup().lookup(FilterModel.class);
+        if (filterModel == null) {
+            filterModel = new FilterModelImpl(workspace);
+            workspace.add(filterModel);
+        }
+        return filterModel;
     }
 
     public void setValue(FilterProperty property, Object value, Callback callback) {

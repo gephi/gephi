@@ -28,11 +28,19 @@ import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicGraph;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.dynamic.api.DynamicModelEvent;
+import org.gephi.filters.api.FilterController;
+import org.gephi.filters.api.FilterModel;
+import org.gephi.filters.api.Query;
+import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder;
+import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder.DynamicRangeFilter;
+import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -52,6 +60,8 @@ public final class DynamicModelImpl implements DynamicModel {
 
     private DynamicControllerImpl controller;
     private GraphModel graphModel;
+    private FilterController filterController;
+    private FilterModel filterModel;
     private TimeInterval visibleTimeInterval;
     private TimeIntervalIndex timeIntervalIndex;
     private AttributeColumn nodeColumn;
@@ -89,6 +99,12 @@ public final class DynamicModelImpl implements DynamicModel {
         graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
         if (graphModel == null || graphModel.getGraph() == null) {
             throw new NullPointerException("The graph model and its underlying graph cannot be nulls.");
+        }
+
+        filterController = Lookup.getDefault().lookup(FilterController.class);
+        filterModel = filterController.getModel(workspace);
+        if (filterModel == null) {
+            throw new NullPointerException("The filter model.");
         }
 
         //Index intervals
@@ -153,6 +169,23 @@ public final class DynamicModelImpl implements DynamicModel {
                             }
                         }
                         break;
+                    case SET_VALUE:
+                        AttributeValue[] values = event.getData().getTouchedValues();
+                        for (int i = 0; i < values.length; i++) {
+                            AttributeValue val = values[i];
+                            if (val.getValue() != null) {
+                                AttributeColumn col = values[i].getColumn();
+                                if (col.getType().equals(AttributeType.TIME_INTERVAL)) {
+                                    if (nodeColumn == null && attUtils.isNodeColumn(col) && col.getId().equals(TIMEINTERVAL_COLUMN)) {
+                                        nodeColumn = col;
+                                    } else if (edgeColumn == null && attUtils.isEdgeColumn(col) && col.getId().equals(TIMEINTERVAL_COLUMN)) {
+                                        edgeColumn = col;
+                                    }
+                                    timeIntervalIndex.add((TimeInterval) val.getValue());
+                                }
+                            }
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -165,26 +198,6 @@ public final class DynamicModelImpl implements DynamicModel {
             public void graphChanged(GraphEvent event) {
                 if (event.getSource().isMainView()) {
                     switch (event.getEventType()) {
-                        case ADD_EDGES:
-                            if (edgeColumn != null) {
-                                for (Edge e : event.getData().addedEdges()) {
-                                    TimeInterval ti = (TimeInterval) e.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
-                                    if (ti != null) {
-                                        timeIntervalIndex.add(ti);
-                                    }
-                                }
-                            }
-                            break;
-                        case ADD_NODES:
-                            if (nodeColumn != null) {
-                                for (Node n : event.getData().addedNodes()) {
-                                    TimeInterval ti = (TimeInterval) n.getNodeData().getAttributes().getValue(nodeColumn.getIndex());
-                                    if (ti != null) {
-                                        timeIntervalIndex.add(ti);
-                                    }
-                                }
-                            }
-                            break;
                         case REMOVE_EDGES:
                             if (edgeColumn != null) {
                                 for (Edge e : event.getData().removedEdges()) {
@@ -231,8 +244,52 @@ public final class DynamicModelImpl implements DynamicModel {
     }
 
     public void setVisibleTimeInterval(TimeInterval visibleTimeInterval) {
-        if (!Double.isNaN(visibleTimeInterval.getLow()) && !Double.isNaN(visibleTimeInterval.getHigh())) {
+        if (!Double.isNaN(visibleTimeInterval.getLow()) && !Double.isNaN(visibleTimeInterval.getHigh()) && !this.visibleTimeInterval.equals(visibleTimeInterval)) {
             this.visibleTimeInterval = visibleTimeInterval;
+
+            //Filters
+            Query dynamicQuery = null;
+            boolean selecting = false;
+            if (filterModel.getCurrentQuery() != null) {
+                //Look if current query is dynamic - filtering must be active
+                Query query = filterModel.getCurrentQuery();
+                Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
+                if (dynamicQueries.length > 0) {
+                    dynamicQuery = dynamicQueries[0];
+                    selecting = filterModel.isSelecting();
+                }
+            } else if (filterModel.getQueries().length == 1) {
+                //Look if a dynamic query alone exists
+                Query query = filterModel.getQueries()[0];
+                if (query.getChildren().length == 0 && query.getQueries(DynamicRangeFilter.class).length == 1) {
+                    dynamicQuery = query;
+                }
+            }
+            if (Double.isInfinite(visibleTimeInterval.getLow()) && Double.isInfinite(visibleTimeInterval.getHigh())) {
+                if (dynamicQuery != null) {
+                    filterController.remove(dynamicQuery);
+                }
+            } else {
+                if (dynamicQuery == null) {
+                    //Create dynamic filter
+                    DynamicRangeBuilder rangeBuilder = filterModel.getLibrary().getLookup().lookup(DynamicRangeBuilder.class);
+                    FilterBuilder[] fb = rangeBuilder.getBuilders();
+                    if (fb.length > 0) {
+                        DynamicRangeFilter filter = (DynamicRangeFilter) fb[0].getFilter();
+                        dynamicQuery = filterController.createQuery(filter);
+                        filterController.add(dynamicQuery);
+                    }
+                }
+                if (dynamicQuery != null) {
+                    if (selecting) {
+                        filterController.selectVisible(dynamicQuery);
+                    } else {
+                        filterController.filterVisible(dynamicQuery);
+                    }
+                }
+            }
+
+
             // Trigger Event
             controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.VISIBLE_INTERVAL, this, visibleTimeInterval));
         }
@@ -279,6 +336,8 @@ public final class DynamicModelImpl implements DynamicModel {
 
         public void add(TimeInterval interval) {
             boolean newDynamic = false;
+            double min = getMin();
+            double max = getMax();
             if (lowMap.isEmpty() && highMap.isEmpty()) {
                 newDynamic = true;
             }
@@ -304,10 +363,21 @@ public final class DynamicModelImpl implements DynamicModel {
             }
             if (newDynamic) {
                 setDynamic(true);
+            } else {
+                double newMin = getMin();
+                double newMax = getMax();
+                if (newMin != min) {
+                    setNewMin(min);
+                }
+                if (newMax != max) {
+                    setNewMax(max);
+                }
             }
         }
 
         public void remove(TimeInterval interval) {
+            double min = getMin();
+            double max = getMax();
             Double low = interval.getLow();
             Double high = interval.getHigh();
             if (low != Double.NEGATIVE_INFINITY) {
@@ -339,6 +409,15 @@ public final class DynamicModelImpl implements DynamicModel {
 
             if (lowMap.isEmpty() && highMap.isEmpty()) {
                 setDynamic(false);
+            } else {
+                double newMin = getMin();
+                double newMax = getMax();
+                if (newMin != min) {
+                    setNewMin(min);
+                }
+                if (newMax != max) {
+                    setNewMax(max);
+                }
             }
         }
 
@@ -373,6 +452,14 @@ public final class DynamicModelImpl implements DynamicModel {
 
         private void setDynamic(boolean dynamic) {
             controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.IS_DYNAMIC, DynamicModelImpl.this, dynamic));
+        }
+
+        private void setNewMin(double min) {
+            controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MIN_CHANGED, DynamicModelImpl.this, min));
+        }
+
+        private void setNewMax(double max) {
+            controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MAX_CHANGED, DynamicModelImpl.this, max));
         }
     }
 }

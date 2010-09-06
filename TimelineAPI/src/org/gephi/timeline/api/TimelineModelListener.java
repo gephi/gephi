@@ -18,16 +18,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.gephi.timeline.api;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author Julian Bilcke <julian.bilcke@gmail.com>
  */
-public interface TimelineModelListener  {
-    public void timelineModelChanged(ChangeEvent event);
+public interface TimelineModelListener {
+
+    public void timelineModelChanged(TimelineModelEvent event);
 }

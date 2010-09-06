@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.ui.timeline.plugin.drawers.minimal;
+package org.gephi.desktop.timeline;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

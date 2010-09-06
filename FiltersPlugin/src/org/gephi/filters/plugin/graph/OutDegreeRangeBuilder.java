@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.filters.plugin.graph;
 
 import java.util.ArrayList;
@@ -74,6 +74,9 @@ public class OutDegreeRangeBuilder implements FilterBuilder {
             return ui.getPanel((OutDegreeRangeFilter) filter);
         }
         return null;
+    }
+
+    public void destroy(Filter filter) {
     }
 
     public static class OutDegreeRangeFilter implements RangeFilter {
