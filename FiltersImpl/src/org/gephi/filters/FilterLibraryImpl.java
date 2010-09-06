@@ -29,6 +29,8 @@ import org.gephi.filters.spi.CategoryBuilder;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterLibraryMask;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -129,7 +131,8 @@ public class FilterLibraryImpl implements FilterLibrary {
         }
 
         public boolean isValid() {
-            return true;
+            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+            return graphModel.isHierarchical();
         }
     }
 }
