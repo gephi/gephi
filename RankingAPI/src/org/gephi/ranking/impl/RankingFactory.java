@@ -104,6 +104,14 @@ public class RankingFactory {
         return nodeRanking;
     }
 
+    public static boolean refreshRanking(AbstractRanking ranking, Graph graph) {
+        Object min = ranking.getMinimumValue();
+        Object max = ranking.getMaximumValue();
+        ranking.setGraph(graph);
+        setMinMax(ranking, graph);
+        return !ranking.getMinimumValue().equals(min) || !ranking.getMaximumValue().equals(max);
+    }
+
     public static boolean isNumberColumn(AttributeColumn column) {
         AttributeType type = column.getType();
         if (type == AttributeType.DOUBLE

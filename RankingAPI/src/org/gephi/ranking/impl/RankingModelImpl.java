@@ -208,7 +208,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         listeners.remove(changeListener);
     }
 
-    private void fireChangeEvent() {
+    public void fireChangeEvent() {
         ChangeEvent changeEvent = new ChangeEvent(this);
         for (ChangeListener changeListener : listeners) {
             changeListener.stateChanged(changeEvent);
