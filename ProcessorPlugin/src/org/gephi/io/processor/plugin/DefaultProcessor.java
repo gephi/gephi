@@ -17,10 +17,11 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.processor.plugin;
 
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.dynamic.api.DynamicController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
@@ -84,10 +85,10 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         attributeModel.mergeModel(container.getAttributeModel());
 
         //Dynamic
-//        if (timelineController != null) {
-//            timelineController.setMin(workspace, container.getTimeIntervalMin());
-//            timelineController.setMax(workspace, container.getTimeIntervalMax());
-//        }
+        if (container.getTimeFormat() != null) {
+            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+            dynamicController.setTimeFormat(container.getTimeFormat());
+        }
 
         int nodeCount = 0;
         //Create all nodes

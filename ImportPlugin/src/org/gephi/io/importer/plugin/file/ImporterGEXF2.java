@@ -31,6 +31,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
@@ -56,6 +57,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
     private static final String GRAPH_DEFAULT_EDGETYPE = "defaultedgetype";
     private static final String GRAPH_START = "start";
     private static final String GRAPH_END = "end";
+    private static final String GRAPH_TIMEFORMAT = "timeformat";
     private static final String NODE = "node";
     private static final String NODE_ID = "id";
     private static final String NODE_LABEL = "label";
@@ -175,6 +177,7 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
         String defaultEdgeType = "";
         String start = "";
         String end = "";
+        String timeFormat = "";
 
         //Attributes
         for (int i = 0; i < reader.getAttributeCount(); i++) {
@@ -185,6 +188,8 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
                 start = reader.getAttributeValue(i);
             } else if (GRAPH_END.equalsIgnoreCase(attName)) {
                 end = reader.getAttributeValue(i);
+            } else if (GRAPH_TIMEFORMAT.equalsIgnoreCase(attName)) {
+                timeFormat = reader.getAttributeValue(i);
             }
         }
 
@@ -207,6 +212,15 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
         }
         if (!end.isEmpty()) {
             container.setTimeIntervalMax(end);
+        }
+
+        //TimeFormat
+        if (!timeFormat.isEmpty()) {
+            if ("double".equalsIgnoreCase(timeFormat) || "float".equalsIgnoreCase(timeFormat)) {
+                container.setTimeFormat(TimeFormat.DOUBLE);
+            } else if ("date".equalsIgnoreCase(timeFormat)) {
+                container.setTimeFormat(TimeFormat.DATE);
+            }
         }
     }
 

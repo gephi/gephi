@@ -22,6 +22,7 @@ package org.gephi.io.importer.api;
 
 import java.util.Collection;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.processor.spi.Processor;
 
 /**
@@ -47,6 +48,8 @@ public interface ContainerUnloader {
     public Double getTimeIntervalMin();
 
     public Double getTimeIntervalMax();
+
+    public TimeFormat getTimeFormat();
 
     public boolean allowSelfLoop();
 

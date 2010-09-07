@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.api;
 
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.importer.spi.Importer;
 
 /**
@@ -146,7 +147,7 @@ public interface ContainerLoader {
      * time intervals that defines their lifetime, this method sets the time
      * interval start. If not set by the user, default value is the yougest
      * element.
-     * @param min
+     * @param min               the lower time interval bound
      */
     public void setTimeIntervalMin(String min);
 
@@ -155,9 +156,16 @@ public interface ContainerLoader {
      * time intervals that defines their lifetime, this method sets the time
      * interval end. If not set by the user, default value is the oldest
      * element.
-     * @param max
+     * @param max               the upper time interval bound
      */
     public void setTimeIntervalMax(String max);
+
+    /**
+     * Sets the current Time Format for dynamic data, either <code>DATE</code>
+     * of <code>DOUBLE</code>. Says how the dates are formatted.
+     * @param timeFormat        the current time format
+     */
+    public void setTimeFormat(TimeFormat timeFormat);
 
     /**
      * Node and edge draft factory. Creates node and edge to push in the container.

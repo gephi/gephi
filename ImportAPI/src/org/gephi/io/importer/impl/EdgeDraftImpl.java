@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.impl;
 
 import java.awt.Color;
@@ -31,6 +31,7 @@ import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.data.attributes.type.TypeConvertor;
 import org.gephi.dynamic.DynamicUtilities;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.EdgeDraftGetter;
@@ -177,24 +178,24 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         Double end = Double.POSITIVE_INFINITY;
         if (dateFrom != null && !dateFrom.isEmpty()) {
             try {
-                start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
-            } catch (Exception ex) {
-                try {
+                if (container.getTimeFormat().equals(TimeFormat.DATE)) {
+                    start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
+                } else {
                     start = Double.parseDouble(dateFrom);
-                } catch (Exception ex2) {
-                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
                 }
+            } catch (Exception ex) {
+                throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
             }
         }
         if (dateTo != null && !dateTo.isEmpty()) {
             try {
-                end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
-            } catch (Exception ex) {
-                try {
+                if (container.getTimeFormat().equals(TimeFormat.DATE)) {
+                    end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
+                } else {
                     end = Double.parseDouble(dateTo);
-                } catch (Exception ex2) {
-                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
                 }
+            } catch (Exception ex) {
+                throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
             }
         }
         if ((start == null && end == null) || (start == Double.NEGATIVE_INFINITY && end == Double.POSITIVE_INFINITY)) {
@@ -226,24 +227,25 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         Double end = null;
         if (dateFrom != null && !dateFrom.isEmpty()) {
             try {
-                start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
-            } catch (Exception ex) {
-                try {
+                if (container.getTimeFormat().equals(TimeFormat.DATE)) {
+                    start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
+                } else {
                     start = Double.parseDouble(dateFrom);
-                } catch (Exception ex2) {
-                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
                 }
+
+            } catch (Exception ex) {
+                throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateFrom));
             }
         }
         if (dateTo != null && !dateTo.isEmpty()) {
             try {
-                end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
-            } catch (Exception ex) {
-                try {
+                if (container.getTimeFormat().equals(TimeFormat.DATE)) {
+                    end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
+                } else {
                     end = Double.parseDouble(dateTo);
-                } catch (Exception ex2) {
-                    throw new IllegalArgumentException(NbBundle.getMessage(EdgeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
                 }
+            } catch (Exception ex) {
+                throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_ParseError", dateTo));
             }
         }
         if (start == null && end == null) {
