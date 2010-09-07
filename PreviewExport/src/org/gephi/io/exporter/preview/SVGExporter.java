@@ -471,10 +471,10 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
                 height));
 
         //Scale & ratio
-        if (scaleStrokes) {
-            scaleRatio = supportSize.getWidthInt() / (float) width;
+        if(scaleStrokes) {
+            scaleRatio = supportSize.getWidthInt() / (float)width;
         }
-
+        
         // draws the graph exporting it into the DOM
         renderGraph(graphSheet.getGraph());
         return doc;

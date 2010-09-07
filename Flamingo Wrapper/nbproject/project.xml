@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.gephi.lib.flamingo</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>org.jvnet.flamingo.bcb</package>
+                <package>org.jvnet.flamingo.bcb.core</package>
+                <package>org.jvnet.flamingo.bcb.ui</package>
+                <package>org.jvnet.flamingo.common</package>
+                <package>org.jvnet.flamingo.common.icon</package>
+                <package>org.jvnet.flamingo.common.model</package>
+                <package>org.jvnet.flamingo.common.popup</package>
+                <package>org.jvnet.flamingo.common.ui</package>
+                <package>org.jvnet.flamingo.ribbon</package>
+                <package>org.jvnet.flamingo.ribbon.resize</package>
+                <package>org.jvnet.flamingo.ribbon.ui</package>
+                <package>org.jvnet.flamingo.ribbon.ui.appmenu</package>
+                <package>org.jvnet.flamingo.slider</package>
+                <package>org.jvnet.flamingo.slider.ui</package>
+                <package>org.jvnet.flamingo.svg</package>
+                <package>org.jvnet.flamingo.utils</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/flamingo.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/flamingo.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>

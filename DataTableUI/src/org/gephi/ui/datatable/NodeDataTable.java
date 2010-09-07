@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Mathieu Jacomy, Julian Bilcke, Eduardo Ramos
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -17,20 +17,26 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.datatable;
 
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Rectangle;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import javax.swing.JMenuItem;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TreeModelListener;
@@ -38,11 +44,22 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.data.attributes.type.DynamicBigDecimal;
+import org.gephi.data.attributes.type.DynamicBigInteger;
+import org.gephi.data.attributes.type.DynamicByte;
+import org.gephi.data.attributes.type.DynamicDouble;
+import org.gephi.data.attributes.type.DynamicFloat;
+import org.gephi.data.attributes.type.DynamicInteger;
+import org.gephi.data.attributes.type.DynamicLong;
+import org.gephi.data.attributes.type.DynamicShort;
+import org.gephi.data.attributes.type.NumberList;
+import org.gephi.datalaboratory.api.AttributeColumnsController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
-import org.gephi.visualization.VizController;
 import org.netbeans.swing.etable.QuickFilter;
 import org.netbeans.swing.outline.DefaultOutlineModel;
 import org.netbeans.swing.outline.Outline;
@@ -51,7 +68,13 @@ import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
 import org.openide.awt.MouseUtils;
 import org.openide.util.Exceptions;
-import org.openide.util.NbBundle;
+import org.openide.util.Lookup;
+import org.gephi.datalaboratory.api.DataLaboratoryHelper;
+import org.gephi.datalaboratory.spi.nodes.NodesManipulator;
+import org.gephi.graph.api.Attributes;
+import org.gephi.tools.api.EditWindowController;
+import utils.PopupMenuUtils;
+import utils.SparkLinesRenderer;
 
 /**
  *
@@ -59,13 +82,19 @@ import org.openide.util.NbBundle;
  */
 public class NodeDataTable {
 
-    private final boolean popupAllowed = true;
+    private boolean useSparklines = false;
     private Outline outlineTable;
     private QuickFilter quickFilter;
     private Pattern pattern;
     private DataTablesModel dataTablesModel;
+    private Node[] selectedNodes;
+    private AttributeColumnsController attributeColumnsController;
+    private boolean refreshingTable = false;
+    private static final int FAKE_COLUMNS_COUNT = 1;
 
     public NodeDataTable() {
+        attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
+
         outlineTable = new Outline();
 
         quickFilter = new QuickFilter() {
@@ -86,6 +115,65 @@ public class NodeDataTable {
         };
 
         outlineTable.addMouseListener(new PopupAdapter());
+        prepareSparklinesRenderers();
+        //Add listener of table selection to refresh edit window when the selection changes (and if the table is not being refreshed):
+        outlineTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent e) {
+                if (!refreshingTable) {
+                    EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
+                    if (edc.isOpen()) {
+                        if (outlineTable.getSelectedRow() != -1) {
+                            edc.editNodes(getNodesFromSelectedRows());
+                        } else {
+                            edc.disableEdit();
+                        }
+                    }
+                }
+            }
+        });
+        outlineTable.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    Node[] selectedNodes = getNodesFromSelectedRows();
+                    if (selectedNodes.length > 0) {
+                        DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+                        NodesManipulator del = dlh.getDeleteNodesManipulator();
+                        if (del != null) {
+                            del.setup(selectedNodes, null);
+                            if (del.canExecute()) {
+                                dlh.executeManipulator(del);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void prepareSparklinesRenderers() {
+        outlineTable.setDefaultRenderer(NumberList.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicBigDecimal.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicBigInteger.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicByte.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicDouble.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicFloat.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicInteger.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicLong.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(DynamicShort.class, new SparkLinesRenderer());
+
+        //Use default string editor for them:
+        outlineTable.setDefaultEditor(NumberList.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicBigDecimal.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicBigInteger.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicByte.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicDouble.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicFloat.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicInteger.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicLong.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(DynamicShort.class, new DefaultCellEditor(new JTextField()));
     }
 
     public Outline getOutlineTable() {
@@ -103,6 +191,10 @@ public class NodeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, final DataTablesModel dataTablesModel) {
+        refreshingTable = true;
+        if (selectedNodes == null) {
+            selectedNodes = getNodesFromSelectedRows();
+        }
         NodeTreeModel nodeTreeModel = new NodeTreeModel(graph.wrapToTreeNode());
         final OutlineModel mdl = DefaultOutlineModel.createOutlineModel(nodeTreeModel, new NodeRowModel(cols), true);
         outlineTable.setRootVisible(false);
@@ -114,6 +206,8 @@ public class NodeDataTable {
                 public void run() {
                     outlineTable.setModel(mdl);
                     NodeDataTable.this.dataTablesModel = dataTablesModel;
+                    setNodesSelection(selectedNodes);//Keep row selection before refreshing.
+                    selectedNodes = null;
                 }
             });
         } catch (InterruptedException ex) {
@@ -121,6 +215,39 @@ public class NodeDataTable {
         } catch (InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
+        refreshingTable = false ;
+    }
+
+    public void setNodesSelection(Node[] nodes) {
+        this.selectedNodes = nodes;//Keep this selection request to be able to do it if the table is first refreshed later.
+        HashSet<Node> nodesSet = new HashSet<Node>();
+        nodesSet.addAll(Arrays.asList(nodes));
+        outlineTable.clearSelection();
+        for (int i = 0; i < outlineTable.getRowCount(); i++) {
+            if (nodesSet.contains(getNodeFromRow(i))) {
+                outlineTable.addRowSelectionInterval(i, i);
+            }
+        }
+    }
+
+    public void scrollToFirstNodeSelected() {
+        int row = outlineTable.getSelectedRow();
+        if (row != -1) {
+            Rectangle rect = outlineTable.getCellRect(row, 0, true);
+            outlineTable.scrollRectToVisible(rect);
+        }
+    }
+
+    public boolean hasData() {
+        return outlineTable.getRowCount() > 0;
+    }
+
+    public boolean isUseSparklines() {
+        return useSparklines;
+    }
+
+    public void setUseSparklines(boolean useSparklines) {
+        this.useSparklines = useSparklines;
     }
 
     private static class NodeTreeModel implements TreeModel {
@@ -136,22 +263,30 @@ public class NodeDataTable {
         }
 
         public Object getChild(Object parent, int index) {
-            TreeNode node = (TreeNode) parent;
-            return node.getChildAt(index);
+            if (parent instanceof TreeNode) {
+                TreeNode node = (TreeNode) parent;
+                return node.getChildAt(index);
+            } else {
+                return null;
+            }
         }
 
         public int getChildCount(Object parent) {
-
-            TreeNode node = (TreeNode) parent;
-            return node.getChildCount();
-
+            if (parent instanceof TreeNode) {
+                TreeNode node = (TreeNode) parent;
+                return node.getChildCount();
+            } else {
+                return 0;
+            }
         }
 
         public boolean isLeaf(Object node) {
-
-            TreeNode n = (TreeNode) node;
-            return n.isLeaf();
-
+            if (node instanceof TreeNode) {
+                TreeNode n = (TreeNode) node;
+                return n.isLeaf();
+            } else {
+                return true;
+            }
         }
 
         public void valueForPathChanged(TreePath path, Object newValue) {
@@ -172,7 +307,7 @@ public class NodeDataTable {
         }
     }
 
-    private static class NodeRowModel implements RowModel {
+    private class NodeRowModel implements RowModel {
 
         private NodeDataColumn[] columns;
 
@@ -211,7 +346,7 @@ public class NodeDataTable {
         }
     }
 
-    private static interface NodeDataColumn {
+    private interface NodeDataColumn {
 
         public Class getColumnClass();
 
@@ -224,7 +359,7 @@ public class NodeDataTable {
         public boolean isEditable();
     }
 
-    private static class AttributeNodeDataColumn implements NodeDataColumn {
+    private class AttributeNodeDataColumn implements NodeDataColumn {
 
         private AttributeColumn column;
 
@@ -233,7 +368,13 @@ public class NodeDataTable {
         }
 
         public Class getColumnClass() {
-            return column.getType().getType();
+            if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
+                return NumberList.class;
+            } else if (useSparklines && AttributeUtils.getDefault().isDynamicNumberColumn(column)) {
+                return column.getType().getType();
+            } else {
+                return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
+            }
         }
 
         public String getColumnName() {
@@ -245,16 +386,23 @@ public class NodeDataTable {
             if (graphNode.getId() == -1) {
                 return null;
             }
-            return graphNode.getNodeData().getAttributes().getValue(column.getIndex());
+            Attributes row = graphNode.getNodeData().getAttributes();
+            Object value = row.getValue(column.getIndex());
+
+            if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column) || AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
+                return value;
+            } else {
+                return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent
+            }
         }
 
         public void setValueFor(ImmutableTreeNode node, Object value) {
             Node graphNode = node.getNode();
-            graphNode.getNodeData().getAttributes().setValue(column.getIndex(), value);
+            attributeColumnsController.setAttributeValue(value, graphNode.getNodeData().getAttributes(), column);
         }
 
         public boolean isEditable() {
-            return column.getOrigin().equals(AttributeOrigin.DATA);
+            return attributeColumnsController.canChangeColumnData(column);
         }
     }
 
@@ -267,7 +415,11 @@ public class NodeDataTable {
 
         @Override
         public String getDisplayName(Object o) {
-            return ((ImmutableTreeNode) o).getNode().getNodeData().getLabel();
+            if (o instanceof ImmutableTreeNode) {
+                return ((ImmutableTreeNode) o).getNode().getNodeData().getLabel();
+            } else {
+                return o.toString();
+            }
         }
 
         @Override
@@ -278,7 +430,6 @@ public class NodeDataTable {
         @Override
         public javax.swing.Icon getIcon(Object o) {
             return null;
-
         }
 
         @Override
@@ -297,7 +448,7 @@ public class NodeDataTable {
         PopupAdapter() {
         }
 
-        protected void showPopup(MouseEvent e) {
+        protected void showPopup(final MouseEvent e) {
             int selRow = outlineTable.rowAtPoint(e.getPoint());
 
             if (selRow != -1) {
@@ -305,17 +456,24 @@ public class NodeDataTable {
                     outlineTable.getSelectionModel().clearSelection();
                     outlineTable.getSelectionModel().setSelectionInterval(selRow, selRow);
                 }
+                final Point p = e.getPoint();
+                new Thread(new Runnable() {
+
+                    public void run() {
+                        final JPopupMenu pop = createPopup(p);
+                        SwingUtilities.invokeLater(new Runnable() {
+
+                            public void run() {
+                                showPopup(p.x, p.y, pop);
+                            }
+                        });
+                    }
+                }).start();
             } else {
                 outlineTable.getSelectionModel().clearSelection();
             }
-            //Point p = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), OutlineView.this);
-            Point p = e.getPoint();
-            if (popupAllowed) {
-                JPopupMenu pop = createPopup(p);
-                showPopup(p.x, p.y, pop);
-
-                e.consume();
-            }
+            outlineTable.repaint();
+            e.consume();
         }
 
         private void showPopup(int xpos, int ypos, final JPopupMenu popup) {
@@ -339,29 +497,52 @@ public class NodeDataTable {
         }
 
         private JPopupMenu createPopup(Point p) {
-            int row = outlineTable.rowAtPoint(p);
-            final Node node = getNodeFromRow(row);
+            final Node[] selectedNodes = getNodesFromSelectedRows();
+            final Node clickedNode = getNodeFromRow(outlineTable.rowAtPoint(p));
             JPopupMenu contextMenu = new JPopupMenu();
-            JMenuItem selectMenu = new JMenuItem();
-            selectMenu.setText(NbBundle.getMessage(NodeDataTable.class, "NodeDataTable.popup.select"));
-            selectMenu.addActionListener(new ActionListener() {
 
-                public void actionPerformed(ActionEvent e) {
-                    VizController.getInstance().getSelectionManager().centerOnNode(node);
+            //First add nodes manipulators items:
+            DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+            Integer lastManipulatorType = null;
+            for (NodesManipulator nm : dlh.getNodesManipulators()) {
+                nm.setup(selectedNodes, clickedNode);
+                if (lastManipulatorType == null) {
+                    lastManipulatorType = nm.getType();
                 }
-            });
-            contextMenu.add(selectMenu);
+                if (lastManipulatorType != nm.getType()) {
+                    contextMenu.addSeparator();
+                }
+                lastManipulatorType = nm.getType();
+                contextMenu.add(PopupMenuUtils.createMenuItemFromManipulator(nm));
+            }
+
+            //Add AttributeValues manipulators submenu:
+            AttributeRow row = (AttributeRow) clickedNode.getNodeData().getAttributes();
+            int realColumnIndex = outlineTable.convertColumnIndexToModel(outlineTable.columnAtPoint(p)) - FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
+            AttributeColumn column = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumn(realColumnIndex);
+            if (column != null) {
+                contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+            }
             return contextMenu;
         }
+    }
 
-        private Node getNodeFromRow(int rowIndex) {
-            int row = outlineTable.convertRowIndexToModel(rowIndex);
-            TreePath tp = outlineTable.getLayoutCache().getPathForRow(row);
-            if (tp == null) {
-                return null;
-            }
-            ImmutableTreeNode immutableTreeNode = (ImmutableTreeNode) tp.getLastPathComponent();
-            return immutableTreeNode.getNode();
+    private Node getNodeFromRow(int rowIndex) {
+        int row = outlineTable.convertRowIndexToModel(rowIndex);
+        TreePath tp = outlineTable.getLayoutCache().getPathForRow(row);
+        if (tp == null) {
+            return null;
         }
+        ImmutableTreeNode immutableTreeNode = (ImmutableTreeNode) tp.getLastPathComponent();
+        return immutableTreeNode.getNode();
+    }
+
+    public Node[] getNodesFromSelectedRows() {
+        int[] selectedRows = outlineTable.getSelectedRows();
+        Node[] node = new Node[selectedRows.length];
+        for (int i = 0; i < node.length; i++) {
+            node[i] = getNodeFromRow(selectedRows[i]);
+        }
+        return node;
     }
 }

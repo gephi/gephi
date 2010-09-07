@@ -60,7 +60,7 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
         show = true;
         colorizer = new CustomColorMode(0, 0, 0);
         edgeScale = new Float(1f);
-        rescaleWeight = Boolean.TRUE;
+        rescaleWeight = Boolean.FALSE;
     }
 
     public Float getEdgeScale() {

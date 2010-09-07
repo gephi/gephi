@@ -88,6 +88,10 @@ public class AttributeTableImpl implements AttributeTable {
     }
 
     private synchronized AttributeColumnImpl addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue, AttributeValueDelegateProvider attributeValueDelegateProvider) {
+        if (title == null || title.isEmpty() || hasColumn(title)) {
+            throw new IllegalArgumentException("The title can't be null, empty or already existing in the table");
+        }
+
         if (defaultValue != null) {
             if (defaultValue.getClass() != type.getType()) {
                 if (defaultValue.getClass() == String.class) {

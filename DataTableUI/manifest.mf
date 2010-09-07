@@ -3,5 +3,6 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.ui.datatable
 OpenIDE-Module-Layer: org/gephi/ui/datatable/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/ui/datatable/Bundle.properties
+OpenIDE-Module-Requires: org.openide.windows.WindowManager
 OpenIDE-Module-Specification-Version: 0.7.1
 

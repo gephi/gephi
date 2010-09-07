@@ -1,0 +1,191 @@
+/*
+Copyright 2008-2010 Gephi
+Authors : Eduardo Ramos <eduramiba@gmail.com>
+Website : http://www.gephi.org
+
+This file is part of Gephi.
+
+Gephi is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+Gephi is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.ui;
+
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.datalaboratory.api.AttributeColumnsMergeStrategiesController.BooleanOperations;
+import org.gephi.datalaboratory.impl.manipulators.attributecolumns.mergestrategies.BooleanLogicOperations;
+import org.gephi.datalaboratory.spi.DialogControls;
+import org.gephi.datalaboratory.spi.Manipulator;
+import org.gephi.datalaboratory.spi.ManipulatorUI;
+import org.gephi.ui.utils.ColumnTitleValidator;
+import org.netbeans.validation.api.ui.ValidationGroup;
+import org.netbeans.validation.api.ui.ValidationPanel;
+
+/**
+ * UI for BooleanLogicOperations AttributeColumnsMergeStrategy
+ * @author Eduardo Ramos <eduramiba@gmail.com>
+ */
+public class BooleanLogicOperationsUI extends javax.swing.JPanel implements ManipulatorUI {
+
+    private BooleanLogicOperations manipulator;
+    private JComboBox[] operationSelectors;
+    private AttributeTable table;
+    private DialogControls dialogControls;
+
+    /** Creates new form BooleanLogicOperationsUI */
+    public BooleanLogicOperationsUI() {
+        initComponents();
+        titleTextField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void insertUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                refreshOkButton();
+            }
+
+            private void refreshOkButton(){
+                String text=titleTextField.getText();
+                dialogControls.setOkButtonEnabled(text!=null&&!text.isEmpty()&&!table.hasColumn(text));//Title not empty and not repeated.
+            }
+        });
+    }
+
+    public void setup(Manipulator m, DialogControls dialogControls) {
+        manipulator = (BooleanLogicOperations) m;
+        this.dialogControls=dialogControls;
+        this.table=manipulator.getTable();
+        prepareColumnsAndOperations();
+    }
+
+    public void unSetup() {
+        BooleanOperations[] booleanOperations=new BooleanOperations[operationSelectors.length];
+        for (int i = 0; i < booleanOperations.length; i++) {
+            booleanOperations[i]=(BooleanOperations) operationSelectors[i].getSelectedItem();
+        }
+
+        manipulator.setBooleanOperations(booleanOperations);
+        manipulator.setNewColumnTitle(titleTextField.getText());
+    }
+
+    public String getDisplayName() {
+        return manipulator.getName();
+    }
+
+    public JPanel getSettingsPanel() {
+        ValidationPanel validationPanel = new ValidationPanel();
+        validationPanel.setInnerComponent(this);
+
+        ValidationGroup group = validationPanel.getValidationGroup();
+
+        group.add(titleTextField, new ColumnTitleValidator(table));
+
+        return validationPanel;
+    }
+
+    public boolean isModal() {
+        return true;
+    }
+
+    private void prepareColumnsAndOperations() {
+        AttributeColumn[] columns = manipulator.getColumns();
+        operationSelectors = new JComboBox[columns.length - 1];
+
+        JLabel columnLabel;
+        for (int i = 0; i < columns.length; i++) {
+            columnLabel=new JLabel(columns[i].getTitle());
+            columnLabel.setHorizontalAlignment(JLabel.CENTER);
+            panel.add(columnLabel);
+            if (i < columns.length - 1) {
+                operationSelectors[i] = prepareOperationSelector();
+                panel.add(operationSelectors[i]);
+            }
+        }
+    }
+
+    private JComboBox prepareOperationSelector() {
+        JComboBox selector = new JComboBox(BooleanOperations.values());
+        return selector;
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        descriptionLabel = new javax.swing.JLabel();
+        scroll = new javax.swing.JScrollPane();
+        panel = new javax.swing.JPanel();
+        titleLabel = new javax.swing.JLabel();
+        titleTextField = new javax.swing.JTextField();
+
+        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.descriptionLabel.text")); // NOI18N
+
+        panel.setLayout(new java.awt.GridLayout(0, 1, 0, 20));
+        scroll.setViewportView(panel);
+
+        titleLabel.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.titleLabel.text")); // NOI18N
+
+        titleTextField.setText(org.openide.util.NbBundle.getMessage(BooleanLogicOperationsUI.class, "BooleanLogicOperationsUI.titleTextField.text")); // NOI18N
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(titleLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(titleTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(titleLabel)
+                    .addComponent(titleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+    }// </editor-fold>//GEN-END:initComponents
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JPanel panel;
+    private javax.swing.JScrollPane scroll;
+    private javax.swing.JLabel titleLabel;
+    private javax.swing.JTextField titleTextField;
+    // End of variables declaration//GEN-END:variables
+}

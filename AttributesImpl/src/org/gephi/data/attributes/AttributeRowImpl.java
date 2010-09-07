@@ -163,10 +163,22 @@ public class AttributeRowImpl implements AttributeRow {
         return values;
     }
 
+    public AttributeValue getAttributeValueAt(int index) {
+        if (checkIndexRange(index)) {
+            return values[index];
+        }
+        return null;
+    }
+
     public int countValues() {
         updateColumns();
         return values.length;
     }
+
+     public AttributeColumn getColumnAt(int index){
+         updateColumns();
+         return attributeTable.getColumn(index);
+     }
 
     public Object getObject() {
         return object;
@@ -201,7 +213,7 @@ public class AttributeRowImpl implements AttributeRow {
     }
 
     private boolean checkIndexRange(int index) {
-        return index < values.length;
+        return index < values.length && index >= 0;
     }
 
     public int getRowVersion() {

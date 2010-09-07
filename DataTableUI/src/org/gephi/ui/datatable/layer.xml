@@ -17,6 +17,10 @@
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-ui-datatable-DataTableAction.instance"/>
                 <attr name="position" intvalue="300"/>
             </file>
+            <file name="LaboratoryAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-ui-datatable-LaboratoryAction.instance"/>
+                <attr name="position" intvalue="350"/>
+            </file>
         </folder>
     </folder>
     <folder name="Windows2">
@@ -24,9 +28,10 @@
             <file name="DataTableTopComponent.settings" url="DataTableTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
-            <folder name="graphmode">
+            <folder name="datatablemode">
                 <file name="DataTableTopComponent.wstcref" url="DataTableTopComponentWstcref.xml"/>
             </folder>
+            <file name="datatablemode.wsmode" url="datatableWsmode.xml"/>
         </folder>
     </folder>
 </filesystem>

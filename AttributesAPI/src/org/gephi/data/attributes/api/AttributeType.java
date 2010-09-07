@@ -22,6 +22,7 @@ package org.gephi.data.attributes.api;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.util.regex.Pattern;
 import org.gephi.data.attributes.type.DynamicByte;
 import org.gephi.data.attributes.type.DynamicShort;
 import org.gephi.data.attributes.type.DynamicInteger;
@@ -126,19 +127,21 @@ public enum AttributeType {
      * method will succeed to return a <code>Boolean</code> instance. May
      * throw <code>NumberFormatException</code>.
      *
+     * <code>DYNAMIC</code> types and <code>TIME_INTERVAL</code> cannot be parsed with this method (see <code>isDynamicType</code> method) and a UnsupportedOperationException will be thrown if it is tried.
+     * 
      * @param str   the string that is to be parsed
      * @return      an instance of the type of this  <code>AttributeType</code>.
      */
     public Object parse(String str) {
         switch (this) {
             case BYTE:
-                return new Byte(str);
+                return new Byte(removeDecimalDigitsFromString(str));
             case SHORT:
-                return new Short(str);
+                return new Short(removeDecimalDigitsFromString(str));
             case INT:
-                return new Integer(str);
+                return new Integer(removeDecimalDigitsFromString(str));
             case LONG:
-                return new Long(str);
+                return new Long(removeDecimalDigitsFromString(str));
             case FLOAT:
                 return new Float(str);
             case DOUBLE:
@@ -148,7 +151,7 @@ public enum AttributeType {
             case CHAR:
                 return new Character(str.charAt(0));
             case BIGINTEGER:
-                return new BigInteger(str);
+                return new BigInteger(removeDecimalDigitsFromString(str));
             case BIGDECIMAL:
                 return new BigDecimal(str);
             case DYNAMIC_BYTE:
@@ -176,13 +179,13 @@ public enum AttributeType {
             case TIME_INTERVAL:
                 throw new UnsupportedOperationException("Not supported.");
             case LIST_BYTE:
-                return new ByteList(str);
+                return new ByteList(removeDecimalDigitsFromString(str));
             case LIST_SHORT:
-                return new ShortList(str);
+                return new ShortList(removeDecimalDigitsFromString(str));
             case LIST_INTEGER:
-                return new IntegerList(str);
+                return new IntegerList(removeDecimalDigitsFromString(str));
             case LIST_LONG:
-                return new LongList(str);
+                return new LongList(removeDecimalDigitsFromString(str));
             case LIST_FLOAT:
                 return new FloatList(str);
             case LIST_DOUBLE:
@@ -194,7 +197,7 @@ public enum AttributeType {
             case LIST_STRING:
                 return new StringList(str);
             case LIST_BIGINTEGER:
-                return new BigIntegerList(str);
+                return new BigIntegerList(removeDecimalDigitsFromString(str));
             case LIST_BIGDECIMAL:
                 return new BigDecimalList(str);
         }
@@ -243,6 +246,10 @@ public enum AttributeType {
      * @return      the compatible <code>AttributeType</code>, or <code>null</code>
      */
     public static AttributeType parseDynamic(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+		
         Class<?> c = obj.getClass();
 
         if (c.equals(Byte.class)) {
@@ -289,24 +296,26 @@ public enum AttributeType {
      * otherwise 
      */
     public boolean isDynamicType() {
-        if (this.equals(DYNAMIC_BYTE)
-                || this.equals(DYNAMIC_SHORT)
-                || this.equals(DYNAMIC_INT)
-                || this.equals(DYNAMIC_LONG)
-                || this.equals(DYNAMIC_FLOAT)
-                || this.equals(DYNAMIC_DOUBLE)
-                || this.equals(DYNAMIC_BOOLEAN)
-                || this.equals(DYNAMIC_CHAR)
-                || this.equals(DYNAMIC_STRING)
-                || this.equals(DYNAMIC_BIGINTEGER)
-                || this.equals(DYNAMIC_BIGDECIMAL)
-                || this.equals(TIME_INTERVAL)) {
-            return true;
+        switch (this) {
+            case DYNAMIC_BYTE:
+            case DYNAMIC_SHORT:
+            case DYNAMIC_INT:
+            case DYNAMIC_LONG:
+            case DYNAMIC_FLOAT:
+            case DYNAMIC_DOUBLE:
+            case DYNAMIC_BOOLEAN:
+            case DYNAMIC_CHAR:
+            case DYNAMIC_STRING:
+            case DYNAMIC_BIGINTEGER:
+            case DYNAMIC_BIGDECIMAL:
+            case TIME_INTERVAL:
+                return true;
+            default:
+                return false;
         }
-        return false;
-    }
-
-    public boolean isListType() {
+    }    
+	
+	public boolean isListType() {
         if (this.equals(LIST_BIGDECIMAL)
                 || this.equals(LIST_BIGINTEGER)
                 || this.equals(LIST_BOOLEAN)
@@ -322,4 +331,17 @@ public enum AttributeType {
         }
         return false;
     }
+
+    /**
+     * Removes the decimal digits and point of the numbers of string when necessary.
+     * Used for trying to parse decimal numbers as not decimal.
+     * For example BigDecimal to BigInteger.
+     * @param s String to remove decimal digits
+     * @return String without dot and decimal digits.
+     */
+    private String removeDecimalDigitsFromString(String s){
+        return removeDecimalDigitsFromStringPattern.matcher(s).replaceAll("");
+    }
+
+    private static final Pattern removeDecimalDigitsFromStringPattern=Pattern.compile("\\.[0-9]*");
 }

@@ -59,6 +59,6 @@ public class UnidirectionalEdgeSupervisorImpl extends DirectedEdgeSupervisorImpl
         arrowSize = 20f;
         arrowColorizer = new ParentColorMode();
         edgeScale = new Float(1f);
-        rescaleWeight = Boolean.TRUE;
+        rescaleWeight = Boolean.FALSE;
     }
 }
