@@ -123,10 +123,8 @@ public final class TypeConvertor {
 
                 throw new IllegalArgumentException(errorMessage);
             } catch (Exception e2) {
-                e2.printStackTrace();
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return resultValue;
     }

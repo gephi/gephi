@@ -121,7 +121,7 @@ public class AttributeRowImpl implements AttributeRow {
 
         this.values[index] = value;
 
-        if (!((oldValue == null && value == null) || (oldValue != null && oldValue.equals(value.getValue())))) {
+        if (!((oldValue == null && value == null) || (oldValue != null && oldValue.equals(value)))) {
             attributeTable.model.fireAttributeEvent(new ValueEvent(EventType.SET_VALUE, attributeTable, object, value));
         }
     }
@@ -163,10 +163,22 @@ public class AttributeRowImpl implements AttributeRow {
         return values;
     }
 
+    public AttributeValue getAttributeValueAt(int index) {
+        if (checkIndexRange(index)) {
+            return values[index];
+        }
+        return null;
+    }
+
     public int countValues() {
         updateColumns();
         return values.length;
     }
+
+     public AttributeColumn getColumnAt(int index){
+         updateColumns();
+         return attributeTable.getColumn(index);
+     }
 
     public Object getObject() {
         return object;
@@ -201,7 +213,7 @@ public class AttributeRowImpl implements AttributeRow {
     }
 
     private boolean checkIndexRange(int index) {
-        return index < values.length;
+        return index < values.length && index >= 0;
     }
 
     public int getRowVersion() {

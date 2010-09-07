@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Essential-Module: true
+OpenIDE-Module: org.gephi.lib.javacsv
+OpenIDE-Module-Localizing-Bundle: org/gephi/lib/javacsv/Bundle.properties
+OpenIDE-Module-Specification-Version: 2.0
+

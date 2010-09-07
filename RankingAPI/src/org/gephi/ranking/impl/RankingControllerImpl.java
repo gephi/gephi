@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ranking.impl;
 
 import org.gephi.ranking.api.RankingResult;
@@ -62,6 +62,8 @@ public class RankingControllerImpl implements RankingController {
         rankingResult.ranking = ranking;
 
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraphVisible();
+        boolean refreshed = RankingFactory.refreshRanking((AbstractRanking) ranking, graph);
+
         if (ranking instanceof NodeRanking) {
             ((AbstractRanking) ranking).setGraph(graph);
             for (Node node : graph.getNodes().toArray()) {
@@ -90,6 +92,9 @@ public class RankingControllerImpl implements RankingController {
             }
         }
         rankingEventBus.publishResults(rankingResult);
+        if (refreshed) {
+            rankingModelImpl.fireChangeEvent();
+        }
     }
 
     public ColorTransformer getObjectColorTransformer(Ranking ranking) {

@@ -33,9 +33,31 @@ public abstract class AttributeUtils {
 
     public abstract boolean isEdgeColumn(AttributeColumn column);
 
+    public abstract boolean isColumnOfType(AttributeColumn column, AttributeType type);
+
+    public abstract boolean areAllColumnsOfType(AttributeColumn[] columns, AttributeType type);
+
+    public abstract boolean areAllColumnsOfSameType(AttributeColumn[] columns);
+
     public abstract boolean isStringColumn(AttributeColumn column);
 
+    public abstract boolean areAllStringColumns(AttributeColumn[] columns);
+
     public abstract boolean isNumberColumn(AttributeColumn column);
+
+    public abstract boolean areAllNumberColumns(AttributeColumn[] columns);
+
+    public abstract boolean isNumberListColumn(AttributeColumn column);
+
+    public abstract boolean areAllNumberListColumns(AttributeColumn[] columns);
+
+    public abstract boolean isNumberOrNumberListColumn(AttributeColumn column);
+
+    public abstract boolean areAllNumberOrNumberListColumns(AttributeColumn[] columns);
+
+    public abstract boolean isDynamicNumberColumn(AttributeColumn column);
+
+    public abstract boolean areAllDynamicNumberColumns(AttributeColumn[] columns);
 
     public abstract AttributeColumn[] getNumberColumns(AttributeTable table);
 

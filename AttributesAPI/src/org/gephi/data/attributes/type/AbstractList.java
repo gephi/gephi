@@ -152,7 +152,9 @@ public abstract class AbstractList<T> {
 
         for (int i = 0; i < list.length; i++) {
             if (this.getItem(i) != s.getItem(i)) {
-                if (!this.getItem(i).equals(s.getItem(i))) {
+                if (this.getItem(i)!=null&&!this.getItem(i).equals(s.getItem(i))) {
+                    return false;
+                }else if(s.getItem(i)!=null&&!s.getItem(i).equals(this.getItem(i))){
                     return false;
                 }
             }

@@ -60,10 +60,8 @@ public interface AttributeTable {
     public int countColumns();
 
     /**
-     * Creates and add a new column to this table. The default origin is set at <code>DATA</code>.
-     * <p>
-     * The title of the column is the identifier.
-     * 
+     * <p>Creates and add a new column to this table. The default origin is set at <code>DATA</code>.</p>
+     * <p>The title of the column is the identifier.</p>
      * @param id            the identifier of the column
      * @param type          the type of the column
      * @return              the newly created column
@@ -71,10 +69,8 @@ public interface AttributeTable {
     public AttributeColumn addColumn(String id, AttributeType type);
 
     /**
-     * Creates and add a new column to this table.
-     * <p>
-     * The title of the column is the identifier
-     * .
+     * <p>Creates and add a new column to this table.</p>
+     * <p>The title of the column is the identifier.</p>
      * @param id            the identifier of the column
      * @param type          the type of the column
      * @param origin        the origin of the column
@@ -83,8 +79,8 @@ public interface AttributeTable {
     public AttributeColumn addColumn(String id, AttributeType type, AttributeOrigin origin);
 
     /**
-     * Creates and add a new column to this table.
-     *
+     * <p>Creates and add a new column to this table.</p>
+     * <p>The title can't be null, empty or already existing in the table</p>
      * @param id            the identifier of the column
      * @param title         the title of the column
      * @param type          the type of the column
@@ -95,8 +91,9 @@ public interface AttributeTable {
     public AttributeColumn addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue);
 
     /**
-     * Creates and add a new column to this table. Attribute origin will be set to AttributeOrigin.DELEGATE.
-     *
+     * <p>Creates and add a new column to this table.</p>
+     * <p>The title can't be null, empty or already existing in the table</p>
+     * <p>Attribute origin will be set to AttributeOrigin.DELEGATE.</p>     *
      * @param id                             the identifier of the column
      * @param title                          the title of the column
      * @param type                           the type of the column
@@ -108,8 +105,7 @@ public interface AttributeTable {
 
     /**
      * Creates and add a new properties column to this table. All needed informations are set in
-     * PropertiesColumn enum instance.
-     *
+     * PropertiesColumn enum instance.     *
      * @param propertiesColumn the properties column
      * @return                 the newly created column
      */

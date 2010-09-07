@@ -78,6 +78,7 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
     private static final String GRAPH_DEFAULT_EDGETYPE = "defaultedgetype";
     private static final String GRAPH_START = "start";
     private static final String GRAPH_END = "end";
+    private static final String GRAPH_TIMEFORMAT = "timeformat";
     private static final String META = "meta";
     private static final String META_LASTMODIFIEDDATE = "lastmodifieddate";
     private static final String META_CREATOR = "creator";
@@ -123,6 +124,7 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
     private GraphModel graphModel;
     private AttributeModel attributeModel;
     private TimeInterval visibleInterval;
+    private DynamicModel dynamicModel;
     //Settings
     private boolean normalize = false;
     private boolean exportColors = true;
@@ -196,7 +198,7 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
 
             if (exportDynamic) {
                 DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-                DynamicModel dynamicModel = dynamicController != null ? dynamicController.getModel(workspace) : null;
+                dynamicModel = dynamicController != null ? dynamicController.getModel(workspace) : null;
                 visibleInterval = dynamicModel == null ? null : exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
             }
 
@@ -225,12 +227,14 @@ public class ExporterGEXF2 implements GraphExporter, CharacterExporter, LongTask
         if (exportDynamic) {
             if (!Double.isInfinite(visibleInterval.getLow())) {
                 String intervalLow = "" + visibleInterval.getLow();
-                xmlWriter.writeAttribute(START, intervalLow);
+                xmlWriter.writeAttribute(GRAPH_START, intervalLow);
             }
             if (!Double.isInfinite(visibleInterval.getHigh())) {
                 String intervalHigh = "" + visibleInterval.getHigh();
-                xmlWriter.writeAttribute(END, intervalHigh);
+                xmlWriter.writeAttribute(GRAPH_END, intervalHigh);
             }
+            String timeFormat = dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE) ? "date" : "double";
+            xmlWriter.writeAttribute(GRAPH_TIMEFORMAT, timeFormat);
         }
 
         writeAttributes(xmlWriter, attributeModel.getNodeTable());

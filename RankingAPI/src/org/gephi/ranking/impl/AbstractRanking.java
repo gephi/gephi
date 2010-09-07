@@ -27,7 +27,7 @@ import org.gephi.ranking.api.Ranking;
  *
  * @author Mathieu Bastian
  */
-public abstract class AbstractRanking<Element, Type> implements Ranking<Element, Type> {
+public abstract class AbstractRanking<Element, Type extends Number> implements Ranking<Element, Type> {
 
     protected Type minimum;
     protected Type maximum;

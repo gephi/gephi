@@ -61,7 +61,7 @@ public class UndirectedEdgeSupervisorImpl extends EdgeSupervisorImpl
         baseLabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
         labelColorizer = new ParentColorMode();
         edgeScale = new Float(1f);
-        rescaleWeight = Boolean.TRUE;
+        rescaleWeight = Boolean.FALSE;
     }
 
     @Override

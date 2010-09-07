@@ -5,6 +5,8 @@
 package org.gephi.io.generator.plugin;
 
 import java.util.Random;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
 import org.gephi.io.importer.api.ContainerLoader;
@@ -26,6 +28,8 @@ public class DynamicGraph implements Generator {
     public void generate(ContainerLoader container) {
         Random random = new Random();
 
+        AttributeColumn col = container.getAttributeModel().getNodeTable().addColumn("score", AttributeType.DYNAMIC_INT);
+
         NodeDraft[] nodeArray = new NodeDraft[numberOfNodes];
         for (int i = 0; i < numberOfNodes; i++) {
             NodeDraft nodeDraft = container.factory().newNodeDraft();
@@ -34,8 +38,14 @@ public class DynamicGraph implements Generator {
 
             Random r = new Random();
             int randomStart = r.nextInt(10) + 2000;
-            int randomEnd = randomStart + r.nextInt(10);
+            int randomEnd = randomStart + 20 + r.nextInt(10);
             nodeDraft.addTimeInterval("" + randomStart, "" + randomEnd);
+
+            randomEnd = randomStart + r.nextInt(10);
+            nodeDraft.addAttributeValue(col, r.nextInt(5), ""+randomStart, ""+randomEnd);
+            randomStart = randomEnd +1;
+            randomEnd = randomStart + r.nextInt(10);
+            nodeDraft.addAttributeValue(col, r.nextInt(5), ""+randomStart, ""+randomEnd);
 
             nodeArray[i] = nodeDraft;
         }

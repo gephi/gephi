@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.impl;
 
 import java.util.ArrayList;
@@ -36,6 +36,7 @@ import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.DynamicUtilities;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.Container;
@@ -59,15 +60,15 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     //MetaData
     private String source;
     //Factory
-    private FactoryImpl factory;
+    private final FactoryImpl factory;
     //Parameters
-    private ImportContainerParameters parameters;
+    private final ImportContainerParameters parameters;
     //Maps
     private HashMap<String, NodeDraftImpl> nodeMap;
-    private HashMap<String, EdgeDraftImpl> edgeMap;
-    private HashMap<String, EdgeDraftImpl> edgeSourceTargetMap;
+    private final HashMap<String, EdgeDraftImpl> edgeMap;
+    private final HashMap<String, EdgeDraftImpl> edgeSourceTargetMap;
     //Attributes
-    private AttributeModel attributeModel;
+    private final AttributeModel attributeModel;
     //Management
     private boolean dynamicGraph = false;
     private boolean hierarchicalGraph = false;
@@ -76,6 +77,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private int directedEdgesCount = 0;
     private int undirectedEdgesCount = 0;
     //Dynamic
+    private TimeFormat timeFormat = TimeFormat.DOUBLE;
     private Double timeIntervalMin;
     private Double timeIntervalMax;
 
@@ -342,6 +344,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         return timeIntervalMax;
     }
 
+    public TimeFormat getTimeFormat() {
+        return timeFormat;
+    }
+
     public void setTimeIntervalMax(String timeIntervalMax) {
         try {
             this.timeIntervalMax = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMax);
@@ -370,14 +376,17 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         }
     }
 
-    public boolean verify() {
+    public void setTimeFormat(TimeFormat timeFormat) {
+        this.timeFormat = timeFormat;
+    }
 
+    public boolean verify() {
         //Edge weight 0
         for (EdgeDraftImpl edge : edgeMap.values().toArray(new EdgeDraftImpl[0])) {
             if (edge.getWeight() <= 0f) {
-                String id = edge.getId();
-                String sourceTargetId = edge.getSource().getId() + "-" + edge.getTarget().getId();
                 if (parameters.isRemoveEdgeWithWeightZero()) {
+                    String id = edge.getId();
+                    String sourceTargetId = edge.getSource().getId() + "-" + edge.getTarget().getId();
                     edgeMap.remove(id);
                     edgeSourceTargetMap.remove(sourceTargetId);
                     report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Weight_Zero_Ignored", id), Level.SEVERE));
@@ -424,8 +433,25 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             }
         }
 
+        //Print time interval values to report
         if (timeIntervalMin != null || timeIntervalMax != null) {
-            //Print values to report
+            if (timeFormat.equals(TimeFormat.DATE)) {
+                try {
+                    String message = "[" + (timeIntervalMin != null ? DynamicUtilities.getXMLDateStringFromDouble(timeIntervalMin) : "-inf") + ",";
+                    message += (timeIntervalMax != null ? DynamicUtilities.getXMLDateStringFromDouble(timeIntervalMax) : "+inf") + "]";
+                    report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeInterval", message));
+                } catch (Exception e) {
+                }
+            } else {
+                String message = "[" + (timeIntervalMin != null ? timeIntervalMin.toString() : "-inf") + ",";
+                message += (timeIntervalMax != null ? timeIntervalMax.toString() : "+inf") + "]";
+                report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeInterval", message));
+            }
+        }
+
+        //Print TimeFormat
+        if (dynamicGraph) {
+            report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeFormat", timeFormat.toString()));
         }
 
         //Dynamic attributes bounds

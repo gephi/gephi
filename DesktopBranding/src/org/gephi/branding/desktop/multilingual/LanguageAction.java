@@ -43,7 +43,8 @@ public final class LanguageAction extends CallableSystemAction {
     public enum Language {
 
         EN_US("en", "English"),
-        FR_FR("fr", "Français");
+        FR_FR("fr", "Français"),
+        ES_ES("es", "Español");
         private String locale;
         private String name;
 

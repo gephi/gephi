@@ -17,13 +17,15 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.processor.plugin;
 
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
@@ -85,15 +87,15 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         }
         GraphFactory factory = graphModel.factory();
 
-        //Dynamic
-//        if (timelineController != null) {
-//            timelineController.setMin(workspace, container.getTimeIntervalMin());
-//            timelineController.setMax(workspace, container.getTimeIntervalMax());
-//        }
-
         //Attributes - Creates columns for properties
         attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         attributeModel.mergeModel(container.getAttributeModel());
+
+        //Dynamic
+        if (container.getTimeFormat() != null) {
+            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+            dynamicController.setTimeFormat(container.getTimeFormat());
+        }
 
         //Index existing graph
         Map<String, Node> map = new HashMap<String, Node>();

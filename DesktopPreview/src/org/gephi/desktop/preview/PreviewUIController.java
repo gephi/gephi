@@ -1,7 +1,7 @@
 package org.gephi.desktop.preview;
 
-import java.awt.Color;
 import javax.swing.SwingUtilities;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
@@ -44,6 +44,9 @@ public class PreviewUIController implements GraphListener {
             }
 
             public void select(Workspace workspace) {
+                //Make sure AttributeModel is created before graph model:
+                Lookup.getDefault().lookup(AttributeController.class).getModel();
+
                 graphModel = gc.getModel();
                 graphModel.addGraphListener(PreviewUIController.this);
                 showRefreshNotification();
