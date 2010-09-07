@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
+AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.lib.flamingo
 OpenIDE-Module-Localizing-Bundle: org/gephi/lib/flamingo/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 5.0
 
