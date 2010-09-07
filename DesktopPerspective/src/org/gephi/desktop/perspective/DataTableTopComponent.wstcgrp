@@ -3,7 +3,7 @@
   "http://www.netbeans.org/dtds/tc-group2_0.dtd">
 
 <tc-group version="2.0">
-    <module name="org.gephi.ui.datatable" spec="1.0"/>
+    <module name="org.gephi.desktop.datalab" spec="1.0"/>
     <tc-id id="DataTableTopComponent" />
     <open-close-behavior open="true" close="true" />
 </tc-group>
