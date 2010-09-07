@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+AutoUpdate-Essential-Module: true
+OpenIDE-Module: org.gephi.desktop.datalab
+OpenIDE-Module-Layer: org/gephi/desktop/datalab/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/datalab/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

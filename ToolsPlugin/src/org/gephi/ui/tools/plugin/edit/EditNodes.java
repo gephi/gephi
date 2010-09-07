@@ -26,7 +26,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
-import org.gephi.datalaboratory.api.AttributeColumnsController;
+import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.openide.nodes.AbstractNode;
