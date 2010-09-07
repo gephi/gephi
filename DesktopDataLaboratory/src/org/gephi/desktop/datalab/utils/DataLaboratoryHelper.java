@@ -201,7 +201,7 @@ public class DataLaboratoryHelper{
                     final ManipulatorUI ui = m.getUI();
                     //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                     if (ui != null) {
-                        final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelper.class, "DataLaboratoryHelperImpl.ui.okButton.text"));
+                        final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelper.class, "DataLaboratoryHelper.ui.okButton.text"));
                         DialogControls dialogControls = new DialogControlsImpl(okButton);
                         ui.setup(m, dialogControls);
                         JPanel settingsPanel = ui.getSettingsPanel();
