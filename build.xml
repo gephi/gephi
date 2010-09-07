@@ -187,6 +187,7 @@
                 <include name="stax-utils.jar"/>
                 <include name="trove*.jar"/>
                 <include name="xml-apis-ext*.jar"/>
+                <include name="javacsv*.jar"/>
             </fileset>
         </copy>
 
