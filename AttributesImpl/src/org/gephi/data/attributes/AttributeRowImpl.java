@@ -121,7 +121,7 @@ public class AttributeRowImpl implements AttributeRow {
 
         this.values[index] = value;
 
-        if (!((oldValue == null && value == null) || (oldValue != null && oldValue.equals(value.getValue())))) {
+        if (!((oldValue == null && value == null) || (oldValue != null && oldValue.equals(value)))) {
             attributeTable.model.fireAttributeEvent(new ValueEvent(EventType.SET_VALUE, attributeTable, object, value));
         }
     }
