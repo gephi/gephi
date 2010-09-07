@@ -50,10 +50,12 @@
             <sourcepath>
                 <pathelement path="AttributesAPI/src"/>
                 <pathelement path="ClusteringAPI/src"/>
+                <pathelement path="DataLaboratoryAPI/src"/>
+                <pathelement path="DynamicAPI/src"/>
                 <pathelement path="ExportAPI/src"/>
                 <pathelement path="FiltersAPI/src"/>
                 <pathelement path="GeneratorAPI/src"/>
-                <pathelement path="GraphAPi/src"/>
+                <pathelement path="GraphAPI/src"/>
                 <pathelement path="ImportAPI/src"/>
                 <pathelement path="LayoutAPI/src"/>
                 <pathelement path="LongTaskAPI/src"/>
@@ -62,11 +64,10 @@
                 <pathelement path="ProjectAPI/src"/>
                 <pathelement path="RankingAPI/src"/>
                 <pathelement path="StatisticsAPI/src"/>
-                <pathelement path="TimelineAPI/src"/>
                 <pathelement path="ToolsAPI/src"/>
             </sourcepath>
-            <doctitle>Gephi 0.7alpha4 API Index</doctitle>
-            <header>Gephi 0.7alpha4 Javadoc</header>
+            <doctitle>Gephi 0.7beta API Index</doctitle>
+            <header>Gephi 0.7beta Javadoc</header>
         </javadoc>
     </target>
 
@@ -169,6 +170,7 @@
                 <include name="org-gephi-partition-plugin.jar"/>
                 <include name="org-gephi-io-generator-api.jar"/>
                 <include name="org-gephi-io-generator-plugin.jar"/>
+                <include name="org-gephi-datalab-api.jar"/>
             </fileset>
         </copy>
         <copy todir="${toolkit.tempdir}">
@@ -238,9 +240,10 @@
                 <pathelement path="PartitionPlugin/src"/>
                 <pathelement path="GeneratorAPI/src"/>
                 <pathelement path="GeneratorPlugin/src"/>
+                <pathelement path="DataLaboratoryAPI/src"/>
             </sourcepath>
             <doctitle>Gephi Toolkit Javadoc</doctitle>
-            <header>Gephi Toolkit 0.7.1 Javadoc</header>
+            <header>Gephi Toolkit Javadoc</header>
         </javadoc>
         <zip destfile="${basedir}/toolkit/toolkit-javadoc.zip" basedir="${basedir}/toolkit/doc">
         </zip>
