@@ -31,7 +31,7 @@ import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulator
 import org.gephi.datalaboratory.spi.attributecolumns.AttributeColumnsManipulatorUI;
 import org.gephi.ui.components.JFreeChartDialog;
 import org.gephi.ui.components.SimpleHTMLReport;
-import org.gephi.utils.ChartsUtils;
+import org.gephi.ui.utils.ChartsUtils;
 import org.gephi.utils.StatisticsUtils;
 import org.jfree.chart.JFreeChart;
 import org.openide.windows.WindowManager;

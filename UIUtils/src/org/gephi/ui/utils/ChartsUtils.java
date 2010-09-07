@@ -18,7 +18,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.utils;
+package org.gephi.ui.utils;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.gephi.utils.HTMLEscape;
+import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;

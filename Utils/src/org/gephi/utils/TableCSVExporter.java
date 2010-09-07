@@ -25,14 +25,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
-import org.gephi.ui.utils.DialogFileFilter;
-import org.openide.util.NbBundle;
-import org.openide.util.NbPreferences;
 
 public class TableCSVExporter {
 
@@ -54,10 +48,10 @@ public class TableCSVExporter {
             separator = DEFAULT_SEPARATOR;
         }
 
-        if(columnsToExport==null){
-            columnsToExport=new Integer[model.getColumnCount()];
+        if (columnsToExport == null) {
+            columnsToExport = new Integer[model.getColumnCount()];
             for (int i = 0; i < columnsToExport.length; i++) {
-                columnsToExport[i]=i;
+                columnsToExport[i] = i;
             }
         }
 
@@ -86,43 +80,4 @@ public class TableCSVExporter {
         }
         writer.close();
     }
-
-    /**
-     * <p>Exports a JTable to a CSV file showing first a dialog to select the file to write.</p>
-     * @param parent Parent window
-     * @param table Table to export
-     * @param separator Separator to use for separating values of a row in the CSV file. If null ',' will be used.
-     * @param charset Charset encoding for the file
-     * @param columnsToExport Indicates the indexes of the columns to export. All columns will be exported if null
-     */
-    public static void exportTableAsCSV(JComponent parent, JTable table, Character separator, Charset charset, Integer[] columnsToExport) {
-        String lastPath = NbPreferences.forModule(TableCSVExporter.class).get(LAST_PATH, null);
-        final JFileChooser chooser = new JFileChooser(lastPath);
-        chooser.setAcceptAllFileFilterUsed(false);
-        DialogFileFilter dialogFileFilter = new DialogFileFilter(NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.filechooser.csvDescription"));
-        dialogFileFilter.addExtension("csv");
-        chooser.addChoosableFileFilter(dialogFileFilter);
-        File selectedFile = new File(chooser.getCurrentDirectory(), "table.csv");
-        chooser.setSelectedFile(selectedFile);
-        int returnFile = chooser.showSaveDialog(null);
-        if (returnFile != JFileChooser.APPROVE_OPTION) {
-            return;
-        }
-        File file = chooser.getSelectedFile();
-
-        if (!file.getPath().endsWith(".csv")) {
-            file = new File(file.getPath() + ".csv");
-        }
-
-        //Save last path
-        String defaultDirectory = file.getParentFile().getAbsolutePath();
-        NbPreferences.forModule(TableCSVExporter.class).put(LAST_PATH, defaultDirectory);
-        try {
-            writeCSVFile(table, file, separator, charset, columnsToExport);
-            JOptionPane.showMessageDialog(parent, NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.success"));
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(parent, NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.error"), NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.error.title"), JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    private static final String LAST_PATH = "TableCSVExporter_Save_Last_Path";
 }

@@ -27,7 +27,10 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -40,7 +43,9 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -76,6 +81,7 @@ import org.gephi.ui.components.WrapLayout;
 import org.gephi.ui.general.actions.AddColumnUI;
 import org.gephi.ui.general.actions.CSVExportUI;
 import org.gephi.ui.general.actions.MergeColumnsUI;
+import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.utils.TableCSVExporter;
 import org.jvnet.flamingo.common.CommandButtonDisplayState;
@@ -574,7 +580,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         CSVExportUI csvUI = new CSVExportUI(table);
         DialogDescriptor dd = new DialogDescriptor(csvUI, csvUI.getDisplayName());
         if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION)) {
-            TableCSVExporter.exportTableAsCSV(this, table, csvUI.getSelectedSeparator(), csvUI.getSelectedCharset(), csvUI.getSelectedColumnsIndexes());
+            DataTableTopComponent.exportTableAsCSV(this, table, csvUI.getSelectedSeparator(), csvUI.getSelectedCharset(), csvUI.getSelectedColumnsIndexes());
         }
         csvUI.unSetup();
     }
@@ -1198,4 +1204,43 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             return DataTableTopComponent.getDefault();
         }
     }
+
+    /**
+     * <p>Exports a JTable to a CSV file showing first a dialog to select the file to write.</p>
+     * @param parent Parent window
+     * @param table Table to export
+     * @param separator Separator to use for separating values of a row in the CSV file. If null ',' will be used.
+     * @param charset Charset encoding for the file
+     * @param columnsToExport Indicates the indexes of the columns to export. All columns will be exported if null
+     */
+    public static void exportTableAsCSV(JComponent parent, JTable table, Character separator, Charset charset, Integer[] columnsToExport) {
+        String lastPath = NbPreferences.forModule(TableCSVExporter.class).get(LAST_PATH, null);
+        final JFileChooser chooser = new JFileChooser(lastPath);
+        chooser.setAcceptAllFileFilterUsed(false);
+        DialogFileFilter dialogFileFilter = new DialogFileFilter(NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.filechooser.csvDescription"));
+        dialogFileFilter.addExtension("csv");
+        chooser.addChoosableFileFilter(dialogFileFilter);
+        File selectedFile = new File(chooser.getCurrentDirectory(), "table.csv");
+        chooser.setSelectedFile(selectedFile);
+        int returnFile = chooser.showSaveDialog(null);
+        if (returnFile != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        File file = chooser.getSelectedFile();
+
+        if (!file.getPath().endsWith(".csv")) {
+            file = new File(file.getPath() + ".csv");
+        }
+
+        //Save last path
+        String defaultDirectory = file.getParentFile().getAbsolutePath();
+        NbPreferences.forModule(TableCSVExporter.class).put(LAST_PATH, defaultDirectory);
+        try {
+            TableCSVExporter.writeCSVFile(table, file, separator, charset, columnsToExport);
+            JOptionPane.showMessageDialog(parent, NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.success"));
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(parent, NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.error"), NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.error.title"), JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    private static final String LAST_PATH = "TableCSVExporter_Save_Last_Path";
 }
