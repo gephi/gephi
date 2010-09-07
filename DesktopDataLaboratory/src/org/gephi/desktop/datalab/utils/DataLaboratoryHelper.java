@@ -18,7 +18,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalab.plugin;
+package org.gephi.desktop.datalab.utils;
 
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
@@ -34,7 +34,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.plugin.manipulators.edges.DeleteEdges;
 import org.gephi.datalab.plugin.manipulators.general.SearchReplace;
 import org.gephi.datalab.plugin.manipulators.nodes.DeleteNodes;
@@ -57,17 +56,19 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Implementation of the DataLaboratoryHelper interface
- * declared in the Data Laboratory API.
+ * Helper class for simplifying the implementation of Data Laboratory UI.
  * @author Eduardo Ramos <eduramiba@gmail.com>
- * @see DataLaboratoryHelper
  */
-@ServiceProvider(service = DataLaboratoryHelper.class)
-public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
+public class DataLaboratoryHelper{
 
+    /**
+     * <p>Prepares an array with one new instance of every NodesManipulator
+     * that has a builder registered and returns it.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     * @return Array of all NodesManipulator implementations
+     */
     public NodesManipulator[] getNodesManipulators() {
         ArrayList<NodesManipulator> nodesManipulators = new ArrayList<NodesManipulator>();
         for (NodesManipulatorBuilder nm : Lookup.getDefault().lookupAll(NodesManipulatorBuilder.class)) {
@@ -77,6 +78,12 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         return nodesManipulators.toArray(new NodesManipulator[0]);
     }
 
+    /**
+     * <p>Prepares an array with one new instance of every EdgesManipulator
+     * that has a builder registered and returns it.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     * @return Array of all EdgesManipulator implementations
+     */
     public EdgesManipulator[] getEdgesManipulators() {
         ArrayList<EdgesManipulator> edgesManipulators = new ArrayList<EdgesManipulator>();
         for (EdgesManipulatorBuilder em : Lookup.getDefault().lookupAll(EdgesManipulatorBuilder.class)) {
@@ -86,6 +93,11 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         return edgesManipulators.toArray(new EdgesManipulator[0]);
     }
 
+    /**
+     * <p>Prepares an array with one instance of every GeneralActionsManipulator that is registered.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     * @return Array of all GeneralActionsManipulator implementations
+     */
     public GeneralActionsManipulator[] getGeneralActionsManipulators() {
         ArrayList<GeneralActionsManipulator> generalActionsManipulators = new ArrayList<GeneralActionsManipulator>();
         generalActionsManipulators.addAll(Lookup.getDefault().lookupAll(GeneralActionsManipulator.class));
@@ -93,6 +105,11 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         return generalActionsManipulators.toArray(new GeneralActionsManipulator[0]);
     }
 
+    /**
+     * <p>Prepares an array with one instance of every PluginGeneralActionsManipulator that is registered.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     * @return Array of all PluginGeneralActionsManipulator implementations
+     */
     public PluginGeneralActionsManipulator[] getPluginGeneralActionsManipulators() {
         ArrayList<PluginGeneralActionsManipulator> pluginGeneralActionsManipulators = new ArrayList<PluginGeneralActionsManipulator>();
         pluginGeneralActionsManipulators.addAll(Lookup.getDefault().lookupAll(PluginGeneralActionsManipulator.class));
@@ -100,6 +117,12 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         return pluginGeneralActionsManipulators.toArray(new PluginGeneralActionsManipulator[0]);
     }
 
+    /**
+     * <p>Prepares an array that has one instance of every AttributeColumnsManipulator implementation
+     * that has a builder registered and returns it.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     * @return Array of all AttributeColumnsManipulator implementations
+     */
     public AttributeColumnsManipulator[] getAttributeColumnsManipulators() {
         ArrayList<AttributeColumnsManipulator> attributeColumnsManipulators = new ArrayList<AttributeColumnsManipulator>();
         attributeColumnsManipulators.addAll(Lookup.getDefault().lookupAll(AttributeColumnsManipulator.class));
@@ -107,6 +130,12 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         return attributeColumnsManipulators.toArray(new AttributeColumnsManipulator[0]);
     }
 
+    /**
+     * <p>Prepares an array with one new instance of every AttributeValueManipulator
+     * that has a builder registered and returns it.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     * @return Array of all AttributeValueManipulator implementations
+     */
     public AttributeValueManipulator[] getAttributeValueManipulators() {
         ArrayList<AttributeValueManipulator> attributeValueManipulators = new ArrayList<AttributeValueManipulator>();
         for (AttributeValueManipulatorBuilder am : Lookup.getDefault().lookupAll(AttributeValueManipulatorBuilder.class)) {
@@ -116,6 +145,11 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         return attributeValueManipulators.toArray(new AttributeValueManipulator[0]);
     }
 
+    /**
+     * <p>Prepares an array that has one new instance of every AttributeColumnsMergeStrategy implementation that is registered.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     * @return Array of all AttributeColumnsMergeStrategy implementations
+     */
     public AttributeColumnsMergeStrategy[] getAttributeColumnsMergeStrategies() {
         ArrayList<AttributeColumnsMergeStrategy> strategies = new ArrayList<AttributeColumnsMergeStrategy>();
         for (AttributeColumnsMergeStrategyBuilder cs : Lookup.getDefault().lookupAll(AttributeColumnsMergeStrategyBuilder.class)) {
@@ -153,6 +187,11 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         });
     }
 
+    /**
+     * Prepares the dialog UI of a manipulator if it has one and executes the manipulator in a separate
+     * Thread when the dialog is accepted or directly if there is no UI.
+     * @param m Manipulator to execute
+     */
     public void executeManipulator(final Manipulator m) {
         if (m.canExecute()) {
             SwingUtilities.invokeLater(new Runnable() {
@@ -162,11 +201,11 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                     final ManipulatorUI ui = m.getUI();
                     //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                     if (ui != null) {
-                        final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelperImpl.class, "DataLaboratoryHelperImpl.ui.okButton.text"));
+                        final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelper.class, "DataLaboratoryHelperImpl.ui.okButton.text"));
                         DialogControls dialogControls = new DialogControlsImpl(okButton);
                         ui.setup(m, dialogControls);
                         JPanel settingsPanel = ui.getSettingsPanel();
-                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
+                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelper.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
 
                             public void actionPerformed(ActionEvent e) {
                                 if (e.getSource().equals(okButton)) {
@@ -206,6 +245,13 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         }.start();
     }
 
+    /**
+     * Prepares the dialog UI of a AttributeColumnsManipulator if it has one and executes the manipulator in a separate
+     * Thread when the dialog is accepted or directly if there is no UI.
+     * @param m AttributeColumnsManipulator
+     * @param table Table of the column
+     * @param column Column to manipulate
+     */
     public void executeAttributeColumnsManipulator(final AttributeColumnsManipulator m, final AttributeTable table, final AttributeColumn column) {
         if (m.canManipulateColumn(table, column)) {
             SwingUtilities.invokeLater(new Runnable() {
@@ -214,11 +260,11 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
                     final AttributeColumnsManipulatorUI ui = m.getUI(table, column);
                     //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
                     if (ui != null) {
-                        final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelperImpl.class, "DataLaboratoryHelperImpl.ui.okButton.text"));
+                        final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelper.class, "DataLaboratoryHelper.ui.okButton.text"));
                         DialogControls dialogControls = new DialogControlsImpl(okButton);
                         ui.setup(m, table, column, dialogControls);
                         JPanel settingsPanel = ui.getSettingsPanel();
-                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelperImpl.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
+                        DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelper.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
 
                             public void actionPerformed(ActionEvent e) {
                                 if (e.getSource().equals(okButton)) {
@@ -258,14 +304,29 @@ public class DataLaboratoryHelperImpl implements DataLaboratoryHelper {
         }.start();
     }
 
+    /**
+     * Special method for making public DeleteNodes manipulator so it can be specifically retrieved from Data Table UI.
+     * It is used for reacting to delete key.
+     * @return DeleteNodes new instance
+     */
     public NodesManipulator getDeleteNodesManipulator() {
         return new DeleteNodes();
     }
 
+    /**
+     * Special method for making public DeleteEdges manipulator so it can be specifically retrieved from Data Table UI.
+     * It is used for reacting to delete key.
+     * @return DeleteEdges new instance
+     */
     public EdgesManipulator getDeleEdgesManipulator() {
         return new DeleteEdges();
     }
 
+    /**
+     * Special method for making public SearchReplace manipulator so it can be specifically retrieved from Data Table UI.
+     * It is used for reacting to Ctrl+F keys combination.
+     * @return SearchReplace new instance
+     */
     public GeneralActionsManipulator getSearchReplaceManipulator() {
         return new SearchReplace();
     }

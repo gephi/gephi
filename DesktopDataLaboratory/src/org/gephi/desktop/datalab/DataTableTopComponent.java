@@ -60,7 +60,6 @@ import org.gephi.data.attributes.api.AttributeEvent.EventType;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.api.DataTablesController;
 import org.gephi.datalab.api.DataTablesEventListener;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
@@ -81,6 +80,7 @@ import org.gephi.ui.components.WrapLayout;
 import org.gephi.desktop.datalab.general.actions.AddColumnUI;
 import org.gephi.desktop.datalab.general.actions.CSVExportUI;
 import org.gephi.desktop.datalab.general.actions.MergeColumnsUI;
+import org.gephi.desktop.datalab.utils.DataLaboratoryHelper;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.utils.TableCSVExporter;
@@ -616,7 +616,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             table = attributeModel.getEdgeTable();
         }
 
-        DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+        DataLaboratoryHelper dlh = new DataLaboratoryHelper();
         AttributeColumnsManipulator[] manipulators = dlh.getAttributeColumnsManipulators();
 
         JCommandButtonStrip currentButtonGroup = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
@@ -799,7 +799,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         //Figure out the index to place the buttons, in order to put them between separator 2 and the boxGlue.
         int index = controlToolbar.getComponentIndex(boxGlue);
 
-        final DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+        final DataLaboratoryHelper dlh = new DataLaboratoryHelper();
         JButton button;
         for (final GeneralActionsManipulator m : dlh.getGeneralActionsManipulators()) {
             button = new JButton(m.getName(), m.getIcon());
@@ -928,7 +928,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         KeyEvent evt = (KeyEvent) event;
 
         if (evt.getID() == KeyEvent.KEY_RELEASED && (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0 && evt.getKeyCode() == KeyEvent.VK_F) {
-            DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+            DataLaboratoryHelper dlh = new DataLaboratoryHelper();
             dlh.executeManipulator(dlh.getSearchReplaceManipulator());
             evt.consume();
         }

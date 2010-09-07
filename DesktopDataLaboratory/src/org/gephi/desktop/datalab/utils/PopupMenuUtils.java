@@ -26,11 +26,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.values.AttributeValueManipulator;
 import org.openide.util.ImageUtilities;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -50,7 +48,7 @@ public class PopupMenuUtils {
             menuItem.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+                    DataLaboratoryHelper dlh = new DataLaboratoryHelper();
                     dlh.executeManipulator(nm);
                 }
             });
@@ -61,7 +59,7 @@ public class PopupMenuUtils {
     }
 
     public static JMenu createSubMenuFromRowColumn(AttributeRow row, AttributeColumn column) {
-        DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+        DataLaboratoryHelper dlh = new DataLaboratoryHelper();
         JMenu subMenu = new JMenu(NbBundle.getMessage(PopupMenuUtils.class, "Cell.Popup.subMenu.text"));
         subMenu.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/table-select.png", true));
 

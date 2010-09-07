@@ -46,7 +46,7 @@
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="availableStrategiesComboBox" pref="218" max="32767" attributes="0"/>
+                              <Component id="availableStrategiesComboBox" pref="232" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="infoLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -86,9 +86,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="availableStrategiesComboBox" alignment="1" max="32767" attributes="1"/>
                   <Component id="infoLabel" pref="20" max="32767" attributes="1"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="availableStrategiesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="availableStrategiesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>

@@ -127,7 +127,14 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>org.gephi.datalab.plugin.manipulators.columns</package>
+                <package>org.gephi.datalab.plugin.manipulators.columns.merge</package>
+                <package>org.gephi.datalab.plugin.manipulators.edges</package>
+                <package>org.gephi.datalab.plugin.manipulators.general</package>
+                <package>org.gephi.datalab.plugin.manipulators.nodes</package>
+                <package>org.gephi.datalab.plugin.manipulators.values</package>
+            </public-packages>
         </data>
     </configuration>
 </project>

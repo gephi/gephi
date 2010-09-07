@@ -69,8 +69,8 @@ import org.netbeans.swing.outline.RowModel;
 import org.openide.awt.MouseUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
+import org.gephi.desktop.datalab.utils.DataLaboratoryHelper;
 import org.gephi.graph.api.Attributes;
 import org.gephi.tools.api.EditWindowController;
 import org.gephi.desktop.datalab.utils.PopupMenuUtils;
@@ -139,7 +139,7 @@ public class NodeDataTable {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
                     Node[] selectedNodes = getNodesFromSelectedRows();
                     if (selectedNodes.length > 0) {
-                        DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+                        DataLaboratoryHelper dlh = new DataLaboratoryHelper();
                         NodesManipulator del = dlh.getDeleteNodesManipulator();
                         if (del != null) {
                             del.setup(selectedNodes, null);
@@ -502,7 +502,7 @@ public class NodeDataTable {
             JPopupMenu contextMenu = new JPopupMenu();
 
             //First add nodes manipulators items:
-            DataLaboratoryHelper dlh = Lookup.getDefault().lookup(DataLaboratoryHelper.class);
+            DataLaboratoryHelper dlh = new DataLaboratoryHelper();
             Integer lastManipulatorType = null;
             for (NodesManipulator nm : dlh.getNodesManipulators()) {
                 nm.setup(selectedNodes, clickedNode);
