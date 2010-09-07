@@ -14,15 +14,7 @@
                         <specification-version>2.0</specification-version>
                     </run-dependency>
                 </dependency>
-                <dependency>
-                    <code-name-base>org.openide.util</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>8.6.1</specification-version>
-                    </run-dependency>
-                </dependency>
-            </module-dependencies>
+                </module-dependencies>
             <test-dependencies>
                 <test-type>
                     <name>unit</name>
