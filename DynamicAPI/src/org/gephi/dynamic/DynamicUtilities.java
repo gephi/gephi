@@ -474,6 +474,6 @@ public final class DynamicUtilities {
 	 * @throws IllegalArgumentException if {@code low} > {@code high}.
 	 */
 	public static DynamicType fitToInterval(DynamicType source, double low, double high) {
-		return fitToInterval(source, new Interval(low, high, false, false));
+		return fitToInterval(source, new Interval(low, high));
 	}
 }

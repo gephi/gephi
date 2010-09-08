@@ -188,28 +188,25 @@ public abstract class DynamicType<T> {
 	}
 
 	/**
-	 * Indicates if this instance is included in a given time interval.
+	 * Indicates if a given time interval overlaps with any interval of this instance.
 	 *
 	 * @param interval a given time interval
 	 *
-	 * @return {@code true} if and only if this instance.low >= interval.low and
-	 *         this instance.right <= interval.high and bounds are properly
-	 *         excluded/included, otherwise {@code false}.
+	 * @return {@code true} a given time interval overlaps with any interval of this
+	 *         instance, otherwise {@code false}.
 	 */
 	public boolean isInRange(Interval<T> interval) {
-		return getLow()  >= interval.getLow()  && (isLowExcluded()  || !interval.isLowExcluded()) &&
-			   getHigh() <= interval.getHigh() && (isHighExcluded() || !interval.isHighExcluded());
+		return intervalTree.overlapsWith(interval);
 	}
 
 	/**
-	 * Indicates if this instance is included in a [{@code low}, {@code high}]
-	 * time interval.
+	 * Indicates if [{@code low}, {@code high}] interval overlaps with any interval of this instance.
 	 *
 	 * @param low  the left endpoint
 	 * @param high the right endpoint
 	 *
-	 * @return {@code true} if and only if this instance.low >= low and
-	 *         this instance.right <= high, otherwise {@code false}.
+	 * @return {@code true} a given time interval overlaps with any interval of this
+	 *         instance, otherwise {@code false}.
 	 *
 	 * @throws IllegalArgumentException if {@code low} > {@code high}.
 	 */
@@ -219,7 +216,7 @@ public abstract class DynamicType<T> {
 						"The left endpoint of the interval must be less than " +
 						"the right endpoint.");
 
-		return getLow() >= low && getHigh() <= high;
+		return intervalTree.overlapsWith(new Interval<T>(low, high));
 	}
 
 	/**

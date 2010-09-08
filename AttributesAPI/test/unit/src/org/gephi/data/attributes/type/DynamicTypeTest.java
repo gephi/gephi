@@ -117,10 +117,10 @@ public class DynamicTypeTest {
 	public void testIsInRange() {
 		System.out.println("isInRange()");
 		DynamicDouble instance = makeTree1();
-		Boolean expResult1 = true;
-		Boolean result1    = instance.isInRange(-1.0, 31.0);
-		Boolean expResult2 = false;
-		Boolean result2    = instance.isInRange(1.0, 20.0);
+		Boolean expResult1 = false;
+		Boolean result1    = instance.isInRange(11.0, 14.0);
+		Boolean expResult2 = true;
+		Boolean result2    = instance.isInRange(9.0, 12.0);
 		assertEquals(expResult1, result1);
 		assertEquals(expResult2, result2);
 		System.out.println("expResult1: " + expResult1);

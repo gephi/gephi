@@ -495,6 +495,51 @@ public final class IntervalTree<T> {
 			searchNodes(n.right, interval, result);
 	}
 
+	/**
+	 * Indicates if this {@code IntervalTree} overlaps with the given time interval.
+	 *
+	 * @param interval a given time interval
+	 *
+	 * @return {@code true} if this {@code IntervalTree} overlaps with {@code interval},
+	 *         {@code false} otherwise.
+	 */
+	public boolean overlapsWith(Interval<T> interval) {
+		return overlapsWith(root.left, interval);
+	}
+
+	private boolean overlapsWith(Node n, Interval<T> interval) {
+		// Don't search nodes that don't exist.
+		if (n == nil)
+			return false;
+
+		// Skip all nodes that have got their max value below the start of
+		// the given interval.
+		if (interval.getLow() > n.max)
+			return false;
+
+		// Search left children.
+		if (n.left != nil)
+			if (overlapsWith(n.left, interval))
+				return true;
+
+		// Check this node.
+		if (n.i.compareTo(interval) == 0)
+			return true;
+
+		// Skip all nodes to the right of nodes whose low value is past the end
+		// of the given interval.
+		if (interval.compareTo(n.i) < 0)
+			return false;
+
+		// Otherwise, search right children.
+		if (n.right != nil)
+			if (overlapsWith(n.right, interval))
+				return true;
+
+		// No overlaps, return false.
+		return false;
+	}
+
 	private void inorderTreeWalk(Node x, List<Interval<T>> list) {
 		if (x != nil) {
 			inorderTreeWalk(x.left, list);
