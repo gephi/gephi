@@ -349,30 +349,34 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     public void setTimeIntervalMax(String timeIntervalMax) {
-        try {
-            this.timeIntervalMax = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMax);
-        } catch (Exception ex) {
+        if (timeFormat.equals(TimeFormat.DATE)) {
+            try {
+                this.timeIntervalMax = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMax);
+            } catch (Exception ex) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMax), Level.SEVERE));
+            }
+        } else {
             try {
                 this.timeIntervalMax = Double.parseDouble(timeIntervalMax);
-            } catch (Exception ex2) {
+            } catch (Exception ex) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMax), Level.SEVERE));
             }
-        }
-        if (this.timeIntervalMax == null) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMax), Level.SEVERE));
         }
     }
 
     public void setTimeIntervalMin(String timeIntervalMin) {
-        try {
-            this.timeIntervalMin = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMin);
-        } catch (Exception ex) {
+        if (timeFormat.equals(TimeFormat.DATE)) {
+            try {
+                this.timeIntervalMin = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMin);
+            } catch (Exception ex) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMin), Level.SEVERE));
+            }
+        } else {
             try {
                 this.timeIntervalMin = Double.parseDouble(timeIntervalMin);
-            } catch (Exception ex2) {
+            } catch (Exception ex) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMin), Level.SEVERE));
             }
-        }
-        if (this.timeIntervalMin == null) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMin), Level.SEVERE));
         }
     }
 
