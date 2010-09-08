@@ -194,9 +194,13 @@ public class RangePanel extends javax.swing.JPanel {
         rangeSliderPanel = new JRangeSliderPanel();
         histogramPanel = new javax.swing.JPanel();
 
+        setOpaque(false);
         setLayout(new java.awt.BorderLayout());
+
+        rangeSliderPanel.setOpaque(false);
         add(rangeSliderPanel, java.awt.BorderLayout.CENTER);
 
+        histogramPanel.setOpaque(false);
         histogramPanel.setLayout(new java.awt.BorderLayout());
         add(histogramPanel, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents

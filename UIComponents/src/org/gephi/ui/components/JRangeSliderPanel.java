@@ -46,6 +46,9 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
     public JRangeSliderPanel() {
         initComponents();
         ((JRangeSlider)rangeSlider).setUpperValue(1000);
+        rangeSlider.setOpaque(false);
+        lowerBoundTextField.setOpaque(false);
+        upperBoundTextField.setOpaque(false);
 
         lowerBoundTextField.addMouseListener(new MouseAdapter() {
 
@@ -169,6 +172,7 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
         lowerBoundTextField = new javax.swing.JTextField();
         upperBoundTextField = new javax.swing.JTextField();
 
+        setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
 
         rangeSlider.setMaximum(1000);
@@ -184,7 +188,6 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
         lowerBoundTextField.setText(org.openide.util.NbBundle.getMessage(JRangeSliderPanel.class, "JRangeSliderPanel.lowerBoundTextField.text")); // NOI18N
         lowerBoundTextField.setBorder(null);
         lowerBoundTextField.setEnabled(false);
-        lowerBoundTextField.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -197,7 +200,6 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
         upperBoundTextField.setText(org.openide.util.NbBundle.getMessage(JRangeSliderPanel.class, "JRangeSliderPanel.upperBoundTextField.text")); // NOI18N
         upperBoundTextField.setBorder(null);
         upperBoundTextField.setEnabled(false);
-        upperBoundTextField.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;

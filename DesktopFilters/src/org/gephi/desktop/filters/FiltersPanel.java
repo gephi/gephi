@@ -63,6 +63,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         toolbar.setBorder(b);
         if (UIUtils.isAquaLookAndFeel()) {
             toolbar.setBackground(UIManager.getColor("NbExplorerView.background"));
+            setBackground(UIManager.getColor("NbExplorerView.background"));
         }
 
         //Components
@@ -370,6 +371,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
 
         southToolbar.setFloatable(false);
         southToolbar.setRollover(true);
+        southToolbar.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -379,6 +381,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         gridBagConstraints.insets = new java.awt.Insets(4, 5, 0, 0);
         add(southToolbar, gridBagConstraints);
 
+        buttonsPanel.setOpaque(false);
         buttonsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 4, 4));
 
         selectButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/select.png"))); // NOI18N
