@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-06-03 11:19+0000\n"
+"PO-Revision-Date: 2010-09-07 15:32+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-07-01 03:46+0000\n"
+"X-Launchpad-Export-Date: 2010-09-08 04:46+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "CTL_GraphAction"
@@ -168,6 +168,9 @@ msgstr "Reestablecer colores"
 msgid "ActionsToolbar.resetSizes"
 msgstr "Reestablecer tamaños"
 
+msgid "ActionsToolbar.resetSizes.dialog"
+msgstr "Establecer tamaño"
+
 msgid "ActionsToolbar.resetLabelColors"
 msgstr "Reestablecer colores de las etiquetas"
 
@@ -204,12 +207,6 @@ msgstr "Color de selección"
 msgid "EdgeSettingsPanel.edgeInSelectionColorChooser.toolTipText"
 msgstr "Color de arista Entrante <-"
 
-msgid "EdgeSettingsPanel.edgeOutSelectionColorChooser.toolTipText"
-msgstr "Color de arista Saliente ->"
-
-msgid "EdgeSettingsPanel.edgeBothSelectionColorChooser.toolTipText"
-msgstr "Color de arista Bidireccional <->"
-
 msgid "NodeSettingsPanel.showHullsCheckbox.text"
 msgstr "Mostrar envolturas"
 
@@ -224,3 +221,15 @@ msgstr "Salida"
 
 msgid "EdgeSettingsPanel.labelBoth.text"
 msgstr "Bidireccional:"
+
+msgid "EdgeSettingsPanel.edgeOutSelectionColorChooser.toolTipText"
+msgstr "Color de arista Saliente ->"
+
+msgid "EdgeSettingsPanel.edgeBothSelectionColorChooser.toolTipText"
+msgstr "Color de arista Bidireccional <->"
+
+msgid "GlobalSettingsPanel.labelZoom.text"
+msgstr "Zoom"
+
+msgid "EdgeSettingsPanel.labelMetaScale.text"
+msgstr "Escala (meta-arista)"

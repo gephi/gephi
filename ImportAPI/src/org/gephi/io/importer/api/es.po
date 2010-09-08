@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-05-17 21:13+0000\n"
+"PO-Revision-Date: 2010-09-07 14:42+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-07-01 03:46+0000\n"
+"X-Launchpad-Export-Date: 2010-09-08 04:46+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "OpenIDE-Module-Long-Description"
@@ -22,3 +22,29 @@ msgstr "API/SPI para importadores"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "API/SPI para importadores"
+
+msgid "ImportUtils.error_no_matching_file_importer"
+msgstr ""
+"Imposible encontrar un importador compatible.\\nEl formato del archivo no "
+"está soportado. Comprueba la extensión del archivo."
+
+msgid "ImportUtils.error_no_matching_stream_importer"
+msgstr ""
+"Imposible encontrar un importador compatible.\\nEl flujo no está soportado."
+
+msgid "ImportUtils.error_no_matching_db_importer"
+msgstr ""
+"Imposible encontrar un importador compatible.\\nLa base de datos no está "
+"soportada."
+
+msgid "ImportUtils.error_file_not_found"
+msgstr "Imposible abrir el archivo."
+
+msgid "ImportUtils.error_missing_document_instance_factory"
+msgstr "Imposible obtener una instancia de DocumentBuilder"
+
+msgid "ImportUtils.error_io"
+msgstr "Impossble leer el archivo dado"
+
+msgid "ImportUtils.error_sax"
+msgstr "Impossble analizar el archivo XML dado"

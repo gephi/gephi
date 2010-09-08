@@ -8,20 +8,29 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-06-03 09:10+0000\n"
+"PO-Revision-Date: 2010-09-07 15:12+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-07-01 03:46+0000\n"
+"X-Launchpad-Export-Date: 2010-09-08 04:46+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Interfaz de usuario de los exportadores estándar"
 
-msgid "UIExporterGEXFPanel.labelExport.text"
-msgstr "Exportar:"
+msgid "UIExporterGDF.name"
+msgstr "GDF"
+
+msgid "UIExporterGEXF.name"
+msgstr "GEXF"
+
+msgid "UIExporterGraphML.name"
+msgstr "GraphML"
+
+msgid "UIExporterCSV.name"
+msgstr "CSV"
 
 msgid "UIExporterGDFPanel.jRadioButton1.text"
 msgstr "Comillas simples"
@@ -53,6 +62,18 @@ msgstr "La encapsulación de los campos usa comillas dobles por defecto"
 msgid "UIExporterGDFPanel.labelNormalize.text"
 msgstr "Escalar posición y tamaño entre 0 y 1"
 
+msgid "UIExporterGDFPanel.simpleQuotesCheckbox.text"
+msgstr "Comillas simples"
+
+msgid "UIExporterGDFPanel.labelQuotes1.text"
+msgstr "Usar comillas simples en lugar de comillas dobles"
+
+msgid "UIExporterGDFPanel.visibilityCheckbox.text"
+msgstr "Visibilidad (grafo visible, etiquetas visibles)"
+
+msgid "UIExporterGEXFPanel.labelExport.text"
+msgstr "Exportar:"
+
 msgid "UIExporterGEXFPanel.attributesExportCheckbox.text"
 msgstr "Atributos"
 
@@ -70,15 +91,6 @@ msgstr "Normalizar"
 
 msgid "UIExporterGEXFPanel.labelNormalize.text"
 msgstr "Escalar posición y tamaño entre 0 y 1"
-
-msgid "UIExporterGDFPanel.simpleQuotesCheckbox.text"
-msgstr "Comillas simples"
-
-msgid "UIExporterGDFPanel.labelQuotes1.text"
-msgstr "Usar comillas simples en lugar de comillas dobles"
-
-msgid "UIExporterGDFPanel.visibilityCheckbox.text"
-msgstr "Visibilidad (grafo visible, etiquetas visibles)"
 
 msgid "UIExporterGraphMLPanel.labelExport.text"
 msgstr "Exportar:"
@@ -118,3 +130,12 @@ msgstr "Matriz"
 
 msgid "UIExporterCSVPanel.zeroEdgeCheckbox.text"
 msgstr "Cero cuando no hay arista"
+
+msgid "UIExporterGEXFPanel.dynamicExportCheckbox.text"
+msgstr "Dinámico"
+
+msgid "UIExporterGEXFPanel.labelNormalize1.text"
+msgstr "Completar el arbol de nodos sin meta-aristas"
+
+msgid "UIExporterGEXFPanel.hierarchyCheckbox.text"
+msgstr "Exportar jerarquía"

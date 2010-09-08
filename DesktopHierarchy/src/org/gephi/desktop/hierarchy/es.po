@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-05-13 21:19+0000\n"
+"PO-Revision-Date: 2010-09-07 13:57+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-07-01 03:46+0000\n"
+"X-Launchpad-Export-Date: 2010-09-08 04:46+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "Actions/Window/org-gephi-desktop-hierarchy-HierarchyAction.instance"
@@ -65,34 +65,47 @@ msgstr "0"
 msgid "HierarchyControlPanel.metaEdgesSettings.title"
 msgstr "Parámetros de las meta-aristas"
 
-msgid "MetaEdgesSettingsPanel.jXHeader1.title"
-msgstr "Parámetros de las meta-aristas"
+msgid "HierarchyControlPanel.info.title"
+msgstr "Meta-aristas"
 
-msgid "MetaEdgesSettingsPanel.jXHeader1.description"
+msgid "HierarchyControlPanel.info.description"
 msgstr ""
-"Las meta-aristas son aristas entre un grupo y un nodo o entre dos grupos. "
-"Representan las aristas apropiadas entre los descendientes de los grupos."
+"Las meta-aristas con aristas entre un grupo de nodos y un nodo o entre 2 "
+"grupos. Representan las aristas adecuadas entre los descendientes de los "
+"grupos."
 
-msgid "HierarchyControlPanel.jLabel1.text"
-msgstr "Auto creación de meta-aristas"
+msgid "HierarchyControlPanel.weightinfo.title"
+msgstr "Peso de las meta-aristas"
 
-msgid "MetaEdgesSettingsPanel.sumRadio.text"
-msgstr "Suma de los pesos de las aristas"
-
-msgid "MetaEdgesSettingsPanel.avgRadio.text"
-msgstr "Valor medio del peso de las aristas"
-
-msgid "MetaEdgesSettingsPanel.labelMax.text"
-msgstr "Peso máximo"
-
-msgid "MetaEdgesSettingsPanel.labelMin.text"
-msgstr "Peso mínimo"
-
-msgid "MetaEdgesSettingsPanel.labelBuilding.text"
-msgstr "Construcción"
-
-msgid "MetaEdgesSettingsPanel.labelEnable.text"
-msgstr "Habilitar meta-aristas"
+msgid "HierarchyControlPanel.weightinfo.description"
+msgstr ""
+"Las meta-aristas son creadas a partir de la agregación de aristas normales, "
+"el peso de las meta-aristas puede ser la suma o el valor medio de los pesos "
+"de las aristas. Notar que el peso no será cambiado en aristas ya existentes "
+"si cambias el parámetro."
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Addon de Visualización para la navegación jerárquica"
+
+msgid "HierarchyControlPanel.labelAuto.text"
+msgstr "Auto creación de meta-aristas"
+
+msgid "HierarchyControlPanel.labelWeight.text"
+msgstr "Peso de las meta-aristas"
+
+msgid "HierarchyControlPanel.sumRadio.label"
+msgstr "Suma"
+
+msgid "HierarchyControlPanel.avgRadio.label"
+msgstr "Valor medio"
+
+msgid "HierarchyControlPanel.sumRadio.toolTipText"
+msgstr "Suma de los pesos de las aristas"
+
+msgid "HierarchyControlPanel.avgRadio.toolTipText"
+msgstr "Valor medio de los pesos de las aristas"
+
+msgid "HierarchyControlPanel.heightLabel.toolTipText"
+msgstr ""
+"La altura de la jerarquía. Valores mayores que 1 significan que el grafo es "
+"jerárquico"

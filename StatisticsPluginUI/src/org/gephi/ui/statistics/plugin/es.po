@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-06-03 10:30+0000\n"
+"PO-Revision-Date: 2010-09-07 15:28+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-07-01 03:46+0000\n"
+"X-Launchpad-Export-Date: 2010-09-08 04:46+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "GraphDistancePanel.directedRadioButton.text"
@@ -31,12 +31,6 @@ msgstr "Dirigido"
 
 msgid "ClusteringCoefficientPanel.undirectedRadioButton.text"
 msgstr "No dirigido"
-
-msgid "ClusteringCoefficientPanel.triangleRadioButton.text"
-msgstr "Triángulo rápido"
-
-msgid "ClusteringCoefficientPanel.bruteRadioButton.text"
-msgstr "Fuerza bruta"
 
 msgid "DegreeDistributionPanel.directedRadioButton.text"
 msgstr "Dirigido"
@@ -95,9 +89,6 @@ msgstr ""
 "corto, puede indicar un efecto \"small-world\". Indica cómo los nodos están "
 "incrustados entre sus nodos vecinos. El valor medio da una indicación "
 "general del clustering en la red."
-
-msgid "ClusteringCoefficientPanel.labelAlgorithm.text_1"
-msgstr "Algoritmo:"
 
 msgid "DegreeDistributionPanel.header.title"
 msgstr "Distribución de grado"
@@ -177,3 +168,43 @@ msgstr ""
 "considerado generalmente significativo. Hacer el algoritmo aleatorio puede "
 "producir una mejor descomposición dando un mayor resultado de modularidad, "
 "sin embargo hacerlo aleatorio incrementará el tiempo de cómputo."
+
+msgid "ConnectedComponentPanel.header.description"
+msgstr "Determina el número de componentes conexas en la red"
+
+msgid "ConnectedComponentPanel.undirectedRadioButton.text"
+msgstr "No dirigido"
+
+msgid "ConnectedComponentPanel.directedRadioButton.text"
+msgstr "Dirigido"
+
+msgid "ConnectedComponentPanel.header.title"
+msgstr "Componentes conexas"
+
+msgid "ConnectedComponentPanel.jLabel1.text"
+msgstr "(Detectará componentes fuertemente y débilmente conectadas)"
+
+msgid "ConnectedComponentPanel.jLabel2.text"
+msgstr "(Detectará solo componentes débilmente conectadas)"
+
+msgid "EigenvectorCentralityPanel.header.description"
+msgstr ""
+"Una medida de la importancia de un nodo en la red basada en sus conexiones."
+
+msgid "EigenvectorCentralityPanel.header.title"
+msgstr "Centralidad de vector propio"
+
+msgid "EigenvectorCentralityPanel.iterationsTextField.text"
+msgstr "jTextField1"
+
+msgid "EigenvectorCentralityPanel.labeliterations.text"
+msgstr "Número de iteraciones:"
+
+msgid "EigenvectorCentralityPanel.directedButton.text"
+msgstr "Dirigido"
+
+msgid "EigenvectorCentralityPanel.undirectedButton.text"
+msgstr "No dirigido"
+
+msgid "GraphDistancePanel.normalizeButton.text"
+msgstr "Normalizar centralidades en el rango [0,1]"

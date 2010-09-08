@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-05-17 21:05+0000\n"
+"PO-Revision-Date: 2010-09-07 14:37+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-07-01 03:46+0000\n"
+"X-Launchpad-Export-Date: 2010-09-08 04:46+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "OpenIDE-Module-Long-Description"
@@ -22,3 +22,15 @@ msgstr "Implementaciones de los exportadores vectoriales"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Implementaciones de los exportadores vectoriales"
+
+msgid "fileType_PDF_Name"
+msgstr "Archivos PDF"
+
+msgid "ExporterPDF_name"
+msgstr "PDF"
+
+msgid "fileType_SVG_Name"
+msgstr "Archivos SVG"
+
+msgid "ExporterSVG_name"
+msgstr "SVG"
