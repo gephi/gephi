@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ranking.impl;
 
 import org.gephi.data.attributes.api.AttributeEvent;
@@ -33,6 +33,10 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.Estimator;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -49,7 +53,9 @@ import org.openide.util.Lookup;
  */
 public class RankingModelImpl implements RankingModel, AttributeListener {
 
-    private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+    private final List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+    private DynamicModel dynamicModel;
+    private Estimator defaultEstimator;
 
     public RankingModelImpl() {
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -67,22 +73,28 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
             public void unselect(Workspace workspace) {
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
                 attributeModel.removeAttributeListener(RankingModelImpl.this);
+                dynamicModel = null;
             }
 
             public void close(Workspace workspace) {
             }
 
             public void disable() {
+                dynamicModel = null;
             }
         });
         if (pc.getCurrentWorkspace() != null) {
             AttributeModel attributeModel = pc.getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
             attributeModel.addAttributeListener(RankingModelImpl.this);
         }
+
+        defaultEstimator = Estimator.AVERAGE;
     }
 
     public void attributesChanged(AttributeEvent event) {
-        fireChangeEvent();
+        if (event.getEventType().equals(AttributeEvent.EventType.ADD_COLUMN) || event.getEventType().equals(AttributeEvent.EventType.REMOVE_COLUMN)) {
+            fireChangeEvent();
+        }
     }
 
     public NodeRanking getDegreeRanking() {
@@ -123,6 +135,12 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
             if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
                 return r;
             }
+        } else if (RankingFactory.isDynamicNumberColumn(column) && getDynamicModel() != null) {
+            TimeInterval visibleInterval = dynamicModel.getVisibleInterval();
+            NodeRanking r = RankingFactory.getNodeDynamicAttributeRanking(column, graph, visibleInterval, defaultEstimator);
+            if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
+                return r;
+            }
         }
         return null;
     }
@@ -132,6 +150,12 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         Graph graph = model.getGraphVisible();
         if (RankingFactory.isNumberColumn(column)) {
             EdgeRanking r = RankingFactory.getEdgeAttributeRanking(column, graph);
+            if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
+                return r;
+            }
+        } else if (RankingFactory.isDynamicNumberColumn(column) && getDynamicModel() != null) {
+            TimeInterval visibleInterval = dynamicModel.getVisibleInterval();
+            EdgeRanking r = RankingFactory.getEdgeDynamicAttributeRanking(column, graph, visibleInterval, defaultEstimator);
             if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
                 return r;
             }
@@ -178,6 +202,12 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
                 if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
                     rankingList.add(r);
                 }
+            } else if (RankingFactory.isDynamicNumberColumn(column) && getDynamicModel() != null) {
+                TimeInterval visibleInterval = dynamicModel.getVisibleInterval();
+                NodeRanking r = RankingFactory.getNodeDynamicAttributeRanking(column, graph, visibleInterval, defaultEstimator);
+                if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
+                    rankingList.add(r);
+                }
             }
         }
         return rankingList.toArray(new NodeRanking[0]);
@@ -193,9 +223,29 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
                 if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
                     rankingList.add(r);
                 }
+            } else if (RankingFactory.isDynamicNumberColumn(column) && getDynamicModel() != null) {
+                TimeInterval visibleInterval = dynamicModel.getVisibleInterval();
+                EdgeRanking r = RankingFactory.getEdgeDynamicAttributeRanking(column, graph, visibleInterval, defaultEstimator);
+                if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
+                    rankingList.add(r);
+                }
             }
         }
         return rankingList.toArray(new EdgeRanking[0]);
+    }
+
+    private DynamicModel getDynamicModel() {
+        if (dynamicModel == null) {
+            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+            if (dynamicController != null) {
+                dynamicModel = dynamicController.getModel();
+            }
+        }
+        return dynamicModel;
+    }
+
+    public void setDefaultEstimator(Estimator estimator) {
+        this.defaultEstimator = estimator;
     }
 
     public void addChangeListener(ChangeListener changeListener) {

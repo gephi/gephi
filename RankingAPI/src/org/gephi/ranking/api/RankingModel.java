@@ -22,6 +22,7 @@ package org.gephi.ranking.api;
 
 import javax.swing.event.ChangeListener;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.Estimator;
 
 /**
  *
@@ -42,6 +43,8 @@ public interface RankingModel {
     public NodeRanking[] getNodeRanking();
 
     public EdgeRanking[] getEdgeRanking();
+
+    public void setDefaultEstimator(Estimator estimator);
 
     public void addChangeListener(ChangeListener changeListener);
 
