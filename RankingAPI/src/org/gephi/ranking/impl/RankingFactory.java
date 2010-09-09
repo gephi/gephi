@@ -92,12 +92,16 @@ public class RankingFactory {
         return nodeRanking;
     }
 
-    public static boolean refreshRanking(AbstractRanking ranking, Graph graph) {
-        Object min = ranking.getMinimumValue();
-        Object max = ranking.getMaximumValue();
+    public static boolean refreshRanking(AbstractRanking ranking, Graph graph, TimeInterval timeInterval) {
+        if (ranking instanceof DynamicNodeAttributeRanking) {
+            ((DynamicNodeAttributeRanking) ranking).timeInterval = timeInterval;
+        } else if (ranking instanceof DynamicEdgeAttributeRanking) {
+            ((DynamicEdgeAttributeRanking) ranking).timeInterval = timeInterval;
+        }
+        double hash = ranking.hash;
         ranking.setGraph(graph);
         setMinMax(ranking, graph);
-        return !ranking.getMinimumValue().equals(min) || !ranking.getMaximumValue().equals(max);
+        return ranking.hash != hash;
     }
 
     public static boolean isNumberColumn(AttributeColumn column) {
@@ -140,6 +144,7 @@ public class RankingFactory {
                     objects.add(value);
                 }
             }
+            ranking.hash = objects.hashCode();
             ranking.setMinimumValue((Number) getMin(objects.toArray(new Comparable[0])));
             ranking.setMaximumValue((Number) getMax(objects.toArray(new Comparable[0])));
         } else if (ranking instanceof EdgeRanking) {
@@ -150,6 +155,7 @@ public class RankingFactory {
                     objects.add(value);
                 }
             }
+            ranking.hash = objects.hashCode();
             ranking.setMinimumValue((Number) getMin(objects.toArray(new Comparable[0])));
             ranking.setMaximumValue((Number) getMax(objects.toArray(new Comparable[0])));
         }

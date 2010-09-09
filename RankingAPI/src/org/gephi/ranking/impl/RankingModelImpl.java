@@ -234,7 +234,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         return rankingList.toArray(new EdgeRanking[0]);
     }
 
-    private DynamicModel getDynamicModel() {
+    public DynamicModel getDynamicModel() {
         if (dynamicModel == null) {
             DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
             if (dynamicController != null) {
