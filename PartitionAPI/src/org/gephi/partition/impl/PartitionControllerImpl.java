@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.partition.impl;
 
 import java.util.ArrayList;
@@ -92,7 +92,7 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
             }
         });
         if (pc.getCurrentWorkspace() != null) {
-            refreshPartitions=true;
+            refreshPartitions = true;
             model = pc.getCurrentWorkspace().getLookup().lookup(PartitionModelImpl.class);
             if (model == null) {
                 model = new PartitionModelImpl();
@@ -141,6 +141,9 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
     }
 
     public void setSelectedPartition(final Partition partition) {
+        if (partition == model.getSelectedPartition()) {
+            return;
+        }
         model.setWaiting(true);
         if (model.getSelectedPartitioning() == PartitionModel.NODE_PARTITIONING) {
             Thread t = new Thread(new Runnable() {
