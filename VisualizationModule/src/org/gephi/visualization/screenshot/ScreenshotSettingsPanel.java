@@ -74,7 +74,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
                 antiAliasingCombo.setSelectedIndex(4);
                 break;
         }
-        transparentBackgroundCheckBox.setSelected(screenshotMaker.isTransparentBackground());
+        //transparentBackgroundCheckBox.setSelected(screenshotMaker.isTransparentBackground());
         selectDirectoryButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -112,7 +112,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
                 screenshotMaker.setAntiAliasing(0);
                 break;
         }
-        screenshotMaker.setTransparentBackground(transparentBackgroundCheckBox.isSelected());
+        //screenshotMaker.setTransparentBackground(transparentBackgroundCheckBox.isSelected());
     }
 
     public static ValidationPanel createValidationPanel(ScreenshotSettingsPanel innerPanel) {
@@ -151,7 +151,6 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
         widthTextField = new javax.swing.JTextField();
         labelAntiAliasing = new javax.swing.JLabel();
         antiAliasingCombo = new javax.swing.JComboBox();
-        transparentBackgroundCheckBox = new javax.swing.JCheckBox();
         heightTextField = new javax.swing.JTextField();
         autoSaveCheckBox = new javax.swing.JCheckBox();
         selectDirectoryButton = new javax.swing.JButton();
@@ -167,8 +166,6 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
         labelAntiAliasing.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.labelAntiAliasing.text")); // NOI18N
 
         antiAliasingCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0x", "2x", "4x", "8x", "16x" }));
-
-        transparentBackgroundCheckBox.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.transparentBackgroundCheckBox.text")); // NOI18N
 
         heightTextField.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.heightTextField.text")); // NOI18N
 
@@ -190,8 +187,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
                     .addGroup(imagePanelLayout.createSequentialGroup()
                         .addComponent(labelAntiAliasing)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(antiAliasingCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(transparentBackgroundCheckBox))
+                        .addComponent(antiAliasingCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         imagePanelLayout.setVerticalGroup(
@@ -207,9 +203,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
                 .addGroup(imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelAntiAliasing)
                     .addComponent(antiAliasingCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(transparentBackgroundCheckBox)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         autoSaveCheckBox.setText(org.openide.util.NbBundle.getMessage(ScreenshotSettingsPanel.class, "ScreenshotSettingsPanel.autoSaveCheckBox.text")); // NOI18N
@@ -223,22 +217,23 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(autoSaveCheckBox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(selectDirectoryButton))
-                    .addComponent(imagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(selectDirectoryButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(imagePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(autoSaveCheckBox)
-                    .addComponent(selectDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(selectDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -250,7 +245,6 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelHeight;
     private javax.swing.JLabel labelWidth;
     private javax.swing.JButton selectDirectoryButton;
-    private javax.swing.JCheckBox transparentBackgroundCheckBox;
     private javax.swing.JTextField widthTextField;
     // End of variables declaration//GEN-END:variables
 }
