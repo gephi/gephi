@@ -58,13 +58,12 @@ public class TextDataBuilderImpl implements TextDataFactory {
                         estimator = Estimator.AVERAGE;
                     }
                     if (timeInterval != null) {
-                        str += dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh(), estimator);
+                        val = dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh(), estimator);
                     } else {
-                        str += dynamicType.getValue(estimator);
+                        val = dynamicType.getValue(estimator);
                     }
-                } else {
-                    str += val;
                 }
+                str += val != null ? val : "";
             }
             textDataImpl.setLine(str);
         }
@@ -86,13 +85,12 @@ public class TextDataBuilderImpl implements TextDataFactory {
                         estimator = Estimator.AVERAGE;
                     }
                     if (timeInterval != null) {
-                        str += dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh(), estimator);
+                        val = dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh(), estimator);
                     } else {
-                        str += dynamicType.getValue(estimator);
+                        val = dynamicType.getValue(estimator);
                     }
-                } else {
-                    str += val;
                 }
+                str += val != null ? val : "";
             }
             textDataImpl.setLine(str);
         }
