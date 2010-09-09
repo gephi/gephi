@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.partition.impl;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -34,6 +34,9 @@ import java.util.Random;
 import java.util.Set;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.api.Estimator;
+import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Graph;
@@ -50,44 +53,93 @@ import org.gephi.partition.api.Partition;
  */
 public class PartitionFactory {
 
-    public static boolean isNodePartitionColumn(AttributeColumn column, Graph graph) {
-        if (column.getType().equals(AttributeType.STRING)
+    public static boolean isPartitionColumn(AttributeColumn column) {
+        return column.getType().equals(AttributeType.STRING)
                 || column.getType().equals(AttributeType.BOOLEAN)
-                || column.getType().equals(AttributeType.INT)) {
-            Set values = new HashSet();
-            int nonNullvalues = 0;
-            for (Node n : graph.getNodes()) {
-                Object value = n.getNodeData().getAttributes().getValue(column.getIndex());
-                if (value != null) {
-                    nonNullvalues++;
-                }
-                values.add(value);
+                || column.getType().equals(AttributeType.INT)
+                || column.getType().equals(AttributeType.SHORT);
+    }
+
+    public static boolean isDynamicPartitionColumn(AttributeColumn column) {
+        return column.getType().equals(AttributeType.DYNAMIC_STRING)
+                || column.getType().equals(AttributeType.DYNAMIC_BOOLEAN)
+                || column.getType().equals(AttributeType.DYNAMIC_INT)
+                || column.getType().equals(AttributeType.DYNAMIC_SHORT);
+    }
+
+    public static boolean isNodePartitionColumn(AttributeColumn column, Graph graph) {
+        Set values = new HashSet();
+        int nonNullvalues = 0;
+        for (Node n : graph.getNodes()) {
+            Object value = n.getNodeData().getAttributes().getValue(column.getIndex());
+            if (value != null) {
+                nonNullvalues++;
             }
-            if (values.size() < 9f / 10f * nonNullvalues) {      //If #different values is < 9:10 of total non-null values
-                return true;
-            }
+            values.add(value);
+        }
+        if (values.size() < 9f / 10f * nonNullvalues) {      //If #different values is < 9:10 of total non-null values
+            return true;
         }
         return false;
     }
 
     public static boolean isEdgePartitionColumn(AttributeColumn column, Graph graph) {
-        if (column.getType().equals(AttributeType.STRING)
-                || column.getType().equals(AttributeType.BOOLEAN)
-                || column.getType().equals(AttributeType.INT)) {
-            Set values = new HashSet();
-            int nonNullvalues = 0;
-            for (Edge n : graph.getEdges()) {
-                Object value = n.getEdgeData().getAttributes().getValue(column.getIndex());
-                if (value != null) {
-                    nonNullvalues++;
-                }
-                values.add(value);
+        Set values = new HashSet();
+        int nonNullvalues = 0;
+        for (Edge n : graph.getEdges()) {
+            Object value = n.getEdgeData().getAttributes().getValue(column.getIndex());
+            if (value != null) {
+                nonNullvalues++;
             }
-            if (values.size() < 9f / 10f * nonNullvalues) {      //If #different values is < 9:10 of total non-null values
-                return true;
-            }
+            values.add(value);
+        }
+        if (values.size() < 9f / 10f * nonNullvalues) {      //If #different values is < 9:10 of total non-null values
+            return true;
         }
         return false;
+    }
+
+    public static boolean isDynamicNodePartitionColumn(AttributeColumn column, Graph graph, TimeInterval timeInterval, Estimator estimator) {
+        Set values = new HashSet();
+        int nonNullvalues = 0;
+        for (Node n : graph.getNodes()) {
+            Object value = n.getNodeData().getAttributes().getValue(column.getIndex());
+            value = getDynamicValue(value, timeInterval, estimator);
+            if (value != null) {
+                nonNullvalues++;
+            }
+            values.add(value);
+        }
+        if (values.size() < 9f / 10f * nonNullvalues) {      //If #different values is < 9:10 of total non-null values
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isDynamicEdgePartitionColumn(AttributeColumn column, Graph graph, TimeInterval timeInterval, Estimator estimator) {
+        Set values = new HashSet();
+        int nonNullvalues = 0;
+        for (Edge n : graph.getEdges()) {
+            Object value = n.getEdgeData().getAttributes().getValue(column.getIndex());
+            value = getDynamicValue(value, timeInterval, estimator);
+            if (value != null) {
+                nonNullvalues++;
+            }
+            values.add(value);
+        }
+        if (values.size() < 9f / 10f * nonNullvalues) {      //If #different values is < 9:10 of total non-null values
+            return true;
+        }
+        return false;
+    }
+
+    private static Object getDynamicValue(Object object, TimeInterval timeInterval, Estimator estimator) {
+        if (object != null && object instanceof DynamicType) {
+            DynamicType dynamicType = (DynamicType) object;
+            return dynamicType.getValue(timeInterval == null ? Double.NEGATIVE_INFINITY : timeInterval.getLow(),
+                    timeInterval == null ? Double.POSITIVE_INFINITY : timeInterval.getHigh(), estimator);
+        }
+        return object;
     }
 
     public static NodePartition createNodePartition(AttributeColumn column) {
@@ -103,11 +155,16 @@ public class PartitionFactory {
     }
 
     public static void buildNodePartition(NodePartition partition, Graph graph) {
+        buildNodePartition(partition, graph, null, null);
+    }
+
+    public static void buildNodePartition(NodePartition partition, Graph graph, TimeInterval timeInterval, Estimator estimator) {
 
         NodePartitionImpl partitionImpl = (NodePartitionImpl) partition;
         ArrayListMultimap<Object, Node> multimap = ArrayListMultimap.create();
         for (Node n : graph.getNodes()) {
             Object value = n.getNodeData().getAttributes().getValue(partitionImpl.column.getIndex());
+            value = getDynamicValue(value, timeInterval, estimator);
             multimap.put(value, n);
         }
 
@@ -123,11 +180,16 @@ public class PartitionFactory {
     }
 
     public static void buildEdgePartition(EdgePartition partition, Graph graph) {
+        buildEdgePartition(partition, graph, null, null);
+    }
+
+    public static void buildEdgePartition(EdgePartition partition, Graph graph, TimeInterval timeInterval, Estimator estimator) {
         EdgePartitionImpl partitionImpl = (EdgePartitionImpl) partition;
 
         ArrayListMultimap<Object, Edge> multimap = ArrayListMultimap.create();
         for (Edge n : graph.getEdges()) {
             Object value = n.getEdgeData().getAttributes().getValue(partitionImpl.column.getIndex());
+            value = getDynamicValue(value, timeInterval, estimator);
             multimap.put(value, n);
         }
 

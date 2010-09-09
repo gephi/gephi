@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.partition.impl;
 
 import java.beans.PropertyChangeEvent;
@@ -25,12 +25,16 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.gephi.data.attributes.api.Estimator;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.partition.api.EdgePartition;
 import org.gephi.partition.api.NodePartition;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionModel;
 import org.gephi.partition.spi.Transformer;
 import org.gephi.partition.spi.TransformerBuilder;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -39,23 +43,26 @@ import org.gephi.partition.spi.TransformerBuilder;
 public class PartitionModelImpl implements PartitionModel {
 
     //Architecture
-    private List<PropertyChangeListener> listeners;
+    private final List<PropertyChangeListener> listeners;
     //Data
     private int selectedPartitioning = NODE_PARTITIONING;
     private Partition nodePartition;
     private Partition edgePartition;
     private TransformerBuilder nodeBuilder;
     private TransformerBuilder edgeBuilder;
-    private HashMap<Class, Transformer> transformersMap;
+    private final HashMap<Class, Transformer> transformersMap;
     private NodePartition[] nodePartitions = new NodePartition[0];
     private EdgePartition[] edgePartitions = new EdgePartition[0];
     private boolean waiting;
     private boolean pie;
     private int visibleViewId = -1;
+    private Estimator defaultEstimator;
+    private DynamicModel dynamicModel;
 
     public PartitionModelImpl() {
         listeners = new ArrayList<PropertyChangeListener>();
         transformersMap = new HashMap<Class, Transformer>();
+        defaultEstimator = Estimator.AVERAGE;
     }
 
     public NodePartition[] getNodePartitions() {
@@ -131,6 +138,16 @@ public class PartitionModelImpl implements PartitionModel {
         return null;
     }
 
+    public DynamicModel getDynamicModel() {
+        if (dynamicModel == null) {
+            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+            if (dynamicController != null) {
+                dynamicModel = dynamicController.getModel();
+            }
+        }
+        return dynamicModel;
+    }
+
     public boolean isWaiting() {
         return waiting;
     }
@@ -141,6 +158,10 @@ public class PartitionModelImpl implements PartitionModel {
 
     public int getVisibleViewId() {
         return visibleViewId;
+    }
+
+    public Estimator getDefaultEstimator() {
+        return defaultEstimator;
     }
 
     public void addPropertyChangeListener(PropertyChangeListener changeListener) {
@@ -236,5 +257,9 @@ public class PartitionModelImpl implements PartitionModel {
 
     public void setVisibleViewId(int visibleViewId) {
         this.visibleViewId = visibleViewId;
+    }
+
+    public void setDefaultEstimator(Estimator defaultEstimator) {
+        this.defaultEstimator = defaultEstimator;
     }
 }
