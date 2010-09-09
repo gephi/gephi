@@ -42,7 +42,8 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     protected static final float WEIGHT_MAXIMUM = 8f;
     //An edge is set in both source node and target node octant. Hence edges are not drawn when none of
     //these octants are visible.
-    protected ModelImpl arrow;
+    protected Arrow2dModel arrow;
+    protected float weight;
 
     public Edge2dModel() {
         octants = new Octant[2];
@@ -148,7 +149,7 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
 
         //Edge weight
         GraphLimits limits = vizModel.getLimits();
-        float weight;
+        float w;
         if (obj.getEdge() instanceof MetaEdge) {
             float weightRatio;
             if (limits.getMinMetaWeight() == limits.getMaxMetaWeight()) {
@@ -157,8 +158,8 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
                 weightRatio = Math.abs((WEIGHT_MAXIMUM - WEIGHT_MINIMUM) / (limits.getMaxMetaWeight() - limits.getMinMetaWeight()));
             }
             float edgeScale = vizModel.getEdgeScale() * vizModel.getMetaEdgeScale();
-            weight = obj.getEdge().getWeight();
-            weight = ((weight - limits.getMinMetaWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
+            w = weight;
+            w = ((w - limits.getMinMetaWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
         } else {
             float weightRatio;
             if (limits.getMinWeight() == limits.getMaxWeight()) {
@@ -167,8 +168,8 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
                 weightRatio = Math.abs((WEIGHT_MAXIMUM - WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
             }
             float edgeScale = vizModel.getEdgeScale();
-            weight = obj.getEdge().getWeight();
-            weight = ((weight - limits.getMinWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
+            w = weight;
+            w = ((w - limits.getMinWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
         }
         //
 
@@ -176,8 +177,8 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
         float x2 = obj.getTarget().x();
         float y1 = obj.getSource().y();
         float y2 = obj.getTarget().y();
-        float t1 = weight;
-        float t2 = weight;
+        float t1 = w;
+        float t2 = w;
 
         float sideVectorX = y1 - y2;
         float sideVectorY = x2 - x1;
@@ -348,11 +349,11 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
         return octants[0] != null || octants[1] != null;
     }
 
-    public ModelImpl getArrow() {
+    public Arrow2dModel getArrow() {
         return arrow;
     }
 
-    public void setArrow(ModelImpl arrow) {
+    public void setArrow(Arrow2dModel arrow) {
         this.arrow = arrow;
     }
 
@@ -364,5 +365,9 @@ public class Edge2dModel extends ModelImpl<EdgeData> {
     @Override
     public float getViewportY() {
         return (obj.getSource().getModel().getViewportY() + 2 * obj.getTarget().getModel().getViewportY()) / 3f;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
     }
 }

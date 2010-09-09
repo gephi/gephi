@@ -42,6 +42,7 @@ import org.gephi.visualization.api.objects.ModelClass;
 import org.gephi.visualization.hull.ConvexHull;
 import org.gephi.visualization.mode.ModeManager;
 import org.gephi.visualization.opengl.AbstractEngine;
+import org.gephi.visualization.opengl.compatibility.objects.Arrow2dModel;
 import org.gephi.visualization.opengl.compatibility.objects.ConvexHullModel;
 import org.gephi.visualization.opengl.compatibility.objects.Edge2dModel;
 import org.openide.util.Lookup;
@@ -188,32 +189,37 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             if (edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
                 continue;
             }
-            minWeight = Math.min(minWeight, edge.getWeight());
-            maxWeight = Math.max(maxWeight, edge.getWeight());
-            Model obj = edge.getEdgeData().getModel();
+            float weight = edge.getWeight();
+            minWeight = Math.min(minWeight, weight);
+            maxWeight = Math.max(maxWeight, weight);
+            Edge2dModel obj = (Edge2dModel)edge.getEdgeData().getModel();            
             if (obj == null) {
                 //Model is null, ADD
-                obj = edgeInit.initModel(edge.getEdgeData());
-                engine.addObject(AbstractEngine.CLASS_EDGE, (ModelImpl) obj);
+                obj = (Edge2dModel)edgeInit.initModel(edge.getEdgeData());
+                engine.addObject(AbstractEngine.CLASS_EDGE, obj);
                 if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop()) {
-                    ModelImpl arrowObj = arrowInit.initModel(edge.getEdgeData());
+                    Arrow2dModel arrowObj = (Arrow2dModel)arrowInit.initModel(edge.getEdgeData());
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
-                    ((Edge2dModel) obj).setArrow(arrowObj);
+                    arrowObj.setWeight(weight);
+                    obj.setArrow(arrowObj);
                 }
             } else if (!obj.isValid()) {
-                engine.addObject(AbstractEngine.CLASS_EDGE, (ModelImpl) obj);
+                engine.addObject(AbstractEngine.CLASS_EDGE, obj);
                 if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop()) {
-                    ModelImpl arrowObj = ((Edge2dModel) obj).getArrow();
+                    Arrow2dModel arrowObj = obj.getArrow();
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
+                    arrowObj.setWeight(weight);
                 }
             } else {
                 if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop() && edge.isDirected()) {
-                    ModelImpl arrowObj = ((Edge2dModel) obj).getArrow();
+                    Arrow2dModel arrowObj = obj.getArrow();
                     arrowObj.setCacheMarker(cacheMarker);
+                    arrowObj.setWeight(weight);
                 }
             }
+            obj.setWeight(weight);
             obj.setCacheMarker(cacheMarker);
         }
 
@@ -223,6 +229,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     public void updateMetaEdges(HierarchicalGraph graph) {
         Modeler edgeInit = engine.getModelClasses()[AbstractEngine.CLASS_EDGE].getCurrentModeler();
+        Modeler arrowInit = engine.getModelClasses()[AbstractEngine.CLASS_ARROW].getCurrentModeler();
 
         float minWeight = Float.POSITIVE_INFINITY;
         float maxWeight = Float.NEGATIVE_INFINITY;
@@ -231,17 +238,37 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             if (edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
                 continue;
             }
-            minWeight = Math.min(minWeight, edge.getWeight());
-            maxWeight = Math.max(maxWeight, edge.getWeight());
-            Model obj = edge.getEdgeData().getModel();
+            float weight = edge.getWeight();
+            minWeight = Math.min(minWeight, weight);
+            maxWeight = Math.max(maxWeight, weight);
+            Edge2dModel obj = (Edge2dModel)edge.getEdgeData().getModel();            
             if (obj == null) {
                 //Model is null, ADD
-                obj = edgeInit.initModel(edge.getEdgeData());
-
-                engine.addObject(AbstractEngine.CLASS_EDGE, (ModelImpl) obj);
+                obj = (Edge2dModel)edgeInit.initModel(edge.getEdgeData());
+                engine.addObject(AbstractEngine.CLASS_EDGE, obj);
+                if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop()) {
+                    Arrow2dModel arrowObj = (Arrow2dModel)arrowInit.initModel(edge.getEdgeData());
+                    engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
+                    arrowObj.setCacheMarker(cacheMarker);
+                    arrowObj.setWeight(weight);
+                    obj.setArrow(arrowObj);
+                }
             } else if (!obj.isValid()) {
-                engine.addObject(AbstractEngine.CLASS_EDGE, (ModelImpl) obj);
+                engine.addObject(AbstractEngine.CLASS_EDGE, obj);
+                if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop()) {
+                    Arrow2dModel arrowObj = obj.getArrow();
+                    engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
+                    arrowObj.setCacheMarker(cacheMarker);
+                    arrowObj.setWeight(weight);
+                }
+            } else {
+                if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop() && edge.isDirected()) {
+                    Arrow2dModel arrowObj = obj.getArrow();
+                    arrowObj.setCacheMarker(cacheMarker);
+                    arrowObj.setWeight(weight);
+                }
             }
+            obj.setWeight(weight);
             obj.setCacheMarker(cacheMarker);
         }
 
