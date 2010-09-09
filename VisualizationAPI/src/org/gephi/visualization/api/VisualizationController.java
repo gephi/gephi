@@ -32,4 +32,6 @@ public interface VisualizationController {
     public void selectNodes(Node[] nodes);
 
     public void selectEdges(Edge[] edges);
+
+    public float getMetaEdgeScale();
 }
