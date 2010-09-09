@@ -138,8 +138,9 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
 
             public void stateChanged(ChangeEvent e) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
-                if (vizModel.getMetaEdgeScale() != (metaScaleSlider.getValue() / 10f + 0.1f)) {
-                    vizModel.setMetaEdgeScale(metaScaleSlider.getValue() / 10f + 0.1f);
+                int val = metaScaleSlider.getValue();
+                if (vizModel.getMetaEdgeScale() != (val / 50f + 0.0001f)) {
+                    vizModel.setMetaEdgeScale(val / 50f + 0.0001f);
                 }
             }
         });
@@ -178,8 +179,8 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         if (scaleSlider.getValue() / 10f + 0.1f != vizModel.getEdgeScale()) {
             scaleSlider.setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
         }
-        if (metaScaleSlider.getValue() / 10f + 0.1f != vizModel.getMetaEdgeScale()) {
-            metaScaleSlider.setValue((int) ((vizModel.getMetaEdgeScale() - 0.1f) * 10));
+        if (metaScaleSlider.getValue() / 50f + 0.0001f != vizModel.getMetaEdgeScale()) {
+            metaScaleSlider.setValue((int) ((vizModel.getMetaEdgeScale() - 0.0001f) * 50));
         }
     }
 
@@ -320,7 +321,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
         selectionColorPanel.add(edgeBothSelectionColorChooser, gridBagConstraints);
 
-        labelIn.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelIn.setFont(new java.awt.Font("Tahoma", 0, 10));
         labelIn.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.labelIn.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -329,7 +330,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 10, 0, 0);
         selectionColorPanel.add(labelIn, gridBagConstraints);
 
-        labelOut.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelOut.setFont(new java.awt.Font("Tahoma", 0, 10));
         labelOut.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.labelOut.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -339,7 +340,7 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(7, 10, 0, 0);
         selectionColorPanel.add(labelOut, gridBagConstraints);
 
-        labelBoth.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelBoth.setFont(new java.awt.Font("Tahoma", 0, 10));
         labelBoth.setText(org.openide.util.NbBundle.getMessage(EdgeSettingsPanel.class, "EdgeSettingsPanel.labelBoth.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -413,24 +414,24 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(showEdgesCheckbox)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(labelEdgeColor)
-                    .addContainerGap(53, Short.MAX_VALUE))
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(32, 32, 32)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(edgeColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(13, 13, 13)
-                            .addComponent(sourceNodeColorCheckbox))
-                        .addComponent(scalePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
-                        .addComponent(selectionColorPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(metaScalePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE))
-                    .addContainerGap()))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(showEdgesCheckbox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(labelEdgeColor))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(edgeColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(13, 13, 13)
+                                .addComponent(sourceNodeColorCheckbox))
+                            .addComponent(scalePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
+                            .addComponent(selectionColorPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(metaScalePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE))))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
