@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.partition.plugin;
 
 import java.awt.Color;
@@ -37,6 +37,7 @@ import org.gephi.partition.api.Partition;
 import org.gephi.partition.plugin.EdgeColorTransformer;
 import org.gephi.partition.spi.Transformer;
 import org.gephi.utils.PaletteUtils;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -78,10 +79,10 @@ public class EdgeColorTransformerPanel extends javax.swing.JPanel {
         });
     }
 
-    public void setup(Partition partition, Transformer transformer) {
+    public void setup(Partition partition, Transformer transformer, boolean color) {
         removeAll();
         edgeColorTransformer = (EdgeColorTransformer) transformer;
-        if (edgeColorTransformer.getMap().isEmpty()) {
+        if (color) {
             List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
             int i = 0;
             for (Part p : partition.getParts()) {
@@ -110,11 +111,12 @@ public class EdgeColorTransformerPanel extends javax.swing.JPanel {
     private void createPopup() {
         popupMenu = new JPopupMenu();
         JMenuItem randomizeItem = new JMenuItem(NbBundle.getMessage(EdgeColorTransformerPanel.class, "EdgeColorTransformerPanel.action.randomize"));
+        randomizeItem.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/partition/plugin/resources/randomize.png", false));
         randomizeItem.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 edgeColorTransformer.getMap().clear();
-                setup(partition, edgeColorTransformer);
+                setup(partition, edgeColorTransformer, true);
                 revalidate();
                 repaint();
             }
@@ -127,7 +129,7 @@ public class EdgeColorTransformerPanel extends javax.swing.JPanel {
                 for (Entry<Object, Color> entry : edgeColorTransformer.getMap().entrySet()) {
                     entry.setValue(Color.BLACK);
                 }
-                setup(partition, edgeColorTransformer);
+                setup(partition, edgeColorTransformer, false);
                 revalidate();
                 repaint();
             }

@@ -52,7 +52,7 @@ public class NodeColorTransformerUIImpl implements NodeColorTransformerUI {
     }
 
     public void setup(Partition partition, Transformer transformer) {
-        panel.setup(partition, transformer);
+        panel.setup(partition, transformer, true);
     }
 
     public void unsetup() {
