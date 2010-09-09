@@ -17,12 +17,13 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.opengl.text;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.NumberList;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
@@ -52,10 +53,14 @@ public class TextDataBuilderImpl implements TextDataFactory {
                 Object val = nodeData.getAttributes().getValue(c.getIndex());
                 if (val instanceof DynamicType) {
                     DynamicType dynamicType = (DynamicType) val;
+                    Estimator estimator = Estimator.FIRST;
+                    if (Number.class.isAssignableFrom(dynamicType.getUnderlyingType())) {
+                        estimator = Estimator.AVERAGE;
+                    }
                     if (timeInterval != null) {
-                        str += dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh(), Estimator.LAST);
+                        str += dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh(), estimator);
                     } else {
-                        str += dynamicType.getValue(Estimator.AVERAGE);
+                        str += dynamicType.getValue(estimator);
                     }
                 } else {
                     str += val;
@@ -76,10 +81,14 @@ public class TextDataBuilderImpl implements TextDataFactory {
                 Object val = edgeData.getAttributes().getValue(c.getIndex());
                 if (val instanceof DynamicType) {
                     DynamicType dynamicType = (DynamicType) val;
+                    Estimator estimator = Estimator.FIRST;
+                    if (Number.class.isAssignableFrom(dynamicType.getUnderlyingType())) {
+                        estimator = Estimator.AVERAGE;
+                    }
                     if (timeInterval != null) {
-                        str += dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh());
+                        str += dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh(), estimator);
                     } else {
-                        str += dynamicType.getValue(Estimator.AVERAGE);
+                        str += dynamicType.getValue(estimator);
                     }
                 } else {
                     str += val;
