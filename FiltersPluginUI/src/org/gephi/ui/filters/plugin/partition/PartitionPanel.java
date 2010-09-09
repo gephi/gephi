@@ -145,9 +145,11 @@ public class PartitionPanel extends javax.swing.JPanel {
 
         Set<Part> filterParts = new HashSet<Part>(currentParts);
         Part[] parts = partition.getParts();
+        Arrays.sort(parts);
         for (int i = 0; i < parts.length; i++) {
-            PartWrapper pw = new PartWrapper(parts[i], parts[i].getColor());
-            pw.setEnabled(filterParts.contains(parts[i]));
+            final Part p = parts[parts.length - 1 - i];
+            PartWrapper pw = new PartWrapper(p, p.getColor());
+            pw.setEnabled(filterParts.contains(p));
             model.add(i, pw);
         }
         list.setModel(model);
