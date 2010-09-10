@@ -37,6 +37,9 @@
 
         <!-- Unzip Netbeans Platform Localization JARs -->
         <antcall target="merge-l10n-mac"/>
+
+        <delete file="${nbdist-contents.dir}/Info.plist"/>
+        <copy tofile="${nbdist-contents.dir}/Info.plist" file="nbproject/Info.plist" />
     </target>
 
     <!-- Override to add localization JARs. -->
