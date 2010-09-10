@@ -17,11 +17,14 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.bridge;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.GraphController;
@@ -60,6 +63,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     private VizConfig vizConfig;
     protected ModeManager modeManager;
     protected GraphLimits limits;
+    protected DynamicModel dynamicModel;
     protected boolean undirected = false;
     //Version
     protected int nodeVersion = -1;
@@ -101,12 +105,10 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             graph = graphModel.getHierarchicalDirectedGraphVisible();
         }
 
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-
-        /*if (graph.isDynamic()) {
-        System.out.println("dynamic graph");
-        graph = (ClusteredDirectedGraph) controller.getVisualizedGraph();
-        }*/
+        if (dynamicModel == null) {
+            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+            dynamicModel = dynamicController.getModel();
+        }
 
         graphView = graph.getView().getViewId();
 
@@ -185,20 +187,28 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         float minWeight = Float.POSITIVE_INFINITY;
         float maxWeight = Float.NEGATIVE_INFINITY;
 
+        TimeInterval timeInterval = dynamicModel.getVisibleInterval();
+        timeInterval = Double.isInfinite(timeInterval.getLow()) && Double.isInfinite(timeInterval.getHigh()) ? null : timeInterval;
+
         for (Edge edge : edgeIterable) {
             if (edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
                 continue;
             }
-            float weight = edge.getWeight();
+            float weight = 1f;
+            if (timeInterval == null) {
+                weight = edge.getWeight();
+            } else {
+                weight = edge.getWeight(timeInterval.getLow(), timeInterval.getHigh());
+            }
             minWeight = Math.min(minWeight, weight);
             maxWeight = Math.max(maxWeight, weight);
-            Edge2dModel obj = (Edge2dModel)edge.getEdgeData().getModel();            
+            Edge2dModel obj = (Edge2dModel) edge.getEdgeData().getModel();
             if (obj == null) {
                 //Model is null, ADD
-                obj = (Edge2dModel)edgeInit.initModel(edge.getEdgeData());
+                obj = (Edge2dModel) edgeInit.initModel(edge.getEdgeData());
                 engine.addObject(AbstractEngine.CLASS_EDGE, obj);
                 if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop()) {
-                    Arrow2dModel arrowObj = (Arrow2dModel)arrowInit.initModel(edge.getEdgeData());
+                    Arrow2dModel arrowObj = (Arrow2dModel) arrowInit.initModel(edge.getEdgeData());
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
                     arrowObj.setWeight(weight);
@@ -234,20 +244,28 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         float minWeight = Float.POSITIVE_INFINITY;
         float maxWeight = Float.NEGATIVE_INFINITY;
 
+        TimeInterval timeInterval = dynamicModel.getVisibleInterval();
+        timeInterval = Double.isInfinite(timeInterval.getLow()) && Double.isInfinite(timeInterval.getHigh()) ? null : timeInterval;
+
         for (Edge edge : graph.getMetaEdges()) {
             if (edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
                 continue;
             }
-            float weight = edge.getWeight();
+            float weight = 1f;
+            if (timeInterval == null) {
+                weight = edge.getWeight();
+            } else {
+                weight = edge.getWeight(timeInterval.getLow(), timeInterval.getHigh());
+            }
             minWeight = Math.min(minWeight, weight);
             maxWeight = Math.max(maxWeight, weight);
-            Edge2dModel obj = (Edge2dModel)edge.getEdgeData().getModel();            
+            Edge2dModel obj = (Edge2dModel) edge.getEdgeData().getModel();
             if (obj == null) {
                 //Model is null, ADD
-                obj = (Edge2dModel)edgeInit.initModel(edge.getEdgeData());
+                obj = (Edge2dModel) edgeInit.initModel(edge.getEdgeData());
                 engine.addObject(AbstractEngine.CLASS_EDGE, obj);
                 if (!undirected && vizConfig.isShowArrows() && !edge.isSelfLoop()) {
-                    Arrow2dModel arrowObj = (Arrow2dModel)arrowInit.initModel(edge.getEdgeData());
+                    Arrow2dModel arrowObj = (Arrow2dModel) arrowInit.initModel(edge.getEdgeData());
                     engine.addObject(AbstractEngine.CLASS_ARROW, arrowObj);
                     arrowObj.setCacheMarker(cacheMarker);
                     arrowObj.setWeight(weight);
@@ -338,6 +356,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     public void resetGraph() {
         graph = null;
+        dynamicModel = null;
     }
 
     public void reset() {
