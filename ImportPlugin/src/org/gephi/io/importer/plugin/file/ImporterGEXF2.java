@@ -31,6 +31,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDefault;
@@ -206,14 +207,6 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             }
         }
 
-        //Start & End
-        if (!start.isEmpty()) {
-            container.setTimeIntervalMin(start);
-        }
-        if (!end.isEmpty()) {
-            container.setTimeIntervalMax(end);
-        }
-
         //TimeFormat
         if (!timeFormat.isEmpty()) {
             if ("double".equalsIgnoreCase(timeFormat) || "float".equalsIgnoreCase(timeFormat)) {
@@ -221,6 +214,14 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
             } else if ("date".equalsIgnoreCase(timeFormat)) {
                 container.setTimeFormat(TimeFormat.DATE);
             }
+        }
+
+        //Start & End
+        if (!start.isEmpty()) {
+            container.setTimeIntervalMin(start);
+        }
+        if (!end.isEmpty()) {
+            container.setTimeIntervalMax(end);
         }
     }
 
@@ -824,14 +825,20 @@ public class ImporterGEXF2 implements FileImporter, LongTask {
 
             //Add to model
             if ("node".equalsIgnoreCase(classAtt) || classAtt.isEmpty()) {
-                if (container.getAttributeModel().getNodeTable().hasColumn(id)) {
+                if (container.getAttributeModel().getNodeTable().hasColumn(id) || container.getAttributeModel().getNodeTable().hasColumn(title)) {
                     report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributecolumn_exist", id));
                     return;
                 }
                 container.getAttributeModel().getNodeTable().addColumn(id, title, attributeType, AttributeOrigin.DATA, defaultValue);
                 report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_nodeattribute", title, attributeType.getTypeString()));
             } else if ("edge".equalsIgnoreCase(classAtt) || classAtt.isEmpty()) {
-                if (container.getAttributeModel().getEdgeTable().hasColumn(id)) {
+                if ((id.equalsIgnoreCase("weight") || title.equalsIgnoreCase("weight")) && dynamic && attributeType.equals(AttributeType.DYNAMIC_FLOAT)) {
+                    //Dynamic weight
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_dynamic_weight", id));
+                    container.getAttributeModel().getEdgeTable().removeColumn(container.getAttributeModel().getEdgeTable().getColumn(PropertiesColumn.EDGE_WEIGHT.getIndex()));
+                    container.getAttributeModel().getEdgeTable().addColumn(id, PropertiesColumn.EDGE_WEIGHT.getTitle(), attributeType, AttributeOrigin.PROPERTY, defaultValue);
+                    return;
+                } else if (container.getAttributeModel().getEdgeTable().hasColumn(id) || container.getAttributeModel().getEdgeTable().hasColumn(title)) {
                     report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributecolumn_exist", id));
                     return;
                 }
