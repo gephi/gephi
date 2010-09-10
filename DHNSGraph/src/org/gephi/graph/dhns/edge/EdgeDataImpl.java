@@ -210,7 +210,10 @@ public class EdgeDataImpl implements EdgeData {
         }
         Object weight = attributes.getValue(PropertiesColumn.EDGE_WEIGHT.getIndex());
         if (weight instanceof DynamicFloat) {
-            return ((DynamicFloat) weight).getValue(Estimator.AVERAGE);
+            weight = ((DynamicFloat) weight).getValue(Estimator.AVERAGE);
+        }
+        if (weight == null) {
+            return 1f;
         }
         return (Float) weight;
     }
@@ -221,14 +224,17 @@ public class EdgeDataImpl implements EdgeData {
         }
         Object weight = attributes.getValue(PropertiesColumn.EDGE_WEIGHT.getIndex());
         if (weight instanceof DynamicFloat) {
-            return ((DynamicFloat) weight).getValue(low, high, Estimator.AVERAGE);
+            weight = ((DynamicFloat) weight).getValue(low, high, Estimator.AVERAGE);
+        }
+        if (weight == null) {
+            return 1f;
         }
         return (Float) weight;
     }
 
     public void setWeight(float weight) {
         if (attributes != null) {
-            if(!((AttributeRow)attributes).getColumnAt(PropertiesColumn.EDGE_WEIGHT.getIndex()).getType().equals(AttributeType.DYNAMIC_FLOAT)) {
+            if (!((AttributeRow) attributes).getColumnAt(PropertiesColumn.EDGE_WEIGHT.getIndex()).getType().equals(AttributeType.DYNAMIC_FLOAT)) {
                 attributes.setValue(PropertiesColumn.EDGE_WEIGHT.getIndex(), weight);
             }
         }
