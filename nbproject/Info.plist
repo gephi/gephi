@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
 <plist version="0.9">
   <dict>
@@ -26,5 +26,29 @@
     
     <key>CFBundleIconFile</key>
     <string>gephidesktop.icns</string>
+	
+	<key>CFBundleDocumentTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>gephi</string>
+        </array>
+        <key>CFBundleTypeName</key>
+        <string>Gephi Project File</string>
+        <key>CFBundleTypeRole</key>
+        <string>Viewer</string>
+      </dict>
+	  <dict>
+        <key>CFBundleTypeExtensions</key>
+        <array>
+          <string>gexf</string>
+        </array>
+        <key>CFBundleTypeName</key>
+        <string>GEXF Graph File</string>
+        <key>CFBundleTypeRole</key>
+        <string>Viewer</string>
+      </dict>
+    </array>
   </dict>
 </plist>
