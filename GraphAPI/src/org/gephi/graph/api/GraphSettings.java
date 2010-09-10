@@ -29,10 +29,10 @@ import org.gephi.graph.spi.MetaEdgeBuilder;
  */
 public interface GraphSettings {
 
-     public static final String ALLOW_MULTILEVEL = "allowMultilevel";
      public static final String AUTO_META_EDGES = "autoMetaEdgeCreation";
      public static final String METAEDGE_BUILDER = "metaEdgeBuilder";
      public static final String METAEDGE_BUILDER_NONDEEP_DIVISOR = "metaEdgeBuilderNonDeepDivisor";
+     public static final String DEFAULT_WEIGHT_ESTIMATOR = "defaultWeightEstimator";
 
      public void putClientProperty(String key, Object value);
 
