@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.type;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Hashtable;
 import java.util.List;
 import org.gephi.data.attributes.api.Estimator;
@@ -130,11 +131,13 @@ public final class DynamicFloat extends DynamicType<Float> {
 
 		switch (estimator) {
 			case AVERAGE:
+                                if(values.size()==1) {
+                                    return values.get(0);
+                                }
 				BigDecimal total = new BigDecimal(0);
 				for (int i = 0; i < values.size(); ++i)
-					total = total.add(new BigDecimal(values.get(i)));
-				return total.divide(new BigDecimal(values.size())).
-						floatValue();
+					total = total.add(BigDecimal.valueOf(values.get(i).doubleValue()));
+				return total.divide(BigDecimal.valueOf((long)values.size()), RoundingMode.HALF_UP).floatValue();
 			case MEDIAN:
 				if (values.size() % 2 == 1)
 					return values.get(values.size() / 2);
