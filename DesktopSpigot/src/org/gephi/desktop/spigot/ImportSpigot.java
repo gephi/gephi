@@ -17,64 +17,58 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.spigot;
 
+import java.awt.Dialog;
 import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
+import java.awt.event.ActionListener;
+import java.text.MessageFormat;
 import org.gephi.desktop.importer.api.ImportControllerUI;
-import org.gephi.io.importer.spi.DatabaseImporterBuilder;
-import org.gephi.io.importer.spi.ImporterUI;
+import org.gephi.io.importer.spi.ImporterWizardUI;
+import org.gephi.io.importer.spi.SpigotImporter;
 import org.gephi.io.importer.spi.SpigotImporterBuilder;
-import org.openide.util.HelpCtx;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.WizardDescriptor;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.actions.CallableSystemAction;
 
-/**
- *
- * @author Mathieu Bastian
- */
-public class ImportSpigot extends CallableSystemAction {
+public final class ImportSpigot implements ActionListener {
 
-    @Override
-    public void performAction() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    public void actionPerformed(ActionEvent e) {
+        SpigotWizardIterator wizardIterator = new SpigotWizardIterator();
+        WizardDescriptor wizardDescriptor = new WizardDescriptor(wizardIterator);
+        wizardDescriptor.setTitleFormat(new MessageFormat("{0} ({1})"));
+        wizardDescriptor.setTitle(NbBundle.getMessage(getClass(), "ImportSpigot.wizard.title"));
+        Dialog dialog = DialogDisplayer.getDefault().createDialog(wizardDescriptor);
+        dialog.setVisible(true);
+        dialog.toFront();
 
-    @Override
-    public String getName() {
-        return "importDB";
-    }
+        boolean cancelled = wizardDescriptor.getValue() != WizardDescriptor.FINISH_OPTION;
+        if (!cancelled) {
+            ImporterWizardUI wizardUI = wizardIterator.getCurrentWizardUI();
 
-    @Override
-    public HelpCtx getHelpCtx() {
-        return null;
-    }
-
-    @Override
-    public JMenuItem getMenuPresenter() {
-        JMenu menu = new JMenu(NbBundle.getMessage(ImportSpigot.class, "CTL_ImportSpigot"));
-
-        final ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
-        if (importController != null) {
-            for (final SpigotImporterBuilder sb : Lookup.getDefault().lookupAll(SpigotImporterBuilder.class)) {
-                ImporterUI ui = importController.getImportController().getUI(sb.buildImporter());
-                String menuName = sb.getName();
-                if (ui != null) {
-                    menuName = ui.getDisplayName();
+            //Get Importer
+            SpigotImporter importer = null;
+            for (SpigotImporterBuilder spigotBuilder : Lookup.getDefault().lookupAll(SpigotImporterBuilder.class)) {
+                SpigotImporter im = spigotBuilder.buildImporter();
+                if (wizardUI.isUIForImporter(im)) {
+                    importer = im;
                 }
-                JMenuItem menuItem = new JMenuItem(new AbstractAction(menuName) {
-
-                    public void actionPerformed(ActionEvent e) {
-                        importController.importSpigot(sb.buildImporter());
-                    }
-                });
-                menu.add(menuItem);
             }
+
+            if (importer == null) {
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "ImportSpigot.error_no_matching_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return;
+            }
+
+            //Unsetup
+            wizardIterator.unsetupPanels(importer);
+
+            ImportControllerUI importControllerUI = Lookup.getDefault().lookup(ImportControllerUI.class);
+            importControllerUI.importSpigot(importer);
         }
-        return menu;
     }
 }

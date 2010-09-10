@@ -39,6 +39,7 @@ import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.DatabaseImporter;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.io.importer.spi.ImporterUI;
+import org.gephi.io.importer.spi.ImporterWizardUI;
 import org.gephi.io.importer.spi.SpigotImporter;
 import org.gephi.io.processor.spi.Processor;
 import org.gephi.io.processor.spi.ProcessorUI;
@@ -348,6 +349,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 return;
             }
 
+            String containerSource = "Spigot";
             ImporterUI ui = controller.getUI(importer);
             if (ui != null) {
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.spigot.ui.dialog.title", ui.getDisplayName());
@@ -370,6 +372,11 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                     return;
                 }
                 ui.unsetup(true);
+                containerSource = ui.getDisplayName();
+            }
+            ImporterWizardUI wizardUI = controller.getWizardUI(importer);
+            if(wizardUI!=null) {
+                containerSource = wizardUI.getCategory() + ":"+ wizardUI.getDisplayName();
             }
 
             LongTask task = null;
@@ -378,14 +385,14 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Execute task
-            final String containerSource = ui != null ? ui.getDisplayName() : "Spigot";
+            final String source = containerSource;
             executor.execute(task, new Runnable() {
 
                 public void run() {
                     try {
                         Container container = controller.importSpigot(importer);
                         if (container != null) {
-                            container.setSource(containerSource);
+                            container.setSource(source);
                             finishImport(container);
                         }
                     } catch (Exception ex) {
@@ -401,7 +408,6 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     private void finishImport(Container container) {
         if (container.verify()) {
             Report report = container.getReport();
-
 
             //Report panel
             ReportPanel reportPanel = new ReportPanel();

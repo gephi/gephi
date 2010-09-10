@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.impl;
 
 import java.io.File;
@@ -38,6 +38,7 @@ import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.io.importer.spi.FileImporterBuilder;
 import org.gephi.io.importer.spi.Importer;
 import org.gephi.io.importer.spi.ImporterUI;
+import org.gephi.io.importer.spi.ImporterWizardUI;
 import org.gephi.io.importer.spi.SpigotImporter;
 import org.gephi.io.importer.spi.SpigotImporterBuilder;
 import org.gephi.io.processor.spi.Processor;
@@ -59,6 +60,7 @@ public class ImportControllerImpl implements ImportController {
     private final DatabaseImporterBuilder[] databaseImporterBuilders;
     private final SpigotImporterBuilder[] spigotImporterBuilders;
     private final ImporterUI[] uis;
+    private final ImporterWizardUI[] wizardUis;
 
     public ImportControllerImpl() {
         //Get FileFormatImporters
@@ -72,6 +74,7 @@ public class ImportControllerImpl implements ImportController {
 
         //Get UIS
         uis = Lookup.getDefault().lookupAll(ImporterUI.class).toArray(new ImporterUI[0]);
+        wizardUis = Lookup.getDefault().lookupAll(ImporterWizardUI.class).toArray(new ImporterWizardUI[0]);
     }
 
     public FileImporter getFileImporter(File file) {
@@ -279,6 +282,15 @@ public class ImportControllerImpl implements ImportController {
 
     public ImporterUI getUI(Importer importer) {
         for (ImporterUI ui : uis) {
+            if (ui.isUIForImporter(importer)) {
+                return ui;
+            }
+        }
+        return null;
+    }
+
+    public ImporterWizardUI getWizardUI(Importer importer) {
+        for (ImporterWizardUI ui : wizardUis) {
             if (ui.isUIForImporter(importer)) {
                 return ui;
             }

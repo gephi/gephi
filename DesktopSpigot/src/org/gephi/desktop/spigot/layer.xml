@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <filesystem>
-    <folder name="Menu">
+   
+    <folder name="Actions">
         <folder name="File">
             <file name="org-gephi-desktop-spigot-ImportSpigot.instance">
-                <attr name="position" intvalue="650"/>
+                <attr name="delegate" newvalue="org.gephi.desktop.spigot.ImportSpigot"/>
+                <attr name="displayName" bundlevalue="org.gephi.desktop.spigot.Bundle#CTL_ImportSpigot"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="File">
+            <file name="org-gephi-desktop-spigot-ImportSpigot.shadow">
+                <attr name="originalFile" stringvalue="Actions/File/org-gephi-desktop-spigot-ImportSpigot.instance"/>
+                <attr name="position" intvalue="575"/>
             </file>
         </folder>
     </folder>
