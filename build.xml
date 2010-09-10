@@ -134,6 +134,7 @@
             <fileset dir="${toolkit.platformdir}/modules">
                 <include name="org-openide-nodes.jar"/>
                 <include name="org-netbeans-modules-masterfs.jar"/>
+                <include name="org-openide-dialogs.jar"/>
             </fileset>
         </copy>
         <copy todir="${toolkit.tempdir}">
