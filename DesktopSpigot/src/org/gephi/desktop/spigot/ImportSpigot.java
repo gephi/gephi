@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Authors : Yi Du <duyi001@gmail.com>
+          Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.

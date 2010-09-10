@@ -108,6 +108,7 @@ public class SpigotWizardIterator implements WizardDescriptor.Iterator {
                     panels[0] = tempFirstPanel;
                     for (int i = 0; i < spigotPanels.length; i++) {
                         panels[i + 1] = spigotPanels[i];
+                        wizardUi.setup(spigotPanels[i]);
                     }
                     currentWizardUI = wizardUi;
                 }
