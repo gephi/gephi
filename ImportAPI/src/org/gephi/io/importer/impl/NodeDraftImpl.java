@@ -207,7 +207,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         if (column.getType().isDynamicType() && !(value instanceof DynamicType)) {
             if (value instanceof String && !column.getType().equals(AttributeType.DYNAMIC_STRING)) {
                 //Value needs to be parsed
-                value = TypeConvertor.getStaticType(column.getType()).parse(value);
+                value = TypeConvertor.getStaticType(column.getType()).parse((String) value);
             }
             //Wrap value in a dynamic type
             value = DynamicUtilities.createDynamicObject(column.getType(), new Interval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, value));
