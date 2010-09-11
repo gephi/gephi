@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.opengl.compatibility.objects;
 
 import com.sun.opengl.util.BufferUtil;
@@ -267,5 +267,17 @@ public class SelfLoop2dModel extends Edge2dModel {
             return oc;
         }
         return this.octants;
+    }
+
+    @Override
+    public boolean isValid() {
+        return octants != null && octants[0] != null;
+    }
+
+    @Override
+    public void resetOctant() {
+        if (this.octants != null) {
+            this.octants[0] = null;
+        }
     }
 }
