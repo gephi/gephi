@@ -404,6 +404,7 @@ public class EdgeDataTable {
 
         public void setEdges(Edge[] edges) {
             this.edges = edges;
+            fireTableDataChanged();
         }
     }
 
