@@ -102,9 +102,21 @@ public interface DataTablesEventListener {
 
     /**
      * Requests the tables implementation to show number lists and dynamic numbers as sparklines.
-     * @param showOnlyVisible Indicates if sparklines should be used
+     * @param useSparklines Indicates if sparklines should be used
      */
     void setUseSparklines(boolean useSparklines);
+
+    /**
+     * Checks if the data tables implementation is showing time intervals as graphics at the moment.
+     * @return True if sparklines are on, false otherwise
+     */
+    boolean isTimeIntervalGraphics();
+
+    /**
+     * Requests the tables implementation to show time intervals as graphics.
+     * @param timeIntervalGraphics Indicates if time interval graphics should be used
+     */
+    void setTimeIntervalGraphics(boolean timeIntervalGraphics);
 
     /**
      * Checks if the data tables implementation is showing edges nodes (source and target) labels at the moment.
@@ -114,7 +126,7 @@ public interface DataTablesEventListener {
 
     /**
      * Requests the tables implementation to show edges nodes (source and target).
-     * @param showOnlyVisible Indicates if edges nodes labels should be shown
+     * @param showEdgesNodesLabels Indicates if edges nodes labels should be shown
      */
     void setShowEdgesNodesLabels(boolean showEdgesNodesLabels);
 

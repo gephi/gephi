@@ -43,6 +43,7 @@ import javax.swing.table.AbstractTableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.type.DynamicBigDecimal;
 import org.gephi.data.attributes.type.DynamicBigInteger;
@@ -53,6 +54,7 @@ import org.gephi.data.attributes.type.DynamicInteger;
 import org.gephi.data.attributes.type.DynamicLong;
 import org.gephi.data.attributes.type.DynamicShort;
 import org.gephi.data.attributes.type.NumberList;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.spi.edges.EdgesManipulator;
 import org.gephi.desktop.datalab.utils.DataLaboratoryHelper;
@@ -68,6 +70,9 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.gephi.desktop.datalab.utils.PopupMenuUtils;
 import org.gephi.desktop.datalab.utils.SparkLinesRenderer;
+import org.gephi.desktop.datalab.utils.TimeIntervalsRenderer;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
 
 /**
  *
@@ -76,6 +81,7 @@ import org.gephi.desktop.datalab.utils.SparkLinesRenderer;
 public class EdgeDataTable {
 
     private boolean useSparklines = false;
+    private boolean timeIntervalGraphics = false;
     private boolean showEdgesNodesLabels = false;
     private JXTable table;
     private PropertyEdgeDataColumn[] propertiesColumns;
@@ -85,12 +91,13 @@ public class EdgeDataTable {
     private boolean refreshingTable = false;
     private static final int FAKE_COLUMNS_COUNT = 3;
     private EdgeDataTableModel model;
+    private TimeIntervalsRenderer timeIntervalsRenderer;
 
     public EdgeDataTable() {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         table = new JXTable();
-        prepareSparklinesRenderers();
+        prepareRenderers();
         table.setHighlighters(HighlighterFactory.createAlternateStriping());
         table.setColumnControlVisible(true);
         table.setSortable(true);
@@ -108,7 +115,7 @@ public class EdgeDataTable {
             @Override
             public Object getValueFor(Edge edge) {
                 if (showEdgesNodesLabels) {
-                    return edge.getSource().getNodeData().getId()+" - "+edge.getSource().getNodeData().getLabel();
+                    return edge.getSource().getNodeData().getId() + " - " + edge.getSource().getNodeData().getLabel();
                 } else {
                     return edge.getSource().getNodeData().getId();
                 }
@@ -125,7 +132,7 @@ public class EdgeDataTable {
             @Override
             public Object getValueFor(Edge edge) {
                 if (showEdgesNodesLabels) {
-                    return edge.getTarget().getNodeData().getId()+" - "+edge.getTarget().getNodeData().getLabel();
+                    return edge.getTarget().getNodeData().getId() + " - " + edge.getTarget().getNodeData().getLabel();
                 } else {
                     return edge.getTarget().getNodeData().getId();
                 }
@@ -185,7 +192,8 @@ public class EdgeDataTable {
         });
     }
 
-    private void prepareSparklinesRenderers() {
+    private void prepareRenderers() {
+        DynamicModel dm=Lookup.getDefault().lookup(DynamicController.class).getModel();
         table.setDefaultRenderer(NumberList.class, new SparkLinesRenderer());
         table.setDefaultRenderer(DynamicBigDecimal.class, new SparkLinesRenderer());
         table.setDefaultRenderer(DynamicBigInteger.class, new SparkLinesRenderer());
@@ -195,6 +203,11 @@ public class EdgeDataTable {
         table.setDefaultRenderer(DynamicInteger.class, new SparkLinesRenderer());
         table.setDefaultRenderer(DynamicLong.class, new SparkLinesRenderer());
         table.setDefaultRenderer(DynamicShort.class, new SparkLinesRenderer());
+        if (dm != null) {
+            table.setDefaultRenderer(TimeInterval.class, timeIntervalsRenderer = new TimeIntervalsRenderer(dm.getMin(), dm.getMax()));
+        }else{
+            table.setDefaultRenderer(TimeInterval.class, timeIntervalsRenderer = new TimeIntervalsRenderer(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY));
+        }
 
         //Use default string editor for them:
         table.setDefaultEditor(NumberList.class, new DefaultCellEditor(new JTextField()));
@@ -206,6 +219,7 @@ public class EdgeDataTable {
         table.setDefaultEditor(DynamicInteger.class, new DefaultCellEditor(new JTextField()));
         table.setDefaultEditor(DynamicLong.class, new DefaultCellEditor(new JTextField()));
         table.setDefaultEditor(DynamicShort.class, new DefaultCellEditor(new JTextField()));
+        table.setDefaultEditor(TimeInterval.class, new DefaultCellEditor(new JTextField()));
     }
 
     public JXTable getTable() {
@@ -226,6 +240,10 @@ public class EdgeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, DataTablesModel dataTablesModel) {
+        DynamicModel dm=Lookup.getDefault().lookup(DynamicController.class).getModel();
+        if (dm != null) {
+            timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
+        }
         refreshingTable = true;
         if (selectedEdges == null) {
             selectedEdges = getEdgesFromSelectedRows();
@@ -280,6 +298,14 @@ public class EdgeDataTable {
 
     public void setUseSparklines(boolean useSparklines) {
         this.useSparklines = useSparklines;
+    }
+
+    public boolean isTimeIntervalGraphics() {
+        return timeIntervalGraphics;
+    }
+
+    public void setTimeIntervalGraphics(boolean timeIntervalGraphics) {
+        this.timeIntervalGraphics = timeIntervalGraphics;
     }
 
     public boolean isShowEdgesNodesLabels() {
@@ -407,6 +433,8 @@ public class EdgeDataTable {
                 return NumberList.class;
             } else if (useSparklines && AttributeUtils.getDefault().isDynamicNumberColumn(column)) {
                 return column.getType().getType();
+            } else if (timeIntervalGraphics && column.getType() == AttributeType.TIME_INTERVAL) {
+                return TimeInterval.class;
             } else {
                 return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
             }
@@ -419,6 +447,8 @@ public class EdgeDataTable {
         public Object getValueFor(Edge edge) {
             Object value = edge.getEdgeData().getAttributes().getValue(column.getIndex());
             if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column) || AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
+                return value;
+            } else if (timeIntervalGraphics && column.getType() == AttributeType.TIME_INTERVAL) {
                 return value;
             } else {
                 return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent

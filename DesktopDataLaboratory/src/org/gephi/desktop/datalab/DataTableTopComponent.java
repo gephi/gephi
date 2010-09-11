@@ -122,6 +122,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private static final String DATA_LABORATORY_DYNAMIC_FILTERING = "DataLaboratory_Dynamic_Filtering";
     private static final String DATA_LABORATORY_ONLY_VISIBLE = "DataLaboratory_visibleOnly";
     private static final String DATA_LABORATORY_SPARKLINES = "DataLaboratory_useSparklines";
+    private static final String DATA_LABORATORY_TIME_INTERVAL_GRAPHICS = "DataLaboratory_timeIntervalGraphics";
     private static final String DATA_LABORATORY_EDGES_NODES_LABELS = "DataLaboratory_showEdgesNodesLabels";
     private static final Color invalidFilterColor = new Color(254, 150, 150);
     private final boolean dynamicFiltering;
@@ -130,6 +131,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private DataTablesModel dataTablesModel;
     private boolean visibleOnly = false;
     private boolean useSparklines = false;
+    private boolean timeIntervalGraphics = false;
     private boolean showEdgesNodesLabels = false;
     //Table
     private NodeDataTable nodeTable;
@@ -137,10 +139,10 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     //General actions buttons
     private ArrayList<JComponent> generalActionsButtons = new ArrayList<JComponent>();
     //States
-    ClassDisplayed classDisplayed = ClassDisplayed.NODE;//Display nodes by default at first.
+    private ClassDisplayed classDisplayed = ClassDisplayed.NODE;//Display nodes by default at first.
     //Executor
-    ExecutorService taskExecutor;
-    RefreshOnceHelperThread refreshOnceHelperThread;
+    private ExecutorService taskExecutor;
+    private RefreshOnceHelperThread refreshOnceHelperThread;
 
     private DataTableTopComponent() {
 
@@ -148,6 +150,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         dynamicFiltering = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_DYNAMIC_FILTERING, true);
         visibleOnly = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_ONLY_VISIBLE, false);
         useSparklines = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_SPARKLINES, false);
+        timeIntervalGraphics = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_TIME_INTERVAL_GRAPHICS, false);
         showEdgesNodesLabels = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_EDGES_NODES_LABELS, false);
 
         taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(20), new ThreadFactory() {
@@ -172,9 +175,16 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
         initEvents();
 
-        //Init table
+        //Init tables
         nodeTable = new NodeDataTable();
         edgeTable = new EdgeDataTable();
+
+        nodeTable.setUseSparklines(useSparklines);
+        nodeTable.setTimeIntervalGraphics(timeIntervalGraphics);
+        edgeTable.setUseSparklines(useSparklines);
+        edgeTable.setTimeIntervalGraphics(timeIntervalGraphics);
+        edgeTable.setShowEdgesNodesLabels(showEdgesNodesLabels);
+
 
         //Init
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -548,6 +558,17 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         this.useSparklines = useSparklines;
         nodeTable.setUseSparklines(useSparklines);
         edgeTable.setUseSparklines(useSparklines);
+        refreshCurrentTable();
+    }
+
+    public boolean isTimeIntervalGraphics() {
+        return timeIntervalGraphics;
+    }
+
+    public void setTimeIntervalGraphics(boolean timeIntervalGraphics) {
+        this.timeIntervalGraphics = timeIntervalGraphics;
+        nodeTable.setTimeIntervalGraphics(timeIntervalGraphics);
+        edgeTable.setTimeIntervalGraphics(timeIntervalGraphics);
         refreshCurrentTable();
     }
 
@@ -1105,6 +1126,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         //Save preferences:
         NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_ONLY_VISIBLE, visibleOnly);
         NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_SPARKLINES, useSparklines);
+        NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_TIME_INTERVAL_GRAPHICS, timeIntervalGraphics);
         NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_EDGES_NODES_LABELS, showEdgesNodesLabels);
     }//GEN-LAST:event_configurationButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

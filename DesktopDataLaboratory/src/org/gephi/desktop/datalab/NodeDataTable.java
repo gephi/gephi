@@ -46,6 +46,7 @@ import javax.swing.tree.TreePath;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.type.DynamicBigDecimal;
 import org.gephi.data.attributes.type.DynamicBigInteger;
@@ -56,6 +57,7 @@ import org.gephi.data.attributes.type.DynamicInteger;
 import org.gephi.data.attributes.type.DynamicLong;
 import org.gephi.data.attributes.type.DynamicShort;
 import org.gephi.data.attributes.type.NumberList;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
@@ -75,6 +77,9 @@ import org.gephi.graph.api.Attributes;
 import org.gephi.tools.api.EditWindowController;
 import org.gephi.desktop.datalab.utils.PopupMenuUtils;
 import org.gephi.desktop.datalab.utils.SparkLinesRenderer;
+import org.gephi.desktop.datalab.utils.TimeIntervalsRenderer;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
 
 /**
  *
@@ -83,6 +88,7 @@ import org.gephi.desktop.datalab.utils.SparkLinesRenderer;
 public class NodeDataTable {
 
     private boolean useSparklines = false;
+    private boolean timeIntervalGraphics = false;
     private Outline outlineTable;
     private QuickFilter quickFilter;
     private Pattern pattern;
@@ -91,6 +97,7 @@ public class NodeDataTable {
     private AttributeColumnsController attributeColumnsController;
     private boolean refreshingTable = false;
     private static final int FAKE_COLUMNS_COUNT = 1;
+    private TimeIntervalsRenderer timeIntervalsRenderer;
 
     public NodeDataTable() {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
@@ -115,7 +122,7 @@ public class NodeDataTable {
         };
 
         outlineTable.addMouseListener(new PopupAdapter());
-        prepareSparklinesRenderers();
+        prepareRenderers();
         //Add listener of table selection to refresh edit window when the selection changes (and if the table is not being refreshed):
         outlineTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
@@ -153,7 +160,8 @@ public class NodeDataTable {
         });
     }
 
-    private void prepareSparklinesRenderers() {
+    private void prepareRenderers() {
+        DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
         outlineTable.setDefaultRenderer(NumberList.class, new SparkLinesRenderer());
         outlineTable.setDefaultRenderer(DynamicBigDecimal.class, new SparkLinesRenderer());
         outlineTable.setDefaultRenderer(DynamicBigInteger.class, new SparkLinesRenderer());
@@ -163,6 +171,11 @@ public class NodeDataTable {
         outlineTable.setDefaultRenderer(DynamicInteger.class, new SparkLinesRenderer());
         outlineTable.setDefaultRenderer(DynamicLong.class, new SparkLinesRenderer());
         outlineTable.setDefaultRenderer(DynamicShort.class, new SparkLinesRenderer());
+        if (dm != null) {
+            outlineTable.setDefaultRenderer(TimeInterval.class, timeIntervalsRenderer = new TimeIntervalsRenderer(dm.getMin(), dm.getMax()));
+        } else {
+            outlineTable.setDefaultRenderer(TimeInterval.class, timeIntervalsRenderer = new TimeIntervalsRenderer(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY));
+        }
 
         //Use default string editor for them:
         outlineTable.setDefaultEditor(NumberList.class, new DefaultCellEditor(new JTextField()));
@@ -174,6 +187,7 @@ public class NodeDataTable {
         outlineTable.setDefaultEditor(DynamicInteger.class, new DefaultCellEditor(new JTextField()));
         outlineTable.setDefaultEditor(DynamicLong.class, new DefaultCellEditor(new JTextField()));
         outlineTable.setDefaultEditor(DynamicShort.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(TimeInterval.class, new DefaultCellEditor(new JTextField()));
     }
 
     public Outline getOutlineTable() {
@@ -191,6 +205,10 @@ public class NodeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, final DataTablesModel dataTablesModel) {
+        DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
+        if (dm != null) {
+            timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
+        }
         refreshingTable = true;
         if (selectedNodes == null) {
             selectedNodes = getNodesFromSelectedRows();
@@ -215,7 +233,7 @@ public class NodeDataTable {
         } catch (InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
-        refreshingTable = false ;
+        refreshingTable = false;
     }
 
     public void setNodesSelection(Node[] nodes) {
@@ -244,6 +262,14 @@ public class NodeDataTable {
 
     public boolean isUseSparklines() {
         return useSparklines;
+    }
+
+    public boolean isTimeIntervalGraphics() {
+        return timeIntervalGraphics;
+    }
+
+    public void setTimeIntervalGraphics(boolean timeIntervalGraphics) {
+        this.timeIntervalGraphics = timeIntervalGraphics;
     }
 
     public void setUseSparklines(boolean useSparklines) {
@@ -372,6 +398,8 @@ public class NodeDataTable {
                 return NumberList.class;
             } else if (useSparklines && AttributeUtils.getDefault().isDynamicNumberColumn(column)) {
                 return column.getType().getType();
+            } else if (timeIntervalGraphics && column.getType() == AttributeType.TIME_INTERVAL) {
+                return TimeInterval.class;
             } else {
                 return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
             }
@@ -390,6 +418,8 @@ public class NodeDataTable {
             Object value = row.getValue(column.getIndex());
 
             if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column) || AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
+                return value;
+            } else if (timeIntervalGraphics && column.getType() == AttributeType.TIME_INTERVAL) {
                 return value;
             } else {
                 return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent
