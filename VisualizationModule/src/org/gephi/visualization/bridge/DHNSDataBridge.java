@@ -187,8 +187,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         float minWeight = Float.POSITIVE_INFINITY;
         float maxWeight = Float.NEGATIVE_INFINITY;
 
-        TimeInterval timeInterval = dynamicModel.getVisibleInterval();
-        timeInterval = Double.isInfinite(timeInterval.getLow()) && Double.isInfinite(timeInterval.getHigh()) ? null : timeInterval;
+        TimeInterval timeInterval = dynamicModel != null ? dynamicModel.getVisibleInterval() : null;
+        timeInterval = timeInterval != null ? (Double.isInfinite(timeInterval.getLow()) && Double.isInfinite(timeInterval.getHigh()) ? null : timeInterval) : null;
 
         for (Edge edge : edgeIterable) {
             if (edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
@@ -244,8 +244,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         float minWeight = Float.POSITIVE_INFINITY;
         float maxWeight = Float.NEGATIVE_INFINITY;
 
-        TimeInterval timeInterval = dynamicModel.getVisibleInterval();
-        timeInterval = Double.isInfinite(timeInterval.getLow()) && Double.isInfinite(timeInterval.getHigh()) ? null : timeInterval;
+        TimeInterval timeInterval = dynamicModel != null ? dynamicModel.getVisibleInterval() : null;
+        timeInterval = timeInterval != null ? (Double.isInfinite(timeInterval.getLow()) && Double.isInfinite(timeInterval.getHigh()) ? null : timeInterval) : null;
 
         for (Edge edge : graph.getMetaEdges()) {
             if (edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
