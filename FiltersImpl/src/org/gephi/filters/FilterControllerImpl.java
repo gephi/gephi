@@ -128,6 +128,13 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     public void remove(Query query) {
+        if(model.getCurrentQuery()==query) {
+            if(model.isSelecting()) {
+                selectVisible(null);
+            } else {
+                filterVisible(null);
+            }
+        }
         query = ((AbstractQueryImpl) query).getRoot();
         model.remove(query);
     }

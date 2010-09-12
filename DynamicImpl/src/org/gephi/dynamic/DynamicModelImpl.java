@@ -250,6 +250,8 @@ public final class DynamicModelImpl implements DynamicModel {
             //Filters
             Query dynamicQuery = null;
             boolean selecting = false;
+
+            //Get or create Dynamic Query
             if (filterModel.getCurrentQuery() != null) {
                 //Look if current query is dynamic - filtering must be active
                 Query query = filterModel.getCurrentQuery();
@@ -265,6 +267,7 @@ public final class DynamicModelImpl implements DynamicModel {
                     dynamicQuery = query;
                 }
             }
+
             if (Double.isInfinite(visibleTimeInterval.getLow()) && Double.isInfinite(visibleTimeInterval.getHigh())) {
                 if (dynamicQuery != null) {
                     filterController.remove(dynamicQuery);
