@@ -49,8 +49,8 @@ public class TimeIntervalGraphics {
      * @param max Maximum time of all intervals
      */
     public TimeIntervalGraphics(double min, double max) {
-        min=normalize(min);
-        max=normalize(max);        
+        min = normalize(min);
+        max = normalize(max);
         if (min > max) {
             throw new IllegalArgumentException("min should be less or equal than max");
         }
@@ -65,7 +65,8 @@ public class TimeIntervalGraphics {
     }
 
     /**
-     * Creates a time interval graphic representation with default colors
+     * Creates a time interval graphic representation with default colors.
+     * If start or end are infinite, they will be assigned min or max values.
      * @param start Start of the interval (must be greater or equal than minimum time)
      * @param end End of the interval (must be lesser or equal than maximum time)
      * @param width Image width
@@ -77,7 +78,8 @@ public class TimeIntervalGraphics {
     }
 
     /**
-     * Creates a time interval graphic representation with the indicated fill and border colors (or null to use default colors)
+     * Creates a time interval graphic representation with the indicated fill and border colors (or null to use default colors).
+     * If start or end are infinite, they will be assigned min or max values.
      * @param start Start of the interval (must be greater or equal than minimum time)
      * @param end End of the interval (must be lesser or equal than maximum time)
      * @param width Image width
@@ -91,7 +93,8 @@ public class TimeIntervalGraphics {
     }
 
     /**
-     * Creates a time interval graphic representation with the indicated fill, border and background colors (or null to use default colors)
+     * Creates a time interval graphic representation with the indicated fill, border and background colors (or null to use default colors).
+     * If start or end are infinite, they will be assigned min or max values.
      * @param start Start of the interval (must be greater or equal than minimum time)
      * @param end End of the interval (must be lesser or equal than maximum time)
      * @param width Image width
@@ -102,8 +105,8 @@ public class TimeIntervalGraphics {
      * @return Generated image for the interval
      */
     public BufferedImage createTimeIntervalImage(double start, double end, int width, int height, Color fill, Color border, Color background) {
-        start=normalize(start);
-        end=normalize(end);
+        start = normalizeToRange(start);
+        end = normalizeToRange(end);
 
         if (start > end) {
             throw new IllegalArgumentException("start should be less or equal than end");
@@ -127,8 +130,15 @@ public class TimeIntervalGraphics {
         final Graphics2D g = image.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        final int startPixel = (int) (width * new BigDecimal(start).subtract(new BigDecimal(min)).divide(range, 5, RoundingMode.HALF_EVEN).doubleValue());
-        final int endPixel = (int) (width * new BigDecimal(end).subtract(new BigDecimal(min)).divide(range, 5, RoundingMode.HALF_EVEN).doubleValue());
+        final int startPixel, endPixel;
+        if (range.compareTo(new BigDecimal(0)) == 0) {//No range, Min=Max
+            //Fill all drawing area:
+            startPixel = 0;
+            endPixel = width;
+        } else {
+            startPixel = (int) (width * new BigDecimal(start).subtract(new BigDecimal(min)).divide(range, 5, RoundingMode.HALF_EVEN).doubleValue());
+            endPixel = (int) (width * new BigDecimal(end).subtract(new BigDecimal(min)).divide(range, 5, RoundingMode.HALF_EVEN).doubleValue());
+        }
 
         //Draw brackground if any:
         if (background != null) {
@@ -154,7 +164,7 @@ public class TimeIntervalGraphics {
     }
 
     public void setMax(double max) {
-        max=normalize(max);
+        max = normalize(max);
         if (max < min) {
             throw new IllegalArgumentException("min should be less or equal than max");
         }
@@ -167,7 +177,7 @@ public class TimeIntervalGraphics {
     }
 
     public void setMin(double min) {
-        min=normalize(min);
+        min = normalize(min);
         if (max < min) {
             throw new IllegalArgumentException("min should be less or equal than max");
         }
@@ -175,12 +185,22 @@ public class TimeIntervalGraphics {
         calculateRange();
     }
 
-    private double normalize(double d){
-        if(d==Double.NEGATIVE_INFINITY){
+    private double normalize(double d) {
+        if (d == Double.NEGATIVE_INFINITY) {
             return -Double.MAX_VALUE;
         }
-        if(d==Double.POSITIVE_INFINITY){
+        if (d == Double.POSITIVE_INFINITY) {
             return Double.MAX_VALUE;
+        }
+        return d;
+    }
+
+    private double normalizeToRange(double d) {
+        if (d == Double.NEGATIVE_INFINITY) {
+            return min;
+        }
+        if (d == Double.POSITIVE_INFINITY) {
+            return max;
         }
         return d;
     }

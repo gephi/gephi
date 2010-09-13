@@ -198,12 +198,32 @@ public final class DynamicModelImpl implements DynamicModel {
             public void graphChanged(GraphEvent event) {
                 if (event.getSource().isMainView()) {
                     switch (event.getEventType()) {
+                        case ADD_EDGES:
+                            if (edgeColumn != null) {
+                                for (Edge e : event.getData().addedEdges()) {
+                                    TimeInterval ti = (TimeInterval) e.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
+                                    if (ti != null) {
+                                        timeIntervalIndex.add(ti);
+                                    }
+                                }
+                            }
+                            break;
                         case REMOVE_EDGES:
                             if (edgeColumn != null) {
                                 for (Edge e : event.getData().removedEdges()) {
                                     TimeInterval ti = (TimeInterval) e.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
                                     if (ti != null) {
                                         timeIntervalIndex.remove(ti);
+                                    }
+                                }
+                            }
+                            break;
+                        case ADD_NODES:
+                            if (nodeColumn != null) {
+                                for (Node n : event.getData().addedNodes()) {
+                                    TimeInterval ti = (TimeInterval) n.getNodeData().getAttributes().getValue(nodeColumn.getIndex());
+                                    if (ti != null) {
+                                        timeIntervalIndex.add(ti);
                                     }
                                 }
                             }
@@ -217,6 +237,7 @@ public final class DynamicModelImpl implements DynamicModel {
                                     }
                                 }
                             }
+                            break;
                         case CLEAR_NODES:
                             timeIntervalIndex.clear();
                             break;
@@ -346,8 +367,8 @@ public final class DynamicModelImpl implements DynamicModel {
             }
             Double low = interval.getLow();
             Double high = interval.getHigh();
-            if (low != Double.NEGATIVE_INFINITY) {
-                Integer c = lowMap.get((Double) interval.getLow());
+            if (!Double.isInfinite(low)) {
+                Integer c = lowMap.get(low);
                 if (c == null) {
                     lowMap.put(low, 1);
                     pointsSet.add(low);
@@ -355,8 +376,8 @@ public final class DynamicModelImpl implements DynamicModel {
                     lowMap.put(low, c + 1);
                 }
             }
-            if (high != Double.POSITIVE_INFINITY) {
-                Integer c = highMap.get((Double) interval.getHigh());
+            if (!Double.isInfinite(high)) {
+                Integer c = highMap.get(high);
                 if (c == null) {
                     highMap.put(high, 1);
                     pointsSet.add(high);
@@ -383,8 +404,8 @@ public final class DynamicModelImpl implements DynamicModel {
             double max = getMax();
             Double low = interval.getLow();
             Double high = interval.getHigh();
-            if (low != Double.NEGATIVE_INFINITY) {
-                Integer c = lowMap.get((Double) interval.getLow());
+            if (!Double.isInfinite(low)) {
+                Integer c = lowMap.get(low);
                 if (c != null) {
                     if (c - 1 == 0) {
                         lowMap.remove(low);
@@ -396,8 +417,8 @@ public final class DynamicModelImpl implements DynamicModel {
                     System.err.println("Problem, the interval is not there");
                 }
             }
-            if (high != Double.POSITIVE_INFINITY) {
-                Integer c = highMap.get((Double) interval.getHigh());
+            if (!Double.isInfinite(high)) {
+                Integer c = highMap.get(high);
                 if (c != null) {
                     if (c - 1 == 0) {
                         highMap.remove(high);
@@ -430,18 +451,18 @@ public final class DynamicModelImpl implements DynamicModel {
         }
 
         public double getMin() {
-            if (lowMap.isEmpty()) {
+            if (pointsSet.isEmpty()) {
                 return Double.NEGATIVE_INFINITY;
             } else {
-                return lowMap.firstKey();
+                return pointsSet.first();
             }
         }
 
         public double getMax() {
-            if (highMap.isEmpty()) {
+            if (pointsSet.isEmpty()) {
                 return Double.POSITIVE_INFINITY;
-            }else {
-                return highMap.lastKey();
+            } else {
+                return pointsSet.last();
             }
         }
 
