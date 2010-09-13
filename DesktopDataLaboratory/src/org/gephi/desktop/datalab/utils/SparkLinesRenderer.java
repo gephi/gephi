@@ -45,7 +45,7 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         if (value == null) {
             //Render empty string when null
-            return super.getTableCellRendererComponent(table, "", isSelected, hasFocus, row, column);
+            return super.getTableCellRendererComponent(table, null, isSelected, hasFocus, row, column);
         }
 
         Number[] numbers=null;

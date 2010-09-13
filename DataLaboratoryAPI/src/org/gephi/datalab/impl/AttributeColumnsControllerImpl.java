@@ -722,7 +722,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     private void checkColumnsAreNumberOrNumberList(AttributeColumn[] columns) {
-        if (columns == null || !AttributeUtils.getDefault().areAllNumberOrNumberListColumns(columns)) {
+        if (columns == null || (!AttributeUtils.getDefault().areAllNumberOrNumberListColumns(columns)&&!AttributeUtils.getDefault().areAllDynamicNumberColumns(columns))) {
             throw new IllegalArgumentException("All columns have to be number or number list columns and can't be null");
         }
     }

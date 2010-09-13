@@ -203,11 +203,15 @@ public class EdgeDataTable {
         table.setDefaultRenderer(DynamicInteger.class, new SparkLinesRenderer());
         table.setDefaultRenderer(DynamicLong.class, new SparkLinesRenderer());
         table.setDefaultRenderer(DynamicShort.class, new SparkLinesRenderer());
+        double min, max;
         if (dm != null) {
-            table.setDefaultRenderer(TimeInterval.class, timeIntervalsRenderer = new TimeIntervalsRenderer(dm.getMin(), dm.getMax()));
-        }else{
-            table.setDefaultRenderer(TimeInterval.class, timeIntervalsRenderer = new TimeIntervalsRenderer(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY));
+            min=dm.getMin();
+            max=dm.getMax();
+        } else {
+            min=Double.NEGATIVE_INFINITY;
+            max=Double.POSITIVE_INFINITY;
         }
+        table.setDefaultRenderer(TimeInterval.class, timeIntervalsRenderer = new TimeIntervalsRenderer(min, max, timeIntervalGraphics));
 
         //Use default string editor for them:
         table.setDefaultEditor(NumberList.class, new DefaultCellEditor(new JTextField()));
@@ -243,7 +247,9 @@ public class EdgeDataTable {
         DynamicModel dm=Lookup.getDefault().lookup(DynamicController.class).getModel();
         if (dm != null) {
             timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
+            timeIntervalsRenderer.setTimeFormat(dm.getTimeFormat());
         }
+        timeIntervalsRenderer.setDrawGraphics(timeIntervalGraphics);
         refreshingTable = true;
         if (selectedEdges == null) {
             selectedEdges = getEdgesFromSelectedRows();
@@ -434,7 +440,7 @@ public class EdgeDataTable {
                 return NumberList.class;
             } else if (useSparklines && AttributeUtils.getDefault().isDynamicNumberColumn(column)) {
                 return column.getType().getType();
-            } else if (timeIntervalGraphics && column.getType() == AttributeType.TIME_INTERVAL) {
+            } else if (column.getType() == AttributeType.TIME_INTERVAL) {
                 return TimeInterval.class;
             } else {
                 return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
@@ -449,7 +455,7 @@ public class EdgeDataTable {
             Object value = edge.getEdgeData().getAttributes().getValue(column.getIndex());
             if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column) || AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
                 return value;
-            } else if (timeIntervalGraphics && column.getType() == AttributeType.TIME_INTERVAL) {
+            } else if (column.getType() == AttributeType.TIME_INTERVAL) {
                 return value;
             } else {
                 return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent
