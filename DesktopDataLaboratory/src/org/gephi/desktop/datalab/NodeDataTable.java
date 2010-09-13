@@ -56,9 +56,11 @@ import org.gephi.data.attributes.type.DynamicFloat;
 import org.gephi.data.attributes.type.DynamicInteger;
 import org.gephi.data.attributes.type.DynamicLong;
 import org.gephi.data.attributes.type.DynamicShort;
+import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.NumberList;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
 import org.gephi.graph.api.Node;
@@ -97,7 +99,9 @@ public class NodeDataTable {
     private AttributeColumnsController attributeColumnsController;
     private boolean refreshingTable = false;
     private static final int FAKE_COLUMNS_COUNT = 1;
+    private SparkLinesRenderer sparkLinesRenderer;
     private TimeIntervalsRenderer timeIntervalsRenderer;
+    private TimeFormat currentTimeFormat;
 
     public NodeDataTable() {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
@@ -162,7 +166,7 @@ public class NodeDataTable {
 
     private void prepareRenderers() {
         DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
-        outlineTable.setDefaultRenderer(NumberList.class, new SparkLinesRenderer());
+        outlineTable.setDefaultRenderer(NumberList.class, sparkLinesRenderer = new SparkLinesRenderer());
         outlineTable.setDefaultRenderer(DynamicBigDecimal.class, new SparkLinesRenderer());
         outlineTable.setDefaultRenderer(DynamicBigInteger.class, new SparkLinesRenderer());
         outlineTable.setDefaultRenderer(DynamicByte.class, new SparkLinesRenderer());
@@ -173,11 +177,11 @@ public class NodeDataTable {
         outlineTable.setDefaultRenderer(DynamicShort.class, new SparkLinesRenderer());
         double min, max;
         if (dm != null) {
-            min=dm.getMin();
-            max=dm.getMax();
+            min = dm.getMin();
+            max = dm.getMax();
         } else {
-            min=Double.NEGATIVE_INFINITY;
-            max=Double.POSITIVE_INFINITY;
+            min = Double.NEGATIVE_INFINITY;
+            max = Double.POSITIVE_INFINITY;
         }
         outlineTable.setDefaultRenderer(TimeInterval.class, timeIntervalsRenderer = new TimeIntervalsRenderer(min, max, timeIntervalGraphics));
 
@@ -212,7 +216,9 @@ public class NodeDataTable {
         DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
         if (dm != null) {
             timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
-            timeIntervalsRenderer.setTimeFormat(dm.getTimeFormat());
+            currentTimeFormat = dm.getTimeFormat();
+            timeIntervalsRenderer.setTimeFormat(currentTimeFormat);
+            sparkLinesRenderer.setTimeFormat(currentTimeFormat);
         }
         timeIntervalsRenderer.setDrawGraphics(timeIntervalGraphics);
         refreshingTable = true;
@@ -428,7 +434,16 @@ public class NodeDataTable {
             } else if (column.getType() == AttributeType.TIME_INTERVAL) {
                 return value;
             } else {
-                return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent
+                //Show values as Strings like in Edit window and other parts of the program to be consistent
+                if (value != null) {
+                    if (value instanceof DynamicType) {//When type is dynamic, take care to show proper time format
+                        return ((DynamicType) value).toString(currentTimeFormat == TimeFormat.DOUBLE);
+                    } else {
+                        return value.toString();
+                    }
+                } else {
+                    return null;
+                }
             }
         }
 

@@ -53,6 +53,7 @@ import org.gephi.data.attributes.type.DynamicFloat;
 import org.gephi.data.attributes.type.DynamicInteger;
 import org.gephi.data.attributes.type.DynamicLong;
 import org.gephi.data.attributes.type.DynamicShort;
+import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.NumberList;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.datalab.api.AttributeColumnsController;
@@ -73,6 +74,7 @@ import org.gephi.desktop.datalab.utils.SparkLinesRenderer;
 import org.gephi.desktop.datalab.utils.TimeIntervalsRenderer;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 
 /**
  *
@@ -92,6 +94,8 @@ public class EdgeDataTable {
     private static final int FAKE_COLUMNS_COUNT = 3;
     private EdgeDataTableModel model;
     private TimeIntervalsRenderer timeIntervalsRenderer;
+    private TimeFormat currentTimeFormat;
+    private SparkLinesRenderer sparkLinesRenderer;
 
     public EdgeDataTable() {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
@@ -193,8 +197,8 @@ public class EdgeDataTable {
     }
 
     private void prepareRenderers() {
-        DynamicModel dm=Lookup.getDefault().lookup(DynamicController.class).getModel();
-        table.setDefaultRenderer(NumberList.class, new SparkLinesRenderer());
+        DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
+        table.setDefaultRenderer(NumberList.class, sparkLinesRenderer = new SparkLinesRenderer());
         table.setDefaultRenderer(DynamicBigDecimal.class, new SparkLinesRenderer());
         table.setDefaultRenderer(DynamicBigInteger.class, new SparkLinesRenderer());
         table.setDefaultRenderer(DynamicByte.class, new SparkLinesRenderer());
@@ -205,11 +209,11 @@ public class EdgeDataTable {
         table.setDefaultRenderer(DynamicShort.class, new SparkLinesRenderer());
         double min, max;
         if (dm != null) {
-            min=dm.getMin();
-            max=dm.getMax();
+            min = dm.getMin();
+            max = dm.getMax();
         } else {
-            min=Double.NEGATIVE_INFINITY;
-            max=Double.POSITIVE_INFINITY;
+            min = Double.NEGATIVE_INFINITY;
+            max = Double.POSITIVE_INFINITY;
         }
         table.setDefaultRenderer(TimeInterval.class, timeIntervalsRenderer = new TimeIntervalsRenderer(min, max, timeIntervalGraphics));
 
@@ -244,10 +248,12 @@ public class EdgeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, DataTablesModel dataTablesModel) {
-        DynamicModel dm=Lookup.getDefault().lookup(DynamicController.class).getModel();
+        DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
         if (dm != null) {
             timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
-            timeIntervalsRenderer.setTimeFormat(dm.getTimeFormat());
+            currentTimeFormat = dm.getTimeFormat();
+            timeIntervalsRenderer.setTimeFormat(currentTimeFormat);
+            sparkLinesRenderer.setTimeFormat(currentTimeFormat);
         }
         timeIntervalsRenderer.setDrawGraphics(timeIntervalGraphics);
         refreshingTable = true;
@@ -458,7 +464,16 @@ public class EdgeDataTable {
             } else if (column.getType() == AttributeType.TIME_INTERVAL) {
                 return value;
             } else {
-                return value != null ? value.toString() : null;//Show values as Strings like in Edit window and other parts of the program to be consistent
+                //Show values as Strings like in Edit window and other parts of the program to be consistent
+                if (value != null) {
+                    if (value instanceof DynamicType) {//When type is dynamic, take care to show proper time format
+                        return ((DynamicType) value).toString(currentTimeFormat == TimeFormat.DOUBLE);
+                    } else {
+                        return value.toString();
+                    }
+                } else {
+                    return null;
+                }
             }
         }
 

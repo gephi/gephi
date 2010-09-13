@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.type;
 
 import java.util.ArrayList;
@@ -49,602 +49,665 @@ import java.util.List;
  * @param <T> type of data
  */
 public final class IntervalTree<T> {
-	private Node nil;  // the sentinel node
-	private Node root; // the root of this interval tree
 
-	/**
-	 * Constructs an empty {@code IntervalTree}.
-	 */
-	public IntervalTree() {
-		nil = new Node();
-		nil.left = nil.right = nil.p = nil;
-		root = nil;
-	}
+    private Node nil;  // the sentinel node
+    private Node root; // the root of this interval tree
 
-	/**
-	 * Constructs a copy of the given {@code IntervalTree}.
-	 *
-	 * @param intervalTree a copied {@code IntervalTree}
-	 */
-	public IntervalTree(IntervalTree intervalTree) {
-		this();
-		copy(intervalTree.root.left, intervalTree.nil);
-	}
+    /**
+     * Constructs an empty {@code IntervalTree}.
+     */
+    public IntervalTree() {
+        nil = new Node();
+        nil.left = nil.right = nil.p = nil;
+        root = nil;
+    }
 
-	private void copy(Node x, Node nil) {
-		if (x != nil) {
-			copy(x.left, nil);
-			insert(x.i);
-			copy(x.right, nil);
-		}
-	}
+    /**
+     * Constructs a copy of the given {@code IntervalTree}.
+     *
+     * @param intervalTree a copied {@code IntervalTree}
+     */
+    public IntervalTree(IntervalTree intervalTree) {
+        this();
+        copy(intervalTree.root.left, intervalTree.nil);
+    }
 
-	private boolean compareLow(Interval a, Interval b) {
-		if (a.getLow() < b.getLow() || a.getLow() == b.getLow() &&
-				(!a.isLowExcluded() || b.isHighExcluded()))
-			return true;
-		return false;
-	}
+    private void copy(Node x, Node nil) {
+        if (x != nil) {
+            copy(x.left, nil);
+            insert(x.i);
+            copy(x.right, nil);
+        }
+    }
 
-	/**
-	 * Inserts the {@code interval} into this {@code IntervalTree}.
-	 * 
-	 * @param interval an interval to be inserted
-	 * 
-	 * @throws NullPointerException if {@code interval} is null.
-	 */
-	public void insert(Interval<T> interval) {
-		if (interval == null)
-			throw new NullPointerException("Interval cannot be null.");
+    private boolean compareLow(Interval a, Interval b) {
+        if (a.getLow() < b.getLow() || a.getLow() == b.getLow()
+                && (!a.isLowExcluded() || b.isHighExcluded())) {
+            return true;
+        }
+        return false;
+    }
 
-		insert(new Node(interval));
-	}
+    /**
+     * Inserts the {@code interval} into this {@code IntervalTree}.
+     *
+     * @param interval an interval to be inserted
+     *
+     * @throws NullPointerException if {@code interval} is null.
+     */
+    public void insert(Interval<T> interval) {
+        if (interval == null) {
+            throw new NullPointerException("Interval cannot be null.");
+        }
 
-	private void insert(Node z) {
-		z.left = z.right = nil;
+        insert(new Node(interval));
+    }
 
-		Node y = root;
-		Node x = root.left;
-		while (x != nil) {
-			y = x;
-			if (compareLow(z.i, y.i))
-				x = x.left;
-			else x = x.right;
-			y.max = Math.max(z.max, y.max);
-		}
-		z.p = y;
-		if (y == root || compareLow(z.i, y.i))
-			y.left = z;
-		else y.right = z;
-		insertFixup(z);
-	}
+    private void insert(Node z) {
+        z.left = z.right = nil;
 
-	private void insertFixup(Node z) {
-		Node y = nil;
+        Node y = root;
+        Node x = root.left;
+        while (x != nil) {
+            y = x;
+            if (compareLow(z.i, y.i)) {
+                x = x.left;
+            } else {
+                x = x.right;
+            }
+            y.max = Math.max(z.max, y.max);
+        }
+        z.p = y;
+        if (y == root || compareLow(z.i, y.i)) {
+            y.left = z;
+        } else {
+            y.right = z;
+        }
+        insertFixup(z);
+    }
 
-		z.color = RED;
-		while (z.p.color == RED)
-			if (z.p == z.p.p.left) {
-				y = z.p.p.right;
-				if (y.color == RED) {
-					z.p.color   = BLACK;
-					y.color     = BLACK;
-					z.p.p.color = RED;
-					z = z.p.p;
-				}
-				else {
-					if (z == z.p.right) {
-						z = z.p;
-						leftRotate(z);
-					}
-					z.p.color   = BLACK;
-					z.p.p.color = RED;
-					rightRotate(z.p.p);
-				}
-			}
-			else {
-				y = z.p.p.left;
-				if (y.color == RED) {
-					z.p.color   = BLACK;
-					y.color     = BLACK;
-					z.p.p.color = RED;
-					z = z.p.p;
-				}
-				else {
-					if (z == z.p.left) {
-						z = z.p;
-						rightRotate(z);
-					}
-					z.p.color   = BLACK;
-					z.p.p.color = RED;
-					leftRotate(z.p.p);
-				}
-			}
-		root.left.color = BLACK;
-	}
+    private void insertFixup(Node z) {
+        Node y = nil;
 
-	/**
-	 * Removes all intervals from this {@code IntervalTree} that overlap with
-	 * the given {@code interval}.
-	 * 
-	 * @param interval determines which intervals should be removed
-	 * 
-	 * @throws NullPointerException if {@code interval} is null.
-	 */
-	public void delete(Interval<T> interval) {
-		if (interval == null)
-			throw new NullPointerException("Interval cannot be null.");
+        z.color = RED;
+        while (z.p.color == RED) {
+            if (z.p == z.p.p.left) {
+                y = z.p.p.right;
+                if (y.color == RED) {
+                    z.p.color = BLACK;
+                    y.color = BLACK;
+                    z.p.p.color = RED;
+                    z = z.p.p;
+                } else {
+                    if (z == z.p.right) {
+                        z = z.p;
+                        leftRotate(z);
+                    }
+                    z.p.color = BLACK;
+                    z.p.p.color = RED;
+                    rightRotate(z.p.p);
+                }
+            } else {
+                y = z.p.p.left;
+                if (y.color == RED) {
+                    z.p.color = BLACK;
+                    y.color = BLACK;
+                    z.p.p.color = RED;
+                    z = z.p.p;
+                } else {
+                    if (z == z.p.left) {
+                        z = z.p;
+                        rightRotate(z);
+                    }
+                    z.p.color = BLACK;
+                    z.p.p.color = RED;
+                    leftRotate(z.p.p);
+                }
+            }
+        }
+        root.left.color = BLACK;
+    }
 
-		for (Node n : searchNodes(interval))
-			delete(n);
-	}
+    /**
+     * Removes all intervals from this {@code IntervalTree} that overlap with
+     * the given {@code interval}.
+     *
+     * @param interval determines which intervals should be removed
+     *
+     * @throws NullPointerException if {@code interval} is null.
+     */
+    public void delete(Interval<T> interval) {
+        if (interval == null) {
+            throw new NullPointerException("Interval cannot be null.");
+        }
 
-	private void delete(Node z) {
-		z.max = Double.NEGATIVE_INFINITY;
-		for (Node i = z.p; i != root; i = i.p)
-			i.max = Math.max(i.left.max, i.right.max);
+        for (Node n : searchNodes(interval)) {
+            delete(n);
+        }
+    }
 
-		Node y;
-		Node x;
+    private void delete(Node z) {
+        z.max = Double.NEGATIVE_INFINITY;
+        for (Node i = z.p; i != root; i = i.p) {
+            i.max = Math.max(i.left.max, i.right.max);
+        }
 
-		if (z.left == nil || z.right == nil)
-			y = z;
-		else y = succesor(z);
-		if (y.left == nil)
-			x = y.right;
-		else x = y.left;
-		x.p = y.p;
-		if (root == x.p)
-			root.left = x;
-		else if (y == y.p.left)
-			y.p.left = x;
-		else y.p.right = x;
-		if (y != z) {
-			if (y.color == BLACK)
-				deleteFixup(x);
+        Node y;
+        Node x;
 
-			y.left   = z.left;
-			y.right  = z.right;
-			y.p      = z.p;
-			y.color  = z.color;
-			z.left.p = z.right.p = y;
-			if (z == z.p.left)
-				z.p.left = y;
-			else z.p.right = y;
-		}
-		else if (y.color == BLACK)
-			deleteFixup(x);
-	}
+        if (z.left == nil || z.right == nil) {
+            y = z;
+        } else {
+            y = succesor(z);
+        }
+        if (y.left == nil) {
+            x = y.right;
+        } else {
+            x = y.left;
+        }
+        x.p = y.p;
+        if (root == x.p) {
+            root.left = x;
+        } else if (y == y.p.left) {
+            y.p.left = x;
+        } else {
+            y.p.right = x;
+        }
+        if (y != z) {
+            if (y.color == BLACK) {
+                deleteFixup(x);
+            }
 
-	private void deleteFixup(Node x) {
-		while (x != root.left && x.color == BLACK)
-			if (x == x.p.left) {
-				Node w = x.p.right;
-				if (w.color == RED) {
-					w.color   = BLACK;
-					x.p.color = RED;
-					leftRotate(x.p);
-					w = x.p.right;
-				}
-				if (w.left.color == BLACK && w.right.color == BLACK) {
-					w.color = RED;
-					x = x.p;
-				}
-				else {
-					if (w.right.color == BLACK) {
-						w.left.color = BLACK;
-						w.color = RED;
-						rightRotate(w);
-						w = x.p.right;
-					}
-					w.color       = x.p.color;
-					x.p.color     = BLACK;
-					w.right.color = BLACK;
-					leftRotate(x.p);
-					x = root.left;
-				}
-			}
-			else {
-				Node w = x.p.left;
-				if (w.color == RED) {
-					w.color   = BLACK;
-					x.p.color = RED;
-					rightRotate(x.p);
-					w = x.p.left;
-				}
-				if (w.right.color == BLACK && w.left.color == BLACK) {
-					w.color = RED;
-					x = x.p;
-				}
-				else {
-					if (w.left.color == BLACK) {
-						w.right.color = BLACK;
-						w.color = RED;
-						leftRotate(w);
-						w = x.p.left;
-					}
-					w.color      = x.p.color;
-					x.p.color    = BLACK;
-					w.left.color = BLACK;
-					rightRotate(x.p);
-					x = root.left;
-				}
-			}
-		x.color = BLACK;
-	}
+            y.left = z.left;
+            y.right = z.right;
+            y.p = z.p;
+            y.color = z.color;
+            z.left.p = z.right.p = y;
+            if (z == z.p.left) {
+                z.p.left = y;
+            } else {
+                z.p.right = y;
+            }
+        } else if (y.color == BLACK) {
+            deleteFixup(x);
+        }
+    }
 
-	private void leftRotate(Node x) {
-		Node y = x.right;
+    private void deleteFixup(Node x) {
+        while (x != root.left && x.color == BLACK) {
+            if (x == x.p.left) {
+                Node w = x.p.right;
+                if (w.color == RED) {
+                    w.color = BLACK;
+                    x.p.color = RED;
+                    leftRotate(x.p);
+                    w = x.p.right;
+                }
+                if (w.left.color == BLACK && w.right.color == BLACK) {
+                    w.color = RED;
+                    x = x.p;
+                } else {
+                    if (w.right.color == BLACK) {
+                        w.left.color = BLACK;
+                        w.color = RED;
+                        rightRotate(w);
+                        w = x.p.right;
+                    }
+                    w.color = x.p.color;
+                    x.p.color = BLACK;
+                    w.right.color = BLACK;
+                    leftRotate(x.p);
+                    x = root.left;
+                }
+            } else {
+                Node w = x.p.left;
+                if (w.color == RED) {
+                    w.color = BLACK;
+                    x.p.color = RED;
+                    rightRotate(x.p);
+                    w = x.p.left;
+                }
+                if (w.right.color == BLACK && w.left.color == BLACK) {
+                    w.color = RED;
+                    x = x.p;
+                } else {
+                    if (w.left.color == BLACK) {
+                        w.right.color = BLACK;
+                        w.color = RED;
+                        leftRotate(w);
+                        w = x.p.left;
+                    }
+                    w.color = x.p.color;
+                    x.p.color = BLACK;
+                    w.left.color = BLACK;
+                    rightRotate(x.p);
+                    x = root.left;
+                }
+            }
+        }
+        x.color = BLACK;
+    }
 
-		x.right = y.left;
-		if (y.left != nil)
-			y.left.p = x;
-		y.p = x.p;
-		if (x == x.p.left)
-			x.p.left = y;
-		else x.p.right = y;
-		y.left = x;
-		x.p    = y;
+    private void leftRotate(Node x) {
+        Node y = x.right;
 
-		y.max = x.max;
-		x.max = Math.max(x.i.getHigh(), Math.max(x.left.max, x.right.max));
-	}
+        x.right = y.left;
+        if (y.left != nil) {
+            y.left.p = x;
+        }
+        y.p = x.p;
+        if (x == x.p.left) {
+            x.p.left = y;
+        } else {
+            x.p.right = y;
+        }
+        y.left = x;
+        x.p = y;
 
-	private void rightRotate(Node x) {
-		Node y = x.left;
+        y.max = x.max;
+        x.max = Math.max(x.i.getHigh(), Math.max(x.left.max, x.right.max));
+    }
 
-		x.left = y.right;
-		if (y.right != nil)
-			y.right.p = x;
-		y.p = x.p;
-		if (x == x.p.left)
-			x.p.left = y;
-		else x.p.right = y;
-		y.right = x;
-		x.p     = y;
+    private void rightRotate(Node x) {
+        Node y = x.left;
 
-		y.max = x.max;
-		x.max = Math.max(x.i.getHigh(), Math.max(x.left.max, x.right.max));
-	}
+        x.left = y.right;
+        if (y.right != nil) {
+            y.right.p = x;
+        }
+        y.p = x.p;
+        if (x == x.p.left) {
+            x.p.left = y;
+        } else {
+            x.p.right = y;
+        }
+        y.right = x;
+        x.p = y;
 
-	private Node succesor(Node x) {
-		Node y = x.right;
-		if (y != nil) {
-			while (y.left != nil)
-				y = y.left;
-			return y;
-		}
-		y = x.p;
-		while (x == y.right) {
-			x = y;
-			y = y.p;
-		}
-		if (y == root)
-			return nil;
-		return y;
-	}
+        y.max = x.max;
+        x.max = Math.max(x.i.getHigh(), Math.max(x.left.max, x.right.max));
+    }
 
-	/**
-	 * Returns the interval with the lowest left endpoint.
-	 *
-	 * @return the interval with the lowest left endpoint
-	 *         or null if the tree is empty.
-	 */
-	public Interval<T> minimum() {
-		if (root.left == nil)
-			return null;
-		return treeMinimum(root.left).i;
-	}
+    private Node succesor(Node x) {
+        Node y = x.right;
+        if (y != nil) {
+            while (y.left != nil) {
+                y = y.left;
+            }
+            return y;
+        }
+        y = x.p;
+        while (x == y.right) {
+            x = y;
+            y = y.p;
+        }
+        if (y == root) {
+            return nil;
+        }
+        return y;
+    }
 
-	private Node treeMinimum(Node x) {
-		while (x.left != nil)
-			x = x.left;
-		return x;
-	}
+    /**
+     * Returns the interval with the lowest left endpoint.
+     *
+     * @return the interval with the lowest left endpoint
+     *         or null if the tree is empty.
+     */
+    public Interval<T> minimum() {
+        if (root.left == nil) {
+            return null;
+        }
+        return treeMinimum(root.left).i;
+    }
 
-	/**
-	 * Returns the interval with the highest left endpoint.
-	 * 
-	 * @return the interval with the highest left endpoint
-	 *         or null if the tree is empty.
-	 */
-	public Interval<T> maximum() {
-		if (root.left == nil)
-			return null;
-		return treeMaximum(root.left).i;
-	}
+    private Node treeMinimum(Node x) {
+        while (x.left != nil) {
+            x = x.left;
+        }
+        return x;
+    }
 
-	private Node treeMaximum(Node x) {
-		while (x.right != nil)
-			x = x.right;
-		return x;
-	}
+    /**
+     * Returns the interval with the highest left endpoint.
+     *
+     * @return the interval with the highest left endpoint
+     *         or null if the tree is empty.
+     */
+    public Interval<T> maximum() {
+        if (root.left == nil) {
+            return null;
+        }
+        return treeMaximum(root.left).i;
+    }
 
-	/**
-	 * Returns the leftmost point or {@code Double.POSITIVE_INFINITY} in case
-	 * of no intervals.
-	 *
-	 * @return the leftmost point.
-	 */
-	public double getLow() {
-		if (isEmpty())
-			return Double.POSITIVE_INFINITY;
-		return minimum().getLow();
-	}
+    private Node treeMaximum(Node x) {
+        while (x.right != nil) {
+            x = x.right;
+        }
+        return x;
+    }
 
-	/**
-	 * Returns the rightmost point or {@code Double.NEGATIVE_INFINITY} in case
-	 * of no intervals.
-	 *
-	 * @return the rightmost point.
-	 */
-	public double getHigh() {
-		if (isEmpty())
-			return Double.NEGATIVE_INFINITY;
-		return root.left.max;
-	}
+    /**
+     * Returns the leftmost point or {@code Double.POSITIVE_INFINITY} in case
+     * of no intervals.
+     *
+     * @return the leftmost point.
+     */
+    public double getLow() {
+        if (isEmpty()) {
+            return Double.POSITIVE_INFINITY;
+        }
+        return minimum().getLow();
+    }
 
-	/**
-	 * Indicates if the leftmost point is excluded.
-	 *
-	 * @return {@code true} if the leftmost point is excluded,
-	 *         {@code false} otherwise.
-	 */
-	public boolean isLowExcluded() {
-		if (isEmpty())
-			return true;
-		return minimum().isLowExcluded();
-	}
+    /**
+     * Returns the rightmost point or {@code Double.NEGATIVE_INFINITY} in case
+     * of no intervals.
+     *
+     * @return the rightmost point.
+     */
+    public double getHigh() {
+        if (isEmpty()) {
+            return Double.NEGATIVE_INFINITY;
+        }
+        return root.left.max;
+    }
 
-	/**
-	 * Indicates if the rightmost point is excluded.
-	 *
-	 * @return {@code true} if the rightmost point is excluded,
-	 *         {@code false} otherwise.
-	 */
-	public boolean isHighExcluded() {
-		if (isEmpty())
-			return true;
-		return maximum().isHighExcluded();
-	}
+    /**
+     * Indicates if the leftmost point is excluded.
+     *
+     * @return {@code true} if the leftmost point is excluded,
+     *         {@code false} otherwise.
+     */
+    public boolean isLowExcluded() {
+        if (isEmpty()) {
+            return true;
+        }
+        return minimum().isLowExcluded();
+    }
 
-	/**
-	 * Indicates if this {@code IntervalTree} contains 0 intervals.
-	 * 
-	 * @return {@code true} if this {@code IntervalTree} is empty,
-	 *         {@code false} otherwise.
-	 */
-	public boolean isEmpty() {
-		return root.left == nil;
-	}
+    /**
+     * Indicates if the rightmost point is excluded.
+     *
+     * @return {@code true} if the rightmost point is excluded,
+     *         {@code false} otherwise.
+     */
+    public boolean isHighExcluded() {
+        if (isEmpty()) {
+            return true;
+        }
+        return maximum().isHighExcluded();
+    }
 
-	/**
-	 * Returns all intervals overlapping with a given {@code Interval}.
-	 *
-	 * @param interval an {#code Interval} to be searched for overlaps
-	 *
-	 * @return all intervals overlapping with a given {@code Interval}.
-	 *
-	 * @throws NullPointerException if {@code interval} is null.
-	 */
-	public List<Interval<T>> search(Interval<T> interval) {
-		if (interval == null)
-			throw new NullPointerException("Interval cannot be null.");
+    /**
+     * Indicates if this {@code IntervalTree} contains 0 intervals.
+     *
+     * @return {@code true} if this {@code IntervalTree} is empty,
+     *         {@code false} otherwise.
+     */
+    public boolean isEmpty() {
+        return root.left == nil;
+    }
 
-		List<Interval<T>> overlaps = new ArrayList<Interval<T>>();
-		for (Node n : searchNodes(interval))
-			overlaps.add(n.i);
-		return overlaps;
-	}
+    /**
+     * Returns all intervals overlapping with a given {@code Interval}.
+     *
+     * @param interval an {#code Interval} to be searched for overlaps
+     *
+     * @return all intervals overlapping with a given {@code Interval}.
+     *
+     * @throws NullPointerException if {@code interval} is null.
+     */
+    public List<Interval<T>> search(Interval<T> interval) {
+        if (interval == null) {
+            throw new NullPointerException("Interval cannot be null.");
+        }
 
-	/**
-	 * Returns all intervals overlapping with an interval given by {@code low}
-	 * and {@code high}. They are considered as included by default.
-	 *
-	 * @param low  the left endpoint of an interval to be searched for overlaps
-	 * @param high the right endpoint an interval to be searched for overlaps
-	 *
-	 * @return all intervals overlapping with an interval given by {@code low}
-	 * and {@code high}.
-	 *
-	 * @throws IllegalArgumentException if {@code low} > {@code high}.
-	 */
-	public List<Interval<T>> search(double low, double high) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
+        List<Interval<T>> overlaps = new ArrayList<Interval<T>>();
+        for (Node n : searchNodes(interval)) {
+            overlaps.add(n.i);
+        }
+        return overlaps;
+    }
 
-		List<Interval<T>> overlaps = new ArrayList<Interval<T>>();
-		for (Node n : searchNodes(new Interval<T>(low, high)))
-			overlaps.add(n.i);
-		return overlaps;
-	}
+    /**
+     * Returns all intervals overlapping with an interval given by {@code low}
+     * and {@code high}. They are considered as included by default.
+     *
+     * @param low  the left endpoint of an interval to be searched for overlaps
+     * @param high the right endpoint an interval to be searched for overlaps
+     *
+     * @return all intervals overlapping with an interval given by {@code low}
+     * and {@code high}.
+     *
+     * @throws IllegalArgumentException if {@code low} > {@code high}.
+     */
+    public List<Interval<T>> search(double low, double high) {
+        if (low > high) {
+            throw new IllegalArgumentException(
+                    "The left endpoint of the interval must be less than "
+                    + "the right endpoint.");
+        }
 
-	private List<Node> searchNodes(Interval<T> interval) {
-		List<Node> result = new ArrayList<Node>();
-		searchNodes(root.left, interval, result);
-		return result;
-	}
+        List<Interval<T>> overlaps = new ArrayList<Interval<T>>();
+        for (Node n : searchNodes(new Interval<T>(low, high))) {
+            overlaps.add(n.i);
+        }
+        return overlaps;
+    }
 
-	private void searchNodes(Node n, Interval<T> interval, List<Node> result) {
-		// Don't search nodes that don't exist.
-		if (n == nil)
-			return;
+    private List<Node> searchNodes(Interval<T> interval) {
+        List<Node> result = new ArrayList<Node>();
+        searchNodes(root.left, interval, result);
+        return result;
+    }
 
-		// Skip all nodes that have got their max value below the start of
-		// the given interval.
-		if (interval.getLow() > n.max)
-			return;
+    private void searchNodes(Node n, Interval<T> interval, List<Node> result) {
+        // Don't search nodes that don't exist.
+        if (n == nil) {
+            return;
+        }
 
-		// Search left children.
-		if (n.left != nil)
-			searchNodes(n.left, interval, result);
+        // Skip all nodes that have got their max value below the start of
+        // the given interval.
+        if (interval.getLow() > n.max) {
+            return;
+        }
 
-		// Check this node.
-		if (n.i.compareTo(interval) == 0)
-			result.add(n);
+        // Search left children.
+        if (n.left != nil) {
+            searchNodes(n.left, interval, result);
+        }
 
-		// Skip all nodes to the right of nodes whose low value is past the end
-		// of the given interval.
-		if (interval.compareTo(n.i) < 0)
-			return;
+        // Check this node.
+        if (n.i.compareTo(interval) == 0) {
+            result.add(n);
+        }
 
-		// Otherwise, search right children.
-		if (n.right != nil)
-			searchNodes(n.right, interval, result);
-	}
+        // Skip all nodes to the right of nodes whose low value is past the end
+        // of the given interval.
+        if (interval.compareTo(n.i) < 0) {
+            return;
+        }
 
-	/**
-	 * Indicates if this {@code IntervalTree} overlaps with the given time interval.
-	 *
-	 * @param interval a given time interval
-	 *
-	 * @return {@code true} if this {@code IntervalTree} overlaps with {@code interval},
-	 *         {@code false} otherwise.
-	 */
-	public boolean overlapsWith(Interval<T> interval) {
-		return overlapsWith(root.left, interval);
-	}
+        // Otherwise, search right children.
+        if (n.right != nil) {
+            searchNodes(n.right, interval, result);
+        }
+    }
 
-	private boolean overlapsWith(Node n, Interval<T> interval) {
-		// Don't search nodes that don't exist.
-		if (n == nil)
-			return false;
+    /**
+     * Indicates if this {@code IntervalTree} overlaps with the given time interval.
+     *
+     * @param interval a given time interval
+     *
+     * @return {@code true} if this {@code IntervalTree} overlaps with {@code interval},
+     *         {@code false} otherwise.
+     */
+    public boolean overlapsWith(Interval<T> interval) {
+        return overlapsWith(root.left, interval);
+    }
 
-		// Skip all nodes that have got their max value below the start of
-		// the given interval.
-		if (interval.getLow() > n.max)
-			return false;
+    private boolean overlapsWith(Node n, Interval<T> interval) {
+        // Don't search nodes that don't exist.
+        if (n == nil) {
+            return false;
+        }
 
-		// Search left children.
-		if (n.left != nil)
-			if (overlapsWith(n.left, interval))
-				return true;
+        // Skip all nodes that have got their max value below the start of
+        // the given interval.
+        if (interval.getLow() > n.max) {
+            return false;
+        }
 
-		// Check this node.
-		if (n.i.compareTo(interval) == 0)
-			return true;
+        // Search left children.
+        if (n.left != nil) {
+            if (overlapsWith(n.left, interval)) {
+                return true;
+            }
+        }
 
-		// Skip all nodes to the right of nodes whose low value is past the end
-		// of the given interval.
-		if (interval.compareTo(n.i) < 0)
-			return false;
+        // Check this node.
+        if (n.i.compareTo(interval) == 0) {
+            return true;
+        }
 
-		// Otherwise, search right children.
-		if (n.right != nil)
-			if (overlapsWith(n.right, interval))
-				return true;
+        // Skip all nodes to the right of nodes whose low value is past the end
+        // of the given interval.
+        if (interval.compareTo(n.i) < 0) {
+            return false;
+        }
 
-		// No overlaps, return false.
-		return false;
-	}
+        // Otherwise, search right children.
+        if (n.right != nil) {
+            if (overlapsWith(n.right, interval)) {
+                return true;
+            }
+        }
 
-	private void inorderTreeWalk(Node x, List<Interval<T>> list) {
-		if (x != nil) {
-			inorderTreeWalk(x.left, list);
-			list.add(x.i);
-			inorderTreeWalk(x.right, list);
-		}
-	}
+        // No overlaps, return false.
+        return false;
+    }
 
-	/**
-	 * Compares this interval tree with the specified object for equality.
-	 *
-	 * <p>Note that two interval trees are equal if they contain the same
-	 * intervals.
-	 *
-	 * @param obj object to which this interval tree is to be compared
-	 *
-	 * @return {@code true} if and only if the specified {@code Object} is a
-	 *         {@code IntervalTree} which contain the same intervals as this
+    private void inorderTreeWalk(Node x, List<Interval<T>> list) {
+        if (x != nil) {
+            inorderTreeWalk(x.left, list);
+            list.add(x.i);
+            inorderTreeWalk(x.right, list);
+        }
+    }
+
+    /**
+     * Compares this interval tree with the specified object for equality.
+     *
+     * <p>Note that two interval trees are equal if they contain the same
+     * intervals.
+     *
+     * @param obj object to which this interval tree is to be compared
+     *
+     * @return {@code true} if and only if the specified {@code Object} is a
+     *         {@code IntervalTree} which contain the same intervals as this
      *         {@code IntervalTree's}.
-	 * 
+     *
      * @see #hashCode
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (obj != null && obj.getClass().equals(this.getClass())) {
-			List<Interval<T>> thisIntervals = new ArrayList<Interval<T>>();
-			List<Interval<T>> objIntervals  = new ArrayList<Interval<T>>();
-			inorderTreeWalk(root.left, thisIntervals);
-			((IntervalTree<T>)obj).inorderTreeWalk(
-					((IntervalTree<T>)obj).root.left, objIntervals);
-			if (thisIntervals.size() == objIntervals.size()) {
-				for (int i = 0; i < thisIntervals.size(); ++i)
-					if (!thisIntervals.get(i).equals(objIntervals.get(i)))
-						return false;
-				return true;
-			}
-		}
-		return false;
-	}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj.getClass().equals(this.getClass())) {
+            List<Interval<T>> thisIntervals = new ArrayList<Interval<T>>();
+            List<Interval<T>> objIntervals = new ArrayList<Interval<T>>();
+            inorderTreeWalk(root.left, thisIntervals);
+            ((IntervalTree<T>) obj).inorderTreeWalk(
+                    ((IntervalTree<T>) obj).root.left, objIntervals);
+            if (thisIntervals.size() == objIntervals.size()) {
+                for (int i = 0; i < thisIntervals.size(); ++i) {
+                    if (!thisIntervals.get(i).equals(objIntervals.get(i))) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Returns a hashcode of this interval tree.
-	 * 
-	 * @return a hashcode of this interval tree.
-	 */
-	@Override
-	public int hashCode() {
-		List<Interval<T>> list = new ArrayList<Interval<T>>();
-		inorderTreeWalk(root.left, list);
-		return Arrays.deepHashCode(list.toArray());
-	}
+    /**
+     * Returns a hashcode of this interval tree.
+     *
+     * @return a hashcode of this interval tree.
+     */
+    @Override
+    public int hashCode() {
+        List<Interval<T>> list = new ArrayList<Interval<T>>();
+        inorderTreeWalk(root.left, list);
+        return Arrays.deepHashCode(list.toArray());
+    }
 
-	/**
-	 * Returns a string representation of this interval tree in a format
-	 * {@code <[low, high, value], ..., [low, high, value]>}. Nodes are visited
-	 * in {@code inorder}.
-	 *
-	 * @return a string representation of this interval tree.
-	 */
-	@Override
-	public String toString() {
-		List<Interval<T>> list = new ArrayList<Interval<T>>();
-		inorderTreeWalk(root.left, list);
-		if (!list.isEmpty()) {
-			StringBuilder sb = new StringBuilder("<");
-			sb.append(list.get(0).toString());
-			for (int i = 1; i < list.size(); ++i)
-				sb.append(", ").append(list.get(i).toString());
-			sb.append(">");
-			return sb.toString();
-		}
-		return "<empty>]";
-	}
+    /**
+     * Creates a String representation of all the intervals with their values.
+     * @param timesAsDoubles Indicates if times should be shown as doubles or dates.
+     * @return String representation with times as doubles or dates.
+     */
+    public String toString(boolean timesAsDoubles) {
+        List<Interval<T>> list = new ArrayList<Interval<T>>();
+        inorderTreeWalk(root.left, list);
+        if (!list.isEmpty()) {
+            StringBuilder sb = new StringBuilder("<");
+            sb.append(list.get(0).toString(timesAsDoubles));
+            for (int i = 1; i < list.size(); ++i) {
+                sb.append(", ").append(list.get(i).toString(timesAsDoubles));
+            }
+            sb.append(">");
+            return sb.toString();
+        }
+        return "<empty>]";
+    }
 
-	private class Node {
-		public Interval<T> i;   // i.low is the key of this node
-		public double      max; // the maximum value of any interval endpoint
-								// stored in the subtree rooted at this node
-		
-		public Color color; // the color of this node
-		public Node  left;  // the left subtree of this node
-		public Node  right; // the right subtree of this node
-		public Node  p;     // the parent node
+    /**
+     * Returns a string representation of this interval tree in a format
+     * {@code <[low, high, value], ..., [low, high, value]>}. Nodes are visited
+     * in {@code inorder}.
+     *
+     * Times are always shown as Doubles
+     *
+     * @return a string representation of this interval tree.
+     */
+    @Override
+    public String toString() {
+        return toString(true);
+    }
 
-		/*
-		 * Constructs a sentinel node by default.
-		 */
-		public Node() {
-			color = BLACK;
-		}
+    private class Node {
 
-		/*
-		 * Constructs a new {@code Node} instance.
-		 */
-		public Node(Interval<T> i) {
-			this();
-			this.i   = i;
-			this.max = i.getHigh();
-		}
-	}
+        public Interval<T> i;   // i.low is the key of this node
+        public double max; // the maximum value of any interval endpoint
+        // stored in the subtree rooted at this node
+        public Color color; // the color of this node
+        public Node left;  // the left subtree of this node
+        public Node right; // the right subtree of this node
+        public Node p;     // the parent node
 
-	private enum Color {
-		RED, BLACK
-	}
+        /*
+         * Constructs a sentinel node by default.
+         */
+        public Node() {
+            color = BLACK;
+        }
 
-	private static final Color RED   = Color.RED;
-	private static final Color BLACK = Color.BLACK;
+        /*
+         * Constructs a new {@code Node} instance.
+         */
+        public Node(Interval<T> i) {
+            this();
+            this.i = i;
+            this.max = i.getHigh();
+        }
+    }
+
+    private enum Color {
+
+        RED, BLACK
+    }
+    private static final Color RED = Color.RED;
+    private static final Color BLACK = Color.BLACK;
 }

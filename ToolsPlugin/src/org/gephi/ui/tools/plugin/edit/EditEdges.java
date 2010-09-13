@@ -26,7 +26,11 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeData;
 import org.openide.nodes.AbstractNode;
@@ -48,6 +52,7 @@ public class EditEdges extends AbstractNode {
     private PropertySet[] propertySets;
     private Edge[] edges;
     private boolean multipleEdges;
+    private TimeFormat currentTimeFormat=TimeFormat.DOUBLE;
 
     /**
      * Single edge edition mode will always be enabled with this single node constructor
@@ -87,6 +92,10 @@ public class EditEdges extends AbstractNode {
      */
     private Sheet.Set prepareEdgesAttributes() {
         try {
+            DynamicModel dm=Lookup.getDefault().lookup(DynamicController.class).getModel();
+            if(dm!=null){
+                currentTimeFormat=dm.getTimeFormat();
+            }
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
             Sheet.Set set = new Sheet.Set();
             set.setName("attributes");
@@ -322,7 +331,11 @@ public class EditEdges extends AbstractNode {
         private String convertToStringIfNotNull() {
             Object value = row.getValue(column.getIndex());
             if (value != null) {
-                return value.toString();
+                if (value instanceof DynamicType) {
+                    return ((DynamicType) value).toString(currentTimeFormat==TimeFormat.DOUBLE);
+                } else {
+                    return value.toString();
+                }
             } else {
                 return null;
             }
@@ -409,7 +422,7 @@ public class EditEdges extends AbstractNode {
         }
     }
 
-    public static class MultipleEdgesAttributeValueWrapper implements AttributeValueWrapper {
+    public class MultipleEdgesAttributeValueWrapper implements AttributeValueWrapper {
 
         private Edge[] edges;
         private AttributeColumn column;
@@ -423,7 +436,11 @@ public class EditEdges extends AbstractNode {
 
         private String convertToStringIfNotNull() {
             if (value != null) {
-                return value.toString();
+                if (value instanceof DynamicType) {
+                    return ((DynamicType) value).toString(currentTimeFormat==TimeFormat.DOUBLE);
+                } else {
+                    return value.toString();
+                }
             } else {
                 return null;
             }

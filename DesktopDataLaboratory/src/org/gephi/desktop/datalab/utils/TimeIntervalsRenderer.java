@@ -23,14 +23,11 @@ package org.gephi.desktop.datalab.utils;
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
-import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 
 /**
@@ -58,15 +55,7 @@ public class TimeIntervalsRenderer extends DefaultTableCellRenderer {
             return super.getTableCellRendererComponent(table, null, isSelected, hasFocus, row, column);
         }
         TimeInterval timeInterval = (TimeInterval) value;
-        String stringRepresentation = null;
-        switch (timeFormat) {
-            case DOUBLE:
-                stringRepresentation = timeInterval.toString();
-                break;
-            case DATE:
-                stringRepresentation = timeIntervalToDatesString(timeInterval);
-                break;
-        }
+        String stringRepresentation = timeInterval.toString(timeFormat==TimeFormat.DOUBLE);
         if (drawGraphics) {
             JLabel label = new JLabel();
             Color background;
@@ -84,27 +73,7 @@ public class TimeIntervalsRenderer extends DefaultTableCellRenderer {
             return super.getTableCellRendererComponent(table, stringRepresentation, isSelected, hasFocus, row, column);
         }
     }
-
-    public String timeIntervalToDatesString(TimeInterval timeInterval) {
-        List<Interval<Double[]>> list = timeInterval.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-        if (!list.isEmpty()) {
-            StringBuilder sb = new StringBuilder("<");
-            sb.append(list.get(0).isLowExcluded() ? "(" : "[").append(doubleToDateString(list.get(0).getLow())).append(", ").
-                    append(doubleToDateString(list.get(0).getHigh())).append(list.get(0).isHighExcluded() ? ")" : "]");
-            for (int i = 1; i < list.size(); ++i) {
-                sb.append(", ").append(list.get(i).isLowExcluded() ? "(" : "[").append(doubleToDateString(list.get(i).getLow())).append(", ").
-                        append(doubleToDateString(list.get(i).getHigh())).append(list.get(i).isHighExcluded() ? ")" : "]");
-            }
-            sb.append(">");
-            return sb.toString();
-        }
-        return "<empty>";
-    }
-
-    private String doubleToDateString(double d) {
-        return DynamicUtilities.getXMLDateStringFromDouble(d);
-    }
-
+    
     public boolean isDrawGraphics() {
         return drawGraphics;
     }
