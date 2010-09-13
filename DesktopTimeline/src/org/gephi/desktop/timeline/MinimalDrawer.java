@@ -236,7 +236,6 @@ public class MinimalDrawer extends JPanel
 
         long min = (long) model.getMinValue();
         long max = (long) model.getMaxValue();
-
         /*
         System.out.println("\nall min: " + min);
         System.out.println("all max: " + max);
@@ -249,7 +248,13 @@ public class MinimalDrawer extends JPanel
                 || max == Double.POSITIVE_INFINITY
                 || max == Double.NEGATIVE_INFINITY
                 || min == Double.POSITIVE_INFINITY) {
+            System.out.println("cannot show a model with negative values");
             return;
+        }
+        if (model.getFromFloat() == Double.NEGATIVE_INFINITY
+                || model.getToFloat() == Double.POSITIVE_INFINITY) {
+            System.out.println("cannot show a selection with negative values");
+                    return;
         }
 
         /*
