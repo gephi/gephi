@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.plaf.metal.MetalBorders.ToolBarBorder;
+import org.gephi.dynamic.api.DynamicController;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.spi.TimelineDrawer;
 import org.gephi.timeline.api.TimelineAnimatorListener;
@@ -239,9 +240,16 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
 
     public void setActivated(boolean activated) {
+        if (!activated) {
+                DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+                if (dynamicController != null) {
+               dynamicController.setVisibleInterval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+            }
+                // TODO : remove the model
+        }
         drawerPanel.setEnabled(activated);
         timelinePanel.setEnabled(activated);
-       timelineToolbar.setEnabled(activated);
+        timelineToolbar.setEnabled(activated);
         enableButton.setSelected(activated);
     }
 

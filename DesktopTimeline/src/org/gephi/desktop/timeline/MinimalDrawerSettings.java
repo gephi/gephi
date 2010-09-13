@@ -96,6 +96,8 @@ public class MinimalDrawerSettings {
     public ConvolveOp blurOperator;
     private int lastWidth = 0;
     private int lastHeight = 0;
+    public int tmMarginTop;
+    public int tmMarginBottom;
 
     void update(int width, int height) {
         if (lastWidth == width && lastHeight == height) {
@@ -161,6 +163,8 @@ public class MinimalDrawerSettings {
 
         hookLength = 16;
 
+        tmMarginTop = 2;
+        tmMarginBottom = 4;
 
 
         //System.out.println("Generating filters for " + this);

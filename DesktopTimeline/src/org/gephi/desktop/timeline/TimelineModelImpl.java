@@ -41,6 +41,7 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
     private double toFloat = 1.0f;
     private double fromValue = 0.0f;
     private double toValue = 0.0f;
+    
     //Architecture
     private final TimelineControllerImpl controller;
     private final DynamicController dynamicController;
@@ -71,7 +72,6 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
             switch (event.getEventType()) {
                 case IS_DYNAMIC:
                     Boolean isDynamic = (Boolean) event.getData();
-                    
                     break;
                 case VISIBLE_INTERVAL:
                     System.out.println("get back visible interval " + event.getData());
@@ -94,6 +94,8 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
             dynamicController.setVisibleInterval(range.getLowerDouble(), range.getUpperDouble());
         }
     }
+
+
 
     // Not used for the moment (will be used to generate charts)
     public String getFirstAttributeLabel() {
@@ -193,14 +195,12 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
     }
 
     public synchronized void setFromFloat(double from) {
-        //if (from >= toFloat) return;
         fromFloat = from;
         setFromValue(getMinValue() + getFromFloat() * getTotalSize());
         setRange(new Range(getFromValue(), getToValue()));
     }
 
     public synchronized void setToFloat(double to) {
-        //if (to <= toFloat) return;
         toFloat = to;
         setToValue(getMinValue() + getFromFloat() * getTotalSize());
         setRange(new Range(getFromValue(), getToValue()));
@@ -215,12 +215,10 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
     }
 
     public synchronized void setFromValue(double from) {
-        //if (from >= toValue) return;
         fromValue = from;
     }
 
     public synchronized void setToValue(double to) {
-        //if (to <= fromValue) return;
         toValue = to;
     }
 
