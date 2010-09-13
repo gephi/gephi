@@ -104,6 +104,7 @@ public class TimeIntervalGraphics {
     public BufferedImage createTimeIntervalImage(double start, double end, int width, int height, Color fill, Color border, Color background) {
         start=normalize(start);
         end=normalize(end);
+
         if (start > end) {
             throw new IllegalArgumentException("start should be less or equal than end");
         }

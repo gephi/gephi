@@ -430,21 +430,17 @@ public final class DynamicModelImpl implements DynamicModel {
         }
 
         public double getMin() {
-            if (lowMap.isEmpty() && highMap.isEmpty()) {
+            if (lowMap.isEmpty()) {
                 return Double.NEGATIVE_INFINITY;
-            } else if (lowMap.isEmpty()) {
-                return highMap.firstKey();
             } else {
                 return lowMap.firstKey();
             }
         }
 
         public double getMax() {
-            if (lowMap.isEmpty() && highMap.isEmpty()) {
+            if (highMap.isEmpty()) {
                 return Double.POSITIVE_INFINITY;
-            } else if (highMap.isEmpty()) {
-                return lowMap.lastKey();
-            } else {
+            }else {
                 return highMap.lastKey();
             }
         }

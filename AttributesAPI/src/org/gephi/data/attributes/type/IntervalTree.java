@@ -388,27 +388,27 @@ public final class IntervalTree<T> {
     }
 
     /**
-     * Returns the leftmost point or {@code Double.POSITIVE_INFINITY} in case
+     * Returns the leftmost point or {@code Double.NEGATIVE_INFINITY} in case
      * of no intervals.
      *
      * @return the leftmost point.
      */
     public double getLow() {
         if (isEmpty()) {
-            return Double.POSITIVE_INFINITY;
+            return Double.NEGATIVE_INFINITY;
         }
         return minimum().getLow();
     }
 
     /**
-     * Returns the rightmost point or {@code Double.NEGATIVE_INFINITY} in case
+     * Returns the rightmost point or {@code Double.POSITIVE_INFINITY} in case
      * of no intervals.
      *
      * @return the rightmost point.
      */
     public double getHigh() {
         if (isEmpty()) {
-            return Double.NEGATIVE_INFINITY;
+            return Double.POSITIVE_INFINITY;
         }
         return root.left.max;
     }

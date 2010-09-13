@@ -89,8 +89,10 @@ public abstract class AttributeUtils {
     public static String getXMLDateStringFromDouble(double d) {
         try {
             DatatypeFactory dateFactory = DatatypeFactory.newInstance();
-            if (Double.isInfinite(d)) {
-                throw new IllegalArgumentException("The passed double cannot be infinite.");
+            if (d == Double.NEGATIVE_INFINITY) {
+                return "-Infinity";
+            } else if (d == Double.POSITIVE_INFINITY) {
+                return "Infinity";
             }
             GregorianCalendar gc = new GregorianCalendar();
             gc.setTimeInMillis((long) d);
