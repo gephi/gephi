@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.io.export.api;
 
 import java.awt.BorderLayout;
@@ -159,10 +159,12 @@ public final class GraphFileExporterUI implements ExporterClassUI {
                 if (selectedFile != null && fileFilter != null) {
                     String fileName = selectedFile.getName();
                     String directoryPath = chooser.getCurrentDirectory().getAbsolutePath();
-                    fileName = fileName.substring(0, fileName.lastIndexOf("."));
-                    fileName = fileName.concat(fileFilter.getExtensions().get(0));
-                    selectedFile = new File(directoryPath, fileName);
-                    chooser.setSelectedFile(selectedFile);
+                    if (fileName.lastIndexOf(".") != -1) {
+                        fileName = fileName.substring(0, fileName.lastIndexOf("."));
+                        fileName = fileName.concat(fileFilter.getExtensions().get(0));
+                        selectedFile = new File(directoryPath, fileName);
+                        chooser.setSelectedFile(selectedFile);
+                    }
                 }
             }
         });
