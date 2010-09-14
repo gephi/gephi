@@ -73,6 +73,7 @@ public class UIExporterGraphML implements ExporterUI {
         private boolean exportPosition = true;
         private boolean exportSize = true;
         private boolean exportAttributes = true;
+        private boolean exportHierarchy = false;
 
         private void save(ExporterGraphML exporterGraphML) {
             this.normalize = exporterGraphML.isNormalize();
@@ -80,6 +81,7 @@ public class UIExporterGraphML implements ExporterUI {
             this.exportPosition = exporterGraphML.isExportPosition();
             this.exportSize = exporterGraphML.isExportSize();
             this.exportAttributes = exporterGraphML.isExportAttributes();
+            this.exportHierarchy = exporterGraphML.isExportHierarchy();
         }
 
         private void load(ExporterGraphML exporterGraphML) {
@@ -88,6 +90,7 @@ public class UIExporterGraphML implements ExporterUI {
             exporterGraphML.setExportAttributes(exportAttributes);
             exporterGraphML.setExportPosition(exportPosition);
             exporterGraphML.setExportSize(exportSize);
+            exporterGraphML.setExportHierarchy(exportHierarchy);
         }
     }
 }

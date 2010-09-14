@@ -80,6 +80,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private boolean exportPosition = true;
     private boolean exportSize = true;
     private boolean exportAttributes = true;
+    private boolean exportHierarchy = false;
     //Settings Helper
     private float minSize;
     private float maxSize;
@@ -364,7 +365,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
                 graphE.appendChild(childE);
             }
             parentE.appendChild(graphE);
-        } else if (graphModel.isHierarchical()) {
+        } else if (exportHierarchy && graphModel.isHierarchical()) {
             // we are on the top of the tree
             HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
             for (Node n : hgraph.getTopNodes()) {
@@ -427,7 +428,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         }
 
         //Hierarchy
-        if (graphModel.isHierarchical()) {
+        if (exportHierarchy && graphModel.isHierarchical()) {
             HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
             int childCount = hgraph.getChildrenCount(n);
             if (childCount != 0) {
@@ -442,11 +443,11 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private void createEdges(Document document, Element edgesE, Graph graph) throws Exception {
 
         EdgeIterable it;
-        if (graphModel.isHierarchical()) {
-            HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
-            it = hgraph.getEdgesAndMetaEdges();
+        HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
+        if (exportHierarchy && graphModel.isHierarchical()) {
+            it = hgraph.getEdgesTree();
         } else {
-            it = graph.getEdges();
+            it = hgraph.getEdgesAndMetaEdges();
         }
         for (Edge e : it.toArray()) {
             if (cancel) {
@@ -686,5 +687,13 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
 
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
+    }
+
+    public boolean isExportHierarchy() {
+        return exportHierarchy;
+    }
+
+    public void setExportHierarchy(boolean exportHierarchy) {
+        this.exportHierarchy = exportHierarchy;
     }
 }
