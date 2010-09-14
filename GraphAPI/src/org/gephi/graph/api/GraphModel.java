@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.graph.api;
 
+import org.gephi.project.api.Workspace;
+
 /**
  * Root interface that contains the complete graph structure and build
  * {@link Graph} objets on demand.
@@ -351,4 +353,10 @@ public interface GraphModel {
      * @see HierarchicalGraph
      */
     public boolean isHierarchical();
+
+    /**
+     * Returns the workspace this graph model belongs to.
+     * @return the workspace that owns this graph model
+     */
+    public Workspace getWorkspace();
 }
