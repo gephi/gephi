@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking.impl;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.ranking.api.RankingModel;
 import org.gephi.ranking.api.NodeRanking;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -92,10 +95,22 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
 
         defaultEstimator = Estimator.AVERAGE;
     }
+    private Timer refreshTimer; //hack
 
     public void attributesChanged(AttributeEvent event) {
         if (event.getEventType().equals(AttributeEvent.EventType.ADD_COLUMN) || event.getEventType().equals(AttributeEvent.EventType.REMOVE_COLUMN)) {
-            fireChangeEvent();
+            if (refreshTimer != null) {
+                refreshTimer.restart();
+            } else {
+                refreshTimer = new Timer(1000, new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        fireChangeEvent();
+                    }
+                });
+                refreshTimer.setRepeats(false);
+                refreshTimer.start();
+            }
         }
     }
 
