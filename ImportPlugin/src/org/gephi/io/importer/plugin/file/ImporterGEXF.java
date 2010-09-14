@@ -56,15 +56,15 @@ public class ImporterGEXF implements FileImporter, LongTask {
     private static final String GEXF_VERSION = "version";
     private static final String GRAPH = "graph";
     private static final String GRAPH_DEFAULT_EDGETYPE = "defaultedgetype";
-    private static final String GRAPH_START = "start";
-    private static final String GRAPH_END = "end";
     private static final String GRAPH_TIMEFORMAT = "timeformat";
     private static final String GRAPH_TIMEFORMAT2 = "timetype";
+    private static final String START = "start";
+    private static final String END = "end";
+    private static final String START_OPEN = "startopen";
+    private static final String END_OPEN = "endopen";
     private static final String NODE = "node";
     private static final String NODE_ID = "id";
     private static final String NODE_LABEL = "label";
-    private static final String NODE_START = "start";
-    private static final String NODE_END = "end";
     private static final String NODE_PID = "pid";
     private static final String NODE_POSITION = "position";
     private static final String NODE_COLOR = "color";
@@ -77,9 +77,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
     private static final String EDGE_LABEL = "label";
     private static final String EDGE_TYPE = "type";
     private static final String EDGE_WEIGHT = "weight";
-    private static final String EDGE_START = "start";
     private static final String EDGE_COLOR = "color";
-    private static final String EDGE_END = "end";
     private static final String EDGE_SLICE = "slice";
     private static final String ATTRIBUTE = "attribute";
     private static final String ATTRIBUTE_ID = "id";
@@ -186,9 +184,9 @@ public class ImporterGEXF implements FileImporter, LongTask {
             String attName = reader.getAttributeName(i).getLocalPart();
             if (GRAPH_DEFAULT_EDGETYPE.equalsIgnoreCase(attName)) {
                 defaultEdgeType = reader.getAttributeValue(i);
-            } else if (GRAPH_START.equalsIgnoreCase(attName)) {
+            } else if (START.equalsIgnoreCase(attName)) {
                 start = reader.getAttributeValue(i);
-            } else if (GRAPH_END.equalsIgnoreCase(attName)) {
+            } else if (END.equalsIgnoreCase(attName)) {
                 end = reader.getAttributeValue(i);
             } else if (GRAPH_TIMEFORMAT.equalsIgnoreCase(attName) || GRAPH_TIMEFORMAT2.equalsIgnoreCase(attName)) {
                 timeFormat = reader.getAttributeValue(i);
@@ -232,6 +230,8 @@ public class ImporterGEXF implements FileImporter, LongTask {
         String startDate = "";
         String endDate = "";
         String pid = "";
+        boolean startOpen = false;
+        boolean endOpen = false;
 
         //Attributes
         for (int i = 0; i < reader.getAttributeCount(); i++) {
@@ -240,10 +240,16 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 id = reader.getAttributeValue(i);
             } else if (NODE_LABEL.equalsIgnoreCase(attName)) {
                 label = reader.getAttributeValue(i);
-            } else if (NODE_START.equalsIgnoreCase(attName)) {
+            } else if (START.equalsIgnoreCase(attName)) {
                 startDate = reader.getAttributeValue(i);
-            } else if (NODE_END.equalsIgnoreCase(attName)) {
+            } else if (START_OPEN.equalsIgnoreCase(attName)) {
+                startDate = reader.getAttributeValue(i);
+                startOpen = true;
+            } else if (END.equalsIgnoreCase(attName)) {
                 endDate = reader.getAttributeValue(i);
+            } else if (END_OPEN.equalsIgnoreCase(attName)) {
+                endDate = reader.getAttributeValue(i);
+                endOpen = true;
             } else if (NODE_PID.equalsIgnoreCase(attName)) {
                 pid = reader.getAttributeValue(i);
             }
@@ -315,7 +321,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
         //Dynamic
         if (!slices && (!startDate.isEmpty() || !endDate.isEmpty())) {
             try {
-                node.addTimeInterval(startDate, endDate);
+                node.addTimeInterval(startDate, endDate, startOpen, endOpen);
             } catch (IllegalArgumentException e) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_node_timeinterval_parseerror", id), Issue.Level.SEVERE));
             }
@@ -454,19 +460,27 @@ public class ImporterGEXF implements FileImporter, LongTask {
     private void readNodeSlice(XMLStreamReader reader, NodeDraft node) throws Exception {
         String start = "";
         String end = "";
+        boolean startOpen = false;
+        boolean endOpen = false;
 
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String attName = reader.getAttributeName(i).getLocalPart();
-            if (NODE_START.equalsIgnoreCase(attName)) {
+            if (START.equalsIgnoreCase(attName)) {
                 start = reader.getAttributeValue(i);
-            } else if (NODE_END.equalsIgnoreCase(attName)) {
+            } else if (END.equalsIgnoreCase(attName)) {
                 end = reader.getAttributeValue(i);
+            } else if (START_OPEN.equalsIgnoreCase(attName)) {
+                start = reader.getAttributeValue(i);
+                startOpen = true;
+            } else if (END_OPEN.equalsIgnoreCase(attName)) {
+                end = reader.getAttributeValue(i);
+                endOpen = true;
             }
         }
 
         if (!start.isEmpty() || !end.isEmpty()) {
             try {
-                node.addTimeInterval(start, end);
+                node.addTimeInterval(start, end, startOpen, endOpen);
             } catch (IllegalArgumentException e) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_node_timeinterval_parseerror", node), Issue.Level.SEVERE));
             }
@@ -482,6 +496,8 @@ public class ImporterGEXF implements FileImporter, LongTask {
         String edgeType = "";
         String startDate = "";
         String endDate = "";
+        boolean startOpen = false;
+        boolean endOpen = false;
 
         //Attributes
         for (int i = 0; i < reader.getAttributeCount(); i++) {
@@ -498,10 +514,16 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 edgeType = reader.getAttributeValue(i);
             } else if (EDGE_LABEL.equalsIgnoreCase(attName)) {
                 label = reader.getAttributeValue(i);
-            } else if (EDGE_START.equalsIgnoreCase(attName)) {
+            } else if (START.equalsIgnoreCase(attName)) {
                 startDate = reader.getAttributeValue(i);
-            } else if (EDGE_END.equalsIgnoreCase(attName)) {
+            } else if (END.equalsIgnoreCase(attName)) {
                 endDate = reader.getAttributeValue(i);
+            } else if (START_OPEN.equalsIgnoreCase(attName)) {
+                startDate = reader.getAttributeValue(i);
+                startOpen = true;
+            } else if (END_OPEN.equalsIgnoreCase(attName)) {
+                endDate = reader.getAttributeValue(i);
+                endOpen = true;
             }
         }
 
@@ -575,7 +597,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
         //Dynamic
         if (!slices && (!startDate.isEmpty() || !endDate.isEmpty())) {
             try {
-                edge.addTimeInterval(startDate, endDate);
+                edge.addTimeInterval(startDate, endDate, startOpen, endOpen);
             } catch (IllegalArgumentException e) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timeinterval_parseerror", edge), Issue.Level.SEVERE));
             }
@@ -657,19 +679,27 @@ public class ImporterGEXF implements FileImporter, LongTask {
     private void readEdgeSlice(XMLStreamReader reader, EdgeDraft edge) throws Exception {
         String start = "";
         String end = "";
+        boolean startOpen = false;
+        boolean endOpen = false;
 
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String attName = reader.getAttributeName(i).getLocalPart();
-            if (EDGE_START.equalsIgnoreCase(attName)) {
+            if (START.equalsIgnoreCase(attName)) {
                 start = reader.getAttributeValue(i);
-            } else if (EDGE_END.equalsIgnoreCase(attName)) {
+            } else if (END.equalsIgnoreCase(attName)) {
                 end = reader.getAttributeValue(i);
+            } else if (START_OPEN.equalsIgnoreCase(attName)) {
+                start = reader.getAttributeValue(i);
+                startOpen = true;
+            } else if (END_OPEN.equalsIgnoreCase(attName)) {
+                end = reader.getAttributeValue(i);
+                endOpen = true;
             }
         }
 
         if (!start.isEmpty() || !end.isEmpty()) {
             try {
-                edge.addTimeInterval(start, end);
+                edge.addTimeInterval(start, end, startOpen, endOpen);
             } catch (IllegalArgumentException e) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timeinterval_parseerror", edge), Issue.Level.SEVERE));
             }

@@ -102,6 +102,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private static final String EDGE_COLOR = "color";
     private static final String START = "start";
     private static final String END = "end";
+    private static final String START_OPEN = "startopen";
+    private static final String END_OPEN = "endopen";
     private static final String SLICES = "slices";
     private static final String SLICE = "slice";
     private static final String ATTRIBUTE = "attribute";
@@ -390,11 +392,11 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                                 xmlWriter.writeAttribute(ATTVALUE_VALUE, value.toString());
                                 if (!Double.isInfinite(interval.getLow())) {
                                     String intervalLow = "" + interval.getLow();
-                                    xmlWriter.writeAttribute(START, intervalLow);
+                                    xmlWriter.writeAttribute(interval.isLowExcluded() ? START_OPEN : START, intervalLow);
                                 }
                                 if (!Double.isInfinite(interval.getHigh())) {
                                     String intervalHigh = "" + interval.getHigh();
-                                    xmlWriter.writeAttribute(END, intervalHigh);
+                                    xmlWriter.writeAttribute(interval.isHighExcluded() ? END_OPEN : END, intervalHigh);
                                 }
                                 xmlWriter.writeEndElement();
                             }
@@ -467,11 +469,11 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 xmlWriter.writeStartElement(SLICE);
                 if (!Double.isInfinite(interval.getLow())) {
                     String intervalLow = "" + interval.getLow();
-                    xmlWriter.writeAttribute(START, intervalLow);
+                    xmlWriter.writeAttribute(interval.isLowExcluded() ? START_OPEN : START, intervalLow);
                 }
                 if (!Double.isInfinite(interval.getHigh())) {
                     String intervalHigh = "" + interval.getHigh();
-                    xmlWriter.writeAttribute(END, intervalHigh);
+                    xmlWriter.writeAttribute(interval.isHighExcluded() ? END_OPEN : END, intervalHigh);
                 }
                 xmlWriter.writeEndElement();
             }
@@ -480,11 +482,11 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             Interval<Double[]> interval = intervals.get(0);
             if (!Double.isInfinite(interval.getLow())) {
                 String intervalLow = "" + interval.getLow();
-                xmlWriter.writeAttribute(START, intervalLow);
+                xmlWriter.writeAttribute(interval.isLowExcluded() ? START_OPEN : START, intervalLow);
             }
             if (!Double.isInfinite(interval.getHigh())) {
                 String intervalHigh = "" + interval.getHigh();
-                xmlWriter.writeAttribute(END, intervalHigh);
+                xmlWriter.writeAttribute(interval.isHighExcluded() ? END_OPEN : END, intervalHigh);
             }
         }
     }
