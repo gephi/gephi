@@ -100,9 +100,9 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         //Index existing graph
         Map<String, Node> map = new HashMap<String, Node>();
         for (Node n : graph.getNodes()) {
-            Object id = n.getNodeData().getAttributes().getValue(PropertiesColumn.NODE_ID.getIndex());
-            if (id != null) {
-                map.put((String) id, n);
+            String id = n.getNodeData().getId();
+            if (id != null && !id.equalsIgnoreCase(String.valueOf(n.getId()))) {
+                map.put(id, n);
             }
             if (n.getNodeData().getLabel() != null && !n.getNodeData().getLabel().isEmpty()) {
                 map.put(n.getNodeData().getLabel(), n);
@@ -114,14 +114,17 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         for (NodeDraftGetter draftNode : container.getNodes()) {
             Node n;
             String id = draftNode.getId();
-            if (id != null && map.get(id) != null) {
+            String label = draftNode.getLabel();
+            if (!draftNode.isAutoId() && id != null && map.get(id) != null) {
                 n = map.get(id);
+            } else if (label != null && map.get(label) != null) {
+                n = map.get(label);
             } else {
-                n = factory.newNode();
+                n = factory.newNode(draftNode.isAutoId()?null:id);
+                nodeCount++;
             }
             flushToNode(draftNode, n);
             draftNode.setNode(n);
-            nodeCount++;
         }
 
         //Push nodes in data structure
@@ -143,25 +146,27 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         for (EdgeDraftGetter edge : container.getEdges()) {
             Node source = edge.getSource().getNode();
             Node target = edge.getTarget().getNode();
-            Edge e = null;
-            switch (container.getEdgeDefault()) {
-                case DIRECTED:
-                    e = factory.newEdge(edge.getId(), source, target, edge.getWeight(), true);
-                    break;
-                case UNDIRECTED:
-                    e = factory.newEdge(edge.getId(), source, target, edge.getWeight(), false);
-                    break;
-                case MIXED:
-                    e = factory.newEdge(edge.getId(), source, target, edge.getWeight(), edge.getType().equals(EdgeType.UNDIRECTED) ? false : true);
-                    break;
-            }
+            if (graph.getEdge(source, target) == null) {
+                Edge e = null;
+                switch (container.getEdgeDefault()) {
+                    case DIRECTED:
+                        e = factory.newEdge(edge.isAutoId()?null:edge.getId(), source, target, edge.getWeight(), true);
+                        break;
+                    case UNDIRECTED:
+                        e = factory.newEdge(edge.isAutoId()?null:edge.getId(), source, target, edge.getWeight(), false);
+                        break;
+                    case MIXED:
+                        e = factory.newEdge(edge.isAutoId()?null:edge.getId(), source, target, edge.getWeight(), edge.getType().equals(EdgeType.UNDIRECTED) ? false : true);
+                        break;
+                }
 
-            flushToEdge(edge, e);
-            edgeCount++;
-            graph.addEdge(e);
+                flushToEdge(edge, e);
+                edgeCount++;
+                graph.addEdge(e);
+            }
         }
 
-        System.out.println("# Nodes loaded: " + nodeCount + "\n# Edges loaded: " + edgeCount);
+        System.out.println("# New Nodes appended: " + nodeCount + "\n# New Edges appended: " + edgeCount);
         workspace = null;
     }
 }

@@ -678,15 +678,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         private int edgeIDgen = 0;
 
         public NodeDraftImpl newNodeDraft() {
-            NodeDraftImpl node = new NodeDraftImpl(ImportContainerImpl.this, source);
-            node.setId("n" + nodeIDgen);
+            NodeDraftImpl node = new NodeDraftImpl(ImportContainerImpl.this, "n" + nodeIDgen);
             nodeIDgen++;
             return node;
         }
 
         public EdgeDraftImpl newEdgeDraft() {
-            EdgeDraftImpl edge = new EdgeDraftImpl(ImportContainerImpl.this, source);
-            edge.setId("e" + edgeIDgen);
+            EdgeDraftImpl edge = new EdgeDraftImpl(ImportContainerImpl.this, "e" + edgeIDgen);
             edgeIDgen++;
             return edge;
         }

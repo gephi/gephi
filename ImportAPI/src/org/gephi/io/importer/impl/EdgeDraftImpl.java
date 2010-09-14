@@ -315,6 +315,10 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         return visible;
     }
 
+    public boolean isAutoId() {
+        return autoId;
+    }
+
     public TimeInterval getTimeInterval() {
         return timeInterval;
     }

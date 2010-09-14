@@ -381,6 +381,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         return createdAuto;
     }
 
+    public boolean isAutoId() {
+        return autoId;
+    }
+
     @Override
     public String toString() {
         String res = "node";
