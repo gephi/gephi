@@ -290,9 +290,9 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
 
     //ClusteredDirected
     public MetaEdge getMetaEdge(Node source, Node target) {
-        AbstractNode AbstractNodeSource = checkNode(source);
-        AbstractNode AbstractNodeTarget = checkNode(target);
-        return AbstractNodeSource.getMetaEdgesOutTree().getItem(AbstractNodeTarget.getNumber());
+        AbstractNode sourceNode = checkNode(source);
+        AbstractNode targetNode = checkNode(target);
+        return sourceNode.getMetaEdgesOutTree().getItem(targetNode.getNumber());
     }
 
     @Override

@@ -17,12 +17,13 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.graph;
 
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.HierarchicalUndirectedGraph;
+import org.gephi.graph.api.MetaEdge;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
@@ -216,6 +217,31 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
         readLock();
         AbstractNode absNode = checkNode(node);
         return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true));
+    }
+
+    public MetaEdge getMetaEdge(Node node1, Node node2) {
+        if (node1 == null || node2 == null) {
+            return null;
+        }
+        readLock();
+        AbstractNode sourceNode = checkNode(node1);
+        AbstractNode targetNode = checkNode(node2);
+        AbstractEdge res = null;
+        AbstractEdge edge1 = sourceNode.getMetaEdgesOutTree().getItem(targetNode.getNumber());
+        AbstractEdge edge2 = sourceNode.getMetaEdgesInTree().getItem(targetNode.getNumber());
+        if (edge1 != null && edge2 != null) {
+            if (edge1.getId() < edge2.getId()) {
+                res = edge1;
+            } else {
+                res = edge2;
+            }
+        } else if (edge1 != null) {
+            res = edge1;
+        } else if (edge2 != null) {
+            res = edge2;
+        }
+        readUnlock();
+        return (MetaEdge) res;
     }
 
     @Override
