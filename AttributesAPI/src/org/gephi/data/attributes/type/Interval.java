@@ -26,10 +26,10 @@ import org.gephi.data.attributes.api.AttributeUtils;
  * This class represents an interval with some value.
  *
  * @author Cezary Bartosiak
- * 
+ *
  * @param <T> type of data
  */
-public final class Interval<T> implements Comparable<Interval<T>> {
+public final class Interval<T> implements Comparable<Interval> {
 
     private double low;   // the left endpoint
     private double high;  // the right endpoint
@@ -142,7 +142,7 @@ public final class Interval<T> implements Comparable<Interval<T>> {
      *
      * @throws NullPointerException if {@code interval} is null.
      */
-    public int compareTo(Interval<T> interval) {
+    public int compareTo(Interval interval) {
         if (interval == null) {
             throw new NullPointerException("Interval cannot be null.");
         }

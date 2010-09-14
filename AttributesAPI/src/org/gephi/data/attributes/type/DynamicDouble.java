@@ -60,7 +60,7 @@ public final class DynamicDouble extends DynamicType<Double> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source}.
+	 * Constructs a deep copy of {@code source}.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
 	 *               instance is created)
@@ -70,7 +70,7 @@ public final class DynamicDouble extends DynamicType<Double> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} that contains a given
+	 * Constructs a deep copy of {@code source} that contains a given
 	 * {@code Interval<T>} in.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
@@ -82,7 +82,7 @@ public final class DynamicDouble extends DynamicType<Double> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} that contains a given
+	 * Constructs a deep copy of {@code source} that contains a given
 	 * {@code Interval<T>} in. Before add it removes from the newly created
 	 * object all intervals that overlap with a given {@code Interval<T>} out.
 	 *
@@ -96,7 +96,7 @@ public final class DynamicDouble extends DynamicType<Double> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * Constructs a deep copy of {@code source} with additional intervals
 	 * given by {@code List<Interval<T>>} in.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
@@ -108,7 +108,7 @@ public final class DynamicDouble extends DynamicType<Double> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * Constructs a deep copy of {@code source} with additional intervals
 	 * given by {@code List<Interval<T>>} in. Before add it removes from the
 	 * newly created object all intervals that overlap with intervals given by
 	 * {@code List<Interval<T>>} out.
@@ -123,7 +123,7 @@ public final class DynamicDouble extends DynamicType<Double> {
 	}
 
 	@Override
-	public Double getValue(Interval<Double> interval, Estimator estimator) {
+	public Double getValue(Interval interval, Estimator estimator) {
 		List<Double> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
@@ -183,16 +183,6 @@ public final class DynamicDouble extends DynamicType<Double> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
-	}
-
-	@Override
-	public Double getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		return getValue(new Interval<Double>(low, high, false, false), estimator);
 	}
 
 	@Override

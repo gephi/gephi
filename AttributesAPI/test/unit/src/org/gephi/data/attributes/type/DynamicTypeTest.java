@@ -22,6 +22,7 @@ package org.gephi.data.attributes.type;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.Estimator;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -327,7 +328,7 @@ public class DynamicTypeTest {
 			StringBuilder sb = new StringBuilder("<");
 			sb.append(list.get(0).toString());
 			for (int i = 1; i < list.size(); ++i)
-				sb.append(", ").append(list.get(i).toString());
+				sb.append("; ").append(list.get(i).toString());
 			sb.append(">");
 			result = sb.toString();
 		}
@@ -398,14 +399,37 @@ public class DynamicTypeTest {
 		System.out.println("toString()");
 		DynamicDouble instance  = makeELboundsTree();
 		StringBuilder expResult = new StringBuilder("<");
-		expResult.append("[0.1, 0.2, 1.0), ");
-		expResult.append("[0.2, 0.3, 2.0), ");
+		expResult.append("[0.1, 0.2, 1.0); ");
+		expResult.append("[0.2, 0.3, 2.0); ");
 		expResult.append("(0.3, 0.4, 3.0)");
 		expResult.append(">");
 		String result = instance.toString();
 		assertEquals(expResult.toString(), result);
 		System.out.println("expResult: " + expResult);
 		System.out.println("result:    " + result);
+		System.out.println();
+	}
+
+        
+
+	@Test
+	public void testDeserialization() {
+		System.out.println("deserialization");
+		DynamicDouble instance1 = makeELboundsTree();
+		DynamicDouble instance2 = (DynamicDouble)AttributeType.DYNAMIC_DOUBLE.parse(instance1.toString());
+		DynamicDouble instance3 = new DynamicDouble();
+		DynamicDouble instance4 = (DynamicDouble)AttributeType.DYNAMIC_DOUBLE.parse(instance3.toString());
+		TimeInterval  instance5 = makeTimeInterval();
+		TimeInterval  instance6 = (TimeInterval)AttributeType.TIME_INTERVAL.parse(instance5.toString());
+		assertEquals(instance1, instance2);
+		assertEquals(instance3, instance4);
+		assertEquals(instance5, instance6);
+		System.out.println("instance1: " + instance1);
+		System.out.println("instance2: " + instance2);
+		System.out.println("instance3: " + instance3);
+		System.out.println("instance4: " + instance4);
+		System.out.println("instance5: " + instance5);
+		System.out.println("instance6: " + instance6);
 		System.out.println();
 	}
 
@@ -421,6 +445,14 @@ public class DynamicTypeTest {
             assertEquals(new Interval<Integer>(2006, 2007, 2), intervals.get(1));
             assertEquals(new Interval<Integer>(2009, 2010, 1), intervals.get(2));
         }
+
+	private TimeInterval makeTimeInterval() {
+		List<Interval> intervals = new ArrayList<Interval>();
+		intervals.add(new Interval<Double>(0.1, 0.2, false, true));
+		intervals.add(new Interval<Double>(0.2, 0.3, false, true));
+		intervals.add(new Interval<Double>(0.3, 0.4, true,  true));
+		return new TimeInterval(intervals);
+	}
 
 	private DynamicDouble makeELboundsTree() {
 		List<Interval<Double>> intervals = new ArrayList<Interval<Double>>();

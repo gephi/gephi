@@ -59,7 +59,7 @@ public final class DynamicCharacter extends DynamicType<Character> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source}.
+	 * Constructs a deep copy of {@code source}.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
 	 *               instance is created)
@@ -69,7 +69,7 @@ public final class DynamicCharacter extends DynamicType<Character> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} that contains a given
+	 * Constructs a deep copy of {@code source} that contains a given
 	 * {@code Interval<T>} in.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
@@ -81,7 +81,7 @@ public final class DynamicCharacter extends DynamicType<Character> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} that contains a given
+	 * Constructs a deep copy of {@code source} that contains a given
 	 * {@code Interval<T>} in. Before add it removes from the newly created
 	 * object all intervals that overlap with a given {@code Interval<T>} out.
 	 *
@@ -95,7 +95,7 @@ public final class DynamicCharacter extends DynamicType<Character> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * Constructs a deep copy of {@code source} with additional intervals
 	 * given by {@code List<Interval<T>>} in.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
@@ -108,7 +108,7 @@ public final class DynamicCharacter extends DynamicType<Character> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * Constructs a deep copy of {@code source} with additional intervals
 	 * given by {@code List<Interval<T>>} in. Before add it removes from the
 	 * newly created object all intervals that overlap with intervals given by
 	 * {@code List<Interval<T>>} out.
@@ -123,7 +123,7 @@ public final class DynamicCharacter extends DynamicType<Character> {
 	}
 
 	@Override
-	public Character getValue(Interval<Character> interval, Estimator estimator) {
+	public Character getValue(Interval interval, Estimator estimator) {
 		List<Character> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
@@ -175,16 +175,6 @@ public final class DynamicCharacter extends DynamicType<Character> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
-	}
-
-	@Override
-	public Character getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		return getValue(new Interval<Character>(low, high, false, false), estimator);
 	}
 
 	@Override
