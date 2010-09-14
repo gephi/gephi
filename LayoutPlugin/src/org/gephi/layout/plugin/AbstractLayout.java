@@ -17,12 +17,16 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.layout.plugin;
 
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
+import org.gephi.project.api.Workspace;
+import org.openide.util.Lookup;
 
 /**
  * Base class for layout algorithms.
@@ -30,8 +34,9 @@ import org.gephi.layout.spi.LayoutBuilder;
  */
 public abstract class AbstractLayout implements Layout {
 
-    private LayoutBuilder layoutBuilder;
+    private final LayoutBuilder layoutBuilder;
     protected GraphModel graphModel;
+    protected DynamicModel dynamicModel;
     private boolean converged;
 
     public AbstractLayout(LayoutBuilder layoutBuilder) {
@@ -44,6 +49,11 @@ public abstract class AbstractLayout implements Layout {
 
     public void setGraphModel(GraphModel graphModel) {
         this.graphModel = graphModel;
+        Workspace workspace = graphModel.getWorkspace();
+        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        if (dynamicController != null && workspace != null) {
+            dynamicModel = dynamicController.getModel(workspace);
+        }
     }
 
     public boolean canAlgo() {

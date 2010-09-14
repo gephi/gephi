@@ -22,6 +22,8 @@ package org.gephi.layout.plugin.forceAtlas;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
@@ -56,6 +58,8 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
     private double cooling;
     private boolean outboundAttractionDistribution;
     private boolean adjustSizes;
+    //Dynamic Weight
+    private TimeInterval timeInterval;
 
     public ForceAtlasLayout(LayoutBuilder layoutBuilder) {
         super(layoutBuilder);
@@ -78,13 +82,11 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
     public void initAlgo() {
         this.graph = graphModel.getHierarchicalGraphVisible();
-        for (Node n : graph.getNodes()) {
-            n.getNodeData().setLayoutData(new ForceVectorNodeLayoutData());
-        }
     }
 
     public void goAlgo() {
         this.graph = graphModel.getHierarchicalGraphVisible();
+        this.timeInterval = DynamicUtilities.getVisibleInterval(dynamicModel);
         graph.readLock();
         Node[] nodes = graph.getNodes().toArray();
         Edge[] edges = graph.getEdgesAndMetaEdges().toArray();
@@ -127,7 +129,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
                     double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
-                    bonus *= e.getWeight();
+                    bonus *= getWeight(e);
                     ForceVectorUtils.fcBiAttractor_noCollide(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength() / (1 + graph.getDegree(nf)));
                 }
             } else {
@@ -135,7 +137,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
                     double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
-                    bonus *= e.getWeight();
+                    bonus *= getWeight(e);
                     ForceVectorUtils.fcBiAttractor_noCollide(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength());
                 }
             }
@@ -145,7 +147,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
                     double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
-                    bonus *= e.getWeight();
+                    bonus *= getWeight(e);
                     ForceVectorUtils.fcBiAttractor(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength() / (1 + graph.getDegree(nf)));
                 }
             } else {
@@ -217,6 +219,14 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
     @Override
     public boolean canAlgo() {
         return true;
+    }
+
+    private float getWeight(Edge edge) {
+        if(timeInterval!=null) {
+            return edge.getWeight(timeInterval.getLow(), timeInterval.getHigh());
+        } else {
+            return edge.getWeight();
+        }
     }
 
     public LayoutProperty[] getProperties() {

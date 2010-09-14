@@ -42,6 +42,7 @@ import org.gephi.data.attributes.type.DynamicString;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.api.DynamicModel;
 import org.openide.util.Exceptions;
 
 /**
@@ -476,4 +477,20 @@ public final class DynamicUtilities {
 	public static DynamicType fitToInterval(DynamicType source, double low, double high) {
 		return fitToInterval(source, new Interval(low, high));
 	}
+
+        /**
+         * Returns the visible time interval of <code>dynamicModel</code> if it is not
+         * [-inf, +inf]. Returns <code>null</null> in other cases.
+         * @param dynamicModel  the dynamic model
+         * @return              the valid visible interval, or <code>null</code>
+         */
+        public static TimeInterval getVisibleInterval(DynamicModel dynamicModel) {
+            if(dynamicModel!=null) {
+                TimeInterval ti = dynamicModel.getVisibleInterval();
+                if(ti!=null && !(Double.isInfinite(ti.getLow()) && Double.isInfinite(ti.getHigh()))) {
+                    return ti;
+                }
+            }
+            return null;
+        }
 }
