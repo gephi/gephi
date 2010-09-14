@@ -35,6 +35,7 @@ import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
@@ -382,7 +383,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 AttributeType type = val.getColumn().getType();
                 if (type.isDynamicType()) {
                     DynamicType dynamicValue = (DynamicType) val.getValue();
-                    if (dynamicValue != null && visibleInterval != null) {
+                    if (dynamicValue != null && visibleInterval != null && exportDynamic) {
                         List<Interval<?>> intervals = dynamicValue.getIntervals(visibleInterval.getLow(), visibleInterval.getHigh());
                         for (Interval<?> interval : intervals) {
                             Object value = interval.getValue();
@@ -400,6 +401,22 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                                 }
                                 xmlWriter.writeEndElement();
                             }
+                        }
+                    } else if (dynamicValue != null) {
+                        TimeInterval interval = visibleInterval;
+                        Estimator estimator = Estimator.FIRST;
+                        if (interval == null) {
+                            interval = new TimeInterval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+                        }
+                        if (Number.class.isAssignableFrom(dynamicValue.getUnderlyingType())) {
+                            estimator = Estimator.AVERAGE;
+                        }
+                        Object value = dynamicValue.getValue(interval.getLow(), interval.getHigh(), estimator);
+                        if (value != null) {
+                            xmlWriter.writeStartElement(ATTVALUE);
+                            xmlWriter.writeAttribute(ATTVALUE_FOR, val.getColumn().getId());
+                            xmlWriter.writeAttribute(ATTVALUE_VALUE, value.toString());
+                            xmlWriter.writeEndElement();
                         }
                     }
                 } else {
