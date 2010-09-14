@@ -21,6 +21,7 @@
 package org.gephi.dynamic;
 
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -356,9 +357,9 @@ public final class DynamicModelImpl implements DynamicModel {
 
         private SortedMap<Double, Integer> lowMap = new TreeMap<Double, Integer>();
         private SortedMap<Double, Integer> highMap = new TreeMap<Double, Integer>();
-        private TreeSet<Double> pointsSet = new TreeSet<Double>();
+        private SortedSet<Double> pointsSet = new TreeSet<Double>();
 
-        public void add(TimeInterval interval) {
+        public synchronized void add(TimeInterval interval) {
             boolean newDynamic = false;
             double min = getMin();
             double max = getMax();
@@ -399,7 +400,7 @@ public final class DynamicModelImpl implements DynamicModel {
             }
         }
 
-        public void remove(TimeInterval interval) {
+        public synchronized void remove(TimeInterval interval) {
             double min = getMin();
             double max = getMax();
             Double low = interval.getLow();
@@ -409,7 +410,9 @@ public final class DynamicModelImpl implements DynamicModel {
                 if (c != null) {
                     if (c - 1 == 0) {
                         lowMap.remove(low);
-                        pointsSet.remove(low);
+                        if (!highMap.containsKey(low)) {
+                            pointsSet.remove(low);
+                        }
                     } else {
                         lowMap.put(low, c - 1);
                     }
@@ -422,7 +425,9 @@ public final class DynamicModelImpl implements DynamicModel {
                 if (c != null) {
                     if (c - 1 == 0) {
                         highMap.remove(high);
-                        pointsSet.remove(high);
+                        if (!lowMap.containsKey(high)) {
+                            pointsSet.remove(high);
+                        }
                     } else {
                         highMap.put(high, c - 1);
                     }
@@ -448,6 +453,7 @@ public final class DynamicModelImpl implements DynamicModel {
         public void clear() {
             lowMap.clear();
             highMap.clear();
+            pointsSet.clear();
         }
 
         public double getMin() {
