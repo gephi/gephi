@@ -35,11 +35,11 @@ import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
-import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.data.attributes.type.TypeConvertor;
+import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.DirectedGraph;
@@ -404,14 +404,10 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                         }
                     } else if (dynamicValue != null) {
                         TimeInterval interval = visibleInterval;
-                        Estimator estimator = Estimator.FIRST;
                         if (interval == null) {
-                            interval = new TimeInterval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+                            interval = new TimeInterval();
                         }
-                        if (Number.class.isAssignableFrom(dynamicValue.getUnderlyingType())) {
-                            estimator = Estimator.AVERAGE;
-                        }
-                        Object value = dynamicValue.getValue(interval.getLow(), interval.getHigh(), estimator);
+                        Object value = DynamicUtilities.getDynamicValue(val, interval.getLow(), interval.getHigh());
                         if (value != null) {
                             xmlWriter.writeStartElement(ATTVALUE);
                             xmlWriter.writeAttribute(ATTVALUE_FOR, val.getColumn().getId());

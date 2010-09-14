@@ -30,6 +30,7 @@ import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.DynamicBigDecimal;
 import org.gephi.data.attributes.type.DynamicBigInteger;
 import org.gephi.data.attributes.type.DynamicBoolean;
@@ -562,6 +563,18 @@ public final class DynamicUtilities {
             }
         }
         return null;
+    }
+
+    public static Object getDynamicValue(Object value, double low, double high) {
+        if (value != null && value instanceof DynamicType) {
+            DynamicType dynamicType = (DynamicType) value;
+            Estimator estimator = Estimator.FIRST;
+            if (Number.class.isAssignableFrom(dynamicType.getUnderlyingType())) {
+                estimator = Estimator.AVERAGE;
+            }
+            return dynamicType.getValue(low, high, estimator);
+        }
+        return value;
     }
 
     public static DynamicType removeOverlapping(DynamicType dynamicType) {
