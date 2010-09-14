@@ -161,6 +161,9 @@ public class PreviewGraphFactory {
         if (dynamicController != null) {
             timeInterval = DynamicUtilities.getVisibleInterval(dynamicController.getModel(sourceGraph.getGraphModel().getWorkspace()));
         }
+        if(timeInterval==null) {
+            timeInterval = new TimeInterval();
+        }
 
         //Min/Max weight
         float minWeight = Float.POSITIVE_INFINITY;
