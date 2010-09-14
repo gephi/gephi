@@ -28,8 +28,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
-import java.util.Comparator;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
@@ -150,13 +148,6 @@ public class RankingChooser extends javax.swing.JPanel {
         } else {
             rankings = model.getEdgeRanking();
         }
-
-        Arrays.sort(rankings, new Comparator<Ranking>() {
-
-            public int compare(Ranking a, Ranking b) {
-                return (a.toString().compareTo(b.toString()));
-            }
-        });
 
         //Ranking list
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();

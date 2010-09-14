@@ -26,6 +26,8 @@ import org.gephi.ranking.api.NodeRanking;
 import org.gephi.ranking.api.EdgeRanking;
 import org.gephi.ranking.api.Ranking;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -196,6 +198,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         }
 
         //Attributes
+        int nativeCount = rankingList.size();
         for (AttributeColumn column : attributeController.getModel().getNodeTable().getColumns()) {
             if (RankingFactory.isNumberColumn(column)) {
                 NodeRanking r = RankingFactory.getNodeAttributeRanking(column, graph);
@@ -210,7 +213,16 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
                 }
             }
         }
-        return rankingList.toArray(new NodeRanking[0]);
+
+        NodeRanking[] rankingArray = rankingList.toArray(new NodeRanking[0]);
+        Arrays.sort(rankingArray, nativeCount, rankingArray.length, new Comparator<NodeRanking>() {
+
+            public int compare(NodeRanking a, NodeRanking b) {
+                return (a.toString().compareTo(b.toString()));
+            }
+        });
+
+        return rankingArray;
     }
 
     public EdgeRanking[] getEdgeRanking() {
