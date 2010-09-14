@@ -52,7 +52,7 @@ import org.openide.util.Lookup;
  */
 public class ExporterGEXF2Test {
 
-    private ExporterGEXF2 exporter;
+    private ExporterGEXF exporter;
 
     @Before
     public void setUp() {
@@ -110,7 +110,7 @@ public class ExporterGEXF2Test {
         DynamicString dynamicString = new DynamicString(stringIntervalList);
         e3.getEdgeData().getAttributes().setValue(edgeCol2.getIndex(), dynamicString);
 
-        exporter = new ExporterGEXF2();
+        exporter = new ExporterGEXF();
         exporter.setWorkspace(workspace);
     }
 

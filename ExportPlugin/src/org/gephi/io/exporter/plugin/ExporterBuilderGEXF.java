@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ExporterBuilderGEXF implements GraphFileExporterBuilder {
 
     public GraphExporter buildExporter() {
-        return new ExporterGEXF2();
+        return new ExporterGEXF();
     }
 
     public FileType[] getFileTypes() {

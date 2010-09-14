@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Sebastien Heymann <sebastien.heymann@gephi.org>
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -17,28 +17,31 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import java.util.List;
+import javanet.staxutils.IndentingXMLStreamWriter;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.Interval;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.data.attributes.type.TypeConvertor;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
@@ -46,38 +49,90 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
+import org.gephi.graph.api.NodeIterable;
+import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.io.exporter.api.FileType;
-import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.io.exporter.spi.CharacterExporter;
+import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 /**
  *
- * @author Sebastien Heymann
+ * @author Mathieu Bastian
  */
 public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask {
 
+    //GEXF
+    private static final String GEXF = "gexf";
+    private static final String GEXF_NAMESPACE = "http://www.gexf.net/1.1draft";
+    private static final String GEXF_NAMESPACE_LOCATION = "http://www.gexf.net/1.1draft http://www.gexf.net/1.1draft/gexf.xsd";
+    private static final String VIZ = "viz";
+    private static final String VIZ_NAMESPACE = "http://www.gexf.net/1.1draft/viz";
+    private static final String GEXF_VERSION = "version";
+    private static final String GRAPH = "graph";
+    private static final String GRAPH_DEFAULT_EDGETYPE = "defaultedgetype";
+    private static final String GRAPH_START = "start";
+    private static final String GRAPH_END = "end";
+    private static final String GRAPH_TIMEFORMAT = "timeformat";
+    private static final String META = "meta";
+    private static final String META_LASTMODIFIEDDATE = "lastmodifieddate";
+    private static final String META_CREATOR = "creator";
+    private static final String META_DESCRIPTION = "description";
+    private static final String NODES = "nodes";
+    private static final String NODE = "node";
+    private static final String NODE_ID = "id";
+    private static final String NODE_LABEL = "label";
+    private static final String NODE_PID = "pid";
+    private static final String NODE_POSITION = "position";
+    private static final String NODE_COLOR = "color";
+    private static final String NODE_SIZE = "size";
+    private static final String EDGES = "edges";
+    private static final String EDGE = "edge";
+    private static final String EDGE_ID = "id";
+    private static final String EDGE_SOURCE = "source";
+    private static final String EDGE_TARGET = "target";
+    private static final String EDGE_LABEL = "label";
+    private static final String EDGE_TYPE = "type";
+    private static final String EDGE_WEIGHT = "weight";
+    private static final String EDGE_COLOR = "color";
+    private static final String START = "start";
+    private static final String END = "end";
+    private static final String SLICES = "slices";
+    private static final String SLICE = "slice";
+    private static final String ATTRIBUTE = "attribute";
+    private static final String ATTRIBUTE_ID = "id";
+    private static final String ATTRIBUTE_TITLE = "title";
+    private static final String ATTRIBUTE_TYPE = "type";
+    private static final String ATTRIBUTE_DEFAULT = "default";
+    private static final String ATTRIBUTES = "attributes";
+    private static final String ATTRIBUTES_CLASS = "class";
+    private static final String ATTRIBUTES_MODE = "mode";
+    private static final String ATTVALUE = "attvalue";
+    private static final String ATTVALUE_FOR = "for";
+    private static final String ATTVALUE_VALUE = "value";
     //Architecture
     private boolean cancel = false;
-    private ProgressTicket progressTicket;
+    private ProgressTicket progress;
     private Workspace workspace;
     private boolean exportVisible;
     private Writer writer;
     private GraphModel graphModel;
     private AttributeModel attributeModel;
+    private TimeInterval visibleInterval;
+    private DynamicModel dynamicModel;
     //Settings
     private boolean normalize = false;
     private boolean exportColors = true;
     private boolean exportPosition = true;
     private boolean exportSize = true;
     private boolean exportAttributes = true;
+    private boolean exportHierarchy = false;
+    private boolean exportDynamic = true;
     //Settings Helper
     private float minSize;
     private float maxSize;
@@ -97,49 +152,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         } else {
             graph = graphModel.getHierarchicalGraph();
         }
-        try {
-            exportData(createDocument(), graph, attributeModel);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return !cancel;
-    }
-
-    public Document createDocument() throws ParserConfigurationException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-        final Document document = documentBuilder.newDocument();
-        document.setXmlVersion("1.0");
-        document.setXmlStandalone(true);
-        return document;
-    }
-
-    private void transform(Document document) throws TransformerConfigurationException, TransformerException {
-        Source source = new DOMSource(document);
-        Result result = new StreamResult(writer);
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        transformer.transform(source, result);
-    }
-
-    /*
-    public Schema getSchema() {
-    try {
-    SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-    return sf.newSchema(new URL("http://www.gexf.net/1.1draft/gexf.xsd"));
-    } catch (MalformedURLException ex) {
-    Exceptions.printStackTrace(ex);
-    } catch (SAXException ex) {
-    Exceptions.printStackTrace(ex);
-    }
-    return null;
-    }
-     */
-    public void exportData(Document document, HierarchicalGraph graph, AttributeModel model) throws Exception {
-        Progress.start(progressTicket);
-
+        Progress.start(progress);
         graph.readLock();
 
         //Options
@@ -148,375 +161,408 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         }
 
         //Calculate progress units count
-        int max;
-        if (graphModel.isHierarchical()) {
-            HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
-            max = hgraph.getNodeCount() + hgraph.getEdgeCount();
-        } else {
-            max = graph.getNodeCount() + graph.getEdgeCount();
-        }
-        Progress.switchToDeterminate(progressTicket, max);
-
-        Element root = document.createElementNS("http://www.gexf.net/1.1draft", "gexf");
-        root.setAttribute("xmlns:viz", "http:///www.gexf.net/1.1draft/viz");
-        //root.setAttribute("xsi:schemaLocation", "http://www.gexf.net/1.1draft http://www.gexf.net/1.1draft/gexf.xsd");
-        root.setAttribute("version", "1.1");
-        document.appendChild(root);
-
-
-        Element metaE = createMeta(document);
-        root.appendChild(metaE);
-
-        Element graphE = createGraph(document, graph);
-        root.appendChild(graphE);
-
-        graph.readUnlockAll();
-
-        if (!cancel) {
-            transform(document);
-        }
-
-        Progress.finish(progressTicket);
-    }
-
-    private Element createMeta(Document document) throws Exception {
-        Element metaE = document.createElement("meta");
-
-        metaE.setAttribute("lastmodifieddate", getDateTime());
-
-        Element creatorE = document.createElement("creator");
-        Text creatorTextE = document.createTextNode("Gephi 0.7");
-        creatorE.appendChild(creatorTextE);
-
-        //TODO get description from Project properties
-
-        /*Element keywordsE = document.createElement("keywords");
-        Text keywordsTextE = document.createTextNode("");
-        creatorE.appendChild(keywordsE);
-
-        Element descriptionE = document.createElement("description");
-        Text descriptionTextE = document.createTextNode("");
-        creatorE.appendChild(descriptionE);*/
-
-        metaE.appendChild(creatorE);
-
-        return metaE;
-    }
-
-    private Element createGraph(Document document, Graph graph) throws Exception {
-        Element graphE = document.createElement("graph");
-
-        /*if(graphModel.isDynamic()) {
-        graphE.setAttribute("type", "dynamic");
-        }
-        else {*/
-        graphE.setAttribute("type", "static");
-        /* }*/
-
-        if (graphModel.isDirected()) {
-            graphE.setAttribute("defaultedgetype", "directed");
-        } else {
-            graphE.setAttribute("defaultedgetype", "undirected"); // defaultValue
-        }
-        graphE.setAttribute("idtype", "string");
-
-        //Attributes
-        if (attributeModel != null) {
-            //Node attributes
-            boolean hasNodeColumns = false;
-            Element nodeAttributesE = document.createElement("attributes");
-            nodeAttributesE.setAttribute("class", "node");
-            nodeAttributesE.setAttribute("mode", "static");
-            for (AttributeColumn column : attributeModel.getNodeTable().getColumns()) {
-                if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
-                    //Data or computed
-                    Element attributeE = createAttribute(document, column);
-                    nodeAttributesE.appendChild(attributeE);
-                    //TODO attribute options
-                    hasNodeColumns = true;
-                }
+        int max = 0;
+        if (exportHierarchy) {
+            for (Node n : graph.getNodesTree()) {
+                max++;
             }
-            if (hasNodeColumns) {
-                graphE.appendChild(nodeAttributesE);
-            }
-            //Edge attributes
-            boolean hasEdgeColumns = false;
-            Element edgeAttributesE = document.createElement("attributes");
-            edgeAttributesE.setAttribute("class", "edge");
-            edgeAttributesE.setAttribute("mode", "static");
-            for (AttributeColumn column : attributeModel.getEdgeTable().getColumns()) {
-                if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
-                    //Data or computed
-                    Element attributeE = createAttribute(document, column);
-                    edgeAttributesE.appendChild(attributeE);
-                    //TODO attribute options
-                    hasEdgeColumns = true;
-                }
-            }
-            if (hasEdgeColumns) {
-                graphE.appendChild(edgeAttributesE);
-            }
-        }
-
-        //Nodes
-        int nodeCount = graph.getNodeCount();
-        Element nodesE = createNodes(document, graph, nodeCount, null);
-        graphE.appendChild(nodesE);
-
-        //Edges
-        Element edgesE = createEdges(document, graph);
-        graphE.appendChild(edgesE);
-
-        return graphE;
-    }
-
-    private Element createAttribute(Document document, AttributeColumn column) throws Exception {
-        Element attributeE = document.createElement("attribute");
-        attributeE.setAttribute("id", column.getId());
-        attributeE.setAttribute("title", column.getTitle());
-        switch (column.getType()) {
-            case INT:
-                attributeE.setAttribute("type", "integer");
-                break;
-            case LIST_STRING:
-                attributeE.setAttribute("type", "liststring");
-                break;
-            case TIME_INTERVAL:
-                // nothing to do
-                break;
-            default:
-                attributeE.setAttribute("type", column.getType().getTypeString().toLowerCase());
-                break;
-        }
-        if (column.getDefaultValue() != null) {
-            Element defaultE = document.createElement("default");
-            Text defaultTextE = document.createTextNode(column.getDefaultValue().toString());
-            defaultE.appendChild(defaultTextE);
-        }
-        return attributeE;
-    }
-
-    private Element createNodeAttvalue(Document document, AttributeColumn column, Node n) throws Exception {
-        int index = column.getIndex();
-        if (n.getNodeData().getAttributes().getValue(index) != null) {
-            String value = n.getNodeData().getAttributes().getValue(index).toString();
-            String id = column.getId();
-
-            Element attvalueE = document.createElement("attvalue");
-            attvalueE.setAttribute("for", id);
-            attvalueE.setAttribute("value", value);
-            return attvalueE;
-        }
-        return null;
-    }
-
-    private Element createEdgeAttvalue(Document document, AttributeColumn column, Edge e) throws Exception {
-        int index = column.getIndex();
-        if (e.getEdgeData().getAttributes().getValue(index) != null) {
-            String value = e.getEdgeData().getAttributes().getValue(index).toString();
-            String id = column.getId();
-
-            Element attvalueE = document.createElement("attvalue");
-            attvalueE.setAttribute("for", id);
-            attvalueE.setAttribute("value", value);
-            return attvalueE;
-        }
-        return null;
-    }
-
-    private Element createNodes(Document document, Graph graph, int count, Node nodeParent) throws Exception {
-        Element nodesE = document.createElement("nodes");
-        nodesE.setAttribute("count", "" + count);
-
-        if (nodeParent != null) {
-            // we are inside the tree
-            HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
-            for (Node n : hgraph.getChildren(nodeParent)) {
-                Element childE = createNode(document, graph, n);
-                nodesE.appendChild(childE);
-            }
-        } else if (graphModel.isHierarchical()) {
-            // we are on the top of the tree
-            HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
-            for (Node n : hgraph.getTopNodes()) {
-                Element nodeE = createNode(document, hgraph, n);
-                nodesE.appendChild(nodeE);
+            for (Edge e : graph.getEdgesTree()) {
+                max++;
             }
         } else {
-            // there is no tree
-            for (Node n : graph.getNodes()) {
-                if (cancel) {
-                    break;
-                }
-                Element nodeE = createNode(document, graph, n);
-                nodesE.appendChild(nodeE);
+            max = graph.getNodeCount();
+            for (Edge e : graph.getEdgesAndMetaEdges()) {
+                max++;
+            }
+        }
+        Progress.switchToDeterminate(progress, max);
+
+        try {
+            XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+            outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
+
+            XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(writer);
+            xmlWriter = new IndentingXMLStreamWriter(xmlWriter);
+
+            xmlWriter.writeStartDocument("UTF-8", "1.0");
+            xmlWriter.setPrefix("", GEXF_NAMESPACE);
+            xmlWriter.writeStartElement(GEXF_NAMESPACE, GEXF);
+            xmlWriter.writeNamespace("", GEXF_NAMESPACE);
+            xmlWriter.writeAttribute(GEXF_VERSION, "1.1");
+
+            if (exportColors || exportPosition || exportSize) {
+                xmlWriter.writeNamespace(VIZ, VIZ_NAMESPACE);
+            }
+            xmlWriter.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+            xmlWriter.writeAttribute("xsi:schemaLocation", GEXF_NAMESPACE_LOCATION);
+
+            if (exportDynamic) {
+                DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+                dynamicModel = dynamicController != null ? dynamicController.getModel(workspace) : null;
+                visibleInterval = dynamicModel == null ? null : exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+            }
+
+            writeMeta(xmlWriter);
+            writeGraph(xmlWriter, graph);
+
+            xmlWriter.writeEndElement();
+            xmlWriter.writeEndDocument();
+            xmlWriter.close();
+
+        } catch (Exception e) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
+            throw new RuntimeException(e);
+        }
+
+        Progress.finish(progress);
+        return !cancel;
+    }
+
+    private void writeGraph(XMLStreamWriter xmlWriter, HierarchicalGraph graph) throws Exception {
+        xmlWriter.writeStartElement(GRAPH);
+        xmlWriter.writeAttribute(GRAPH_DEFAULT_EDGETYPE, graph instanceof DirectedGraph ? "directed" : graph instanceof UndirectedGraph ? "undirected" : "mixed");
+
+        if (exportDynamic) {
+            if (!Double.isInfinite(visibleInterval.getLow())) {
+                String intervalLow = "" + visibleInterval.getLow();
+                xmlWriter.writeAttribute(GRAPH_START, intervalLow);
+            }
+            if (!Double.isInfinite(visibleInterval.getHigh())) {
+                String intervalHigh = "" + visibleInterval.getHigh();
+                xmlWriter.writeAttribute(GRAPH_END, intervalHigh);
+            }
+            String timeFormat = dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE) ? "date" : "double";
+            xmlWriter.writeAttribute(GRAPH_TIMEFORMAT, timeFormat);
+        }
+
+        writeAttributes(xmlWriter, attributeModel.getNodeTable());
+        writeAttributes(xmlWriter, attributeModel.getEdgeTable());
+        writeNodes(xmlWriter, graph);
+        writeEdges(xmlWriter, graph);
+
+        xmlWriter.writeEndElement();
+    }
+
+    private void writeMeta(XMLStreamWriter xmlWriter) throws Exception {
+        xmlWriter.writeStartElement(META);
+        xmlWriter.writeAttribute(META_LASTMODIFIEDDATE, getDateTime());
+
+        xmlWriter.writeStartElement(META_CREATOR);
+        xmlWriter.writeCharacters("Gephi 0.7");
+        xmlWriter.writeEndElement();
+
+        xmlWriter.writeStartElement(META_DESCRIPTION);
+        xmlWriter.writeCharacters("");
+        xmlWriter.writeEndElement();
+
+        xmlWriter.writeEndElement();
+    }
+
+    private void writeAttributes(XMLStreamWriter xmlWriter, AttributeTable table) throws Exception {
+        boolean dataColumns = false;
+        boolean dynamicColumns = false;
+        for (AttributeColumn col : table.getColumns()) {
+            if (!col.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                dataColumns = true;
+            }
+            if (col.getType().isDynamicType()) {
+                dynamicColumns = true;
             }
         }
 
-        return nodesE;
-    }
+        if (dataColumns) {
+            xmlWriter.writeStartElement(ATTRIBUTES);
+            xmlWriter.writeAttribute(ATTRIBUTES_CLASS, table == attributeModel.getNodeTable() ? "node" : "edge");
+            xmlWriter.writeAttribute(ATTRIBUTES_MODE, dynamicColumns ? "dynamic" : "static");
 
-    private Element createNode(Document document, Graph graph, Node n) throws Exception {
-        Element nodeE = document.createElement("node");
-        nodeE.setAttribute("id", n.getNodeData().getId());
-        nodeE.setAttribute("label", n.getNodeData().getLabel());
-
-        //Attribute values
-        if (attributeModel != null) {
-            boolean hasColumns = false;
-            Element attvaluesE = document.createElement("attvalues");
-            for (AttributeColumn column : attributeModel.getNodeTable().getColumns()) {
-                if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
-                    //Data or computed
-                    Element attvalueE = createNodeAttvalue(document, column, n);
-                    if (attvalueE != null) {
-                        attvaluesE.appendChild(attvalueE);
-                        hasColumns = true;
+            for (AttributeColumn col : table.getColumns()) {
+                if (!col.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                    xmlWriter.writeStartElement(ATTRIBUTE);
+                    xmlWriter.writeAttribute(ATTRIBUTE_ID, col.getId());
+                    xmlWriter.writeAttribute(ATTRIBUTE_TITLE, col.getTitle());
+                    if (col.getType().equals(AttributeType.INT)) {
+                        xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "integer");
+                    } else if (col.getType().isListType()) {
+                        if (col.getType().equals(AttributeType.LIST_INTEGER)) {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "listint");
+                        } else if (col.getType().equals(AttributeType.LIST_CHARACTER)) {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "listchar");
+                        } else {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, col.getType().getTypeString().toLowerCase().replace("_", ""));
+                        }
+                    } else if (col.getType().isDynamicType()) {
+                        AttributeType staticType = TypeConvertor.getStaticType(col.getType());
+                        if (staticType.equals(AttributeType.INT)) {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "integer");
+                        } else {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, staticType.getTypeString().toLowerCase());
+                        }
+                    } else {
+                        xmlWriter.writeAttribute(ATTRIBUTE_TYPE, col.getType().getTypeString().toLowerCase());
                     }
+                    if (col.getDefaultValue() != null) {
+                        xmlWriter.writeStartElement(ATTRIBUTE_DEFAULT);
+                        xmlWriter.writeCharacters(col.getDefaultValue().toString());
+                        xmlWriter.writeEndElement();
+                    }
+                    xmlWriter.writeEndElement();
                 }
             }
-            if (hasColumns) {
-                nodeE.appendChild(attvaluesE);
-            }
-        }
 
-        //Viz
-        if (exportSize) {
-            Element sizeE = createNodeSize(document, n);
-            nodeE.appendChild(sizeE);
+            xmlWriter.writeEndElement();
         }
-        if (exportColors) {
-            Element colorE = createNodeColors(document, n);
-            nodeE.appendChild(colorE);
-        }
-        if (exportPosition) {
-            Element positionE = createNodePosition(document, n);
-            nodeE.appendChild(positionE);
-        }
-
-        //Hierarchy
-        if (graphModel.isHierarchical()) {
-            HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
-            int childCount = hgraph.getChildrenCount(n);
-            if (childCount != 0) {
-                Element nodesE = createNodes(document, graph, childCount, n);
-                nodeE.appendChild(nodesE);
-            }
-        }
-        Progress.progress(progressTicket);
-
-        return nodeE;
     }
 
-    private Element createEdges(Document document, Graph graph) throws Exception {
-        Element edgesE = document.createElement("edges");
-        edgesE.setAttribute("count", "" + graph.getEdgeCount());
-
-        EdgeIterable it;
-        if (graphModel.isHierarchical()) {
-            HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
-            it = hgraph.getEdgesAndMetaEdges();
-        } else {
-            it = graph.getEdges();
+    private void writeNodes(XMLStreamWriter xmlWriter, HierarchicalGraph graph) throws Exception {
+        if (cancel) {
+            return;
         }
-        for (Edge e : it.toArray()) {
+        xmlWriter.writeStartElement(NODES);
+
+        AttributeColumn dynamicCol = dynamicCol = attributeModel.getNodeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
+
+        NodeIterable nodeIterable = exportHierarchy ? graph.getNodesTree() : graph.getNodes();
+        for (Node node : nodeIterable) {
+            xmlWriter.writeStartElement(NODE);
+
+            String id = node.getNodeData().getId();
+            xmlWriter.writeAttribute(NODE_ID, id);
+            if (node.getNodeData().getLabel() != null && !node.getNodeData().getLabel().isEmpty() && !node.getNodeData().getLabel().equals(id)) {
+                xmlWriter.writeAttribute(NODE_LABEL, node.getNodeData().getLabel());
+            }
+
+            if (exportHierarchy) {
+                Node parent = graph.getParent(node);
+                if (parent != null) {
+                    xmlWriter.writeAttribute(NODE_PID, parent.getNodeData().getId());
+                }
+            }
+
+            if (exportDynamic && dynamicCol != null && visibleInterval != null) {
+                TimeInterval timeInterval = (TimeInterval) node.getNodeData().getAttributes().getValue(dynamicCol.getIndex());
+                if (timeInterval != null) {
+                    writeTimeInterval(xmlWriter, timeInterval);
+                }
+            }
+
+            if (exportAttributes && node.getNodeData().getAttributes() != null) {
+                AttributeRow attributeRow = (AttributeRow) node.getNodeData().getAttributes();
+                writeAttValue(xmlWriter, attributeRow, visibleInterval);
+            }
+
+            if (exportSize) {
+                writeNodeSize(xmlWriter, node);
+            }
+
+            if (exportPosition) {
+                writeNodePosition(xmlWriter, node);
+            }
+
+            if (exportColors) {
+                writeNodeColor(xmlWriter, node);
+            }
+
+            xmlWriter.writeEndElement();
+            Progress.progress(progress);
             if (cancel) {
                 break;
             }
-            Element edgeE = createEdge(document, e);
-            edgesE.appendChild(edgeE);
         }
 
-        return edgesE;
+        xmlWriter.writeEndElement();
     }
 
-    private Element createEdge(Document document, Edge e) throws Exception {
-        Element edgeE = document.createElement("edge");
-
-        edgeE.setAttribute("id", e.getEdgeData().getId());
-        edgeE.setAttribute("source", e.getSource().getNodeData().getId());
-        edgeE.setAttribute("target", e.getTarget().getNodeData().getId());
-
-        if (e.isDirected() && graphModel.isMixed()) {
-            edgeE.setAttribute("type", "directed");
-        } else if (!e.isDirected() && graphModel.isMixed()) {
-            edgeE.setAttribute("type", "undirected");
-        }
-
-        String label = e.getEdgeData().getLabel();
-        if (label != null && !label.isEmpty()) {
-            edgeE.setAttribute("label", label);
-        }
-
-        float weight = e.getWeight();
-        if (weight != 1.0) {
-            edgeE.setAttribute("weight", "" + weight);
-        }
-
-        //Attribute values
-        if (attributeModel != null) {
-            boolean hasColumns = false;
-            Element attvaluesE = document.createElement("attvalues");
-            for (AttributeColumn column : attributeModel.getEdgeTable().getColumns()) {
-                if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
-                    //Data or computed
-                    Element attvalueE = createEdgeAttvalue(document, column, e);
-                    if (attvalueE != null) {
-                        attvaluesE.appendChild(attvalueE);
-                        hasColumns = true;
+    private void writeAttValue(XMLStreamWriter xmlWriter, AttributeRow row, TimeInterval visibleInterval) throws Exception {
+        for (AttributeValue val : row.getValues()) {
+            if (!val.getColumn().getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                AttributeType type = val.getColumn().getType();
+                if (type.isDynamicType()) {
+                    DynamicType dynamicValue = (DynamicType) val.getValue();
+                    if (dynamicValue != null && visibleInterval != null) {
+                        List<Interval<?>> intervals = dynamicValue.getIntervals(visibleInterval.getLow(), visibleInterval.getHigh());
+                        for (Interval<?> interval : intervals) {
+                            Object value = interval.getValue();
+                            if (value != null) {
+                                xmlWriter.writeStartElement(ATTVALUE);
+                                xmlWriter.writeAttribute(ATTVALUE_FOR, val.getColumn().getId());
+                                xmlWriter.writeAttribute(ATTVALUE_VALUE, value.toString());
+                                if (!Double.isInfinite(interval.getLow())) {
+                                    String intervalLow = "" + interval.getLow();
+                                    xmlWriter.writeAttribute(START, intervalLow);
+                                }
+                                if (!Double.isInfinite(interval.getHigh())) {
+                                    String intervalHigh = "" + interval.getHigh();
+                                    xmlWriter.writeAttribute(END, intervalHigh);
+                                }
+                                xmlWriter.writeEndElement();
+                            }
+                        }
+                    }
+                } else {
+                    if (val.getValue() != null) {
+                        xmlWriter.writeStartElement(ATTVALUE);
+                        xmlWriter.writeAttribute(ATTVALUE_FOR, val.getColumn().getId());
+                        xmlWriter.writeAttribute(ATTVALUE_VALUE, val.getValue().toString());
+                        xmlWriter.writeEndElement();
                     }
                 }
             }
-            if (hasColumns) {
-                edgeE.appendChild(attvaluesE);
-            }
         }
-        Progress.progress(progressTicket);
-
-        return edgeE;
     }
 
-    private Element createNodeSize(Document document, Node n) throws Exception {
-        Element sizeE = document.createElement("viz:size");
-        float size = n.getNodeData().getSize();
-        if (normalize) {
-            size = (size - minSize) / (maxSize - minSize);
-        }
-        sizeE.setAttribute("value", "" + size);
-
-        return sizeE;
-    }
-
-    private Element createNodeColors(Document document, Node n) throws Exception {
-        Element colorE = document.createElement("viz:color");
-        colorE.setAttribute("r", "" + (Math.round(n.getNodeData().r() * 255f)));
-        colorE.setAttribute("g", "" + (Math.round(n.getNodeData().g() * 255f)));
-        colorE.setAttribute("b", "" + (Math.round(n.getNodeData().b() * 255f)));
-
-        return colorE;
-    }
-
-    private Element createNodePosition(Document document, Node n) throws Exception {
-        Element positionE = document.createElement("viz:position");
-        float x = n.getNodeData().x();
+    private void writeNodePosition(XMLStreamWriter xmlWriter, Node node) throws Exception {
+        float x = node.getNodeData().x();
         if (normalize && x != 0.0) {
             x = (x - minX) / (maxX - minX);
         }
-        positionE.setAttribute("x", "" + x);
-
-        float y = n.getNodeData().y();
+        float y = node.getNodeData().y();
         if (normalize && y != 0.0) {
             y = (y - minY) / (maxY - minY);
         }
-        positionE.setAttribute("y", "" + y);
-
-        float z = n.getNodeData().z();
+        float z = node.getNodeData().z();
         if (normalize && z != 0.0) {
             z = (z - minZ) / (maxZ - minZ);
         }
-        positionE.setAttribute("z", "" + z);
+        if (!(x == 0 && y == 0 && z == 0)) {
+            xmlWriter.writeStartElement(VIZ, NODE_POSITION, VIZ_NAMESPACE);
+            xmlWriter.writeAttribute("x", "" + x);
+            xmlWriter.writeAttribute("y", "" + y);
+            if (z != 0) {
+                xmlWriter.writeAttribute("z", "" + z);
+            }
+            xmlWriter.writeEndElement();
+        }
+    }
 
-        return positionE;
+    private void writeNodeSize(XMLStreamWriter xmlWriter, Node node) throws Exception {
+        xmlWriter.writeStartElement(VIZ, NODE_SIZE, VIZ_NAMESPACE);
+        float size = node.getNodeData().getSize();
+        if (normalize) {
+            size = (size - minSize) / (maxSize - minSize);
+        }
+        xmlWriter.writeAttribute("value", "" + size);
+        xmlWriter.writeEndElement();
+    }
+
+    private void writeNodeColor(XMLStreamWriter xmlWriter, Node node) throws Exception {
+        int r = Math.round(node.getNodeData().r() * 255f);
+        int g = Math.round(node.getNodeData().g() * 255f);
+        int b = Math.round(node.getNodeData().b() * 255f);
+        if (r != 0 || g != 0 || b != 0) {
+            xmlWriter.writeStartElement(VIZ, NODE_COLOR, VIZ_NAMESPACE);
+            xmlWriter.writeAttribute("r", "" + r);
+            xmlWriter.writeAttribute("g", "" + g);
+            xmlWriter.writeAttribute("b", "" + b);
+            xmlWriter.writeEndElement();
+        }
+    }
+
+    private void writeTimeInterval(XMLStreamWriter xmlWriter, TimeInterval timeInterval) throws Exception {
+        List<Interval<Double[]>> intervals = timeInterval.getIntervals(visibleInterval.getLow(), visibleInterval.getHigh());
+        if (intervals.size() > 1) {
+            xmlWriter.writeStartElement(SLICES);
+            for (Interval<Double[]> interval : intervals) {
+                xmlWriter.writeStartElement(SLICE);
+                if (!Double.isInfinite(interval.getLow())) {
+                    String intervalLow = "" + interval.getLow();
+                    xmlWriter.writeAttribute(START, intervalLow);
+                }
+                if (!Double.isInfinite(interval.getHigh())) {
+                    String intervalHigh = "" + interval.getHigh();
+                    xmlWriter.writeAttribute(END, intervalHigh);
+                }
+                xmlWriter.writeEndElement();
+            }
+            xmlWriter.writeEndElement();
+        } else if (intervals.size() == 1) {
+            Interval<Double[]> interval = intervals.get(0);
+            if (!Double.isInfinite(interval.getLow())) {
+                String intervalLow = "" + interval.getLow();
+                xmlWriter.writeAttribute(START, intervalLow);
+            }
+            if (!Double.isInfinite(interval.getHigh())) {
+                String intervalHigh = "" + interval.getHigh();
+                xmlWriter.writeAttribute(END, intervalHigh);
+            }
+        }
+    }
+
+    private void writeEdges(XMLStreamWriter xmlWriter, HierarchicalGraph graph) throws Exception {
+        if (cancel) {
+            return;
+        }
+        xmlWriter.writeStartElement(EDGES);
+
+        AttributeColumn dynamicCol = dynamicCol = attributeModel.getEdgeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
+
+        EdgeIterable edgeIterable = exportHierarchy ? graph.getEdgesTree() : graph.getEdgesAndMetaEdges();
+        for (Edge edge : edgeIterable) {
+            xmlWriter.writeStartElement(EDGE);
+
+            if (edge.getEdgeData().getId() != null && !edge.getEdgeData().getId().equals(Integer.toString(edge.getId()))) {
+                xmlWriter.writeAttribute(EDGE_ID, edge.getEdgeData().getId());
+            }
+            xmlWriter.writeAttribute(EDGE_SOURCE, edge.getSource().getNodeData().getId());
+            xmlWriter.writeAttribute(EDGE_TARGET, edge.getTarget().getNodeData().getId());
+
+            if (edge.isDirected() && graphModel.isMixed()) {
+                xmlWriter.writeAttribute(EDGE_TYPE, "directed");
+            } else if (!edge.isDirected() && graphModel.isMixed()) {
+                xmlWriter.writeAttribute(EDGE_TYPE, "undirected");
+            }
+
+            String label = edge.getEdgeData().getLabel();
+            if (label != null && !label.isEmpty() && !label.equals(edge.getEdgeData().getId())) {
+                xmlWriter.writeAttribute(EDGE_LABEL, label);
+            }
+
+            float weight = edge.getWeight();
+            if (weight != 1f) {
+                xmlWriter.writeAttribute(EDGE_WEIGHT, "" + weight);
+            }
+
+            if (exportDynamic && dynamicCol != null && visibleInterval != null) {
+                TimeInterval timeInterval = (TimeInterval) edge.getEdgeData().getAttributes().getValue(dynamicCol.getIndex());
+                if (timeInterval != null) {
+                    writeTimeInterval(xmlWriter, timeInterval);
+                }
+            }
+
+            writeEdgeColor(xmlWriter, edge);
+
+            if (exportAttributes && edge.getEdgeData().getAttributes() != null) {
+                AttributeRow attributeRow = (AttributeRow) edge.getEdgeData().getAttributes();
+                writeAttValue(xmlWriter, attributeRow, visibleInterval);
+            }
+
+            xmlWriter.writeEndElement();
+            Progress.progress(progress);
+            if (cancel) {
+                break;
+            }
+        }
+
+        xmlWriter.writeEndElement();
+    }
+
+    private void writeEdgeColor(XMLStreamWriter xmlWriter, Edge edge) throws Exception {
+        if (edge.getEdgeData().r() != -1) { //Edge has custom color
+            int r = Math.round(edge.getEdgeData().r() * 255f);
+            int g = Math.round(edge.getEdgeData().g() * 255f);
+            int b = Math.round(edge.getEdgeData().b() * 255f);
+            if (r != 0 || g != 0 || b != 0) {
+                xmlWriter.writeStartElement(VIZ, EDGE_COLOR, VIZ_NAMESPACE);
+                xmlWriter.writeAttribute("r", "" + r);
+                xmlWriter.writeAttribute("g", "" + g);
+                xmlWriter.writeAttribute("b", "" + b);
+                if (edge.getEdgeData().alpha() != 1f) {
+                    xmlWriter.writeAttribute("a", "" + b);
+                }
+                xmlWriter.writeEndElement();
+            }
+        }
     }
 
     private void calculateMinMax(Graph graph) {
@@ -548,7 +594,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     public void setProgressTicket(ProgressTicket progressTicket) {
-        this.progressTicket = progressTicket;
+        this.progress = progressTicket;
     }
 
     public String getName() {
@@ -558,6 +604,12 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".gexf", NbBundle.getMessage(getClass(), "fileType_GEXF_Name"));
         return new FileType[]{ft};
+    }
+
+    private String getDateTime() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        return dateFormat.format(date);
     }
 
     public void setExportAttributes(boolean exportAttributes) {
@@ -580,6 +632,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         this.normalize = normalize;
     }
 
+    public void setExportDynamic(boolean exportDynamic) {
+        this.exportDynamic = exportDynamic;
+    }
+
+    public void setExportHierarchy(boolean exportHierarchy) {
+        this.exportHierarchy = exportHierarchy;
+    }
+
     public boolean isExportAttributes() {
         return exportAttributes;
     }
@@ -600,14 +660,16 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         return normalize;
     }
 
-    private String getDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd+HH:mm");
-        Date date = new Date();
-        return dateFormat.format(date);
-    }
-
     public boolean isExportVisible() {
         return exportVisible;
+    }
+
+    public boolean isExportDynamic() {
+        return exportDynamic;
+    }
+
+    public boolean isExportHierarchy() {
+        return exportHierarchy;
     }
 
     public void setExportVisible(boolean exportVisible) {

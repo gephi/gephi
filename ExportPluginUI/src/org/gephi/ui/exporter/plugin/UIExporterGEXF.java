@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.exporter.plugin;
 
 import javax.swing.JPanel;
-import org.gephi.io.exporter.plugin.ExporterGEXF2;
+import org.gephi.io.exporter.plugin.ExporterGEXF;
 import org.gephi.io.exporter.spi.Exporter;
 import org.gephi.io.exporter.spi.ExporterUI;
 import org.openide.util.NbBundle;
@@ -35,11 +35,11 @@ import org.openide.util.lookup.ServiceProvider;
 public class UIExporterGEXF implements ExporterUI {
 
     private UIExporterGEXFPanel panel;
-    private ExporterGEXF2 exporterGEXF;
+    private ExporterGEXF exporterGEXF;
     private ExporterGEXFSettings settings = new ExporterGEXFSettings();
 
     public void setup(Exporter exporter) {
-        exporterGEXF = (ExporterGEXF2) exporter;
+        exporterGEXF = (ExporterGEXF) exporter;
         settings.load(exporterGEXF);
         panel.setup(exporterGEXF);
     }
@@ -59,7 +59,7 @@ public class UIExporterGEXF implements ExporterUI {
     }
 
     public boolean isUIForExporter(Exporter exporter) {
-        return exporter instanceof ExporterGEXF2;
+        return exporter instanceof ExporterGEXF;
     }
 
     public String getDisplayName() {
@@ -76,17 +76,17 @@ public class UIExporterGEXF implements ExporterUI {
         private boolean exportDynamics = true;
         private boolean exportHierarchy = false;
 
-        private void save(ExporterGEXF2 exporterGEXF) {
+        private void save(ExporterGEXF exporterGEXF) {
             this.normalize = exporterGEXF.isNormalize();
             this.exportColors = exporterGEXF.isExportColors();
             this.exportPosition = exporterGEXF.isExportPosition();
             this.exportSize = exporterGEXF.isExportSize();
             this.exportAttributes = exporterGEXF.isExportAttributes();
-            this.exportDynamics = exporterGEXF.isExportAttributes();
-            this.exportHierarchy = exporterGEXF.isExportDynamic();
+            this.exportDynamics = exporterGEXF.isExportDynamic();
+            this.exportHierarchy = exporterGEXF.isExportHierarchy();
         }
 
-        private void load(ExporterGEXF2 exporterGEXF) {
+        private void load(ExporterGEXF exporterGEXF) {
             exporterGEXF.setNormalize(normalize);
             exporterGEXF.setExportColors(exportColors);
             exporterGEXF.setExportAttributes(exportAttributes);
