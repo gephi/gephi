@@ -130,11 +130,12 @@ public final class DynamicLong extends DynamicType<Long> {
 
 		switch (estimator) {
 			case AVERAGE:
+				if (values.size() == 1)
+					return values.get(0);
 				BigInteger total = BigInteger.valueOf(0);
 				for (int i = 0; i < values.size(); ++i)
 					total = total.add(BigInteger.valueOf(values.get(i)));
-				return total.divide(BigInteger.valueOf(values.size())).
-						longValue();
+				return total.divide(BigInteger.valueOf(values.size())).longValue();
 			case MEDIAN:
 				if (values.size() % 2 == 1)
 					return values.get(values.size() / 2);

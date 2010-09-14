@@ -85,7 +85,7 @@ public class DynamicTypeTest {
 		DynamicDouble instance2 = new DynamicDouble();
 		Double expResult1 = 0.0;
 		Double result1    = instance1.getLow();
-		Double expResult2 = Double.POSITIVE_INFINITY;
+		Double expResult2 = Double.NEGATIVE_INFINITY;
 		Double result2    = instance2.getLow();
 		assertEquals(expResult1, result1);
 		assertEquals(expResult2, result2);
@@ -103,7 +103,7 @@ public class DynamicTypeTest {
 		DynamicDouble instance2 = new DynamicDouble();
 		Double expResult1 = 30.0;
 		Double result1    = instance1.getHigh();
-		Double expResult2 = Double.NEGATIVE_INFINITY;
+		Double expResult2 = Double.POSITIVE_INFINITY;
 		Double result2    = instance2.getHigh();
 		assertEquals(expResult1, result1);
 		assertEquals(expResult2, result2);
@@ -408,9 +408,7 @@ public class DynamicTypeTest {
 		System.out.println("expResult: " + expResult);
 		System.out.println("result:    " + result);
 		System.out.println();
-	}
-
-        
+	}   
 
 	@Test
 	public void testDeserialization() {
@@ -433,18 +431,18 @@ public class DynamicTypeTest {
 		System.out.println();
 	}
 
-        @Test
-        public void testOrder() {
-            DynamicInteger instance = new DynamicInteger();
-            instance = new DynamicInteger(instance, new Interval<Integer>(2009, 2010, 1));
-            instance = new DynamicInteger(instance, new Interval<Integer>(2006, 2007, 2));
-            instance = new DynamicInteger(instance, new Interval<Integer>(2001, 2002, 3));
+	@Test
+	public void testOrder() {
+		DynamicInteger instance = new DynamicInteger();
+		instance = new DynamicInteger(instance, new Interval<Integer>(2009, 2010, 1));
+		instance = new DynamicInteger(instance, new Interval<Integer>(2006, 2007, 2));
+		instance = new DynamicInteger(instance, new Interval<Integer>(2001, 2002, 3));
 
-            List<Interval<Integer>> intervals = instance.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-            assertEquals(new Interval<Integer>(2001, 2002, 3), intervals.get(0));
-            assertEquals(new Interval<Integer>(2006, 2007, 2), intervals.get(1));
-            assertEquals(new Interval<Integer>(2009, 2010, 1), intervals.get(2));
-        }
+		List<Interval<Integer>> intervals = instance.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+		assertEquals(new Interval<Integer>(2001, 2002, 3), intervals.get(0));
+		assertEquals(new Interval<Integer>(2006, 2007, 2), intervals.get(1));
+		assertEquals(new Interval<Integer>(2009, 2010, 1), intervals.get(2));
+	}
 
 	private TimeInterval makeTimeInterval() {
 		List<Interval> intervals = new ArrayList<Interval>();

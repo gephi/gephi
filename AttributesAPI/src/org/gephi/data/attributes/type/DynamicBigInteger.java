@@ -130,6 +130,8 @@ public final class DynamicBigInteger extends DynamicType<BigInteger> {
 
 		switch (estimator) {
 			case AVERAGE:
+				if (values.size() == 1)
+					return values.get(0);
 				BigInteger total = BigInteger.valueOf(0);
 				for (int i = 0; i < values.size(); ++i)
 					total = total.add(values.get(i));

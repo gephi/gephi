@@ -130,11 +130,12 @@ public final class DynamicDouble extends DynamicType<Double> {
 
 		switch (estimator) {
 			case AVERAGE:
+				if (values.size() == 1)
+					return values.get(0);
 				BigDecimal total = new BigDecimal(0);
 				for (int i = 0; i < values.size(); ++i)
-					total = total.add(new BigDecimal(values.get(i)));
-				return total.divide(new BigDecimal(values.size())).
-						doubleValue();
+					total = total.add(BigDecimal.valueOf(values.get(i)));
+				return total.divide(BigDecimal.valueOf((long)values.size())).doubleValue();
 			case MEDIAN:
 				if (values.size() % 2 == 1)
 					return values.get(values.size() / 2);

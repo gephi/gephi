@@ -131,9 +131,8 @@ public final class DynamicFloat extends DynamicType<Float> {
 
 		switch (estimator) {
 			case AVERAGE:
-                                if(values.size()==1) {
-                                    return values.get(0);
-                                }
+				if (values.size() == 1)
+					return values.get(0);
 				BigDecimal total = new BigDecimal(0);
 				for (int i = 0; i < values.size(); ++i)
 					total = total.add(BigDecimal.valueOf(values.get(i).doubleValue()));
