@@ -459,15 +459,27 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeFormat", timeFormat.toString()));
         }
 
-        //Compress dynamic attributes
-        if(dynamicGraph) {
+        //Remove overlapping
+        if (dynamicGraph && parameters.isRemoveIntervalsOverlapping()) {
             for (NodeDraftImpl node : nodeMap.values()) {
                 AttributeValue[] values = node.getAttributeRow().getValues();
                 for (int i = 0; i < values.length; i++) {
                     AttributeValue val = values[i];
                     if (val.getValue() != null && val.getValue() instanceof DynamicType) {   //is Dynamic type
                         DynamicType type = (DynamicType) val.getValue();
-                        List<Interval> intervals = type.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY); 
+                        type = DynamicUtilities.removeOverlapping(type);
+                        node.getAttributeRow().setValue(val.getColumn(), type);
+                    }
+                }
+            }
+            for (EdgeDraftImpl edge : edgeMap.values()) {
+                AttributeValue[] values = edge.getAttributeRow().getValues();
+                for (int i = 0; i < values.length; i++) {
+                    AttributeValue val = values[i];
+                    if (val.getValue() != null && val.getValue() instanceof DynamicType) {   //is Dynamic type
+                        DynamicType type = (DynamicType) val.getValue();
+                        type = DynamicUtilities.removeOverlapping(type);
+                        edge.getAttributeRow().setValue(val.getColumn(), type);
                     }
                 }
             }
