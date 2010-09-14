@@ -23,6 +23,7 @@ package org.gephi.visualization.bridge;
 import java.util.ArrayList;
 import java.util.List;
 import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
@@ -34,7 +35,6 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.project.api.ProjectController;
 import org.gephi.visualization.GraphLimits;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
@@ -187,8 +187,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         float minWeight = Float.POSITIVE_INFINITY;
         float maxWeight = Float.NEGATIVE_INFINITY;
 
-        TimeInterval timeInterval = dynamicModel != null ? dynamicModel.getVisibleInterval() : null;
-        timeInterval = timeInterval != null ? (Double.isInfinite(timeInterval.getLow()) && Double.isInfinite(timeInterval.getHigh()) ? null : timeInterval) : null;
+        TimeInterval timeInterval = DynamicUtilities.getVisibleInterval(dynamicModel);
 
         for (Edge edge : edgeIterable) {
             if (edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
@@ -244,8 +243,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         float minWeight = Float.POSITIVE_INFINITY;
         float maxWeight = Float.NEGATIVE_INFINITY;
 
-        TimeInterval timeInterval = dynamicModel != null ? dynamicModel.getVisibleInterval() : null;
-        timeInterval = timeInterval != null ? (Double.isInfinite(timeInterval.getLow()) && Double.isInfinite(timeInterval.getHigh()) ? null : timeInterval) : null;
+        TimeInterval timeInterval = DynamicUtilities.getVisibleInterval(dynamicModel);
 
         for (Edge edge : graph.getMetaEdges()) {
             if (edge.getSource().getNodeData().getModel() == null || edge.getTarget().getNodeData().getModel() == null) {
