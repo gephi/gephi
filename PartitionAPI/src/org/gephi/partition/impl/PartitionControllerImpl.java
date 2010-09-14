@@ -74,14 +74,20 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
 
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(PartitionModelImpl.class);
+                if(model==null) {
+                    model = new PartitionModelImpl();
+                    workspace.add(model);
+                }
                 refreshPartitions = true;
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
                 trachViewChange(gm);
-                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+                AttributeModel attributeModel =  Lookup.getDefault().lookup(AttributeController.class).getModel(workspace);
                 attributeModel.addAttributeListener(PartitionControllerImpl.this);
             }
 
             public void unselect(Workspace workspace) {
+                GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
+                untrackViewChange(gm);
                 model = null;
                 AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
                 attributeModel.removeAttributeListener(PartitionControllerImpl.this);
@@ -104,7 +110,7 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
                 trachViewChange(gm);
 
-                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
+                AttributeModel attributeModel =  Lookup.getDefault().lookup(AttributeController.class).getModel(workspace);
                 attributeModel.addAttributeListener(PartitionControllerImpl.this);
             }
         }
