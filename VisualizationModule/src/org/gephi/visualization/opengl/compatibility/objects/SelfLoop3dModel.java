@@ -56,9 +56,9 @@ public class SelfLoop3dModel extends SelfLoop2dModel {
         } else {
             weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
         }
-        float weight = obj.getEdge().getWeight();
+        float w = weight;
         float edgeScale = vizModel.getEdgeScale();
-        weight = ((weight - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
+        w = ((w - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
         //
 
         //Params
@@ -78,18 +78,18 @@ public class SelfLoop3dModel extends SelfLoop2dModel {
         sideVector.normalize();
 
         //Get thickness points
-        float baseRightX = x + sideVector.x() * weight / 2;
-        float baseRightY = y + sideVector.y() * weight / 2;
-        float baseRightZ = z + sideVector.z() * weight / 2;
-        float baseLeftX = x - sideVector.x() * weight / 2;
-        float baseLeftY = y - sideVector.y() * weight / 2;
-        float baseLeftZ = z - sideVector.z() * weight / 2;
-        float baseTopX = x + upVector.x() * weight / 2;
-        float baseTopY = y + upVector.y() * weight / 2;
-        float baseTopZ = z + upVector.z() * weight / 2;
-        float baseBottomX = x - upVector.x() * weight / 2;
-        float baseBottomY = y - upVector.y() * weight / 2;
-        float baseBottomZ = z - upVector.z() * weight / 2;
+        float baseRightX = x + sideVector.x() * w / 2;
+        float baseRightY = y + sideVector.y() * w / 2;
+        float baseRightZ = z + sideVector.z() * w / 2;
+        float baseLeftX = x - sideVector.x() * w / 2;
+        float baseLeftY = y - sideVector.y() * w / 2;
+        float baseLeftZ = z - sideVector.z() * w / 2;
+        float baseTopX = x + upVector.x() * w / 2;
+        float baseTopY = y + upVector.y() * w / 2;
+        float baseTopZ = z + upVector.z() * w / 2;
+        float baseBottomX = x - upVector.x() * w / 2;
+        float baseBottomY = y - upVector.y() * w / 2;
+        float baseBottomZ = z - upVector.z() * w / 2;
 
         //Calculate control points
         float height = node.getRadius() * 3;
