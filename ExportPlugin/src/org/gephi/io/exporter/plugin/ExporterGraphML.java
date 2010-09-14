@@ -298,14 +298,8 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
             case INT:
                 attributeE.setAttribute("attr.type", "int");
                 break;
-            case LIST_STRING:
-                // nothing to do
-                break;
-            case TIME_INTERVAL:
-                // nothing to do
-                break;
             default:
-                attributeE.setAttribute("type", column.getType().getTypeString().toLowerCase());
+                attributeE.setAttribute("attr.type", column.getType().getTypeString().toLowerCase());
                 break;
         }
         if (column.getDefaultValue() != null) {
@@ -575,7 +569,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private Element createEdgeWeight(Document document, Edge e) throws Exception {
         Element weightE = document.createElement("data");
         weightE.setAttribute("key", "weight");
-        weightE.setTextContent(Double.toString(e.getWeight(visibleInterval.getLow(), visibleInterval.getHigh())));
+        weightE.setTextContent(Float.toString(e.getWeight(visibleInterval.getLow(), visibleInterval.getHigh())));
 
         return weightE;
     }

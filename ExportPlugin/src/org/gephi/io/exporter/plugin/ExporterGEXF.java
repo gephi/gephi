@@ -229,11 +229,11 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
         if (exportDynamic) {
             if (!Double.isInfinite(visibleInterval.getLow())) {
-                String intervalLow = "" + visibleInterval.getLow();
+                String intervalLow = formatTime(visibleInterval.getLow());
                 xmlWriter.writeAttribute(GRAPH_START, intervalLow);
             }
             if (!Double.isInfinite(visibleInterval.getHigh())) {
-                String intervalHigh = "" + visibleInterval.getHigh();
+                String intervalHigh = formatTime(visibleInterval.getHigh());
                 xmlWriter.writeAttribute(GRAPH_END, intervalHigh);
             }
             String timeFormat = dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE) ? "date" : "double";
@@ -392,11 +392,11 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                                 xmlWriter.writeAttribute(ATTVALUE_FOR, val.getColumn().getId());
                                 xmlWriter.writeAttribute(ATTVALUE_VALUE, value.toString());
                                 if (!Double.isInfinite(interval.getLow())) {
-                                    String intervalLow = "" + interval.getLow();
+                                    String intervalLow = formatTime(interval.getLow());
                                     xmlWriter.writeAttribute(interval.isLowExcluded() ? START_OPEN : START, intervalLow);
                                 }
                                 if (!Double.isInfinite(interval.getHigh())) {
-                                    String intervalHigh = "" + interval.getHigh();
+                                    String intervalHigh = formatTime(interval.getHigh());
                                     xmlWriter.writeAttribute(interval.isHighExcluded() ? END_OPEN : END, intervalHigh);
                                 }
                                 xmlWriter.writeEndElement();
@@ -481,11 +481,11 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             for (Interval<Double[]> interval : intervals) {
                 xmlWriter.writeStartElement(SLICE);
                 if (!Double.isInfinite(interval.getLow())) {
-                    String intervalLow = "" + interval.getLow();
+                    String intervalLow = formatTime(interval.getLow());
                     xmlWriter.writeAttribute(interval.isLowExcluded() ? START_OPEN : START, intervalLow);
                 }
                 if (!Double.isInfinite(interval.getHigh())) {
-                    String intervalHigh = "" + interval.getHigh();
+                    String intervalHigh = formatTime(interval.getHigh());
                     xmlWriter.writeAttribute(interval.isHighExcluded() ? END_OPEN : END, intervalHigh);
                 }
                 xmlWriter.writeEndElement();
@@ -494,11 +494,11 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         } else if (intervals.size() == 1) {
             Interval<Double[]> interval = intervals.get(0);
             if (!Double.isInfinite(interval.getLow())) {
-                String intervalLow = "" + interval.getLow();
+                String intervalLow = formatTime(interval.getLow());
                 xmlWriter.writeAttribute(interval.isLowExcluded() ? START_OPEN : START, intervalLow);
             }
             if (!Double.isInfinite(interval.getHigh())) {
-                String intervalHigh = "" + interval.getHigh();
+                String intervalHigh = formatTime(interval.getHigh());
                 xmlWriter.writeAttribute(interval.isHighExcluded() ? END_OPEN : END, intervalHigh);
             }
         }
@@ -600,6 +600,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             maxZ = Math.max(maxZ, nodeData.z());
             minSize = Math.min(minSize, nodeData.getSize());
             maxSize = Math.max(maxSize, nodeData.getSize());
+        }
+    }
+
+    private String formatTime(double time) {
+        if(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE)) {
+            return DynamicUtilities.getXMLDateStringFromDouble(time);
+        } else {
+            return Double.toString(time);
         }
     }
 
