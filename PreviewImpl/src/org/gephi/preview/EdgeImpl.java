@@ -58,8 +58,8 @@ public abstract class EdgeImpl extends AbstractEdge implements org.gephi.preview
      * @param label      the edge's label
      * @param labelSize  the edge's label size
      */
-    protected EdgeImpl(GraphImpl parent, Edge edge, NodeImpl node1, NodeImpl node2, String label, float labelSize) {
-        super(parent, edge.getWeight());
+    protected EdgeImpl(GraphImpl parent, Edge edge, float thickness, NodeImpl node1, NodeImpl node2, String label, float labelSize) {
+        super(parent, thickness);
         this.node1 = node1;
         this.node2 = node2;
         this.metaEdge = edge instanceof MetaEdge;
@@ -71,7 +71,7 @@ public abstract class EdgeImpl extends AbstractEdge implements org.gephi.preview
         direction.normalize();
 
         //Color
-        if(edge.getEdgeData().r()!=-1) {
+        if (edge.getEdgeData().r() != -1) {
             originalColor = new Color(edge.getEdgeData().r(), edge.getEdgeData().g(), edge.getEdgeData().b(), edge.getEdgeData().alpha());
         } else {
             originalColor = null;
