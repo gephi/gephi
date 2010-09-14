@@ -20,6 +20,8 @@
  */
 package org.gephi.dynamic;
 
+import java.util.List;
+import org.gephi.data.attributes.type.DynamicInteger;
 import org.gephi.data.attributes.type.DynamicDouble;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.type.DynamicType;
@@ -86,4 +88,18 @@ public class DynamicUtilitiesTest {
 		System.out.println("expResult: " + expResult.toString());
 		System.out.println();
 	}
+
+        @Test
+        public void testCompress() {
+            DynamicInteger instance = new DynamicInteger();
+            instance = new DynamicInteger(instance, new Interval<Integer>(2002, Double.POSITIVE_INFINITY, 1));
+            instance = new DynamicInteger(instance, new Interval<Integer>(2003, Double.POSITIVE_INFINITY, 2));
+            instance = new DynamicInteger(instance, new Interval<Integer>(2004, Double.POSITIVE_INFINITY, 3));
+
+            DynamicInteger result = (DynamicInteger)DynamicUtilities.compressIntervals(instance);
+            List<Interval<Integer>> intervalsResult = result.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+            assertEquals(new Interval<Integer>(2002, 2003, false, true,1), intervalsResult.get(0));
+            assertEquals(new Interval<Integer>(2003, 2004, false, true, 2), intervalsResult.get(1));
+            assertEquals(new Interval<Integer>(2004, Double.POSITIVE_INFINITY, false, false, 3), intervalsResult.get(2));
+        }
 }

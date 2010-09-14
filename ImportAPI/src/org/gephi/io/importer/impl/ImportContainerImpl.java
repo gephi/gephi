@@ -27,13 +27,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
@@ -458,6 +459,20 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             report.log(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerLog.TimeFormat", timeFormat.toString()));
         }
 
+        //Compress dynamic attributes
+        if(dynamicGraph) {
+            for (NodeDraftImpl node : nodeMap.values()) {
+                AttributeValue[] values = node.getAttributeRow().getValues();
+                for (int i = 0; i < values.length; i++) {
+                    AttributeValue val = values[i];
+                    if (val.getValue() != null && val.getValue() instanceof DynamicType) {   //is Dynamic type
+                        DynamicType type = (DynamicType) val.getValue();
+                        List<Interval> intervals = type.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY); 
+                    }
+                }
+            }
+        }
+
         //Dynamic attributes bounds
         if (dynamicGraph && (timeIntervalMin != null || timeIntervalMax != null)) {
             for (NodeDraftImpl node : nodeMap.values()) {
@@ -479,7 +494,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 AttributeValue[] values = node.getAttributeRow().getValues();
                 for (int i = 0; i < values.length; i++) {
                     AttributeValue val = values[i];
-                    if (val.getValue() != null && DynamicType.class.isAssignableFrom(val.getColumn().getType().getType())) {   //is Dynamic type
+                    if (val.getValue() != null && val.getValue() instanceof DynamicType) {   //is Dynamic type
                         DynamicType type = (DynamicType) val.getValue();
                         if (timeIntervalMin != null && type.getLow() < timeIntervalMin) {
                             if (!Double.isInfinite(type.getLow())) {
@@ -518,7 +533,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 AttributeValue[] values = edge.getAttributeRow().getValues();
                 for (int i = 0; i < values.length; i++) {
                     AttributeValue val = values[i];
-                    if (val.getValue() != null && DynamicType.class.isAssignableFrom(val.getColumn().getType().getType())) {   //is Dynamic type
+                    if (val.getValue() != null && val.getValue() instanceof DynamicType) {   //is Dynamic type
                         DynamicType type = (DynamicType) val.getValue();
                         if (timeIntervalMin != null && type.getLow() < timeIntervalMin) {
                             if (!Double.isInfinite(type.getLow())) {

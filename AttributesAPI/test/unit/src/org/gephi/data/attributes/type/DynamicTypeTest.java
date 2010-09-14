@@ -409,6 +409,19 @@ public class DynamicTypeTest {
 		System.out.println();
 	}
 
+        @Test
+        public void testOrder() {
+            DynamicInteger instance = new DynamicInteger();
+            instance = new DynamicInteger(instance, new Interval<Integer>(2009, 2010, 1));
+            instance = new DynamicInteger(instance, new Interval<Integer>(2006, 2007, 2));
+            instance = new DynamicInteger(instance, new Interval<Integer>(2001, 2002, 3));
+
+            List<Interval<Integer>> intervals = instance.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+            assertEquals(new Interval<Integer>(2001, 2002, 3), intervals.get(0));
+            assertEquals(new Interval<Integer>(2006, 2007, 2), intervals.get(1));
+            assertEquals(new Interval<Integer>(2009, 2010, 1), intervals.get(2));
+        }
+
 	private DynamicDouble makeELboundsTree() {
 		List<Interval<Double>> intervals = new ArrayList<Interval<Double>>();
 		intervals.add(new Interval<Double>(0.1, 0.2, false, true, 1.0));
