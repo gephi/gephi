@@ -23,7 +23,6 @@ package org.gephi.io.importer.plugin.file;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
-import javax.xml.datatype.DatatypeConfigurationException;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
@@ -48,9 +47,9 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class ImporterGEXF2Test {
+public class ImporterGEXFTest {
 
-    private ImporterGEXF2 importer;
+    private ImporterGEXF importer;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -62,7 +61,7 @@ public class ImporterGEXF2Test {
 
     @Before
     public void setUp() {
-        importer = new ImporterGEXF2();
+        importer = new ImporterGEXF();
         try {
             URL url = getClass().getResource("/org/gephi/io/importer/plugin/file/testparser.gexf");
             File file = new File(url.toURI());

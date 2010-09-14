@@ -1,7 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>,
-          Sebastien Heymann <sebastien.heymann@gephi.org>
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,737 +17,837 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.plugin.file;
-
-import static org.w3c.dom.Node.ELEMENT_NODE;
 
 import java.awt.Color;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-import org.gephi.data.attributes.api.AttributeTable;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLReporter;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.events.XMLEvent;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.attributes.type.StringList;
+import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
-import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
-import org.gephi.io.importer.api.PropertiesAssociations;
-import org.gephi.io.importer.api.PropertiesAssociations.EdgeProperties;
-import org.gephi.io.importer.api.PropertiesAssociations.NodeProperties;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.NbBundle;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
  * @author Mathieu Bastian
- * @author Sebastien Heymann
  */
 public class ImporterGEXF implements FileImporter, LongTask {
 
+    //GEXF
+    private static final String GEXF = "gexf";
+    private static final String GEXF_VERSION = "version";
+    private static final String GRAPH = "graph";
+    private static final String GRAPH_DEFAULT_EDGETYPE = "defaultedgetype";
+    private static final String GRAPH_START = "start";
+    private static final String GRAPH_END = "end";
+    private static final String GRAPH_TIMEFORMAT = "timeformat";
+    private static final String GRAPH_TIMEFORMAT2 = "timetype";
+    private static final String NODE = "node";
+    private static final String NODE_ID = "id";
+    private static final String NODE_LABEL = "label";
+    private static final String NODE_START = "start";
+    private static final String NODE_END = "end";
+    private static final String NODE_PID = "pid";
+    private static final String NODE_POSITION = "position";
+    private static final String NODE_COLOR = "color";
+    private static final String NODE_SIZE = "size";
+    private static final String NODE_SLICE = "slice";
+    private static final String EDGE = "edge";
+    private static final String EDGE_ID = "id";
+    private static final String EDGE_SOURCE = "source";
+    private static final String EDGE_TARGET = "target";
+    private static final String EDGE_LABEL = "label";
+    private static final String EDGE_TYPE = "type";
+    private static final String EDGE_WEIGHT = "weight";
+    private static final String EDGE_START = "start";
+    private static final String EDGE_COLOR = "color";
+    private static final String EDGE_END = "end";
+    private static final String EDGE_SLICE = "slice";
+    private static final String ATTRIBUTE = "attribute";
+    private static final String ATTRIBUTE_ID = "id";
+    private static final String ATTRIBUTE_TITLE = "title";
+    private static final String ATTRIBUTE_TYPE = "type";
+    private static final String ATTRIBUTE_DEFAULT = "default";
+    private static final String ATTRIBUTES = "attributes";
+    private static final String ATTRIBUTES_CLASS = "class";
+    private static final String ATTRIBUTES_TYPE = "type";
+    private static final String ATTRIBUTES_TYPE2 = "mode";
+    private static final String ATTVALUE = "attvalue";
+    private static final String ATTVALUE_FOR = "for";
+    private static final String ATTVALUE_FOR2 = "id";
+    private static final String ATTVALUE_VALUE = "value";
+    private static final String ATTVALUE_START = "start";
+    private static final String ATTVALUE_END = "end";
     //Architecture
     private Reader reader;
     private ContainerLoader container;
+    private boolean cancel;
     private Report report;
-    private ProgressTicket progressTicket;
-    private boolean cancel = false;
-    //Settings
-    private boolean keepComplexAndEmptyAttributeTypes = true;
-    private boolean isDynamicMode = false;
-    private boolean isIdTypeInteger = false;
-    private boolean isDateTypeFloat = false;
-    //Attributes
-    protected PropertiesAssociations properties = new PropertiesAssociations();
-    private HashMap<String, NodeProperties> nodePropertiesAttributes = new HashMap<String, NodeProperties>();
-    private HashMap<String, EdgeProperties> edgePropertiesAttributes = new HashMap<String, EdgeProperties>();
-    //Attributes options
-    private HashMap<String, StringList> optionsAttributes = new HashMap<String, StringList>();
-    //Unknown parents nodes
-    private ConcurrentHashMap<String, List<String>> unknownParents; // <parentId, ChildIdList>
-
-    public ImporterGEXF() {
-        //Default node associations
-        properties.addNodePropertyAssociation(NodeProperties.LABEL, "label");
-        properties.addNodePropertyAssociation(NodeProperties.X, "x");
-        properties.addNodePropertyAssociation(NodeProperties.Y, "y");
-        properties.addNodePropertyAssociation(NodeProperties.Y, "z");
-        properties.addNodePropertyAssociation(NodeProperties.SIZE, "size");
-
-        //Default edge associations
-        properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "label");
-        properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "weight");
-    }
+    private ProgressTicket progress;
+    private XMLStreamReader xmlReader;
 
     public boolean execute(ContainerLoader container) {
         this.container = container;
         this.report = new Report();
-        Document document = ImportUtils.getXMLDocument(reader);
+        Progress.start(progress);
         try {
-            importData(document);
+
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+                inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+            }
+            inputFactory.setXMLReporter(new XMLReporter() {
+
+                @Override
+                public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                    System.out.println("Error:" + errorType + ", message : " + message);
+                }
+            });
+            xmlReader = inputFactory.createXMLStreamReader(reader);
+
+            while (xmlReader.hasNext()) {
+
+                Integer eventType = xmlReader.next();
+                if (eventType.equals(XMLEvent.START_ELEMENT)) {
+                    String name = xmlReader.getLocalName();
+                    if (GEXF.equalsIgnoreCase(name)) {
+                        readGexf(xmlReader);
+                    } else if (GRAPH.equalsIgnoreCase(name)) {
+                        readGraph(xmlReader);
+                    } else if (NODE.equalsIgnoreCase(name)) {
+                        readNode(xmlReader, null);
+                    } else if (EDGE.equalsIgnoreCase(name)) {
+                        readEdge(xmlReader);
+                    } else if (ATTRIBUTES.equalsIgnoreCase(name)) {
+                        readAttributes(xmlReader);
+                    }
+                } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                    String name = xmlReader.getLocalName();
+                    if (NODE.equalsIgnoreCase(name)) {
+                    }
+                }
+            }
+            xmlReader.close();
+
         } catch (Exception e) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
             throw new RuntimeException(e);
         }
+        Progress.finish(progress);
         return !cancel;
     }
 
-    private void importData(Document document) throws Exception {
-        Progress.start(progressTicket);        //Progress
+    private void readGexf(XMLStreamReader reader) throws Exception {
+        String version = "";
 
-        //Root
-        Element root = document.getDocumentElement();
+        //Attributes
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if (GEXF_VERSION.equalsIgnoreCase(attName)) {
+                version = reader.getAttributeValue(i);
+            }
+        }
 
-        //Version
-        String version = root.getAttribute("version");
-        if (version.isEmpty() || version.equals("1.0")) {
-            ImporterGEXF10 importer = new ImporterGEXF10();
-            importer.importData(document, container, report);
+        if (!version.isEmpty() && version.equals("1.0")) {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version10"), Issue.Level.INFO));
         } else {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version11"), Issue.Level.INFO));
-            //XPath
-            XPathFactory factory = XPathFactory.newInstance();
-            XPath xpath = factory.newXPath();
-
-            XPathExpression exp = xpath.compile("./graph/attributes[@class]/attribute[@id and normalize-space(@title) and normalize-space(@type)]");
-            NodeList columnListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-            if (cancel) {
-                return;
-            }
-
-            exp = xpath.compile("./graph/nodes/node[@id]");
-            NodeList nodeListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-            if (cancel) {
-                return;
-            }
-            exp = xpath.compile("./graph/edges/edge[@source and @target]");
-            NodeList edgeListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-            if (cancel) {
-                return;
-            }
-
-            // Progress steps
-            int taskMax = nodeListE.getLength() + edgeListE.getLength();
-            Progress.switchToDeterminate(progressTicket, taskMax);
-
-            //Parsing mode
-            exp = xpath.compile("./graph[@mode]");
-            NodeList modeE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-            if (modeE != null && modeE.getLength() > 0) {
-                String mode = ((Element) modeE.item(0)).getAttribute("mode");
-                if (mode.equals("dynamic")) {
-                    isDynamicMode = true;
-
-                    //Date type
-                    exp = xpath.compile("./graph[@timetype]");
-                    NodeList datetypeE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-                    if (datetypeE != null && datetypeE.getLength() > 0) {
-                        String timetype = ((Element) modeE.item(0)).getAttribute("timetype");
-                        if (timetype.equals("float")) {
-                            isDateTypeFloat = true;
-                        } else if (!timetype.isEmpty() && !timetype.equals("date")) {
-                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_parsingdatetype", timetype), Issue.Level.SEVERE));
-                        }
-                    }
-
-                    //Graph date from
-                    exp = xpath.compile("./graph[@start]");
-                    NodeList datefromE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-                    if (datefromE != null && datefromE.getLength() > 0) {
-                        String start = ((Element) modeE.item(0)).getAttribute("start");
-                        container.setTimeIntervalMin(start);
-                    }
-
-                    //Graph date to
-                    exp = xpath.compile("./graph[@end]");
-                    NodeList datetoE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-                    if (datetoE != null && datetoE.getLength() > 0) {
-                        String end = ((Element) modeE.item(0)).getAttribute("end");
-                        container.setTimeIntervalMin(end);
-                    }
-                } else if (!mode.isEmpty() && !mode.equals("static")) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_parsingmode", mode), Issue.Level.SEVERE));
-                }
-            }
-            if (cancel) {
-                return;
-            }
-
-            //Id type
-            exp = xpath.compile("./graph[@idtype]");
-            NodeList idtypeE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-            if (idtypeE != null && idtypeE.getLength() > 0) {
-                String idtype = ((Element) idtypeE.item(0)).getAttribute("idtype");
-                if (idtype.equals("integer")) {
-                    isIdTypeInteger = true;
-                }
-            }
-
-            //Default edge type
-            exp = xpath.compile("./graph[@defaultedgetype]");
-            NodeList edgeTypeE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-            if (edgeTypeE != null && edgeTypeE.getLength() > 0) {
-                String defaultEdgeType = ((Element) edgeTypeE.item(0)).getAttribute("defaultedgetype");
-
-                if (defaultEdgeType.equals("undirected")) {
-                    container.setEdgeDefault(EdgeDefault.UNDIRECTED);
-                } else if (defaultEdgeType.equals("directed")) {
-                    container.setEdgeDefault(EdgeDefault.DIRECTED);
-                } else if (defaultEdgeType.equals("double")) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgedouble"), Issue.Level.WARNING));
-                } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_defaultedgetype", defaultEdgeType), Issue.Level.SEVERE));
-                }
-            }
-            if (cancel) {
-                return;
-            }
-
-            //Attributes columns
-            setAttributesColumns(columnListE);
-
-            //Nodes
-            unknownParents = new ConcurrentHashMap<String, List<String>>();
-            parseNodes(nodeListE, null);
-            nodeListE = null;
-
-            //Unknown parents
-            setUnknownParents();
-
-            //Edges
-            parseEdges(edgeListE, null);
         }
-
-        Progress.finish(progressTicket);
     }
 
-    private void parseNodes(NodeList nodeListE, String parent) throws Exception {
-        for (int i = 0; i < nodeListE.getLength(); i++) {
-            //security
-            if (nodeListE.item(i).getNodeType() != ELEMENT_NODE) {
-                continue;
+    private void readGraph(XMLStreamReader reader) throws Exception {
+        String defaultEdgeType = "";
+        String start = "";
+        String end = "";
+        String timeFormat = "";
+
+        //Attributes
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if (GRAPH_DEFAULT_EDGETYPE.equalsIgnoreCase(attName)) {
+                defaultEdgeType = reader.getAttributeValue(i);
+            } else if (GRAPH_START.equalsIgnoreCase(attName)) {
+                start = reader.getAttributeValue(i);
+            } else if (GRAPH_END.equalsIgnoreCase(attName)) {
+                end = reader.getAttributeValue(i);
+            } else if (GRAPH_TIMEFORMAT.equalsIgnoreCase(attName) || GRAPH_TIMEFORMAT2.equalsIgnoreCase(attName)) {
+                timeFormat = reader.getAttributeValue(i);
             }
+        }
 
-            Element nodeE = (Element) nodeListE.item(i);
-
-            if (!nodeE.getNodeName().equals("node")) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_notnode", nodeE.getNodeName()), Issue.Level.WARNING));
-                return;
+        //Edge Type
+        if (!defaultEdgeType.isEmpty()) {
+            if (defaultEdgeType.equalsIgnoreCase("undirected")) {
+                container.setEdgeDefault(EdgeDefault.UNDIRECTED);
+            } else if (defaultEdgeType.equalsIgnoreCase("directed")) {
+                container.setEdgeDefault(EdgeDefault.DIRECTED);
+            } else if (defaultEdgeType.equalsIgnoreCase("mutual")) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgedouble"), Issue.Level.WARNING));
+            } else {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_defaultedgetype", defaultEdgeType), Issue.Level.SEVERE));
             }
+        }
 
-            //highest nodes are used to calculate the progress
-            if (parent == null) {
-                Progress.progress(progressTicket);
+        //TimeFormat
+        if (!timeFormat.isEmpty()) {
+            if ("double".equalsIgnoreCase(timeFormat) || "float".equalsIgnoreCase(timeFormat)) {
+                container.setTimeFormat(TimeFormat.DOUBLE);
+            } else if ("date".equalsIgnoreCase(timeFormat)) {
+                container.setTimeFormat(TimeFormat.DATE);
             }
-            if (cancel) {
-                return;
+        }
+
+        //Start & End
+        if (!start.isEmpty()) {
+            container.setTimeIntervalMin(start);
+        }
+        if (!end.isEmpty()) {
+            container.setTimeIntervalMax(end);
+        }
+    }
+
+    private void readNode(XMLStreamReader reader, NodeDraft parent) throws Exception {
+        String id = "";
+        String label = "";
+        String startDate = "";
+        String endDate = "";
+        String pid = "";
+
+        //Attributes
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if (NODE_ID.equalsIgnoreCase(attName)) {
+                id = reader.getAttributeValue(i);
+            } else if (NODE_LABEL.equalsIgnoreCase(attName)) {
+                label = reader.getAttributeValue(i);
+            } else if (NODE_START.equalsIgnoreCase(attName)) {
+                startDate = reader.getAttributeValue(i);
+            } else if (NODE_END.equalsIgnoreCase(attName)) {
+                endDate = reader.getAttributeValue(i);
+            } else if (NODE_PID.equalsIgnoreCase(attName)) {
+                pid = reader.getAttributeValue(i);
             }
+        }
 
-            //Id
-            String nodeId = nodeE.getAttribute("id");
-            if (nodeId.isEmpty()) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeid"), Issue.Level.SEVERE));
-                continue;
+        if (id.isEmpty()) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeid"), Issue.Level.SEVERE));
+            return;
+        }
+
+        NodeDraft node = null;
+        if (container.nodeExists(id)) {
+            node = container.getNode(id);
+        } else {
+            node = container.factory().newNodeDraft();
+        }
+        node.setId(id);
+        node.setLabel(label);
+
+        //Parent
+        if (parent != null) {
+            node.setParent(parent);
+        } else if (!pid.isEmpty()) {
+            NodeDraft parentNode = container.getNode(pid);
+            if (parentNode == null) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_pid_notfound", pid, id), Issue.Level.SEVERE));
+            } else {
+                node.setParent(parentNode);
             }
+        }
 
-            //Create node
-            NodeDraft node = container.factory().newNodeDraft();
-            node.setId(nodeId);
+        if (!container.nodeExists(id)) {
+            container.addNode(node);
+        }
 
-            //Parent
-            if (!nodeE.getAttribute("pid").isEmpty() && !nodeE.getAttribute("pid").equals("0")) {
-                String pid = nodeE.getAttribute("pid");
+        boolean end = false;
+        boolean slices = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
 
-                // parent node unknown, maybe declared after
-                if (!container.nodeExists(pid)) {
-                    if (unknownParents.containsKey(pid)) {
-                        unknownParents.get(pid).add(nodeId);
-                    } else {
-                        List<String> childList = new ArrayList<String>();
-                        childList.add(nodeId);
-                        unknownParents.put(pid, childList);
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = xmlReader.getLocalName();
+                    if (ATTVALUE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        readNodeAttValue(reader, node);
+                    } else if (NODE_POSITION.equalsIgnoreCase(name)) {
+                        readNodePosition(reader, node);
+                    } else if (NODE_COLOR.equalsIgnoreCase(name)) {
+                        readNodeColor(reader, node);
+                    } else if (NODE_SIZE.equalsIgnoreCase(name)) {
+                        readNodeSize(reader, node);
+                    } else if (NODE_SLICE.equalsIgnoreCase(name)) {
+                        readNodeSlice(reader, node);
+                        slices = true;
+                    } else if (NODE.equalsIgnoreCase(name)) {
+                        readNode(reader, node);
                     }
-                } // parent node known
-                else {
-                    node.setParent(container.getNode(pid));
+                    break;
+
+                case XMLStreamReader.END_ELEMENT:
+                    if (NODE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        end = true;
+                    }
+                    break;
+            }
+        }
+
+
+        //Dynamic
+        if (!slices && (!startDate.isEmpty() || !endDate.isEmpty())) {
+            try {
+                node.addTimeInterval(startDate, endDate);
+            } catch (IllegalArgumentException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_node_timeinterval_parseerror", id), Issue.Level.SEVERE));
+            }
+        }
+    }
+
+    private void readNodeAttValue(XMLStreamReader reader, NodeDraft node) {
+        String fore = "";
+        String value = "";
+        String startDate = "";
+        String endDate = "";
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if (ATTVALUE_FOR.equalsIgnoreCase(attName) || ATTVALUE_FOR2.equalsIgnoreCase(attName)) {
+                fore = reader.getAttributeValue(i);
+            } else if (ATTVALUE_VALUE.equalsIgnoreCase(attName)) {
+                value = reader.getAttributeValue(i);
+            } else if (ATTVALUE_START.equalsIgnoreCase(attName)) {
+                startDate = reader.getAttributeValue(i);
+            } else if (ATTVALUE_END.equalsIgnoreCase(attName)) {
+                endDate = reader.getAttributeValue(i);
+            }
+        }
+
+        if (fore.isEmpty()) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datakey", node), Issue.Level.SEVERE));
+            return;
+        }
+
+        if (!value.isEmpty()) {
+            //Data attribute value
+            AttributeColumn column = container.getAttributeModel().getNodeTable().getColumn(fore);
+            if (column != null) {
+                if (!startDate.isEmpty() || !endDate.isEmpty()) {
+                    //Dynamic
+                    try {
+                        node.addAttributeValue(column, value, startDate, endDate);
+                    } catch (IllegalArgumentException e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeattribute_timeinterval_parseerror", node), Issue.Level.SEVERE));
+                    } catch (Exception e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
+                    }
+                } else {
+                    try {
+                        Object val = column.getType().parse(value);
+                        node.addAttributeValue(column, val);
+                    } catch (Exception e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
+                    }
                 }
-            } else if (parent != null) { //xml-element parent
-                node.setParent(container.getNode(parent));
             }
+        }
+    }
 
-            //Label
-            String nodeLabel = nodeE.getAttribute("label");
-            node.setLabel(nodeLabel);
+    private void readNodeColor(XMLStreamReader reader, NodeDraft node) throws Exception {
+        String rStr = "";
+        String gStr = "";
+        String bStr = "";
 
-            //Get Attvalue child nodes, avoiding using descendants
-            Node child = nodeE.getFirstChild();
-            if (child != null) {
-                do {
-                    if (child.getNodeName().equals("attvalues")) {
-                        Node childE = child.getFirstChild();
-
-                        if (childE != null) {
-                            do {
-                                if (childE.getNodeName().equals("attvalue")) {
-                                    Element dataE = (Element) childE;
-                                    setNodeData(dataE, node, nodeId);
-                                }
-                            } while ((childE = childE.getNextSibling()) != null);
-                        }
-
-                    }
-                } while ((child = child.getNextSibling()) != null);
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if ("r".equalsIgnoreCase(attName)) {
+                rStr = reader.getAttributeValue(i);
+            } else if ("g".equalsIgnoreCase(attName)) {
+                gStr = reader.getAttributeValue(i);
+            } else if ("b".equalsIgnoreCase(attName)) {
+                bStr = reader.getAttributeValue(i);
             }
+        }
 
-            //Node color
-            Element nodeColor = (Element) nodeE.getElementsByTagName("viz:color").item(0);
-            if (nodeColor != null) {
-                String rStr = nodeColor.getAttribute("r");
-                String gStr = nodeColor.getAttribute("g");
-                String bStr = nodeColor.getAttribute("b");
+        int r = (rStr.isEmpty()) ? 0 : Integer.parseInt(rStr);
+        int g = (gStr.isEmpty()) ? 0 : Integer.parseInt(gStr);
+        int b = (bStr.isEmpty()) ? 0 : Integer.parseInt(bStr);
 
-                int r = (rStr.isEmpty()) ? 0 : Integer.parseInt(rStr);
-                int g = (gStr.isEmpty()) ? 0 : Integer.parseInt(gStr);
-                int b = (bStr.isEmpty()) ? 0 : Integer.parseInt(bStr);
+        node.setColor(new Color(r, g, b));
+    }
 
-                node.setColor(new Color(r, g, b));
+    private void readNodePosition(XMLStreamReader reader, NodeDraft node) throws Exception {
+        String xStr = "";
+        String yStr = "";
+        String zStr = "";
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if ("x".equalsIgnoreCase(attName)) {
+                xStr = reader.getAttributeValue(i);
+            } else if ("y".equalsIgnoreCase(attName)) {
+                yStr = reader.getAttributeValue(i);
+            } else if ("z".equalsIgnoreCase(attName)) {
+                zStr = reader.getAttributeValue(i);
             }
+        }
 
-            //Node position
-            Element nodePosition = (Element) nodeE.getElementsByTagName("viz:position").item(0);
-            if (nodePosition != null) {
-                try {
-                    String xStr = nodePosition.getAttribute("x");
-                    if (!xStr.isEmpty()) {
-                        float x = Float.parseFloat(xStr);
-                        node.setX(x);
-                    }
-                } catch (NumberFormatException e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId, "X"), Issue.Level.WARNING));
-                }
-                try {
-                    String yStr = nodePosition.getAttribute("y");
-                    if (!yStr.isEmpty()) {
-                        float y = Float.parseFloat(yStr);
-                        node.setY(y);
-                    }
-                } catch (NumberFormatException e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId, "Y"), Issue.Level.WARNING));
-                }
-                try {
-                    String zStr = nodePosition.getAttribute("z");
-                    if (!zStr.isEmpty()) {
-                        float z = Float.parseFloat(zStr);
-                        node.setZ(z);
-                    }
-                } catch (NumberFormatException e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId, "Z"), Issue.Level.WARNING));
-                }
+        if (!xStr.isEmpty()) {
+            try {
+                float x = Float.parseFloat(xStr);
+                node.setX(x);
+            } catch (NumberFormatException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", node, "X"), Issue.Level.WARNING));
             }
+        }
+        if (!yStr.isEmpty()) {
+            try {
+                float y = Float.parseFloat(yStr);
+                node.setY(y);
+            } catch (NumberFormatException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", node, "Y"), Issue.Level.WARNING));
+            }
+        }
+        if (!zStr.isEmpty()) {
+            try {
+                float z = Float.parseFloat(zStr);
+                node.setZ(z);
+            } catch (NumberFormatException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", node, "Z"), Issue.Level.WARNING));
+            }
+        }
+    }
 
-            //Node size
-            Element nodeSize = (Element) nodeE.getElementsByTagName("viz:size").item(0);
-            if (nodeSize != null) {
+    private void readNodeSize(XMLStreamReader reader, NodeDraft node) throws Exception {
+        String attName = reader.getAttributeName(0).getLocalPart();
+        if ("value".equalsIgnoreCase(attName)) {
+            String sizeStr = reader.getAttributeValue(0);
+            if (!sizeStr.isEmpty()) {
                 try {
-                    float size = Float.parseFloat(nodeSize.getAttribute("value"));
+                    float size = Float.parseFloat(sizeStr);
                     node.setSize(size);
                 } catch (NumberFormatException e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodesize", nodeId), Issue.Level.WARNING));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodesize", node), Issue.Level.WARNING));
                 }
-            }
-
-            if (isDynamicMode) {
-                String nodeStart = null;
-                String nodeEnd = null;
-                //Node start date
-                if (!nodeE.getAttribute("start").isEmpty()) {
-                    nodeStart = nodeE.getAttribute("start");
-                }
-
-                //Node end date
-                if (!nodeE.getAttribute("end").isEmpty()) {
-                    nodeEnd = nodeE.getAttribute("end");
-                }
-
-                if (nodeStart != null || nodeEnd != null) {
-                    node.addTimeInterval(nodeStart, nodeEnd);
-                }
-            }
-
-            //Append node
-            container.addNode(node);
-
-            //Hierarchy nodes
-            Node childNodes = nodeE.getFirstChild();
-            if (childNodes != null) {
-                do {
-                    if (childNodes.getNodeName().equals("nodes")) {
-                        // enter sub-hierarchy
-                        NodeList childrenListE = childNodes.getChildNodes();
-                        if (childrenListE != null && childrenListE.getLength() > 0) {
-                            parseNodes(childrenListE, nodeId);
-                        }
-                    }
-                } while ((childNodes = childNodes.getNextSibling()) != null);
-            }
-
-            //Hierarchy edges
-            Node childEdges = nodeE.getFirstChild();
-            if (childEdges != null) {
-                do {
-                    if (childEdges.getNodeName().equals("edges")) {
-                        // enter sub-hierarchy
-                        NodeList childrenListE = childEdges.getChildNodes();
-                        if (childrenListE != null && childrenListE.getLength() > 0) {
-                            parseEdges(childrenListE, nodeId);
-                        }
-                    }
-                } while ((childEdges = childEdges.getNextSibling()) != null);
             }
         }
     }
 
-    private void parseEdges(NodeList edgeListE, String parent) {
-        for (int i = 0; i < edgeListE.getLength(); i++) {
-            //security
-            if (edgeListE.item(i).getNodeType() != ELEMENT_NODE) {
-                continue;
-            }
-            Element edgeE = (Element) edgeListE.item(i);
+    private void readNodeSlice(XMLStreamReader reader, NodeDraft node) throws Exception {
+        String start = "";
+        String end = "";
 
-            EdgeDraft edge = container.factory().newEdgeDraft();
-
-            //highest nodes are used to calculate the progress
-            if (parent == null) {
-                Progress.progress(progressTicket);
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if (NODE_START.equalsIgnoreCase(attName)) {
+                start = reader.getAttributeValue(i);
+            } else if (NODE_END.equalsIgnoreCase(attName)) {
+                end = reader.getAttributeValue(i);
             }
-            if (cancel) {
+        }
+
+        if (!start.isEmpty() || !end.isEmpty()) {
+            try {
+                node.addTimeInterval(start, end);
+            } catch (IllegalArgumentException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_node_timeinterval_parseerror", node), Issue.Level.SEVERE));
+            }
+        }
+    }
+
+    private void readEdge(XMLStreamReader reader) throws Exception {
+        String id = "";
+        String label = "";
+        String source = "";
+        String target = "";
+        String weight = "";
+        String edgeType = "";
+        String startDate = "";
+        String endDate = "";
+
+        //Attributes
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if (EDGE_SOURCE.equalsIgnoreCase(attName)) {
+                source = reader.getAttributeValue(i);
+            } else if (EDGE_TARGET.equalsIgnoreCase(attName)) {
+                target = reader.getAttributeValue(i);
+            } else if (EDGE_WEIGHT.equalsIgnoreCase(attName)) {
+                weight = reader.getAttributeValue(i);
+            } else if (EDGE_ID.equalsIgnoreCase(attName)) {
+                id = reader.getAttributeValue(i);
+            } else if (EDGE_TYPE.equalsIgnoreCase(attName)) {
+                edgeType = reader.getAttributeValue(i);
+            } else if (EDGE_LABEL.equalsIgnoreCase(attName)) {
+                label = reader.getAttributeValue(i);
+            } else if (EDGE_START.equalsIgnoreCase(attName)) {
+                startDate = reader.getAttributeValue(i);
+            } else if (EDGE_END.equalsIgnoreCase(attName)) {
+                endDate = reader.getAttributeValue(i);
+            }
+        }
+
+        EdgeDraft edge = container.factory().newEdgeDraft();
+
+        NodeDraft nodeSource = container.getNode(source);
+        NodeDraft nodeTarget = container.getNode(target);
+        edge.setSource(nodeSource);
+        edge.setTarget(nodeTarget);
+
+        //Type
+        if (!edgeType.isEmpty()) {
+            if (edgeType.equalsIgnoreCase("undirected")) {
+                edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
+            } else if (edgeType.equalsIgnoreCase("directed")) {
+                edge.setType(EdgeDraft.EdgeType.DIRECTED);
+            } else if (edgeType.equalsIgnoreCase("mutual")) {
+                edge.setType(EdgeDraft.EdgeType.MUTUAL);
+            } else {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetype", edgeType, edge), Issue.Level.SEVERE));
+            }
+        }
+
+        //Id
+        if (!id.isEmpty()) {
+            edge.setId(id);
+        }
+
+        //Weight
+        if (!weight.isEmpty()) {
+            try {
+                float weightNumber = Float.parseFloat(weight);
+                edge.setWeight(weightNumber);
+            } catch (NumberFormatException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeweight", edge), Issue.Level.WARNING));
+            }
+        }
+
+        //Label
+        if (!label.isEmpty()) {
+            edge.setLabel(label);
+        }
+
+        container.addEdge(edge);
+
+        boolean end = false;
+        boolean slices = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    if (ATTVALUE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        readEdgeAttValue(reader, edge);
+                    } else if (EDGE_COLOR.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        readEdgeColor(reader, edge);
+                    } else if (EDGE_SLICE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        readEdgeSlice(reader, edge);
+                        slices = true;
+                    }
+                    break;
+
+                case XMLStreamReader.END_ELEMENT:
+                    if (EDGE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        end = true;
+                    }
+                    break;
+            }
+        }
+
+        //Dynamic
+        if (!slices && (!startDate.isEmpty() || !endDate.isEmpty())) {
+            try {
+                edge.addTimeInterval(startDate, endDate);
+            } catch (IllegalArgumentException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timeinterval_parseerror", edge), Issue.Level.SEVERE));
+            }
+        }
+    }
+
+    private void readEdgeAttValue(XMLStreamReader reader, EdgeDraft edge) {
+        String fore = "";
+        String value = "";
+        String startDate = "";
+        String endDate = "";
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if (ATTVALUE_FOR.equalsIgnoreCase(attName) || ATTVALUE_FOR2.equalsIgnoreCase(attName)) {
+                fore = reader.getAttributeValue(i);
+            } else if (ATTVALUE_VALUE.equalsIgnoreCase(attName)) {
+                value = reader.getAttributeValue(i);
+            } else if (ATTVALUE_START.equalsIgnoreCase(attName)) {
+                startDate = reader.getAttributeValue(i);
+            } else if (ATTVALUE_END.equalsIgnoreCase(attName)) {
+                endDate = reader.getAttributeValue(i);
+            }
+        }
+
+        if (fore.isEmpty()) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datakey", edge), Issue.Level.SEVERE));
+            return;
+        }
+
+        if (!value.isEmpty()) {
+            //Data attribute value
+            AttributeColumn column = container.getAttributeModel().getEdgeTable().getColumn(fore);
+            if (column != null) {
+                if (!startDate.isEmpty() || !endDate.isEmpty()) {
+                    //Dynamic
+                    try {
+                        edge.addAttributeValue(column, value, startDate, endDate);
+                    } catch (IllegalArgumentException e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeattribute_timeinterval_parseerror", edge), Issue.Level.SEVERE));
+                    } catch (Exception e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
+                    }
+                } else {
+                    try {
+                        Object val = column.getType().parse(value);
+                        edge.addAttributeValue(column, val);
+                    } catch (Exception e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
+                    }
+                }
+            }
+        }
+    }
+
+    private void readEdgeColor(XMLStreamReader reader, EdgeDraft edge) throws Exception {
+        String rStr = "";
+        String gStr = "";
+        String bStr = "";
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if ("r".equalsIgnoreCase(attName)) {
+                rStr = reader.getAttributeValue(i);
+            } else if ("g".equalsIgnoreCase(attName)) {
+                gStr = reader.getAttributeValue(i);
+            } else if ("b".equalsIgnoreCase(attName)) {
+                bStr = reader.getAttributeValue(i);
+            }
+        }
+
+        int r = (rStr.isEmpty()) ? 0 : Integer.parseInt(rStr);
+        int g = (gStr.isEmpty()) ? 0 : Integer.parseInt(gStr);
+        int b = (bStr.isEmpty()) ? 0 : Integer.parseInt(bStr);
+
+        edge.setColor(new Color(r, g, b));
+    }
+
+    private void readEdgeSlice(XMLStreamReader reader, EdgeDraft edge) throws Exception {
+        String start = "";
+        String end = "";
+
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if (EDGE_START.equalsIgnoreCase(attName)) {
+                start = reader.getAttributeValue(i);
+            } else if (EDGE_END.equalsIgnoreCase(attName)) {
+                end = reader.getAttributeValue(i);
+            }
+        }
+
+        if (!start.isEmpty() || !end.isEmpty()) {
+            try {
+                edge.addTimeInterval(start, end);
+            } catch (IllegalArgumentException e) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edge_timeinterval_parseerror", edge), Issue.Level.SEVERE));
+            }
+        }
+    }
+
+    private void readAttributes(XMLStreamReader reader) throws Exception {
+        String classAtt = "";
+        String typeAtt = "";
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if (ATTRIBUTES_CLASS.equalsIgnoreCase(attName)) {
+                classAtt = reader.getAttributeValue(i);
+            } else if (ATTRIBUTES_TYPE.equalsIgnoreCase(attName) || ATTRIBUTES_TYPE2.equalsIgnoreCase(attName)) {
+                typeAtt = reader.getAttributeValue(i);
+            }
+        }
+
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    if (ATTRIBUTE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        readAttribute(reader, classAtt, typeAtt);
+                    }
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    if (ATTRIBUTES.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        end = true;
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void readAttribute(XMLStreamReader reader, String classAtt, String typeAtt) throws Exception {
+        String id = "";
+        String type = "";
+        String title = "";
+        String defaultStr = "";
+        for (int i = 0; i < reader.getAttributeCount(); i++) {
+            String attName = reader.getAttributeName(i).getLocalPart();
+            if (ATTRIBUTE_ID.equalsIgnoreCase(attName)) {
+                id = reader.getAttributeValue(i);
+            } else if (ATTRIBUTE_TYPE.equalsIgnoreCase(attName)) {
+                type = reader.getAttributeValue(i);
+            } else if (ATTRIBUTE_TITLE.equalsIgnoreCase(attName)) {
+                title = reader.getAttributeValue(i);
+            }
+        }
+
+        if (title.isEmpty()) {
+            title = id;
+        }
+
+
+        if (!id.isEmpty() && !type.isEmpty()) {
+            //Class type
+            if (classAtt.isEmpty() || !(classAtt.equalsIgnoreCase("node") || classAtt.equalsIgnoreCase("edge"))) {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributeclass", title), Issue.Level.SEVERE));
+            }
+
+            //Default?
+            boolean end = false;
+            boolean defaultFlag = false;
+            while (reader.hasNext() && !end) {
+                int xmltype = reader.next();
+
+                switch (xmltype) {
+                    case XMLStreamReader.START_ELEMENT:
+                        if (ATTRIBUTE_DEFAULT.equalsIgnoreCase(xmlReader.getLocalName())) {
+                            defaultFlag = true;
+                        }
+                        break;
+                    case XMLStreamReader.CHARACTERS:
+                        if (defaultFlag && !xmlReader.isWhiteSpace()) {
+                            defaultStr = xmlReader.getText();
+                        }
+                        break;
+                    case XMLStreamReader.END_ELEMENT:
+                        if (ATTRIBUTE.equalsIgnoreCase(xmlReader.getLocalName())) {
+                            end = true;
+                        }
+                        break;
+                }
+            }
+
+            //Dynamic?
+            boolean dynamic = typeAtt.equalsIgnoreCase("dynamic");
+
+            //Type
+            AttributeType attributeType = AttributeType.STRING;
+            if (type.equalsIgnoreCase("boolean") || type.equalsIgnoreCase("bool")) {
+                attributeType = dynamic ? AttributeType.DYNAMIC_BOOLEAN : AttributeType.BOOLEAN;
+            } else if (type.equalsIgnoreCase("integer") || type.equalsIgnoreCase("int")) {
+                attributeType = dynamic ? AttributeType.DYNAMIC_INT : AttributeType.INT;
+            } else if (type.equalsIgnoreCase("long")) {
+                attributeType = dynamic ? AttributeType.DYNAMIC_LONG : AttributeType.LONG;
+            } else if (type.equalsIgnoreCase("float")) {
+                attributeType = dynamic ? AttributeType.DYNAMIC_FLOAT : AttributeType.FLOAT;
+            } else if (type.equalsIgnoreCase("double")) {
+                attributeType = dynamic ? AttributeType.DYNAMIC_DOUBLE : AttributeType.DOUBLE;
+            } else if (type.equalsIgnoreCase("string")) {
+                attributeType = dynamic ? AttributeType.DYNAMIC_STRING : AttributeType.STRING;
+            } else if (type.equalsIgnoreCase("bigdecimal")) {
+                attributeType = dynamic ? AttributeType.DYNAMIC_BIGDECIMAL : AttributeType.BIGDECIMAL;
+            } else if (type.equalsIgnoreCase("biginteger")) {
+                attributeType = dynamic ? AttributeType.DYNAMIC_BIGINTEGER : AttributeType.BIGINTEGER;
+            } else if (type.equalsIgnoreCase("byte")) {
+                attributeType = dynamic ? AttributeType.DYNAMIC_BYTE : AttributeType.BYTE;
+            } else if (type.equalsIgnoreCase("char")) {
+                attributeType = dynamic ? AttributeType.DYNAMIC_CHAR : AttributeType.CHAR;
+            } else if (type.equalsIgnoreCase("short")) {
+                attributeType = dynamic ? AttributeType.DYNAMIC_SHORT : AttributeType.SHORT;
+            } else if (type.equalsIgnoreCase("listboolean")) {
+                attributeType = AttributeType.LIST_BOOLEAN;
+            } else if (type.equalsIgnoreCase("listint")) {
+                attributeType = AttributeType.LIST_INTEGER;
+            } else if (type.equalsIgnoreCase("listlong")) {
+                attributeType = AttributeType.LIST_LONG;
+            } else if (type.equalsIgnoreCase("listfloat")) {
+                attributeType = AttributeType.LIST_FLOAT;
+            } else if (type.equalsIgnoreCase("listdouble")) {
+                attributeType = AttributeType.LIST_DOUBLE;
+            } else if (type.equalsIgnoreCase("liststring")) {
+                attributeType = AttributeType.LIST_STRING;
+            } else if (type.equalsIgnoreCase("listbigdecimal")) {
+                attributeType = AttributeType.LIST_BIGDECIMAL;
+            } else if (type.equalsIgnoreCase("listbiginteger")) {
+                attributeType = AttributeType.LIST_BIGINTEGER;
+            } else if (type.equalsIgnoreCase("listbyte")) {
+                attributeType = AttributeType.LIST_BYTE;
+            } else if (type.equalsIgnoreCase("listchar")) {
+                attributeType = AttributeType.LIST_CHARACTER;
+            } else if (type.equalsIgnoreCase("listshort")) {
+                attributeType = AttributeType.LIST_SHORT;
+            } else {
+                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributetype2", type), Issue.Level.SEVERE));
                 return;
             }
 
-            //Id
-            String edgeId = edgeE.getAttribute("id");
-            if (edgeId.isEmpty()) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeid"), Issue.Level.WARNING));
-            }
-
-            String edgeSource = edgeE.getAttribute("source");
-            String edgeTarget = edgeE.getAttribute("target");
-
-            NodeDraft nodeSource = container.getNode(edgeSource);
-            NodeDraft nodeTarget = container.getNode(edgeTarget);
-            if (nodeSource == null || nodeTarget == null) {
-                throw new NullPointerException(edgeSource + "  " + edgeTarget);
-            }
-            edge.setSource(nodeSource);
-            edge.setTarget(nodeTarget);
-
-            //Type
-            String edgeType = edgeE.getAttribute("type");
-            if (!edgeType.isEmpty()) {
-                if (edgeType.equals("undirected")) {
-                    edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
-                } else if (edgeType.equals("directed")) {
-                    edge.setType(EdgeDraft.EdgeType.DIRECTED);
-                } else if (edgeType.equals("mutual")) {
-                    edge.setType(EdgeDraft.EdgeType.MUTUAL);
-                } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetype", edgeType, edgeId), Issue.Level.SEVERE));
-                }
-            }
-
-            //Weight
-            String weightStr = edgeE.getAttribute("weight");
-            if (!weightStr.isEmpty()) {
-                try {
-                    float weight = Float.parseFloat(weightStr);
-                    edge.setWeight(weight);
-                } catch (NumberFormatException e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeweight", edgeId), Issue.Level.WARNING));
-                }
-            }
-            // TODO dynamic weight: reserved title "weight" in attributes
-
-            //Label
-            String edgeLabel = edgeE.getAttribute("label");
-            if (!edgeLabel.isEmpty()) {
-                edge.setLabel(edgeLabel);
-            }
-
-            //Edge color
-            Element edgeColor = (Element) edgeE.getElementsByTagName("viz:color").item(0);
-            if (edgeColor != null) {
-                String rStr = edgeColor.getAttribute("r");
-                String gStr = edgeColor.getAttribute("g");
-                String bStr = edgeColor.getAttribute("b");
-
-                int r = (rStr.isEmpty()) ? 0 : Integer.parseInt(rStr);
-                int g = (gStr.isEmpty()) ? 0 : Integer.parseInt(gStr);
-                int b = (bStr.isEmpty()) ? 0 : Integer.parseInt(bStr);
-
-                edge.setColor(new Color(r, g, b));
-            }
-
-            //Get Attvalue child nodes, avoiding using descendants
-            Node child = edgeE.getFirstChild();
-            if (child != null) {
-                do {
-                    if (child.getNodeName().equals("attvalues")) {
-                        Node childE = child.getFirstChild();
-
-                        if (childE != null) {
-                            do {
-                                if (childE.getNodeName().equals("attvalue")) {
-                                    Element dataE = (Element) childE;
-                                    setEdgeData(dataE, edge, edgeId);
-                                }
-                            } while ((childE = childE.getNextSibling()) != null);
-                        }
-
-                    }
-                } while ((child = child.getNextSibling()) != null);
-            }
-
-
-            if (isDynamicMode) {
-                String edgeStart = null;
-                String edgeEnd = null;
-                //Edge start date
-                if (!edgeE.getAttribute("start").isEmpty()) {
-                    edgeStart = edgeE.getAttribute("start");
-                }
-
-                //Edge end date
-                if (!edgeE.getAttribute("end").isEmpty()) {
-                    edgeEnd = edgeE.getAttribute("end");
-                }
-
-                if (edgeStart != null || edgeEnd != null) {
-                    edge.addTimeInterval(edgeStart, edgeEnd);
-                }
-            }
-
-            container.addEdge(edge);
-        }
-    }
-
-    private void setAttributesColumns(NodeList columnListE) {
-        //NodeColumn
-        for (int i = 0; i < columnListE.getLength() && !cancel; i++) {
-            Element columnE = (Element) columnListE.item(i);
-
-            Progress.progress(progressTicket);
-
-            //Id & Name
-            String colId = columnE.getAttribute("id");
-            String colTitle = columnE.getAttribute("title");
-            if (colTitle.isEmpty()) {
-                colTitle = colId;
-            }
-
-            //Class
-            String colClass = ((Element) columnE.getParentNode()).getAttribute("class");
-            if (colClass.isEmpty() || !(colClass.equals("node") || colClass.equals("edge"))) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributeclass", colTitle), Issue.Level.SEVERE));
-                continue;
-            }
-
-            //Try to see if the column is a node/edge property
-            if (colClass.equals("node")) {
-                NodeProperties prop = properties.getNodeProperty(colTitle);
-                if (prop != null) {
-                    nodePropertiesAttributes.put(colId, prop);
-                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_nodeproperty", colTitle));
-                    continue;
-                }
-            } else if (colClass.equals("edge")) {
-                EdgeProperties prop = properties.getEdgeProperty(colTitle);
-                if (prop != null) {
-                    edgePropertiesAttributes.put(colId, prop);
-                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_edgeeproperty", colTitle));
-                    continue;
-                }
-            }
-
-            //Type
-            String keyType = columnE.getAttribute("type");
-            AttributeType attributeType = AttributeType.STRING;
-            if (keyType.equals("boolean")) {
-                attributeType = AttributeType.BOOLEAN;
-            } else if (keyType.equals("integer")) {
-                attributeType = AttributeType.INT;
-            } else if (keyType.equals("long")) {
-                attributeType = AttributeType.LONG;
-            } else if (keyType.equals("float")) {
-                attributeType = AttributeType.FLOAT;
-            } else if (keyType.equals("double")) {
-                attributeType = AttributeType.DOUBLE;
-            } else if (keyType.equals("string")) {
-                attributeType = AttributeType.STRING;
-            } else if (keyType.equals("liststring")) {
-                attributeType = AttributeType.LIST_STRING;
-            } else if (keyType.equals("anyURI")) {
-                attributeType = AttributeType.STRING; //TODO need to create a new type?
-            } else {
-                if (keepComplexAndEmptyAttributeTypes) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributetype1", colTitle), Issue.Level.WARNING));
-                } else {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributetype2", colTitle), Issue.Level.SEVERE));
-                    continue;
-                }
-            }
-
-            //Default
-            NodeList defaultList = columnE.getElementsByTagName("default");
+            //Default Object
             Object defaultValue = null;
-            if (defaultList.getLength() > 0) {
-                Element defaultE = (Element) defaultList.item(0);
-                String defaultValueStr = defaultE.getTextContent();
+            if (!defaultStr.isEmpty()) {
                 try {
-                    defaultValue = attributeType.parse(defaultValueStr);
-                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_default", defaultValueStr, colTitle));
+                    defaultValue = attributeType.parse(defaultStr);
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_default", defaultStr, title));
                 } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributedefault", colTitle, attributeType.getTypeString()), Issue.Level.SEVERE));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributedefault", title, attributeType.getTypeString()), Issue.Level.SEVERE));
                 }
             }
 
-            //Options
-            NodeList optionsList = columnE.getElementsByTagName("options");
-            if (optionsList.getLength() > 0) {
-                Element optionE = (Element) optionsList.item(0);
-                String optionsValuesStr = optionE.getTextContent();
-                try {
-                    //String[] optionValues = optionsValueStr.split("\\|");
-                    StringList optionValuesList = new StringList(optionsValuesStr, "\\|");
-                    optionsAttributes.put(colId, optionValuesList);
-                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_options", optionsValuesStr, colTitle));
-                } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributeoptions", colTitle, attributeType.getTypeString()), Issue.Level.SEVERE));
+            //Add to model
+            if ("node".equalsIgnoreCase(classAtt) || classAtt.isEmpty()) {
+                if (container.getAttributeModel().getNodeTable().hasColumn(id) || container.getAttributeModel().getNodeTable().hasColumn(title)) {
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributecolumn_exist", id));
+                    return;
                 }
-            }
-
-            /*if (isDynamicMode) {
-            String attrStart = null;
-            String attrEnd = null;
-            //Attribute start date
-            if (!columnE.getAttribute("start").isEmpty()) {
-            attrStart = columnE.getAttribute("start");
-            }
-
-            //Attribute end date
-            if (!columnE.getAttribute("end").isEmpty()) {
-            attrEnd = columnE.getAttribute("end");
-            }
-
-            if (attrStart != null || attrEnd != null) {
-            columnE.addTimeSlice(attrStart, attrEnd);
-            }
-            }*/
-
-            //Add as attribute
-            if (colClass.equals("node")) {
-                AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
-                nodeClass.addColumn(colId, colTitle, attributeType, AttributeOrigin.DATA, defaultValue);
-                report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_nodeattribute", colTitle, attributeType.getTypeString()));
-            } else if (colClass.equals("edge")) {
-                AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
-                edgeClass.addColumn(colId, colTitle, attributeType, AttributeOrigin.DATA, defaultValue);
-                report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_edgeattribute", colTitle, attributeType.getTypeString()));
-            }
-        }
-    }
-
-    private void setUnknownParents() {
-        for (String pid : unknownParents.keySet()) {
-            List<String> childList = unknownParents.get(pid);
-            for (String childId : childList) {
-                container.getNode(childId).setParent(container.getNode(pid));
-            }
-            unknownParents.remove(pid);
-        }
-    }
-
-    private void setNodeData(Element dataE, NodeDraft nodeDraft, String nodeId) {
-        //Key
-        String dataKey = dataE.getAttribute("for");
-        if (dataKey.isEmpty()) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datakey", nodeDraft), Issue.Level.SEVERE));
-            return;
-        }
-        String dataValue = dataE.getAttribute("value");
-        if (!dataValue.isEmpty()) {
-
-            //Data attribute value
-            AttributeColumn column = container.getAttributeModel().getNodeTable().getColumn(dataKey);
-            if (column != null) {
-                try {
-                    Object value = column.getType().parse(dataValue);
-
-                    //Check value
-                    if (column.getType() != AttributeType.LIST_STRING) { //otherwise this is a nonsense
-                        StringList options = optionsAttributes.get(dataKey);
-                        if (options != null && !options.contains(value.toString())) {
-                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_dataoptionsvalue", dataValue, nodeId, column.getTitle()), Issue.Level.SEVERE));
-                            return;
-                        }
-                    }
-
-                    nodeDraft.addAttributeValue(column, value);
-                } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", dataKey, nodeId, column.getTitle()), Issue.Level.SEVERE));
+                container.getAttributeModel().getNodeTable().addColumn(id, title, attributeType, AttributeOrigin.DATA, defaultValue);
+                report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_nodeattribute", title, attributeType.getTypeString()));
+            } else if ("edge".equalsIgnoreCase(classAtt) || classAtt.isEmpty()) {
+                if ((id.equalsIgnoreCase("weight") || title.equalsIgnoreCase("weight")) && dynamic && attributeType.equals(AttributeType.DYNAMIC_FLOAT)) {
+                    //Dynamic weight
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_dynamic_weight", id));
+                    container.getAttributeModel().getEdgeTable().removeColumn(container.getAttributeModel().getEdgeTable().getColumn(PropertiesColumn.EDGE_WEIGHT.getIndex()));
+                    container.getAttributeModel().getEdgeTable().addColumn(id, PropertiesColumn.EDGE_WEIGHT.getTitle(), attributeType, AttributeOrigin.PROPERTY, defaultValue);
+                    return;
+                } else if (container.getAttributeModel().getEdgeTable().hasColumn(id) || container.getAttributeModel().getEdgeTable().hasColumn(title)) {
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributecolumn_exist", id));
+                    return;
                 }
+                container.getAttributeModel().getEdgeTable().addColumn(id, title, attributeType, AttributeOrigin.DATA, defaultValue);
+                report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_edgeattribute", title, attributeType.getTypeString()));
             }
-        }
-    }
-
-    private void setEdgeData(Element dataE, EdgeDraft edgeDraft, String edgeId) {
-        //Key
-        String dataKey = dataE.getAttribute("for");
-        if (dataKey.isEmpty()) {
-            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datakey", edgeDraft), Issue.Level.SEVERE));
-            return;
-        }
-        String dataValue = dataE.getAttribute("value");
-        if (!dataValue.isEmpty()) {
-
-            //Data attribute value
-            AttributeColumn column = container.getAttributeModel().getEdgeTable().getColumn(dataKey);
-            if (column != null) {
-                try {
-                    Object value = column.getType().parse(dataValue);
-
-                    //Check value
-                    if (column.getType() != AttributeType.LIST_STRING) { //otherwise this is a nonsense
-                        StringList options = optionsAttributes.get(dataKey);
-                        if (options != null && !options.contains(value.toString())) {
-                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_dataoptionsvalue", dataValue, edgeId, column.getTitle()), Issue.Level.SEVERE));
-                            return;
-                        }
-                    }
-
-                    edgeDraft.addAttributeValue(column, value);
-                } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", dataKey, edgeId, column.getTitle()), Issue.Level.SEVERE));
-                }
-            }
+        } else {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributeempty", title), Issue.Level.SEVERE));
         }
     }
 
@@ -770,294 +869,6 @@ public class ImporterGEXF implements FileImporter, LongTask {
     }
 
     public void setProgressTicket(ProgressTicket progressTicket) {
-        this.progressTicket = progressTicket;
-    }
-
-    public final class ImporterGEXF10 {
-
-        /**
-         * GEXF 1.0 import
-         */
-        private void importData(Document document, ContainerLoader container, Report report) throws Exception {
-            //Root
-            Element root = document.getDocumentElement();
-
-            //XPath
-            XPathFactory factory = XPathFactory.newInstance();
-            XPath xpath = factory.newXPath();
-
-            XPathExpression exp = xpath.compile("./graph/attributes[@class]/attribute[@id and normalize-space(@title) and normalize-space(@type)]");
-            NodeList columnListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-            if (cancel) {
-                return;
-            }
-
-            exp = xpath.compile("./graph/nodes/node[@id and normalize-space(@label)]");
-            NodeList nodeListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-            if (cancel) {
-                return;
-            }
-            exp = xpath.compile("./graph/edges/edge[@source and @target]");
-            NodeList edgeListE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-            if (cancel) {
-                return;
-            }
-
-            // Progress steps
-            int taskMax = nodeListE.getLength() + edgeListE.getLength();
-            Progress.switchToDeterminate(progressTicket, taskMax);
-
-            // Default edge type
-            exp = xpath.compile("./graph/edges[@defaultedgetype]");
-            NodeList edgeTypeE = (NodeList) exp.evaluate(root, XPathConstants.NODESET);
-            if (edgeTypeE != null && edgeTypeE.getLength() > 0) {
-                String defaultEdgeType = ((Element) edgeTypeE.item(0)).getAttribute("defaultedgetype");
-
-                if (!defaultEdgeType.isEmpty()) {
-                    if (defaultEdgeType.equals("simple")) {
-                        container.setEdgeDefault(EdgeDefault.UNDIRECTED);
-                    } else if (defaultEdgeType.equals("directed")) {
-                        container.setEdgeDefault(EdgeDefault.DIRECTED);
-                    } else if (defaultEdgeType.equals("double")) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgedouble"), Issue.Level.WARNING));
-                    } else {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_defaultedgetype"), Issue.Level.SEVERE));
-                    }
-                }
-            }
-
-            //Attributes columns
-            setAttributesColumns(columnListE);
-
-            //Nodes
-            for (int i = 0; i < nodeListE.getLength(); i++) {
-                Element nodeE = (Element) nodeListE.item(i);
-
-                //Id
-                String nodeId = nodeE.getAttribute("id");
-                if (nodeId.isEmpty()) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeid"), Issue.Level.SEVERE));
-                    continue;
-                }
-
-                //Create node
-                NodeDraft node = container.factory().newNodeDraft();
-                node.setId(nodeId);
-
-                //Parent
-                if (!nodeE.getAttribute("pid").isEmpty() && !nodeE.getAttribute("pid").equals("0")) {
-                    String parentId = nodeE.getAttribute("pid");
-                    node.setParent(container.getNode(parentId));
-                }
-
-                //Label
-                String nodeLabel = nodeE.getAttribute("label");
-                if (nodeLabel.isEmpty()) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodelabel", nodeId), Issue.Level.SEVERE));
-                    continue;
-                }
-                node.setLabel(nodeLabel);
-
-                //Get Attvalue child nodes, avoiding using descendants
-                Node child = nodeE.getFirstChild();
-                if (child != null) {
-                    do {
-                        if (child.getNodeName().equals("attvalues")) {
-                            Node childE = child.getFirstChild();
-
-                            if (childE != null) {
-                                do {
-                                    if (childE.getNodeName().equals("attvalue")) {
-                                        Element dataE = (Element) childE;
-                                        setNodeData(dataE, node, nodeId);
-                                    }
-                                } while ((childE = childE.getNextSibling()) != null);
-                            }
-
-                        }
-                    } while ((child = child.getNextSibling()) != null);
-                }
-
-                //Node color
-                Element nodeColor = (Element) nodeE.getElementsByTagName("viz:color").item(0);
-                if (nodeColor != null) {
-                    String rStr = nodeColor.getAttribute("r");
-                    String gStr = nodeColor.getAttribute("g");
-                    String bStr = nodeColor.getAttribute("b");
-
-                    int r = (rStr.isEmpty()) ? 0 : Integer.parseInt(rStr);
-                    int g = (gStr.isEmpty()) ? 0 : Integer.parseInt(gStr);
-                    int b = (bStr.isEmpty()) ? 0 : Integer.parseInt(bStr);
-
-                    node.setColor(new Color(r, g, b));
-                }
-
-                //Node position
-                Element nodePosition = (Element) nodeE.getElementsByTagName("viz:position").item(0);
-                if (nodePosition != null) {
-                    try {
-                        String xStr = nodePosition.getAttribute("x");
-                        if (!xStr.isEmpty()) {
-                            float x = Float.parseFloat(xStr);
-                            node.setX(x);
-                        }
-                    } catch (NumberFormatException e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId, "X"), Issue.Level.WARNING));
-                    }
-                    try {
-                        String yStr = nodePosition.getAttribute("y");
-                        if (!yStr.isEmpty()) {
-                            float y = Float.parseFloat(yStr);
-                            node.setY(y);
-                        }
-                    } catch (NumberFormatException e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId, "Y"), Issue.Level.WARNING));
-                    }
-                    try {
-                        String zStr = nodePosition.getAttribute("z");
-                        if (!zStr.isEmpty()) {
-                            float z = Float.parseFloat(zStr);
-                            node.setZ(z);
-                        }
-                    } catch (NumberFormatException e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeposition", nodeId, "Z"), Issue.Level.WARNING));
-                    }
-                }
-
-                //Node size
-                Element nodeSize = (Element) nodeE.getElementsByTagName("viz:size").item(0);
-                if (nodeSize != null) {
-                    try {
-                        float size = Float.parseFloat(nodeSize.getAttribute("value"));
-                        node.setSize(size);
-                    } catch (NumberFormatException e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodesize", nodeId), Issue.Level.WARNING));
-                    }
-                }
-
-                //Append node
-                container.addNode(node);
-                Progress.progress(progressTicket);
-            }
-
-
-            //Edges
-            for (int i = 0; i < edgeListE.getLength(); i++) {
-                Element edgeE = (Element) edgeListE.item(i);
-
-                EdgeDraft edge = container.factory().newEdgeDraft();
-
-                //Id
-                String edgeId = edgeE.getAttribute("id");
-                if (edgeId.isEmpty()) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeid"), Issue.Level.WARNING));
-                }
-
-                String edgeSource = edgeE.getAttribute("source");
-                String edgeTarget = edgeE.getAttribute("target");
-
-                NodeDraft nodeSource = container.getNode(edgeSource);
-                NodeDraft nodeTarget = container.getNode(edgeTarget);
-                if (nodeSource == null || nodeTarget == null) {
-                    throw new NullPointerException(edgeSource + "  " + edgeTarget);
-                }
-                edge.setSource(nodeSource);
-                edge.setTarget(nodeTarget);
-
-                // Type
-                String edgeType = edgeE.getAttribute("type");
-                if (!edgeType.isEmpty()) {
-                    if (edgeType.equals("sim")) {
-                        edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
-                    } else if (edgeType.equals("dir")) {
-                        edge.setType(EdgeDraft.EdgeType.DIRECTED);
-                    } else if (edgeType.equals("dou")) {
-                        edge.setType(EdgeDraft.EdgeType.MUTUAL);
-                    } else {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgetype", edgeType), Issue.Level.SEVERE));
-                    }
-                }
-
-                //Get Attvalue child nodes, avoiding using descendants
-                Node child = edgeE.getFirstChild();
-                if (child != null) {
-                    do {
-                        if (child.getNodeName().equals("attvalues")) {
-                            Node childE = child.getFirstChild();
-
-                            if (childE != null) {
-                                do {
-                                    if (childE.getNodeName().equals("attvalue")) {
-                                        Element dataE = (Element) childE;
-                                        setEdgeData(dataE, edge, edgeId);
-                                    }
-                                } while ((childE = childE.getNextSibling()) != null);
-                            }
-
-                        }
-                    } while ((child = child.getNextSibling()) != null);
-                }
-
-                //Cardinal
-                String cardinalStr = edgeE.getAttribute("cardinal");
-                if (!cardinalStr.isEmpty()) {
-                    try {
-                        float weight = Float.parseFloat(cardinalStr);
-                        edge.setWeight(weight);
-                    } catch (NumberFormatException e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeweight", edgeId), Issue.Level.WARNING));
-                    }
-                }
-
-                container.addEdge(edge);
-                Progress.progress(progressTicket);
-            }
-        }
-
-        private void setNodeData(Element dataE, NodeDraft nodeDraft, String nodeId) {
-            //Key
-            String dataKey = dataE.getAttribute("id");
-            if (dataKey.isEmpty()) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datakey1", nodeDraft), Issue.Level.SEVERE));
-                return;
-            }
-            String dataValue = dataE.getAttribute("value");
-            if (!dataValue.isEmpty()) {
-
-                //Data attribute value
-                AttributeColumn column = container.getAttributeModel().getNodeTable().getColumn(dataKey);
-                if (column != null) {
-                    try {
-                        Object value = column.getType().parse(dataValue);
-                        nodeDraft.addAttributeValue(column, value);
-                    } catch (Exception e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", dataKey, nodeId, column.getTitle()), Issue.Level.SEVERE));
-                    }
-                }
-            }
-        }
-
-        private void setEdgeData(Element dataE, EdgeDraft edgeDraft, String edgeId) {
-            //Key
-            String dataKey = dataE.getAttribute("id");
-            if (dataKey.isEmpty()) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datakey", edgeDraft), Issue.Level.SEVERE));
-                return;
-            }
-            String dataValue = dataE.getAttribute("value");
-            if (!dataValue.isEmpty()) {
-
-                //Data attribute value
-                AttributeColumn column = container.getAttributeModel().getEdgeTable().getColumn(dataKey);
-                if (column != null) {
-                    try {
-                        Object value = column.getType().parse(dataValue);
-                        edgeDraft.addAttributeValue(column, value);
-                    } catch (Exception e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", dataKey, edgeId, column.getTitle()), Issue.Level.SEVERE));
-                    }
-                }
-            }
-        }
+        this.progress = progressTicket;
     }
 }

@@ -4,7 +4,7 @@
 		<creator>Mathieu Bastian</creator>
 		<description>A full GEXF 1.1 example with dynamic topology and attributes</description>
 	</meta>
-	<graph mode="dynamic" type="dynamic" defaultedgetype="undirected" start="2000-01-01" end="2010-12-31">
+	<graph mode="dynamic" type="dynamic" defaultedgetype="undirected" start="2000-01-01" end="2010-12-31" timeformat="date">
 		<attributes class="node" type="dynamic">
 			<attribute id="0" title="type" type="string"/>
 			<attribute id="1" title="Attribute 1" type="float"/>
@@ -119,7 +119,7 @@
 			<node id="j" label="TestPid3"/>
 		</nodes>
 		<attributes class="edge" type="dynamic">
-			<attribute id="0" title="weight2" type="float"/>
+			<attribute id="0" title="weight" type="float"/>
 		</attributes>
 		<edges>
 			<edge id="0" source="4c175b4b2c9016b90d1b4bc2" target="4c175b4b2c9016b9f61a4bc2" start="2002-01-01" end="2002-12-31" weight="1.0">
