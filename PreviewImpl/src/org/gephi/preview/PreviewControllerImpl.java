@@ -31,7 +31,13 @@ import org.gephi.preview.api.GraphSheet;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
+import org.gephi.preview.presets.DefaultCurved;
 import org.gephi.preview.presets.DefaultPreset;
+import org.gephi.preview.presets.DefaultStraight;
+import org.gephi.preview.presets.EdgesCustomColor;
+import org.gephi.preview.presets.HighlightMutualEdges;
+import org.gephi.preview.presets.SmallLabels;
+import org.gephi.preview.presets.TagCloud;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -199,6 +205,12 @@ public class PreviewControllerImpl implements PreviewController {
     public PreviewPreset[] getDefaultPresets() {
         List<PreviewPreset> presets = new ArrayList<PreviewPreset>();
         presets.add(new DefaultPreset());
+        presets.add(new DefaultCurved());
+        presets.add(new DefaultStraight());
+        presets.add(new SmallLabels());
+        presets.add(new HighlightMutualEdges());
+        presets.add(new TagCloud());
+        presets.add(new EdgesCustomColor());
         return presets.toArray(new PreviewPreset[0]);
     }
 
