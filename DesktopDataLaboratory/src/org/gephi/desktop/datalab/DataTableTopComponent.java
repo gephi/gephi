@@ -283,9 +283,11 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     private void refreshAll() {
-        refreshTable();
-        refreshColumnManipulators();
-        refreshGeneralActionsButtons();
+        if (nodesButton.isEnabled()) {//Some workspace is selected
+            refreshTable();
+            refreshColumnManipulators();
+            refreshGeneralActionsButtons();
+        }
     }
 
     private void clearAll() {
@@ -294,12 +296,26 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         clearGeneralActionsButtons();
     }
 
-    public void attributesChanged(AttributeEvent event) {
-        refreshOnce(event.is(EventType.SET_VALUE));
+    public void attributesChanged(final AttributeEvent event) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                if (isOpened()) {
+                    refreshOnce(event.is(EventType.SET_VALUE));
+                }
+            }
+        });
     }
 
     public void graphChanged(GraphEvent event) {
-        refreshOnce(false);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                if (isOpened()) {
+                    refreshOnce(false);
+                }
+            }
+        });
     }
 
     private void refreshOnce(boolean refreshTableOnly) {
@@ -1188,12 +1204,11 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        refreshAll();
     }
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
     }
 
     @Override
