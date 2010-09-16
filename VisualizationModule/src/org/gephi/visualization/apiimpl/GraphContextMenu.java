@@ -17,18 +17,26 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.apiimpl;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceInformation;
+import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.bridge.DHNSEventBridge;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -111,13 +119,68 @@ public class GraphContextMenu {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                NotifyDescriptor.Confirmation notifyDescriptor = new NotifyDescriptor.Confirmation("Nodes will be deleted, do you want to proceed?", "Delete nodes", NotifyDescriptor.YES_NO_OPTION);
+                NotifyDescriptor.Confirmation notifyDescriptor = new NotifyDescriptor.Confirmation(
+                        NbBundle.getMessage(GraphContextMenu.class, "GraphContextMenu.Delete.message"),
+                        NbBundle.getMessage(GraphContextMenu.class, "GraphContextMenu.Delete.message.title"), NotifyDescriptor.YES_NO_OPTION);
                 if (DialogDisplayer.getDefault().notify(notifyDescriptor).equals(NotifyDescriptor.YES_OPTION)) {
                     eventBridge.delete();
                 }
             }
         };
         deleteAction.setEnabled(eventBridge.canDelete());
+
+        //Move workspace
+        JMenu moveToWorkspaceMenu = new JMenu(NbBundle.getMessage(GraphContextMenu.class, "GraphContextMenu_MoveToWorkspace"));
+        boolean moveOrCopyEnabled = eventBridge.canMoveOrCopyWorkspace();
+        if (moveOrCopyEnabled) {
+            moveToWorkspaceMenu.add(new GraphContextMenuImpl("GraphContextMenu_MoveToWorkspace_NewWorkspace", "org/gephi/visualization/api/resources/new-wokspace.png") {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    eventBridge.moveToNewWorkspace();
+                }
+            });
+            moveToWorkspaceMenu.addSeparator();
+            ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+            for (final Workspace w : projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
+                JMenuItem item = new JMenuItem(w.getLookup().lookup(WorkspaceInformation.class).getName());
+                item.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        eventBridge.moveToWorkspace(w);
+                    }
+                });
+                moveToWorkspaceMenu.add(item);
+                item.setEnabled(w != projectController.getCurrentWorkspace());
+            }
+        }
+        moveToWorkspaceMenu.setEnabled(moveOrCopyEnabled);
+
+        //Copy workspace
+        JMenu copyToWorkspaceMenu = new JMenu(NbBundle.getMessage(GraphContextMenu.class, "GraphContextMenu_CopyToWorkspace"));
+        if (moveOrCopyEnabled) {
+            copyToWorkspaceMenu.add(new GraphContextMenuImpl("GraphContextMenu_CopyToWorkspace_NewWorkspace", "org/gephi/visualization/api/resources/new-wokspace.png") {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    eventBridge.copyToNewWorkspace();
+                }
+            });
+            copyToWorkspaceMenu.addSeparator();
+            ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+            for (final Workspace w : projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
+                JMenuItem item = new JMenuItem(w.getLookup().lookup(WorkspaceInformation.class).getName());
+                item.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        eventBridge.copyToWorkspace(w);
+                    }
+                });
+                copyToWorkspaceMenu.add(item);
+                item.setEnabled(w != projectController.getCurrentWorkspace());
+            }
+        }
+        copyToWorkspaceMenu.setEnabled(moveOrCopyEnabled);
 
         //Popup
         JPopupMenu popupMenu = new JPopupMenu();
@@ -128,6 +191,8 @@ public class GraphContextMenu {
         popupMenu.add(contractAction);
         popupMenu.addSeparator();
         popupMenu.add(deleteAction);
+        popupMenu.add(moveToWorkspaceMenu);
+        popupMenu.add(copyToWorkspaceMenu);
         popupMenu.addSeparator();
         popupMenu.add(settleAction);
         popupMenu.add(freeAction);
