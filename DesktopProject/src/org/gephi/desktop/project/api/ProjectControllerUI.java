@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.desktop.project.api;
 
 import java.io.File;
+import org.gephi.project.api.Project;
+import org.gephi.project.api.Workspace;
 
 /**
  *
@@ -42,9 +44,9 @@ public interface ProjectControllerUI {
 
     public void openFile();
 
-    public void newWorkspace();
+    public Workspace newWorkspace();
 
-    public void newProject();
+    public Project newProject();
 
     public void deleteWorkspace();
 
