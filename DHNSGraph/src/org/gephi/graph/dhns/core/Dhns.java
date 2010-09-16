@@ -392,6 +392,19 @@ public class Dhns implements GraphModel {
         // eventManager.fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
+    public void pushNodes(Graph graph, Node[] nodes) {
+        if (graph == null) {
+            throw new NullPointerException();
+        }
+        HierarchicalGraphImpl graphImpl = (HierarchicalGraphImpl) graph;
+        if (graphImpl.getGraphModel() == this) {
+            throw new IllegalArgumentException("The graph must be from a different Workspace");
+        }
+        Dhns source = (Dhns) graphImpl.getGraphModel();
+        source.getDuplicateManager().duplicateNodes(this, nodes);
+        graphVersion.incNodeAndEdgeVersion();
+    }
+
     public void clear() {
         graphVersion = new GraphVersion();
         graphStructure = new GraphStructure(this);

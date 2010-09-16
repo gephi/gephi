@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.api;
 
 import org.gephi.project.api.Workspace;
@@ -287,12 +287,23 @@ public interface GraphModel {
     /**
      * Copy the graph structure from <code>graph</code> to this model. The
      * given <code>graph</code>must come from a different <code>GraphModel</code>,
-     * i.e. a different workspace.
+     * e.g. a different workspace.
      * @param graph the graph that is to be copied in this model
      * @throws IllegalArgumentException if <code>graph</code> belongs to this
      * graph model
      */
     public void pushFrom(Graph graph);
+
+    /**
+     * Copy the nodes and edges betweeen these nodes from the <code>graph</code>
+     * to this model. The given <code>graph</code>must come from a different
+     * <code>GraphModel</code>, e.g. a different workspace.
+     * @param graph the graph that is to be copied in this model
+     * @param nodes the nodes to copy
+     * @throws IllegalArgumentException if <code>graph</code> belongs to this
+     * graph model
+     */
+    public void pushNodes(Graph graph, Node[] nodes);
 
     /**
      * Returns a complete copy of this model, including all views but not listeners.
