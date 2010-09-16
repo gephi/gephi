@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns;
 
 import java.util.concurrent.Executor;
@@ -87,12 +87,10 @@ public class DhnsGraphController implements GraphController, WorkspaceDuplicateP
     }
 
     public void duplicate(Workspace source, Workspace destination) {
-        Dhns sourceModel = source.getLookup().lookup(Dhns.class);
-        if (sourceModel != null) {
-            Dhns destModel = destination.getLookup().lookup(Dhns.class);
-            if (destModel == null) {
-                destModel = newDhns(destination);
-            }
+        GraphController controller = Lookup.getDefault().lookup(GraphController.class);
+        Dhns sourceModel = (Dhns) controller.getModel(source);
+        Dhns destModel = (Dhns) controller.getModel(destination);
+        if (sourceModel != null && destModel != null) {
             sourceModel.getDuplicateManager().duplicate(destModel);
         }
     }
