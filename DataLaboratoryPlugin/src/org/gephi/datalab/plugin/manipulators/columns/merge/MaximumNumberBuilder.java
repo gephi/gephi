@@ -25,7 +25,7 @@ import org.gephi.datalab.spi.columns.merge.AttributeColumnsMergeStrategyBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Builder for MaximumNumber AttributeColumnsMergeStrategyBuilder.
+ * Builder for MaximumNumber AttributeColumnsMergeStrategy.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service=AttributeColumnsMergeStrategyBuilder.class)

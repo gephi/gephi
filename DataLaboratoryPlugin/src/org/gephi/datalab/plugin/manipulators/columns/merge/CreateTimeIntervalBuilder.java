@@ -20,19 +20,18 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalab.plugin.manipulators.columns.merge;
 
-
 import org.gephi.datalab.spi.columns.merge.AttributeColumnsMergeStrategy;
 import org.gephi.datalab.spi.columns.merge.AttributeColumnsMergeStrategyBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Builder for SumNumbers AttributeColumnsMergeStrategy.
+ * Builder for CreateTimeInterval AttributeColumnsMergeStrategyBuilder.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service=AttributeColumnsMergeStrategyBuilder.class)
-public class SumNumbersBuilder implements AttributeColumnsMergeStrategyBuilder{
+public class CreateTimeIntervalBuilder implements AttributeColumnsMergeStrategyBuilder{
 
     public AttributeColumnsMergeStrategy getAttributeColumnsMergeStrategy() {
-        return new SumNumbers();
+        return new CreateTimeInterval();
     }
 }
