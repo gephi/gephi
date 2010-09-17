@@ -27,12 +27,6 @@ msgstr "Randomize colors"
 msgid "NodeColorTransformerPanel.action.allBlacks"
 msgstr "All Blacks"
 
-msgid "NodeSizeTransformerBuilder.ui.name"
-msgstr "Size"
-
-msgid "NodeSizeTransformerBuilder.action.randomize"
-msgstr "Randomize"
-
 msgid "EdgeColorTransformerBuilder.ui.name"
 msgstr "Color"
 
@@ -41,6 +35,3 @@ msgstr "Randomize"
 
 msgid "EdgeColorTransformerPanel.action.allBlacks"
 msgstr "All Blacks"
-
-msgid "NodeGroupTransformerBuilder.ui.name"
-msgstr "Group"

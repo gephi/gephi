@@ -21,5 +21,10 @@ msgstr "Language"
 msgid "ChangeLang.Confirm.message"
 msgstr "The language will be changed. Do you want to restart Gephi?"
 
+msgid "ChangeLang.Confirm.message.mac"
+msgstr ""
+"The language will be changed. Do you want to exit Gephi? Please restart "
+"Gephi after."
+
 msgid "ChangeLang.Confirm.title"
 msgstr "Language"

@@ -17,3 +17,51 @@ msgstr ""
 
 msgid "CTL_EditToolTopComponent"
 msgstr "Edit"
+
+msgid "EditNodes.multiple.elements"
+msgstr "Various nodes"
+
+msgid "EditNodes.properties.text"
+msgstr "{0} - Properties"
+
+msgid "EditNodes.attributes.text"
+msgstr "{0} - Attributes"
+
+msgid "EditNodes.properties.text.multiple"
+msgstr "Various nodes - Properties"
+
+msgid "EditNodes.attributes.text.multiple"
+msgstr "Various nodes - Attributes"
+
+msgid "EditNodes.size.text"
+msgstr "Size"
+
+msgid "EditNodes.position.text"
+msgstr "Position ({0})"
+
+msgid "EditNodes.color.text"
+msgstr "Color"
+
+msgid "EditEdges.multiple.elements"
+msgstr "Various edges"
+
+msgid "EditEdges.properties.text"
+msgstr "{0} - Properties"
+
+msgid "EditEdges.attributes.text"
+msgstr "{0} - Attributes"
+
+msgid "EditEdges.properties.text.multiple"
+msgstr "Various edges - Properties"
+
+msgid "EditEdges.attributes.text.multiple"
+msgstr "Various edges - Attributes"
+
+msgid "EditEdges.size.text"
+msgstr "Size"
+
+msgid "EditEdges.position.text"
+msgstr "Position ({0})"
+
+msgid "EditEdges.color.text"
+msgstr "Color"

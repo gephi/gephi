@@ -35,3 +35,21 @@ msgstr "Free"
 
 msgid "GraphContextMenu_Delete"
 msgstr "Delete"
+
+msgid "GraphContextMenu_MoveToWorkspace"
+msgstr "Move to..."
+
+msgid "GraphContextMenu_MoveToWorkspace_NewWorkspace"
+msgstr "New workspace"
+
+msgid "GraphContextMenu_CopyToWorkspace"
+msgstr "Copy to..."
+
+msgid "GraphContextMenu_CopyToWorkspace_NewWorkspace"
+msgstr "New workspace"
+
+msgid "GraphContextMenu.Delete.message"
+msgstr "Nodes will be deleted, do you want to proceed?"
+
+msgid "GraphContextMenu.Delete.message.title"
+msgstr "Delete nodes"

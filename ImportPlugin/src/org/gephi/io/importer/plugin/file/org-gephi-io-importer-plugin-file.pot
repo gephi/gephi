@@ -295,6 +295,9 @@ msgstr "GEXF version 1.0 (deprecated)"
 msgid "importerGEXF_log_version11"
 msgstr "GEXF version 1.1"
 
+msgid "importerGEXF_log_dynamic_weight"
+msgstr "Dynamic weight column found"
+
 msgid "importerDL_error_firstline"
 msgstr "First line of DL file must begin with 'DL'"
 

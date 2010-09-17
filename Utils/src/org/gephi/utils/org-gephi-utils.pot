@@ -20,3 +20,17 @@ msgstr "Utils classes for core"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Utils classes for core"
+
+msgid "TableCSVExporter.dialog.success"
+msgstr "Table exported with success"
+
+msgid "TableCSVExporter.dialog.error"
+msgstr ""
+"An error happened when writing the file. Make sure the file is not in use "
+"and you have permissions"
+
+msgid "TableCSVExporter.dialog.error.title"
+msgstr "Error"
+
+msgid "TableCSVExporter.filechooser.csvDescription"
+msgstr "CSV"

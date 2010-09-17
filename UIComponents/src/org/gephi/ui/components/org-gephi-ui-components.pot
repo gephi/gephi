@@ -41,3 +41,33 @@ msgstr "NaN"
 
 msgid "JRangeSliderPanel.upperBoundTextField.text"
 msgstr "NaN"
+
+msgid "SimpleHTMLReport.printButton.text"
+msgstr "Print"
+
+msgid "SimpleHTMLReport.copyButton.text"
+msgstr "Copy"
+
+msgid "SimpleHTMLReport.saveButton.text"
+msgstr "Save"
+
+msgid "SimpleHTMLReport.closeButton.text"
+msgstr "Close"
+
+msgid "SimpleHTMLReport.title"
+msgstr "HTML Report"
+
+msgid "SimpleHTMLReport.status.saveSuccess"
+msgstr "Report saved to {0} directory"
+
+msgid "JFreeChartDialog.zoomOutButton.text"
+msgstr "Zoom out"
+
+msgid "JFreeChartDialog.closeButton.text"
+msgstr "Close"
+
+msgid "JFreeChartDialog.resetButton.text"
+msgstr "Reset chart size"
+
+msgid "JFreeChartDialog.zoomInButton.text"
+msgstr "Zoom in"

@@ -16,4 +16,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "CTL_ImportSpigot"
-msgstr "Import Spigot"
+msgstr "Import Spigot..."
+
+msgid "ImportSpigot.wizard.title"
+msgstr "Import Spigots"
+
+msgid "ImportSpigot.error_no_matching_importer"
+msgstr "No importer can be found for this type of Spigot"
+
+msgid "SpigotVisualPanel1.title"
+msgstr "Select Spigot"
+
+msgid "SpigotVisualPanel1.labelCategory.text"
+msgstr "Category:"
+
+msgid "SpigotVisualPanel1.labelSpigot.text"
+msgstr "Spigot Type:"
+
+msgid "SpigotVisualPanel1.labelDescription.text"
+msgstr "Description:"

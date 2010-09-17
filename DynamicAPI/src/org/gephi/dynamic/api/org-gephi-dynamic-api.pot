@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "OpenIDE-Module-Long-Description"
-msgstr "API providing features for dynamics."
+msgstr "Provide features for dynamic graphs"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Dynamic API"
+msgstr "Provide features for dynamic graphs"

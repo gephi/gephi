@@ -111,6 +111,12 @@ msgstr "Size"
 msgid "UIExporterGraphMLPanel.labelNormalize.text"
 msgstr "Scale position and size between 0 and 1"
 
+msgid "UIExporterGraphMLPanel.hierarchyCheckbox.text"
+msgstr "Export hierarchy"
+
+msgid "UIExporterGraphMLPanel.labelNormalize1.text"
+msgstr "Complete node tree without meta edges"
+
 msgid "UIExporterCSVPanel.labelExport.text"
 msgstr "Export:"
 

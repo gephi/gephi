@@ -30,12 +30,6 @@ msgstr "PNG"
 msgid "ScreenshotMaker.configure.title"
 msgstr "Screenshot settings"
 
-msgid "ScreenshotSettingsPanel.transparentBackgroundCheckBox.text"
-msgstr "Transparent background"
-
-msgid "ScreenshotSettingsPanel.autoSaveCheckBox.text"
-msgstr "Autosave"
-
 msgid "ScreenshotSettingsPanel.labelWidth.text"
 msgstr "Width:"
 
@@ -44,6 +38,9 @@ msgstr "Height:"
 
 msgid "ScreenshotSettingsPanel.labelAntiAliasing.text"
 msgstr "Antialiasing:"
+
+msgid "ScreenshotSettingsPanel.autoSaveCheckBox.text"
+msgstr "Autosave"
 
 msgid "ScreenshotSettingsPanel.selectDirectoryButton.text"
 msgstr "Select directory..."
