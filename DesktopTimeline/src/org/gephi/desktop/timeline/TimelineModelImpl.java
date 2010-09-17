@@ -49,9 +49,8 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
     private boolean enabled = false;
     //Architecture
     private final TimelineControllerImpl controller;
-    private DynamicController dynamicController;   
+    private DynamicController dynamicController;
     private DynamicModel dynamicModel;
-    
 
     public TimelineModelImpl(TimelineControllerImpl controller) {
         this.controller = controller;
@@ -63,13 +62,14 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
         enabled = !Double.isInfinite(dynamicModel.getVisibleInterval().getLow()) && !Double.isInfinite(dynamicModel.getVisibleInterval().getHigh());
         dynamicController.addModelListener(this);
 
-        unit = dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE)?DateTime.class:null;
+        unit = dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE) ? DateTime.class : null;
         customMin = Double.NEGATIVE_INFINITY;
         customMax = Double.POSITIVE_INFINITY;
         modelMin = Double.NEGATIVE_INFINITY;
         modelMax = Double.POSITIVE_INFINITY;
         setModelMin(dynamicModel.getMin());
         setModelMax(dynamicModel.getMax());
+        refreshEnabled();
     }
 
     public void unsetup() {
@@ -91,12 +91,27 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
                     fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.VISIBLE_INTERVAL, this, event.getData()));
                     break;
                 case MIN_CHANGED:
-                    setModelMin((Double)event.getData());
+                    setModelMin((Double) event.getData());
                     break;
                 case MAX_CHANGED:
-                    setModelMax((Double)event.getData());
+                    setModelMax((Double) event.getData());
                     break;
             }
+        }
+    }
+
+    public void setEnabled(boolean enabled) {
+        if (this.enabled != enabled) {
+            this.enabled = enabled;
+            refreshEnabled();
+        }
+    }
+
+    private void refreshEnabled() {
+        if (this.enabled) {
+            dynamicController.setVisibleInterval(modelMin, modelMax);
+        } else {
+            dynamicController.setVisibleInterval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
         }
     }
 
@@ -181,10 +196,6 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
 
     public Class getUnit() {
         return unit;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public boolean isEnabled() {

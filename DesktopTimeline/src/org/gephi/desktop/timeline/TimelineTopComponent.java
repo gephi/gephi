@@ -28,6 +28,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import org.gephi.timeline.spi.TimelineDrawer;
 import org.gephi.timeline.api.TimelineAnimatorListener;
+import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.api.TimelineModelEvent;
 import org.gephi.timeline.api.TimelineModelListener;
 import org.openide.util.NbBundle;
@@ -36,7 +37,6 @@ import org.openide.windows.WindowManager;
 import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.util.Lookup;
-import org.openide.windows.Mode;
 
 /**
  * Top component which displays something.
@@ -53,6 +53,7 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
     private static final String PREFERRED_ID = "TimelineTopComponent";
     private JPanel drawerPanel;
     private TimelineAnimatorImpl animator;
+    private TimelineModel model;
     //MinMax
     private double min;
     private double max;
@@ -79,16 +80,21 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
             public void actionPerformed(ActionEvent e) {
                 TimelineTopComponent.this.setEnabled(enableButton.isSelected());
+                if (model != null) {
+                    model.setEnabled(enableButton.isSelected());
+                }
             }
         });
     }
 
     public void timelineModelChanged(TimelineModelEvent event) {
-        System.out.println("timeline model changed " + event.getData());
         setEnabled(event.getSource().isEnabled());
         TimelineDrawer drawer = (TimelineDrawer) drawerPanel;
         if (drawer.getModel() == null || drawer.getModel() != event.getSource()) {
             drawer.setModel(event.getSource());
+        }
+        if (model != event.getSource()) {
+            model = event.getSource();
         }
         switch (event.getEventType()) {
             case MIN_CHANGED:
@@ -180,7 +186,6 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
     private void enableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_enableButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton enableButton;
     private javax.swing.JPanel timelinePanel;
@@ -219,7 +224,7 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
     @Override
     public int getPersistenceType() {
-        return TopComponent.PERSISTENCE_NEVER;
+        return TopComponent.PERSISTENCE_ALWAYS;
     }
 
     @Override
