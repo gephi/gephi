@@ -28,7 +28,7 @@ public final class DynamicModelEvent {
 
     public enum EventType {
 
-        VISIBLE_INTERVAL, IS_DYNAMIC, MIN_CHANGED, MAX_CHANGED
+        VISIBLE_INTERVAL, MIN_CHANGED, MAX_CHANGED
     };
     private final EventType type;
     private final DynamicModel source;

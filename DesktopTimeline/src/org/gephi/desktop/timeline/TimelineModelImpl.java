@@ -70,9 +70,6 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
         System.out.println("Dynamic model changed"+event.getEventType());
         if (event.getSource() == dynamicModel) {
             switch (event.getEventType()) {
-                case IS_DYNAMIC:
-                    Boolean isDynamic = (Boolean) event.getData();
-                    break;
                 case VISIBLE_INTERVAL:
                     System.out.println("get back visible interval " + event.getData());
                     fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.VISIBLE_INTERVAL, this, event.getData()));

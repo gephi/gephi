@@ -1,12 +1,29 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2008-2010 Gephi
+ * Authors : Cezary Bartosiak
+ * Website : http://www.gephi.org
+ *
+ * This file is part of Gephi.
+ *
+ * Gephi is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Gephi is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.dynamic;
 
 import java.util.List;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.IntervalTree;
+import org.gephi.dynamic.api.DynamicModelEvent;
 
 /**
  *
@@ -15,34 +32,51 @@ import org.gephi.data.attributes.type.IntervalTree;
 public class DynamicIndex {
 
     protected IntervalTree<Integer> intervalTree;
+    protected final DynamicModelImpl model;
 
-    /**
-     * Constructs a new {@code DynamicType} instance with no intervals.
-     */
-    public DynamicIndex() {
+    public DynamicIndex(DynamicModelImpl model) {
+        this.model = model;
         intervalTree = new IntervalTree<Integer>();
     }
 
-    public void add(Interval interval) {
-        List<Interval<Integer>> intervals = intervalTree.search(interval);
-        if (intervals.size() == 1 && intervals.get(0).equals(interval)) {
-            Interval<Integer> existingInterval = intervals.get(0);
+    public synchronized void add(Interval interval) {
+        Interval<Integer> existingInterval = searchInterval(interval);
+        if (existingInterval != null) {
             Integer counter = new Integer(1 + existingInterval.getValue());
             intervalTree.delete(existingInterval);
             existingInterval = new Interval<Integer>(existingInterval.getLow(), existingInterval.getHigh(), existingInterval.isLowExcluded(), existingInterval.isHighExcluded(), counter);
             intervalTree.insert(existingInterval);
         } else {
+            double min = intervalTree.getLow();
+            double max = intervalTree.getHigh();
+
             Interval<Integer> intInterval = new Interval<Integer>(interval.getLow(), interval.getHigh(), interval.isLowExcluded(), interval.isHighExcluded(), new Integer(1));
             intervalTree.insert(intInterval);
+
+            if (intInterval.getLow() < min) {
+                fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MIN_CHANGED, model, intInterval.getLow()));
+            }
+            if (intInterval.getHigh() > max) {
+                fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MAX_CHANGED, model, intInterval.getHigh()));
+            }
         }
     }
 
-    public void remove(Interval interval) {
-        List<Interval<Integer>> intervals = intervalTree.search(interval);
-        if (intervals.size() == 1 && intervals.get(0).equals(interval)) {
-            Interval<Integer> existingInterval = intervals.get(0);
+    public synchronized void remove(Interval interval) {
+        Interval<Integer> existingInterval = searchInterval(interval);
+        if (existingInterval != null) {
             if (existingInterval.getValue().intValue() == 1) {
+                double min = intervalTree.getLow();
+                double max = intervalTree.getHigh();
+
                 intervalTree.delete(existingInterval);
+
+                if (existingInterval.getLow() == min) {
+                    fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MIN_CHANGED, model, intervalTree.getLow()));
+                }
+                if (existingInterval.getHigh() == max) {
+                    fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MAX_CHANGED, model, intervalTree.getHigh()));
+                }
             } else {
                 Integer counter = new Integer(existingInterval.getValue() - 1);
                 intervalTree.delete(existingInterval);
@@ -50,6 +84,32 @@ public class DynamicIndex {
                 intervalTree.insert(existingInterval);
             }
         }
+    }
+
+    private Interval<Integer> searchInterval(Interval interval) {
+        List<Interval<Integer>> list = intervalTree.search(interval);
+        if (list.size() == 1 && list.get(0).equals(interval)) {
+            return list.get(0);
+        } else if (list.size() > 1) {
+            for (Interval i : list) {
+                if (i.equals(interval)) {
+                    return i;
+                }
+            }
+        }
+        return null;
+    }
+
+    public synchronized void clear() {
+        intervalTree = new IntervalTree<Integer>();
+    }
+
+    public synchronized double getMin() {
+        return intervalTree.minimumNotInfinite();
+    }
+
+    public synchronized double getMax() {
+        return intervalTree.maximumNotInfinite();
     }
 
     public List<Interval<Integer>> getIntervals() {
@@ -126,5 +186,11 @@ public class DynamicIndex {
     @Override
     public String toString() {
         return intervalTree.toString();
+    }
+
+    private void fireEvent(DynamicModelEvent event) {
+        if (model != null) {
+            model.controller.fireModelEvent(event);
+        }
     }
 }
