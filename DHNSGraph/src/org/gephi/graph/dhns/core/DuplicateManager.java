@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
 import java.util.HashMap;
@@ -110,24 +110,31 @@ public class DuplicateManager {
     public void duplicateNodes(Dhns destination, Node[] nodes) {
         Map<AbstractNode, AbstractNode> nodeMap = new HashMap<AbstractNode, AbstractNode>();
 
-         GraphFactoryImpl factory = destination.factory();
-         Graph destGraph = destination.getGraph();
+        GraphFactoryImpl factory = destination.factory();
+        Graph destGraph = null;
+        if (dhns.isDirected()) {
+            destGraph = destination.getDirectedGraph();
+        } else if (dhns.isUndirected()) {
+            destGraph = destination.getUndirectedGraph();
+        } else {
+            destGraph = destination.getMixedGraph();
+        }
         dhns.getReadLock().lock();
         destination.getWriteLock().lock();
 
         //Nodes
-        for(Node sourceNode : nodes) {
-            AbstractNode absSourceNode = (AbstractNode)sourceNode;
+        for (Node sourceNode : nodes) {
+            AbstractNode absSourceNode = (AbstractNode) sourceNode;
             AbstractNode nodeCopy = factory.newNode(sourceNode.getNodeData().getId());
             destGraph.addNode(nodeCopy);
-            duplicateNodeData((NodeDataImpl)sourceNode.getNodeData(), (NodeDataImpl)nodeCopy.getNodeData());
+            duplicateNodeData((NodeDataImpl) sourceNode.getNodeData(), (NodeDataImpl) nodeCopy.getNodeData());
             nodeMap.put(absSourceNode, nodeCopy);
         }
-        
+
         //Edges
         ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
-        for(Node sourceNode : nodes) {
-            AbstractNode absSourceNode = (AbstractNode)sourceNode;
+        for (Node sourceNode : nodes) {
+            AbstractNode absSourceNode = (AbstractNode) sourceNode;
             AbstractNode nodeCopy = nodeMap.get(absSourceNode);
             int sourceView = absSourceNode.getViewId();
             if (!absSourceNode.getEdgesOutTree().isEmpty()) {
@@ -135,7 +142,19 @@ public class DuplicateManager {
                     AbstractEdge edge = edgeIterator.next();
                     AbstractNode originalTargetNode = edge.getTarget(sourceView);
                     AbstractNode copyTargetNode = nodeMap.get(originalTargetNode);
-                    if(copyTargetNode!=null) {
+                    if (copyTargetNode != null) {
+                        AbstractEdge edgeCopy = factory.newEdge(edge.getEdgeData().getId(), nodeCopy, copyTargetNode, edge.getWeight(), edge.isDirected());
+                        destGraph.addEdge(edgeCopy);
+                        duplicateEdgeData(edge.getEdgeData(), edgeCopy.getEdgeData());
+                    }
+                }
+            }
+            if (!absSourceNode.getMetaEdgesOutTree().isEmpty()) {
+                for (edgeIterator.setNode(absSourceNode.getMetaEdgesOutTree()); edgeIterator.hasNext();) {
+                    AbstractEdge edge = edgeIterator.next();
+                    AbstractNode originalTargetNode = edge.getTarget(sourceView);
+                    AbstractNode copyTargetNode = nodeMap.get(originalTargetNode);
+                    if (copyTargetNode != null) {
                         AbstractEdge edgeCopy = factory.newEdge(edge.getEdgeData().getId(), nodeCopy, copyTargetNode, edge.getWeight(), edge.isDirected());
                         destGraph.addEdge(edgeCopy);
                         duplicateEdgeData(edge.getEdgeData(), edgeCopy.getEdgeData());
