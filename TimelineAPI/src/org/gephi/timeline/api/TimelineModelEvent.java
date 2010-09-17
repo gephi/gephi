@@ -28,7 +28,7 @@ public final class TimelineModelEvent {
 
     public enum EventType {
 
-        INIT, VISIBLE_INTERVAL, MIN_CHANGED, MAX_CHANGED
+        VISIBLE_INTERVAL, MIN_CHANGED, MAX_CHANGED
     };
     private final EventType type;
     private final TimelineModel source;

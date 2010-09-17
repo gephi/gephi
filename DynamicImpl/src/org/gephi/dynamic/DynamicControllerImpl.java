@@ -60,7 +60,6 @@ public final class DynamicControllerImpl implements DynamicController {
         projectController.addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
-                workspace.add(new DynamicModelImpl(DynamicControllerImpl.this, workspace));
             }
 
             @Override

@@ -24,10 +24,10 @@ import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.dynamic.api.DynamicModelEvent;
 import org.gephi.dynamic.api.DynamicModelListener;
-import org.gephi.filters.api.Range;
 
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.api.TimelineModelEvent;
+import org.joda.time.DateTime;
 import org.openide.util.Lookup;
 
 /**
@@ -41,24 +41,35 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
     private double toFloat = 1.0f;
     private double fromValue = 0.0f;
     private double toValue = 0.0f;
-    
+    private double customMin = Double.NEGATIVE_INFINITY;
+    private double customMax = Double.POSITIVE_INFINITY;
+    private double modelMin = Double.NEGATIVE_INFINITY;
+    private double modelMax = Double.POSITIVE_INFINITY;
+    private Class unit = null;
+    private boolean enabled = false;
     //Architecture
     private final TimelineControllerImpl controller;
-    private final DynamicController dynamicController;
-    private double minValue = Double.POSITIVE_INFINITY;
-    private double maxValue = Double.NEGATIVE_INFINITY;
+    private DynamicController dynamicController;   
     private DynamicModel dynamicModel;
-    private Class unit = null;
+    
 
     public TimelineModelImpl(TimelineControllerImpl controller) {
         this.controller = controller;
-        dynamicController = Lookup.getDefault().lookup(DynamicController.class);
     }
 
     public void setup(DynamicModel dynamicModel) {
+        dynamicController = Lookup.getDefault().lookup(DynamicController.class);
         this.dynamicModel = dynamicModel;
+        enabled = !Double.isInfinite(dynamicModel.getVisibleInterval().getLow()) && !Double.isInfinite(dynamicModel.getVisibleInterval().getHigh());
         dynamicController.addModelListener(this);
-        fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.INIT, this, this));
+
+        unit = dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE)?DateTime.class:null;
+        customMin = Double.NEGATIVE_INFINITY;
+        customMax = Double.POSITIVE_INFINITY;
+        modelMin = Double.NEGATIVE_INFINITY;
+        modelMax = Double.POSITIVE_INFINITY;
+        setModelMin(dynamicModel.getMin());
+        setModelMax(dynamicModel.getMax());
     }
 
     public void unsetup() {
@@ -66,8 +77,13 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
         dynamicController.removeModelListener(this);
     }
 
+    public void disable() {
+        enabled = false;
+        setModelMin(Double.NEGATIVE_INFINITY);
+        setModelMax(Double.POSITIVE_INFINITY);
+    }
+
     public void dynamicModelChanged(DynamicModelEvent event) {
-        System.out.println("Dynamic model changed"+event.getEventType());
         if (event.getSource() == dynamicModel) {
             switch (event.getEventType()) {
                 case VISIBLE_INTERVAL:
@@ -75,156 +91,84 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
                     fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.VISIBLE_INTERVAL, this, event.getData()));
                     break;
                 case MIN_CHANGED:
-                    setMinValue((Double)event.getData());
-                    fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MIN_CHANGED, this, event.getData()));
+                    setModelMin((Double)event.getData());
                     break;
                 case MAX_CHANGED:
-                    setMaxValue((Double)event.getData());
-                    fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MAX_CHANGED, this, event.getData()));
+                    setModelMax((Double)event.getData());
                     break;
             }
         }
-    }
-
-    private void setRange(Range range) {
-        if (dynamicModel != null) {
-            dynamicController.setVisibleInterval(range.getLowerDouble(), range.getUpperDouble());
-        }
-    }
-
-
-
-    // Not used for the moment (will be used to generate charts)
-    public String getFirstAttributeLabel() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    // Not used for the moment (will be used to generate charts)
-    public String getLastAttributeLabel() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    // Not used for the moment (will be used to generate charts)
-    public String getAttributeLabel(int i) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    // Not used for the moment (will be used to generate charts)
-    public String getAttributeLabel(int from, int to) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    // Not used for the moment (will be used to generate charts)
-    public double getAttributeValue(int i) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    // Not used for the moment (will be used to generate charts)
-    public double getAttributeValue(int from, int to) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public synchronized double getTotalSize() {
         return getMaxValue() - getMinValue();
     }
 
-    public synchronized double getRangeSizeValue() {
-        return getToValue() - getFromValue();
-    }
-
-    public synchronized double getRangeSizeFloat() {
-        return getToFloat() - getFromFloat();
-    }
-    // set the range using real values
-
     public synchronized double getMinValue() {
-        return minValue;
+        if (!Double.isInfinite(customMin)) {
+            return customMin;
+        }
+        return modelMin;
     }
-    // set the range using real values
 
     public synchronized double getMaxValue() {
-        return maxValue;
-    }
-
-    // set the range using real values
-    public synchronized void setMinValue(double min) {
-        //if (min >= maxValue) return;
-        this.minValue = min;
-        setFromValue(getMinValue() + getFromFloat() * getTotalSize());
-    }
-    // set the range using real values
-
-    public synchronized void setMaxValue(double max) {
-        //if (max <= minValue) return;
-        this.maxValue = max;
-        setFromValue(getMaxValue() + getToFloat() * getTotalSize());
-    }
-
-    public synchronized void setMinMax(double min, double max) {
-        if (min >= max) {
-            return;
+        if (!Double.isInfinite(customMax)) {
+            return customMax;
         }
-        this.minValue = min;
-        setFromValue(getMinValue() + getFromFloat() * getTotalSize());
-        this.maxValue = max;
-        setFromValue(getMaxValue() + getToFloat() * getTotalSize());
+        return modelMax;
     }
 
-    // set the range using real values
-    public synchronized void setRangeFromRealValues(double from, double to) {
-        if (from >= to) {
-            return;
+    public double getFromFloat() {
+        return fromFloat;
+    }
+
+    public double getToFloat() {
+        return toFloat;
+    }
+
+    public void setModelMin(double modelMin) {
+        if (modelMin != this.modelMin) {
+            this.modelMin = modelMin;
+            fromValue = getMinValue() + fromFloat * getTotalSize();
+            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MIN_CHANGED, this, modelMin));
         }
-        fromValue = from;
-        toValue = to;
-        setRange(new Range(from, to));
+    }
+
+    public void setModelMax(double modelMax) {
+        if (modelMax != this.modelMax) {
+            this.modelMax = modelMax;
+            fromValue = getMaxValue() + toFloat * getTotalSize();
+            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MAX_CHANGED, this, modelMax));
+        }
+    }
+
+    public synchronized void setCustomMin(double min) {
+        if (min != this.customMin && min != modelMin) {
+            this.customMin = min;
+            fromValue = getMinValue() + fromFloat * getTotalSize();
+            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MIN_CHANGED, this, min));
+        }
+    }
+
+    public synchronized void setCustomMax(double max) {
+        if (max != this.customMax && max != modelMax) {
+            this.customMax = max;
+            fromValue = getMaxValue() + toFloat * getTotalSize();
+            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MAX_CHANGED, this, max));
+        }
     }
 
     public synchronized void setRangeFromFloat(double from, double to) {
-        if (from >= to) {
+        if (from >= to || !enabled) {
             return;
         }
         fromFloat = from;
         fromValue = getMinValue() + from * getTotalSize();
         toFloat = to;
         toValue = getMinValue() + to * getTotalSize();
-        setRange(new Range(getFromValue(), getToValue()));
-    }
-
-    public synchronized void setFromFloat(double from) {
-        fromFloat = from;
-        setFromValue(getMinValue() + getFromFloat() * getTotalSize());
-        setRange(new Range(getFromValue(), getToValue()));
-    }
-
-    public synchronized void setToFloat(double to) {
-        toFloat = to;
-        setToValue(getMinValue() + getFromFloat() * getTotalSize());
-        setRange(new Range(getFromValue(), getToValue()));
-    }
-
-    public synchronized double getFromFloat() {
-        return fromFloat;
-    }
-
-    public synchronized double getToFloat() {
-        return toFloat;
-    }
-
-    public synchronized void setFromValue(double from) {
-        fromValue = from;
-    }
-
-    public synchronized void setToValue(double to) {
-        toValue = to;
-    }
-
-    public synchronized double getFromValue() {
-        return fromValue;
-    }
-
-    public synchronized double getToValue() {
-        return toValue;
+        if (dynamicModel != null) {
+            dynamicController.setVisibleInterval(fromValue, toValue);
+        }
     }
 
     public synchronized double getValueFromFloat(double position) {
@@ -237,6 +181,14 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
 
     public Class getUnit() {
         return unit;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
     private void fireTimelineModelEvent(TimelineModelEvent event) {
