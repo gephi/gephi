@@ -1,0 +1,193 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "ClearEdgesUI.deleteDirectedCheckbox.text"
+msgstr "Delete directed edges"
+
+msgid "ClearEdgesUI.descriptionLabel.text"
+msgstr "Choose the edge types to delete:"
+
+msgid "ClearEdgesUI.deleteUndirectedChekbox.text"
+msgstr "Delete undirected edges"
+
+msgid "AddEdgeToGraphUI.descriptionLabel.text"
+msgstr "Select type for the new edge and source and target node:"
+
+msgid "AddEdgeToGraphUI.directedRadioButton.text"
+msgstr "Directed"
+
+msgid "AddEdgeToGraphUI.undirectedRadioButton.text"
+msgstr "Undirected"
+
+msgid "AddEdgeToGraphUI.sourceNodeLabel.text"
+msgstr "Source node:"
+
+msgid "AddEdgeToGraphUI.targetNodeLabel.text"
+msgstr "Target node:"
+
+msgid "SearchReplaceUI.searchLabel.text"
+msgstr "Search:"
+
+msgid "SearchReplaceUI.replaceLabel.text"
+msgstr "Replace with:"
+
+msgid "SearchReplaceUI.matchWholeValueCheckBox.text"
+msgstr "Only match whole value"
+
+msgid "SearchReplaceUI.caseSensitiveCheckBox.text"
+msgstr "Case sensitive"
+
+msgid "SearchReplaceUI.normalSearchModeRadioButton.text"
+msgstr "Normal search"
+
+msgid "SearchReplaceUI.regexSearchModeRadioButton.text"
+msgstr "Regular expression search"
+
+msgid "SearchReplaceUI.findNextButton.text"
+msgstr "Find next"
+
+msgid "SearchReplaceUI.replaceButton.text"
+msgstr "Replace"
+
+msgid "SearchReplaceUI.replaceAllButton.text"
+msgstr "Replace all"
+
+msgid "SearchReplaceUI.descriptionLabel.text.nodes"
+msgstr "Searching on nodes table"
+
+msgid "SearchReplaceUI.descriptionLabel.text.edges"
+msgstr "Searching on edges table"
+
+msgid "SearchReplaceUI.resultLabel.text"
+msgstr "Search match result:"
+
+msgid "SearchReplaceUI.resultText.contentType"
+msgstr "text/html"
+
+msgid "SearchReplaceUI.not.found"
+msgstr "Could not find \"{0}\""
+
+msgid "SearchReplaceUI.regexReplacementError"
+msgstr "The replacement string is not correct for the regular expression"
+
+msgid "SearchReplaceUI.dialog.title.error"
+msgstr "Error"
+
+msgid "SearchReplaceUI.replacements.count.message"
+msgstr "{0} ocurrences were replaced"
+
+msgid "SearchReplaceUI.column"
+msgstr "Column: ''{0}''"
+
+msgid "ImportCSVUIWizardAction.name"
+msgstr "Import CSV file to a table"
+
+msgid "ImportCSVUIVisualPanel1.name"
+msgstr "General options"
+
+msgid "ImportCSVUIVisualPanel1.comma"
+msgstr "Comma"
+
+msgid "ImportCSVUIVisualPanel1.semicolon"
+msgstr "Semicolon"
+
+msgid "ImportCSVUIVisualPanel1.space"
+msgstr "Space"
+
+msgid "ImportCSVUIVisualPanel1.tab"
+msgstr "Tab"
+
+msgid "ImportCSVUIVisualPanel1.nodes-table"
+msgstr "Nodes table"
+
+msgid "ImportCSVUIVisualPanel1.edges-table"
+msgstr "Edges table"
+
+msgid "ImportCSVUIVisualPanel1.filechooser.csvDescription"
+msgstr "CSV"
+
+msgid "ImportCSVUIVisualPanel1.tableLabel.text"
+msgstr "Select table to use:"
+
+msgid "ImportCSVUIVisualPanel1.fileButton.text"
+msgstr "..."
+
+msgid "ImportCSVUIVisualPanel1.separatorLabel.text"
+msgstr "Separator:"
+
+msgid "ImportCSVUIVisualPanel1.descriptionLabel.text"
+msgstr "Choose a CSV file to import:"
+
+msgid "ImportCSVUIVisualPanel1.previewLabel.text"
+msgstr "Preview:"
+
+msgid "ImportCSVUIVisualPanel1.charsetLabel.text"
+msgstr "Charset:"
+
+msgid "ImportCSVUIVisualPanel1.validation.invalid-file"
+msgstr "Invalid CSV file"
+
+msgid "ImportCSVUIVisualPanel1.validation.no-columns"
+msgstr "The file does not have any column"
+
+msgid "ImportCSVUIVisualPanel1.validation.repeated-columns"
+msgstr "The file can't have repeated column names"
+
+msgid "ImportCSVUIVisualPanel1.validation.error"
+msgstr "Error"
+
+msgid "ImportCSVUIVisualPanel1.validation.file-permissions-error"
+msgstr ""
+"An error happened when reading the file. Make sure the file is not in use "
+"and you have permissions"
+
+msgid "ImportCSVUIVisualPanel1.validation.edges.no-source-target-columns"
+msgstr ""
+"Importing to edges table needs a 'Source' and 'Target' column with the nodes "
+"ids"
+
+msgid "ImportCSVUIVisualPanel2.name"
+msgstr "Import settings"
+
+msgid "ImportCSVUIVisualPanel2.columnsLabel.text"
+msgstr "Choose columns to import:"
+
+msgid "ImportCSVUIVisualPanel2.nodes.description"
+msgstr ""
+"<html>Not existing columns will be created with the specified type.<br>If no "
+"id is given for a node, it will be assigned one.<br>Unless 'Assign a new id "
+"to a node when it already exists in table' is enabled, already existing "
+"nodes data will be updated with the CSV data</html>"
+
+msgid "ImportCSVUIVisualPanel2.nodes.assign-ids-checkbox"
+msgstr "Assign a new id to a node when it already exists in table"
+
+msgid "ImportCSVUIVisualPanel2.edges.description"
+msgstr ""
+"<html>Not existing columns will be created with the specified type.<br>If no "
+"id is given for a edge or an edge with that id already exists, it will be "
+"assigned one.<br>Edges need 'Source' and 'Target' columns with the id of the "
+"source and target nodes. If any is not provided for a row, it will be "
+"ignored.<br>If no 'Type' column is provided, all edges will be directed."
+"<br>If an edge already exists or cannot be created, it will be ignored, and "
+"no data will be updated.</html>"
+
+msgid "ImportCSVUIVisualPanel2.edges.create-new-nodes-checkbox"
+msgstr "Create new node when source or target node id does not exist"
+
+msgid "SearchReplaceUI.regexReplaceCheckBox.text"
+msgstr "Regular expression replacement"

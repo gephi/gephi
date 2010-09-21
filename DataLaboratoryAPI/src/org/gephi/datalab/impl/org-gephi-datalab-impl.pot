@@ -15,11 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "CTL_TimelineAction"
-msgstr "Timeline"
-
-msgid "CTL_TimelineTopComponent"
-msgstr "Timeline"
+msgid "Group.nodeCount.label"
+msgstr "Group ({0} nodes)"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Timeline UI"
+msgstr "Implementation of Data Laboratory API and some manipulators"

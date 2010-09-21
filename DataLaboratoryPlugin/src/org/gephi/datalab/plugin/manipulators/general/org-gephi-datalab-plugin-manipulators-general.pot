@@ -15,11 +15,34 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "CTL_TimelineAction"
-msgstr "Timeline"
+msgid "AddNodeToGraph.name"
+msgstr "Add node"
 
-msgid "CTL_TimelineTopComponent"
-msgstr "Timeline"
+msgid "AddNodeToGraph.dialog.text"
+msgstr "Choose a label for the new node"
 
-msgid "OpenIDE-Module-Short-Description"
-msgstr "Timeline UI"
+msgid "AddEdgeToGraph.name"
+msgstr "Add edge"
+
+msgid "ClearGraph.name"
+msgstr "Clear graph"
+
+msgid "ClearGraph.dialog.text"
+msgstr ""
+"<html><b>Are you sure you want to clear the graph?<br>All nodes and edges "
+"will be deleted!</b></html>"
+
+msgid "ClearEdges.name"
+msgstr "Clear edges"
+
+msgid "SearchReplace.name"
+msgstr "Search/Replace"
+
+msgid "SearchReplace.window.close"
+msgstr "Close"
+
+msgid "ImportCSV.name"
+msgstr "Import CSV"
+
+msgid "ExportTable.name"
+msgstr "Export table"

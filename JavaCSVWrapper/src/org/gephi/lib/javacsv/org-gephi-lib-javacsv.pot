@@ -15,11 +15,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "CTL_TimelineAction"
-msgstr "Timeline"
-
-msgid "CTL_TimelineTopComponent"
-msgstr "Timeline"
+msgid "OpenIDE-Module-Long-Description"
+msgstr ""
+"Java CSV is a small fast open source java library for reading and writing "
+"CSV and plain delimited text files. All kinds of CSV files can be handled, "
+"text qualified, Excel formatted, etc."
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Timeline UI"
+msgstr ""
+"Small fast library for reading and writing CSV and plain delimited text files"

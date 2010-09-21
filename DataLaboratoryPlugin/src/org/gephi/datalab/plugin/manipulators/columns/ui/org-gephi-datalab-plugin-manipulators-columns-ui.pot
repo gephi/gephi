@@ -1,0 +1,73 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "CopyDataToOtherColumnUI.sourceColumnLabel.text"
+msgstr "Copying data from source column ''{0}''"
+
+msgid "CopyDataToOtherColumnUI.descriptionLabel.text"
+msgstr "Choose target column to copy the data:"
+
+msgid "DuplicateColumnUI.titleLabel.text"
+msgstr "Title of the column:"
+
+msgid "DuplicateColumnUI.typeLabel.text"
+msgstr "Type of the column:"
+
+msgid "DuplicateColumnUI.new.title"
+msgstr "{0}_copy"
+
+msgid "DuplicateColumnUI.descriptionLabel.text"
+msgstr "Duplicate the column ''{0}''."
+
+msgid "GeneralCreateColumnFromRegexUI.descriptionLabel.text.boolean"
+msgstr "Creating a new boolean matches column from column ''{0}''"
+
+msgid "GeneralCreateColumnFromRegexUI.descriptionLabel.text.matching_groups"
+msgstr "Creating a new list of matching groups column from column ''{0}''"
+
+msgid "GeneralCreateColumnFromRegexUI.regexLabel.text"
+msgstr "Regular expression:"
+
+msgid "GeneralCreateColumnFromRegexUI.titleLabel.text"
+msgstr "Title of the column:"
+
+msgid "ColumnValuesFrequencyUI.configurePieChartButton.text"
+msgstr "Configure pie chart"
+
+msgid "ColumnValuesFrequencyUI.showReportButton.text"
+msgstr "Show report"
+
+msgid "NumberColumnStatisticsReportUI.showReportButton.text"
+msgstr "Show report"
+
+msgid "NumberColumnStatisticsReportUI.configureBoxPlotButton.text"
+msgstr "Configure box plot"
+
+msgid "NumberColumnStatisticsReportUI.configureScatterPlotButton.text"
+msgstr "Configure scatter plot"
+
+msgid "NumberColumnStatisticsReportUI.configureHistogramButton.text"
+msgstr "Configure Histogram"
+
+msgid "NumberColumnStatisticsReportUI.useLinesCheckBox.text"
+msgstr "Show lines"
+
+msgid "NumberColumnStatisticsReportUI.useLinearRegression.text"
+msgstr "Show linear regression"
+
+msgid "NumberColumnStatisticsReportUI.divisionsLabel.text"
+msgstr "Divisions:"

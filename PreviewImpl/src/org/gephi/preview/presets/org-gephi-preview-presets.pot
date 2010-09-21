@@ -15,11 +15,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "CTL_TimelineAction"
-msgstr "Timeline"
+msgid "Default.name"
+msgstr "Default"
 
-msgid "CTL_TimelineTopComponent"
-msgstr "Timeline"
+msgid "SmallLabels.name"
+msgstr "Small Labels"
 
-msgid "OpenIDE-Module-Short-Description"
-msgstr "Timeline UI"
+msgid "HighlightMutualEdges.name"
+msgstr "Highlight Mutual Edges"
+
+msgid "TagCloud.name"
+msgstr "Tag Cloud"
+
+msgid "DefaultStraight.name"
+msgstr "Default Straight"
+
+msgid "DefaultCurved.name"
+msgstr "Default Curved"
+
+msgid "EdgesCustomColor.name"
+msgstr "Edges Custom Color"

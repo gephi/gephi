@@ -15,11 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "CTL_TimelineAction"
-msgstr "Timeline"
+msgid "DeleteEdgesWithNodesUI.description"
+msgstr "Choose the nodes to delete of the selected edge(s)."
 
-msgid "CTL_TimelineTopComponent"
-msgstr "Timeline"
+msgid "DeleteEdgesWithNodesUI.deleteSource.text"
+msgstr "Delete source node"
 
-msgid "OpenIDE-Module-Short-Description"
-msgstr "Timeline UI"
+msgid "DeleteEdgesWithNodesUI.deleteTarget.text"
+msgstr "Delete target node"

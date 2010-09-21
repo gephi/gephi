@@ -15,11 +15,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "CTL_TimelineAction"
-msgstr "Timeline"
-
-msgid "CTL_TimelineTopComponent"
-msgstr "Timeline"
+msgid "OpenIDE-Module-Long-Description"
+msgstr ""
+"The library provides a Swing implementation of the Office 2007 ribbon "
+"container and command buttons."
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Timeline UI"
+msgstr ""
+"The library provides a Swing implementation of the Office 2007 ribbon "
+"container and command buttons"

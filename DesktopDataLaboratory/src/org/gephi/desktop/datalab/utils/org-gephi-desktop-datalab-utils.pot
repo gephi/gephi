@@ -15,11 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "CTL_TimelineAction"
-msgstr "Timeline"
+msgid "Cell.Popup.subMenu.text"
+msgstr "Cell"
 
-msgid "CTL_TimelineTopComponent"
-msgstr "Timeline"
+msgid "SettingsPanel.title"
+msgstr "{0} - Settings"
 
-msgid "OpenIDE-Module-Short-Description"
-msgstr "Timeline UI"
+msgid "DataLaboratoryHelper.ui.okButton.text"
+msgstr "Ok"

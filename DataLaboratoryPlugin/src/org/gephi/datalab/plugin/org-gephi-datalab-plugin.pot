@@ -15,11 +15,5 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "CTL_TimelineAction"
-msgstr "Timeline"
-
-msgid "CTL_TimelineTopComponent"
-msgstr "Timeline"
-
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Timeline UI"
+msgstr "Implementation of some Data Laboratory manipulators"
