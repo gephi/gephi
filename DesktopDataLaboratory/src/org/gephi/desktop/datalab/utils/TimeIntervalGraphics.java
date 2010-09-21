@@ -112,10 +112,10 @@ public class TimeIntervalGraphics {
             throw new IllegalArgumentException("start should be less or equal than end");
         }
         if (start < min) {
-            throw new IllegalArgumentException("start should be greater or equal than the minimum time set");
+            throw new IllegalArgumentException("start should be greater or equal than the minimum time set, "+start+"<"+min);
         }
         if (end > max) {
-            throw new IllegalArgumentException("end should be lesser or equal than the maximum time set");
+            throw new IllegalArgumentException("end should be lesser or equal than the maximum time set, "+end+">"+max);
         }
 
         if (fill == null) {

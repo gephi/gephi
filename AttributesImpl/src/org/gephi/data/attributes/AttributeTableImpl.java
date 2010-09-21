@@ -200,7 +200,7 @@ public class AttributeTableImpl implements AttributeTable {
     }
 
     public synchronized boolean hasColumn(String title) {
-        return columnsMap.containsKey(title.toLowerCase());
+        return columnsMap.containsKey(title) || columnsMap.containsKey(title.toLowerCase());
     }
 
     public synchronized int getVersion() {
