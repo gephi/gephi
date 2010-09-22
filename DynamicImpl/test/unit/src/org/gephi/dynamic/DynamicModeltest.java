@@ -32,12 +32,6 @@ public class DynamicModeltest {
         dynamicIndex.add(interval4);
         dynamicIndex.add(interval5);
 
-        assertEquals(3, dynamicIndex.getIntervals().size());
-
-        dynamicIndex.remove(interval1);
-        assertEquals(3, dynamicIndex.getIntervals().size());
-        dynamicIndex.remove(interval1);
-        assertEquals(2, dynamicIndex.getIntervals().size());
 
         Interval interval6 = new Interval(2000, 2010);
         Interval interval7 = new Interval(Double.NEGATIVE_INFINITY, 2015);
@@ -54,9 +48,27 @@ public class DynamicModeltest {
         System.out.println(dynamicIndex.getMin());
         System.out.println(dynamicIndex.getMax());
 
-        printIntervals(dynamicIndex.intervalTree.search(interval6));
+        //printIntervals(dynamicIndex.intervalTree.search(interval6));
         
         //printIntervals(dynamicIndex.getIntervals());
+    }
+
+    @Test
+    public void testIndex2() {
+
+        DynamicIndex dynamicIndex = new DynamicIndex(null);
+
+        Interval interval1 = new Interval(2, Double.POSITIVE_INFINITY);
+        Interval interval2 = new Interval(2, 5);
+        Interval interval3 = new Interval(2, 3);
+
+        dynamicIndex.add(interval1);
+        dynamicIndex.add(interval2);
+        dynamicIndex.add(interval2);
+        dynamicIndex.add(interval2);
+        dynamicIndex.add(interval2);
+        dynamicIndex.add(interval3);
+
     }
 
     private void printIntervals(List<Interval<Integer>> intervals) {

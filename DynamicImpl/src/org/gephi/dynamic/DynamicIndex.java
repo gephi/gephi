@@ -20,9 +20,8 @@
  */
 package org.gephi.dynamic;
 
-import java.util.List;
+import java.util.TreeMap;
 import org.gephi.data.attributes.type.Interval;
-import org.gephi.data.attributes.type.IntervalTree;
 import org.gephi.dynamic.api.DynamicModelEvent;
 
 /**
@@ -31,161 +30,85 @@ import org.gephi.dynamic.api.DynamicModelEvent;
  */
 public class DynamicIndex {
 
-    protected IntervalTree<Integer> intervalTree;
+    protected final TreeMap<Double, Integer> lowMap;
+    protected final TreeMap<Double, Integer> highMap;
     protected final DynamicModelImpl model;
 
     public DynamicIndex(DynamicModelImpl model) {
         this.model = model;
-        intervalTree = new IntervalTree<Integer>();
+        lowMap = new TreeMap<Double, Integer>();
+        highMap = new TreeMap<Double, Integer>();
     }
 
     public synchronized void add(Interval interval) {
-        Interval<Integer> existingInterval = searchInterval(interval);
-        if (existingInterval != null) {
-            Integer counter = new Integer(1 + existingInterval.getValue());
-            intervalTree.delete(existingInterval);
-            existingInterval = new Interval<Integer>(existingInterval.getLow(), existingInterval.getHigh(), existingInterval.isLowExcluded(), existingInterval.isHighExcluded(), counter);
-            intervalTree.insert(existingInterval);
-        } else {
-            double min = intervalTree.getLow();
-            double max = intervalTree.getHigh();
-
-            Interval<Integer> intInterval = new Interval<Integer>(interval.getLow(), interval.getHigh(), interval.isLowExcluded(), interval.isHighExcluded(), new Integer(1));
-            intervalTree.insert(intInterval);
-
-            if (intInterval.getLow() < min) {
-                fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MIN_CHANGED, model, intInterval.getLow()));
+        Double low = interval.getLow();
+        Double high = interval.getHigh();
+        if (!Double.isInfinite(low)) {
+            if (lowMap.get(low) != null) {
+                Integer counter = new Integer(lowMap.get(low) + 1);
+                lowMap.put(low, counter);
+            } else {
+                Double min = lowMap.isEmpty() ? Double.POSITIVE_INFINITY : lowMap.firstKey();
+                lowMap.put(low, 1);
+                if (low < min) {
+                    fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MIN_CHANGED, model, low));
+                }
             }
-            if (intInterval.getHigh() > max) {
-                fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MAX_CHANGED, model, intInterval.getHigh()));
+        }
+        if (!Double.isInfinite(high)) {
+            if (highMap.get(high) != null) {
+                Integer counter = new Integer(highMap.get(high) + 1);
+                highMap.put(high, counter);
+            } else {
+                Double max = highMap.isEmpty() ? Double.NEGATIVE_INFINITY : highMap.lastKey();
+                highMap.put(high, 1);
+                if (high > max) {
+                    fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MAX_CHANGED, model, high));
+                }
             }
         }
     }
 
     public synchronized void remove(Interval interval) {
-        Interval<Integer> existingInterval = searchInterval(interval);
-        if (existingInterval != null) {
-            if (existingInterval.getValue().intValue() == 1) {
-                double min = intervalTree.getLow();
-                double max = intervalTree.getHigh();
-
-                intervalTree.delete(existingInterval);
-
-                if (existingInterval.getLow() == min) {
-                    fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MIN_CHANGED, model, intervalTree.getLow()));
-                }
-                if (existingInterval.getHigh() == max) {
-                    fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MAX_CHANGED, model, intervalTree.getHigh()));
+        Double low = interval.getLow();
+        Double high = interval.getHigh();
+        if (!Double.isInfinite(low) && lowMap.get(low) != null) {
+            Integer counter = new Integer(lowMap.get(low) - 1);
+            if (counter == 0) {
+                Double min = lowMap.firstKey();
+                lowMap.remove(low);
+                if (min.equals(low)) {
+                    fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MIN_CHANGED, model, getMin()));
                 }
             } else {
-                Integer counter = new Integer(existingInterval.getValue() - 1);
-                intervalTree.delete(existingInterval);
-                existingInterval = new Interval<Integer>(existingInterval.getLow(), existingInterval.getHigh(), existingInterval.isLowExcluded(), existingInterval.isHighExcluded(), counter);
-                intervalTree.insert(existingInterval);
+                lowMap.put(low, counter);
             }
         }
-    }
-
-    private Interval<Integer> searchInterval(Interval interval) {
-        List<Interval<Integer>> list = intervalTree.search(interval);
-        if (list.size() == 1 && list.get(0).equals(interval)) {
-            return list.get(0);
-        } else if (list.size() > 1) {
-            for (Interval i : list) {
-                if (i.equals(interval)) {
-                    return i;
+        if (!Double.isInfinite(high) && highMap.get(high) != null) {
+            Integer counter = new Integer(highMap.get(high) - 1);
+            if (counter == 0) {
+                Double max = highMap.lastKey();
+                highMap.remove(high);
+                if (max.equals(high)) {
+                    fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MAX_CHANGED, model, getMax()));
                 }
+            } else {
+                highMap.put(high, counter);
             }
         }
-        return null;
     }
 
     public synchronized void clear() {
-        intervalTree = new IntervalTree<Integer>();
+        lowMap.clear();
+        highMap.clear();
     }
 
     public synchronized double getMin() {
-        return intervalTree.minimumNotInfinite();
+        return lowMap.isEmpty() ? Double.NEGATIVE_INFINITY : lowMap.firstKey();
     }
 
     public synchronized double getMax() {
-        return intervalTree.maximumNotInfinite();
-    }
-
-    public List<Interval<Integer>> getIntervals() {
-        return intervalTree.search(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-    }
-
-    /**
-     * Returns a list of intervals which overlap with a given time interval.
-     *
-     * @param interval a given time interval
-     *
-     * @return a list of intervals which overlap with a given time interval.
-     */
-    public List<Interval<Integer>> getIntervals(Interval<Integer> interval) {
-        return intervalTree.search(interval);
-    }
-
-    /**
-     * Returns a list of intervals which overlap with a
-     * [{@code low}, {@code high}] time interval.
-     *
-     * @param low  the left endpoint
-     * @param high the right endpoint
-     *
-     * @return a list of intervals which overlap with a
-     *         [{@code low}, {@code high}] time interval.
-     *
-     * @throws IllegalArgumentException if {@code low} > {@code high}.
-     */
-    public List<Interval<Integer>> getIntervals(double low, double high) {
-        return intervalTree.search(low, high);
-    }
-
-    /**
-     * Compares this instance with the specified object for equality.
-     *
-     * <p>Note that two {@code DynamicType} instances are equal if they have got
-     * the same type {@code T} and their interval trees are equal.
-     *
-     * @param obj object to which this instance is to be compared
-     *
-     * @return {@code true} if and only if the specified {@code Object} is a
-     *         {@code DynamicType} which has the same type {@code T} and an
-     *         equal interval tree.
-     *
-     * @see #hashCode
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj != null && obj.getClass().equals(this.getClass())
-                && ((DynamicIndex) obj).intervalTree.equals(intervalTree)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Returns a hashcode of this instance.
-     *
-     * @return a hashcode of this instance.
-     */
-    @Override
-    public int hashCode() {
-        return intervalTree.hashCode();
-    }
-
-    /**
-     * Returns a string representation of this instance in a format
-     * {@code <[low, high, value], ..., [low, high, value]>}. Intervals are
-     * ordered by its left endpoint.
-     *
-     * @return a string representation of this instance.
-     */
-    @Override
-    public String toString() {
-        return intervalTree.toString();
+        return highMap.isEmpty() ? Double.POSITIVE_INFINITY : highMap.lastKey();
     }
 
     private void fireEvent(DynamicModelEvent event) {
