@@ -78,7 +78,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private static final String VIZ_NAMESPACE = "http://www.gexf.net/1.1draft/viz";
     private static final String GEXF_VERSION = "version";
     private static final String GRAPH = "graph";
-    private static final String GRAPH_MODE = "dynamic";
+    private static final String GRAPH_MODE = "mode";
     private static final String GRAPH_DEFAULT_EDGETYPE = "defaultedgetype";
     private static final String GRAPH_START = "start";
     private static final String GRAPH_END = "end";
