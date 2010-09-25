@@ -54,7 +54,7 @@ public class NodePencil implements Tool {
     public NodePencil() {
         //Default settings
         color = Color.BLACK;
-        size = 1f;
+        size = 10f;
     }
 
     public void select() {

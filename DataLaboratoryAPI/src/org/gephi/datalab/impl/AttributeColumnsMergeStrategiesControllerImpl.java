@@ -21,12 +21,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalab.impl;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.datalab.api.AttributeColumnsMergeStrategiesController;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Attributes;
 import org.gephi.utils.StatisticsUtils;
 import org.openide.util.Lookup;
@@ -52,7 +59,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         if (newColumn == null) {
             return null;
         }
-        
+
         final int newColumnIndex = newColumn.getIndex();
 
         if (separator == null) {
@@ -126,6 +133,115 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         }
 
         return newColumn;
+    }
+
+    public AttributeColumn mergeNumericColumnsToTimeInterval(AttributeTable table, AttributeColumn startColumn, AttributeColumn endColumn, double defaultStart, double defaultEnd) {
+        checkTableAndOneColumn(table, startColumn, endColumn);
+
+        AttributeColumn timeIntervalColumn = getTimeIntervalColumn(table);
+        final int timeIntervalColumnIndex = timeIntervalColumn.getIndex();
+        final int startColumnIndex = startColumn != null ? startColumn.getIndex() : -1;
+        final int endColumnIndex = endColumn != null ? endColumn.getIndex() : -1;
+        final boolean isStartColumnNumeric = startColumn != null ? AttributeUtils.getDefault().isNumberColumn(startColumn) : false;
+        final boolean isEndColumnNumeric = endColumn != null ? AttributeUtils.getDefault().isNumberColumn(endColumn) : false;
+
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        Object value;
+        double start, end;
+        TimeInterval timeInterval;
+        for (Attributes row : ac.getTableAttributeRows(table)) {
+            if (startColumnIndex != -1) {
+                value = row.getValue(startColumnIndex);
+                if (value != null) {
+                    if (isStartColumnNumeric) {
+                        start = ((Number) value).doubleValue();
+                    } else {
+                        start = parseDouble(value.toString(), defaultStart);
+                    }
+                } else {
+                    start = defaultStart;
+                }
+            } else {
+                start = defaultStart;
+            }
+            if (endColumnIndex != -1) {
+                value = row.getValue(endColumnIndex);
+                if (value != null) {
+                    if (isEndColumnNumeric) {
+                        end = ((Number) value).doubleValue();
+                    } else {
+                        end = parseDouble(value.toString(), defaultEnd);
+                    }
+                } else {
+                    end = defaultEnd;
+                }
+            } else {
+                end = defaultEnd;
+            }
+            if (!Double.isInfinite(start) && !Double.isInfinite(end) && start > end) {
+                //When start>end, check what column was provided and keep its value. If both columns were provided, set an infinite interval:
+                if (startColumnIndex == -1) {
+                    start = Double.NEGATIVE_INFINITY;
+                } else if (endColumnIndex == -1) {
+                    end = Double.POSITIVE_INFINITY;
+                } else {
+                    start = Double.NEGATIVE_INFINITY;
+                    end = Double.POSITIVE_INFINITY;
+                }
+            }
+            timeInterval = new TimeInterval(start, end);
+            row.setValue(timeIntervalColumnIndex, timeInterval);
+        }
+        Lookup.getDefault().lookup(DynamicController.class).setTimeFormat(DynamicModel.TimeFormat.DOUBLE);
+        return timeIntervalColumn;
+    }
+
+    public AttributeColumn mergeDateColumnsToTimeInterval(AttributeTable table, AttributeColumn startColumn, AttributeColumn endColumn, SimpleDateFormat dateFormat, String defaultStartDate, String defaultEndDate) {
+        checkTableAndOneColumn(table, startColumn, endColumn);
+        if (dateFormat == null) {
+            throw new IllegalArgumentException("Date format can't be null can't be null");
+        }
+
+        AttributeColumn timeIntervalColumn = getTimeIntervalColumn(table);
+        final int timeIntervalColumnIndex = timeIntervalColumn.getIndex();
+        final int startColumnIndex = startColumn != null ? startColumn.getIndex() : -1;
+        final int endColumnIndex = endColumn != null ? endColumn.getIndex() : -1;
+        double defaultStart = parseDateToDouble(dateFormat, defaultStartDate, Double.NEGATIVE_INFINITY);
+        double defaultEnd = parseDateToDouble(dateFormat, defaultEndDate, Double.POSITIVE_INFINITY);
+
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        Object value;
+        double start, end;
+        TimeInterval timeInterval;
+        for (Attributes row : ac.getTableAttributeRows(table)) {
+            if (startColumnIndex != -1) {
+                value = row.getValue(startColumnIndex);
+                start = parseDateToDouble(dateFormat, value != null ? value.toString() : null, defaultStart);
+            } else {
+                start = defaultStart;
+            }
+            if (endColumnIndex != -1) {
+                value = row.getValue(endColumnIndex);
+                end = parseDateToDouble(dateFormat, value != null ? value.toString() : null, defaultEnd);
+            } else {
+                end = defaultEnd;
+            }
+            if (!Double.isInfinite(start) && !Double.isInfinite(end) && start > end) {
+                //When start>end, check what column was provided and keep its value. If both columns were provided, set an infinite interval:
+                if (startColumnIndex == -1) {
+                    start = Double.NEGATIVE_INFINITY;
+                } else if (endColumnIndex == -1) {
+                    end = Double.POSITIVE_INFINITY;
+                } else {
+                    start = Double.NEGATIVE_INFINITY;
+                    end = Double.POSITIVE_INFINITY;
+                }
+            }
+            timeInterval = new TimeInterval(start, end);
+            row.setValue(timeIntervalColumnIndex, timeInterval);
+        }
+        Lookup.getDefault().lookup(DynamicController.class).setTimeFormat(DynamicModel.TimeFormat.DATE);
+        return timeIntervalColumn;
     }
 
     public AttributeColumn averageNumberMerge(AttributeTable table, AttributeColumn[] columnsToMerge, String newColumnTitle) {
@@ -295,7 +411,7 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
         if (newColumn == null) {
             return null;
         }
-        
+
         final int newColumnIndex = newColumn.getIndex();
 
         BigDecimal max;
@@ -308,6 +424,48 @@ public class AttributeColumnsMergeStrategiesControllerImpl implements AttributeC
     }
 
     /*************Private methods:*************/
+    private AttributeColumn getTimeIntervalColumn(AttributeTable table) {
+        AttributeColumn column = table.getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
+        if (column == null) {
+            column = table.addColumn(DynamicModel.TIMEINTERVAL_COLUMN, "Time Interval", AttributeType.TIME_INTERVAL, AttributeOrigin.PROPERTY, null);
+        }
+        return column;
+    }
+
+    private double parseDouble(String number, double defaultValue) {
+        if (number == null) {
+            return defaultValue;
+        }
+        try {
+            return Double.parseDouble(number);
+        } catch (Exception ex) {
+            return defaultValue;
+        }
+    }
+
+    private double parseDateToDouble(SimpleDateFormat dateFormat, String date, double defaultValue) {
+        if (date == null) {
+            return defaultValue;
+        }
+        try {
+            Date d = dateFormat.parse(date);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(d);
+            return cal.getTimeInMillis();
+        } catch (Exception ex) {
+            return defaultValue;
+        }
+    }
+
+    private void checkTableAndOneColumn(AttributeTable table, AttributeColumn startColumn, AttributeColumn endColumn) {
+        if (table == null) {
+            throw new IllegalArgumentException("Table can't be null");
+        }
+        if (startColumn == null && endColumn == null) {
+            throw new IllegalArgumentException("Only one column could be null");
+        }
+    }
+
     private void checkTableAndColumnsAreNumberOrNumberList(AttributeTable table, AttributeColumn[] columns) {
         if (table == null) {
             throw new IllegalArgumentException("Table can't be null");

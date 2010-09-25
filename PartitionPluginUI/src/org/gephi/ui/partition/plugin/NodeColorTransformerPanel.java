@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.partition.plugin;
 
 import java.awt.Color;
@@ -47,6 +47,7 @@ import org.gephi.partition.api.Partition;
 import org.gephi.partition.plugin.NodeColorTransformer;
 import org.gephi.partition.spi.Transformer;
 import org.gephi.utils.PaletteUtils;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -87,16 +88,16 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
         table.setRowHeight(18);
     }
 
-    public void setup(Partition partition, Transformer transformer) {
+    public void setup(Partition partition, Transformer transformer, boolean color) {
         nodeColorTransformer = (NodeColorTransformer) transformer;
-        //if (nodeColorTransformer.getMap().isEmpty()) {
-        List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
-        int i = 0;
-        for (Part p : partition.getParts()) {
-            nodeColorTransformer.getMap().put(p.getValue(), colors.get(i));
-            i++;
+        if (color) {
+            List<Color> colors = PaletteUtils.getSequenceColors(partition.getPartsCount());
+            int i = 0;
+            for (Part p : partition.getParts()) {
+                nodeColorTransformer.getMap().put(p.getValue(), colors.get(i));
+                i++;
+            }
         }
-        //}
         NumberFormat formatter = NumberFormat.getPercentInstance();
         formatter.setMaximumFractionDigits(2);
         this.partition = partition;
@@ -141,11 +142,12 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
     private void createPopup() {
         popupMenu = new JPopupMenu();
         JMenuItem randomizeItem = new JMenuItem(NbBundle.getMessage(NodeColorTransformerPanel.class, "NodeColorTransformerPanel.action.randomize"));
+        randomizeItem.setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/partition/plugin/resources/randomize.png", false));
         randomizeItem.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 nodeColorTransformer.getMap().clear();
-                setup(partition, nodeColorTransformer);
+                setup(partition, nodeColorTransformer, true);
                 revalidate();
                 repaint();
             }
@@ -158,7 +160,7 @@ public class NodeColorTransformerPanel extends javax.swing.JPanel {
                 for (Entry<Object, Color> entry : nodeColorTransformer.getMap().entrySet()) {
                     entry.setValue(Color.BLACK);
                 }
-                setup(partition, nodeColorTransformer);
+                setup(partition, nodeColorTransformer, false);
                 revalidate();
                 repaint();
             }

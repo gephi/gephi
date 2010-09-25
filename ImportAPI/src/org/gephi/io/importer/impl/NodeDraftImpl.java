@@ -207,7 +207,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         if (column.getType().isDynamicType() && !(value instanceof DynamicType)) {
             if (value instanceof String && !column.getType().equals(AttributeType.DYNAMIC_STRING)) {
                 //Value needs to be parsed
-                value = TypeConvertor.getStaticType(column.getType()).parse(value);
+                value = TypeConvertor.getStaticType(column.getType()).parse((String) value);
             }
             //Wrap value in a dynamic type
             value = DynamicUtilities.createDynamicObject(column.getType(), new Interval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, value));
@@ -216,6 +216,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
     }
 
     public void addAttributeValue(AttributeColumn column, Object value, String dateFrom, String dateTo) throws IllegalArgumentException {
+        addAttributeValue(column, value, dateFrom, dateTo, false, false);
+    }
+
+    public void addAttributeValue(AttributeColumn column, Object value, String dateFrom, String dateTo, boolean startOpen, boolean endOpen) throws IllegalArgumentException {
         if (!column.getType().isDynamicType()) {
             throw new IllegalArgumentException("The column must be dynamic");
         }
@@ -253,19 +257,23 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         }
         Object sourceVal = attributeRow.getValue(column);
         if (sourceVal != null && sourceVal instanceof DynamicType) {
-            value = DynamicUtilities.createDynamicObject(column.getType(), (DynamicType) sourceVal, new Interval(start, end, value));
+            value = DynamicUtilities.createDynamicObject(column.getType(), (DynamicType) sourceVal, new Interval(start, end, startOpen, endOpen, value));
         } else if (sourceVal != null && !(sourceVal instanceof DynamicType)) {
             List<Interval> intervals = new ArrayList<Interval>(2);
             intervals.add(new Interval(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, sourceVal));
-            intervals.add(new Interval(start, end, value));
+            intervals.add(new Interval(start, end, startOpen, endOpen, value));
             value = DynamicUtilities.createDynamicObject(column.getType(), intervals);
         } else {
-            value = DynamicUtilities.createDynamicObject(column.getType(), new Interval(start, end, value));
+            value = DynamicUtilities.createDynamicObject(column.getType(), new Interval(start, end, startOpen, endOpen, value));
         }
         attributeRow.setValue(column, value);
     }
 
     public void addTimeInterval(String dateFrom, String dateTo) throws IllegalArgumentException {
+        addTimeInterval(dateFrom, dateTo, false, false);
+    }
+
+    public void addTimeInterval(String dateFrom, String dateTo, boolean startOpen, boolean endOpen) throws IllegalArgumentException {
         if (timeInterval == null) {
             timeInterval = new TimeInterval();
         }
@@ -297,7 +305,7 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         if (start == null && end == null) {
             throw new IllegalArgumentException(NbBundle.getMessage(NodeDraftImpl.class, "ImportContainerException_TimeInterval_Empty"));
         }
-        timeInterval = new TimeInterval(timeInterval, start != null ? start : Double.NEGATIVE_INFINITY, end != null ? end : Double.POSITIVE_INFINITY);
+        timeInterval = new TimeInterval(timeInterval, start != null ? start : Double.NEGATIVE_INFINITY, end != null ? end : Double.POSITIVE_INFINITY, startOpen, endOpen);
     }
 
     public void setTimeInterval(TimeInterval timeInterval) {
@@ -371,6 +379,10 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
 
     public boolean isCreatedAuto() {
         return createdAuto;
+    }
+
+    public boolean isAutoId() {
+        return autoId;
     }
 
     @Override

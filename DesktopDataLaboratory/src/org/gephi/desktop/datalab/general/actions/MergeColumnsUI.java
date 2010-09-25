@@ -205,7 +205,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
     public void execute() {
         int index = availableStrategiesComboBox.getSelectedIndex();
         if (index != -1) {
-            Lookup.getDefault().lookup(DataLaboratoryHelper.class).executeManipulator(availableMergeStrategies[index]);
+            new DataLaboratoryHelper().executeManipulator(availableMergeStrategies[index]);
         }
     }
 

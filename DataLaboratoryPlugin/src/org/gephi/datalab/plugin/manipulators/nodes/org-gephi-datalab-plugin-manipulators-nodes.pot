@@ -1,0 +1,136 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "OpenInEditNodeWindow.name"
+msgstr "Edit node"
+
+msgid "OpenInEditNodeWindow.name.multiple"
+msgstr "Edit all nodes"
+
+msgid "OpenInEditNodeWindow.description"
+msgstr ""
+"Opens edit window to edit the selected node. It allows to edit the size, "
+"position, color of the node and also the attributes."
+
+msgid "OpenInEditNodeWindow.description.multiple"
+msgstr ""
+"Opens edit window to edit the selected nodes. Fields will be blank at first. "
+"It allows to edit the size, position, color of the nodes and also the "
+"attributes."
+
+msgid "SelectOnGraph.name"
+msgstr "Select on graph view"
+
+msgid "SelectNeighboursOnTable.name"
+msgstr "Select neighbour nodes on table"
+
+msgid "SelectEdgesOnTable.name"
+msgstr "Select edges that have the node on edges table"
+
+msgid "DeleteNodes.name.single"
+msgstr "Delete"
+
+msgid "DeleteNodes.name.multiple"
+msgstr "Delete all"
+
+msgid "DeleteNodes.confirmation.message"
+msgstr "Are you sure you want to delete the node(s)?"
+
+msgid "ClearNodesData.name.single"
+msgstr "Clear node data..."
+
+msgid "ClearNodesData.name.multiple"
+msgstr "Clear all nodes data..."
+
+msgid "ClearNodesData.description"
+msgstr "Clears the desired columns data of the selected nodes(s)"
+
+msgid "ClearNodesData.ui.description"
+msgstr "Choose columns to clear data:"
+
+msgid "CopyNodeDataToOtherNodes.name"
+msgstr "Copy node data to the other selected nodes..."
+
+msgid "CopyNodeDataToOtherNodes.description"
+msgstr ""
+"Copies the desired columns of the selected node to the other selected nodes"
+
+msgid "CopyNodeDataToOtherNodes.ui.description"
+msgstr "Choose columns to copy data:"
+
+msgid "Group.name"
+msgstr "Group"
+
+msgid "Ungroup.name.single"
+msgstr "Ungroup"
+
+msgid "Ungroup.name.multiple"
+msgstr "Ungroup selected groups"
+
+msgid "UngroupRecursively.name.single"
+msgstr "Ungroup recursively"
+
+msgid "UngroupRecursively.name.multiple"
+msgstr "Ungroup selected groups recursively"
+
+msgid "UngroupRecursively.description"
+msgstr ""
+"Ungroups the selected groups and their descendant nodes that form a group"
+
+msgid "MoveNodeToGroup.name.single"
+msgstr "Move to group..."
+
+msgid "MoveNodeToGroup.name.multiple"
+msgstr "Move all to group..."
+
+msgid "RemoveNodeFromGroup.name.single"
+msgstr "Remove from its group"
+
+msgid "RemoveNodeFromGroup.name.multiple"
+msgstr "Remove all from their group"
+
+msgid "Settle.name.single"
+msgstr "Settle"
+
+msgid "Settle.name.multiple"
+msgstr "Settle all"
+
+msgid "Free.name.single"
+msgstr "Free"
+
+msgid "Free.name.multiple"
+msgstr "Free all"
+
+msgid "SetNodesSize.name.single"
+msgstr "Set node size..."
+
+msgid "SetNodesSize.name.multiple"
+msgstr "Set all nodes size..."
+
+msgid "LinkNodes.name"
+msgstr "Link nodes (create edge)"
+
+msgid "LinkNodes.description"
+msgstr ""
+"Creates edges (directed or undirected) between the node you choose and all "
+"the other selected nodes"
+
+msgid "CopyNodes.name.single"
+msgstr "Copy node"
+
+msgid "CopyNodes.name.multiple"
+msgstr "Copy all nodes"

@@ -22,6 +22,7 @@ package org.gephi.dynamic;
 
 import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicGraph;
 import org.gephi.dynamic.api.DynamicModel;
@@ -115,16 +116,27 @@ public final class DynamicGraphImpl implements DynamicGraph {
 
 	@Override
 	public Object[] getAttributesValues(Node node, double low, double high) {
+		checkLowHigh(low, high);
+		return getAttributesValues(node, new Interval(low, high));
+	}
+
+	@Override
+	public Object[] getAttributesValues(Node node, Interval interval) {
 		int count = node.getNodeData().getAttributes().countValues();
 		Estimator[] estimators = new Estimator[count];
 		for (int i = 0; i < count; ++i)
 			estimators[i] = Estimator.FIRST;
-		return getAttributesValues(node, low, high, estimators);
+		return getAttributesValues(node, interval, estimators);
 	}
 
 	@Override
 	public Object[] getAttributesValues(Node node, double low, double high, Estimator[] estimators) {
 		checkLowHigh(low, high);
+		return getAttributesValues(node, new Interval(low, high), estimators);
+	}
+
+	@Override
+	public Object[] getAttributesValues(Node node, Interval interval, Estimator[] estimators) {
 		checkEstimators(node, estimators);
 
 		Attributes attributes = node.getNodeData().getAttributes();
@@ -156,16 +168,27 @@ public final class DynamicGraphImpl implements DynamicGraph {
 
 	@Override
 	public Object[] getAttributesValues(Edge edge, double low, double high) {
+		checkLowHigh(low, high);
+		return getAttributesValues(edge, new Interval(low, high));
+	}
+
+	@Override
+	public Object[] getAttributesValues(Edge edge, Interval interval) {
 		int count = edge.getEdgeData().getAttributes().countValues();
 		Estimator[] estimators = new Estimator[count];
 		for (int i = 0; i < count; ++i)
 			estimators[i] = Estimator.FIRST;
-		return getAttributesValues(edge, low, high, estimators);
+		return getAttributesValues(edge, interval, estimators);
 	}
 
 	@Override
 	public Object[] getAttributesValues(Edge edge, double low, double high, Estimator[] estimators) {
 		checkLowHigh(low, high);
+		return getAttributesValues(edge, new Interval(low, high), estimators);
+	}
+
+	@Override
+	public Object[] getAttributesValues(Edge edge, Interval interval, Estimator[] estimators) {
 		checkEstimators(edge, estimators);
 
 		Attributes attributes = edge.getEdgeData().getAttributes();
@@ -207,22 +230,32 @@ public final class DynamicGraphImpl implements DynamicGraph {
 	}
 
 	@Override
+	public Graph getSnapshotGraph(Interval interval) {
+		return getSnapshotGraph(interval, Estimator.FIRST);
+	}
+
+	@Override
 	public Graph getSnapshotGraph(double low, double high, Estimator estimator) {
 		checkLowHigh(low, high);
+		return getSnapshotGraph(new Interval(low, high), Estimator.FIRST);
+	}
+
+	@Override
+	public Graph getSnapshotGraph(Interval interval, Estimator estimator) {
 		Graph graph  = model.getGraph(sourceView);
 		Graph vgraph = model.getGraph(currentView);
 		for (Node n : graph.getNodes().toArray()) {
 			TimeInterval ti = (TimeInterval)n.getNodeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
-			if (ti.getValue(low, high, estimator) == null && vgraph.contains(n))
+			if (ti.getValue(interval, estimator) == null && vgraph.contains(n))
 				vgraph.removeNode(n);
-			else if (ti.getValue(low, high, estimator) != null && !vgraph.contains(n))
+			else if (ti.getValue(interval, estimator) != null && !vgraph.contains(n))
 				vgraph.addNode(n);
 		}
 		for (Edge e : graph.getEdges().toArray()) {
 			TimeInterval ti = (TimeInterval)e.getEdgeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
-			if (ti.getValue(low, high, estimator) == null && vgraph.contains(e))
+			if (ti.getValue(interval, estimator) == null && vgraph.contains(e))
 				vgraph.removeEdge(e);
-			else if (ti.getValue(low, high, estimator) != null && !vgraph.contains(e) &&
+			else if (ti.getValue(interval, estimator) != null && !vgraph.contains(e) &&
 					vgraph.contains(e.getSource()) && vgraph.contains(e.getTarget()))
 				vgraph.addEdge(e);
 		}
@@ -238,20 +271,25 @@ public final class DynamicGraphImpl implements DynamicGraph {
 	@Override
 	public Graph getStrongSnapshotGraph(double low, double high) {
 		checkLowHigh(low, high);
+		return getStrongSnapshotGraph(new Interval(low, high));
+	}
+
+	@Override
+	public Graph getStrongSnapshotGraph(Interval interval) {
 		Graph graph  = model.getGraph(sourceView);
 		Graph vgraph = model.getGraph(currentView);
 		for (Node n : graph.getNodes().toArray()) {
 			TimeInterval ti = (TimeInterval)n.getNodeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
-			if (ti.getValues(low, high).size() < ti.getValues().size() && vgraph.contains(n))
+			if (ti.getValues(interval).size() < ti.getValues().size() && vgraph.contains(n))
 				vgraph.removeNode(n);
-			else if (ti.getValues(low, high).size() == ti.getValues().size() && !vgraph.contains(n))
+			else if (ti.getValues(interval).size() == ti.getValues().size() && !vgraph.contains(n))
 				vgraph.addNode(n);
 		}
 		for (Edge e : graph.getEdges().toArray()) {
 			TimeInterval ti = (TimeInterval)e.getEdgeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
-			if (ti.getValues(low, high).size() < ti.getValues().size() && vgraph.contains(e))
+			if (ti.getValues(interval).size() < ti.getValues().size() && vgraph.contains(e))
 				vgraph.removeEdge(e);
-			else if (ti.getValues(low, high).size() == ti.getValues().size() && !vgraph.contains(e) &&
+			else if (ti.getValues(interval).size() == ti.getValues().size() && !vgraph.contains(e) &&
 					vgraph.contains(e.getSource()) && vgraph.contains(e.getTarget()))
 				vgraph.addEdge(e);
 		}

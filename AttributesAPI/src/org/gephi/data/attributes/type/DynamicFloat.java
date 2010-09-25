@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.type;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Hashtable;
 import java.util.List;
 import org.gephi.data.attributes.api.Estimator;
@@ -60,7 +61,7 @@ public final class DynamicFloat extends DynamicType<Float> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source}.
+	 * Constructs a deep copy of {@code source}.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
 	 *               instance is created)
@@ -70,7 +71,7 @@ public final class DynamicFloat extends DynamicType<Float> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} that contains a given
+	 * Constructs a deep copy of {@code source} that contains a given
 	 * {@code Interval<T>} in.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
@@ -82,7 +83,7 @@ public final class DynamicFloat extends DynamicType<Float> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} that contains a given
+	 * Constructs a deep copy of {@code source} that contains a given
 	 * {@code Interval<T>} in. Before add it removes from the newly created
 	 * object all intervals that overlap with a given {@code Interval<T>} out.
 	 *
@@ -96,7 +97,7 @@ public final class DynamicFloat extends DynamicType<Float> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * Constructs a deep copy of {@code source} with additional intervals
 	 * given by {@code List<Interval<T>>} in.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
@@ -108,7 +109,7 @@ public final class DynamicFloat extends DynamicType<Float> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * Constructs a deep copy of {@code source} with additional intervals
 	 * given by {@code List<Interval<T>>} in. Before add it removes from the
 	 * newly created object all intervals that overlap with intervals given by
 	 * {@code List<Interval<T>>} out.
@@ -123,18 +124,19 @@ public final class DynamicFloat extends DynamicType<Float> {
 	}
 
 	@Override
-	public Float getValue(Interval<Float> interval, Estimator estimator) {
+	public Float getValue(Interval interval, Estimator estimator) {
 		List<Float> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
 
 		switch (estimator) {
 			case AVERAGE:
+				if (values.size() == 1)
+					return values.get(0);
 				BigDecimal total = new BigDecimal(0);
 				for (int i = 0; i < values.size(); ++i)
-					total = total.add(new BigDecimal(values.get(i)));
-				return total.divide(new BigDecimal(values.size())).
-						floatValue();
+					total = total.add(BigDecimal.valueOf(values.get(i).doubleValue()));
+				return total.divide(BigDecimal.valueOf((long)values.size()), RoundingMode.HALF_UP).floatValue();
 			case MEDIAN:
 				if (values.size() % 2 == 1)
 					return values.get(values.size() / 2);
@@ -183,16 +185,6 @@ public final class DynamicFloat extends DynamicType<Float> {
 			default:
 				throw new IllegalArgumentException("Unknown estimator.");
 		}
-	}
-
-	@Override
-	public Float getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
-
-		return getValue(new Interval<Float>(low, high, false, false), estimator);
 	}
 
 	@Override

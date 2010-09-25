@@ -35,6 +35,7 @@ import org.gephi.io.importer.api.FileType;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.ProjectInformation;
+import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.project.spi.ProjectPropertiesUI;
 import org.gephi.ui.utils.DialogFileFilter;
@@ -461,7 +462,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         }
     }
 
-    public void newProject() {
+    public Project newProject() {
         if (closeCurrentProject()) {
             controller.newProject();
             final Project project = controller.getCurrentProject();
@@ -476,7 +477,9 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             });
 
             unlockProjectActions();
+            return project;
         }
+        return null;
     }
 
     public void closeProject() {
@@ -485,8 +488,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         }
     }
 
-    public void newWorkspace() {
-        controller.newWorkspace(controller.getCurrentProject());
+    public Workspace newWorkspace() {
+        return controller.newWorkspace(controller.getCurrentProject());
     }
 
     public void cleanWorkspace() {

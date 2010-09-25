@@ -46,3 +46,9 @@ msgid "EgoBuilder.description"
 msgstr ""
 "Keep neighbors at depth 1, 2, 3 or Max from a particular node. Node is found "
 "with regex on ID and LABEL."
+
+msgid "GiantComponentBuilder.name"
+msgstr "Giant Component"
+
+msgid "GiantComponentBuilder.description"
+msgstr "Keep only nodes in the giant component (the component with most nodes)"

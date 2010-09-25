@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2010 Gephi
 Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, 
-          Sebastien Heymann <sebastien.heymann@gephi.org>
+Sebastien Heymann <sebastien.heymann@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,7 +18,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.exporter.plugin;
 
 import java.awt.Color;
@@ -38,6 +38,9 @@ import javax.xml.transform.stream.StreamResult;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.DynamicUtilities;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
@@ -77,6 +80,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private boolean exportPosition = true;
     private boolean exportSize = true;
     private boolean exportAttributes = true;
+    private boolean exportHierarchy = false;
     //Settings Helper
     private float minSize;
     private float maxSize;
@@ -86,6 +90,8 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private float maxY;
     private float minZ;
     private float maxZ;
+    //Dynamic
+    private TimeInterval visibleInterval;
 
     public boolean execute() {
         attributeModel = workspace.getLookup().lookup(AttributeModel.class);
@@ -96,6 +102,8 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         } else {
             graph = graphModel.getHierarchicalGraph();
         }
+        DynamicModel dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
+        visibleInterval = dynamicModel != null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
         try {
             exportData(createDocument(), graph, attributeModel);
         } catch (Exception e) {
@@ -290,14 +298,8 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
             case INT:
                 attributeE.setAttribute("attr.type", "int");
                 break;
-            case LIST_STRING:
-                // nothing to do
-                break;
-            case TIME_INTERVAL:
-                // nothing to do
-                break;
             default:
-                attributeE.setAttribute("type", column.getType().getTypeString().toLowerCase());
+                attributeE.setAttribute("attr.type", column.getType().getTypeString().toLowerCase());
                 break;
         }
         if (column.getDefaultValue() != null) {
@@ -311,7 +313,9 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private Element createNodeAttvalue(Document document, AttributeColumn column, Node n) throws Exception {
         int index = column.getIndex();
         if (n.getNodeData().getAttributes().getValue(index) != null) {
-            String value = n.getNodeData().getAttributes().getValue(index).toString();
+            Object val = n.getNodeData().getAttributes().getValue(index);
+            val = DynamicUtilities.getDynamicValue(val, visibleInterval.getLow(), visibleInterval.getHigh());
+            String value = val.toString();
             String id = column.getId();
 
             Element attvalueE = document.createElement("data");
@@ -325,7 +329,9 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private Element createEdgeAttvalue(Document document, AttributeColumn column, Edge e) throws Exception {
         int index = column.getIndex();
         if (e.getEdgeData().getAttributes().getValue(index) != null) {
-            String value = e.getEdgeData().getAttributes().getValue(index).toString();
+            Object val = e.getEdgeData().getAttributes().getValue(index);
+            val = DynamicUtilities.getDynamicValue(val, visibleInterval.getLow(), visibleInterval.getHigh());
+            String value = val.toString();
             String id = column.getId();
 
             Element attvalueE = document.createElement("data");
@@ -353,7 +359,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
                 graphE.appendChild(childE);
             }
             parentE.appendChild(graphE);
-        } else if (graphModel.isHierarchical()) {
+        } else if (exportHierarchy && graphModel.isHierarchical()) {
             // we are on the top of the tree
             HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
             for (Node n : hgraph.getTopNodes()) {
@@ -416,7 +422,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         }
 
         //Hierarchy
-        if (graphModel.isHierarchical()) {
+        if (exportHierarchy && graphModel.isHierarchical()) {
             HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
             int childCount = hgraph.getChildrenCount(n);
             if (childCount != 0) {
@@ -431,11 +437,11 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private void createEdges(Document document, Element edgesE, Graph graph) throws Exception {
 
         EdgeIterable it;
-        if (graphModel.isHierarchical()) {
-            HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
-            it = hgraph.getEdgesAndMetaEdges();
+        HierarchicalGraph hgraph = graphModel.getHierarchicalGraph();
+        if (exportHierarchy && graphModel.isHierarchical()) {
+            it = hgraph.getEdgesTree();
         } else {
-            it = graph.getEdges();
+            it = hgraph.getEdgesAndMetaEdges();
         }
         for (Edge e : it.toArray()) {
             if (cancel) {
@@ -563,7 +569,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
     private Element createEdgeWeight(Document document, Edge e) throws Exception {
         Element weightE = document.createElement("data");
         weightE.setAttribute("key", "weight");
-        weightE.setTextContent(Double.toString(e.getWeight()));
+        weightE.setTextContent(Float.toString(e.getWeight(visibleInterval.getLow(), visibleInterval.getHigh())));
 
         return weightE;
     }
@@ -675,5 +681,13 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
 
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
+    }
+
+    public boolean isExportHierarchy() {
+        return exportHierarchy;
+    }
+
+    public void setExportHierarchy(boolean exportHierarchy) {
+        this.exportHierarchy = exportHierarchy;
     }
 }

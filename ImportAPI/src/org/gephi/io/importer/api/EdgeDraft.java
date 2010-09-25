@@ -83,5 +83,9 @@ public interface EdgeDraft {
 
     public void addAttributeValue(AttributeColumn column, Object value, String start, String end) throws IllegalArgumentException;
 
+    public void addAttributeValue(AttributeColumn column, Object value, String start, String end, boolean startOpen, boolean endOpen) throws IllegalArgumentException;
+
     public void addTimeInterval(String start, String end) throws IllegalArgumentException;
+
+    public void addTimeInterval(String start, String end, boolean startOpen, boolean endOpen) throws IllegalArgumentException;
 }

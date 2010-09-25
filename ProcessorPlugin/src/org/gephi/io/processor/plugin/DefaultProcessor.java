@@ -58,7 +58,6 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         if (container.getSource() != null) {
             pc.setSource(workspace, container.getSource());
         }
-        this.workspace = workspace;
 
         //Architecture
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
@@ -93,7 +92,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         int nodeCount = 0;
         //Create all nodes
         for (NodeDraftGetter draftNode : container.getNodes()) {
-            Node n = factory.newNode(draftNode.getId());
+            Node n = factory.newNode(draftNode.isAutoId() ? null : draftNode.getId());
             flushToNode(draftNode, n);
             draftNode.setNode(n);
             nodeCount++;
@@ -121,13 +120,13 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
             Edge e = null;
             switch (container.getEdgeDefault()) {
                 case DIRECTED:
-                    e = factory.newEdge(edge.getId(), source, target, edge.getWeight(), true);
+                    e = factory.newEdge(edge.isAutoId() ? null : edge.getId(), source, target, edge.getWeight(), true);
                     break;
                 case UNDIRECTED:
-                    e = factory.newEdge(edge.getId(), source, target, edge.getWeight(), false);
+                    e = factory.newEdge(edge.isAutoId() ? null : edge.getId(), source, target, edge.getWeight(), false);
                     break;
                 case MIXED:
-                    e = factory.newEdge(edge.getId(), source, target, edge.getWeight(), edge.getType().equals(EdgeType.UNDIRECTED) ? false : true);
+                    e = factory.newEdge(edge.isAutoId() ? null : edge.getId(), source, target, edge.getWeight(), edge.getType().equals(EdgeType.UNDIRECTED) ? false : true);
                     break;
             }
 

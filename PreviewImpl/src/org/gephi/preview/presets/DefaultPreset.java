@@ -17,10 +17,11 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.preview.presets;
 
 import org.gephi.preview.api.PreviewPreset;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -29,7 +30,7 @@ import org.gephi.preview.api.PreviewPreset;
 public class DefaultPreset extends PreviewPreset {
 
     public DefaultPreset() {
-        super("Default");
+        super(NbBundle.getMessage(DefaultPreset.class, "Default.name"));
 
         properties.put("showNodes", "true");
         properties.put("Directed_arrowAddedRadius", "65.0");
@@ -52,6 +53,7 @@ public class DefaultPreset extends PreviewPreset {
         properties.put("showNodeLabels", "false");
         properties.put("proportionalLabelSize", "true");
         properties.put("Directed_colorizer", "source");
+        properties.put("Undirected_rescaleWeight", "false");
         properties.put("Directed_miniLabelMaxChar", "10");
         properties.put("Undirected_shortenLabelsFlag", "false");
         properties.put("Directed_shortenLabelsFlag", "false");
@@ -60,9 +62,11 @@ public class DefaultPreset extends PreviewPreset {
         properties.put("Directed_showMiniLabelsFlag", "false");
         properties.put("Directed_arrowSize", "20.0");
         properties.put("SelfLoop_edgeScale", "1.0");
+        properties.put("SelfLoop_rescaleWeight", "false");
         properties.put("SelfLoop_colorizer", "custom [0,0,0]");
         properties.put("Directed_showArrowsFlag", "true");
         properties.put("Undirected_baseLabelFont", "Arial Plain 10");
+        properties.put("Directed_rescaleWeight", "false");
         properties.put("Undirected_showLabelsFlag", "false");
         properties.put("Directed_edgeScale", "1.0");
         properties.put("Undirected_labelMaxChar", "10");
@@ -88,6 +92,7 @@ public class DefaultPreset extends PreviewPreset {
         properties.put("nodeColorizer", "original");
         properties.put("Undirected_edgeScale", "1.0");
         properties.put("Directed_baseLabelFont", "Arial Plain 8");
+        properties.put("Bidirectional_rescaleWeight", "false");
         properties.put("Bidirectional_showMiniLabelsFlag", "false");
         properties.put("Bidirectional_showLabelsFlag", "false");
         properties.put("Directed_miniLabelFont", "Arial Plain 6");

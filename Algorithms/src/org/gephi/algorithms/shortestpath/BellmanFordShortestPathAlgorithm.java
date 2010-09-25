@@ -17,13 +17,17 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.algorithms.shortestpath;
 
 import java.util.HashMap;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.DynamicUtilities;
+import org.gephi.dynamic.api.DynamicController;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -31,13 +35,18 @@ import org.gephi.graph.api.Node;
  */
 public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgorithm {
 
-    protected DirectedGraph graph;
-    protected HashMap<Node, Edge> predecessors;
+    protected final DirectedGraph graph;
+    protected final HashMap<Node, Edge> predecessors;
+    protected TimeInterval timeInterval;
 
     public BellmanFordShortestPathAlgorithm(DirectedGraph graph, Node sourceNode) {
         super(sourceNode);
         this.graph = graph;
         predecessors = new HashMap<Node, Edge>();
+        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        if (dynamicController != null) {
+            timeInterval = DynamicUtilities.getVisibleInterval(dynamicController.getModel(graph.getGraphModel().getWorkspace()));
+        }
     }
 
     public void compute() {
@@ -72,13 +81,21 @@ public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgori
         //Check for negative-weight cycles
         for (Edge edge : graph.getEdges()) {
 
-            if (distances.get(edge.getSource()) + edge.getWeight() < distances.get(edge.getTarget())) {
+            if (distances.get(edge.getSource()) + edgeWeight(edge) < distances.get(edge.getTarget())) {
                 graph.readUnlock();
                 throw new RuntimeException("The Graph contains a negative-weighted cycle");
             }
         }
 
         graph.readUnlock();
+    }
+
+    @Override
+    protected double edgeWeight(Edge edge) {
+        if (timeInterval != null) {
+            return edge.getWeight(timeInterval.getLow(), timeInterval.getHigh());
+        }
+        return edge.getWeight();
     }
 
     public Node getPredecessor(Node node) {

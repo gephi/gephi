@@ -40,10 +40,11 @@ import org.gephi.graph.api.Node;
 public interface AttributeColumnsController {
 
     /**
-     * <p>Sets a value to the given row,column pair (cell) using the <code>toString</code> representation of the object.</p>
+     * <p>Sets a value to the given row,column pair (cell). If the class of the value is not the column type class,
+     * it will try to parse the <code>toString</code> representation of the value.</p>
      * <p>Takes care to avoid parsing exceptions of the target column type.</p>
-     * <p>Also, this will not set a null value to a column that can't have null values if the given object is null or the parsing fails.</p>
-     * @param value Value to set
+     * <p>Also, this will not set a null value to a column that can't have null values (see <code>canClearColumnData</code> method) if the given object is null or the parsing fails.</p>
+     * @param value Value to set, can be null
      * @param row Row
      * @param column Column
      * @return True if the value was set, false otherwise

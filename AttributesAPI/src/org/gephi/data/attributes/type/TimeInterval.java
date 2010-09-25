@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Cezary Bartosiak
+Authors : Mathieu Bastian, Cezary Bartosiak
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -23,19 +23,17 @@ package org.gephi.data.attributes.type;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.api.Estimator;
 
 /**
  * Complex type for specifying time interval. An, interval is two
- * <code>double</code> with <code>start</code> inferior or equal to
- * <code>end</code>. Thus intervals are inclusive.
- *
- * <p>
- * This type accepts multiple, overlapping intervals.
+ * <code>double</code> with <code>low</code> inferior or equal to
+ * <code>high</code>. Thus intervals can have got included or excluded
+ * bounds.
  *
  * @author Mathieu Bastian, Cezary Bartosiak
  */
-//Brute-force implementation
 public final class TimeInterval extends DynamicType<Double[]> {
 	/**
 	 * Constructs a new {@code DynamicType} instance with no intervals.
@@ -54,7 +52,7 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	 * @param ropen indicates if the right endpoint is excluded (true in this case)
 	 */
 	public TimeInterval(double low, double high, boolean lopen, boolean ropen) {
-		super(new Interval<Double[]>(low, high, lopen, ropen, new Double[] { low, high }));
+		super(new Interval<Double[]>(low, high, lopen, ropen));
 	}
 
 	/**
@@ -65,21 +63,21 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	 * @param high the right endpoint
 	 */
 	public TimeInterval(double low, double high) {
-		super(new Interval<Double[]>(low, high, new Double[] { low, high }));
+		super(new Interval<Double[]>(low, high));
 	}
 
 	/**
 	 * Constructs a new {@code DynamicType} instance with intervals given by
-	 * {@code List<Double[]>} in.
+	 * {@code List<Interval>} in.
 	 *
 	 * @param in intervals to add (could be null)
 	 */
-	public TimeInterval(List<Double[]> in) {
+	public TimeInterval(List<Interval> in) {
 		super(getList(in));
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source}.
+	 * Constructs a deep copy of {@code source}.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
 	 *               instance is created)
@@ -89,7 +87,7 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} that contains a given
+	 * Constructs a deep copy of {@code source} that contains a given
 	 * {@code interval}.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
@@ -100,11 +98,11 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	 * @param ropen  indicates if the right endpoint is excluded (true in this case)
 	 */
 	public TimeInterval(TimeInterval source, double low, double high, boolean lopen, boolean ropen) {
-		super(source, new Interval<Double[]>(low, high, lopen, ropen, new Double[] { low, high }));
+		super(source, new Interval<Double[]>(low, high, lopen, ropen));
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} that contains a given
+	 * Constructs a deep copy of {@code source} that contains a given
 	 * {@code interval} [{@code low}, {@code high}].
 	 *
 	 * @param source an object to copy from (could be null, then completely new
@@ -113,11 +111,11 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	 * @param high   the right endpoint
 	 */
 	public TimeInterval(TimeInterval source, double low, double high) {
-		super(source, new Interval<Double[]>(low, high, new Double[] { low, high }));
+		super(source, new Interval<Double[]>(low, high));
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} that contains a given
+	 * Constructs a deep copy of {@code source} that contains a given
 	 * {@code interval} [{@code alow}, {@code ahigh}]. Before add it removes
 	 * from the newly created object all intervals that overlap with a given
 	 * {@code interval} [{@code rlow}, {@code rhigh}].
@@ -136,12 +134,12 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	public TimeInterval(TimeInterval source, double alow, double ahigh, boolean alopen, boolean aropen,
 			double rlow, double rhigh, boolean blopen, boolean bropen) {
 		super(source,
-			new Interval<Double[]>(alow, ahigh, alopen, aropen, new Double[] { alow, ahigh }),
-			new Interval<Double[]>(rlow, rhigh, blopen, bropen, new Double[] { rlow, rhigh }));
+			new Interval<Double[]>(alow, ahigh, alopen, aropen),
+			new Interval<Double[]>(rlow, rhigh, blopen, bropen));
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} that contains a given
+	 * Constructs a deep copy of {@code source} that contains a given
 	 * {@code interval} [{@code alow}, {@code ahigh}]. Before add it removes
 	 * from the newly created object all intervals that overlap with a given
 	 * {@code interval} [{@code rlow}, {@code rhigh}].
@@ -155,48 +153,49 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	 */
 	public TimeInterval(TimeInterval source, double alow, double ahigh, double rlow, double rhigh) {
 		super(source,
-			new Interval<Double[]>(alow, ahigh, new Double[] { alow, ahigh }),
-			new Interval<Double[]>(rlow, rhigh, new Double[] { rlow, rhigh }));
+			new Interval<Double[]>(alow, ahigh),
+			new Interval<Double[]>(rlow, rhigh));
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} with additional intervals
-	 * given by {@code List<Double[]>} in.
+	 * Constructs a deep copy of {@code source} with additional intervals
+	 * given by {@code List<Interval>} in.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
 	 *               instance is created)
 	 * @param in     intervals to add (could be null)
 	 */
-	public TimeInterval(TimeInterval source, List<Double[]> in) {
+	public TimeInterval(TimeInterval source, List<Interval> in) {
 		super(source, getList(in));
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} with additional intervals
-	 * given by {@code List<Double[]>} in. Before add it removes from the
+	 * Constructs a deep copy of {@code source} with additional intervals
+	 * given by {@code List<Interval>} in. Before add it removes from the
 	 * newly created object all intervals that overlap with intervals given by
-	 * {@code List<Double[]>} out.
+	 * {@code List<Interval>} out.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
 	 *               instance is created)
 	 * @param in     intervals to add (could be null)
 	 * @param out    intervals to remove (could be null)
 	 */
-	public TimeInterval(TimeInterval source, List<Double[]> in, List<Double[]> out) {
+	public TimeInterval(TimeInterval source, List<Interval> in, List<Interval> out) {
 		super(source, getList(in), getList(out));
 	}
 
-	private static List<Interval<Double[]>> getList(List<Double[]> arg) {
+	private static List<Interval<Double[]>> getList(List<Interval> arg) {
 		if (arg == null)
 			return null;
 		List<Interval<Double[]>> list = new ArrayList<Interval<Double[]>>();
-		for (Double[] item : arg)
-			list.add(new Interval<Double[]>(item[0], item[1], item));
+		for (Interval item : arg)
+			list.add(new Interval<Double[]>(item.getLow(), item.getHigh(),
+				item.isLowExcluded(), item.isHighExcluded()));
 		return list;
 	}
 
 	@Override
-	public Double[] getValue(Interval<Double[]> interval, Estimator estimator) {
+	public Double[] getValue(Interval interval, Estimator estimator) {
 		List<Double[]> values = getValues(interval);
 		if (values.isEmpty())
 			return null;
@@ -245,13 +244,49 @@ public final class TimeInterval extends DynamicType<Double[]> {
 	}
 
 	@Override
-	public Double[] getValue(double low, double high, Estimator estimator) {
-		if (low > high)
-			throw new IllegalArgumentException(
-						"The left endpoint of the interval must be less than " +
-						"the right endpoint.");
+	public List<Double[]> getValues(Interval interval) {
+		List<Double[]> result = new ArrayList<Double[]>();
+		for (Interval<Double[]> i : intervalTree.search(interval))
+			result.add(new Double[] { i.getLow(), i.getHigh() });
+		return result;
+	}
 
-		return getValue(new Interval<Double[]>(low, high, false, false), estimator);
+	@Override
+	public Class getUnderlyingType() {
+		return Double[].class;
+	}
+
+	@Override
+	public String toString(boolean timesAsDoubles) {
+		if (timesAsDoubles)
+			return toString();
+		return toStringTimesAsDates();
+	}
+
+	/**
+	 * Returns a string representation of this instance in a format
+	 * {@code <[low, high], ..., [low, high]>}. Intervals are
+	 * ordered by its left endpoint.
+	 *
+	 * <p>Times are always shown as dates.</p>
+	 *
+	 * @return a string representation of this instance.
+	 */
+	public String toStringTimesAsDates() {
+		List<Interval<Double[]>> list = getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+		if (!list.isEmpty()) {
+			StringBuilder sb = new StringBuilder("<");
+			sb.append(list.get(0).isLowExcluded() ? "(" : "[").append(AttributeUtils.getXMLDateStringFromDouble(
+				list.get(0).getLow())).append(", ").append(AttributeUtils.getXMLDateStringFromDouble(
+				list.get(0).getHigh())).append(list.get(0).isHighExcluded() ? ")" : "]");
+			for (int i = 1; i < list.size(); ++i)
+				sb.append("; ").append(list.get(i).isLowExcluded() ? "(" : "[").append(AttributeUtils.
+					getXMLDateStringFromDouble(list.get(i).getLow())).append(", ").append(AttributeUtils.
+					getXMLDateStringFromDouble(list.get(i).getHigh())).append(list.get(i).isHighExcluded() ? ")" : "]");
+			sb.append(">");
+			return sb.toString();
+		}
+		return "<empty>";
 	}
 
 	/**
@@ -267,18 +302,13 @@ public final class TimeInterval extends DynamicType<Double[]> {
 		if (!list.isEmpty()) {
 			StringBuilder sb = new StringBuilder("<");
 			sb.append(list.get(0).isLowExcluded() ? "(" : "[").append(list.get(0).getLow()).append(", ").
-					append(list.get(0).getHigh()).append(list.get(0).isHighExcluded() ? ")" : "]");
+				append(list.get(0).getHigh()).append(list.get(0).isHighExcluded() ? ")" : "]");
 			for (int i = 1; i < list.size(); ++i)
-				sb.append(", ").append(list.get(i).isLowExcluded()? "(" :"[").append(list.get(i).getLow()).append(", ").
-						append(list.get(i).getHigh()).append(list.get(i).isHighExcluded() ? ")" : "]");
+				sb.append("; ").append(list.get(i).isLowExcluded() ? "(" : "[").append(list.get(i).getLow()).
+				append(", ").append(list.get(i).getHigh()).append(list.get(i).isHighExcluded() ? ")" : "]");
 			sb.append(">");
 			return sb.toString();
 		}
 		return "<empty>";
-	}
-
-	@Override
-	public Class getUnderlyingType() {
-		return Double[].class;
 	}
 }

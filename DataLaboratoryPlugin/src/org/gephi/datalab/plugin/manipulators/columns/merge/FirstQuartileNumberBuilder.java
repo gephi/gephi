@@ -26,7 +26,7 @@ import org.gephi.datalab.spi.columns.merge.AttributeColumnsMergeStrategyBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Builder for MedianNumber AttributeColumnsMergeStrategyBuilder.
+ * Builder for MedianNumber AttributeColumnsMergeStrategy.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 @ServiceProvider(service=AttributeColumnsMergeStrategyBuilder.class)

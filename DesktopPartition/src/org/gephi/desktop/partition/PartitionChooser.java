@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.partition;
 
 import java.awt.BorderLayout;
@@ -28,6 +28,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
+import java.util.Comparator;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -286,6 +288,12 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
         } else if (model.getSelectedPartitioning() == PartitionModel.EDGE_PARTITIONING) {
             partitionArray = model.getEdgePartitions();
         }
+        Arrays.sort(partitionArray, new Comparator<Partition>() {
+
+            public int compare(Partition a, Partition b) {
+                return (a.toString().compareTo(b.toString()));
+            }
+        });
         if (partitionArray.length > 0) {
             comboBoxModel.addElement(NO_SELECTION);
             for (Partition p : partitionArray) {

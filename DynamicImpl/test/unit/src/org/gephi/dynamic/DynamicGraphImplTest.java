@@ -47,11 +47,18 @@ import static org.junit.Assert.*;
 public class DynamicGraphImplTest {
 	private GraphModel graphModel;
 	
-	public DynamicGraphImplTest() {
+	@BeforeClass
+	public static void setUpClass() throws Exception { }
+
+	@AfterClass
+	public static void tearDownClass() throws Exception { }
+
+	@Before
+	public void setUp() {
 		ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
 		projectController.newProject();
 		projectController.newWorkspace(projectController.getCurrentProject());
-		
+
 		ImportController importController = Lookup.getDefault().lookup(ImportController.class);
 
 		Container container;
@@ -70,17 +77,10 @@ public class DynamicGraphImplTest {
 		graphModel = graphController.getModel();
 	}
 
-	@BeforeClass
-	public static void setUpClass() throws Exception { }
-
-	@AfterClass
-	public static void tearDownClass() throws Exception { }
-
-	@Before
-	public void setUp() { }
-
 	@After
-	public void tearDown() { }
+	public void tearDown() {
+		graphModel = null;
+	}
 
 	@Test
 	public void testGetAttributesValues() throws DatatypeConfigurationException {
@@ -113,16 +113,6 @@ public class DynamicGraphImplTest {
 		instance.setInterval(1.0, 3.0);
 		assertEquals(instance.getHigh(), 3.0, 0.01);
 		System.out.println();
-	}
-
-	@Test
-	public void testGetSnapshotGraph_3args() {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	@Test
-	public void testGetStrongSnapshotGraph_double_double() {
-		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Test

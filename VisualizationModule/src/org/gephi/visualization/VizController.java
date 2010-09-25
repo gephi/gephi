@@ -254,4 +254,11 @@ public class VizController implements VisualizationController {
     public SelectionManager getSelectionManager() {
         return selectionManager;
     }
+
+    public float getMetaEdgeScale() {
+        if(currentModel!=null) {
+            return currentModel.getMetaEdgeScale();
+        }
+        return 1f;
+    }
 }

@@ -17,11 +17,15 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.EdgeDataImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -103,6 +107,66 @@ public class DuplicateManager {
         dhns.getReadLock().unlock();
     }
 
+    public void duplicateNodes(Dhns destination, Node[] nodes) {
+        Map<AbstractNode, AbstractNode> nodeMap = new HashMap<AbstractNode, AbstractNode>();
+
+        GraphFactoryImpl factory = destination.factory();
+        Graph destGraph = null;
+        if (dhns.isDirected()) {
+            destGraph = destination.getDirectedGraph();
+        } else if (dhns.isUndirected()) {
+            destGraph = destination.getUndirectedGraph();
+        } else {
+            destGraph = destination.getMixedGraph();
+        }
+        dhns.getReadLock().lock();
+        destination.getWriteLock().lock();
+
+        //Nodes
+        for (Node sourceNode : nodes) {
+            AbstractNode absSourceNode = (AbstractNode) sourceNode;
+            AbstractNode nodeCopy = factory.newNode(sourceNode.getNodeData().getId());
+            destGraph.addNode(nodeCopy);
+            duplicateNodeData((NodeDataImpl) sourceNode.getNodeData(), (NodeDataImpl) nodeCopy.getNodeData());
+            nodeMap.put(absSourceNode, nodeCopy);
+        }
+
+        //Edges
+        ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
+        for (Node sourceNode : nodes) {
+            AbstractNode absSourceNode = (AbstractNode) sourceNode;
+            AbstractNode nodeCopy = nodeMap.get(absSourceNode);
+            int sourceView = absSourceNode.getViewId();
+            if (!absSourceNode.getEdgesOutTree().isEmpty()) {
+                for (edgeIterator.setNode(absSourceNode.getEdgesOutTree()); edgeIterator.hasNext();) {
+                    AbstractEdge edge = edgeIterator.next();
+                    AbstractNode originalTargetNode = edge.getTarget(sourceView);
+                    AbstractNode copyTargetNode = nodeMap.get(originalTargetNode);
+                    if (copyTargetNode != null) {
+                        AbstractEdge edgeCopy = factory.newEdge(edge.getEdgeData().getId(), nodeCopy, copyTargetNode, edge.getWeight(), edge.isDirected());
+                        destGraph.addEdge(edgeCopy);
+                        duplicateEdgeData(edge.getEdgeData(), edgeCopy.getEdgeData());
+                    }
+                }
+            }
+            if (!absSourceNode.getMetaEdgesOutTree().isEmpty()) {
+                for (edgeIterator.setNode(absSourceNode.getMetaEdgesOutTree()); edgeIterator.hasNext();) {
+                    AbstractEdge edge = edgeIterator.next();
+                    AbstractNode originalTargetNode = edge.getTarget(sourceView);
+                    AbstractNode copyTargetNode = nodeMap.get(originalTargetNode);
+                    if (copyTargetNode != null) {
+                        AbstractEdge edgeCopy = factory.newEdge(edge.getEdgeData().getId(), nodeCopy, copyTargetNode, edge.getWeight(), edge.isDirected());
+                        destGraph.addEdge(edgeCopy);
+                        duplicateEdgeData(edge.getEdgeData(), edgeCopy.getEdgeData());
+                    }
+                }
+            }
+        }
+
+        destination.getWriteLock().unlock();
+        dhns.getReadLock().unlock();
+    }
+
     private void duplicateNodeData(NodeDataImpl source, NodeDataImpl dest) {
         dest.setX(source.x());
         dest.setY(source.y());
@@ -112,6 +176,9 @@ public class DuplicateManager {
         dest.setB(source.b());
         dest.setAlpha(source.alpha());
         dest.setSize(source.getSize());
+        dest.getTextData().setColor(source.getTextData().getR(), source.getTextData().getG(), source.getTextData().getB(), source.getTextData().getAlpha());
+        dest.getTextData().setSize(source.getTextData().getSize());
+        dest.getTextData().setVisible(source.getTextData().isVisible());
 
         //Attributes
         Attributes sourceAttributes = source.getAttributes();
@@ -125,6 +192,9 @@ public class DuplicateManager {
         dest.setG(source.g());
         dest.setB(source.b());
         dest.setAlpha(source.alpha());
+        dest.getTextData().setColor(source.getTextData().getR(), source.getTextData().getG(), source.getTextData().getB(), source.getTextData().getAlpha());
+        dest.getTextData().setSize(source.getTextData().getSize());
+        dest.getTextData().setVisible(source.getTextData().isVisible());
 
         //Attributes
         Attributes sourceAttributes = source.getAttributes();

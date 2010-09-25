@@ -51,6 +51,12 @@ public class TimelineControllerImpl implements TimelineController {
     public TimelineControllerImpl() {
         listeners = Collections.synchronizedList(new ArrayList<TimelineModelListener>());
 
+        //Timeline immediately listen
+        TopComponent tc = WindowManager.getDefault().findTopComponent("TimelineTopComponent");
+        if (tc != null) {
+            listeners.add((TimelineTopComponent) tc);
+        }
+
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         final DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
@@ -79,8 +85,8 @@ public class TimelineControllerImpl implements TimelineController {
             }
 
             public void disable() {
+                model.disable();
                 model = null;
-                setTimeLineVisible(false);
             }
         });
 
@@ -93,9 +99,6 @@ public class TimelineControllerImpl implements TimelineController {
             DynamicModel dynamicModel = dynamicController.getModel(pc.getCurrentWorkspace());
             model.setup(dynamicModel);
         }
-
-        //TODO remove this force
-        setTimeLineVisible(true);
     }
 
     public TimelineModel getModel() {
@@ -108,29 +111,14 @@ public class TimelineControllerImpl implements TimelineController {
 
     public void setMin(double min) {
         if (model != null) {
-            model.setMinValue(min);
+            model.setCustomMin(min);
         }
     }
 
     public void setMax(double max) {
         if (model != null) {
-            model.setMaxValue(max);
+            model.setCustomMax(max);
         }
-    }
-
-    private void setTimeLineVisible(final boolean visible) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            public void run() {
-                final TopComponent topComponent = WindowManager.getDefault().findTopComponent("TimelineTopComponent");
-                if (visible && !topComponent.isOpened()) {
-                    topComponent.open();
-                    topComponent.requestActive();
-                } else if (!visible && topComponent.isOpened()) {
-                    topComponent.close();
-                }
-            }
-        });
     }
 
     protected void fireTimelineModelEvent(TimelineModelEvent event) {

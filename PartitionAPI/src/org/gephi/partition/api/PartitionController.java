@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.partition.api;
 
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.Estimator;
 import org.gephi.graph.api.Graph;
 import org.gephi.partition.spi.Transformer;
 import org.gephi.partition.spi.TransformerBuilder;
@@ -54,4 +55,6 @@ public interface PartitionController {
     public void showPie(boolean showPie);
 
     public PartitionModel getModel();
+
+    public void setDefaultEstimator(Estimator estimator);
 }

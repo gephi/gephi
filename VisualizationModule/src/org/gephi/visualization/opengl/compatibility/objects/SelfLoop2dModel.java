@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.opengl.compatibility.objects;
 
 import com.sun.opengl.util.BufferUtil;
@@ -37,7 +37,7 @@ import org.gephi.visualization.opengl.octree.Octant;
  *
  * @author Mathieu Bastian
  */
-public class SelfLoop2dModel extends ModelImpl<EdgeData> {
+public class SelfLoop2dModel extends Edge2dModel {
 
     private static Vec3f upVector = new Vec3f(0f, 1f, 0f);
     private static Vec3f sideVector = new Vec3f(1f, 0f, 0f);
@@ -61,9 +61,9 @@ public class SelfLoop2dModel extends ModelImpl<EdgeData> {
         } else {
             weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
         }
-        float weight = obj.getEdge().getWeight();
+        float w = weight;
         float edgeScale = vizModel.getEdgeScale();
-        weight = ((weight - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
+        w = ((w - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
         //
 
         //Params
@@ -73,18 +73,18 @@ public class SelfLoop2dModel extends ModelImpl<EdgeData> {
         float z = node.z();
 
         //Get thickness points
-        float baseRightX = x + sideVector.x() * weight / 2;
-        float baseRightY = y + sideVector.y() * weight / 2;
-        float baseRightZ = z + sideVector.z() * weight / 2;
-        float baseLeftX = x - sideVector.x() * weight / 2;
-        float baseLeftY = y - sideVector.y() * weight / 2;
-        float baseLeftZ = z - sideVector.z() * weight / 2;
-        float baseTopX = x + upVector.x() * weight / 2;
-        float baseTopY = y + upVector.y() * weight / 2;
-        float baseTopZ = z + upVector.z() * weight / 2;
-        float baseBottomX = x - upVector.x() * weight / 2;
-        float baseBottomY = y - upVector.y() * weight / 2;
-        float baseBottomZ = z - upVector.z() * weight / 2;
+        float baseRightX = x + sideVector.x() * w / 2;
+        float baseRightY = y + sideVector.y() * w / 2;
+        float baseRightZ = z + sideVector.z() * w / 2;
+        float baseLeftX = x - sideVector.x() * w / 2;
+        float baseLeftY = y - sideVector.y() * w / 2;
+        float baseLeftZ = z - sideVector.z() * w / 2;
+        float baseTopX = x + upVector.x() * w / 2;
+        float baseTopY = y + upVector.y() * w / 2;
+        float baseTopZ = z + upVector.z() * w / 2;
+        float baseBottomX = x - upVector.x() * w / 2;
+        float baseBottomY = y - upVector.y() * w / 2;
+        float baseBottomZ = z - upVector.z() * w / 2;
 
         //Calculate control points
         float height = node.getRadius() * 3;
@@ -267,5 +267,17 @@ public class SelfLoop2dModel extends ModelImpl<EdgeData> {
             return oc;
         }
         return this.octants;
+    }
+
+    @Override
+    public boolean isValid() {
+        return octants != null && octants[0] != null;
+    }
+
+    @Override
+    public void resetOctant() {
+        if (this.octants != null) {
+            this.octants[0] = null;
+        }
     }
 }

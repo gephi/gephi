@@ -32,6 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.NumberList;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 
 /**
  * TableCellRenderer for drawing sparklines from cells that have a NumberList or DynamicNumber as their value.
@@ -40,26 +41,30 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
 
     private static final Color SELECTED_BACKGROUND = new Color(225, 255, 255);
     private static final Color UNSELECTED_BACKGROUND = Color.white;
+    private TimeFormat timeFormat = TimeFormat.DOUBLE;
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         if (value == null) {
             //Render empty string when null
-            return super.getTableCellRendererComponent(table, "", isSelected, hasFocus, row, column);
+            return super.getTableCellRendererComponent(table, null, isSelected, hasFocus, row, column);
         }
 
-        Number[] numbers=null;
+        String stringRepresentation = null;
+        Number[] numbers = null;
         if (value instanceof NumberList) {
             numbers = getNumberListNumbers((NumberList) value);
-        } else if(value instanceof DynamicType){
-            numbers=getDynamicNumberNumbers((DynamicType) value);
-        }else{
+            stringRepresentation = value.toString();
+        } else if (value instanceof DynamicType) {
+            numbers = getDynamicNumberNumbers((DynamicType) value);
+            stringRepresentation=((DynamicType) value).toString(timeFormat==TimeFormat.DOUBLE);
+        } else {
             throw new IllegalArgumentException("Only number lists and dynamic numbers are supported for sparklines rendering");
         }
 
         //If there is less than 2 elements, show as a String.
         if (numbers.length < 2) {
-            return super.getTableCellRendererComponent(table, value.toString(), isSelected, hasFocus, row, column);
+            return super.getTableCellRendererComponent(table, stringRepresentation, isSelected, hasFocus, row, column);
         }
 
         JLabel label = new JLabel();
@@ -74,7 +79,7 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
         final SizeParams size = new SizeParams(table.getColumnModel().getColumn(column).getWidth(), table.getRowHeight(row) - 1, 1);
         final BufferedImage i = LineGraph.createGraph(numbers, size, Color.BLUE, background);
         label.setIcon(new ImageIcon(i));
-        label.setToolTipText(value.toString());//String representation as tooltip
+        label.setToolTipText(stringRepresentation);//String representation as tooltip
 
         return label;
     }
@@ -91,7 +96,7 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
         return numbers.toArray(new Number[0]);
     }
 
-    private Number[] getDynamicNumberNumbers(DynamicType dynamicNumber){
+    private Number[] getDynamicNumberNumbers(DynamicType dynamicNumber) {
         ArrayList<Number> numbers = new ArrayList<Number>();
         if (dynamicNumber == null) {
             return new Number[0];
@@ -106,5 +111,13 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
             }
         }
         return numbers.toArray(new Number[0]);
+    }
+
+    public TimeFormat getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(TimeFormat timeFormat) {
+        this.timeFormat = timeFormat;
     }
 }

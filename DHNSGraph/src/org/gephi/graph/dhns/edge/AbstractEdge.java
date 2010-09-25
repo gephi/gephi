@@ -71,6 +71,10 @@ public abstract class AbstractEdge implements Edge, AVLItem {
         return edgeData.getWeight();
     }
 
+    public float getWeight(double low, double high) {
+        return edgeData.getWeight(low, high);
+    }
+
     public void setWeight(float weight) {
         edgeData.setWeight(weight);
     }

@@ -1,0 +1,82 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "AddColumnUI.title"
+msgstr "Add new column - Settings"
+
+msgid "AddColumnUI.descriptionLabel.text.nodes"
+msgstr "<html><b>Add new column to nodes table</b><html>"
+
+msgid "AddColumnUI.descriptionLabel.text.edges"
+msgstr "<html><b>Add new column to edges table</b><html>"
+
+msgid "AddColumnUI.typeLabel.text"
+msgstr "Type of the column:"
+
+msgid "AddColumnUI.titleLabel.text"
+msgstr "Title of the column:"
+
+msgid "MergeColumnsUI.title"
+msgstr "Merge columns"
+
+msgid "MergeColumnsUI.availableColumnsLabel.text"
+msgstr "Available columns:"
+
+msgid "MergeColumnsUI.columnsToMergeLabel.text"
+msgstr "Columns to merge:"
+
+msgid "MergeColumnsUI.availableStrategiesLabel.text"
+msgstr "Available merge strategies:"
+
+msgid "MergeColumnsUI.description.text"
+msgstr "<html>Choose the columns to merge and a merge strategy</html>"
+
+msgid "MergeColumnsUI.problems.less_than_2_columns_selected"
+msgstr "At least 1 column has to be selected to merge"
+
+msgid "MergeColumnsUI.problems.not_executable_strategy"
+msgstr ""
+"The selected strategy cannot be executed with the given columns to merge"
+
+msgid "CSVExportUI.title"
+msgstr "Export table to CSV file"
+
+msgid "CSVExportUI.separatorLabel.text"
+msgstr "Values separator:"
+
+msgid "CSVExportUI.comma"
+msgstr "Comma"
+
+msgid "CSVExportUI.semicolon"
+msgstr "Semicolon"
+
+msgid "CSVExportUI.space"
+msgstr "Space"
+
+msgid "CSVExportUI.tab"
+msgstr "Tab"
+
+msgid "CSVExportUI.columnsLabel.text"
+msgstr "Columns to export:"
+
+msgid "CSVExportUI.charsetLabel.text"
+msgstr "Charset:"
+
+msgid "CSVExportUI.descriptionLabel.text"
+msgstr ""
+"<html>Table data will be exported to a CSV file with the selected charset</"
+"html>"

@@ -37,7 +37,7 @@ public class ImporterBuilderGEXF implements FileImporterBuilder {
     public static final String IDENTIFER = "gexf";
 
     public FileImporter buildImporter() {
-        return new ImporterGEXF2();
+        return new ImporterGEXF();
     }
 
     public String getName() {

@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalab.api;
 
+import java.text.SimpleDateFormat;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
@@ -53,6 +54,48 @@ public interface AttributeColumnsMergeStrategiesController {
      * @return The new created column
      */
     AttributeColumn joinWithSeparatorMerge(AttributeTable table, AttributeColumn[] columnsToMerge, AttributeType newColumnType, String newColumnTitle, String separator);
+
+    /**
+     * <p>Merge 1 or 2 columns creating a time interval for each row. Values of the columns will be expected as numbers</p>
+     * <p>Only one of the 2 column could be null, and its corresponding start/end default will be used.</p>
+     * <p>Columns can be of any type. If not numeric, their values will be parsed.</p>
+     * <p>Default start and end values will be used when the columns don't have a value or it can't be parsed to a double.</p>
+     * <p>When start > end for any reason:
+     * <ul>
+     * <li>If both columns were provided: A infinite time interval will be set</li>
+     * <li>If only one column was provided: The value for the provided column will be kept and the other will be infinite</li>
+     * </ul>
+     * </p>
+     * @param table Table of the columns, can't be null or wrong
+     * @param startColumn Column to use as start value
+     * @param endColumn Column to use as end value
+     * @param defaultStart Default start value
+     * @param defaultEnd Default end value
+     * @return Time interval column
+     */
+    AttributeColumn mergeNumericColumnsToTimeInterval(AttributeTable table, AttributeColumn startColumn, AttributeColumn endColumn, double defaultStart, double defaultEnd);
+
+    /**
+     * <p>Merge 1 or 2 columns creating a time interval for each row. Values of the columns will be expected as dates in the given date format</p>
+     * <p>Only one of the 2 column could be null, and its corresponding start/end default will be used.</p>
+     * <p>Columns can be of any type.</p>
+     * <p>Default start and end values will be used when the columns don't have a value or it can't be parsed to a date.
+     * If a default value can't be parsed to a date, infinity will be used as default instead.</p>
+     * <p>When start > end for any reason:
+     * <ul>
+     * <li>If both columns were provided: A infinite time interval will be set</li>
+     * <li>If only one column was provided: The value for the provided column will be kept and the other will be infinite</li>
+     * </ul>
+     * </p>
+     * @param table Table of the columns, can't be null or wrong
+     * @param startColumn Column to use as start value
+     * @param endColumn Column to use as end value
+     * @param dateFormat Format for the dates, can't be null
+     * @param defaultStartDate Default date to use as start if it can be parsed
+     * @param defaultEndDate Default date to use as end if it can be parsed
+     * @return Time interval column
+     */
+    AttributeColumn mergeDateColumnsToTimeInterval(AttributeTable table, AttributeColumn startColumn, AttributeColumn endColumn, SimpleDateFormat dateFormat, String defaultStartDate, String defaultEndDate);
 
     /**
      * <p>Strategy to apply only to all boolean columns. Merges various columns into a new boolean column

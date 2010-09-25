@@ -38,6 +38,8 @@ public interface NodeDraftGetter extends NodeDraft {
 
     public String getId();
 
+    public boolean isAutoId();
+
     public String getLabel();
 
     public float getSize();

@@ -37,6 +37,9 @@
 
         <!-- Unzip Netbeans Platform Localization JARs -->
         <antcall target="merge-l10n-mac"/>
+
+        <delete file="${nbdist-contents.dir}/Info.plist"/>
+        <copy tofile="${nbdist-contents.dir}/Info.plist" file="nbproject/Info.plist" />
     </target>
 
     <!-- Override to add localization JARs. -->
@@ -134,6 +137,7 @@
             <fileset dir="${toolkit.platformdir}/modules">
                 <include name="org-openide-nodes.jar"/>
                 <include name="org-netbeans-modules-masterfs.jar"/>
+                <include name="org-openide-dialogs.jar"/>
             </fileset>
         </copy>
         <copy todir="${toolkit.tempdir}">

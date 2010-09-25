@@ -20,8 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.processor.plugin;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
@@ -120,15 +122,35 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
         DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
         dynamicController.setTimeFormat(dateMode ? DynamicModel.TimeFormat.DATE : DynamicModel.TimeFormat.DOUBLE);
 
+        //Index existing graph
+        Map<String, Node> map = new HashMap<String, Node>();
+        for (Node n : graph.getNodes()) {
+            String id = n.getNodeData().getId();
+            if (id != null && !id.equalsIgnoreCase(String.valueOf(n.getId()))) {
+                map.put(id, n);
+            }
+            if (n.getNodeData().getLabel() != null && !n.getNodeData().getLabel().isEmpty()) {
+                map.put(n.getNodeData().getLabel(), n);
+            }
+        }
+
         //Create all nodes
         Set<Node> nodesInDraft = new HashSet<Node>();
         int newNodeCount = 0;
         for (NodeDraftGetter draftNode : container.getNodes()) {
-            Node node = graph.getNode(draftNode.getId()) != null ? graph.getNode(draftNode.getId()) : graph.getNode(draftNode.getLabel());
+            Node node = null;
+            String id = draftNode.getId();
+            String label = draftNode.getLabel();
+            if (!draftNode.isAutoId() && id != null && map.get(id) != null) {
+                node = map.get(id);
+            } else if (label != null && map.get(label) != null) {
+                node = map.get(label);
+            }
+
             TimeInterval timeInterval = null;
             if (node == null) {
                 //Node is new
-                node = factory.newNode(draftNode.getId());
+                node = factory.newNode(draftNode.isAutoId() ? null : draftNode.getId());
                 flushToNode(draftNode, node);
                 draftNode.setNode(node);
                 newNodeCount++;
@@ -176,13 +198,13 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
                 //Edge is new
                 switch (container.getEdgeDefault()) {
                     case DIRECTED:
-                        edge = factory.newEdge(draftEdge.getId(), source, target, draftEdge.getWeight(), true);
+                        edge = factory.newEdge(draftEdge.isAutoId() ? null : draftEdge.getId(), source, target, draftEdge.getWeight(), true);
                         break;
                     case UNDIRECTED:
-                        edge = factory.newEdge(draftEdge.getId(), source, target, draftEdge.getWeight(), false);
+                        edge = factory.newEdge(draftEdge.isAutoId() ? null : draftEdge.getId(), source, target, draftEdge.getWeight(), false);
                         break;
                     case MIXED:
-                        edge = factory.newEdge(draftEdge.getId(), source, target, draftEdge.getWeight(), draftEdge.getType().equals(EdgeType.UNDIRECTED) ? false : true);
+                        edge = factory.newEdge(draftEdge.isAutoId() ? null : draftEdge.getId(), source, target, draftEdge.getWeight(), draftEdge.getType().equals(EdgeType.UNDIRECTED) ? false : true);
                         break;
                 }
                 newEdgeCount++;

@@ -1,0 +1,121 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "JoinWithSeparator.name"
+msgstr "Join values with separator"
+
+msgid "JoinWithSeparator.description"
+msgstr ""
+"Joins the values of columns of any type putting the given separator (or no "
+"separator) between each pair of columns. The new created column has type "
+"STRING."
+
+msgid "JoinNumberColumns.name"
+msgstr "Join number/number list columns"
+
+msgid "JoinNumberColumns.description"
+msgstr ""
+"Joins the values of various number/number list columns into a new number "
+"list column with the type LIST_BIGDECIMAL."
+
+msgid "CreateTimeInterval.name"
+msgstr "Create time interval"
+
+msgid "CreateTimeInterval.description"
+msgstr ""
+"Creates a time interval for each row taking 1 or 2 columns as start/end "
+"times and using the indicated default times."
+
+msgid "AverageNumber.name"
+msgstr "Calculate average value"
+
+msgid "AverageNumber.description"
+msgstr ""
+"Calculate the average value of all numbers in the given columns (only number "
+"or number list columns) and creates a new column (BIGDECIMAL) with the "
+"result."
+
+msgid "FirstQuartileNumber.name"
+msgstr "Calculate first quartile (Q1)"
+
+msgid "FirstQuartileNumber.description"
+msgstr ""
+"Calculates the first quartile (Q1) value of all numbers in the given columns "
+"(only number or number list columns) and creates a new column (BIGDECIMAL) "
+"with the result."
+
+msgid "MedianNumber.name"
+msgstr "Calculate median value"
+
+msgid "MedianNumber.description"
+msgstr ""
+"Calculates the median value of all numbers in the given columns (only number "
+"or number list columns) and creates a new column (BIGDECIMAL) with the "
+"result."
+
+msgid "ThirdQuartileNumber.name"
+msgstr "Calculate third quartile (Q3)"
+
+msgid "ThirdQuartileNumber.description"
+msgstr ""
+"Calculates the third quartile (Q3) value of all numbers in the given columns "
+"(only number or number list columns) and creates a new column (BIGDECIMAL) "
+"with the result."
+
+msgid "InterQuartileRangeNumber.name"
+msgstr "Calculate interquartile range (IQR)"
+
+msgid "InterQuartileRangeNumber.description"
+msgstr ""
+"Calculates the interquartile range (IQR) value of all numbers in the given "
+"columns (only number or number list columns) and creates a new column "
+"(BIGDECIMAL) with the result."
+
+msgid "SumNumbers.name"
+msgstr "Sum number values"
+
+msgid "SumNumbers.description"
+msgstr ""
+"Calculates the sum of all numbers in the given columns (only number or "
+"number list columns) and creates a new column (BIGDECIMAL) with the result."
+
+msgid "MinimumNumber.name"
+msgstr "Calculate minimum value"
+
+msgid "MinimumNumber.description"
+msgstr ""
+"Calculates the minimum value of all numbers in the given columns (only "
+"number or number list columns) and creates a new column (BIGDECIMAL) with "
+"the result."
+
+msgid "MaximumNumber.name"
+msgstr "Calculate maximum value"
+
+msgid "MaximumNumber.description"
+msgstr ""
+"Calculates the maximum value of all numbers in the given columns (only "
+"number or number list columns) and creates a new column (BIGDECIMAL) with "
+"the result."
+
+msgid "BooleanLogicOperations.name"
+msgstr "Logic merge of boolean columns"
+
+msgid "BooleanLogicOperations.description"
+msgstr ""
+"Merge various boolean columns in the selected order to create a new column, "
+"choosing the logical operations applied between each pair of columns. If any "
+"value is null, false will be used instead."

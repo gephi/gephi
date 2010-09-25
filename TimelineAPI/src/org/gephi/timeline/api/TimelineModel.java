@@ -1,28 +1,26 @@
 /*
-Copyright 2010 WebAtlas
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Patrick J. McSweeney
+Copyright 2008-2010 Gephi
+Authors : Julian Bilcke <julian.bilcke@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
 
 Gephi is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
 Gephi is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.timeline.api;
 
-import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicModel;
-import org.gephi.filters.spi.FilterProperty;
 
 /**
  *
@@ -34,127 +32,29 @@ public interface TimelineModel {
 
     public void unsetup();
 
-    /**
-     *
-     * @return
-     */
+    public void disable();
+
     public double getTotalSize();
 
-    /**
-     *
-     * @return
-     */
-    public double getRangeSizeValue();
-
-    /**
-     *
-     * @return
-     */
-    public double getRangeSizeFloat();
-
-    /**
-     *
-     * @param min
-     */
-    public void setMinValue(double min);
-
-    /**
-     *
-     * @param max
-     */
-    public void setMaxValue(double max);
-
-    /**
-     *
-     * @param min
-     * @param max
-     */
-    public void setMinMax(double min, double max);
-
-
-    /**
-     *
-     * @return
-     */
     public double getMinValue();
 
-    /**
-     *
-     * @return
-     */
     public double getMaxValue();
 
-
-    /**
-     * Set the range using real values
-     *
-     * @param from
-     * @param to
-     */
-    public void setRangeFromRealValues(double from, double to);
-
-    /**
-     *
-     * @param from
-     * @param to
-     */
-    public void setRangeFromFloat(double from, double to);
-
-    /**
-     *
-     * @param from
-     */
-    public void setFromFloat(double from);
-
-    /**
-     *
-     * @param to
-     */
-    public void setToFloat(double to);
-
-    /**
-     *
-     * @return
-     */
     public double getFromFloat();
 
-    /**
-     *
-     * @return
-     */
     public double getToFloat();
 
-    /**
-     *
-     * @param from
-     */
-    public void setFromValue(double from);
+    public void setCustomMin(double min);
 
-    /**
-     *
-     * @param to
-     */
-    public void setToValue(double to);
+    public void setCustomMax(double max);
 
-    /**
-     *
-     * @return
-     */
-    public double getFromValue();
+    public void setRangeFromFloat(double from, double to);
 
-    /**
-     *
-     * @return
-     */
-    public double getToValue();
-
-    /**
-     * Return the absolute value from a relative value
-     *
-     * @param position
-     * @return
-     */
     public double getValueFromFloat(double position);
+
+    public boolean isEnabled();
+
+    public void setEnabled(boolean enabled);
 
     public void setUnit(Class cl);
 

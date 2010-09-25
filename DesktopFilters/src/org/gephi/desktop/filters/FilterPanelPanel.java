@@ -23,11 +23,13 @@ package org.gephi.desktop.filters;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -44,6 +46,9 @@ public class FilterPanelPanel extends JPanel implements ChangeListener {
     public FilterPanelPanel() {
         super(new BorderLayout());
         settingsString = NbBundle.getMessage(FilterPanelPanel.class, "FilterPanelPanel.settings");
+        if (UIUtils.isAquaLookAndFeel()) {
+            setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
     }
 
     public void stateChanged(ChangeEvent e) {
@@ -91,6 +96,7 @@ public class FilterPanelPanel extends JPanel implements ChangeListener {
                         JPanel panel = builder.getPanel(query.getFilter());
                         if (panel != null) {
                             add(panel, BorderLayout.CENTER);
+                            panel.setOpaque(false);
                             setBorder(javax.swing.BorderFactory.createTitledBorder(query.getFilter().getName() + " " + settingsString));
                         }
                     } catch (Exception e) {

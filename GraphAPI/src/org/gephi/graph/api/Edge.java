@@ -61,6 +61,18 @@ public interface Edge {
     public float getWeight();
 
     /**
+     * Returns the weight of the edge for the given time interval.
+     * If the weight is dynamic, it has several values over time. This method
+     * returns the weight for a particular interval.
+     * @param low       the lower interval bound, can be
+     *                  <code>Double.NEGATIVE_INFINITY</code>
+     * @param high      the upper interval bound, can be
+     *                  <code>Double.POSITIVE_INFINITY</code>
+     * @return          the weight of the edge at this [low,high] interval
+     */
+    public float getWeight(double low, double high);
+
+    /**
      * Set the weight of the edge.
      * @param weight    the weight of the edge
      */

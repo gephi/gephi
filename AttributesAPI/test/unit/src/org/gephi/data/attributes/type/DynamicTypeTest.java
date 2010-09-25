@@ -22,6 +22,7 @@ package org.gephi.data.attributes.type;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.Estimator;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -84,7 +85,7 @@ public class DynamicTypeTest {
 		DynamicDouble instance2 = new DynamicDouble();
 		Double expResult1 = 0.0;
 		Double result1    = instance1.getLow();
-		Double expResult2 = Double.POSITIVE_INFINITY;
+		Double expResult2 = Double.NEGATIVE_INFINITY;
 		Double result2    = instance2.getLow();
 		assertEquals(expResult1, result1);
 		assertEquals(expResult2, result2);
@@ -102,7 +103,7 @@ public class DynamicTypeTest {
 		DynamicDouble instance2 = new DynamicDouble();
 		Double expResult1 = 30.0;
 		Double result1    = instance1.getHigh();
-		Double expResult2 = Double.NEGATIVE_INFINITY;
+		Double expResult2 = Double.POSITIVE_INFINITY;
 		Double result2    = instance2.getHigh();
 		assertEquals(expResult1, result1);
 		assertEquals(expResult2, result2);
@@ -117,10 +118,10 @@ public class DynamicTypeTest {
 	public void testIsInRange() {
 		System.out.println("isInRange()");
 		DynamicDouble instance = makeTree1();
-		Boolean expResult1 = true;
-		Boolean result1    = instance.isInRange(-1.0, 31.0);
-		Boolean expResult2 = false;
-		Boolean result2    = instance.isInRange(1.0, 20.0);
+		Boolean expResult1 = false;
+		Boolean result1    = instance.isInRange(11.0, 14.0);
+		Boolean expResult2 = true;
+		Boolean result2    = instance.isInRange(9.0, 12.0);
 		assertEquals(expResult1, result1);
 		assertEquals(expResult2, result2);
 		System.out.println("expResult1: " + expResult1);
@@ -327,7 +328,7 @@ public class DynamicTypeTest {
 			StringBuilder sb = new StringBuilder("<");
 			sb.append(list.get(0).toString());
 			for (int i = 1; i < list.size(); ++i)
-				sb.append(", ").append(list.get(i).toString());
+				sb.append("; ").append(list.get(i).toString());
 			sb.append(">");
 			result = sb.toString();
 		}
@@ -398,8 +399,8 @@ public class DynamicTypeTest {
 		System.out.println("toString()");
 		DynamicDouble instance  = makeELboundsTree();
 		StringBuilder expResult = new StringBuilder("<");
-		expResult.append("[0.1, 0.2, 1.0), ");
-		expResult.append("[0.2, 0.3, 2.0), ");
+		expResult.append("[0.1, 0.2, 1.0); ");
+		expResult.append("[0.2, 0.3, 2.0); ");
 		expResult.append("(0.3, 0.4, 3.0)");
 		expResult.append(">");
 		String result = instance.toString();
@@ -407,6 +408,48 @@ public class DynamicTypeTest {
 		System.out.println("expResult: " + expResult);
 		System.out.println("result:    " + result);
 		System.out.println();
+	}   
+
+	@Test
+	public void testDeserialization() {
+		System.out.println("deserialization");
+		DynamicDouble instance1 = makeELboundsTree();
+		DynamicDouble instance2 = (DynamicDouble)AttributeType.DYNAMIC_DOUBLE.parse(instance1.toString());
+		DynamicDouble instance3 = new DynamicDouble();
+		DynamicDouble instance4 = (DynamicDouble)AttributeType.DYNAMIC_DOUBLE.parse(instance3.toString());
+		TimeInterval  instance5 = makeTimeInterval();
+		TimeInterval  instance6 = (TimeInterval)AttributeType.TIME_INTERVAL.parse(instance5.toString());
+		assertEquals(instance1, instance2);
+		assertEquals(instance3, instance4);
+		assertEquals(instance5, instance6);
+		System.out.println("instance1: " + instance1);
+		System.out.println("instance2: " + instance2);
+		System.out.println("instance3: " + instance3);
+		System.out.println("instance4: " + instance4);
+		System.out.println("instance5: " + instance5);
+		System.out.println("instance6: " + instance6);
+		System.out.println();
+	}
+
+	@Test
+	public void testOrder() {
+		DynamicInteger instance = new DynamicInteger();
+		instance = new DynamicInteger(instance, new Interval<Integer>(2009, 2010, 1));
+		instance = new DynamicInteger(instance, new Interval<Integer>(2006, 2007, 2));
+		instance = new DynamicInteger(instance, new Interval<Integer>(2001, 2002, 3));
+
+		List<Interval<Integer>> intervals = instance.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+		assertEquals(new Interval<Integer>(2001, 2002, 3), intervals.get(0));
+		assertEquals(new Interval<Integer>(2006, 2007, 2), intervals.get(1));
+		assertEquals(new Interval<Integer>(2009, 2010, 1), intervals.get(2));
+	}
+
+	private TimeInterval makeTimeInterval() {
+		List<Interval> intervals = new ArrayList<Interval>();
+		intervals.add(new Interval<Double>(0.1, 0.2, false, true));
+		intervals.add(new Interval<Double>(0.2, 0.3, false, true));
+		intervals.add(new Interval<Double>(0.3, 0.4, true,  true));
+		return new TimeInterval(intervals);
 	}
 
 	private DynamicDouble makeELboundsTree() {

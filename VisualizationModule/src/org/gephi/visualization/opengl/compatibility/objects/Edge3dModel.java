@@ -59,7 +59,7 @@ public class Edge3dModel extends Edge2dModel {
 
         //Edge weight
         GraphLimits limits = vizModel.getLimits();
-        float weight;
+        float w;
         if (obj.getEdge() instanceof MetaEdge) {
             float weightRatio;
             if (limits.getMinMetaWeight() == limits.getMaxMetaWeight()) {
@@ -68,8 +68,8 @@ public class Edge3dModel extends Edge2dModel {
                 weightRatio = Math.abs((WEIGHT_MAXIMUM - WEIGHT_MINIMUM) / (limits.getMaxMetaWeight() - limits.getMinMetaWeight()));
             }
             float edgeScale = vizModel.getEdgeScale() * vizModel.getMetaEdgeScale();
-            weight = obj.getEdge().getWeight();
-            weight = ((weight - limits.getMinMetaWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
+            w = weight;
+            w = ((w - limits.getMinMetaWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
         } else {
             float weightRatio;
             if (limits.getMinWeight() == limits.getMaxWeight()) {
@@ -78,8 +78,8 @@ public class Edge3dModel extends Edge2dModel {
                 weightRatio = Math.abs((WEIGHT_MAXIMUM - WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
             }
             float edgeScale = vizModel.getEdgeScale();
-            weight = obj.getEdge().getWeight();
-            weight = ((weight - limits.getMinWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
+            w = weight;
+            w = ((w - limits.getMinWeight()) * weightRatio + WEIGHT_MINIMUM) * edgeScale;
         }
         //
 
@@ -89,8 +89,8 @@ public class Edge3dModel extends Edge2dModel {
         float y2 = obj.getTarget().y();
         float z1 = obj.getSource().z();
         float z2 = obj.getTarget().z();
-        float t1 = weight;
-        float t2 = weight;
+        float t1 = w;
+        float t2 = w;
 
         //CameraVector, from camera location to any point on the line
         float cameraVectorX = x1 - cameraLocation[0];

@@ -46,28 +46,29 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="showEdgesCheckbox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="labelEdgeColor" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="53" max="32767" attributes="0"/>
-              </Group>
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="edgeColorButton" min="-2" pref="24" max="-2" attributes="1"/>
-                          <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
-                          <Component id="sourceNodeColorCheckbox" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Component id="scalePanel" alignment="0" pref="61" max="32767" attributes="1"/>
-                      <Component id="selectionColorPanel" alignment="1" min="-2" max="-2" attributes="1"/>
-                      <Component id="metaScalePanel" alignment="1" pref="61" max="32767" attributes="1"/>
+          <Group type="102" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="showEdgesCheckbox" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="labelEdgeColor" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="edgeColorButton" min="-2" pref="24" max="-2" attributes="1"/>
+                              <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
+                              <Component id="sourceNodeColorCheckbox" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="scalePanel" alignment="0" pref="61" max="32767" attributes="1"/>
+                          <Component id="selectionColorPanel" alignment="1" min="-2" max="-2" attributes="1"/>
+                          <Component id="metaScalePanel" alignment="1" pref="61" max="32767" attributes="1"/>
+                      </Group>
+                  </Group>
               </Group>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

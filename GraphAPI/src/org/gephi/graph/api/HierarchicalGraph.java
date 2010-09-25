@@ -395,6 +395,20 @@ public interface HierarchicalGraph extends Graph {
     public EdgeIterable getMetaEdges(Node nodeGroup);
 
     /**
+     * Finds and returns a <b>directed</b> or <b>undirected</b> meta edge that connects <code>node1</code> and
+     * <code>node2</code>. Returns <code>null</code> if no such edge is found.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
+     * @param node1 the first incident node of the queried meta edge
+     * @param node2 thge second incident node of the queried meta edge
+     * @return a meta edge that connects <code>node1</code> and <code>node2</code>
+     * or <code>null</code> if no such edge exists
+     * @throws IllegalArgumentException if <code>node1</code> or <code>node2</code>
+     * are <code>null</code> or not legal nodes in the graph
+    */
+    public MetaEdge getMetaEdge(Node node1, Node node2);
+
+    /**
      * Returns the number of <code>node</code>'s incident meta edges.
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
      * statement.

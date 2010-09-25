@@ -31,6 +31,7 @@ import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.event.ColumnEvent;
 import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
+import org.gephi.data.attributes.type.TypeConvertor;
 import org.gephi.data.properties.PropertiesColumn;
 
 /**
@@ -106,7 +107,7 @@ public class AttributeTableImpl implements AttributeTable {
         columns.add(column);
         columnsMap.put(id, column);
         if (title != null && !title.equals(id)) {
-            columnsMap.put(title, column);
+            columnsMap.put(title.toLowerCase(), column);
         }
         columnsSet.put(column, column);
 
@@ -146,6 +147,30 @@ public class AttributeTableImpl implements AttributeTable {
         version++;
     }
 
+    private synchronized void replaceColumn(AttributeColumn source, AttributeColumnImpl target) {
+        int index = columns.indexOf(source);
+        if (index == -1) {
+            return;
+        }
+        //Remove from collections
+        columnsMap.remove(source.getId());
+        if (source.getTitle() != null && !source.getTitle().equals(source.getId())) {
+            columnsMap.remove(source.getTitle());
+        }
+        columnsSet.remove(source);
+
+        //Add
+        columns.set(index, target);
+        columnsMap.put(target.id, target);
+        if (target.title != null && !target.title.equals(target.id)) {
+            columnsMap.put(target.title.toLowerCase(), target);
+        }
+        columnsSet.put(target, target);
+
+        //Version
+        version++;
+    }
+
     public synchronized AttributeColumnImpl getColumn(int index) {
         if (index >= 0 && index < columns.size()) {
             return columns.get(index);
@@ -155,11 +180,15 @@ public class AttributeTableImpl implements AttributeTable {
     }
 
     public synchronized AttributeColumnImpl getColumn(String id) {
-        return columnsMap.get(id);
+        AttributeColumnImpl col = columnsMap.get(id);
+        if (col == null) {
+            return columnsMap.get(id.toLowerCase());
+        }
+        return col;
     }
 
     public synchronized AttributeColumnImpl getColumn(String title, AttributeType type) {
-        AttributeColumnImpl c = columnsMap.get(title);
+        AttributeColumnImpl c = columnsMap.get(title.toLowerCase());
         if (c != null && c.getType().equals(type)) {
             return c;
         }
@@ -168,11 +197,10 @@ public class AttributeTableImpl implements AttributeTable {
 
     public synchronized AttributeColumn getColumn(AttributeColumn column) {
         return columnsSet.get(column);
-
     }
 
     public synchronized boolean hasColumn(String title) {
-        return columnsMap.containsKey(title);
+        return columnsMap.containsKey(title) || columnsMap.containsKey(title.toLowerCase());
     }
 
     public synchronized int getVersion() {
@@ -203,7 +231,15 @@ public class AttributeTableImpl implements AttributeTable {
         for (AttributeColumn column : table.getColumns()) {
             AttributeColumn existingCol = getColumn(column);
             if (existingCol == null) {
+                existingCol = getColumn(column.getTitle());
+            }
+            if (existingCol == null) {
                 addColumn(column.getId(), column.getTitle(), column.getType(), column.getOrigin(), column.getDefaultValue());
+            } else if (column.getType().isDynamicType() && TypeConvertor.getStaticType(column.getType()).equals(existingCol.getType())) {
+                //The column exists but has the underlying static type
+                //Change type
+                AttributeColumnImpl newCol = new AttributeColumnImpl(this, existingCol.getIndex(), existingCol.getId(), existingCol.getTitle(), column.getType(), existingCol.getOrigin(), column.getDefaultValue(), null);
+                replaceColumn(existingCol, newCol);
             }
         }
     }

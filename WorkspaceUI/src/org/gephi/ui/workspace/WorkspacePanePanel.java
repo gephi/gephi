@@ -41,7 +41,7 @@ import org.openide.util.NbBundle;
  */
 public final class WorkspacePanePanel extends javax.swing.JPanel implements MouseListener {
 
-    private Workspace workspace;
+    private final Workspace workspace;
 
     public WorkspacePanePanel(Workspace workspace) {
         this.workspace = workspace;

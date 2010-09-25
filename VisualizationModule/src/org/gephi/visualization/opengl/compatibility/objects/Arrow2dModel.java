@@ -42,11 +42,10 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
     protected static float ARROW_WIDTH = 1f;
     protected static float ARROW_HEIGHT = 1.1f;
     protected EdgeData edge;
-    protected float[] cameraLocation;
-
+    protected float weight;
+    
     private Arrow2dModel() {
         super();
-        cameraLocation = VizController.getInstance().getDrawable().getCameraLocation();
         octants = new Octant[1];
     }
 
@@ -65,7 +64,7 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
 
         //Edge weight
         GraphLimits limits = vizModel.getLimits();
-        float weight;
+        float w;
         if (edge.getEdge() instanceof MetaEdge) {
             float weightRatio;
             if (limits.getMinMetaWeight() == limits.getMaxMetaWeight()) {
@@ -74,8 +73,8 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
                 weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxMetaWeight() - limits.getMinMetaWeight()));
             }
             float edgeScale = vizModel.getEdgeScale() * vizModel.getMetaEdgeScale();
-            weight = edge.getEdge().getWeight();
-            weight = ((weight - limits.getMinMetaWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
+            w = weight;
+            w = ((w - limits.getMinMetaWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
         } else {
             float weightRatio;
             if (limits.getMinWeight() == limits.getMaxWeight()) {
@@ -84,14 +83,14 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
                 weightRatio = Math.abs((Edge2dModel.WEIGHT_MAXIMUM - Edge2dModel.WEIGHT_MINIMUM) / (limits.getMaxWeight() - limits.getMinWeight()));
             }
             float edgeScale = vizModel.getEdgeScale();
-            weight = edge.getEdge().getWeight();
-            weight = ((weight - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
+            w = weight;
+            w = ((w - limits.getMinWeight()) * weightRatio + Edge2dModel.WEIGHT_MINIMUM) * edgeScale;
         }
         //
 
         //Edge size
-        float arrowWidth = ARROW_WIDTH * weight * 2f;
-        float arrowHeight = ARROW_HEIGHT * weight * 2f;
+        float arrowWidth = ARROW_WIDTH * w * 2f;
+        float arrowHeight = ARROW_HEIGHT * w * 2f;
 
         float x2 = nodeTo.x();
         float y2 = nodeTo.y();
@@ -265,5 +264,9 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
 
     @Override
     public void cleanModel() {
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
     }
 }

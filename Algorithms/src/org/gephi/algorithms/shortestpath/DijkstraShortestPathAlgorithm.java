@@ -17,15 +17,19 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.algorithms.shortestpath;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.DynamicUtilities;
+import org.gephi.dynamic.api.DynamicController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -33,13 +37,18 @@ import org.gephi.graph.api.Node;
  */
 public class DijkstraShortestPathAlgorithm extends AbstractShortestPathAlgorithm {
 
-    protected Graph graph;
-    protected HashMap<Node, Edge> predecessors;
+    protected final Graph graph;
+    protected final HashMap<Node, Edge> predecessors;
+    protected TimeInterval timeInterval;
 
     public DijkstraShortestPathAlgorithm(Graph graph, Node sourceNode) {
         super(sourceNode);
         this.graph = graph;
         predecessors = new HashMap<Node, Edge>();
+        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        if (dynamicController != null) {
+            timeInterval = DynamicUtilities.getVisibleInterval(dynamicController.getModel(graph.getGraphModel().getWorkspace()));
+        }
     }
 
     public void compute() {
@@ -91,7 +100,11 @@ public class DijkstraShortestPathAlgorithm extends AbstractShortestPathAlgorithm
         graph.readUnlock();
     }
 
-    private double edgeWeight(Edge edge) {
+    @Override
+    protected double edgeWeight(Edge edge) {
+        if (timeInterval != null) {
+            return edge.getWeight(timeInterval.getLow(), timeInterval.getHigh());
+        }
         return edge.getWeight();
     }
 

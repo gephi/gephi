@@ -68,10 +68,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     public boolean setAttributeValue(Object value, Attributes row, AttributeColumn column) {
         AttributeType targetType = column.getType();
-        try {
-            value = targetType.parse(value.toString());//Try to convert to target type
-        } catch (Exception ex) {
-            value = null;//Could not parse
+        if (value != null && !value.getClass().equals(targetType.getType())) {
+            try {
+                value = targetType.parse(value.toString());//Try to convert to target type
+            } catch (Exception ex) {
+                value = null;//Could not parse
+            }
         }
 
         if (value == null && !canClearColumnData(column)) {
@@ -722,7 +724,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     private void checkColumnsAreNumberOrNumberList(AttributeColumn[] columns) {
-        if (columns == null || !AttributeUtils.getDefault().areAllNumberOrNumberListColumns(columns)) {
+        if (columns == null || (!AttributeUtils.getDefault().areAllNumberOrNumberListColumns(columns) && !AttributeUtils.getDefault().areAllDynamicNumberColumns(columns))) {
             throw new IllegalArgumentException("All columns have to be number or number list columns and can't be null");
         }
     }

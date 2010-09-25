@@ -32,10 +32,12 @@ import javax.swing.JMenuItem;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
+import org.openide.modules.InstalledFileLocator;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
+import org.openide.util.Utilities;
 import org.openide.util.actions.CallableSystemAction;
 
 public final class LanguageAction extends CallableSystemAction {
@@ -84,7 +86,7 @@ public final class LanguageAction extends CallableSystemAction {
             JMenuItem menuItem = new JMenuItem(new AbstractAction(lang.getName()) {
 
                 public void actionPerformed(ActionEvent e) {
-                    String msg = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.message");
+                    String msg = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.message" + (Utilities.isMac() ? ".mac" : ""));
                     String title = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.title");
                     DialogDescriptor.Confirmation dd = new DialogDescriptor.Confirmation(msg, title, DialogDescriptor.YES_NO_OPTION);
                     if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.YES_OPTION)) {
@@ -104,7 +106,13 @@ public final class LanguageAction extends CallableSystemAction {
     }
 
     private void setLanguage(Language language) {
-        final String homePath = System.getProperty("user.dir"); // NOI18N
+        String homePath;
+        if (Utilities.isMac()) {
+            homePath = System.getProperty("netbeans.home");
+        } else {
+            homePath = System.getProperty("user.dir");
+        }
+
         File etc = new File(homePath, "etc");
         if (!etc.exists()) {
             File base = new File(homePath).getParentFile();
@@ -143,7 +151,10 @@ public final class LanguageAction extends CallableSystemAction {
             writer.close();
 
             //Restart
-            LifecycleManager.getDefault().markForRestart();
+            if (!Utilities.isMac()) {
+                //On Mac the change is applied only if restarted manually
+                LifecycleManager.getDefault().markForRestart();
+            }
             LifecycleManager.getDefault().exit();
         } catch (Exception e) {
             Exceptions.printStackTrace(e);

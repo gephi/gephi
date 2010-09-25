@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -62,7 +63,8 @@ public class RankingControllerImpl implements RankingController {
         rankingResult.ranking = ranking;
 
         Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraphVisible();
-        boolean refreshed = RankingFactory.refreshRanking((AbstractRanking) ranking, graph);
+        DynamicModel dynamicModel = rankingModelImpl.getDynamicModel();
+        boolean refreshed = RankingFactory.refreshRanking((AbstractRanking) ranking, graph, dynamicModel != null ? dynamicModel.getVisibleInterval() : null);
 
         if (ranking instanceof NodeRanking) {
             ((AbstractRanking) ranking).setGraph(graph);

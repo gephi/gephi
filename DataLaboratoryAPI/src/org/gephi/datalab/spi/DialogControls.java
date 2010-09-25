@@ -33,4 +33,10 @@ public interface DialogControls {
      * @param enabled
      */
     void setOkButtonEnabled(boolean enabled);
+
+    /**
+     * Indicates if ok button is enabled for this dialog at the moment
+     * @return
+     */
+    boolean isOkButtonEnabled();
 }

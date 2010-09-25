@@ -20,3 +20,60 @@ msgstr "Utils classes for UI"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Utils classes for UI"
+
+msgid "ColumnTitleValidator.title.empty"
+msgstr "Column title can't be empty"
+
+msgid "ColumnTitleValidator.title.repeated"
+msgstr "Column title can't be repeated in the same table"
+
+msgid "ChartsUtils.report.header"
+msgstr "<h1>Statistic values report for ''{0}''</h1>"
+
+msgid "ChartsUtils.report.empty"
+msgstr "There is no number data to calculate statistics."
+
+msgid "ChartsUtils.report.average"
+msgstr "Average"
+
+msgid "ChartsUtils.report.Q1"
+msgstr "First quartile (Q1)"
+
+msgid "ChartsUtils.report.median"
+msgstr "Median"
+
+msgid "ChartsUtils.report.Q3"
+msgstr "Third quartile (Q3)"
+
+msgid "ChartsUtils.report.IQR"
+msgstr "Interquartile range (IQR)"
+
+msgid "ChartsUtils.report.sum"
+msgstr "Sum"
+
+msgid "ChartsUtils.report.min"
+msgstr "Minimum"
+
+msgid "ChartsUtils.report.max"
+msgstr "Maximum"
+
+msgid "ChartsUtils.report.box-plot.title"
+msgstr "Box-plot"
+
+msgid "ChartsUtils.report.box-plot.values"
+msgstr "Values"
+
+msgid "ChartsUtils.report.box-plot.values-range"
+msgstr "Range of values"
+
+msgid "ChartsUtils.report.scatter-plot.title"
+msgstr "Scatter plot"
+
+msgid "ChartsUtils.report.scatter-plot.xLabel"
+msgstr "Values"
+
+msgid "ChartsUtils.report.histogram.title"
+msgstr "Histogram"
+
+msgid "ChartsUtils.report.histogram.yLabel"
+msgstr "Frequency"

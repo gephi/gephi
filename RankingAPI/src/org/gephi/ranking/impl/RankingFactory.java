@@ -28,6 +28,10 @@ import org.gephi.ranking.api.NodeRanking;
 import org.gephi.ranking.api.EdgeRanking;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.api.AttributeUtils;
+import org.gephi.data.attributes.api.Estimator;
+import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -48,6 +52,18 @@ public class RankingFactory {
 
     public static EdgeRanking getEdgeAttributeRanking(AttributeColumn column, Graph graph) {
         EdgeRanking edgeRanking = new EdgeAttributeRanking(column);
+        setMinMax((AbstractRanking) edgeRanking, graph);
+        return edgeRanking;
+    }
+
+    public static NodeRanking getNodeDynamicAttributeRanking(AttributeColumn column, Graph graph, TimeInterval timeInterval, Estimator estimator) {
+        DynamicNodeAttributeRanking nodeRanking = new DynamicNodeAttributeRanking(column, timeInterval, estimator);
+        setMinMax((AbstractRanking) nodeRanking, graph);
+        return nodeRanking;
+    }
+
+    public static EdgeRanking getEdgeDynamicAttributeRanking(AttributeColumn column, Graph graph, TimeInterval timeInterval, Estimator estimator) {
+        DynamicEdgeAttributeRanking edgeRanking = new DynamicEdgeAttributeRanking(column, timeInterval, estimator);
         setMinMax((AbstractRanking) edgeRanking, graph);
         return edgeRanking;
     }
@@ -76,12 +92,16 @@ public class RankingFactory {
         return nodeRanking;
     }
 
-    public static boolean refreshRanking(AbstractRanking ranking, Graph graph) {
-        Object min = ranking.getMinimumValue();
-        Object max = ranking.getMaximumValue();
+    public static boolean refreshRanking(AbstractRanking ranking, Graph graph, TimeInterval timeInterval) {
+        if (ranking instanceof DynamicNodeAttributeRanking) {
+            ((DynamicNodeAttributeRanking) ranking).timeInterval = timeInterval;
+        } else if (ranking instanceof DynamicEdgeAttributeRanking) {
+            ((DynamicEdgeAttributeRanking) ranking).timeInterval = timeInterval;
+        }
+        double hash = ranking.hash;
         ranking.setGraph(graph);
         setMinMax(ranking, graph);
-        return !ranking.getMinimumValue().equals(min) || !ranking.getMaximumValue().equals(max);
+        return ranking.hash != hash;
     }
 
     public static boolean isNumberColumn(AttributeColumn column) {
@@ -90,9 +110,26 @@ public class RankingFactory {
                 || type == AttributeType.FLOAT
                 || type == AttributeType.INT
                 || type == AttributeType.LONG
+                || type == AttributeType.BYTE
                 || type == AttributeType.BIGDECIMAL
                 || type == AttributeType.BIGINTEGER
                 || type == AttributeType.SHORT) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isDynamicNumberColumn(AttributeColumn column) {
+        AttributeType type = column.getType();
+        AttributeUtils.getDefault().isDynamicNumberColumn(column);
+        if (type == AttributeType.DYNAMIC_BIGDECIMAL
+                || type == AttributeType.DYNAMIC_BIGINTEGER
+                || type == AttributeType.DYNAMIC_BYTE
+                || type == AttributeType.DYNAMIC_DOUBLE
+                || type == AttributeType.DYNAMIC_FLOAT
+                || type == AttributeType.DYNAMIC_INT
+                || type == AttributeType.DYNAMIC_LONG
+                || type == AttributeType.DYNAMIC_SHORT) {
             return true;
         }
         return false;
@@ -107,6 +144,7 @@ public class RankingFactory {
                     objects.add(value);
                 }
             }
+            ranking.hash = objects.hashCode();
             ranking.setMinimumValue((Number) getMin(objects.toArray(new Comparable[0])));
             ranking.setMaximumValue((Number) getMax(objects.toArray(new Comparable[0])));
         } else if (ranking instanceof EdgeRanking) {
@@ -117,6 +155,7 @@ public class RankingFactory {
                     objects.add(value);
                 }
             }
+            ranking.hash = objects.hashCode();
             ranking.setMinimumValue((Number) getMin(objects.toArray(new Comparable[0])));
             ranking.setMaximumValue((Number) getMax(objects.toArray(new Comparable[0])));
         }
@@ -359,6 +398,48 @@ public class RankingFactory {
 
         public Type getValue(Edge edge) {
             return (Type) edge.getEdgeData().getAttributes().getValue(column.getIndex());
+        }
+    }
+
+    private static class DynamicNodeAttributeRanking<Type extends Number> extends AttributeRanking<Node, Type> implements NodeRanking<Type> {
+
+        private TimeInterval timeInterval;
+        private Estimator estimator;
+
+        public DynamicNodeAttributeRanking(AttributeColumn column, TimeInterval timeInterval, Estimator estimator) {
+            super(column);
+            this.timeInterval = timeInterval;
+            this.estimator = estimator;
+        }
+
+        public Type getValue(Node node) {
+            DynamicType<Type> dynamicType = (DynamicType<Type>) node.getNodeData().getAttributes().getValue(column.getIndex());
+            if (dynamicType != null) {
+                return (Type) dynamicType.getValue(timeInterval == null ? Double.NEGATIVE_INFINITY : timeInterval.getLow(),
+                        timeInterval == null ? Double.POSITIVE_INFINITY : timeInterval.getHigh(), estimator);
+            }
+            return null;
+        }
+    }
+
+    private static class DynamicEdgeAttributeRanking<Type extends Number> extends AttributeRanking<Edge, Type> implements EdgeRanking<Type> {
+
+        private TimeInterval timeInterval;
+        private Estimator estimator;
+
+        public DynamicEdgeAttributeRanking(AttributeColumn column, TimeInterval timeInterval, Estimator estimator) {
+            super(column);
+            this.timeInterval = timeInterval;
+            this.estimator = estimator;
+        }
+
+        public Type getValue(Edge edge) {
+            DynamicType<Type> dynamicType = (DynamicType<Type>) edge.getEdgeData().getAttributes().getValue(column.getIndex());
+            if (dynamicType != null) {
+                return (Type) dynamicType.getValue(timeInterval == null ? Double.NEGATIVE_INFINITY : timeInterval.getLow(),
+                        timeInterval == null ? Double.POSITIVE_INFINITY : timeInterval.getHigh(), estimator);
+            }
+            return null;
         }
     }
 }

@@ -22,7 +22,7 @@ package org.gephi.ui.exporter.plugin;
 
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.io.exporter.plugin.ExporterGEXF2;
+import org.gephi.io.exporter.plugin.ExporterGEXF;
 import org.openide.util.Lookup;
 
 /**
@@ -36,7 +36,7 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void setup(ExporterGEXF2 exporterGEXF) {
+    public void setup(ExporterGEXF exporterGEXF) {
         colorsExportCheckbox.setSelected(exporterGEXF.isExportColors());
         positionExportCheckbox.setSelected(exporterGEXF.isExportPosition());
         sizeExportCheckbox.setSelected(exporterGEXF.isExportSize());
@@ -49,7 +49,7 @@ public class UIExporterGEXFPanel extends javax.swing.JPanel {
         hierarchyCheckbox.setEnabled(graphModel.isHierarchical());
     }
 
-    public void unsetup(ExporterGEXF2 exporterGEXF) {
+    public void unsetup(ExporterGEXF exporterGEXF) {
         exporterGEXF.setExportAttributes(attributesExportCheckbox.isSelected());
         exporterGEXF.setExportColors(colorsExportCheckbox.isSelected());
         exporterGEXF.setExportSize(sizeExportCheckbox.isSelected());

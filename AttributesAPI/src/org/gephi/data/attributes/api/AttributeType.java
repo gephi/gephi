@@ -22,6 +22,8 @@ package org.gephi.data.attributes.api;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 import org.gephi.data.attributes.type.DynamicByte;
 import org.gephi.data.attributes.type.DynamicShort;
@@ -46,6 +48,7 @@ import org.gephi.data.attributes.type.CharacterList;
 import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.attributes.type.BigIntegerList;
 import org.gephi.data.attributes.type.BigDecimalList;
+import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
 
 /**
@@ -155,29 +158,18 @@ public enum AttributeType {
             case BIGDECIMAL:
                 return new BigDecimal(str);
             case DYNAMIC_BYTE:
-                return new DynamicByte(new Interval<Byte>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Byte(str)));
             case DYNAMIC_SHORT:
-                return new DynamicShort(new Interval<Short>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Short(str)));
             case DYNAMIC_INT:
-                return new DynamicInteger(new Interval<Integer>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Integer(str)));
             case DYNAMIC_LONG:
-                return new DynamicLong(new Interval<Long>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Long(str)));
             case DYNAMIC_FLOAT:
-                return new DynamicFloat(new Interval<Float>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Float(str)));
             case DYNAMIC_DOUBLE:
-                return new DynamicDouble(new Interval<Double>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Double(str)));
             case DYNAMIC_BOOLEAN:
-                return new DynamicBoolean(new Interval<Boolean>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Boolean(str)));
             case DYNAMIC_CHAR:
-                return new DynamicCharacter(new Interval<Character>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new Character(str.charAt(0))));
             case DYNAMIC_STRING:
-                return new DynamicString(new Interval<String>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, str));
             case DYNAMIC_BIGINTEGER:
-                return new DynamicBigInteger(new Interval<BigInteger>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new BigInteger(str)));
             case DYNAMIC_BIGDECIMAL:
-                return new DynamicBigDecimal(new Interval<BigDecimal>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new BigDecimal(str)));
             case TIME_INTERVAL:
-                throw new UnsupportedOperationException("Not supported.");
+                return parseDynamic(str);
             case LIST_BYTE:
                 return new ByteList(removeDecimalDigitsFromString(str));
             case LIST_SHORT:
@@ -203,6 +195,201 @@ public enum AttributeType {
         }
         return str;
     }
+
+	private Object parseDynamic(String str) {
+		if (str.equals("<empty>"))
+			return createDynamicObject(null);
+
+		str = str.replace("<", "").replace(">", "");
+		String[] intervals = str.split("; ");
+
+		List<Interval> in = new ArrayList<Interval>();
+
+		for (String interval : intervals) {
+			boolean lopen = interval.startsWith("(");
+			boolean ropen = interval.endsWith(")");
+
+			interval = interval.substring(1, interval.length() - 1);
+			String[] parts = interval.split(", ");
+
+			double low   = Double.parseDouble(parts[0]);
+			double high  = Double.parseDouble(parts[1]);
+			Object value = null;
+			switch (this) {
+				case DYNAMIC_BYTE:
+					value = new Byte(removeDecimalDigitsFromString(parts[2]));
+					break;
+				case DYNAMIC_SHORT:
+					value = new Short(removeDecimalDigitsFromString(parts[2]));
+					break;
+				case DYNAMIC_INT:
+					value = new Integer(removeDecimalDigitsFromString(parts[2]));
+					break;
+				case DYNAMIC_LONG:
+					value = new Long(removeDecimalDigitsFromString(parts[2]));
+					break;
+				case DYNAMIC_FLOAT:
+					value = new Float(parts[2]);
+					break;
+				case DYNAMIC_DOUBLE:
+					value = new Double(parts[2]);
+					break;
+				case DYNAMIC_BOOLEAN:
+					value = new Boolean(parts[2]);
+					break;
+				case DYNAMIC_CHAR:
+					value = new Character(parts[2].charAt(0));
+					break;
+				case DYNAMIC_STRING:
+					value = parts[2];
+					break;
+				case DYNAMIC_BIGINTEGER:
+					value = new BigInteger(removeDecimalDigitsFromString(parts[2]));
+					break;
+				case DYNAMIC_BIGDECIMAL:
+					value = new BigDecimal(parts[2]);
+					break;
+				case TIME_INTERVAL:
+				default:
+					value = null;
+					break;
+			}
+
+			in.add(new Interval(low, high, lopen, ropen, value));
+		}
+
+		return createDynamicObject(in);
+	}
+
+	private DynamicType createDynamicObject(List<Interval> in) {
+		if (!this.isDynamicType())
+			return null;
+
+		switch (this) {
+			case DYNAMIC_BYTE: {
+				ArrayList<Interval<Byte>> lin = null;
+				if (in != null) {
+					lin = new ArrayList<Interval<Byte>>();
+					for (Interval interval : in)
+						lin.add(new Interval<Byte>(interval.getLow(), interval.getHigh(),
+							interval.isLowExcluded(), interval.isHighExcluded(), (Byte)interval.getValue()));
+				}
+				return new DynamicByte(lin);
+			}
+			case DYNAMIC_SHORT: {
+				ArrayList<Interval<Short>> lin = null;
+				if (in != null) {
+					lin = new ArrayList<Interval<Short>>();
+					for (Interval interval : in)
+						lin.add(new Interval<Short>(interval.getLow(), interval.getHigh(),
+							interval.isLowExcluded(), interval.isHighExcluded(), (Short)interval.getValue()));
+				}
+				return new DynamicShort(lin);
+			}
+			case DYNAMIC_INT: {
+				ArrayList<Interval<Integer>> lin = null;
+				if (in != null) {
+					lin = new ArrayList<Interval<Integer>>();
+					for (Interval interval : in)
+						lin.add(new Interval<Integer>(interval.getLow(), interval.getHigh(),
+							interval.isLowExcluded(), interval.isHighExcluded(), (Integer)interval.getValue()));
+				}
+				return new DynamicInteger(lin);
+			}
+			case DYNAMIC_LONG: {
+				ArrayList<Interval<Long>> lin = null;
+				if (in != null) {
+					lin = new ArrayList<Interval<Long>>();
+					for (Interval interval : in)
+						lin.add(new Interval<Long>(interval.getLow(), interval.getHigh(),
+							interval.isLowExcluded(), interval.isHighExcluded(), (Long)interval.getValue()));
+				}
+				return new DynamicLong(lin);
+			}
+			case DYNAMIC_FLOAT: {
+				ArrayList<Interval<Float>> lin = null;
+				if (in != null) {
+					lin = new ArrayList<Interval<Float>>();
+					for (Interval interval : in)
+						lin.add(new Interval<Float>(interval.getLow(), interval.getHigh(),
+							interval.isLowExcluded(), interval.isHighExcluded(), (Float)interval.getValue()));
+				}
+				return new DynamicFloat(lin);
+			}
+			case DYNAMIC_DOUBLE: {
+				ArrayList<Interval<Double>> lin = null;
+				if (in != null) {
+					lin = new ArrayList<Interval<Double>>();
+					for (Interval interval : in)
+						lin.add(new Interval<Double>(interval.getLow(), interval.getHigh(),
+							interval.isLowExcluded(), interval.isHighExcluded(), (Double)interval.getValue()));
+				}
+				return new DynamicDouble(lin);
+			}
+			case DYNAMIC_BOOLEAN: {
+				ArrayList<Interval<Boolean>> lin = null;
+				if (in != null) {
+					lin = new ArrayList<Interval<Boolean>>();
+					for (Interval interval : in)
+						lin.add(new Interval<Boolean>(interval.getLow(), interval.getHigh(),
+							interval.isLowExcluded(), interval.isHighExcluded(), (Boolean)interval.getValue()));
+				}
+				return new DynamicBoolean(lin);
+			}
+			case DYNAMIC_CHAR: {
+				ArrayList<Interval<Character>> lin = null;
+				if (in != null) {
+					lin = new ArrayList<Interval<Character>>();
+					for (Interval interval : in)
+						lin.add(new Interval<Character>(interval.getLow(), interval.getHigh(),
+							interval.isLowExcluded(), interval.isHighExcluded(), (Character)interval.getValue()));
+				}
+				return new DynamicCharacter(lin);
+			}
+			case DYNAMIC_STRING: {
+				ArrayList<Interval<String>> lin = null;
+				if (in != null) {
+					lin = new ArrayList<Interval<String>>();
+					for (Interval interval : in)
+						lin.add(new Interval<String>(interval.getLow(), interval.getHigh(),
+							interval.isLowExcluded(), interval.isHighExcluded(), (String)interval.getValue()));
+				}
+				return new DynamicString(lin);
+			}
+			case DYNAMIC_BIGINTEGER: {
+				ArrayList<Interval<BigInteger>> lin = null;
+				if (in != null) {
+					lin = new ArrayList<Interval<BigInteger>>();
+					for (Interval interval : in)
+						lin.add(new Interval<BigInteger>(interval.getLow(), interval.getHigh(),
+							interval.isLowExcluded(), interval.isHighExcluded(), (BigInteger)interval.getValue()));
+				}
+				return new DynamicBigInteger(lin);
+			}
+			case DYNAMIC_BIGDECIMAL: {
+				ArrayList<Interval<BigDecimal>> lin = null;
+				if (in != null) {
+					lin = new ArrayList<Interval<BigDecimal>>();
+					for (Interval interval : in)
+						lin.add(new Interval<BigDecimal>(interval.getLow(), interval.getHigh(),
+							interval.isLowExcluded(), interval.isHighExcluded(), (BigDecimal)interval.getValue()));
+				}
+				return new DynamicBigDecimal(lin);
+			}
+			case TIME_INTERVAL: {
+				ArrayList<Interval> lin = null;
+				if (in != null) {
+					lin = new ArrayList<Interval>();
+					for (Interval interval : in)
+						lin.add(new Interval(interval.getLow(), interval.getHigh(),
+							interval.isLowExcluded(), interval.isHighExcluded()));
+				}
+				return new TimeInterval(lin);
+			}
+			default:
+				return null;
+		}
+	}
 
     /**
      * Build an <code>AttributeType</code> from the given <code>obj</code> type.

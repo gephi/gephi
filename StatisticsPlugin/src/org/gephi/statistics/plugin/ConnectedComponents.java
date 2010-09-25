@@ -20,8 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.plugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -55,6 +57,7 @@ public class ConnectedComponents implements Statistics, LongTask {
     private boolean mIsCanceled;
     private int mComponentCount;
     private int mStronglyCount;
+    private int[] componentsSize;
     int count;
 
     public ConnectedComponents() {
@@ -82,6 +85,8 @@ public class ConnectedComponents implements Statistics, LongTask {
         if (componentCol == null) {
             componentCol = nodeTable.addColumn(WEAKLY, "Component ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
+
+        List<Integer> sizeList = new ArrayList<Integer>();
 
         graph.readLock();
 
@@ -150,9 +155,15 @@ public class ConnectedComponents implements Statistics, LongTask {
                 AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
                 row.setValue(componentCol, mComponentCount);
             }
+            sizeList.add(component.size());
             mComponentCount++;
         }
         graph.readUnlock();
+
+        componentsSize = new int[sizeList.size()];
+        for (int i = 0; i < sizeList.size(); i++) {
+            componentsSize[i] = sizeList.get(i);
+        }
     }
 
     public void top_tarjans(DirectedGraph graph, AttributeModel attributeModel) {
@@ -247,6 +258,23 @@ public class ConnectedComponents implements Statistics, LongTask {
 
     public boolean isDirected() {
         return mDirected;
+    }
+
+    public int[] getComponentsSize() {
+        return componentsSize;
+    }
+
+    public int getGiantComponent() {
+        int[] sizes = getComponentsSize();
+        int max = Integer.MIN_VALUE;
+        int maxIndex = -1;
+        for (int i = 0; i < sizes.length; i++) {
+            if (sizes[i] > max) {
+                max = sizes[i];
+                maxIndex = i;
+            }
+        }
+        return maxIndex;
     }
 
     public String getReport() {

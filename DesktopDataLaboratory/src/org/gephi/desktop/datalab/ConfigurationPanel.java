@@ -34,6 +34,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
         initComponents();
         onlyVisibleCheckBox.setSelected(dataTableTopComponent.isShowOnlyVisible());
         useSparklinesCheckBox.setSelected(dataTableTopComponent.isUseSparklines());
+        timeIntervalsGraphicsCheckBox.setSelected(dataTableTopComponent.isTimeIntervalGraphics());
         showEdgesNodesLabelsCheckBox.setSelected(dataTableTopComponent.isShowEdgesNodesLabels());
     }
 
@@ -49,30 +50,38 @@ public class ConfigurationPanel extends javax.swing.JPanel {
         onlyVisibleCheckBox = new javax.swing.JCheckBox();
         useSparklinesCheckBox = new javax.swing.JCheckBox();
         showEdgesNodesLabelsCheckBox = new javax.swing.JCheckBox();
-        jLabel1 = new javax.swing.JLabel();
+        descriptionLabel = new javax.swing.JLabel();
+        timeIntervalsGraphicsCheckBox = new javax.swing.JCheckBox();
 
         onlyVisibleCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.onlyVisibleCheckBox.text")); // NOI18N
-        onlyVisibleCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                onlyVisibleCheckBoxItemStateChanged(evt);
+        onlyVisibleCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                onlyVisibleCheckBoxActionPerformed(evt);
             }
         });
 
         useSparklinesCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.useSparklinesCheckBox.text")); // NOI18N
-        useSparklinesCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                useSparklinesCheckBoxItemStateChanged(evt);
+        useSparklinesCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                useSparklinesCheckBoxActionPerformed(evt);
             }
         });
 
         showEdgesNodesLabelsCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.showEdgesNodesLabelsCheckBox.text")); // NOI18N
-        showEdgesNodesLabelsCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                showEdgesNodesLabelsCheckBoxItemStateChanged(evt);
+        showEdgesNodesLabelsCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showEdgesNodesLabelsCheckBoxActionPerformed(evt);
             }
         });
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.jLabel1.text")); // NOI18N
+        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.descriptionLabel.text")); // NOI18N
+
+        timeIntervalsGraphicsCheckBox.setText(org.openide.util.NbBundle.getMessage(ConfigurationPanel.class, "ConfigurationPanel.timeIntervalsGraphicsCheckBox.text")); // NOI18N
+        timeIntervalsGraphicsCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                timeIntervalsGraphicsCheckBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -80,45 +89,53 @@ public class ConfigurationPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1)
-                    .addComponent(onlyVisibleCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(useSparklinesCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(showEdgesNodesLabelsCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(descriptionLabel, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(onlyVisibleCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(useSparklinesCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(showEdgesNodesLabelsCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(timeIntervalsGraphicsCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(6, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addComponent(descriptionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 4, Short.MAX_VALUE)
                 .addComponent(onlyVisibleCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(useSparklinesCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(timeIntervalsGraphicsCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showEdgesNodesLabelsCheckBox)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void onlyVisibleCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_onlyVisibleCheckBoxItemStateChanged
+    private void onlyVisibleCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_onlyVisibleCheckBoxActionPerformed
         dataTableTopComponent.setShowOnlyVisible(onlyVisibleCheckBox.isSelected());
-    }//GEN-LAST:event_onlyVisibleCheckBoxItemStateChanged
+    }//GEN-LAST:event_onlyVisibleCheckBoxActionPerformed
 
-    private void useSparklinesCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_useSparklinesCheckBoxItemStateChanged
+    private void useSparklinesCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useSparklinesCheckBoxActionPerformed
         dataTableTopComponent.setUseSparklines(useSparklinesCheckBox.isSelected());
-    }//GEN-LAST:event_useSparklinesCheckBoxItemStateChanged
+    }//GEN-LAST:event_useSparklinesCheckBoxActionPerformed
 
-    private void showEdgesNodesLabelsCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showEdgesNodesLabelsCheckBoxItemStateChanged
+    private void timeIntervalsGraphicsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timeIntervalsGraphicsCheckBoxActionPerformed
+        dataTableTopComponent.setTimeIntervalGraphics(timeIntervalsGraphicsCheckBox.isSelected());
+    }//GEN-LAST:event_timeIntervalsGraphicsCheckBoxActionPerformed
+
+    private void showEdgesNodesLabelsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showEdgesNodesLabelsCheckBoxActionPerformed
         dataTableTopComponent.setShowEdgesNodesLabels(showEdgesNodesLabelsCheckBox.isSelected());
-    }//GEN-LAST:event_showEdgesNodesLabelsCheckBoxItemStateChanged
+    }//GEN-LAST:event_showEdgesNodesLabelsCheckBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel descriptionLabel;
     private javax.swing.JCheckBox onlyVisibleCheckBox;
     private javax.swing.JCheckBox showEdgesNodesLabelsCheckBox;
+    private javax.swing.JCheckBox timeIntervalsGraphicsCheckBox;
     private javax.swing.JCheckBox useSparklinesCheckBox;
     // End of variables declaration//GEN-END:variables
 

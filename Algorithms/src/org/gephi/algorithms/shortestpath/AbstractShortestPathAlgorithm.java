@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.algorithms.shortestpath;
 
 import java.awt.Color;
@@ -31,9 +31,9 @@ import org.gephi.graph.api.Node;
  */
 public abstract class AbstractShortestPathAlgorithm {
 
-    protected HashMap<Node, Color> colors;
-    protected HashMap<Node, Double> distances;
-    protected Node sourceNode;
+    protected final HashMap<Node, Color> colors;
+    protected final HashMap<Node, Double> distances;
+    protected final Node sourceNode;
     protected double maxDistance = 0;
 
     public AbstractShortestPathAlgorithm(Node sourceNode) {
@@ -47,7 +47,7 @@ public abstract class AbstractShortestPathAlgorithm {
         Node target = edge.getTarget();
         double distSource = distances.get(source);
         double distTarget = distances.get(target);
-        double weight = edge.getWeight();
+        double weight = edgeWeight(edge);
 
         double sourceWeight = distSource + weight;
         if (sourceWeight < distTarget) {
@@ -57,6 +57,10 @@ public abstract class AbstractShortestPathAlgorithm {
         } else {
             return false;
         }
+    }
+
+    protected double edgeWeight(Edge edge) {
+        return edge.getWeight();
     }
 
     public abstract void compute();

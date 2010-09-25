@@ -27,6 +27,9 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.DynamicUtilities;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
@@ -75,6 +78,8 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
     private AttributeColumn[] edgeColumns;
     //Buffer
     private Writer writer;
+    //Dynamic
+    private TimeInterval visibleInterval;
 
     public boolean execute() {
         AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
@@ -85,6 +90,8 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         } else {
             graph = graphModel.getGraph();
         }
+        DynamicModel dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
+        visibleInterval = dynamicModel !=null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
         try {
             exportData(graph, attributeModel);
         } catch (Exception e) {
@@ -176,6 +183,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             for (AttributeColumn c : nodeColumns) {
                 if (!c.getOrigin().equals(AttributeOrigin.PROPERTY)) {
                     Object val = node.getNodeData().getAttributes().getValue(c.getIndex());
+                    val = DynamicUtilities.getDynamicValue(val, visibleInterval.getLow(), visibleInterval.getHigh());
                     if (val != null) {
                         if (c.getType().equals(AttributeType.STRING) || c.getType().equals(AttributeType.LIST_STRING)) {
                             String quote = !useQuotes ? "" : simpleQuotes ? "'" : "\"";
@@ -264,6 +272,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             //Attributes columns
             for (AttributeColumn c : nodeColumns) {
                 Object val = edge.getEdgeData().getAttributes().getValue(c.getIndex());
+                val = DynamicUtilities.getDynamicValue(val, visibleInterval.getLow(), visibleInterval.getHigh());
                 if (val != null) {
                     if (c.getType().equals(AttributeType.STRING) || c.getType().equals(AttributeType.LIST_STRING)) {
                         String quote = !useQuotes ? "" : simpleQuotes ? "'" : "\"";
@@ -537,7 +546,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public void writeData(StringBuilder builder, Edge edge) {
-                builder.append(edge.getWeight());
+                builder.append(edge.getWeight(visibleInterval.getLow(), visibleInterval.getHigh()));
             }
         };
 
@@ -712,11 +721,21 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
                 return DataTypeGDF.FLOAT;
             case INT:
                 return DataTypeGDF.INTEGER;
-            case LIST_STRING:
-                return DataTypeGDF.VARCHAR;
             case LONG:
                 return DataTypeGDF.INTEGER;
             case STRING:
+                return DataTypeGDF.VARCHAR;
+            case DYNAMIC_BOOLEAN:
+                return DataTypeGDF.BOOLEAN;
+            case DYNAMIC_DOUBLE:
+                return DataTypeGDF.DOUBLE;
+            case DYNAMIC_FLOAT:
+                return DataTypeGDF.FLOAT;
+            case DYNAMIC_INT:
+                return DataTypeGDF.INTEGER;
+            case DYNAMIC_LONG:
+                return DataTypeGDF.INTEGER;
+            case DYNAMIC_STRING:
                 return DataTypeGDF.VARCHAR;
             default:
                 return DataTypeGDF.VARCHAR;

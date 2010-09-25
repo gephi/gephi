@@ -17,9 +17,13 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.api;
 
+import java.util.GregorianCalendar;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -71,5 +75,31 @@ public abstract class AttributeUtils {
 
     public static synchronized AttributeUtils getDefault() {
         return Lookup.getDefault().lookup(AttributeUtils.class);
+    }
+
+    /**
+     * Used for export (writes XML date strings).
+     *
+     * @param d a double to convert from
+     *
+     * @return an XML date string.
+     *
+     * @throws IllegalArgumentException if {@code d} is infinite.
+     */
+    public static String getXMLDateStringFromDouble(double d) {
+        try {
+            DatatypeFactory dateFactory = DatatypeFactory.newInstance();
+            if (d == Double.NEGATIVE_INFINITY) {
+                return "-Infinity";
+            } else if (d == Double.POSITIVE_INFINITY) {
+                return "Infinity";
+            }
+            GregorianCalendar gc = new GregorianCalendar();
+            gc.setTimeInMillis((long) d);
+            return dateFactory.newXMLGregorianCalendar(gc).toXMLFormat().substring(0, 23);
+        } catch (DatatypeConfigurationException ex) {
+            Exceptions.printStackTrace(ex);
+            return "";
+        }
     }
 }

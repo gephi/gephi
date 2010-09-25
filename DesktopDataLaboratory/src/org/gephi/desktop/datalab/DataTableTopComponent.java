@@ -122,6 +122,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private static final String DATA_LABORATORY_DYNAMIC_FILTERING = "DataLaboratory_Dynamic_Filtering";
     private static final String DATA_LABORATORY_ONLY_VISIBLE = "DataLaboratory_visibleOnly";
     private static final String DATA_LABORATORY_SPARKLINES = "DataLaboratory_useSparklines";
+    private static final String DATA_LABORATORY_TIME_INTERVAL_GRAPHICS = "DataLaboratory_timeIntervalGraphics";
     private static final String DATA_LABORATORY_EDGES_NODES_LABELS = "DataLaboratory_showEdgesNodesLabels";
     private static final Color invalidFilterColor = new Color(254, 150, 150);
     private final boolean dynamicFiltering;
@@ -130,6 +131,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private DataTablesModel dataTablesModel;
     private boolean visibleOnly = false;
     private boolean useSparklines = false;
+    private boolean timeIntervalGraphics = false;
     private boolean showEdgesNodesLabels = false;
     //Table
     private NodeDataTable nodeTable;
@@ -137,10 +139,10 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     //General actions buttons
     private ArrayList<JComponent> generalActionsButtons = new ArrayList<JComponent>();
     //States
-    ClassDisplayed classDisplayed = ClassDisplayed.NODE;//Display nodes by default at first.
+    private ClassDisplayed classDisplayed = ClassDisplayed.NODE;//Display nodes by default at first.
     //Executor
-    ExecutorService taskExecutor;
-    RefreshOnceHelperThread refreshOnceHelperThread;
+    private ExecutorService taskExecutor;
+    private RefreshOnceHelperThread refreshOnceHelperThread;
 
     private DataTableTopComponent() {
 
@@ -148,6 +150,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         dynamicFiltering = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_DYNAMIC_FILTERING, true);
         visibleOnly = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_ONLY_VISIBLE, false);
         useSparklines = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_SPARKLINES, false);
+        timeIntervalGraphics = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_TIME_INTERVAL_GRAPHICS, false);
         showEdgesNodesLabels = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_EDGES_NODES_LABELS, false);
 
         taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(20), new ThreadFactory() {
@@ -172,9 +175,16 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
         initEvents();
 
-        //Init table
+        //Init tables
         nodeTable = new NodeDataTable();
         edgeTable = new EdgeDataTable();
+
+        nodeTable.setUseSparklines(useSparklines);
+        nodeTable.setTimeIntervalGraphics(timeIntervalGraphics);
+        edgeTable.setUseSparklines(useSparklines);
+        edgeTable.setTimeIntervalGraphics(timeIntervalGraphics);
+        edgeTable.setShowEdgesNodesLabels(showEdgesNodesLabels);
+
 
         //Init
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -273,9 +283,11 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     private void refreshAll() {
-        refreshTable();
-        refreshColumnManipulators();
-        refreshGeneralActionsButtons();
+        if (nodesButton.isEnabled()) {//Some workspace is selected
+            refreshTable();
+            refreshColumnManipulators();
+            refreshGeneralActionsButtons();
+        }
     }
 
     private void clearAll() {
@@ -284,12 +296,26 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         clearGeneralActionsButtons();
     }
 
-    public void attributesChanged(AttributeEvent event) {
-        refreshOnce(event.is(EventType.SET_VALUE));
+    public void attributesChanged(final AttributeEvent event) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                if (isOpened()) {
+                    refreshOnce(event.is(EventType.SET_VALUE));
+                }
+            }
+        });
     }
 
     public void graphChanged(GraphEvent event) {
-        refreshOnce(false);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                if (isOpened()) {
+                    refreshOnce(false);
+                }
+            }
+        });
     }
 
     private void refreshOnce(boolean refreshTableOnly) {
@@ -551,6 +577,17 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         refreshCurrentTable();
     }
 
+    public boolean isTimeIntervalGraphics() {
+        return timeIntervalGraphics;
+    }
+
+    public void setTimeIntervalGraphics(boolean timeIntervalGraphics) {
+        this.timeIntervalGraphics = timeIntervalGraphics;
+        nodeTable.setTimeIntervalGraphics(timeIntervalGraphics);
+        edgeTable.setTimeIntervalGraphics(timeIntervalGraphics);
+        refreshCurrentTable();
+    }
+
     public boolean isShowEdgesNodesLabels() {
         return showEdgesNodesLabels;
     }
@@ -677,7 +714,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                         button.addActionListener(new ActionListener() {
 
                             public void actionPerformed(ActionEvent e) {
-                                Lookup.getDefault().lookup(DataLaboratoryHelper.class).executeAttributeColumnsManipulator(acm, table, column);
+                                new DataLaboratoryHelper().executeAttributeColumnsManipulator(acm, table, column);
                             }
                         });
                         popup.addMenuButton(button);
@@ -871,7 +908,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             button.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    Lookup.getDefault().lookup(DataLaboratoryHelper.class).executeManipulator(m);
+                    new DataLaboratoryHelper().executeManipulator(m);
                 }
             });
         } else {
@@ -991,9 +1028,10 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         controlToolbar.add(edgesButton);
         controlToolbar.add(separator);
 
+        configurationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/datalab/resources/gear-small.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(configurationButton, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.configurationButton.text")); // NOI18N
         configurationButton.setFocusable(false);
-        configurationButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        configurationButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         configurationButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         configurationButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1105,6 +1143,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         //Save preferences:
         NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_ONLY_VISIBLE, visibleOnly);
         NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_SPARKLINES, useSparklines);
+        NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_TIME_INTERVAL_GRAPHICS, timeIntervalGraphics);
         NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_EDGES_NODES_LABELS, showEdgesNodesLabels);
     }//GEN-LAST:event_configurationButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1165,12 +1204,11 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        refreshAll();
     }
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
     }
 
     @Override

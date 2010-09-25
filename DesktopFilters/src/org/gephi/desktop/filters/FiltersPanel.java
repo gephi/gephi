@@ -63,6 +63,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         toolbar.setBorder(b);
         if (UIUtils.isAquaLookAndFeel()) {
             toolbar.setBackground(UIManager.getColor("NbExplorerView.background"));
+            setBackground(UIManager.getColor("NbExplorerView.background"));
         }
 
         //Components
@@ -149,7 +150,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 }
             }
         });
-        autoRefreshButton.addActionListener(new ActionListener() {
+        /*autoRefreshButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 if (filterModel.isAutoRefresh() != autoRefreshButton.isSelected()) {
@@ -157,7 +158,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                     controller.setAutoRefresh(autoRefreshButton.isSelected());
                 }
             }
-        });
+        });*/
         updateEnabled(false);
     }
 
@@ -200,7 +201,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 resetButton.setEnabled(enabled);
                 selectButton.setEnabled(enabled);
                 filterButton.setEnabled(enabled);
-                autoRefreshButton.setEnabled(enabled);
+                /*autoRefreshButton.setEnabled(enabled);*/
                 exportColumnButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
                 exportWorkspaceButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
                 exportLabelVisible.setEnabled(enabled && uiModel.getSelectedQuery() != null);
@@ -215,11 +216,11 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 if (filterModel != null) {
                     filterButton.setSelected(filterModel.isFiltering());
                     selectButton.setSelected(filterModel.isSelecting());
-                    autoRefreshButton.setSelected(filterModel.isAutoRefresh());
+                    /*autoRefreshButton.setSelected(filterModel.isAutoRefresh());*/
                 } else {
                     filterButton.setSelected(false);
                     selectButton.setSelected(false);
-                    autoRefreshButton.setSelected(false);
+                    /*autoRefreshButton.setSelected(false);*/
                 }
             }
         });
@@ -271,8 +272,6 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         toolbar = new javax.swing.JToolBar();
         resetButton = new javax.swing.JButton();
         separator = new javax.swing.JToolBar.Separator();
-        autoRefreshButton = new javax.swing.JToggleButton();
-        separator2 = new javax.swing.JToolBar.Separator();
         exportColumnButton = new javax.swing.JButton();
         exportWorkspaceButton = new javax.swing.JButton();
         exportLabelVisible = new javax.swing.JButton();
@@ -296,14 +295,6 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         resetButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(resetButton);
         toolbar.add(separator);
-
-        autoRefreshButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/autorefresh.png"))); // NOI18N
-        autoRefreshButton.setToolTipText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.autoRefreshButton.toolTipText")); // NOI18N
-        autoRefreshButton.setFocusable(false);
-        autoRefreshButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        autoRefreshButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toolbar.add(autoRefreshButton);
-        toolbar.add(separator2);
 
         exportColumnButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/table_export.png"))); // NOI18N
         exportColumnButton.setText(org.openide.util.NbBundle.getMessage(FiltersPanel.class, "FiltersPanel.exportColumnButton.text")); // NOI18N
@@ -370,6 +361,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
 
         southToolbar.setFloatable(false);
         southToolbar.setRollover(true);
+        southToolbar.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -379,6 +371,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         gridBagConstraints.insets = new java.awt.Insets(4, 5, 0, 0);
         add(southToolbar, gridBagConstraints);
 
+        buttonsPanel.setOpaque(false);
         buttonsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 4, 4));
 
         selectButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/filters/resources/select.png"))); // NOI18N
@@ -397,7 +390,6 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         add(buttonsPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton autoRefreshButton;
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.JButton exportColumnButton;
     private javax.swing.JButton exportLabelVisible;
@@ -408,7 +400,6 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
     private javax.swing.JButton resetButton;
     private javax.swing.JToggleButton selectButton;
     private javax.swing.JToolBar.Separator separator;
-    private javax.swing.JToolBar.Separator separator2;
     private javax.swing.JPanel southPanel;
     private javax.swing.JToolBar southToolbar;
     private javax.swing.JSplitPane splitPane;

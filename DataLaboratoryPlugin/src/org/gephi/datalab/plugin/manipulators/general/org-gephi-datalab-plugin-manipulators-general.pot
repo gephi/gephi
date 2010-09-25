@@ -1,0 +1,48 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "AddNodeToGraph.name"
+msgstr "Add node"
+
+msgid "AddNodeToGraph.dialog.text"
+msgstr "Choose a label for the new node"
+
+msgid "AddEdgeToGraph.name"
+msgstr "Add edge"
+
+msgid "ClearGraph.name"
+msgstr "Clear graph"
+
+msgid "ClearGraph.dialog.text"
+msgstr ""
+"<html><b>Are you sure you want to clear the graph?<br>All nodes and edges "
+"will be deleted!</b></html>"
+
+msgid "ClearEdges.name"
+msgstr "Clear edges"
+
+msgid "SearchReplace.name"
+msgstr "Search/Replace"
+
+msgid "SearchReplace.window.close"
+msgstr "Close"
+
+msgid "ImportCSV.name"
+msgstr "Import CSV"
+
+msgid "ExportTable.name"
+msgstr "Export table"

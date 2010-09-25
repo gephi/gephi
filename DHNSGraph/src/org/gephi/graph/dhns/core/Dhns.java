@@ -64,22 +64,24 @@ import org.w3c.dom.Element;
 public class Dhns implements GraphModel {
 
     //Core
-    private DhnsGraphController controller;
+    private final Workspace workspace;
+    private final DhnsGraphController controller;
     private GraphStructure graphStructure;
     private GraphVersion graphVersion;
-    private EventManager eventManager;
-    private SettingsManager settingsManager;
-    private GraphFactoryImpl factory;
-    private DuplicateManager duplicateManager;
+    private final EventManager eventManager;
+    private final SettingsManager settingsManager;
+    private final GraphFactoryImpl factory;
+    private final DuplicateManager duplicateManager;
     //Type
     private boolean directed = false;
     private boolean undirected = false;
     private boolean mixed = false;
     //Locking
-    private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     public Dhns(DhnsGraphController controller, Workspace workspace) {
         this.controller = controller;
+        this.workspace = workspace;
         graphVersion = new GraphVersion();
         eventManager = new EventManager(this);
         settingsManager = new SettingsManager(this);
@@ -390,6 +392,19 @@ public class Dhns implements GraphModel {
         // eventManager.fireEvent(EventType.NODES_AND_EDGES_UPDATED);
     }
 
+    public void pushNodes(Graph graph, Node[] nodes) {
+        if (graph == null) {
+            throw new NullPointerException();
+        }
+        HierarchicalGraphImpl graphImpl = (HierarchicalGraphImpl) graph;
+        if (graphImpl.getGraphModel() == this) {
+            throw new IllegalArgumentException("The graph must be from a different Workspace");
+        }
+        Dhns source = (Dhns) graphImpl.getGraphModel();
+        source.getDuplicateManager().duplicateNodes(this, nodes);
+        graphVersion.incNodeAndEdgeVersion();
+    }
+
     public void clear() {
         graphVersion = new GraphVersion();
         graphStructure = new GraphStructure(this);
@@ -424,5 +439,9 @@ public class Dhns implements GraphModel {
 
     public GraphView getVisibleView() {
         return graphStructure.getVisibleView();
+    }
+
+    public Workspace getWorkspace() {
+        return workspace;
     }
 }

@@ -68,7 +68,7 @@ public abstract class DynamicType<T> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source}.
+	 * Constructs a deep copy of {@code source}.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
 	 *               instance is created)
@@ -80,7 +80,7 @@ public abstract class DynamicType<T> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} that contains a given
+	 * Constructs a deep copy of {@code source} that contains a given
 	 * {@code Interval<T>} in.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
@@ -94,7 +94,7 @@ public abstract class DynamicType<T> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} that contains a given
+	 * Constructs a deep copy of {@code source} that contains a given
 	 * {@code Interval<T>} in. Before add it removes from the newly created
 	 * object all intervals that overlap with a given {@code Interval<T>} out.
 	 *
@@ -112,7 +112,7 @@ public abstract class DynamicType<T> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * Constructs a deep copy of {@code source} with additional intervals
 	 * given by {@code List<Interval<T>>} in.
 	 *
 	 * @param source an object to copy from (could be null, then completely new
@@ -127,7 +127,7 @@ public abstract class DynamicType<T> {
 	}
 
 	/**
-	 * Constructs a shallow copy of {@code source} with additional intervals
+	 * Constructs a deep copy of {@code source} with additional intervals
 	 * given by {@code List<Interval<T>>} in. Before add it removes from the
 	 * newly created object all intervals that overlap with intervals given by
 	 * {@code List<Interval<T>>} out.
@@ -148,7 +148,7 @@ public abstract class DynamicType<T> {
 	}
 
 	/**
-	 * Returns the leftmost point or {@code Double.POSITIVE_INFINITY} in case
+	 * Returns the leftmost point or {@code Double.NEGATIVE_INFINITY} in case
 	 * of no intervals.
 	 *
 	 * @return the leftmost point.
@@ -158,7 +158,7 @@ public abstract class DynamicType<T> {
 	}
 
 	/**
-	 * Returns the rightmost point or {@code Double.NEGATIVE_INFINITY} in case
+	 * Returns the rightmost point or {@code Double.POSITIVE_INFINITY} in case
 	 * of no intervals.
 	 *
 	 * @return the rightmost point.
@@ -188,28 +188,25 @@ public abstract class DynamicType<T> {
 	}
 
 	/**
-	 * Indicates if this instance is included in a given time interval.
+	 * Indicates if a given time interval overlaps with any interval of this instance.
 	 *
 	 * @param interval a given time interval
 	 *
-	 * @return {@code true} if and only if this instance.low >= interval.low and
-	 *         this instance.right <= interval.high and bounds are properly
-	 *         excluded/included, otherwise {@code false}.
+	 * @return {@code true} a given time interval overlaps with any interval of this
+	 *         instance, otherwise {@code false}.
 	 */
-	public boolean isInRange(Interval<T> interval) {
-		return getLow()  >= interval.getLow()  && (isLowExcluded()  || !interval.isLowExcluded()) &&
-			   getHigh() <= interval.getHigh() && (isHighExcluded() || !interval.isHighExcluded());
+	public boolean isInRange(Interval interval) {
+		return intervalTree.overlapsWith(interval);
 	}
 
 	/**
-	 * Indicates if this instance is included in a [{@code low}, {@code high}]
-	 * time interval.
+	 * Indicates if [{@code low}, {@code high}] interval overlaps with any interval of this instance.
 	 *
 	 * @param low  the left endpoint
 	 * @param high the right endpoint
 	 *
-	 * @return {@code true} if and only if this instance.low >= low and
-	 *         this instance.right <= high, otherwise {@code false}.
+	 * @return {@code true} a given time interval overlaps with any interval of this
+	 *         instance, otherwise {@code false}.
 	 *
 	 * @throws IllegalArgumentException if {@code low} > {@code high}.
 	 */
@@ -219,7 +216,7 @@ public abstract class DynamicType<T> {
 						"The left endpoint of the interval must be less than " +
 						"the right endpoint.");
 
-		return getLow() >= low && getHigh() <= high;
+		return intervalTree.overlapsWith(new Interval(low, high));
 	}
 
 	/**
@@ -250,8 +247,8 @@ public abstract class DynamicType<T> {
 	 * 
 	 * @see Estimator
 	 */
-	public T getValue(double low, double high) {
-		return getValue(low, high, Estimator.FIRST);
+	public T getValue(Interval interval) {
+		return getValue(interval, Estimator.FIRST);
 	}
 
 	/**
@@ -270,8 +267,8 @@ public abstract class DynamicType<T> {
 	 *
 	 * @see Estimator
 	 */
-	public T getValue(Interval<T> interval) {
-		return getValue(interval, Estimator.FIRST);
+	public T getValue(double low, double high) {
+		return getValue(low, high, Estimator.FIRST);
 	}
 
 	/**
@@ -311,7 +308,7 @@ public abstract class DynamicType<T> {
 	 *
 	 * @see Estimator
 	 */
-	public abstract T getValue(Interval<T> interval, Estimator estimator);
+	public abstract T getValue(Interval interval, Estimator estimator);
 
 	/**
 	 * Returns the estimated value of a set of values whose time intervals
@@ -331,7 +328,14 @@ public abstract class DynamicType<T> {
 	 *
 	 * @see Estimator
 	 */
-	public abstract T getValue(double low, double high, Estimator estimator);
+	public T getValue(double low, double high, Estimator estimator) {
+		if (low > high)
+			throw new IllegalArgumentException(
+						"The left endpoint of the interval must be less than " +
+						"the right endpoint.");
+
+		return getValue(new Interval(low, high, false, false), estimator);
+	}
 
 	/**
 	 * Returns a list of all values stored in this instance.
@@ -340,22 +344,6 @@ public abstract class DynamicType<T> {
 	 */
 	public List<T> getValues() {
 		return getValues(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-	}
-
-	/**
-	 * Returns a list of values whose time intervals overlap with a
-	 * given time interval.
-	 *
-	 * @param interval a given time interval
-	 *
-	 * @return a list of values whose time intervals overlap with a
-	 *         given time interval.
-	 */
-	public List<T> getValues(Interval<T> interval) {
-		List<T> result = new ArrayList<T>();
-		for (Interval<T> i : intervalTree.search(interval))
-			result.add(i.getValue());
-		return result;
 	}
 
 	/**
@@ -371,8 +359,21 @@ public abstract class DynamicType<T> {
 	 * @throws IllegalArgumentException if {@code low} > {@code high}.
 	 */
 	public List<T> getValues(double low, double high) {
+		return getValues(new Interval(low, high));
+	}
+
+	/**
+	 * Returns a list of values whose time intervals overlap with a
+	 * given time interval.
+	 *
+	 * @param interval a given time interval
+	 *
+	 * @return a list of values whose time intervals overlap with a
+	 *         given time interval.
+	 */
+	public List<T> getValues(Interval interval) {
 		List<T> result = new ArrayList<T>();
-		for (Interval<T> i : intervalTree.search(low, high))
+		for (Interval<T> i : intervalTree.search(interval))
 			result.add(i.getValue());
 		return result;
 	}
@@ -384,7 +385,7 @@ public abstract class DynamicType<T> {
 	 *
 	 * @return a list of intervals which overlap with a given time interval.
 	 */
-	public List<Interval<T>> getIntervals(Interval<T> interval) {
+	public List<Interval<T>> getIntervals(Interval interval) {
 		return intervalTree.search(interval);
 	}
 
@@ -423,7 +424,7 @@ public abstract class DynamicType<T> {
 	 *         {@code DynamicType} which has the same type {@code T} and an
 	 *         equal interval tree.
 	 * 
-     * @see #hashCode
+	 * @see #hashCode
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -444,10 +445,21 @@ public abstract class DynamicType<T> {
 	}
 
 	/**
+	 * Creates a string representation of all the intervals with their values.
+	 *
+	 * @param timesAsDoubles indicates if times should be shown as doubles or dates
+	 *
+	 * @return a string representation with times as doubles or dates.
+	 */
+	public String toString(boolean timesAsDoubles) {
+		return intervalTree.toString(timesAsDoubles);
+	}
+
+	/**
 	 * Returns a string representation of this instance in a format
 	 * {@code <[low, high, value], ..., [low, high, value]>}. Intervals are
 	 * ordered by its left endpoint.
-	 * 
+	 *
 	 * @return a string representation of this instance.
 	 */
 	@Override

@@ -50,6 +50,8 @@ public interface EdgeDraftGetter extends EdgeDraft {
 
     public String getId();
 
+    public boolean isAutoId();
+
     public NodeDraftGetter getSource();
 
     public NodeDraftGetter getTarget();

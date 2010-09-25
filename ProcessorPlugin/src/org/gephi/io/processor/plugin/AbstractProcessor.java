@@ -27,6 +27,8 @@ import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.type.DynamicFloat;
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -143,6 +145,14 @@ public abstract class AbstractProcessor {
                     row.setValue(val.getColumn(), val.getValue());
                 }
             }
+        }
+
+        //Dynamic Weight
+        AttributeColumn dynamicWeightCol = container.getAttributeModel().getEdgeTable().getColumn(PropertiesColumn.EDGE_WEIGHT.getTitle(), AttributeType.DYNAMIC_FLOAT);
+        if (dynamicWeightCol != null) {
+            DynamicFloat weight = (DynamicFloat) edgeDraft.getAttributeRow().getValue(dynamicWeightCol.getIndex());
+            AttributeRow row = (AttributeRow) edge.getEdgeData().getAttributes();
+            row.setValue(PropertiesColumn.EDGE_WEIGHT.getIndex(), weight);
         }
     }
 

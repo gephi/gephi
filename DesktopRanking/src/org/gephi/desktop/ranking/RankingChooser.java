@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.ranking;
 
 import org.gephi.ranking.api.TransformerUI;
@@ -148,6 +148,7 @@ public class RankingChooser extends javax.swing.JPanel {
         } else {
             rankings = model.getEdgeRanking();
         }
+
         //Ranking list
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
         comboBoxModel.addElement(NO_SELECTION);

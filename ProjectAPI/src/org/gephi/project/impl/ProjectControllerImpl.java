@@ -164,6 +164,12 @@ public class ProjectControllerImpl implements ProjectController {
     public void deleteWorkspace(Workspace workspace) {
         WorkspaceInformation wi = workspace.getLookup().lookup(WorkspaceInformation.class);
         WorkspaceProviderImpl workspaceProvider = wi.getProject().getLookup().lookup(WorkspaceProviderImpl.class);
+
+        Workspace toSelectWorkspace = null;
+        if (getCurrentWorkspace() == workspace) {
+            toSelectWorkspace = workspaceProvider.getPrecedingWorkspace(workspace);
+        }
+
         workspaceProvider.removeWorkspace(workspace);
 
         //Event
@@ -171,10 +177,8 @@ public class ProjectControllerImpl implements ProjectController {
 
         if (getCurrentWorkspace() == workspace) {
             //Select the one before, or after
-            Workspace toSelectWorkspace = workspaceProvider.getPrecedingWorkspace(workspace);
             if (toSelectWorkspace == null) {
                 closeCurrentProject();
-                return;
             } else {
                 openWorkspace(toSelectWorkspace);
             }

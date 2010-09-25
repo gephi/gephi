@@ -23,6 +23,3 @@ msgstr "Timeline"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Timeline UI"
-
-msgid "TimelineTopComponent.enableButton.text"
-msgstr "timeline"

@@ -20,7 +20,11 @@
  */
 package org.gephi.dynamic;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -31,6 +35,8 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicGraph;
 import org.gephi.dynamic.api.DynamicModel;
@@ -41,6 +47,7 @@ import org.gephi.filters.api.Query;
 import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder;
 import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder.DynamicRangeFilter;
 import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -58,14 +65,16 @@ import org.openide.util.Lookup;
  */
 public final class DynamicModelImpl implements DynamicModel {
 
-    private DynamicControllerImpl controller;
-    private GraphModel graphModel;
-    private FilterController filterController;
-    private FilterModel filterModel;
+    protected final DynamicControllerImpl controller;
+    private final FilterController filterController;
+    private final DynamicIndex timeIntervalIndex;
+    private final GraphModel graphModel;
+    private final AttributeModel attributeModel;
+    private final FilterModel filterModel;
+    private final List<AttributeColumn> nodeDynamicColumns;
+    private final List<AttributeColumn> edgeDynamicColumns;
+    //Variables
     private TimeInterval visibleTimeInterval;
-    private TimeIntervalIndex timeIntervalIndex;
-    private AttributeColumn nodeColumn;
-    private AttributeColumn edgeColumn;
     private TimeFormat timeFormat;
 
     /**
@@ -108,28 +117,12 @@ public final class DynamicModelImpl implements DynamicModel {
         }
 
         //Index intervals
-        timeIntervalIndex = new TimeIntervalIndex();
-        AttributeModel attModel = Lookup.getDefault().lookup(AttributeController.class).getModel(workspace);
-        nodeColumn = attModel.getNodeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
-        edgeColumn = attModel.getEdgeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
-        Graph graph = graphModel.getGraph();
-        if (nodeColumn != null) {
-            for (Node n : graph.getNodes()) {
-                TimeInterval ti = (TimeInterval) n.getNodeData().getAttributes().getValue(nodeColumn.getIndex());
-                if (ti != null) {
-                    timeIntervalIndex.add(ti);
-                }
-            }
-        }
-        if (edgeColumn != null) {
-            for (Edge e : graph.getEdges()) {
-                TimeInterval ti = (TimeInterval) e.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
-                if (ti != null) {
-                    timeIntervalIndex.add(ti);
-                }
-            }
-        }
+        timeIntervalIndex = new DynamicIndex(this);
+        attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel(workspace);
+        nodeDynamicColumns = Collections.synchronizedList(new ArrayList<AttributeColumn>());
+        edgeDynamicColumns = Collections.synchronizedList(new ArrayList<AttributeColumn>());
 
+        refresh();
 
         //Visible interval
         visibleTimeInterval = new TimeInterval(timeIntervalIndex.getMin(), timeIntervalIndex.getMax());
@@ -138,34 +131,30 @@ public final class DynamicModelImpl implements DynamicModel {
         final AttributeUtils attUtils = AttributeUtils.getDefault();
 
         //Listen columns
-        attModel.addAttributeListener(new AttributeListener() {
+        AttributeListener attributeListener = new AttributeListener() {
 
             @Override
             public void attributesChanged(AttributeEvent event) {
                 switch (event.getEventType()) {
                     case ADD_COLUMN:
-                        if (nodeColumn == null) {
-                            AttributeColumn[] addedColumns = event.getData().getAddedColumns();
-                            for (int i = 0; i < addedColumns.length; i++) {
-                                AttributeColumn col = addedColumns[i];
-                                if (col.getId().equals(TIMEINTERVAL_COLUMN)) {
-                                    if (attUtils.isNodeColumn(col)) {
-                                        nodeColumn = col;
-                                    } else {
-                                        edgeColumn = col;
-                                    }
-                                }
+                        AttributeColumn[] addedColumns = event.getData().getAddedColumns();
+                        for (int i = 0; i < addedColumns.length; i++) {
+                            AttributeColumn col = addedColumns[i];
+                            if (col.getType().isDynamicType() && attUtils.isNodeColumn(col)) {
+                                nodeDynamicColumns.add(col);
+                            } else if (col.getType().isDynamicType() && attUtils.isEdgeColumn(col)) {
+                                edgeDynamicColumns.add(col);
                             }
                         }
                         break;
                     case REMOVE_COLUMN:
-                        AttributeColumn[] addedColumns = event.getData().getAddedColumns();
-                        for (int i = 0; i < addedColumns.length; i++) {
-                            AttributeColumn col = addedColumns[i];
-                            if (nodeColumn != null && nodeColumn == col) {
-                                nodeColumn = null;
-                            } else if (edgeColumn != null && edgeColumn == col) {
-                                edgeColumn = null;
+                        AttributeColumn[] removedColumns = event.getData().getRemovedColumns();
+                        for (int i = 0; i < removedColumns.length; i++) {
+                            AttributeColumn col = removedColumns[i];
+                            if (col.getType().isDynamicType() && attUtils.isNodeColumn(col)) {
+                                nodeDynamicColumns.remove(col);
+                            } else if (col.getType().isDynamicType() && attUtils.isEdgeColumn(col)) {
+                                edgeDynamicColumns.remove(col);
                             }
                         }
                         break;
@@ -175,13 +164,11 @@ public final class DynamicModelImpl implements DynamicModel {
                             AttributeValue val = values[i];
                             if (val.getValue() != null) {
                                 AttributeColumn col = values[i].getColumn();
-                                if (col.getType().equals(AttributeType.TIME_INTERVAL)) {
-                                    if (nodeColumn == null && attUtils.isNodeColumn(col) && col.getId().equals(TIMEINTERVAL_COLUMN)) {
-                                        nodeColumn = col;
-                                    } else if (edgeColumn == null && attUtils.isEdgeColumn(col) && col.getId().equals(TIMEINTERVAL_COLUMN)) {
-                                        edgeColumn = col;
+                                if (col.getType().isDynamicType()) {
+                                    DynamicType<?> dynamicType = (DynamicType) val.getValue();
+                                    for (Interval interval : dynamicType.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
+                                        timeIntervalIndex.add(interval);
                                     }
-                                    timeIntervalIndex.add((TimeInterval) val.getValue());
                                 }
                             }
                         }
@@ -190,33 +177,47 @@ public final class DynamicModelImpl implements DynamicModel {
                         break;
                 }
             }
-        });
+        };
+        attributeModel.addAttributeListener(attributeListener);
 
-        graphModel.addGraphListener(new GraphListener() {
+        GraphListener graphListener = new GraphListener() {
 
             @Override
             public void graphChanged(GraphEvent event) {
                 if (event.getSource().isMainView()) {
                     switch (event.getEventType()) {
                         case REMOVE_EDGES:
-                            if (edgeColumn != null) {
+                            if (!edgeDynamicColumns.isEmpty()) {
+                                AttributeColumn[] dynamicCols = edgeDynamicColumns.toArray(new AttributeColumn[0]);
                                 for (Edge e : event.getData().removedEdges()) {
-                                    TimeInterval ti = (TimeInterval) e.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
-                                    if (ti != null) {
-                                        timeIntervalIndex.remove(ti);
+                                    Attributes attributeRow = e.getEdgeData().getAttributes();
+                                    for (int i = 0; i < dynamicCols.length; i++) {
+                                        DynamicType<?> ti = (DynamicType) attributeRow.getValue(dynamicCols[i].getIndex());
+                                        if (ti != null) {
+                                            for (Interval interval : ti.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
+                                                timeIntervalIndex.remove(interval);
+                                            }
+                                        }
                                     }
                                 }
                             }
                             break;
                         case REMOVE_NODES:
-                            if (nodeColumn != null) {
+                            if (!nodeDynamicColumns.isEmpty()) {
+                               AttributeColumn[] dynamicCols = edgeDynamicColumns.toArray(new AttributeColumn[0]);
                                 for (Node n : event.getData().removedNodes()) {
-                                    TimeInterval ti = (TimeInterval) n.getNodeData().getAttributes().getValue(nodeColumn.getIndex());
-                                    if (ti != null) {
-                                        timeIntervalIndex.remove(ti);
+                                    Attributes attributeRow = n.getNodeData().getAttributes();
+                                    for (int i = 0; i < dynamicCols.length; i++) {
+                                        DynamicType<?> ti = (DynamicType) attributeRow.getValue(dynamicCols[i].getIndex());
+                                        if (ti != null) {
+                                            for (Interval interval : ti.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
+                                                timeIntervalIndex.remove(interval);
+                                            }
+                                        }
                                     }
                                 }
                             }
+                            break;
                         case CLEAR_NODES:
                             timeIntervalIndex.clear();
                             break;
@@ -225,7 +226,52 @@ public final class DynamicModelImpl implements DynamicModel {
                     }
                 }
             }
-        });
+        };
+        graphModel.addGraphListener(graphListener);
+    }
+
+    private void refresh() {
+        timeIntervalIndex.clear();
+        for (AttributeColumn col : attributeModel.getNodeTable().getColumns()) {
+            if (col.getType().isDynamicType()) {
+                nodeDynamicColumns.add(col);
+            }
+        }
+        AttributeColumn[] dynamicCols = nodeDynamicColumns.toArray(new AttributeColumn[0]);
+        if (dynamicCols.length>0) {
+            Graph graph = graphModel.getGraph();
+            for (Node n : graph.getNodes()) {
+                Attributes attributeRow = n.getNodeData().getAttributes();
+                for (int i = 0; i < dynamicCols.length; i++) {
+                    DynamicType<?> ti = (DynamicType) attributeRow.getValue(dynamicCols[i].getIndex());
+                    if (ti != null) {
+                        for (Interval interval : ti.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
+                            timeIntervalIndex.add(interval);
+                        }
+                    }
+                }
+            }
+        }
+        for (AttributeColumn col : attributeModel.getNodeTable().getColumns()) {
+            if (col.getType().isDynamicType()) {
+                edgeDynamicColumns.add(col);
+            }
+        }
+        dynamicCols = nodeDynamicColumns.toArray(new AttributeColumn[0]);
+        if (dynamicCols.length>0) {
+            Graph graph = graphModel.getGraph();
+            for (Edge e : graph.getEdges()) {
+                Attributes attributeRow = e.getEdgeData().getAttributes();
+                for (int i = 0; i < dynamicCols.length; i++) {
+                    DynamicType<?> ti = (DynamicType) attributeRow.getValue(dynamicCols[i].getIndex());
+                    if (ti != null) {
+                        for (Interval interval : ti.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
+                            timeIntervalIndex.add(interval);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -250,6 +296,8 @@ public final class DynamicModelImpl implements DynamicModel {
             //Filters
             Query dynamicQuery = null;
             boolean selecting = false;
+
+            //Get or create Dynamic Query
             if (filterModel.getCurrentQuery() != null) {
                 //Look if current query is dynamic - filtering must be active
                 Query query = filterModel.getCurrentQuery();
@@ -265,6 +313,7 @@ public final class DynamicModelImpl implements DynamicModel {
                     dynamicQuery = query;
                 }
             }
+
             if (Double.isInfinite(visibleTimeInterval.getLow()) && Double.isInfinite(visibleTimeInterval.getHigh())) {
                 if (dynamicQuery != null) {
                     filterController.remove(dynamicQuery);
@@ -317,149 +366,5 @@ public final class DynamicModelImpl implements DynamicModel {
     @Override
     public double getMax() {
         return timeIntervalIndex.getMax();
-    }
-
-    public double[] getPoints() {
-        Double[] points = timeIntervalIndex.getPoints();
-        double[] d = new double[points.length];
-        for (int i = 0; i < d.length; i++) {
-            d[i] = (double) points[i];
-        }
-        return d;
-    }
-
-    private class TimeIntervalIndex {
-
-        private SortedMap<Double, Integer> lowMap = new TreeMap<Double, Integer>();
-        private SortedMap<Double, Integer> highMap = new TreeMap<Double, Integer>();
-        private TreeSet<Double> pointsSet = new TreeSet<Double>();
-
-        public void add(TimeInterval interval) {
-            boolean newDynamic = false;
-            double min = getMin();
-            double max = getMax();
-            if (lowMap.isEmpty() && highMap.isEmpty()) {
-                newDynamic = true;
-            }
-            Double low = interval.getLow();
-            Double high = interval.getHigh();
-            if (low != Double.NEGATIVE_INFINITY) {
-                Integer c = lowMap.get((Double) interval.getLow());
-                if (c == null) {
-                    lowMap.put(low, 1);
-                    pointsSet.add(low);
-                } else {
-                    lowMap.put(low, c + 1);
-                }
-            }
-            if (high != Double.POSITIVE_INFINITY) {
-                Integer c = highMap.get((Double) interval.getHigh());
-                if (c == null) {
-                    highMap.put(high, 1);
-                    pointsSet.add(high);
-                } else {
-                    highMap.put(high, c + 1);
-                }
-            }
-            if (newDynamic) {
-                setDynamic(true);
-            } else {
-                double newMin = getMin();
-                double newMax = getMax();
-                if (newMin != min) {
-                    setNewMin(min);
-                }
-                if (newMax != max) {
-                    setNewMax(max);
-                }
-            }
-        }
-
-        public void remove(TimeInterval interval) {
-            double min = getMin();
-            double max = getMax();
-            Double low = interval.getLow();
-            Double high = interval.getHigh();
-            if (low != Double.NEGATIVE_INFINITY) {
-                Integer c = lowMap.get((Double) interval.getLow());
-                if (c != null) {
-                    if (c - 1 == 0) {
-                        lowMap.remove(low);
-                        pointsSet.remove(low);
-                    } else {
-                        lowMap.put(low, c - 1);
-                    }
-                } else {
-                    System.err.println("Problem, the interval is not there");
-                }
-            }
-            if (high != Double.POSITIVE_INFINITY) {
-                Integer c = highMap.get((Double) interval.getHigh());
-                if (c != null) {
-                    if (c - 1 == 0) {
-                        highMap.remove(high);
-                        pointsSet.remove(high);
-                    } else {
-                        highMap.put(high, c - 1);
-                    }
-                } else {
-                    System.err.println("Problem, the interval is not there");
-                }
-            }
-
-            if (lowMap.isEmpty() && highMap.isEmpty()) {
-                setDynamic(false);
-            } else {
-                double newMin = getMin();
-                double newMax = getMax();
-                if (newMin != min) {
-                    setNewMin(min);
-                }
-                if (newMax != max) {
-                    setNewMax(max);
-                }
-            }
-        }
-
-        public void clear() {
-            lowMap.clear();
-            highMap.clear();
-        }
-
-        public double getMin() {
-            if (lowMap.isEmpty() && highMap.isEmpty()) {
-                return Double.NEGATIVE_INFINITY;
-            } else if (lowMap.isEmpty()) {
-                return highMap.firstKey();
-            } else {
-                return lowMap.firstKey();
-            }
-        }
-
-        public double getMax() {
-            if (lowMap.isEmpty() && highMap.isEmpty()) {
-                return Double.POSITIVE_INFINITY;
-            } else if (highMap.isEmpty()) {
-                return lowMap.lastKey();
-            } else {
-                return highMap.lastKey();
-            }
-        }
-
-        public Double[] getPoints() {
-            return pointsSet.toArray(new Double[0]);
-        }
-
-        private void setDynamic(boolean dynamic) {
-            controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.IS_DYNAMIC, DynamicModelImpl.this, dynamic));
-        }
-
-        private void setNewMin(double min) {
-            controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MIN_CHANGED, DynamicModelImpl.this, min));
-        }
-
-        private void setNewMax(double max) {
-            controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MAX_CHANGED, DynamicModelImpl.this, max));
-        }
     }
 }

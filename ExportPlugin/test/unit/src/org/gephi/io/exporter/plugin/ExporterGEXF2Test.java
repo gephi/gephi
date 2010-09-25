@@ -52,7 +52,7 @@ import org.openide.util.Lookup;
  */
 public class ExporterGEXF2Test {
 
-    private ExporterGEXF2 exporter;
+    private ExporterGEXF exporter;
 
     @Before
     public void setUp() {
@@ -95,9 +95,9 @@ public class ExporterGEXF2Test {
         n1.getNodeData().getAttributes().setValue(nodeCol2.getIndex(), new IntegerList(new int[]{1, 2, 3, 4}));
 
         n1.getNodeData().getAttributes().setValue(nodeTimeCol.getIndex(), new TimeInterval(1, 5));
-        List<Double[]> intervalList = new ArrayList<Double[]>();
-        intervalList.add(new Double[]{1., 2.});
-        intervalList.add(new Double[]{3., 4.});
+        List<Interval> intervalList = new ArrayList<Interval>();
+        intervalList.add(new Interval(1.0, 2.0));
+        intervalList.add(new Interval(3.0, 4.0));
         n2.getNodeData().getAttributes().setValue(nodeTimeCol.getIndex(), new TimeInterval(intervalList));
 
         DynamicInteger dynamicInteger = new DynamicInteger(new Interval(4., 10., 100));
@@ -110,7 +110,7 @@ public class ExporterGEXF2Test {
         DynamicString dynamicString = new DynamicString(stringIntervalList);
         e3.getEdgeData().getAttributes().setValue(edgeCol2.getIndex(), dynamicString);
 
-        exporter = new ExporterGEXF2();
+        exporter = new ExporterGEXF();
         exporter.setWorkspace(workspace);
     }
 

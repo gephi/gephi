@@ -159,6 +159,20 @@ public class DataTablesControllerImpl implements DataTablesController {
         }
     }
 
+    public boolean isTimeIntervalGraphics() {
+        if (listener != null) {
+            return listener.isTimeIntervalGraphics();
+        } else {
+            return false;
+        }
+    }
+
+    public void setTimeIntervalGraphics(boolean timeIntervalGraphics) {
+        if (listener != null) {
+            listener.setTimeIntervalGraphics(timeIntervalGraphics);
+        }
+    }
+
     public boolean isShowEdgesNodesLabels() {
         if (listener != null) {
             return listener.isShowEdgesNodesLabels();

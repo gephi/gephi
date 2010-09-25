@@ -342,5 +342,9 @@ public class DataLaboratoryHelper{
         public void setOkButtonEnabled(boolean enabled) {
             okButton.setEnabled(enabled);
         }
+
+        public boolean isOkButtonEnabled(){
+            return okButton.isEnabled();
+        }
     }
 }

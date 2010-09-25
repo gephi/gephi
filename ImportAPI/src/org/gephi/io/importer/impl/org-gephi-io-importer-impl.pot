@@ -15,6 +15,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "ImportContainerLog.TimeInterval"
+msgstr "Time Interval set at {0}"
+
+msgid "ImportContainerLog.TimeFormat"
+msgstr "Time Format: {0}"
+
 msgid "ImportContainerException_nodeExist"
 msgstr "Duplicated node id=''{0}''"
 

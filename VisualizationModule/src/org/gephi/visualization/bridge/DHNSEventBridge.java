@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.bridge;
 
 import java.util.ArrayList;
@@ -25,6 +25,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.desktop.project.api.ProjectControllerUI;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GroupData;
@@ -32,6 +36,8 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Model;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
+import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.GraphIO;
@@ -380,6 +386,65 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
                 graph.removeNode(node);
             }
         }
+    }
+
+    //MOVE & COPY WORKSPACE
+    public boolean canMoveOrCopyWorkspace() {
+        GraphModel graphModel = graphController.getModel();
+        if (graphModel == null) {
+            return false;
+        }
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        int nodesReallyPresent = 0;
+        for (ModelImpl metaModelImpl : selectedNodeModels) {
+            NodeData nodeData = (NodeData) metaModelImpl.getObj();
+            Node node = nodeData.getNode(graph.getView().getViewId());
+            if (node != null) {
+                nodesReallyPresent++;
+            }
+        }
+        return nodesReallyPresent >= 1;
+    }
+
+    public void moveToWorkspace(Workspace workspace) {
+        copyToWorkspace(workspace);
+        delete();
+    }
+
+    public void moveToNewWorkspace() {
+        Workspace workspace = Lookup.getDefault().lookup(ProjectControllerUI.class).newWorkspace();
+        moveToWorkspace(workspace);
+    }
+
+    public void copyToWorkspace(Workspace workspace) {
+        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
+        ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+
+        Workspace currentWorkspace = projectController.getCurrentWorkspace();
+        AttributeModel sourceAttributeModel = attributeController.getModel(currentWorkspace);
+        AttributeModel destAttributeModel = attributeController.getModel(workspace);
+        destAttributeModel.mergeModel(sourceAttributeModel);
+
+        GraphModel sourceModel = graphController.getModel(currentWorkspace);
+        GraphModel destModel = graphController.getModel(workspace);
+        Graph sourceGraph = sourceModel.getHierarchicalGraphVisible();
+
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        List<Node> nodes = new ArrayList<Node>();
+        for (ModelImpl metaModelImpl : selectedNodeModels) {
+            NodeData nodeData = (NodeData) metaModelImpl.getObj();
+            Node node = nodeData.getNode(sourceGraph.getView().getViewId());
+            if (node != null) {
+                nodes.add(node);
+            }
+        }
+
+        destModel.pushNodes(sourceGraph, nodes.toArray(new Node[0]));
+    }
+
+    public void copyToNewWorkspace() {
+        Workspace workspace = Lookup.getDefault().lookup(ProjectControllerUI.class).newWorkspace();
+        copyToWorkspace(workspace);
     }
 
     public void mouseClick(ModelClass objectClass, Model[] clickedObjects) {

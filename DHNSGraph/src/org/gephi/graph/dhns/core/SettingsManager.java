@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.gephi.data.attributes.api.Estimator;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.GraphSettings;
 import org.gephi.graph.api.GraphView;
@@ -38,10 +39,10 @@ public class SettingsManager implements GraphSettings {
 
     private Dhns dhns;
     //Settings
-    private Boolean allowMultilevel;
     private Boolean autoMetaEdgeCreation;
     private MetaEdgeBuilder metaEdgeBuilder;
     private Float metaEdgeBuilderNonDeepDivisor;
+    private Estimator defaultWeightEstimator;
 
     public SettingsManager(Dhns dhns) {
         this.dhns = dhns;
@@ -49,14 +50,10 @@ public class SettingsManager implements GraphSettings {
     }
 
     private void defaultSettings() {
-        allowMultilevel = Boolean.TRUE;
         autoMetaEdgeCreation = Boolean.TRUE;
         metaEdgeBuilderNonDeepDivisor = Float.valueOf(10f);
         metaEdgeBuilder = new SumMetaEdgeBuilder(metaEdgeBuilderNonDeepDivisor);
-    }
-
-    public boolean isAllowMultilevel() {
-        return allowMultilevel;
+        defaultWeightEstimator = Estimator.AVERAGE;
     }
 
     public boolean isAutoMetaEdgeCreation() {
@@ -67,17 +64,19 @@ public class SettingsManager implements GraphSettings {
         return metaEdgeBuilder;
     }
 
+    public Estimator getDefaultWeightEstimator() {
+        return defaultWeightEstimator;
+    }
+
     public void setMetaEdgeBuilder(MetaEdgeBuilder metaEdgeBuilder) {
-        putClientProperty("metaEdgeBuilder", metaEdgeBuilder);
+        putClientProperty(GraphSettings.METAEDGE_BUILDER, metaEdgeBuilder);
     }
 
     public void putClientProperty(String key, Object value) {
-        if (key.equals("allowMultilevel")) {
-            allowMultilevel = (Boolean) value;
-        } else if (key.equals("autoMetaEdgeCreation")) {
+        if (key.equals(GraphSettings.AUTO_META_EDGES)) {
             autoMetaEdgeCreation = (Boolean) value;
             fireUpdate();
-        } else if (key.equals("metaEdgeBuilder")) {
+        } else if (key.equals(GraphSettings.METAEDGE_BUILDER)) {
             if (value instanceof MetaEdgeBuilder) {
                 metaEdgeBuilder = (MetaEdgeBuilder) value;
             }
@@ -87,7 +86,7 @@ public class SettingsManager implements GraphSettings {
                 metaEdgeBuilder = new SumMetaEdgeBuilder(metaEdgeBuilderNonDeepDivisor);
             }
             fireUpdate();
-        } else if (key.equals("metaEdgeBuilderNonDeepDivisor")) {
+        } else if (key.equals(GraphSettings.METAEDGE_BUILDER_NONDEEP_DIVISOR)) {
             metaEdgeBuilderNonDeepDivisor = (Float) value;
             if (metaEdgeBuilder instanceof SumMetaEdgeBuilder) {
                 metaEdgeBuilder = new SumMetaEdgeBuilder(metaEdgeBuilderNonDeepDivisor);
@@ -95,15 +94,16 @@ public class SettingsManager implements GraphSettings {
                 metaEdgeBuilder = new AverageMetaEdgeBuilder(metaEdgeBuilderNonDeepDivisor);
             }
             fireUpdate();
+        } else if(key.equals(GraphSettings.DEFAULT_WEIGHT_ESTIMATOR)) {
+            defaultWeightEstimator = (Estimator)value;
+            fireUpdate();
         }
     }
 
     public Object getClientProperty(String key) {
-        if (key.equals("allowMultilevel")) {
-            return allowMultilevel;
-        } else if (key.equals("autoMetaEdgeCreation")) {
+        if (key.equals(GraphSettings.AUTO_META_EDGES)) {
             return autoMetaEdgeCreation;
-        } else if (key.equals("metaEdgeBuilder")) {
+        } else if (key.equals(GraphSettings.METAEDGE_BUILDER)) {
             if (metaEdgeBuilder instanceof SumMetaEdgeBuilder) {
                 return "sum";
             } else if (metaEdgeBuilder instanceof AverageMetaEdgeBuilder) {
@@ -111,8 +111,10 @@ public class SettingsManager implements GraphSettings {
             } else {
                 return metaEdgeBuilder.getClass().getName();
             }
-        } else if (key.equals("metaEdgeBuilderNonDeepDivisor")) {
+        } else if (key.equals(GraphSettings.METAEDGE_BUILDER_NONDEEP_DIVISOR)) {
             return metaEdgeBuilderNonDeepDivisor;
+        } else if (key.equals(GraphSettings.DEFAULT_WEIGHT_ESTIMATOR)) {
+            return defaultWeightEstimator;
         }
         return null;
     }
@@ -126,10 +128,10 @@ public class SettingsManager implements GraphSettings {
 
     public Map<String, Object> getClientProperties() {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("allowMultilevel", getClientProperty("allowMultilevel"));
-        map.put("autoMetaEdgeCreation", getClientProperty("autoMetaEdgeCreation"));
-        map.put("metaEdgeBuilder", getClientProperty("metaEdgeBuilder"));
-        map.put("metaEdgeBuilderNonDeepDivisor", getClientProperty("metaEdgeBuilderNonDeepDivisor"));
+        map.put(GraphSettings.AUTO_META_EDGES, getClientProperty(GraphSettings.AUTO_META_EDGES));
+        map.put(GraphSettings.METAEDGE_BUILDER, getClientProperty(GraphSettings.METAEDGE_BUILDER));
+        map.put(GraphSettings.METAEDGE_BUILDER_NONDEEP_DIVISOR, getClientProperty(GraphSettings.METAEDGE_BUILDER_NONDEEP_DIVISOR));
+        map.put(GraphSettings.DEFAULT_WEIGHT_ESTIMATOR, getClientProperty(GraphSettings.DEFAULT_WEIGHT_ESTIMATOR));
         return map;
     }
 }

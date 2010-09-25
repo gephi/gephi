@@ -87,6 +87,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.jdesktop.swingx</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.6.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.jfree</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -135,6 +143,10 @@
                 <package>org.gephi.datalab.plugin.manipulators.nodes</package>
                 <package>org.gephi.datalab.plugin.manipulators.values</package>
             </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/swingx-1.6.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/swingx-1.6.1.jar</binary-origin>
+            </class-path-extension>
         </data>
     </configuration>
 </project>
