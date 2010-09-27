@@ -237,7 +237,6 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             }
 
             public void close(Workspace workspace) {
-                clearAll();
             }
 
             public void disable() {
