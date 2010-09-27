@@ -39,7 +39,6 @@ public class EdgeProcessor {
 
     //Architecture
     private final TreeStructure treeStructure;
-    private final IDGen idGen;
     private final Dhns dhns;
     private final GraphViewImpl view;
     private final int viewId;
@@ -49,7 +48,6 @@ public class EdgeProcessor {
     public EdgeProcessor(Dhns dhns, GraphViewImpl view) {
         this.dhns = dhns;
         this.treeStructure = view.getStructure();
-        this.idGen = dhns.getIdGen();
         this.view = view;
         this.viewId = view.getViewId();
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
