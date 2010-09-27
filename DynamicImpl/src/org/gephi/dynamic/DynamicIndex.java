@@ -104,11 +104,11 @@ public class DynamicIndex {
     }
 
     public synchronized double getMin() {
-        return lowMap.isEmpty() ? Double.NEGATIVE_INFINITY : lowMap.firstKey();
+        return lowMap.isEmpty() ? (highMap.isEmpty() ? Double.NEGATIVE_INFINITY : highMap.firstKey()) : lowMap.firstKey();
     }
 
     public synchronized double getMax() {
-        return highMap.isEmpty() ? Double.POSITIVE_INFINITY : highMap.lastKey();
+        return highMap.isEmpty() ? (lowMap.isEmpty() ? Double.POSITIVE_INFINITY : lowMap.lastKey()) : highMap.lastKey();
     }
 
     private void fireEvent(DynamicModelEvent event) {
