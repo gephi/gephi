@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.clustering;
 
 import java.awt.Component;
@@ -75,7 +75,7 @@ public final class ClusteringTopComponent extends TopComponent implements Change
         if (UIUtils.isAquaLookAndFeel()) {
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
-        
+
         ClusteringController cc = Lookup.getDefault().lookup(ClusteringController.class);
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
@@ -95,7 +95,9 @@ public final class ClusteringTopComponent extends TopComponent implements Change
             }
 
             public void unselect(Workspace workspace) {
-                model.removeChangeListener(ClusteringTopComponent.this);
+                if (model != null) {
+                    model.removeChangeListener(ClusteringTopComponent.this);
+                }
                 model = null;
             }
 
