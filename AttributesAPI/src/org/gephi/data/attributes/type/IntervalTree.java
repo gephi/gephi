@@ -336,32 +336,9 @@ public final class IntervalTree<T> {
 		return treeMinimum(root.left).i;
 	}
 
-        public double minimumNotInfinite() {
-		if (root.left == nil)
-			return Double.NEGATIVE_INFINITY;
-		return treeMinimumNotInfinite(root.left).i.getLow();
-	}
-
 	private Node treeMinimum(Node x) {
 		while (x.left != nil)
 			x = x.left;
-		return x;
-	}
-
-        private Node treeMinimumNotInfinite(Node x) {
-		while (x.left != nil || x.right != nil || Double.isInfinite(x.i.getLow())) {
-                    if(Double.isInfinite(x.i.getLow())) {
-                        if(x.right != nil) {
-                            x = x.right;
-                        } else {
-                            x = x.p;
-                            break;
-                        }
-                    } else {
-                        x = x.left;
-                    }
-                }
-			
 		return x;
 	}
 
@@ -377,32 +354,10 @@ public final class IntervalTree<T> {
 		return treeMaximum(root.left).i;
 	}
 
-        public double maximumNotInfinite() {
-		if (root.left == nil)
-			return Double.POSITIVE_INFINITY;
-		return treeMaximumNotInfinite(root.left);
-	}
-
 	private Node treeMaximum(Node x) {
 		while (x.right != nil)
 			x = x.right;
 		return x;
-	}
-
-        private double treeMaximumNotInfinite(Node x) {
-                if (x != nil) {
-			double l = treeMaximumNotInfinite(x.right);
-			double r = treeMaximumNotInfinite(x.left);
-                        double c = x.i.getHigh();
-                        l = l==Double.POSITIVE_INFINITY?Double.NEGATIVE_INFINITY:l;
-                        r = r==Double.POSITIVE_INFINITY?Double.NEGATIVE_INFINITY:r;
-                        c = c==Double.POSITIVE_INFINITY?Double.NEGATIVE_INFINITY:c;
-                        double max = Math.max(c, Math.max(l, r));
-                        if(max!=Double.NEGATIVE_INFINITY) {
-                            return max;
-                        }
-		}
-		return Double.POSITIVE_INFINITY;
 	}
 
 	/**
