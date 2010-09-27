@@ -35,6 +35,7 @@ public class ImportContainerParameters {
     private boolean removeEdgeWithWeightZero = false;
     private boolean undirectedSumDirectedEdgesWeight = false;
     private boolean removeIntervalsOverlapping = true;
+    private boolean mergeParallelEdgesWeight = true;
     private EdgeDefault edgeDefault = EdgeDefault.DIRECTED;
 
     public boolean isAutoNode() {
@@ -99,5 +100,13 @@ public class ImportContainerParameters {
 
     public void setRemoveIntervalsOverlapping(boolean removeIntervalsOverlapping) {
         this.removeIntervalsOverlapping = removeIntervalsOverlapping;
+    }
+
+    public boolean isMergeParallelEdgesWeight() {
+        return mergeParallelEdgesWeight;
+    }
+
+    public void setMergeParallelEdgesWeight(boolean mergeParallelEdgesWeight) {
+        this.mergeParallelEdgesWeight = mergeParallelEdgesWeight;
     }
 }

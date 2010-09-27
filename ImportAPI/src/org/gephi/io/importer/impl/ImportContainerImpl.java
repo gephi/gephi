@@ -220,6 +220,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 return;
             } else {
                 //Manage parallel edges
+                if (parameters.isMergeParallelEdgesWeight()) {
+                    EdgeDraftImpl existingEdge = edgeMap.get(id);
+                    if (existingEdge == null) {
+                        existingEdge = edgeSourceTargetMap.get(sourceTargetId);
+                    }
+                    existingEdge.setWeight(existingEdge.getWeight() + edgeDraftImpl.getWeight());
+                }
                 report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge", id), Level.INFO));
                 return;
             }
@@ -238,6 +245,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     return;
                 } else {
                     //Manage parallel edges
+                    if (parameters.isMergeParallelEdgesWeight()) {
+                        EdgeDraftImpl existingEdge = edgeSourceTargetMap.get(sourceTargetId);
+                        existingEdge.setWeight(existingEdge.getWeight() + edgeDraftImpl.getWeight());
+                    }
                     report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge", id), Level.INFO));
                     return;
                 }

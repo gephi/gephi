@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.plugin.file;
 
 import java.io.Reader;
@@ -380,9 +380,6 @@ public class ImporterGraphML implements FileImporter, LongTask {
             edge.setId(id);
         }
 
-
-        container.addEdge(edge);
-
         boolean end = false;
         while (reader.hasNext() && !end) {
             int type = reader.next();
@@ -401,6 +398,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
                     break;
             }
         }
+        container.addEdge(edge);
     }
 
     private void readEdgeAttValue(XMLStreamReader reader, EdgeDraft edge) throws Exception {
