@@ -91,6 +91,10 @@ public abstract class AbstractProcessor {
         }
 
         //Attributes
+        flushToNodeAttributes(nodeDraft, node);
+    }
+
+    protected void flushToNodeAttributes(NodeDraftGetter nodeDraft, Node node) {
         if (node.getNodeData().getAttributes() != null) {
             AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
             for (AttributeValue val : nodeDraft.getAttributeRow().getValues()) {
@@ -138,6 +142,10 @@ public abstract class AbstractProcessor {
         }
 
         //Attributes
+        flushToEdgeAttributes(edgeDraft, edge);
+    }
+
+    protected void flushToEdgeAttributes(EdgeDraftGetter edgeDraft, Edge edge) {
         if (edge.getEdgeData().getAttributes() != null) {
             AttributeRow row = (AttributeRow) edge.getEdgeData().getAttributes();
             for (AttributeValue val : edgeDraft.getAttributeRow().getValues()) {

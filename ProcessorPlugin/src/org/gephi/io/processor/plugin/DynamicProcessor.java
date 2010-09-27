@@ -28,9 +28,15 @@ import java.util.Set;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.data.attributes.type.TypeConvertor;
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
@@ -56,8 +62,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Processor.class)
 public class DynamicProcessor extends AbstractProcessor implements Processor {
 
+    //Settings
     private boolean dateMode = true;
     private String date = "";
+    //Variable
+    private double point;
 
     public void process() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -94,9 +103,40 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
         }
         GraphFactory factory = graphModel.factory();
 
-        //Attributes - Creates columns for properties
+        //Attributes - Manually merge models with new dynamic cols
         attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
-        attributeModel.mergeModel(container.getAttributeModel());
+        AttributeTable nodeTable = container.getAttributeModel().getNodeTable();
+        AttributeTable edgeTable = container.getAttributeModel().getEdgeTable();
+        for (AttributeColumn column : nodeTable.getColumns()) {
+            AttributeColumn existingCol = attributeModel.getNodeTable().getColumn(column.getTitle());
+            if (existingCol == null) {
+                if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                    AttributeType dynamicType = TypeConvertor.getDynamicType(column.getType());
+                    if (dynamicType != null && !column.getType().isDynamicType()) {
+                        attributeModel.getNodeTable().addColumn(column.getId(), column.getTitle(), dynamicType, column.getOrigin(), null);
+                    } else {
+                        attributeModel.getNodeTable().addColumn(column.getId(), column.getTitle(), column.getType(), column.getOrigin(), column.getDefaultValue());
+                    }
+                }
+            }
+
+        }
+        for (AttributeColumn column : edgeTable.getColumns()) {
+            AttributeColumn existingCol = attributeModel.getEdgeTable().getColumn(column.getTitle());
+            if (existingCol == null) {
+                if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                    AttributeType dynamicType = TypeConvertor.getDynamicType(column.getType());
+                    if (dynamicType != null && !column.getType().isDynamicType()) {
+                        attributeModel.getEdgeTable().addColumn(column.getId(), column.getTitle(), dynamicType, column.getOrigin(), null);
+                    } else {
+                        attributeModel.getEdgeTable().addColumn(column.getId(), column.getTitle(), column.getType(), column.getOrigin(), column.getDefaultValue());
+                    }
+                }
+            } else if (PropertiesColumn.EDGE_WEIGHT.getId().equals(column.getId())) {
+                edgeTable.removeColumn(column);
+                edgeTable.addColumn(PropertiesColumn.EDGE_WEIGHT.getId(), PropertiesColumn.EDGE_WEIGHT.getTitle(), AttributeType.DYNAMIC_FLOAT, AttributeOrigin.PROPERTY, null);
+            }
+        }
 
         //Get Time Interval Column
         AttributeColumn nodeDynamicColumn = attributeModel.getNodeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
@@ -109,7 +149,6 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
         }
 
         //Get Time stamp
-        double point;
         if (dateMode) {
             try {
                 point = DynamicUtilities.getDoubleFromXMLDateString(date);
@@ -156,6 +195,7 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
                 newNodeCount++;
             } else {
                 timeInterval = (TimeInterval) node.getNodeData().getAttributes().getValue(nodeDynamicColumn.getIndex());
+                flushToNodeAttributes(draftNode, node);
                 draftNode.setNode(node);
             }
             nodesInDraft.add(node);
@@ -212,6 +252,7 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
                 flushToEdge(draftEdge, edge);
             } else {
                 timeInterval = (TimeInterval) edge.getEdgeData().getAttributes().getValue(edgeDynamicColumn.getIndex());
+                flushToEdgeAttributes(draftEdge, edge);
             }
             edgesInDraft.add(edge);
 
@@ -231,6 +272,50 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
         workspace = null;
     }
 
+    @Override
+    protected void flushToNodeAttributes(NodeDraftGetter nodeDraft, Node node) {
+        if (node.getNodeData().getAttributes() != null) {
+            AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
+            for (int i = 0; i < row.countValues(); i++) {
+                Object val = row.getValue(i);
+                AttributeColumn col = row.getColumnAt(i);
+                Object draftValue = nodeDraft.getAttributeRow().getValue(col.getId());
+                if (col.getType().isDynamicType()) {
+                    if (draftValue == null && val != null) {
+                        removePoint(col.getType(), (DynamicType) val, point);
+                    } else if (draftValue != null) {
+                        DynamicType dynamicValue = addPoint(col.getType(), (DynamicType) val, draftValue, point);
+                        row.setValue(col.getIndex(), dynamicValue);
+                    }
+                } else if (draftValue != null && !col.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                    row.setValue(col.getIndex(), draftValue);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void flushToEdgeAttributes(EdgeDraftGetter edgeDraft, Edge edge) {
+        if (edge.getEdgeData().getAttributes() != null) {
+            AttributeRow row = (AttributeRow) edge.getEdgeData().getAttributes();
+            for (int i = 0; i < row.countValues(); i++) {
+                Object val = row.getValue(i);
+                AttributeColumn col = row.getColumnAt(i);
+                Object draftValue = edgeDraft.getAttributeRow().getValue(col);
+                if (col.getType().isDynamicType()) {
+                    if (draftValue == null && val != null) {
+                        removePoint(col.getType(), (DynamicType) val, point);
+                    } else if (draftValue != null) {
+                        DynamicType dynamicValue = addPoint(col.getType(), (DynamicType) val, draftValue, point);
+                        row.setValue(col.getIndex(), dynamicValue);
+                    }
+                } else if (draftValue != null && !col.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                    row.setValue(col.getIndex(), draftValue);
+                }
+            }
+        }
+    }
+
     private TimeInterval addPoint(TimeInterval source, double point) {
         if (source == null) {
             return new TimeInterval(point, Double.POSITIVE_INFINITY);
@@ -238,6 +323,28 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
         List<Interval<Double[]>> intervals = source.getIntervals(point, point);
         if (intervals.isEmpty()) {
             return new TimeInterval(source, point, Double.POSITIVE_INFINITY);
+        }
+        return source;
+    }
+
+    private DynamicType addPoint(AttributeType type, DynamicType source, Object value, double point) {
+        if (source == null) {
+            return DynamicUtilities.createDynamicObject(type, new Interval(point, Double.POSITIVE_INFINITY, value));
+        }
+        List<Interval<?>> intervals = source.getIntervals(point, point);
+        if (intervals.isEmpty()) {
+            return DynamicUtilities.createDynamicObject(type, source, new Interval(point, Double.POSITIVE_INFINITY, value));
+        } else if (intervals.size() > 1) {
+            throw new RuntimeException("DynamicProcessor doesn't support overlapping intervals.");
+        } else {
+            Interval<?> toRemove = intervals.get(0);
+            if (!toRemove.getValue().equals(value)) {
+                Interval toAdd = new Interval(toRemove.getLow(), point, toRemove.isLowExcluded(), true, toRemove.getValue());
+                DynamicType updated = DynamicUtilities.createDynamicObject(type, source, toAdd, toRemove);
+                toAdd = new Interval(point, Double.POSITIVE_INFINITY, value);
+                updated = DynamicUtilities.createDynamicObject(type, updated, toAdd);
+                return updated;
+            }
         }
         return source;
     }
@@ -260,7 +367,25 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
             return new TimeInterval(source, toAdd[0], toAdd[1], toRemove.isLowExcluded(), true, toRemove.getLow(), toRemove.getHigh(), toRemove.isLowExcluded(), toRemove.isHighExcluded());
         }
         return source;
+    }
 
+    private DynamicType removePoint(AttributeType type, DynamicType source, double point) {
+        if (source == null) {
+            return null;
+        }
+        List<Interval<?>> intervals = source.getIntervals(point, point);
+        if (intervals.size() > 1) {
+            throw new RuntimeException("DynamicProcessor doesn't support overlapping intervals.");
+        } else if (!intervals.isEmpty()) {
+            Interval<?> toRemove = intervals.get(0);
+            if (toRemove.getLow() >= point) {
+                return source;
+            }
+
+            Interval toAdd = new Interval(toRemove.getLow(), point, toRemove.isLowExcluded(), true, toRemove.getValue());
+            return DynamicUtilities.createDynamicObject(type, source, toAdd, toRemove);
+        }
+        return source;
     }
 
     public String getDisplayName() {
@@ -273,18 +398,13 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
 
     public void setDate(String date) {
         this.date = date;
-
-
     }
 
     public boolean isDateMode() {
         return dateMode;
-
-
     }
 
     public void setDateMode(boolean dateMode) {
         this.dateMode = dateMode;
-
     }
 }
