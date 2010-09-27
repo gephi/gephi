@@ -238,4 +238,43 @@ public final class TypeConvertor {
                 return null;
         }
     }
+
+    /**
+     * Returns the corresponding dynamic type from <code>staticType</code> For example
+     * returns <code>DYNAMIC_FLOAT</code> if given type is <code>FLOAT</code>.
+     * @param staticType a static type
+     * @return the corresponding dynamic type
+     * @throws IllegalArgumentException if <code>staticType</code> is not static
+     */
+    public static AttributeType getDynamicType(AttributeType staticType) {
+        if (staticType.isDynamicType()) {
+            throw new IllegalArgumentException("Given type '" + staticType + "' is not static.");
+        }
+        switch (staticType) {
+            case BIGDECIMAL:
+                return AttributeType.DYNAMIC_BIGDECIMAL;
+            case BIGINTEGER:
+                return AttributeType.DYNAMIC_BIGINTEGER;
+            case BOOLEAN:
+                return AttributeType.DYNAMIC_BOOLEAN;
+            case BYTE:
+                return AttributeType.DYNAMIC_BYTE;
+            case CHAR:
+                return AttributeType.DYNAMIC_CHAR;
+            case DOUBLE:
+                return AttributeType.DYNAMIC_DOUBLE;
+            case FLOAT:
+                return AttributeType.DYNAMIC_FLOAT;
+            case INT:
+                return AttributeType.DYNAMIC_INT;
+            case LONG:
+                return AttributeType.DYNAMIC_LONG;
+            case SHORT:
+                return AttributeType.DYNAMIC_SHORT;
+            case STRING:
+                return AttributeType.DYNAMIC_STRING;
+            default:
+                return null;
+        }
+    }
 }
