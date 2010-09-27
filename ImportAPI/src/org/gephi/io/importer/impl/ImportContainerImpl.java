@@ -679,14 +679,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             }
         }
     }
+    private static int nodeIDgen = 0;
+    private static int edgeIDgen = 0;
 
     /**
      * Factory for draft objects
      */
     public class FactoryImpl implements DraftFactory {
-
-        private int nodeIDgen = 0;
-        private int edgeIDgen = 0;
 
         public NodeDraftImpl newNodeDraft() {
             NodeDraftImpl node = new NodeDraftImpl(ImportContainerImpl.this, "n" + nodeIDgen);
