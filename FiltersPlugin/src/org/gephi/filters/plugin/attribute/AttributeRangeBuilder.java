@@ -31,6 +31,7 @@ import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.filters.plugin.RangeFilter;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Range;
+import org.gephi.filters.plugin.DynamicAttributesHelper;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
 import org.gephi.filters.spi.Filter;
@@ -69,13 +70,13 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
         AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
         for (AttributeColumn c : am.getNodeTable().getColumns()) {
-            if (AttributeUtils.getDefault().isNumberColumn(c)) {
+            if (AttributeUtils.getDefault().isNumberColumn(c) || AttributeUtils.getDefault().isDynamicNumberColumn(c)) {
                 AttributeRangeFilterBuilder b = new AttributeRangeFilterBuilder(c);
                 builders.add(b);
             }
         }
         for (AttributeColumn c : am.getEdgeTable().getColumns()) {
-            if (AttributeUtils.getDefault().isNumberColumn(c)) {
+            if (AttributeUtils.getDefault().isNumberColumn(c) || AttributeUtils.getDefault().isDynamicNumberColumn(c)) {
                 AttributeRangeFilterBuilder b = new AttributeRangeFilterBuilder(c);
                 builders.add(b);
             }
@@ -150,6 +151,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         private AttributeColumn column;
         private Object min = 0;
         private Object max = 0;
+        private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
         //States
         private List<Object> values;
 
@@ -170,6 +172,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
 
         public boolean init(Graph graph) {
+            dynamicHelper = new DynamicAttributesHelper(this, graph);
             if (range == null) {
                 getValues();
                 refreshRange();
@@ -180,6 +183,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
 
         public boolean evaluate(Graph graph, Node node) {
             Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
+            val = dynamicHelper.getDynamicValue(val);
             if (val != null) {
                 values.add(val);
                 return range.isInRange(val);
@@ -190,6 +194,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
 
         public boolean evaluate(Graph graph, Edge edge) {
             Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
+            val = dynamicHelper.getDynamicValue(val);
             if (val != null) {
                 values.add(val);
                 return range.isInRange(val);
@@ -209,6 +214,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
                 if (AttributeUtils.getDefault().isNodeColumn(column)) {
                     for (Node n : graph.getNodes()) {
                         Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
+                        val = dynamicHelper.getDynamicValue(val);
                         if (val != null) {
                             vals.add(val);
                         }
@@ -216,6 +222,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
                 } else {
                     for (Edge e : graph.getEdges()) {
                         Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
+                        val = dynamicHelper.getDynamicValue(val);
                         if (val != null) {
                             vals.add(val);
                         }
