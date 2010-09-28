@@ -190,9 +190,18 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
         //Init
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        if (pc.getCurrentWorkspace() == null) {
+        Workspace workspace = pc.getCurrentWorkspace();
+        if (workspace == null) {
             clearAll();
         } else {
+            AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
+
+            dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
+            if (dataTablesModel == null) {
+                workspace.add(dataTablesModel = new DataTablesModel(attributeModel.getNodeTable(), attributeModel.getEdgeTable()));
+            }
+            nodeAvailableColumnsModel = dataTablesModel.getNodeAvailableColumnsModel();
+            edgeAvailableColumnsModel = dataTablesModel.getEdgeAvailableColumnsModel();
             refreshAll();
         }
         bannerPanel.setVisible(false);
