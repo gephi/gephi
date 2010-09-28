@@ -155,7 +155,7 @@ public abstract class AbstractQueryImpl implements Query {
         return r.toArray(new Query[0]);
     }
 
-    public Query[] getQueriesAndSelf() {
+    public Query[] getDescendantsAndSelf() {
         List<Query> r = new LinkedList<Query>();
         LinkedList<Query> stack = new LinkedList<Query>();
         stack.add(this);

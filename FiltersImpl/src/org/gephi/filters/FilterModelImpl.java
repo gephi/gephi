@@ -259,7 +259,7 @@ public class FilterModelImpl implements FilterModel {
     private void destroyQuery(Query query) {
         if (query instanceof AbstractQueryImpl) {
             AbstractQueryImpl absQuery = (AbstractQueryImpl) query;
-            for (Query q : absQuery.getQueriesAndSelf()) {
+            for (Query q : absQuery.getDescendantsAndSelf()) {
                 if (q instanceof FilterQueryImpl) {
                     Filter f = ((FilterQueryImpl) q).getFilter();
                     FilterBuilder builder = filterLibraryImpl.getBuilder(f);

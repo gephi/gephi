@@ -100,6 +100,12 @@ public interface Query {
     public Query[] getQueries(Class<? extends Filter> filterClass);
 
     /**
+     * Utility method that returns all descendant queries plus this query.
+     * @return      all descendant queries and self
+     */
+    public Query[] getDescendantsAndSelf();
+
+    /**
      * Returns the filter this query is wrapping.
      * @return      the filter
      */
