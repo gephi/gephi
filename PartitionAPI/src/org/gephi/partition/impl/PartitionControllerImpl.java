@@ -74,14 +74,14 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
 
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(PartitionModelImpl.class);
-                if(model==null) {
+                if (model == null) {
                     model = new PartitionModelImpl();
                     workspace.add(model);
                 }
                 refreshPartitions = true;
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
                 trachViewChange(gm);
-                AttributeModel attributeModel =  Lookup.getDefault().lookup(AttributeController.class).getModel(workspace);
+                AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel(workspace);
                 attributeModel.addAttributeListener(PartitionControllerImpl.this);
             }
 
@@ -110,7 +110,7 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
                 trachViewChange(gm);
 
-                AttributeModel attributeModel =  Lookup.getDefault().lookup(AttributeController.class).getModel(workspace);
+                AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel(workspace);
                 attributeModel.addAttributeListener(PartitionControllerImpl.this);
             }
         }
@@ -163,8 +163,8 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
 
                         DynamicModel dynamicModel = model.getDynamicModel();
                         TimeInterval timeInterval = dynamicModel != null ? dynamicModel.getVisibleInterval() : null;
-
-                        PartitionFactory.buildNodePartition((NodePartition) partition, graphModel.getGraphVisible(), timeInterval, model.getDefaultEstimator());
+                        Estimator estimator = AttributeUtils.getDefault().isDynamicNumberColumn(partition.getColumn()) ? model.getNumberEstimator() : model.getEstimator();
+                        PartitionFactory.buildNodePartition((NodePartition) partition, graphModel.getGraphVisible(), timeInterval, estimator);
                     }
                     model.setNodePartition(partition);
                     if (model.getNodeTransformerBuilder() == null) {
@@ -191,8 +191,8 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
 
                         DynamicModel dynamicModel = model.getDynamicModel();
                         TimeInterval timeInterval = dynamicModel != null ? dynamicModel.getVisibleInterval() : null;
-
-                        PartitionFactory.buildEdgePartition((EdgePartition) partition, graphModel.getGraphVisible(), timeInterval, model.getDefaultEstimator());
+                        Estimator estimator = AttributeUtils.getDefault().isDynamicNumberColumn(partition.getColumn()) ? model.getNumberEstimator() : model.getEstimator();
+                        PartitionFactory.buildEdgePartition((EdgePartition) partition, graphModel.getGraphVisible(), timeInterval, estimator);
                     }
                     model.setEdgePartition(partition);
                     if (model.getEdgeTransformerBuilder() == null) {
@@ -219,11 +219,13 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
 
         if (AttributeUtils.getDefault().isNodeColumn(column)) {
             NodePartition partition = PartitionFactory.createNodePartition(column);
-            PartitionFactory.buildNodePartition(partition, graph, timeInterval, model.getDefaultEstimator());
+            Estimator estimator = AttributeUtils.getDefault().isDynamicNumberColumn(column) ? model.getNumberEstimator() : model.getEstimator();
+            PartitionFactory.buildNodePartition(partition, graph, timeInterval, estimator);
             return partition;
         } else {
             EdgePartition partition = PartitionFactory.createEdgePartition(column);
-            PartitionFactory.buildEdgePartition(partition, graph, timeInterval, model.getDefaultEstimator());
+            Estimator estimator = AttributeUtils.getDefault().isDynamicNumberColumn(column) ? model.getNumberEstimator() : model.getEstimator();
+            PartitionFactory.buildEdgePartition(partition, graph, timeInterval, estimator);
             return partition;
         }
     }
@@ -273,7 +275,8 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
                 } else if (PartitionFactory.isDynamicPartitionColumn(column)) {
                     DynamicModel dynamicModel = model.getDynamicModel();
                     TimeInterval timeInterval = dynamicModel != null ? dynamicModel.getVisibleInterval() : null;
-                    if (PartitionFactory.isDynamicNodePartitionColumn(column, graph, timeInterval, model.getDefaultEstimator())) {
+                    Estimator estimator = AttributeUtils.getDefault().isDynamicNumberColumn(column) ? model.getNumberEstimator() : model.getEstimator();
+                    if (PartitionFactory.isDynamicNodePartitionColumn(column, graph, timeInterval, estimator)) {
                         nodePartitions.add(PartitionFactory.createNodePartition(column));
                     }
                 }
@@ -289,7 +292,8 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
                 } else if (PartitionFactory.isDynamicPartitionColumn(column)) {
                     DynamicModel dynamicModel = model.getDynamicModel();
                     TimeInterval timeInterval = dynamicModel != null ? dynamicModel.getVisibleInterval() : null;
-                    if (PartitionFactory.isDynamicEdgePartitionColumn(column, graph, timeInterval, model.getDefaultEstimator())) {
+                    Estimator estimator = AttributeUtils.getDefault().isDynamicNumberColumn(column) ? model.getNumberEstimator() : model.getEstimator();
+                    if (PartitionFactory.isDynamicEdgePartitionColumn(column, graph, timeInterval, estimator)) {
                         edgePartitions.add(PartitionFactory.createEdgePartition(column));
                     }
                 }
@@ -386,11 +390,5 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
 
     public PartitionModel getModel() {
         return model;
-    }
-
-    public void setDefaultEstimator(Estimator estimator) {
-        if (model != null) {
-            model.setDefaultEstimator(estimator);
-        }
     }
 }

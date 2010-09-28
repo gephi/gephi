@@ -56,13 +56,11 @@ public class PartitionModelImpl implements PartitionModel {
     private boolean waiting;
     private boolean pie;
     private int visibleViewId = -1;
-    private Estimator defaultEstimator;
     private DynamicModel dynamicModel;
 
     public PartitionModelImpl() {
         listeners = new ArrayList<PropertyChangeListener>();
         transformersMap = new HashMap<Class, Transformer>();
-        defaultEstimator = Estimator.AVERAGE;
     }
 
     public NodePartition[] getNodePartitions() {
@@ -160,8 +158,12 @@ public class PartitionModelImpl implements PartitionModel {
         return visibleViewId;
     }
 
-    public Estimator getDefaultEstimator() {
-        return defaultEstimator;
+    public Estimator getEstimator() {
+        return dynamicModel.getEstimator();
+    }
+
+    public Estimator getNumberEstimator() {
+        return dynamicModel.getNumberEstimator();
     }
 
     public void addPropertyChangeListener(PropertyChangeListener changeListener) {
@@ -257,9 +259,5 @@ public class PartitionModelImpl implements PartitionModel {
 
     public void setVisibleViewId(int visibleViewId) {
         this.visibleViewId = visibleViewId;
-    }
-
-    public void setDefaultEstimator(Estimator defaultEstimator) {
-        this.defaultEstimator = defaultEstimator;
     }
 }

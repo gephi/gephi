@@ -1,6 +1,7 @@
 /*
  * Copyright 2008-2010 Gephi
  * Authors : Cezary Bartosiak
+ *           Mathieu Bastian <mathieu.bastian@gephi.org>
  * Website : http://www.gephi.org
  * 
  * This file is part of Gephi.
@@ -20,6 +21,7 @@
  */
 package org.gephi.dynamic.api;
 
+import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.project.api.Workspace;
 
@@ -32,6 +34,7 @@ import org.gephi.project.api.Workspace;
  * </pre>
  * 
  * @author Cezary Bartosiak
+ * @author Mathieu Bastian
  */
 public interface DynamicController {
 
@@ -39,7 +42,7 @@ public interface DynamicController {
      * Returns the dynamic model for the current workspace, or {@code null}
      * if the project is empty.
      *
-     * @return the current dynamic model.
+     * @return              the current dynamic model.
      */
     public DynamicModel getModel();
 
@@ -48,7 +51,7 @@ public interface DynamicController {
      *
      * @param workspace the workspace that dynamic model is to be returned
      *
-     * @return the {@code workspace}'s dynamic model.
+     * @return              the {@code workspace}'s dynamic model.
      */
     public DynamicModel getModel(Workspace workspace);
 
@@ -56,7 +59,7 @@ public interface DynamicController {
      * Sets the time interval wrapped by the {@code DynamicGraph} of
      * the current workspace.
      *
-     * @param interval an object to get endpoints from
+     * @param interval      an object to get endpoints from
      */
     public void setVisibleInterval(TimeInterval interval);
 
@@ -64,16 +67,30 @@ public interface DynamicController {
      * Sets the time interval wrapped by the {@code DynamicGraph} of
      * the current workspace.
      *
-     * @param low  the left endpoint
-     * @param high the right endpoint
+     * @param low           the left endpoint
+     * @param high          the right endpoint
      */
     public void setVisibleInterval(double low, double high);
 
     /**
      * Sets the current time format. This should be done when the model is inited.
-     * @param timeFormat the time format that is to be set as current
+     * @param timeFormat    the time format that is to be set as current
      */
     public void setTimeFormat(DynamicModel.TimeFormat timeFormat);
+
+    /**
+     * Sets the current <code>ESTIMATOR</code> used to get values from
+     * {@link DynamicType}. Default is <b><code>Estimator.FIRST</code></b>.
+     * @param estimator     the estimator that is to be set
+     */
+    public void setEstimator(Estimator estimator);
+
+    /**
+     * Sets the current number <code>ESTIMATOR</code> used to get values from
+     * {@link DynamicType}. Default is <b><code>Estimator.AVERAGE</code></b>.
+     * @param estimator     the number estimator that is to be set
+     */
+    public void setNumberEstimator(Estimator estimator);
 
     /**
      * Adds <code>listener</code> to the listeners of this model. It receives

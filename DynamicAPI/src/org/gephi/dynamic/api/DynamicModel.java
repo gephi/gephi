@@ -20,6 +20,9 @@
  */
 package org.gephi.dynamic.api;
 
+import org.gephi.data.attributes.api.Estimator;
+import org.gephi.data.attributes.type.DynamicInteger;
+import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.graph.api.Graph;
 
@@ -42,7 +45,10 @@ public interface DynamicModel {
      * The way the time is represented, either a simple real value (DOUBLE) or
      * a date.
      */
-    public enum TimeFormat { DATE, DOUBLE };
+    public enum TimeFormat {
+
+        DATE, DOUBLE
+    };
 
     /**
      * Builds a new {@code DynamicGraph} from the given {@code Graph} instance.
@@ -91,12 +97,31 @@ public interface DynamicModel {
     public double getMax();
 
     /**
-     * Get the current time format for this model. Though all time values are stored
+     * Gets the current time format for this model. Though all time values are stored
      * in double numbers, the time format inform how this values should be
      * converted to display to users.
      * @return the current time format
      */
     public TimeFormat getTimeFormat();
+
+    /**
+     * Returns the current <code>ESTIMATOR</code>, used to get values from
+     * {@link DynamicType}. Default is <b><code>Estimator.FIRST</code></b>.
+     * <p>
+     * See the {@link #getNumberEstimator()} method for number types.
+     * @return the current estimator
+     */
+    public Estimator getEstimator();
+
+    /**
+     * Returns the current number <code>ESTIMATOR</code>, used to get values
+     * from number {@link DynamicType}, like {@link DynamicInteger}. Default is
+     * <b><code>Estimator.AVERAGE</code></b>.
+     * <p>
+     * See the {@link #getEstimator()} method for non-number types.
+     * @return the current number estimator
+     */
+    public Estimator getNumberEstimator();
 
     /**
      * Returns <code>true</code> if the graph in the current workspace is dynamic,

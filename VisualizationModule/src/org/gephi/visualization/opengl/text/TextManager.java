@@ -30,6 +30,7 @@ import javax.swing.event.ChangeListener;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.dynamic.api.DynamicController;
@@ -139,6 +140,8 @@ public class TextManager implements VizArchitecture {
                     DynamicModel dynamicModel = dynamicController.getModel();
                     if(dynamicModel!=null) {
                         currentTimeInterval = dynamicModel.getVisibleInterval();
+                        builder.setDefaultEstimator(dynamicModel.getEstimator());
+                        builder.setNumberEstimator(dynamicModel.getNumberEstimator());
                     } else {
                         currentTimeInterval = null;
                     }
@@ -303,7 +306,7 @@ public class TextManager implements VizArchitecture {
                 model.colorMode.textColor(this, textData, objectModel);
                 model.sizeMode.setSizeFactor3d(model.edgeSizeFactor, textData, objectModel);
                 if (edgeRefresh) {
-                    builder.buildNodeText((NodeData) renderable, textData, model, currentTimeInterval);
+                    builder.buildEdgeText((EdgeData) renderable, textData, model, currentTimeInterval);
                 }
 
                 String txt = textData.line.text;

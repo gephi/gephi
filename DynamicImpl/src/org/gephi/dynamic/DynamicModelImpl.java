@@ -1,6 +1,7 @@
 /*
  * Copyright 2008-2010 Gephi
  * Authors : Cezary Bartosiak
+ *           Mathieu Bastian <mathieu.bastian@gephi.org>
  * Website : http://www.gephi.org
  * 
  * This file is part of Gephi.
@@ -23,18 +24,14 @@ package org.gephi.dynamic;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
@@ -62,6 +59,7 @@ import org.openide.util.Lookup;
  * The default implementation of {@code DynamicModel}.
  *
  * @author Cezary Bartosiak
+ * @author Mathieu Bastian
  */
 public final class DynamicModelImpl implements DynamicModel {
 
@@ -76,6 +74,8 @@ public final class DynamicModelImpl implements DynamicModel {
     //Variables
     private TimeInterval visibleTimeInterval;
     private TimeFormat timeFormat;
+    private Estimator estimator = Estimator.FIRST;
+    private Estimator numberEstimator = Estimator.AVERAGE;
 
     /**
      * The default constructor.
@@ -204,7 +204,7 @@ public final class DynamicModelImpl implements DynamicModel {
                             break;
                         case REMOVE_NODES:
                             if (!nodeDynamicColumns.isEmpty()) {
-                               AttributeColumn[] dynamicCols = edgeDynamicColumns.toArray(new AttributeColumn[0]);
+                                AttributeColumn[] dynamicCols = edgeDynamicColumns.toArray(new AttributeColumn[0]);
                                 for (Node n : event.getData().removedNodes()) {
                                     Attributes attributeRow = n.getNodeData().getAttributes();
                                     for (int i = 0; i < dynamicCols.length; i++) {
@@ -238,7 +238,7 @@ public final class DynamicModelImpl implements DynamicModel {
             }
         }
         AttributeColumn[] dynamicCols = nodeDynamicColumns.toArray(new AttributeColumn[0]);
-        if (dynamicCols.length>0) {
+        if (dynamicCols.length > 0) {
             Graph graph = graphModel.getGraph();
             for (Node n : graph.getNodes()) {
                 Attributes attributeRow = n.getNodeData().getAttributes();
@@ -258,7 +258,7 @@ public final class DynamicModelImpl implements DynamicModel {
             }
         }
         dynamicCols = nodeDynamicColumns.toArray(new AttributeColumn[0]);
-        if (dynamicCols.length>0) {
+        if (dynamicCols.length > 0) {
             Graph graph = graphModel.getGraph();
             for (Edge e : graph.getEdges()) {
                 Attributes attributeRow = e.getEdgeData().getAttributes();
@@ -366,5 +366,23 @@ public final class DynamicModelImpl implements DynamicModel {
     @Override
     public double getMax() {
         return timeIntervalIndex.getMax();
+    }
+
+    @Override
+    public Estimator getEstimator() {
+        return estimator;
+    }
+
+    @Override
+    public Estimator getNumberEstimator() {
+        return numberEstimator;
+    }
+
+    public void setEstimator(Estimator estimator) {
+        this.estimator = estimator;
+    }
+
+    public void setNumberEstimator(Estimator numberEstimator) {
+        this.numberEstimator = numberEstimator;
     }
 }
