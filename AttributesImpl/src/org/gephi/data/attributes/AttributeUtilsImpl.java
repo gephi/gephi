@@ -151,7 +151,7 @@ public class AttributeUtilsImpl extends AttributeUtils {
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
     public Comparable getMin(AttributeColumn column, Comparable[] values) {
-        if (!isNumberColumn(column)) {
+        if (!isNumberColumn(column) && !isDynamicNumberColumn(column)) {
             throw new IllegalArgumentException("Colun must be a number column");
         }
 
@@ -178,7 +178,7 @@ public class AttributeUtilsImpl extends AttributeUtils {
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
     public Comparable getMax(AttributeColumn column, Comparable[] values) {
-        if (!isNumberColumn(column)) {
+        if (!isNumberColumn(column) && !isDynamicNumberColumn(column)) {
             throw new IllegalArgumentException("Colun must be a number column");
         }
 
