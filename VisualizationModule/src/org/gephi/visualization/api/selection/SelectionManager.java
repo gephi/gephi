@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.api.selection;
 
 import java.util.ArrayList;
@@ -143,11 +143,15 @@ public class SelectionManager implements VizArchitecture {
     }
 
     public void selectNodes(Node[] nodes) {
+        if (nodes == null) {
+            resetSelection();
+            return;
+        }
         if (!isCustomSelection()) {
             setCustomSelection();
         }
         Model[] models = new Model[nodes.length];
-        for(int i=0;i<nodes.length;i++) {
+        for (int i = 0; i < nodes.length; i++) {
             models[i] = nodes[i].getNodeData().getModel();
         }
         engine.selectObject(models);
