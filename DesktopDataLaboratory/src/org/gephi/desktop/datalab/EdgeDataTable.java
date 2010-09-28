@@ -90,7 +90,7 @@ public class EdgeDataTable {
     private Edge[] selectedEdges;
     private AttributeColumnsController attributeColumnsController;
     private boolean refreshingTable = false;
-    private AttributeColumn[] showingColumns=null;
+    private AttributeColumn[] showingColumns = null;
     private static final int FAKE_COLUMNS_COUNT = 3;
     private EdgeDataTableModel model;
     private TimeIntervalsRenderer timeIntervalsRenderer;
@@ -248,7 +248,7 @@ public class EdgeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, DataTablesModel dataTablesModel) {
-        showingColumns=cols;
+        showingColumns = cols;
         DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
         if (dm != null) {
             timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
@@ -587,9 +587,11 @@ public class EdgeDataTable {
             //Add AttributeValues manipulators submenu:
             AttributeRow row = (AttributeRow) clickedEdge.getEdgeData().getAttributes();
             int realColumnIndex = table.convertColumnIndexToModel(table.columnAtPoint(p)) - FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
-            AttributeColumn column = showingColumns[realColumnIndex];
-            if (column != null) {
-                contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+            if (realColumnIndex >= 0) {
+                AttributeColumn column = showingColumns[realColumnIndex];
+                if (column != null) {
+                    contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+                }
             }
             return contextMenu;
         }

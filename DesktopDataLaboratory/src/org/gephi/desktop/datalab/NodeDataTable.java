@@ -97,7 +97,7 @@ public class NodeDataTable {
     private Node[] selectedNodes;
     private AttributeColumnsController attributeColumnsController;
     private boolean refreshingTable = false;
-    private AttributeColumn[] showingColumns=null;
+    private AttributeColumn[] showingColumns = null;
     private static final int FAKE_COLUMNS_COUNT = 1;
     private SparkLinesRenderer sparkLinesRenderer;
     private TimeIntervalsRenderer timeIntervalsRenderer;
@@ -213,7 +213,7 @@ public class NodeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, final DataTablesModel dataTablesModel) {
-        showingColumns=cols;
+        showingColumns = cols;
         DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
         if (dm != null) {
             timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
@@ -571,9 +571,11 @@ public class NodeDataTable {
             //Add AttributeValues manipulators submenu:
             AttributeRow row = (AttributeRow) clickedNode.getNodeData().getAttributes();
             int realColumnIndex = outlineTable.convertColumnIndexToModel(outlineTable.columnAtPoint(p)) - FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
-            AttributeColumn column = showingColumns[realColumnIndex];
-            if (column != null) {
-                contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+            if (realColumnIndex >= 0) {
+                AttributeColumn column = showingColumns[realColumnIndex];
+                if (column != null) {
+                    contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+                }
             }
             return contextMenu;
         }
