@@ -41,7 +41,6 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
@@ -91,6 +90,7 @@ public class EdgeDataTable {
     private Edge[] selectedEdges;
     private AttributeColumnsController attributeColumnsController;
     private boolean refreshingTable = false;
+    private AttributeColumn[] showingColumns=null;
     private static final int FAKE_COLUMNS_COUNT = 3;
     private EdgeDataTableModel model;
     private TimeIntervalsRenderer timeIntervalsRenderer;
@@ -248,6 +248,7 @@ public class EdgeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, DataTablesModel dataTablesModel) {
+        showingColumns=cols;
         DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
         if (dm != null) {
             timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
@@ -586,7 +587,7 @@ public class EdgeDataTable {
             //Add AttributeValues manipulators submenu:
             AttributeRow row = (AttributeRow) clickedEdge.getEdgeData().getAttributes();
             int realColumnIndex = table.convertColumnIndexToModel(table.columnAtPoint(p)) - FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
-            AttributeColumn column = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable().getColumn(realColumnIndex);
+            AttributeColumn column = showingColumns[realColumnIndex];
             if (column != null) {
                 contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
             }

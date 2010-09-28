@@ -129,6 +129,8 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     //Data
     private GraphModel graphModel;
     private DataTablesModel dataTablesModel;
+    private AvailableColumnsModel nodeAvailableColumnsModel;
+    private AvailableColumnsModel edgeAvailableColumnsModel;
     private boolean visibleOnly = false;
     private boolean useSparklines = false;
     private boolean timeIntervalGraphics = false;
@@ -204,7 +206,6 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         pc.addWorkspaceListener(new WorkspaceListener() {
 
             public void initialize(Workspace workspace) {
-                workspace.add(new DataTablesModel());
                 //Prepare DataTablesEvent listener
                 Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(DataTableTopComponent.this);
             }
@@ -212,17 +213,23 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             public void select(Workspace workspace) {
                 //Prepare DataTablesEvent listener
                 Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(DataTableTopComponent.this);
+                AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
 
+                dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
+                if (dataTablesModel == null) {
+                    workspace.add(dataTablesModel = new DataTablesModel(attributeModel.getNodeTable(), attributeModel.getEdgeTable()));
+                }
+                nodeAvailableColumnsModel = dataTablesModel.getNodeAvailableColumnsModel();
+                edgeAvailableColumnsModel = dataTablesModel.getEdgeAvailableColumnsModel();
                 hideTable();
                 enableTableControls();
                 bannerPanel.setVisible(false);
 
-                AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
                 attributeModel.addAttributeListener(DataTableTopComponent.this);
 
                 graphModel = gc.getModel();
                 graphModel.addGraphListener(DataTableTopComponent.this);
-                dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
+
                 refreshAll();
             }
 
@@ -233,6 +240,8 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                 attributeModel.removeAttributeListener(DataTableTopComponent.this);
                 graphModel = null;
                 dataTablesModel = null;
+                nodeAvailableColumnsModel = null;
+                edgeAvailableColumnsModel = null;
                 clearAll();
             }
 
@@ -295,10 +304,34 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         clearGeneralActionsButtons();
     }
 
+    private AvailableColumnsModel getTableAvailableColumnsModel(AttributeTable table) {
+        if (Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable() == table) {
+            return nodeAvailableColumnsModel;
+        } else {
+            return edgeAvailableColumnsModel;
+        }
+    }
+
     public void attributesChanged(final AttributeEvent event) {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
+                AvailableColumnsModel tableAvailableColumnsModel = getTableAvailableColumnsModel(event.getSource());
+                switch (event.getEventType()) {
+                    case ADD_COLUMN:
+                        for (AttributeColumn c : event.getData().getAddedColumns()) {
+                            if (!tableAvailableColumnsModel.addAvailableColumn(c)) {//Add as available by default. Will only be added if the max number of available columns is not surpassed
+                                availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/light-bulb--plus.png", true));
+                                break;
+                            }
+                        }
+                        break;
+                    case REMOVE_COLUMN:
+                        for (AttributeColumn c : event.getData().getAddedColumns()) {
+                            tableAvailableColumnsModel.removeAvailableColumn(c);
+                        }
+                        break;
+                }
                 if (isOpened()) {
                     refreshOnce(event.is(EventType.SET_VALUE));
                 }
@@ -353,8 +386,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                     busylabel.setBusy(true);
 
                     //Attributes columns
-                    AttributeModel attModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
-                    final AttributeColumn[] cols = attModel.getNodeTable().getColumns();
+                    final AttributeColumn[] cols = nodeAvailableColumnsModel.getAvailableColumns();
 
                     //Nodes from DHNS
                     HierarchicalGraph graph;
@@ -375,7 +407,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                     busylabel.setBusy(false);
                     nodeTable.scrollToFirstNodeSelected();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                     JLabel errorLabel = new JLabel(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.error"), SwingConstants.CENTER);
                     tableScrollPane.setViewportView(errorLabel);
                 }
@@ -394,8 +426,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                     busylabel.setBusy(true);
 
                     //Attributes columns
-                    AttributeModel attModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
-                    final AttributeColumn[] cols = attModel.getEdgeTable().getColumns();
+                    final AttributeColumn[] cols = edgeAvailableColumnsModel.getAvailableColumns();
 
                     //Edges from DHNS
                     HierarchicalGraph graph;
@@ -416,7 +447,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                     busylabel.setBusy(false);
                     edgeTable.scrollToFirstEdgeSelected();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                     JLabel errorLabel = new JLabel(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.error"), SwingConstants.CENTER);
                     tableScrollPane.setViewportView(errorLabel);
                 }
@@ -455,6 +486,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         nodesButton.setEnabled(true);
         edgesButton.setEnabled(true);
         configurationButton.setEnabled(true);
+        availableColumnsButton.setEnabled(true);
         filterTextField.setEnabled(true);
         labelFilter.setEnabled(true);
     }
@@ -465,6 +497,8 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         edgesButton.setEnabled(false);
         configurationButton.setEnabled(false);
         filterTextField.setEnabled(false);
+        availableColumnsButton.setEnabled(false);
+        availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/light-bulb.png", true));
         labelFilter.setEnabled(false);
         bannerPanel.setVisible(false);
         hideTable();
@@ -646,10 +680,13 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private void prepareColumnManipulatorsButtons() {
         AttributeModel attributeModel = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
         AttributeTable table;
+        AttributeColumn[] columns;
         if (classDisplayed == ClassDisplayed.NODE) {
             table = attributeModel.getNodeTable();
+            columns = nodeAvailableColumnsModel.getAvailableColumns();
         } else {
             table = attributeModel.getEdgeTable();
+            columns = edgeAvailableColumnsModel.getAvailableColumns();
         }
 
         DataLaboratoryHelper dlh = new DataLaboratoryHelper();
@@ -668,19 +705,19 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                 currentButtonGroup.setDisplayState(CommandButtonDisplayState.BIG);
             }
             lastManipulatorType = acm.getType();
-            currentButtonGroup.add(prepareJCommandButton(table, acm));
+            currentButtonGroup.add(prepareJCommandButton(table, columns, acm));
         }
         columnManipulatorsPanel.add(currentButtonGroup);
     }
 
     /**
-     * Creates a JCommandButton for the specified table and AttributeColumnsManipulator
-     * @param table Table
+     * Creates a JCommandButton for the specified columns of a table and AttributeColumnsManipulator
+     * @param table table
+     * @param columns Columns
      * @param acm AttributeColumnsManipulator
      * @return Prepared JCommandButton
      */
-    private JCommandButton prepareJCommandButton(final AttributeTable table, final AttributeColumnsManipulator acm) {
-        final AttributeColumn[] columns = table.getColumns();
+    private JCommandButton prepareJCommandButton(final AttributeTable table, final AttributeColumn[] columns, final AttributeColumnsManipulator acm) {
         JCommandButton manipulatorButton;
         if (acm.getIcon() != null) {
             manipulatorButton = new JCommandButton(acm.getName(), ImageWrapperResizableIcon.getIcon(acm.getIcon(), new Dimension(16, 16)));
@@ -990,6 +1027,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         labelFilter = new org.jdesktop.swingx.JXLabel();
         filterTextField = new javax.swing.JTextField();
         columnComboBox = new javax.swing.JComboBox();
+        availableColumnsButton = new javax.swing.JButton();
         tableScrollPane = new javax.swing.JScrollPane();
         bannerPanel = new javax.swing.JPanel();
         labelBanner = new javax.swing.JLabel();
@@ -1056,6 +1094,19 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         columnComboBox.setMaximumSize(new java.awt.Dimension(2000, 20));
         columnComboBox.setPreferredSize(new java.awt.Dimension(120, 20));
         controlToolbar.add(columnComboBox);
+
+        availableColumnsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/datalab/resources/light-bulb.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(availableColumnsButton, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.availableColumnsButton.text")); // NOI18N
+        availableColumnsButton.setToolTipText(org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.availableColumnsButton.toolTipText")); // NOI18N
+        availableColumnsButton.setFocusable(false);
+        availableColumnsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        availableColumnsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        availableColumnsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                availableColumnsButtonActionPerformed(evt);
+            }
+        });
+        controlToolbar.add(availableColumnsButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -1145,8 +1196,25 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_TIME_INTERVAL_GRAPHICS, timeIntervalGraphics);
         NbPreferences.forModule(DataTableTopComponent.class).putBoolean(DATA_LABORATORY_EDGES_NODES_LABELS, showEdgesNodesLabels);
     }//GEN-LAST:event_configurationButtonActionPerformed
+
+    private void availableColumnsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_availableColumnsButtonActionPerformed
+        AttributeTable table;
+        AvailableColumnsModel availableColumnsModel;
+        if (classDisplayed == classDisplayed.NODE) {
+            table = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
+        } else {
+            table = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
+        }
+        availableColumnsModel = getTableAvailableColumnsModel(table);
+        DialogDescriptor dd = new DialogDescriptor(new AvailableColumnsPanel(table, availableColumnsModel).getValidationPanel(), NbBundle.getMessage(DataTableTopComponent.class, "AvailableColumnsPanel.title"));
+        dd.setOptions(new Object[]{DialogDescriptor.OK_OPTION});
+        DialogDisplayer.getDefault().notify(dd);
+        refreshAll();
+        availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/light-bulb.png", true));
+    }//GEN-LAST:event_availableColumnsButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane attributeColumnsScrollPane;
+    private javax.swing.JButton availableColumnsButton;
     private javax.swing.JPanel bannerPanel;
     private javax.swing.JLabel boxGlue;
     private javax.swing.JComboBox columnComboBox;

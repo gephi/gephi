@@ -44,7 +44,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
@@ -98,6 +97,7 @@ public class NodeDataTable {
     private Node[] selectedNodes;
     private AttributeColumnsController attributeColumnsController;
     private boolean refreshingTable = false;
+    private AttributeColumn[] showingColumns=null;
     private static final int FAKE_COLUMNS_COUNT = 1;
     private SparkLinesRenderer sparkLinesRenderer;
     private TimeIntervalsRenderer timeIntervalsRenderer;
@@ -213,6 +213,7 @@ public class NodeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, final DataTablesModel dataTablesModel) {
+        showingColumns=cols;
         DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
         if (dm != null) {
             timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
@@ -570,7 +571,7 @@ public class NodeDataTable {
             //Add AttributeValues manipulators submenu:
             AttributeRow row = (AttributeRow) clickedNode.getNodeData().getAttributes();
             int realColumnIndex = outlineTable.convertColumnIndexToModel(outlineTable.columnAtPoint(p)) - FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
-            AttributeColumn column = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumn(realColumnIndex);
+            AttributeColumn column = showingColumns[realColumnIndex];
             if (column != null) {
                 contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
             }
