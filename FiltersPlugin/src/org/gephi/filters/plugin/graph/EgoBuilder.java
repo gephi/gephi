@@ -79,6 +79,7 @@ public class EgoBuilder implements FilterBuilder {
     public static class EgoFilter implements ComplexFilter {
 
         private String pattern = "";
+        private boolean self = true;
         private int depth = 1;
 
         public Graph filter(Graph graph) {
@@ -115,6 +116,10 @@ public class EgoBuilder implements FilterBuilder {
                 }
             }
 
+            if (self) {
+                result.addAll(nodes);
+            }
+
             for (Node node : graph.getNodes().toArray()) {
                 if (!result.contains(node)) {
                     graph.removeNode(node);
@@ -132,7 +137,8 @@ public class EgoBuilder implements FilterBuilder {
             try {
                 return new FilterProperty[]{
                             FilterProperty.createProperty(this, String.class, "pattern"),
-                            FilterProperty.createProperty(this, Integer.class, "depth")};
+                            FilterProperty.createProperty(this, Integer.class, "depth"),
+                            FilterProperty.createProperty(this, Boolean.class, "self")};
             } catch (NoSuchMethodException ex) {
                 ex.printStackTrace();
             }
@@ -153,6 +159,14 @@ public class EgoBuilder implements FilterBuilder {
 
         public void setDepth(Integer depth) {
             this.depth = depth;
+        }
+
+        public boolean isSelf() {
+            return self;
+        }
+
+        public void setSelf(boolean self) {
+            this.self = self;
         }
     }
 }
