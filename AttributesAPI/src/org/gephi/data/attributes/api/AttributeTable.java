@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.api;
 
 import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
@@ -117,6 +117,19 @@ public interface AttributeTable {
      * @param column        the column that is to be removed
      */
     public void removeColumn(AttributeColumn column);
+
+    /**
+     * If exists, replace <code>source</code> by the new column created from params.
+     * @param source                        the column that is to be removed
+     * @param id                             the identifier of the column
+     * @param title                          the title of the column
+     * @param type                           the type of the column
+     * @param attributeValueDelegateProvider the attribute value delegate provider of the column
+     * @param defaultValue                   the default value of the column
+     * @return                               the newly created column, or
+     * <code>null</code> if <code>source</code> can't be found
+     */
+    public AttributeColumn replaceColumn(AttributeColumn source, String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue);
 
     /**
      * Gets the column at the <code>index</code> of <code>null</code> if the

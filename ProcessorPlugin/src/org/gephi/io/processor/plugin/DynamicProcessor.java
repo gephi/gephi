@@ -133,8 +133,7 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
                     }
                 }
             } else if (PropertiesColumn.EDGE_WEIGHT.getId().equals(column.getId())) {
-                edgeTable.removeColumn(column);
-                edgeTable.addColumn(PropertiesColumn.EDGE_WEIGHT.getId(), PropertiesColumn.EDGE_WEIGHT.getTitle(), AttributeType.DYNAMIC_FLOAT, AttributeOrigin.PROPERTY, null);
+                attributeModel.getEdgeTable().replaceColumn(attributeModel.getEdgeTable().getColumn(PropertiesColumn.EDGE_WEIGHT.getIndex()), PropertiesColumn.EDGE_WEIGHT.getId(), PropertiesColumn.EDGE_WEIGHT.getTitle(), AttributeType.DYNAMIC_FLOAT, AttributeOrigin.PROPERTY, null);
             }
         }
 
@@ -302,6 +301,9 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
                 Object val = row.getValue(i);
                 AttributeColumn col = row.getColumnAt(i);
                 Object draftValue = edgeDraft.getAttributeRow().getValue(col);
+                if (col.getId().equals(PropertiesColumn.EDGE_WEIGHT.getId())) {
+                    draftValue = new Float(edgeDraft.getWeight());
+                }
                 if (col.getType().isDynamicType()) {
                     if (draftValue == null && val != null) {
                         removePoint(col.getType(), (DynamicType) val, point);
