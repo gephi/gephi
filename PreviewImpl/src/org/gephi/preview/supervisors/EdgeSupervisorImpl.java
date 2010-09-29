@@ -79,7 +79,7 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
             weight = (weight - min) * ratio + GraphImpl.WEIGHT_MINIMUM;
         }
 
-        if (edge.getMetaEdge()) {
+        if (edge.getMetaEdge() && visualizationController != null) {
             weight *= visualizationController.getMetaEdgeScale();
         }
 

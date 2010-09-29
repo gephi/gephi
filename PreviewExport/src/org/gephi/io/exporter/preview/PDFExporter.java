@@ -24,13 +24,18 @@ package org.gephi.io.exporter.preview;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.DefaultFontMapper;
+import com.itextpdf.text.pdf.FontMapper;
+import com.itextpdf.text.pdf.FontSelector;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Font;
 import java.awt.geom.AffineTransform;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.gephi.io.exporter.spi.ByteExporter;
@@ -60,6 +65,7 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import sun.font.FontManager;
 
 /**
  * Class exporting the preview graph as a PDF file.
@@ -82,6 +88,7 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
     private float marginRight = 18f;
     private boolean landscape = false;
     private Rectangle pageSize = PageSize.A4;
+    private FontMapper fontMapper = new DefaultFontMapper();
 
     public boolean execute() {
         // fetches the preview graph sheet
@@ -416,6 +423,33 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
      * @throws      IOException
      */
     private BaseFont genBaseFont(java.awt.Font font) throws DocumentException, IOException {
+        if (font != null) {
+            try {
+                if (fontMapper instanceof DefaultFontMapper) {
+                    DefaultFontMapper defaultFontMapper = (DefaultFontMapper) fontMapper;
+                    String fontName = FontManager.getFileNameForFontName(font.getFontName()).toLowerCase();
+                    if (fontName != null && !fontName.isEmpty()) {
+                        String fontFilePath = FontManager.getFontPath(true) + "/" + fontName;
+
+                        if (fontName.endsWith(".ttf") || fontName.endsWith(".otf") || fontName.endsWith(".afm")) {
+                            Object allNames[] = BaseFont.getAllFontNames(fontFilePath, BaseFont.CP1252, null);
+                            defaultFontMapper.insertNames(allNames, fontFilePath);
+                        } else if (fontName.endsWith(".ttc")) {
+                            String ttcs[] = BaseFont.enumerateTTCNames(fontFilePath);
+                            for (int j = 0; j < ttcs.length; ++j) {
+                                String nt = fontFilePath + "," + j;
+                                Object allNames[] = BaseFont.getAllFontNames(nt, BaseFont.CP1252, null);
+                                defaultFontMapper.insertNames(allNames, nt);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return BaseFont.createFont();
+            }
+            return fontMapper.awtToPdf(font);
+        }
         return BaseFont.createFont();
     }
 
@@ -525,5 +559,13 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
 
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
+    }
+
+    public void setFontMapper(FontMapper fontMapper) {
+        this.fontMapper = fontMapper;
+    }
+
+    public FontMapper getFontMapper() {
+        return fontMapper;
     }
 }
