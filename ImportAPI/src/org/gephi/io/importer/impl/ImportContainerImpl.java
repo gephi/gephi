@@ -66,6 +66,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private final ImportContainerParameters parameters;
     //Maps
     private HashMap<String, NodeDraftImpl> nodeMap;
+    private HashMap<String, NodeDraftImpl> nodeLabelMap;
     private final HashMap<String, EdgeDraftImpl> edgeMap;
     private final HashMap<String, EdgeDraftImpl> edgeSourceTargetMap;
     //Attributes
@@ -85,6 +86,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
         nodeMap = new LinkedHashMap<String, NodeDraftImpl>();//to maintain the order
+        nodeLabelMap = new HashMap<String, NodeDraftImpl>();
         edgeMap = new LinkedHashMap<String, EdgeDraftImpl>();
         edgeSourceTargetMap = new HashMap<String, EdgeDraftImpl>();
         attributeModel = Lookup.getDefault().lookup(AttributeController.class).newModel();
@@ -120,11 +122,22 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (nodeMap.containsKey(nodeDraftImpl.getId())) {
             String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraftImpl.getId());
             report.logIssue(new Issue(message, Level.WARNING));
-            report.log("Duplicated node id='" + nodeDraftImpl.getId() + "' label='" + nodeDraftImpl.getLabel() + "' is ignored");
+            return;
+        }
+
+        if (parameters.isDuplicateWithLabels()
+                && nodeDraftImpl.getLabel() != null
+                && !nodeDraftImpl.getLabel().equals(nodeDraftImpl.getId())
+                && nodeLabelMap.containsKey(nodeDraftImpl.getLabel())) {
+            String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraftImpl.getId());
+            report.logIssue(new Issue(message, Level.WARNING));
             return;
         }
 
         nodeMap.put(nodeDraftImpl.getId(), nodeDraftImpl);
+        if (nodeDraftImpl.getLabel() != null && !nodeDraftImpl.getLabel().equals(nodeDraftImpl.getId())) {
+            nodeLabelMap.put(nodeDraftImpl.getLabel(), nodeDraftImpl);
+        }
     }
 
     public NodeDraftImpl getNode(String id) {
