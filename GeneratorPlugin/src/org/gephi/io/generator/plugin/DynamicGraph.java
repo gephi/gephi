@@ -17,12 +17,16 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.generator.plugin;
 
 import java.util.Random;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.type.DynamicFloat;
+import org.gephi.data.attributes.type.Interval;
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
 import org.gephi.io.importer.api.ContainerLoader;
@@ -58,15 +62,18 @@ public class DynamicGraph implements Generator {
             nodeDraft.addTimeInterval("" + randomStart, "" + randomEnd);
 
             randomEnd = randomStart + r.nextInt(10);
-            nodeDraft.addAttributeValue(col, r.nextInt(5), ""+randomStart, ""+randomEnd);
-            randomStart = randomEnd +1;
+            nodeDraft.addAttributeValue(col, r.nextInt(5), "" + randomStart, "" + randomEnd);
+            randomStart = randomEnd + 1;
             randomEnd = randomStart + r.nextInt(10);
-            nodeDraft.addAttributeValue(col, r.nextInt(5), ""+randomStart, ""+randomEnd);
+            nodeDraft.addAttributeValue(col, r.nextInt(5), "" + randomStart, "" + randomEnd);
 
             nodeArray[i] = nodeDraft;
         }
 
         if (wiringProbability > 0) {
+            AttributeColumn oldWeight = container.getAttributeModel().getEdgeTable().getColumn(PropertiesColumn.EDGE_WEIGHT.getIndex());
+            AttributeColumn weightCol = container.getAttributeModel().getEdgeTable().replaceColumn(oldWeight, PropertiesColumn.EDGE_WEIGHT.getId(), PropertiesColumn.EDGE_WEIGHT.getTitle(), AttributeType.DYNAMIC_FLOAT, AttributeOrigin.PROPERTY, null);
+
             for (int i = 0; i < numberOfNodes - 1; i++) {
                 NodeDraft node1 = nodeArray[i];
                 for (int j = i + 1; j < numberOfNodes; j++) {
@@ -75,6 +82,18 @@ public class DynamicGraph implements Generator {
                         EdgeDraft edgeDraft = container.factory().newEdgeDraft();
                         edgeDraft.setSource(node1);
                         edgeDraft.setTarget(node2);
+
+                        Random r = new Random();
+                        DynamicFloat dynamicWeight = new DynamicFloat(new Interval<Float>(2010, 2012, false, true, new Float(r.nextInt(3)+1)));
+                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2012, 2014, false, true, new Float(r.nextInt(3)+2)));
+                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2014, 2016, false, true, new Float(r.nextInt(3)+3)));
+                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2016, 2018, false, true, new Float(r.nextInt(3)+4)));
+                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2018, 2020, false, true, new Float(r.nextInt(3)+5)));
+                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2020, 2022, false, true, new Float(r.nextInt(3)+6)));
+                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2022, 2024, false, true, new Float(r.nextInt(3)+7)));
+                        dynamicWeight = new DynamicFloat(dynamicWeight, new Interval<Float>(2024, 2026, false, false, new Float(r.nextInt(3)+8)));
+                        edgeDraft.addAttributeValue(weightCol, dynamicWeight);
+
                         container.addEdge(edgeDraft);
                     }
                 }
