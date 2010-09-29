@@ -178,6 +178,7 @@
                 <include name="org-gephi-io-generator-api.jar"/>
                 <include name="org-gephi-io-generator-plugin.jar"/>
                 <include name="org-gephi-datalab-api.jar"/>
+                <include name="org-gephi-visualization-api.jar"/>
             </fileset>
         </copy>
         <copy todir="${toolkit.tempdir}">
