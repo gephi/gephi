@@ -62,6 +62,8 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
+import org.openide.util.Utilities;
 import sun.font.FontManager;
 
 /**
@@ -85,7 +87,7 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
     private float marginRight = 18f;
     private boolean landscape = false;
     private Rectangle pageSize = PageSize.A4;
-    private FontMapper fontMapper = new DefaultFontMapper();
+    private FontMapper fontMapper;
 
     public boolean execute() {
         // fetches the preview graph sheet
@@ -121,6 +123,9 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
                 max += graph.countSelfLoops();
             }
         }
+
+        initFontMapper();
+
         Progress.switchToDeterminate(progress, max);
 
         Rectangle size = new Rectangle(pageSize);
@@ -420,34 +425,36 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
      * @throws      IOException
      */
     private BaseFont genBaseFont(java.awt.Font font) throws DocumentException, IOException {
-        if (font != null) {
-            try {
-                if (fontMapper instanceof DefaultFontMapper) {
-                    DefaultFontMapper defaultFontMapper = (DefaultFontMapper) fontMapper;
-                    String fontName = FontManager.getFileNameForFontName(font.getFontName());
-                    if (fontName != null && !fontName.isEmpty()) {
-                        fontName = fontName.toLowerCase();
-                        String fontFilePath = FontManager.getFontPath(false);
-                        if (fontFilePath != null && !fontFilePath.isEmpty()) {
-                            fontFilePath = fontFilePath + "/" + fontName;
+        if (font != null && fontMapper != null) {
+            if (!Utilities.isMac()) {
+                try {
+                    if (fontMapper instanceof DefaultFontMapper) {
+                        DefaultFontMapper defaultFontMapper = (DefaultFontMapper) fontMapper;
+                        String fontName = FontManager.getFileNameForFontName(font.getFontName());
+                        if (fontName != null && !fontName.isEmpty()) {
+                            fontName = fontName.toLowerCase();
+                            String fontFilePath = FontManager.getFontPath(false);
+                            if (fontFilePath != null && !fontFilePath.isEmpty()) {
+                                fontFilePath = fontFilePath + "/" + fontName;
 
-                            if (fontName.endsWith(".ttf") || fontName.endsWith(".otf") || fontName.endsWith(".afm")) {
-                                Object allNames[] = BaseFont.getAllFontNames(fontFilePath, BaseFont.CP1252, null);
-                                defaultFontMapper.insertNames(allNames, fontFilePath);
-                            } else if (fontName.endsWith(".ttc")) {
-                                String ttcs[] = BaseFont.enumerateTTCNames(fontFilePath);
-                                for (int j = 0; j < ttcs.length; ++j) {
-                                    String nt = fontFilePath + "," + j;
-                                    Object allNames[] = BaseFont.getAllFontNames(nt, BaseFont.CP1252, null);
-                                    defaultFontMapper.insertNames(allNames, nt);
+                                if (fontName.endsWith(".ttf") || fontName.endsWith(".otf") || fontName.endsWith(".afm")) {
+                                    Object allNames[] = BaseFont.getAllFontNames(fontFilePath, BaseFont.CP1252, null);
+                                    defaultFontMapper.insertNames(allNames, fontFilePath);
+                                } else if (fontName.endsWith(".ttc")) {
+                                    String ttcs[] = BaseFont.enumerateTTCNames(fontFilePath);
+                                    for (int j = 0; j < ttcs.length; ++j) {
+                                        String nt = fontFilePath + "," + j;
+                                        Object allNames[] = BaseFont.getAllFontNames(nt, BaseFont.CP1252, null);
+                                        defaultFontMapper.insertNames(allNames, nt);
+                                    }
                                 }
                             }
                         }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return BaseFont.createFont();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return BaseFont.createFont();
             }
             return fontMapper.awtToPdf(font);
         }
@@ -496,6 +503,22 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
      */
     private void setFillColor(Color color) {
         cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    private void initFontMapper() {
+        if (fontMapper != null) {
+            return;
+        }
+        if (Utilities.isMac()) {
+            try {
+                String homeLibraryFonts = System.getProperty("user.home") + "/Library/Fonts";
+                ((DefaultFontMapper) fontMapper).insertDirectory(homeLibraryFonts);
+            } catch (Exception e) {
+            }
+            // add the system font paths
+            ((DefaultFontMapper) fontMapper).insertDirectory("/System/Library/Fonts");
+            ((DefaultFontMapper) fontMapper).insertDirectory("/Library/Fonts");
+        }
     }
 
     public float getMarginBottom() {
