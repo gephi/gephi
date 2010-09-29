@@ -313,31 +313,6 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         public EqualNumberFilter(AttributeColumn column) {
             this.column = column;
             this.dynamicHelper = new DynamicAttributesHelper(this, null);
-
-            //Default min-max
-            GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-            Graph graph = gm.getGraph();
-            List<Object> vals = new ArrayList<Object>();
-            if (AttributeUtils.getDefault().isNodeColumn(column)) {
-                for (Node n : graph.getNodes()) {
-                    Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
-                    if (val != null) {
-                        vals.add(val);
-                    }
-                }
-            } else {
-                for (Edge e : graph.getEdges()) {
-                    Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
-                    if (val != null) {
-                        vals.add(val);
-                    }
-                }
-            }
-            //Object[] valuesArray = vals.toArray();
-            Comparable[] comparableArray = ComparableArrayConverter.convert(vals);
-
-            min = AttributeUtils.getDefault().getMin(column, comparableArray /*valuesArray*/);
-            max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
         }
 
         public String getName() {
@@ -379,6 +354,33 @@ public class AttributeEqualBuilder implements CategoryBuilder {
             values = null;
         }
 
+        private void refreshValues() {
+            //Default min-max
+            GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
+            Graph graph = gm.getGraph();
+            List<Object> vals = new ArrayList<Object>();
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                for (Node n : graph.getNodes()) {
+                    Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
+                    if (val != null) {
+                        vals.add(val);
+                    }
+                }
+            } else {
+                for (Edge e : graph.getEdges()) {
+                    Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
+                    if (val != null) {
+                        vals.add(val);
+                    }
+                }
+            }
+            //Object[] valuesArray = vals.toArray();
+            Comparable[] comparableArray = ComparableArrayConverter.convert(vals);
+
+            min = AttributeUtils.getDefault().getMin(column, comparableArray /*valuesArray*/);
+            max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
+        }
+
         public FilterProperty[] getProperties() {
             if (filterProperties == null) {
                 filterProperties = new FilterProperty[0];
@@ -402,10 +404,16 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public Object getMinimun() {
+            if (min == null) {
+                refreshValues();
+            }
             return min;
         }
 
         public Object getMaximum() {
+            if (max == null) {
+                refreshValues();
+            }
             return max;
         }
 
