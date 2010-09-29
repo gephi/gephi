@@ -17,11 +17,12 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeRowFactory;
@@ -151,15 +152,55 @@ public class Dhns implements GraphModel {
     }
 
     //Locking
-    public Lock getReadLock() {
-        return readWriteLock.readLock();
+    public void readLock() {
+        /*if (SwingUtilities.isEventDispatchThread()) {
+        Throwable r = new RuntimeException();
+        int i = 0;
+        for (i = 0; i < r.getStackTrace().length; i++) {
+        if (!r.getStackTrace()[i].toString().startsWith("org.gephi.graph.dhns")) {
+        break;
+        }
+        }
+        System.err.println("WARNING: readLock() on the EDT - " + r.getStackTrace()[i].toString());
+        }*/
+        String t = Thread.currentThread().toString();
+        //Logger.getLogger("").log(Level.WARNING, "{0} read lock", Thread.currentThread());
+        readWriteLock.readLock().lock();
     }
 
-    public Lock getWriteLock() {
+    public void readUnlock() {
+        readWriteLock.readLock().unlock();
+    }
+
+    public void readUnlockAll() {
+        ReentrantReadWriteLock lock = readWriteLock;
+        final int nReadLocks = lock.getReadHoldCount();
+        for (int n = 0; n < nReadLocks; n++) {
+            lock.readLock().unlock();
+        }
+    }
+
+    public void writeLock() {
         if (readWriteLock.getReadHoldCount() > 0) {
             throw new IllegalMonitorStateException("Impossible to acquire a write lock when currently holding a read lock. Use toArray() methods on NodeIterable and EdgeIterable to avoid holding a readLock.");
         }
-        return readWriteLock.writeLock();
+        /*if (SwingUtilities.isEventDispatchThread()) {
+        Throwable r = new RuntimeException();
+        int i = 0;
+        for (i = 0; i < r.getStackTrace().length; i++) {
+        if (!r.getStackTrace()[i].toString().startsWith("org.gephi.graph.dhns")) {
+        break;
+        }
+        }
+        System.err.println("WARNING: writeLock() on the EDT - " + r.getStackTrace()[i].toString());
+        }*/
+        //Logger.getLogger("").log(Level.WARNING, "{0} write lock", Thread.currentThread());
+        readWriteLock.writeLock().lock();
+    }
+
+    public void writeUnlock() {
+        //Logger.getLogger("").log(Level.WARNING, "{0} write unlock", Thread.currentThread());
+        readWriteLock.writeLock().unlock();
     }
 
     public ReentrantReadWriteLock getReadWriteLock() {

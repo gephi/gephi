@@ -29,10 +29,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.gephi.graph.api.Edge;
 import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.api.GraphEvent.EventType;
-import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.event.AbstractEvent;
 import org.gephi.graph.dhns.event.ViewEvent;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
@@ -97,7 +95,7 @@ public class GraphStructure {
     public GraphViewImpl copyView(GraphViewImpl view) {
         GraphViewImpl viewCopy = new GraphViewImpl(dhns, viewId.getAndIncrement());
         TreeStructure newStructure = viewCopy.getStructure();
-        dhns.getReadLock().lock();
+        dhns.writeLock();
 
         for (TreeListIterator itr = new TreeListIterator(view.getStructure().getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
@@ -133,9 +131,9 @@ public class GraphStructure {
         //Metaedges
         viewCopy.getStructureModifier().getEdgeProcessor().computeMetaEdges();
         
-        views.add(viewCopy);
+        views.add(viewCopy); 
+        dhns.writeUnlock();
         dhns.getEventManager().fireEvent(new ViewEvent(EventType.NEW_VIEW, viewCopy));
-        dhns.getReadLock().unlock();
         return viewCopy;
     }
 
@@ -222,7 +220,7 @@ public class GraphStructure {
 
         private final WeakReference<GraphStructure> structureReference;
         private final int STD_TIMER = 300;
-        private final int UNDESTRO_TIMER = 5000;
+        private final int UNDESTRO_TIMER = 2000;
         private boolean running = true;
 
         public ViewDestructorThread(GraphStructure graphStructure) {
@@ -264,16 +262,16 @@ public class GraphStructure {
         }
 
         private void destroyView(GraphStructure structure, GraphViewImpl view) {
-            //System.out.println("Destroy view " + view.getViewId());
-            structure.dhns.getWriteLock().lock();
+            //Logger.getLogger("").log(Level.WARNING, "Destroy view {0}", view.getViewId());
+            structure.dhns.writeLock();
             for (TreeListIterator itr = new TreeListIterator(structure.mainView.getStructure().getTree(), 1); itr.hasNext();) {
                 AbstractNode node = itr.next();
                 node.getNodeData().getNodes().remove(view.getViewId());
             }
             structure.views.remove(view);
-            //System.out.println("Destroy view finished");
+            //System.out.println("Destroy view finished");           
+            structure.dhns.writeUnlock();
             structure.dhns.getEventManager().fireEvent(new ViewEvent(EventType.DESTROY_VIEW, view));
-            structure.dhns.getWriteLock().unlock();
             if (structure.visibleView == view) {
                 structure.visibleView = structure.mainView;
                 structure.dhns.getEventManager().fireEvent(new ViewEvent(EventType.VISIBLE_VIEW, structure.mainView));

@@ -21,6 +21,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.dhns.graph;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
@@ -60,51 +62,23 @@ public abstract class AbstractGraphImpl {
     }
 
     public void readLock() {
-        //System.out.println(Thread.currentThread()+ "read lock");
-        if (SwingUtilities.isEventDispatchThread()) {
-            Throwable r = new RuntimeException();
-            int i = 0;
-            for (i = 0; i < r.getStackTrace().length; i++) {
-                if (!r.getStackTrace()[i].toString().startsWith("org.gephi.graph.dhns")) {
-                    break;
-                }
-            }
-            //System.err.println("WARNING: readLock() on the EDT - " + r.getStackTrace()[i].toString());
-        }
-        dhns.getReadLock().lock();
+        dhns.readLock();
     }
 
     public void readUnlock() {
-        //System.out.println(Thread.currentThread()+ "read unlock");
-        dhns.getReadLock().unlock();
+        dhns.readUnlock();
     }
 
     public void readUnlockAll() {
-        ReentrantReadWriteLock lock = dhns.getReadWriteLock();
-        final int nReadLocks = lock.getReadHoldCount();
-        for (int n = 0; n < nReadLocks; n++) {
-            lock.readLock().unlock();
-        }
+        dhns.readUnlockAll();
     }
 
     public void writeLock() {
-        if (SwingUtilities.isEventDispatchThread()) {
-            Throwable r = new RuntimeException();
-            int i = 0;
-            for (i = 0; i < r.getStackTrace().length; i++) {
-                if (!r.getStackTrace()[i].toString().startsWith("org.gephi.graph.dhns")) {
-                    break;
-                }
-            }
-            //System.err.println("WARNING: readLock() on the EDT - " + r.getStackTrace()[i].toString());
-        }
-        //System.out.println(Thread.currentThread()+ "write lock");
-        dhns.getWriteLock().lock();
+        dhns.writeLock();
     }
 
     public void writeUnlock() {
-        //System.out.println(Thread.currentThread()+ "write lock");
-        dhns.getWriteLock().unlock();
+        dhns.writeUnlock();
     }
 
     public int getNodeVersion() {
