@@ -28,6 +28,7 @@ import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Group;
@@ -343,11 +344,12 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             }
         }
         //Refresh reader if sight changed
-        if (graph != null) {
-            if (graph.getGraphModel().getVisibleView().getViewId() != graphView) {
+        Graph g = graph;
+        if (g != null) {
+            if (g.getGraphModel().getVisibleView().getViewId() != graphView) {
                 reset();
             }
-            return graph.getNodeVersion() > nodeVersion || graph.getEdgeVersion() > edgeVersion;
+            return g.getNodeVersion() > nodeVersion || g.getEdgeVersion() > edgeVersion;
         }
         return false;
     }
