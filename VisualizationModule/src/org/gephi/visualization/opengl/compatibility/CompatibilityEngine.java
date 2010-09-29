@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.opengl.compatibility;
 
 import com.sun.opengl.util.BufferUtil;
@@ -80,7 +80,7 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     public void updateSelection(GL gl, GLU glu) {
-        if (vizConfig.isSelectionEnable() && currentSelectionArea.isEnabled()) {
+        if (vizConfig.isSelectionEnable() && currentSelectionArea != null && currentSelectionArea.isEnabled()) {
             VizModel vizModel = VizController.getInstance().getVizModel();
             float[] mp = Arrays.copyOf(graphIO.getMousePosition(), 2);
             float[] cent = currentSelectionArea.getSelectionAreaCenter();
@@ -715,10 +715,10 @@ public class CompatibilityEngine extends AbstractEngine {
                 }
             }
 
-             for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(modelClasses[AbstractEngine.CLASS_EDGE].getClassId()); itr.hasNext();) {
-                 ModelImpl obj = itr.next();
-                 obj.setSelected(false);
-             }
+            for (Iterator<ModelImpl> itr = octree.getSelectedObjectIterator(modelClasses[AbstractEngine.CLASS_EDGE].getClassId()); itr.hasNext();) {
+                ModelImpl obj = itr.next();
+                obj.setSelected(false);
+            }
         }
         for (Model r : objs) {
             if (r != null) {
@@ -726,7 +726,7 @@ public class CompatibilityEngine extends AbstractEngine {
                 mdl.setSelected(true);
                 if (mdl.getObj() instanceof NodeData) {
                     selectedObjects[modelClasses[AbstractEngine.CLASS_NODE].getSelectionId()].add(mdl);
-                } else if(mdl.getObj() instanceof EdgeData)  {
+                } else if (mdl.getObj() instanceof EdgeData) {
                     selectedObjects[modelClasses[AbstractEngine.CLASS_EDGE].getSelectionId()].add(mdl);
                 }
             }
