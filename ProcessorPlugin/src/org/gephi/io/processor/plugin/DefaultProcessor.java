@@ -86,7 +86,9 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         //Dynamic
         if (container.getTimeFormat() != null) {
             DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-            dynamicController.setTimeFormat(container.getTimeFormat());
+            if (dynamicController != null) {
+                dynamicController.setTimeFormat(container.getTimeFormat());
+            }
         }
 
         int nodeCount = 0;
