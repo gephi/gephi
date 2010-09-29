@@ -427,7 +427,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                         if (interval == null) {
                             interval = new TimeInterval();
                         }
-                        Object value = DynamicUtilities.getDynamicValue(val, interval.getLow(), interval.getHigh());
+                        Object value = DynamicUtilities.getDynamicValue(dynamicValue, interval.getLow(), interval.getHigh());
                         if (value != null) {
                             xmlWriter.writeStartElement(ATTVALUE);
                             xmlWriter.writeAttribute(ATTVALUE_FOR, val.getColumn().getId());

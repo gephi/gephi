@@ -224,7 +224,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
         //Attributes Edge columns
         for (AttributeColumn c : edgeColumns) {
-            if (c.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+            if (!c.getOrigin().equals(AttributeOrigin.PROPERTY)) {
                 stringBuilder.append(c.getTitle());
                 stringBuilder.append(" ");
                 DataTypeGDF dataTypeGDF = getDataTypeGDF(c.getType());
@@ -587,7 +587,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportVisibility;
             }
 
             @Override
@@ -600,7 +600,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportVisibility;
             }
 
             @Override
