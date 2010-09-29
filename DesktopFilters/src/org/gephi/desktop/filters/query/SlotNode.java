@@ -17,13 +17,14 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.filters.query;
 
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.io.IOException;
+import java.util.Arrays;
 import javax.swing.Action;
 import org.gephi.desktop.filters.library.FilterBuilderNode;
 import org.gephi.filters.api.FilterController;
@@ -66,16 +67,19 @@ public class SlotNode extends AbstractNode {
     public PasteType getDropType(final Transferable t, int action, int index) {
         final Node dropNode = NodeTransfer.node(t, DnDConstants.ACTION_COPY_OR_MOVE);
         if (dropNode != null && dropNode instanceof QueryNode) {
-            return new PasteType() {
+            Query q = ((QueryNode) dropNode).getQuery();
+            if (!Arrays.asList(q.getDescendantsAndSelf()).contains(parent)) { //Check if not parent
+                return new PasteType() {
 
-                @Override
-                public Transferable paste() throws IOException {
-                    QueryNode queryNode = (QueryNode) dropNode;
-                    FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-                    filterController.setSubQuery(parent, queryNode.getQuery());
-                    return null;
-                }
-            };
+                    @Override
+                    public Transferable paste() throws IOException {
+                        QueryNode queryNode = (QueryNode) dropNode;
+                        FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
+                        filterController.setSubQuery(parent, queryNode.getQuery());
+                        return null;
+                    }
+                };
+            }
         } else if (t.isDataFlavorSupported(FilterBuilderNode.DATA_FLAVOR)) {
             return new PasteType() {
 
