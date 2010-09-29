@@ -24,18 +24,15 @@ package org.gephi.io.exporter.preview;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.DefaultFontMapper;
 import com.itextpdf.text.pdf.FontMapper;
-import com.itextpdf.text.pdf.FontSelector;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Font;
 import java.awt.geom.AffineTransform;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.gephi.io.exporter.spi.ByteExporter;
@@ -427,19 +424,23 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
             try {
                 if (fontMapper instanceof DefaultFontMapper) {
                     DefaultFontMapper defaultFontMapper = (DefaultFontMapper) fontMapper;
-                    String fontName = FontManager.getFileNameForFontName(font.getFontName()).toLowerCase();
+                    String fontName = FontManager.getFileNameForFontName(font.getFontName());
                     if (fontName != null && !fontName.isEmpty()) {
-                        String fontFilePath = FontManager.getFontPath(true) + "/" + fontName;
+                        fontName = fontName.toLowerCase();
+                        String fontFilePath = FontManager.getFontPath(false);
+                        if (fontFilePath != null && !fontFilePath.isEmpty()) {
+                            fontFilePath = fontFilePath + "/" + fontName;
 
-                        if (fontName.endsWith(".ttf") || fontName.endsWith(".otf") || fontName.endsWith(".afm")) {
-                            Object allNames[] = BaseFont.getAllFontNames(fontFilePath, BaseFont.CP1252, null);
-                            defaultFontMapper.insertNames(allNames, fontFilePath);
-                        } else if (fontName.endsWith(".ttc")) {
-                            String ttcs[] = BaseFont.enumerateTTCNames(fontFilePath);
-                            for (int j = 0; j < ttcs.length; ++j) {
-                                String nt = fontFilePath + "," + j;
-                                Object allNames[] = BaseFont.getAllFontNames(nt, BaseFont.CP1252, null);
-                                defaultFontMapper.insertNames(allNames, nt);
+                            if (fontName.endsWith(".ttf") || fontName.endsWith(".otf") || fontName.endsWith(".afm")) {
+                                Object allNames[] = BaseFont.getAllFontNames(fontFilePath, BaseFont.CP1252, null);
+                                defaultFontMapper.insertNames(allNames, fontFilePath);
+                            } else if (fontName.endsWith(".ttc")) {
+                                String ttcs[] = BaseFont.enumerateTTCNames(fontFilePath);
+                                for (int j = 0; j < ttcs.length; ++j) {
+                                    String nt = fontFilePath + "," + j;
+                                    Object allNames[] = BaseFont.getAllFontNames(nt, BaseFont.CP1252, null);
+                                    defaultFontMapper.insertNames(allNames, nt);
+                                }
                             }
                         }
                     }
