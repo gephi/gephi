@@ -33,6 +33,8 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Font;
 import java.awt.geom.AffineTransform;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.gephi.io.exporter.spi.ByteExporter;
@@ -62,7 +64,6 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.NbPreferences;
 import org.openide.util.Utilities;
 import sun.font.FontManager;
 
@@ -425,40 +426,90 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
      * @throws      IOException
      */
     private BaseFont genBaseFont(java.awt.Font font) throws DocumentException, IOException {
-        if (font != null && fontMapper != null) {
-            if (!Utilities.isMac()) {
-                try {
-                    if (fontMapper instanceof DefaultFontMapper) {
-                        DefaultFontMapper defaultFontMapper = (DefaultFontMapper) fontMapper;
-                        String fontName = FontManager.getFileNameForFontName(font.getFontName());
-                        if (fontName != null && !fontName.isEmpty()) {
-                            fontName = fontName.toLowerCase();
-                            String fontFilePath = FontManager.getFontPath(false);
-                            if (fontFilePath != null && !fontFilePath.isEmpty()) {
-                                fontFilePath = fontFilePath + "/" + fontName;
-
-                                if (fontName.endsWith(".ttf") || fontName.endsWith(".otf") || fontName.endsWith(".afm")) {
-                                    Object allNames[] = BaseFont.getAllFontNames(fontFilePath, BaseFont.CP1252, null);
-                                    defaultFontMapper.insertNames(allNames, fontFilePath);
-                                } else if (fontName.endsWith(".ttc")) {
-                                    String ttcs[] = BaseFont.enumerateTTCNames(fontFilePath);
-                                    for (int j = 0; j < ttcs.length; ++j) {
-                                        String nt = fontFilePath + "," + j;
-                                        Object allNames[] = BaseFont.getAllFontNames(nt, BaseFont.CP1252, null);
-                                        defaultFontMapper.insertNames(allNames, nt);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return BaseFont.createFont();
-                }
+        if (font != null) {
+            try {
+                loadFont(font);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return BaseFont.createFont();
             }
+
             return fontMapper.awtToPdf(font);
         }
         return BaseFont.createFont();
+    }
+
+    private void loadFont(java.awt.Font font) throws Exception {
+        if (fontMapper == null) {
+            fontMapper = new DefaultFontMapper();
+        }
+        if (fontMapper instanceof DefaultFontMapper) {
+            if (Utilities.isMac()) {
+                String fontName = font.getName();
+                if (!((DefaultFontMapper) fontMapper).getMapper().containsKey(fontName)) {
+                    File homeLibraryFonts = new File(System.getProperty("user.home") + "/Library/Fonts");
+                    File systemLibraryFonts = new File("/System/Library/Fonts");
+                    File libraryFonts = new File("/Library/Fonts");
+                    File fontResult = lookFor(fontName, homeLibraryFonts);
+                    fontResult = fontResult != null ? fontResult : lookFor(fontName, systemLibraryFonts);
+                    fontResult = fontResult != null ? fontResult : lookFor(fontName, libraryFonts);
+                    if (fontResult != null) {
+                        fontName = fontResult.getName();
+                        String fontFilePath = fontResult.getAbsolutePath();
+                        loadFont(fontName, fontFilePath);
+                    }
+                }
+            } else {
+                String fontName = FontManager.getFileNameForFontName(font.getFontName());
+                if (!((DefaultFontMapper) fontMapper).getMapper().containsKey(fontName)) {
+                    String fontFilePath = FontManager.getFontPath(false);
+                    fontFilePath = fontFilePath + "/" + fontName;
+                    loadFont(fontName, fontFilePath);
+                }
+            }
+        }
+    }
+
+    private void loadFont(String fontName, String fontFilePath) throws Exception {
+        if (fontName != null && !fontName.isEmpty()) {
+            fontName = fontName.toLowerCase();
+            if (fontFilePath != null && !fontFilePath.isEmpty()) {
+                if (fontName.endsWith(".ttf") || fontName.endsWith(".otf") || fontName.endsWith(".afm")) {
+                    Object allNames[] = BaseFont.getAllFontNames(fontFilePath, BaseFont.CP1252, null);
+                    ((DefaultFontMapper) fontMapper).insertNames(allNames, fontFilePath);
+                } else if (fontName.endsWith(".ttc")) {
+                    String ttcs[] = BaseFont.enumerateTTCNames(fontFilePath);
+                    for (int j = 0; j < ttcs.length; ++j) {
+                        String nt = fontFilePath + "," + j;
+                        Object allNames[] = BaseFont.getAllFontNames(nt, BaseFont.CP1252, null);
+                        ((DefaultFontMapper) fontMapper).insertNames(allNames, nt);
+                    }
+                }
+            }
+        }
+    }
+
+    private File lookFor(String fileName, File folder) {
+        if (!folder.isDirectory()) {
+            return null;
+        }
+        File lookFile = new File(folder, fileName + ".ttf");
+        if (lookFile.exists()) {
+            return lookFile;
+        }
+        lookFile = new File(folder, fileName + ".otf");
+        if (lookFile.exists()) {
+            return lookFile;
+        }
+        lookFile = new File(folder, fileName + ".ttc");
+        if (lookFile.exists()) {
+            return lookFile;
+        }
+        lookFile = new File(folder, fileName + ".afm");
+        if (lookFile.exists()) {
+            return lookFile;
+        }
+        return null;
     }
 
     /**
@@ -509,11 +560,13 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
         if (fontMapper != null) {
             return;
         }
+        fontMapper = new DefaultFontMapper();
         if (Utilities.isMac()) {
             try {
                 String homeLibraryFonts = System.getProperty("user.home") + "/Library/Fonts";
                 ((DefaultFontMapper) fontMapper).insertDirectory(homeLibraryFonts);
             } catch (Exception e) {
+                e.printStackTrace();
             }
             // add the system font paths
             ((DefaultFontMapper) fontMapper).insertDirectory("/System/Library/Fonts");
