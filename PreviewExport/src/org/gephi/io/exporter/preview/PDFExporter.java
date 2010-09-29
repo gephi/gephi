@@ -125,8 +125,6 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
             }
         }
 
-        initFontMapper();
-
         Progress.switchToDeterminate(progress, max);
 
         Rectangle size = new Rectangle(pageSize);
@@ -554,24 +552,6 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
      */
     private void setFillColor(Color color) {
         cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
-    }
-
-    private void initFontMapper() {
-        if (fontMapper != null) {
-            return;
-        }
-        fontMapper = new DefaultFontMapper();
-        if (Utilities.isMac()) {
-            try {
-                String homeLibraryFonts = System.getProperty("user.home") + "/Library/Fonts";
-                ((DefaultFontMapper) fontMapper).insertDirectory(homeLibraryFonts);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            // add the system font paths
-            ((DefaultFontMapper) fontMapper).insertDirectory("/System/Library/Fonts");
-            ((DefaultFontMapper) fontMapper).insertDirectory("/Library/Fonts");
-        }
     }
 
     public float getMarginBottom() {
