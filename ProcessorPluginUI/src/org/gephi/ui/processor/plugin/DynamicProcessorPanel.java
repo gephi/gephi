@@ -79,6 +79,8 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
                 lastFrameLabel.setText(Double.toString(lastFrame));
             }
         }
+
+        labelMatchingCheckbox.setSelected(processor.isLabelmatching());
     }
 
     public void unsetup(DynamicProcessor processor) {
@@ -94,6 +96,7 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
         } else {
             processor.setDate(timestampField.getText());
         }
+        processor.setLabelmatching(labelMatchingCheckbox.isSelected());
     }
 
     public static ValidationPanel createValidationPanel(DynamicProcessorPanel innerPanel) {
@@ -235,6 +238,7 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
         timestampField = new javax.swing.JTextField();
         labelLastFrame = new javax.swing.JLabel();
         lastFrameLabel = new javax.swing.JLabel();
+        labelMatchingCheckbox = new javax.swing.JCheckBox();
 
         header.setDescription(org.openide.util.NbBundle.getMessage(DynamicProcessorPanel.class, "DynamicProcessorPanel.header.description")); // NOI18N
         header.setTitle(org.openide.util.NbBundle.getMessage(DynamicProcessorPanel.class, "DynamicProcessorPanel.header.title")); // NOI18N
@@ -265,17 +269,22 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
         labelLastFrame.setFont(labelLastFrame.getFont().deriveFont(labelLastFrame.getFont().getStyle() | java.awt.Font.BOLD));
         labelLastFrame.setText(org.openide.util.NbBundle.getMessage(DynamicProcessorPanel.class, "DynamicProcessorPanel.labelLastFrame.text")); // NOI18N
 
+        labelMatchingCheckbox.setText(org.openide.util.NbBundle.getMessage(DynamicProcessorPanel.class, "DynamicProcessorPanel.labelMatchingCheckbox.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labelMatchingCheckbox)
+                .addGap(32, 32, 32)
+                .addComponent(lastFrameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labelLastFrame)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lastFrameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(389, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -291,16 +300,19 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(timestampField, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(timeStampRadio))
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addContainerGap(205, Short.MAX_VALUE))
+            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelLastFrame)
-                    .addComponent(lastFrameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lastFrameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelMatchingCheckbox))
+                .addGap(18, 18, 18)
+                .addComponent(labelLastFrame)
                 .addGap(18, 18, 18)
                 .addComponent(dateRadio)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -313,7 +325,7 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelTime)
                     .addComponent(timestampField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -325,6 +337,7 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXHeader header;
     private javax.swing.JLabel labelDate;
     private javax.swing.JLabel labelLastFrame;
+    private javax.swing.JCheckBox labelMatchingCheckbox;
     private javax.swing.JLabel labelTime;
     private javax.swing.JLabel lastFrameLabel;
     private javax.swing.JRadioButton timeStampRadio;

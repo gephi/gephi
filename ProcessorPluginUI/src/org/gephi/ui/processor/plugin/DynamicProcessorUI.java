@@ -73,15 +73,18 @@ public class DynamicProcessorUI implements ProcessorUI {
 
         private boolean dateMode = true;
         private String date = "";
+        private boolean labelMatching = true;
 
         private void save(DynamicProcessor dynamicProcessor) {
             this.dateMode = dynamicProcessor.isDateMode();
             this.date = dynamicProcessor.getDate();
+            this.labelMatching = dynamicProcessor.isLabelmatching();
         }
 
         private void load(DynamicProcessor dynamicProcessor) {
             dynamicProcessor.setDateMode(dateMode);
             dynamicProcessor.setDate(date);
+            dynamicProcessor.setLabelmatching(labelMatching);
         }
     }
 }

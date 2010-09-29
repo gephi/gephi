@@ -65,6 +65,7 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
     //Settings
     private boolean dateMode = true;
     private String date = "";
+    private boolean labelmatching = true;
     //Variable
     private double point;
 
@@ -164,10 +165,10 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
         Map<String, Node> map = new HashMap<String, Node>();
         for (Node n : graph.getNodes()) {
             String id = n.getNodeData().getId();
-            if (id != null && !id.equalsIgnoreCase(String.valueOf(n.getId()))) {
+            if (id != null && !labelmatching && !id.equalsIgnoreCase(String.valueOf(n.getId()))) {
                 map.put(id, n);
             }
-            if (n.getNodeData().getLabel() != null && !n.getNodeData().getLabel().isEmpty()) {
+            if (n.getNodeData().getLabel() != null && !n.getNodeData().getLabel().isEmpty() && labelmatching) {
                 map.put(n.getNodeData().getLabel(), n);
             }
         }
@@ -179,9 +180,9 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
             Node node = null;
             String id = draftNode.getId();
             String label = draftNode.getLabel();
-            if (!draftNode.isAutoId() && id != null && map.get(id) != null) {
+            if (!draftNode.isAutoId() && id != null && map.get(id) != null && !labelmatching) {
                 node = map.get(id);
-            } else if (label != null && map.get(label) != null) {
+            } else if (label != null && map.get(label) != null && labelmatching) {
                 node = map.get(label);
             }
 
@@ -408,5 +409,13 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
 
     public void setDateMode(boolean dateMode) {
         this.dateMode = dateMode;
+    }
+
+    public boolean isLabelmatching() {
+        return labelmatching;
+    }
+
+    public void setLabelmatching(boolean labelmatching) {
+        this.labelmatching = labelmatching;
     }
 }
