@@ -112,7 +112,6 @@ public class DynamicProcessorPanel extends javax.swing.JPanel {
 
             @Override
             public void propertyChange(PropertyChangeEvent e) {
-                System.out.println(e.getPropertyName());
                 if ("date".equals(e.getPropertyName())) {
                     fullValidationListener.event();
                 }
