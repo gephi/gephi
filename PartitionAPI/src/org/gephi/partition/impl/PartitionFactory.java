@@ -384,6 +384,21 @@ public class PartitionFactory {
             int theirCount = ((PartImpl) o).objects.length;
             return thisCount == theirCount ? 0 : thisCount > theirCount ? 1 : -1;
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if(obj!=null && obj instanceof PartImpl) {
+                return ((PartImpl)obj).value.equals(value);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 53 * hash + (this.value != null ? this.value.hashCode() : 0);
+            return hash;
+        }
     }
 
     public static List<Color> getSequenceColors(int num) {
