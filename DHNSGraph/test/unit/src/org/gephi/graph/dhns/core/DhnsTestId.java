@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
+import java.util.logging.Logger;
 import org.gephi.graph.api.GraphView;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.Edge;
@@ -29,7 +30,6 @@ import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.node.AbstractNode;
-import org.gephi.graph.dhns.node.NodeDataImpl;
 import org.gephi.project.api.ProjectController;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -187,7 +187,7 @@ public class DhnsTestId {
         Node n2 = factory.newNode("n2");
         rootGraph.addNode(n1);
         rootGraph.addNode(n2);
-        Edge e1 = factory.newEdge(n1, n2);
+        Edge e1 = factory.newEdge("e1", n1, n2, 1f, false);
         rootGraph.addEdge(e1);
 
         GraphView newView = graphModel.newView();
@@ -210,15 +210,15 @@ public class DhnsTestId {
         rootGraph.removeEdge(e1);
         assertNull(rootGraph.getEdge(e1.getId()));
 
+        rootGraph.addEdge(e1);
         newView = graphModel.newView();
+        graphNewView = graphModel.getGraph(newView);
+        Logger.getLogger("").info("clearedges");
+        graphNewView.clearEdges();
+        graphNewView = null;
         ((Dhns) graphModel).destroyView(newView);
-        newView = graphModel.newView();
-        ((Dhns) graphModel).destroyView(newView);
-        newView = graphModel.newView();
-        ((Dhns) graphModel).destroyView(newView);
-
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         }

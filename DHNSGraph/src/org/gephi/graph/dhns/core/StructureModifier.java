@@ -159,7 +159,6 @@ public class StructureModifier {
         if (clearedEdges != null) {
             for (int i = 0; i < clearedEdges.length; i++) {
                 if (clearedEdges[i] != null) {
-                    dhns.getGraphStructure().removeFromDictionnary(clearedEdges[i]);
                     dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, clearedEdges[i], view));
                 }
             }
