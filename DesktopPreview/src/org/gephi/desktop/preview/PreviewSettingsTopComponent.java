@@ -52,6 +52,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         // property sheet
         propertySheet = new PropertySheet();
         propertySheet.setNodes(new Node[]{new PreviewNode()});
+        propertySheet.setDescriptionAreaVisible(false);
         propertiesPanel.add(propertySheet, BorderLayout.CENTER);
 
         // checks the state of the workspace
