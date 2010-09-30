@@ -230,7 +230,7 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
         add(nodeLabel, gridBagConstraints);
 
         labelEdges.setText(org.openide.util.NbBundle.getMessage(ContextPanel.class, "ContextPanel.labelEdges.text")); // NOI18N
-        labelEdges.setToolTipText("null"); // NOI18N
+        labelEdges.setToolTipText("Number of edges, without meta-edges"); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
