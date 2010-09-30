@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.desktop.spigot
 OpenIDE-Module-Layer: org/gephi/desktop/spigot/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/spigot/Bundle.properties
