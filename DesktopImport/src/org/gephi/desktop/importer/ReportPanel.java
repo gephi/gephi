@@ -344,7 +344,7 @@ public class ReportPanel extends javax.swing.JPanel {
 
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
-        labelNodeCount.setFont(new java.awt.Font("Tahoma", 1, 11));
+        labelNodeCount.setFont(labelNodeCount.getFont().deriveFont(labelNodeCount.getFont().getStyle() | java.awt.Font.BOLD));
         labelNodeCount.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelNodeCount.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -353,7 +353,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 6, 0);
         jPanel1.add(labelNodeCount, gridBagConstraints);
 
-        labelEdgeCount.setFont(new java.awt.Font("Tahoma", 1, 11));
+        labelEdgeCount.setFont(labelEdgeCount.getFont().deriveFont(labelEdgeCount.getFont().getStyle() | java.awt.Font.BOLD));
         labelEdgeCount.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelEdgeCount.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
