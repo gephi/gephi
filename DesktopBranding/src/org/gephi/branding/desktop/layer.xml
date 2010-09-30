@@ -93,7 +93,8 @@
             <file name="org-gephi-branding-desktop-multilingual-LanguageAction.instance">
                 <attr name="position" intvalue="10000"/>
             </file>
-            <file name="org-netbeans-modules-favorites-templates-TemplatesAction.shadow_hidden"/>
+                <file name="org-netbeans-modules-favorites-templates-TemplatesAction.shadow_hidden"/>
+            <file name="org-openide-actions-ToolsAction.shadow_hidden"/>
         </folder>
         <folder name="View">
             <file name="Separator1.instance_hidden"/>
