@@ -42,6 +42,8 @@ import org.openide.util.actions.CallableSystemAction;
 
 public final class LanguageAction extends CallableSystemAction {
 
+    private static final String APPNAME = "gephidesktop";
+
     public enum Language {
 
         EN_US("en", "English"),
@@ -119,7 +121,7 @@ public final class LanguageAction extends CallableSystemAction {
             etc = new File(base, "etc");
         }
 
-        File confFile = new File(etc, "gephidesktop.conf");
+        File confFile = new File(etc, APPNAME+".conf");
         try {
             StringBuilder outputBuilder = new StringBuilder();
             String match = "-J-Duser.language=";
