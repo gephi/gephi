@@ -218,10 +218,10 @@
     <Container class="javax.swing.JScrollPane" name="attributeColumnsScrollPane">
       <Properties>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[200, 130]"/>
+          <Dimension value="[200, 100]"/>
         </Property>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[200, 130]"/>
+          <Dimension value="[200, 100]"/>
         </Property>
       </Properties>
       <Constraints>

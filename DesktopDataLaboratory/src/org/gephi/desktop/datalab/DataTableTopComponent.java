@@ -163,6 +163,9 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         });
 
         initComponents();
+        if (UIUtils.isAquaLookAndFeel()) {
+            columnManipulatorsPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
 
         columnManipulatorsPanel.setLayout(new WrapLayout(WrapLayout.CENTER, 25, 20));
         setName(NbBundle.getMessage(DataTableTopComponent.class, "CTL_DataTableTopComponent"));
@@ -1168,8 +1171,8 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         gridBagConstraints.weightx = 1.0;
         add(bannerPanel, gridBagConstraints);
 
-        attributeColumnsScrollPane.setMinimumSize(new java.awt.Dimension(200, 130));
-        attributeColumnsScrollPane.setPreferredSize(new java.awt.Dimension(200, 130));
+        attributeColumnsScrollPane.setMinimumSize(new java.awt.Dimension(200, 100));
+        attributeColumnsScrollPane.setPreferredSize(new java.awt.Dimension(200, 100));
 
         columnManipulatorsPanel.setMinimumSize(new java.awt.Dimension(200, 100));
         columnManipulatorsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 25, 20));
