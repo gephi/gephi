@@ -209,6 +209,19 @@ public class DhnsTestId {
         }
         rootGraph.removeEdge(e1);
         assertNull(rootGraph.getEdge(e1.getId()));
+
+        newView = graphModel.newView();
+        ((Dhns) graphModel).destroyView(newView);
+        newView = graphModel.newView();
+        ((Dhns) graphModel).destroyView(newView);
+        newView = graphModel.newView();
+        ((Dhns) graphModel).destroyView(newView);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     @Test

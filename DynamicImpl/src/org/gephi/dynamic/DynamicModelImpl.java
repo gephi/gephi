@@ -218,9 +218,6 @@ public final class DynamicModelImpl implements DynamicModel {
                                 }
                             }
                             break;
-                        case CLEAR_NODES:
-                            timeIntervalIndex.clear();
-                            break;
                         default:
                             break;
                     }

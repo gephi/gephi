@@ -26,9 +26,10 @@ import java.lang.ref.WeakReference;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.api.GraphEvent.EventType;
-import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.event.ViewEvent;
 import org.gephi.graph.dhns.node.AbstractNode;
@@ -155,14 +156,6 @@ public class GraphStructure {
         dictionnary.removeEdge(edge);
     }
 
-    public void clearNodeDictionnary() {
-        dictionnary.clearNodes();
-    }
-
-    public void clearEdgeDictionnary() {
-        dictionnary.clearEdges();
-    }
-
     public AbstractEdge getEdgeFromDictionnary(int id) {
         return dictionnary.getEdge(id);
     }
@@ -257,14 +250,12 @@ public class GraphStructure {
             for (TreeListIterator itr = new TreeListIterator(structure.mainView.getStructure().getTree(), 1); itr.hasNext();) {
                 AbstractNode node = itr.next();
                 node.getNodeData().getNodes().remove(view.getViewId());
-
                 if (!node.getEdgesOutTree().isEmpty()) {
                     for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
                         AbstractEdge edge = edgeIterator.next();
                         structure.removeFromDictionnary(edge);
                     }
                 }
-
             }
             structure.views.remove(view);
             //System.out.println("Destroy view finished");           
@@ -308,6 +299,7 @@ public class GraphStructure {
         }
 
         public synchronized void addEdge(AbstractEdge edge) {
+            Logger.getLogger("").log(Level.WARNING, "ADD edge {0}", edge.getId());
             EdgeCounter edgeCounter = edgesRefCount.get(edge.getId());
             if (edgeCounter != null) {
                 edgeCounter.inc();
@@ -322,6 +314,7 @@ public class GraphStructure {
         }
 
         public synchronized void removeEdge(AbstractEdge edge) {
+            Logger.getLogger("").log(Level.WARNING, "REMOVE edge {0}", edge.getId());
             EdgeCounter edgeCounter = edgesRefCount.get(edge.getId());
             int count = edgeCounter.decAndGet();
             if (count == 0) {
@@ -363,16 +356,6 @@ public class GraphStructure {
                 return getEdge(natId);
             }
             return null;
-        }
-
-        public synchronized void clearNodes() {
-            nodesMap.clear();
-            nodesIntMap.clear();
-        }
-
-        public synchronized void clearEdges() {
-            edgesMap.clear();
-            edgesRefCount.clear();
         }
 
         public synchronized void setNodeId(String oldId, String newId, NodeDataImpl node) {
