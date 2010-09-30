@@ -128,7 +128,7 @@ public interface AttributeColumnsController {
      * @param table Table of the column to match
      * @param column Column to match
      * @param newColumnTitle Title for the new boolean column
-     * @param regex Regular expression to match
+     * @param pattern Regular expression to match
      * @return New created column or null if title is not correct
      */
     AttributeColumn createBooleanMatchesColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern);
@@ -148,7 +148,7 @@ public interface AttributeColumnsController {
      * @param table Table of the column to match
      * @param column Column to match
      * @param newColumnTitle Title for the new boolean column
-     * @param regex Regular expression to match
+     * @param pattern Regular expression to match
      * @return New created column or null if title is not correct
      */
     AttributeColumn createFoundGroupsListColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern);
@@ -172,7 +172,7 @@ public interface AttributeColumnsController {
     /**
      * <p>Clears all edge attributes except computed attributes and id.</p>
      * <p>Columns to clear can be specified, but id and computed columns will not be cleared.</p>
-     * @param node Edge to clear data
+     * @param edge Edge to clear data
      * @param columnsToClear Columns of the edge to clear. All columns will be cleared if it is null
      */
     void clearEdgeData(Edge edge, AttributeColumn[] columnsToClear);
@@ -180,7 +180,7 @@ public interface AttributeColumnsController {
     /**
      * <p>Clears all the edges attributes except computed attributes and id, checking first that the edges are in the graph.</p>
      * <p>Columns to clear can be specified, but id and computed columns will not be cleared.</p>
-     * @param nodes Array of edges to clear data
+     * @param edges Array of edges to clear data
      * @param columnsToClear Columns of the edges to clear. All columns will be cleared if it is null
      */
     void clearEdgesData(Edge[] edges, AttributeColumn[] columnsToClear);
@@ -232,7 +232,7 @@ public interface AttributeColumnsController {
      * <p>Counts the number of rows of a table (nodes or edges table) and returns the result.</p>
      * <p>Uses <code>GraphElementsController</code> <code>getNodesCount</code> and <code>getEdgesCount</code> to calculate the result.</p>
      * @param table
-     * @return
+     * @return the number of rows in <code>table</code>
      */
     int getTableRowsCount(AttributeTable table);
 

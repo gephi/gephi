@@ -107,13 +107,13 @@ public interface GraphElementsController {
 
     /**
      * Tries to delete an edge checking first if it is on the graph.
-     * @param node Edge to delete
+     * @param edge Edge to delete
      */
     void deleteEdge(Edge edge);
 
     /**
      * Tries to delete an array of edges checking first if they are on the graph.
-     * @param nodes Array of edges to delete
+     * @param edges Array of edges to delete
      */
     void deleteEdges(Edge[] edges);
 
@@ -151,7 +151,7 @@ public interface GraphElementsController {
 
     /**
      * Ungroups a node if it forms a group.
-     * @param nodes Node to ungroup
+     * @param node Node to ungroup
      * @return True if the node was succesfully ungrouped, false otherwise
      */
     boolean ungroupNode(Node node);

@@ -80,14 +80,14 @@ public interface DynamicController {
 
     /**
      * Sets the current <code>ESTIMATOR</code> used to get values from
-     * {@link DynamicType}. Default is <b><code>Estimator.FIRST</code></b>.
+     * {@link org.gephi.data.attributes.type.DynamicType}. Default is <b><code>Estimator.FIRST</code></b>.
      * @param estimator     the estimator that is to be set
      */
     public void setEstimator(Estimator estimator);
 
     /**
      * Sets the current number <code>ESTIMATOR</code> used to get values from
-     * {@link DynamicType}. Default is <b><code>Estimator.AVERAGE</code></b>.
+     * {@link org.gephi.data.attributes.type.DynamicType}. Default is <b><code>Estimator.AVERAGE</code></b>.
      * @param estimator     the number estimator that is to be set
      */
     public void setNumberEstimator(Estimator estimator);

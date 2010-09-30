@@ -124,7 +124,6 @@ public interface AttributeTable {
      * @param id                             the identifier of the column
      * @param title                          the title of the column
      * @param type                           the type of the column
-     * @param attributeValueDelegateProvider the attribute value delegate provider of the column
      * @param defaultValue                   the default value of the column
      * @return                               the newly created column, or
      * <code>null</code> if <code>source</code> can't be found
