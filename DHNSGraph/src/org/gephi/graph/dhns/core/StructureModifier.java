@@ -315,9 +315,9 @@ public class StructureModifier {
                         }
                     }
                 }
-                if (node.countInViews() == 1) {
-                    dhns.getGraphStructure().removeFromDictionnary(node);
-                }
+
+                dhns.getGraphStructure().removeFromDictionnary(node);
+
 
                 treeStructure.deleteOnlySelf(node);
                 dhns.getEventManager().fireEvent(new NodeEvent(EventType.REMOVE_NODES, node, view));
@@ -453,9 +453,8 @@ public class StructureModifier {
                         }
                     }
                 }
-                if (node.countInViews() == 1) {
-                    dhns.getGraphStructure().removeFromDictionnary(descendant);
-                }
+                dhns.getGraphStructure().removeFromDictionnary(descendant);
+
                 i++;
             }
 

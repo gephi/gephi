@@ -29,8 +29,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class IDGen {
 
-    private AtomicInteger nodeGen = new AtomicInteger();
-    private AtomicInteger edgeGen = new AtomicInteger();
+    private AtomicInteger nodeGen = new AtomicInteger(1);
+    private AtomicInteger edgeGen = new AtomicInteger(1);
 
     public int newNodeId() {
         return nodeGen.getAndIncrement();

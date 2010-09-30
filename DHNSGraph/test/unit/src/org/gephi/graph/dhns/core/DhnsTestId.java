@@ -17,9 +17,10 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
+import org.gephi.graph.api.GraphView;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -27,12 +28,15 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.NodeDataImpl;
 import org.gephi.project.api.ProjectController;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import static org.junit.Assert.*;
 
@@ -150,6 +154,61 @@ public class DhnsTestId {
         rootGraph.setId(e1, "test2");
 
         assertEquals(e1, rootGraph.getEdge("test2"));
+    }
+
+    @Test
+    public void testViewNodes() {
+        GraphFactory factory = graphModel.factory();
+        Node n1 = factory.newNode("n1");
+        Node n2 = factory.newNode("n2");
+        rootGraph.addNode(n1);
+        rootGraph.addNode(n2);
+
+        GraphView newView = graphModel.newView();
+        Graph graphNewView = graphModel.getGraph(newView);
+        Node n1c = graphNewView.getNode("n1");
+        assertNotSame(n1, n1c);
+        assertSame(n1.getNodeData(), n1c.getNodeData());
+        assertEquals(((AbstractNode) n1c).getViewId(), newView.getViewId());
+        assertSame(n1c, graphNewView.getNode(n1.getId()));
+
+        graphNewView.removeNode(n1c);
+        assertNull(graphNewView.getNode("n1"));
+        assertNotNull(rootGraph.getNode("n1"));
+
+        rootGraph.removeNode(n1);
+        assertNull(rootGraph.getNode("n1"));
+    }
+
+    @Test
+    public void testViewEdges() {
+        GraphFactory factory = graphModel.factory();
+        Node n1 = factory.newNode("n1");
+        Node n2 = factory.newNode("n2");
+        rootGraph.addNode(n1);
+        rootGraph.addNode(n2);
+        Edge e1 = factory.newEdge(n1, n2);
+        rootGraph.addEdge(e1);
+
+        GraphView newView = graphModel.newView();
+        Graph graphNewView = graphModel.getGraph(newView);
+        assertNotNull(graphNewView.getEdge(e1.getId()));
+        assertNotNull(graphNewView.getEdge(e1.getEdgeData().getId()));
+        assertSame(e1, graphNewView.getEdge(e1.getId()));
+
+        graphNewView.removeEdge(graphNewView.getEdge(e1.getId()));
+        assertSame(e1, rootGraph.getEdge(e1.getId()));
+
+        newView = graphModel.newView();
+        assertNotNull(rootGraph.getEdge(e1.getId()));
+        ((Dhns) graphModel).destroyView(newView);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        rootGraph.removeEdge(e1);
+        assertNull(rootGraph.getEdge(e1.getId()));
     }
 
     @Test

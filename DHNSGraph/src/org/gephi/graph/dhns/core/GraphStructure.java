@@ -17,25 +17,23 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
+import gnu.trove.TIntObjectHashMap;
+import gnu.trove.TObjectIntHashMap;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.gephi.graph.api.Edge;
 import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.event.ViewEvent;
 import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.NodeDataImpl;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
-import org.gephi.graph.dhns.utils.avl.AbstractEdgeTree;
-import org.gephi.graph.dhns.utils.avl.AbstractNodeTree;
 
 /**
  *
@@ -47,10 +45,7 @@ public class GraphStructure {
     private final Dhns dhns;
     private final GraphViewImpl mainView;
     private final Queue<GraphViewImpl> views;
-    private final AbstractNodeTree nodeDictionnary;
-    private final AbstractEdgeTree edgeDictionnary;
-    private final Map<String, NodeData> nodeIDDictionnary;   //Temporary, waiting for attributes indexing
-    private final Map<String, Edge> edgeIDDIctionnary;
+    private final GraphDictionnary dictionnary;
     private GraphViewImpl visibleView;
     //Destroy
     private final Object lock = new Object();
@@ -58,11 +53,8 @@ public class GraphStructure {
 
     public GraphStructure(Dhns dhns) {
         this.dhns = dhns;
-        nodeDictionnary = new AbstractNodeTree();
-        edgeDictionnary = new AbstractEdgeTree();
-        nodeIDDictionnary = new HashMap<String, NodeData>();
-        edgeIDDIctionnary = new HashMap<String, Edge>();
         views = new ConcurrentLinkedQueue<GraphViewImpl>();
+        dictionnary = new GraphDictionnary();
 
         //Main view
         mainView = new GraphViewImpl(dhns, 0);
@@ -119,6 +111,7 @@ public class GraphStructure {
                     AbstractNode targetCopy = newStructure.getNodeAt(edge.getTarget().getPre());
                     sourceCopy.getEdgesOutTree().add(edge);
                     targetCopy.getEdgesInTree().add(edge);
+                    addToDictionnary(edge);
                 }
             }
         }
@@ -130,8 +123,8 @@ public class GraphStructure {
 
         //Metaedges
         viewCopy.getStructureModifier().getEdgeProcessor().computeMetaEdges();
-        
-        views.add(viewCopy); 
+
+        views.add(viewCopy);
         dhns.writeUnlock();
         dhns.getEventManager().fireEvent(new ViewEvent(EventType.NEW_VIEW, viewCopy));
         return viewCopy;
@@ -147,57 +140,53 @@ public class GraphStructure {
     }
 
     public void addToDictionnary(AbstractNode node) {
-        nodeDictionnary.add(node);
-        if (node.getNodeData().getId() != null) {
-            nodeIDDictionnary.put(node.getNodeData().getId(), node.getNodeData());
-        }
+        dictionnary.addNode(node);
     }
 
     public void removeFromDictionnary(AbstractNode node) {
-        nodeDictionnary.remove(node);
-        if (node.getNodeData().getId() != null) {
-            nodeIDDictionnary.remove(node.getNodeData().getId());
-        }
+        dictionnary.removeNode(node);
     }
 
     public void addToDictionnary(AbstractEdge edge) {
-        edgeDictionnary.add(edge);
-        if (edge.getEdgeData().getId() != null) {
-            edgeIDDIctionnary.put(edge.getEdgeData().getId(), edge);
-        }
+        dictionnary.addEdge(edge);
     }
 
     public void removeFromDictionnary(AbstractEdge edge) {
-        edgeDictionnary.remove(edge);
-        if (edge.getEdgeData().getId() != null) {
-            edgeIDDIctionnary.remove(edge.getEdgeData().getId());
-        }
+        dictionnary.removeEdge(edge);
     }
 
     public void clearNodeDictionnary() {
-        nodeDictionnary.clear();
-        nodeIDDictionnary.clear();
+        dictionnary.clearNodes();
     }
 
     public void clearEdgeDictionnary() {
-        edgeDictionnary.clear();
-        edgeIDDIctionnary.clear();
+        dictionnary.clearEdges();
     }
 
     public AbstractEdge getEdgeFromDictionnary(int id) {
-        return edgeDictionnary.get(id);
+        return dictionnary.getEdge(id);
     }
 
-    public AbstractNode getNodeFromDictionnary(int id) {
-        return nodeDictionnary.get(id);
+    public AbstractEdge getEdgeFromDictionnary(String id) {
+        return dictionnary.getEdge(id);
     }
 
-    public Map<String, NodeData> getNodeIDDictionnary() {
-        return nodeIDDictionnary;
+    public AbstractNode getNodeFromDictionnary(int id, int viewId) {
+        return dictionnary.getNode(id, viewId);
     }
 
-    public Map<String, Edge> getEdgeIDDIctionnary() {
-        return edgeIDDIctionnary;
+    public AbstractNode getNodeFromDictionnary(String id, int viewId) {
+        return dictionnary.getNode(id, viewId);
+    }
+
+    public void setNodeId(NodeDataImpl node, String id) {
+        String oldId = node.setId(id);
+        dictionnary.setNodeId(oldId, id, node);
+    }
+
+    public void setEdgeId(AbstractEdge edge, String id) {
+        String oldId = edge.getEdgeData().setId(id);
+        dictionnary.setEdgeId(oldId, id, edge);
     }
 
     public GraphViewImpl getVisibleView() {
@@ -264,9 +253,18 @@ public class GraphStructure {
         private void destroyView(GraphStructure structure, GraphViewImpl view) {
             //Logger.getLogger("").log(Level.WARNING, "Destroy view {0}", view.getViewId());
             structure.dhns.writeLock();
+            ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
             for (TreeListIterator itr = new TreeListIterator(structure.mainView.getStructure().getTree(), 1); itr.hasNext();) {
                 AbstractNode node = itr.next();
                 node.getNodeData().getNodes().remove(view.getViewId());
+
+                if (!node.getEdgesOutTree().isEmpty()) {
+                    for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
+                        AbstractEdge edge = edgeIterator.next();
+                        structure.removeFromDictionnary(edge);
+                    }
+                }
+
             }
             structure.views.remove(view);
             //System.out.println("Destroy view finished");           
@@ -275,6 +273,157 @@ public class GraphStructure {
             if (structure.visibleView == view) {
                 structure.visibleView = structure.mainView;
                 structure.dhns.getEventManager().fireEvent(new ViewEvent(EventType.VISIBLE_VIEW, structure.mainView));
+            }
+        }
+    }
+
+    private static class GraphDictionnary {
+
+        private final TObjectIntHashMap<String> nodesMap;
+        private final TIntObjectHashMap<NodeDataImpl> nodesIntMap;
+        private final TIntObjectHashMap<EdgeCounter> edgesRefCount;
+        private final TObjectIntHashMap<String> edgesMap;
+
+        public GraphDictionnary() {
+            nodesMap = new TObjectIntHashMap<String>();
+            nodesIntMap = new TIntObjectHashMap<NodeDataImpl>();
+            edgesRefCount = new TIntObjectHashMap<EdgeCounter>();
+            edgesMap = new TObjectIntHashMap<String>();
+        }
+
+        public synchronized void addNode(AbstractNode node) {
+            if (node.getNodeData().getId() != null) {
+                nodesMap.put(node.getNodeData().getId(), node.getId());
+            }
+            nodesIntMap.put(node.getId(), node.getNodeData());
+        }
+
+        public synchronized void removeNode(AbstractNode node) {
+            if (node.getNodeData().getNodes().getCount() == 1) {
+                if (node.getNodeData().getId() != null) {
+                    nodesMap.remove(node.getNodeData().getId());
+                }
+                nodesIntMap.remove(node.getId());
+            }
+        }
+
+        public synchronized void addEdge(AbstractEdge edge) {
+            EdgeCounter edgeCounter = edgesRefCount.get(edge.getId());
+            if (edgeCounter != null) {
+                edgeCounter.inc();
+            } else {
+                edgeCounter = new EdgeCounter(edge);
+                edgesRefCount.put(edge.getId(), edgeCounter);
+                String id = edge.getEdgeData().getId();
+                if (id != null) {
+                    edgesMap.put(id, edge.getId());
+                }
+            }
+        }
+
+        public synchronized void removeEdge(AbstractEdge edge) {
+            EdgeCounter edgeCounter = edgesRefCount.get(edge.getId());
+            int count = edgeCounter.decAndGet();
+            if (count == 0) {
+                edgesRefCount.remove(edge.getId());
+                String id = edge.getEdgeData().getId();
+                if (id != null) {
+                    edgesMap.remove(id);
+                }
+            }
+        }
+
+        public synchronized AbstractNode getNode(int id, int viewId) {
+            NodeDataImpl nodeDataImpl = nodesIntMap.get(id);
+            if (nodeDataImpl != null) {
+                return (AbstractNode) nodeDataImpl.getNode(viewId);
+            }
+            return null;
+        }
+
+        public synchronized AbstractNode getNode(String id, int viewId) {
+            int natId = nodesMap.get(id);
+            if (natId != 0) {
+                return getNode(natId, viewId);
+            }
+            return null;
+        }
+
+        public synchronized AbstractEdge getEdge(int id) {
+            EdgeCounter edgeCounter = edgesRefCount.get(id);
+            if (edgeCounter != null) {
+                return edgeCounter.edge;
+            }
+            return null;
+        }
+
+        public synchronized AbstractEdge getEdge(String id) {
+            int natId = edgesMap.get(id);
+            if (natId != 0) {
+                return getEdge(natId);
+            }
+            return null;
+        }
+
+        public synchronized void clearNodes() {
+            nodesMap.clear();
+            nodesIntMap.clear();
+        }
+
+        public synchronized void clearEdges() {
+            edgesMap.clear();
+            edgesRefCount.clear();
+        }
+
+        public synchronized void setNodeId(String oldId, String newId, NodeDataImpl node) {
+            if (oldId != null) {
+                int val = nodesMap.remove(oldId);
+                nodesMap.put(newId, val);
+            } else {
+                nodesMap.put(newId, node.getID());
+            }
+        }
+
+        public synchronized void setEdgeId(String oldId, String newId, AbstractEdge edge) {
+            if (oldId != null) {
+                int val = edgesMap.remove(oldId);
+                edgesMap.put(newId, val);
+            } else {
+                edgesMap.put(newId, edge.getId());
+            }
+        }
+
+        private static class EdgeCounter {
+
+            protected final AbstractEdge edge;
+            private int counter = 1;
+
+            public EdgeCounter(AbstractEdge edge) {
+                this.edge = edge;
+            }
+
+            private void inc() {
+                counter++;
+            }
+
+            private int decAndGet() {
+                return --counter;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (obj != null && obj instanceof EdgeCounter) {
+                    EdgeCounter e = (EdgeCounter) obj;
+                    return e.edge.equals(edge);
+                } else if (obj != null && obj instanceof AbstractEdge) {
+                    return obj.equals(edge);
+                }
+                return false;
+            }
+
+            @Override
+            public int hashCode() {
+                return edge.hashCode();
             }
         }
     }
