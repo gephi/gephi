@@ -158,9 +158,7 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         timelinePanel = new javax.swing.JPanel();
         closeButton = new CloseButton();
 
-        setMaximumSize(new java.awt.Dimension(2147483647, 27));
-        setMinimumSize(new java.awt.Dimension(128, 16));
-        setPreferredSize(new java.awt.Dimension(800, 24));
+        setMaximumSize(new java.awt.Dimension(32767, 48));
         setLayout(new java.awt.GridBagLayout());
 
         enableButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/disabled.png"))); // NOI18N

@@ -11,15 +11,13 @@
             </file>
         </folder>
     </folder>
-    <!--
     <folder name="Menu">
         <folder name="Window">
             <file name="TimelineAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-timeline-TimelineAction.instance"/>
             </file>
         </folder>
-    </folder>
-    -->
+    </folder>   
     <folder name="Windows2">
         <folder name="Components">
             <file name="TimelineTopComponent.settings" url="TimelineTopComponentSettings.xml"/>
