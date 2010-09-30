@@ -5,7 +5,7 @@
   <kind type="view" />
   <state type="joined" />
   <constraints>
-    <path orientation="vertical" number="80" weight="0.146872246"/>
+    <path orientation="vertical" number="80" weight="0.106872246"/>
   </constraints>
   <frame state="0"/>
     <active-tc  id="TimelineTopComponent" />
