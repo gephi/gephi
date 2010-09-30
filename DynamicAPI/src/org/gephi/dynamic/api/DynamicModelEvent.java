@@ -1,6 +1,7 @@
 /*
  * Copyright 2008-2010 Gephi
  * Authors : Cezary Bartosiak
+ *           Mathieu Bastian <mathieu.bastian@gephi.org>
  * Website : http://www.gephi.org
  *
  * This file is part of Gephi.
@@ -21,11 +22,28 @@
 package org.gephi.dynamic.api;
 
 /**
- *
+ * Event from the dynamic model.
+ * <ul>
+ * <li><b>VISIBLE_INTERVAL:</b> The visible interval set by the timeline has changed</li>
+ * <li><b>MIN_CHANGED:</b> The minimum bound in time has changed</li>
+ * <li><b>MAX_CHANGED:</b> The maximum bound in time has changed</li>
+ * </ul>
+ * @author Cezary Bartosiak
  * @author Mathieu Bastian
  */
 public final class DynamicModelEvent {
 
+    /**
+     * Event from the dynamic model.
+     * <p>
+     * The visible interval is a <code>TimeInterval</code> object. For min and
+     * max changed, data are <code>Double</code> objects.
+     * <ul>
+     * <li><b>VISIBLE_INTERVAL:</b> The visible interval set by the timeline has changed</li>
+     * <li><b>MIN_CHANGED:</b> The minimum bound in time has changed</li>
+     * <li><b>MAX_CHANGED:</b> The maximum bound in time has changed</li>
+     * </ul>
+     */
     public enum EventType {
 
         VISIBLE_INTERVAL, MIN_CHANGED, MAX_CHANGED

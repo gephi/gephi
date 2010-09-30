@@ -30,7 +30,7 @@ import org.gephi.data.attributes.api.AttributeType;
  * <h4>Get nodes ID column
  * <pre>
  * AttributeColumn col = nodeTable.getColumn(PropertiesColumn.NODE_ID.getIndex());
- *
+ * </pre>
  * @author Mathieu Bastian
  * @author Martin Škurla
  */

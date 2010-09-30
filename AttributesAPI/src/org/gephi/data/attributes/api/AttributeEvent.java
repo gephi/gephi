@@ -21,17 +21,35 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.data.attributes.api;
 
 /**
+ * Attribute event interface, that {@link AttributeListener } receives when the
+ * attribute model or any attribute row is modified.
+ * <p>
+ * <ul>
+ * <li><b>ADD_COLUMN:</b> One or several columns have been created, look at
+ * {@link AttributeEventData#getAddedColumns() } to get data.</li>
+ * <li><b>REMOVE_COLUMN:</b> One or several columns have been removed, look at
+ * {@link AttributeEventData#getRemovedColumns() } to get data.</li>
+ * <li><b>SET_VALUE:</b> A value has been set in a row, look at*
+ * {@link AttributeEventData#getTouchedValues()} to get new values and
+ * {@link AttributeEventData#getTouchedObjects() } to get objects where value
+ * has been modified.</li>
+ * </ul>
  *
  * @author Mathieu Bastian
  */
 public interface AttributeEvent {
 
     /**
+     * Attribute model events.
      * <ul>
-     * <li><b>ADD_COLUMN:</b> A column has been created. Source is the
-     * <code>AttributeTable</code> and data is the column.</li>
-     * <li><b>REMOVE_COLUMN:</b> A column has been removed. Source is the
-     * <code>AttributeTable</code> and data is the column.</li>
+     * <li><b>ADD_COLUMN:</b> One or several columns have been created, look at
+     * {@link AttributeEventData#getAddedColumns() } to get data.</li>
+     * <li><b>REMOVE_COLUMN:</b> One or several columns have been removed, look at
+     * {@link AttributeEventData#getRemovedColumns() } to get data.</li>
+     * <li><b>SET_VALUE:</b> A value has been set in a row, look at*
+     * {@link AttributeEventData#getTouchedValues()} to get new values and
+     * {@link AttributeEventData#getTouchedObjects() } to get objects where value
+     * has been modified.</li>
      * </ul>
      */
     public enum EventType {

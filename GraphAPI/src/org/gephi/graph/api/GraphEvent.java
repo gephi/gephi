@@ -34,8 +34,6 @@ package org.gephi.graph.api;
      * <tr><td><b>- VISIBLE_VIEW:</b></td><td>Current visible view is changed</td></tr>
      * <tr><td><b>- NEW_VIEW:</b></td><td>A new view is created</td></tr>
      * <tr><td><b>- DESTROY_VIEW:</b></td><td>A view is destroyed</td></tr>
-     * <tr><td><b>- CLEAR_NODES:</b></td><td>Clear all nodes in the graph, and all edges</td></tr>
-     * <tr><td><b>- CLEAR_EDGES:</b></td>Clear all edges in the graph<td></td></tr>
      * <tr><td><b>- EXPAND:</b></td><td>Expand nodes in the hierarchy</td></tr>
      * <tr><td><b>- RETRACT:</b></td><td>Retract nodes in the hierarchy</td></tr>
      * <tr><td><b>- META_EDGES_UPDATE</b></td><td>Meta-Edges are updated</td></tr></table>

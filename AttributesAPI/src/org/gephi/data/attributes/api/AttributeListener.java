@@ -23,8 +23,10 @@ package org.gephi.data.attributes.api;
 import java.util.EventListener;
 
 /**
+ * Listener for attribute events.
  *
  * @author Mathieu Bastian
+ * @see AttributeEvent
  */
 public interface AttributeListener extends EventListener {
 

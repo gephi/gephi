@@ -1,6 +1,7 @@
 /*
  * Copyright 2008-2010 Gephi
  * Authors : Cezary Bartosiak
+ *           Mathieu Bastian <mathieu.bastian@gephi.org>
  * Website : http://www.gephi.org
  * 
  * This file is part of Gephi.
@@ -27,17 +28,33 @@ import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.graph.api.Graph;
 
 /**
- * Root interface that contains the complete dynamic graph structure and build
- * {@link DynamicGraph} objets on demand.
+ * Model that maintains the dynamic states of the application, which include the
+ * minimum and the maximum bounds, as well as the current visible interval.
+ * <p>
+ * The min and the max are used to know what are the limits of the time in the
+ * current data. The visible interval is typically configured by a timeline
+ * component to select a range of time. The model also maintains what is the
+ * current time format, either <code>DOUBLE</code> or <code>DATE</code>. Internally,
+ * all times are double, but it can be converted to dates for user display. In
+ * addition the model stores the current estimators used to compute dynamic
+ * values.
+ * <p>
+ * The model is listening to graph and attributes events to track all intervals and
+ * deduce minimum and maximum. It thows <code>MIN_CHANGED</code> or 
+ * <code>MAX_CHANGED</code> events when these values are changed.
+ * <p>
+ * The model can also build {@link DynamicGraph} objets on demand. These objects
+ * can work independently to states of this model.
  * 
  * @author Cezary Bartosiak
+ * @author Mathieu Bastian
  *
  * @see DynamicController
  */
 public interface DynamicModel {
 
     /**
-     * The name of a column containing time intervals.
+     * The name of the column containing time intervals.
      */
     public static final String TIMEINTERVAL_COLUMN = "time_interval";
 
