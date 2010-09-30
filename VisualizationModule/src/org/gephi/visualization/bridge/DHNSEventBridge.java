@@ -427,6 +427,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
 
         GraphModel sourceModel = graphController.getModel(currentWorkspace);
         GraphModel destModel = graphController.getModel(workspace);
+        Graph destGraph = destModel.getHierarchicalGraphVisible();
         Graph sourceGraph = sourceModel.getHierarchicalGraphVisible();
 
         ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
@@ -434,7 +435,7 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         for (ModelImpl metaModelImpl : selectedNodeModels) {
             NodeData nodeData = (NodeData) metaModelImpl.getObj();
             Node node = nodeData.getNode(sourceGraph.getView().getViewId());
-            if (node != null) {
+            if (node != null && destGraph.getNode(node.getNodeData().getId()) == null) {
                 nodes.add(node);
             }
         }
