@@ -133,7 +133,7 @@ public class DynamicProcessor extends AbstractProcessor implements Processor {
                         attributeModel.getEdgeTable().addColumn(column.getId(), column.getTitle(), column.getType(), column.getOrigin(), column.getDefaultValue());
                     }
                 }
-            } else if (PropertiesColumn.EDGE_WEIGHT.getId().equals(column.getId())) {
+            } else if (PropertiesColumn.EDGE_WEIGHT.getId().equals(column.getId()) && !existingCol.getType().isDynamicType()) {
                 attributeModel.getEdgeTable().replaceColumn(attributeModel.getEdgeTable().getColumn(PropertiesColumn.EDGE_WEIGHT.getIndex()), PropertiesColumn.EDGE_WEIGHT.getId(), PropertiesColumn.EDGE_WEIGHT.getTitle(), AttributeType.DYNAMIC_FLOAT, AttributeOrigin.PROPERTY, null);
             }
         }
