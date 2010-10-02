@@ -88,6 +88,7 @@ public class EdgeDataTable {
     private PropertyEdgeDataColumn[] propertiesColumns;
     private RowFilter rowFilter;
     private Edge[] selectedEdges;
+    private AttributeUtils attributeUtils;
     private AttributeColumnsController attributeColumnsController;
     private boolean refreshingTable = false;
     private AttributeColumn[] showingColumns = null;
@@ -98,6 +99,7 @@ public class EdgeDataTable {
     private SparkLinesRenderer sparkLinesRenderer;
 
     public EdgeDataTable() {
+        attributeUtils = AttributeUtils.getDefault();
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         table = new JXTable();
@@ -443,12 +445,14 @@ public class EdgeDataTable {
         }
 
         public Class getColumnClass() {
-            if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
+            if (useSparklines && attributeUtils.isNumberListColumn(column)) {
                 return NumberList.class;
-            } else if (useSparklines && AttributeUtils.getDefault().isDynamicNumberColumn(column)) {
+            } else if (useSparklines && attributeUtils.isDynamicNumberColumn(column)) {
                 return column.getType().getType();
             } else if (column.getType() == AttributeType.TIME_INTERVAL) {
                 return TimeInterval.class;
+            } else if (attributeUtils.isNumberColumn(column)) {
+                return column.getType().getType();//Number columns should not be treated as Strings because the sorting would be alphabetic instead of numeric
             } else {
                 return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
             }
@@ -460,9 +464,11 @@ public class EdgeDataTable {
 
         public Object getValueFor(Edge edge) {
             Object value = edge.getEdgeData().getAttributes().getValue(column.getIndex());
-            if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column) || AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
+            if (useSparklines && (attributeUtils.isNumberListColumn(column) || attributeUtils.isDynamicNumberColumn(column))) {
                 return value;
             } else if (column.getType() == AttributeType.TIME_INTERVAL) {
+                return value;
+            } else if (attributeUtils.isNumberColumn(column)) {
                 return value;
             } else {
                 //Show values as Strings like in Edit window and other parts of the program to be consistent

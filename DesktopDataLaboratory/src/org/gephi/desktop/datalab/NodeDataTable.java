@@ -95,6 +95,7 @@ public class NodeDataTable {
     private Pattern pattern;
     private DataTablesModel dataTablesModel;
     private Node[] selectedNodes;
+    private AttributeUtils attributeUtils;
     private AttributeColumnsController attributeColumnsController;
     private boolean refreshingTable = false;
     private AttributeColumn[] showingColumns = null;
@@ -104,6 +105,7 @@ public class NodeDataTable {
     private TimeFormat currentTimeFormat;
 
     public NodeDataTable() {
+        attributeUtils=AttributeUtils.getDefault();
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         outlineTable = new Outline();
@@ -407,12 +409,14 @@ public class NodeDataTable {
         }
 
         public Class getColumnClass() {
-            if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
+            if (useSparklines && attributeUtils.isNumberListColumn(column)) {
                 return NumberList.class;
-            } else if (useSparklines && AttributeUtils.getDefault().isDynamicNumberColumn(column)) {
+            } else if (useSparklines && attributeUtils.isDynamicNumberColumn(column)) {
                 return column.getType().getType();
             } else if (column.getType() == AttributeType.TIME_INTERVAL) {
                 return TimeInterval.class;
+            } else if (attributeUtils.isNumberColumn(column)) {
+                return column.getType().getType();//Number columns should not be treated as Strings because the sorting would be alphabetic instead of numeric
             } else {
                 return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
             }
@@ -430,11 +434,13 @@ public class NodeDataTable {
             Attributes row = graphNode.getNodeData().getAttributes();
             Object value = row.getValue(column.getIndex());
 
-            if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column) || AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
+            if (useSparklines && (attributeUtils.isNumberListColumn(column) || attributeUtils.isDynamicNumberColumn(column))) {
                 return value;
             } else if (column.getType() == AttributeType.TIME_INTERVAL) {
                 return value;
-            } else {
+            } else if (attributeUtils.isNumberColumn(column)) {
+                return value;
+            }else {
                 //Show values as Strings like in Edit window and other parts of the program to be consistent
                 if (value != null) {
                     if (value instanceof DynamicType) {//When type is dynamic, take care to show proper time format

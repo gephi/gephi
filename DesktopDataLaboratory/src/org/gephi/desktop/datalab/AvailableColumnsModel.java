@@ -30,7 +30,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
  */
 public class AvailableColumnsModel {
 
-    private static final int MAX_AVAILABLE_COLUMNS = 35;
+    private static final int MAX_AVAILABLE_COLUMNS = 20;
     private ArrayList<AttributeColumn> availableColumns = new ArrayList<AttributeColumn>();
 
     public boolean isColumnAvailable(AttributeColumn column) {
