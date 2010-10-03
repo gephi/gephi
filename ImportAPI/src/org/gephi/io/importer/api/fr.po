@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-07-01 03:46+0000\n"
+"X-Launchpad-Export-Date: 2010-10-03 04:58+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "OpenIDE-Module-Long-Description"
@@ -22,3 +22,24 @@ msgstr "API/SPI du module d'Import"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "API/SPI du module d'Import"
+
+msgid "ImportUtils.error_no_matching_file_importer"
+msgstr ""
+
+msgid "ImportUtils.error_no_matching_stream_importer"
+msgstr ""
+
+msgid "ImportUtils.error_no_matching_db_importer"
+msgstr ""
+
+msgid "ImportUtils.error_file_not_found"
+msgstr ""
+
+msgid "ImportUtils.error_missing_document_instance_factory"
+msgstr ""
+
+msgid "ImportUtils.error_io"
+msgstr ""
+
+msgid "ImportUtils.error_sax"
+msgstr ""

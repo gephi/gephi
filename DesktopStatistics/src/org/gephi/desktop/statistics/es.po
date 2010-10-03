@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-09-08 04:46+0000\n"
+"X-Launchpad-Export-Date: 2010-10-03 04:58+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "OpenIDE-Module-Short-Description"
@@ -55,21 +55,6 @@ msgstr "Resultado"
 
 msgid "StatisticsFrontEnd.settingsPanel.title"
 msgstr "Parámetros de {0}"
-
-msgid "StatisticsReportPanel.copyButton.text"
-msgstr "Copiar"
-
-msgid "StatisticsReportPanel.closeButton.text"
-msgstr "Cerrar"
-
-msgid "StatisticsReportPanel.printButton.text"
-msgstr "Imprimir"
-
-msgid "StatisticsReportPanel.saveButton.text"
-msgstr "Guardar"
-
-msgid "StatisticsReportPanel.status.saveSuccess"
-msgstr "Informe guardado en el directorio {0}"
 
 msgid "StatisticsFrontEnd.reportButton.toolTipText"
 msgstr "Ver informe"

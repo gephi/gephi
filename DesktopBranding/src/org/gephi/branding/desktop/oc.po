@@ -14,14 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-07-01 03:46+0000\n"
+"X-Launchpad-Export-Date: 2010-10-03 04:58+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
-
-msgid "CTL_BannerAction"
-msgstr "Bandièra"
-
-msgid "CTL_BannerTopComponent"
-msgstr "Bandièra"
 
 msgid "OpenIDE-Module-Long-Description"
 msgstr "Algoritmes de basa en teoria dels grafes"
@@ -86,9 +80,15 @@ msgstr "Enregistrar jos..."
 msgid "Actions/File/org-gephi-branding-desktop-actions-SaveProject.instance"
 msgstr "Enregistrar lo projècte"
 
-msgid "BannerTopComponent.logoButton.toolTipText"
-msgstr "Anar sul site web de Gephi www.gephi.org"
-
 msgid "DragNDropFrameAdapter.openGephiError"
 msgstr ""
 "Impossible de dobrir lo fichièr, perque son format es pas compatible."
+
+msgid "CommandLineProcessor.openGephiError"
+msgstr ""
+
+msgid "CommandLineProcessor.fileNotFound"
+msgstr ""
+
+msgid "CommandLineProcessor.fileNotSupported"
+msgstr ""

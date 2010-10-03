@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-09-08 04:46+0000\n"
+"X-Launchpad-Export-Date: 2010-10-03 04:58+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "OpenIDE-Module-Short-Description"
@@ -112,6 +112,12 @@ msgstr "Tamaño"
 
 msgid "UIExporterGraphMLPanel.labelNormalize.text"
 msgstr "Escalar tamaño y posición entre 0 y 1"
+
+msgid "UIExporterGraphMLPanel.hierarchyCheckbox.text"
+msgstr ""
+
+msgid "UIExporterGraphMLPanel.labelNormalize1.text"
+msgstr ""
 
 msgid "UIExporterCSVPanel.labelExport.text"
 msgstr "Exportar:"

@@ -14,14 +14,23 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-07-01 03:46+0000\n"
+"X-Launchpad-Export-Date: 2010-10-03 04:58+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Interface utilisateur des exporteurs standards"
 
-msgid "UIExporterGEXFPanel.labelExport.text"
-msgstr "Export :"
+msgid "UIExporterGDF.name"
+msgstr ""
+
+msgid "UIExporterGEXF.name"
+msgstr ""
+
+msgid "UIExporterGraphML.name"
+msgstr ""
+
+msgid "UIExporterCSV.name"
+msgstr ""
 
 msgid "UIExporterGDFPanel.jRadioButton1.text"
 msgstr "Guillemets simples"
@@ -53,6 +62,18 @@ msgstr "L'encapsulation des champs prend des guillemets doubles par défaut"
 msgid "UIExporterGDFPanel.labelNormalize.text"
 msgstr "Réduit les positions et tailles entre 0 et 1"
 
+msgid "UIExporterGDFPanel.simpleQuotesCheckbox.text"
+msgstr "Guillemets simples"
+
+msgid "UIExporterGDFPanel.labelQuotes1.text"
+msgstr "Utiliser les guillemets simples à la place des guillemets doubles"
+
+msgid "UIExporterGDFPanel.visibilityCheckbox.text"
+msgstr "Visibilité (graphe visible, labels visibles)"
+
+msgid "UIExporterGEXFPanel.labelExport.text"
+msgstr "Export :"
+
 msgid "UIExporterGEXFPanel.attributesExportCheckbox.text"
 msgstr "Attributs"
 
@@ -70,15 +91,6 @@ msgstr "Normaliser"
 
 msgid "UIExporterGEXFPanel.labelNormalize.text"
 msgstr "Réduit les positions et tailles entre 0 et 1"
-
-msgid "UIExporterGDFPanel.simpleQuotesCheckbox.text"
-msgstr "Guillemets simples"
-
-msgid "UIExporterGDFPanel.labelQuotes1.text"
-msgstr "Utiliser les guillemets simples à la place des guillemets doubles"
-
-msgid "UIExporterGDFPanel.visibilityCheckbox.text"
-msgstr "Visibilité (graphe visible, labels visibles)"
 
 msgid "UIExporterGraphMLPanel.labelExport.text"
 msgstr "Export :"
@@ -101,6 +113,12 @@ msgstr "Taille"
 msgid "UIExporterGraphMLPanel.labelNormalize.text"
 msgstr "Réduit les positions et tailles entre 0 et 1"
 
+msgid "UIExporterGraphMLPanel.hierarchyCheckbox.text"
+msgstr ""
+
+msgid "UIExporterGraphMLPanel.labelNormalize1.text"
+msgstr ""
+
 msgid "UIExporterCSVPanel.labelExport.text"
 msgstr "Export :"
 
@@ -118,3 +136,12 @@ msgstr "Matrice"
 
 msgid "UIExporterCSVPanel.zeroEdgeCheckbox.text"
 msgstr "Zero si aucun lien"
+
+msgid "UIExporterGEXFPanel.dynamicExportCheckbox.text"
+msgstr ""
+
+msgid "UIExporterGEXFPanel.labelNormalize1.text"
+msgstr ""
+
+msgid "UIExporterGEXFPanel.hierarchyCheckbox.text"
+msgstr ""

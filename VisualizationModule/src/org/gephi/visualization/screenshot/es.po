@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-07-01 03:46+0000\n"
+"X-Launchpad-Export-Date: 2010-10-03 04:58+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "ScreenshotMaker.finishedMessage.message"
@@ -32,12 +32,6 @@ msgstr "PNG"
 msgid "ScreenshotMaker.configure.title"
 msgstr "Parámetros de captura de pantalla"
 
-msgid "ScreenshotSettingsPanel.transparentBackgroundCheckBox.text"
-msgstr "Fondo transparente"
-
-msgid "ScreenshotSettingsPanel.autoSaveCheckBox.text"
-msgstr "Autoguardado"
-
 msgid "ScreenshotSettingsPanel.labelWidth.text"
 msgstr "Ancho:"
 
@@ -46,6 +40,9 @@ msgstr "Alto:"
 
 msgid "ScreenshotSettingsPanel.labelAntiAliasing.text"
 msgstr "Antialiasing:"
+
+msgid "ScreenshotSettingsPanel.autoSaveCheckBox.text"
+msgstr "Autoguardado"
 
 msgid "ScreenshotSettingsPanel.selectDirectoryButton.text"
 msgstr "Seleccionar directorio..."
