@@ -32,9 +32,9 @@ import com.itextpdf.text.pdf.FontMapper;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.geom.AffineTransform;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.gephi.io.exporter.spi.ByteExporter;
@@ -89,6 +89,12 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
     private boolean landscape = false;
     private Rectangle pageSize = PageSize.A4;
     private FontMapper fontMapper;
+
+    static {
+        //Required in Headless to not get NPE on FontManager.getFileNameForFontName()
+        GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        e.getAllFonts();
+    }
 
     public boolean execute() {
         // fetches the preview graph sheet
