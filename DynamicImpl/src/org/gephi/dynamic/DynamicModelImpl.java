@@ -300,7 +300,7 @@ public final class DynamicModelImpl implements DynamicModel {
                 Query query = filterModel.getCurrentQuery();
                 Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
                 if (dynamicQueries.length > 0) {
-                    dynamicQuery = dynamicQueries[0];
+                    dynamicQuery = query;
                     selecting = filterModel.isSelecting();
                 }
             } else if (filterModel.getQueries().length == 1) {
