@@ -75,17 +75,17 @@ public class StatisticsModelImpl implements StatisticsModel {
     }
 
     public void addReport(Statistics statistics) {
-        if (!reportMap.containsKey(statistics.getClass())) {
-            reportMap.put(statistics.getClass(), statistics.getReport());
-            fireChangeEvent();
-        }
+        reportMap.put(statistics.getClass(), statistics.getReport());
+        fireChangeEvent();
     }
 
     public void addResult(StatisticsUI ui) {
-        if (!resultMap.containsKey(ui) && ui.getValue() != null) {
+        if (resultMap.containsKey(ui) && ui.getValue() == null) {
+            resultMap.remove(ui);
+        } else {
             resultMap.put(ui, ui.getValue());
-            fireChangeEvent();
         }
+        fireChangeEvent();
     }
 
     public String getReport(Class<? extends Statistics> statisticsClass) {
