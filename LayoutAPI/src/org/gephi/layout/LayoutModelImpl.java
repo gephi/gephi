@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.layout;
 
 import java.beans.PropertyChangeEvent;
@@ -222,12 +222,14 @@ public class LayoutModelImpl implements LayoutModel {
         //Properties
         Element propertiesE = document.createElement("properties");
         for (Entry<LayoutPropertyKey, Object> entry : savedProperties.entrySet()) {
-            Element propertyE = document.createElement("property");
-            propertyE.setAttribute("layout", entry.getKey().layoutClassName);
-            propertyE.setAttribute("property", entry.getKey().name);
-            propertyE.setAttribute("class", entry.getValue().getClass().getName());
-            propertyE.setTextContent(entry.getValue().toString());
-            propertiesE.appendChild(propertyE);
+            if (entry.getValue() != null) {
+                Element propertyE = document.createElement("property");
+                propertyE.setAttribute("layout", entry.getKey().layoutClassName);
+                propertyE.setAttribute("property", entry.getKey().name);
+                propertyE.setAttribute("class", entry.getValue().getClass().getName());
+                propertyE.setTextContent(entry.getValue().toString());
+                propertiesE.appendChild(propertyE);
+            }
         }
 
         layoutModelE.appendChild(propertiesE);
@@ -244,7 +246,9 @@ public class LayoutModelImpl implements LayoutModel {
 
                 LayoutPropertyKey key = new LayoutPropertyKey(propertyE.getAttribute("property"), propertyE.getAttribute("layout"));
                 Object value = parse(propertyE.getAttribute("class"), propertyE.getTextContent());
-                savedProperties.put(key, value);
+                if (value != null) {
+                    savedProperties.put(key, value);
+                }
             }
         }
     }
