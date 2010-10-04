@@ -246,16 +246,21 @@ public final class DynamicGraphImpl implements DynamicGraph {
 		Graph vgraph = model.getGraph(currentView);
 		for (Node n : graph.getNodes().toArray()) {
 			TimeInterval ti = (TimeInterval)n.getNodeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
-			if (ti.getValue(interval, estimator) == null && vgraph.contains(n))
+                        if(ti == null && !vgraph.contains(n))
+                                vgraph.addNode(n);
+                        else if(ti != null && ti.getValue(interval, estimator) == null && vgraph.contains(n))
 				vgraph.removeNode(n);
-			else if (ti.getValue(interval, estimator) != null && !vgraph.contains(n))
+			else if (ti != null && ti.getValue(interval, estimator) != null && !vgraph.contains(n))
 				vgraph.addNode(n);
 		}
 		for (Edge e : graph.getEdges().toArray()) {
 			TimeInterval ti = (TimeInterval)e.getEdgeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
-			if (ti.getValue(interval, estimator) == null && vgraph.contains(e))
+                        if(ti == null && !vgraph.contains(e) &&
+					vgraph.contains(e.getSource()) && vgraph.contains(e.getTarget()))
+                                vgraph.addEdge(e);
+                        else if(ti != null && ti.getValue(interval, estimator) == null && vgraph.contains(e))
 				vgraph.removeEdge(e);
-			else if (ti.getValue(interval, estimator) != null && !vgraph.contains(e) &&
+			else if (ti != null && ti.getValue(interval, estimator) != null && !vgraph.contains(e) &&
 					vgraph.contains(e.getSource()) && vgraph.contains(e.getTarget()))
 				vgraph.addEdge(e);
 		}
