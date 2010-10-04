@@ -165,6 +165,7 @@
                 <include name="org-gephi-project-api.jar"/>
                 <include name="org-gephi-statistics-api.jar"/>
                 <include name="org-gephi-statistics-plugin.jar"/>
+                <include name="org-gephi-timeline.jar"/>
                 <include name="org-gephi-dynamic-api.jar"/>
                 <include name="org-gephi-dynamic.jar"/>
                 <include name="org-gephi-utils.jar"/>
