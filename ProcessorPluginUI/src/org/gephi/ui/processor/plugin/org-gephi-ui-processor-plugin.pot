@@ -45,3 +45,6 @@ msgstr "Select natural or real number"
 
 msgid "DynamicProcessorPanel.labelLastFrame.text"
 msgstr "Last frame found:"
+
+msgid "DynamicProcessorPanel.labelMatchingCheckbox.text"
+msgstr "Use labels for identifiers instead of ids"
