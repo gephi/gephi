@@ -38,7 +38,9 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * Processor 'Add full graph' that unloads the complete container into the
+ * workspace.
+ * 
  * @author  Mathieu Bastian
  */
 @ServiceProvider(service = Processor.class, position = 10)

@@ -56,7 +56,10 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * Processor 'Time Frame' that uses its 'date' parameter to associate the content
+ * of the container to a particular point in time. It locates and modify existing
+ * elements by appending new time intervals. It also create dynamic attribute
+ * values, as well as a dynamic weight.
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Processor.class)

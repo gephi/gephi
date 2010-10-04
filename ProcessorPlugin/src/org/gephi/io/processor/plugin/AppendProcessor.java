@@ -42,7 +42,12 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * Processor 'Append graph' that tries to find in the current workspace nodes and
+ * edges in the container to only append new elements. It uses elements' id and
+ * label to do the matching.
+ * <p>
+ * The attibutes are not merged and values are from the latest element imported.
+ * 
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Processor.class)
