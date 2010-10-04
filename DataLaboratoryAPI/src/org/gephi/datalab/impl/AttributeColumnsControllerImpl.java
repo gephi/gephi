@@ -177,7 +177,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 } else {
                     matcher = pattern.matcher("");
                 }
-                row.setValue(newColumn.getIndex(), new Boolean(matcher.matches()));
+                row.setValue(newColumn.getIndex(), matcher.matches());
             }
             return newColumn;
         } else {
@@ -472,7 +472,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     if (id == null || id.isEmpty()) {
                         node = gec.createNode(null);//id null or empty, assign one
                     } else {
+                        graph.readLock();
                         node = graph.getNode(id);
+                        graph.readUnlock();
                         if (node != null) {//Node with that id already in graph
                             if (assignNewNodeIds) {
                                 node = gec.createNode(null);
@@ -556,17 +558,31 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     continue;//No correct source and target ids were provided, ignore row
                 }
 
+                graph.readLock();
                 source = graph.getNode(sourceId);
-                target = graph.getNode(targetId);
+                graph.readUnlock();
 
-                if ((source == null || target == null) && !createNewNodes) {//Don't create new nodes when they don't exist already
-                    continue;//Ignore this edge row, since no new nodes should be created.
-                } else {//Create new nodes when they don't exist already
-                    if (source == null) {
-                        source = gec.createNode(null, sourceId);
+                if (source == null) {
+                    if (createNewNodes) {//Create new nodes when they don't exist already and option is enabled
+                        if (source == null) {
+                            source = gec.createNode(null, sourceId);
+                        }
+                    } else {
+                        continue;//Ignore this edge row, since no new nodes should be created.
                     }
-                    if (target == null) {
-                        target = gec.createNode(null, targetId);
+                }
+
+                graph.readLock();
+                target = graph.getNode(targetId);
+                graph.readUnlock();
+
+                if (target == null) {
+                    if (createNewNodes) {//Create new nodes when they don't exist already and option is enabled
+                        if (target == null) {
+                            target = gec.createNode(null, targetId);
+                        }
+                    } else {
+                        continue;//Ignore this edge row, since no new nodes should be created.
                     }
                 }
 
@@ -579,7 +595,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                         directed = true;
                     }
                 } else {
-                    directed = true;//Directed by default when no indicated
+                    directed = true;//Directed by default when not indicated
                 }
 
                 //Prepare the correct edge to assign the attributes:

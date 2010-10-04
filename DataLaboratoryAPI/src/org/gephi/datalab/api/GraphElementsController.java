@@ -65,7 +65,6 @@ public interface GraphElementsController {
 
     /**
      * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
-     * This will not create a self-loop.
      * @param source Source node
      * @param target Target node
      * @param directed Indicates if the edge has to be directed
@@ -76,7 +75,6 @@ public interface GraphElementsController {
     /**
      * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
      * <p>If a edge with the given id already exists, no edge will be created.</p>
-     * <p>This will not create a self-loop.</p>
      * @param source Source node
      * @param target Target node
      * @param directed Indicates if the edge has to be directed

@@ -84,48 +84,40 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     public Edge createEdge(Node source, Node target, boolean directed) {
         Edge newEdge;
+        if (directed) {
+            newEdge = buildEdge(source, target, true);
+            if (getDirectedGraph().addEdge(newEdge)) {//The edge will be created if it does not already exist.
+                return newEdge;
+            } else {
+                return null;
+            }
+        } else {
+            newEdge = buildEdge(source, target, false);
+            if (getUndirectedGraph().addEdge(newEdge)) {//The edge will be created if it does not already exist.
+                return newEdge;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public Edge createEdge(String id, Node source, Node target, boolean directed) {
+        Edge newEdge;
         if (source != target) {//Cannot create self-loop
             if (directed) {
-                newEdge = buildEdge(source, target, true);
+                newEdge = buildEdge(id, source, target, true);
                 if (getDirectedGraph().addEdge(newEdge)) {//The edge will be created if it does not already exist.
                     return newEdge;
                 } else {
                     return null;
                 }
             } else {
-                newEdge = buildEdge(source, target, false);
+                newEdge = buildEdge(id, source, target, false);
                 if (getUndirectedGraph().addEdge(newEdge)) {//The edge will be created if it does not already exist.
                     return newEdge;
                 } else {
                     return null;
                 }
-            }
-        } else {
-            return null;
-        }
-    }
-
-    public Edge createEdge(String id, Node source, Node target, boolean directed) {
-        Edge newEdge;
-        if (getGraph().getEdge(id) == null) {
-            if (source != target) {//Cannot create self-loop
-                if (directed) {
-                    newEdge = buildEdge(id, source, target, true);
-                    if (getDirectedGraph().addEdge(newEdge)) {//The edge will be created if it does not already exist.
-                        return newEdge;
-                    } else {
-                        return null;
-                    }
-                } else {
-                    newEdge = buildEdge(id, source, target, false);
-                    if (getUndirectedGraph().addEdge(newEdge)) {//The edge will be created if it does not already exist.
-                        return newEdge;
-                    } else {
-                        return null;
-                    }
-                }
-            } else {
-                return null;
             }
         } else {
             return null;
@@ -421,7 +413,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     private Node buildNode(String label, String id) {
-        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode(id);
+        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode();
         getGraph().setId(newNode, id);
         newNode.getNodeData().setLabel(label);
         return newNode;
