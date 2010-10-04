@@ -306,7 +306,8 @@ public final class DynamicModelImpl implements DynamicModel {
             } else if (filterModel.getQueries().length == 1) {
                 //Look if a dynamic query alone exists
                 Query query = filterModel.getQueries()[0];
-                if (query.getChildren().length == 0 && query.getQueries(DynamicRangeFilter.class).length == 1) {
+                Query[] dynamicQueries = query.getQueries(DynamicRangeFilter.class);
+                if (dynamicQueries.length > 0) {
                     dynamicQuery = query;
                 }
             }
