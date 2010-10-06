@@ -118,6 +118,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private static final String ATTRIBUTES = "attributes";
     private static final String ATTRIBUTES_CLASS = "class";
     private static final String ATTRIBUTES_MODE = "mode";
+    private static final String ATTVALUES = "attvalues";
     private static final String ATTVALUE = "attvalue";
     private static final String ATTVALUE_FOR = "for";
     private static final String ATTVALUE_VALUE = "value";
@@ -373,7 +374,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             if (exportAttributes && node.getNodeData().getAttributes() != null) {
                 AttributeRow attributeRow = (AttributeRow) node.getNodeData().getAttributes();
-                writeAttValue(xmlWriter, attributeRow, visibleInterval);
+                writeAttValues(xmlWriter, attributeRow, visibleInterval);
             }
 
             if (exportSize) {
@@ -398,7 +399,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         xmlWriter.writeEndElement();
     }
 
-    private void writeAttValue(XMLStreamWriter xmlWriter, AttributeRow row, TimeInterval visibleInterval) throws Exception {
+    private void writeAttValues(XMLStreamWriter xmlWriter, AttributeRow row, TimeInterval visibleInterval) throws Exception {
+        xmlWriter.writeStartElement(ATTVALUES);
         for (AttributeValue val : row.getValues()) {
             AttributeColumn col = val.getColumn();
             if (!col.getOrigin().equals(AttributeOrigin.PROPERTY)
@@ -448,6 +450,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 }
             }
         }
+        xmlWriter.writeEndElement();
     }
 
     private void writeNodePosition(XMLStreamWriter xmlWriter, Node node) throws Exception {
@@ -572,7 +575,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             if (exportAttributes && edge.getEdgeData().getAttributes() != null) {
                 AttributeRow attributeRow = (AttributeRow) edge.getEdgeData().getAttributes();
-                writeAttValue(xmlWriter, attributeRow, visibleInterval);
+                writeAttValues(xmlWriter, attributeRow, visibleInterval);
             }
 
             xmlWriter.writeEndElement();
