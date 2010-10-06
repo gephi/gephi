@@ -161,7 +161,7 @@ public class Dhns implements GraphModel {
         }
         System.err.println("WARNING: readLock() on the EDT - " + r.getStackTrace()[i].toString());
         }*/
-        String t = Thread.currentThread().toString();
+        //String t = Thread.currentThread().toString();
         //Logger.getLogger("").log(Level.WARNING, "{0} read lock", Thread.currentThread());
         readWriteLock.readLock().lock();
     }

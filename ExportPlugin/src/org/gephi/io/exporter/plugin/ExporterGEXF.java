@@ -216,11 +216,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.close();
 
         } catch (Exception e) {
+            graph.readUnlockAll();
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
             }
             throw new RuntimeException(e);
         }
+
+        graph.readUnlock();
 
         Progress.finish(progress);
         return !cancel;

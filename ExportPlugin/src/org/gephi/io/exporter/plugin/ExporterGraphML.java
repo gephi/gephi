@@ -107,6 +107,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         try {
             exportData(createDocument(), graph, attributeModel);
         } catch (Exception e) {
+            graph.readUnlockAll();
             throw new RuntimeException(e);
         }
 
