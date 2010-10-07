@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.visualization.opengl.text;
 
+import org.gephi.visualization.impl.TextDataImpl;
 import javax.swing.ImageIcon;
 import org.gephi.graph.api.Renderable;
 import org.gephi.visualization.VizController;
@@ -50,12 +51,12 @@ public class ObjectColorMode implements ColorMode {
             if (vizConfig.isLightenNonSelected()) {
                 if (!model.isSelected() && !model.isHighlight()) {
                     float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
-                    renderer.setColor(text.r, text.g, text.b, lightColorFactor);
+                    renderer.setColor(text.getR(), text.getG(), text.getB(), lightColorFactor);
                 } else {
-                    renderer.setColor(text.r, text.g, text.b, 1);
+                    renderer.setColor(text.getR(), text.getG(), text.getB(), 1);
                 }
             } else {
-                renderer.setColor(text.r, text.g, text.b, text.a);
+                renderer.setColor(text.getR(), text.getG(), text.getB(), text.getAlpha());
             }
         } else {
             Renderable renderable = model.getObj();

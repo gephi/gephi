@@ -28,21 +28,18 @@ import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.TextData;
 import org.gephi.graph.spi.TextDataFactory;
+import org.gephi.visualization.impl.TextDataImpl;
+import org.gephi.visualization.opengl.text.TextModel;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = TextDataFactory.class)
-public class TextDataBuilderImpl implements TextDataFactory {
+public class TextDataBuilderImpl {
 
     private Estimator defaultEstimator;
     private Estimator numberEstimator;
-
-    public TextData newTextData() {
-        return new TextDataImpl();
-    }
 
     public void buildNodeText(NodeData nodeData, TextDataImpl textDataImpl, TextModel model, TimeInterval timeInterval) {
         if (model.getNodeTextColumns() != null) {
@@ -67,7 +64,7 @@ public class TextDataBuilderImpl implements TextDataFactory {
                 }
                 str += val != null ? val : "";
             }
-            textDataImpl.setLine(str);
+            textDataImpl.setText(str);
         }
     }
 
@@ -94,7 +91,7 @@ public class TextDataBuilderImpl implements TextDataFactory {
                 }
                 str += val != null ? val : "";
             }
-            textDataImpl.setLine(str);
+            textDataImpl.setText(str);
         }
     }
 

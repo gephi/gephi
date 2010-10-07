@@ -25,7 +25,7 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TextData;
-import org.gephi.visualization.opengl.text.TextDataImpl;
+import org.gephi.visualization.impl.TextDataImpl;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;

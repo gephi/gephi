@@ -18,10 +18,9 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.gephi.visualization.opengl.text;
+package org.gephi.visualization.impl;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import org.gephi.graph.api.TextData;
 
@@ -49,7 +48,7 @@ public class TextDataImpl implements TextData {
         this.wrappedLines = lines;
     }
 
-    public void setLine(String line) {
+    public void setText(String line) {
         this.line = new TextLine(line, this.line.bounds);
     }
 
@@ -98,6 +97,10 @@ public class TextDataImpl implements TextData {
 
     public String getText() {
         return line.text;
+    }
+
+    public float getSizeFactor() {
+        return sizeFactor;
     }
 
     public float getSize() {
