@@ -298,46 +298,48 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeAttributes(XMLStreamWriter xmlWriter, AttributeColumn[] cols, String mode, String attClass) throws Exception {
-        xmlWriter.writeStartElement(ATTRIBUTES);
-        xmlWriter.writeAttribute(ATTRIBUTES_CLASS, attClass);
-        xmlWriter.writeAttribute(ATTRIBUTES_MODE, mode);
+        if(exportAttributes) {
+            xmlWriter.writeStartElement(ATTRIBUTES);
+            xmlWriter.writeAttribute(ATTRIBUTES_CLASS, attClass);
+            xmlWriter.writeAttribute(ATTRIBUTES_MODE, mode);
 
-        for (AttributeColumn col : cols) {
-            if (!col.getOrigin().equals(AttributeOrigin.PROPERTY)
-                    || (exportDynamic && col.getOrigin().equals(AttributeOrigin.PROPERTY) && col.getIndex() == PropertiesColumn.EDGE_WEIGHT.getIndex())) {
-                xmlWriter.writeStartElement(ATTRIBUTE);
-                xmlWriter.writeAttribute(ATTRIBUTE_ID, col.getId());
-                xmlWriter.writeAttribute(ATTRIBUTE_TITLE, col.getTitle());
-                if (col.getType().equals(AttributeType.INT)) {
-                    xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "integer");
-                } else if (col.getType().isListType()) {
-                    if (col.getType().equals(AttributeType.LIST_INTEGER)) {
-                        xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "listint");
-                    } else if (col.getType().equals(AttributeType.LIST_CHARACTER)) {
-                        xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "listchar");
-                    } else {
-                        xmlWriter.writeAttribute(ATTRIBUTE_TYPE, col.getType().getTypeString().toLowerCase().replace("_", ""));
-                    }
-                } else if (col.getType().isDynamicType()) {
-                    AttributeType staticType = TypeConvertor.getStaticType(col.getType());
-                    if (staticType.equals(AttributeType.INT)) {
+            for (AttributeColumn col : cols) {
+                if (!col.getOrigin().equals(AttributeOrigin.PROPERTY)
+                        || (exportDynamic && col.getOrigin().equals(AttributeOrigin.PROPERTY) && col.getIndex() == PropertiesColumn.EDGE_WEIGHT.getIndex())) {
+                    xmlWriter.writeStartElement(ATTRIBUTE);
+                    xmlWriter.writeAttribute(ATTRIBUTE_ID, col.getId());
+                    xmlWriter.writeAttribute(ATTRIBUTE_TITLE, col.getTitle());
+                    if (col.getType().equals(AttributeType.INT)) {
                         xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "integer");
+                    } else if (col.getType().isListType()) {
+                        if (col.getType().equals(AttributeType.LIST_INTEGER)) {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "listint");
+                        } else if (col.getType().equals(AttributeType.LIST_CHARACTER)) {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "listchar");
+                        } else {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, col.getType().getTypeString().toLowerCase().replace("_", ""));
+                        }
+                    } else if (col.getType().isDynamicType()) {
+                        AttributeType staticType = TypeConvertor.getStaticType(col.getType());
+                        if (staticType.equals(AttributeType.INT)) {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "integer");
+                        } else {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, staticType.getTypeString().toLowerCase());
+                        }
                     } else {
-                        xmlWriter.writeAttribute(ATTRIBUTE_TYPE, staticType.getTypeString().toLowerCase());
+                        xmlWriter.writeAttribute(ATTRIBUTE_TYPE, col.getType().getTypeString().toLowerCase());
                     }
-                } else {
-                    xmlWriter.writeAttribute(ATTRIBUTE_TYPE, col.getType().getTypeString().toLowerCase());
-                }
-                if (col.getDefaultValue() != null) {
-                    xmlWriter.writeStartElement(ATTRIBUTE_DEFAULT);
-                    xmlWriter.writeCharacters(col.getDefaultValue().toString());
+                    if (col.getDefaultValue() != null) {
+                        xmlWriter.writeStartElement(ATTRIBUTE_DEFAULT);
+                        xmlWriter.writeCharacters(col.getDefaultValue().toString());
+                        xmlWriter.writeEndElement();
+                    }
                     xmlWriter.writeEndElement();
                 }
-                xmlWriter.writeEndElement();
             }
-        }
 
-        xmlWriter.writeEndElement();
+            xmlWriter.writeEndElement();
+        }
     }
 
     private void writeNodes(XMLStreamWriter xmlWriter, HierarchicalGraph graph) throws Exception {
