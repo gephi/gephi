@@ -315,7 +315,7 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
                 Node n0 = nodePartition.getParts()[0].getObjects()[0];
                 GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
                 HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
-                if (graph.getParent(n0) == null) {
+                if (graph.contains(n0) && graph.getParent(n0) == null) {
                     return true;
                 }
             }
@@ -330,7 +330,7 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
                 Node n0 = nodePartition.getParts()[0].getObjects()[0];
                 GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
                 HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
-                if (graph.getParent(n0) != null) {
+                if (graph.contains(n0) && graph.getParent(n0) != null) {
                     return true;
                 }
             }
