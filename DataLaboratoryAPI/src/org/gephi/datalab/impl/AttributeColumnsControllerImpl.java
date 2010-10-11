@@ -47,6 +47,7 @@ import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
+import org.gephi.dynamic.api.DynamicController;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;

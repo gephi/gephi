@@ -47,6 +47,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphElementsController.class)
 public class GraphElementsControllerImpl implements GraphElementsController {
+    private static final float DEFAULT_NODE_SIZE=10f;
+    private static final float DEFAULT_EDGE_WEIGHT=1f;
 
     public Node createNode(String label) {
         Node newNode = buildNode(label);
@@ -127,7 +129,9 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     public void createEdges(Node source, Node[] allNodes, boolean directed) {
         if (isNodeInGraph(source) && areNodesInGraph(allNodes)) {
             for (Node n : allNodes) {
-                createEdge(source, n, directed);
+                if (n != source) {
+                    createEdge(source, n, directed);
+                }
             }
         }
     }
@@ -408,24 +412,24 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     private Node buildNode(String label) {
         Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode();
+        newNode.getNodeData().setSize(DEFAULT_NODE_SIZE);
         newNode.getNodeData().setLabel(label);
         return newNode;
     }
 
     private Node buildNode(String label, String id) {
-        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode();
+        Node newNode = buildNode(label);
         getGraph().setId(newNode, id);
-        newNode.getNodeData().setLabel(label);
         return newNode;
     }
 
     private Edge buildEdge(Node source, Node target, boolean directed) {
-        Edge newEdge = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newEdge(source, target, 1.0f, directed);
+        Edge newEdge = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newEdge(source, target, DEFAULT_EDGE_WEIGHT, directed);
         return newEdge;
     }
 
     private Edge buildEdge(String id, Node source, Node target, boolean directed) {
-        Edge newEdge = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newEdge(id, source, target, 1.0f, directed);
+        Edge newEdge = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newEdge(id, source, target, DEFAULT_EDGE_WEIGHT, directed);
         return newEdge;
     }
 
