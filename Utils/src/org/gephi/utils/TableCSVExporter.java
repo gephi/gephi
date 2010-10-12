@@ -66,9 +66,9 @@ public class TableCSVExporter {
         //Write rows:
         Object value;
         String text;
-        for (int row = 0; row < model.getRowCount(); row++) {
+        for (int row = 0; row < table.getRowCount(); row++) {
             for (int column = 0; column < columnsToExport.length; column++) {
-                value = model.getValueAt(row, columnsToExport[column]);
+                value = model.getValueAt(table.convertRowIndexToModel(row), columnsToExport[column]);
                 if (value != null) {
                     text = value.toString();
                 } else {

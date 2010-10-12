@@ -60,7 +60,7 @@ public interface AttributeColumnsController {
      * @param table Table to add the column
      * @param title Title for the new column, can't be repeated in the table, null or empty string
      * @param type Type for the new column
-     * @return The created column or null if title is not correct
+     * @return The created column or null if the column could not be created
      */
     AttributeColumn addAttributeColumn(AttributeTable table, String title, AttributeType type);
 
@@ -75,7 +75,7 @@ public interface AttributeColumnsController {
      * @param column Column to duplicate
      * @param title Title for the new column
      * @param type AttributeType for the new column
-     * @return The created column or null if title is not correct
+     * @return The created column or null if the column could not be created
      */
     AttributeColumn duplicateColumn(AttributeTable table, AttributeColumn column, String title, AttributeType type);
 
