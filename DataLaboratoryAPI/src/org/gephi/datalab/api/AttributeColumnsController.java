@@ -54,7 +54,9 @@ public interface AttributeColumnsController {
     /**
      * <p>Adds a new column to the specified table with the given title and type of column.</p>
      * <p>The title for the new column can't be repeated in the table, null or an empty string.</p>.
-     * <p>The id of the column will be set to the title.</p>
+     * <p>The id of the column will be set to the same as the title,
+     * but if the first TimeInterval column of the table is created
+     * it will be given the default dynamic time interval id to be able to use dynamic filters.</p>
      * <p>The <code>AttributeOrigin</code> of the column will be set to <code>DATA</code>.</p>
      * <p>Default column value will be set to null.</p>
      * @param table Table to add the column

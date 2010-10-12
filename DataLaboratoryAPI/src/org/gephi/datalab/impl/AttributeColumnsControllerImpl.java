@@ -47,6 +47,7 @@ import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -90,6 +91,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
         if (table.hasColumn(title)) {
             return null;
+        }
+        if (type == AttributeType.TIME_INTERVAL && table.getColumn(DynamicModel.TIMEINTERVAL_COLUMN) == null) {
+            return table.addColumn(DynamicModel.TIMEINTERVAL_COLUMN, title, type, AttributeOrigin.DATA, null);
         }
         return table.addColumn(title, title, type, AttributeOrigin.DATA, null);
     }
