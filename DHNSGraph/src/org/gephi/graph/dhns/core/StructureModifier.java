@@ -304,6 +304,7 @@ public class StructureModifier {
                     for (int i = 0; i < newEdges.length; i++) {
                         AbstractEdge e = newEdges[i];
                         if (e != null) {
+                            dhns.getGraphStructure().addToDictionnary(e);
                             dhns.getEventManager().fireEvent(new EdgeEvent(EventType.ADD_EDGES, e, view));
                         }
                     }
