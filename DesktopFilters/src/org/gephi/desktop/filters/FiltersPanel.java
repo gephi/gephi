@@ -152,12 +152,12 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
         });
         /*autoRefreshButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                if (filterModel.isAutoRefresh() != autoRefreshButton.isSelected()) {
-                    FilterController controller = Lookup.getDefault().lookup(FilterController.class);
-                    controller.setAutoRefresh(autoRefreshButton.isSelected());
-                }
-            }
+        public void actionPerformed(ActionEvent e) {
+        if (filterModel.isAutoRefresh() != autoRefreshButton.isSelected()) {
+        FilterController controller = Lookup.getDefault().lookup(FilterController.class);
+        controller.setAutoRefresh(autoRefreshButton.isSelected());
+        }
+        }
         });*/
         updateEnabled(false);
     }
@@ -202,9 +202,9 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 selectButton.setEnabled(enabled);
                 filterButton.setEnabled(enabled);
                 /*autoRefreshButton.setEnabled(enabled);*/
-                exportColumnButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
-                exportWorkspaceButton.setEnabled(enabled && uiModel.getSelectedQuery() != null);
-                exportLabelVisible.setEnabled(enabled && uiModel.getSelectedQuery() != null);
+                exportColumnButton.setEnabled(enabled && uiModel.getSelectedQuery() != null && filterModel.getCurrentQuery() != null);
+                exportWorkspaceButton.setEnabled(enabled && uiModel.getSelectedQuery() != null && filterModel.getCurrentQuery() != null);
+                exportLabelVisible.setEnabled(enabled && uiModel.getSelectedQuery() != null && filterModel.getCurrentQuery() != null);
             }
         });
     }
