@@ -156,7 +156,9 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
 
     @Override
     public void resetOctant() {
-        octants = null;
+        if (this.octants != null) {
+            this.octants[0] = null;
+        }
     }
 
     @Override
