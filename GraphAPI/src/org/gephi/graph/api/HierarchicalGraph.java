@@ -395,6 +395,18 @@ public interface HierarchicalGraph extends Graph {
     public EdgeIterable getMetaEdges(Node nodeGroup);
 
     /**
+     * Returns edges and meta edges incident to <code>node</code>.
+     * <p>
+     * For <b>directed</b> graph, note that self-loops are repeated only once. <b>Undirected</b>
+     * graphs repeats edges once by default.
+     * @param node the node whose incident edges and meta edges are to be returned
+     * @return an edge iterable of edges and meta edges incident to <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code>
+     * or not legal in the graph.
+     */
+    public EdgeIterable getEdgesAndMetaEdges(Node node);
+
+    /**
      * Finds and returns a <b>directed</b> or <b>undirected</b> meta edge that connects <code>node1</code> and
      * <code>node2</code>. Returns <code>null</code> if no such edge is found.
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
@@ -409,7 +421,7 @@ public interface HierarchicalGraph extends Graph {
     public MetaEdge getMetaEdge(Node node1, Node node2);
 
     /**
-     * Returns the number of <code>node</code>'s incident meta edges.
+     * Returns the degree for node's meta edges.
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
      * statement.
      * @param node the node whose meta degree is queried
@@ -418,6 +430,18 @@ public interface HierarchicalGraph extends Graph {
      * the graph.
      */
     public int getMetaDegree(Node node);
+
+    /**
+     * Returns the sum of the degree and the meta-edge degree. Equavalent to
+     * <code>getDegree(Node) + getMetaDegree(Node)</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
+     * @param node the node whose total degree is queried
+     * @return the number of meta edges connected to <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> of not legal in
+     * the graph.
+     */
+    public int getTotalDegree(Node node);
 
     /**
      * Clears all meta edges for <code>node</code>.

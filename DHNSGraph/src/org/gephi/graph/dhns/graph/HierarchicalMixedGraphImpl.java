@@ -29,6 +29,7 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphViewImpl;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.iterators.BiEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeAndMetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
@@ -226,18 +227,26 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
 
     public EdgeIterable getMetaEdges() {
         readLock();
-        return dhns.newEdgeIterable(new MetaEdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true));
+        return dhns.newEdgeIterable(new MetaEdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false));
     }
 
     public EdgeIterable getEdgesAndMetaEdges() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true, enabledNodePredicate, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeAndMetaEdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, enabledNodePredicate, Tautology.instance));
     }
 
     public EdgeIterable getMetaEdges(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
-        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true));
+        return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
+    }
+
+    public EdgeIterable getEdgesAndMetaEdges(Node node) {
+        readLock();
+        AbstractNode absNode = checkNode(node);
+        EdgeNodeIterator std = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, enabledNodePredicate, Tautology.instance);
+        MetaEdgeNodeIterator meta = new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false);
+        return dhns.newEdgeIterable(new BiEdgeIterator(std, meta));
     }
 
     public MetaEdge getMetaEdge(Node node1, Node node2) {
@@ -256,18 +265,17 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
     }
 
     public int getMetaDegree(Node node) {
-        readLock();
         AbstractNode absNode = checkNode(node);
-        int count = 0;
-        MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
-        for (; itr.hasNext();) {
-            AbstractEdge edge = itr.next();
-            if (edge.isSelfLoop()) {
-                count++;
-            }
-            count++;
-        }
-        readUnlock();
+        int count = absNode.getMetaEdgesInTree().getCount() + absNode.getMetaEdgesOutTree().getCount();
+        return count;
+    }
+
+    public int getTotalDegree(Node node) {
+        AbstractNode absNode = checkNode(node);
+        int count = absNode.getEdgesInTree().getCount()
+                + absNode.getEdgesOutTree().getCount()
+                + absNode.getMetaEdgesInTree().getCount()
+                + absNode.getMetaEdgesOutTree().getCount();
         return count;
     }
 

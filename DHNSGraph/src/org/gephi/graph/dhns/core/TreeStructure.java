@@ -41,7 +41,7 @@ public class TreeStructure {
     }
 
     private void initRoot() {
-        root = new AbstractNode(-1, viewId, 0, 0, 0, null);
+        root = new AbstractNode(0, viewId, 0, 0, 0, null);
         tree.add(root);
     }
 

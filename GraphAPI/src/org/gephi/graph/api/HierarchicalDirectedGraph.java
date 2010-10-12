@@ -38,6 +38,15 @@ public interface HierarchicalDirectedGraph extends HierarchicalGraph, DirectedGr
     public EdgeIterable getMetaInEdges(Node node);
 
     /**
+     * Returns incoming edges and meta edges incident to <code>node</code>.
+     * @param node the node whose incoming edges and meta edges are to be returned
+     * @return an edge iterable of <code>node</code>'s incoming edges and meta edges
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in
+     * the graph
+     */
+    public EdgeIterable getInEdgesAndMetaInEdges(Node node);
+
+    /**
      * Returns outgoing meta edges incident to <code>node</code>.
      * @param node the node whose outgoing meta edges are to be returned
      * @return an edge iterable of <code>node</code>'s outgoing meta edges
@@ -45,6 +54,15 @@ public interface HierarchicalDirectedGraph extends HierarchicalGraph, DirectedGr
      * the graph
      */
     public EdgeIterable getMetaOutEdges(Node node);
+
+    /**
+     * Returns outgoing edges and meta edges incident to <code>node</code>.
+     * @param node the node whose outgoing edges and meta edges are to be returned
+     * @return an edge iterable of <code>node</code>'s outgoing edges and meta edges
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in
+     * the graph
+     */
+    public EdgeIterable getOutEdgesAndMetaOutEdges(Node node);
 
     /**
      * Returns the number of <code>node</code>'s incoming meta edges.
@@ -56,6 +74,30 @@ public interface HierarchicalDirectedGraph extends HierarchicalGraph, DirectedGr
      * the graph.
      */
     public int getMetaInDegree(Node node);
+
+    /**
+     * Returns the sum of the in-degree for edges and meta-edge. Equivalent to
+     * <code>getInDegree(Node) + getMetaInDegree(Node)</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
+     * @param node the node whose total in-degree is queried
+     * @return the number of edges and meta edges incoming to <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in
+     * the graph.
+     */
+    public int getTotalInDegree(Node node);
+
+    /**
+     * Returns the sum of the out-degree for edges and meta-edge. Equivalent to
+     * <code>getOutDegree(Node) + getMetaOutDegree(Node)</code>.
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
+     * @param node the node whose total out-degree is queried
+     * @return the number of edges and meta edges outgoing from <code>node</code>
+     * @throws IllegalArgumentException if <code>node</code> is <code>null</code> or not legal in
+     * the graph.
+     */
+    public int getTotalOutDegree(Node node);
 
     /**
      * Returns the number of <code>node</code>'s outgoing meta edges.

@@ -217,7 +217,7 @@ public class DhnsTestDirectedGraph {
         for (int i = 0; i < 10; i++) {
             AbstractNode n = treeStructure.getNodeAt(i);
             assertEquals("AbstractNode pre", i, n.getPre());
-            assertEquals("AbstractNode id", i - 1, n.getId());
+            assertEquals("AbstractNode id", i, n.getId());
             assertEquals("AbstractNode enabled", i > 0, n.isEnabled());
             assertEquals("AbstractNode avl node", i, n.avlNode.getIndex());
             if (n.avlNode.next() != null) {
@@ -228,7 +228,7 @@ public class DhnsTestDirectedGraph {
             }
         }
 
-        int i = 0;
+        int i = 1;
         for (Node node : graph.getNodes()) {
             assertEquals("node iterator", i, node.getId());
             i++;
@@ -488,7 +488,7 @@ public class DhnsTestDirectedGraph {
         for (Edge e : graphGlobal.getEdges()) {
             Node s = e.getSource();
             Node t = e.getTarget();
-            Edge ed = edgeMap.get(s.getId() + "-" + t.getId());
+            Edge ed = edgeMap.get((s.getId()-1) + "-" + (t.getId()-1));
             assertSame("edge iterator", e, ed);
             System.out.print("#" + s.getId() + "-" + t.getId() + " ");
             actual[i++] = e;
@@ -510,7 +510,7 @@ public class DhnsTestDirectedGraph {
         for (Edge e : graphGlobal.getEdges()) {
             Node s = e.getSource();
             Node t = e.getTarget();
-            Edge ed = edgeMap.get(s.getId() + "-" + t.getId());
+            Edge ed = edgeMap.get((s.getId()-1) + "-" + (t.getId()-1));
             assertSame("edge iterator", e, ed);
             System.out.print("#" + s.getId() + "-" + t.getId() + " ");
             actual[i++] = e;
