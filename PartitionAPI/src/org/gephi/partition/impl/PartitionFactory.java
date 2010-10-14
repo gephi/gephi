@@ -387,8 +387,12 @@ public class PartitionFactory {
 
         @Override
         public boolean equals(Object obj) {
-            if(obj!=null && obj instanceof PartImpl) {
-                return ((PartImpl)obj).value.equals(value);
+            if (obj != null && obj instanceof PartImpl) {
+                if (value == null && ((PartImpl) obj).value == null) {
+                    return true;
+                } else if (((PartImpl) obj).value != null && value != null) {
+                    return ((PartImpl) obj).value.equals(value);
+                }
             }
             return false;
         }
