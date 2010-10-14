@@ -356,7 +356,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             String id = node.getNodeData().getId();
             xmlWriter.writeAttribute(NODE_ID, id);
-            if (node.getNodeData().getLabel() != null && !node.getNodeData().getLabel().isEmpty() && !node.getNodeData().getLabel().equals(id)) {
+            if (node.getNodeData().getLabel() != null && !node.getNodeData().getLabel().isEmpty()) {
                 xmlWriter.writeAttribute(NODE_LABEL, node.getNodeData().getLabel());
             }
 
