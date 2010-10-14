@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.component;
 
 import java.awt.Color;
@@ -30,6 +30,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
@@ -104,25 +105,34 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                 vizModel.setEdgeSelectionColor(selectionColorCheckbox.isSelected());
             }
         });
-        edgeInSelectionColorChooser.addActionListener(new ActionListener() {
+        edgeInSelectionColorChooser.addPropertyChangeListener(new PropertyChangeListener() {
 
-            public void actionPerformed(ActionEvent ae) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                vizModel.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor().getComponents(null));
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor().getComponents(null));
+                }
             }
         });
-        edgeBothSelectionColorChooser.addActionListener(new ActionListener() {
+        edgeBothSelectionColorChooser.addPropertyChangeListener(new PropertyChangeListener() {
 
-            public void actionPerformed(ActionEvent ae) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                vizModel.setEdgeBothSelectionColor(edgeBothSelectionColorChooser.getColor().getComponents(null));
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.setEdgeInSelectionColor(edgeBothSelectionColorChooser.getColor().getComponents(null));
+                }
             }
         });
-        edgeOutSelectionColorChooser.addActionListener(new ActionListener() {
+        edgeOutSelectionColorChooser.addPropertyChangeListener(new PropertyChangeListener() {
 
-            public void actionPerformed(ActionEvent ae) {
-                VizModel vizModel = VizController.getInstance().getVizModel();
-                vizModel.setEdgeOutSelectionColor(edgeOutSelectionColorChooser.getColor().getComponents(null));
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
+                    VizModel vizModel = VizController.getInstance().getVizModel();
+                    vizModel.setEdgeInSelectionColor(edgeOutSelectionColorChooser.getColor().getComponents(null));
+                }
             }
         });
         scaleSlider.addChangeListener(new ChangeListener() {
