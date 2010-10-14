@@ -648,7 +648,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
                 report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_nodeattribute", title, attributeType.getTypeString()));
             } else if ("edge".equalsIgnoreCase(forStr) || "all".equalsIgnoreCase(forStr)) {
                 if (container.getAttributeModel().getEdgeTable().hasColumn(id) || container.getAttributeModel().getEdgeTable().hasColumn(title)) {
-                    report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphMLF_error_attributecolumn_exist", id));
+                    report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributecolumn_exist", id));
                     return;
                 }
                 container.getAttributeModel().getEdgeTable().addColumn(id, title, attributeType, AttributeOrigin.DATA, defaultValue);
