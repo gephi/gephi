@@ -557,7 +557,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             }
 
             String label = edge.getEdgeData().getLabel();
-            if (label != null && !label.isEmpty() && !label.equals(edge.getEdgeData().getId())) {
+            if (label != null && !label.isEmpty()) {
                 xmlWriter.writeAttribute(EDGE_LABEL, label);
             }
 
@@ -573,7 +573,9 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 }
             }
 
-            writeEdgeColor(xmlWriter, edge);
+            if (exportColors) {
+                writeEdgeColor(xmlWriter, edge);
+            }
 
             if (exportAttributes && edge.getEdgeData().getAttributes() != null) {
                 AttributeRow attributeRow = (AttributeRow) edge.getEdgeData().getAttributes();
