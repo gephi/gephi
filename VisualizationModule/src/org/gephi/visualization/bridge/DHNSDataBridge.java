@@ -70,6 +70,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     protected int nodeVersion = -1;
     protected int edgeVersion = -1;
     protected int graphView = 0;
+    protected GraphModel gm;
     //Attributes
     private int cacheMarker = 0;
 
@@ -91,6 +92,10 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             engine.worldUpdated(cacheMarker);
             return;
         }
+        if (gm != null && gm != graphModel) {
+            reset();
+        }
+        gm = graphModel;
         HierarchicalGraph graph;
         if (graphModel.isDirected()) {
             undirected = false;

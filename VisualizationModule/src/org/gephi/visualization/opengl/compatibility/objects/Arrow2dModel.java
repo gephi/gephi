@@ -218,7 +218,7 @@ public class Arrow2dModel extends ModelImpl<NodeData> {
     @Override
     public int[] octreePosition(float centerX, float centerY, float centerZ,
             float size) {
-        return null;
+        return new int[] {};
     }
 
     @Override

@@ -230,7 +230,7 @@ public class SelfLoop2dModel extends Edge2dModel {
     @Override
     public int[] octreePosition(float centerX, float centerY, float centerZ,
             float size) {
-        return null;
+        return new int[] {};
     }
 
     @Override
