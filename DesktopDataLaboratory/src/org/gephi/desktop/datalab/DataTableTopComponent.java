@@ -126,15 +126,15 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private static final String DATA_LABORATORY_EDGES_NODES_LABELS = "DataLaboratory_showEdgesNodesLabels";
     private static final Color invalidFilterColor = new Color(254, 150, 150);
     private final boolean dynamicFiltering;
+    private boolean visibleOnly = false;
+    private boolean useSparklines = false;
+    private boolean timeIntervalGraphics = false;
+    private boolean showEdgesNodesLabels = false;
     //Data
     private GraphModel graphModel;
     private DataTablesModel dataTablesModel;
     private AvailableColumnsModel nodeAvailableColumnsModel;
     private AvailableColumnsModel edgeAvailableColumnsModel;
-    private boolean visibleOnly = false;
-    private boolean useSparklines = false;
-    private boolean timeIntervalGraphics = false;
-    private boolean showEdgesNodesLabels = false;
     //Table
     private NodeDataTable nodeTable;
     private EdgeDataTable edgeTable;
@@ -142,6 +142,10 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private ArrayList<JComponent> generalActionsButtons = new ArrayList<JComponent>();
     //States
     private ClassDisplayed classDisplayed = ClassDisplayed.NODE;//Display nodes by default at first.
+    private ArrayList previousNodeFilterColumns = new ArrayList();
+    private int previousNodeColumnsFilterIndex = 0;
+    private ArrayList previousEdgeFilterColumns = new ArrayList();
+    private int previousEdgeColumnsFilterIndex = 0;
     //Executor
     private ExecutorService taskExecutor;
     private RefreshOnceHelperThread refreshOnceHelperThread;
@@ -300,6 +304,12 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                 }
             });
         }
+        columnComboBox.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                refreshFilter();
+            }
+        });
     }
 
     private void refreshAll() {
@@ -373,18 +383,21 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
     /****************Table related methods:*****************/
     private void refreshFilter() {
+        int index = columnComboBox.getSelectedIndex();
         if (classDisplayed.equals(ClassDisplayed.NODE)) {
-            if (nodeTable.setFilter(filterTextField.getText(), columnComboBox.getSelectedIndex())) {
+            if (nodeTable.setFilter(filterTextField.getText(), index)) {
                 filterTextField.setBackground(Color.WHITE);
             } else {
                 filterTextField.setBackground(invalidFilterColor);
             }
+            previousNodeColumnsFilterIndex = index;
         } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
-            if (edgeTable.setPattern(filterTextField.getText(), columnComboBox.getSelectedIndex())) {
+            if (edgeTable.setPattern(filterTextField.getText(), index)) {
                 filterTextField.setBackground(Color.WHITE);
             } else {
                 filterTextField.setBackground(invalidFilterColor);
             }
+            previousEdgeColumnsFilterIndex = index;
         }
     }
 
@@ -472,23 +485,39 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
+                ArrayList columns = new ArrayList();
                 if (classDisplayed.equals(ClassDisplayed.NODE)) {
                     ETableColumnModel columnModel = (ETableColumnModel) nodeTable.getOutlineTable().getColumnModel();
                     DefaultComboBoxModel model = new DefaultComboBoxModel();
                     for (int i = 0; i < columnModel.getColumnCount(); i++) {
                         if (!columnModel.isColumnHidden(columnModel.getColumn(i))) {
                             model.addElement(columnModel.getColumn(i).getHeaderValue());
+                            columns.add(columnModel.getColumn(i).getHeaderValue());
                         }
                     }
+
                     columnComboBox.setModel(model);
+                    if (columns.equals(previousNodeFilterColumns) && previousNodeColumnsFilterIndex < columnComboBox.getItemCount()) {//Preserve user selected column when the columns list does not change
+                        columnComboBox.setSelectedIndex(previousNodeColumnsFilterIndex);
+                    } else {
+                        previousNodeColumnsFilterIndex = 0;
+                    }
+                    previousNodeFilterColumns = columns;
                 } else if (classDisplayed.equals(ClassDisplayed.EDGE)) {
                     DefaultComboBoxModel model = new DefaultComboBoxModel();
                     for (int i = 0; i < edgeTable.getTable().getColumnCount(); i++) {
                         if (edgeTable.getTable().getColumnExt(i).isVisible()) {
                             model.addElement(edgeTable.getTable().getColumnExt(i).getTitle());
+                            columns.add(edgeTable.getTable().getColumnExt(i).getTitle());
                         }
                     }
                     columnComboBox.setModel(model);
+                    if (columns.equals(previousEdgeFilterColumns) && previousEdgeColumnsFilterIndex < columnComboBox.getItemCount()) {//Preserve user selected column when the columns list does not change
+                        columnComboBox.setSelectedIndex(previousEdgeColumnsFilterIndex);
+                    } else {
+                        previousEdgeColumnsFilterIndex = 0;
+                    }
+                    previousEdgeFilterColumns = columns;
                 }
             }
         });
@@ -500,6 +529,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         configurationButton.setEnabled(true);
         availableColumnsButton.setEnabled(true);
         filterTextField.setEnabled(true);
+        columnComboBox.setEnabled(true);
         labelFilter.setEnabled(true);
     }
 
@@ -509,6 +539,11 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         edgesButton.setEnabled(false);
         configurationButton.setEnabled(false);
         filterTextField.setEnabled(false);
+        filterTextField.setText("");
+        columnComboBox.setEnabled(false);
+        columnComboBox.removeAllItems();
+        previousNodeFilterColumns.clear();
+        previousEdgeFilterColumns.clear();
         availableColumnsButton.setEnabled(false);
         availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/light-bulb.png", true));
         labelFilter.setEnabled(false);
@@ -535,10 +570,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                classDisplayed = classDisplayed.NODE;
-                nodesButton.setSelected(true);
-                tableScrollPane.setViewportView(nodeTable.getOutlineTable());
-                refreshFilterColumns();
+                classDisplayed = ClassDisplayed.NODE;
                 refreshAll();
             }
         });
@@ -548,10 +580,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                classDisplayed = classDisplayed.EDGE;
-                edgesButton.setSelected(true);
-                tableScrollPane.setViewportView(edgeTable.getTable());
-                refreshFilterColumns();
+                classDisplayed = ClassDisplayed.EDGE;
                 refreshAll();
             }
         });

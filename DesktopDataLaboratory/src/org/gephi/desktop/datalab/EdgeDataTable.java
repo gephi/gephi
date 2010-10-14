@@ -238,7 +238,7 @@ public class EdgeDataTable {
 
     public boolean setPattern(String regularExpr, int column) {
         try {
-            if (regularExpr.startsWith("(?i)")) {   //CASE_INSENSITIVE
+            if (!regularExpr.startsWith("(?i)")) {   //CASE_INSENSITIVE
                 regularExpr = "(?i)" + regularExpr;
             }
             rowFilter = RowFilter.regexFilter(regularExpr, column);

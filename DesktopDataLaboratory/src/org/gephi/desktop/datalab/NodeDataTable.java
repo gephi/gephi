@@ -105,7 +105,7 @@ public class NodeDataTable {
     private TimeFormat currentTimeFormat;
 
     public NodeDataTable() {
-        attributeUtils=AttributeUtils.getDefault();
+        attributeUtils = AttributeUtils.getDefault();
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         outlineTable = new Outline();
@@ -114,7 +114,7 @@ public class NodeDataTable {
 
             public boolean accept(Object value) {
                 if (value == null) {
-                    return false;
+                    value = "";
                 }
                 if (value instanceof ImmutableTreeNode) {
                     String label = ((ImmutableTreeNode) value).getNode().getNodeData().getLabel();
@@ -440,7 +440,7 @@ public class NodeDataTable {
                 return value;
             } else if (attributeUtils.isNumberColumn(column)) {
                 return value;
-            }else {
+            } else {
                 //Show values as Strings like in Edit window and other parts of the program to be consistent
                 if (value != null) {
                     if (value instanceof DynamicType) {//When type is dynamic, take care to show proper time format
