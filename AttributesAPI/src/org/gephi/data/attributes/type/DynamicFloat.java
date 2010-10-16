@@ -136,7 +136,7 @@ public final class DynamicFloat extends DynamicType<Float> {
 				BigDecimal total = new BigDecimal(0);
 				for (int i = 0; i < values.size(); ++i)
 					total = total.add(BigDecimal.valueOf(values.get(i).doubleValue()));
-				return total.divide(BigDecimal.valueOf((long)values.size()), RoundingMode.HALF_UP).floatValue();
+				return total.divide(BigDecimal.valueOf((long)values.size()), 10, RoundingMode.HALF_EVEN).floatValue();
 			case MEDIAN:
 				if (values.size() % 2 == 1)
 					return values.get(values.size() / 2);

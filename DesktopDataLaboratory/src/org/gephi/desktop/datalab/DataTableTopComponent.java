@@ -384,6 +384,9 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     /****************Table related methods:*****************/
     private void refreshFilter() {
         int index = columnComboBox.getSelectedIndex();
+        if (index < 0) {
+            return;
+        }
         if (classDisplayed.equals(ClassDisplayed.NODE)) {
             if (nodeTable.setFilter(filterTextField.getText(), index)) {
                 filterTextField.setBackground(Color.WHITE);

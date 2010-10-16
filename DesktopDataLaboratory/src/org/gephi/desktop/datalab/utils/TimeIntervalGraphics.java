@@ -111,12 +111,13 @@ public class TimeIntervalGraphics {
         if (start > end) {
             throw new IllegalArgumentException("start should be less or equal than end");
         }
-        if (start < min) {
-            throw new IllegalArgumentException("start should be greater or equal than the minimum time set, "+start+"<"+min);
-        }
-        if (end > max) {
-            throw new IllegalArgumentException("end should be lesser or equal than the maximum time set, "+end+">"+max);
-        }
+//        if (start < min) {
+//            throw new IllegalArgumentException("start should be greater or equal than the minimum time set, " + start + "<" + min);
+//        }
+//        if (end > max) {
+//            throw new IllegalArgumentException("end should be lesser or equal than the maximum time set, " + end + ">" + max);
+//        }
+        /*** Previous code commented and values normalized to range because DynamicIndex min and max values are sometimes wrong***/
 
         if (fill == null) {
             fill = DEFAULT_FILL;
@@ -196,10 +197,10 @@ public class TimeIntervalGraphics {
     }
 
     private double normalizeToRange(double d) {
-        if (d == Double.NEGATIVE_INFINITY) {
+        if (d == Double.NEGATIVE_INFINITY || d < min) {
             return min;
         }
-        if (d == Double.POSITIVE_INFINITY) {
+        if (d == Double.POSITIVE_INFINITY || d > max) {
             return max;
         }
         return d;
