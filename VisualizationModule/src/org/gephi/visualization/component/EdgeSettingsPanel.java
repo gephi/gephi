@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 package org.gephi.visualization.component;
 
 import java.awt.Color;
@@ -30,7 +30,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import net.java.dev.colorchooser.ColorChooser;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.VizModel;
@@ -105,34 +104,25 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
                 vizModel.setEdgeSelectionColor(selectionColorCheckbox.isSelected());
             }
         });
-        edgeInSelectionColorChooser.addPropertyChangeListener(new PropertyChangeListener() {
+        edgeInSelectionColorChooser.addActionListener(new ActionListener() {
 
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
-                    VizModel vizModel = VizController.getInstance().getVizModel();
-                    vizModel.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor().getComponents(null));
-                }
+            public void actionPerformed(ActionEvent ae) {
+                VizModel vizModel = VizController.getInstance().getVizModel();
+                vizModel.setEdgeInSelectionColor(edgeInSelectionColorChooser.getColor().getComponents(null));
             }
         });
-        edgeBothSelectionColorChooser.addPropertyChangeListener(new PropertyChangeListener() {
+        edgeBothSelectionColorChooser.addActionListener(new ActionListener() {
 
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
-                    VizModel vizModel = VizController.getInstance().getVizModel();
-                    vizModel.setEdgeInSelectionColor(edgeBothSelectionColorChooser.getColor().getComponents(null));
-                }
+            public void actionPerformed(ActionEvent ae) {
+                VizModel vizModel = VizController.getInstance().getVizModel();
+                vizModel.setEdgeBothSelectionColor(edgeBothSelectionColorChooser.getColor().getComponents(null));
             }
         });
-        edgeOutSelectionColorChooser.addPropertyChangeListener(new PropertyChangeListener() {
+        edgeOutSelectionColorChooser.addActionListener(new ActionListener() {
 
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
-                    VizModel vizModel = VizController.getInstance().getVizModel();
-                    vizModel.setEdgeInSelectionColor(edgeOutSelectionColorChooser.getColor().getComponents(null));
-                }
+            public void actionPerformed(ActionEvent ae) {
+                VizModel vizModel = VizController.getInstance().getVizModel();
+                vizModel.setEdgeOutSelectionColor(edgeOutSelectionColorChooser.getColor().getComponents(null));
             }
         });
         scaleSlider.addChangeListener(new ChangeListener() {
@@ -211,7 +201,6 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         labelOut.setEnabled(enable && showEdgesCheckbox.isSelected() && selectionColorCheckbox.isSelected());
         labelBoth.setEnabled(enable && showEdgesCheckbox.isSelected() && selectionColorCheckbox.isSelected());
     }
-
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
