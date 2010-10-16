@@ -268,9 +268,15 @@ public class ImporterDL implements FileImporter, LongTask {
     }
 
     private void readEdgelistRow(String row, int pointer, double startTime, double endTime) {
-        StringTokenizer rowkonizer = new StringTokenizer(row, " ");
+        StringTokenizer rowkonizer = new StringTokenizer(row);
+        if (!rowkonizer.hasMoreTokens()) {
+            return;
+        }
         // should have three entries, int from, int to, weight
         String from = rowkonizer.nextToken();
+        if (!rowkonizer.hasMoreTokens()) {
+            return;
+        }
         String to = rowkonizer.nextToken();
         double weight = 1.0;
 

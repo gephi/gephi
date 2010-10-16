@@ -1,7 +1,7 @@
 /*
 Copyright 2008-2010 Gephi
 Authors : Mathieu Bastian <mathieu.bastian@gephi.org>,
-          Sebastien Heymann <sebastien.heymann@gephi.org>
+Sebastien Heymann <sebastien.heymann@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,7 +18,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.plugin.file;
 
 import java.io.BufferedReader;
@@ -119,7 +119,9 @@ public class ImporterGDF implements FileImporter, LongTask {
                             id = data;
                             node.setId(data);
                         } else if (count - 1 < nodeColumns.length) {
-                            setNodeData(node, nodeColumns[count - 1], data);
+                            if (nodeColumns[count - 1] != null) {
+                                setNodeData(node, nodeColumns[count - 1], data);
+                            }
                         } else {
                             report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat7", id), Issue.Level.SEVERE));
                         }
@@ -160,7 +162,9 @@ public class ImporterGDF implements FileImporter, LongTask {
                             edge.setTarget(nodeTarget);
                             id += "," + data;
                         } else if (count - 2 < edgeColumns.length) {
-                            setEdgeData(edge, edgeColumns[count - 2], data);
+                            if (edgeColumns[count - 2] != null) {
+                                setEdgeData(edge, edgeColumns[count - 2], data);
+                            }
                         } else {
                             report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat7", id), Issue.Level.SEVERE));
                         }
@@ -291,9 +295,13 @@ public class ImporterGDF implements FileImporter, LongTask {
                 report.log("Node property found: labelvisible");
             } else {
                 AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
-                AttributeColumn newColumn = nodeClass.addColumn(columnName, type);
-                nodeColumns[i - 1] = new GDFColumn(newColumn);
-                report.log("Node attribute " + columnName + " (" + type.getTypeString() + ")");
+                if (!nodeClass.hasColumn(columnName)) {
+                    AttributeColumn newColumn = nodeClass.addColumn(columnName, type);
+                    nodeColumns[i - 1] = new GDFColumn(newColumn);
+                    report.log("Node attribute " + columnName + " (" + type.getTypeString() + ")");
+                } else {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat8", columnName), Issue.Level.SEVERE));
+                }
             }
         }
     }
@@ -374,9 +382,13 @@ public class ImporterGDF implements FileImporter, LongTask {
                 report.log("Edge property found: labelvisible");
             } else {
                 AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
-                AttributeColumn newColumn = edgeClass.addColumn(columnName, type);
-                edgeColumns[i - 2] = new GDFColumn(newColumn);
-                report.log("Edge attribute " + columnName + " (" + type.getTypeString() + ")");
+                if (!edgeClass.hasColumn(columnName)) {
+                    AttributeColumn newColumn = edgeClass.addColumn(columnName, type);
+                    edgeColumns[i - 2] = new GDFColumn(newColumn);
+                    report.log("Edge attribute " + columnName + " (" + type.getTypeString() + ")");
+                } else {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGDF.class, "importerGDF_error_dataformat9", columnName), Issue.Level.SEVERE));
+                }
             }
         }
     }
