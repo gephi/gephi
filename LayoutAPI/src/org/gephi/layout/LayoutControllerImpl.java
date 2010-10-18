@@ -150,6 +150,9 @@ public class LayoutControllerImpl implements LayoutController {
 
         public void setProgressTicket(ProgressTicket progressTicket) {
             this.progressTicket = progressTicket;
+            if (layout instanceof LongTask) {
+                ((LongTask) layout).setProgressTicket(progressTicket);
+            }
         }
     }
 }
