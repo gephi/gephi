@@ -350,6 +350,25 @@ public class ImporterDOT implements FileImporter, LongTask {
                     //System.err.println("couldn't find style at line " + streamTokenizer.lineno());
                     streamTokenizer.pushBack();
                 }
+            } else if (streamTokenizer.sval.equalsIgnoreCase("weight")) {
+                streamTokenizer.nextToken();
+                if (streamTokenizer.ttype == '=') {
+                    streamTokenizer.nextToken();
+                    if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
+                        try {
+                            Float weight = Float.parseFloat(streamTokenizer.sval);
+                            edge.setWeight(weight);
+                        } catch (Exception e) {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_weightunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                        }
+                    } else {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_weightunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                        streamTokenizer.pushBack();
+                    }
+                } else {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_weightunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                    streamTokenizer.pushBack();
+                }
             }
         }
         edgeAttributes(streamTokenizer, edge);
