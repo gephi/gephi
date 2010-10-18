@@ -616,6 +616,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
                 }
                 if (edge.getType().equals(EdgeDraft.EdgeType.UNDIRECTED)) {
+                    String myKey = edge.getSource().getId() + "-" + edge.getTarget().getId();
                     String oppositekey = edge.getTarget().getId() + "-" + edge.getSource().getId();
                     EdgeDraftImpl opposite = edgeSourceTargetMap.get(oppositekey);
                     if (opposite != null) {
@@ -624,8 +625,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                         } else {
                             edge.setWeight(Math.max(edge.getWeight(), opposite.getWeight()));
                         }
-                        edgeMap.remove(opposite.getId());
-                        edgeSourceTargetMap.remove(oppositekey);
+                        edgeMap.remove(edge.getId());
+                        edgeSourceTargetMap.remove(myKey);
                     }
                 }
             }
