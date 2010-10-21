@@ -46,25 +46,27 @@ public final class AttributeValueImpl implements AttributeValue {
     public Object getValue() {
         if (column.getOrigin() != AttributeOrigin.DELEGATE) {
             return value;
-        } else {
-            if (value == null) {
+        }
+        else {
+            if (value == null)
                 return null;
-            }
 
             AttributeValueDelegateProvider attributeValueDelegateProvider = column.getProvider();
 
             Object result;
-            if (AttributeUtilsImpl.getDefault().isEdgeColumn(column)) {
-                result = attributeValueDelegateProvider.getEdgeValue(column, value);
-            } else if (AttributeUtilsImpl.getDefault().isNodeColumn(column)) {
-                result = attributeValueDelegateProvider.getNodeValue(column, value);
-            } else {
+            if (AttributeUtilsImpl.getDefault().isEdgeColumn(column))
+                result = attributeValueDelegateProvider.getEdgeAttributeValue(value, column);
+            else if (AttributeUtilsImpl.getDefault().isNodeColumn(column))
+                result = attributeValueDelegateProvider.getNodeAttributeValue(value, column);
+            else
                 throw new AssertionError();
-            }
 
-            if (result.getClass().isArray()) {
+            // important for Neo4j and in future also for other storing engines
+            // the conversion can be necessary because of types mismatch
+            // for Neo4j return type can be array of primitive type which must be
+            // converted into List type
+            if (result.getClass().isArray())
                 result = ListFactory.fromArray(result);
-            }
 
             return result;
         }
