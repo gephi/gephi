@@ -30,7 +30,7 @@ public final class PreviewTopComponent extends TopComponent {
     private static PreviewTopComponent instance;
     static final String ICON_PATH = "org/gephi/desktop/preview/resources/preview.png";
     private static final String PREFERRED_ID = "PreviewTopComponent";
-    private final ProcessingPreview sketch = new ProcessingPreview();
+    private final ProcessingPreview sketch;
     private final ProcessingListener processingListener = new ProcessingListener();
 
     private PreviewTopComponent() {
@@ -48,6 +48,7 @@ public final class PreviewTopComponent extends TopComponent {
         bannerPanel.setVisible(false);
 
         // inits the preview applet
+        sketch = new ProcessingPreview();
         sketchPanel.add(sketch, BorderLayout.CENTER);
         sketch.init();
         sketch.registerPost(processingListener);
@@ -201,6 +202,7 @@ public final class PreviewTopComponent extends TopComponent {
         previewPanel.setLayout(new java.awt.CardLayout());
 
         sketchPanel.setBackground(new java.awt.Color(255, 255, 255));
+        sketchPanel.setPreferredSize(new java.awt.Dimension(500, 500));
         sketchPanel.setLayout(new java.awt.BorderLayout());
         previewPanel.add(sketchPanel, "previewCard");
 
