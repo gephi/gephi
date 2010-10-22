@@ -8,14 +8,17 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-04-24 05:54+0000\n"
+"PO-Revision-Date: 2010-10-21 15:36+0000\n"
 "Last-Translator: Mathieu Bastian <mathieu.bastian@gmail.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-25 03:46+0000\n"
+"X-Launchpad-Export-Date: 2010-10-22 04:42+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr ""
 
 msgid "CTL_DataTableAction"
 msgstr "Tableau de données"
@@ -44,14 +47,86 @@ msgstr "Rafraichir"
 msgid "DataTableTopComponent.labelBanner.text"
 msgstr "Données mises à jour. Souhaitez-vous ré-actualiser le tableau ?"
 
-msgid "DataTableTopComponent.visibleGraphCheckbox.text"
-msgstr "Graphe visible uniquement"
-
 msgid "DataTableTopComponent.filterTextField.toolTipText"
 msgstr "Usage des expressions rationnelles autorisé"
 
-msgid "NodeDataTable.popup.select"
-msgstr "Sélectionner sur le graphe"
+msgid "DataTableTopComponent.attributeColumnsPanel.title"
+msgstr ""
+
+msgid "DataTableTopComponent.RichToolTip.title.text"
+msgstr ""
+
+msgid "DataTableTopComponent.addColumnButton.text"
+msgstr ""
+
+msgid "DataTableTopComponent.mergeColumnsButton.text"
+msgstr ""
+
+msgid "DataTableTopComponent.dialogs.okButton.text"
+msgstr ""
+
+msgid "DataTableTopComponent.general.actions.plugins.button.text"
+msgstr ""
+
+msgid "DataTableTopComponent.general.actions.plugins.group.name"
+msgstr ""
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Tableau du laboratoire de données"
+
+msgid "SettingsPanel.title"
+msgstr ""
+
+msgid "EdgeDataTable.source.column.text"
+msgstr ""
+
+msgid "EdgeDataTable.target.column.text"
+msgstr ""
+
+msgid "EdgeDataTable.type.column.text"
+msgstr ""
+
+msgid "EdgeDataTable.type.column.directed"
+msgstr ""
+
+msgid "EdgeDataTable.type.column.undirected"
+msgstr ""
+
+msgid "ConfigurationPanel.title"
+msgstr ""
+
+msgid "ConfigurationPanel.onlyVisibleCheckBox.text"
+msgstr ""
+
+msgid "ConfigurationPanel.useSparklinesCheckBox.text"
+msgstr ""
+
+msgid "ConfigurationPanel.showEdgesNodesLabelsCheckBox.text"
+msgstr ""
+
+msgid "DataTableTopComponent.configurationButton.text"
+msgstr ""
+
+msgid "ConfigurationPanel.descriptionLabel.text"
+msgstr ""
+
+msgid "ConfigurationPanel.timeIntervalsGraphicsCheckBox.text"
+msgstr ""
+
+msgid "DataTableTopComponent.availableColumnsButton.toolTipText"
+msgstr ""
+
+msgid "AvailableColumnsPanel.title"
+msgstr ""
+
+msgid "AvailableColumnsPanel.descriptionLabel.text"
+msgstr ""
+
+msgid "AvailableColumnsPanel.maximum-available-columns.info"
+msgstr ""
+
+#~ msgid "DataTableTopComponent.visibleGraphCheckbox.text"
+#~ msgstr "Graphe visible uniquement"
+
+#~ msgid "NodeDataTable.popup.select"
+#~ msgstr "Sélectionner sur le graphe"
