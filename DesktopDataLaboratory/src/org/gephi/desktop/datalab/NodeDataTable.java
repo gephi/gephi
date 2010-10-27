@@ -213,7 +213,12 @@ public class NodeDataTable {
         } catch (PatternSyntaxException e) {
             return false;
         }
-        outlineTable.setQuickFilter(columnIndex, quickFilter);
+        if (regularExpr == null || regularExpr.isEmpty()) {
+            outlineTable.unsetQuickFilter();
+        } else {
+            outlineTable.setQuickFilter(columnIndex, quickFilter);
+        }
+
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
