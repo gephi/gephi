@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.swing;
 
 import java.awt.Cursor;
@@ -35,6 +35,7 @@ import org.gephi.visualization.apiimpl.VizEventManager;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.lib.gleem.linalg.MathUtil;
 import org.gephi.lib.gleem.linalg.Vec3f;
+import org.gephi.visualization.api.selection.SelectionManager;
 import org.gephi.visualization.selection.Rectangle;
 
 /**
@@ -280,6 +281,19 @@ public class StandardGraphIO implements GraphIO, VizArchitecture {
 
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getUnitsToScroll() == 0) {
+            return;
+        }
+
+        boolean ctrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0 || (e.getModifiers() & InputEvent.CTRL_MASK) != 0;
+        if (ctrl) {
+            SelectionManager manager = VizController.getInstance().getSelectionManager();
+            if (!manager.isRectangleSelection()) {
+                int s = manager.getMouseSelectionDiameter();
+                s += -e.getUnitsToScroll() * 2;
+                s = Math.min(1000, s);
+                s = Math.max(1, s);
+                manager.setMouseSelectionDiameter(s);
+            }
             return;
         }
 
