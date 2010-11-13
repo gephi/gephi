@@ -279,7 +279,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             }
 
             //Attributes columns
-            for (AttributeColumn c : nodeColumns) {
+            for (AttributeColumn c : edgeColumns) {
                 Object val = edge.getEdgeData().getAttributes().getValue(c.getIndex());
                 val = DynamicUtilities.getDynamicValue(val, visibleInterval.getLow(), visibleInterval.getHigh());
                 if (val != null) {
@@ -338,7 +338,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
     private boolean isNodeDefaultColumn(String id) {
         for (NodeColumnsGDF c : defaultNodeColumnsGDFs) {
-            if (c.title.equals(id.toLowerCase())) {
+            if (c.title.equalsIgnoreCase(id)) {
                 return true;
             }
         }
@@ -347,7 +347,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
     private boolean isEdgeDefaultColumn(String id) {
         for (EdgeColumnsGDF c : defaultEdgeColumnsGDFs) {
-            if (c.title.equals(id.toLowerCase())) {
+            if (c.title.equalsIgnoreCase(id)) {
                 return true;
             }
         }
@@ -620,13 +620,26 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             }
         };
 
-        defaultEdgeColumnsGDFs = new EdgeColumnsGDF[6];
-        defaultEdgeColumnsGDFs[0] = labelColumn;
-        defaultEdgeColumnsGDFs[1] = weightColumn;
-        defaultEdgeColumnsGDFs[2] = directedColumn;
-        defaultEdgeColumnsGDFs[3] = colorColumn;
-        defaultEdgeColumnsGDFs[4] = visibleColumn;
-        defaultEdgeColumnsGDFs[5] = labelVisibleColumn;
+        EdgeColumnsGDF edgeIdColumn = new EdgeColumnsGDF("id", DataTypeGDF.VARCHAR) {
+
+            @Override
+            public boolean isEnable() {
+                return false;
+            }
+
+            @Override
+            public void writeData(StringBuilder builder, Edge edge) {
+            }
+        };
+
+        defaultEdgeColumnsGDFs = new EdgeColumnsGDF[7];
+        defaultEdgeColumnsGDFs[0] = edgeIdColumn;
+        defaultEdgeColumnsGDFs[1] = labelColumn;
+        defaultEdgeColumnsGDFs[2] = weightColumn;
+        defaultEdgeColumnsGDFs[3] = directedColumn;
+        defaultEdgeColumnsGDFs[4] = colorColumn;
+        defaultEdgeColumnsGDFs[5] = visibleColumn;
+        defaultEdgeColumnsGDFs[6] = labelVisibleColumn;
     }
 
     private void calculateMinMax(Graph graph) {
