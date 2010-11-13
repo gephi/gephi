@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
@@ -71,6 +71,8 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
     private float maxX;
     private float minY;
     private float maxY;
+    private boolean edgeLabels;
+    private boolean edgeColors;
     //Columns
     private NodeColumnsGDF[] defaultNodeColumnsGDFs;
     private EdgeColumnsGDF[] defaultEdgeColumnsGDFs;
@@ -91,7 +93,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             graph = graphModel.getGraph();
         }
         DynamicModel dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
-        visibleInterval = dynamicModel !=null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
+        visibleInterval = dynamicModel != null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
         try {
             exportData(graph, attributeModel);
         } catch (Exception e) {
@@ -207,6 +209,13 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
         //Edge intro
         stringBuilder.append("edgedef> node1,node2,");
+
+        //Edge settings helper
+        HierarchicalGraph hg = (HierarchicalGraph) graph;
+        for (Edge e : hg.getEdgesAndMetaEdges()) {
+            edgeColors = edgeColors || e.getEdgeData().r() != -1;
+            edgeLabels = edgeLabels || (e.getEdgeData().getLabel() != null && !e.getEdgeData().getLabel().isEmpty());
+        }
 
         //Edge columns title
         for (EdgeColumnsGDF c : defaultEdgeColumnsGDFs) {
@@ -522,7 +531,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return edgeLabels;
             }
 
             @Override
@@ -567,19 +576,21 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return exportColors;
+                return exportColors && edgeColors;
             }
 
             @Override
             public void writeData(StringBuilder builder, Edge edge) {
-                String quote = "'";
-                builder.append(quote);
-                builder.append((int) (edge.getEdgeData().r() * 255f));
-                builder.append(",");
-                builder.append((int) (edge.getEdgeData().g() * 255f));
-                builder.append(",");
-                builder.append((int) (edge.getEdgeData().b() * 255f));
-                builder.append(quote);
+                if (edge.getEdgeData().r() != -1) {
+                    String quote = "'";
+                    builder.append(quote);
+                    builder.append((int) (edge.getEdgeData().r() * 255f));
+                    builder.append(",");
+                    builder.append((int) (edge.getEdgeData().g() * 255f));
+                    builder.append(",");
+                    builder.append((int) (edge.getEdgeData().b() * 255f));
+                    builder.append(quote);
+                }
             }
         };
 
