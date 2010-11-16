@@ -19,6 +19,7 @@ import org.gephi.preview.api.PreviewModel;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.UIUtils;
 import org.jdesktop.swingx.JXBusyLabel;
+import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -50,9 +51,26 @@ public final class PreviewTopComponent extends TopComponent {
         // inits the preview applet
         sketch = new ProcessingPreview();
         sketchPanel.add(sketch, BorderLayout.CENTER);
-        sketch.init();
-        sketch.registerPost(processingListener);
-        sketch.registerPre(processingListener);
+
+        Thread initProcessing = new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        sketch.init();
+                        sketch.registerPost(processingListener);
+                        sketch.registerPre(processingListener);
+                    }
+                });
+            }
+        });
+        initProcessing.start();
 
         // forces the controller instanciation
         PreviewUIController.findInstance();
