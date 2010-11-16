@@ -20,7 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalab.api;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.HierarchicalGraph;
@@ -89,6 +92,7 @@ public interface SearchReplaceController {
         private Node[] nodesToSearch;
         private Edge[] edgesToSearch;
         private Integer startingRow = null, startingColumn = null;
+        private HashSet<Integer> columnsToSearch = new HashSet<Integer>();
         private boolean loopToBeginning = true;
         private Pattern regexPattern;
         private boolean useRegexReplaceMode = false;
@@ -133,7 +137,12 @@ public interface SearchReplaceController {
             }
         }
 
-        /*******Available constructors*********/
+        /**
+         * Setup options to search on nodes with the given pattern.
+         * If nodesToSearch is null, all nodes of the graph will be used.
+         * @param nodesToSearch
+         * @param regexPattern
+         */
         public SearchOptions(Node[] nodesToSearch, Pattern regexPattern) {
             this.nodesToSearch = nodesToSearch;
             this.regexPattern = regexPattern;
@@ -141,6 +150,12 @@ public interface SearchReplaceController {
             checkNodesToSearch();
         }
 
+        /**
+         * Setup options to search on edges with the given pattern.
+         * If edgesToSearch is null, all edges of the graph will be used.
+         * @param edgesToSearch
+         * @param regexPattern
+         */
         public SearchOptions(Edge[] edgesToSearch, Pattern regexPattern) {
             this.edgesToSearch = edgesToSearch;
             this.regexPattern = regexPattern;
@@ -148,6 +163,13 @@ public interface SearchReplaceController {
             checkEdgesToSearch();
         }
 
+        /**
+         * Setup options to search on nodes with the given pattern.
+         * If nodesToSearch is null, all nodes of the graph will be used.
+         * @param nodesToSearch
+         * @param regexPattern
+         * @param onlyMatchWholeAttributeValue 
+         */
         public SearchOptions(Node[] nodesToSearch, Pattern regexPattern, boolean onlyMatchWholeAttributeValue) {
             this.nodesToSearch = nodesToSearch;
             this.regexPattern = regexPattern;
@@ -155,6 +177,13 @@ public interface SearchReplaceController {
             searchNodes = true;
         }
 
+        /**
+         * Setup options to search on edges with the given pattern.
+         * If edgesToSearch is null, all edges of the graph will be used.
+         * @param edgesToSearch
+         * @param regexPattern
+         * @param onlyMatchWholeAttributeValue
+         */
         public SearchOptions(Edge[] edgesToSearch, Pattern regexPattern, boolean onlyMatchWholeAttributeValue) {
             this.edgesToSearch = edgesToSearch;
             this.regexPattern = regexPattern;
@@ -201,6 +230,42 @@ public interface SearchReplaceController {
 
         public void setStartingRow(Integer startingRow) {
             this.startingRow = startingRow;
+        }
+
+        /**
+         * Set column indexes that should be used to search with the current options.
+         * If columnsToSearch is empty, all columns will be used to search.
+         * @param columnsToSearch It is safe to specify invalid columns indexes, they will be ignored
+         */
+        public void setColumnsToSearch(int[] columnsToSearch) {
+            this.columnsToSearch.clear();
+            if (columnsToSearch != null) {
+                for (Integer i : columnsToSearch) {
+                    this.columnsToSearch.add(i);
+                }
+            }
+        }
+
+        /**
+         * Set column that should be used to search with the current options.
+         * If columnsToSearch is empty, all columns will be used to search.
+         * @param columnsToSearch It is safe to specify invalid columns, they will be ignored
+         */
+        public void setColumnsToSearch(AttributeColumn[] columnsToSearch) {
+            this.columnsToSearch.clear();
+            if (columnsToSearch != null) {
+                for (AttributeColumn c : columnsToSearch) {
+                    this.columnsToSearch.add(c.getIndex());
+                }
+            }
+        }
+
+        /**
+         * Returns columns indexes to search
+         * @return Set with columns indexes to search
+         */
+        public Set<Integer> getColumnsToSearch() {
+            return columnsToSearch;
         }
 
         public boolean isSearchNodes() {
