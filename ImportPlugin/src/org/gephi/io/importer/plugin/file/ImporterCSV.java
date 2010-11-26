@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Sebastien Heymann <sebastien.heymann@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -24,7 +24,8 @@ import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.ImportUtils;
@@ -37,7 +38,7 @@ import org.gephi.utils.progress.ProgressTicket;
 
 /**
  *
- * @author Mathieu Bastian
+ * @author Mathieu Bastian, Sebastien Heymann
  */
 public class ImporterCSV implements FileImporter, LongTask {
 
@@ -73,24 +74,35 @@ public class ImporterCSV implements FileImporter, LongTask {
 
         Progress.switchToDeterminate(progressTicket, lines.size());
 
-        String SEPARATOR = ",;|";
+        //Magix regex
+        Pattern pattern = Pattern.compile("(?<=(?:,|\\s|^)\")(.*?)(?=(?<=(?:[^\\\\]))\",|\"\\s|\"$)|(?<=(?:,|\\s|^)')(.*?)(?=(?<=(?:[^\\\\]))',|'\\s|'$)|(?<=(?:,|\\s|^))(?=[^'\"])(.*?)(?=(?:,|\\s|$))|(?<=,)($)");
+
         for (String line : lines) {
             if (cancel) {
-                break;
+                return;
             }
-            StringTokenizer tokenizer = new StringTokenizer(line, SEPARATOR);
-            String source = null;
-            String target;
-            for (int i = 0; tokenizer.hasMoreElements(); i++) {
-                if (i == 0) {
-                    source = tokenizer.nextToken();
-                } else {
-                    target = tokenizer.nextToken();
-                    addEdge(source, target);
+            
+            Matcher m = pattern.matcher(line);
+            int count = 0;
+            String sourceID = "";
+            while (m.find()) {
+                int start = m.start();
+                int end = m.end();
+                if (start != end) {
+                    String data = line.substring(start, end);
+                    data = data.trim();
+                    if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                        if (count == 0) {
+                            sourceID = data;
+                        } else {
+                            //Create Edge
+                            addEdge(sourceID,data);
+                        }
+                    }
                 }
+                count++;
             }
-
-            Progress.progress(progressTicket);
+            Progress.progress(progressTicket);      //Progress
         }
     }
 
