@@ -20,11 +20,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.importer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -497,9 +503,27 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     }
 
     private FileObject getArchivedFile(FileObject fileObject) {
+        // Uncompress ZIP and JAR archives
         if (FileUtil.isArchiveFile(fileObject)) {
-            //Unzip
             fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
+        }
+        // Uncompress GZ archives
+        if (fileObject.getExt().equalsIgnoreCase("gz")) {
+            try {
+                String[] splittedFileName = fileObject.getName().split("\\.");
+                if (splittedFileName.length < 2) {
+                    return fileObject;
+                }
+
+                String fileExt = splittedFileName[splittedFileName.length - 1];
+
+                File tempFile = File.createTempFile(fileObject.getName().replace(".gz", ""), "."+fileExt);
+                tempFile = gunzipFile(fileObject, tempFile);
+
+                fileObject = FileUtil.toFileObject(tempFile);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
         return fileObject;
     }
@@ -515,5 +539,31 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
         }
         return null;
+    }
+
+
+    /**
+     * Uncompress a GZIP file.
+     */
+    private File gunzipFile(FileObject in, File out) {
+
+        try {
+            GZIPInputStream gzipInputStream = new GZIPInputStream(new FileInputStream(in.getPath()));
+
+            OutputStream outStream = new FileOutputStream(out.getAbsolutePath());
+
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = gzipInputStream.read(buf)) > 0) {
+                outStream.write(buf, 0, len);
+            }
+
+            gzipInputStream.close();
+            outStream.close();
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        return out;
     }
 }
