@@ -20,16 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.impl;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.zip.GZIPInputStream;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerFactory;
 import org.gephi.io.importer.api.Database;
@@ -58,6 +56,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Mathieu Bastian
+ * @author Sebastien Heymann
  */
 @ServiceProvider(service = ImportController.class)
 public class ImportControllerImpl implements ImportController {
@@ -235,22 +234,31 @@ public class ImportControllerImpl implements ImportController {
         if (FileUtil.isArchiveFile(fileObject)) {
             fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
         }
-        // GZ archives
-        if (fileObject.getExt().equalsIgnoreCase("gz")) {
-            try {
-                String[] splittedFileName = fileObject.getName().split("\\.");
-                if (splittedFileName.length < 2) {
-                    return fileObject;
+        else { // GZ or BZIP2 archives
+            boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
+            boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
+            if (isGz || isBzip) {
+                try {
+                    String[] splittedFileName = fileObject.getName().split("\\.");
+                    if (splittedFileName.length < 2) {
+                        return fileObject;
+                    }
+
+                    String fileExt1 = splittedFileName[splittedFileName.length - 1];
+                    String fileExt2 = splittedFileName[splittedFileName.length - 2];
+
+                    // Create an empty file
+                    File tempFile = null;
+                    if (fileExt1.equalsIgnoreCase("tar")) {
+                        tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt2);
+                    } else {
+                        tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt1);
+                    }
+                    tempFile.deleteOnExit();
+                    fileObject = FileUtil.toFileObject(tempFile);
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
                 }
-
-                String fileExt = splittedFileName[splittedFileName.length - 1];
-
-                File tempFile = File.createTempFile(fileObject.getName().replace(".gz", ""), "."+fileExt);
-                tempFile = gunzipFile(fileObject, tempFile);
-
-                fileObject = FileUtil.toFileObject(tempFile);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
             }
         }
         return fileObject;
@@ -321,30 +329,5 @@ public class ImportControllerImpl implements ImportController {
             }
         }
         return null;
-    }
-
-    /**
-     * Uncompress a GZ file.
-     */
-    private File gunzipFile(FileObject in, File out) {
-
-        try {
-            GZIPInputStream gzipInputStream = new GZIPInputStream(new FileInputStream(in.getPath()));
-
-            OutputStream outStream = new FileOutputStream(out.getAbsolutePath());
-
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = gzipInputStream.read(buf)) > 0) {
-                outStream.write(buf, 0, len);
-            }
-
-            gzipInputStream.close();
-            outStream.close();
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-
-        return out;
     }
 }

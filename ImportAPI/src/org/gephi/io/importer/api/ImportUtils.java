@@ -146,7 +146,6 @@ public final class ImportUtils {
 
     public static FileObject getArchivedFile(FileObject fileObject) {
         if (FileUtil.isArchiveFile(fileObject)) {
-            //Unzip
             fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
         }
         return fileObject;

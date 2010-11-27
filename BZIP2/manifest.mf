@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.apache.tools.bzip2
+OpenIDE-Module-Localizing-Bundle: org/apache/tools/bzip2/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
