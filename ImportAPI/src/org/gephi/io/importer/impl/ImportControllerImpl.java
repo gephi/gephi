@@ -231,8 +231,7 @@ public class ImportControllerImpl implements ImportController {
         // ZIP and JAR archives
         if (FileUtil.isArchiveFile(fileObject)) {
             fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
-        }
-        else { // GZ or BZIP2 archives
+        } else { // GZ or BZIP2 archives
             boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
             boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
             if (isGz || isBzip) {
@@ -305,8 +304,9 @@ public class ImportControllerImpl implements ImportController {
                 return true;
             }
         }
-        if (fileObject.getExt().equalsIgnoreCase("zip") ||
-                fileObject.getExt().equalsIgnoreCase("gz")) {
+        if (fileObject.getExt().equalsIgnoreCase("zip")
+                || fileObject.getExt().equalsIgnoreCase("gz")
+                || fileObject.getExt().equalsIgnoreCase("bz2")) {
             return true;
         }
         return false;
