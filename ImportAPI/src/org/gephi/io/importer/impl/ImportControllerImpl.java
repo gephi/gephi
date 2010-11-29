@@ -248,8 +248,20 @@ public class ImportControllerImpl implements ImportController {
                     File tempFile = null;
                     if (fileExt1.equalsIgnoreCase("tar")) {
                         tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt2);
+                        // Untar & unzip
+                        if (isGz) {
+                            tempFile = ImportUtils.getGzFile(fileObject, tempFile, true);
+                        } else {
+                            tempFile = ImportUtils.getBzipFile(fileObject, tempFile, true);
+                        }
                     } else {
                         tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt1);
+                        // Unzip
+                        if (isGz) {
+                            tempFile = ImportUtils.getGzFile(fileObject, tempFile, false);
+                        } else {
+                            tempFile = ImportUtils.getBzipFile(fileObject, tempFile, false);
+                        }
                     }
                     tempFile.deleteOnExit();
                     tempFile = FileUtil.normalizeFile(tempFile);
