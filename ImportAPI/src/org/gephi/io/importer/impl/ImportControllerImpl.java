@@ -20,10 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.impl;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -255,6 +253,7 @@ public class ImportControllerImpl implements ImportController {
                         tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt1);
                     }
                     tempFile.deleteOnExit();
+                    tempFile = FileUtil.normalizeFile(tempFile);
                     fileObject = FileUtil.toFileObject(tempFile);
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);

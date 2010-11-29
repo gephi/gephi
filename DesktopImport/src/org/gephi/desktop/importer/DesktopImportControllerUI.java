@@ -541,6 +541,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         }
                     }
                     tempFile.deleteOnExit();
+                    tempFile = FileUtil.normalizeFile(tempFile);
                     fileObject = FileUtil.toFileObject(tempFile);
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
