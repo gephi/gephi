@@ -182,6 +182,7 @@
         <copy todir="${toolkit.tempdir}">
             <fileset dir="${libs.dir}">
                 <include name="batik*.jar"/>
+                <include name="bzip2*.jar"/>
                 <include name="core.jar"/><!-- Processing -->
                 <include name="iText*.jar"/>
                 <include name="jcommon*.jar"/>
