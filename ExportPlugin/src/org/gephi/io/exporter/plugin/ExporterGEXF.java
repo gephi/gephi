@@ -284,7 +284,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 } else {
                     staticCols.add(col);
                 }
-            } else if (exportDynamic && col.getType().isDynamicType() && col.getOrigin().equals(AttributeOrigin.PROPERTY) && col.getIndex() == PropertiesColumn.EDGE_WEIGHT.getIndex()) {
+            } else if (exportDynamic && col.getType().isDynamicType() && col.getType() != AttributeType.TIME_INTERVAL
+                    && col.getOrigin().equals(AttributeOrigin.PROPERTY) && col.getIndex() == PropertiesColumn.EDGE_WEIGHT.getIndex()) {
                 dynamicCols.add(col);
             }
         }
