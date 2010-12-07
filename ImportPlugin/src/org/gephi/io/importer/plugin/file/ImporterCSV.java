@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.plugin.file;
 
 import java.io.LineNumberReader;
@@ -75,38 +75,107 @@ public class ImporterCSV implements FileImporter, LongTask {
         Progress.switchToDeterminate(progressTicket, lines.size());
 
         //Magix regex
-        Pattern pattern = Pattern.compile("(?<=(?:,|\\s|^)\")(.*?)(?=(?<=(?:[^\\\\]))\",|\"\\s|\"$)|(?<=(?:,|\\s|^)')(.*?)(?=(?<=(?:[^\\\\]))',|'\\s|'$)|(?<=(?:,|\\s|^))(?=[^'\"])(.*?)(?=(?:,|\\s|$))|(?<=,)($)");
+        Pattern pattern = Pattern.compile("(?<=(?:,|;|\\s|^)\")(.*?)(?=(?<=(?:[^\\\\]))\",|;|\"\\s|\"$)|(?<=(?:,|;|\\s|^)')(.*?)(?=(?<=(?:[^\\\\]))',|;|'\\s|'$)|(?<=(?:,|;|\\s|^))(?=[^'\"])(.*?)(?=(?:,|;|\\s|$))|(?<=,|;)($)");
 
-        for (String line : lines) {
-            if (cancel) {
-                return;
-            }
-            
-            Matcher m = pattern.matcher(line);
-            int count = 0;
-            String sourceID = "";
+        if (lines.get(0).startsWith(";")) { //Matrix
+            //Fill the Labels array
+            String line0 = lines.get(0);
+            line0 = line0.substring(1, line0.length());
+            lines.remove(0);
+            Matcher m = pattern.matcher(line0); //Remove the first ";"
+            List<String> labels = new ArrayList<String>();
             while (m.find()) {
                 int start = m.start();
                 int end = m.end();
                 if (start != end) {
-                    String data = line.substring(start, end);
+                    String data = line0.substring(start, end);
                     data = data.trim();
                     if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
-                        if (count == 0) {
-                            sourceID = data;
-                        } else {
-                            //Create Edge
-                            addEdge(sourceID,data);
-                        }
+                        labels.add(data);
                     }
                 }
-                count++;
             }
-            Progress.progress(progressTicket);      //Progress
+
+            int size = lines.size();
+            if (size != labels.size()) {
+                throw new Exception("Inconsistent number of matrix lines compared to the number of labels.");
+            }
+
+            for (int i = 0; i < size; i++) {
+                if (cancel) {
+                    return;
+                }
+                String line = lines.get(i);
+                m = pattern.matcher(line);
+                int count = -1;
+                String sourceID = "";
+                while (m.find()) {
+                    int start = m.start();
+                    int end = m.end();
+                    if (start != end) {
+                        String data = line.substring(start, end);
+                        data = data.trim();
+                        if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                            if (count == -1) {
+                                sourceID = data;
+                                addNode(sourceID, labels.get(i));
+                            } else if (!data.equals("0")) {
+                                //Create Edge
+                                addEdge(sourceID, labels.get(count), Float.parseFloat(data));
+                            }
+                        }
+                    }
+                    count++;
+                }
+                Progress.progress(progressTicket);      //Progress
+            }
+        } else { //Edge or Adjacency list
+            Matcher m;
+            for (String line : lines) {
+                if (cancel) {
+                    return;
+                }
+                m = pattern.matcher(line);
+                int count = 0;
+                String sourceID = "";
+                while (m.find()) {
+                    int start = m.start();
+                    int end = m.end();
+                    if (start != end) {
+                        String data = line.substring(start, end);
+                        data = data.trim();
+                        if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                            if (count == 0) {
+                                sourceID = data;
+                            } else {
+                                //Create Edge
+                                addEdge(sourceID, data);
+                            }
+                        }
+                    }
+                    count++;
+                }
+                Progress.progress(progressTicket);      //Progress
+            }
+        }
+
+    }
+
+    private void addNode(String id, String label) {
+        NodeDraft node;
+        if (!container.nodeExists(id)) {
+            node = container.factory().newNodeDraft();
+            node.setId(id);
+            node.setLabel(label);
+            container.addNode(node);
         }
     }
 
     private void addEdge(String source, String target) {
+        addEdge(source, target, 1);
+    }
+
+    private void addEdge(String source, String target, float weight) {
         NodeDraft sourceNode;
         if (!container.nodeExists(source)) {
             sourceNode = container.factory().newNodeDraft();
@@ -130,7 +199,7 @@ public class ImporterCSV implements FileImporter, LongTask {
             edge.setTarget(targetNode);
             container.addEdge(edge);
         } else {
-            edge.setWeight(edge.getWeight() + 1f);
+            edge.setWeight(edge.getWeight() + weight);
         }
     }
 

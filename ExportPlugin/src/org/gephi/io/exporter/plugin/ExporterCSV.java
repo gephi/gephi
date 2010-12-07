@@ -133,7 +133,7 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
                     for (int j = 0; j < nodes.length; j++) {
                         Node m = nodes[j];
                         Edge e = directedGraph.getEdge(n, m);
-                        e = e == null ? ((HierarchicalDirectedGraph) directedGraph).getMetaEdge(n, m) : null;
+                        e = e == null ? ((HierarchicalDirectedGraph) directedGraph).getMetaEdge(n, m) : e;
                         writeEdge(e, j < nodes.length - 1);
                     }
                     Progress.progress(progressTicket);
@@ -150,7 +150,7 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
                     for (int j = 0; j < nodes.length; j++) {
                         Node m = nodes[j];
                         Edge e = undirectedGraph.getEdge(n, m);
-                        e = e == null ? ((HierarchicalUndirectedGraph) undirectedGraph).getMetaEdge(n, m) : null;
+                        e = e == null ? ((HierarchicalUndirectedGraph) undirectedGraph).getMetaEdge(n, m) : e;
                         writeEdge(e, j < nodes.length - 1);
                     }
                     Progress.progress(progressTicket);
@@ -167,7 +167,7 @@ public class ExporterCSV implements GraphExporter, CharacterExporter, LongTask {
                     for (int j = 0; j < nodes.length; j++) {
                         Node m = nodes[j];
                         Edge e = mixedGraph.getEdge(n, m);
-                        e = e == null ? ((HierarchicalMixedGraph) mixedGraph).getMetaEdge(n, m) : null;
+                        e = e == null ? ((HierarchicalMixedGraph) mixedGraph).getMetaEdge(n, m) : e;
                         writeEdge(e, j < nodes.length - 1);
                     }
                     Progress.progress(progressTicket);
