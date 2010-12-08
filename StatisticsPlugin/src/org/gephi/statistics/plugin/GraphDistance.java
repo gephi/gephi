@@ -239,7 +239,7 @@ public class GraphDistance implements Statistics, LongTask {
             }
             if (this.mRelativeValues) {
                 mCloseness[s_index] = (mCloseness[s_index] == 0) ? 0 : 1.0 / mCloseness[s_index];
-                mBetweenness[s_index] /= ((mN - 1) * (mN - 2)) / 2;
+                mBetweenness[s_index] /= mDirected ? (mN - 1) * (mN - 2) : (mN - 1) * (mN - 2) / 2;
             }
             row.setValue(eccentricityCol, mEccentricity[s_index]);
             row.setValue(closenessCol, mCloseness[s_index]);
