@@ -214,21 +214,21 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
             Element colorRKeyE = document.createElement("key");
             colorRKeyE.setAttribute("id", "r");
             colorRKeyE.setAttribute("attr.name", "r");
-            colorRKeyE.setAttribute("attr.type", "integer");
+            colorRKeyE.setAttribute("attr.type", "int");
             colorRKeyE.setAttribute("for", "node");
             root.appendChild(colorRKeyE);
 
             Element colorGKeyE = document.createElement("key");
             colorGKeyE.setAttribute("id", "g");
             colorGKeyE.setAttribute("attr.name", "g");
-            colorGKeyE.setAttribute("attr.type", "integer");
+            colorGKeyE.setAttribute("attr.type", "int");
             colorGKeyE.setAttribute("for", "node");
             root.appendChild(colorGKeyE);
 
             Element colorBKeyE = document.createElement("key");
             colorBKeyE.setAttribute("id", "b");
             colorBKeyE.setAttribute("attr.name", "b");
-            colorBKeyE.setAttribute("attr.type", "integer");
+            colorBKeyE.setAttribute("attr.type", "int");
             colorBKeyE.setAttribute("for", "node");
             root.appendChild(colorBKeyE);
         }
