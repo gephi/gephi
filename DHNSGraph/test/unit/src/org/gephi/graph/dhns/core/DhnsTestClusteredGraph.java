@@ -146,7 +146,7 @@ public class DhnsTestClusteredGraph {
     @Test
     public void testMoveDurableTreeList() {
 
-        TreeStructure treeStructure = new TreeStructure(0);
+        TreeStructure treeStructure = new TreeStructure(null);
 
         AbstractNode p0 = treeStructure.getRoot();
         AbstractNode p1 = new AbstractNode(1, 0, 0, 0, 0, null);
