@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.importer;
 
 import java.awt.Color;
@@ -27,6 +27,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -64,6 +66,7 @@ public class ReportPanel extends javax.swing.JPanel {
     //Preferences
     private final static String SHOW_ISSUES = "ReportPanel_Show_Issues";
     private final static String SHOW_REPORT = "ReportPanel_Show_Report";
+    private final static int ISSUES_LIMIT = 5000;
     private ThreadGroup fillingThreads;
     //Icons
     private ImageIcon infoIcon;
@@ -140,6 +143,7 @@ public class ReportPanel extends javax.swing.JPanel {
     public void setData(Report report, Container container) {
         this.container = container;
         initProcessorsUI();
+        report.pruneReport(ISSUES_LIMIT);
         fillIssues(report);
         fillReport(report);
         fillStats(container);

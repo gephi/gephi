@@ -23,11 +23,11 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="tabbedPane" alignment="0" pref="545" max="32767" attributes="0"/>
+                  <Component id="tabbedPane" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="labelSrc" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="sourceLabel" pref="502" max="32767" attributes="0"/>
+                      <Component id="sourceLabel" pref="506" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -36,7 +36,7 @@
                               <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
                               <Component id="graphTypeCombo" min="-2" pref="107" max="-2" attributes="1"/>
                           </Group>
-                          <Component id="jPanel1" pref="216" max="32767" attributes="1"/>
+                          <Component id="jPanel1" pref="231" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace pref="154" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">

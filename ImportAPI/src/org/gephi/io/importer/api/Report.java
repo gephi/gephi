@@ -17,10 +17,11 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.api;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -146,6 +147,71 @@ public final class Report {
         public ReportEntry(String message) {
             this.message = message;
             this.issue = null;
+        }
+    }
+
+    public void pruneReport(int limit) {
+        if (entries.size() > limit) {
+            int step = 0;
+            while (entries.size() > limit && step < 3) {
+                if (step == 0) {
+                    ReportEntry lastIssue = null;
+                    for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
+                        ReportEntry issue = itr.next();
+                        if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.INFO)) {
+                            lastIssue = issue;
+                            itr.remove();
+                        }
+                    }
+                    if (lastIssue != null) {
+                        entries.add(lastIssue);
+                        entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.INFO)));
+                    }
+                    step = 1;
+                } else if (step == 1) {
+                    ReportEntry lastIssue = null;
+                    for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
+                        ReportEntry issue = itr.next();
+                        if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.WARNING)) {
+                            lastIssue = issue;
+                            itr.remove();
+                        }
+                    }
+                    if (lastIssue != null) {
+                        entries.add(lastIssue);
+                        entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.WARNING)));
+                    }
+                    step = 2;
+                } else if (step == 2) {
+                    ReportEntry lastIssue = null;
+                    for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
+                        ReportEntry issue = itr.next();
+                        if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.INFO)) {
+                            lastIssue = issue;
+                            itr.remove();
+                        }
+                    }
+                    if (lastIssue != null) {
+                        entries.add(lastIssue);
+                        entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.INFO)));
+                    }
+                    step = 3;
+                } else if (step == 3) {
+                    ReportEntry lastIssue = null;
+                    for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
+                        ReportEntry issue = itr.next();
+                        if (issue.issue == null) {
+                            lastIssue = issue;
+                            itr.remove();
+                        }
+                    }
+                    if (lastIssue != null) {
+                        entries.add(lastIssue);
+                        entries.add(new ReportEntry("More messages not listed..."));
+                    }
+                    step = 4;
+                }
+            }
         }
     }
 }
