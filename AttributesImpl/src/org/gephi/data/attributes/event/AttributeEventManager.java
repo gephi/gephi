@@ -83,6 +83,7 @@ public class AttributeEventManager implements Runnable {
                         }
 
                         eventCompress.add(evt.getData());
+                        eventQueue.poll();
                     } else {
                         break;
                     }
