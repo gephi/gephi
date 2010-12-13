@@ -18,10 +18,10 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.data.attributes;
+package org.gephi.graph.dhns;
 
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspaceDuplicateProvider;
 import org.openide.util.Lookup;
@@ -31,15 +31,15 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = WorkspaceDuplicateProvider.class, position = 10)
-public class AttributeModelDuplicateProvider implements WorkspaceDuplicateProvider {
+@ServiceProvider(service = WorkspaceDuplicateProvider.class, position = 1000)
+public class DhnsDuplicateProvider implements WorkspaceDuplicateProvider {
 
     public void duplicate(Workspace source, Workspace destination) {
-        AttributeController controller = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeModel sourceModel = controller.getModel(source);
-        AttributeModel destModel = controller.getModel(destination);
+        GraphController controller = Lookup.getDefault().lookup(GraphController.class);
+        Dhns sourceModel = (Dhns) controller.getModel(source);
+        Dhns destModel = (Dhns) controller.getModel(destination);
         if (sourceModel != null && destModel != null) {
-            destModel.mergeModel(sourceModel);
+            sourceModel.getDuplicateManager().duplicate(destModel);
         }
     }
 }
