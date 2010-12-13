@@ -131,7 +131,7 @@ public class WattsStrogatz implements Generator {
     }
 
     public String getName() {
-        return "Watts-Strogatz Small World";
+        return "Watts-Strogatz Small World model";
     }
 
     public GeneratorUI getUI() {
