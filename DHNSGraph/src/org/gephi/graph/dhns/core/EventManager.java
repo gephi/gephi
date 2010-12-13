@@ -80,9 +80,7 @@ public class EventManager implements Runnable {
                             eventCompress = new ArrayList<Object>();
                             eventCompress.add(precEvt.getData());
                         }
-
                         eventCompress.add(evt.getData());
-                        eventQueue.poll();
                     } else {
                         break;
                     }
@@ -162,7 +160,7 @@ public class EventManager implements Runnable {
     }
 
     public void fireEvent(AbstractEvent event) {
-        eventQueue.add(event);
+        //eventQueue.add(event);
         synchronized (lock) {
             lock.notifyAll();
         }
