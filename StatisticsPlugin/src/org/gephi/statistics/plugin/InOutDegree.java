@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.plugin;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -29,6 +31,7 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -99,16 +102,26 @@ public class InOutDegree implements Statistics, LongTask {
 
         for (Node n : graph.getNodes()) {
             AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
-            if (graph instanceof DirectedGraph) {
-                DirectedGraph directedGraph = (DirectedGraph) graph;
-                row.setValue(inCol, directedGraph.getInDegree(n));
-                row.setValue(outCol, directedGraph.getOutDegree(n));
-                mAvgInDegree += directedGraph.getInDegree(n);
-                mAvgOutDegree += directedGraph.getOutDegree(n);
+            if (graph.getGraphModel().isHierarchical()) {
+                if (graph instanceof DirectedGraph) {
+                    row.setValue(inCol, ((HierarchicalDirectedGraph)graph).getTotalInDegree(n));
+                    row.setValue(outCol, ((HierarchicalDirectedGraph)graph).getTotalOutDegree(n));
+                    mAvgInDegree += ((HierarchicalDirectedGraph)graph).getTotalInDegree(n);
+                    mAvgOutDegree += ((HierarchicalDirectedGraph)graph).getTotalOutDegree(n);
+                }
+                row.setValue(degCol, ((HierarchicalDirectedGraph)graph).getTotalDegree(n));
+                mAvgDegree += ((HierarchicalDirectedGraph)graph).getTotalDegree(n);
             }
-            row.setValue(degCol, graph.getDegree(n));
-            mAvgDegree += graph.getDegree(n);
-
+            else {
+                if (graph instanceof DirectedGraph) {
+                    row.setValue(inCol, ((DirectedGraph) graph).getInDegree(n));
+                    row.setValue(outCol, ((DirectedGraph) graph).getOutDegree(n));
+                    mAvgInDegree += ((DirectedGraph) graph).getInDegree(n);
+                    mAvgOutDegree += ((DirectedGraph) graph).getOutDegree(n);
+                }
+                row.setValue(degCol, graph.getDegree(n));
+                mAvgDegree += graph.getDegree(n);
+            }
             if (mIsCanceled) {
                 break;
             }
@@ -128,15 +141,15 @@ public class InOutDegree implements Statistics, LongTask {
      * @return
      */
     public String getReport() {
-
+        NumberFormat f = new DecimalFormat("#0.000");
 
         String report = "<HTML> <BODY> <h1>Degree Report </h1> "
                 + "<hr>"
                 + "<br>"
                 + "<br> <h2> Results: </h2>"
-                + "Average Degree: " + mAvgDegree
-                + (mAvgDegree > 0 ? ("<br >Average In Degree: " + mAvgInDegree) : "")
-                + (mAvgOutDegree > 0 ? ("<br >Average Out Degree: " + mAvgOutDegree) : "")
+                + "Average Degree: " + f.format(mAvgDegree)
+                + (mAvgInDegree > 0 ? ("<br >Average In Degree: " + f.format(mAvgInDegree)) : "")
+                + (mAvgOutDegree > 0 ? ("<br >Average Out Degree: " + f.format(mAvgOutDegree)) : "")
                 + "</BODY></HTML>";
 
         return report;
