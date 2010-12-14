@@ -126,7 +126,7 @@ public class DhnsTestDirectedGraph {
 
     @Test
     public void testTreeList() {
-        DurableTreeList durableTreeList = new DurableTreeList();
+        DurableTreeList durableTreeList = new DurableTreeList(null);
         List<AbstractNode> expected = new ArrayList<AbstractNode>();
         for (int i = 0; i < 10; i++) {
             AbstractNode node = new AbstractNode(i, 0, 0, 0, 0, null);

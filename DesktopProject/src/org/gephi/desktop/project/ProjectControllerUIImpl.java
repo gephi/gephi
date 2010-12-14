@@ -357,6 +357,10 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         return newWorkspace;
     }
 
+    public boolean canDuplicateWorkspace() {
+        return duplicateWorkspace;
+    }
+
     public boolean canOpenFile() {
         return openFile;
     }
@@ -502,5 +506,9 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
     public void renameWorkspace(String name) {
         controller.renameWorkspace(controller.getCurrentWorkspace(), name);
+    }
+
+    public Workspace duplicateWorkspace() {
+        return controller.duplicateWorkspace(controller.getCurrentWorkspace());
     }
 }

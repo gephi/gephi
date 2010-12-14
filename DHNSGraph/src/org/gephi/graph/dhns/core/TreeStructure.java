@@ -32,16 +32,16 @@ public class TreeStructure {
 
     protected DurableTreeList tree;
     protected AbstractNode root;
-    protected final int viewId;
+    protected final GraphViewImpl view;
 
-    public TreeStructure(int viewId) {
-        tree = new DurableTreeList();
-        this.viewId = viewId;
+    public TreeStructure(GraphViewImpl view) {
+        tree = new DurableTreeList(view);
+        this.view = view;
         initRoot();
     }
 
     private void initRoot() {
-        root = new AbstractNode(0, viewId, 0, 0, 0, null);
+        root = new AbstractNode(0, view != null ? view.getViewId() : 0, 0, 0, 0, null);
         tree.add(root);
     }
 
@@ -172,10 +172,10 @@ public class TreeStructure {
     public void deleteAtPre(AbstractNode node) {
         int pre = node.getPre();
         AbstractNode n = tree.remove(pre);
-        n.removeFromView(viewId);
+        n.removeFromView(view.getViewId());
         for (int i = 0; i < node.size; i++) {
             n = tree.remove(pre);
-            n.removeFromView(viewId);
+            n.removeFromView(view.getViewId());
         }
     }
 
@@ -187,7 +187,7 @@ public class TreeStructure {
     public void deleteOnlySelf(AbstractNode node) {
         int pre = node.getPre();
         AbstractNode n = tree.remove(pre);
-        n.removeFromView(viewId);
+        n.removeFromView(view.getViewId());
     }
 
     public void incrementAncestorsSize(AbstractNode node) {

@@ -48,7 +48,7 @@ public class GraphViewImpl implements GraphView {
     public GraphViewImpl(Dhns dhns, int viewId) {
         this.dhns = dhns;
         this.viewId = viewId;
-        this.structure = new TreeStructure(viewId);
+        this.structure = new TreeStructure(this);
         this.structureModifier = new StructureModifier(dhns, this);
     }
 

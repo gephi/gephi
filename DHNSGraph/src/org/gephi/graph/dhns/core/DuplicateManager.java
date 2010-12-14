@@ -45,7 +45,7 @@ public class DuplicateManager {
     }
 
     public void duplicate(Dhns destination) {
-//        duplicate(destination, dhns.getGraphStructure().getMainView());
+        duplicate(destination, dhns.getGraphStructure().getMainView());
     }
 
     public void duplicate(Dhns destination, GraphViewImpl view) {
