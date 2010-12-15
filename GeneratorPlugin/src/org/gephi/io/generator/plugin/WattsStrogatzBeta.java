@@ -20,16 +20,30 @@
  */
 package org.gephi.io.generator.plugin;
 
+import java.util.Random;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
 import org.gephi.io.importer.api.ContainerLoader;
+import org.gephi.io.importer.api.EdgeDefault;
+import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.NodeDraft;
+import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Generates an undirected not necessarily connected graph.
+ *
+ * http://en.wikipedia.org/wiki/Watts_and_Strogatz_model
  * http://tam.cornell.edu/tam/cms/manage/upload/SS_nature_smallworld.pdf
  * http://www.bsos.umd.edu/socy/alan/stats/network-grad/summaries/Watts-Six%20Degrees-Ghosh.pdf
+ *
+ * N >= K >= ln(N) >= 1
+ * K % 2 == 0
+ * 0 <= beta <= 1
+ *
+ * Ω(N * K)
  *
  * @author Cezary Bartosiak
  */
@@ -38,8 +52,89 @@ public class WattsStrogatzBeta implements Generator {
 	private boolean cancel = false;
 	private ProgressTicket progressTicket;
 
+	private int    N    = 20;
+	private int    K    = 4;
+	private double beta = 0.2;
+
 	public void generate(ContainerLoader container) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		Progress.start(progressTicket, N + N * K);
+		Random random = new Random();
+		container.setEdgeDefault(EdgeDefault.UNDIRECTED);
+
+		NodeDraft[] nodes = new NodeDraft[N];
+
+		// Creating a regular ring lattice
+		for (int i = 0; i < N && !cancel; ++i) {
+			NodeDraft node = container.factory().newNodeDraft();
+			node.setLabel("Node " + i);
+			nodes[i] = node;
+			container.addNode(node);
+			Progress.progress(progressTicket);
+		}
+		for (int i = 0; i < N && !cancel; ++i)
+			for (int j = 1; j <= K / 2 && !cancel; ++j) {
+				EdgeDraft edge = container.factory().newEdgeDraft();
+				edge.setSource(nodes[i]);
+				edge.setTarget(nodes[(i + j) % N]);
+				container.addEdge(edge);
+				Progress.progress(progressTicket);
+			}
+
+		// Rewiring edges
+		for (int i = 0; i < N && !cancel; ++i)
+			for (int j = 1; j <= K / 2 && !cancel; ++j)
+				if (random.nextDouble() <= beta) {
+					container.removeEdge(getEdge(container, nodes[i], nodes[(i + j) % N]));
+
+					int k = random.nextInt(N);
+					while ((k == i || edgeExists(container, nodes[i], nodes[k])) && !cancel)
+						k = random.nextInt(N);
+
+					EdgeDraft edge = container.factory().newEdgeDraft();
+					edge.setSource(nodes[i]);
+					edge.setTarget(nodes[k]);
+					container.addEdge(edge);
+					
+					Progress.progress(progressTicket);
+				}
+
+		Progress.finish(progressTicket);
+		progressTicket = null;
+	}
+
+	private boolean edgeExists(ContainerLoader container, NodeDraft node1, NodeDraft node2) {
+		return container.edgeExists(node1, node2) || container.edgeExists(node2, node1);
+	}
+
+	private EdgeDraft getEdge(ContainerLoader container, NodeDraft node1, NodeDraft node2) {
+		EdgeDraft edge = container.getEdge(node1, node2);
+		if (edge == null)
+			edge = container.getEdge(node2, node1);
+		return edge;
+	}
+
+	public int getN() {
+		return N;
+	}
+
+	public int getK() {
+		return K;
+	}
+
+	public double getbeta() {
+		return beta;
+	}
+
+	public void setN(int N) {
+		this.N = N;
+	}
+
+	public void setK(int K) {
+		this.K = K;
+	}
+
+	public void setbeta(double beta) {
+		this.beta = beta;
 	}
 
 	public String getName() {

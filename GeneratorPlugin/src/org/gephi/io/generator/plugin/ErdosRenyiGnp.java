@@ -24,6 +24,7 @@ import java.util.Random;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
 import org.gephi.io.importer.api.ContainerLoader;
+import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.utils.progress.Progress;
@@ -32,7 +33,7 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Generates a directed not necessarily connected graph.
+ * Generates an undirected not necessarily connected graph.
  *
  * http://www.math-inst.hu/~p_erdos/1960-10.pdf
  * http://www.inf.uni-konstanz.de/algo/publications/bb-eglrn-05.pdf
@@ -55,6 +56,7 @@ public class ErdosRenyiGnp implements Generator {
 	public void generate(ContainerLoader container) {
 		Progress.start(progressTicket, n + n * n);
 		Random random = new Random();
+		container.setEdgeDefault(EdgeDefault.UNDIRECTED);
 
 		NodeDraft[] nodes = new NodeDraft[n];
 

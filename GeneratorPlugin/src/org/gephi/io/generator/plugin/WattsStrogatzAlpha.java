@@ -28,8 +28,9 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * http://en.wikipedia.org/wiki/Watts_and_Strogatz_model
  * http://tam.cornell.edu/tam/cms/manage/upload/SS_nature_smallworld.pdf
- *http://www.bsos.umd.edu/socy/alan/stats/network-grad/summaries/Watts-Six%20Degrees-Ghosh.pdf
+ * http://www.bsos.umd.edu/socy/alan/stats/network-grad/summaries/Watts-Six%20Degrees-Ghosh.pdf
  *
  * @author Cezary Bartosiak
  */

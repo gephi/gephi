@@ -24,6 +24,7 @@ import java.util.Random;
 import org.gephi.io.generator.spi.Generator;
 import org.gephi.io.generator.spi.GeneratorUI;
 import org.gephi.io.importer.api.ContainerLoader;
+import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.utils.progress.Progress;
@@ -32,7 +33,7 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Generates a directed connected graph.
+ * Generates an undirected connected graph.
  *
  * http://en.wikipedia.org/wiki/Barabási–Albert_model
  * http://www.barabasilab.com/pubs/CCNR-ALB_Publications/199910-15_Science-Emergence/199910-15_Science-Emergence.pdf
@@ -58,6 +59,7 @@ public class BarabasiAlbert implements Generator {
 	public void generate(ContainerLoader container) {
 		Progress.start(progressTicket, N + M);
 		Random random = new Random();
+		container.setEdgeDefault(EdgeDefault.UNDIRECTED);
 
 		NodeDraft[] nodes = new NodeDraft[N];
 		int[] degrees = new int[N];
