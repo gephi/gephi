@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Patick J. McSweeney <pjmcswee@syr.edu>
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -52,67 +52,67 @@ import org.openide.util.Lookup;
 public class DegreeDistribution implements Statistics, LongTask {
 
     /**  The combined In/Out-degree distribution. */
-    private double[][] mCombinedDistribution;
+    private double[][] combinedDistribution;
     /** The In-degree distribution. */
-    private double[][] mInDistribution;
+    private double[][] inDistribution;
     /** The out-degree distribution. */
-    private double[][] mOutDistribution;
+    private double[][] outDistribution;
     /** Remember if the metric has been canceled.  */
-    private boolean mIsCanceled;
+    private boolean isCanceled;
     /** The progress meter for this metric. */
-    private ProgressTicket mProgress;
+    private ProgressTicket progress;
     /**  Indicates if this network should be directed or undirected.*/
-    private boolean mDirected;
+    private boolean isDirected;
     /** The powerlaw value for the combined in/out-degree of this network. */
-    private double mCombinedAlpha;
+    private double combinedAlpha;
     /** The powerlaw value for the in-degree of this network. */
-    private double mInAlpha;
+    private double inAlpha;
     /** The powerlaw value for the out-degree of this network. */
-    private double mOutAlpha;
+    private double outAlpha;
     /** The powerlaw value for the combined in/out-degree of this network. */
-    private double mCombinedBeta;
+    private double combinedBeta;
     /** The powerlaw value for the in-degree of this network. */
-    private double mInBeta;
+    private double inBeta;
     /** The powerlaw value for the out-degree of this network. */
-    private double mOutBeta;
+    private double outBeta;
 
     public DegreeDistribution() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         if (graphController != null && graphController.getModel() != null) {
-            mDirected = graphController.getModel().isDirected();
+            isDirected = graphController.getModel().isDirected();
         }
     }
 
     /**
-     * @param pDirected Indicates the metric's interpretation of this network. 
+     * @param isDirected Indicates the metric's interpretation of this network.
      */
-    public void setDirected(boolean pDirected) {
-        this.mDirected = pDirected;
+    public void setDirected(boolean isDirected) {
+        this.isDirected = isDirected;
     }
 
     public boolean isDirected() {
-        return mDirected;
+        return isDirected;
     }
 
     /**
      * @return The combined in/out-degree power law value for this network.
      */
     public double getCombinedPowerLaw() {
-        return this.mCombinedAlpha;
+        return this.combinedAlpha;
     }
 
     /**
      * @return The combined in/out-degree power law value for this network.
      */
     public double getInPowerLaw() {
-        return this.mInAlpha;
+        return this.inAlpha;
     }
 
     /**
      * @return The combined in/out-degree power law value for this network.
      */
     public double getOutPowerLaw() {
-        return this.mOutAlpha;
+        return this.outAlpha;
     }
 
     /**
@@ -126,51 +126,51 @@ public class DegreeDistribution implements Statistics, LongTask {
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         //Get the graph from the graphController, based
         //on the mDirected variable.
-        Graph graph;
-        if (this.mDirected) {
-            graph = graphModel.getDirectedGraphVisible();
+        HierarchicalGraph graph;
+        if (isDirected) {
+            graph = graphModel.getHierarchicalDirectedGraphVisible();
         } else {
-            graph = graphModel.getUndirectedGraphVisible();
+            graph = graphModel.getHierarchicalUndirectedGraphVisible();
         }
         execute(graph, attributeModel);
     }
 
-    public void execute(Graph graph, AttributeModel attributeModel) {
+    public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
         //Mark this as not yet canceled.
-        this.mIsCanceled = false;
+        isCanceled = false;
 
         graph.readLock();
 
         //Start 
-        Progress.start(mProgress, graph.getNodeCount());
+        Progress.start(progress, graph.getNodeCount());
 
 
         //Consider the in and out degree of every node
-        if (this.mDirected) {
-            this.mInDistribution = new double[2][2 * graph.getNodeCount()];
-            this.mOutDistribution = new double[2][2 * graph.getNodeCount()];
+        if (isDirected) {
+            inDistribution = new double[2][2 * graph.getNodeCount()];
+            outDistribution = new double[2][2 * graph.getNodeCount()];
         } else {
-            this.mCombinedDistribution = new double[2][2 * graph.getNodeCount()];
+            combinedDistribution = new double[2][2 * graph.getNodeCount()];
         }
 
 
         int nodeCount = 0;
         for (Node node : graph.getNodes()) {
-            if (this.mDirected) {
-                int inDegree = ((DirectedGraph) graph).getInDegree(node);
-                int outDegree = ((DirectedGraph) graph).getOutDegree(node);
-                this.mInDistribution[1][inDegree]++;
-                this.mOutDistribution[1][outDegree]++;
-                this.mInDistribution[0][inDegree] = inDegree;
-                this.mOutDistribution[0][outDegree] = outDegree;
+            if (isDirected) {
+                int inDegree = ((HierarchicalDirectedGraph) graph).getTotalInDegree(node);
+                int outDegree = ((HierarchicalDirectedGraph) graph).getTotalOutDegree(node);
+                inDistribution[1][inDegree]++;
+                outDistribution[1][outDegree]++;
+                inDistribution[0][inDegree] = inDegree;
+                outDistribution[0][outDegree] = outDegree;
             } else {
-                int combinedDegree = ((UndirectedGraph) graph).getDegree(node);
-                this.mCombinedDistribution[1][combinedDegree]++;
-                this.mCombinedDistribution[0][combinedDegree] = combinedDegree;
+                int combinedDegree = ((HierarchicalUndirectedGraph) graph).getTotalDegree(node);
+                combinedDistribution[1][combinedDegree]++;
+                combinedDistribution[0][combinedDegree] = combinedDegree;
             }
-            Progress.progress(mProgress, nodeCount);
+            Progress.progress(progress, nodeCount);
             nodeCount++;
-            if (this.mIsCanceled) {
+            if (isCanceled) {
                 graph.readUnlockAll();
                 return;
             }
@@ -178,26 +178,26 @@ public class DegreeDistribution implements Statistics, LongTask {
 
         graph.readUnlock();
 
-        if (this.mDirected) {
+        if (isDirected) {
             double[] inFit = new double[2];
             double[] outFit = new double[2];
-            leastSquares(this.mInDistribution[1], inFit);
-            leastSquares(this.mOutDistribution[1], outFit);
-            this.mInAlpha = inFit[1];
-            this.mInBeta = inFit[0];
-            this.mOutAlpha = outFit[1];
-            this.mOutBeta = outFit[0];
+            leastSquares(inDistribution[1], inFit);
+            leastSquares(outDistribution[1], outFit);
+            inAlpha = inFit[1];
+            inBeta = inFit[0];
+            outAlpha = outFit[1];
+            outBeta = outFit[0];
         } else {
             double[] fit = new double[2];
-            leastSquares(this.mCombinedDistribution[1], fit);
-            this.mCombinedAlpha = fit[1];
-            this.mCombinedBeta = fit[0];
+            leastSquares(combinedDistribution[1], fit);
+            combinedAlpha = fit[1];
+            combinedBeta = fit[0];
         }
     }
 
     /**
      * Fits the logarithm distribution/degree to a straight line of the form:
-     *	a + b *x which is then interrpreted as a*x^y in the non-logarithmic scale
+     *	a + b *x which is then interpreted as a*x^y in the non-logarithmic scale
      *
      * @param dist The distribution of node degrees to fit to a logarithmized straight line
      *
@@ -211,7 +211,7 @@ public class DegreeDistribution implements Statistics, LongTask {
         //Vararibles to compute
         double SSxx = 0;
         double SSxy = 0;
-        double SSyy = 0;
+        //double SSyy = 0;
 
         //Compute the average log(x) value when for positive (>0) values
         double avgX = 0;
@@ -224,7 +224,7 @@ public class DegreeDistribution implements Statistics, LongTask {
                 nonZero++;
             }
 
-            if (this.mIsCanceled) {
+            if (isCanceled) {
                 return;
             }
 
@@ -236,7 +236,7 @@ public class DegreeDistribution implements Statistics, LongTask {
         for (int i = 1; i < dist.length; i++) {
             if (dist[i] > 0) {
                 SSxx += Math.pow(Math.log(i) - avgX, 2);
-                SSyy += Math.pow(Math.log(dist[i]) - avgY, 2);
+                //SSyy += Math.pow(Math.log(dist[i]) - avgY, 2);
                 SSxy += (Math.log(i) - avgX) * (Math.log(dist[i]) - avgY);
             }
         }
@@ -250,11 +250,7 @@ public class DegreeDistribution implements Statistics, LongTask {
      * @return A String report based on the interpretation of the network.
      */
     public String getReport() {
-        if (this.mDirected) {
-            return getDirectedReport();
-        } else {
-            return getUndirectedReport();
-        }
+        return (isDirected) ? getDirectedReport() : getUndirectedReport();
     }
 
     /**
@@ -264,20 +260,20 @@ public class DegreeDistribution implements Statistics, LongTask {
     private String getDirectedReport() {
         double inMax = 0;
         XYSeries inSeries2 = new XYSeries("Series 2");
-        for (int i = 1; i < this.mInDistribution[1].length; i++) {
-            if (this.mInDistribution[1][i] > 0) {
-                inSeries2.add((Math.log(this.mInDistribution[0][i]) / Math.log(Math.E)), (Math.log(this.mInDistribution[1][i]) / Math.log(Math.E)));
-                inMax = (float) Math.max((Math.log(this.mInDistribution[0][i]) / Math.log(Math.E)), inMax);
+        for (int i = 1; i < inDistribution[1].length; i++) {
+            if (inDistribution[1][i] > 0) {
+                inSeries2.add((Math.log(inDistribution[0][i]) / Math.log(Math.E)), (Math.log(inDistribution[1][i]) / Math.log(Math.E)));
+                inMax = (float) Math.max((Math.log(inDistribution[0][i]) / Math.log(Math.E)), inMax);
             }
         }
-        double inA = this.mInAlpha;
-        double inB = this.mInBeta;
+        double inA = inAlpha;
+        double inB = inBeta;
 
         String inImageFile = "";
         String outImageFile = "";
         try {
 
-            XYSeries inSeries1 = new XYSeries(this.mInAlpha + " ");
+            XYSeries inSeries1 = new XYSeries(inAlpha + " ");
             inSeries1.add(0, inA);
             inSeries1.add(inMax, inA + inB * inMax);
 
@@ -319,17 +315,17 @@ public class DegreeDistribution implements Statistics, LongTask {
 
             double outMax = 0;
             XYSeries outSeries2 = new XYSeries("Series 2");
-            for (int i = 1; i < this.mOutDistribution[1].length; i++) {
-                if (this.mOutDistribution[1][i] > 0) {
-                    outSeries2.add((Math.log(this.mOutDistribution[0][i]) / Math.log(Math.E)), (Math.log(this.mOutDistribution[1][i]) / Math.log(Math.E)));
-                    outMax = (float) Math.max((Math.log(this.mOutDistribution[0][i]) / Math.log(Math.E)), outMax);
+            for (int i = 1; i < outDistribution[1].length; i++) {
+                if (outDistribution[1][i] > 0) {
+                    outSeries2.add((Math.log(outDistribution[0][i]) / Math.log(Math.E)), (Math.log(outDistribution[1][i]) / Math.log(Math.E)));
+                    outMax = (float) Math.max((Math.log(outDistribution[0][i]) / Math.log(Math.E)), outMax);
                 }
             }
-            double outA = this.mOutAlpha;
-            double outB = this.mOutBeta;
+            double outA = outAlpha;
+            double outB = outBeta;
 
 
-            XYSeries outSeries1 = new XYSeries(this.mOutAlpha + " ");
+            XYSeries outSeries1 = new XYSeries(outAlpha + " ");
             outSeries1.add(0, outA);
             outSeries1.add(outMax, outA + outB * outMax);
 
@@ -375,10 +371,10 @@ public class DegreeDistribution implements Statistics, LongTask {
                 + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
-                + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
+                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
-                + "In-Degree Power Law: -" + this.mInAlpha + "\n <BR>"
-                + inImageFile + "<br>Out-Degree Power Law: -" + this.mOutAlpha + "\n <BR>"
+                + "In-Degree Power Law: -" + inAlpha + "\n <BR>"
+                + inImageFile + "<br>Out-Degree Power Law: -" + outAlpha + "\n <BR>"
                 + outImageFile + "</BODY> </HTML>";
 
 
@@ -392,17 +388,17 @@ public class DegreeDistribution implements Statistics, LongTask {
     private String getUndirectedReport() {
         double max = 0;
         XYSeries series2 = new XYSeries("Series 2");
-        for (int i = 1; i < this.mCombinedDistribution[1].length; i++) {
-            if (this.mCombinedDistribution[1][i] > 0) {
-                series2.add((Math.log(this.mCombinedDistribution[0][i]) / Math.log(Math.E)), (Math.log(this.mCombinedDistribution[1][i]) / Math.log(Math.E)));
-                max = (float) Math.max((Math.log(this.mCombinedDistribution[0][i]) / Math.log(Math.E)), max);
+        for (int i = 1; i < combinedDistribution[1].length; i++) {
+            if (combinedDistribution[1][i] > 0) {
+                series2.add((Math.log(combinedDistribution[0][i]) / Math.log(Math.E)), (Math.log(combinedDistribution[1][i]) / Math.log(Math.E)));
+                max = (float) Math.max((Math.log(combinedDistribution[0][i]) / Math.log(Math.E)), max);
             }
         }
-        double a = this.mCombinedAlpha;
-        double b = this.mCombinedBeta;
+        double a = combinedAlpha;
+        double b = combinedBeta;
 
 
-        XYSeries series1 = new XYSeries(this.mCombinedAlpha + " ");
+        XYSeries series1 = new XYSeries(combinedAlpha + " ");
         series1.add(0, a);
         series1.add(max, a + b * max);
 
@@ -447,14 +443,14 @@ public class DegreeDistribution implements Statistics, LongTask {
         }
 
 
-        String report = new String("<HTML> <BODY> <h1>Degree Distribution Metric Report </h1> "
+        String report = "<HTML> <BODY> <h1>Degree Distribution Metric Report </h1> "
                 + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
-                + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
+                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
-                + "In-Degree Power Law: -" + this.mInAlpha + "\n <BR>"
-                + " Power: -" + this.mCombinedAlpha + "\n <BR>" + imageFile + "</BODY> </HTML>");
+                + "Degree Power Law: -" + combinedAlpha + "\n <BR>"
+                + imageFile + "</BODY> </HTML>";
         return report;
     }
 
@@ -462,7 +458,7 @@ public class DegreeDistribution implements Statistics, LongTask {
      * @return Indicates that the metric canceled flag was set.
      */
     public boolean cancel() {
-        this.mIsCanceled = true;
+        isCanceled = true;
         return true;
     }
 
@@ -470,6 +466,6 @@ public class DegreeDistribution implements Statistics, LongTask {
      * @param progressTicket Sets the progress meter for the metric.
      */
     public void setProgressTicket(ProgressTicket pProgressTicket) {
-        this.mProgress = pProgressTicket;
+        progress = pProgressTicket;
     }
 }
