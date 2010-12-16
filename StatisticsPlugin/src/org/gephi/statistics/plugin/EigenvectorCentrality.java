@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Patick J. McSweeney <pjmcswee@syr.edu>
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -29,12 +29,12 @@ import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.TempDirUtils;
@@ -61,23 +61,23 @@ import org.openide.util.Lookup;
 public class EigenvectorCentrality implements Statistics, LongTask {
 
     public static final String EIGENVECTOR = "eigencentrality";
-    private int mNumRuns = 100;
-    private double[] mCentralities;
-    private double mSumChange;
-    private ProgressTicket mProgress;
+    private int numRuns = 100;
+    private double[] centralities;
+    private double sumChange;
+    private ProgressTicket progress;
     /** */
-    private boolean mIsCanceled;
-    private boolean mDirected;
+    private boolean isCanceled;
+    private boolean isDirected;
 
     public EigenvectorCentrality() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         if (graphController != null && graphController.getModel() != null) {
-            mDirected = graphController.getModel().isDirected();
+            isDirected = graphController.getModel().isDirected();
         }
     }
 
-    public void setNumRuns(int pNumRuns) {
-        mNumRuns = pNumRuns;
+    public void setNumRuns(int numRuns) {
+        this.numRuns = numRuns;
     }
 
     /**
@@ -85,7 +85,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
      * @return
      */
     public int getNumRuns() {
-        return mNumRuns;
+        return numRuns;
     }
 
     /**
@@ -93,15 +93,15 @@ public class EigenvectorCentrality implements Statistics, LongTask {
      * @return
      */
     public boolean isDirected() {
-        return mDirected;
+        return isDirected;
     }
 
     /**
      * 
-     * @param pDirected
+     * @param isDirected
      */
-    public void setDirected(boolean pDirected) {
-        mDirected = pDirected;
+    public void setDirected(boolean isDirected) {
+        this.isDirected = isDirected;
     }
 
     /**
@@ -110,16 +110,16 @@ public class EigenvectorCentrality implements Statistics, LongTask {
      * @param attributeModel
      */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        Graph graph = null;
-        if (mDirected) {
-            graph = graphModel.getDirectedGraphVisible();
+        HierarchicalGraph graph = null;
+        if (isDirected) {
+            graph = graphModel.getHierarchicalDirectedGraphVisible();
         } else {
-            graph = graphModel.getUndirectedGraphVisible();
+            graph = graphModel.getHierarchicalUndirectedGraphVisible();
         }
         execute(graph, attributeModel);
     }
 
-    public void execute(Graph graph, AttributeModel attributeModel) {
+    public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
 
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn eigenCol = nodeTable.getColumn(EIGENVECTOR);
@@ -131,9 +131,9 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         graph.readLock();
 
         double[] tmp = new double[N];
-        mCentralities = new double[N];
+        centralities = new double[N];
 
-        Progress.start(mProgress, mNumRuns);
+        Progress.start(progress, numRuns);
 
         HashMap<Integer, Node> indicies = new HashMap<Integer, Node>();
         HashMap<Node, Integer> invIndicies = new HashMap<Node, Integer>();
@@ -141,16 +141,16 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         for (Node u : graph.getNodes()) {
             indicies.put(count, u);
             invIndicies.put(u, count);
-            mCentralities[count] = 1;
+            centralities[count] = 1;
             count++;
         }
-        for (int s = 0; s < mNumRuns; s++) {
+        for (int s = 0; s < numRuns; s++) {
             double max = 0;
             for (int i = 0; i < N; i++) {
                 Node u = indicies.get(i);
                 EdgeIterable iter = null;
-                if (mDirected) {
-                    iter = ((DirectedGraph) graph).getInEdges(u);
+                if (isDirected) {
+                    iter = ((HierarchicalDirectedGraph) graph).getInEdges(u);
                 } else {
                     iter = graph.getEdges(u);
                 }
@@ -158,42 +158,42 @@ public class EigenvectorCentrality implements Statistics, LongTask {
                 for (Edge e : iter) {
                     Node v = graph.getOpposite(u, e);
                     Integer id = invIndicies.get(v);
-                    tmp[i] += mCentralities[id];
+                    tmp[i] += centralities[id];
                 }
                 max = Math.max(max, tmp[i]);
-                if (this.mIsCanceled) {
+                if (isCanceled) {
                     return;
                 }
             }
-            mSumChange = 0;
+            sumChange = 0;
             for (int k = 0; k < N; k++) {
                 if (max != 0) {
-                    mSumChange += Math.abs(mCentralities[k] - (tmp[k] / max));
-                    mCentralities[k] = tmp[k] / max;
+                    sumChange += Math.abs(centralities[k] - (tmp[k] / max));
+                    centralities[k] = tmp[k] / max;
                     //tmp[k] = 0;
                 }
-                if (this.mIsCanceled) {
+                if (isCanceled) {
                     return;
                 }
             }
-            if (this.mIsCanceled) {
+            if (isCanceled) {
                 return;
             }
 
-            Progress.progress(mProgress);
+            Progress.progress(progress);
         }
 
         for (int i = 0; i < N; i++) {
             Node s = indicies.get(i);
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
-            row.setValue(eigenCol, mCentralities[i]);
-            if (this.mIsCanceled) {
+            row.setValue(eigenCol, centralities[i]);
+            if (isCanceled) {
                 return;
             }
         }
         graph.readUnlock();
 
-        Progress.finish(mProgress);
+        Progress.finish(progress);
     }
 
     /**
@@ -201,11 +201,9 @@ public class EigenvectorCentrality implements Statistics, LongTask {
      * @return
      */
     public String getReport() {
-
-        double max = 0;
         XYSeries series = new XYSeries("Series 2");
-        for (int i = 0; i < this.mCentralities.length; i++) {
-            series.add(i, mCentralities[i]);
+        for (int i = 0; i < centralities.length; i++) {
+            series.add(i, centralities[i]);
         }
 
         XYSeriesCollection dataset = new XYSeriesCollection();
@@ -248,9 +246,9 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         String report = "<HTML> <BODY> <h1>Eigenvector Centrality Report</h1> "
                 + "<hr>"
                 + "<h2> Parameters: </h2>"
-                + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
-                + "Number of iterations: " + this.mNumRuns + "<br>"
-                + "Sum change: " + this.mSumChange
+                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
+                + "Number of iterations: " + numRuns + "<br>"
+                + "Sum change: " + sumChange
                 + "<br> <h2> Results: </h2>"
                 + imageFile
                 + "</BODY></HTML>";
@@ -260,12 +258,12 @@ public class EigenvectorCentrality implements Statistics, LongTask {
     }
 
     public boolean cancel() {
-        this.mIsCanceled = true;
+        this.isCanceled = true;
         return true;
     }
 
     public void setProgressTicket(ProgressTicket progressTicket) {
-        this.mProgress = progressTicket;
+        this.progress = progressTicket;
 
     }
 }
