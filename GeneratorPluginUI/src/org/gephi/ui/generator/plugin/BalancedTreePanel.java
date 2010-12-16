@@ -20,7 +20,6 @@
  */
 package org.gephi.ui.generator.plugin;
 
-import org.gephi.lib.validation.PositiveNumberValidator;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
@@ -32,37 +31,33 @@ import org.netbeans.validation.api.ui.ValidationPanel;
  *
  * @author Cezary Bartosiak
  */
-public class ErdosRenyiGnmPanel extends javax.swing.JPanel {
+public class BalancedTreePanel extends javax.swing.JPanel {
 
     /** Creates new form BarabasiAlbertPanel */
-    public ErdosRenyiGnmPanel() {
+    public BalancedTreePanel() {
         initComponents();
     }
 
-	public static ValidationPanel createValidationPanel(ErdosRenyiGnmPanel innerPanel) {
+	public static ValidationPanel createValidationPanel(BalancedTreePanel innerPanel) {
 		ValidationPanel validationPanel = new ValidationPanel();
 		if (innerPanel == null)
-			innerPanel = new ErdosRenyiGnmPanel();
+			innerPanel = new BalancedTreePanel();
 		validationPanel.setInnerComponent(innerPanel);
 
 		ValidationGroup group = validationPanel.getValidationGroup();
 
-		group.add(innerPanel.nField, Validators.REQUIRE_NON_EMPTY_STRING,
-				new PositiveNumberValidator());
-		group.add(innerPanel.nField, Validators.REQUIRE_NON_EMPTY_STRING,
-				new mnValidator(innerPanel));
-		group.add(innerPanel.mField, Validators.REQUIRE_NON_EMPTY_STRING,
-				new mValidator(innerPanel));
-		group.add(innerPanel.mField, Validators.REQUIRE_NON_EMPTY_STRING,
-				new mnValidator(innerPanel));
+		group.add(innerPanel.rField, Validators.REQUIRE_NON_EMPTY_STRING,
+				new rValidator(innerPanel));
+		group.add(innerPanel.hField, Validators.REQUIRE_NON_EMPTY_STRING,
+				new hValidator(innerPanel));
 
 		return validationPanel;
 	}
 
-	private static class mValidator implements Validator<String> {
-		private ErdosRenyiGnmPanel innerPanel;
+	private static class rValidator implements Validator<String> {
+		private BalancedTreePanel innerPanel;
 
-		public mValidator(ErdosRenyiGnmPanel innerPanel) {
+		public rValidator(BalancedTreePanel innerPanel) {
 			this.innerPanel = innerPanel;
 		}
 
@@ -71,12 +66,12 @@ public class ErdosRenyiGnmPanel extends javax.swing.JPanel {
 			boolean result = false;
 
 			try {
-				Integer m = Integer.parseInt(innerPanel.mField.getText());
-				result = m >= 0;
+				Integer r = Integer.parseInt(innerPanel.rField.getText());
+				result = r >= 2;
 			}
 			catch (Exception e) { }
 			if (!result) {
-				String message = "<html>m &gt;= 0</html>";
+				String message = "<html>r &gt;= 2</html>";
 				problems.add(message);
 			}
 
@@ -84,10 +79,10 @@ public class ErdosRenyiGnmPanel extends javax.swing.JPanel {
 		}
     }
 
-	private static class mnValidator implements Validator<String> {
-		private ErdosRenyiGnmPanel innerPanel;
+	private static class hValidator implements Validator<String> {
+		private BalancedTreePanel innerPanel;
 
-		public mnValidator(ErdosRenyiGnmPanel innerPanel) {
+		public hValidator(BalancedTreePanel innerPanel) {
 			this.innerPanel = innerPanel;
 		}
 
@@ -96,13 +91,12 @@ public class ErdosRenyiGnmPanel extends javax.swing.JPanel {
 			boolean result = false;
 
 			try {
-				Integer m = Integer.parseInt(innerPanel.mField.getText());
-				Integer n = Integer.parseInt(innerPanel.nField.getText());
-				result = m <= n * (n - 1) / 2;
+				Integer h = Integer.parseInt(innerPanel.hField.getText());
+				result = h >= 1;
 			}
 			catch (Exception e) { }
 			if (!result) {
-				String message = "<html>m &lt;= n * (n - 1) / 2</html>";
+				String message = "<html>h &gt;= 1</html>";
 				problems.add(message);
 			}
 
@@ -119,55 +113,55 @@ public class ErdosRenyiGnmPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        nField = new javax.swing.JTextField();
-        mField = new javax.swing.JTextField();
-        nLabel = new javax.swing.JLabel();
-        mLabel = new javax.swing.JLabel();
+        rField = new javax.swing.JTextField();
+        hField = new javax.swing.JTextField();
+        rLabel = new javax.swing.JLabel();
+        hLabel = new javax.swing.JLabel();
         constraintsLabel = new javax.swing.JLabel();
 
-        setPreferredSize(new java.awt.Dimension(431, 116));
+        setPreferredSize(new java.awt.Dimension(330, 102));
 
-        nField.setText(org.openide.util.NbBundle.getMessage(ErdosRenyiGnmPanel.class, "ErdosRenyiGnmPanel.nField.text")); // NOI18N
+        rField.setText(org.openide.util.NbBundle.getMessage(BalancedTreePanel.class, "BalancedTreePanel.rField.text")); // NOI18N
 
-        mField.setText(org.openide.util.NbBundle.getMessage(ErdosRenyiGnmPanel.class, "ErdosRenyiGnmPanel.mField.text")); // NOI18N
+        hField.setText(org.openide.util.NbBundle.getMessage(BalancedTreePanel.class, "BalancedTreePanel.hField.text")); // NOI18N
 
-        nLabel.setText(org.openide.util.NbBundle.getMessage(ErdosRenyiGnmPanel.class, "ErdosRenyiGnmPanel.nLabel.text")); // NOI18N
+        rLabel.setText(org.openide.util.NbBundle.getMessage(BalancedTreePanel.class, "BalancedTreePanel.rLabel.text")); // NOI18N
 
-        mLabel.setText(org.openide.util.NbBundle.getMessage(ErdosRenyiGnmPanel.class, "ErdosRenyiGnmPanel.mLabel.text")); // NOI18N
+        hLabel.setText(org.openide.util.NbBundle.getMessage(BalancedTreePanel.class, "BalancedTreePanel.hLabel.text")); // NOI18N
 
-        constraintsLabel.setText(org.openide.util.NbBundle.getMessage(ErdosRenyiGnmPanel.class, "ErdosRenyiGnmPanel.constraintsLabel.text")); // NOI18N
+        constraintsLabel.setText(org.openide.util.NbBundle.getMessage(BalancedTreePanel.class, "BalancedTreePanel.constraintsLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nLabel)
-                            .addComponent(mLabel))
+                            .addComponent(rLabel)
+                            .addComponent(hLabel))
                         .addGap(60, 60, 60)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(mField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
-                            .addComponent(nField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(constraintsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(175, 175, 175))))
+                            .addComponent(hField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                            .addComponent(rField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(136, 136, 136)
+                        .addComponent(constraintsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nLabel))
+                    .addComponent(rField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(mField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(mLabel))
+                    .addComponent(hField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(hLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(constraintsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -177,10 +171,10 @@ public class ErdosRenyiGnmPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel constraintsLabel;
-    protected javax.swing.JTextField mField;
-    private javax.swing.JLabel mLabel;
-    protected javax.swing.JTextField nField;
-    private javax.swing.JLabel nLabel;
+    protected javax.swing.JTextField hField;
+    private javax.swing.JLabel hLabel;
+    protected javax.swing.JTextField rField;
+    private javax.swing.JLabel rLabel;
     // End of variables declaration//GEN-END:variables
 
 }

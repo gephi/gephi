@@ -20,7 +20,7 @@
  */
 package org.gephi.ui.generator.plugin;
 
-import org.gephi.lib.validation.PositiveNumberValidator;
+import org.gephi.lib.validation.BetweenZeroAndOneValidator;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
@@ -32,37 +32,35 @@ import org.netbeans.validation.api.ui.ValidationPanel;
  *
  * @author Cezary Bartosiak
  */
-public class ErdosRenyiGnmPanel extends javax.swing.JPanel {
+public class WattsStrogatzAlphaPanel extends javax.swing.JPanel {
 
     /** Creates new form BarabasiAlbertPanel */
-    public ErdosRenyiGnmPanel() {
+    public WattsStrogatzAlphaPanel() {
         initComponents();
     }
 
-	public static ValidationPanel createValidationPanel(ErdosRenyiGnmPanel innerPanel) {
+	public static ValidationPanel createValidationPanel(WattsStrogatzAlphaPanel innerPanel) {
 		ValidationPanel validationPanel = new ValidationPanel();
 		if (innerPanel == null)
-			innerPanel = new ErdosRenyiGnmPanel();
+			innerPanel = new WattsStrogatzAlphaPanel();
 		validationPanel.setInnerComponent(innerPanel);
 
 		ValidationGroup group = validationPanel.getValidationGroup();
 
 		group.add(innerPanel.nField, Validators.REQUIRE_NON_EMPTY_STRING,
-				new PositiveNumberValidator());
-		group.add(innerPanel.nField, Validators.REQUIRE_NON_EMPTY_STRING,
-				new mnValidator(innerPanel));
-		group.add(innerPanel.mField, Validators.REQUIRE_NON_EMPTY_STRING,
-				new mValidator(innerPanel));
-		group.add(innerPanel.mField, Validators.REQUIRE_NON_EMPTY_STRING,
-				new mnValidator(innerPanel));
+				new nkValidator(innerPanel));
+		group.add(innerPanel.kField, Validators.REQUIRE_NON_EMPTY_STRING,
+				new nkValidator(innerPanel));
+		group.add(innerPanel.alphaField, Validators.REQUIRE_NON_EMPTY_STRING,
+				new alphaValidator(innerPanel));
 
 		return validationPanel;
 	}
 
-	private static class mValidator implements Validator<String> {
-		private ErdosRenyiGnmPanel innerPanel;
+	private static class nkValidator implements Validator<String> {
+		private WattsStrogatzAlphaPanel innerPanel;
 
-		public mValidator(ErdosRenyiGnmPanel innerPanel) {
+		public nkValidator(WattsStrogatzAlphaPanel innerPanel) {
 			this.innerPanel = innerPanel;
 		}
 
@@ -71,12 +69,13 @@ public class ErdosRenyiGnmPanel extends javax.swing.JPanel {
 			boolean result = false;
 
 			try {
-				Integer m = Integer.parseInt(innerPanel.mField.getText());
-				result = m >= 0;
+				Integer n = Integer.parseInt(innerPanel.nField.getText());
+				Integer k = Integer.parseInt(innerPanel.kField.getText());
+				result = n > k && k > 0;
 			}
 			catch (Exception e) { }
 			if (!result) {
-				String message = "<html>m &gt;= 0</html>";
+				String message = "<html>n &gt; k &gt; 0</html>";
 				problems.add(message);
 			}
 
@@ -84,10 +83,10 @@ public class ErdosRenyiGnmPanel extends javax.swing.JPanel {
 		}
     }
 
-	private static class mnValidator implements Validator<String> {
-		private ErdosRenyiGnmPanel innerPanel;
+	private static class alphaValidator implements Validator<String> {
+		private WattsStrogatzAlphaPanel innerPanel;
 
-		public mnValidator(ErdosRenyiGnmPanel innerPanel) {
+		public alphaValidator(WattsStrogatzAlphaPanel innerPanel) {
 			this.innerPanel = innerPanel;
 		}
 
@@ -96,13 +95,12 @@ public class ErdosRenyiGnmPanel extends javax.swing.JPanel {
 			boolean result = false;
 
 			try {
-				Integer m = Integer.parseInt(innerPanel.mField.getText());
-				Integer n = Integer.parseInt(innerPanel.nField.getText());
-				result = m <= n * (n - 1) / 2;
+				Double alpha = Double.parseDouble(innerPanel.alphaField.getText());
+				result = alpha >= 0;
 			}
 			catch (Exception e) { }
 			if (!result) {
-				String message = "<html>m &lt;= n * (n - 1) / 2</html>";
+				String message = "<html>alpha &gt;= 0</html>";
 				problems.add(message);
 			}
 
@@ -119,43 +117,51 @@ public class ErdosRenyiGnmPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        alphaLabel = new javax.swing.JLabel();
+        alphaField = new javax.swing.JTextField();
         nField = new javax.swing.JTextField();
-        mField = new javax.swing.JTextField();
+        kField = new javax.swing.JTextField();
         nLabel = new javax.swing.JLabel();
-        mLabel = new javax.swing.JLabel();
+        kLabel = new javax.swing.JLabel();
         constraintsLabel = new javax.swing.JLabel();
 
-        setPreferredSize(new java.awt.Dimension(431, 116));
+        setPreferredSize(new java.awt.Dimension(364, 128));
 
-        nField.setText(org.openide.util.NbBundle.getMessage(ErdosRenyiGnmPanel.class, "ErdosRenyiGnmPanel.nField.text")); // NOI18N
+        alphaLabel.setText(org.openide.util.NbBundle.getMessage(WattsStrogatzAlphaPanel.class, "WattsStrogatzAlphaPanel.alphaLabel.text")); // NOI18N
 
-        mField.setText(org.openide.util.NbBundle.getMessage(ErdosRenyiGnmPanel.class, "ErdosRenyiGnmPanel.mField.text")); // NOI18N
+        alphaField.setText(org.openide.util.NbBundle.getMessage(WattsStrogatzAlphaPanel.class, "WattsStrogatzAlphaPanel.alphaField.text")); // NOI18N
 
-        nLabel.setText(org.openide.util.NbBundle.getMessage(ErdosRenyiGnmPanel.class, "ErdosRenyiGnmPanel.nLabel.text")); // NOI18N
+        nField.setText(org.openide.util.NbBundle.getMessage(WattsStrogatzAlphaPanel.class, "WattsStrogatzAlphaPanel.nField.text")); // NOI18N
 
-        mLabel.setText(org.openide.util.NbBundle.getMessage(ErdosRenyiGnmPanel.class, "ErdosRenyiGnmPanel.mLabel.text")); // NOI18N
+        kField.setText(org.openide.util.NbBundle.getMessage(WattsStrogatzAlphaPanel.class, "WattsStrogatzAlphaPanel.kField.text")); // NOI18N
 
-        constraintsLabel.setText(org.openide.util.NbBundle.getMessage(ErdosRenyiGnmPanel.class, "ErdosRenyiGnmPanel.constraintsLabel.text")); // NOI18N
+        nLabel.setText(org.openide.util.NbBundle.getMessage(WattsStrogatzAlphaPanel.class, "WattsStrogatzAlphaPanel.nLabel.text")); // NOI18N
+
+        kLabel.setText(org.openide.util.NbBundle.getMessage(WattsStrogatzAlphaPanel.class, "WattsStrogatzAlphaPanel.kLabel.text")); // NOI18N
+
+        constraintsLabel.setText(org.openide.util.NbBundle.getMessage(WattsStrogatzAlphaPanel.class, "WattsStrogatzAlphaPanel.constraintsLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nLabel)
-                            .addComponent(mLabel))
-                        .addGap(60, 60, 60)
+                            .addComponent(kLabel)
+                            .addComponent(alphaLabel))
+                        .addGap(25, 25, 25)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(mField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
-                            .addComponent(nField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(constraintsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(175, 175, 175))))
+                            .addComponent(kField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                            .addComponent(alphaField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                            .addComponent(nField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(155, 155, 155)
+                        .addComponent(constraintsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -166,19 +172,25 @@ public class ErdosRenyiGnmPanel extends javax.swing.JPanel {
                     .addComponent(nLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(mField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(mLabel))
+                    .addComponent(kField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(kLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(alphaField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(alphaLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(constraintsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    protected javax.swing.JTextField alphaField;
+    private javax.swing.JLabel alphaLabel;
     private javax.swing.JLabel constraintsLabel;
-    protected javax.swing.JTextField mField;
-    private javax.swing.JLabel mLabel;
+    protected javax.swing.JTextField kField;
+    private javax.swing.JLabel kLabel;
     protected javax.swing.JTextField nField;
     private javax.swing.JLabel nLabel;
     // End of variables declaration//GEN-END:variables

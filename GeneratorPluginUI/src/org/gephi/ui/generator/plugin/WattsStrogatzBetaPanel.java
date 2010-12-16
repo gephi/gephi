@@ -21,7 +21,6 @@
 package org.gephi.ui.generator.plugin;
 
 import org.gephi.lib.validation.BetweenZeroAndOneValidator;
-import org.gephi.lib.validation.PositiveNumberValidator;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
@@ -72,11 +71,11 @@ public class WattsStrogatzBetaPanel extends javax.swing.JPanel {
 			try {
 				Integer N = Integer.parseInt(innerPanel.NField.getText());
 				Integer K = Integer.parseInt(innerPanel.KField.getText());
-				result = N >= K;
+				result = N > K;
 			}
 			catch (Exception e) { }
 			if (!result) {
-				String message = "<html>N &gt;= K</html>";
+				String message = "<html>N &gt; K</html>";
 				problems.add(message);
 			}
 
