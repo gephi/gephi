@@ -54,6 +54,7 @@ public class KleinbergUIImpl implements KleinbergUI {
 		panel.pField.setText(String.valueOf(kleinberg.getp()));
 		panel.qField.setText(String.valueOf(kleinberg.getq()));
 		panel.rField.setText(String.valueOf(kleinberg.getr()));
+		panel.torusCheckBox.setSelected(kleinberg.isTorusBased());
 	}
 
 	public void unsetup() {
@@ -61,6 +62,7 @@ public class KleinbergUIImpl implements KleinbergUI {
 		kleinberg.setp(Integer.parseInt(panel.pField.getText()));
 		kleinberg.setq(Integer.parseInt(panel.qField.getText()));
 		kleinberg.setr(Integer.parseInt(panel.rField.getText()));
+		kleinberg.setTorusBased(panel.torusCheckBox.isSelected());
 		panel = null;
 	}
 }

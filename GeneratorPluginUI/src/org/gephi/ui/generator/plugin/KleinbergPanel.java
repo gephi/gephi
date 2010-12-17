@@ -20,7 +20,6 @@
  */
 package org.gephi.ui.generator.plugin;
 
-import org.gephi.lib.validation.PositiveNumberValidator;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
@@ -185,8 +184,9 @@ public class KleinbergPanel extends javax.swing.JPanel {
         constraintsLabel = new javax.swing.JLabel();
         rLabel = new javax.swing.JLabel();
         rField = new javax.swing.JTextField();
+        torusCheckBox = new javax.swing.JCheckBox();
 
-        setPreferredSize(new java.awt.Dimension(399, 224));
+        setPreferredSize(new java.awt.Dimension(399, 247));
 
         qLabel.setText(org.openide.util.NbBundle.getMessage(KleinbergPanel.class, "KleinbergPanel.qLabel.text")); // NOI18N
 
@@ -205,6 +205,8 @@ public class KleinbergPanel extends javax.swing.JPanel {
         rLabel.setText(org.openide.util.NbBundle.getMessage(KleinbergPanel.class, "KleinbergPanel.rLabel.text")); // NOI18N
 
         rField.setText(org.openide.util.NbBundle.getMessage(KleinbergPanel.class, "KleinbergPanel.rField.text")); // NOI18N
+
+        torusCheckBox.setText(org.openide.util.NbBundle.getMessage(KleinbergPanel.class, "KleinbergPanel.torusCheckBox.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -228,7 +230,10 @@ public class KleinbergPanel extends javax.swing.JPanel {
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(constraintsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(86, 86, 86))))
+                        .addGap(82, 82, 82))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(torusCheckBox)
+                        .addContainerGap(306, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -249,7 +254,9 @@ public class KleinbergPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(torusCheckBox)
+                .addGap(4, 4, 4)
                 .addComponent(constraintsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -266,6 +273,7 @@ public class KleinbergPanel extends javax.swing.JPanel {
     private javax.swing.JLabel qLabel;
     protected javax.swing.JTextField rField;
     private javax.swing.JLabel rLabel;
+    protected javax.swing.JCheckBox torusCheckBox;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -59,6 +59,8 @@ public class Kleinberg implements Generator {
 	private int q = 2;
 	private int r = 0;
 
+	private boolean torusBased = false;
+
 	public void generate(ContainerLoader container) {
 		Progress.start(progressTicket, n * n + n * n * (2 * p + 1) * (2 * p + 1) +
 				(int)Math.pow(n, 4) + n * n * q);
@@ -80,10 +82,11 @@ public class Kleinberg implements Generator {
 			for (int j = 0; j < n && !cancel; ++j)
 				for (int k = i - p; k <= i + p && !cancel; ++k)
 					for (int l = j - p; l <= j + p && !cancel; ++l) {
-						if (k >= 0 && k < n && l >= 0 && l < n && d(i, j, k, l) <= p && nodes[i][j] != nodes[k][l]) {
+						if ((torusBased || !torusBased && k >= 0 && k < n && l >= 0 && l < n) &&
+								d(i, j, k, l) <= p && nodes[i][j] != nodes[(k + n) % n][(l + n) % n]) {
 							EdgeDraft edge = container.factory().newEdgeDraft();
 							edge.setSource(nodes[i][j]);
-							edge.setTarget(nodes[k][l]);
+							edge.setTarget(nodes[(k + n) % n][(l + n) % n]);
 							container.addEdge(edge);
 						}
 						Progress.progress(progressTicket);
@@ -95,8 +98,10 @@ public class Kleinberg implements Generator {
 				double sum = 0.0;
 				for (int k = 0; k < n && !cancel; ++k)
 					for (int l = 0; l < n && !cancel; ++l) {
-						if (d(i, j, k, l) > p)
+						if (!torusBased && d(i, j, k, l) > p)
 							sum += Math.pow(d(i, j, k, l), -r);
+						else if (torusBased && dtb(i, j, k, l) > p)
+							sum += Math.pow(dtb(i, j, k, l), -r);
 						Progress.progress(progressTicket);
 					}
 				for (int m = 0; m < q && !cancel; ++m) {
@@ -106,8 +111,8 @@ public class Kleinberg implements Generator {
 						double pki = 0.0;
 						for (int k = 0; k < n && !e && !cancel; ++k)
 							for (int l = 0; l < n && !e && !cancel; ++l)
-								if (d(i, j, k, l) > p) {
-									pki += Math.pow(d(i, j, k, l), -r) / sum;
+								if (!torusBased && d(i, j, k, l) > p || torusBased && dtb(i, j, k, l) > p) {
+									pki += Math.pow(!torusBased ? d(i, j, k, l) : dtb(i, j, k, l), -r) / sum;
 
 									if (b <= pki && !container.edgeExists(nodes[i][j], nodes[k][l])) {
 										EdgeDraft edge = container.factory().newEdgeDraft();
@@ -132,6 +137,10 @@ public class Kleinberg implements Generator {
 		return Math.abs(k - i) + Math.abs(l - j);
 	}
 
+	private int dtb(int i, int j, int k, int l) {
+		return Math.min(Math.abs(k - i), n - Math.abs(k - i)) + Math.min(Math.abs(l - j), n - Math.abs(l - j));
+	}
+
 	public int getn() {
 		return n;
 	}
@@ -148,6 +157,10 @@ public class Kleinberg implements Generator {
 		return r;
 	}
 
+	public boolean isTorusBased() {
+		return torusBased;
+	}
+
 	public void setn(int n) {
 		this.n = n;
 	}
@@ -162,6 +175,10 @@ public class Kleinberg implements Generator {
 
 	public void setr(int r) {
 		this.r = r;
+	}
+
+	public void setTorusBased(boolean torusBased) {
+		this.torusBased = torusBased;
 	}
 
 	public String getName() {
