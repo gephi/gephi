@@ -62,7 +62,7 @@ public class Kleinberg implements Generator {
 
     public void generate(ContainerLoader container) {
         Progress.start(progressTicket, n * n + n * n * (2 * p + 1) * (2 * p + 1)
-                + (int) Math.pow(n, 4) + n * n * q);
+                + (int) Math.pow(n, 3) + n * n * q);
         Random random = new Random();
 
         // Creating lattice n x n
@@ -106,8 +106,8 @@ public class Kleinberg implements Generator {
                         } else if (torusBased && dtb(i, j, k, l) > p) {
                             sum += Math.pow(dtb(i, j, k, l), -r);
                         }
-                        Progress.progress(progressTicket);
                     }
+					Progress.progress(progressTicket);
                 }
                 for (int m = 0; m < q && !cancel; ++m) {
                     double b = random.nextDouble();
