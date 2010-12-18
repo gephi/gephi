@@ -85,7 +85,15 @@ public class ImportControllerImpl implements ImportController {
         fileObject = getArchivedFile(fileObject);   //Unzip and return content file
         FileImporterBuilder builder = getMatchingImporter(fileObject);
         if (fileObject != null && builder != null) {
-            return builder.buildImporter();
+            FileImporter fi = builder.buildImporter();
+            if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
+                try {
+                    fileObject.delete();
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+            return fi;
         }
         return null;
     }
@@ -104,7 +112,15 @@ public class ImportControllerImpl implements ImportController {
             fileObject = getArchivedFile(fileObject);   //Unzip and return content file
             FileImporterBuilder builder = getMatchingImporter(fileObject);
             if (fileObject != null && builder != null) {
-                return importFile(fileObject.getInputStream(), builder.buildImporter());
+                Container c = importFile(fileObject.getInputStream(), builder.buildImporter());
+                if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
+                    try {
+                        fileObject.delete();
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+                return c;
             }
         }
         return null;
@@ -115,7 +131,15 @@ public class ImportControllerImpl implements ImportController {
         if (fileObject != null) {
             fileObject = getArchivedFile(fileObject);   //Unzip and return content file
             if (fileObject != null) {
-                return importFile(fileObject.getInputStream(), importer);
+                Container c = importFile(fileObject.getInputStream(), importer);
+                if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
+                    try {
+                        fileObject.delete();
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+                return c;
             }
         }
         return null;
@@ -244,10 +268,11 @@ public class ImportControllerImpl implements ImportController {
                     String fileExt1 = splittedFileName[splittedFileName.length - 1];
                     String fileExt2 = splittedFileName[splittedFileName.length - 2];
 
-                    // Create an empty file
                     File tempFile = null;
                     if (fileExt1.equalsIgnoreCase("tar")) {
-                        tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt2);
+                        String fname = fileObject.getName().replaceAll("\\.tar$", "");
+                        fname = fname.replace(fileExt2, "");
+                        tempFile = File.createTempFile(fname, "." + fileExt2);
                         // Untar & unzip
                         if (isGz) {
                             tempFile = ImportUtils.getGzFile(fileObject, tempFile, true);
@@ -255,7 +280,9 @@ public class ImportControllerImpl implements ImportController {
                             tempFile = ImportUtils.getBzipFile(fileObject, tempFile, true);
                         }
                     } else {
-                        tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt1);
+                        String fname = fileObject.getName();
+                        fname = fname.replace(fileExt1, "");
+                        tempFile = File.createTempFile(fname, "." + fileExt1);
                         // Unzip
                         if (isGz) {
                             tempFile = ImportUtils.getGzFile(fileObject, tempFile, false);

@@ -160,6 +160,13 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                     }
                 }
             }, "Import " + containerSource, errorHandler);
+            if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
+                try {
+                    fileObject.delete();
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
@@ -508,8 +515,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         // ZIP and JAR archives
         if (FileUtil.isArchiveFile(fileObject)) {
             fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
-        }
-        else { // GZ or BZIP2 archives
+        } else { // GZ or BZIP2 archives
             boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
             boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
             if (isGz || isBzip) {
@@ -524,7 +530,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                     File tempFile = null;
                     if (fileExt1.equalsIgnoreCase("tar")) {
-                        tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt2);
+                        String fname = fileObject.getName().replaceAll("\\.tar$", "");
+                        fname = fname.replace(fileExt2, "");
+                        tempFile = File.createTempFile(fname, "." + fileExt2);
                         // Untar & unzip
                         if (isGz) {
                             tempFile = getGzFile(fileObject, tempFile, true);
@@ -532,7 +540,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                             tempFile = getBzipFile(fileObject, tempFile, true);
                         }
                     } else {
-                        tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt1);
+                        String fname = fileObject.getName();
+                        fname = fname.replace(fileExt1, "");
+                        tempFile = File.createTempFile(fname, "." + fileExt1);
                         // Unzip
                         if (isGz) {
                             tempFile = getGzFile(fileObject, tempFile, false);
