@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Authors : Cezary Bartosiak
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -17,14 +17,15 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.generator.plugin;
 
 import org.gephi.io.generator.spi.GeneratorUI;
 
 /**
  *
- * @author Mathieu Bastian
+ * 
+ * @author Cezary Bartosiak
  */
-public interface WattsStrogatzUI extends GeneratorUI {
+public interface WattsStrogatzAlphaUI extends GeneratorUI {
 }
