@@ -160,7 +160,7 @@ public class EventManager implements Runnable {
     }
 
     public void fireEvent(AbstractEvent event) {
-        //eventQueue.add(event);
+        eventQueue.add(event);
         synchronized (lock) {
             lock.notifyAll();
         }
