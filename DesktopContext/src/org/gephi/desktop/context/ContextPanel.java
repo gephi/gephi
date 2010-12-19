@@ -35,6 +35,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.UndirectedGraph;
 
 /**
@@ -114,13 +115,13 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
     private class RefreshRunnable implements Runnable {
 
         public void run() {
-            Graph visibleGraph = model.getGraphVisible();
-            Graph fullGraph = model.getGraph();
-            final int nodesFull = fullGraph.getNodeCount();
-            final int nodesVisible = visibleGraph.getNodeCount();
-            final int edgesFull = fullGraph.getEdgeCount();
-            final int edgesVisible = visibleGraph.getEdgeCount();
-            final GraphType graphType = visibleGraph instanceof DirectedGraph ? GraphType.DIRECTED : visibleGraph instanceof UndirectedGraph ? GraphType.UNDIRECTED : GraphType.MIXED;
+            HierarchicalGraph visibleHGraph = model.getHierarchicalGraphVisible();
+            HierarchicalGraph fullHGraph = model.getHierarchicalGraph();
+            final int nodesFull = fullHGraph.getNodeCount();
+            final int nodesVisible = visibleHGraph.getNodeCount();
+            final int edgesFull = fullHGraph.getEdgesAndMetaEdges().toArray().length;//getEdgeCount()
+            final int edgesVisible = visibleHGraph.getEdgesAndMetaEdges().toArray().length;//getEdgeCount()
+            final GraphType graphType = visibleHGraph instanceof DirectedGraph ? GraphType.DIRECTED : visibleHGraph instanceof UndirectedGraph ? GraphType.UNDIRECTED : GraphType.MIXED;
             SwingUtilities.invokeLater(new Runnable() {
 
                 public void run() {
