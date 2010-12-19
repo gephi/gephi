@@ -31,6 +31,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.ranking.api.Ranking;
@@ -68,10 +69,16 @@ public class RankingChooser extends javax.swing.JPanel {
     }
 
     private void initRanking() {
-        DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
+        final DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
         comboBoxModel.addElement(NO_SELECTION);
         comboBoxModel.setSelectedItem(NO_SELECTION);
-        rankingComboBox.setModel(comboBoxModel);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                rankingComboBox.setModel(comboBoxModel);
+            }
+        });
+
         rankingComboBox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
@@ -150,7 +157,7 @@ public class RankingChooser extends javax.swing.JPanel {
         }
 
         //Ranking list
-        DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
+        final DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
         comboBoxModel.addElement(NO_SELECTION);
         comboBoxModel.setSelectedItem(NO_SELECTION);
         for (Ranking r : rankings) {
@@ -160,7 +167,12 @@ public class RankingChooser extends javax.swing.JPanel {
                 comboBoxModel.setSelectedItem(elem);
             }
         }
-        rankingComboBox.setModel(comboBoxModel);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                rankingComboBox.setModel(comboBoxModel);
+            }
+        });
 
         //CenterPanel
         if (centerPanel != null) {
