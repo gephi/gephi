@@ -32,12 +32,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -147,7 +141,6 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private ArrayList previousEdgeFilterColumns = new ArrayList();
     private int previousEdgeColumnsFilterIndex = 0;
     //Executor
-    private ExecutorService taskExecutor;
     private RefreshOnceHelperThread refreshOnceHelperThread;
 
     private DataTableTopComponent() {
@@ -158,13 +151,6 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         useSparklines = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_SPARKLINES, false);
         timeIntervalGraphics = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_TIME_INTERVAL_GRAPHICS, false);
         showEdgesNodesLabels = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_EDGES_NODES_LABELS, false);
-
-        taskExecutor = new ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(20), new ThreadFactory() {
-
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "Data Laboratory fetching");
-            }
-        });
 
         initComponents();
         if (UIUtils.isAquaLookAndFeel()) {
@@ -209,7 +195,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             }
             nodeAvailableColumnsModel = dataTablesModel.getNodeAvailableColumnsModel();
             edgeAvailableColumnsModel = dataTablesModel.getEdgeAvailableColumnsModel();
-            refreshAll();
+            refreshAllOnce();
         }
         bannerPanel.setVisible(false);
     }
@@ -239,14 +225,13 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                 edgeAvailableColumnsModel = dataTablesModel.getEdgeAvailableColumnsModel();
                 hideTable();
                 enableTableControls();
-                bannerPanel.setVisible(false);
 
                 attributeModel.addAttributeListener(DataTableTopComponent.this);
 
                 graphModel = gc.getModel();
                 graphModel.addGraphListener(DataTableTopComponent.this);
 
-                refreshAll();
+                refreshAllOnce();
             }
 
             public void unselect(Workspace workspace) {
@@ -312,7 +297,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         });
     }
 
-    private void refreshAll() {
+    private synchronized void refreshAll() {
         if (nodesButton.isEnabled()) {//Some workspace is selected
             refreshTable();
             refreshColumnManipulators();
@@ -321,9 +306,14 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     private void clearAll() {
-        clearTableControls();
-        clearColumnManipulators();
-        clearGeneralActionsButtons();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                clearTableControls();
+                clearColumnManipulators();
+                clearGeneralActionsButtons();
+            }
+        });
     }
 
     private AvailableColumnsModel getTableAvailableColumnsModel(AttributeTable table) {
@@ -372,6 +362,11 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         });
     }
 
+    /**
+     * This method ensures that the refreshing of all Data laboratory or table only happens once in a short time period.
+     *
+     * @param refreshTableOnly True to refresh only table values, false to refresh all UI including manipulators
+     */
     private void refreshOnce(boolean refreshTableOnly) {
         if (refreshOnceHelperThread == null || !refreshOnceHelperThread.isAlive() || (refreshOnceHelperThread.refreshTableOnly && !refreshTableOnly)) {
             refreshOnceHelperThread = new RefreshOnceHelperThread(refreshTableOnly);
@@ -379,6 +374,10 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         } else {
             refreshOnceHelperThread.eventAttended();
         }
+    }
+
+    private void refreshAllOnce() {
+        refreshOnce(false);
     }
 
     /****************Table related methods:*****************/
@@ -441,7 +440,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                 }
             }
         };
-        Future future = taskExecutor.submit(initNodesRunnable);
+        SwingUtilities.invokeLater(initNodesRunnable);
     }
 
     private void initEdgesView() {
@@ -481,7 +480,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                 }
             }
         };
-        Future future = taskExecutor.submit(initEdgesRunnable);
+        SwingUtilities.invokeLater(initEdgesRunnable);
     }
 
     private void refreshFilterColumns() {
@@ -527,13 +526,18 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     private void enableTableControls() {
-        nodesButton.setEnabled(true);
-        edgesButton.setEnabled(true);
-        configurationButton.setEnabled(true);
-        availableColumnsButton.setEnabled(true);
-        filterTextField.setEnabled(true);
-        columnComboBox.setEnabled(true);
-        labelFilter.setEnabled(true);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                nodesButton.setEnabled(true);
+                edgesButton.setEnabled(true);
+                configurationButton.setEnabled(true);
+                availableColumnsButton.setEnabled(true);
+                filterTextField.setEnabled(true);
+                columnComboBox.setEnabled(true);
+                labelFilter.setEnabled(true);
+            }
+        });
     }
 
     private void clearTableControls() {
@@ -555,7 +559,12 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     private void hideTable() {
-        tableScrollPane.setViewportView(null);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                tableScrollPane.setViewportView(null);
+            }
+        });
     }
 
     private void refreshTable() {
@@ -574,7 +583,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
             public void run() {
                 classDisplayed = ClassDisplayed.NODE;
-                refreshAll();
+                refreshAllOnce();
             }
         });
     }
@@ -584,7 +593,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
             public void run() {
                 classDisplayed = ClassDisplayed.EDGE;
-                refreshAll();
+                refreshAllOnce();
             }
         });
     }
@@ -593,7 +602,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                refreshTable();
+                refreshOnce(true);
             }
         });
     }
@@ -708,7 +717,6 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                 prepareAddColumnButton();
                 prepareMergeColumnsButton();
                 prepareColumnManipulatorsButtons();
-                columnManipulatorsPanel.updateUI();
             }
         });
     }
@@ -1253,7 +1261,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         DialogDescriptor dd = new DialogDescriptor(new AvailableColumnsPanel(table, availableColumnsModel).getValidationPanel(), NbBundle.getMessage(DataTableTopComponent.class, "AvailableColumnsPanel.title"));
         dd.setOptions(new Object[]{DialogDescriptor.OK_OPTION});
         DialogDisplayer.getDefault().notify(dd);
-        refreshAll();
+        refreshAllOnce();
         availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/light-bulb.png", true));
     }//GEN-LAST:event_availableColumnsButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1315,7 +1323,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
     @Override
     public void componentOpened() {
-        refreshAll();
+        refreshAllOnce();
     }
 
     @Override

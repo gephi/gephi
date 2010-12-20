@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -70,7 +69,6 @@ import org.netbeans.swing.outline.OutlineModel;
 import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
 import org.openide.awt.MouseUtils;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.desktop.datalab.utils.DataLaboratoryHelper;
@@ -247,22 +245,10 @@ public class NodeDataTable {
         final OutlineModel mdl = DefaultOutlineModel.createOutlineModel(nodeTreeModel, new NodeRowModel(cols), true);
         outlineTable.setRootVisible(false);
         outlineTable.setRenderDataProvider(new NodeRenderer());
-
-        try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-
-                public void run() {
-                    outlineTable.setModel(mdl);
-                    NodeDataTable.this.dataTablesModel = dataTablesModel;
-                    setNodesSelection(selectedNodes);//Keep row selection before refreshing.
-                    selectedNodes = null;
-                }
-            });
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        outlineTable.setModel(mdl);
+        NodeDataTable.this.dataTablesModel = dataTablesModel;
+        setNodesSelection(selectedNodes);//Keep row selection before refreshing.
+        selectedNodes = null;
         refreshingTable = false;
     }
 
