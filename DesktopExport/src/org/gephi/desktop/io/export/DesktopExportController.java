@@ -75,6 +75,7 @@ public class DesktopExportController implements ExportControllerUI {
             task = (LongTask) exporter;
         }
 
+        String taskmsg = NbBundle.getMessage(DesktopExportController.class, "DesktopExportController.exportTaskName", fileObject.getNameExt());
         executor.execute(task, new Runnable() {
 
             public void run() {
@@ -85,7 +86,7 @@ public class DesktopExportController implements ExportControllerUI {
                     throw new RuntimeException(ex);
                 }
             }
-        }, "Export to " + fileObject.getNameExt(), errorHandler);
+        }, taskmsg, errorHandler);
     }
 
     public ExportController getExportController() {
