@@ -12,6 +12,7 @@ import org.openide.nodes.Children;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  * This class provides some sets of properties for the preview UI.
@@ -22,7 +23,7 @@ public class PreviewNode extends AbstractNode {
 
     public PreviewNode() {
         super(Children.LEAF);
-        setDisplayName("Preview Settings");
+        setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.displayName"));
     }
 
     @Override
@@ -39,27 +40,27 @@ public class PreviewNode extends AbstractNode {
             EdgeSupervisor bes = model.getBiEdgeSupervisor();
 
             Sheet.Set nodeSet = Sheet.createPropertiesSet();
-            nodeSet.setDisplayName("Node");
+            nodeSet.setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.Node.displayName"));
             nodeSet.setName("nodes");
 
             Sheet.Set edgeSet = Sheet.createPropertiesSet();
-            edgeSet.setDisplayName("Edge");
+            edgeSet.setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.Edge.displayName"));
             edgeSet.setName("edges");
 
             Sheet.Set selfLoopSet = Sheet.createPropertiesSet();
-            selfLoopSet.setDisplayName("Self-Loop");
+            selfLoopSet.setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.SelfLoop.displayName"));
             selfLoopSet.setName("selfLoops");
 
             Sheet.Set undirectedEdgeSet = Sheet.createPropertiesSet();
-            undirectedEdgeSet.setDisplayName("Undirected");
+            undirectedEdgeSet.setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.Undirected.displayName"));
             undirectedEdgeSet.setName("undirectedEdges");
 
             Sheet.Set uniEdgeSet = Sheet.createPropertiesSet();
-            uniEdgeSet.setDisplayName("Directed");
+            uniEdgeSet.setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.Directed.displayName"));
             uniEdgeSet.setName("uniEdges");
 
             Sheet.Set biEdgeSet = Sheet.createPropertiesSet();
-            biEdgeSet.setDisplayName("Mutual");
+            biEdgeSet.setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.Mutual.displayName"));
             biEdgeSet.setName("biEdges");
 
             for (SupervisorPropery p : ns.getProperties()) {
