@@ -42,6 +42,7 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -88,7 +89,7 @@ public class DesktopGeneratorController implements GeneratorController {
         final Container container = Lookup.getDefault().lookup(ContainerFactory.class).newContainer();
         container.setSource("" + generator.getName());
         container.setReport(new Report());
-        String taskname = "Generate " + generator.getName();
+        String taskname = NbBundle.getMessage(DesktopGeneratorController.class, "DesktopGeneratorController.taskname", generator.getName());
 
         //Error handler
         LongTaskErrorHandler errorHandler = new LongTaskErrorHandler() {
