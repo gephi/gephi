@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.hierarchy;
 
 import java.awt.Color;
@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import org.gephi.visualization.apiimpl.PropertiesBarAddon;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -65,7 +66,7 @@ public class HierarchyPropertyBarAddon implements PropertiesBarAddon {
     private static class HierarchyAddonButton extends JButton {
 
         public HierarchyAddonButton() {
-            super("Hierarchy");
+            super(NbBundle.getMessage(HierarchyPropertyBarAddon.class, "HierarchyAddonButton.title"));
             setOpaque(false);
             setMargin(new Insets(0, 10, 0, 10));
             setFocusPainted(false);
