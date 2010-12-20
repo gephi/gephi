@@ -38,6 +38,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -103,12 +104,13 @@ public class EdgeWeightBuilder implements FilterBuilder {
         }
 
         public boolean init(Graph graph) {
-            dynamicHelper = new DynamicAttributesHelper(this, graph);
+            HierarchicalGraph hgraph = (HierarchicalGraph) graph;
+            dynamicHelper = new DynamicAttributesHelper(this, hgraph);
             if (range == null) {
                 getValues();
                 refreshRange();
             }
-            values = new ArrayList<Float>(graph.getEdgeCount());
+            values = new ArrayList<Float>(hgraph.getTotalEdgeCount());
             min = Float.POSITIVE_INFINITY;
             max = Float.NEGATIVE_INFINITY;
             return true;
@@ -129,12 +131,12 @@ public class EdgeWeightBuilder implements FilterBuilder {
         public Object[] getValues() {
             if (values == null) {
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-                Graph graph = gm.getGraph();
-                Float[] weights = new Float[graph.getEdgeCount()];
+                HierarchicalGraph hgraph = gm.getHierarchicalGraphVisible();
+                Float[] weights = new Float[hgraph.getTotalEdgeCount()];
                 int i = 0;
                 min = Float.MAX_VALUE;
                 max = Float.MIN_VALUE;
-                for (Edge e : graph.getEdges()) {
+                for (Edge e : hgraph.getEdgesAndMetaEdges()) {
                     float weight = dynamicHelper.getEdgeWeight(e);
                     min = Math.min(min, weight);
                     max = Math.max(max, weight);

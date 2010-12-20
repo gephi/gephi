@@ -31,6 +31,7 @@ import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -87,49 +88,50 @@ public class NOTBuilderNode implements FilterBuilder {
             if (graphs.length > 1) {
                 throw new IllegalArgumentException("Not Filter accepts a single graph in parameter");
             }
-            Graph graph = graphs[0];
-            GraphView graphView = graph.getView();
-            Graph mainGraph = graph.getView().getGraphModel().getGraph();
-            for (Node n : mainGraph.getNodes().toArray()) {
-                if (n.getNodeData().getNode(graphView.getViewId()) == null) {
+            HierarchicalGraph hgraph = (HierarchicalGraph) graphs[0];
+            GraphView hgraphView = hgraph.getView();
+            HierarchicalGraph mainHGraph = hgraph.getView().getGraphModel().getHierarchicalGraph();
+            for (Node n : mainHGraph.getNodes().toArray()) {
+                if (n.getNodeData().getNode(hgraphView.getViewId()) == null) {
                     //The node n is not in graph
-                    graph.addNode(n);
+                    hgraph.addNode(n);
                 } else {
                     //The node n is in graph
-                    graph.removeNode(n);
+                    hgraph.removeNode(n);
                 }
             }
 
-            for (Node n : graph.getNodes().toArray()) {
-                Node mainNode = n.getNodeData().getNode(mainGraph.getView().getViewId());
-                Edge[] edges = mainGraph.getEdges(mainNode).toArray();
+            for (Node n : hgraph.getNodes().toArray()) {
+                Node mainNode = n.getNodeData().getNode(mainHGraph.getView().getViewId());
+                Edge[] edges = mainHGraph.getEdgesAndMetaEdges(mainNode).toArray();
                 for (Edge e : edges) {
-                    if (e.getSource().getNodeData().getNode(graphView.getViewId()) != null
-                            && e.getTarget().getNodeData().getNode(graphView.getViewId()) != null) {
-                        graph.addEdge(e);
+                    if (e.getSource().getNodeData().getNode(hgraphView.getViewId()) != null
+                            && e.getTarget().getNodeData().getNode(hgraphView.getViewId()) != null) {
+                        hgraph.addEdge(e);
                     }
                 }
             }
 
-            return graph;
+            return hgraph;
         }
 
         public Graph filter(Graph graph, Filter[] filters) {
             if (filters.length > 1) {
                 throw new IllegalArgumentException("Not Filter accepts a single filter in parameter");
             }
+            HierarchicalGraph hgraph = (HierarchicalGraph) graph;
             Filter filter = filters[0];
-            if (filter instanceof NodeFilter && ((NodeFilter) filter).init(graph)) {
+            if (filter instanceof NodeFilter && ((NodeFilter) filter).init(hgraph)) {
                 NodeFilter nodeFilter = (NodeFilter) filter;
-                for (Node n : graph.getNodes().toArray()) {
-                    if (nodeFilter.evaluate(graph, n)) {
-                        graph.removeNode(n);
+                for (Node n : hgraph.getNodes().toArray()) {
+                    if (nodeFilter.evaluate(hgraph, n)) {
+                        hgraph.removeNode(n);
                     }
                 }
                 nodeFilter.finish();
             }
 
-            return graph;
+            return hgraph;
         }
     }
 }

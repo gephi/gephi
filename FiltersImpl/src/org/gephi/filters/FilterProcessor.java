@@ -31,6 +31,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 
 /**
@@ -41,7 +42,6 @@ public class FilterProcessor {
 
     public Graph process(AbstractQueryImpl query, GraphModel graphModel) {
         List<GraphView> views = new ArrayList<GraphView>();
-        Graph rootGraph = graphModel.getGraph();
         query = simplifyQuery(query);
         AbstractQueryImpl[] tree = getTree(query, true);
         for (int i = 0; i < tree.length; i++) {
@@ -123,17 +123,29 @@ public class FilterProcessor {
     }
 
     private void processEdgeFilter(EdgeFilter edgeFilter, Graph graph) {
-        if (edgeFilter.init(graph)) {
+        HierarchicalGraph hgraph = (HierarchicalGraph) graph;
+        if (edgeFilter.init(hgraph)) {
             List<Edge> edgesToRemove = new ArrayList<Edge>();
-            for (Edge e : graph.getEdges()) {
-                if (!edgeFilter.evaluate(graph, e)) {
+            for (Edge e : hgraph.getEdges()) {
+                if (!edgeFilter.evaluate(hgraph, e)) {
                     edgesToRemove.add(e);
                 }
             }
 
             for (Edge e : edgesToRemove) {
-                graph.removeEdge(e);
+                hgraph.removeEdge(e);
             }
+            edgesToRemove.clear();
+
+            for (Edge e : hgraph.getMetaEdges()) {
+                if (!edgeFilter.evaluate(hgraph, e)) {
+                    edgesToRemove.add(e);
+                }
+            }
+            for (Edge e : edgesToRemove) {
+                hgraph.removeMetaEdge(e);
+            }
+
             edgeFilter.finish();
         }
     }

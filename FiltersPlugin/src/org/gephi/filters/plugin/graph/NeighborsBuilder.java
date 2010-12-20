@@ -35,6 +35,7 @@ import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -86,7 +87,7 @@ public class NeighborsBuilder implements FilterBuilder {
         public Graph filter(Graph graph) {
 
             GraphView graphView = graph.getView();
-            Graph mainGraph = graphView.getGraphModel().getGraph();
+            HierarchicalGraph mainGraph = graphView.getGraphModel().getHierarchicalGraph();
 
             List<Node> nodes = new ArrayList<Node>();
             for (Node n : graph.getNodes()) {
