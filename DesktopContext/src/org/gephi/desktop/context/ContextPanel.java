@@ -31,12 +31,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.swing.SwingUtilities;
 import org.gephi.graph.api.DirectedGraph;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.UndirectedGraph;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -46,9 +46,9 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
 
     private enum GraphType {
 
-        DIRECTED("Directed Graph"),
-        UNDIRECTED("Undirected Graph"),
-        MIXED("Mixed Graph");
+        DIRECTED(NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphType.directed")),
+        UNDIRECTED(NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphType.undirected")),
+        MIXED(NbBundle.getMessage(ContextPanel.class, "ContextPanel.graphType.mixed"));
         protected final String type;
 
         GraphType(String type) {
@@ -125,11 +125,12 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
             SwingUtilities.invokeLater(new Runnable() {
 
                 public void run() {
+                    String visible = NbBundle.getMessage(ContextPanel.class, "ContextPanel.visible");
                     String nodeText = String.valueOf(nodesVisible);
                     String edgeText = String.valueOf(edgesVisible);
                     if (nodesFull != nodesVisible || edgesFull != edgesVisible) {
-                        nodeText += nodesFull > 0 ? " (" + formatter.format(nodesVisible / (double) nodesFull) + " visible)" : "";
-                        edgeText += edgesFull > 0 ? " (" + formatter.format(edgesVisible / (double) edgesFull) + " visible)" : "";
+                        nodeText += nodesFull > 0 ? " (" + formatter.format(nodesVisible / (double) nodesFull) + " " + visible + ")" : "";
+                        edgeText += edgesFull > 0 ? " (" + formatter.format(edgesVisible / (double) edgesFull) + " " + visible + ")" : "";
                     }
                     nodeLabel.setText(nodeText);
                     edgeLabel.setText(edgeText);
