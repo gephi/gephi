@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.context;
 
 import java.awt.BorderLayout;
@@ -115,13 +115,13 @@ public class ContextPanel extends javax.swing.JPanel implements GraphListener {
     private class RefreshRunnable implements Runnable {
 
         public void run() {
-            HierarchicalGraph visibleHGraph = model.getHierarchicalGraphVisible();
-            HierarchicalGraph fullHGraph = model.getHierarchicalGraph();
-            final int nodesFull = fullHGraph.getNodeCount();
-            final int nodesVisible = visibleHGraph.getNodeCount();
-            final int edgesFull = fullHGraph.getEdgesAndMetaEdges().toArray().length;//getEdgeCount()
-            final int edgesVisible = visibleHGraph.getEdgesAndMetaEdges().toArray().length;//getEdgeCount()
-            final GraphType graphType = visibleHGraph instanceof DirectedGraph ? GraphType.DIRECTED : visibleHGraph instanceof UndirectedGraph ? GraphType.UNDIRECTED : GraphType.MIXED;
+            HierarchicalGraph visibleGraph = model.getHierarchicalGraphVisible();
+            HierarchicalGraph fullGraph = model.getHierarchicalGraph();
+            final int nodesFull = fullGraph.getNodeCount();
+            final int nodesVisible = visibleGraph.getNodeCount();
+            final int edgesFull = fullGraph.getTotalEdgeCount();
+            final int edgesVisible = visibleGraph.getTotalEdgeCount();
+            final GraphType graphType = visibleGraph instanceof DirectedGraph ? GraphType.DIRECTED : visibleGraph instanceof UndirectedGraph ? GraphType.UNDIRECTED : GraphType.MIXED;
             SwingUtilities.invokeLater(new Runnable() {
 
                 public void run() {

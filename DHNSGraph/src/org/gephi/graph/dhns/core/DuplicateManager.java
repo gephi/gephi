@@ -103,6 +103,9 @@ public class DuplicateManager {
         newGraphStructure.getMainView().setEdgesCountEnabled(view.getEdgesCountEnabled());
         newGraphStructure.getMainView().setMutualEdgesTotal(view.getMutualEdgesTotal());
         newGraphStructure.getMainView().setMutualEdgesEnabled(view.getMutualEdgesEnabled());
+
+        //Metaedges
+        newGraphStructure.getMainView().getStructureModifier().getEdgeProcessor().computeMetaEdges();
         destination.writeUnlock();
         dhns.readUnlock();
     }

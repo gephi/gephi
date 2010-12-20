@@ -25,6 +25,7 @@ import java.util.List;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.event.EdgeEvent;
 import org.gephi.graph.dhns.event.GeneralEvent;
 import org.gephi.graph.dhns.event.NodeEvent;
@@ -103,7 +104,7 @@ public class StructureModifier {
 
     public void deleteNode(AbstractNode node) {
         if (view.isMainView() && node.getNodeData().getNodes().getCount() > 1) {
-            dhns.writeLock();      
+            dhns.writeLock();
             for (AbstractNodeIterator itr = node.getNodeData().getNodes().iterator(); itr.hasNext();) {
                 AbstractNode nodeInOtherView = itr.next();
                 if (nodeInOtherView.getViewId() != view.getViewId()) {
@@ -145,6 +146,14 @@ public class StructureModifier {
         if (res) {
             dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, edge, view));
         }
+        return res;
+    }
+
+    public boolean deleteMetaEdge(AbstractEdge edge) {
+        dhns.writeLock();
+        boolean res = business.delMetaEdge((MetaEdgeImpl) edge);
+        graphVersion.incEdgeVersion();
+        dhns.writeUnlock();
         return res;
     }
 
@@ -531,6 +540,26 @@ public class StructureModifier {
 
             //Remove edge from possible metaEdge
             edgeProcessor.removeEdgeFromMetaEdge(edge);
+            return res;
+        }
+
+        public boolean delMetaEdge(MetaEdgeImpl edge) {
+            AbstractNode source = edge.getSource(view.getViewId());
+            AbstractNode target = edge.getTarget(view.getViewId());
+
+            if (!edge.isSelfLoop() && source.getEdgesInTree().hasNeighbour(target)) {
+                //mutual
+                view.decMutualMetaEdgesTotal(1);
+                source.decMutualMetaEdgeDegree();
+                target.decMutualMetaEdgeDegree();
+
+            }
+            view.decMetaEdgesCount(1);
+
+            //Remove edge
+            boolean res = source.getMetaEdgesOutTree().remove(edge);
+            res = res && target.getMetaEdgesInTree().remove(edge);
+
             return res;
         }
 

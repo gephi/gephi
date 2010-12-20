@@ -201,6 +201,11 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
         return view.getEdgesCountEnabled();
     }
 
+    //ClusteredGraph
+    public int getTotalEdgeCount() {
+        return view.getEdgesCountEnabled() + view.getMetaEdgesCountTotal();
+    }
+
     //Graph
     public int getDegree(Node node) {
         AbstractNode absNode = checkNode(node);
@@ -260,6 +265,11 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
         EdgeNodeIterator std = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, enabledNodePredicate, Tautology.instance);
         MetaEdgeNodeIterator meta = new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false);
         return dhns.newEdgeIterable(new BiEdgeIterator(std, meta));
+    }
+
+    public boolean removeMetaEdge(Edge edge) {
+        AbstractEdge absEdge = checkMetaEdge(edge);
+        return view.getStructureModifier().deleteMetaEdge(absEdge);
     }
 
     //DirectedClusteredGraph

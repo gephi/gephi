@@ -20,10 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.graph.dhns.core;
 
-import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.dhns.graph.AbstractGraphImpl;
 
@@ -42,6 +39,8 @@ public class GraphViewImpl implements GraphView {
     private int mutualEdgesTotal;
     private int edgesCountEnabled;
     private int mutualEdgesEnabled;
+    private int metaEdgesCountTotal;
+    private int mutualMetaEdgesTotal;
     //RefCounting
     private final WeakHashMap<AbstractGraphImpl, Boolean> graphsMap = new WeakHashMap<AbstractGraphImpl, Boolean>();
 
@@ -126,6 +125,22 @@ public class GraphViewImpl implements GraphView {
         mutualEdgesEnabled -= shift;
     }
 
+    public void incMetaEdgesCount(int shift) {
+        metaEdgesCountTotal += shift;
+    }
+
+    public void decMetaEdgesCount(int shift) {
+        metaEdgesCountTotal -= shift;
+    }
+
+    public void incMutualMetaEdgesTotal(int shift) {
+        mutualMetaEdgesTotal += shift;
+    }
+
+    public void decMutualMetaEdgesTotal(int shift) {
+        mutualMetaEdgesTotal -= shift;
+    }
+
     public int getEdgesCountEnabled() {
         return edgesCountEnabled;
     }
@@ -164,6 +179,22 @@ public class GraphViewImpl implements GraphView {
 
     public void setNodesEnabled(int nodesEnabled) {
         this.nodesEnabled = nodesEnabled;
+    }
+
+    public int getMetaEdgesCountTotal() {
+        return metaEdgesCountTotal;
+    }
+
+    public void setMetaEdgesCountTotal(int metaEdgesCountTotal) {
+        this.metaEdgesCountTotal = metaEdgesCountTotal;
+    }
+
+    public int getMutualMetaEdgesTotal() {
+        return mutualMetaEdgesTotal;
+    }
+
+    public void setMutualMetaEdgesTotal(int mutualMetaEdgesTotal) {
+        this.mutualMetaEdgesTotal = mutualMetaEdgesTotal;
     }
 
     public Dhns getGraphModel() {
