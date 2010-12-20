@@ -26,7 +26,6 @@ import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.AbstractButton;

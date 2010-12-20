@@ -146,6 +146,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             fileObject = getArchivedFile(fileObject);
             final String containerSource = fileObject.getNameExt();
             final InputStream stream = fileObject.getInputStream();
+            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -159,7 +160,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, "Import " + containerSource, errorHandler);
+            }, taskName, errorHandler);
             if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
                 try {
                     fileObject.delete();
@@ -211,7 +212,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Execute task
-            final String containerSource = "Stream " + importerName;
+            final String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource", importerName);
+            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -225,7 +227,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, "Import " + containerSource, errorHandler);
+            }, taskName, errorHandler);
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
@@ -270,7 +272,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Execute task
-            final String containerSource = "Stream " + importerName;
+            final String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource", importerName);
+            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -284,7 +287,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, "Import " + containerSource, errorHandler);
+            }, taskName, errorHandler);
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
@@ -337,6 +340,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             //Execute task
             final String containerSource = database.getName();
             final Database db = database;
+            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -350,7 +354,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, "Import " + containerSource, errorHandler);
+            }, taskName, errorHandler);
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
@@ -364,7 +368,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 return;
             }
 
-            String containerSource = "Spigot";
+            String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.spigotSource", "");
             ImporterUI ui = controller.getUI(importer);
             if (ui != null) {
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.spigot.ui.dialog.title", ui.getDisplayName());
@@ -401,6 +405,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
             //Execute task
             final String source = containerSource;
+            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -414,7 +419,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, "Import " + containerSource, errorHandler);
+            }, taskName, errorHandler);
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
