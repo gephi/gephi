@@ -546,10 +546,10 @@ public class Modularity implements Statistics, LongTask {
      * 
      * @param struct
      * @param degrees
-     * @param graph
+     * @param hgraph
      * @return
      */
-    public double finalQ(int[] struct, double[] degrees, HierarchicalUndirectedGraph graph, AttributeModel attributeModel) {
+    public double finalQ(int[] struct, double[] degrees, HierarchicalUndirectedGraph hgraph, AttributeModel attributeModel) {
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn modCol = nodeTable.getColumn(MODULARITY_CLASS);
         if (modCol == null) {
@@ -558,11 +558,11 @@ public class Modularity implements Statistics, LongTask {
 
         double res = 0;
         double[] internal = new double[degrees.length];
-        for (Node n : graph.getNodes()) {
+        for (Node n : hgraph.getNodes()) {
             int n_index = structure.map.get(n);
             AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
             row.setValue(modCol, struct[n_index]);
-            for (Node neighbor : graph.getNeighbors(n)) {
+            for (Node neighbor : hgraph.getNeighbors(n)) {
                 if (n == neighbor) {
                     continue;
                 }
@@ -574,7 +574,7 @@ public class Modularity implements Statistics, LongTask {
         }
         for (int i = 0; i < degrees.length; i++) {
             internal[i] /= 2.0;
-            res += (internal[i] / graph.getEdgeCount()) - Math.pow(degrees[i] / (2 * graph.getEdgeCount()), 2);
+            res += (internal[i] / hgraph.getTotalEdgeCount()) - Math.pow(degrees[i] / (2 * hgraph.getTotalEdgeCount()), 2);
         }
         return res;
     }
