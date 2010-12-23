@@ -119,7 +119,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         execute(graph, attributeModel);
     }
 
-    public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
+    private void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
 
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn eigenCol = nodeTable.getColumn(EIGENVECTOR);
@@ -127,8 +127,8 @@ public class EigenvectorCentrality implements Statistics, LongTask {
             eigenCol = nodeTable.addColumn(EIGENVECTOR, "Eigenvector Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
-        int N = graph.getNodeCount();
-        graph.readLock();
+        int N = hgraph.getNodeCount();
+        hgraph.readLock();
 
         double[] tmp = new double[N];
         centralities = new double[N];
@@ -138,7 +138,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         HashMap<Integer, Node> indicies = new HashMap<Integer, Node>();
         HashMap<Node, Integer> invIndicies = new HashMap<Node, Integer>();
         int count = 0;
-        for (Node u : graph.getNodes()) {
+        for (Node u : hgraph.getNodes()) {
             indicies.put(count, u);
             invIndicies.put(u, count);
             centralities[count] = 1;
@@ -150,13 +150,13 @@ public class EigenvectorCentrality implements Statistics, LongTask {
                 Node u = indicies.get(i);
                 EdgeIterable iter = null;
                 if (isDirected) {
-                    iter = ((HierarchicalDirectedGraph) graph).getInEdges(u);
+                    iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(u);
                 } else {
-                    iter = graph.getEdges(u);
+                    iter = hgraph.getEdges(u);
                 }
 
                 for (Edge e : iter) {
-                    Node v = graph.getOpposite(u, e);
+                    Node v = hgraph.getOpposite(u, e);
                     Integer id = invIndicies.get(v);
                     tmp[i] += centralities[id];
                 }
@@ -191,7 +191,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
                 return;
             }
         }
-        graph.readUnlock();
+        hgraph.readUnlock();
 
         Progress.finish(progress);
     }

@@ -212,28 +212,23 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     }
 
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        HierarchicalGraph graph = null;
+        HierarchicalGraph hgraph = null;
         if (!isDirected) {
-            graph = graphModel.getHierarchicalUndirectedGraphVisible();
+            hgraph = graphModel.getHierarchicalUndirectedGraphVisible();
         } else {
-            graph = graphModel.getHierarchicalDirectedGraphVisible();
+            hgraph = graphModel.getHierarchicalDirectedGraphVisible();
         }
 
-        execute(graph, attributeModel);
+        execute(hgraph, attributeModel);
     }
 
-    public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
+    private void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
 
-        triangles(graph, attributeModel);
+        triangles(hgraph, attributeModel);
     }
 
-    /**
-     *
-     * @param v
-     * @return
-     */
-    public int closest_in_array(int v) {
+    private int closest_in_array(int v) {
         int right = network[v].length() - 1;
 
         /* optimization for extreme cases */
@@ -275,7 +270,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
      *
      * @param v - The specific node to count the triangles on.
      */
-    public void newVertex(int v) {
+    private void newVertex(int v) {
         int[] A = new int[N];
 
         for (int i = network[v].length() - 1; (i >= 0) && (network[v].get(i) > v); i--) {
@@ -295,12 +290,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
     }
 
-    /**
-     *
-     * @param u
-     * @param v
-     */
-    public void tr_link_nohigh(int u, int v, int count) {
+    private void tr_link_nohigh(int u, int v, int count) {
         int iu = 0, iv = 0, w;
         while ((iu < network[u].length()) && (iv < network[v].length())) {
             if (network[u].get(iu) < network[v].get(iv)) {
@@ -318,14 +308,14 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
     }
 
-    public void triangles(HierarchicalGraph graph, AttributeModel attributeModel) {
+    private void triangles(HierarchicalGraph hgraph, AttributeModel attributeModel) {
 
         int ProgressCount = 0;
-        Progress.start(progress, 7 * graph.getNodeCount());
+        Progress.start(progress, 7 * hgraph.getNodeCount());
 
-        graph.readLock();
+        hgraph.readLock();
 
-        N = graph.getNodeCount();
+        N = hgraph.getNodeCount();
         nodeClustering = new double[N];
 
         /** Create network for processing */
@@ -334,7 +324,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         /**  */
         HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             indicies.put(s, index);
             network[index] = new ArrayWrapper();
             index++;
@@ -342,20 +332,20 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
 
         index = 0;
-        for (Node node : graph.getNodes()) {
+        for (Node node : hgraph.getNodes()) {
             HashMap<Node, EdgeWrapper> neighborTable = new HashMap<Node, EdgeWrapper>();
 
             if (!isDirected) {
-                for (Node neighbor : graph.getNeighbors(node)) {
+                for (Node neighbor : hgraph.getNeighbors(node)) {
                     neighborTable.put(neighbor, new EdgeWrapper(1, network[indicies.get(neighbor)]));
                 }
             } else {
-                for (Edge in : ((HierarchicalDirectedGraph) graph).getInEdges(node)) {
+                for (Edge in : ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node)) {
                     Node neighbor = in.getSource();
                     neighborTable.put(neighbor, new EdgeWrapper(1, network[indicies.get(neighbor)]));
                 }
 
-                for (Edge out : ((HierarchicalDirectedGraph) graph).getOutEdges(node)) {
+                for (Edge out : ((HierarchicalDirectedGraph) hgraph).getOutEdgesAndMetaOutEdges(node)) {
                     Node neighbor = out.getTarget();
                     EdgeWrapper ew = neighborTable.get(neighbor);
                     if (ew == null) {
@@ -378,7 +368,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             Progress.progress(progress, ++ProgressCount);
 
             if (isCanceled) {
-                graph.readUnlockAll();
+                hgraph.readUnlockAll();
                 return;
             }
         }
@@ -414,7 +404,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             Progress.progress(progress, ++ProgressCount);
 
             if (isCanceled) {
-                graph.readUnlockAll();
+                hgraph.readUnlockAll();
                 return;
             }
         }
@@ -426,7 +416,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             clusteringCol = nodeTable.addColumn(CLUSTERING_COEFF, "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             int v = indicies.get(s);
             if (network[v].length() > 1) {
                 double cc = triangles[v];
@@ -443,18 +433,18 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             Progress.progress(progress, ++ProgressCount);
 
             if (isCanceled) {
-                graph.readUnlockAll();
+                hgraph.readUnlockAll();
                 return;
             }
         }
         totalTriangles /= 3;
         avgClusteringCoeff /= N;
 
-        graph.readUnlock();
+        hgraph.readUnlock();
     }
 
 
-    /*public void bruteForce(GraphModel graphModel, AttributeModel attributeModel) {
+    /*private void bruteForce(GraphModel graphModel, AttributeModel attributeModel) {
         //The atrributes computed by the statistics
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn clusteringCol = nodeTable.getColumn("clustering");

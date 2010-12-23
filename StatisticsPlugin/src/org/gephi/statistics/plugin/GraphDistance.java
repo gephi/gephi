@@ -103,10 +103,20 @@ public class GraphDistance implements Statistics, LongTask {
     }
 
     /**
-     * 
+     *
      * @param graphModel
      */
-    public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
+        HierarchicalGraph graph = null;
+        if (isDirected) {
+            graph = graphModel.getHierarchicalDirectedGraphVisible();
+        } else {
+            graph = graphModel.getHierarchicalUndirectedGraphVisible();
+        }
+        execute(graph, attributeModel);
+    }
+
+    private void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn eccentricityCol = nodeTable.getColumn(ECCENTRICITY);
@@ -122,9 +132,9 @@ public class GraphDistance implements Statistics, LongTask {
             betweenessCol = nodeTable.addColumn(BETWEENNESS, "Betweenness Centrality", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
-        graph.readLock();
+        hgraph.readLock();
 
-        N = graph.getNodeCount();
+        N = hgraph.getNodeCount();
 
         betweenness = new double[N];
         eccentricity = new double[N];
@@ -135,14 +145,14 @@ public class GraphDistance implements Statistics, LongTask {
         radius = Integer.MAX_VALUE;
         HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             indicies.put(s, index);
             index++;
         }
 
-        Progress.start(progress, graph.getNodeCount());
+        Progress.start(progress, hgraph.getNodeCount());
         int count = 0;
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             Stack<Node> S = new Stack<Node>();
 
             LinkedList<Node>[] P = new LinkedList[N];
@@ -168,13 +178,13 @@ public class GraphDistance implements Statistics, LongTask {
 
                 EdgeIterable edgeIter = null;
                 if (isDirected) {
-                    edgeIter = ((HierarchicalDirectedGraph) graph).getOutEdges(v);
+                    edgeIter = ((HierarchicalDirectedGraph) hgraph).getOutEdgesAndMetaOutEdges(v);
                 } else {
-                    edgeIter = graph.getEdges(v);
+                    edgeIter = hgraph.getEdgesAndMetaEdges(v);
                 }
 
                 for (Edge edge : edgeIter) {
-                    Node reachable = graph.getOpposite(v, edge);
+                    Node reachable = hgraph.getOpposite(v, edge);
 
                     int r_index = indicies.get(reachable);
                     if (d[r_index] < 0) {
@@ -222,7 +232,7 @@ public class GraphDistance implements Statistics, LongTask {
             }
             count++;
             if (isCanceled) {
-                graph.readUnlockAll();
+                hgraph.readUnlockAll();
                 return;
             }
             Progress.progress(progress, count);
@@ -230,7 +240,7 @@ public class GraphDistance implements Statistics, LongTask {
 
         avgDist /= shortestPaths;//mN * (mN - 1.0f);
 
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
             int s_index = indicies.get(s);
 
@@ -245,21 +255,7 @@ public class GraphDistance implements Statistics, LongTask {
             row.setValue(closenessCol, closeness[s_index]);
             row.setValue(betweenessCol, betweenness[s_index]);
         }
-        graph.readUnlock();
-    }
-
-    /**
-     *
-     * @param graphModel
-     */
-    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        HierarchicalGraph graph = null;
-        if (isDirected) {
-            graph = graphModel.getHierarchicalDirectedGraphVisible();
-        } else {
-            graph = graphModel.getHierarchicalUndirectedGraphVisible();
-        }
-        execute(graph, attributeModel);
+        hgraph.readUnlock();
     }
 
     /**

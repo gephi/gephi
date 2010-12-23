@@ -104,19 +104,19 @@ public class PageRank implements Statistics, LongTask {
         execute(graph, attributeModel);
     }
 
-    public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
+    private void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
 
-        graph.readLock();
+        hgraph.readLock();
 
-        int N = graph.getNodeCount();
+        int N = hgraph.getNodeCount();
         pageranks = new double[N];
         double[] temp = new double[N];
         HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
 
         Progress.start(progress);
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             indicies.put(s, index);
             pageranks[index] = 1.0f / N;
             index++;
@@ -124,13 +124,13 @@ public class PageRank implements Statistics, LongTask {
 
         while (true) {
             double r = 0;
-            for (Node s : graph.getNodes()) {
+            for (Node s : hgraph.getNodes()) {
                 int s_index = indicies.get(s);
                 boolean out;
                 if (isDirected) {
-                    out = ((HierarchicalDirectedGraph) graph).getTotalOutDegree(s) > 0;
+                    out = ((HierarchicalDirectedGraph) hgraph).getTotalOutDegree(s) > 0;
                 } else {
-                    out = graph.getTotalDegree(s) > 0;
+                    out = hgraph.getTotalDegree(s) > 0;
                 }
 
                 if (out) {
@@ -139,31 +139,31 @@ public class PageRank implements Statistics, LongTask {
                     r += (pageranks[s_index] / N);
                 }
                 if (isCanceled) {
-                    graph.readUnlockAll();
+                    hgraph.readUnlockAll();
                     return;
                 }
             }
 
             boolean done = true;
-            for (Node s : graph.getNodes()) {
+            for (Node s : hgraph.getNodes()) {
                 int s_index = indicies.get(s);
                 temp[s_index] = r;
 
                 EdgeIterable eIter;
                 if (isDirected) {
-                    eIter = ((HierarchicalDirectedGraph) graph).getInEdges(s);
+                    eIter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(s);
                 } else {
-                    eIter = ((HierarchicalUndirectedGraph) graph).getEdges(s);
+                    eIter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(s);
                 }
 
                 for (Edge edge : eIter) {
-                    Node neighbor = graph.getOpposite(s, edge);
+                    Node neighbor = hgraph.getOpposite(s, edge);
                     int neigh_index = indicies.get(neighbor);
                     int normalize;
                     if (isDirected) {
-                        normalize = ((HierarchicalDirectedGraph) graph).getTotalOutDegree(neighbor);
+                        normalize = ((HierarchicalDirectedGraph) hgraph).getTotalOutDegree(neighbor);
                     } else {
-                        normalize = ((HierarchicalUndirectedGraph) graph).getTotalDegree(neighbor);
+                        normalize = ((HierarchicalUndirectedGraph) hgraph).getTotalDegree(neighbor);
                     }
 
                     temp[s_index] += probability * (pageranks[neigh_index] / normalize);
@@ -174,7 +174,7 @@ public class PageRank implements Statistics, LongTask {
                 }
 
                 if (isCanceled) {
-                    graph.readUnlockAll();
+                    hgraph.readUnlockAll();
                     return;
                 }
 
@@ -193,13 +193,13 @@ public class PageRank implements Statistics, LongTask {
             pangeRanksCol = nodeTable.addColumn(PAGERANK, "PageRank", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             int s_index = indicies.get(s);
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
             row.setValue(pangeRanksCol, pageranks[s_index]);
         }
 
-        graph.readUnlockAll();
+        hgraph.readUnlockAll();
     }
 
     /**

@@ -77,7 +77,7 @@ public class ConnectedComponents implements Statistics, LongTask {
         }
     }
 
-    public void weaklyConnected(HierarchicalUndirectedGraph graph, AttributeModel attributeModel) {
+    public void weaklyConnected(HierarchicalUndirectedGraph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
         componentCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
@@ -88,22 +88,22 @@ public class ConnectedComponents implements Statistics, LongTask {
 
         List<Integer> sizeList = new ArrayList<Integer>();
 
-        graph.readLock();
+        hgraph.readLock();
 
         HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             indicies.put(s, index);
             index++;
         }
 
 
-        int N = graph.getNodeCount();
+        int N = hgraph.getNodeCount();
 
         //Keep track of which nodes have been seen
         int[] color = new int[N];
 
-        Progress.start(progress, graph.getNodeCount());
+        Progress.start(progress, hgraph.getNodeCount());
         int seenCount = 0;
         while (seenCount < N) {
             //The search Q
@@ -112,7 +112,7 @@ public class ConnectedComponents implements Statistics, LongTask {
             LinkedList<Node> component = new LinkedList<Node>();
 
             //Seed the seach Q
-            NodeIterable iter = graph.getNodes();
+            NodeIterable iter = hgraph.getNodes();
             for (Node first : iter) {
                 if (color[indicies.get(first)] == 0) {
                     Q.add(first);
@@ -124,7 +124,7 @@ public class ConnectedComponents implements Statistics, LongTask {
             //While there are more nodes to search
             while (!Q.isEmpty()) {
                 if (isCanceled) {
-                    graph.readUnlock();
+                    hgraph.readUnlock();
                     return;
                 }
                 //Get the next Node and add it to the component list
@@ -132,11 +132,11 @@ public class ConnectedComponents implements Statistics, LongTask {
                 component.add(u);
 
                 //Iterate over all of u's neighbors
-                EdgeIterable edgeIter = graph.getEdges(u);
+                EdgeIterable edgeIter = hgraph.getEdgesAndMetaEdges(u);
 
                 //For each neighbor
                 for (Edge edge : edgeIter) {
-                    Node reachable = graph.getOpposite(u, edge);
+                    Node reachable = hgraph.getOpposite(u, edge);
                     int id = indicies.get(reachable);
                     //If this neighbor is unvisited
                     if (color[id] == 0) {
@@ -158,7 +158,7 @@ public class ConnectedComponents implements Statistics, LongTask {
             sizeList.add(component.size());
             componentCount++;
         }
-        graph.readUnlock();
+        hgraph.readUnlock();
 
         componentsSize = new int[sizeList.size()];
         for (int i = 0; i < sizeList.size(); i++) {
@@ -166,7 +166,7 @@ public class ConnectedComponents implements Statistics, LongTask {
         }
     }
 
-    public void top_tarjans(HierarchicalDirectedGraph graph, AttributeModel attributeModel) {
+    private void top_tarjans(HierarchicalDirectedGraph hgraph, AttributeModel attributeModel) {
         count = 1;
         stronglyCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
@@ -175,15 +175,15 @@ public class ConnectedComponents implements Statistics, LongTask {
             componentCol = nodeTable.addColumn(STRONG, "Strongly-Connected ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
 
-        graph.readLock();
+        hgraph.readLock();
 
         HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int v = 0;
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             indicies.put(s, v);
             v++;
         }
-        int N = graph.getNodeCount();
+        int N = hgraph.getNodeCount();
         int[] index = new int[N];
         int[] low_index = new int[N];
 
@@ -194,7 +194,7 @@ public class ConnectedComponents implements Statistics, LongTask {
             //LinkedList<Node> component = new LinkedList<Node>();
             //Seed the seach Q
             Node first = null;
-            NodeIterable iter = graph.getNodes();
+            NodeIterable iter = hgraph.getNodes();
             for (Node u : iter) {
                 if (index[indicies.get(u)] == 0) {
                     first = u;
@@ -203,35 +203,25 @@ public class ConnectedComponents implements Statistics, LongTask {
                 }
             }
             if (first == null) {
-                graph.readUnlockAll();
+                hgraph.readUnlockAll();
                 return;
             }
-            tarjans(componentCol, S, graph, first, index, low_index, indicies);
+            tarjans(componentCol, S, hgraph, first, index, low_index, indicies);
         }
     }
 
-    /**
-     * 
-     * @param col
-     * @param S
-     * @param graph
-     * @param f
-     * @param index
-     * @param low_index
-     * @param indicies
-     */
-    private void tarjans(AttributeColumn col, LinkedList<Node> S, HierarchicalDirectedGraph graph, Node f, int[] index, int[] low_index, HashMap<Node, Integer> indicies) {
+    private void tarjans(AttributeColumn col, LinkedList<Node> S, HierarchicalDirectedGraph hgraph, Node f, int[] index, int[] low_index, HashMap<Node, Integer> indicies) {
         int id = indicies.get(f);
         index[id] = count;
         low_index[id] = count;
         count++;
         S.addFirst(f);
-        EdgeIterable edgeIter = graph.getOutEdges(f);
+        EdgeIterable edgeIter = hgraph.getOutEdgesAndMetaOutEdges(f);
         for (Edge e : edgeIter) {
-            Node u = graph.getOpposite(f, e);
+            Node u = hgraph.getOpposite(f, e);
             int x = indicies.get(u);
             if (index[x] == 0) {
-                tarjans(col, S, graph, u, index, low_index, indicies);
+                tarjans(col, S, hgraph, u, index, low_index, indicies);
                 low_index[id] = Math.min(low_index[x], low_index[id]);
             } else if (S.contains(u)) {
                 low_index[id] = Math.min(low_index[id], index[x]);

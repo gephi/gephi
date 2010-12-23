@@ -104,10 +104,10 @@ public class Hits implements Statistics, LongTask {
         execute(graph, attributeModel);
     }
 
-    public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
-        graph.readLock();
+    private void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+        hgraph.readLock();
 
-        int N = graph.getNodeCount();
+        int N = hgraph.getNodeCount();
         authority = new double[N];
         hubs = new double[N];
         double[] temp_authority = new double[N];
@@ -120,19 +120,19 @@ public class Hits implements Statistics, LongTask {
 
         indicies = new HashMap<Node, Integer>();
         int index = 0;
-        for (Node node : graph.getNodes()) {
+        for (Node node : hgraph.getNodes()) {
             indicies.put(node, new Integer(index));
             index++;
 
             if (!useUndirected) {
-                if (((HierarchicalDirectedGraph) graph).getTotalOutDegree(node) > 0) {
+                if (((HierarchicalDirectedGraph) hgraph).getTotalOutDegree(node) > 0) {
                     hub_list.add(node);
                 }
-                if (((HierarchicalDirectedGraph) graph).getTotalInDegree(node) > 0) {
+                if (((HierarchicalDirectedGraph) hgraph).getTotalInDegree(node) > 0) {
                     auth_list.add(node);
                 }
             } else {
-                if (((HierarchicalUndirectedGraph) graph).getTotalDegree(node) > 0) {
+                if (((HierarchicalUndirectedGraph) hgraph).getTotalDegree(node) > 0) {
                     hub_list.add(node);
                     auth_list.add(node);
                 }
@@ -159,12 +159,12 @@ public class Hits implements Statistics, LongTask {
                 temp_authority[n_index] = authority[n_index];
                 EdgeIterable edge_iter;
                 if (!useUndirected) {
-                    edge_iter = ((HierarchicalDirectedGraph) graph).getInEdges(node);
+                    edge_iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node);
                 } else {
-                    edge_iter = ((HierarchicalUndirectedGraph) graph).getEdges(node);
+                    edge_iter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(node);
                 }
                 for (Edge edge : edge_iter) {
-                    Node target = graph.getOpposite(node, edge);
+                    Node target = hgraph.getOpposite(node, edge);
                     int target_index = indicies.get(target);
                     temp_authority[n_index] += hubs[target_index];
                 }
@@ -183,12 +183,12 @@ public class Hits implements Statistics, LongTask {
                 temp_hubs[n_index] = hubs[n_index];
                 EdgeIterable edge_iter;
                 if (!useUndirected) {
-                    edge_iter = ((HierarchicalDirectedGraph) graph).getInEdges(node);
+                    edge_iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node);
                 } else {
-                    edge_iter = ((HierarchicalUndirectedGraph) graph).getEdges(node);
+                    edge_iter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(node);
                 }
                 for (Edge edge : edge_iter) {
-                    Node target = graph.getOpposite(node, edge);
+                    Node target = hgraph.getOpposite(node, edge);
                     int target_index = indicies.get(target);
                     temp_hubs[n_index] += authority[target_index];
                 }
@@ -234,14 +234,14 @@ public class Hits implements Statistics, LongTask {
             hubsCol = nodeTable.addColumn(HUB, "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
         }
 
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             int s_index = indicies.get(s);
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
             row.setValue(authorityCol, (float) authority[s_index]);
             row.setValue(hubsCol, (float) hubs[s_index]);
         }
 
-        graph.readUnlockAll();
+        hgraph.readUnlockAll();
     }
 
     /**

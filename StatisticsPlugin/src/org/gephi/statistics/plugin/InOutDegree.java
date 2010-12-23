@@ -71,7 +71,7 @@ public class InOutDegree implements Statistics, LongTask {
         execute(graph, attributeModel);
     }
 
-    public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
+    private void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
         isCanceled = false;
         avgInDegree = avgOutDegree = 0.0;
 
