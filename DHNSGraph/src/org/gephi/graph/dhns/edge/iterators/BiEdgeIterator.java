@@ -23,7 +23,6 @@ package org.gephi.graph.dhns.edge.iterators;
 import java.util.Iterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.dhns.edge.AbstractEdge;
-import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
 
 /**
  *
@@ -31,12 +30,10 @@ import org.gephi.graph.dhns.edge.iterators.AbstractEdgeIterator;
  */
 public class BiEdgeIterator extends AbstractEdgeIterator implements Iterator<Edge> {
 
-    private AbstractEdgeIterator itr1;
     private AbstractEdgeIterator itr2;
     private AbstractEdgeIterator currentIterator;
 
     public BiEdgeIterator(AbstractEdgeIterator itr1, AbstractEdgeIterator itr2) {
-        this.itr1 = itr1;
         this.itr2 = itr2;
         currentIterator = itr1;
     }

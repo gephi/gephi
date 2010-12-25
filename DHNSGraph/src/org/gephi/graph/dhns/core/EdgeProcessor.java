@@ -20,8 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.core;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MetaEdgeImpl;
@@ -39,7 +37,6 @@ public class EdgeProcessor {
 
     //Architecture
     private final TreeStructure treeStructure;
-    private final IDGen idGen;
     private final Dhns dhns;
     private final GraphViewImpl view;
     private final int viewId;
@@ -49,7 +46,6 @@ public class EdgeProcessor {
     public EdgeProcessor(Dhns dhns, GraphViewImpl view) {
         this.dhns = dhns;
         this.treeStructure = view.getStructure();
-        this.idGen = dhns.getIdGen();
         this.view = view;
         this.viewId = view.getViewId();
         this.edgeIterator = new ParamAVLIterator<AbstractEdge>();
@@ -185,9 +181,17 @@ public class EdgeProcessor {
         }
     }
 
-    public void clearAllEdges() {
+    public AbstractEdge[] clearAllEdges() {
+        AbstractEdge[] edges = new AbstractEdge[view.getEdgesCountTotal()];
+        int i = 0;
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree()); itr.hasNext();) {
             AbstractNode node = itr.next();
+            edgeIterator.setNode(node.getEdgesOutTree());
+            while (edgeIterator.hasNext()) {
+                AbstractEdge edge = edgeIterator.next();
+                dhns.getGraphStructure().removeFromDictionnary(edge);
+                edges[i++] = edge;
+            }
             node.getEdgesInTree().clear();
             node.getEdgesOutTree().clear();
             node.setEnabledInDegree(0);
@@ -199,7 +203,7 @@ public class EdgeProcessor {
         view.setEdgesCountEnabled(0);
         view.setMutualEdgesEnabled(0);
         view.setMutualEdgesTotal(0);
-        dhns.getGraphStructure().clearEdgeDictionnary();
+        return edges;
     }
 
     public void clearAllMetaEdges() {

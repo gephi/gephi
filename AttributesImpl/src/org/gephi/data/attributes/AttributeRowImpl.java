@@ -84,7 +84,7 @@ public class AttributeRowImpl implements AttributeRow {
         } else {
             //add column
             AttributeType type = AttributeType.parse(value);
-            System.out.println("parsed value type: " + value.getClass());
+            //System.out.println("parsed value type: " + value.getClass());
             if (type != null) {
                 attributeColumn = attributeTable.addColumn(column, type);
                 setValue(attributeColumn, value);

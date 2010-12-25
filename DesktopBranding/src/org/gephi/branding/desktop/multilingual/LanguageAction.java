@@ -42,11 +42,13 @@ import org.openide.util.actions.CallableSystemAction;
 
 public final class LanguageAction extends CallableSystemAction {
 
+    private static final String APPNAME = "gephi07beta";
+
     public enum Language {
 
-        EN_US("en", "English"),
-        FR_FR("fr", "Français"),
-        ES_ES("es", "Español");
+        EN_US("en", "English");
+        //FR_FR("fr", "Français"),
+        //ES_ES("es", "Español");
         private String locale;
         private String name;
 
@@ -119,7 +121,7 @@ public final class LanguageAction extends CallableSystemAction {
             etc = new File(base, "etc");
         }
 
-        File confFile = new File(etc, "gephidesktop.conf");
+        File confFile = new File(etc, APPNAME+".conf");
         try {
             StringBuilder outputBuilder = new StringBuilder();
             String match = "-J-Duser.language=";

@@ -56,7 +56,6 @@ public class RandomGraph implements Generator {
         NodeDraft[] nodeArray = new NodeDraft[numberOfNodes];
         for (int i = 0; i < numberOfNodes && !cancel; i++) {
             NodeDraft nodeDraft = container.factory().newNodeDraft();
-            nodeDraft.setId("n" + i);
             container.addNode(nodeDraft);
             nodeArray[i] = nodeDraft;
             Progress.progress(progress, ++progressUnit);

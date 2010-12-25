@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.utils;
 
 import org.gephi.graph.api.EdgeData;
@@ -133,7 +133,7 @@ public class DataSerializer {
 
     public void readNodeData(Element nodeDataE, NodeData nodeData, GraphStructure structure) {
         if (nodeDataE.hasAttribute("id")) {
-            structure.getNodeIDDictionnary().put(nodeDataE.getAttribute("id"), nodeData);
+            structure.setNodeId((NodeDataImpl) nodeData, nodeDataE.getAttribute("id"));
         }
 
         NodeList dataE = nodeDataE.getChildNodes();
@@ -179,7 +179,7 @@ public class DataSerializer {
 
     public void readEdgeData(Element edgeDataE, EdgeData edgeData, GraphStructure structure) {
         if (edgeDataE.hasAttribute("id")) {
-            structure.getEdgeIDDIctionnary().put(edgeDataE.getAttribute("id"), edgeData.getEdge());
+            structure.setEdgeId((AbstractEdge) edgeData.getEdge(), edgeDataE.getAttribute("id"));
         }
 
         NodeList dataE = edgeDataE.getChildNodes();

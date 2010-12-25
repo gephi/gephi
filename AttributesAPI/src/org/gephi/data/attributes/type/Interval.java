@@ -224,15 +224,14 @@ public final class Interval<T> implements Comparable<Interval> {
 		return false;
 	}
 
-    /**
-     * Return a hashcode of this interval.
-     *
-     * @return a hashcode of this interval.
-     */
     @Override
     public int hashCode() {
-        return (int) (Double.doubleToLongBits(low)
-                ^ Double.doubleToLongBits(high));
+        int hash = 7;
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.low) ^ (Double.doubleToLongBits(this.low) >>> 32));
+        hash = 97 * hash + (int) (Double.doubleToLongBits(this.high) ^ (Double.doubleToLongBits(this.high) >>> 32));
+        hash = 97 * hash + (this.lopen ? 1 : 0);
+        hash = 97 * hash + (this.ropen ? 1 : 0);
+        return hash;
     }
 
 	/**

@@ -107,6 +107,7 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         try {
             exportData(createDocument(), graph, attributeModel);
         } catch (Exception e) {
+            graph.readUnlockAll();
             throw new RuntimeException(e);
         }
 
@@ -210,12 +211,26 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         root.appendChild(edgeIdKeyE);
 
         if (exportColors) {
-            Element colorKeyE = document.createElement("key");
-            colorKeyE.setAttribute("id", "color");
-            colorKeyE.setAttribute("attr.name", "color");
-            colorKeyE.setAttribute("attr.type", "integer");
-            colorKeyE.setAttribute("for", "node");
-            root.appendChild(colorKeyE);
+            Element colorRKeyE = document.createElement("key");
+            colorRKeyE.setAttribute("id", "r");
+            colorRKeyE.setAttribute("attr.name", "r");
+            colorRKeyE.setAttribute("attr.type", "int");
+            colorRKeyE.setAttribute("for", "node");
+            root.appendChild(colorRKeyE);
+
+            Element colorGKeyE = document.createElement("key");
+            colorGKeyE.setAttribute("id", "g");
+            colorGKeyE.setAttribute("attr.name", "g");
+            colorGKeyE.setAttribute("attr.type", "int");
+            colorGKeyE.setAttribute("for", "node");
+            root.appendChild(colorGKeyE);
+
+            Element colorBKeyE = document.createElement("key");
+            colorBKeyE.setAttribute("id", "b");
+            colorBKeyE.setAttribute("attr.name", "b");
+            colorBKeyE.setAttribute("attr.type", "int");
+            colorBKeyE.setAttribute("for", "node");
+            root.appendChild(colorBKeyE);
         }
 
         if (exportPosition) {
@@ -225,12 +240,14 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
             positionKeyE.setAttribute("attr.type", "float");
             positionKeyE.setAttribute("for", "node");
             root.appendChild(positionKeyE);
+
             Element positionKey2E = document.createElement("key");
             positionKey2E.setAttribute("id", "y");
             positionKey2E.setAttribute("attr.name", "y");
             positionKey2E.setAttribute("attr.type", "float");
             positionKey2E.setAttribute("for", "node");
             root.appendChild(positionKey2E);
+            
             if (minZ != 0f || maxZ != 0f) {
                 Element positionKey3E = document.createElement("key");
                 positionKey3E.setAttribute("id", "z");
@@ -407,7 +424,13 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
             nodeE.appendChild(sizeE);
         }
         if (exportColors) {
-            Element colorE = createNodeColors(document, n);
+            Element colorE = createNodeColorR(document, n);
+            nodeE.appendChild(colorE);
+
+            colorE = createNodeColorG(document, n);
+            nodeE.appendChild(colorE);
+
+            colorE = createNodeColorB(document, n);
             nodeE.appendChild(colorE);
         }
         if (exportPosition) {
@@ -507,11 +530,27 @@ public class ExporterGraphML implements GraphExporter, CharacterExporter, LongTa
         return sizeE;
     }
 
-    private Element createNodeColors(Document document, Node n) throws Exception {
+    private Element createNodeColorR(Document document, Node n) throws Exception {
+        int r = Math.round(n.getNodeData().r() * 255f);
         Element colorE = document.createElement("data");
-        Color color = new Color(n.getNodeData().r(), n.getNodeData().g(), n.getNodeData().b());
-        colorE.setAttribute("key", "color");
-        colorE.setTextContent("" + color.getRGB());
+        colorE.setAttribute("key", "r");
+        colorE.setTextContent("" + r);
+        return colorE;
+    }
+
+    private Element createNodeColorG(Document document, Node n) throws Exception {
+        int g = Math.round(n.getNodeData().g() * 255f);
+        Element colorE = document.createElement("data");
+        colorE.setAttribute("key", "g");
+        colorE.setTextContent("" + g);
+        return colorE;
+    }
+
+    private Element createNodeColorB(Document document, Node n) throws Exception {
+        int b = Math.round(n.getNodeData().b() * 255f);
+        Element colorE = document.createElement("data");
+        colorE.setAttribute("key", "b");
+        colorE.setTextContent("" + b);
         return colorE;
     }
 

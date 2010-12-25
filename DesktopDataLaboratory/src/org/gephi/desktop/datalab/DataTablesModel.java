@@ -17,14 +17,11 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.datalab;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeTable;
 
 /**
  *
@@ -32,70 +29,28 @@ import org.w3c.dom.NodeList;
  */
 public class DataTablesModel {
 
-    private String[] nodeColumnsHidden;
-    private String[] edgeColumnsHidden;
+    private AvailableColumnsModel nodeAvailableColumnsModel;
+    private AvailableColumnsModel edgeAvailableColumnsModel;
 
-    public DataTablesModel() {
-        nodeColumnsHidden = new String[0];
-        edgeColumnsHidden = new String[0];
-    }
+    public DataTablesModel(AttributeTable nodeTable, AttributeTable edgeTable) {
+        nodeAvailableColumnsModel = new AvailableColumnsModel();
+        edgeAvailableColumnsModel = new AvailableColumnsModel();
 
-    public String[] getEdgeColumnsHidden() {
-        return edgeColumnsHidden;
-    }
-
-    public void setEdgeColumnsHidden(String[] edgeColumnsHidden) {
-        this.edgeColumnsHidden = edgeColumnsHidden;
-    }
-
-    public String[] getNodeColumnsHidden() {
-        return nodeColumnsHidden;
-    }
-
-    public void setNodeColumnsHidden(String[] nodeColumnsHidden) {
-        this.nodeColumnsHidden = nodeColumnsHidden;
-    }
-
-    public void readXML(Element modelElement) {
-        List<String> nodeList = new ArrayList<String>();
-
-        Element nodeHiddenE = (Element) modelElement.getElementsByTagName("nodehidden").item(0);
-        NodeList nodeChildren = nodeHiddenE.getChildNodes();
-        for (int i = 0; i < nodeChildren.getLength(); i++) {
-            Element colE = (Element) nodeChildren.item(i);
-            nodeList.add(colE.getTextContent());
+        //Try to make available all columns at start by default:
+        for(AttributeColumn column:nodeTable.getColumns()){
+            nodeAvailableColumnsModel.addAvailableColumn(column);
         }
-        this.nodeColumnsHidden = nodeList.toArray(new String[0]);
 
-        List<String> edgeList = new ArrayList<String>();
-        Element edgeHiddenE = (Element) modelElement.getElementsByTagName("edgehidden").item(0);
-        NodeList edgeChildren = edgeHiddenE.getChildNodes();
-        for (int i = 0; i < edgeChildren.getLength(); i++) {
-            Element colE = (Element) edgeChildren.item(i);
-            edgeList.add(colE.getTextContent());
+        for(AttributeColumn column:edgeTable.getColumns()){
+            edgeAvailableColumnsModel.addAvailableColumn(column);
         }
-        this.edgeColumnsHidden = edgeList.toArray(new String[0]);
     }
 
-    public Element writeXML(Document document) {
-        Element modelE = document.createElement("datatablesmodel");
+    public AvailableColumnsModel getEdgeAvailableColumnsModel() {
+        return edgeAvailableColumnsModel;
+    }
 
-        Element nodeHiddenE = document.createElement("nodehidden");
-        for (int i = 0; i < nodeColumnsHidden.length; i++) {
-            Element colE = document.createElement("column");
-            colE.setTextContent(nodeColumnsHidden[i]);
-            nodeHiddenE.appendChild(colE);
-        }
-        modelE.appendChild(nodeHiddenE);
-
-        Element edgeHiddenE = document.createElement("edgehidden");
-        for (int i = 0; i < edgeColumnsHidden.length; i++) {
-            Element colE = document.createElement("column");
-            colE.setTextContent(edgeColumnsHidden[i]);
-            edgeHiddenE.appendChild(colE);
-        }
-        modelE.appendChild(edgeHiddenE);
-
-        return modelE;
+    public AvailableColumnsModel getNodeAvailableColumnsModel() {
+        return nodeAvailableColumnsModel;
     }
 }

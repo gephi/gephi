@@ -17,14 +17,15 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.filter;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
 import org.gephi.graph.dhns.core.Dhns;
@@ -40,11 +41,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.openide.util.Exceptions;
 
 public class DhnsTestFiltering {
 
     private Dhns dhnsGlobal;
-    private Graph graphGlobal;
+    private HierarchicalGraph graphGlobal;
     private Map<String, Node> nodeMap;
     private Map<String, Edge> edgeMap;
 
@@ -158,25 +160,24 @@ public class DhnsTestFiltering {
     }
 
     @Test
-    public void testGC() {
-        DhnsGraphController controller = new DhnsGraphController();
-        Dhns dhns = new Dhns(controller, null);
-        Graph graph = dhns.getDirectedGraph();
-        AbstractNode node1 = dhns.factory().newNode();
-        AbstractNode node2 = dhns.factory().newNode();
-        graph.addNode(node1);
-        graph.addNode(node2);
-        GraphViewImpl view = (GraphViewImpl) dhns.newView();
-        int viewId = view.getViewId();
-        dhns.destroyView(view);
-        System.out.println("Free memory: " + Runtime.getRuntime().freeMemory());
-        view = null;
+    public void testFlatten() {
+        Node[] nodeGroup = new Node[]{nodeMap.get("Node 1"), nodeMap.get("Node 2")};
+        graphGlobal.groupNodes(nodeGroup);
+
+        GraphView newView = dhnsGlobal.newView();
+        HierarchicalGraph viewGraph = dhnsGlobal.getHierarchicalGraph(newView);
+        viewGraph.resetViewToTopNodes();
+        viewGraph.flatten();
+
+        dhnsGlobal.destroyView(newView);
+        viewGraph = null;
+        newView = null;
         System.gc();
-        System.out.println("Free memory: " + Runtime.getRuntime().freeMemory());
-        AbstractNode n1 = node1.getInView(viewId);
-        AbstractNode n2 = node2.getInView(viewId);
-        assertNull(n1);
-        assertNull(n2);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 //    private void showEdges(TreeStructure treeStructure) {
 //        ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();

@@ -87,6 +87,10 @@
                         <compile-dependency/>
                     </test-dependency>
                     <test-dependency>
+                        <code-name-base>org.gephi.dynamic.api</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
+                    <test-dependency>
                         <code-name-base>org.gephi.graph.api</code-name-base>
                         <compile-dependency/>
                     </test-dependency>
@@ -132,6 +136,10 @@
                     </test-dependency>
                     <test-dependency>
                         <code-name-base>org.gephi.utils.collection</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
+                    <test-dependency>
+                        <code-name-base>org.gephi.visualization.api</code-name-base>
                         <compile-dependency/>
                     </test-dependency>
                     <test-dependency>

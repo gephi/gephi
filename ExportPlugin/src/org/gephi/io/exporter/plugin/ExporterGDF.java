@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.exporter.plugin;
 
 import java.io.Writer;
@@ -71,6 +71,8 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
     private float maxX;
     private float minY;
     private float maxY;
+    private boolean edgeLabels;
+    private boolean edgeColors;
     //Columns
     private NodeColumnsGDF[] defaultNodeColumnsGDFs;
     private EdgeColumnsGDF[] defaultEdgeColumnsGDFs;
@@ -91,7 +93,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             graph = graphModel.getGraph();
         }
         DynamicModel dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
-        visibleInterval = dynamicModel !=null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
+        visibleInterval = dynamicModel != null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
         try {
             exportData(graph, attributeModel);
         } catch (Exception e) {
@@ -208,6 +210,13 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         //Edge intro
         stringBuilder.append("edgedef> node1,node2,");
 
+        //Edge settings helper
+        HierarchicalGraph hg = (HierarchicalGraph) graph;
+        for (Edge e : hg.getEdgesAndMetaEdges()) {
+            edgeColors = edgeColors || e.getEdgeData().r() != -1;
+            edgeLabels = edgeLabels || (e.getEdgeData().getLabel() != null && !e.getEdgeData().getLabel().isEmpty());
+        }
+
         //Edge columns title
         for (EdgeColumnsGDF c : defaultEdgeColumnsGDFs) {
             if (c.isEnable()) {
@@ -224,7 +233,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
         //Attributes Edge columns
         for (AttributeColumn c : edgeColumns) {
-            if (c.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+            if (!c.getOrigin().equals(AttributeOrigin.PROPERTY)) {
                 stringBuilder.append(c.getTitle());
                 stringBuilder.append(" ");
                 DataTypeGDF dataTypeGDF = getDataTypeGDF(c.getType());
@@ -270,7 +279,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             }
 
             //Attributes columns
-            for (AttributeColumn c : nodeColumns) {
+            for (AttributeColumn c : edgeColumns) {
                 Object val = edge.getEdgeData().getAttributes().getValue(c.getIndex());
                 val = DynamicUtilities.getDynamicValue(val, visibleInterval.getLow(), visibleInterval.getHigh());
                 if (val != null) {
@@ -329,7 +338,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
     private boolean isNodeDefaultColumn(String id) {
         for (NodeColumnsGDF c : defaultNodeColumnsGDFs) {
-            if (c.title.equals(id.toLowerCase())) {
+            if (c.title.equalsIgnoreCase(id)) {
                 return true;
             }
         }
@@ -338,7 +347,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
     private boolean isEdgeDefaultColumn(String id) {
         for (EdgeColumnsGDF c : defaultEdgeColumnsGDFs) {
-            if (c.title.equals(id.toLowerCase())) {
+            if (c.title.equalsIgnoreCase(id)) {
                 return true;
             }
         }
@@ -522,7 +531,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return edgeLabels;
             }
 
             @Override
@@ -567,19 +576,21 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return exportColors;
+                return exportColors && edgeColors;
             }
 
             @Override
             public void writeData(StringBuilder builder, Edge edge) {
-                String quote = "'";
-                builder.append(quote);
-                builder.append((int) (edge.getEdgeData().r() * 255f));
-                builder.append(",");
-                builder.append((int) (edge.getEdgeData().g() * 255f));
-                builder.append(",");
-                builder.append((int) (edge.getEdgeData().b() * 255f));
-                builder.append(quote);
+                if (edge.getEdgeData().r() != -1) {
+                    String quote = "'";
+                    builder.append(quote);
+                    builder.append((int) (edge.getEdgeData().r() * 255f));
+                    builder.append(",");
+                    builder.append((int) (edge.getEdgeData().g() * 255f));
+                    builder.append(",");
+                    builder.append((int) (edge.getEdgeData().b() * 255f));
+                    builder.append(quote);
+                }
             }
         };
 
@@ -587,7 +598,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportVisibility;
             }
 
             @Override
@@ -600,7 +611,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
             @Override
             public boolean isEnable() {
-                return true;
+                return exportVisibility;
             }
 
             @Override
@@ -609,13 +620,26 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             }
         };
 
-        defaultEdgeColumnsGDFs = new EdgeColumnsGDF[6];
-        defaultEdgeColumnsGDFs[0] = labelColumn;
-        defaultEdgeColumnsGDFs[1] = weightColumn;
-        defaultEdgeColumnsGDFs[2] = directedColumn;
-        defaultEdgeColumnsGDFs[3] = colorColumn;
-        defaultEdgeColumnsGDFs[4] = visibleColumn;
-        defaultEdgeColumnsGDFs[5] = labelVisibleColumn;
+        EdgeColumnsGDF edgeIdColumn = new EdgeColumnsGDF("id", DataTypeGDF.VARCHAR) {
+
+            @Override
+            public boolean isEnable() {
+                return false;
+            }
+
+            @Override
+            public void writeData(StringBuilder builder, Edge edge) {
+            }
+        };
+
+        defaultEdgeColumnsGDFs = new EdgeColumnsGDF[7];
+        defaultEdgeColumnsGDFs[0] = edgeIdColumn;
+        defaultEdgeColumnsGDFs[1] = labelColumn;
+        defaultEdgeColumnsGDFs[2] = weightColumn;
+        defaultEdgeColumnsGDFs[3] = directedColumn;
+        defaultEdgeColumnsGDFs[4] = colorColumn;
+        defaultEdgeColumnsGDFs[5] = visibleColumn;
+        defaultEdgeColumnsGDFs[6] = labelVisibleColumn;
     }
 
     private void calculateMinMax(Graph graph) {

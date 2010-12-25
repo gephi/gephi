@@ -17,41 +17,21 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-package org.gephi.ui.spigot.plugin;
+ */
+package org.gephi.visualization.impl;
 
-import javax.swing.JPanel;
-import org.gephi.io.importer.spi.Importer;
-import org.gephi.io.importer.spi.ImporterUI;
-import org.gephi.io.spigot.plugin.SampleSpigot;
+import org.gephi.graph.api.TextData;
+import org.gephi.graph.spi.TextDataFactory;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = ImporterUI.class)
-public class SampleSpigotUI implements ImporterUI {
+@ServiceProvider(service = TextDataFactory.class)
+public class TextDataFactoryImpl implements TextDataFactory {
 
-    private SampleSpigotPanel panel;
-
-    public void setup(Importer importer) {
-    }
-
-    public JPanel getPanel() {
-        panel = new SampleSpigotPanel();
-        return panel;
-    }
-
-    public void unsetup(boolean update) {
-        panel = null;
-    }
-
-    public String getDisplayName() {
-        return "Sample";
-    }
-
-    public boolean isUIForImporter(Importer importer) {
-        return importer instanceof SampleSpigot;
+    public TextData newTextData() {
+        return new TextDataImpl();
     }
 }

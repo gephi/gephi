@@ -18,24 +18,15 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.gephi.io.spigot.plugin;
+package org.gephi.filters.plugin.graph;
 
-import org.gephi.io.importer.spi.SpigotImporter;
-import org.gephi.io.importer.spi.SpigotImporterBuilder;
-import org.openide.util.lookup.ServiceProvider;
+import javax.swing.JPanel;
 
 /**
  *
- * @author Mathieu Bastian
+ * @author Sebastien Heymann
  */
-@ServiceProvider(service = SpigotImporterBuilder.class)
-public class SampleSpigotBuilder implements SpigotImporterBuilder {
+public interface NeighborsUI {
 
-    public SpigotImporter buildImporter() {
-        return new SampleSpigot();
-    }
-
-    public String getName() {
-        return "Sample";
-    }
+    public JPanel getPanel(NeighborsBuilder.NeighborsFilter neighborsFilter);
 }

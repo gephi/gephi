@@ -51,7 +51,7 @@ import org.openide.util.lookup.ServiceProvider;
  * AttributeColumnsManipulator that shows a report with a list of the different values of a column and their frequency of appearance.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-@ServiceProvider(service = AttributeColumnsManipulator.class)
+//@ServiceProvider(service = AttributeColumnsManipulator.class)
 public class ColumnValuesFrequency implements AttributeColumnsManipulator {
 
     public static final int MAX_PIE_CHART_CATEGORIES = 100;

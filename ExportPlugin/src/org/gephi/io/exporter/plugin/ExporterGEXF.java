@@ -118,6 +118,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private static final String ATTRIBUTES = "attributes";
     private static final String ATTRIBUTES_CLASS = "class";
     private static final String ATTRIBUTES_MODE = "mode";
+    private static final String ATTVALUES = "attvalues";
     private static final String ATTVALUE = "attvalue";
     private static final String ATTVALUE_FOR = "for";
     private static final String ATTVALUE_VALUE = "value";
@@ -216,11 +217,14 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.close();
 
         } catch (Exception e) {
+            graph.readUnlockAll();
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
             }
             throw new RuntimeException(e);
         }
+
+        graph.readUnlock();
 
         Progress.finish(progress);
         return !cancel;
@@ -280,7 +284,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 } else {
                     staticCols.add(col);
                 }
-            } else if (exportDynamic && col.getType().isDynamicType() && col.getOrigin().equals(AttributeOrigin.PROPERTY) && col.getIndex() == PropertiesColumn.EDGE_WEIGHT.getIndex()) {
+            } else if (exportDynamic && col.getType().isDynamicType() && col.getType() != AttributeType.TIME_INTERVAL
+                    && col.getOrigin().equals(AttributeOrigin.PROPERTY) && col.getIndex() == PropertiesColumn.EDGE_WEIGHT.getIndex()) {
                 dynamicCols.add(col);
             }
         }
@@ -294,46 +299,48 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeAttributes(XMLStreamWriter xmlWriter, AttributeColumn[] cols, String mode, String attClass) throws Exception {
-        xmlWriter.writeStartElement(ATTRIBUTES);
-        xmlWriter.writeAttribute(ATTRIBUTES_CLASS, attClass);
-        xmlWriter.writeAttribute(ATTRIBUTES_MODE, mode);
+        if(exportAttributes) {
+            xmlWriter.writeStartElement(ATTRIBUTES);
+            xmlWriter.writeAttribute(ATTRIBUTES_CLASS, attClass);
+            xmlWriter.writeAttribute(ATTRIBUTES_MODE, mode);
 
-        for (AttributeColumn col : cols) {
-            if (!col.getOrigin().equals(AttributeOrigin.PROPERTY)
-                    || (exportDynamic && col.getOrigin().equals(AttributeOrigin.PROPERTY) && col.getIndex() == PropertiesColumn.EDGE_WEIGHT.getIndex())) {
-                xmlWriter.writeStartElement(ATTRIBUTE);
-                xmlWriter.writeAttribute(ATTRIBUTE_ID, col.getId());
-                xmlWriter.writeAttribute(ATTRIBUTE_TITLE, col.getTitle());
-                if (col.getType().equals(AttributeType.INT)) {
-                    xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "integer");
-                } else if (col.getType().isListType()) {
-                    if (col.getType().equals(AttributeType.LIST_INTEGER)) {
-                        xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "listint");
-                    } else if (col.getType().equals(AttributeType.LIST_CHARACTER)) {
-                        xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "listchar");
-                    } else {
-                        xmlWriter.writeAttribute(ATTRIBUTE_TYPE, col.getType().getTypeString().toLowerCase().replace("_", ""));
-                    }
-                } else if (col.getType().isDynamicType()) {
-                    AttributeType staticType = TypeConvertor.getStaticType(col.getType());
-                    if (staticType.equals(AttributeType.INT)) {
+            for (AttributeColumn col : cols) {
+                if (!col.getOrigin().equals(AttributeOrigin.PROPERTY)
+                        || (exportDynamic && col.getOrigin().equals(AttributeOrigin.PROPERTY) && col.getIndex() == PropertiesColumn.EDGE_WEIGHT.getIndex())) {
+                    xmlWriter.writeStartElement(ATTRIBUTE);
+                    xmlWriter.writeAttribute(ATTRIBUTE_ID, col.getId());
+                    xmlWriter.writeAttribute(ATTRIBUTE_TITLE, col.getTitle());
+                    if (col.getType().equals(AttributeType.INT)) {
                         xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "integer");
+                    } else if (col.getType().isListType()) {
+                        if (col.getType().equals(AttributeType.LIST_INTEGER)) {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "listint");
+                        } else if (col.getType().equals(AttributeType.LIST_CHARACTER)) {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "listchar");
+                        } else {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, col.getType().getTypeString().toLowerCase().replace("_", ""));
+                        }
+                    } else if (col.getType().isDynamicType()) {
+                        AttributeType staticType = TypeConvertor.getStaticType(col.getType());
+                        if (staticType.equals(AttributeType.INT)) {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, "integer");
+                        } else {
+                            xmlWriter.writeAttribute(ATTRIBUTE_TYPE, staticType.getTypeString().toLowerCase());
+                        }
                     } else {
-                        xmlWriter.writeAttribute(ATTRIBUTE_TYPE, staticType.getTypeString().toLowerCase());
+                        xmlWriter.writeAttribute(ATTRIBUTE_TYPE, col.getType().getTypeString().toLowerCase());
                     }
-                } else {
-                    xmlWriter.writeAttribute(ATTRIBUTE_TYPE, col.getType().getTypeString().toLowerCase());
-                }
-                if (col.getDefaultValue() != null) {
-                    xmlWriter.writeStartElement(ATTRIBUTE_DEFAULT);
-                    xmlWriter.writeCharacters(col.getDefaultValue().toString());
+                    if (col.getDefaultValue() != null) {
+                        xmlWriter.writeStartElement(ATTRIBUTE_DEFAULT);
+                        xmlWriter.writeCharacters(col.getDefaultValue().toString());
+                        xmlWriter.writeEndElement();
+                    }
                     xmlWriter.writeEndElement();
                 }
-                xmlWriter.writeEndElement();
             }
-        }
 
-        xmlWriter.writeEndElement();
+            xmlWriter.writeEndElement();
+        }
     }
 
     private void writeNodes(XMLStreamWriter xmlWriter, HierarchicalGraph graph) throws Exception {
@@ -350,7 +357,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             String id = node.getNodeData().getId();
             xmlWriter.writeAttribute(NODE_ID, id);
-            if (node.getNodeData().getLabel() != null && !node.getNodeData().getLabel().isEmpty() && !node.getNodeData().getLabel().equals(id)) {
+            if (node.getNodeData().getLabel() != null && !node.getNodeData().getLabel().isEmpty()) {
                 xmlWriter.writeAttribute(NODE_LABEL, node.getNodeData().getLabel());
             }
 
@@ -370,7 +377,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
             if (exportAttributes && node.getNodeData().getAttributes() != null) {
                 AttributeRow attributeRow = (AttributeRow) node.getNodeData().getAttributes();
-                writeAttValue(xmlWriter, attributeRow, visibleInterval);
+                writeAttValues(xmlWriter, attributeRow, visibleInterval);
             }
 
             if (exportSize) {
@@ -395,7 +402,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         xmlWriter.writeEndElement();
     }
 
-    private void writeAttValue(XMLStreamWriter xmlWriter, AttributeRow row, TimeInterval visibleInterval) throws Exception {
+    private void writeAttValues(XMLStreamWriter xmlWriter, AttributeRow row, TimeInterval visibleInterval) throws Exception {
+        xmlWriter.writeStartElement(ATTVALUES);
         for (AttributeValue val : row.getValues()) {
             AttributeColumn col = val.getColumn();
             if (!col.getOrigin().equals(AttributeOrigin.PROPERTY)
@@ -427,7 +435,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                         if (interval == null) {
                             interval = new TimeInterval();
                         }
-                        Object value = DynamicUtilities.getDynamicValue(val, interval.getLow(), interval.getHigh());
+                        Object value = DynamicUtilities.getDynamicValue(dynamicValue, interval.getLow(), interval.getHigh());
                         if (value != null) {
                             xmlWriter.writeStartElement(ATTVALUE);
                             xmlWriter.writeAttribute(ATTVALUE_FOR, val.getColumn().getId());
@@ -445,6 +453,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 }
             }
         }
+        xmlWriter.writeEndElement();
     }
 
     private void writeNodePosition(XMLStreamWriter xmlWriter, Node node) throws Exception {
@@ -549,7 +558,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             }
 
             String label = edge.getEdgeData().getLabel();
-            if (label != null && !label.isEmpty() && !label.equals(edge.getEdgeData().getId())) {
+            if (label != null && !label.isEmpty()) {
                 xmlWriter.writeAttribute(EDGE_LABEL, label);
             }
 
@@ -565,11 +574,13 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 }
             }
 
-            writeEdgeColor(xmlWriter, edge);
+            if (exportColors) {
+                writeEdgeColor(xmlWriter, edge);
+            }
 
             if (exportAttributes && edge.getEdgeData().getAttributes() != null) {
                 AttributeRow attributeRow = (AttributeRow) edge.getEdgeData().getAttributes();
-                writeAttValue(xmlWriter, attributeRow, visibleInterval);
+                writeAttValues(xmlWriter, attributeRow, visibleInterval);
             }
 
             xmlWriter.writeEndElement();

@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
  * AttributeColumnsManipulator that shows a report with statistics values and charts of a number/number list column.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-@ServiceProvider(service = AttributeColumnsManipulator.class)
+//@ServiceProvider(service = AttributeColumnsManipulator.class)
 public class NumberColumnStatisticsReport implements AttributeColumnsManipulator {
 
     public void execute(AttributeTable table, AttributeColumn column) {

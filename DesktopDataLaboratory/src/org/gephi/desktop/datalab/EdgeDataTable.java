@@ -41,7 +41,6 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
@@ -89,8 +88,10 @@ public class EdgeDataTable {
     private PropertyEdgeDataColumn[] propertiesColumns;
     private RowFilter rowFilter;
     private Edge[] selectedEdges;
+    private AttributeUtils attributeUtils;
     private AttributeColumnsController attributeColumnsController;
     private boolean refreshingTable = false;
+    private AttributeColumn[] showingColumns = null;
     private static final int FAKE_COLUMNS_COUNT = 3;
     private EdgeDataTableModel model;
     private TimeIntervalsRenderer timeIntervalsRenderer;
@@ -98,6 +99,7 @@ public class EdgeDataTable {
     private SparkLinesRenderer sparkLinesRenderer;
 
     public EdgeDataTable() {
+        attributeUtils = AttributeUtils.getDefault();
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         table = new JXTable();
@@ -236,7 +238,7 @@ public class EdgeDataTable {
 
     public boolean setPattern(String regularExpr, int column) {
         try {
-            if (regularExpr.startsWith("(?i)")) {   //CASE_INSENSITIVE
+            if (!regularExpr.startsWith("(?i)")) {   //CASE_INSENSITIVE
                 regularExpr = "(?i)" + regularExpr;
             }
             rowFilter = RowFilter.regexFilter(regularExpr, column);
@@ -248,6 +250,7 @@ public class EdgeDataTable {
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, DataTablesModel dataTablesModel) {
+        showingColumns = cols;
         DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
         if (dm != null) {
             timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
@@ -442,12 +445,14 @@ public class EdgeDataTable {
         }
 
         public Class getColumnClass() {
-            if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
+            if (useSparklines && attributeUtils.isNumberListColumn(column)) {
                 return NumberList.class;
-            } else if (useSparklines && AttributeUtils.getDefault().isDynamicNumberColumn(column)) {
+            } else if (useSparklines && attributeUtils.isDynamicNumberColumn(column)) {
                 return column.getType().getType();
             } else if (column.getType() == AttributeType.TIME_INTERVAL) {
                 return TimeInterval.class;
+            } else if (attributeUtils.isNumberColumn(column)) {
+                return column.getType().getType();//Number columns should not be treated as Strings because the sorting would be alphabetic instead of numeric
             } else {
                 return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
             }
@@ -459,9 +464,11 @@ public class EdgeDataTable {
 
         public Object getValueFor(Edge edge) {
             Object value = edge.getEdgeData().getAttributes().getValue(column.getIndex());
-            if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column) || AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
+            if (useSparklines && (attributeUtils.isNumberListColumn(column) || attributeUtils.isDynamicNumberColumn(column))) {
                 return value;
             } else if (column.getType() == AttributeType.TIME_INTERVAL) {
+                return value;
+            } else if (attributeUtils.isNumberColumn(column)) {
                 return value;
             } else {
                 //Show values as Strings like in Edit window and other parts of the program to be consistent
@@ -586,9 +593,11 @@ public class EdgeDataTable {
             //Add AttributeValues manipulators submenu:
             AttributeRow row = (AttributeRow) clickedEdge.getEdgeData().getAttributes();
             int realColumnIndex = table.convertColumnIndexToModel(table.columnAtPoint(p)) - FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
-            AttributeColumn column = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable().getColumn(realColumnIndex);
-            if (column != null) {
-                contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+            if (realColumnIndex >= 0) {
+                AttributeColumn column = showingColumns[realColumnIndex];
+                if (column != null) {
+                    contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+                }
             }
             return contextMenu;
         }

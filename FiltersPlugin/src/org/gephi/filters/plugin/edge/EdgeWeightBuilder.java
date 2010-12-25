@@ -26,8 +26,8 @@ import javax.swing.Icon;
 import javax.swing.JPanel;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Range;
+import org.gephi.filters.plugin.DynamicAttributesHelper;
 import org.gephi.filters.plugin.RangeFilter;
-import org.gephi.filters.plugin.graph.DegreeRangeBuilder;
 import org.gephi.filters.plugin.graph.RangeUI;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.EdgeFilter;
@@ -86,6 +86,7 @@ public class EdgeWeightBuilder implements FilterBuilder {
         private Float min = 0f;
         private Float max = 0f;
         private Range range;
+        private DynamicAttributesHelper dynamicHelper= new DynamicAttributesHelper(this, null);
         //States
         private List<Float> values;
 
@@ -102,6 +103,7 @@ public class EdgeWeightBuilder implements FilterBuilder {
         }
 
         public boolean init(Graph graph) {
+            dynamicHelper = new DynamicAttributesHelper(this, graph);
             if (range == null) {
                 getValues();
                 refreshRange();
@@ -113,7 +115,7 @@ public class EdgeWeightBuilder implements FilterBuilder {
         }
 
         public boolean evaluate(Graph graph, Edge edge) {
-            float weight = edge.getWeight();
+            float weight = dynamicHelper.getEdgeWeight(edge);
             min = Math.min(min, weight);
             max = Math.max(max, weight);
             values.add(new Float(weight));
@@ -133,7 +135,7 @@ public class EdgeWeightBuilder implements FilterBuilder {
                 min = Float.MAX_VALUE;
                 max = Float.MIN_VALUE;
                 for (Edge e : graph.getEdges()) {
-                    float weight = e.getWeight();
+                    float weight = dynamicHelper.getEdgeWeight(e);
                     min = Math.min(min, weight);
                     max = Math.max(max, weight);
                     weights[i++] = weight;

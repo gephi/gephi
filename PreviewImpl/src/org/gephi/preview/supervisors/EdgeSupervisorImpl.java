@@ -72,14 +72,18 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
         }
 
         float weight = edge.getThickness();
+        float min = edge.getMetaEdge() ? edge.getGraph().getMinMetaWeight() : edge.getGraph().getMinWeight();
+        float max = edge.getMetaEdge() ? edge.getGraph().getMaxMetaWeight() : edge.getGraph().getMaxWeight();
         if (rescaleWeight) {
-            float min = edge.getMetaEdge() ? edge.getGraph().getMinMetaWeight() : edge.getGraph().getMinWeight();
-            float max = edge.getMetaEdge() ? edge.getGraph().getMaxMetaWeight() : edge.getGraph().getMaxWeight();
-            float ratio = (GraphImpl.WEIGHT_MAXIMUM - GraphImpl.WEIGHT_MINIMUM) / (max - min);
-            weight = (weight - min) * ratio + GraphImpl.WEIGHT_MINIMUM;
+            if (!Double.isInfinite(min) && !Double.isInfinite(max) && max != min) {
+                float ratio = (GraphImpl.WEIGHT_MAXIMUM - GraphImpl.WEIGHT_MINIMUM) / (max - min);
+                weight = (weight - min) * ratio + GraphImpl.WEIGHT_MINIMUM;
+            }
+        } else if (min <= 0) {
+            weight += Math.abs(min) + 1;
         }
 
-        if (edge.getMetaEdge()) {
+        if (edge.getMetaEdge() && visualizationController != null) {
             weight *= visualizationController.getMetaEdgeScale();
         }
 

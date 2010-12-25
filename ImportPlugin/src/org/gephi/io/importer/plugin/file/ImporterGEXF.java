@@ -366,11 +366,15 @@ public class ImporterGEXF implements FileImporter, LongTask {
                         report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
                     }
                 } else {
-                    try {
-                        Object val = column.getType().parse(value);
-                        node.addAttributeValue(column, val);
-                    } catch (Exception e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
+                    if (column.getType().isDynamicType()) {
+                        node.addAttributeValue(column, value);
+                    } else {
+                        try {
+                            Object val = column.getType().parse(value);
+                            node.addAttributeValue(column, val);
+                        } catch (Exception e) {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
+                        }
                     }
                 }
             }
@@ -642,11 +646,15 @@ public class ImporterGEXF implements FileImporter, LongTask {
                         report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
                     }
                 } else {
-                    try {
-                        Object val = column.getType().parse(value);
-                        edge.addAttributeValue(column, val);
-                    } catch (Exception e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
+                    if (column.getType().isDynamicType()) {
+                        edge.addAttributeValue(column, value);
+                    } else {
+                        try {
+                            Object val = column.getType().parse(value);
+                            edge.addAttributeValue(column, val);
+                        } catch (Exception e) {
+                            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
+                        }
                     }
                 }
             }

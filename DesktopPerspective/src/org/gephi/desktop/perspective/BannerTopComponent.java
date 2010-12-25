@@ -126,7 +126,7 @@ public final class BannerTopComponent extends TopComponent {
                         if (member.close(closingPerspective)) {
                             if (member instanceof TopComponent) {
                                 boolean closed = ((TopComponent) member).close();
-                                System.out.println("Close "+member+" : "+closed);
+                                //System.out.println("Close "+member+" : "+closed);
                             }
                         }
                     }
@@ -136,7 +136,7 @@ public final class BannerTopComponent extends TopComponent {
                         if (member.open(perspective)) {
                             if (member instanceof TopComponent && !((TopComponent) member).isOpened()) {
                                 ((TopComponent) member).open();
-                                System.out.println("Open "+member);
+                                //System.out.println("Open "+member);
                             }
                         }
                     }

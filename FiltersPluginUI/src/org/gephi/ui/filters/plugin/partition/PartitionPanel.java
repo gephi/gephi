@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.filters.plugin.partition;
 
 import java.awt.Color;
@@ -98,6 +98,9 @@ public class PartitionPanel extends javax.swing.JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     int index = list.locationToIndex(e.getPoint());
+                    if (index == -1) {
+                        return;
+                    }
                     PartWrapper pw = (PartWrapper) list.getModel().getElementAt(index);
                     boolean set = !pw.isEnabled();
                     pw.setEnabled(set);

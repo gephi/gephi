@@ -200,8 +200,13 @@ public enum AttributeType {
 		if (str.equals("<empty>"))
 			return createDynamicObject(null);
 
-		str = str.replace("<", "").replace(">", "");
-		String[] intervals = str.split("; ");
+                if(str.startsWith("<")){
+                    str=str.substring(1);
+                }
+                if(str.endsWith(">")){
+                    str=str.substring(0, str.length()-1);
+                }
+		String[] intervals = str.split("; *");
 
 		List<Interval> in = new ArrayList<Interval>();
 
@@ -210,7 +215,7 @@ public enum AttributeType {
 			boolean ropen = interval.endsWith(")");
 
 			interval = interval.substring(1, interval.length() - 1);
-			String[] parts = interval.split(", ");
+			String[] parts = interval.split(", *", 3);
 
 			double low   = Double.parseDouble(parts[0]);
 			double high  = Double.parseDouble(parts[1]);

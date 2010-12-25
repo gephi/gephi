@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.graph;
 
 import org.gephi.utils.collection.avl.ParamAVLIterator;
@@ -30,6 +30,7 @@ import org.gephi.graph.api.NodeIterable;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphViewImpl;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.iterators.BiEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeAndMetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
@@ -253,11 +254,27 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
         return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false));
     }
 
+    public EdgeIterable getEdgesAndMetaEdges(Node node) {
+        readLock();
+        AbstractNode absNode = checkNode(node);
+        EdgeNodeIterator std = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false, enabledNodePredicate, Tautology.instance);
+        MetaEdgeNodeIterator meta = new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, false);
+        return dhns.newEdgeIterable(new BiEdgeIterator(std, meta));
+    }
+
     //DirectedClusteredGraph
     public EdgeIterable getMetaInEdges(Node node) {
         readLock();
         AbstractNode absNode = checkNode(node);
         return dhns.newEdgeIterable(new MetaEdgeNodeIterator(null, absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false));
+    }
+
+    public EdgeIterable getInEdgesAndMetaInEdges(Node node) {
+        readLock();
+        AbstractNode absNode = checkNode(node);
+        EdgeNodeIterator std = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.IN, false, enabledNodePredicate, Tautology.instance);
+        MetaEdgeNodeIterator meta = new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.IN, false);
+        return dhns.newEdgeIterable(new BiEdgeIterator(std, meta));
     }
 
     //DirectedClusteredGraph
@@ -267,10 +284,24 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
         return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), null, MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false));
     }
 
+    public EdgeIterable getOutEdgesAndMetaOutEdges(Node node) {
+        readLock();
+        AbstractNode absNode = checkNode(node);
+        EdgeNodeIterator std = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.OUT, false, enabledNodePredicate, Tautology.instance);
+        MetaEdgeNodeIterator meta = new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.OUT, false);
+        return dhns.newEdgeIterable(new BiEdgeIterator(std, meta));
+    }
+
     //DirectedClusteredGraph
     public int getMetaInDegree(Node node) {
         AbstractNode absNode = checkNode(node);
         int count = absNode.getMetaEdgesInTree().getCount();
+        return count;
+    }
+
+    public int getTotalInDegree(Node node) {
+        AbstractNode absNode = checkNode(node);
+        int count = absNode.getEnabledInDegree() + absNode.getMetaEdgesInTree().getCount();
         return count;
     }
 
@@ -281,10 +312,25 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
         return count;
     }
 
+    public int getTotalOutDegree(Node node) {
+        AbstractNode absNode = checkNode(node);
+        int count = absNode.getEnabledOutDegree() + absNode.getMetaEdgesOutTree().getCount();
+        return count;
+    }
+
     //ClusteredGraph
     public int getMetaDegree(Node node) {
         AbstractNode absNode = checkNode(node);
         int count = absNode.getMetaEdgesInTree().getCount() + absNode.getMetaEdgesOutTree().getCount();
+        return count;
+    }
+
+    public int getTotalDegree(Node node) {
+        AbstractNode absNode = checkNode(node);
+        int count = absNode.getEdgesInTree().getCount()
+                + absNode.getEdgesOutTree().getCount()
+                + absNode.getMetaEdgesInTree().getCount()
+                + absNode.getMetaEdgesOutTree().getCount();
         return count;
     }
 

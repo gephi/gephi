@@ -27,14 +27,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.type.DynamicType;
-import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
@@ -66,6 +64,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     private final ImportContainerParameters parameters;
     //Maps
     private HashMap<String, NodeDraftImpl> nodeMap;
+    private HashMap<String, NodeDraftImpl> nodeLabelMap;
     private final HashMap<String, EdgeDraftImpl> edgeMap;
     private final HashMap<String, EdgeDraftImpl> edgeSourceTargetMap;
     //Attributes
@@ -85,6 +84,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     public ImportContainerImpl() {
         parameters = new ImportContainerParameters();
         nodeMap = new LinkedHashMap<String, NodeDraftImpl>();//to maintain the order
+        nodeLabelMap = new HashMap<String, NodeDraftImpl>();
         edgeMap = new LinkedHashMap<String, EdgeDraftImpl>();
         edgeSourceTargetMap = new HashMap<String, EdgeDraftImpl>();
         attributeModel = Lookup.getDefault().lookup(AttributeController.class).newModel();
@@ -120,11 +120,22 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         if (nodeMap.containsKey(nodeDraftImpl.getId())) {
             String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraftImpl.getId());
             report.logIssue(new Issue(message, Level.WARNING));
-            report.log("Duplicated node id='" + nodeDraftImpl.getId() + "' label='" + nodeDraftImpl.getLabel() + "' is ignored");
+            return;
+        }
+
+        if (parameters.isDuplicateWithLabels()
+                && nodeDraftImpl.getLabel() != null
+                && !nodeDraftImpl.getLabel().equals(nodeDraftImpl.getId())
+                && nodeLabelMap.containsKey(nodeDraftImpl.getLabel())) {
+            String message = NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_nodeExist", nodeDraftImpl.getId());
+            report.logIssue(new Issue(message, Level.WARNING));
             return;
         }
 
         nodeMap.put(nodeDraftImpl.getId(), nodeDraftImpl);
+        if (nodeDraftImpl.getLabel() != null && !nodeDraftImpl.getLabel().equals(nodeDraftImpl.getId())) {
+            nodeLabelMap.put(nodeDraftImpl.getLabel(), nodeDraftImpl);
+        }
     }
 
     public NodeDraftImpl getNode(String id) {
@@ -220,6 +231,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 return;
             } else {
                 //Manage parallel edges
+                if (parameters.isMergeParallelEdgesWeight()) {
+                    EdgeDraftImpl existingEdge = edgeMap.get(id);
+                    if (existingEdge == null) {
+                        existingEdge = edgeSourceTargetMap.get(sourceTargetId);
+                    }
+                    existingEdge.setWeight(existingEdge.getWeight() + edgeDraftImpl.getWeight());
+                }
                 report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge", id), Level.INFO));
                 return;
             }
@@ -238,6 +256,10 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     return;
                 } else {
                     //Manage parallel edges
+                    if (parameters.isMergeParallelEdgesWeight()) {
+                        EdgeDraftImpl existingEdge = edgeSourceTargetMap.get(sourceTargetId);
+                        existingEdge.setWeight(existingEdge.getWeight() + edgeDraftImpl.getWeight());
+                    }
                     report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge", id), Level.INFO));
                     return;
                 }
@@ -594,6 +616,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
                 }
                 if (edge.getType().equals(EdgeDraft.EdgeType.UNDIRECTED)) {
+                    String myKey = edge.getSource().getId() + "-" + edge.getTarget().getId();
                     String oppositekey = edge.getTarget().getId() + "-" + edge.getSource().getId();
                     EdgeDraftImpl opposite = edgeSourceTargetMap.get(oppositekey);
                     if (opposite != null) {
@@ -602,8 +625,8 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                         } else {
                             edge.setWeight(Math.max(edge.getWeight(), opposite.getWeight()));
                         }
-                        edgeMap.remove(opposite.getId());
-                        edgeSourceTargetMap.remove(oppositekey);
+                        edgeMap.remove(edge.getId());
+                        edgeSourceTargetMap.remove(myKey);
                     }
                 }
             }
@@ -668,14 +691,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             }
         }
     }
+    private static int nodeIDgen = 0;
+    private static int edgeIDgen = 0;
 
     /**
      * Factory for draft objects
      */
     public class FactoryImpl implements DraftFactory {
-
-        private int nodeIDgen = 0;
-        private int edgeIDgen = 0;
 
         public NodeDraftImpl newNodeDraft() {
             NodeDraftImpl node = new NodeDraftImpl(ImportContainerImpl.this, "n" + nodeIDgen);

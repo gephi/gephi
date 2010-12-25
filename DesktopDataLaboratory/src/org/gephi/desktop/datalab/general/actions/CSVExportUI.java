@@ -76,15 +76,18 @@ public class CSVExportUI extends javax.swing.JPanel {
         columnsPanel.removeAll();
         columnsPanel.setLayout(new MigLayout("", "[pref!]"));
 
-        if (outlineTable) {//If outline table, hide nodes tree column from exporting (first column)
-            columnsCheckBoxes[0] = new JCheckBox(model.getColumnName(0), false);
-        } else {
-            columnsCheckBoxes[0] = new JCheckBox(model.getColumnName(0), true);
-            columnsPanel.add(columnsCheckBoxes[0], "wrap");
-        }
+
+        int modelIndex;
         //Show rest of columns:
-        for (int i = 1; i < model.getColumnCount(); i++) {
-            columnsCheckBoxes[i] = new JCheckBox(model.getColumnName(i), true);
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            modelIndex=table.convertColumnIndexToModel(i);
+            if(modelIndex==0){
+                if(outlineTable){//If outline table, hide nodes tree column from exporting (first column)
+                    columnsCheckBoxes[i] = new JCheckBox(model.getColumnName(modelIndex), false);
+                    continue;
+                }
+            }
+            columnsCheckBoxes[i] = new JCheckBox(model.getColumnName(modelIndex), true);
             columnsPanel.add(columnsCheckBoxes[i], "wrap");
         }
         columnsPanel.revalidate();
@@ -108,7 +111,7 @@ public class CSVExportUI extends javax.swing.JPanel {
         ArrayList<Integer> columnsIndexes = new ArrayList<Integer>();
         for (int i = 0; i < columnsCheckBoxes.length; i++) {
             if (columnsCheckBoxes[i].isSelected()) {
-                columnsIndexes.add(i);
+                columnsIndexes.add(table.convertColumnIndexToModel(i));
             }
         }
         return columnsIndexes.toArray(new Integer[0]);

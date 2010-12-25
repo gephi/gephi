@@ -161,8 +161,10 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             this.timelineController = timelineController;
             min = dynamicModel.getMin();
             max = dynamicModel.getMax();
-            timelineController.setMin(min);
-            timelineController.setMax(max);
+            if (timelineController != null) {
+                timelineController.setMin(min);
+                timelineController.setMax(max);
+            }
             visibleInterval = dynamicModel.getVisibleInterval();
         }
 
@@ -201,11 +203,11 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         }
 
         public void finish() {
-            if (!Double.isInfinite(min)) {
-                timelineController.setMin(min);
+            if (!Double.isInfinite(min) && timelineController != null) {
+                //timelineController.setMin(min);
             }
-            if (!Double.isInfinite(max)) {
-                timelineController.setMax(max);
+            if (!Double.isInfinite(max) && timelineController != null) {
+                //timelineController.setMax(max);
             }
         }
 

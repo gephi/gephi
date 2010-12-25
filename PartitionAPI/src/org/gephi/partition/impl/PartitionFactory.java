@@ -100,9 +100,6 @@ public class PartitionFactory {
     }
 
     public static boolean isDynamicNodePartitionColumn(AttributeColumn column, Graph graph, TimeInterval timeInterval, Estimator estimator) {
-        if (column.getType().isDynamicType() && !Number.class.isAssignableFrom(column.getType().getType())) {
-            estimator = Estimator.FIRST;
-        }
         Set values = new HashSet();
         int nonNullvalues = 0;
         for (Node n : graph.getNodes()) {
@@ -120,9 +117,6 @@ public class PartitionFactory {
     }
 
     public static boolean isDynamicEdgePartitionColumn(AttributeColumn column, Graph graph, TimeInterval timeInterval, Estimator estimator) {
-        if (column.getType().isDynamicType() && !Number.class.isAssignableFrom(column.getType().getType())) {
-            estimator = Estimator.FIRST;
-        }
         Set values = new HashSet();
         int nonNullvalues = 0;
         for (Edge n : graph.getEdges()) {
@@ -142,9 +136,6 @@ public class PartitionFactory {
     private static Object getDynamicValue(Object object, TimeInterval timeInterval, Estimator estimator) {
         if (object != null && object instanceof DynamicType) {
             DynamicType dynamicType = (DynamicType) object;
-            if (!Number.class.isAssignableFrom(dynamicType.getUnderlyingType())) {
-                estimator = Estimator.FIRST;
-            }
             return dynamicType.getValue(timeInterval == null ? Double.NEGATIVE_INFINITY : timeInterval.getLow(),
                     timeInterval == null ? Double.POSITIVE_INFINITY : timeInterval.getHigh(), estimator);
         }
@@ -392,6 +383,25 @@ public class PartitionFactory {
             int thisCount = objects.length;
             int theirCount = ((PartImpl) o).objects.length;
             return thisCount == theirCount ? 0 : thisCount > theirCount ? 1 : -1;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj != null && obj instanceof PartImpl) {
+                if (value == null && ((PartImpl) obj).value == null) {
+                    return true;
+                } else if (((PartImpl) obj).value != null && value != null) {
+                    return ((PartImpl) obj).value.equals(value);
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 53 * hash + (this.value != null ? this.value.hashCode() : 0);
+            return hash;
         }
     }
 

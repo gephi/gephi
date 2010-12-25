@@ -48,18 +48,20 @@ public class WattsStrogatz implements Generator {
         Progress.start(progress, numberOfNodes);
         Random random = new Random();
 
+       NodeDraft[] nodeArray = new NodeDraft[numberOfNodes];
+
         //Create ring lattice
         for (int i = 0; i < numberOfNodes && !cancel; i++) {
             NodeDraft node = container.factory().newNodeDraft();
             node.setLabel("Node " + i);
-            node.setId("" + i);
+            nodeArray[i] = node;
             container.addNode(node);
         }
         for (int i = 0; i < numberOfNodes && !cancel; i++) {
             for (int j = 0; j < numberOfNeighbors; j++) {
                 EdgeDraft edge = container.factory().newEdgeDraft();
-                edge.setSource(container.getNode("" + i));
-                edge.setTarget(container.getNode("" + ((i + (numberOfNeighbors - j)) % numberOfNodes)));
+                edge.setSource(nodeArray[i]);
+                edge.setTarget(nodeArray[(i + (numberOfNeighbors - j)) % numberOfNodes]);
                 container.addEdge(edge);
             }
         }
@@ -73,9 +75,9 @@ public class WattsStrogatz implements Generator {
                     if (r < rewiringProbability) {
                         int v = random.nextInt(numberOfNeighbors);
 
-                        NodeDraft vthNode = container.getNode("" + v);
-                        NodeDraft ithNode = container.getNode("" + i);
-                        NodeDraft kthNode = container.getNode("" + ((i + s) % numberOfNodes));//upIndex(i, s));
+                        NodeDraft vthNode = nodeArray[v];
+                        NodeDraft ithNode = nodeArray[i];
+                        NodeDraft kthNode = nodeArray[((i + s) % numberOfNodes)];//upIndex(i, s));
                         EdgeDraft e = container.getEdge(ithNode, kthNode);
 
                         if (kthNode != vthNode && container.getEdge(kthNode, vthNode) == null) {

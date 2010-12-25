@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.visualization.opengl.text;
 
+import org.gephi.visualization.impl.TextDataImpl;
 import javax.swing.ImageIcon;
 import org.gephi.visualization.apiimpl.ModelImpl;
 

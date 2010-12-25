@@ -33,7 +33,7 @@ public interface ManipulatorUI {
 
     /**
      * Prepare this UI to be able to interact with its Manipulator.
-     * @param gem Manipulator for the UI
+     * @param m Manipulator for the UI
      * @param dialogControls Used to enable/disable the dialog controls
      */
     void setup(Manipulator m, DialogControls dialogControls);

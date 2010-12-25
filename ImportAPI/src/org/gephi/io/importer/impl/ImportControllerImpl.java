@@ -22,6 +22,7 @@ package org.gephi.io.importer.impl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -46,12 +47,14 @@ import org.gephi.io.processor.spi.Scaler;
 import org.gephi.project.api.Workspace;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
+ * @author Sebastien Heymann
  */
 @ServiceProvider(service = ImportController.class)
 public class ImportControllerImpl implements ImportController {
@@ -225,9 +228,48 @@ public class ImportControllerImpl implements ImportController {
         if (fileObject == null) {
             return null;
         }
+        // ZIP and JAR archives
         if (FileUtil.isArchiveFile(fileObject)) {
-            //Unzip
             fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
+        } else { // GZ or BZIP2 archives
+            boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
+            boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
+            if (isGz || isBzip) {
+                try {
+                    String[] splittedFileName = fileObject.getName().split("\\.");
+                    if (splittedFileName.length < 2) {
+                        return fileObject;
+                    }
+
+                    String fileExt1 = splittedFileName[splittedFileName.length - 1];
+                    String fileExt2 = splittedFileName[splittedFileName.length - 2];
+
+                    // Create an empty file
+                    File tempFile = null;
+                    if (fileExt1.equalsIgnoreCase("tar")) {
+                        tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt2);
+                        // Untar & unzip
+                        if (isGz) {
+                            tempFile = ImportUtils.getGzFile(fileObject, tempFile, true);
+                        } else {
+                            tempFile = ImportUtils.getBzipFile(fileObject, tempFile, true);
+                        }
+                    } else {
+                        tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt1);
+                        // Unzip
+                        if (isGz) {
+                            tempFile = ImportUtils.getGzFile(fileObject, tempFile, false);
+                        } else {
+                            tempFile = ImportUtils.getBzipFile(fileObject, tempFile, false);
+                        }
+                    }
+                    tempFile.deleteOnExit();
+                    tempFile = FileUtil.normalizeFile(tempFile);
+                    fileObject = FileUtil.toFileObject(tempFile);
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
         }
         return fileObject;
     }
@@ -274,7 +316,9 @@ public class ImportControllerImpl implements ImportController {
                 return true;
             }
         }
-        if (fileObject.getExt().equalsIgnoreCase("zip")) {
+        if (fileObject.getExt().equalsIgnoreCase("zip")
+                || fileObject.getExt().equalsIgnoreCase("gz")
+                || fileObject.getExt().equalsIgnoreCase("bz2")) {
             return true;
         }
         return false;

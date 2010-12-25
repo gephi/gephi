@@ -38,7 +38,6 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
@@ -60,7 +59,6 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
 
     private final List<ChangeListener> listeners = new ArrayList<ChangeListener>();
     private DynamicModel dynamicModel;
-    private Estimator defaultEstimator;
 
     public RankingModelImpl() {
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -92,8 +90,6 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
             AttributeModel attributeModel = pc.getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
             attributeModel.addAttributeListener(RankingModelImpl.this);
         }
-
-        defaultEstimator = Estimator.AVERAGE;
     }
     private Timer refreshTimer; //hack
 
@@ -154,7 +150,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
             }
         } else if (RankingFactory.isDynamicNumberColumn(column) && getDynamicModel() != null) {
             TimeInterval visibleInterval = dynamicModel.getVisibleInterval();
-            NodeRanking r = RankingFactory.getNodeDynamicAttributeRanking(column, graph, visibleInterval, defaultEstimator);
+            NodeRanking r = RankingFactory.getNodeDynamicAttributeRanking(column, graph, visibleInterval, dynamicModel.getNumberEstimator());
             if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
                 return r;
             }
@@ -172,7 +168,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
             }
         } else if (RankingFactory.isDynamicNumberColumn(column) && getDynamicModel() != null) {
             TimeInterval visibleInterval = dynamicModel.getVisibleInterval();
-            EdgeRanking r = RankingFactory.getEdgeDynamicAttributeRanking(column, graph, visibleInterval, defaultEstimator);
+            EdgeRanking r = RankingFactory.getEdgeDynamicAttributeRanking(column, graph, visibleInterval, dynamicModel.getNumberEstimator());
             if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
                 return r;
             }
@@ -222,7 +218,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
                 }
             } else if (RankingFactory.isDynamicNumberColumn(column) && getDynamicModel() != null) {
                 TimeInterval visibleInterval = dynamicModel.getVisibleInterval();
-                NodeRanking r = RankingFactory.getNodeDynamicAttributeRanking(column, graph, visibleInterval, defaultEstimator);
+                NodeRanking r = RankingFactory.getNodeDynamicAttributeRanking(column, graph, visibleInterval, dynamicModel.getNumberEstimator());
                 if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
                     rankingList.add(r);
                 }
@@ -252,7 +248,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
                 }
             } else if (RankingFactory.isDynamicNumberColumn(column) && getDynamicModel() != null) {
                 TimeInterval visibleInterval = dynamicModel.getVisibleInterval();
-                EdgeRanking r = RankingFactory.getEdgeDynamicAttributeRanking(column, graph, visibleInterval, defaultEstimator);
+                EdgeRanking r = RankingFactory.getEdgeDynamicAttributeRanking(column, graph, visibleInterval, dynamicModel.getNumberEstimator());
                 if (r.getMinimumValue() != null && r.getMaximumValue() != null && !r.getMinimumValue().equals(r.getMaximumValue())) {
                     rankingList.add(r);
                 }
@@ -269,10 +265,6 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
             }
         }
         return dynamicModel;
-    }
-
-    public void setDefaultEstimator(Estimator estimator) {
-        this.defaultEstimator = estimator;
     }
 
     public void addChangeListener(ChangeListener changeListener) {

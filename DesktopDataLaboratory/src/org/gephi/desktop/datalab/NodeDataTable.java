@@ -44,7 +44,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
@@ -96,14 +95,17 @@ public class NodeDataTable {
     private Pattern pattern;
     private DataTablesModel dataTablesModel;
     private Node[] selectedNodes;
+    private AttributeUtils attributeUtils;
     private AttributeColumnsController attributeColumnsController;
     private boolean refreshingTable = false;
+    private AttributeColumn[] showingColumns = null;
     private static final int FAKE_COLUMNS_COUNT = 1;
     private SparkLinesRenderer sparkLinesRenderer;
     private TimeIntervalsRenderer timeIntervalsRenderer;
     private TimeFormat currentTimeFormat;
 
     public NodeDataTable() {
+        attributeUtils = AttributeUtils.getDefault();
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         outlineTable = new Outline();
@@ -112,7 +114,7 @@ public class NodeDataTable {
 
             public boolean accept(Object value) {
                 if (value == null) {
-                    return false;
+                    value = "";
                 }
                 if (value instanceof ImmutableTreeNode) {
                     String label = ((ImmutableTreeNode) value).getNode().getNodeData().getLabel();
@@ -203,16 +205,32 @@ public class NodeDataTable {
     }
 
     public boolean setFilter(String regularExpr, int columnIndex) {
+        if (selectedNodes == null) {
+            selectedNodes = getNodesFromSelectedRows();
+        }
         try {
             pattern = Pattern.compile(regularExpr, Pattern.CASE_INSENSITIVE);
         } catch (PatternSyntaxException e) {
             return false;
         }
-        outlineTable.setQuickFilter(columnIndex, quickFilter);
+        if (regularExpr == null || regularExpr.isEmpty()) {
+            outlineTable.unsetQuickFilter();
+        } else {
+            outlineTable.setQuickFilter(columnIndex, quickFilter);
+        }
+
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                setNodesSelection(selectedNodes); //Keep row selection before refreshing.
+                selectedNodes = null;
+            }
+        });
         return true;
     }
 
     public void refreshModel(HierarchicalGraph graph, AttributeColumn[] cols, final DataTablesModel dataTablesModel) {
+        showingColumns = cols;
         DynamicModel dm = Lookup.getDefault().lookup(DynamicController.class).getModel();
         if (dm != null) {
             timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
@@ -249,13 +267,15 @@ public class NodeDataTable {
     }
 
     public void setNodesSelection(Node[] nodes) {
-        this.selectedNodes = nodes;//Keep this selection request to be able to do it if the table is first refreshed later.
-        HashSet<Node> nodesSet = new HashSet<Node>();
-        nodesSet.addAll(Arrays.asList(nodes));
-        outlineTable.clearSelection();
-        for (int i = 0; i < outlineTable.getRowCount(); i++) {
-            if (nodesSet.contains(getNodeFromRow(i))) {
-                outlineTable.addRowSelectionInterval(i, i);
+        this.selectedNodes = nodes;//Keep this selection request to be able to apply nodes selection if the table is first refreshed later.
+        if (selectedNodes != null) {
+            HashSet<Node> nodesSet = new HashSet<Node>();
+            nodesSet.addAll(Arrays.asList(selectedNodes));
+            outlineTable.clearSelection();
+            for (int i = 0; i < outlineTable.getRowCount(); i++) {
+                if (nodesSet.contains(getNodeFromRow(i))) {
+                    outlineTable.addRowSelectionInterval(i, i);
+                }
             }
         }
     }
@@ -406,12 +426,14 @@ public class NodeDataTable {
         }
 
         public Class getColumnClass() {
-            if (useSparklines && AttributeUtils.getDefault().isNumberListColumn(column)) {
+            if (useSparklines && attributeUtils.isNumberListColumn(column)) {
                 return NumberList.class;
-            } else if (useSparklines && AttributeUtils.getDefault().isDynamicNumberColumn(column)) {
+            } else if (useSparklines && attributeUtils.isDynamicNumberColumn(column)) {
                 return column.getType().getType();
             } else if (column.getType() == AttributeType.TIME_INTERVAL) {
                 return TimeInterval.class;
+            } else if (attributeUtils.isNumberColumn(column)) {
+                return column.getType().getType();//Number columns should not be treated as Strings because the sorting would be alphabetic instead of numeric
             } else {
                 return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
             }
@@ -429,9 +451,11 @@ public class NodeDataTable {
             Attributes row = graphNode.getNodeData().getAttributes();
             Object value = row.getValue(column.getIndex());
 
-            if (useSparklines && (AttributeUtils.getDefault().isNumberListColumn(column) || AttributeUtils.getDefault().isDynamicNumberColumn(column))) {
+            if (useSparklines && (attributeUtils.isNumberListColumn(column) || attributeUtils.isDynamicNumberColumn(column))) {
                 return value;
             } else if (column.getType() == AttributeType.TIME_INTERVAL) {
+                return value;
+            } else if (attributeUtils.isNumberColumn(column)) {
                 return value;
             } else {
                 //Show values as Strings like in Edit window and other parts of the program to be consistent
@@ -570,9 +594,11 @@ public class NodeDataTable {
             //Add AttributeValues manipulators submenu:
             AttributeRow row = (AttributeRow) clickedNode.getNodeData().getAttributes();
             int realColumnIndex = outlineTable.convertColumnIndexToModel(outlineTable.columnAtPoint(p)) - FAKE_COLUMNS_COUNT;//Get real attribute column index not counting fake columns.
-            AttributeColumn column = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumn(realColumnIndex);
-            if (column != null) {
-                contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+            if (realColumnIndex >= 0) {
+                AttributeColumn column = showingColumns[realColumnIndex];
+                if (column != null) {
+                    contextMenu.add(PopupMenuUtils.createSubMenuFromRowColumn(row, column));
+                }
             }
             return contextMenu;
         }
@@ -590,10 +616,10 @@ public class NodeDataTable {
 
     public Node[] getNodesFromSelectedRows() {
         int[] selectedRows = outlineTable.getSelectedRows();
-        Node[] node = new Node[selectedRows.length];
-        for (int i = 0; i < node.length; i++) {
-            node[i] = getNodeFromRow(selectedRows[i]);
+        Node[] nodes = new Node[selectedRows.length];
+        for (int i = 0; i < nodes.length; i++) {
+            nodes[i] = getNodeFromRow(selectedRows[i]);
         }
-        return node;
+        return nodes;
     }
 }

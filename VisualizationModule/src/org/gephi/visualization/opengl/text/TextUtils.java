@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.visualization.opengl.text;
 
+import org.gephi.visualization.impl.TextDataImpl;
 import com.sun.opengl.util.j2d.TextRenderer;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
@@ -48,7 +49,7 @@ public class TextUtils {
         TextRenderer joglRenderer = renderer.getJOGLRenderer();
         FontRenderContext frc = joglRenderer.getFontRenderContext();
 
-        String paragraph = text.getLine().text;
+        String paragraph = text.getLine().getText();
         Map attrs = new HashMap();
         attrs.put(TextAttribute.FONT, joglRenderer.getFont());
         AttributedString str = new AttributedString(paragraph, attrs);

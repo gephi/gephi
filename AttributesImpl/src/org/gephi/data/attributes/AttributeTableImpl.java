@@ -147,10 +147,10 @@ public class AttributeTableImpl implements AttributeTable {
         version++;
     }
 
-    private synchronized void replaceColumn(AttributeColumn source, AttributeColumnImpl target) {
+    public synchronized AttributeColumn replaceColumn(AttributeColumn source, AttributeColumnImpl targetImpl) {
         int index = columns.indexOf(source);
         if (index == -1) {
-            return;
+            return null;
         }
         //Remove from collections
         columnsMap.remove(source.getId());
@@ -160,15 +160,32 @@ public class AttributeTableImpl implements AttributeTable {
         columnsSet.remove(source);
 
         //Add
-        columns.set(index, target);
-        columnsMap.put(target.id, target);
-        if (target.title != null && !target.title.equals(target.id)) {
-            columnsMap.put(target.title.toLowerCase(), target);
+        targetImpl.index = index;
+        columns.set(index, targetImpl);
+        columnsMap.put(targetImpl.id, targetImpl);
+        if (targetImpl.title != null && !targetImpl.title.equals(targetImpl.id)) {
+            columnsMap.put(targetImpl.title.toLowerCase(), targetImpl);
         }
-        columnsSet.put(target, target);
+        columnsSet.put(targetImpl, targetImpl);
 
         //Version
         version++;
+        return targetImpl;
+    }
+
+    public synchronized AttributeColumn replaceColumn(AttributeColumn source, String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue) {
+        if (defaultValue != null) {
+            if (defaultValue.getClass() != type.getType()) {
+                if (defaultValue.getClass() == String.class) {
+                    defaultValue = type.parse((String) defaultValue);
+                } else {
+                    throw new IllegalArgumentException("The default value type cannot be cast to the type");
+                }
+            }
+            defaultValue = model.getManagedValue(defaultValue, type);
+        }
+        AttributeColumnImpl targetImpl = new AttributeColumnImpl(this, columns.size(), id, title, type, origin, defaultValue, null);
+        return replaceColumn(source, targetImpl);
     }
 
     public synchronized AttributeColumnImpl getColumn(int index) {

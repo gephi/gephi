@@ -31,6 +31,7 @@ import org.gephi.timeline.api.TimelineAnimatorListener;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.api.TimelineModelEvent;
 import org.gephi.timeline.api.TimelineModelListener;
+import org.gephi.ui.components.CloseButton;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -83,6 +84,13 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
                 if (model != null) {
                     model.setEnabled(enableButton.isSelected());
                 }
+            }
+        });
+
+        closeButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                TimelineTopComponent.this.close();
             }
         });
     }
@@ -148,10 +156,10 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
         enableButton = new javax.swing.JToggleButton();
         timelinePanel = new javax.swing.JPanel();
+        closeButton = new CloseButton();
 
-        setMaximumSize(new java.awt.Dimension(2147483647, 27));
-        setMinimumSize(new java.awt.Dimension(128, 16));
-        setPreferredSize(new java.awt.Dimension(800, 24));
+        setMaximumSize(new java.awt.Dimension(32767, 58));
+        setMinimumSize(new java.awt.Dimension(414, 58));
         setLayout(new java.awt.GridBagLayout());
 
         enableButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/disabled.png"))); // NOI18N
@@ -181,12 +189,21 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         add(timelinePanel, gridBagConstraints);
+
+        closeButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.closeButton.toolTipText")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+        add(closeButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void enableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_enableButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton closeButton;
     private javax.swing.JToggleButton enableButton;
     private javax.swing.JPanel timelinePanel;
     // End of variables declaration//GEN-END:variables

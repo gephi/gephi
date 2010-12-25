@@ -47,6 +47,7 @@ import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -90,6 +91,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
         if (table.hasColumn(title)) {
             return null;
+        }
+        if (type == AttributeType.TIME_INTERVAL && table.getColumn(DynamicModel.TIMEINTERVAL_COLUMN) == null) {
+            return table.addColumn(DynamicModel.TIMEINTERVAL_COLUMN, title, type, AttributeOrigin.PROPERTY, null);
         }
         return table.addColumn(title, title, type, AttributeOrigin.DATA, null);
     }
@@ -177,7 +181,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 } else {
                     matcher = pattern.matcher("");
                 }
-                row.setValue(newColumn.getIndex(), new Boolean(matcher.matches()));
+                row.setValue(newColumn.getIndex(), matcher.matches());
             }
             return newColumn;
         } else {
@@ -357,10 +361,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     public boolean canChangeColumnData(AttributeColumn column) {
         AttributeUtils au = Lookup.getDefault().lookup(AttributeUtils.class);
         if (au.isNodeColumn(column)) {
-            //Can change values of columns with DATA origin and label of nodes:
-            return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.NODE_LABEL.getIndex();
+            return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.NODE_ID.getIndex();
         } else if (au.isEdgeColumn(column)) {
-            return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.EDGE_LABEL.getIndex() || column.getIndex() == PropertiesColumn.EDGE_WEIGHT.getIndex();
+            return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.EDGE_ID.getIndex();
         } else {
             return canChangeGenericColumnData(column);
         }
@@ -369,10 +372,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     public boolean canClearColumnData(AttributeColumn column) {
         AttributeUtils au = Lookup.getDefault().lookup(AttributeUtils.class);
         if (au.isNodeColumn(column)) {
-            //Can clear values of columns with DATA origin and label of nodes:
-            return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.NODE_LABEL.getIndex();
+            return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.NODE_ID.getIndex();
         } else if (au.isEdgeColumn(column)) {
-            return canChangeGenericColumnData(column) || column.getIndex() == PropertiesColumn.EDGE_LABEL.getIndex();
+            return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.EDGE_ID.getIndex() && column.getIndex() != PropertiesColumn.EDGE_WEIGHT.getIndex();
         } else {
             return canChangeGenericColumnData(column);
         }
@@ -472,7 +474,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     if (id == null || id.isEmpty()) {
                         node = gec.createNode(null);//id null or empty, assign one
                     } else {
+                        graph.readLock();
                         node = graph.getNode(id);
+                        graph.readUnlock();
                         if (node != null) {//Node with that id already in graph
                             if (assignNewNodeIds) {
                                 node = gec.createNode(null);
@@ -556,17 +560,31 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     continue;//No correct source and target ids were provided, ignore row
                 }
 
+                graph.readLock();
                 source = graph.getNode(sourceId);
-                target = graph.getNode(targetId);
+                graph.readUnlock();
 
-                if ((source == null || target == null) && !createNewNodes) {//Don't create new nodes when they don't exist already
-                    continue;//Ignore this edge row, since no new nodes should be created.
-                } else {//Create new nodes when they don't exist already
-                    if (source == null) {
-                        source = gec.createNode(null, sourceId);
+                if (source == null) {
+                    if (createNewNodes) {//Create new nodes when they don't exist already and option is enabled
+                        if (source == null) {
+                            source = gec.createNode(null, sourceId);
+                        }
+                    } else {
+                        continue;//Ignore this edge row, since no new nodes should be created.
                     }
-                    if (target == null) {
-                        target = gec.createNode(null, targetId);
+                }
+
+                graph.readLock();
+                target = graph.getNode(targetId);
+                graph.readUnlock();
+
+                if (target == null) {
+                    if (createNewNodes) {//Create new nodes when they don't exist already and option is enabled
+                        if (target == null) {
+                            target = gec.createNode(null, targetId);
+                        }
+                    } else {
+                        continue;//Ignore this edge row, since no new nodes should be created.
                     }
                 }
 
@@ -579,7 +597,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                         directed = true;
                     }
                 } else {
-                    directed = true;//Directed by default when no indicated
+                    directed = true;//Directed by default when not indicated
                 }
 
                 //Prepare the correct edge to assign the attributes:
@@ -632,11 +650,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     /**
-     * Only checks that a column is of type DATA and has a changeable AttributeType. (Does not check if it is the label of nodes/edges table)
-     * Used in various methods to not repeat code.
+     * Only checks that a column is not <code>COMPUTED</code> or <code>DELEGATE</code>
      */
     private boolean canChangeGenericColumnData(AttributeColumn column) {
-        return column.getOrigin() == AttributeOrigin.DATA && !column.getType().isDynamicType();
+        return column.getOrigin() != AttributeOrigin.COMPUTED && column.getOrigin() != AttributeOrigin.DELEGATE;
     }
 
     /**

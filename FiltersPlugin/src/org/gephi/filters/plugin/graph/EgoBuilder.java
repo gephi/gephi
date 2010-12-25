@@ -79,6 +79,7 @@ public class EgoBuilder implements FilterBuilder {
     public static class EgoFilter implements ComplexFilter {
 
         private String pattern = "";
+        private boolean self = true;
         private int depth = 1;
 
         public Graph filter(Graph graph) {
@@ -89,7 +90,7 @@ public class EgoBuilder implements FilterBuilder {
             for (Node n : graph.getNodes()) {
                 if (n.getNodeData().getId().toLowerCase().contains(str)) {
                     nodes.add(n);
-                } else if (n.getNodeData().getLabel().toLowerCase().contains(str)) {
+                } else if ((n.getNodeData().getLabel() != null) && n.getNodeData().getLabel().toLowerCase().contains(str)) {
                     nodes.add(n);
                 }
             }
@@ -115,6 +116,10 @@ public class EgoBuilder implements FilterBuilder {
                 }
             }
 
+            if (self) {
+                result.addAll(nodes);
+            }
+
             for (Node node : graph.getNodes().toArray()) {
                 if (!result.contains(node)) {
                     graph.removeNode(node);
@@ -125,14 +130,15 @@ public class EgoBuilder implements FilterBuilder {
         }
 
         public String getName() {
-            return NbBundle.getMessage(DegreeRangeBuilder.class, "EgoBuilder.name");
+            return NbBundle.getMessage(EgoBuilder.class, "EgoBuilder.name");
         }
 
         public FilterProperty[] getProperties() {
             try {
                 return new FilterProperty[]{
                             FilterProperty.createProperty(this, String.class, "pattern"),
-                            FilterProperty.createProperty(this, Integer.class, "depth")};
+                            FilterProperty.createProperty(this, Integer.class, "depth"),
+                            FilterProperty.createProperty(this, Boolean.class, "self")};
             } catch (NoSuchMethodException ex) {
                 ex.printStackTrace();
             }
@@ -153,6 +159,14 @@ public class EgoBuilder implements FilterBuilder {
 
         public void setDepth(Integer depth) {
             this.depth = depth;
+        }
+
+        public boolean isSelf() {
+            return self;
+        }
+
+        public void setSelf(boolean self) {
+            this.self = self;
         }
     }
 }

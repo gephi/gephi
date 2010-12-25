@@ -122,7 +122,6 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
     private void refreshZoom() {
         int zoomValue = (int) VizController.getInstance().getVizModel().getCameraDistance();
         if (zoomSlider.getValue() != zoomValue) {
-            System.out.println("refresh zoom " + zoomValue);
             zoomSlider.setValue(zoomValue);
         }
     }

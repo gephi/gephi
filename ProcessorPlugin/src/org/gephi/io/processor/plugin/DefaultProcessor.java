@@ -38,7 +38,9 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * Processor 'Add full graph' that unloads the complete container into the
+ * workspace.
+ * 
  * @author  Mathieu Bastian
  */
 @ServiceProvider(service = Processor.class, position = 10)
@@ -86,7 +88,9 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
         //Dynamic
         if (container.getTimeFormat() != null) {
             DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-            dynamicController.setTimeFormat(container.getTimeFormat());
+            if (dynamicController != null) {
+                dynamicController.setTimeFormat(container.getTimeFormat());
+            }
         }
 
         int nodeCount = 0;

@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization;
 
 import org.gephi.graph.api.Edge;
@@ -65,7 +65,7 @@ public class VizController implements VisualizationController {
 
     public synchronized static VizController getInstance() {
         if (instance == null) {
-            instance = (VizController)Lookup.getDefault().lookup(VisualizationController.class);
+            instance = (VizController) Lookup.getDefault().lookup(VisualizationController.class);
             instance.initInstances();
         }
         return instance;
@@ -176,23 +176,33 @@ public class VizController implements VisualizationController {
     }
 
     public void resetSelection() {
-        selectionManager.resetSelection();
+        if (selectionManager != null) {
+            selectionManager.resetSelection();
+        }
     }
 
     public void selectNode(Node node) {
-        selectionManager.selectNode(node);
+        if (selectionManager != null) {
+            selectionManager.selectNode(node);
+        }
     }
 
     public void selectEdge(Edge edge) {
-        selectionManager.selectEdge(edge);
+        if (selectionManager != null) {
+            selectionManager.selectEdge(edge);
+        }
     }
 
     public void selectNodes(Node[] nodes) {
-        selectionManager.selectNodes(nodes);
+        if (selectionManager != null) {
+            selectionManager.selectNodes(nodes);
+        }
     }
 
     public void selectEdges(Edge[] edges) {
-        selectionManager.selectEdges(edges);
+        if (selectionManager != null) {
+            selectionManager.selectEdges(edges);
+        }
     }
 
     public VizModel getVizModel() {
@@ -256,7 +266,7 @@ public class VizController implements VisualizationController {
     }
 
     public float getMetaEdgeScale() {
-        if(currentModel!=null) {
+        if (currentModel != null) {
             return currentModel.getMetaEdgeScale();
         }
         return 1f;

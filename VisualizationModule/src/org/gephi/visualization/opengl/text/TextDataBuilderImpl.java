@@ -23,24 +23,23 @@ package org.gephi.visualization.opengl.text;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.DynamicType;
-import org.gephi.data.attributes.type.NumberList;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.TextData;
 import org.gephi.graph.spi.TextDataFactory;
+import org.gephi.visualization.impl.TextDataImpl;
+import org.gephi.visualization.opengl.text.TextModel;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = TextDataFactory.class)
-public class TextDataBuilderImpl implements TextDataFactory {
+public class TextDataBuilderImpl {
 
-    public TextData newTextData() {
-        return new TextDataImpl();
-    }
+    private Estimator defaultEstimator;
+    private Estimator numberEstimator;
 
     public void buildNodeText(NodeData nodeData, TextDataImpl textDataImpl, TextModel model, TimeInterval timeInterval) {
         if (model.getNodeTextColumns() != null) {
@@ -53,9 +52,9 @@ public class TextDataBuilderImpl implements TextDataFactory {
                 Object val = nodeData.getAttributes().getValue(c.getIndex());
                 if (val instanceof DynamicType) {
                     DynamicType dynamicType = (DynamicType) val;
-                    Estimator estimator = Estimator.FIRST;
+                    Estimator estimator = defaultEstimator;
                     if (Number.class.isAssignableFrom(dynamicType.getUnderlyingType())) {
-                        estimator = Estimator.AVERAGE;
+                        estimator = numberEstimator;
                     }
                     if (timeInterval != null) {
                         val = dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh(), estimator);
@@ -65,7 +64,7 @@ public class TextDataBuilderImpl implements TextDataFactory {
                 }
                 str += val != null ? val : "";
             }
-            textDataImpl.setLine(str);
+            textDataImpl.setText(str);
         }
     }
 
@@ -80,9 +79,9 @@ public class TextDataBuilderImpl implements TextDataFactory {
                 Object val = edgeData.getAttributes().getValue(c.getIndex());
                 if (val instanceof DynamicType) {
                     DynamicType dynamicType = (DynamicType) val;
-                    Estimator estimator = Estimator.FIRST;
+                    Estimator estimator = defaultEstimator;
                     if (Number.class.isAssignableFrom(dynamicType.getUnderlyingType())) {
-                        estimator = Estimator.AVERAGE;
+                        estimator = numberEstimator;
                     }
                     if (timeInterval != null) {
                         val = dynamicType.getValue(timeInterval.getLow(), timeInterval.getHigh(), estimator);
@@ -92,7 +91,15 @@ public class TextDataBuilderImpl implements TextDataFactory {
                 }
                 str += val != null ? val : "";
             }
-            textDataImpl.setLine(str);
+            textDataImpl.setText(str);
         }
+    }
+
+    public void setDefaultEstimator(Estimator defaultEstimator) {
+        this.defaultEstimator = defaultEstimator;
+    }
+
+    public void setNumberEstimator(Estimator numberEstimator) {
+        this.numberEstimator = numberEstimator;
     }
 }

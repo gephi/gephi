@@ -22,6 +22,7 @@ package org.gephi.preview.supervisors;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.gephi.preview.GraphImpl;
 import org.gephi.preview.SelfLoopImpl;
 import org.gephi.preview.api.EdgeColorizer;
 import org.gephi.preview.api.SupervisorPropery;
@@ -78,8 +79,22 @@ public class SelfLoopSupervisorImpl implements SelfLoopSupervisor {
      *
      * @param selfLoop  the self-loop to supervise
      */
-    public void addSelfLoop(SelfLoopImpl selfLoop) {
-        supervisedSelfLoops.add(selfLoop);
+    public void addSelfLoop(SelfLoopImpl edge) {
+        supervisedSelfLoops.add(edge);
+
+        float weight = edge.getThickness();
+        float min = edge.getGraph().getMinWeight();
+        float max = edge.getGraph().getMaxWeight();
+        if (rescaleWeight) {
+            if (!Double.isInfinite(min) && !Double.isInfinite(max) && max != min) {
+                float ratio = (GraphImpl.WEIGHT_MAXIMUM - GraphImpl.WEIGHT_MINIMUM) / (max - min);
+                weight = (weight - min) * ratio + GraphImpl.WEIGHT_MINIMUM;
+            }
+        } else if (min <= 0) {
+            weight += Math.abs(min) + 1;
+        }
+
+        edge.setThickness(weight);
 
         colorSelfLoops();
     }

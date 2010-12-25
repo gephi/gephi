@@ -78,19 +78,19 @@
         <property name="l10n.url" value="http://netbeans.org/project_downloads/nblocalization/6.9/"/>
         <property name="l10n.file" value="nb69_platform_l10n.zip"/>
         <property name="l10n.dir" value="l10n"/>
-        <get src="${l10n.url}${l10n.file}" dest="${dist.dir}" verbose="true" skipexisting="true"/>
+        <get src="${l10n.url}${l10n.file}" dest="${dist.dir}" verbose="true" skipexisting="true" ignoreerrors="true"/>      
     </target>
 
     <target name="unzip-l10n" depends="download-l10n-jars" description="Unzip Netbeans Platform Localization JARs">
         <unzip src="${dist.dir}/${l10n.file}" dest="${dist.dir}/${l10n.dir}/${app.name}"/>
     </target>
     
-    <target name="merge-l10n-zip" depends="unzip-l10n" description="Merge Localization JARs on ZIP distribution">
+    <target name="merge-l10n-zip" depends="unzip-l10n" description="Merge Localization JARs on ZIP distribution" >
         <zip destfile="${dist.dir}/${app.name}.zip" basedir="${dist.dir}/${l10n.dir}" update="true"/>
         <antcall target="clean-l10n"/>
     </target>
 
-    <target name="merge-l10n-mac" depends="unzip-l10n" description="Merge Localization JARs on MAC distribution">
+    <target name="merge-l10n-mac" depends="unzip-l10n" description="Merge Localization JARs on MAC distribution" >
         <copy todir="${dist.dir}/${app.name}.app/Contents/Resources">
             <fileset dir="${dist.dir}/${l10n.dir}"/>
         </copy>
@@ -165,6 +165,7 @@
                 <include name="org-gephi-project-api.jar"/>
                 <include name="org-gephi-statistics-api.jar"/>
                 <include name="org-gephi-statistics-plugin.jar"/>
+                <include name="org-gephi-timeline.jar"/>
                 <include name="org-gephi-dynamic-api.jar"/>
                 <include name="org-gephi-dynamic.jar"/>
                 <include name="org-gephi-utils.jar"/>
@@ -175,11 +176,13 @@
                 <include name="org-gephi-io-generator-api.jar"/>
                 <include name="org-gephi-io-generator-plugin.jar"/>
                 <include name="org-gephi-datalab-api.jar"/>
+                <include name="org-gephi-visualization-api.jar"/>
             </fileset>
         </copy>
         <copy todir="${toolkit.tempdir}">
             <fileset dir="${libs.dir}">
                 <include name="batik*.jar"/>
+                <include name="bzip2*.jar"/>
                 <include name="core.jar"/><!-- Processing -->
                 <include name="iText*.jar"/>
                 <include name="jcommon*.jar"/>

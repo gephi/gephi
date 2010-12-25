@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalab.impl;
 
+import java.util.Set;
 import java.util.regex.Matcher;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
@@ -167,6 +168,8 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
     private SearchResult findOnNodes(SearchOptions searchOptions, int rowIndex, int columnIndex) {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         SearchResult result = null;
+        Set<Integer> columnsToSearch = searchOptions.getColumnsToSearch();
+        boolean searchAllColumns = columnsToSearch.isEmpty();
         Node[] nodes = searchOptions.getNodesToSearch();
         AttributeRow row;
         Object value;
@@ -176,14 +179,17 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
             }
             row = (AttributeRow) nodes[rowIndex].getNodeData().getAttributes();
             for (; columnIndex < row.countValues(); columnIndex++) {
-                value = row.getValue(columnIndex);
-                result = matchRegex(value, searchOptions, rowIndex, columnIndex);
-                if (result != null) {
-                    result.setFoundNode(nodes[rowIndex]);
-                    return result;
+                if (searchAllColumns || columnsToSearch.contains(columnIndex)) {
+                    value = row.getValue(columnIndex);
+                    result = matchRegex(value, searchOptions, rowIndex, columnIndex);
+                    if (result != null) {
+                        result.setFoundNode(nodes[rowIndex]);
+                        return result;
+                    }
                 }
                 searchOptions.setRegionStart(0);//Start at the beginning for the next value
             }
+            searchOptions.setRegionStart(0);//Start at the beginning for the next value
             columnIndex = 0;//Start at the first column for the next row
         }
         return result;
@@ -192,6 +198,8 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
     private SearchResult findOnEdges(SearchOptions searchOptions, int rowIndex, int columnIndex) {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         SearchResult result = null;
+        Set<Integer> columnsToSearch = searchOptions.getColumnsToSearch();
+        boolean searchAllColumns = columnsToSearch.isEmpty();
         Edge[] edges = searchOptions.getEdgesToSearch();
         AttributeRow row;
         Object value;
@@ -201,14 +209,17 @@ public class SearchReplaceControllerImpl implements SearchReplaceController {
             }
             row = (AttributeRow) edges[rowIndex].getEdgeData().getAttributes();
             for (; columnIndex < row.countValues(); columnIndex++) {
-                value = row.getValue(columnIndex);
-                result = matchRegex(value, searchOptions, rowIndex, columnIndex);
-                if (result != null) {
-                    result.setFoundEdge(edges[rowIndex]);
-                    return result;
+                if (searchAllColumns || columnsToSearch.contains(columnIndex)) {
+                    value = row.getValue(columnIndex);
+                    result = matchRegex(value, searchOptions, rowIndex, columnIndex);
+                    if (result != null) {
+                        result.setFoundEdge(edges[rowIndex]);
+                        return result;
+                    }
                 }
                 searchOptions.setRegionStart(0);//Start at the beginning for the next value
             }
+            searchOptions.setRegionStart(0);//Start at the beginning for the next value
             columnIndex = 0;//Start at the first column for the next row
         }
         return result;

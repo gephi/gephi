@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.component;
 
 import com.connectina.swing.fontchooser.JFontChooser;
@@ -487,11 +487,14 @@ public class VizBarController {
             colorChooser.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.defaultColor"));
             colorChooser.setPreferredSize(new Dimension(16, 16));
             colorChooser.setMaximumSize(new Dimension(16, 16));
-            colorChooser.addActionListener(new ActionListener() {
+            colorChooser.addPropertyChangeListener(new PropertyChangeListener() {
 
-                public void actionPerformed(ActionEvent ae) {
-                    TextModel model = VizController.getInstance().getVizModel().getTextModel();
-                    model.setNodeColor(colorChooser.getColor());
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
+                        TextModel model = VizController.getInstance().getVizModel().getTextModel();
+                        model.setNodeColor(colorChooser.getColor());
+                    }
                 }
             });
             model.addChangeListener(new ChangeListener() {

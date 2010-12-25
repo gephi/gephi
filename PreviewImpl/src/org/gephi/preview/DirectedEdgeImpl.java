@@ -58,10 +58,10 @@ public abstract class DirectedEdgeImpl extends EdgeImpl implements DirectedEdge 
         arrows.add(new EdgeArrowB2In(this));
 
         // generate mini-labels
-        if (node1.hasLabel()) {
+        if (node2.hasLabel()) {
             miniLabels.add(new EdgeMiniLabelB1(this));
         }
-        if (node2.hasLabel()) {
+        if (node1.hasLabel()) {
             miniLabels.add(new EdgeMiniLabelB2(this));
         }
     }

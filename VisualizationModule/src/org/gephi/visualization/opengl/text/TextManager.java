@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.visualization.opengl.text;
 
+import org.gephi.visualization.impl.TextDataImpl;
 import com.sun.opengl.util.j2d.TextRenderer;
 import java.awt.Font;
 import java.awt.geom.Rectangle2D;
@@ -39,7 +40,6 @@ import org.gephi.dynamic.api.DynamicModelListener;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.Renderable;
-import org.gephi.graph.spi.TextDataFactory;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.GraphDrawable;
@@ -78,7 +78,7 @@ public class TextManager implements VizArchitecture {
 
     public TextManager() {
         textUtils = new TextUtils(this);
-        builder = (TextDataBuilderImpl) Lookup.getDefault().lookup(TextDataFactory.class);
+        builder = new TextDataBuilderImpl();
 
         //SizeMode init
         sizeModes = new SizeMode[3];
@@ -139,6 +139,8 @@ public class TextManager implements VizArchitecture {
                     DynamicModel dynamicModel = dynamicController.getModel();
                     if(dynamicModel!=null) {
                         currentTimeInterval = dynamicModel.getVisibleInterval();
+                        builder.setDefaultEstimator(dynamicModel.getEstimator());
+                        builder.setNumberEstimator(dynamicModel.getNumberEstimator());
                     } else {
                         currentTimeInterval = null;
                     }
@@ -285,14 +287,14 @@ public class TextManager implements VizArchitecture {
                 if (nodeRefresh) {
                     builder.buildNodeText((NodeData) renderable, textData, model, currentTimeInterval);
                 }
-                String txt = textData.line.text;
+                String txt = textData.getLine().getText();
                 Rectangle2D r = renderer.getBounds(txt);
-                textData.line.setBounds(r);
-                float posX = renderable.x() + (float) r.getWidth() / -2 * textData.sizeFactor;
-                float posY = renderable.y() + (float) r.getHeight() / -2 * textData.sizeFactor;
+                textData.getLine().setBounds(r);
+                float posX = renderable.x() + (float) r.getWidth() / -2 * textData.getSizeFactor();
+                float posY = renderable.y() + (float) r.getHeight() / -2 * textData.getSizeFactor();
                 float posZ = renderable.getRadius();
 
-                renderer.draw3D(txt, posX, posY, posZ, textData.sizeFactor);
+                renderer.draw3D(txt, posX, posY, posZ, textData.getSizeFactor());
             }
         }
 
@@ -303,17 +305,17 @@ public class TextManager implements VizArchitecture {
                 model.colorMode.textColor(this, textData, objectModel);
                 model.sizeMode.setSizeFactor3d(model.edgeSizeFactor, textData, objectModel);
                 if (edgeRefresh) {
-                    builder.buildNodeText((NodeData) renderable, textData, model, currentTimeInterval);
+                    builder.buildEdgeText((EdgeData) renderable, textData, model, currentTimeInterval);
                 }
 
-                String txt = textData.line.text;
+                String txt = textData.getLine().getText();
                 Rectangle2D r = renderer.getBounds(txt);
-                textData.line.setBounds(r);
-                float posX = renderable.x() + (float) r.getWidth() / -2 * textData.sizeFactor;
-                float posY = renderable.y() + (float) r.getHeight() / -2 * textData.sizeFactor;
+                textData.getLine().setBounds(r);
+                float posX = renderable.x() + (float) r.getWidth() / -2 * textData.getSizeFactor();
+                float posY = renderable.y() + (float) r.getHeight() / -2 * textData.getSizeFactor();
                 float posZ = renderable.getRadius();
 
-                renderer.draw3D(txt, posX, posY, posZ, textData.sizeFactor);
+                renderer.draw3D(txt, posX, posY, posZ, textData.getSizeFactor());
             }
         }
 
@@ -369,17 +371,17 @@ public class TextManager implements VizArchitecture {
                 if (nodeRefresh) {
                     builder.buildNodeText((NodeData) renderable, textData, model, currentTimeInterval);
                 }
-                if (textData.sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
+                if (textData.getSizeFactor() * renderer.getCharWidth('a') < PIXEL_LIMIT) {
                     return;
                 }
-                String txt = textData.line.text;
+                String txt = textData.getLine().getText();
                 Rectangle2D r = renderer.getBounds(txt);
-                float posX = renderable.getModel().getViewportX() + (float) r.getWidth() / -2 * textData.sizeFactor;
-                float posY = renderable.getModel().getViewportY() + (float) r.getHeight() / -2 * textData.sizeFactor;
+                float posX = renderable.getModel().getViewportX() + (float) r.getWidth() / -2 * textData.getSizeFactor();
+                float posY = renderable.getModel().getViewportY() + (float) r.getHeight() / -2 * textData.getSizeFactor();
                 r.setRect(0, 0, r.getWidth() / Math.abs(drawable.getDraggingMarkerX()), r.getHeight() / Math.abs(drawable.getDraggingMarkerY()));
-                textData.line.setBounds(r);
+                textData.getLine().setBounds(r);
 
-                renderer.draw3D(txt, posX, posY, 0, textData.sizeFactor);
+                renderer.draw3D(txt, posX, posY, 0, textData.getSizeFactor());
             }
         }
 
@@ -392,17 +394,17 @@ public class TextManager implements VizArchitecture {
                 if (edgeRefresh) {
                     builder.buildEdgeText((EdgeData) renderable, textData, model, currentTimeInterval);
                 }
-                if (textData.sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
+                if (textData.getSizeFactor() * renderer.getCharWidth('a') < PIXEL_LIMIT) {
                     return;
                 }
-                String txt = textData.line.text;
+                String txt = textData.getLine().getText();
                 Rectangle2D r = renderer.getBounds(txt);
-                float posX = renderable.getModel().getViewportX() + (float) r.getWidth() / -2 * textData.sizeFactor;
-                float posY = renderable.getModel().getViewportY() + (float) r.getHeight() / -2 * textData.sizeFactor;
+                float posX = renderable.getModel().getViewportX() + (float) r.getWidth() / -2 * textData.getSizeFactor();
+                float posY = renderable.getModel().getViewportY() + (float) r.getHeight() / -2 * textData.getSizeFactor();
                 r.setRect(0, 0, r.getWidth() / drawable.getDraggingMarkerX(), r.getHeight() / drawable.getDraggingMarkerY());
-                textData.line.setBounds(r);
+                textData.getLine().setBounds(r);
 
-                renderer.draw3D(txt, posX, posY, 0, textData.sizeFactor);
+                renderer.draw3D(txt, posX, posY, 0, textData.getSizeFactor());
             }
         }
 

@@ -1,6 +1,7 @@
 /*
  * Copyright 2008-2010 Gephi
  * Authors : Cezary Bartosiak
+ *           Mathieu Bastian <mathieu.bastian@gephi.org>
  * Website : http://www.gephi.org
  * 
  * This file is part of Gephi.
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
@@ -41,6 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
  * It is the default implementation of the {@code DynamicController} class.
  *
  * @author Cezary Bartosiak
+ * @author Mathieu Bastian
  */
 @ServiceProvider(service = DynamicController.class)
 public final class DynamicControllerImpl implements DynamicController {
@@ -122,7 +125,7 @@ public final class DynamicControllerImpl implements DynamicController {
     @Override
     public void setVisibleInterval(TimeInterval interval) {
         if (model != null) {
-            System.out.println("set visible interval "+interval);
+            //System.out.println("set visible interval "+interval);
             model.setVisibleTimeInterval(interval);
         }
     }
@@ -136,6 +139,20 @@ public final class DynamicControllerImpl implements DynamicController {
     public void setTimeFormat(TimeFormat timeFormat) {
         if (model != null) {
             model.setTimeFormat(timeFormat);
+        }
+    }
+
+    @Override
+    public void setEstimator(Estimator estimator) {
+        if (model != null) {
+            model.setEstimator(estimator);
+        }
+    }
+
+    @Override
+    public void setNumberEstimator(Estimator numberEstimator) {
+        if (model != null) {
+            model.setNumberEstimator(numberEstimator);
         }
     }
 

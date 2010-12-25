@@ -36,7 +36,7 @@ public interface DialogControls {
 
     /**
      * Indicates if ok button is enabled for this dialog at the moment
-     * @return
+     * @return <code>true</code> if ok button is enabled
      */
     boolean isOkButtonEnabled();
 }

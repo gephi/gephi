@@ -1,6 +1,7 @@
 /*
  * Copyright 2008-2010 Gephi
  * Authors : Cezary Bartosiak
+ *           Mathieu Bastian <mathieu.bastian@gephi.org>
  * Website : http://www.gephi.org
  * 
  * This file is part of Gephi.
@@ -20,21 +21,40 @@
  */
 package org.gephi.dynamic.api;
 
+import org.gephi.data.attributes.api.Estimator;
+import org.gephi.data.attributes.type.DynamicInteger;
+import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.graph.api.Graph;
 
 /**
- * Root interface that contains the complete dynamic graph structure and build
- * {@link DynamicGraph} objets on demand.
+ * Model that maintains the dynamic states of the application, which include the
+ * minimum and the maximum bounds, as well as the current visible interval.
+ * <p>
+ * The min and the max are used to know what are the limits of the time in the
+ * current data. The visible interval is typically configured by a timeline
+ * component to select a range of time. The model also maintains what is the
+ * current time format, either <code>DOUBLE</code> or <code>DATE</code>. Internally,
+ * all times are double, but it can be converted to dates for user display. In
+ * addition the model stores the current estimators used to compute dynamic
+ * values.
+ * <p>
+ * The model is listening to graph and attributes events to track all intervals and
+ * deduce minimum and maximum. It thows <code>MIN_CHANGED</code> or 
+ * <code>MAX_CHANGED</code> events when these values are changed.
+ * <p>
+ * The model can also build {@link DynamicGraph} objets on demand. These objects
+ * can work independently to states of this model.
  * 
  * @author Cezary Bartosiak
+ * @author Mathieu Bastian
  *
  * @see DynamicController
  */
 public interface DynamicModel {
 
     /**
-     * The name of a column containing time intervals.
+     * The name of the column containing time intervals.
      */
     public static final String TIMEINTERVAL_COLUMN = "time_interval";
 
@@ -42,7 +62,10 @@ public interface DynamicModel {
      * The way the time is represented, either a simple real value (DOUBLE) or
      * a date.
      */
-    public enum TimeFormat { DATE, DOUBLE };
+    public enum TimeFormat {
+
+        DATE, DOUBLE
+    };
 
     /**
      * Builds a new {@code DynamicGraph} from the given {@code Graph} instance.
@@ -91,12 +114,31 @@ public interface DynamicModel {
     public double getMax();
 
     /**
-     * Get the current time format for this model. Though all time values are stored
+     * Gets the current time format for this model. Though all time values are stored
      * in double numbers, the time format inform how this values should be
      * converted to display to users.
      * @return the current time format
      */
     public TimeFormat getTimeFormat();
+
+    /**
+     * Returns the current <code>ESTIMATOR</code>, used to get values from
+     * {@link DynamicType}. Default is <b><code>Estimator.FIRST</code></b>.
+     * <p>
+     * See the {@link #getNumberEstimator()} method for number types.
+     * @return the current estimator
+     */
+    public Estimator getEstimator();
+
+    /**
+     * Returns the current number <code>ESTIMATOR</code>, used to get values
+     * from number {@link DynamicType}, like {@link DynamicInteger}. Default is
+     * <b><code>Estimator.AVERAGE</code></b>.
+     * <p>
+     * See the {@link #getEstimator()} method for non-number types.
+     * @return the current number estimator
+     */
+    public Estimator getNumberEstimator();
 
     /**
      * Returns <code>true</code> if the graph in the current workspace is dynamic,

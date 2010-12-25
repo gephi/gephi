@@ -33,6 +33,9 @@ msgstr "Queries"
 msgid "SlotNode.name"
 msgstr "<html><i>Drag subfilter here</i></html>"
 
+msgid "SlotNode.description"
+msgstr "Subfilters are executed before their parent node"
+
 msgid "HelpNode.name"
 msgstr "<html><i>Drag filter here</i></html>"
 

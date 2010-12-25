@@ -65,7 +65,6 @@ public interface GraphElementsController {
 
     /**
      * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
-     * This will not create a self-loop.
      * @param source Source node
      * @param target Target node
      * @param directed Indicates if the edge has to be directed
@@ -76,7 +75,6 @@ public interface GraphElementsController {
     /**
      * <p>Creates and edge between source and target node (if it does not already exist), directed or undirected.</p>
      * <p>If a edge with the given id already exists, no edge will be created.</p>
-     * <p>This will not create a self-loop.</p>
      * @param source Source node
      * @param target Target node
      * @param directed Indicates if the edge has to be directed
@@ -107,13 +105,13 @@ public interface GraphElementsController {
 
     /**
      * Tries to delete an edge checking first if it is on the graph.
-     * @param node Edge to delete
+     * @param edge Edge to delete
      */
     void deleteEdge(Edge edge);
 
     /**
      * Tries to delete an array of edges checking first if they are on the graph.
-     * @param nodes Array of edges to delete
+     * @param edges Array of edges to delete
      */
     void deleteEdges(Edge[] edges);
 
@@ -151,7 +149,7 @@ public interface GraphElementsController {
 
     /**
      * Ungroups a node if it forms a group.
-     * @param nodes Node to ungroup
+     * @param node Node to ungroup
      * @return True if the node was succesfully ungrouped, false otherwise
      */
     boolean ungroupNode(Node node);

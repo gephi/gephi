@@ -15,6 +15,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Import Spigot action with Wizard"
+
 msgid "CTL_ImportSpigot"
 msgstr "Import Spigot..."
 
@@ -23,6 +26,9 @@ msgstr "Import Spigots"
 
 msgid "ImportSpigot.error_no_matching_importer"
 msgstr "No importer can be found for this type of Spigot"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Spigot integration with Wizard"
 
 msgid "SpigotVisualPanel1.title"
 msgstr "Select Spigot"

@@ -27,6 +27,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -222,13 +224,15 @@ public class EdgeColorTransformerPanel extends javax.swing.JPanel {
 
         public ColorChooserEditor() {
             delegate = new ColorChooser();
-            ActionListener actionListener = new ActionListener() {
+            delegate.addPropertyChangeListener(new PropertyChangeListener() {
 
-                public void actionPerformed(ActionEvent actionEvent) {
-                    edgeColorTransformer.getMap().put(currentValue, delegate.getColor());
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals(ColorChooser.PROP_COLOR)) {
+                        edgeColorTransformer.getMap().put(currentValue, (Color) evt.getNewValue());
+                    }
                 }
-            };
-            delegate.addActionListener(actionListener);
+            });
         }
 
         public Object getCellEditorValue() {

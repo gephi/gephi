@@ -443,7 +443,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             graphFilter.addExtensions(fileType.getExtensions());
         }
         DialogFileFilter zipFileFilter = new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_zipfilter"));
-        zipFileFilter.addExtensions(new String[]{".zip"});
+        zipFileFilter.addExtensions(new String[]{".zip", ".gz", ".bz2"});
         chooser.addChoosableFileFilter(zipFileFilter);
         chooser.addChoosableFileFilter(graphFilter);
 

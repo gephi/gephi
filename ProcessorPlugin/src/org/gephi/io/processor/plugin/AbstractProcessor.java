@@ -28,6 +28,7 @@ import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.type.DynamicFloat;
+import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
@@ -91,6 +92,10 @@ public abstract class AbstractProcessor {
         }
 
         //Attributes
+        flushToNodeAttributes(nodeDraft, node);
+    }
+
+    protected void flushToNodeAttributes(NodeDraftGetter nodeDraft, Node node) {
         if (node.getNodeData().getAttributes() != null) {
             AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
             for (AttributeValue val : nodeDraft.getAttributeRow().getValues()) {
@@ -138,6 +143,10 @@ public abstract class AbstractProcessor {
         }
 
         //Attributes
+        flushToEdgeAttributes(edgeDraft, edge);
+    }
+
+    protected void flushToEdgeAttributes(EdgeDraftGetter edgeDraft, Edge edge) {
         if (edge.getEdgeData().getAttributes() != null) {
             AttributeRow row = (AttributeRow) edge.getEdgeData().getAttributes();
             for (AttributeValue val : edgeDraft.getAttributeRow().getValues()) {
@@ -152,7 +161,11 @@ public abstract class AbstractProcessor {
         if (dynamicWeightCol != null) {
             DynamicFloat weight = (DynamicFloat) edgeDraft.getAttributeRow().getValue(dynamicWeightCol.getIndex());
             AttributeRow row = (AttributeRow) edge.getEdgeData().getAttributes();
-            row.setValue(PropertiesColumn.EDGE_WEIGHT.getIndex(), weight);
+            if (weight == null) {
+                row.setValue(PropertiesColumn.EDGE_WEIGHT.getIndex(), new DynamicFloat(new Interval<Float>(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, edgeDraft.getWeight())));
+            } else {
+                row.setValue(PropertiesColumn.EDGE_WEIGHT.getIndex(), weight);
+            }
         }
     }
 

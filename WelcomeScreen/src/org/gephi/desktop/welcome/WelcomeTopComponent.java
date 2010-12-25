@@ -166,7 +166,7 @@ public final class WelcomeTopComponent extends TopComponent {
                         try {
                             stream.reset();
                         } catch (IOException ex) {
-                            Exceptions.printStackTrace(ex);
+                            //Exceptions.printStackTrace(ex);
                         }
                         ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
                         importController.importStream(stream, importer);

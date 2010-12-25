@@ -47,6 +47,8 @@ public interface TextData {
 
     public boolean isVisible();
 
+    public void setText(String text);
+
     public void setColor(float r, float g, float b, float alpha);
 
     public void setColor(Color color);

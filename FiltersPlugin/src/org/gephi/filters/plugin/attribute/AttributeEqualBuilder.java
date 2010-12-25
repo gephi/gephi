@@ -31,6 +31,7 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.filters.api.FilterLibrary;
+import org.gephi.filters.plugin.DynamicAttributesHelper;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
 import org.gephi.filters.spi.EdgeFilter;
@@ -68,25 +69,25 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         List<FilterBuilder> builders = new ArrayList<FilterBuilder>();
         AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
         for (AttributeColumn c : am.getNodeTable().getColumns()) {
-            if (AttributeUtils.getDefault().isStringColumn(c)) {
+            if (AttributeUtils.getDefault().isStringColumn(c) || c.getType().equals(AttributeType.DYNAMIC_STRING)) {
                 EqualStringFilterBuilder b = new EqualStringFilterBuilder(c);
                 builders.add(b);
-            } else if (AttributeUtils.getDefault().isNumberColumn(c)) {
+            } else if (AttributeUtils.getDefault().isNumberColumn(c) || AttributeUtils.getDefault().isDynamicNumberColumn(c)) {
                 EqualNumberFilterBuilder b = new EqualNumberFilterBuilder(c);
                 builders.add(b);
-            } else if (c.getType().equals(AttributeType.BOOLEAN)) {
+            } else if (c.getType().equals(AttributeType.BOOLEAN) || c.getType().equals(AttributeType.DYNAMIC_BOOLEAN)) {
                 EqualBooleanFilterBuilder b = new EqualBooleanFilterBuilder(c);
                 builders.add(b);
             }
         }
         for (AttributeColumn c : am.getEdgeTable().getColumns()) {
-            if (AttributeUtils.getDefault().isStringColumn(c)) {
+            if (AttributeUtils.getDefault().isStringColumn(c) || c.getType().equals(AttributeType.DYNAMIC_STRING)) {
                 EqualStringFilterBuilder b = new EqualStringFilterBuilder(c);
                 builders.add(b);
-            } else if (AttributeUtils.getDefault().isNumberColumn(c)) {
+            } else if (AttributeUtils.getDefault().isNumberColumn(c) || AttributeUtils.getDefault().isDynamicNumberColumn(c)) {
                 EqualNumberFilterBuilder b = new EqualNumberFilterBuilder(c);
                 builders.add(b);
-            } else if (c.getType().equals(AttributeType.BOOLEAN)) {
+            } else if (c.getType().equals(AttributeType.BOOLEAN) || c.getType().equals(AttributeType.DYNAMIC_BOOLEAN)) {
                 EqualBooleanFilterBuilder b = new EqualBooleanFilterBuilder(c);
                 builders.add(b);
             }
@@ -157,12 +158,14 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         private boolean useRegex;
         private AttributeColumn column;
         private Pattern regex;
+        private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
 
         public String getName() {
             return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name");
         }
 
         public boolean init(Graph graph) {
+            dynamicHelper = new DynamicAttributesHelper(this, graph);
             return true;
         }
 
@@ -171,6 +174,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
                 return true;
             }
             Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
+            val = dynamicHelper.getDynamicValue(val);
             if (val != null && useRegex) {
                 return regex.matcher((String) val).matches();
             } else if (val != null) {
@@ -181,6 +185,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
         public boolean evaluate(Graph graph, Edge edge) {
             Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
+            val = dynamicHelper.getDynamicValue(val);
             if (val != null && useRegex) {
                 return regex.matcher((String) val).matches();
             } else if (val != null) {
@@ -303,10 +308,53 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         private Object max;
         //State
         private List<Object> values;
+        private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
 
         public EqualNumberFilter(AttributeColumn column) {
             this.column = column;
+            this.dynamicHelper = new DynamicAttributesHelper(this, null);
+        }
 
+        public String getName() {
+            return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name");
+        }
+
+        public boolean init(Graph graph) {
+            values = new ArrayList<Object>();
+            dynamicHelper = new DynamicAttributesHelper(this, graph);
+            return true;
+        }
+
+        public boolean evaluate(Graph graph, Node node) {
+            Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
+            val = dynamicHelper.getDynamicValue(val);
+            if (val != null) {
+                values.add(val);
+                return val.equals(match);
+            }
+            return false;
+        }
+
+        public boolean evaluate(Graph graph, Edge edge) {
+            Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
+            val = dynamicHelper.getDynamicValue(val);
+            if (val != null) {
+                values.add(val);
+                return val.equals(match);
+            }
+            return false;
+        }
+
+        public void finish() {
+            //Object[] valuesArray = values.toArray();
+            Comparable[] comparableArray = ComparableArrayConverter.convert(values);
+
+            min = AttributeUtils.getDefault().getMin(column, comparableArray /*valuesArray*/);
+            max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
+            values = null;
+        }
+
+        private void refreshValues() {
             //Default min-max
             GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
             Graph graph = gm.getGraph();
@@ -333,42 +381,6 @@ public class AttributeEqualBuilder implements CategoryBuilder {
             max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
         }
 
-        public String getName() {
-            return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name");
-        }
-
-        public boolean init(Graph graph) {
-            values = new ArrayList<Object>();
-            return true;
-        }
-
-        public boolean evaluate(Graph graph, Node node) {
-            Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
-            if (val != null) {
-                values.add(val);
-                return val.equals(match);
-            }
-            return false;
-        }
-
-        public boolean evaluate(Graph graph, Edge edge) {
-            Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
-            if (val != null) {
-                values.add(val);
-                return val.equals(match);
-            }
-            return false;
-        }
-
-        public void finish() {
-            //Object[] valuesArray = values.toArray();
-            Comparable[] comparableArray = ComparableArrayConverter.convert(values);
-
-            min = AttributeUtils.getDefault().getMin(column, comparableArray /*valuesArray*/);
-            max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
-            values = null;
-        }
-
         public FilterProperty[] getProperties() {
             if (filterProperties == null) {
                 filterProperties = new FilterProperty[0];
@@ -392,10 +404,16 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public Object getMinimun() {
+            if (min == null) {
+                refreshValues();
+            }
             return min;
         }
 
         public Object getMaximum() {
+            if (max == null) {
+                refreshValues();
+            }
             return max;
         }
 
@@ -469,6 +487,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         private FilterProperty[] filterProperties;
         private boolean match = false;
         private AttributeColumn column;
+        private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
 
         public String getName() {
             return NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name");
@@ -490,11 +509,13 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public boolean init(Graph graph) {
+            dynamicHelper = new DynamicAttributesHelper(this, graph);
             return true;
         }
 
         public boolean evaluate(Graph graph, Node node) {
             Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
+            val = dynamicHelper.getDynamicValue(val);
             if (val != null) {
                 return val.equals(match);
             }
@@ -503,6 +524,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
         public boolean evaluate(Graph graph, Edge edge) {
             Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
+            val = dynamicHelper.getDynamicValue(val);
             if (val != null) {
                 return val.equals(match);
             }

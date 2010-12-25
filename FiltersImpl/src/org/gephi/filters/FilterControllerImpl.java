@@ -48,6 +48,7 @@ import org.gephi.utils.progress.ProgressTicketProvider;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.visualization.api.VisualizationController;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -128,8 +129,8 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     public void remove(Query query) {
-        if(model.getCurrentQuery()==query) {
-            if(model.isSelecting()) {
+        if (model.getCurrentQuery() == query) {
+            if (model.isSelecting()) {
                 selectVisible(null);
             } else {
                 filterVisible(null);
@@ -209,6 +210,10 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             filterThread.setRootQuery((AbstractQueryImpl) query);
             filterThread.start();
         } else {
+            VisualizationController visController = Lookup.getDefault().lookup(VisualizationController.class);
+            if (visController != null) {
+                visController.selectNodes(null);
+            }
         }
     }
 

@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.apiimpl;
 
 import javax.media.opengl.GL;
@@ -110,7 +110,7 @@ public abstract class ModelImpl<ObjectType extends Renderable> implements Model,
 
     public void resetOctant() {
         if (this.octants != null) {
-            this.octants[0] = null;
+            this.octants = new Octant[]{null};
         }
     }
 

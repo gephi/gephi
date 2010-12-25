@@ -161,7 +161,7 @@ public class PreviewGraphFactory {
         if (dynamicController != null) {
             timeInterval = DynamicUtilities.getVisibleInterval(dynamicController.getModel(sourceGraph.getGraphModel().getWorkspace()));
         }
-        if(timeInterval==null) {
+        if (timeInterval == null) {
             timeInterval = new TimeInterval();
         }
 
@@ -198,8 +198,10 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.TextData sourceNodeTextData = sourceNodeData.getTextData();
 
         String label = sourceNodeData.getLabel();
-        if (sourceNodeTextData != null && sourceNodeTextData.getText() != null && !sourceNodeTextData.getText().isEmpty()) {
+        if (sourceNodeTextData != null && sourceNodeTextData.getText() != null && !sourceNodeTextData.getText().isEmpty() && sourceNodeTextData.isVisible()) {
             label = sourceNodeTextData.getText();
+        } else if (sourceNodeTextData != null && !sourceNodeTextData.isVisible()) {
+            label = null;
         }
 
         float labelSize = 1f;
@@ -263,8 +265,10 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
         String label = sourceEdgeData.getLabel();
-        if (sourceEdgeTextData != null && sourceEdgeTextData.getText() != null && sourceEdgeTextData.getText().isEmpty()) {
+        if (sourceEdgeTextData != null && sourceEdgeTextData.getText() != null && !sourceEdgeTextData.getText().isEmpty() && sourceEdgeTextData.isVisible()) {
             label = sourceEdgeTextData.getText();
+        } else if (sourceEdgeTextData != null && !sourceEdgeTextData.isVisible()) {
+            label = null;
         }
 
         float labelSize = 1f;
@@ -298,8 +302,10 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
         String label = sourceEdgeData.getLabel();
-        if (sourceEdgeTextData != null && sourceEdgeTextData.getText() != null && sourceEdgeTextData.getText().isEmpty()) {
+        if (sourceEdgeTextData != null && sourceEdgeTextData.getText() != null && !sourceEdgeTextData.getText().isEmpty() && sourceEdgeTextData.isVisible()) {
             label = sourceEdgeTextData.getText();
+        } else if (sourceEdgeTextData != null && !sourceEdgeTextData.isVisible()) {
+            label = null;
         }
 
         float labelSize = 1f;
@@ -333,8 +339,10 @@ public class PreviewGraphFactory {
         org.gephi.graph.api.TextData sourceEdgeTextData = sourceEdgeData.getTextData();
 
         String label = sourceEdgeData.getLabel();
-        if (sourceEdgeTextData != null && sourceEdgeTextData.getText() != null && sourceEdgeTextData.getText().isEmpty()) {
+        if (sourceEdgeTextData != null && sourceEdgeTextData.getText() != null && !sourceEdgeTextData.getText().isEmpty() && sourceEdgeTextData.isVisible()) {
             label = sourceEdgeTextData.getText();
+        } else if (sourceEdgeTextData != null && !sourceEdgeTextData.isVisible()) {
+            label = null;
         }
 
         float labelSize = 1f;

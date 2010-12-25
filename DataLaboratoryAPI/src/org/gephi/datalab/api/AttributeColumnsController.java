@@ -54,13 +54,15 @@ public interface AttributeColumnsController {
     /**
      * <p>Adds a new column to the specified table with the given title and type of column.</p>
      * <p>The title for the new column can't be repeated in the table, null or an empty string.</p>.
-     * <p>The id of the column will be set to the title.</p>
+     * <p>The id of the column will be set to the same as the title,
+     * but if the first TimeInterval column of the table is created
+     * it will be given the default dynamic time interval id to be able to use dynamic filters.</p>
      * <p>The <code>AttributeOrigin</code> of the column will be set to <code>DATA</code>.</p>
      * <p>Default column value will be set to null.</p>
      * @param table Table to add the column
      * @param title Title for the new column, can't be repeated in the table, null or empty string
      * @param type Type for the new column
-     * @return The created column or null if title is not correct
+     * @return The created column or null if the column could not be created
      */
     AttributeColumn addAttributeColumn(AttributeTable table, String title, AttributeType type);
 
@@ -75,7 +77,7 @@ public interface AttributeColumnsController {
      * @param column Column to duplicate
      * @param title Title for the new column
      * @param type AttributeType for the new column
-     * @return The created column or null if title is not correct
+     * @return The created column or null if the column could not be created
      */
     AttributeColumn duplicateColumn(AttributeTable table, AttributeColumn column, String title, AttributeType type);
 
@@ -128,7 +130,7 @@ public interface AttributeColumnsController {
      * @param table Table of the column to match
      * @param column Column to match
      * @param newColumnTitle Title for the new boolean column
-     * @param regex Regular expression to match
+     * @param pattern Regular expression to match
      * @return New created column or null if title is not correct
      */
     AttributeColumn createBooleanMatchesColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern);
@@ -148,7 +150,7 @@ public interface AttributeColumnsController {
      * @param table Table of the column to match
      * @param column Column to match
      * @param newColumnTitle Title for the new boolean column
-     * @param regex Regular expression to match
+     * @param pattern Regular expression to match
      * @return New created column or null if title is not correct
      */
     AttributeColumn createFoundGroupsListColumn(AttributeTable table, AttributeColumn column, String newColumnTitle, Pattern pattern);
@@ -172,7 +174,7 @@ public interface AttributeColumnsController {
     /**
      * <p>Clears all edge attributes except computed attributes and id.</p>
      * <p>Columns to clear can be specified, but id and computed columns will not be cleared.</p>
-     * @param node Edge to clear data
+     * @param edge Edge to clear data
      * @param columnsToClear Columns of the edge to clear. All columns will be cleared if it is null
      */
     void clearEdgeData(Edge edge, AttributeColumn[] columnsToClear);
@@ -180,7 +182,7 @@ public interface AttributeColumnsController {
     /**
      * <p>Clears all the edges attributes except computed attributes and id, checking first that the edges are in the graph.</p>
      * <p>Columns to clear can be specified, but id and computed columns will not be cleared.</p>
-     * @param nodes Array of edges to clear data
+     * @param edges Array of edges to clear data
      * @param columnsToClear Columns of the edges to clear. All columns will be cleared if it is null
      */
     void clearEdgesData(Edge[] edges, AttributeColumn[] columnsToClear);
@@ -232,7 +234,7 @@ public interface AttributeColumnsController {
      * <p>Counts the number of rows of a table (nodes or edges table) and returns the result.</p>
      * <p>Uses <code>GraphElementsController</code> <code>getNodesCount</code> and <code>getEdgesCount</code> to calculate the result.</p>
      * @param table
-     * @return
+     * @return the number of rows in <code>table</code>
      */
     int getTableRowsCount(AttributeTable table);
 

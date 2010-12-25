@@ -110,3 +110,15 @@ msgstr "Data table configuration:"
 
 msgid "ConfigurationPanel.timeIntervalsGraphicsCheckBox.text"
 msgstr "Show time intervals graphics"
+
+msgid "DataTableTopComponent.availableColumnsButton.toolTipText"
+msgstr "Configure available columns"
+
+msgid "AvailableColumnsPanel.title"
+msgstr "Available columns settings"
+
+msgid "AvailableColumnsPanel.descriptionLabel.text"
+msgstr "Choose the columns that should be available:"
+
+msgid "AvailableColumnsPanel.maximum-available-columns.info"
+msgstr "Maximum number of available columns reached"

@@ -1,6 +1,7 @@
 /*
  * Copyright 2008-2010 Gephi
  * Authors : Cezary Bartosiak
+ *           Mathieu Bastian <mathieu.bastian@gephi.org>
  * Website : http://www.gephi.org
  *
  * This file is part of Gephi.
@@ -23,8 +24,11 @@ package org.gephi.dynamic.api;
 import java.util.EventListener;
 
 /**
+ * Listener for the dynamicModel.
  *
+ * @author Cezary Bartosiak
  * @author Mathieu Bastian
+ * @see DynamicModelEvent
  */
 public interface DynamicModelListener extends EventListener {
 

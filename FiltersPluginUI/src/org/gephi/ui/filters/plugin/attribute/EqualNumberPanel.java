@@ -17,11 +17,12 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.filters.plugin.attribute;
 
 import java.text.DecimalFormat;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.filters.plugin.attribute.AttributeEqualBuilder.EqualNumberFilter;
@@ -49,46 +50,67 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
         }
     }
 
-    public void setup(EqualNumberFilter filter) {
-        this.filter = filter;
-        this.setToolTipText(filter.getName() + " '" + filter.getColumn().getTitle() + "'");
-        Number match = filter.getMatch();
-        Number stepSize = null;
-        Comparable min = (Comparable) filter.getMinimun();
-        Comparable max = (Comparable) filter.getMaximum();
-        switch (filter.getColumn().getType()) {
-            case DOUBLE:
-                match = (match != null ? match : new Double((Double)min));
-                stepSize = new Double(.1);
-                break;
-            case FLOAT:
-                match = (match != null ? match : new Float((Float)min));
-                stepSize = new Float(.1f);
-                break;
-            case LONG:
-                match = (match != null ? match : new Long((Long)min));
-                stepSize = new Long(1l);
-                break;
-            case INT:
-                match = (match != null ? match : new Integer((Integer)min));
-                stepSize = 1;
-                break;
-            default:
-                throw new IllegalArgumentException("Column must be number");
-        }
-        if (min.equals(Double.NEGATIVE_INFINITY) || min.equals(Integer.MIN_VALUE)) {
-            minLabel.setText("");
-            maxLabel.setText("");
-        } else {
-            DecimalFormat df = new DecimalFormat();
-            df.setMaximumFractionDigits(5);
-            minLabel.setText(df.format(min));
-            maxLabel.setText(df.format(max));
-        }
+    public void setup(EqualNumberFilter f) {
+        this.filter = f;
+        new Thread(new Runnable() {
 
-        SpinnerNumberModel model = new SpinnerNumberModel(match, min, max, stepSize);
-        valueSpinner.setModel(model);
-        model.addChangeListener(WeakListeners.change(this, model));
+            public void run() {
+                setToolTipText(filter.getName() + " '" + filter.getColumn().getTitle() + "'");
+                Number match = filter.getMatch();
+                Number stepSize = null;
+                final Comparable min = (Comparable) filter.getMinimun();
+                final Comparable max = (Comparable) filter.getMaximum();
+                switch (filter.getColumn().getType()) {
+                    case DOUBLE:
+                        match = (match != null ? match : new Double((Double) min));
+                        stepSize = new Double(.1);
+                        break;
+                    case FLOAT:
+                        match = (match != null ? match : new Float((Float) min));
+                        stepSize = new Float(.1f);
+                        break;
+                    case LONG:
+                        match = (match != null ? match : new Long((Long) min));
+                        stepSize = new Long(1l);
+                        break;
+                    case INT:
+                        match = (match != null ? match : new Integer((Integer) min));
+                        stepSize = 1;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Column must be number");
+                }
+                Number minNumber = (Number) min;
+                Number maxNumber = (Number) max;
+                if (match.doubleValue() < minNumber.doubleValue()) {
+                    match = minNumber;
+                    filter.getProperties()[1].setValue(minNumber);
+                } else if (match.doubleValue() > maxNumber.doubleValue()) {
+                    match = maxNumber;
+                    filter.getProperties()[1].setValue(maxNumber);
+                }
+
+                final SpinnerNumberModel model = new SpinnerNumberModel(match, min, max, stepSize);
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        if (min.equals(Double.NEGATIVE_INFINITY) || min.equals(Integer.MIN_VALUE)) {
+                            minLabel.setText("");
+                            maxLabel.setText("");
+                        } else {
+                            DecimalFormat df = new DecimalFormat();
+                            df.setMaximumFractionDigits(5);
+                            minLabel.setText(df.format(min));
+                            maxLabel.setText(df.format(max));
+                        }
+
+
+                        valueSpinner.setModel(model);
+                        model.addChangeListener(WeakListeners.change(EqualNumberPanel.this, model));
+                    }
+                });
+            }
+        }).start();
     }
 
     /** This method is called from within the constructor to

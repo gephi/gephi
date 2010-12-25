@@ -23,3 +23,9 @@ msgstr "Depth:"
 
 msgid "EgoPanel.okButton.text"
 msgstr "OK"
+
+msgid "EgoPanel.withSelfCheckbox.text"
+msgstr "With self"
+
+msgid "EgoPanel.nodeIdTextField.toolTipText"
+msgstr "Set node's ID or LABEL"

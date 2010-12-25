@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.serialization;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -195,6 +195,8 @@ public class AttributeModelSerializer {
         }
         if (!table.hasColumn(title)) {
             table.addColumn(id, title, type, origin, defaultValue);
+        } else {
+            table.replaceColumn(table.getColumn(title), id, title, type, origin, defaultValue);
         }
     }
 }

@@ -30,6 +30,7 @@ import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphViewImpl;
 import org.gephi.graph.dhns.edge.AbstractEdge;
 import org.gephi.graph.dhns.edge.MixedEdgeImpl;
+import org.gephi.graph.dhns.edge.iterators.BiEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeAndMetaEdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeIterator;
 import org.gephi.graph.dhns.edge.iterators.EdgeNodeIterator;
@@ -203,6 +204,23 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
         return count;
     }
 
+    public int getTotalDegree(Node node) {
+        readLock();
+        AbstractNode absNode = checkNode(node);
+        int count = 0;
+        MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
+        for (; itr.hasNext();) {
+            AbstractEdge edge = itr.next();
+            if (edge.isSelfLoop()) {
+                count++;
+            }
+            count++;
+        }
+        readUnlock();
+        count += absNode.getEnabledInDegree() + absNode.getEnabledOutDegree() - absNode.getEnabledMutualDegree();
+        return count;
+    }
+
     public EdgeIterable getMetaEdges() {
         readLock();
         return dhns.newEdgeIterable(new MetaEdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), true));
@@ -217,6 +235,14 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
         readLock();
         AbstractNode absNode = checkNode(node);
         return dhns.newEdgeIterable(new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true));
+    }
+
+    public EdgeIterable getEdgesAndMetaEdges(Node node) {
+        readLock();
+        AbstractNode absNode = checkNode(node);
+        EdgeNodeIterator std = new EdgeNodeIterator(absNode, EdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true, enabledNodePredicate, Tautology.instance);
+        MetaEdgeNodeIterator meta = new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
+        return dhns.newEdgeIterable(new BiEdgeIterator(std, meta));
     }
 
     public MetaEdge getMetaEdge(Node node1, Node node2) {

@@ -46,7 +46,7 @@ public final class PropertiesAssociations implements Serializable {
 
     public void addEdgePropertyAssociation(EdgeProperties property, String title) {
         PropertyAssociation<EdgeProperties> association = new PropertyAssociation<EdgeProperties>(property, title);
-        if (edgePropertyAssociations.contains(association)) {
+        /*if (edgePropertyAssociations.contains(association)) {
             return;
         }
         //Avoid any double
@@ -57,13 +57,13 @@ public final class PropertiesAssociations implements Serializable {
             } else if (p.getProperty().equals(association.getProperty())) {
                 itr.remove();
             }
-        }
+        }*/
         edgePropertyAssociations.add(association);
     }
 
     public void addNodePropertyAssociation(NodeProperties property, String title) {
         PropertyAssociation<NodeProperties> association = new PropertyAssociation<NodeProperties>(property, title);
-        if (nodePropertyAssociations.contains(association)) {
+        /*if (nodePropertyAssociations.contains(association)) {
             return;
         }
         //Avoid any double
@@ -74,7 +74,7 @@ public final class PropertiesAssociations implements Serializable {
             } else if (p.getProperty().equals(association.getProperty())) {
                 itr.remove();
             }
-        }
+        }*/
         nodePropertyAssociations.add(association);
     }
 

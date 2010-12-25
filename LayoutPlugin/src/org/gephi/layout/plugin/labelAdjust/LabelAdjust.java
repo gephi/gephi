@@ -109,6 +109,7 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         }
 
         if (correctNodes.isEmpty()) {
+            graph.readUnlock();
             return;
         }
 

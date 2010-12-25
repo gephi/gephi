@@ -17,14 +17,13 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.filters.plugin.graph;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import javax.swing.DefaultComboBoxModel;
 import org.gephi.filters.plugin.graph.EgoBuilder.EgoFilter;
 
 /**
@@ -61,6 +60,15 @@ public class EgoPanel extends javax.swing.JPanel {
                 }
             }
         });
+
+        withSelfCheckbox.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                if (!egoFilter.isSelf() == withSelfCheckbox.isSelected()) {
+                    egoFilter.getProperties()[2].setValue(withSelfCheckbox.isSelected());
+                }
+            }
+        });
     }
 
     public void setup(EgoFilter egoFilter) {
@@ -73,6 +81,8 @@ public class EgoPanel extends javax.swing.JPanel {
         } else {
             depthComboBox.setSelectedIndex(depth - 1);
         }
+
+        withSelfCheckbox.setSelected(egoFilter.isSelf());
     }
 
     /** This method is called from within the constructor to
@@ -89,10 +99,12 @@ public class EgoPanel extends javax.swing.JPanel {
         labelDepth = new javax.swing.JLabel();
         depthComboBox = new javax.swing.JComboBox();
         okButton = new javax.swing.JButton();
+        withSelfCheckbox = new javax.swing.JCheckBox();
 
         labelNodeId.setText(org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.labelNodeId.text")); // NOI18N
 
         nodeIdTextField.setText(org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.nodeIdTextField.text")); // NOI18N
+        nodeIdTextField.setToolTipText(org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.nodeIdTextField.toolTipText")); // NOI18N
 
         labelDepth.setText(org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.labelDepth.text")); // NOI18N
 
@@ -100,6 +112,8 @@ public class EgoPanel extends javax.swing.JPanel {
 
         okButton.setText(org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.okButton.text")); // NOI18N
         okButton.setMargin(new java.awt.Insets(2, 7, 2, 7));
+
+        withSelfCheckbox.setText(org.openide.util.NbBundle.getMessage(EgoPanel.class, "EgoPanel.withSelfCheckbox.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -112,6 +126,7 @@ public class EgoPanel extends javax.swing.JPanel {
                     .addComponent(labelDepth))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(withSelfCheckbox)
                     .addComponent(depthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(nodeIdTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
@@ -131,6 +146,8 @@ public class EgoPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(depthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelDepth))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(withSelfCheckbox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -140,5 +157,6 @@ public class EgoPanel extends javax.swing.JPanel {
     private javax.swing.JLabel labelNodeId;
     private javax.swing.JTextField nodeIdTextField;
     private javax.swing.JButton okButton;
+    private javax.swing.JCheckBox withSelfCheckbox;
     // End of variables declaration//GEN-END:variables
 }

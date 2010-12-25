@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.filters;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.gephi.filters.api.FilterModel;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
@@ -75,13 +74,11 @@ public class FilterAutoRefreshor extends Thread implements GraphListener {
     public void graphChanged(GraphEvent event) {
         if (event.getSource().isMainView() && event.is(GraphEvent.EventType.ADD_EDGES,
                 GraphEvent.EventType.ADD_NODES,
-                GraphEvent.EventType.CLEAR_EDGES,
-                GraphEvent.EventType.CLEAR_NODES,
                 GraphEvent.EventType.MOVE_NODES,
                 GraphEvent.EventType.REMOVE_EDGES,
                 GraphEvent.EventType.REMOVE_NODES)) {
             refresh.set(true);
-            System.out.println("set refresh true");
+            //System.out.println("set refresh true");
         }
     }
 

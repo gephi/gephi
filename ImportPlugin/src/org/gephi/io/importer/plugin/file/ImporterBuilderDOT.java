@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.plugin.file;
 
 import org.gephi.io.importer.api.FileType;
@@ -45,11 +45,11 @@ public final class ImporterBuilderDOT implements FileImporterBuilder {
     }
 
     public FileType[] getFileTypes() {
-        FileType ft = new FileType(".dot", NbBundle.getMessage(getClass(), "fileType_DOT_Name"));
+        FileType ft = new FileType(new String[]{".dot", ".gv"}, NbBundle.getMessage(getClass(), "fileType_GraphViz_Name"));
         return new FileType[]{ft};
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.getExt().equalsIgnoreCase("dot");
+        return fileObject.getExt().equalsIgnoreCase("dot") || fileObject.getExt().equalsIgnoreCase("gv");
     }
 }

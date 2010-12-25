@@ -23,3 +23,6 @@ msgstr "Timeline"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Timeline UI"
+
+msgid "TimelineTopComponent.closeButton.toolTipText"
+msgstr "Close the Timeline"

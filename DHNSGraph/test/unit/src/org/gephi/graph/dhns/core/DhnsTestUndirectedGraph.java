@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
 import java.util.HashMap;
@@ -233,7 +233,7 @@ public class DhnsTestUndirectedGraph {
         for (Edge e : graphGlobal.getEdges()) {
             Node s = e.getSource();
             Node t = e.getTarget();
-            Edge ed = edgeMap.get(s.getId() + "-" + t.getId());
+            Edge ed = edgeMap.get((s.getId() - 1) + "-" + (t.getId() - 1));
             assertSame("edge iterator", e, ed);
             System.out.print("#" + s.getId() + "-" + t.getId() + " ");
             actual[i++] = e;
@@ -255,7 +255,7 @@ public class DhnsTestUndirectedGraph {
         for (Edge e : graphGlobal.getEdges()) {
             Node s = e.getSource();
             Node t = e.getTarget();
-            Edge ed = edgeMap.get(s.getId() + "-" + t.getId());
+            Edge ed = edgeMap.get((s.getId() - 1) + "-" + (s.getId() - 1));
             assertSame("edge iterator", e, ed);
             System.out.print("#" + s.getId() + "-" + t.getId() + " ");
             actual[i++] = e;

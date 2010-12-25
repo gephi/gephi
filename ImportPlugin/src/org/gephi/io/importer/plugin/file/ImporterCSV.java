@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Sebastien Heymann <sebastien.heymann@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -17,14 +17,15 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.plugin.file;
 
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.ImportUtils;
@@ -37,7 +38,7 @@ import org.gephi.utils.progress.ProgressTicket;
 
 /**
  *
- * @author Mathieu Bastian
+ * @author Mathieu Bastian, Sebastien Heymann
  */
 public class ImporterCSV implements FileImporter, LongTask {
 
@@ -73,28 +74,108 @@ public class ImporterCSV implements FileImporter, LongTask {
 
         Progress.switchToDeterminate(progressTicket, lines.size());
 
-        String SEPARATOR = ",;|";
-        for (String line : lines) {
-            if (cancel) {
-                break;
-            }
-            StringTokenizer tokenizer = new StringTokenizer(line, SEPARATOR);
-            String source = null;
-            String target;
-            for (int i = 0; tokenizer.hasMoreElements(); i++) {
-                if (i == 0) {
-                    source = tokenizer.nextToken();
-                } else {
-                    target = tokenizer.nextToken();
-                    addEdge(source, target);
+        //Magix regex
+        Pattern pattern = Pattern.compile("(?<=(?:,|;|\\s|^)\")(.*?)(?=(?<=(?:[^\\\\]))\",|;|\"\\s|\"$)|(?<=(?:,|;|\\s|^)')(.*?)(?=(?<=(?:[^\\\\]))',|;|'\\s|'$)|(?<=(?:,|;|\\s|^))(?=[^'\"])(.*?)(?=(?:,|;|\\s|$))|(?<=,|;)($)");
+
+        if (lines.get(0).startsWith(";")) { //Matrix
+            //Fill the Labels array
+            String line0 = lines.get(0);
+            line0 = line0.substring(1, line0.length());
+            lines.remove(0);
+            Matcher m = pattern.matcher(line0); //Remove the first ";"
+            List<String> labels = new ArrayList<String>();
+            while (m.find()) {
+                int start = m.start();
+                int end = m.end();
+                if (start != end) {
+                    String data = line0.substring(start, end);
+                    data = data.trim();
+                    if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                        labels.add(data);
+                    }
                 }
             }
 
-            Progress.progress(progressTicket);
+            int size = lines.size();
+            if (size != labels.size()) {
+                throw new Exception("Inconsistent number of matrix lines compared to the number of labels.");
+            }
+
+            for (int i = 0; i < size; i++) {
+                if (cancel) {
+                    return;
+                }
+                String line = lines.get(i);
+                m = pattern.matcher(line);
+                int count = -1;
+                String sourceID = "";
+                while (m.find()) {
+                    int start = m.start();
+                    int end = m.end();
+                    if (start != end) {
+                        String data = line.substring(start, end);
+                        data = data.trim();
+                        if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                            if (count == -1) {
+                                sourceID = data;
+                                addNode(sourceID, labels.get(i));
+                            } else if (!data.equals("0")) {
+                                //Create Edge
+                                addEdge(sourceID, labels.get(count), Float.parseFloat(data));
+                            }
+                        }
+                    }
+                    count++;
+                }
+                Progress.progress(progressTicket);      //Progress
+            }
+        } else { //Edge or Adjacency list
+            Matcher m;
+            for (String line : lines) {
+                if (cancel) {
+                    return;
+                }
+                m = pattern.matcher(line);
+                int count = 0;
+                String sourceID = "";
+                while (m.find()) {
+                    int start = m.start();
+                    int end = m.end();
+                    if (start != end) {
+                        String data = line.substring(start, end);
+                        data = data.trim();
+                        if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
+                            if (count == 0) {
+                                sourceID = data;
+                            } else {
+                                //Create Edge
+                                addEdge(sourceID, data);
+                            }
+                        }
+                    }
+                    count++;
+                }
+                Progress.progress(progressTicket);      //Progress
+            }
+        }
+
+    }
+
+    private void addNode(String id, String label) {
+        NodeDraft node;
+        if (!container.nodeExists(id)) {
+            node = container.factory().newNodeDraft();
+            node.setId(id);
+            node.setLabel(label);
+            container.addNode(node);
         }
     }
 
     private void addEdge(String source, String target) {
+        addEdge(source, target, 1);
+    }
+
+    private void addEdge(String source, String target, float weight) {
         NodeDraft sourceNode;
         if (!container.nodeExists(source)) {
             sourceNode = container.factory().newNodeDraft();
@@ -118,7 +199,7 @@ public class ImporterCSV implements FileImporter, LongTask {
             edge.setTarget(targetNode);
             container.addEdge(edge);
         } else {
-            edge.setWeight(edge.getWeight() + 1f);
+            edge.setWeight(edge.getWeight() + weight);
         }
     }
 

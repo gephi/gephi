@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.layout;
 
 import org.gephi.graph.api.GraphController;
@@ -65,6 +65,10 @@ public class LayoutControllerImpl implements LayoutController {
             }
 
             public void close(Workspace workspace) {
+                LayoutModelImpl layoutModel = workspace.getLookup().lookup(LayoutModelImpl.class);
+                if (layoutModel != null) {
+                    layoutModel.getExecutor().cancel();
+                }
             }
 
             public void disable() {
@@ -146,6 +150,9 @@ public class LayoutControllerImpl implements LayoutController {
 
         public void setProgressTicket(ProgressTicket progressTicket) {
             this.progressTicket = progressTicket;
+            if (layout instanceof LongTask) {
+                ((LongTask) layout).setProgressTicket(progressTicket);
+            }
         }
     }
 }

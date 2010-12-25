@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.desktop.perspective
 OpenIDE-Module-Layer: org/gephi/desktop/perspective/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/perspective/Bundle.properties

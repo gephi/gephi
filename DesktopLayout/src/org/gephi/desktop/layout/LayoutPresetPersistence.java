@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.layout;
 
 import java.io.InputStream;
@@ -152,8 +152,10 @@ public class LayoutPresetPersistence {
             for (LayoutProperty p : layout.getProperties()) {
                 try {
                     Object value = p.getProperty().getValue();
-                    propertyNames.add(p.getProperty().getName());
-                    propertyValues.add(value);
+                    if (value != null) {
+                        propertyNames.add(p.getProperty().getName());
+                        propertyValues.add(value);
+                    }
                 } catch (Exception e) {
                 }
             }
