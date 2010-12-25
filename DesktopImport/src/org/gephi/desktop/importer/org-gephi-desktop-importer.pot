@@ -62,6 +62,15 @@ msgstr ""
 msgid "ReportPanel.autoscaleCheckbox.text"
 msgstr "Auto-scale"
 
+msgid "DesktopImportControllerUI.spigotSource"
+msgstr "Spigot {0}"
+
+msgid "DesktopImportControllerUI.streamSource"
+msgstr "Stream {0}"
+
+msgid "DesktopImportControllerUI.taskName"
+msgstr "Import {0}"
+
 msgid "DesktopImportControllerUI.database.ui.dialog.title"
 msgstr "Database settings"
 

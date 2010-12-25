@@ -39,6 +39,9 @@ msgstr "Properties..."
 msgid "CTL_NewWorkspace"
 msgstr "New workspace"
 
+msgid "CTL_DuplicateWorkspace"
+msgstr "Duplicate workspace"
+
 msgid "CTL_DeleteWorkspace"
 msgstr "Delete workspace"
 

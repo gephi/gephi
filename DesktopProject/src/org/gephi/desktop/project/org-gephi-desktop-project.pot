@@ -23,8 +23,8 @@ msgstr "\"Close Project\""
 
 msgid "CloseProject_confirm_message"
 msgstr ""
-"<html><b>Do you want to save your project?</b><br><font size=\"-2"
-"\">Modifications will be lost if you don't save them.</html>"
+"<html><b>Do you want to save your project?</b><br><font size="
+"\"-2\">Modifications will be lost if you don't save them.</html>"
 
 msgid "CloseProject_confirm_save"
 msgstr "Save"
@@ -66,7 +66,7 @@ msgid "OpenFile_filechooser_graphfilter"
 msgstr "Graph Files"
 
 msgid "OpenFile_filechooser_zipfilter"
-msgstr "Archived ZIP Files"
+msgstr "Archived Files"
 
 msgid "ProjectControllerUI.error.open"
 msgstr ""

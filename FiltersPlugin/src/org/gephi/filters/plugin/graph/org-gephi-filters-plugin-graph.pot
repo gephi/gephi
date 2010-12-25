@@ -52,3 +52,9 @@ msgstr "Giant Component"
 
 msgid "GiantComponentBuilder.description"
 msgstr "Keep only nodes in the giant component (the component with most nodes)"
+
+msgid "NeighborsBuilder.name"
+msgstr "Neighbors Network"
+
+msgid "NeighborsBuilder.description"
+msgstr "Keep neighbors at depth 1, 2, 3 or Max from the current graph."

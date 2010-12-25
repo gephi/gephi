@@ -29,3 +29,9 @@ msgstr "With self"
 
 msgid "EgoPanel.nodeIdTextField.toolTipText"
 msgstr "Set node's ID or LABEL"
+
+msgid "NeighborsPanel.labelDepth.text"
+msgstr "Depth:"
+
+msgid "NeighborsPanel.withSelfCheckbox.text"
+msgstr "With self"

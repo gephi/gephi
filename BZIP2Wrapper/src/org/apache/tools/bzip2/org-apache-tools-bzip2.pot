@@ -15,29 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "OpenIDE-Module-Long-Description"
+msgstr "More info: http://www.kohsuke.org/bzip2/"
+
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Contextual information about current graph"
-
-msgid "CTL_ContextAction"
-msgstr "Context"
-
-msgid "CTL_ContextTopComponent"
-msgstr "Context"
-
-msgid "ContextPanel.labelNodes.text"
-msgstr "Nodes:"
-
-msgid "ContextPanel.labelEdges.text"
-msgstr "Edges:"
-
-msgid "ContextPanel.graphType.directed"
-msgstr "Directed Graph"
-
-msgid "ContextPanel.graphType.undirected"
-msgstr "Undirected Graph"
-
-msgid "ContextPanel.graphType.mixed"
-msgstr "Mixed Graph"
-
-msgid "ContextPanel.visible"
-msgstr "Visible"
+msgstr "bzip2 library from Apache Ant"

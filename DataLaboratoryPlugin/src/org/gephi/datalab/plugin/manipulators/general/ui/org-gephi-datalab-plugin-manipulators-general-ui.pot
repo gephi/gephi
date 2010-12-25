@@ -93,6 +93,9 @@ msgstr "{0} ocurrences were replaced"
 msgid "SearchReplaceUI.column"
 msgstr "Column: ''{0}''"
 
+msgid "SearchReplaceUI.allColumns"
+msgstr "--All columns--"
+
 msgid "ImportCSVUIWizardAction.name"
 msgstr "Import CSV file to a table"
 
@@ -191,3 +194,6 @@ msgstr "Create new node when source or target node id does not exist"
 
 msgid "SearchReplaceUI.regexReplaceCheckBox.text"
 msgstr "Regular expression replacement"
+
+msgid "SearchReplaceUI.columnsToSearchLabel.text"
+msgstr "Columns to search/replace:"

@@ -36,8 +36,8 @@ msgstr "TLP Files"
 msgid "fileType_CSV_Name"
 msgstr "CSV Files"
 
-msgid "fileType_DOT_Name"
-msgstr "DOT Files (GraphViz)"
+msgid "fileType_GraphViz_Name"
+msgstr "GraphViz Files"
 
 msgid "fileType_DL_Name"
 msgstr "DL Files (UCINET)"
@@ -67,6 +67,12 @@ msgid "importerGDF_error_dataformat7"
 msgstr ""
 "Line ''{0}'' has more columns than defined in header. Please verify the "
 "number of comas."
+
+msgid "importerGDF_error_dataformat8"
+msgstr "The node column ''{0}'' can't be added because it already exists"
+
+msgid "importerGDF_error_dataformat9"
+msgstr "The edge column ''{0}'' can't be added because it already exists"
 
 msgid "importerTPL_error_dataformat1"
 msgstr "Bad edge formatting at line {0}."
@@ -364,3 +370,6 @@ msgstr "Unable to parse edge at line {0}"
 
 msgid "importerDOT_error_posunreachable"
 msgstr "Unable to parse position of node at line {0}. Must be pos=\"x, y\"."
+
+msgid "importerDOT_error_weightunreachable"
+msgstr "Unable to parse edge's weight at line {0}"

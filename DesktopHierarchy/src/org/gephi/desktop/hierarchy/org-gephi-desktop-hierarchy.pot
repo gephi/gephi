@@ -24,6 +24,12 @@ msgstr "Hierarchy"
 msgid "CTL_HierarchyTopComponent"
 msgstr "Hierarchy"
 
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Visualization addon for hierarchy navigation"
+
+msgid "HierarchyAddonButton.title"
+msgstr "Hierarchy"
+
 msgid "HierarchyControlPanel.showTreeLabel.toolTipText"
 msgstr "Show Tree"
 
@@ -79,9 +85,6 @@ msgstr ""
 "Meta-edges are created from the aggregation of regular edges, the weight  of "
 "meta edges can be the sum or the average of the edges' weight. Note the "
 "weight is not changed on existing edges if you change the parameter."
-
-msgid "OpenIDE-Module-Short-Description"
-msgstr "Visualization addon for hierarchy navigation"
 
 msgid "HierarchyControlPanel.labelAuto.text"
 msgstr "Auto meta-edges creation"
