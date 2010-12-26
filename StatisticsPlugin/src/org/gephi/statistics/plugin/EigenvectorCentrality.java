@@ -119,7 +119,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
         execute(graph, attributeModel);
     }
 
-    private void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+    public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
 
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn eigenCol = nodeTable.getColumn(EIGENVECTOR);

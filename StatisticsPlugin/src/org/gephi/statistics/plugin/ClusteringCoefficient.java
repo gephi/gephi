@@ -222,7 +222,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         execute(hgraph, attributeModel);
     }
 
-    private void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+    public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
 
         triangles(hgraph, attributeModel);

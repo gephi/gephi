@@ -104,7 +104,7 @@ public class Hits implements Statistics, LongTask {
         execute(graph, attributeModel);
     }
 
-    private void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+    public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
         hgraph.readLock();
 
         int N = hgraph.getNodeCount();

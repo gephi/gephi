@@ -166,7 +166,7 @@ public class ConnectedComponents implements Statistics, LongTask {
         }
     }
 
-    private void top_tarjans(HierarchicalDirectedGraph hgraph, AttributeModel attributeModel) {
+    public void top_tarjans(HierarchicalDirectedGraph hgraph, AttributeModel attributeModel) {
         count = 1;
         stronglyCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();

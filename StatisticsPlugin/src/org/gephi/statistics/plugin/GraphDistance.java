@@ -116,7 +116,7 @@ public class GraphDistance implements Statistics, LongTask {
         execute(graph, attributeModel);
     }
 
-    private void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+    public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn eccentricityCol = nodeTable.getColumn(ECCENTRICITY);

@@ -369,7 +369,7 @@ public class Modularity implements Statistics, LongTask {
         execute(hgraph, attributeModel);
     }
 
-    private void execute(HierarchicalUndirectedGraph hgraph, AttributeModel attributeModel) {
+    public void execute(HierarchicalUndirectedGraph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
         Progress.start(progress);
         Random rand = new Random();

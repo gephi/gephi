@@ -104,7 +104,7 @@ public class PageRank implements Statistics, LongTask {
         execute(graph, attributeModel);
     }
 
-    private void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+    public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
 
         hgraph.readLock();

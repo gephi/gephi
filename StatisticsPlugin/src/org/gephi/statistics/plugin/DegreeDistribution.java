@@ -135,7 +135,7 @@ public class DegreeDistribution implements Statistics, LongTask {
         execute(graph, attributeModel);
     }
 
-    private void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
+    public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
         //Mark this as not yet canceled.
         isCanceled = false;
 
