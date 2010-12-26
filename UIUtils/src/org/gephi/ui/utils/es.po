@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-06-03 10:40+0000\n"
+"PO-Revision-Date: 2010-12-26 00:05+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-10-03 04:58+0000\n"
+"X-Launchpad-Export-Date: 2010-12-26 04:53+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "OpenIDE-Module-Long-Description"
@@ -24,58 +24,58 @@ msgid "OpenIDE-Module-Short-Description"
 msgstr "Clases de utilidades para la interfaz de usuario"
 
 msgid "ColumnTitleValidator.title.empty"
-msgstr ""
+msgstr "El título de la columna no puede estar vacío"
 
 msgid "ColumnTitleValidator.title.repeated"
-msgstr ""
+msgstr "El título de la columna no puede estar repetido en la misma tabla"
 
 msgid "ChartsUtils.report.header"
-msgstr ""
+msgstr "<h1>Informe de estadísticas para ''{0}''</h1>"
 
 msgid "ChartsUtils.report.empty"
-msgstr ""
+msgstr "No hay datos numéricos para calcular estadísticas."
 
 msgid "ChartsUtils.report.average"
-msgstr ""
+msgstr "Media"
 
 msgid "ChartsUtils.report.Q1"
-msgstr ""
+msgstr "Primer cuartil (Q1)"
 
 msgid "ChartsUtils.report.median"
-msgstr ""
+msgstr "Mediana"
 
 msgid "ChartsUtils.report.Q3"
-msgstr ""
+msgstr "Tercer cuartil (Q3)"
 
 msgid "ChartsUtils.report.IQR"
-msgstr ""
+msgstr "Rango intercuartílico (IQR)"
 
 msgid "ChartsUtils.report.sum"
-msgstr ""
+msgstr "Suma"
 
 msgid "ChartsUtils.report.min"
-msgstr ""
+msgstr "Mínimo"
 
 msgid "ChartsUtils.report.max"
-msgstr ""
+msgstr "Máximo"
 
 msgid "ChartsUtils.report.box-plot.title"
-msgstr ""
+msgstr "Diagrama de cajas"
 
 msgid "ChartsUtils.report.box-plot.values"
-msgstr ""
+msgstr "Valores"
 
 msgid "ChartsUtils.report.box-plot.values-range"
-msgstr ""
+msgstr "Rango de valores"
 
 msgid "ChartsUtils.report.scatter-plot.title"
-msgstr ""
+msgstr "Diagrama de dispersión"
 
 msgid "ChartsUtils.report.scatter-plot.xLabel"
-msgstr ""
+msgstr "Valores"
 
 msgid "ChartsUtils.report.histogram.title"
-msgstr ""
+msgstr "Histograma"
 
 msgid "ChartsUtils.report.histogram.yLabel"
-msgstr ""
+msgstr "Frecuencia"

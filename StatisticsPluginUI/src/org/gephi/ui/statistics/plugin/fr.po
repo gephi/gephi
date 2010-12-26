@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-09-03 20:13+0000\n"
+"PO-Revision-Date: 2010-12-25 20:06+0000\n"
 "Last-Translator: Sébastien Heymann <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-10-03 04:58+0000\n"
+"X-Launchpad-Export-Date: 2010-12-26 04:53+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "GraphDistancePanel.directedRadioButton.text"
@@ -169,43 +169,43 @@ msgstr ""
 "élevé. Cela augmente cependant la durée de calcul."
 
 msgid "ConnectedComponentPanel.header.description"
-msgstr ""
+msgstr "Détermine le nombre de composantes connexes dans le réseau."
 
 msgid "ConnectedComponentPanel.undirectedRadioButton.text"
-msgstr ""
+msgstr "Non dirigé"
 
 msgid "ConnectedComponentPanel.directedRadioButton.text"
-msgstr ""
+msgstr "Dirigé"
 
 msgid "ConnectedComponentPanel.header.title"
-msgstr ""
+msgstr "Composantes Connexes"
 
 msgid "ConnectedComponentPanel.jLabel1.text"
-msgstr ""
+msgstr "(Détecte les composantes fortement et faiblement connexes)"
 
 msgid "ConnectedComponentPanel.jLabel2.text"
-msgstr ""
+msgstr "(Détecte les composantes faiblement connexes uniquement)"
 
 msgid "EigenvectorCentralityPanel.header.description"
-msgstr ""
+msgstr "Mesure l'importance d'un noeud dans le réseau selon ses connexions."
 
 msgid "EigenvectorCentralityPanel.header.title"
-msgstr ""
+msgstr "Centralité Eigenvector"
 
 msgid "EigenvectorCentralityPanel.iterationsTextField.text"
-msgstr ""
+msgstr "Nombre d'itérations"
 
 msgid "EigenvectorCentralityPanel.labeliterations.text"
-msgstr ""
+msgstr "Nombre d'itérations :"
 
 msgid "EigenvectorCentralityPanel.directedButton.text"
-msgstr ""
+msgstr "Dirigé"
 
 msgid "EigenvectorCentralityPanel.undirectedButton.text"
-msgstr ""
+msgstr "Non dirigé"
 
 msgid "GraphDistancePanel.normalizeButton.text"
-msgstr ""
+msgstr "Normalise entre [0,1]"
 
 #~ msgid "ClusteringCoefficientPanel.bruteRadioButton.text"
 #~ msgstr "Force brute"

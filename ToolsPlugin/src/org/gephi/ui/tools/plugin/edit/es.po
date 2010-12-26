@@ -8,62 +8,62 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-06-03 10:39+0000\n"
+"PO-Revision-Date: 2010-12-25 23:58+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-10-03 04:58+0000\n"
+"X-Launchpad-Export-Date: 2010-12-26 04:53+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "CTL_EditToolTopComponent"
 msgstr "Edición"
 
 msgid "EditNodes.multiple.elements"
-msgstr ""
+msgstr "Varios nodos"
 
 msgid "EditNodes.properties.text"
-msgstr ""
+msgstr "{0} - Propiedades"
 
 msgid "EditNodes.attributes.text"
-msgstr ""
+msgstr "{0} - Atributos"
 
 msgid "EditNodes.properties.text.multiple"
-msgstr ""
+msgstr "Varios nodos - Propiedades"
 
 msgid "EditNodes.attributes.text.multiple"
-msgstr ""
+msgstr "Varios nodos - Atributos"
 
 msgid "EditNodes.size.text"
-msgstr ""
+msgstr "Tamaño"
 
 msgid "EditNodes.position.text"
-msgstr ""
+msgstr "Posición ({0})"
 
 msgid "EditNodes.color.text"
-msgstr ""
+msgstr "Color"
 
 msgid "EditEdges.multiple.elements"
-msgstr ""
+msgstr "Varias aristas"
 
 msgid "EditEdges.properties.text"
-msgstr ""
+msgstr "{0} - Propiedades"
 
 msgid "EditEdges.attributes.text"
-msgstr ""
+msgstr "{0} - Atributos"
 
 msgid "EditEdges.properties.text.multiple"
-msgstr ""
+msgstr "Varias aristas - Propiedades"
 
 msgid "EditEdges.attributes.text.multiple"
-msgstr ""
+msgstr "Varias aristas - Atributos"
 
 msgid "EditEdges.size.text"
-msgstr ""
+msgstr "Tamaño"
 
 msgid "EditEdges.position.text"
-msgstr ""
+msgstr "Posición ({0})"
 
 msgid "EditEdges.color.text"
-msgstr ""
+msgstr "Color"

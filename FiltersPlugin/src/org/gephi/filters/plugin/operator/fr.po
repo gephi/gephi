@@ -1,0 +1,55 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-25 18:56+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-26 04:53+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "INTERSECTIONBuilder.name"
+msgstr "INTERSECTION"
+
+msgid "INTERSECTIONBuilder.description"
+msgstr ""
+"Opérateur ET sur les sous-requêtes. Garde les noeuds et liens présents dans "
+"les résultats de toutes les sous-requêtes."
+
+msgid "UNIONBuilder.name"
+msgstr "UNION"
+
+msgid "UNIONBuilder.description"
+msgstr ""
+"Opérateur OU sur les sous-requêtes. Garde les noeuds et liens présents dans "
+"les résultats d'au moins une sous-requête."
+
+msgid "NOTBuilderEdge.name"
+msgstr "NON (Liens)"
+
+msgid "NOTBuilderEdge.description"
+msgstr "Opérateur NON sur un filtre de liens."
+
+msgid "NOTBuilderNode.name"
+msgstr "NON (Noeuds)"
+
+msgid "NOTBuilderNode.description"
+msgstr "Opérateur NON sur un filtre de noeuds."
+
+msgid "MASKBuilderEdge.name"
+msgstr "MASQUE (Liens)"
+
+msgid "MASKBuilderEdge.description"
+msgstr ""
+"Retourne le graphe partiel dont les liens connectent des nœuds appartenant "
+"au résultat de la sous-requête. Par exemple, garde les liens dont le degré "
+"du nœud source est > 5."

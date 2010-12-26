@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-05-02 11:30+0000\n"
+"PO-Revision-Date: 2010-12-25 17:52+0000\n"
 "Last-Translator: Sébastien Heymann <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-10-03 04:58+0000\n"
+"X-Launchpad-Export-Date: 2010-12-26 04:53+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "Actions/Window/org-gephi-desktop-hierarchy-HierarchyAction.instance"
@@ -66,40 +66,47 @@ msgid "HierarchyControlPanel.metaEdgesSettings.title"
 msgstr "Paramètres des méta-liens"
 
 msgid "HierarchyControlPanel.info.title"
-msgstr ""
+msgstr "Méta-liens"
 
 msgid "HierarchyControlPanel.info.description"
 msgstr ""
+"Les méta-liens sont des liens entre un groupe et un noeud, ou entre deux "
+"groupes. Les représentent les liens entre descendants des groupes."
 
 msgid "HierarchyControlPanel.weightinfo.title"
-msgstr ""
+msgstr "Poids des méta-liens"
 
 msgid "HierarchyControlPanel.weightinfo.description"
 msgstr ""
+"Les méta-liens sont créés par agrégation de liens. Leur poids peut être la "
+"somme ou la moyenne du poids de ces liens. Notez que le poids des liens n'en "
+"est pas affecté."
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Greffon de visualisation pour la navigation hiérarchique"
 
 msgid "HierarchyControlPanel.labelAuto.text"
-msgstr ""
+msgstr "Création auto des méta-liens"
 
 msgid "HierarchyControlPanel.labelWeight.text"
-msgstr ""
+msgstr "Poids des méta-liens :"
 
 msgid "HierarchyControlPanel.sumRadio.label"
-msgstr ""
+msgstr "Somme"
 
 msgid "HierarchyControlPanel.avgRadio.label"
-msgstr ""
+msgstr "Moyenne"
 
 msgid "HierarchyControlPanel.sumRadio.toolTipText"
-msgstr ""
+msgstr "Somme du poids des liens"
 
 msgid "HierarchyControlPanel.avgRadio.toolTipText"
-msgstr ""
+msgstr "Moyenne du poids des liens"
 
 msgid "HierarchyControlPanel.heightLabel.toolTipText"
 msgstr ""
+"Hauteur de la hiérarchie. Un graphe est hiérarchique lorsque sa valeur est "
+"supérieure à un."
 
 #~ msgid "MetaEdgesSettingsPanel.sumRadio.text"
 #~ msgstr "Somme des poids des liens"
@@ -127,3 +134,6 @@ msgstr ""
 
 #~ msgid "MetaEdgesSettingsPanel.avgRadio.text"
 #~ msgstr "Moyenne des poids des liens"
+
+#~ msgid "MetaEdgesSettingsPanel.labelBuilding.text"
+#~ msgstr "Construction"

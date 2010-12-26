@@ -1,0 +1,52 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-25 20:51+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-26 04:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Fournit les panneaux de paramètres pour les processeurs"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Fournit les panneaux de paramètres pour les processeurs"
+
+msgid "DynamicProcessorPanel.header.title"
+msgstr "Tranche temporelle"
+
+msgid "DynamicProcessorPanel.header.description"
+msgstr ""
+"Ajouter les données en tant que nouvelle tranche temporelle. Utilise "
+"l'analyse dynamique pour importer le même réseau à des moments différentes, "
+"exprimés par des dates ou des timestamps. Attention d'utiliser les mêmes "
+"identifiants de noeuds pour les reconnaître à travers différents fichiers."
+
+msgid "DynamicProcessorPanel.dateRadio.text"
+msgstr "Date"
+
+msgid "DynamicProcessorPanel.labelDate.text"
+msgstr "Sélectionnez une date"
+
+msgid "DynamicProcessorPanel.timeStampRadio.text"
+msgstr "Timestamp"
+
+msgid "DynamicProcessorPanel.labelTime.text"
+msgstr "Sélectionnez un nombre naturel ou réel"
+
+msgid "DynamicProcessorPanel.labelLastFrame.text"
+msgstr "Dernière tranche temporelle trouvée :"
+
+msgid "DynamicProcessorPanel.labelMatchingCheckbox.text"
+msgstr "Utiliser les labels en tant qu'identifiant à la place des ids"
