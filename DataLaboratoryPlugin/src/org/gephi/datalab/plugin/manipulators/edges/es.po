@@ -8,20 +8,20 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-12-26 01:13+0000\n"
+"PO-Revision-Date: 2010-12-26 19:52+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-26 04:54+0000\n"
+"X-Launchpad-Export-Date: 2010-12-27 04:43+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "OpenInEditEdgeWindow.name"
 msgstr "Editar arista"
 
 msgid "OpenInEditEdgeWindow.name.multiple"
-msgstr "Editar aristas"
+msgstr "Editar todas aristas"
 
 msgid "OpenInEditEdgeWindow.description"
 msgstr ""
@@ -44,19 +44,19 @@ msgid "SelectNodesOnTable.name"
 msgstr "Seleccionar nodos origen y destino en la tabla de nodos"
 
 msgid "DeleteEdges.name.single"
-msgstr "Borrar"
+msgstr "Eliminar"
 
 msgid "DeleteEdges.name.multiple"
-msgstr "Borrar todas"
+msgstr "Eliminar todas"
 
 msgid "DeleteEdges.confirmation.message"
 msgstr "¿Estás seguro de que quieres borrar la(s) arista(s)?"
 
 msgid "DeleteEdgesWithNodes.name.single"
-msgstr "Borrar arista con sus nodos..."
+msgstr "Eliminar arista con sus nodos..."
 
 msgid "DeleteEdgesWithNodes.name.multiple"
-msgstr "Borrar aristas con sus nodos..."
+msgstr "Eliminar aristas con sus nodos..."
 
 msgid "ClearEdgesData.name.single"
 msgstr "Borrar datos de la arista..."

@@ -1,0 +1,86 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-26 20:25+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-27 04:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "AddColumnUI.title"
+msgstr "Añadir nueva columna - Parámetros"
+
+msgid "AddColumnUI.descriptionLabel.text.nodes"
+msgstr "<html><b>Añadir nueva columna a la tabla de nodos</b><html>"
+
+msgid "AddColumnUI.descriptionLabel.text.edges"
+msgstr "<html><b>Añadir nueva columna a la tabla de aristas</b><html>"
+
+msgid "AddColumnUI.typeLabel.text"
+msgstr "Tipo de la columna:"
+
+msgid "AddColumnUI.titleLabel.text"
+msgstr "Título de la columna"
+
+msgid "MergeColumnsUI.title"
+msgstr "Mezclar columnas"
+
+msgid "MergeColumnsUI.availableColumnsLabel.text"
+msgstr "Columnas disponibles:"
+
+msgid "MergeColumnsUI.columnsToMergeLabel.text"
+msgstr "Columnas a mezclar:"
+
+msgid "MergeColumnsUI.availableStrategiesLabel.text"
+msgstr "Estrategias de mezclado disponibles:"
+
+msgid "MergeColumnsUI.description.text"
+msgstr ""
+"<html>Elige las columnas a mezclar y una estrategia de mezclado</html>"
+
+msgid "MergeColumnsUI.problems.less_than_2_columns_selected"
+msgstr "Al menos 1 columna debe ser seleccionada para mezclar"
+
+msgid "MergeColumnsUI.problems.not_executable_strategy"
+msgstr ""
+"La estrategia seleccionada no puede ser ejecutada con las columnas escogidas "
+"para mezclar"
+
+msgid "CSVExportUI.title"
+msgstr "Exportar tabla a CSV"
+
+msgid "CSVExportUI.separatorLabel.text"
+msgstr "Separador:"
+
+msgid "CSVExportUI.comma"
+msgstr "Coma"
+
+msgid "CSVExportUI.semicolon"
+msgstr "Punto y coma"
+
+msgid "CSVExportUI.space"
+msgstr "Espacio"
+
+msgid "CSVExportUI.tab"
+msgstr "Tabulador"
+
+msgid "CSVExportUI.columnsLabel.text"
+msgstr "Columnas a exportar:"
+
+msgid "CSVExportUI.charsetLabel.text"
+msgstr "Conjunto de caracteres:"
+
+msgid "CSVExportUI.descriptionLabel.text"
+msgstr ""
+"<html>La tabla va a ser exportada a un archivo CSV con el conjunto de "
+"caracteres seleccionado</html>"
