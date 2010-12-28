@@ -31,7 +31,6 @@ import org.gephi.datalab.spi.columns.AttributeColumnsManipulatorUI;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * AttributeColumnsManipulator that shows a report with statistics values and charts of a number/number list column.
