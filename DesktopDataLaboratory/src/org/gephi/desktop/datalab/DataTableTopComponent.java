@@ -298,7 +298,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     private synchronized void refreshAll() {
-        if (nodesButton.isEnabled()) {//Some workspace is selected
+        if (Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace()!=null) {//Some workspace is selected
             refreshTable();
             refreshColumnManipulators();
             refreshGeneralActionsButtons();

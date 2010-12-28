@@ -20,33 +20,31 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalab.plugin.manipulators;
 
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.datalab.plugin.manipulators.nodes.ClearNodesData;
+import org.gephi.datalab.plugin.manipulators.nodes.CopyNodeDataToOtherNodes;
 
 /**
  * Interface in common for choosing columns to manipulate.
- * Used to be able to get/set the columns to clear in the GeneralChooseColumnsUI.
+ * Used to be able to get/set the columns to copy and row (node or edge) to user in the GeneralChooseColumnsAndRowUI.
  * @author Eduardo Ramos <eduramiba@gmail.com>
- * @see ClearNodesData
+ * @see CopyNodeDataToOtherNodes
  */
-public interface GeneralColumnsChooser{
+public interface GeneralColumnsAndRowChooser extends GeneralColumnsChooser{
 
     /**
-     * Provide columns to show in the UI to be selected or not.
-     * Normally provide all table columns that can be manipulated.
-     * @return Columns to show in the GeneralChooseColumnsUI
+     * Provide rows (nodes or edges) to show in the GeneralChooseColumnsAndRowUI to be selected or not.
+     * @return Nodes or edges set to select one
      */
-    AttributeColumn[] getColumns();
+    Object[] getRows();
 
     /**
-     * The GeneralChooseColumnsUI will use this method to set the columns to finally manipulate, after the GeneralChooseColumnsUI is closed.
-     * @param columnsToClearData Columns to clear
+     * Provide initially selected node or edge in the GeneralChooseColumnsAndRowUI
+     * @return Initially selected node or edge
      */
-    void setColumns(AttributeColumn[] columnsToClearData);
+    Object getRow();
 
     /**
-     * Provide title for the GeneralChooseColumnsUI.
-     * @return Title name
+     * The GeneralChooseColumnsAndRowUI will use this method to set the row to finally manipulate, after the GeneralChooseColumnsAndRowUI is closed.
+     * @param row Selected node or edge depending on the manipulator
      */
-    String getName();
+    void setRow(Object row);
 }

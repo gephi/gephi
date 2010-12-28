@@ -477,7 +477,11 @@ public class NodeDataTable {
         @Override
         public String getDisplayName(Object o) {
             if (o instanceof ImmutableTreeNode) {
-                return ((ImmutableTreeNode) o).getNode().getNodeData().getLabel();
+                if (((ImmutableTreeNode) o).getNode().getNodeData().isFixed()) {
+                    return "¤ " + ((ImmutableTreeNode) o).getNode().getNodeData().getLabel();//UI feedback when node is settled
+                } else {
+                    return ((ImmutableTreeNode) o).getNode().getNodeData().getLabel();
+                }
             } else {
                 return o.toString();
             }
