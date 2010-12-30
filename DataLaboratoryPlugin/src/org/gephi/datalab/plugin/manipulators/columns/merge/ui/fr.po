@@ -1,0 +1,70 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-29 11:01+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-30 04:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "BooleanLogicOperationsUI.descriptionLabel.text"
+msgstr ""
+"<html><center>Opération logique entre chaque pair de colonnes</center></html>"
+
+msgid "BooleanLogicOperationsUI.titleLabel.text"
+msgstr "Titre de la nouvelle colonne :"
+
+msgid "JoinWithSeparatorUI.titleLabel.text"
+msgstr "Titre de la nouvelle colonne :"
+
+msgid "JoinWithSeparatorUI.separatorLabel.text"
+msgstr "Séparateur :"
+
+msgid "GeneralColumnTitleChooserUI.titleLabel.text"
+msgstr "Titre de la nouvelle colonne :"
+
+msgid "CreateTimeIntervalUI.startColumnLabel.text"
+msgstr "Temps de début :"
+
+msgid "CreateTimeIntervalUI.endColumnLabel.text"
+msgstr "Temps de fin :"
+
+msgid "CreateTimeIntervalUI.header.title"
+msgstr "Options du nouvel intervalle temporel"
+
+msgid "CreateTimeIntervalUI.header.description"
+msgstr ""
+"<html>Colonnes de temps de début et de fin.<br />Choisissez des valeurs par "
+"défaut pour les valeurs manquantes ou incorrectes, ou l'infini sera "
+"utilisé.</html>"
+
+msgid "CreateTimeIntervalUI.parseDatesRadioButton.text"
+msgstr "Extraire les dates"
+
+msgid "CreateTimeIntervalUI.parseNumbersRadioButton.text"
+msgstr "Extraire les nombres"
+
+msgid "CreateTimeIntervalUI.dateDefaultStartLabel.text"
+msgstr "Défaut par défaut :"
+
+msgid "CreateTimeIntervalUI.dateDefaultEndLabel.text"
+msgstr "Fin par défaut :"
+
+msgid "CreateTimeIntervalUI.dateFormatLabel.text"
+msgstr "Format temporel :"
+
+msgid "CreateTimeIntervalUI.defaultStartNumberLabel.text"
+msgstr "Début par défaut :"
+
+msgid "CreateTimeIntervalUI.defaultEndNumberLabel.text"
+msgstr "Fin par défaut :"

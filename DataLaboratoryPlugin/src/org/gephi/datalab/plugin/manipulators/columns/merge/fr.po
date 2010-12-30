@@ -1,0 +1,113 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-29 10:47+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-30 04:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "JoinWithSeparator.name"
+msgstr "Jointure avec séparateur"
+
+msgid "JoinWithSeparator.description"
+msgstr ""
+"Fusionne les valeurs de n'importe quelles colonnes avec un séparateur "
+"(optionnel) entre elles. La colonne ainsi créée est de type STRING."
+
+msgid "JoinNumberColumns.name"
+msgstr "Jointure numérique"
+
+msgid "JoinNumberColumns.description"
+msgstr "Créé une colonne de liste de nombres de type LIST_BIGDECIMAL."
+
+msgid "CreateTimeInterval.name"
+msgstr "Créer un intervalle temporel"
+
+msgid "CreateTimeInterval.description"
+msgstr ""
+"Créé un intervalle temporel pour chaque ligne. Un ou deux colonnes servent "
+"de début/fin."
+
+msgid "AverageNumber.name"
+msgstr "Calcule la moyenne"
+
+msgid "AverageNumber.description"
+msgstr ""
+"Calcule la valeur moyenne d'une colonne numérique. Créé une colonne de type "
+"BIGDECIMAL contenant le résultat."
+
+msgid "FirstQuartileNumber.name"
+msgstr "Calcule le premier quartile (Q1)"
+
+msgid "FirstQuartileNumber.description"
+msgstr ""
+"Calcule le premier quartile (Q1) d'une colonne numérique. Créé une colonne "
+"de type BIGDECIMAL contenant le résultat."
+
+msgid "MedianNumber.name"
+msgstr "Calcule la médiane"
+
+msgid "MedianNumber.description"
+msgstr ""
+"Calcule la valeur médiane d'une colonne numérique. Créé une colonne de type "
+"BIGDECIMAL contenant le résultat."
+
+msgid "ThirdQuartileNumber.name"
+msgstr "Calcule le troisième quartile (Q3)"
+
+msgid "ThirdQuartileNumber.description"
+msgstr ""
+"Calcule le troisième quartile (Q3) d'une colonne numérique. Créé une colonne "
+"de type BIGDECIMAL contenant le résultat."
+
+msgid "InterQuartileRangeNumber.name"
+msgstr "Calcule l'écart interquartile (IQR)"
+
+msgid "InterQuartileRangeNumber.description"
+msgstr ""
+"Calcule l'écart interquartile (IQR) d'une colonne numérique. Créé une "
+"colonne de type BIGDECIMAL contenant le résultat."
+
+msgid "SumNumbers.name"
+msgstr "Calcule la somme"
+
+msgid "SumNumbers.description"
+msgstr ""
+"Calcule la somme d'une colonne numérique. Créé une colonne de type "
+"BIGDECIMAL contenant le résultat."
+
+msgid "MinimumNumber.name"
+msgstr "Calcule le minimum"
+
+msgid "MinimumNumber.description"
+msgstr ""
+"Calcule le minimum d'une colonne numérique. Créé une colonne de type "
+"BIGDECIMAL contenant le résultat."
+
+msgid "MaximumNumber.name"
+msgstr "Calcule la valeur maximale"
+
+msgid "MaximumNumber.description"
+msgstr ""
+"Calcule la valeur maximale d'une colonne numérique, et créé une nouvelle "
+"colonne de type BIGDECIMAL contenant le résultat."
+
+msgid "BooleanLogicOperations.name"
+msgstr "Fusion de colonnes booléennes"
+
+msgid "BooleanLogicOperations.description"
+msgstr ""
+"Fusionne des colonnes booléennes dans une nouvelle, selon une opération "
+"logique entre chaque pair de colonnes. Les valeurs nulles sont interprétées "
+"comme fausses."
