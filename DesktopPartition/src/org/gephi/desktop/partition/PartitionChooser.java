@@ -277,7 +277,12 @@ public class PartitionChooser extends javax.swing.JPanel implements PropertyChan
     }
 
     private void refreshPartitions() {
-        partitionComboBox.setModel(getComboBoxModel());
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                partitionComboBox.setModel(getComboBoxModel());
+            }
+        });
     }
 
     private DefaultComboBoxModel getComboBoxModel() {

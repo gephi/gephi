@@ -42,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class DeleteColumn implements AttributeColumnsManipulator {
 
     public void execute(AttributeTable table, AttributeColumn column) {
-        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearColumnData.class, "ClearColumnData.confirmation.message", column.getTitle()), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearColumnData.class, "DeleteColumn.confirmation.message", column.getTitle()), getName(), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             Lookup.getDefault().lookup(AttributeColumnsController.class).deleteAttributeColumn(table, column);
             Lookup.getDefault().lookup(DataTablesController.class).selectTable(table);
         }

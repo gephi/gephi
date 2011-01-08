@@ -132,6 +132,10 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
         return view.getEdgesCountEnabled() - view.getMutualEdgesEnabled();
     }
 
+    public int getTotalEdgeCount() {
+        return getEdgeCount() + view.getMetaEdgesCountTotal() - view.getMutualMetaEdgesTotal();
+    }
+
     public int getDegree(Node node) {
         AbstractNode absNode = checkNode(node);
         int count = absNode.getEnabledInDegree() + absNode.getEnabledOutDegree() - absNode.getEnabledMutualDegree();
@@ -188,35 +192,29 @@ public class HierarchicalUndirectedGraphImpl extends HierarchicalGraphImpl imple
         return dhns.newEdgeIterable(new RangeEdgeIterator(structure, view.getViewId(), absNode, absNode, false, true, Tautology.instance, Tautology.instance));
     }
 
-    public int getMetaDegree(Node node) {
-        readLock();
-        AbstractNode absNode = checkNode(node);
-        int count = 0;
-        MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
-        for (; itr.hasNext();) {
-            AbstractEdge edge = itr.next();
-            if (edge.isSelfLoop()) {
-                count++;
+    public boolean removeMetaEdge(Edge edge) {
+        AbstractEdge absEdge = checkMetaEdge(edge);
+        boolean res = false;
+        if (!absEdge.isSelfLoop()) {
+            //Remove also mutual edge if present
+            AbstractEdge symmetricEdge = getSymmetricMetaEdge(absEdge);
+            if (symmetricEdge != null) {
+                res = view.getStructureModifier().deleteMetaEdge(symmetricEdge);
             }
-            count++;
         }
-        readUnlock();
+        res = view.getStructureModifier().deleteMetaEdge(absEdge) || res;
+        return res;
+    }
+
+    public int getMetaDegree(Node node) {
+        AbstractNode absNode = checkNode(node);
+        int count = absNode.getMetaEdgesInTree().getCount() + absNode.getMetaEdgesOutTree().getCount() - absNode.getMutualMetaEdgeDegree();
         return count;
     }
 
     public int getTotalDegree(Node node) {
-        readLock();
         AbstractNode absNode = checkNode(node);
-        int count = 0;
-        MetaEdgeNodeIterator itr = new MetaEdgeNodeIterator(absNode.getMetaEdgesOutTree(), absNode.getMetaEdgesInTree(), MetaEdgeNodeIterator.EdgeNodeIteratorMode.BOTH, true);
-        for (; itr.hasNext();) {
-            AbstractEdge edge = itr.next();
-            if (edge.isSelfLoop()) {
-                count++;
-            }
-            count++;
-        }
-        readUnlock();
+        int count = absNode.getMetaEdgesInTree().getCount() + absNode.getMetaEdgesOutTree().getCount() - absNode.getMutualMetaEdgeDegree();
         count += absNode.getEnabledInDegree() + absNode.getEnabledOutDegree() - absNode.getEnabledMutualDegree();
         return count;
     }

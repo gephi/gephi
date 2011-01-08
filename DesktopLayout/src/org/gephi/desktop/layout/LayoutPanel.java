@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.layout;
 
 import java.awt.Color;
@@ -387,7 +387,9 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         LayoutUI layoutUI = null;
         try {
             layoutUI = builder.getUI();
-            description = layoutUI.getDescription();
+            if (layoutUI.getDescription() != null) {
+                description = layoutUI.getDescription();
+            }
             if (layoutUI.getQualityRank() < 0 || layoutUI.getSpeedRank() < 0) {
                 layoutUI = null;
             }

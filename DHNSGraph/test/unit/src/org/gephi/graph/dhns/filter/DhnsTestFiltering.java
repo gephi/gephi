@@ -179,6 +179,33 @@ public class DhnsTestFiltering {
             Exceptions.printStackTrace(ex);
         }
     }
+
+    @Test
+    public void testDelete() {
+        Node node1 = nodeMap.get("Node 1");
+        Node node2 = nodeMap.get("Node 2");
+        Edge edge21 = edgeMap.get("2-1");
+
+        GraphView newView = dhnsGlobal.newView();
+        HierarchicalGraph viewGraph = dhnsGlobal.getHierarchicalGraph(newView);
+
+        assertNotNull(node1.getNodeData().getNode(newView.getViewId()));
+        assertNotNull(dhnsGlobal.getGraphStructure().getNodeFromDictionnary(node1.getId(), newView.getViewId()));
+        assertNotNull(dhnsGlobal.getGraphStructure().getNodeFromDictionnary(node1.getId(), graphGlobal.getView().getViewId()));
+        assertNotNull(dhnsGlobal.getGraphStructure().getEdgeFromDictionnary(edge21.getId()));
+
+        graphGlobal.removeNode(node1);
+
+        assertNull(node1.getNodeData().getNode(graphGlobal.getView().getViewId()));
+        assertNull(node1.getNodeData().getNode(newView.getViewId()));
+
+        assertEquals(Boolean.FALSE, graphGlobal.contains(node1));
+        assertEquals(Boolean.FALSE, viewGraph.contains(node1));
+        assertEquals(Boolean.FALSE, graphGlobal.contains(edge21));
+        assertEquals(Boolean.FALSE, viewGraph.contains(edge21));
+    }
+
+
 //    private void showEdges(TreeStructure treeStructure) {
 //        ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
 //        for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {

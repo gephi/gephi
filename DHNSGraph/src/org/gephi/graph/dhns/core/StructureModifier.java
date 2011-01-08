@@ -25,10 +25,12 @@ import java.util.List;
 import org.gephi.graph.api.GraphEvent.EventType;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.edge.AbstractEdge;
+import org.gephi.graph.dhns.edge.MetaEdgeImpl;
 import org.gephi.graph.dhns.event.EdgeEvent;
 import org.gephi.graph.dhns.event.GeneralEvent;
 import org.gephi.graph.dhns.event.NodeEvent;
 import org.gephi.graph.dhns.node.AbstractNode;
+import org.gephi.graph.dhns.node.iterators.AbstractNodeIterator;
 import org.gephi.graph.dhns.node.iterators.ChildrenIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantAndSelfIterator;
 import org.gephi.graph.dhns.node.iterators.DescendantIterator;
@@ -101,12 +103,30 @@ public class StructureModifier {
     }
 
     public void deleteNode(AbstractNode node) {
-        dhns.writeLock();
-        AbstractNode[] deletesNodes = business.deleteNode(node);
-        graphVersion.incNodeAndEdgeVersion();
-        dhns.writeUnlock();
-        for (int i = 0; i < deletesNodes.length; i++) {
-            dhns.getEventManager().fireEvent(new NodeEvent(EventType.REMOVE_NODES, deletesNodes[i], view));
+        if (view.isMainView() && node.getNodeData().getNodes().getCount() > 1) {
+            dhns.writeLock();
+            for (AbstractNodeIterator itr = node.getNodeData().getNodes().iterator(); itr.hasNext();) {
+                AbstractNode nodeInOtherView = itr.next();
+                if (nodeInOtherView.getViewId() != view.getViewId()) {
+                    GraphViewImpl otherView = nodeInOtherView.avlNode.getList().getView();
+                    business.deleteNode(nodeInOtherView, otherView);
+                }
+            }
+            AbstractNode[] deletesNodes = business.deleteNode(node, view);
+            graphVersion.incNodeAndEdgeVersion();
+            dhns.writeUnlock();
+            for (int i = 0; i < deletesNodes.length; i++) {
+                dhns.getEventManager().fireEvent(new NodeEvent(EventType.REMOVE_NODES, deletesNodes[i], view));
+            }
+
+        } else {
+            dhns.writeLock();
+            AbstractNode[] deletesNodes = business.deleteNode(node, view);
+            graphVersion.incNodeAndEdgeVersion();
+            dhns.writeUnlock();
+            for (int i = 0; i < deletesNodes.length; i++) {
+                dhns.getEventManager().fireEvent(new NodeEvent(EventType.REMOVE_NODES, deletesNodes[i], view));
+            }
         }
     }
 
@@ -126,6 +146,14 @@ public class StructureModifier {
         if (res) {
             dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, edge, view));
         }
+        return res;
+    }
+
+    public boolean deleteMetaEdge(AbstractEdge edge) {
+        dhns.writeLock();
+        boolean res = business.delMetaEdge((MetaEdgeImpl) edge);
+        graphVersion.incEdgeVersion();
+        dhns.writeUnlock();
         return res;
     }
 
@@ -453,22 +481,22 @@ public class StructureModifier {
             }
         }
 
-        private AbstractNode[] deleteNode(AbstractNode node) {
+        private AbstractNode[] deleteNode(AbstractNode node, GraphViewImpl graphView) {
             AbstractNode[] descendants = new AbstractNode[node.size + 1];
             int i = 0;
-            for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(treeStructure, node, Tautology.instance); itr.hasNext();) {
+            for (DescendantAndSelfIterator itr = new DescendantAndSelfIterator(graphView.getStructure(), node, Tautology.instance); itr.hasNext();) {
                 AbstractNode descendant = itr.next();
                 descendants[i] = descendant;
                 if (descendant.isEnabled()) {
-                    edgeProcessor.clearMetaEdges(descendant);
-                    view.decNodesEnabled(1);
+                    graphView.getStructureModifier().edgeProcessor.clearMetaEdges(descendant);
+                    graphView.decNodesEnabled(1);
                 }
-                AbstractEdge[] deletedEdges = edgeProcessor.clearEdges(descendant);
+                AbstractEdge[] deletedEdges = graphView.getStructureModifier().edgeProcessor.clearEdges(descendant);
                 if (deletedEdges != null) {
                     for (int j = 0; j < deletedEdges.length; j++) {
                         if (deletedEdges[j] != null) {
                             dhns.getGraphStructure().removeFromDictionnary(deletedEdges[j]);
-                            dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, deletedEdges[j], view));
+                            dhns.getEventManager().fireEvent(new EdgeEvent(EventType.REMOVE_EDGES, deletedEdges[j], graphView));
                         }
                     }
                 }
@@ -477,7 +505,7 @@ public class StructureModifier {
                 i++;
             }
 
-            treeStructure.deleteDescendantAndSelf(node);
+            graphView.getStructure().deleteDescendantAndSelf(node);
             return descendants;
         }
 
@@ -512,6 +540,26 @@ public class StructureModifier {
 
             //Remove edge from possible metaEdge
             edgeProcessor.removeEdgeFromMetaEdge(edge);
+            return res;
+        }
+
+        public boolean delMetaEdge(MetaEdgeImpl edge) {
+            AbstractNode source = edge.getSource(view.getViewId());
+            AbstractNode target = edge.getTarget(view.getViewId());
+
+            if (!edge.isSelfLoop() && source.getEdgesInTree().hasNeighbour(target)) {
+                //mutual
+                view.decMutualMetaEdgesTotal(1);
+                source.decMutualMetaEdgeDegree();
+                target.decMutualMetaEdgeDegree();
+
+            }
+            view.decMetaEdgesCount(1);
+
+            //Remove edge
+            boolean res = source.getMetaEdgesOutTree().remove(edge);
+            res = res && target.getMetaEdgesInTree().remove(edge);
+
             return res;
         }
 
@@ -573,7 +621,7 @@ public class StructureModifier {
                 ungroupedNodes[i] = node;
             }
 
-            business.deleteNode(nodeGroup);
+            business.deleteNode(nodeGroup, view);
             return ungroupedNodes;
         }
 

@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Patick J. McSweeney <pjmcswee@syr.edu>
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -21,9 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.statistics.plugin;
 
 import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.statistics.spi.Statistics;
 import org.openide.util.Lookup;
 
@@ -34,49 +34,46 @@ import org.openide.util.Lookup;
 public class GraphDensity implements Statistics {
 
     /** The density of the graph.*/
-    private double mDensity;
+    private double density;
     /** */
-    private boolean mDirected;
+    private boolean isDirected;
 
     public GraphDensity() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         if (graphController != null && graphController.getModel() != null) {
-            mDirected = graphController.getModel().isDirected();
+            isDirected = graphController.getModel().isDirected();
         }
     }
 
-    public void setDirected(boolean pDirected) {
-        mDirected = pDirected;
+    public void setDirected(boolean isDirected) {
+        this.isDirected = isDirected;
     }
 
     public boolean getDirected() {
-        return mDirected;
+        return isDirected;
     }
 
     public double getDensity() {
-        return mDensity;
+        return density;
     }
 
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        Graph graph;
+        HierarchicalGraph hgraph;
 
-        if (mDirected) {
-            graph = graphModel.getDirectedGraphVisible();
+        if (isDirected) {
+            hgraph = graphModel.getHierarchicalDirectedGraphVisible();
         } else {
-            graph = graphModel.getUndirectedGraphVisible();
+            hgraph = graphModel.getHierarchicalUndirectedGraphVisible();
         }
-        execute(graph, attributeModel);
-    }
 
-    public void execute(Graph graph, AttributeModel attributeModel) {
-        double edgesCount = graph.getEdgeCount();
-        double nodesCount = graph.getNodeCount();
+        double edgesCount = hgraph.getTotalEdgeCount();
+        double nodesCount = hgraph.getNodeCount();
         double multiplier = 1;
 
-        if (!mDirected) {
+        if (!isDirected) {
             multiplier = 2;
         }
-        mDensity = (multiplier * edgesCount) / (nodesCount * nodesCount - nodesCount);
+        density = (multiplier * edgesCount) / (nodesCount * nodesCount - nodesCount);
     }
 
     /**
@@ -84,14 +81,13 @@ public class GraphDensity implements Statistics {
      * @return
      */
     public String getReport() {
-        String report = "<HTML> <BODY> <h1>Graph Density  Report </h1> "
+        return "<HTML> <BODY> <h1>Graph Density  Report </h1> "
                 + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
-                + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
+                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
-                + "Density: " + mDensity
+                + "Density: " + density
                 + "</BODY></HTML>";
-        return report;
     }
 }

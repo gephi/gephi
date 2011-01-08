@@ -32,6 +32,7 @@ import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.NodeFilter;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.plugin.ConnectedComponents;
@@ -85,11 +86,11 @@ public class GiantComponentBuilder implements FilterBuilder {
 
         public boolean init(Graph graph) {
             ConnectedComponents cc = new ConnectedComponents();
-            UndirectedGraph undirectedGraph = null;
+            HierarchicalUndirectedGraph undirectedGraph = null;
             if (cc instanceof UndirectedGraph) {
-                undirectedGraph = (UndirectedGraph) graph;
+                undirectedGraph = (HierarchicalUndirectedGraph) graph;
             } else {
-                undirectedGraph = graph.getView().getGraphModel().getUndirectedGraph(graph.getView());
+                undirectedGraph = graph.getView().getGraphModel().getHierarchicalUndirectedGraph(graph.getView());
             }
 
             cc.weaklyConnected(undirectedGraph, attributeModel);

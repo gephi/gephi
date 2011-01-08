@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Patick J. McSweeney <pjmcswee@syr.edu>
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -30,14 +30,14 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
@@ -95,20 +95,19 @@ public class Hits implements Statistics, LongTask {
     }
 
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        Graph graph = null;
+        HierarchicalGraph graph = null;
         if (useUndirected) {
-            graph = graphModel.getUndirectedGraphVisible();
+            graph = graphModel.getHierarchicalUndirectedGraphVisible();
         } else {
-            graph = graphModel.getDirectedGraphVisible();
+            graph = graphModel.getHierarchicalDirectedGraphVisible();
         }
         execute(graph, attributeModel);
     }
 
-    public void execute(Graph graph, AttributeModel attributeModel) {
-        graph.readLock();
+    public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+        hgraph.readLock();
 
-        //DirectedGraph digraph = graphController.getDirectedGraph();
-        int N = graph.getNodeCount();
+        int N = hgraph.getNodeCount();
         authority = new double[N];
         hubs = new double[N];
         double[] temp_authority = new double[N];
@@ -121,19 +120,19 @@ public class Hits implements Statistics, LongTask {
 
         indicies = new HashMap<Node, Integer>();
         int index = 0;
-        for (Node node : graph.getNodes()) {
+        for (Node node : hgraph.getNodes()) {
             indicies.put(node, new Integer(index));
             index++;
 
             if (!useUndirected) {
-                if (((DirectedGraph) graph).getOutDegree(node) > 0) {
+                if (((HierarchicalDirectedGraph) hgraph).getTotalOutDegree(node) > 0) {
                     hub_list.add(node);
                 }
-                if (((DirectedGraph) graph).getInDegree(node) > 0) {
+                if (((HierarchicalDirectedGraph) hgraph).getTotalInDegree(node) > 0) {
                     auth_list.add(node);
                 }
             } else {
-                if (((UndirectedGraph) graph).getDegree(node) > 0) {
+                if (((HierarchicalUndirectedGraph) hgraph).getTotalDegree(node) > 0) {
                     hub_list.add(node);
                     auth_list.add(node);
                 }
@@ -160,12 +159,12 @@ public class Hits implements Statistics, LongTask {
                 temp_authority[n_index] = authority[n_index];
                 EdgeIterable edge_iter;
                 if (!useUndirected) {
-                    edge_iter = ((DirectedGraph) graph).getInEdges(node);
+                    edge_iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node);
                 } else {
-                    edge_iter = ((UndirectedGraph) graph).getEdges(node);
+                    edge_iter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(node);
                 }
                 for (Edge edge : edge_iter) {
-                    Node target = graph.getOpposite(node, edge);
+                    Node target = hgraph.getOpposite(node, edge);
                     int target_index = indicies.get(target);
                     temp_authority[n_index] += hubs[target_index];
                 }
@@ -184,12 +183,12 @@ public class Hits implements Statistics, LongTask {
                 temp_hubs[n_index] = hubs[n_index];
                 EdgeIterable edge_iter;
                 if (!useUndirected) {
-                    edge_iter = ((DirectedGraph) graph).getInEdges(node);
+                    edge_iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node);
                 } else {
-                    edge_iter = ((UndirectedGraph) graph).getEdges(node);
+                    edge_iter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(node);
                 }
                 for (Edge edge : edge_iter) {
-                    Node target = graph.getOpposite(node, edge);
+                    Node target = hgraph.getOpposite(node, edge);
                     int target_index = indicies.get(target);
                     temp_hubs[n_index] += authority[target_index];
                 }
@@ -235,14 +234,14 @@ public class Hits implements Statistics, LongTask {
             hubsCol = nodeTable.addColumn(HUB, "Hub", AttributeType.FLOAT, AttributeOrigin.COMPUTED, new Float(0));
         }
 
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             int s_index = indicies.get(s);
             AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
             row.setValue(authorityCol, (float) authority[s_index]);
             row.setValue(hubsCol, (float) hubs[s_index]);
         }
 
-        graph.readUnlockAll();
+        hgraph.readUnlockAll();
     }
 
     /**
@@ -250,7 +249,6 @@ public class Hits implements Statistics, LongTask {
      * @return
      */
     public String getReport() {
-        double max = 0;
         String imageFile1 = "";
         String imageFile2 = "";
         try {

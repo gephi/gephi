@@ -344,7 +344,13 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
         HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
         for (Part<Node> p : nodePartition.getParts()) {
             Node[] nodes = p.getObjects();
-            if (graph.getParent(nodes[0]) == null) {
+            List<Node> validNodes = new ArrayList<Node>();
+            for (Node n : nodes) {
+                if (graph.contains(n)) {
+                    validNodes.add(n);
+                }
+            }
+            if (!validNodes.isEmpty() && graph.getParent(validNodes.get(0)) == null) {
                 float centroidX = 0;
                 float centroidY = 0;
                 float sizes = 0;
@@ -352,20 +358,20 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
                 float g = 0;
                 float b = 0;
                 int len = 0;
-                for (Node n : nodes) {
+                for (Node n : validNodes) {
                     centroidX += n.getNodeData().x();
                     centroidY += n.getNodeData().y();
-                    sizes += n.getNodeData().getSize() / 10f;
+                    sizes += n.getNodeData().getSize();
                     r += n.getNodeData().r();
                     g += n.getNodeData().g();
                     b += n.getNodeData().b();
                     len++;
                 }
-                Node metaNode = graph.groupNodes(nodes);
+                Node metaNode = graph.groupNodes(validNodes.toArray(new Node[0]));
                 metaNode.getNodeData().setX(centroidX / len);
                 metaNode.getNodeData().setY(centroidY / len);
                 metaNode.getNodeData().setLabel(p.getDisplayName());
-                metaNode.getNodeData().setSize(sizes);
+                metaNode.getNodeData().setSize(sizes / graph.getNodeCount() * 5f);
                 metaNode.getNodeData().setColor(r / len, g / len, b / len);
             }
         }
@@ -377,9 +383,17 @@ public class PartitionControllerImpl implements PartitionController, AttributeLi
         HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
         for (Part<Node> p : nodePartition.getParts()) {
             Node[] nodes = p.getObjects();
-            Node metaNode = graph.getParent(nodes[0]);
-            if (metaNode != null) {
-                graph.ungroupNodes(metaNode);
+            List<Node> validNodes = new ArrayList<Node>();
+            for (Node n : nodes) {
+                if (graph.contains(n)) {
+                    validNodes.add(n);
+                }
+            }
+            if (!validNodes.isEmpty()) {
+                Node metaNode = graph.getParent(validNodes.get(0));
+                if (metaNode != null) {
+                    graph.ungroupNodes(metaNode);
+                }
             }
         }
     }

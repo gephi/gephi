@@ -29,3 +29,15 @@ msgstr "Nodes:"
 
 msgid "ContextPanel.labelEdges.text"
 msgstr "Edges:"
+
+msgid "ContextPanel.graphType.directed"
+msgstr "Directed Graph"
+
+msgid "ContextPanel.graphType.undirected"
+msgstr "Undirected Graph"
+
+msgid "ContextPanel.graphType.mixed"
+msgstr "Mixed Graph"
+
+msgid "ContextPanel.visible"
+msgstr "Visible"

@@ -46,6 +46,8 @@ public interface ProjectControllerUI {
 
     public Workspace newWorkspace();
 
+    public Workspace duplicateWorkspace();
+
     public Project newProject();
 
     public void deleteWorkspace();
@@ -69,6 +71,8 @@ public interface ProjectControllerUI {
     public boolean canSaveAs();
 
     public boolean canNewWorkspace();
+
+    public boolean canDuplicateWorkspace();
 
     public boolean canDeleteWorkspace();
 

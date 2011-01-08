@@ -20,10 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.filters;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterProperty;
 
@@ -43,7 +39,7 @@ public class FilterQueryImpl extends AbstractQueryImpl {
         updateParameters();
     }
 
-    public void updateParameters() {
+    public final void updateParameters() {
         FilterProperty[] properties = filter.getProperties();
         parameters = new Parameters[properties == null ? 0 : properties.length];
         if (properties != null) {

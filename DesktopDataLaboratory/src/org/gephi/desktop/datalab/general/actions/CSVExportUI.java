@@ -163,7 +163,6 @@ public class CSVExportUI extends javax.swing.JPanel {
         scroll = new javax.swing.JScrollPane();
         columnsPanel = new javax.swing.JPanel();
         columnsLabel = new javax.swing.JLabel();
-        descriptionLabel = new javax.swing.JLabel();
         charsetLabel = new javax.swing.JLabel();
         charsetComboBox = new javax.swing.JComboBox();
 
@@ -174,8 +173,6 @@ public class CSVExportUI extends javax.swing.JPanel {
 
         columnsLabel.setText(org.openide.util.NbBundle.getMessage(CSVExportUI.class, "CSVExportUI.columnsLabel.text")); // NOI18N
 
-        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(CSVExportUI.class, "CSVExportUI.descriptionLabel.text")); // NOI18N
-
         charsetLabel.setText(org.openide.util.NbBundle.getMessage(CSVExportUI.class, "CSVExportUI.charsetLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -185,25 +182,22 @@ public class CSVExportUI extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(separatorLabel)
                         .addGap(18, 18, 18)
-                        .addComponent(separatorComboBox, 0, 77, Short.MAX_VALUE))
+                        .addComponent(separatorComboBox, 0, 150, Short.MAX_VALUE))
                     .addComponent(columnsLabel)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(charsetLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(charsetComboBox, 0, 134, Short.MAX_VALUE)))
+                        .addComponent(charsetComboBox, 0, 174, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(separatorLabel)
                     .addComponent(separatorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -223,7 +217,6 @@ public class CSVExportUI extends javax.swing.JPanel {
     private javax.swing.JLabel charsetLabel;
     private javax.swing.JLabel columnsLabel;
     private javax.swing.JPanel columnsPanel;
-    private javax.swing.JLabel descriptionLabel;
     private javax.swing.JScrollPane scroll;
     private javax.swing.JComboBox separatorComboBox;
     private javax.swing.JLabel separatorLabel;

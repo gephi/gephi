@@ -146,6 +146,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             fileObject = getArchivedFile(fileObject);
             final String containerSource = fileObject.getNameExt();
             final InputStream stream = fileObject.getInputStream();
+            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -159,7 +160,14 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, "Import " + containerSource, errorHandler);
+            }, taskName, errorHandler);
+            if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
+                try {
+                    fileObject.delete();
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
@@ -204,7 +212,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Execute task
-            final String containerSource = "Stream " + importerName;
+            final String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource", importerName);
+            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -218,7 +227,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, "Import " + containerSource, errorHandler);
+            }, taskName, errorHandler);
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
@@ -263,7 +272,8 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Execute task
-            final String containerSource = "Stream " + importerName;
+            final String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.streamSource", importerName);
+            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -277,7 +287,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, "Import " + containerSource, errorHandler);
+            }, taskName, errorHandler);
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
@@ -330,6 +340,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             //Execute task
             final String containerSource = database.getName();
             final Database db = database;
+            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -343,7 +354,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, "Import " + containerSource, errorHandler);
+            }, taskName, errorHandler);
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
@@ -357,7 +368,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                 return;
             }
 
-            String containerSource = "Spigot";
+            String containerSource = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.spigotSource", "");
             ImporterUI ui = controller.getUI(importer);
             if (ui != null) {
                 String title = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.spigot.ui.dialog.title", ui.getDisplayName());
@@ -394,6 +405,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
             //Execute task
             final String source = containerSource;
+            String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {
 
                 public void run() {
@@ -407,7 +419,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                         throw new RuntimeException(ex);
                     }
                 }
-            }, "Import " + containerSource, errorHandler);
+            }, taskName, errorHandler);
         } catch (Exception ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }
@@ -508,8 +520,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
         // ZIP and JAR archives
         if (FileUtil.isArchiveFile(fileObject)) {
             fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
-        }
-        else { // GZ or BZIP2 archives
+        } else { // GZ or BZIP2 archives
             boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
             boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
             if (isGz || isBzip) {
@@ -524,7 +535,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
 
                     File tempFile = null;
                     if (fileExt1.equalsIgnoreCase("tar")) {
-                        tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt2);
+                        String fname = fileObject.getName().replaceAll("\\.tar$", "");
+                        fname = fname.replace(fileExt2, "");
+                        tempFile = File.createTempFile(fname, "." + fileExt2);
                         // Untar & unzip
                         if (isGz) {
                             tempFile = getGzFile(fileObject, tempFile, true);
@@ -532,7 +545,9 @@ public class DesktopImportControllerUI implements ImportControllerUI {
                             tempFile = getBzipFile(fileObject, tempFile, true);
                         }
                     } else {
-                        tempFile = File.createTempFile(fileObject.getName().replaceAll("\\.(gz|bz2)$", ""), "." + fileExt1);
+                        String fname = fileObject.getName();
+                        fname = fname.replace(fileExt1, "");
+                        tempFile = File.createTempFile(fname, "." + fileExt1);
                         // Unzip
                         if (isGz) {
                             tempFile = getGzFile(fileObject, tempFile, false);

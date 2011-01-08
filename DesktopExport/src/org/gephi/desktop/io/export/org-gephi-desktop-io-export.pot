@@ -51,5 +51,8 @@ msgstr "Full"
 msgid "GraphFileExporterUIPanel.labelGraph.text"
 msgstr "Graph:"
 
+msgid "DesktopExportController.exportTaskName"
+msgstr "Export to {0}"
+
 msgid "DesktopExportController.status.exportSuccess"
 msgstr "{0} successfully exported"

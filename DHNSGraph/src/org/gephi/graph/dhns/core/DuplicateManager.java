@@ -45,7 +45,7 @@ public class DuplicateManager {
     }
 
     public void duplicate(Dhns destination) {
-//        duplicate(destination, dhns.getGraphStructure().getMainView());
+        duplicate(destination, dhns.getGraphStructure().getMainView());
     }
 
     public void duplicate(Dhns destination, GraphViewImpl view) {
@@ -103,6 +103,9 @@ public class DuplicateManager {
         newGraphStructure.getMainView().setEdgesCountEnabled(view.getEdgesCountEnabled());
         newGraphStructure.getMainView().setMutualEdgesTotal(view.getMutualEdgesTotal());
         newGraphStructure.getMainView().setMutualEdgesEnabled(view.getMutualEdgesEnabled());
+
+        //Metaedges
+        newGraphStructure.getMainView().getStructureModifier().getEdgeProcessor().computeMetaEdges();
         destination.writeUnlock();
         dhns.readUnlock();
     }

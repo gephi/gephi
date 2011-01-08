@@ -56,6 +56,16 @@ public interface HierarchicalGraph extends Graph {
     public boolean addNode(Node node, Node parent);
 
     /**
+     * Remove <code>metaEdge</code> from the graph. Fails if the edge doesn't exist.
+     * @param metaEdge  the meta edge that is to be removed
+     * @return  <code>true</code> if remove is successful, false otherwise
+     * @throws IllegalArgumentException if <code>edge</code> is <code>null</code> or nodes not legal in
+     * the graph
+     * @throws IllegalMonitorStateException if the current thread is holding a read lock
+     */
+    public boolean removeMetaEdge(Edge metaEdge);
+
+    /**
      * Returns the number of children of <code>node</code>. Returns <code>zero</code> if <code>node</code> is a leaf.
      * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
      * statement.
@@ -139,6 +149,19 @@ public interface HierarchicalGraph extends Graph {
      * @return  an edge iterable of all edges
      */
     public EdgeIterable getEdgesTree();
+
+    /**
+     * Returns the number of edges and meta edges in the graph
+     * <p>
+     * Special case of interest:
+     * <ul><li>Count self-loops once only.</li>
+     * <li>For <b>hierarchical</b> graph, count edges incident only to nodes
+     * in the current view.</li></ul>
+     * <p><b>Warning:</b> This method is not thread safe, be sure to call it in a locked
+     * statement.
+     * @return the number of edges in the graph.
+     */
+    public int getTotalEdgeCount();
 
     /**
      * Returns nodes at the given <code>level</code> in the hierarchy. Top nodes
@@ -417,7 +440,7 @@ public interface HierarchicalGraph extends Graph {
      * or <code>null</code> if no such edge exists
      * @throws IllegalArgumentException if <code>node1</code> or <code>node2</code>
      * are <code>null</code> or not legal nodes in the graph
-    */
+     */
     public MetaEdge getMetaEdge(Node node1, Node node2);
 
     /**

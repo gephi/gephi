@@ -36,6 +36,8 @@ import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -108,14 +110,14 @@ public class MutualDegreeRangeBuilder implements FilterBuilder {
                 getValues();
                 refreshRange();
             }
-            values = new ArrayList<Integer>(graph.getNodeCount());
+            values = new ArrayList<Integer>(((HierarchicalGraph)graph).getNodeCount());
             min = Integer.MAX_VALUE;
             max = Integer.MIN_VALUE;
             return true;
         }
 
         public boolean evaluate(Graph graph, Node node) {
-            int degree = ((DirectedGraph) graph).getMutualDegree(node);
+            int degree = ((HierarchicalDirectedGraph) graph).getMutualDegree(node);
             min = Math.min(min, degree);
             max = Math.max(max, degree);
             values.add(new Integer(degree));
@@ -129,13 +131,13 @@ public class MutualDegreeRangeBuilder implements FilterBuilder {
         public Object[] getValues() {
             if (values == null) {
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-                DirectedGraph graph = gm.getDirectedGraph();
-                Integer[] degrees = new Integer[graph.getNodeCount()];
+                HierarchicalDirectedGraph hgraph = gm.getHierarchicalDirectedGraph();
+                Integer[] degrees = new Integer[hgraph.getNodeCount()];
                 int i = 0;
                 min = Integer.MAX_VALUE;
                 max = Integer.MIN_VALUE;
-                for (Node n : graph.getNodes()) {
-                    int degree = graph.getMutualDegree(n);
+                for (Node n : hgraph.getNodes()) {
+                    int degree = hgraph.getMutualDegree(n);
                     min = Math.min(min, degree);
                     max = Math.max(max, degree);
                     degrees[i++] = degree;

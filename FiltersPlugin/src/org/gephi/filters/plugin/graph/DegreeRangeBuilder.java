@@ -35,6 +35,7 @@ import org.gephi.filters.spi.NodeFilter;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -104,14 +105,14 @@ public class DegreeRangeBuilder implements FilterBuilder {
                 getValues();
                 refreshRange();
             }
-            values = new ArrayList<Integer>(graph.getNodeCount());
+            values = new ArrayList<Integer>(((HierarchicalGraph)graph).getNodeCount());
             min = Integer.MAX_VALUE;
             max = Integer.MIN_VALUE;
             return true;
         }
 
         public boolean evaluate(Graph graph, Node node) {
-            int degree = graph.getDegree(node);
+            int degree = ((HierarchicalGraph)graph).getTotalDegree(node);
             min = Math.min(min, degree);
             max = Math.max(max, degree);
             values.add(new Integer(degree));
@@ -125,13 +126,13 @@ public class DegreeRangeBuilder implements FilterBuilder {
         public Object[] getValues() {
             if (values == null) {
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-                Graph graph = gm.getGraph();
+                HierarchicalGraph graph = gm.getHierarchicalGraph();
                 Integer[] degrees = new Integer[graph.getNodeCount()];
                 int i = 0;
                 min = Integer.MAX_VALUE;
                 max = Integer.MIN_VALUE;
                 for (Node n : graph.getNodes()) {
-                    int degree = graph.getDegree(n);
+                    int degree = graph.getTotalDegree(n);
                     min = Math.min(min, degree);
                     max = Math.max(max, degree);
                     degrees[i++] = degree;

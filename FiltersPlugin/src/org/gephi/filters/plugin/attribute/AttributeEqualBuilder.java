@@ -43,6 +43,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -165,7 +166,8 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public boolean init(Graph graph) {
-            dynamicHelper = new DynamicAttributesHelper(this, graph);
+            HierarchicalGraph hg = (HierarchicalGraph) graph;
+            dynamicHelper = new DynamicAttributesHelper(this, hg);
             return true;
         }
 
@@ -320,8 +322,9 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public boolean init(Graph graph) {
+            HierarchicalGraph hg = (HierarchicalGraph) graph;
             values = new ArrayList<Object>();
-            dynamicHelper = new DynamicAttributesHelper(this, graph);
+            dynamicHelper = new DynamicAttributesHelper(this, hg);
             return true;
         }
 
@@ -357,23 +360,28 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         private void refreshValues() {
             //Default min-max
             GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-            Graph graph = gm.getGraph();
+            HierarchicalGraph hgraph = gm.getHierarchicalGraphVisible();
             List<Object> vals = new ArrayList<Object>();
             if (AttributeUtils.getDefault().isNodeColumn(column)) {
-                for (Node n : graph.getNodes()) {
+                for (Node n : hgraph.getNodes()) {
                     Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
                     if (val != null) {
                         vals.add(val);
                     }
                 }
             } else {
-                for (Edge e : graph.getEdges()) {
+                for (Edge e : hgraph.getEdgesAndMetaEdges()) {
                     Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
                     if (val != null) {
                         vals.add(val);
                     }
                 }
             }
+            //If the column is empty for every node/edge
+            if (vals.isEmpty()) {
+                vals.add(0);
+            }
+
             //Object[] valuesArray = vals.toArray();
             Comparable[] comparableArray = ComparableArrayConverter.convert(vals);
 
@@ -509,7 +517,8 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public boolean init(Graph graph) {
-            dynamicHelper = new DynamicAttributesHelper(this, graph);
+            HierarchicalGraph hg = (HierarchicalGraph) graph;
+            dynamicHelper = new DynamicAttributesHelper(this, hg);
             return true;
         }
 

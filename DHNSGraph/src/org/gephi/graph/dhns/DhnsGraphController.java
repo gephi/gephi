@@ -41,10 +41,8 @@ import org.openide.util.lookup.ServiceProviders;
  *
  * @author Mathieu Bastian
  */
-@ServiceProviders({
-    @ServiceProvider(service = GraphController.class),
-    @ServiceProvider(service = WorkspaceDuplicateProvider.class, position = 1000)})
-public class DhnsGraphController implements GraphController, WorkspaceDuplicateProvider {
+@ServiceProvider(service = GraphController.class)
+public class DhnsGraphController implements GraphController {
 
     protected IDGen iDGen;
 
@@ -84,14 +82,5 @@ public class DhnsGraphController implements GraphController, WorkspaceDuplicateP
 
     public GraphModel getModel() {
         return getCurrentDhns();
-    }
-
-    public void duplicate(Workspace source, Workspace destination) {
-        GraphController controller = Lookup.getDefault().lookup(GraphController.class);
-        Dhns sourceModel = (Dhns) controller.getModel(source);
-        Dhns destModel = (Dhns) controller.getModel(destination);
-        if (sourceModel != null && destModel != null) {
-            sourceModel.getDuplicateManager().duplicate(destModel);
-        }
     }
 }

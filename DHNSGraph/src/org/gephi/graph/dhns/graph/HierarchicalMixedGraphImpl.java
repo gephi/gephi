@@ -180,6 +180,10 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
         return view.getEdgesCountEnabled();
     }
 
+    public int getTotalEdgeCount() {
+        return view.getEdgesCountEnabled() + view.getMetaEdgesCountTotal();
+    }
+
     public int getDegree(Node node) {
         AbstractNode absNode = checkNode(node);
         int count = absNode.getEdgesInTree().getCount() + absNode.getEdgesOutTree().getCount();
@@ -277,6 +281,11 @@ public class HierarchicalMixedGraphImpl extends HierarchicalGraphImpl implements
                 + absNode.getMetaEdgesInTree().getCount()
                 + absNode.getMetaEdgesOutTree().getCount();
         return count;
+    }
+
+    public boolean removeMetaEdge(Edge edge) {
+        AbstractEdge absEdge = checkMetaEdge(edge);
+        return view.getStructureModifier().deleteMetaEdge(absEdge);
     }
 
     @Override

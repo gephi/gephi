@@ -31,10 +31,13 @@ import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -79,7 +82,7 @@ public class OutDegreeRangeBuilder implements FilterBuilder {
     public void destroy(Filter filter) {
     }
 
-    public static class OutDegreeRangeFilter implements RangeFilter {
+    public static class OutDegreeRangeFilter implements RangeFilter, NodeFilter {
 
         private Integer min = 0;
         private Integer max = 0;
@@ -107,14 +110,14 @@ public class OutDegreeRangeBuilder implements FilterBuilder {
                 getValues();
                 refreshRange();
             }
-            values = new ArrayList<Integer>(graph.getNodeCount());
+            values = new ArrayList<Integer>(((HierarchicalGraph)graph).getNodeCount());
             min = Integer.MAX_VALUE;
             max = Integer.MIN_VALUE;
             return true;
         }
 
         public boolean evaluate(Graph graph, Node node) {
-            int degree = ((DirectedGraph) graph).getOutDegree(node);
+            int degree = ((HierarchicalDirectedGraph) graph).getTotalOutDegree(node);
             min = Math.min(min, degree);
             max = Math.max(max, degree);
             values.add(new Integer(degree));
@@ -128,13 +131,13 @@ public class OutDegreeRangeBuilder implements FilterBuilder {
         public Object[] getValues() {
             if (values == null) {
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-                DirectedGraph graph = gm.getDirectedGraph();
+                HierarchicalDirectedGraph graph = gm.getHierarchicalDirectedGraph();
                 Integer[] degrees = new Integer[graph.getNodeCount()];
                 int i = 0;
                 min = Integer.MAX_VALUE;
                 max = Integer.MIN_VALUE;
                 for (Node n : graph.getNodes()) {
-                    int degree = graph.getOutDegree(n);
+                    int degree = graph.getTotalOutDegree(n);
                     min = Math.min(min, degree);
                     max = Math.max(max, degree);
                     degrees[i++] = degree;

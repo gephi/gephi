@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Patick J. McSweeney <pjmcswee@syr.edu>
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -30,14 +30,14 @@ import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalDirectedGraph;
+import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -52,34 +52,34 @@ public class ConnectedComponents implements Statistics, LongTask {
 
     public static final String WEAKLY = "componentnumber";
     public static final String STRONG = "strongcompnum";
-    private boolean mDirected;
-    private ProgressTicket mProgress;
-    private boolean mIsCanceled;
-    private int mComponentCount;
-    private int mStronglyCount;
+    private boolean isDirected;
+    private ProgressTicket progress;
+    private boolean isCanceled;
+    private int componentCount;
+    private int stronglyCount;
     private int[] componentsSize;
     int count;
 
     public ConnectedComponents() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         if (graphController != null && graphController.getModel() != null) {
-            mDirected = graphController.getModel().isDirected();
+            isDirected = graphController.getModel().isDirected();
         }
     }
 
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
 
-        UndirectedGraph undirectedGraph = graphModel.getUndirectedGraphVisible();
+        HierarchicalUndirectedGraph undirectedGraph = graphModel.getHierarchicalUndirectedGraphVisible();
         weaklyConnected(undirectedGraph, attributeModel);
-        if (mDirected) {
-            DirectedGraph directedGraph = graphModel.getDirectedGraphVisible();
+        if (isDirected) {
+            HierarchicalDirectedGraph directedGraph = graphModel.getHierarchicalDirectedGraphVisible();
             top_tarjans(directedGraph, attributeModel);
         }
     }
 
-    public void weaklyConnected(UndirectedGraph graph, AttributeModel attributeModel) {
-        mIsCanceled = false;
-        mComponentCount = 0;
+    public void weaklyConnected(HierarchicalUndirectedGraph hgraph, AttributeModel attributeModel) {
+        isCanceled = false;
+        componentCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn componentCol = nodeTable.getColumn(WEAKLY);
         if (componentCol == null) {
@@ -88,22 +88,22 @@ public class ConnectedComponents implements Statistics, LongTask {
 
         List<Integer> sizeList = new ArrayList<Integer>();
 
-        graph.readLock();
+        hgraph.readLock();
 
         HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             indicies.put(s, index);
             index++;
         }
 
 
-        int N = graph.getNodeCount();
+        int N = hgraph.getNodeCount();
 
         //Keep track of which nodes have been seen
         int[] color = new int[N];
 
-        Progress.start(mProgress, graph.getNodeCount());
+        Progress.start(progress, hgraph.getNodeCount());
         int seenCount = 0;
         while (seenCount < N) {
             //The search Q
@@ -112,7 +112,7 @@ public class ConnectedComponents implements Statistics, LongTask {
             LinkedList<Node> component = new LinkedList<Node>();
 
             //Seed the seach Q
-            NodeIterable iter = graph.getNodes();
+            NodeIterable iter = hgraph.getNodes();
             for (Node first : iter) {
                 if (color[indicies.get(first)] == 0) {
                     Q.add(first);
@@ -123,8 +123,8 @@ public class ConnectedComponents implements Statistics, LongTask {
 
             //While there are more nodes to search
             while (!Q.isEmpty()) {
-                if (mIsCanceled) {
-                    graph.readUnlock();
+                if (isCanceled) {
+                    hgraph.readUnlock();
                     return;
                 }
                 //Get the next Node and add it to the component list
@@ -132,11 +132,11 @@ public class ConnectedComponents implements Statistics, LongTask {
                 component.add(u);
 
                 //Iterate over all of u's neighbors
-                EdgeIterable edgeIter = graph.getEdges(u);
+                EdgeIterable edgeIter = hgraph.getEdgesAndMetaEdges(u);
 
                 //For each neighbor
                 for (Edge edge : edgeIter) {
-                    Node reachable = graph.getOpposite(u, edge);
+                    Node reachable = hgraph.getOpposite(u, edge);
                     int id = indicies.get(reachable);
                     //If this neighbor is unvisited
                     if (color[id] == 0) {
@@ -145,7 +145,7 @@ public class ConnectedComponents implements Statistics, LongTask {
                         Q.addLast(reachable);
                         //Mark it as used 
 
-                        Progress.progress(mProgress, seenCount);
+                        Progress.progress(progress, seenCount);
                     }
                 }
                 color[indicies.get(u)] = 2;
@@ -153,12 +153,12 @@ public class ConnectedComponents implements Statistics, LongTask {
             }
             for (Node s : component) {
                 AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
-                row.setValue(componentCol, mComponentCount);
+                row.setValue(componentCol, componentCount);
             }
             sizeList.add(component.size());
-            mComponentCount++;
+            componentCount++;
         }
-        graph.readUnlock();
+        hgraph.readUnlock();
 
         componentsSize = new int[sizeList.size()];
         for (int i = 0; i < sizeList.size(); i++) {
@@ -166,24 +166,24 @@ public class ConnectedComponents implements Statistics, LongTask {
         }
     }
 
-    public void top_tarjans(DirectedGraph graph, AttributeModel attributeModel) {
+    public void top_tarjans(HierarchicalDirectedGraph hgraph, AttributeModel attributeModel) {
         count = 1;
-        mStronglyCount = 0;
+        stronglyCount = 0;
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn componentCol = nodeTable.getColumn(STRONG);
         if (componentCol == null) {
             componentCol = nodeTable.addColumn(STRONG, "Strongly-Connected ID", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
         }
 
-        graph.readLock();
+        hgraph.readLock();
 
         HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int v = 0;
-        for (Node s : graph.getNodes()) {
+        for (Node s : hgraph.getNodes()) {
             indicies.put(s, v);
             v++;
         }
-        int N = graph.getNodeCount();
+        int N = hgraph.getNodeCount();
         int[] index = new int[N];
         int[] low_index = new int[N];
 
@@ -191,10 +191,10 @@ public class ConnectedComponents implements Statistics, LongTask {
             //The search Q
             LinkedList<Node> S = new LinkedList<Node>();
             //The component-list
-            LinkedList<Node> component = new LinkedList<Node>();
+            //LinkedList<Node> component = new LinkedList<Node>();
             //Seed the seach Q
             Node first = null;
-            NodeIterable iter = graph.getNodes();
+            NodeIterable iter = hgraph.getNodes();
             for (Node u : iter) {
                 if (index[indicies.get(u)] == 0) {
                     first = u;
@@ -203,35 +203,25 @@ public class ConnectedComponents implements Statistics, LongTask {
                 }
             }
             if (first == null) {
-                graph.readUnlockAll();
+                hgraph.readUnlockAll();
                 return;
             }
-            tarjans(componentCol, S, graph, first, index, low_index, indicies);
+            tarjans(componentCol, S, hgraph, first, index, low_index, indicies);
         }
     }
 
-    /**
-     * 
-     * @param col
-     * @param S
-     * @param graph
-     * @param f
-     * @param index
-     * @param low_index
-     * @param indicies
-     */
-    private void tarjans(AttributeColumn col, LinkedList<Node> S, DirectedGraph graph, Node f, int[] index, int[] low_index, HashMap<Node, Integer> indicies) {
+    private void tarjans(AttributeColumn col, LinkedList<Node> S, HierarchicalDirectedGraph hgraph, Node f, int[] index, int[] low_index, HashMap<Node, Integer> indicies) {
         int id = indicies.get(f);
         index[id] = count;
         low_index[id] = count;
         count++;
         S.addFirst(f);
-        EdgeIterable edgeIter = graph.getOutEdges(f);
+        EdgeIterable edgeIter = hgraph.getOutEdgesAndMetaOutEdges(f);
         for (Edge e : edgeIter) {
-            Node u = graph.getOpposite(f, e);
+            Node u = hgraph.getOpposite(f, e);
             int x = indicies.get(u);
             if (index[x] == 0) {
-                tarjans(col, S, graph, u, index, low_index, indicies);
+                tarjans(col, S, hgraph, u, index, low_index, indicies);
                 low_index[id] = Math.min(low_index[x], low_index[id]);
             } else if (S.contains(u)) {
                 low_index[id] = Math.min(low_index[id], index[x]);
@@ -242,22 +232,22 @@ public class ConnectedComponents implements Statistics, LongTask {
             while (v != f) {
                 v = S.removeFirst();
                 AttributeRow row = (AttributeRow) v.getNodeData().getAttributes();
-                row.setValue(col, mStronglyCount);
+                row.setValue(col, stronglyCount);
             }
-            mStronglyCount++;
+            stronglyCount++;
         }
     }
 
     public int getConnectedComponentsCount() {
-        return mComponentCount;
+        return componentCount;
     }
 
-    public void setDirected(boolean pDirected) {
-        this.mDirected = pDirected;
+    public void setDirected(boolean isDirected) {
+        this.isDirected = isDirected;
     }
 
     public boolean isDirected() {
-        return mDirected;
+        return isDirected;
     }
 
     public int[] getComponentsSize() {
@@ -282,21 +272,21 @@ public class ConnectedComponents implements Statistics, LongTask {
                 + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
-                + "Network Interpretation:  " + (this.mDirected ? "directed" : "undirected") + "<br>"
+                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
-                + "Weakly Connected Components: " + mComponentCount + "<br>"
-                + (mDirected ? "Stronlgy Connected Components: " + this.mStronglyCount + "<br>" : "")
+                + "Weakly Connected Components: " + componentCount + "<br>"
+                + (isDirected ? "Stronlgy Connected Components: " + stronglyCount + "<br>" : "")
                 + "</BODY></HTML>";
 
         return report;
     }
 
     public boolean cancel() {
-        mIsCanceled = true;
+        isCanceled = true;
         return true;
     }
 
     public void setProgressTicket(ProgressTicket progressTicket) {
-        mProgress = progressTicket;
+        progress = progressTicket;
     }
 }

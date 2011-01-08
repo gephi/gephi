@@ -300,7 +300,6 @@ public class DHNSSerializer {
                 edgeE.setAttribute("id", String.valueOf(edge.getId()));
             }
         }
-        graphView.getStructureModifier().getEdgeProcessor().computeMetaEdges();
 
         return viewE;
     }
@@ -343,6 +342,8 @@ public class DHNSSerializer {
                 }
             }
         }
+
+        graphView.getStructureModifier().getEdgeProcessor().computeMetaEdges();
     }
 
     public Element writeGraphVersion(Document document, GraphVersion graphVersion) {

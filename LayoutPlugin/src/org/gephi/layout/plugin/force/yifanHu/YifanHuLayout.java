@@ -217,14 +217,16 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         // Apply edge forces.
 
         for (Edge e : graph.getEdgesAndMetaEdges()) {
-            NodeData n1 = e.getSource().getNodeData();
-            NodeData n2 = e.getTarget().getNodeData();
-            ForceVector f1 = n1.getLayoutData();
-            ForceVector f2 = n2.getLayoutData();
+            if (!e.getSource().equals(e.getTarget())) {
+                NodeData n1 = e.getSource().getNodeData();
+                NodeData n2 = e.getTarget().getNodeData();
+                ForceVector f1 = n1.getLayoutData();
+                ForceVector f2 = n2.getLayoutData();
 
-            ForceVector f = getEdgeForce().calculateForce(n1, n2);
-            f1.add(f);
-            f2.subtract(f);
+                ForceVector f = getEdgeForce().calculateForce(n1, n2);
+                f1.add(f);
+                f2.subtract(f);
+            }
         }
 
         // Calculate energy and max force.
@@ -252,7 +254,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         postAlgo();
 //        springEnergy = energy - electricEnergy;
 //        System.out.println("electric: " + electricEnergy + "    spring: " + springEnergy);
-//        System.out.println("energy0 = " + energy0 + "   energy = " + energy);
+        System.out.println("energy0 = " + energy0 + "   energy = " + energy);
         graph.readUnlock();
     }
 

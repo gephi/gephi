@@ -26,8 +26,8 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.DataTablesController;
-import org.gephi.datalab.plugin.manipulators.GeneralColumnsChooser;
-import org.gephi.datalab.plugin.manipulators.ui.GeneralChooseColumnsUI;
+import org.gephi.datalab.plugin.manipulators.GeneralColumnsAndRowChooser;
+import org.gephi.datalab.plugin.manipulators.ui.GeneralChooseColumnsAndRowUI;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
@@ -39,7 +39,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that copies the given columns data of one node to the other selected nodes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class CopyNodeDataToOtherNodes implements NodesManipulator, GeneralColumnsChooser {
+public class CopyNodeDataToOtherNodes implements NodesManipulator, GeneralColumnsAndRowChooser {
 
     private Node clickedNode;
     private Node[] nodes;
@@ -49,13 +49,13 @@ public class CopyNodeDataToOtherNodes implements NodesManipulator, GeneralColumn
         this.clickedNode = clickedNode;
         this.nodes = nodes;
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        ArrayList<AttributeColumn> columnsToClearDataList = new ArrayList<AttributeColumn>();
+        ArrayList<AttributeColumn> columnsToCopyDataList = new ArrayList<AttributeColumn>();
         for (AttributeColumn column : Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumns()) {
             if (ac.canChangeColumnData(column)) {
-                columnsToClearDataList.add(column);
+                columnsToCopyDataList.add(column);
             }
         }
-        columnsToCopyData = columnsToClearDataList.toArray(new AttributeColumn[0]);
+        columnsToCopyData = columnsToCopyDataList.toArray(new AttributeColumn[0]);
     }
 
     public void execute() {
@@ -79,7 +79,7 @@ public class CopyNodeDataToOtherNodes implements NodesManipulator, GeneralColumn
     }
 
     public ManipulatorUI getUI() {
-        return new GeneralChooseColumnsUI(NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.ui.description"));
+        return new GeneralChooseColumnsAndRowUI(NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.ui.rowDescription"),NbBundle.getMessage(CopyNodeDataToOtherNodes.class, "CopyNodeDataToOtherNodes.ui.columnsDescription"));
     }
 
     public int getType() {
@@ -100,5 +100,17 @@ public class CopyNodeDataToOtherNodes implements NodesManipulator, GeneralColumn
 
     public void setColumns(AttributeColumn[] columnsToClearData) {
         this.columnsToCopyData = columnsToClearData;
+    }
+
+    public Object[] getRows() {
+        return nodes;
+    }
+
+    public Object getRow() {
+        return clickedNode;
+    }
+
+    public void setRow(Object row) {
+        clickedNode=(Node) row;
     }
 }

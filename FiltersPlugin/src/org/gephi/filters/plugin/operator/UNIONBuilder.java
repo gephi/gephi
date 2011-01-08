@@ -34,6 +34,7 @@ import org.gephi.filters.spi.NodeFilter;
 import org.gephi.filters.spi.Operator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -87,30 +88,31 @@ public class UNIONBuilder implements FilterBuilder {
         }
 
         public Graph filter(Graph[] graphs) {
-            Graph maxGraph = graphs[0];
+            HierarchicalGraph maxHGraph = (HierarchicalGraph) graphs[0];
             int maxElements = 0;
             for (int i = 0; i < graphs.length; i++) {
-                int count = graphs[i].getNodeCount();
+                int count = ((HierarchicalGraph) graphs[i]).getNodeCount();
                 if (count > maxElements) {
-                    maxGraph = graphs[i];
+                    maxHGraph = (HierarchicalGraph) graphs[i];
                     maxElements = count;
                 }
             }
             for (int i = 0; i < graphs.length; i++) {
-                if (graphs[i] != maxGraph) {
+                if ((HierarchicalGraph) graphs[i] != maxHGraph) {
                     //Merge
-                    for (Node n : graphs[i].getNodes().toArray()) {
-                        maxGraph.addNode(n);
+                    for (Node n : ((HierarchicalGraph) graphs[i]).getNodes().toArray()) {
+                        maxHGraph.addNode(n);
                     }
-                    for (Edge e : graphs[i].getEdges().toArray()) {
-                        maxGraph.addEdge(e);
+                    for (Edge e : ((HierarchicalGraph) graphs[i]).getEdgesAndMetaEdges().toArray()) {
+                        maxHGraph.addEdge(e);
                     }
                 }
             }
-            return maxGraph;
+            return maxHGraph;
         }
 
         public Graph filter(Graph graph, Filter[] filters) {
+            HierarchicalGraph hgraph = (HierarchicalGraph) graph;
             List<NodeFilter> nodeFilters = new ArrayList<NodeFilter>();
             List<EdgeFilter> edgeFilters = new ArrayList<EdgeFilter>();
             for (Filter f : filters) {
@@ -123,15 +125,15 @@ public class UNIONBuilder implements FilterBuilder {
             if (nodeFilters.size() > 0) {
                 for (Iterator<NodeFilter> itr = nodeFilters.iterator(); itr.hasNext();) {
                     NodeFilter nf = itr.next();
-                    if (!nf.init(graph)) {
+                    if (!nf.init(hgraph)) {
                         itr.remove();
                     }
                 }
                 List<Node> nodesToRemove = new ArrayList<Node>();
-                for (Node n : graph.getNodes()) {
+                for (Node n : hgraph.getNodes()) {
                     boolean remove = true;
                     for (NodeFilter nf : nodeFilters) {
-                        if (nf.evaluate(graph, n)) {
+                        if (nf.evaluate(hgraph, n)) {
                             remove = false;
                         }
                     }
@@ -141,7 +143,7 @@ public class UNIONBuilder implements FilterBuilder {
                 }
 
                 for (Node n : nodesToRemove) {
-                    graph.removeNode(n);
+                    hgraph.removeNode(n);
                 }
                 for (NodeFilter nf : nodeFilters) {
                     nf.finish();
@@ -150,15 +152,15 @@ public class UNIONBuilder implements FilterBuilder {
             if (edgeFilters.size() > 0) {
                 for (Iterator<EdgeFilter> itr = edgeFilters.iterator(); itr.hasNext();) {
                     EdgeFilter ef = itr.next();
-                    if (!ef.init(graph)) {
+                    if (!ef.init(hgraph)) {
                         itr.remove();
                     }
                 }
                 List<Edge> edgesToRemove = new ArrayList<Edge>();
-                for (Edge e : graph.getEdges()) {
+                for (Edge e : hgraph.getEdgesAndMetaEdges()) {
                     boolean remove = true;
                     for (EdgeFilter ef : edgeFilters) {
-                        if (ef.evaluate(graph, e)) {
+                        if (ef.evaluate(hgraph, e)) {
                             remove = false;
                         }
                     }
@@ -168,13 +170,13 @@ public class UNIONBuilder implements FilterBuilder {
                 }
 
                 for (Edge e : edgesToRemove) {
-                    graph.removeEdge(e);
+                    hgraph.removeEdge(e);
                 }
                 for (EdgeFilter ef : edgeFilters) {
                     ef.finish();
                 }
             }
-            return graph;
+            return hgraph;
         }
     }
 }

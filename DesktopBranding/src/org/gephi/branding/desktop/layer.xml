@@ -36,6 +36,10 @@
                 <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-RenameWorkspace.instance"/>
                 <attr name="position" intvalue="2800"/>
             </file>
+            <file name="org-gephi-branding-desktop-actions-DuplicateWorkspace.instance">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-DuplicateWorkspace.instance"/>
+                <attr name="position" intvalue="2900"/>
+            </file>
             <file name="org-openide-actions-CopyAction.shadow_hidden"/>
             <file name="org-openide-actions-CutAction.shadow_hidden"/>
             <file name="org-openide-actions-DeleteAction.shadow_hidden"/>

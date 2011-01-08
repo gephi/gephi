@@ -126,15 +126,15 @@ public class StatisticsControllerImpl implements StatisticsController {
             }, builder.getName(), null);
         } else {
             pStatistics.execute(graphModel, attributeModel);
-            if (listener != null) {
-                listener.taskFinished(null);
-            }
             model.setRunning(pStatistics, false);
             for (StatisticsUI s : uis) {              
                 model.addResult(s);
                 s.unsetup();
             }
             model.addReport(pStatistics);
+            if (listener != null) {
+                listener.taskFinished(null);
+            }
         }
     }
 

@@ -54,6 +54,7 @@ public class AbstractNode implements Node, Group, AVLItem {
     private int enabledInDegree;
     private int enabledOutDegree;
     private int enabledMutualDegree;
+    private int mutualMetaEdgeDegree;
 
     public AbstractNode(int ID, int viewId) {
         this(viewId, new NodeDataImpl(ID, null), 0, 0, 0, null);
@@ -201,6 +202,10 @@ public class AbstractNode implements Node, Group, AVLItem {
         enabledMutualDegree++;
     }
 
+    public void incMutualMetaEdgeDegree() {
+        mutualMetaEdgeDegree++;
+    }
+
     public void decEnabledInDegree() {
         enabledInDegree--;
     }
@@ -211,6 +216,10 @@ public class AbstractNode implements Node, Group, AVLItem {
 
     public void decEnabledMutualDegree() {
         enabledMutualDegree--;
+    }
+
+    public void decMutualMetaEdgeDegree() {
+        mutualMetaEdgeDegree--;
     }
 
     public int getEnabledInDegree() {
@@ -235,6 +244,14 @@ public class AbstractNode implements Node, Group, AVLItem {
 
     public void setEnabledOutDegree(int enabledOutDegree) {
         this.enabledOutDegree = enabledOutDegree;
+    }
+
+    public int getMutualMetaEdgeDegree() {
+        return mutualMetaEdgeDegree;
+    }
+
+    public void setMutualMetaEdgeDegree(int mutualMetaEdgeDegree) {
+        this.mutualMetaEdgeDegree = mutualMetaEdgeDegree;
     }
 
     @Override

@@ -34,18 +34,18 @@ public interface GeneralColumnsChooser{
     /**
      * Provide columns to show in the UI to be selected or not.
      * Normally provide all table columns that can be manipulated.
-     * @return Columns to show in the GeneralClearRowDataUI
+     * @return Columns to show in the GeneralChooseColumnsUI
      */
     AttributeColumn[] getColumns();
 
     /**
-     * The GeneralClearRowDataUI will use this method to set the columns to finally manipulate, after the GeneralChooseColumnsUI is closed.
+     * The GeneralChooseColumnsUI will use this method to set the columns to finally manipulate, after the GeneralChooseColumnsUI is closed.
      * @param columnsToClearData Columns to clear
      */
     void setColumns(AttributeColumn[] columnsToClearData);
 
     /**
-     * Provide title for the GeneralColumnsChooserUI.
+     * Provide title for the GeneralChooseColumnsUI.
      * @return Title name
      */
     String getName();

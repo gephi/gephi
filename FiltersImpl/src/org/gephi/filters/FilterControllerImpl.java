@@ -40,6 +40,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.utils.progress.Progress;
@@ -218,18 +219,18 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     public void exportToColumn(String title, Query query) {
-        Graph result;
+        HierarchicalGraph result;
         if (model.getCurrentQuery() == query) {
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
             GraphView view = model.getCurrentResult();
             if (view != null) {
                 return;
             }
-            result = graphModel.getGraph(view);
+            result = graphModel.getHierarchicalGraph(view);
         } else {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-            result = processor.process((AbstractQueryImpl) query, graphModel);
+            result = (HierarchicalGraph) processor.process((AbstractQueryImpl) query, graphModel);
         }
         AttributeModel am = Lookup.getDefault().lookup(AttributeController.class).getModel();
         AttributeColumn nodeCol = am.getNodeTable().getColumn("filter_" + title);
@@ -244,7 +245,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         for (Node n : result.getNodes()) {
             n.getNodeData().getAttributes().setValue(nodeCol.getIndex(), Boolean.TRUE);
         }
-        for (Edge e : result.getEdges()) {
+        for (Edge e : result.getEdgesAndMetaEdges()) {
             e.getEdgeData().getAttributes().setValue(edgeCol.getIndex(), Boolean.TRUE);
         }
         result.readUnlock();
@@ -252,21 +253,21 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     public void exportToNewWorkspace(Query query) {
-        Graph result;
+        HierarchicalGraph result;
         if (model.getCurrentQuery() == query) {
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
             GraphView view = model.getCurrentResult();
             if (view == null) {
                 return;
             }
-            result = graphModel.getGraph(view);
+            result = graphModel.getHierarchicalGraph(view);
         } else {
             FilterProcessor processor = new FilterProcessor();
             GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-            result = processor.process((AbstractQueryImpl) query, graphModel);
+            result = (HierarchicalGraph) processor.process((AbstractQueryImpl) query, graphModel);
         }
 
-        final Graph graphView = result;
+        final HierarchicalGraph graphView = result;
         new Thread(new Runnable() {
 
             public void run() {
@@ -289,29 +290,29 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     public void exportToLabelVisible(Query query) {
-        Graph result;
+        HierarchicalGraph result;
         GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
         if (model.getCurrentQuery() == query) {
             GraphView view = model.getCurrentResult();
             if (view == null) {
                 return;
             }
-            result = graphModel.getGraph(view);
+            result = graphModel.getHierarchicalGraph(view);
         } else {
             FilterProcessor processor = new FilterProcessor();
-            result = processor.process((AbstractQueryImpl) query, graphModel);
+            result = (HierarchicalGraph) processor.process((AbstractQueryImpl) query, graphModel);
         }
-        Graph fullGraph = graphModel.getGraph();
-        fullGraph.readLock();
-        for (Node n : fullGraph.getNodes()) {
+        HierarchicalGraph fullHGraph = graphModel.getHierarchicalGraph();
+        fullHGraph.readLock();
+        for (Node n : fullHGraph.getNodes()) {
             boolean inView = n.getNodeData().getNode(result.getView().getViewId()) != null;
             n.getNodeData().getTextData().setVisible(inView);
         }
-        for (Edge e : fullGraph.getEdges()) {
+        for (Edge e : fullHGraph.getEdgesAndMetaEdges()) {
             boolean inView = result.contains(e);
             e.getEdgeData().getTextData().setVisible(inView);
         }
-        fullGraph.readUnlock();
+        fullHGraph.readUnlock();
     }
 
     public void setAutoRefresh(boolean autoRefresh) {

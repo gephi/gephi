@@ -157,4 +157,8 @@ public abstract class AbstractGraphImpl {
     protected AbstractEdge getSymmetricEdge(AbstractEdge edge) {
         return edge.getTarget(view.getViewId()).getEdgesOutTree().getItem(edge.getSource().getNumber());
     }
+
+    protected AbstractEdge getSymmetricMetaEdge(AbstractEdge edge) {
+        return edge.getTarget(view.getViewId()).getMetaEdgesOutTree().getItem(edge.getSource().getNumber());
+    }
 }

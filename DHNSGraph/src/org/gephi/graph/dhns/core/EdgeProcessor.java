@@ -136,7 +136,15 @@ public class EdgeProcessor {
             edgeIterator.setNode(node.getMetaEdgesInTree());
             while (edgeIterator.hasNext()) {
                 AbstractEdge edge = edgeIterator.next();
-                edge.getSource(viewId).getMetaEdgesOutTree().remove((MetaEdgeImpl) edge);
+                AbstractNode source = edge.getSource(viewId);
+                if (!edge.isSelfLoop() && node.getEdgesOutTree().hasNeighbour(source)) {
+                    node.decMutualMetaEdgeDegree();
+                    source.decMutualMetaEdgeDegree();
+                    view.decMutualMetaEdgesTotal(1);
+                }
+                source.getMetaEdgesOutTree().remove((MetaEdgeImpl) edge);
+                view.decMetaEdgesCount(1);
+
             }
             node.getMetaEdgesInTree().clear();
         }
@@ -146,6 +154,7 @@ public class EdgeProcessor {
             while (edgeIterator.hasNext()) {
                 AbstractEdge edge = edgeIterator.next();
                 edge.getTarget(viewId).getMetaEdgesInTree().remove((MetaEdgeImpl) edge);
+                view.decMetaEdgesCount(1);
             }
             node.getMetaEdgesOutTree().clear();
         }
@@ -158,11 +167,18 @@ public class EdgeProcessor {
             edgeIterator.setNode(enabledNode.getMetaEdgesOutTree());
             while (edgeIterator.hasNext()) {
                 MetaEdgeImpl metaEdge = (MetaEdgeImpl) edgeIterator.next();
-                int targetPre = metaEdge.getTarget(viewId).getPre();
+                AbstractNode target = metaEdge.getTarget(viewId);
+                int targetPre = target.getPre();
                 if (targetPre >= rangeStart && targetPre <= rangeLimit) {
                     //The meta edge has to be removed because it's in the range
+                    if (!metaEdge.isSelfLoop() && target.getEdgesInTree().hasNeighbour(enabledNode)) {
+                        enabledNode.decMutualMetaEdgeDegree();
+                        target.decMutualMetaEdgeDegree();
+                        view.decMutualMetaEdgesTotal(1);
+                    }
                     edgeIterator.remove();
-                    metaEdge.getTarget(viewId).getMetaEdgesInTree().remove(metaEdge);
+                    target.getMetaEdgesInTree().remove(metaEdge);
+                    view.decMetaEdgesCount(1);
                 }
             }
         }
@@ -176,6 +192,7 @@ public class EdgeProcessor {
                     //The meta edge has to be removed because it's in the range
                     edgeIterator.remove();
                     metaEdge.getSource(viewId).getMetaEdgesOutTree().remove(metaEdge);
+                    view.decMetaEdgesCount(1);
                 }
             }
         }
@@ -210,7 +227,10 @@ public class EdgeProcessor {
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree()); itr.hasNext();) {
             AbstractNode node = itr.next();
             node.clearMetaEdges();
+            node.setMutualMetaEdgeDegree(0);
         }
+        view.setMetaEdgesCountTotal(0);
+        view.setMutualMetaEdgesTotal(0);
     }
 
     public void computeMetaEdges(AbstractNode node, AbstractNode enabledAncestor) {
@@ -302,6 +322,12 @@ public class EdgeProcessor {
         MetaEdgeImpl newEdge = dhns.factory().newMetaEdge(source, target);
         source.getMetaEdgesOutTree().add(newEdge);
         target.getMetaEdgesInTree().add(newEdge);
+        if (!newEdge.isSelfLoop() && target.getEdgesInTree().hasNeighbour(source)) {
+            source.incMutualMetaEdgeDegree();
+            target.incMutualMetaEdgeDegree();
+            view.incMutualMetaEdgesTotal(1);
+        }
+        view.incMetaEdgesCount(1);
         return newEdge;
     }
 
@@ -353,8 +379,16 @@ public class EdgeProcessor {
                 dhns.getSettingsManager().getMetaEdgeBuilder().pullEdge(edge, edgeSource, edgeTarget, metaEdge);
             }
             if (metaEdge.isEmpty()) {
-                metaEdge.getSource(viewId).getMetaEdgesOutTree().remove(metaEdge);
-                metaEdge.getTarget(viewId).getMetaEdgesInTree().remove(metaEdge);
+                AbstractNode source = metaEdge.getSource(viewId);
+                AbstractNode target = metaEdge.getTarget(viewId);
+                if(!metaEdge.isSelfLoop() && source.getMetaEdgesInTree().hasNeighbour(target)) {
+                    source.decMutualMetaEdgeDegree();
+                    target.decMutualMetaEdgeDegree();
+                    view.decMutualMetaEdgesTotal(1);
+                }
+                source.getMetaEdgesOutTree().remove(metaEdge);
+                target.getMetaEdgesInTree().remove(metaEdge);
+                view.decMetaEdgesCount(1);
             }
         }
     }
@@ -391,6 +425,7 @@ public class EdgeProcessor {
                 AbstractNode source = edge.getSource(viewId);
                 edgeIterator.remove();
                 source.getMetaEdgesOutTree().remove((MetaEdgeImpl) edge);
+                view.decMetaEdgesCount(1);
 
                 if (!node.getEdgesInTree().hasNeighbour(source)) {
                     AbstractEdge realEdge = dhns.factory().newEdge(source, node, edge.getWeight(), edge.isDirected());
@@ -423,6 +458,7 @@ public class EdgeProcessor {
                 AbstractNode target = edge.getTarget(viewId);
                 edgeIterator.remove();
                 target.getMetaEdgesInTree().remove((MetaEdgeImpl) edge);
+                view.decMetaEdgesCount(1);
 
                 if (!node.getEdgesOutTree().hasNeighbour(target)) {
                     AbstractEdge realEdge = dhns.factory().newEdge(node, target, edge.getWeight(), edge.isDirected());
@@ -449,6 +485,8 @@ public class EdgeProcessor {
                 i++;
             }
         }
+        view.decMutualMetaEdgesTotal(node.getMutualMetaEdgeDegree());
+        node.setMutualMetaEdgeDegree(0);
         return newEdges;
     }
 

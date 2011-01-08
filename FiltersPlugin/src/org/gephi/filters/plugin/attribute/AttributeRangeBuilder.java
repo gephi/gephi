@@ -44,6 +44,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -172,7 +173,8 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
 
         public boolean init(Graph graph) {
-            dynamicHelper = new DynamicAttributesHelper(this, graph);
+            HierarchicalGraph hg = graph.getGraphModel().getHierarchicalGraphVisible();
+            dynamicHelper = new DynamicAttributesHelper(this, hg);
             if (range == null) {
                 getValues();
                 refreshRange();
@@ -209,10 +211,10 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         public Object[] getValues() {
             if (values == null) {
                 GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-                Graph graph = gm.getGraph();
+                HierarchicalGraph hgraph = gm.getHierarchicalGraphVisible();
                 List<Object> vals = new ArrayList<Object>();
                 if (AttributeUtils.getDefault().isNodeColumn(column)) {
-                    for (Node n : graph.getNodes()) {
+                    for (Node n : hgraph.getNodes()) {
                         Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
                         val = dynamicHelper.getDynamicValue(val);
                         if (val != null) {
@@ -220,7 +222,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
                         }
                     }
                 } else {
-                    for (Edge e : graph.getEdges()) {
+                    for (Edge e : hgraph.getEdgesAndMetaEdges()) {
                         Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
                         val = dynamicHelper.getDynamicValue(val);
                         if (val != null) {
@@ -228,6 +230,11 @@ public class AttributeRangeBuilder implements CategoryBuilder {
                         }
                     }
                 }
+                //If the column is empty for every node/edge
+                if (vals.isEmpty()) {
+                    vals.add(0);
+                }
+
                 //Object[] valuesArray = vals.toArray();
                 Comparable[] comparableArray = ComparableArrayConverter.convert(vals);
 

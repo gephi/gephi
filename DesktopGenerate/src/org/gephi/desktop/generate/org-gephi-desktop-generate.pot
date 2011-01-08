@@ -20,3 +20,6 @@ msgstr "Generate"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Integrate generators in UI"
+
+msgid "DesktopGeneratorController.taskname"
+msgstr "Generate {0}"

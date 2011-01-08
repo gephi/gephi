@@ -481,7 +481,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
             }
 
             //Data attribute value
-            AttributeColumn column = container.getAttributeModel().getNodeTable().getColumn(fore);
+            AttributeColumn column = container.getAttributeModel().getEdgeTable().getColumn(fore);
             if (column != null) {
                 try {
                     Object val = column.getType().parse(value);

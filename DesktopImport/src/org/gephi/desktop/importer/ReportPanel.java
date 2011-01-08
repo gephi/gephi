@@ -27,8 +27,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -209,7 +207,13 @@ public class ReportPanel extends javax.swing.JPanel {
 
             public void run() {
                 //Source
-                sourceLabel.setText(container.getSource());
+                String source = container.getSource();
+                String[] label = source.split("\\.");
+                if (label.length > 2 && label[label.length-2].matches("\\d+")) { //case of temp file
+                    source = source.replaceFirst("."+label[label.length-2], "");
+                }
+                
+                sourceLabel.setText(source);
 
                 //Autoscale
                 autoscaleCheckbox.setSelected(container.isAutoScale());

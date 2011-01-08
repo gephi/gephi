@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
 import java.util.ArrayList;
@@ -75,12 +75,11 @@ public class EventManager implements Runnable {
             AbstractEvent evt = null;
             while ((evt = eventQueue.peek()) != null) {
                 if (precEvt != null) {
-                    if ((evt instanceof NodeEvent || evt instanceof EdgeEvent) && precEvt.getEventType().equals(evt.getEventType()) && precEvt.getView()==evt.getView()) {     //Same type
+                    if ((evt instanceof NodeEvent || evt instanceof EdgeEvent) && precEvt.getEventType().equals(evt.getEventType()) && precEvt.getView() == evt.getView()) {     //Same type
                         if (eventCompress == null) {
                             eventCompress = new ArrayList<Object>();
                             eventCompress.add(precEvt.getData());
                         }
-
                         eventCompress.add(evt.getData());
                     } else {
                         break;

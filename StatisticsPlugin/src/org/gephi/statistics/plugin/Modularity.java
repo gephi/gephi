@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Patick J. McSweeney <pjmcswee@syr.edu>
+Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.statistics.plugin;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
@@ -32,8 +31,8 @@ import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -46,122 +45,88 @@ import org.gephi.utils.progress.ProgressTicket;
 public class Modularity implements Statistics, LongTask {
 
     public static final String MODULARITY_CLASS = "modularity_class";
-    private ProgressTicket mProgress;
-    private boolean mIsCanceled;
-    private CommunityStructure mStructure;
-    private double mModularity;
-    private boolean mRandomize = false;
+    private ProgressTicket progress;
+    private boolean isCanceled;
+    private CommunityStructure structure;
+    private double modularity;
+    private boolean isRandomized = false;
 
-    /**
-     *
-     * @param pRandom
-     */
-    public void setRandom(boolean pRandom) {
-        mRandomize = pRandom;
+    public void setRandom(boolean isRandomized) {
+        this.isRandomized = isRandomized;
     }
 
-    /**
-     * 
-     * @return
-     */
     public boolean getRandom() {
-        return mRandomize;
+        return isRandomized;
     }
 
-    /**
-     * 
-     * @return
-     */
     public boolean cancel() {
-        mIsCanceled = true;
+        this.isCanceled = true;
         return true;
     }
 
-    /**
-     *
-     * @param progressTicket
-     */
     public void setProgressTicket(ProgressTicket progressTicket) {
-        mProgress = progressTicket;
+        this.progress = progressTicket;
     }
 
-    /**
-     *
-     */
     class ModEdge {
 
         int source;
         int target;
         int weight;
 
-        /**
-         * 
-         * @param pS
-         * @param pT
-         * @param pW
-         */
-        public ModEdge(int pS, int pT, int pW) {
-            source = pS;
-            target = pT;
-            weight = pW;
+        public ModEdge(int s, int t, int w) {
+            source = s;
+            target = t;
+            weight = w;
         }
     }
 
     class CommunityStructure {
 
-        /**   */
         HashMap<Community, Integer>[] nodeConnections;
-        /** */
         HashMap<Node, Integer> map;
-        /**   */
         Community[] nodeCommunities;
-        /** */
-        UndirectedGraph mGraph;
-        /** */
+        HierarchicalUndirectedGraph graph;
         double[] weights;
         double graphWeightSum;
         LinkedList<ModEdge>[] topology;
-        LinkedList<Community> mCommunities;
+        LinkedList<Community> communities;
         int N;
         HashMap<Integer, Community> invMap;
 
-        /**
-         * 
-         * @param graph
-         */
-        CommunityStructure(UndirectedGraph graph) {
-            mGraph = graph;
-            N = graph.getNodeCount();
+        CommunityStructure(HierarchicalUndirectedGraph hgraph) {
+            this.graph = hgraph;
+            N = hgraph.getNodeCount();
             invMap = new HashMap<Integer, Community>();
             nodeConnections = new HashMap[N];
             nodeCommunities = new Community[N];
             map = new HashMap<Node, Integer>();
             topology = new LinkedList[N];
-            mCommunities = new LinkedList<Community>();
+            communities = new LinkedList<Community>();
             int index = 0;
             weights = new double[N];
-            for (Node node : graph.getNodes()) {
+            for (Node node : hgraph.getNodes()) {
                 map.put(node, index);
                 nodeCommunities[index] = new Community(this);
                 nodeConnections[index] = new HashMap<Community, Integer>();
-                weights[index] = graph.getDegree(node);
+                weights[index] = hgraph.getTotalDegree(node);
                 nodeCommunities[index].seed(index);
-                Community hidden = new Community(mStructure);
-                hidden.mNodes.add(index);
+                Community hidden = new Community(structure);
+                hidden.nodes.add(index);
                 invMap.put(index, hidden);
-                mCommunities.add(nodeCommunities[index]);
+                communities.add(nodeCommunities[index]);
                 index++;
 
-                if (mIsCanceled) {
+                if (isCanceled) {
                     return;
                 }
             }
 
-            for (Node node : graph.getNodes()) {
+            for (Node node : hgraph.getNodes()) {
                 int node_index = map.get(node);
                 topology[node_index] = new LinkedList<ModEdge>();
 
-                for (Node neighbor : graph.getNeighbors(node)) {
+                for (Node neighbor : hgraph.getNeighbors(node)) {
                     if (node == neighbor) {
                         continue;
                     }
@@ -176,32 +141,27 @@ public class Modularity implements Statistics, LongTask {
                     graphWeightSum++;
                 }
 
-                if (mIsCanceled) {
+                if (isCanceled) {
                     return;
                 }
             }
             graphWeightSum /= 2.0;
         }
 
-        /**
-         *
-         * @param node
-         * @param pTo
-         */
-        private void addNodeTo(int node, Community pTo) {
-            pTo.add(new Integer(node));
-            nodeCommunities[node] = pTo;
+        private void addNodeTo(int node, Community to) {
+            to.add(new Integer(node));
+            nodeCommunities[node] = to;
 
             for (ModEdge e : topology[node]) {
                 int neighbor = e.target;
 
                 ////////
                 //Remove Node Connection to this community
-                Integer neighEdgesTo = nodeConnections[neighbor].get(pTo);
+                Integer neighEdgesTo = nodeConnections[neighbor].get(to);
                 if (neighEdgesTo == null) {
-                    nodeConnections[neighbor].put(pTo, e.weight);
+                    nodeConnections[neighbor].put(to, e.weight);
                 } else {
-                    nodeConnections[neighbor].put(pTo, neighEdgesTo + e.weight);
+                    nodeConnections[neighbor].put(to, neighEdgesTo + e.weight);
                 }
 
 
@@ -209,11 +169,11 @@ public class Modularity implements Statistics, LongTask {
 
                 ///////////////////
                 Community adjCom = nodeCommunities[neighbor];
-                Integer oEdgesto = adjCom.connections.get(pTo);
+                Integer oEdgesto = adjCom.connections.get(to);
                 if (oEdgesto == null) {
-                    adjCom.connections.put(pTo, e.weight);
+                    adjCom.connections.put(to, e.weight);
                 } else {
-                    adjCom.connections.put(pTo, oEdgesto + e.weight);
+                    adjCom.connections.put(to, oEdgesto + e.weight);
                 }
 
                 Integer nodeEdgesTo = nodeConnections[node].get(adjCom);
@@ -223,23 +183,18 @@ public class Modularity implements Statistics, LongTask {
                     nodeConnections[node].put(adjCom, nodeEdgesTo + e.weight);
                 }
 
-                if (pTo != adjCom) {
-                    Integer comEdgesto = pTo.connections.get(adjCom);
+                if (to != adjCom) {
+                    Integer comEdgesto = to.connections.get(adjCom);
                     if (comEdgesto == null) {
-                        pTo.connections.put(adjCom, e.weight);
+                        to.connections.put(adjCom, e.weight);
                     } else {
-                        pTo.connections.put(adjCom, comEdgesto + e.weight);
+                        to.connections.put(adjCom, comEdgesto + e.weight);
                     }
                 }
             }
         }
 
-        /**
-         * 
-         * @param node
-         * @param pFrom
-         */
-        private void removeNodeFrom(int node, Community pFrom) {
+        private void removeNodeFrom(int node, Community from) {
             Community community = nodeCommunities[node];
             for (ModEdge e : topology[node]) {
                 int neighbor = e.target;
@@ -285,48 +240,38 @@ public class Modularity implements Statistics, LongTask {
 
 
             }
-            pFrom.remove(new Integer(node));
+            from.remove(new Integer(node));
         }
 
-        /**
-         *
-         * @param node
-         * @param pFrom
-         * @param pTo
-         */
-        public void moveNodeTo(int node, Community pTo) {
+        private void moveNodeTo(int node, Community to) {
             Community from = nodeCommunities[node];
             removeNodeFrom(node, from);
-            addNodeTo(node, pTo);
+            addNodeTo(node, to);
         }
 
-        /**
-         *
-         * @return
-         */
-        public void zoomOut() {
-            int M = mCommunities.size();
+        private void zoomOut() {
+            int M = communities.size();
             LinkedList<ModEdge>[] newTopology = new LinkedList[M];
             int index = 0;
             nodeCommunities = new Community[M];
             nodeConnections = new HashMap[M];
             HashMap<Integer, Community> newInvMap = new HashMap<Integer, Community>();
-            for (int i = 0; i < mCommunities.size(); i++) {//Community com : mCommunities) {
-                Community com = mCommunities.get(i);
+            for (int i = 0; i < communities.size(); i++) {//Community com : mCommunities) {
+                Community com = communities.get(i);
                 nodeConnections[index] = new HashMap<Community, Integer>();
                 newTopology[index] = new LinkedList<ModEdge>();
                 nodeCommunities[index] = new Community(com);
                 Set<Community> iter = com.connections.keySet();
                 double weightSum = 0;
 
-                Community hidden = new Community(mStructure);
-                for (Integer nodeInt : com.mNodes) {
+                Community hidden = new Community(structure);
+                for (Integer nodeInt : com.nodes) {
                     Community oldHidden = invMap.get(nodeInt);
-                    hidden.mNodes.addAll(oldHidden.mNodes);
+                    hidden.nodes.addAll(oldHidden.nodes);
                 }
                 newInvMap.put(index, hidden);
                 for(Community adjCom : iter) {
-                    int target = mCommunities.indexOf(adjCom);
+                    int target = communities.indexOf(adjCom);
                     int weight = com.connections.get(adjCom);
 
                     weightSum += weight;
@@ -338,11 +283,11 @@ public class Modularity implements Statistics, LongTask {
 
                 index++;
             }
-            mCommunities.clear();
+            communities.clear();
 
             for (int i = 0; i < M; i++) {
                 Community com = nodeCommunities[i];
-                mCommunities.add(com);
+                communities.add(com);
                 for (ModEdge e : newTopology[i]) {
                     nodeConnections[i].put(nodeCommunities[e.target], e.weight);
                     com.connections.put(nodeCommunities[e.target], e.weight);
@@ -356,86 +301,57 @@ public class Modularity implements Statistics, LongTask {
         }
     }
 
-    /**
-     *
-     */
     class Community {
 
         double weightSum;
-        CommunityStructure mStructure;
-        LinkedList<Integer> mNodes;
+        CommunityStructure structure;
+        LinkedList<Integer> nodes;
         HashMap<Community, Integer> connections;
         Integer min;
 
-        /**
-         * 
-         * @return
-         */
         public int size() {
-            return mNodes.size();
+            return nodes.size();
         }
 
-        /**
-         * 
-         * @param pCom
-         */
-        public Community(Community pCom) {
-            mStructure = pCom.mStructure;
+        public Community(Community com) {
+            structure = com.structure;
             connections = new HashMap<Community, Integer>();
-            mNodes = new LinkedList<Integer>();
+            nodes = new LinkedList<Integer>();
             min = Integer.MAX_VALUE;
             //mHidden = pCom.mHidden;
         }
 
-        /**
-         * 
-         * @param pStructure
-         */
-        public Community(CommunityStructure pStructure) {
-            mStructure = pStructure;
+        public Community(CommunityStructure structure) {
+            this.structure = structure;
             connections = new HashMap<Community, Integer>();
-            mNodes = new LinkedList<Integer>();
+            nodes = new LinkedList<Integer>();
         }
 
-        /**
-         * 
-         * @param node
-         */
         public void seed(int node) {
-            mNodes.add(node);
-            weightSum += mStructure.weights[node];
+            nodes.add(node);
+            weightSum += structure.weights[node];
             min = node;
         }
 
-        /**
-         *
-         * @param node
-         * @return
-         */
         public boolean add(int node) {
-            mNodes.addLast(new Integer(node));
-            weightSum += mStructure.weights[node];
-            if (!mRandomize) {
+            nodes.addLast(new Integer(node));
+            weightSum += structure.weights[node];
+            if (!isRandomized) {
                 min = Math.min(node, min);
             }
             return true;
         }
 
-        /**
-         * 
-         * @param node
-         * @return
-         */
         public boolean remove(int node) {
-            boolean result = mNodes.remove(new Integer(node));
-            weightSum -= mStructure.weights[node];
-            if (mNodes.size() == 0) {
-                mStructure.mCommunities.remove(this);
+            boolean result = nodes.remove(new Integer(node));
+            weightSum -= structure.weights[node];
+            if (nodes.size() == 0) {
+                structure.communities.remove(this);
             }
-            if (!mRandomize) {
+            if (!isRandomized) {
                 if (node == min.intValue()) {
                     min = Integer.MAX_VALUE;
-                    for (Integer other : mNodes) {
+                    for (Integer other : nodes) {
                         min = Math.min(other, min);
                     }
                 }
@@ -448,25 +364,21 @@ public class Modularity implements Statistics, LongTask {
         }
     }
 
-    /**
-     *
-     * @param graphModel
-     */
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
-        UndirectedGraph graph = graphModel.getUndirectedGraphVisible();
-        execute(graph, attributeModel);
+        HierarchicalUndirectedGraph hgraph = graphModel.getHierarchicalUndirectedGraphVisible();
+        execute(hgraph, attributeModel);
     }
 
-    public void execute(UndirectedGraph graph, AttributeModel attributeModel) {
-        mIsCanceled = false;
-        Progress.start(mProgress);
+    public void execute(HierarchicalUndirectedGraph hgraph, AttributeModel attributeModel) {
+        isCanceled = false;
+        Progress.start(progress);
         Random rand = new Random();
 
-        graph.readLock();
+        hgraph.readLock();
 
-        mStructure = new CommunityStructure(graph);
-        if (mIsCanceled) {
-            graph.readUnlockAll();
+        structure = new CommunityStructure(hgraph);
+        if (isCanceled) {
+            hgraph.readUnlockAll();
             return;
         }
         boolean someChange = true;
@@ -478,17 +390,17 @@ public class Modularity implements Statistics, LongTask {
             while (localChange) {
                 localChange = false;
                 int start = 0;
-                if (mRandomize) {
-                    start = Math.abs(rand.nextInt()) % mStructure.N;
+                if (isRandomized) {
+                    start = Math.abs(rand.nextInt()) % structure.N;
                 }
                 int step = 0;
-                for (int i = start; step < mStructure.N; i = (i + 1) % mStructure.N) {
+                for (int i = start; step < structure.N; i = (i + 1) % structure.N) {
                     step++;
                     double best = 0;
-                    double current = q(i, mStructure.nodeCommunities[i]);
+                    double current = q(i, structure.nodeCommunities[i]);
                     Community bestCommunity = null;
                     int smallest = Integer.MAX_VALUE;
-                    Set<Community> iter = mStructure.nodeConnections[i].keySet();
+                    Set<Community> iter = structure.nodeConnections[i].keySet();
                     for(Community com : iter) {
                         double qValue = q(i, com) - current;
                         if (qValue > best) {
@@ -501,57 +413,50 @@ public class Modularity implements Statistics, LongTask {
                             smallest = com.getMin();
                         }
                     }
-                    if ((mStructure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
-                        mStructure.moveNodeTo(i, bestCommunity);
+                    if ((structure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
+                        structure.moveNodeTo(i, bestCommunity);
                         localChange = true;
                     }
-                    if (mIsCanceled) {
-                        graph.readUnlockAll();
+                    if (isCanceled) {
+                        hgraph.readUnlockAll();
                         return;
                     }
                 }
                 someChange = localChange || someChange;
-                if (mIsCanceled) {
-                    graph.readUnlockAll();
+                if (isCanceled) {
+                    hgraph.readUnlockAll();
                     return;
                 }
             }
 
             if (someChange) {
-                mStructure.zoomOut();
+                structure.zoomOut();
             }
         }
 
-        int[] comStructure = new int[graph.getNodeCount()];
+        int[] comStructure = new int[hgraph.getNodeCount()];
         int count = 0;
-        double[] degreeCount = new double[mStructure.mCommunities.size()];
-        for (Community com : mStructure.mCommunities) {
-            for (Integer node : com.mNodes) {
-                Community hidden = mStructure.invMap.get(node);
-                for (Integer nodeInt : hidden.mNodes) {
+        double[] degreeCount = new double[structure.communities.size()];
+        for (Community com : structure.communities) {
+            for (Integer node : com.nodes) {
+                Community hidden = structure.invMap.get(node);
+                for (Integer nodeInt : hidden.nodes) {
                     comStructure[nodeInt] = count;
                 }
             }
             count++;
         }
-        for (Node node : graph.getNodes()) {
-            int index = mStructure.map.get(node);
-            degreeCount[comStructure[index]] += graph.getDegree(node);
+        for (Node node : hgraph.getNodes()) {
+            int index = structure.map.get(node);
+            degreeCount[comStructure[index]] += hgraph.getTotalDegree(node);
         }
 
-        mModularity = finalQ(comStructure, degreeCount, graph, attributeModel);
+        modularity = finalQ(comStructure, degreeCount, hgraph, attributeModel);
 
-        graph.readUnlock();
+        hgraph.readUnlock();
     }
 
-    /**
-     * 
-     * @param pStruct
-     * @param pDegrees
-     * @param pGraph
-     * @return
-     */
-    public double finalQ(int[] pStruct, double[] pDegrees, UndirectedGraph pGraph, AttributeModel attributeModel) {
+    private double finalQ(int[] struct, double[] degrees, HierarchicalUndirectedGraph hgraph, AttributeModel attributeModel) {
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn modCol = nodeTable.getColumn(MODULARITY_CLASS);
         if (modCol == null) {
@@ -559,73 +464,59 @@ public class Modularity implements Statistics, LongTask {
         }
 
         double res = 0;
-        double[] internal = new double[pDegrees.length];
-        for (Node n : pGraph.getNodes()) {
-            int n_index = mStructure.map.get(n);
+        double[] internal = new double[degrees.length];
+        for (Node n : hgraph.getNodes()) {
+            int n_index = structure.map.get(n);
             AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
-            row.setValue(modCol, pStruct[n_index]);
-            for (Node neighbor : pGraph.getNeighbors(n)) {
+            row.setValue(modCol, struct[n_index]);
+            for (Node neighbor : hgraph.getNeighbors(n)) {
                 if (n == neighbor) {
                     continue;
                 }
-                int neigh_index = mStructure.map.get(neighbor);
-                if (pStruct[neigh_index] == pStruct[n_index]) {
-                    internal[pStruct[neigh_index]]++;
+                int neigh_index = structure.map.get(neighbor);
+                if (struct[neigh_index] == struct[n_index]) {
+                    internal[struct[neigh_index]]++;
                 }
             }
         }
-        for (int i = 0; i < pDegrees.length; i++) {
+        for (int i = 0; i < degrees.length; i++) {
             internal[i] /= 2.0;
-            res += (internal[i] / pGraph.getEdgeCount()) - Math.pow(pDegrees[i] / (2 * pGraph.getEdgeCount()), 2);
+            res += (internal[i] / hgraph.getTotalEdgeCount()) - Math.pow(degrees[i] / (2 * hgraph.getTotalEdgeCount()), 2);
         }
         return res;
     }
 
-    /**
-     * 
-     * @return
-     */
     public double getModularity() {
-        return mModularity;
+        return modularity;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getReport() {
 
         String report = "<HTML> <BODY> <h1>Modularity Report </h1> "
                 + "<hr>"
                 + "<h2> Parameters: </h2>"
-                + "Randomize:  " + (this.mRandomize ? "On" : "Off") + "<br>"
+                + "Randomize:  " + (isRandomized ? "On" : "Off") + "<br>"
                 + "<br> <h2> Results: </h2>"
-                + "Modularity: " + mModularity + "<br>"
-                + "Number of Communities: " + mStructure.mCommunities.size()
+                + "Modularity: " + modularity + "<br>"
+                + "Number of Communities: " + structure.communities.size()
                 + "</BODY></HTML>";
 
         return report;
     }
 
-    /**
-     * 
-     * @param node
-     * @param pCom
-     * @return
-     */
-    private double q(int node, Community pCommunity) {
+    private double q(int node, Community community) {
 
-        Integer edgesToInt = mStructure.nodeConnections[node].get(pCommunity);
+        Integer edgesToInt = structure.nodeConnections[node].get(community);
         double edgesTo = 0;
         if (edgesToInt != null) {
             edgesTo = edgesToInt.doubleValue();
         }
-        double weightSum = pCommunity.weightSum;
-        double nodeWeight = mStructure.weights[node];
-        double penalty = (nodeWeight * weightSum) / (2.0 * mStructure.graphWeightSum);
-        double qValue = edgesTo - (nodeWeight * weightSum) / (2.0 * mStructure.graphWeightSum);
-        if ((mStructure.nodeCommunities[node] == pCommunity) && (mStructure.nodeCommunities[node].size() > 1)) {
-            qValue = edgesTo - (nodeWeight * (weightSum - nodeWeight)) / (2.0 * mStructure.graphWeightSum);
+        double weightSum = community.weightSum;
+        double nodeWeight = structure.weights[node];
+        //double penalty = (nodeWeight * weightSum) / (2.0 * mStructure.graphWeightSum);
+        double qValue = edgesTo - (nodeWeight * weightSum) / (2.0 * structure.graphWeightSum);
+        if ((structure.nodeCommunities[node] == community) && (structure.nodeCommunities[node].size() > 1)) {
+            qValue = edgesTo - (nodeWeight * (weightSum - nodeWeight)) / (2.0 * structure.graphWeightSum);
         }
         return qValue;
     }

@@ -77,14 +77,20 @@ public class DurableTreeList extends AbstractList<AbstractNode> implements Itera
     int size = 0;
     private int preConsistent = 0;
     protected int[] levelsSize;
+    private final GraphViewImpl view;
 
     //-----------------------------------------------------------------------
     /**
      * Constructs a new empty list.
      */
-    public DurableTreeList() {
+    public DurableTreeList(GraphViewImpl view) {
         super();
+        this.view = view;
         levelsSize = new int[1];
+    }
+
+    public GraphViewImpl getView() {
+        return view;
     }
 
     /**

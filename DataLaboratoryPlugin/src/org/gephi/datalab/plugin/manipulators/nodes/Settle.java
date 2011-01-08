@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
+import org.gephi.datalab.api.DataTablesController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
@@ -46,6 +47,7 @@ public class Settle implements NodesManipulator {
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         gec.setNodesFixed(nodes, true);
+        Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
     }
 
     public String getName() {
