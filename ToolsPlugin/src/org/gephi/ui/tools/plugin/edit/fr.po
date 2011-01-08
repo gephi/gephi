@@ -8,14 +8,62 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-04-26 04:48+0000\n"
-"Last-Translator: Mathieu Bastian <mathieu.bastian@gmail.com>\n"
+"PO-Revision-Date: 2010-12-25 20:54+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-27 03:43+0000\n"
+"X-Launchpad-Export-Date: 2010-12-26 04:53+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "CTL_EditToolTopComponent"
 msgstr "Edition"
+
+msgid "EditNodes.multiple.elements"
+msgstr "Noeuds divers"
+
+msgid "EditNodes.properties.text"
+msgstr "{0} - Propriétés"
+
+msgid "EditNodes.attributes.text"
+msgstr "{0} - Attributs"
+
+msgid "EditNodes.properties.text.multiple"
+msgstr "Noeuds divers - Propriétés"
+
+msgid "EditNodes.attributes.text.multiple"
+msgstr "Noeuds divers - Attributs"
+
+msgid "EditNodes.size.text"
+msgstr "Taille"
+
+msgid "EditNodes.position.text"
+msgstr "Position ({0})"
+
+msgid "EditNodes.color.text"
+msgstr "Couleur"
+
+msgid "EditEdges.multiple.elements"
+msgstr "Liens variés"
+
+msgid "EditEdges.properties.text"
+msgstr "{0} - Propriétés"
+
+msgid "EditEdges.attributes.text"
+msgstr "{0} - Attributs"
+
+msgid "EditEdges.properties.text.multiple"
+msgstr "Liens variés - Propriétés"
+
+msgid "EditEdges.attributes.text.multiple"
+msgstr "Liens variés - Attributs"
+
+msgid "EditEdges.size.text"
+msgstr "Taille"
+
+msgid "EditEdges.position.text"
+msgstr "Position ({0})"
+
+msgid "EditEdges.color.text"
+msgstr "Couleur"

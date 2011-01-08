@@ -1,0 +1,45 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-26 19:56+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-27 04:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "LinkNodesUI.descriptionLabel.text"
+msgstr ""
+"<html>Escoge el nodo origen y el tipo de la(s) arista(s).<br>Se crearán "
+"aristas entre el nodo seleccionado y todos los demás nodos cuando sea "
+"posible.</html>"
+
+msgid "LinkNodesUI.directedEdge.text"
+msgstr "Dirigida"
+
+msgid "LinkNodesUI.undirectedEdge.text"
+msgstr "No dirigida"
+
+msgid "LinkNodesUI.sourceNodeLabel.text"
+msgstr "Nodo origen:"
+
+msgid "LinkNodesUI.edgeTypeLabel.text"
+msgstr "Tipo de arista:"
+
+msgid "MoveNodeToGroupUI.descriptionLabel.text"
+msgstr "Elige el grupo al que mover lo(s) nodo(s)"
+
+msgid "CopyNodesUI.descriptionLabel.text"
+msgstr "Elige el número de copias:"
+
+msgid "SetNodesSizeUI.sizeLabel.text"
+msgstr "Nuevo tamaño para lo(s) nodo(s):"

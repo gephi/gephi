@@ -1,0 +1,195 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-29 15:11+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-30 04:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "ClearEdgesUI.deleteDirectedCheckbox.text"
+msgstr "Supprimer liens dirigés"
+
+msgid "ClearEdgesUI.descriptionLabel.text"
+msgstr "Types de liens à supprimer :"
+
+msgid "ClearEdgesUI.deleteUndirectedChekbox.text"
+msgstr "Supprimer liens non dirigés"
+
+msgid "AddEdgeToGraphUI.descriptionLabel.text"
+msgstr ""
+"Sélectionnez le type du lien créé, ses noeuds source et destination :"
+
+msgid "AddEdgeToGraphUI.directedRadioButton.text"
+msgstr "Dirigé"
+
+msgid "AddEdgeToGraphUI.undirectedRadioButton.text"
+msgstr "Non dirigé"
+
+msgid "AddEdgeToGraphUI.sourceNodeLabel.text"
+msgstr "Noeud source :"
+
+msgid "AddEdgeToGraphUI.targetNodeLabel.text"
+msgstr "Noeud de destination :"
+
+msgid "SearchReplaceUI.searchLabel.text"
+msgstr "Rechercher :"
+
+msgid "SearchReplaceUI.replaceLabel.text"
+msgstr "Remplacer par :"
+
+msgid "SearchReplaceUI.matchWholeValueCheckBox.text"
+msgstr "Chaîne complète"
+
+msgid "SearchReplaceUI.caseSensitiveCheckBox.text"
+msgstr "Sensible à la casse"
+
+msgid "SearchReplaceUI.normalSearchModeRadioButton.text"
+msgstr "Recherche normale"
+
+msgid "SearchReplaceUI.regexSearchModeRadioButton.text"
+msgstr "Recherche par expression rationnelle"
+
+msgid "SearchReplaceUI.findNextButton.text"
+msgstr "Trouver suivant"
+
+msgid "SearchReplaceUI.replaceButton.text"
+msgstr "Remplacer"
+
+msgid "SearchReplaceUI.replaceAllButton.text"
+msgstr "Tout remplacer"
+
+msgid "SearchReplaceUI.descriptionLabel.text.nodes"
+msgstr "Chercher parmi les noeuds"
+
+msgid "SearchReplaceUI.descriptionLabel.text.edges"
+msgstr "Chercher parmi les liens"
+
+msgid "SearchReplaceUI.resultLabel.text"
+msgstr "Résultat :"
+
+msgid "SearchReplaceUI.resultText.contentType"
+msgstr "text/html"
+
+msgid "SearchReplaceUI.not.found"
+msgstr "\"{0}\" introuvable"
+
+msgid "SearchReplaceUI.regexReplacementError"
+msgstr "Chaïne de remplacement incorrecte pour l'expression rationnelle"
+
+msgid "SearchReplaceUI.dialog.title.error"
+msgstr "Erreur"
+
+msgid "SearchReplaceUI.replacements.count.message"
+msgstr "{0} ocurrences ont été remplacées"
+
+msgid "SearchReplaceUI.column"
+msgstr "Colonne: ''{0}''"
+
+msgid "ImportCSVUIWizardAction.name"
+msgstr "Importer feuille de calcul"
+
+msgid "ImportCSVUIVisualPanel1.name"
+msgstr "Options générales"
+
+msgid "ImportCSVUIVisualPanel1.comma"
+msgstr "Virgule"
+
+msgid "ImportCSVUIVisualPanel1.semicolon"
+msgstr "Point-virgule"
+
+msgid "ImportCSVUIVisualPanel1.space"
+msgstr "Espace"
+
+msgid "ImportCSVUIVisualPanel1.tab"
+msgstr "Tabulation"
+
+msgid "ImportCSVUIVisualPanel1.nodes-table"
+msgstr "Table des noeuds"
+
+msgid "ImportCSVUIVisualPanel1.edges-table"
+msgstr "Table des liens"
+
+msgid "ImportCSVUIVisualPanel1.filechooser.csvDescription"
+msgstr "CSV"
+
+msgid "ImportCSVUIVisualPanel1.tableLabel.text"
+msgstr "En tant que table :"
+
+msgid "ImportCSVUIVisualPanel1.fileButton.text"
+msgstr "..."
+
+msgid "ImportCSVUIVisualPanel1.separatorLabel.text"
+msgstr "Séparateur :"
+
+msgid "ImportCSVUIVisualPanel1.descriptionLabel.text"
+msgstr "Choisissez un fichier CSV à importer :"
+
+msgid "ImportCSVUIVisualPanel1.previewLabel.text"
+msgstr "Prévisualisation :"
+
+msgid "ImportCSVUIVisualPanel1.charsetLabel.text"
+msgstr "Encodage :"
+
+msgid "ImportCSVUIVisualPanel1.validation.invalid-file"
+msgstr "Fichier CSV invalide"
+
+msgid "ImportCSVUIVisualPanel1.validation.no-columns"
+msgstr "Le fichier n'a aucune colonne."
+
+msgid "ImportCSVUIVisualPanel1.validation.repeated-columns"
+msgstr "Les noms de colonne doivent être unique dans le fichier."
+
+msgid "ImportCSVUIVisualPanel1.validation.error"
+msgstr "Erreur"
+
+msgid "ImportCSVUIVisualPanel1.validation.file-permissions-error"
+msgstr ""
+"Erreur lors de la lecture du fichier. Vérifiez qu'il n'est pas utilisé et "
+"que vous avez les bonnes permissions."
+
+msgid "ImportCSVUIVisualPanel1.validation.edges.no-source-target-columns"
+msgstr ""
+"La tables des liens nécessite les colonnes 'Source' et 'Target' contenant "
+"les ids des noeuds."
+
+msgid "ImportCSVUIVisualPanel2.name"
+msgstr "Paramètres d'import"
+
+msgid "ImportCSVUIVisualPanel2.columnsLabel.text"
+msgstr "Colonnes importées :"
+
+msgid "ImportCSVUIVisualPanel2.nodes.description"
+msgstr ""
+"<html>Les nouvelles colonnes ont le type spécifié.<br />Un identifiant est "
+"créé s'il est manquant.<br />Les noeuds existants sont mis à jour sauf si "
+"l'option 'Forcer les noeuds importés à être de nouveaux noeuds' est "
+"cochée.</html>"
+
+msgid "ImportCSVUIVisualPanel2.nodes.assign-ids-checkbox"
+msgstr "Forcer les noeuds importés à être de nouveaux noeuds"
+
+msgid "ImportCSVUIVisualPanel2.edges.description"
+msgstr ""
+"<html>Les nouvelles colonnes ont le type spécifié.<br />Un identifiant est "
+"créé s'il est manquant ou déjà présent.<br />Les liens ont besoin de "
+"colonnes 'Source' et 'Target' contenant les ids des noeuds. Si une ligne "
+"n'en contient pas, elle est ignorée.<br />Sans colonne 'Type', les liens "
+"sont dirigés.<br />Si un lien existe ou ne peut être crééé, il est "
+"ignoré.</html>"
+
+msgid "ImportCSVUIVisualPanel2.edges.create-new-nodes-checkbox"
+msgstr "Créer les noeuds manquants"
+
+msgid "SearchReplaceUI.regexReplaceCheckBox.text"
+msgstr "Remplacement par expression rationnelle"

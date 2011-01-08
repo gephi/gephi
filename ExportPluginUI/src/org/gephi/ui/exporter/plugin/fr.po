@@ -8,20 +8,29 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-04-25 04:38+0000\n"
-"Last-Translator: Mathieu Bastian <mathieu.bastian@gmail.com>\n"
+"PO-Revision-Date: 2010-12-25 20:01+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-04-26 03:42+0000\n"
+"X-Launchpad-Export-Date: 2010-12-26 04:53+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Interface utilisateur des exporteurs standards"
 
-msgid "UIExporterGEXFPanel.labelExport.text"
-msgstr "Export :"
+msgid "UIExporterGDF.name"
+msgstr "GDF"
+
+msgid "UIExporterGEXF.name"
+msgstr "GEXF"
+
+msgid "UIExporterGraphML.name"
+msgstr "GraphML"
+
+msgid "UIExporterCSV.name"
+msgstr "CSV"
 
 msgid "UIExporterGDFPanel.jRadioButton1.text"
 msgstr "Guillemets simples"
@@ -53,6 +62,18 @@ msgstr "L'encapsulation des champs prend des guillemets doubles par défaut"
 msgid "UIExporterGDFPanel.labelNormalize.text"
 msgstr "Réduit les positions et tailles entre 0 et 1"
 
+msgid "UIExporterGDFPanel.simpleQuotesCheckbox.text"
+msgstr "Guillemets simples"
+
+msgid "UIExporterGDFPanel.labelQuotes1.text"
+msgstr "Utiliser les guillemets simples à la place des guillemets doubles"
+
+msgid "UIExporterGDFPanel.visibilityCheckbox.text"
+msgstr "Visibilité (graphe visible, labels visibles)"
+
+msgid "UIExporterGEXFPanel.labelExport.text"
+msgstr "Export :"
+
 msgid "UIExporterGEXFPanel.attributesExportCheckbox.text"
 msgstr "Attributs"
 
@@ -70,15 +91,6 @@ msgstr "Normaliser"
 
 msgid "UIExporterGEXFPanel.labelNormalize.text"
 msgstr "Réduit les positions et tailles entre 0 et 1"
-
-msgid "UIExporterGDFPanel.simpleQuotesCheckbox.text"
-msgstr "Guillemets simples"
-
-msgid "UIExporterGDFPanel.labelQuotes1.text"
-msgstr "Utiliser les guillemets simples à la place des guillemets doubles"
-
-msgid "UIExporterGDFPanel.visibilityCheckbox.text"
-msgstr "Visibilité (graphe visible, labels visibles)"
 
 msgid "UIExporterGraphMLPanel.labelExport.text"
 msgstr "Export :"
@@ -101,6 +113,12 @@ msgstr "Taille"
 msgid "UIExporterGraphMLPanel.labelNormalize.text"
 msgstr "Réduit les positions et tailles entre 0 et 1"
 
+msgid "UIExporterGraphMLPanel.hierarchyCheckbox.text"
+msgstr "Exporter la hiérarchie"
+
+msgid "UIExporterGraphMLPanel.labelNormalize1.text"
+msgstr "Arbre complet sous les méta-liens"
+
 msgid "UIExporterCSVPanel.labelExport.text"
 msgstr "Export :"
 
@@ -118,3 +136,12 @@ msgstr "Matrice"
 
 msgid "UIExporterCSVPanel.zeroEdgeCheckbox.text"
 msgstr "Zero si aucun lien"
+
+msgid "UIExporterGEXFPanel.dynamicExportCheckbox.text"
+msgstr "Dynamique"
+
+msgid "UIExporterGEXFPanel.labelNormalize1.text"
+msgstr "Arbre complet sous les méta-liens"
+
+msgid "UIExporterGEXFPanel.hierarchyCheckbox.text"
+msgstr "Exporter la hiérarchie"

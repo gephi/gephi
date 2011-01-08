@@ -1,0 +1,59 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-25 22:09+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-26 04:53+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "DegreeRangeBuilder.name"
+msgstr "Rango de grado"
+
+msgid "DegreeRangeBuilder.description"
+msgstr "Mantener nodos con un grado entre un rango"
+
+msgid "InDegreeRangeBuilder.name"
+msgstr "Rango de grado de entrada"
+
+msgid "InDegreeRangeBuilder.description"
+msgstr "Mantener nodos con un grado de entrada entre un rango"
+
+msgid "OutDegreeRangeBuilder.name"
+msgstr "Rango de grado de salida"
+
+msgid "OutDegreeRangeBuilder.description"
+msgstr "Mantener nodos con un grado de salida entre un rango"
+
+msgid "MutualDegreeRangeBuilder.name"
+msgstr "Rango de grado bidireccional"
+
+msgid "MutualDegreeRangeBuilder.description"
+msgstr "Mantener nodos con un grado mutuo entre un rango"
+
+msgid "EgoBuilder.name"
+msgstr "Ego"
+
+msgid "EgoBuilder.description"
+msgstr ""
+"Mantener vecinos a una profundidad de 1, 2, 3 o máxima de un nodo "
+"particular. El nodo será encontrado aplicando una expresión regular a su ID "
+"y etiqueta"
+
+msgid "GiantComponentBuilder.name"
+msgstr "Componente gigante"
+
+msgid "GiantComponentBuilder.description"
+msgstr ""
+"Mantener solamente nodos en el componente gigante (el componente con la "
+"mayoría de nodos)"

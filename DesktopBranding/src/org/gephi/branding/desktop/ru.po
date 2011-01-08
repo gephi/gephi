@@ -1,0 +1,95 @@
+# Russian translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-11-30 21:53+0000\n"
+"Last-Translator: Altsoph <Unknown>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-01 05:04+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Инициализация и настройка рабочего стола"
+
+msgid "CTL_TopTabAction"
+msgstr "TopTab"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Инициализация и настройка рабочего стола"
+
+msgid ""
+"Services/AutoupdateType/org_gephi_branding_desktop_update_center.instance"
+msgstr "Центр обновлений Gephi"
+
+msgid ""
+"Services/AutoupdateType/org_gephi_branding_desktop_update_center_1.instance"
+msgstr "Сторонние плагины для Gephi"
+
+msgid "CommandLineProcessor.OutOfMemoryError.message"
+msgstr ""
+"Недостаточно памяти. Увеличьте максимально доступный объем памяти установив "
+"параметр (-Xmx) в файле настроек запуска Gephi."
+
+msgid ""
+"Actions/Edit/org-gephi-branding-desktop-actions-CleanWorkspace.instance"
+msgstr "Очистить рабочую область"
+
+msgid ""
+"Actions/Edit/org-gephi-branding-desktop-actions-DeleteWorkspace.instance"
+msgstr "Удалить рабочую область"
+
+msgid "Actions/Edit/org-gephi-branding-desktop-actions-NewWorkspace.instance"
+msgstr "Создать рабочую область"
+
+msgid "Actions/Edit/org-gephi-branding-desktop-actions-OpenProject.instance"
+msgstr "Открыть проект"
+
+msgid "Actions/Edit/org-gephi-branding-desktop-actions-SaveProject.instance"
+msgstr "Сохранить проект"
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-CloseProject.instance"
+msgstr "Закрыть проект"
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-NewProject.instance"
+msgstr "Создать проект"
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-OpenFile.instance"
+msgstr "Открыть..."
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-OpenProject.instance"
+msgstr "Открыть проект"
+
+msgid ""
+"Actions/File/org-gephi-branding-desktop-actions-ProjectProperties.instance"
+msgstr "Свойства проекта"
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-ProjectTest.instance"
+msgstr "Тест..."
+
+msgid ""
+"Actions/File/org-gephi-branding-desktop-actions-SaveAsProject.instance"
+msgstr "Сохранить проект как..."
+
+msgid "Actions/File/org-gephi-branding-desktop-actions-SaveProject.instance"
+msgstr "Сохранить проект"
+
+msgid "DragNDropFrameAdapter.openGephiError"
+msgstr "Невозможно открыть файл. Файл должен иметь '.gephi'-формат."
+
+msgid "CommandLineProcessor.openGephiError"
+msgstr "Невозможно открыть файл. Файл должен иметь '.gephi'-формат."
+
+msgid "CommandLineProcessor.fileNotFound"
+msgstr "Файл ''{0}'' не найден, проверьте его наличие."
+
+msgid "CommandLineProcessor.fileNotSupported"
+msgstr "Данный формат файла не поддерживается."

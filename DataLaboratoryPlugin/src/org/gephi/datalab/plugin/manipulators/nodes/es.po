@@ -1,0 +1,141 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-26 19:50+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-27 04:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenInEditNodeWindow.name"
+msgstr "Editar nodo"
+
+msgid "OpenInEditNodeWindow.name.multiple"
+msgstr "Editar todos nodos"
+
+msgid "OpenInEditNodeWindow.description"
+msgstr ""
+"Abre la ventana de edición para editar el nodo seleccionado. Permite editar "
+"el tamaño, posición, color y también los atributos del nodo."
+
+msgid "OpenInEditNodeWindow.description.multiple"
+msgstr ""
+"Abre la ventana de edición para editar los nodos seleccionados. Los campos "
+"estarán vacíos inicialmente. Permite editar el tamaño, posición, color y "
+"también los atributos de los nodos."
+
+msgid "SelectOnGraph.name"
+msgstr "Seleccionar en la vista del grafo"
+
+msgid "SelectNeighboursOnTable.name"
+msgstr "Seleccionar nodos vecinos en la tabla"
+
+msgid "SelectEdgesOnTable.name"
+msgstr "Seleccionar aristas que usan el nodo en la tabla de aristas"
+
+msgid "DeleteNodes.name.single"
+msgstr "Eliminar"
+
+msgid "DeleteNodes.name.multiple"
+msgstr "Eliminar todos"
+
+msgid "DeleteNodes.confirmation.message"
+msgstr "¿Estás seguro de que quieres eliminar lo(s) nodo(s)?"
+
+msgid "ClearNodesData.name.single"
+msgstr "Borrar datos del nodo..."
+
+msgid "ClearNodesData.name.multiple"
+msgstr "Borrar datos de todos los nodos..."
+
+msgid "ClearNodesData.description"
+msgstr ""
+"Borra datos de las columnas deseadas de lo(s) nodo(s) seleccionado(s)"
+
+msgid "ClearNodesData.ui.description"
+msgstr "Elige las columnas de las que borrar los datos:"
+
+msgid "CopyNodeDataToOtherNodes.name"
+msgstr "Copiar datos del nodo a los otros nodos seleccionados..."
+
+msgid "CopyNodeDataToOtherNodes.description"
+msgstr ""
+"Copia las columnas deseadas del nodo seleccionado a los otras nodos "
+"seleccionados"
+
+msgid "CopyNodeDataToOtherNodes.ui.description"
+msgstr "Elige columnas de las que copiar los datos:"
+
+msgid "Group.name"
+msgstr "Agrupar"
+
+msgid "Ungroup.name.single"
+msgstr "Desagrupar"
+
+msgid "Ungroup.name.multiple"
+msgstr "Desagrupar grupos seleccionados"
+
+msgid "UngroupRecursively.name.single"
+msgstr "Desagrupar recursivamente"
+
+msgid "UngroupRecursively.name.multiple"
+msgstr "Desagrupar grupos seleccionados recursivamente"
+
+msgid "UngroupRecursively.description"
+msgstr ""
+"Desagrupa los grupos seleccionados y sus nodos descendientes que formen "
+"grupos"
+
+msgid "MoveNodeToGroup.name.single"
+msgstr "Mover a grupo..."
+
+msgid "MoveNodeToGroup.name.multiple"
+msgstr "Mover todos a grupo..."
+
+msgid "RemoveNodeFromGroup.name.single"
+msgstr "Quitar del grupo"
+
+msgid "RemoveNodeFromGroup.name.multiple"
+msgstr "Quitar todos de su grupo"
+
+msgid "Settle.name.single"
+msgstr "Bloquear"
+
+msgid "Settle.name.multiple"
+msgstr "Bloquear todos"
+
+msgid "Free.name.single"
+msgstr "Desbloquear"
+
+msgid "Free.name.multiple"
+msgstr "Desbloquear todos"
+
+msgid "SetNodesSize.name.single"
+msgstr "Configurar tamaño del nodo..."
+
+msgid "SetNodesSize.name.multiple"
+msgstr "Configurar tamaño de los nodos..."
+
+msgid "LinkNodes.name"
+msgstr "Enlazar nodos (crear arista)"
+
+msgid "LinkNodes.description"
+msgstr ""
+"Crea aristas (dirigidas o no dirigidas) entre el nodo escogido y todos los "
+"demás nodos seleccionados"
+
+msgid "CopyNodes.name.single"
+msgstr "Copiar nodo"
+
+msgid "CopyNodes.name.multiple"
+msgstr "Copiar todos los nodos"

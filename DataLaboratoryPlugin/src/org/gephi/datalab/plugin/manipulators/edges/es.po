@@ -1,0 +1,83 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-26 19:52+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-27 04:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenInEditEdgeWindow.name"
+msgstr "Editar arista"
+
+msgid "OpenInEditEdgeWindow.name.multiple"
+msgstr "Editar todas aristas"
+
+msgid "OpenInEditEdgeWindow.description"
+msgstr ""
+"Abre la ventana de edición para editar la arista seleccionada. Permite "
+"editar el color de la arista y también sus atributos."
+
+msgid "OpenInEditEdgeWindow.description.multiple"
+msgstr ""
+"Abre la ventana de edición para editar las aristas seleccionadas. Los campos "
+"estarán vacíos inicialmente. Permite editar el color de las aristas y "
+"también sus atributos."
+
+msgid "SelectSourceOnGraph.name"
+msgstr "Seleccionar nodo origen en la vista del grafo"
+
+msgid "SelectTargetOnGraph.name"
+msgstr "Seleccionar nodo destino en la vista del grafo"
+
+msgid "SelectNodesOnTable.name"
+msgstr "Seleccionar nodos origen y destino en la tabla de nodos"
+
+msgid "DeleteEdges.name.single"
+msgstr "Eliminar"
+
+msgid "DeleteEdges.name.multiple"
+msgstr "Eliminar todas"
+
+msgid "DeleteEdges.confirmation.message"
+msgstr "¿Estás seguro de que quieres borrar la(s) arista(s)?"
+
+msgid "DeleteEdgesWithNodes.name.single"
+msgstr "Eliminar arista con sus nodos..."
+
+msgid "DeleteEdgesWithNodes.name.multiple"
+msgstr "Eliminar aristas con sus nodos..."
+
+msgid "ClearEdgesData.name.single"
+msgstr "Borrar datos de la arista..."
+
+msgid "ClearEdgesData.name.multiple"
+msgstr "Borrar datos de todas las aristas..."
+
+msgid "ClearEdgesData.description"
+msgstr ""
+"Borra los datos de las columnas deseadas de la(s) arista(s) seleccionada(s)"
+
+msgid "ClearEdgesData.ui.description"
+msgstr "Elige las columnas de las que borrar los datos:"
+
+msgid "CopyEdgeDataToOtherEdges.name"
+msgstr "Copiar datos de la arista a las otras aristas seleccionadas..."
+
+msgid "CopyEdgeDataToOtherEdges.description"
+msgstr ""
+"Copia las columnas deseadas de la arista seleccionada a las otras aristas "
+"seleccionadas"
+
+msgid "CopyEdgeDataToOtherEdges.ui.description"
+msgstr "Elige columnas de las que copiar los datos:"

@@ -1,0 +1,75 @@
+# French translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-29 15:25+0000\n"
+"Last-Translator: Sébastien Heymann <Unknown>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-30 04:54+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "OpenInEditEdgeWindow.name"
+msgstr "Editer le lien"
+
+msgid "OpenInEditEdgeWindow.name.multiple"
+msgstr "Editer tous les liens"
+
+msgid "OpenInEditEdgeWindow.description"
+msgstr "Change les couleurs et attributs."
+
+msgid "OpenInEditEdgeWindow.description.multiple"
+msgstr "Change les couleurs et attributs. Les champs sont vides au début."
+
+msgid "SelectSourceOnGraph.name"
+msgstr "Sélectionner le noeud source dans la Vue d'Ensemble"
+
+msgid "SelectTargetOnGraph.name"
+msgstr "Sélectionner le noeud de destination dans la Vue d'Ensemble"
+
+msgid "SelectNodesOnTable.name"
+msgstr "Sélectionner les noeuds source et destination"
+
+msgid "DeleteEdges.name.single"
+msgstr "Supprimer"
+
+msgid "DeleteEdges.name.multiple"
+msgstr "Tout supprimer"
+
+msgid "DeleteEdges.confirmation.message"
+msgstr "Confirmer la suppression des liens ?"
+
+msgid "DeleteEdgesWithNodes.name.single"
+msgstr "Supprimer les liens avec leurs noeuds..."
+
+msgid "DeleteEdgesWithNodes.name.multiple"
+msgstr "Supprimer tous les liens avec leurs noeuds..."
+
+msgid "ClearEdgesData.name.single"
+msgstr "Effacer..."
+
+msgid "ClearEdgesData.name.multiple"
+msgstr "Tout effacer..."
+
+msgid "ClearEdgesData.description"
+msgstr "Effacer les données des liens sélectionnés"
+
+msgid "ClearEdgesData.ui.description"
+msgstr "Effacer les colonnes :"
+
+msgid "CopyEdgeDataToOtherEdges.name"
+msgstr "Ecraser les données des autres liens sélectionnés..."
+
+msgid "CopyEdgeDataToOtherEdges.description"
+msgstr "Copier les colonnes du lien vers les autres liens sélectionnés"
+
+msgid "CopyEdgeDataToOtherEdges.ui.description"
+msgstr ""

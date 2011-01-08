@@ -1,0 +1,88 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-26 00:38+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-27 04:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "DeleteColumn.name"
+msgstr "Borrar columna"
+
+msgid "DeleteColumn.confirmation.message"
+msgstr "¿Estás seguro de que quieres borrar la columna ''{0}''?"
+
+msgid "ClearColumnData.name"
+msgstr "Borrar datos de columna"
+
+msgid "ClearColumnData.confirmation.message"
+msgstr "¿Estás seguro de que quieres borrar los datos de la columna ''{0}''?"
+
+msgid "CopyDataToOtherColumn.name"
+msgstr "Copiar datos a otra columna"
+
+msgid "FillColumnWithValue.name"
+msgstr "Rellenar columna con un valor"
+
+msgid "FillColumnWithValue.inputDialog.text"
+msgstr "Elige un valor con el que rellenar todas las filas de la columna"
+
+msgid "DuplicateColumn.name"
+msgstr "Duplicar columna"
+
+msgid "ColumnValuesFrequency.name"
+msgstr "Calcular frecuencia de valores de columna"
+
+msgid "ColumnValuesFrequency.description"
+msgstr ""
+"Calcula la frecuencia de aparición de cada valor de una columna y muestra un "
+"informe"
+
+msgid "ColumnValuesFrequency.report.header"
+msgstr "<h1>Informe de frecuencia de valores para la columna ''{0}''</h1>"
+
+msgid "ColumnValuesFrequency.report.piechart.title"
+msgstr "Gráfico de tarta de frecuencias de valores"
+
+msgid "ColumnValuesFrequency.report.piechart.not-shown"
+msgstr ""
+"Hay más de 100 valores diferentes, el gráfico de tarta no es mostrado."
+
+msgid "NumberColumnStatisticsReport.name"
+msgstr "Calcular estadísticas de columna numérica"
+
+msgid "NumberColumnStatisticsReport.description"
+msgstr ""
+"Calcula estadísticas de una columna numérica o de lista de números y muestra "
+"un informe"
+
+msgid "CreateBooleanMatchesColumn.name"
+msgstr "Crear columna booleana a partir de expresión regular"
+
+msgid "CreateBooleanMatchesColumn.description"
+msgstr ""
+"Crea una nueva columna booleana con valores que indican si cada valor de la "
+"columna seleccionada se ajusta a la expresión regular proporcionada"
+
+msgid "CreateFoundGroupsListColumn.name"
+msgstr ""
+"Crear columna con lista de grupos que se ajustan a una expresión regular"
+
+msgid "CreateFoundGroupsListColumn.description"
+msgstr ""
+"Crea una nueva columna de tipo lista de cadenas de texto con valores que son "
+"la lista de grupos que se ajustan a la expresión regular proporcionada"
+
+msgid "NegateBooleanColumn.name"
+msgstr "Negar columna booleana"

@@ -1,0 +1,79 @@
+# Spanish translation for gephi
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-12-26 01:04+0000\n"
+"Last-Translator: Eduardo Ramos <Unknown>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-12-27 04:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+msgid "CopyDataToOtherColumnUI.sourceColumnLabel.text"
+msgstr "Copiando datos de columna origen ''{0}''"
+
+msgid "CopyDataToOtherColumnUI.descriptionLabel.text"
+msgstr "Elige la columna destino en la que copiar los datos:"
+
+msgid "DuplicateColumnUI.titleLabel.text"
+msgstr "Título de la columna:"
+
+msgid "DuplicateColumnUI.typeLabel.text"
+msgstr "Tipo de la columna:"
+
+msgid "DuplicateColumnUI.new.title"
+msgstr "{0}_copia"
+
+msgid "DuplicateColumnUI.descriptionLabel.text"
+msgstr "Duplicar la columna ''{0}''."
+
+msgid "GeneralCreateColumnFromRegexUI.descriptionLabel.text.boolean"
+msgstr ""
+"Creando una nueva columna booleana a partir de expresión regular en la "
+"columna ''{0}''"
+
+msgid "GeneralCreateColumnFromRegexUI.descriptionLabel.text.matching_groups"
+msgstr ""
+"Creando una nueva columna de grupos que se ajustan a una expresión regular "
+"en la columna ''{0}''"
+
+msgid "GeneralCreateColumnFromRegexUI.regexLabel.text"
+msgstr "Expresión regular:"
+
+msgid "GeneralCreateColumnFromRegexUI.titleLabel.text"
+msgstr "Título de la columna:"
+
+msgid "ColumnValuesFrequencyUI.configurePieChartButton.text"
+msgstr "Configurar gráfico de tarta"
+
+msgid "ColumnValuesFrequencyUI.showReportButton.text"
+msgstr "Mostrar informe"
+
+msgid "NumberColumnStatisticsReportUI.showReportButton.text"
+msgstr "Mostrar informe"
+
+msgid "NumberColumnStatisticsReportUI.configureBoxPlotButton.text"
+msgstr "Configurar diagrama de cajas"
+
+msgid "NumberColumnStatisticsReportUI.configureScatterPlotButton.text"
+msgstr "Configurar diagrama de dispersión"
+
+msgid "NumberColumnStatisticsReportUI.configureHistogramButton.text"
+msgstr "Configurar histograma"
+
+msgid "NumberColumnStatisticsReportUI.useLinesCheckBox.text"
+msgstr "Mostrar líneas"
+
+msgid "NumberColumnStatisticsReportUI.useLinearRegression.text"
+msgstr "Mostrar regresión lineal"
+
+msgid "NumberColumnStatisticsReportUI.divisionsLabel.text"
+msgstr "Divisiones:"
