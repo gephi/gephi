@@ -142,6 +142,22 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         }
     }
 
+    public void fillNodesColumnWithValue(Node[] nodes, AttributeColumn column, String value){
+        if (canChangeColumnData(column)) {
+            for (Node node: nodes) {
+                setAttributeValue(value, node.getNodeData().getAttributes(), column);
+            }
+        }
+    }
+
+    public void fillEdgesColumnWithValue(Edge[] edges, AttributeColumn column, String value){
+        if (canChangeColumnData(column)) {
+            for (Edge edge: edges) {
+                setAttributeValue(value, edge.getEdgeData().getAttributes(), column);
+            }
+        }
+    }
+
     public void clearColumnData(AttributeTable table, AttributeColumn column) {
         if (canClearColumnData(column)) {
             final int columnIndex = column.getIndex();

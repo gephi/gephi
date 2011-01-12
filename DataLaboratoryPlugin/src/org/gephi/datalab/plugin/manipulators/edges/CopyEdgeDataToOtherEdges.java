@@ -87,7 +87,7 @@ public class CopyEdgeDataToOtherEdges implements EdgesManipulator, GeneralColumn
     }
 
     public int getPosition() {
-        return 100;
+        return 200;
     }
 
     public Icon getIcon() {

@@ -109,6 +109,26 @@ public interface AttributeColumnsController {
     void fillColumnWithValue(AttributeTable table, AttributeColumn column, String value);
 
     /**
+     * <p>Fills the data values of a given column of the indicated nodes with a value as a String,
+     * parsing it for the <code>AttributeType</code> of the column. If it is not possible to parse,
+     * the value will be set to null.</p>
+     * @param nodes Nodes to fill
+     * @param column Column to fill
+     * @param value String representation of the value for the column for each node
+     */
+    void fillNodesColumnWithValue(Node[] nodes, AttributeColumn column, String value);
+
+    /**
+     * <p>Fills the data values of a given column of the indicated edges with a value as a String,
+     * parsing it for the <code>AttributeType</code> of the column. If it is not possible to parse,
+     * the value will be set to null.</p>
+     * @param edges Edges to fill
+     * @param column Column to fill
+     * @param value String representation of the value for the column for each edge
+     */
+    void fillEdgesColumnWithValue(Edge[] edges, AttributeColumn column, String value);
+
+    /**
      * <p>Clears all rows data for a given column of a table (nodes table or edges table)</p>
      * @param table Table to clear column data
      * @param column Column to clear data

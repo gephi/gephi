@@ -18,70 +18,71 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalab.plugin.manipulators.nodes;
+package org.gephi.datalab.plugin.manipulators.edges;
 
 import java.util.ArrayList;
 import javax.swing.Icon;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.DataTablesController;
-import org.gephi.datalab.plugin.manipulators.GeneralColumnsChooser;
-import org.gephi.datalab.plugin.manipulators.ui.GeneralChooseColumnsUI;
+import org.gephi.datalab.plugin.manipulators.GeneralColumnAndValueChooser;
+import org.gephi.datalab.plugin.manipulators.ui.GeneralColumnAndValueChooserUI;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
-import org.gephi.graph.api.Node;
+import org.gephi.datalab.spi.edges.EdgesManipulator;
+import org.gephi.graph.api.Edge;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- * Nodes manipulator that clears the given columns data of one or more nodes except the id and computed attributes.
+ * Nodes manipulator that fills the given column of multiple edges with a value.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class ClearNodesData implements NodesManipulator, GeneralColumnsChooser {
+public class FillEdgesColumnWithValue implements EdgesManipulator, GeneralColumnAndValueChooser {
 
-    private Node[] nodes;
-    private AttributeColumn[] columnsToClearData;
+    private Edge[] edges;
+    private AttributeColumn column;
+    private AttributeTable table;
+    private AttributeColumn[] availableColumns;
+    private String value;
 
-    public void setup(Node[] nodes, Node clickedNode) {
-        this.nodes = nodes;
+    public void setup(Edge[] edges, Edge clickedEdge) {
+        this.edges = edges;
+        table=Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-        ArrayList<AttributeColumn> columnsToClearDataList = new ArrayList<AttributeColumn>();
-        for (AttributeColumn column : Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable().getColumns()) {
-            if (ac.canClearColumnData(column)) {
-                columnsToClearDataList.add(column);
+        ArrayList<AttributeColumn> availableColumnsList = new ArrayList<AttributeColumn>();
+        for (AttributeColumn c : table.getColumns()) {
+            if (ac.canChangeColumnData(c)) {
+                availableColumnsList.add(c);
             }
         }
-        columnsToClearData = columnsToClearDataList.toArray(new AttributeColumn[0]);
+        availableColumns = availableColumnsList.toArray(new AttributeColumn[0]);
     }
 
     public void execute() {
-        if (columnsToClearData.length >= 0) {
+        if (column != null) {
             AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
-            ac.clearNodesData(nodes, columnsToClearData);
+            ac.fillEdgesColumnWithValue(edges, column, value);
             Lookup.getDefault().lookup(DataTablesController.class).refreshCurrentTable();
         }
     }
 
     public String getName() {
-        if (nodes.length > 1) {
-            return NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.name.multiple");
-        } else {
-            return NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.name.single");
-        }
+        return NbBundle.getMessage(FillEdgesColumnWithValue.class, "FillEdgesColumnWithValue.name");
     }
 
     public String getDescription() {
-        return NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.description");
+        return "";
     }
 
     public boolean canExecute() {
-        return true;
+        return edges.length > 1;
     }
 
     public ManipulatorUI getUI() {
-        return new GeneralChooseColumnsUI(NbBundle.getMessage(ClearNodesData.class, "ClearNodesData.ui.description"));
+        return new GeneralColumnAndValueChooserUI();
     }
 
     public int getType() {
@@ -89,18 +90,26 @@ public class ClearNodesData implements NodesManipulator, GeneralColumnsChooser {
     }
 
     public int getPosition() {
-        return 100;
+        return 0;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/clear-data.png", true);
+        return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/tag-label.png", true);
     }
 
     public AttributeColumn[] getColumns() {
-        return columnsToClearData;
+        return availableColumns;
     }
 
-    public void setColumns(AttributeColumn[] columnsToClearData) {
-        this.columnsToClearData = columnsToClearData;
+    public void setColumn(AttributeColumn column) {
+        this.column = column;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public AttributeTable getTable() {
+        return table;
     }
 }
