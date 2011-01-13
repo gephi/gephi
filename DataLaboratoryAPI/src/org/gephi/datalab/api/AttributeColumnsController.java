@@ -31,6 +31,7 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.openide.util.Lookup;
 
 /**
  * <p>This interface defines part of the Data Laboratory API basic actions.</p>

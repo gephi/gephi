@@ -18,7 +18,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.desktop.datalab.utils;
+package org.gephi.datalab.api;
 
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
@@ -34,9 +34,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalab.plugin.manipulators.edges.DeleteEdges;
-import org.gephi.datalab.plugin.manipulators.general.SearchReplace;
-import org.gephi.datalab.plugin.manipulators.nodes.DeleteNodes;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
@@ -56,11 +53,12 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Helper class for simplifying the implementation of Data Laboratory UI.
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * Helper class for simplifying the use of Data Laboratory API and SPI.
  */
+@ServiceProvider(service=DataLaboratoryHelper.class)
 public class DataLaboratoryHelper{
 
     /**
@@ -305,30 +303,87 @@ public class DataLaboratoryHelper{
     }
 
     /**
-     * Special method for making public DeleteNodes manipulator so it can be specifically retrieved from Data Table UI.
-     * It is used for reacting to delete key.
-     * @return DeleteNodes new instance
+     * Returns the AttributeColumnsMergeStrategy with that class name or null if it does not exist
      */
-    public NodesManipulator getDeleteNodesManipulator() {
-        return new DeleteNodes();
+    public NodesManipulator getNodesManipulatorByName(String name){
+        for (NodesManipulatorBuilder nm : Lookup.getDefault().lookupAll(NodesManipulatorBuilder.class)) {
+            if(nm.getNodesManipulator().getClass().getSimpleName().equals(name)){
+                return nm.getNodesManipulator();
+            }
+        }
+        return null;
     }
 
     /**
-     * Special method for making public DeleteEdges manipulator so it can be specifically retrieved from Data Table UI.
-     * It is used for reacting to delete key.
-     * @return DeleteEdges new instance
+     * Returns the AttributeColumnsMergeStrategy with that class name or null if it does not exist
      */
-    public EdgesManipulator getDeleEdgesManipulator() {
-        return new DeleteEdges();
+    public EdgesManipulator getEdgesManipulatorByName(String name){
+        for (EdgesManipulatorBuilder nm : Lookup.getDefault().lookupAll(EdgesManipulatorBuilder.class)) {
+            if(nm.getEdgesManipulator().getClass().getSimpleName().equals(name)){
+                return nm.getEdgesManipulator();
+            }
+        }
+        return null;
     }
 
     /**
-     * Special method for making public SearchReplace manipulator so it can be specifically retrieved from Data Table UI.
-     * It is used for reacting to Ctrl+F keys combination.
-     * @return SearchReplace new instance
+     * Returns the AttributeColumnsMergeStrategy with that class name or null if it does not exist
      */
-    public GeneralActionsManipulator getSearchReplaceManipulator() {
-        return new SearchReplace();
+    public GeneralActionsManipulator getGeneralActionsManipulatorByName(String name) {
+        for (GeneralActionsManipulator m : Lookup.getDefault().lookupAll(GeneralActionsManipulator.class)) {
+            if(m.getClass().getSimpleName().equals(name)){
+                return m;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the AttributeColumnsMergeStrategy with that class name or null if it does not exist
+     */
+    public PluginGeneralActionsManipulator getPluginGeneralActionsManipulatorByName(String name) {
+        for (PluginGeneralActionsManipulator m : Lookup.getDefault().lookupAll(PluginGeneralActionsManipulator.class)) {
+            if(m.getClass().getSimpleName().equals(name)){
+                return m;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the AttributeColumnsMergeStrategy with that class name or null if it does not exist
+     */
+    public AttributeColumnsManipulator getAttributeColumnsManipulatorByName(String name) {
+        for (AttributeColumnsManipulator m : Lookup.getDefault().lookupAll(AttributeColumnsManipulator.class)) {
+            if(m.getClass().getSimpleName().equals(name)){
+                return m;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the AttributeColumnsMergeStrategy with that class name or null if it does not exist
+     */
+    public AttributeValueManipulator getAttributeValueManipulatorByName(String name) {
+        for (AttributeValueManipulatorBuilder am : Lookup.getDefault().lookupAll(AttributeValueManipulatorBuilder.class)) {
+            if(am.getAttributeValueManipulator().getClass().getSimpleName().equals(name)){
+                return am.getAttributeValueManipulator();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the AttributeColumnsMergeStrategy with that class name or null if it does not exist
+     */
+    public AttributeColumnsMergeStrategy getAttributeColumnsMergeStrategieByName(String name) {
+        for (AttributeColumnsMergeStrategyBuilder cs : Lookup.getDefault().lookupAll(AttributeColumnsMergeStrategyBuilder.class)) {
+            if(cs.getAttributeColumnsMergeStrategy().getClass().getSimpleName().equals(name)){
+                return cs.getAttributeColumnsMergeStrategy();
+            }
+        }
+        return null;
     }
 
     class DialogControlsImpl implements DialogControls {
@@ -346,5 +401,9 @@ public class DataLaboratoryHelper{
         public boolean isOkButtonEnabled(){
             return okButton.isEnabled();
         }
+    }
+
+    public static DataLaboratoryHelper getDefault(){
+        return Lookup.getDefault().lookup(DataLaboratoryHelper.class);
     }
 }

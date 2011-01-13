@@ -196,6 +196,21 @@ public class GraphContextMenu {
         popupMenu.addSeparator();
         popupMenu.add(settleAction);
         popupMenu.add(freeAction);
+
+        if (eventBridge.isTagNodesAvailable()) {
+            //Tag nodes
+            GraphContextMenuAction tagAction = new GraphContextMenuImpl("GraphContextMenu_TagNodes") {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    eventBridge.tagNodes();
+                }
+            };
+            tagAction.setEnabled(eventBridge.canTagNodes());
+
+            popupMenu.addSeparator();
+            popupMenu.add(tagAction);
+        }
         return popupMenu;
     }
 

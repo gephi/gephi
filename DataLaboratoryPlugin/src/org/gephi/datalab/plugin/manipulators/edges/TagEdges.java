@@ -37,10 +37,10 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
- * Nodes manipulator that fills the given column of multiple edges with a value.
+ * Edges manipulator that fills the given column of multiple edges with a value.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class FillEdgesColumnWithValue implements EdgesManipulator, GeneralColumnAndValueChooser {
+public class TagEdges implements EdgesManipulator, GeneralColumnAndValueChooser {
 
     private Edge[] edges;
     private AttributeColumn column;
@@ -50,7 +50,7 @@ public class FillEdgesColumnWithValue implements EdgesManipulator, GeneralColumn
 
     public void setup(Edge[] edges, Edge clickedEdge) {
         this.edges = edges;
-        table=Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
+        table = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         ArrayList<AttributeColumn> availableColumnsList = new ArrayList<AttributeColumn>();
         for (AttributeColumn c : table.getColumns()) {
@@ -70,7 +70,11 @@ public class FillEdgesColumnWithValue implements EdgesManipulator, GeneralColumn
     }
 
     public String getName() {
-        return NbBundle.getMessage(FillEdgesColumnWithValue.class, "FillEdgesColumnWithValue.name");
+        if (edges.length > 1) {
+            return NbBundle.getMessage(TagEdges.class, "TagEdges.name.multiple");
+        } else {
+            return NbBundle.getMessage(TagEdges.class, "TagEdges.name.single");
+        }
     }
 
     public String getDescription() {
@@ -78,7 +82,7 @@ public class FillEdgesColumnWithValue implements EdgesManipulator, GeneralColumn
     }
 
     public boolean canExecute() {
-        return edges.length > 1;
+        return edges.length > 0;
     }
 
     public ManipulatorUI getUI() {

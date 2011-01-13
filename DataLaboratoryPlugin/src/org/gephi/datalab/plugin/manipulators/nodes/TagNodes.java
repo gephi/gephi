@@ -40,7 +40,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that fills the given column of multiple nodes with a value.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class FillNodesColumnWithValue implements NodesManipulator, GeneralColumnAndValueChooser {
+public class TagNodes implements NodesManipulator, GeneralColumnAndValueChooser {
 
     private Node[] nodes;
     private AttributeColumn column;
@@ -50,7 +50,7 @@ public class FillNodesColumnWithValue implements NodesManipulator, GeneralColumn
 
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes = nodes;
-        table=Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
+        table = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         ArrayList<AttributeColumn> availableColumnsList = new ArrayList<AttributeColumn>();
         for (AttributeColumn c : table.getColumns()) {
@@ -70,7 +70,11 @@ public class FillNodesColumnWithValue implements NodesManipulator, GeneralColumn
     }
 
     public String getName() {
-        return NbBundle.getMessage(FillNodesColumnWithValue.class, "FillNodesColumnWithValue.name");
+        if (nodes.length > 1) {
+            return NbBundle.getMessage(TagNodes.class, "TagNodes.name.multiple");
+        } else {
+            return NbBundle.getMessage(TagNodes.class, "TagNodes.name.single");
+        }
     }
 
     public String getDescription() {
@@ -78,7 +82,7 @@ public class FillNodesColumnWithValue implements NodesManipulator, GeneralColumn
     }
 
     public boolean canExecute() {
-        return nodes.length > 1;
+        return nodes.length > 0;
     }
 
     public ManipulatorUI getUI() {

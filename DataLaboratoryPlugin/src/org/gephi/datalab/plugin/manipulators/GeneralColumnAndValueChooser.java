@@ -22,7 +22,7 @@ package org.gephi.datalab.plugin.manipulators;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalab.plugin.manipulators.nodes.FillNodesColumnWithValue;
+import org.gephi.datalab.plugin.manipulators.nodes.TagNodes;
 
 /**
  * Interface in common for choosing a column to manipulate from a list and a String value.

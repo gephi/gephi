@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Set;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.datalab.api.DataLaboratoryHelper;
+import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -354,6 +356,49 @@ public class DHNSEventBridge implements EventBridge, VizArchitecture {
         for (ModelImpl metaModelImpl : selectedNodeModels) {
             NodeData nodeData = (NodeData) metaModelImpl.getObj();
             nodeData.setFixed(false);
+        }
+    }
+
+    //MASS TAGGING OF NODES
+    public boolean isTagNodesAvailable() {
+        return DataLaboratoryHelper.getDefault().getNodesManipulatorByName("TagNodes")!=null;//Do not show tag nodes action if the TagNodes nodes manipulator does not exist
+    }
+
+    public boolean canTagNodes() {
+        this.graph = graphController.getModel().getHierarchicalGraphVisible();
+        ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+        for (int i = 0; i < selectedNodeModels.length; i++) {
+            Node node = ((NodeData) selectedNodeModels[i].getObj()).getNode(graph.getView().getViewId());
+            if (node != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void tagNodes() {
+        try {
+            DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
+            NodesManipulator tag = dlh.getNodesManipulatorByName("TagNodes");
+
+            this.graph = graphController.getModel().getHierarchicalGraphVisible();
+            ModelImpl[] selectedNodeModels = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+            final List<Node> nodes = new ArrayList<Node>();
+            for (int i = 0; i < selectedNodeModels.length; i++) {
+                Node node = ((NodeData) selectedNodeModels[i].getObj()).getNode(graph.getView().getViewId());
+                if (node != null) {
+                    nodes.add(node);
+                }
+            }
+
+            if (tag != null) {
+                tag.setup(nodes.toArray(new Node[0]), null);
+                if (tag.canExecute()) {
+                    dlh.executeManipulator(tag);
+                }
+            }
+        } catch (Exception ex) {
+            //TagNodes manipulator not available but it should be, ignore event
         }
     }
 
