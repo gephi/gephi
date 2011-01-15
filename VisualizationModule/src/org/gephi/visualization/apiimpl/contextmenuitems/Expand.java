@@ -90,6 +90,10 @@ public class Expand implements GraphContextMenuItem {
         return NbBundle.getMessage(Expand.class, "GraphContextMenu_Expand");
     }
 
+    public String getDescription() {
+        return null;
+    }
+
     public boolean isAvailable() {
         return true;
     }

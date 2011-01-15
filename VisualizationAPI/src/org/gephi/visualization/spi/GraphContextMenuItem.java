@@ -74,6 +74,12 @@ public interface GraphContextMenuItem {
     String getName();
 
     /**
+     * Description of the context menu item, to show as tooltip.
+     * @return Description or null
+     */
+    String getDescription();
+
+    /**
      * Indicates if this item has to appear in the context menu at all
      * @return True to show, false otherwise
      */

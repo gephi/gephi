@@ -54,6 +54,10 @@ public class Group implements GraphContextMenuItem{
         return NbBundle.getMessage(Group.class, "GraphContextMenu_Group");
     }
 
+    public String getDescription() {
+        return null;
+    }
+
     public boolean isAvailable() {
         return true;
     }

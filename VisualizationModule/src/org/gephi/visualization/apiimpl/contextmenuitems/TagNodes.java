@@ -55,6 +55,10 @@ public class TagNodes implements GraphContextMenuItem {
          return tagNodes != null ? tagNodes.getName() : null;
     }
 
+    public String getDescription() {
+        return null;
+    }
+
     public boolean isAvailable() {
         return tagNodes != null;//Do not show tag nodes action if the TagNodes nodes manipulator does not exist
     }

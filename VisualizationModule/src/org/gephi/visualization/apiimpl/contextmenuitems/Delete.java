@@ -62,6 +62,10 @@ public class Delete implements GraphContextMenuItem {
         return NbBundle.getMessage(Delete.class, "GraphContextMenu_Delete");
     }
 
+    public String getDescription() {
+        return null;
+    }
+
     public boolean isAvailable() {
         return true;
     }

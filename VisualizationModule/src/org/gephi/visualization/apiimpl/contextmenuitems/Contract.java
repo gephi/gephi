@@ -92,6 +92,10 @@ public class Contract implements GraphContextMenuItem {
         return NbBundle.getMessage(Contract.class, "GraphContextMenu_Contract");
     }
 
+    public String getDescription() {
+        return null;
+    }
+
     public boolean isAvailable() {
         return true;
     }

@@ -55,6 +55,10 @@ public class Ungroup implements GraphContextMenuItem {
         return NbBundle.getMessage(Ungroup.class, "GraphContextMenu_Ungroup");
     }
 
+    public String getDescription() {
+        return null;
+    }
+
     public boolean isAvailable() {
         return true;
     }

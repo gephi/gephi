@@ -62,6 +62,10 @@ public abstract class CopyOrMoveToWorkspace implements GraphContextMenuItem {
         }
     }
 
+    public String getDescription() {
+        return null;
+    }
+
     public boolean isAvailable() {
         return true;
     }

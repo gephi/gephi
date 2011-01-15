@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import javax.swing.Icon;
+import org.gephi.datalab.api.DataTablesController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
@@ -34,17 +35,17 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = GraphContextMenuItem.class)
-public class Settle implements GraphContextMenuItem {
-
+public class SelectInDataLaboratory implements GraphContextMenuItem {
     private Node[] nodes;
-
+    private DataTablesController dtc;
     public void setup(HierarchicalGraph graph, Node[] nodes) {
         this.nodes = nodes;
+        dtc=Lookup.getDefault().lookup(DataTablesController.class);
     }
 
     public void execute() {
-        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        gec.setNodesFixed(nodes, true);
+        dtc.setNodeTableSelection(nodes);
+        dtc.selectNodesTable();
     }
 
     public GraphContextMenuItem[] getSubItems() {
@@ -52,7 +53,7 @@ public class Settle implements GraphContextMenuItem {
     }
 
     public String getName() {
-        return NbBundle.getMessage(Settle.class, "GraphContextMenu_Settle");
+        return NbBundle.getMessage(SelectInDataLaboratory.class, "GraphContextMenu_SelectInDataLaboratory");
     }
 
     public String getDescription() {
@@ -60,27 +61,22 @@ public class Settle implements GraphContextMenuItem {
     }
 
     public boolean isAvailable() {
-        return true;
+        return dtc.isDataTablesReady();
     }
 
     public boolean canExecute() {
-        for (Node n : nodes) {
-            if (!Lookup.getDefault().lookup(GraphElementsController.class).isNodeFixed(n)) {
-                return true;
-            }
-        }
-        return false;
+        return true;
     }
 
     public int getType() {
-        return 300;
+        return 400;
     }
 
     public int getPosition() {
-        return 0;
+        return 100;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/settle.png", false);
+        return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/table-select.png", false);
     }
 }

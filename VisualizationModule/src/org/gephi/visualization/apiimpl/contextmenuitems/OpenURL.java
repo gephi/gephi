@@ -20,13 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.swing.Icon;
-import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.spi.GraphContextMenuItem;
+import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.util.ImageUtilities;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -34,17 +35,24 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = GraphContextMenuItem.class)
-public class Settle implements GraphContextMenuItem {
+public class OpenURL implements GraphContextMenuItem {
 
     private Node[] nodes;
+    private URL url = null;
 
     public void setup(HierarchicalGraph graph, Node[] nodes) {
         this.nodes = nodes;
+        if (nodes.length > 0) {
+            try {
+                this.url = new URL(nodes[0].getNodeData().getLabel());
+            } catch (MalformedURLException ex) {
+                url = null;
+            }
+        }
     }
 
     public void execute() {
-        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
-        gec.setNodesFixed(nodes, true);
+        URLDisplayer.getDefault().showURLExternal(url);
     }
 
     public GraphContextMenuItem[] getSubItems() {
@@ -52,35 +60,30 @@ public class Settle implements GraphContextMenuItem {
     }
 
     public String getName() {
-        return NbBundle.getMessage(Settle.class, "GraphContextMenu_Settle");
+        return NbBundle.getMessage(OpenURL.class, "GraphContextMenu_OpenURL");
     }
 
     public String getDescription() {
-        return null;
+        return NbBundle.getMessage(OpenURL.class, "GraphContextMenu_OpenURL.description");
     }
 
     public boolean isAvailable() {
-        return true;
+        return nodes.length == 1;
     }
 
     public boolean canExecute() {
-        for (Node n : nodes) {
-            if (!Lookup.getDefault().lookup(GraphElementsController.class).isNodeFixed(n)) {
-                return true;
-            }
-        }
-        return false;
+        return url != null;
     }
 
     public int getType() {
-        return 300;
+        return 400;
     }
 
     public int getPosition() {
-        return 0;
+        return 300;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/settle.png", false);
+        return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/globe-network.png", false);
     }
 }

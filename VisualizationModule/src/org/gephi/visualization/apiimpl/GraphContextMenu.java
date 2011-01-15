@@ -25,8 +25,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -35,9 +33,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.bridge.DHNSEventBridge;
 import org.gephi.visualization.spi.GraphContextMenuItem;
-import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -95,8 +91,11 @@ public class GraphContextMenu {
         if (subItems != null && item.canExecute()) {
             JMenu subMenu = new JMenu();
             subMenu.setText(item.getName());
+            if (item.getDescription() != null && !item.getDescription().isEmpty()) {
+                subMenu.setToolTipText(item.getDescription());
+            }
             subMenu.setIcon(item.getIcon());
-            Integer lastItemType=null;
+            Integer lastItemType = null;
             for (GraphContextMenuItem subItem : subItems) {
                 subItem.setup(graph, nodes);
                 if (lastItemType == null) {
@@ -114,6 +113,9 @@ public class GraphContextMenu {
         } else {
             JMenuItem menuItem = new JMenuItem();
             menuItem.setText(item.getName());
+            if (item.getDescription() != null && !item.getDescription().isEmpty()) {
+                menuItem.setToolTipText(item.getDescription());
+            }
             menuItem.setIcon(item.getIcon());
             if (item.canExecute()) {
                 menuItem.addActionListener(new ActionListener() {

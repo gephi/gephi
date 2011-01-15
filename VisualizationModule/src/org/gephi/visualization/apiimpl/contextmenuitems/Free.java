@@ -55,6 +55,10 @@ public class Free implements GraphContextMenuItem {
         return NbBundle.getMessage(Free.class, "GraphContextMenu_Free");
     }
 
+    public String getDescription() {
+        return null;
+    }
+
     public boolean isAvailable() {
         return true;
     }
