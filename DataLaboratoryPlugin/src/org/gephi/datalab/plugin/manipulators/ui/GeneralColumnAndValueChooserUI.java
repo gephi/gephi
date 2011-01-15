@@ -45,6 +45,7 @@ public class GeneralColumnAndValueChooserUI extends javax.swing.JPanel implement
     private AttributeColumn[] columns;
     private AttributeTable table;
     private String values[];
+    private static String lastChosenColumn=null;//To try to preserve last chosen column only while this program execution.
 
     /** Creates new form GeneralColumnAndValueChooserUI */
     public GeneralColumnAndValueChooserUI() {
@@ -63,6 +64,7 @@ public class GeneralColumnAndValueChooserUI extends javax.swing.JPanel implement
         manipulator.setColumn(getChosenColumn());
         manipulator.setValue(valueComboBox.getSelectedItem() != null ? valueComboBox.getSelectedItem().toString() : null);
         NbPreferences.forModule(GeneralChooseColumnsAndRowUI.class).putBoolean(AUTO_COMPLETE_SAVED_PREFERENCES, autoComplete.isSelected());
+        lastChosenColumn=getChosenColumn().getTitle();
     }
 
     public String getDisplayName() {
@@ -89,6 +91,9 @@ public class GeneralColumnAndValueChooserUI extends javax.swing.JPanel implement
         columns = manipulator.getColumns();
         for (int i = 0; i < columns.length; i++) {
             columnComboBox.addItem(columns[i].getTitle());
+        }
+        if(lastChosenColumn!=null&&!lastChosenColumn.isEmpty()){
+            columnComboBox.setSelectedItem(lastChosenColumn);
         }
     }
     private int lastFetchedColumn = -1;
