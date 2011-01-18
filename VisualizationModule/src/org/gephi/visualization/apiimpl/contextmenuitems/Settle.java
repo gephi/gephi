@@ -86,6 +86,6 @@ public class Settle implements GraphContextMenuItem {
     }
 
     public Integer getMnemonicKey() {
-        return KeyEvent.VK_S;
+        return KeyEvent.VK_B;
     }
 }
