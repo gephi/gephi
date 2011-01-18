@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.statistics.plugin;
 
 import java.io.File;
@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.graph.api.Node;
 import org.gephi.data.attributes.api.AttributeTable;
@@ -47,6 +49,8 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -206,7 +210,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             isDirected = graphController.getModel().isDirected();
         }
     }
-    
+
     public double getAverageClusteringCoefficient() {
         return avgClusteringCoeff;
     }
@@ -445,96 +449,108 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
 
     /*private void bruteForce(GraphModel graphModel, AttributeModel attributeModel) {
-        //The atrributes computed by the statistics
-        AttributeTable nodeTable = attributeModel.getNodeTable();
-        AttributeColumn clusteringCol = nodeTable.getColumn("clustering");
-        if (clusteringCol == null) {
-            clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
-        }
+    //The atrributes computed by the statistics
+    AttributeTable nodeTable = attributeModel.getNodeTable();
+    AttributeColumn clusteringCol = nodeTable.getColumn("clustering");
+    if (clusteringCol == null) {
+    clusteringCol = nodeTable.addColumn("clustering", "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
+    }
 
-        float totalCC = 0;
-        Graph graph = null;
-        if (!directed) {
-            graph = graphModel.getUndirectedGraphVisible();
-        } else {
-            graph = graphModel.getDirectedGraphVisible();
-        }
+    float totalCC = 0;
+    Graph graph = null;
+    if (!directed) {
+    graph = graphModel.getUndirectedGraphVisible();
+    } else {
+    graph = graphModel.getDirectedGraphVisible();
+    }
 
-        graph.readLock();
+    graph.readLock();
 
-        Progress.start(progress, graph.getNodeCount());
-        int node_count = 0;
-        for (Node node : graph.getNodes()) {
-            float nodeCC = 0;
-            int neighborhood = 0;
-            NodeIterable neighbors1 = graph.getNeighbors(node);
-            for (Node neighbor1 : neighbors1) {
-                neighborhood++;
-                NodeIterable neighbors2 = graph.getNeighbors(node);
-                for (Node neighbor2 : neighbors2) {
+    Progress.start(progress, graph.getNodeCount());
+    int node_count = 0;
+    for (Node node : graph.getNodes()) {
+    float nodeCC = 0;
+    int neighborhood = 0;
+    NodeIterable neighbors1 = graph.getNeighbors(node);
+    for (Node neighbor1 : neighbors1) {
+    neighborhood++;
+    NodeIterable neighbors2 = graph.getNeighbors(node);
+    for (Node neighbor2 : neighbors2) {
 
-                    if (neighbor1 == neighbor2) {
-                        continue;
-                    }
-                    if (directed) {
-                        if (((DirectedGraph) graph).getEdge(neighbor1, neighbor2) != null) {
-                            nodeCC++;
-                        }
-                        if (((DirectedGraph) graph).getEdge(neighbor2, neighbor1) != null) {
-                            nodeCC++;
-                        }
-                    } else {
-                        if (graph.isAdjacent(neighbor1, neighbor2)) {
-                            nodeCC++;
-                        }
-                    }
-                }
-            }
-            nodeCC /= 2.0;
+    if (neighbor1 == neighbor2) {
+    continue;
+    }
+    if (directed) {
+    if (((DirectedGraph) graph).getEdge(neighbor1, neighbor2) != null) {
+    nodeCC++;
+    }
+    if (((DirectedGraph) graph).getEdge(neighbor2, neighbor1) != null) {
+    nodeCC++;
+    }
+    } else {
+    if (graph.isAdjacent(neighbor1, neighbor2)) {
+    nodeCC++;
+    }
+    }
+    }
+    }
+    nodeCC /= 2.0;
 
 
 
-            if (neighborhood > 1) {
-                float cc = nodeCC / (.5f * neighborhood * (neighborhood - 1));
-                if (directed) {
-                    cc = nodeCC / (neighborhood * (neighborhood - 1));
-                }
+    if (neighborhood > 1) {
+    float cc = nodeCC / (.5f * neighborhood * (neighborhood - 1));
+    if (directed) {
+    cc = nodeCC / (neighborhood * (neighborhood - 1));
+    }
 
-                AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
-                row.setValue(clusteringCol, cc);
+    AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
+    row.setValue(clusteringCol, cc);
 
-                totalCC += cc;
-            }
+    totalCC += cc;
+    }
 
-            if (isCanceled) {
-                break;
-            }
+    if (isCanceled) {
+    break;
+    }
 
-            node_count++;
-            Progress.progress(progress, node_count);
+    node_count++;
+    Progress.progress(progress, node_count);
 
-        }
-        avgClusteringCoeff = totalCC / graph.getNodeCount();
+    }
+    avgClusteringCoeff = totalCC / graph.getNodeCount();
 
-        graph.readUnlockAll();
+    graph.readUnlockAll();
     }*/
-
     public String getReport() {
-
-        //double max = 0;
-        XYSeries series1 = new XYSeries("Clustering Coefficient");
+        //distribution of values
+        Map<Double, Integer> dist = new HashMap<Double, Integer>();
         for (int i = 0; i < N; i++) {
-            series1.add(i, nodeClustering[i]);
-            //max = Math.max(nodeClustering[i], max);
+            Double d = nodeClustering[i];
+            if (dist.containsKey(d)) {
+                Integer v = dist.get(d);
+                dist.put(d, v + 1);
+            } else {
+                dist.put(d, 1);
+            }
         }
+
+        //Distribution series
+        XYSeries dSeries = new XYSeries("Clustering Coefficient");
+        for (Iterator it = dist.entrySet().iterator(); it.hasNext();) {
+            Map.Entry d = (Map.Entry) it.next();
+            Double x = (Double) d.getKey();
+            Integer y = (Integer) d.getValue();
+            dSeries.add(x, y);
+        }
+
         XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(series1);
+        dataset.addSeries(dSeries);
 
-
-        JFreeChart chart = ChartFactory.createXYLineChart(
+        JFreeChart chart = ChartFactory.createScatterPlot(
                 "Clustering Coefficient Distribution",
-                "Node",
-                "Clustering Ceofficient",
+                "Values",
+                "Count",
                 dataset,
                 PlotOrientation.VERTICAL,
                 true,
@@ -542,17 +558,21 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                 false);
         XYPlot plot = (XYPlot) chart.getPlot();
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesLinesVisible(0, true);
-        renderer.setSeriesShapesVisible(0, false);
-        renderer.setSeriesLinesVisible(1, false);
-        renderer.setSeriesShapesVisible(1, true);
-        renderer.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
+        renderer.setSeriesLinesVisible(0, false);
+        renderer.setSeriesShapesVisible(0, true);
+        renderer.setSeriesShape(0, new java.awt.geom.Ellipse2D.Double(0, 0, 2, 2));
         plot.setBackgroundPaint(java.awt.Color.WHITE);
         plot.setDomainGridlinePaint(java.awt.Color.GRAY);
         plot.setRangeGridlinePaint(java.awt.Color.GRAY);
-
         plot.setRenderer(renderer);
 
+        ValueAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setLowerMargin(1.0);
+        domainAxis.setUpperMargin(1.0);
+        domainAxis.setRange(dSeries.getMinX()-1, dSeries.getMaxX()+1);
+        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setRange(-1, dSeries.getMaxY()+0.1*dSeries.getMaxY());
 
         String imageFile = "";
         try {

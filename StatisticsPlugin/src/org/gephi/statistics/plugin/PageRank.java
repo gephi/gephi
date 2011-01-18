@@ -23,6 +23,8 @@ package org.gephi.statistics.plugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -47,6 +49,8 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -207,20 +211,34 @@ public class PageRank implements Statistics, LongTask {
      * @return
      */
     public String getReport() {
-        XYSeries series = new XYSeries("Series 2");
+        //distribution of values
+        Map<Double, Integer> dist = new HashMap<Double, Integer>();
         for (int i = 0; i < pageranks.length; i++) {
-            series.add(i, pageranks[i]);
-
+            Double d = pageranks[i];
+            if (dist.containsKey(d)) {
+                Integer v = dist.get(d);
+                dist.put(d, v + 1);
+            } else {
+                dist.put(d, 1);
+            }
         }
 
+        //Distribution series
+        XYSeries dSeries = new XYSeries("PageRanks");
+        for (Iterator it = dist.entrySet().iterator(); it.hasNext();) {
+            Map.Entry d = (Map.Entry) it.next();
+            Double x = (Double) d.getKey();
+            Integer y = (Integer) d.getValue();
+            dSeries.add(x, y);
+        }
 
         XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(series);
+        dataset.addSeries(dSeries);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "PageRanks",
-                "Nodes",
-                "PageRank",
+                "PageRank Distribution",
+                "Scores",
+                "Count",
                 dataset,
                 PlotOrientation.VERTICAL,
                 true,
@@ -228,17 +246,21 @@ public class PageRank implements Statistics, LongTask {
                 false);
         XYPlot plot = (XYPlot) chart.getPlot();
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesLinesVisible(0, true);
-        renderer.setSeriesShapesVisible(0, false);
-        renderer.setSeriesLinesVisible(1, false);
-        renderer.setSeriesShapesVisible(1, true);
-        renderer.setSeriesShape(1, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
+        renderer.setSeriesLinesVisible(0, false);
+        renderer.setSeriesShapesVisible(0, true);
+        renderer.setSeriesShape(0, new java.awt.geom.Ellipse2D.Double(0, 0, 2, 2));
         plot.setBackgroundPaint(java.awt.Color.WHITE);
         plot.setDomainGridlinePaint(java.awt.Color.GRAY);
         plot.setRangeGridlinePaint(java.awt.Color.GRAY);
-
         plot.setRenderer(renderer);
 
+        ValueAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setLowerMargin(1.0);
+        domainAxis.setUpperMargin(1.0);
+        domainAxis.setRange(dSeries.getMinX()-1, dSeries.getMaxX()+1);
+        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setRange(-1, dSeries.getMaxY()+0.1*dSeries.getMaxY());
 
         String imageFile = "";
         try {

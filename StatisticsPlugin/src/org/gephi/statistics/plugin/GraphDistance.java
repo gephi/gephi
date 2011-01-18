@@ -23,10 +23,12 @@ package org.gephi.statistics.plugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.graph.api.*;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Stack;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -43,6 +45,8 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -286,27 +290,36 @@ public class GraphDistance implements Statistics, LongTask {
         return isDirected;
     }
 
-    /**
-     * 
-     * @param pVals
-     * @param pName
-     * @param pX
-     * @param pY
-     * @return
-     */
     private String createImageFile(TempDir tempDir, double[] pVals, String pName, String pX, String pY) throws IOException {
-        XYSeries series = new XYSeries(pName);
+        //distribution of values
+        Map<Double, Integer> dist = new HashMap<Double, Integer>();
         for (int i = 0; i < N; i++) {
-            series.add(i, pVals[i]);
+            Double d = pVals[i];
+            if (dist.containsKey(d)) {
+                Integer v = dist.get(d);
+                dist.put(d, v + 1);
+            } else {
+                dist.put(d, 1);
+            }
         }
-        XYSeriesCollection dataSet = new XYSeriesCollection();
-        dataSet.addSeries(series);
+
+        //Distribution series
+        XYSeries dSeries = new XYSeries(pName);
+        for (Iterator it = dist.entrySet().iterator(); it.hasNext();) {
+            Map.Entry d = (Map.Entry) it.next();
+            Double x = (Double) d.getKey();
+            Integer y = (Integer) d.getValue();
+            dSeries.add(x, y);
+        }
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(dSeries);
 
         JFreeChart chart = ChartFactory.createXYLineChart(
                 pName,
                 pX,
                 pY,
-                dataSet,
+                dataset,
                 PlotOrientation.VERTICAL,
                 true,
                 false,
@@ -315,16 +328,24 @@ public class GraphDistance implements Statistics, LongTask {
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
         renderer.setSeriesLinesVisible(0, false);
         renderer.setSeriesShapesVisible(0, true);
-        renderer.setSeriesShape(0, new java.awt.geom.Ellipse2D.Double(0, 0, 1, 1));
+        renderer.setSeriesShape(0, new java.awt.geom.Ellipse2D.Double(0, 0, 2, 2));
         plot.setBackgroundPaint(java.awt.Color.WHITE);
         plot.setDomainGridlinePaint(java.awt.Color.GRAY);
         plot.setRangeGridlinePaint(java.awt.Color.GRAY);
         plot.setRenderer(renderer);
 
+        ValueAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setLowerMargin(1.0);
+        domainAxis.setUpperMargin(1.0);
+        domainAxis.setRange(dSeries.getMinX()-1, dSeries.getMaxX()+1);
+        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+        rangeAxis.setRange(-1, dSeries.getMaxY()+0.1*dSeries.getMaxY());
+
         String imageFile = "";
 
         ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-        String fileName = pY + ".png";
+        String fileName = pName + ".png";
         File file1 = tempDir.createFile(fileName);
         imageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
 
@@ -343,9 +364,9 @@ public class GraphDistance implements Statistics, LongTask {
         String htmlIMG3 = "";
         try {
             TempDir tempDir = TempDirUtils.createTempDir();
-            htmlIMG1 = createImageFile(tempDir, betweenness, "Betweenness Centrality", "Nodes", "Betweenness");
-            htmlIMG2 = createImageFile(tempDir, closeness, "Closeness Centrality", "Nodes", "Closeness");
-            htmlIMG3 = createImageFile(tempDir, eccentricity, "Eccentricity", "Nodes", "Eccentricity");
+            htmlIMG1 = createImageFile(tempDir, betweenness, "Betweenness Centrality Distribution", "Values", "Count");
+            htmlIMG2 = createImageFile(tempDir, closeness, "Closeness Centrality Distribution", "Values", "Count");
+            htmlIMG3 = createImageFile(tempDir, eccentricity, "Eccentricity Distribution", "Values", "Count");
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
