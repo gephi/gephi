@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
+import java.awt.event.KeyEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.Icon;
@@ -85,5 +86,9 @@ public class OpenURL implements GraphContextMenuItem {
 
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/globe-network.png", false);
+    }
+
+    public Integer getMnemonicKey() {
+        return KeyEvent.VK_O;
     }
 }

@@ -20,10 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
+import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.Icon;
-import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.graph.api.GroupData;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
@@ -32,7 +32,6 @@ import org.gephi.visualization.hull.ConvexHull;
 import org.gephi.visualization.opengl.compatibility.objects.ConvexHullModel;
 import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.util.ImageUtilities;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -119,5 +118,9 @@ public class Contract implements GraphContextMenuItem {
 
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/contract.png", false);
+    }
+
+    public Integer getMnemonicKey() {
+        return KeyEvent.VK_C;
     }
 }

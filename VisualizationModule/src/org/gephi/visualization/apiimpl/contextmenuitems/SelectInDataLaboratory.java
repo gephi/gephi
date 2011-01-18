@@ -20,9 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
+import java.awt.event.KeyEvent;
 import javax.swing.Icon;
 import org.gephi.datalab.api.DataTablesController;
-import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.spi.GraphContextMenuItem;
@@ -78,5 +78,9 @@ public class SelectInDataLaboratory implements GraphContextMenuItem {
 
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/table-select.png", false);
+    }
+
+    public Integer getMnemonicKey() {
+        return KeyEvent.VK_L;
     }
 }

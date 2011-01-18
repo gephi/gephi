@@ -142,4 +142,8 @@ public class CopyOrMoveToWorkspaceSubItem implements GraphContextMenuItem {
             graph.removeNode(n);
         }
     }
+
+    public Integer getMnemonicKey() {
+        return null;
+    }
 }

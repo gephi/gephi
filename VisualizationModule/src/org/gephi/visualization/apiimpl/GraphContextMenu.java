@@ -22,12 +22,14 @@ package org.gephi.visualization.apiimpl;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
@@ -109,6 +111,9 @@ public class GraphContextMenu {
                     subMenu.add(createMenuItemFromGraphContextMenuItem(subItem, graph, nodes));
                 }
             }
+            if(item.getMnemonicKey()!=null){
+                subMenu.setMnemonic(item.getMnemonicKey());//Mnemonic for opening a sub menu
+            }
             return subMenu;
         } else {
             JMenuItem menuItem = new JMenuItem();
@@ -132,6 +137,10 @@ public class GraphContextMenu {
                 });
             } else {
                 menuItem.setEnabled(false);
+            }
+            if(item.getMnemonicKey()!=null){
+                menuItem.setMnemonic(item.getMnemonicKey());//Mnemonic for executing the action
+                menuItem.setAccelerator(KeyStroke.getKeyStroke(item.getMnemonicKey(),KeyEvent.CTRL_DOWN_MASK));//And the same key mnemonic + ctrl for executing the action (and as a help display for the user!).
             }
             return menuItem;
         }

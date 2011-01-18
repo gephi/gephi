@@ -29,7 +29,6 @@ import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 
 /**
  *
@@ -79,6 +78,10 @@ public abstract class CopyOrMoveToWorkspace implements GraphContextMenuItem {
     }
 
     public Icon getIcon() {
+        return null;
+    }
+
+    public Integer getMnemonicKey() {
         return null;
     }
 

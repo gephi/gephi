@@ -17,15 +17,19 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.component;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -65,6 +69,18 @@ final class GraphTopComponent extends TopComponent {
         initCollapsePanel();
         initToolPanels();
         final GraphDrawableImpl drawable = VizController.getInstance().getDrawable();
+
+        this.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getModifiers() == KeyEvent.CTRL_DOWN_MASK) {
+                    if (e.getKeyCode() == KeyEvent.VK_M) {
+                        JOptionPane.showMessageDialog(GraphTopComponent.this, "M");//Test
+                    }
+                }
+            }
+        });
 
         //Request component activation and therefore initialize JOGL component
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {

@@ -107,6 +107,13 @@ public interface GraphContextMenuItem {
     int getPosition();
 
     /**
+     * Optional. Allows to declare a mnemonic key for this item in the menu.
+     * There should not be 2 items with the same mnemonic at the same time.
+     * @return Integer from <code>KeyEvent</code> values or null
+     */
+    Integer getMnemonicKey();
+
+    /**
      * Returns an icon for this item if necessary.
      * @return Icon or null
      */
