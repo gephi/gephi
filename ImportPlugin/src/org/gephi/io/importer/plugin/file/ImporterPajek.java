@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.plugin.file;
 
 import java.io.BufferedReader;
@@ -189,24 +189,23 @@ public class ImporterPajek implements FileImporter, LongTask {
 
         // parse the rest of the line
         if (firstParts != -1 && parts != null && parts.length >= firstParts + 2) {
-            for (int i = firstParts; i < parts.length; i++) {
-                //Coordinates
-                if (i < parts.length - 1) {
-                    try {
-                        float x = Float.parseFloat(parts[i]);
-                        float y = Float.parseFloat(parts[i + 1]);
+            int i = firstParts;
+            //Coordinates
+            if (i < parts.length - 1) {
+                try {
+                    float x = Float.parseFloat(parts[i]);
+                    float y = Float.parseFloat(parts[i + 1]);
 
-                        node.setX(x);
-                        node.setY(y);
+                    node.setX(x);
+                    node.setY(y);
 
-                        i++;
-                    } catch (Exception e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat5", lineReader.getLineNumber()), Issue.Level.WARNING));
-                    }
+                    i++;
+                } catch (Exception e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat5", lineReader.getLineNumber()), Issue.Level.WARNING));
                 }
+            }
 
-                if (parts[i].equals("ic")) {
-                }
+            if (parts[i].equals("ic")) {
             }
         }
     }
