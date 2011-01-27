@@ -43,6 +43,6 @@ public class ExporterBuilderGDF implements GraphFileExporterBuilder {
     }
 
     public String getName() {
-        return NbBundle.getMessage(ExporterBuilderGDF.class, "ExporterGDF_name");
+        return "GDF";
     }
 }

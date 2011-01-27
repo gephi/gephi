@@ -43,6 +43,6 @@ public class ExporterBuilderCSV implements GraphFileExporterBuilder {
     }
 
     public String getName() {
-        return NbBundle.getMessage(ExporterBuilderCSV.class, "ExporterCSV_name");
+        return "CSV";
     }
 }

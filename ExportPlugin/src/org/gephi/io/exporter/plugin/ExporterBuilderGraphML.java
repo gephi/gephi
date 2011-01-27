@@ -43,6 +43,6 @@ public class ExporterBuilderGraphML implements GraphFileExporterBuilder {
     }
 
     public String getName() {
-        return NbBundle.getMessage(ExporterBuilderGEXF.class, "ExporterGraphML_name");
+        return "GraphML";
     }
 }

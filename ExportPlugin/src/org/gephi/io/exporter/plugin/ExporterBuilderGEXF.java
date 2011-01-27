@@ -43,6 +43,6 @@ public class ExporterBuilderGEXF implements GraphFileExporterBuilder {
     }
 
     public String getName() {
-        return NbBundle.getMessage(ExporterBuilderGEXF.class, "ExporterGEXF_name");
+        return "GEXF";
     }
 }
