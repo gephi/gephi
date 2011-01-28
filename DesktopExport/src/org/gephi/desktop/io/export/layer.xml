@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<filesystem>
+     <folder name="Menu">
+        <folder name="File">
+            <file name="Separator.instance" url="Separator.instance">
+                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                <attr name="position" intvalue="1150"/>
+            </file>
+            <file name="org-gephi-desktop-io-export-Export.instance">
+                <attr name="position" intvalue="1200"/>
+            </file>
+        </folder>
+    </folder>
+</filesystem>

@@ -1,0 +1,10 @@
+**/build
+**/nbproject/private
+**/nbproject/platform.properties
+nbproject/project.properties
+**/dist
+nbproject/private/platform-private.properties
+nbproject/private/profiler/
+.DS_Store
+toolkit
+keystore.ks

@@ -1,0 +1,28 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "SPI for perspectives and TopComponent management"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "SPI for perspectives and TopComponent management"
+
+msgid "BannerTopComponent.logoButton.toolTipText"
+msgstr "Go on Gephi website www.gephi.org"
+
+msgid "CTL_BannerTopComponent"
+msgstr "Banner"

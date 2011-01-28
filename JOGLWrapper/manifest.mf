@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+AutoUpdate-Essential-Module: true
+OpenIDE-Module: org.gephi.lib.jogl
+OpenIDE-Module-Localizing-Bundle: org/gephi/lib/jogl/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.1.0.1
+OpenIDE-Module-Install: org/gephi/lib/jogl/JOGLNativesInstaller.class
+

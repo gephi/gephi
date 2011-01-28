@@ -1,0 +1,124 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Data Laboratory Table component and edit panels"
+
+msgid "CTL_DataTableAction"
+msgstr "Data Table"
+
+msgid "CTL_DataTableTopComponent"
+msgstr "Data Table"
+
+msgid "DataTableTopComponent.tableScrollPane.busyMessage"
+msgstr "Fetching data..."
+
+msgid "DataTableTopComponent.tableScrollPane.error"
+msgstr "An error occurend while feching data..."
+
+msgid "DataTableTopComponent.labelFilter.text"
+msgstr "Filter:"
+
+msgid "DataTableTopComponent.edgesButton.text"
+msgstr "Edges"
+
+msgid "DataTableTopComponent.nodesButton.text"
+msgstr "Nodes"
+
+msgid "DataTableTopComponent.refreshButton.text"
+msgstr "Refresh"
+
+msgid "DataTableTopComponent.labelBanner.text"
+msgstr "Data have been updated. Do you want to refresh the table?"
+
+msgid "DataTableTopComponent.filterTextField.toolTipText"
+msgstr "Regular expression use is permitted"
+
+msgid "DataTableTopComponent.attributeColumnsPanel.title"
+msgstr "Attribute columns"
+
+msgid "DataTableTopComponent.RichToolTip.title.text"
+msgstr "Description"
+
+msgid "DataTableTopComponent.addColumnButton.text"
+msgstr "Add new column"
+
+msgid "DataTableTopComponent.mergeColumnsButton.text"
+msgstr "Merge columns"
+
+msgid "DataTableTopComponent.dialogs.okButton.text"
+msgstr "Ok"
+
+msgid "DataTableTopComponent.general.actions.plugins.button.text"
+msgstr "More actions"
+
+msgid "DataTableTopComponent.general.actions.plugins.group.name"
+msgstr "Group {0}"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Data Laboratory Table component and edit panels"
+
+msgid "SettingsPanel.title"
+msgstr "{0} settings"
+
+msgid "EdgeDataTable.source.column.text"
+msgstr "Source"
+
+msgid "EdgeDataTable.target.column.text"
+msgstr "Target"
+
+msgid "EdgeDataTable.type.column.text"
+msgstr "Type"
+
+msgid "EdgeDataTable.type.column.directed"
+msgstr "Directed"
+
+msgid "EdgeDataTable.type.column.undirected"
+msgstr "Undirected"
+
+msgid "ConfigurationPanel.title"
+msgstr "Configuration"
+
+msgid "ConfigurationPanel.onlyVisibleCheckBox.text"
+msgstr "Visible graph only"
+
+msgid "ConfigurationPanel.useSparklinesCheckBox.text"
+msgstr "Show number lists and dynamic numbers as sparklines"
+
+msgid "ConfigurationPanel.showEdgesNodesLabelsCheckBox.text"
+msgstr "Show label of source and target nodes of edges"
+
+msgid "DataTableTopComponent.configurationButton.text"
+msgstr "Configuration"
+
+msgid "ConfigurationPanel.descriptionLabel.text"
+msgstr "Data table configuration:"
+
+msgid "ConfigurationPanel.timeIntervalsGraphicsCheckBox.text"
+msgstr "Show time intervals graphics"
+
+msgid "DataTableTopComponent.availableColumnsButton.toolTipText"
+msgstr "Configure available columns"
+
+msgid "AvailableColumnsPanel.title"
+msgstr "Available columns settings"
+
+msgid "AvailableColumnsPanel.descriptionLabel.text"
+msgstr "Choose the columns that should be available:"
+
+msgid "AvailableColumnsPanel.maximum-available-columns.info"
+msgstr "Maximum number of available columns reached"

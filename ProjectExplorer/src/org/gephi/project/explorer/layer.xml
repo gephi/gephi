@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        
+        <folder name="Window">
+            <file name="org-gephi-project-explorer-ProjectAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.project.explorer.Bundle"/>
+                <attr name="component" methodvalue="org.gephi.project.explorer.ProjectTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.project.explorer.Bundle#CTL_ProjectAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="ProjectAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-project-explorer-ProjectAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="ProjectTopComponent.settings" url="ProjectTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="output">
+                <file name="ProjectTopComponent.wstcref" url="ProjectTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

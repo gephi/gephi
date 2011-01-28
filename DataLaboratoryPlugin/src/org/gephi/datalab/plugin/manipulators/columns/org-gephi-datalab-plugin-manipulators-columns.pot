@@ -1,0 +1,83 @@
+# English (en) translation for Gephi.
+# Copyright (C) 2010 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.7\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2010-04-07 13:16+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "DeleteColumn.name"
+msgstr "Delete column"
+
+msgid "DeleteColumn.confirmation.message"
+msgstr "Are you sure you want to delete the column ''{0}''?"
+
+msgid "ClearColumnData.name"
+msgstr "Clear column data"
+
+msgid "ClearColumnData.confirmation.message"
+msgstr "Are you sure you want to clear the column ''{0}'' data?"
+
+msgid "CopyDataToOtherColumn.name"
+msgstr "Copy data to other column"
+
+msgid "FillColumnWithValue.name"
+msgstr "Fill column with a value"
+
+msgid "FillColumnWithValue.inputDialog.text"
+msgstr "Choose a value to use to fill all rows of the column"
+
+msgid "DuplicateColumn.name"
+msgstr "Duplicate column"
+
+msgid "ColumnValuesFrequency.name"
+msgstr "Calculate column values frequency"
+
+msgid "ColumnValuesFrequency.description"
+msgstr ""
+"Calculates the frequency of appearance of each value of the column and shows "
+"a report"
+
+msgid "ColumnValuesFrequency.report.header"
+msgstr "<h1>Values frequencies report for column ''{0}''</h1>"
+
+msgid "ColumnValuesFrequency.report.piechart.title"
+msgstr "Values frequencies pie chart"
+
+msgid "ColumnValuesFrequency.report.piechart.not-shown"
+msgstr "There are more than 100 different values, pie chart is not shown."
+
+msgid "NumberColumnStatisticsReport.name"
+msgstr "Calculate number column statistics"
+
+msgid "NumberColumnStatisticsReport.description"
+msgstr ""
+"Calculates statistics of a number or number list column and shows a report"
+
+msgid "CreateBooleanMatchesColumn.name"
+msgstr "Create boolean column from regex match"
+
+msgid "CreateBooleanMatchesColumn.description"
+msgstr ""
+"Creates a new boolean column with values that indicate if each of the "
+"selected column values match the given regular expression"
+
+msgid "CreateFoundGroupsListColumn.name"
+msgstr "Create column with list of regex matching groups"
+
+msgid "CreateFoundGroupsListColumn.description"
+msgstr ""
+"Creates a new string list column with values that are the list of matching "
+"groups of the given regular expression"
+
+msgid "NegateBooleanColumn.name"
+msgstr "Negate boolean column values"

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-gephi-visualization-component-GraphAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.visualization.Bundle"/>
+                <attr name="component" methodvalue="org.gephi.visualization.component.GraphTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.gephi.visualization.component.Bundle#CTL_GraphAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="GraphAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-visualization-component-GraphAction.instance"/>
+                <attr name="position" intvalue="500"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="OptionsDialog">
+        <folder name="VisualizationOptionsCategory">
+            <file name="org-gephi-visualization-options-DefaultAdvancedOption.instance">
+                <attr name="controller" newvalue="org.gephi.visualization.options.DefaultOptionsPanelController"/>
+                <attr name="displayName" bundlevalue="org.gephi.visualization.options.Bundle#AdvancedOption_DisplayName_Default"/>
+                <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.AdvancedOption.createSubCategory"/>
+                <attr name="keywords" bundlevalue="org.gephi.visualization.options.Bundle#AdvancedOption_Keywords_Default"/>
+                <attr name="keywordsCategory" stringvalue="VisualizationOptionsCategory/null"/>
+                <attr name="toolTip" bundlevalue="org.gephi.visualization.options.Bundle#AdvancedOption_Tooltip_Default"/>
+            </file>
+            <file name="org-gephi-visualization-options-OpenGLAdvancedOption.instance">
+                <attr name="controller" newvalue="org.gephi.visualization.options.OpenGLOptionsPanelController"/>
+                <attr name="displayName" bundlevalue="org.gephi.visualization.options.Bundle#AdvancedOption_DisplayName_OpenGL"/>
+                <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.AdvancedOption.createSubCategory"/>
+                <attr name="keywords" bundlevalue="org.gephi.visualization.options.Bundle#AdvancedOption_Keywords_OpenGL"/>
+                <attr name="keywordsCategory" stringvalue="VisualizationOptionsCategory/null"/>
+                <attr name="toolTip" bundlevalue="org.gephi.visualization.options.Bundle#AdvancedOption_Tooltip_OpenGL"/>
+            </file>
+        </folder>
+        <file name="VisualizationOptionsCategory.instance">
+            <attr name="advancedOptionsFolder" stringvalue="OptionsDialog/VisualizationOptionsCategory"/>
+            <attr name="categoryName" bundlevalue="org.gephi.visualization.options.Bundle#OptionsCategory_Name_Visualization"/>
+            <attr name="iconBase" stringvalue="org/gephi/visualization/options/optionDialog_viz_name.png"/>
+            <attr name="instanceCreate" methodvalue="org.netbeans.spi.options.OptionsCategory.createCategory"/>
+            <attr name="keywords" bundlevalue="org.gephi.visualization.options.Bundle#OptionsCategory_Keywords_Visualization"/>
+            <attr name="keywordsCategory" stringvalue="Visualization"/>
+            <attr name="title" bundlevalue="org.gephi.visualization.options.Bundle#OptionsCategory_Title_Visualization"/>
+        </file>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="GraphTopComponent.settings" url="GraphTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            
+            <folder name="graphmode">
+                <file name="GraphTopComponent.wstcref" url="GraphTopComponentWstcref.xml"/>
+            </folder>
+            <file name="graphmode.wsmode" url="graphmodeWsmode.xml"/>
+        </folder>
+    </folder>
+</filesystem>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <attr name="Menu\Edit\Separator1.instance\position" intvalue="300"/>
+    <attr name="Menu\Edit\Separator2.instance\position" intvalue="800"/>
+    <attr name="Menu\Edit\org-openide-actions-CopyAction.instance\position" intvalue="500"/>
+    <attr name="Menu\Edit\org-openide-actions-CutAction.instance\position" intvalue="400"/>
+    <attr name="Menu\Edit\org-openide-actions-DeleteAction.instance\position" intvalue="700"/>
+    <attr name="Menu\Edit\org-openide-actions-FindAction.instance\position" intvalue="900"/>
+    <attr name="Menu\Edit\org-openide-actions-PasteAction.instance\position" intvalue="600"/>
+    <attr name="Menu\Edit\org-openide-actions-RedoAction.instance\position" intvalue="200"/>
+    <attr name="Menu\Edit\org-openide-actions-ReplaceAction.instance\position" intvalue="1000"/>
+    <attr name="Menu\Edit\org-openide-actions-UndoAction.instance\position" intvalue="100"/>
+    <attr name="Menu\File\Separator2.instance\position" intvalue="450"/>
+    <attr name="Menu\File\Separator4.instance\position" intvalue="725"/>
+    <attr name="Menu\File\org-netbeans-core-actions-SystemExit.instance\position" intvalue="2150"/>
+    <attr name="Menu\Window\ProjectAction.shadow\position" intvalue="250"/>
+    <attr name="Menu\Window\org-netbeans-core-windows-actions-ResetWindowsAction.shadow\position" intvalue="2750"/>
+    <folder name="Menu">
+        <folder name="Edit">
+            <file name="Separator1.instance_hidden"/>
+            <file name="Separator2.instance_hidden"/>
+            <file name="org-gephi-branding-desktop-actions-CleanWorkspace.instance">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-CleanWorkspace.instance"/>
+                <attr name="position" intvalue="2700"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-DeleteWorkspace.instance">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-DeleteWorkspace.instance"/>
+                <attr name="position" intvalue="2600"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-NewWorkspace.instance">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-NewWorkspace.instance"/>
+                <attr name="position" intvalue="2500"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-RenameWorkspace.instance">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-RenameWorkspace.instance"/>
+                <attr name="position" intvalue="2800"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-DuplicateWorkspace.instance">
+                <attr name="originalFile" stringvalue="Actions/Edit/org-gephi-branding-desktop-actions-DuplicateWorkspace.instance"/>
+                <attr name="position" intvalue="2900"/>
+            </file>
+            <file name="org-openide-actions-CopyAction.shadow_hidden"/>
+            <file name="org-openide-actions-CutAction.shadow_hidden"/>
+            <file name="org-openide-actions-DeleteAction.shadow_hidden"/>
+            <file name="org-openide-actions-FindAction.shadow_hidden"/>
+            <file name="org-openide-actions-PasteAction.shadow_hidden"/>
+            <file name="org-openide-actions-RedoAction.shadow_hidden"/>
+            <file name="org-openide-actions-ReplaceAction.shadow_hidden"/>
+            <file name="org-openide-actions-UndoAction.shadow_hidden"/>
+        </folder>
+        <folder name="File">
+            <file name="org-gephi-branding-desktop-actions-CloseProject.instance">
+                <attr name="position" intvalue="400"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-NewProject.instance">
+                <attr name="position" intvalue="100"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-OpenFile.instance">
+                <attr name="position" intvalue="300"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-OpenProject.instance">
+                <attr name="position" intvalue="200"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-ProjectProperties.instance">
+                <attr name="position" intvalue="500"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-SaveAsProject.instance">
+                <attr name="position" intvalue="1100"/>
+            </file>
+            <file name="org-gephi-branding-desktop-actions-SaveProject.instance">
+                <attr name="position" intvalue="750"/>
+            </file>
+            <file name="org-netbeans-modules-print-action-PageSetupAction.shadow_hidden"/>
+            <file name="org-netbeans-modules-print-action-PrintAction.shadow_hidden"/>
+            <file name="org-openide-actions-PageSetupAction.instance_hidden"/>
+            <file name="org-openide-actions-PrintAction.instance_hidden"/>
+            <file name="org-openide-actions-SaveAction.instance_hidden"/>
+            <file name="org-openide-actions-SaveAction.shadow_hidden"/>
+            <file name="org-openide-actions-SaveAllAction.instance_hidden"/>
+            <file name="org-openide-actions-SaveAllAction.shadow_hidden"/>
+            <file name="org-openide-actions-SaveAsAction.shadow_hidden"/>
+            <file name="Separator2_1.instance" url="Separator2_1.instance">
+                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                <attr name="position" intvalue="550"/>
+            </file>
+        </folder>
+        <folder name="Plugins">
+            <attr name="position" intvalue="1250"/>
+        </folder>
+        <file name="GoTo_hidden"/>
+        <folder name="Tools">
+            <file name="Separator3_1.instance" url="Separator3_1.instance">
+                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                <attr name="position" intvalue="9900"/>
+            </file>
+            <file name="org-gephi-branding-desktop-multilingual-LanguageAction.instance">
+                <attr name="position" intvalue="10000"/>
+            </file>
+                <file name="org-netbeans-modules-favorites-templates-TemplatesAction.shadow_hidden"/>
+            <file name="org-openide-actions-ToolsAction.shadow_hidden"/>
+        </folder>
+        <folder name="View">
+            <file name="Separator1.instance_hidden"/>
+            <file name="Separator2.instance_hidden"/>
+            <file name="org-netbeans-core-actions-HTMLViewAction.instance_hidden"/>
+            <file name="org-netbeans-core-actions-HTMLViewAction.shadow_hidden"/>
+            <file name="org-netbeans-core-actions-LogAction.shadow_hidden"/>
+            <file name="org-netbeans-core-windows-actions-ToolbarsListAction.instance_hidden"/>
+        </folder>
+        <folder name="Window">
+            <file name="CloneDocumentAction.shadow_hidden"/>
+            <file name="CloseAllButThisAction.shadow_hidden"/>
+            <file name="CloseAllDocumentsAction.shadow_hidden"/>
+            <file name="DocumentsAction.shadow_hidden"/>
+            <file name="Output_hidden"/>
+            <file name="ProgressListAction.shadow_hidden"/>
+            <file name="Separator4_1.instance" url="Separator4_1.instance">
+                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                <attr name="position" intvalue="2925"/>
+            </file>
+            <file name="Separator5.instance_hidden"/>
+            <file name="SwitchToRecentDocumentAction.shadow_hidden"/>
+            <file name="ViewFavoritesTabAction.shadow_hidden"/>
+            <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
+            <file name="org-netbeans-core-windows-actions-GlobalPropertiesAction.shadow_hidden"/>
+            <file name="org-netbeans-core-windows-actions-ResetWindowsAction.shadow_hidden"/>
+        </folder>
+    </folder>
+    <folder name="Services">
+        <folder name="AutoupdateType">
+            <file name="org_gephi_branding_desktop_update_center.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#Services/AutoupdateType/org_gephi_branding_desktop_update_center.instance"/>
+                <attr name="enabled" boolvalue="true"/>
+                <attr name="instanceCreate" methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
+                <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
+                <attr name="url_key" stringvalue="org_gephi_branding_desktop_update_center"/>
+            </file>
+            <file name="org_gephi_branding_desktop_update_center_1.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.gephi.branding.desktop.Bundle"/>
+                <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#Services/AutoupdateType/org_gephi_branding_desktop_update_center_1.instance"/>
+                <attr name="enabled" boolvalue="true"/>
+                <attr name="instanceCreate" methodvalue="org.netbeans.modules.autoupdate.updateprovider.AutoupdateCatalogFactory.createUpdateProvider"/>
+                <attr name="instanceOf" stringvalue="org.netbeans.spi.autoupdate.UpdateProvider"/>
+                <attr name="url_key" stringvalue="org_gephi_branding_desktop_update_center_1"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Shortcuts">
+        <file name="D-N.shadow">
+            <attr name="originalFile" stringvalue="Menu/Edit/org-gephi-branding-desktop-actions-NewWorkspace.instance"/>
+        </file>
+        <file name="D-O.shadow">
+            <attr name="originalFile" stringvalue="Menu/File/org-gephi-branding-desktop-actions-OpenFile.instance"/>
+        </file>
+        <file name="D-S.shadow">
+            <attr name="originalFile" stringvalue="Menu/File/org-gephi-branding-desktop-actions-SaveProject.instance"/>
+        </file>
+        <file name="DS-N.shadow">
+            <attr name="originalFile" stringvalue="Menu/File/org-gephi-branding-desktop-actions-NewProject.instance"/>
+        </file>
+        <file name="DS-O.shadow">
+            <attr name="originalFile" stringvalue="Menu/File/org-gephi-branding-desktop-actions-OpenProject.instance"/>
+        </file>
+    </folder>
+    <file name="Toolbars_hidden"/>
+</filesystem>

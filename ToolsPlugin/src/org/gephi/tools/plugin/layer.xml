@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="EditToolTopComponent.settings" url="/org/gephi/ui/tools/plugin/edit/EditToolTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="rankingmode">
+                <file name="EditToolTopComponent.wstcref" url="/org/gephi/ui/tools/plugin/edit/EditToolTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

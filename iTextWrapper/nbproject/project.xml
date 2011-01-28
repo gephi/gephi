@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.gephi.lib.itext</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>com.itextpdf.text</package>
+                <package>com.itextpdf.text.error_messages</package>
+                <package>com.itextpdf.text.exceptions</package>
+                <package>com.itextpdf.text.factories</package>
+                <package>com.itextpdf.text.html</package>
+                <package>com.itextpdf.text.html.simpleparser</package>
+                <package>com.itextpdf.text.pdf</package>
+                <package>com.itextpdf.text.pdf.codec</package>
+                <package>com.itextpdf.text.pdf.codec.wmf</package>
+                <package>com.itextpdf.text.pdf.collection</package>
+                <package>com.itextpdf.text.pdf.crypto</package>
+                <package>com.itextpdf.text.pdf.draw</package>
+                <package>com.itextpdf.text.pdf.events</package>
+                <package>com.itextpdf.text.pdf.fonts</package>
+                <package>com.itextpdf.text.pdf.fonts.cmaps</package>
+                <package>com.itextpdf.text.pdf.hyphenation</package>
+                <package>com.itextpdf.text.pdf.interfaces</package>
+                <package>com.itextpdf.text.pdf.internal</package>
+                <package>com.itextpdf.text.pdf.parser</package>
+                <package>com.itextpdf.text.pdf.richmedia</package>
+                <package>com.itextpdf.text.xml</package>
+                <package>com.itextpdf.text.xml.simpleparser</package>
+                <package>com.itextpdf.text.xml.xmp</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/iText-5.0.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/iText-5.0.1.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>
