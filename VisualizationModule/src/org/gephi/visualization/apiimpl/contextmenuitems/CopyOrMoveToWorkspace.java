@@ -45,17 +45,21 @@ public abstract class CopyOrMoveToWorkspace implements GraphContextMenuItem {
     }
 
     public GraphContextMenuItem[] getSubItems() {
-        int i=0;
-        ArrayList<GraphContextMenuItem> subItems=new ArrayList<GraphContextMenuItem>();
-        if (canExecute()) {
-            subItems.add(new CopyOrMoveToWorkspaceSubItem(null, true, 0, 0, isCopy()));//New workspace
-            ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
-            for (final Workspace w : projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
-                GraphContextMenuItem item=new CopyOrMoveToWorkspaceSubItem(w, w != projectController.getCurrentWorkspace(), 1, i, isCopy());
-                subItems.add(item);
-                i++;
+        if (nodes != null) {
+            int i = 0;
+            ArrayList<GraphContextMenuItem> subItems = new ArrayList<GraphContextMenuItem>();
+            if (canExecute()) {
+                subItems.add(new CopyOrMoveToWorkspaceSubItem(null, true, 0, 0, isCopy()));//New workspace
+                ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
+                for (final Workspace w : projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
+                    GraphContextMenuItem item = new CopyOrMoveToWorkspaceSubItem(w, w != projectController.getCurrentWorkspace(), 1, i, isCopy());
+                    subItems.add(item);
+                    i++;
+                }
+                return subItems.toArray(new GraphContextMenuItem[0]);
+            } else {
+                return null;
             }
-            return subItems.toArray(new GraphContextMenuItem[0]);
         } else {
             return null;
         }

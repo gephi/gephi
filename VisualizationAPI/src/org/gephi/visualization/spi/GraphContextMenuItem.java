@@ -36,8 +36,9 @@ import org.gephi.graph.api.Node;
  *  <li>Provide and icon or not</li>
  * </ul>
  * <p>Used for different manipulators such as NodesManipulator, EdgesManipulator and GeneralActionsManipulator.</p>
- * <p>The only methods that are called before setting up an item with the data are getType and getPosition.
+ * <p>The only methods that are called before setting up an item with the data are <b>getSubItems, getType and getPosition.</b>
  * This way, the other methods behaviour can depend on the data that has been setup before</p>
+ * <p><b>getSubItems will be called before and after setup. Take care when the nodes are null!</b></p>
  *
  * To provide a context menu item, a class has to implement this interface and have a <code>@ServiceProvider</code> annotation
  * @author Eduardo Ramos <eduramiba@gmail.com>
@@ -45,7 +46,7 @@ import org.gephi.graph.api.Node;
 public interface GraphContextMenuItem {
 
     /**
-     * Prepare nodes for this item.
+     * Prepare nodes for this item. Note that nodes could contain 0 nodes.
      * @param graph Hierarchical graph
      * @param nodes All selected nodes
      */
@@ -58,9 +59,12 @@ public interface GraphContextMenuItem {
     void execute();
 
     /**
-     * This is optional. Return sub items for this menu item if desired.
-     * If this item should contain more items, return a new instance of each sub item.
-     * If not return null and implement execute for this item.
+     * <p>This is optional. Return sub items for this menu item if desired.</p>
+     * <p>If this item should contain more items, return a new instance of each sub item.
+     * If not return null and implement execute for this item.</p>
+     * <p>In order to declare mnemonic keys for subitem(s), the implementation of this item
+     * must return the subitem(s) with the mnemonic even when it has not been setup with any node.
+     * If you don't need a mnemonic, return null if the item is not setup.</p>
      * @return
      */
     GraphContextMenuItem[] getSubItems();

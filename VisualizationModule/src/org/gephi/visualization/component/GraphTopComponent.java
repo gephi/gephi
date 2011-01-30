@@ -188,13 +188,22 @@ final class GraphTopComponent extends TopComponent implements AWTEventListener {
     }
 
     private void initKeyEventContextMenuActionMappings() {
+        mapItems(Lookup.getDefault().lookupAll(GraphContextMenuItem.class).toArray(new GraphContextMenuItem[0]));
+    }
+
+    private void mapItems(GraphContextMenuItem[] items){
         Integer key;
-        for (GraphContextMenuItem item : Lookup.getDefault().lookupAll(GraphContextMenuItem.class)) {
+        GraphContextMenuItem[] subItems;
+        for (GraphContextMenuItem item : items) {
             key = item.getMnemonicKey();
             if (key != null) {
                 if (!keyActionMappings.containsKey(key)) {
                     keyActionMappings.put(key, item);
                 }
+            }
+            subItems=item.getSubItems();
+            if(subItems!=null){
+                mapItems(subItems);
             }
         }
     }

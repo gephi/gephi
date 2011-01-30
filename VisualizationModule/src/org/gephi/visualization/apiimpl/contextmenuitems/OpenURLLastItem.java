@@ -20,81 +20,95 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
-import java.util.ArrayList;
+import java.awt.event.KeyEvent;
+import java.net.URL;
 import javax.swing.Icon;
 import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
+import org.gephi.project.api.ProjectController;
 import org.gephi.visualization.spi.GraphContextMenuItem;
-import org.openide.util.ImageUtilities;
+import org.openide.awt.HtmlBrowser.URLDisplayer;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  */
-@ServiceProvider(service = GraphContextMenuItem.class)
-public class OpenURL implements GraphContextMenuItem {
+public class OpenURLLastItem implements GraphContextMenuItem {
 
     private Node node;
+    private String column, url;
 
     public void setup(HierarchicalGraph graph, Node[] nodes) {
         if (nodes.length == 1) {
             node = nodes[0];
+            LastColumnOpenedURL lc = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getLookup().lookup(LastColumnOpenedURL.class);
+            if (lc != null) {
+                column = lc.column;
+                AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
+                Object value;
+                if ((value = row.getValue(column)) != null) {
+                    url = value.toString();
+
+                    if (!url.matches("(https?|ftp):(//?|\\\\?)?.*")) {
+                        //Does not look like an URL, try http:
+                        url = "http://" + url;
+                    }
+                }
+            }else{
+                column=null;
+                url=null;
+            }
         }else{
             node=null;
+            url=null;
+            column=null;
         }
     }
 
     public void execute() {
+        if (url != null) {
+            try {
+                URLDisplayer.getDefault().showURLExternal(new URL(url));
+            } catch (Exception ex) {
+            }
+        }
     }
 
     public GraphContextMenuItem[] getSubItems() {
-        ArrayList<GraphContextMenuItem> subItems = new ArrayList<GraphContextMenuItem>();
-
-        //Always provide OpenURLLastItem so its shortcut is available:
-        subItems.add(new OpenURLLastItem());
-        if (node != null) {
-            AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
-            for (int i = 0; i < row.countValues(); i++) {
-                if ((row.getColumnAt(i).getType() == AttributeType.STRING || row.getColumnAt(i).getType() == AttributeType.DYNAMIC_STRING) && row.getValue(i) != null) {
-                    subItems.add(new OpenURLSubItem(row.getColumnAt(i).getTitle(), i));
-                }
-            }
-        }
-        return subItems.toArray(new GraphContextMenuItem[0]);
+        return null;
     }
 
     public String getName() {
-        return NbBundle.getMessage(OpenURL.class, "GraphContextMenu_OpenURL");
+        return NbBundle.getMessage(OpenURLLastItem.class, "GraphContextMenu_OpenURLLastItem", column != null ? column : "--");
     }
 
     public String getDescription() {
-        return NbBundle.getMessage(OpenURL.class, "GraphContextMenu_OpenURL.description");
+        return null;
     }
 
     public boolean isAvailable() {
-        return node != null;
-    }
-
-    public boolean canExecute() {
         return true;
     }
 
+    public boolean canExecute() {
+        return url != null;
+    }
+
     public int getType() {
-        return 400;
+        return 0;
     }
 
     public int getPosition() {
-        return 300;
+        return 0;
     }
 
     public Icon getIcon() {
-        return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/globe-network.png", false);
+        return null;
     }
 
     public Integer getMnemonicKey() {
-        return null;
+        return KeyEvent.VK_P;
     }
 }
