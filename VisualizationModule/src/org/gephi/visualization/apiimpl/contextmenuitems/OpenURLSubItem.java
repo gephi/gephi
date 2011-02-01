@@ -20,9 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
+import java.awt.event.KeyEvent;
 import java.net.URL;
+import java.util.ArrayList;
 import javax.swing.Icon;
+import javax.swing.JOptionPane;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
@@ -37,42 +42,60 @@ import org.openide.util.NbBundle;
 public class OpenURLSubItem implements GraphContextMenuItem {
 
     private Node node;
-    private String column, url;
-    private int position;
-
-    public OpenURLSubItem(String column, int position) {
-        this.column = column;
-        this.position = position;
-    }
+    private String columnTitle, url;
 
     public void setup(HierarchicalGraph graph, Node[] nodes) {
         if (nodes.length == 1) {
             node = nodes[0];
-            AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
-            Object value;
-            if ((value = row.getValue(column)) != null) {
-                url = value.toString();
-
-                if (!url.matches("(https?|ftp):(//?|\\\\?)?.*")) {
-                    //Does not look like an URL, try http:
-                    url = "http://" + url;
-                }
-            }
+        } else {
+            node = null;
         }
     }
 
     public void execute() {
-        if (url != null) {
-            try {
-                URLDisplayer.getDefault().showURLExternal(new URL(url));
-            } catch (Exception ex) {
-            }
+        if (node != null) {
             LastColumnOpenedURL lc = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getLookup().lookup(LastColumnOpenedURL.class);
-            if (lc == null) {
-                Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().add(new LastColumnOpenedURL(column));
-            } else {
-                lc.column = column;
+            ArrayList<ColumnURL> columnUrls = new ArrayList<ColumnURL>();
+            ColumnURL initialSelection = null;
+            Object value;
+            String str;
+            AttributeColumn column;
+            AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
+            for (int i = 0; i < row.countValues(); i++) {
+                column = row.getColumnAt(i);
+                if ((column.getType() == AttributeType.STRING || column.getType() == AttributeType.DYNAMIC_STRING) && (value = row.getValue(i)) != null) {
+                    str = value.toString();
+                    if (!str.matches("(https?|ftp):(//?|\\\\?)?.*")) {
+                        //Does not look like an URL, try http:
+                        str = "http://" + str;
+                    }
+                    if (lc != null && lc.column.equals(column.getTitle())) {
+                        columnUrls.add(initialSelection=new ColumnURL(column.getTitle(), str));
+                    }else{
+                        columnUrls.add(new ColumnURL(column.getTitle(), str));
+                    }
+                }
             }
+
+            ColumnURL selection = (ColumnURL) JOptionPane.showInputDialog(null, NbBundle.getMessage(OpenURLSubItem.class, "GraphContextMenu_OpenURLSubItem.message"), getName(), JOptionPane.QUESTION_MESSAGE, null, columnUrls.toArray(), initialSelection);
+            if (selection != null) {
+                columnTitle = selection.column;
+                url = selection.url;
+                showUrl();
+            }
+        }
+    }
+
+    private void showUrl() {
+        try {
+            URLDisplayer.getDefault().showURLExternal(new URL(url));
+        } catch (Exception ex) {
+        }
+        LastColumnOpenedURL lc = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getLookup().lookup(LastColumnOpenedURL.class);
+        if (lc == null) {
+            Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().add(new LastColumnOpenedURL(columnTitle));
+        } else {
+            lc.column = columnTitle;
         }
     }
 
@@ -81,13 +104,7 @@ public class OpenURLSubItem implements GraphContextMenuItem {
     }
 
     public String getName() {
-        String shortenedUrl = url;
-        if (url == null) {
-            shortenedUrl = "";
-        } else if (url.length() >= 60) {
-            shortenedUrl = url.substring(0, 57) + "...";
-        }
-        return NbBundle.getMessage(OpenURLSubItem.class, "GraphContextMenu_OpenURLSubItem", column, shortenedUrl);
+        return NbBundle.getMessage(OpenURLSubItem.class, "GraphContextMenu_OpenURLSubItem");
     }
 
     public String getDescription() {
@@ -99,7 +116,7 @@ public class OpenURLSubItem implements GraphContextMenuItem {
     }
 
     public boolean canExecute() {
-        return url != null;
+        return true;
     }
 
     public int getType() {
@@ -107,7 +124,7 @@ public class OpenURLSubItem implements GraphContextMenuItem {
     }
 
     public int getPosition() {
-        return position;
+        return 0;
     }
 
     public Icon getIcon() {
@@ -115,6 +132,21 @@ public class OpenURLSubItem implements GraphContextMenuItem {
     }
 
     public Integer getMnemonicKey() {
-        return null;
+        return KeyEvent.VK_N;
+    }
+
+    class ColumnURL {
+
+        String column, url;
+
+        public ColumnURL(String column, String url) {
+            this.column = column;
+            this.url = url;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s - %s", column, url);
+        }
     }
 }

@@ -51,19 +51,12 @@ public class OpenURL implements GraphContextMenuItem {
     }
 
     public GraphContextMenuItem[] getSubItems() {
-        ArrayList<GraphContextMenuItem> subItems = new ArrayList<GraphContextMenuItem>();
+        GraphContextMenuItem[] subItems=new GraphContextMenuItem[2];
 
-        //Always provide OpenURLLastItem so its shortcut is available:
-        subItems.add(new OpenURLLastItem());
-        if (node != null) {
-            AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
-            for (int i = 0; i < row.countValues(); i++) {
-                if ((row.getColumnAt(i).getType() == AttributeType.STRING || row.getColumnAt(i).getType() == AttributeType.DYNAMIC_STRING) && row.getValue(i) != null) {
-                    subItems.add(new OpenURLSubItem(row.getColumnAt(i).getTitle(), i));
-                }
-            }
-        }
-        return subItems.toArray(new GraphContextMenuItem[0]);
+        //Always provide subitems so their shortcuts are available:
+        subItems[0]=new OpenURLLastItem();
+        subItems[1]=new OpenURLSubItem();
+        return subItems;
     }
 
     public String getName() {

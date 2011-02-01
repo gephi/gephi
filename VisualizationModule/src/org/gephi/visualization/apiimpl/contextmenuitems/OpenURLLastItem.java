@@ -23,7 +23,9 @@ package org.gephi.visualization.apiimpl.contextmenuitems;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 import javax.swing.Icon;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
@@ -41,29 +43,32 @@ public class OpenURLLastItem implements GraphContextMenuItem {
     private String column, url;
 
     public void setup(HierarchicalGraph graph, Node[] nodes) {
+        url = null;
+        column = null;
         if (nodes.length == 1) {
             node = nodes[0];
             LastColumnOpenedURL lc = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getLookup().lookup(LastColumnOpenedURL.class);
             if (lc != null) {
                 column = lc.column;
-                AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
-                Object value;
-                if ((value = row.getValue(column)) != null) {
-                    url = value.toString();
+                AttributeTable table = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
+                if (table.hasColumn(column)) {
+                    AttributeRow row = (AttributeRow) node.getNodeData().getAttributes();
+                    Object value;
+                    if ((value = row.getValue(column)) != null) {
+                        url = value.toString();
 
-                    if (!url.matches("(https?|ftp):(//?|\\\\?)?.*")) {
-                        //Does not look like an URL, try http:
-                        url = "http://" + url;
+                        if (!url.matches("(https?|ftp):(//?|\\\\?)?.*")) {
+                            //Does not look like an URL, try http:
+                            url = "http://" + url;
+                        }
                     }
+                }else{
+                    column=null;
+                     Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().remove(lc);
                 }
-            }else{
-                column=null;
-                url=null;
             }
-        }else{
-            node=null;
-            url=null;
-            column=null;
+        } else {
+            node = null;
         }
     }
 

@@ -65,7 +65,7 @@ public class SelectInDataLaboratory implements GraphContextMenuItem {
     }
 
     public boolean canExecute() {
-        return true;
+        return nodes.length>=1;
     }
 
     public int getType() {
