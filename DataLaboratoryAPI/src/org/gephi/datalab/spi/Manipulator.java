@@ -31,7 +31,7 @@ import org.gephi.datalab.spi.nodes.NodesManipulator;
  * <ul>
  *  <li>Execute an action</li>
  *  <li>Provide a name, description, type and order of appearance (position in group of its type)</li>
- *  <li>Indicate wether they have to be executable or not</li>
+ *  <li>Indicate wether they have to be executable (enabled in the context menu) or not</li>
  *  <li>Provide and UI or not</li>
  *  <li>Provide and icon or not</li>
  * </ul>
@@ -64,9 +64,9 @@ public interface Manipulator {
     String getDescription();
 
     /**
-     * Indicates if this Manipulator has to be shown.
+     * Indicates if this Manipulator has to be executable.
      * Implementations should evaluate the current data and conditions.
-     * @return True if it has to be shown, false otherwise
+     * @return True if it has to be executable, false otherwise
      */
     boolean canExecute();
 

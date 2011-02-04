@@ -89,7 +89,7 @@ public class ClearNodesData implements NodesManipulator, GeneralColumnsChooser {
     }
 
     public int getPosition() {
-        return 0;
+        return 100;
     }
 
     public Icon getIcon() {

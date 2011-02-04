@@ -58,6 +58,7 @@ import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.NumberList;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
@@ -71,7 +72,6 @@ import org.netbeans.swing.outline.RowModel;
 import org.openide.awt.MouseUtils;
 import org.openide.util.Lookup;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
-import org.gephi.desktop.datalab.utils.DataLaboratoryHelper;
 import org.gephi.graph.api.Attributes;
 import org.gephi.tools.api.EditWindowController;
 import org.gephi.desktop.datalab.utils.PopupMenuUtils;
@@ -148,10 +148,10 @@ public class NodeDataTable {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
                     Node[] selectedNodes = getNodesFromSelectedRows();
                     if (selectedNodes.length > 0) {
-                        DataLaboratoryHelper dlh = new DataLaboratoryHelper();
-                        NodesManipulator del = dlh.getDeleteNodesManipulator();
+                        NodesManipulator del = dlh.getNodesManipulatorByName("DeleteNodes");
                         if (del != null) {
                             del.setup(selectedNodes, null);
                             if (del.canExecute()) {
@@ -567,7 +567,7 @@ public class NodeDataTable {
             JPopupMenu contextMenu = new JPopupMenu();
 
             //First add nodes manipulators items:
-            DataLaboratoryHelper dlh = new DataLaboratoryHelper();
+            DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
             Integer lastManipulatorType = null;
             for (NodesManipulator nm : dlh.getNodesManipulators()) {
                 nm.setup(selectedNodes, clickedNode);

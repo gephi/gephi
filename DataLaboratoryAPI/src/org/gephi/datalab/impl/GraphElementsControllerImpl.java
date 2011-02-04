@@ -35,6 +35,8 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.UndirectedGraph;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -47,8 +49,9 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphElementsController.class)
 public class GraphElementsControllerImpl implements GraphElementsController {
-    private static final float DEFAULT_NODE_SIZE=10f;
-    private static final float DEFAULT_EDGE_WEIGHT=1f;
+
+    private static final float DEFAULT_NODE_SIZE = 10f;
+    private static final float DEFAULT_EDGE_WEIGHT = 1f;
 
     public Node createNode(String label) {
         Node newNode = buildNode(label);
@@ -176,10 +179,39 @@ public class GraphElementsControllerImpl implements GraphElementsController {
 
     public boolean groupNodes(Node[] nodes) {
         if (canGroupNodes(nodes)) {
-            HierarchicalGraph hg = getHierarchicalGraph();
-            Node group = hg.groupNodes(nodes);
-            //Set the group node label to the same used int visualization module:
-            group.getNodeData().setLabel(NbBundle.getMessage(GraphElementsControllerImpl.class, "Group.nodeCount.label", getNodeChildrenCount(hg, group)));
+            HierarchicalGraph graph = getHierarchicalGraph();
+            try {
+                float centroidX = 0;
+                float centroidY = 0;
+                int len = 0;
+                float sizes = 0;
+                float r = 0;
+                float g = 0;
+                float b = 0;
+                Node group = graph.groupNodes(nodes);
+                group.getNodeData().setLabel(NbBundle.getMessage(GraphElementsControllerImpl.class, "Group.nodeCount.label", nodes.length));
+                group.getNodeData().setSize(10f);
+                for (Node child : nodes) {
+                    centroidX += child.getNodeData().x();
+                    centroidY += child.getNodeData().y();
+                    len++;
+                    sizes += child.getNodeData().getSize() / 10f;
+                    r += child.getNodeData().r();
+                    g += child.getNodeData().g();
+                    b += child.getNodeData().b();
+                }
+                centroidX /= len;
+                centroidY /= len;
+                group.getNodeData().setSize(sizes);
+                group.getNodeData().setColor(r / len, g / len, b / len);
+                group.getNodeData().setX(centroidX);
+                group.getNodeData().setY(centroidY);
+            } catch (Exception e) {
+                graph.readUnlockAll();
+                NotifyDescriptor.Message nd = new NotifyDescriptor.Message(e.getMessage());
+                DialogDisplayer.getDefault().notifyLater(nd);
+                return false;
+            }
             return true;
         } else {
             return false;

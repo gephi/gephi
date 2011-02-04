@@ -40,7 +40,7 @@ public interface GeneralColumnsChooser{
 
     /**
      * The GeneralChooseColumnsUI will use this method to set the columns to finally manipulate, after the GeneralChooseColumnsUI is closed.
-     * @param columnsToClearData Columns to clear
+     * @param columnsToClearData Columns to manipulate
      */
     void setColumns(AttributeColumn[] columnsToClearData);
 

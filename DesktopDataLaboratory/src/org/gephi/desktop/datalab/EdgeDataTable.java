@@ -56,8 +56,8 @@ import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.NumberList;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.edges.EdgesManipulator;
-import org.gephi.desktop.datalab.utils.DataLaboratoryHelper;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.tools.api.EditWindowController;
@@ -182,10 +182,10 @@ public class EdgeDataTable {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
                     Edge[] selectedEdges = getEdgesFromSelectedRows();
                     if (selectedEdges.length > 0) {
-                        DataLaboratoryHelper dlh = new DataLaboratoryHelper();
-                        EdgesManipulator del = dlh.getDeleEdgesManipulator();
+                        EdgesManipulator del = dlh.getEdgesManipulatorByName("DeleteEdges");
                         if (del != null) {
                             del.setup(selectedEdges, null);
                             if (del.canExecute()) {
@@ -576,7 +576,7 @@ public class EdgeDataTable {
             JPopupMenu contextMenu = new JPopupMenu();
 
             //First add edges manipulators items:
-            DataLaboratoryHelper dlh = new DataLaboratoryHelper();
+            DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
             Integer lastManipulatorType = null;
             for (EdgesManipulator em : dlh.getEdgesManipulators()) {
                 em.setup(selectedEdges, clickedEdge);

@@ -89,7 +89,7 @@ public class ClearEdgesData implements EdgesManipulator, GeneralColumnsChooser {
     }
 
     public int getPosition() {
-        return 0;
+        return 100;
     }
 
     public Icon getIcon() {

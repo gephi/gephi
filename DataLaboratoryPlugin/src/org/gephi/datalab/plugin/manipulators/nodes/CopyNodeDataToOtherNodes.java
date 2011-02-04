@@ -87,7 +87,7 @@ public class CopyNodeDataToOtherNodes implements NodesManipulator, GeneralColumn
     }
 
     public int getPosition() {
-        return 100;
+        return 200;
     }
 
     public Icon getIcon() {

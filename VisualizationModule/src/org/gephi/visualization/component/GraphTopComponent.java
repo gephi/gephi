@@ -17,13 +17,18 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.component;
 
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.event.AWTEventListener;
+import java.awt.event.KeyEvent;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -38,12 +43,14 @@ import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.visualization.bridge.DHNSEventBridge;
+import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-final class GraphTopComponent extends TopComponent {
+final class GraphTopComponent extends TopComponent implements AWTEventListener {
 
     private static GraphTopComponent instance;
     /** path to the icon used by the component and its open action */
@@ -51,6 +58,8 @@ final class GraphTopComponent extends TopComponent {
     private static final String PREFERRED_ID = "GraphTopComponent";
     private AbstractEngine engine;
     private VizBarController vizBarController;
+    private final DHNSEventBridge eventBridge;
+    private Map<Integer, GraphContextMenuItem> keyActionMappings = new HashMap<Integer, GraphContextMenuItem>();
 
     private GraphTopComponent() {
         initComponents();
@@ -60,6 +69,7 @@ final class GraphTopComponent extends TopComponent {
 //        setIcon(Utilities.loadImage(ICON_PATH, true));
 
         engine = VizController.getInstance().getEngine();
+        eventBridge = (DHNSEventBridge) VizController.getInstance().getEventBridge();
 
         //Init
         initCollapsePanel();
@@ -81,6 +91,7 @@ final class GraphTopComponent extends TopComponent {
                 });
             }
         });
+        initKeyEventContextMenuActionMappings();
         //remove(waitingLabel);
         //add(drawable.getGraphComponent(), BorderLayout.CENTER);
     }
@@ -176,6 +187,50 @@ final class GraphTopComponent extends TopComponent {
         addonsBar.setEnabled(hasWorkspace);
     }
 
+    private void initKeyEventContextMenuActionMappings() {
+        mapItems(Lookup.getDefault().lookupAll(GraphContextMenuItem.class).toArray(new GraphContextMenuItem[0]));
+    }
+
+    private void mapItems(GraphContextMenuItem[] items){
+        Integer key;
+        GraphContextMenuItem[] subItems;
+        for (GraphContextMenuItem item : items) {
+            key = item.getMnemonicKey();
+            if (key != null) {
+                if (!keyActionMappings.containsKey(key)) {
+                    keyActionMappings.put(key, item);
+                }
+            }
+            subItems=item.getSubItems();
+            if(subItems!=null){
+                mapItems(subItems);
+            }
+        }
+    }
+
+    /**
+     * For attending Ctrl+Key events in graph window to launch context menu actions
+     */
+    public void eventDispatched(AWTEvent event) {
+        KeyEvent evt = (KeyEvent) event;
+
+        if (evt.getID() == KeyEvent.KEY_RELEASED && (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK) {
+            final GraphContextMenuItem item = keyActionMappings.get(evt.getKeyCode());
+            if (item != null) {
+                item.setup(eventBridge.getGraph(), eventBridge.getSelectedNodes());
+                if (item.isAvailable() && item.canExecute()) {
+                    new Thread(new Runnable() {
+
+                        public void run() {
+                            item.execute();
+                        }
+                    }).start();
+                }
+                evt.consume();
+            }
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -250,6 +305,16 @@ final class GraphTopComponent extends TopComponent {
 
     @Override
     public void componentOpened() {
+    }
+
+    @Override
+    protected void componentActivated() {
+        java.awt.Toolkit.getDefaultToolkit().addAWTEventListener(this, AWTEvent.KEY_EVENT_MASK);
+    }
+
+    @Override
+    protected void componentDeactivated() {
+        java.awt.Toolkit.getDefaultToolkit().removeAWTEventListener(this);
     }
 
     @Override

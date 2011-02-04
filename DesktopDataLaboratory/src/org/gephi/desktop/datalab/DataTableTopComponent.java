@@ -54,6 +54,7 @@ import org.gephi.data.attributes.api.AttributeEvent.EventType;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.api.DataTablesController;
 import org.gephi.datalab.api.DataTablesEventListener;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
@@ -74,7 +75,6 @@ import org.gephi.ui.components.WrapLayout;
 import org.gephi.desktop.datalab.general.actions.AddColumnUI;
 import org.gephi.desktop.datalab.general.actions.CSVExportUI;
 import org.gephi.desktop.datalab.general.actions.MergeColumnsUI;
-import org.gephi.desktop.datalab.utils.DataLaboratoryHelper;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.utils.TableCSVExporter;
@@ -298,7 +298,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     private synchronized void refreshAll() {
-        if (Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace()!=null) {//Some workspace is selected
+        if (Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace() != null) {//Some workspace is selected
             refreshTable();
             refreshColumnManipulators();
             refreshGeneralActionsButtons();
@@ -741,7 +741,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             columns = edgeAvailableColumnsModel.getAvailableColumns();
         }
 
-        DataLaboratoryHelper dlh = new DataLaboratoryHelper();
+        DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
         AttributeColumnsManipulator[] manipulators = dlh.getAttributeColumnsManipulators();
 
         JCommandButtonStrip currentButtonGroup = new JCommandButtonStrip(JCommandButtonStrip.StripOrientation.HORIZONTAL);
@@ -802,7 +802,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                         button.addActionListener(new ActionListener() {
 
                             public void actionPerformed(ActionEvent e) {
-                                new DataLaboratoryHelper().executeAttributeColumnsManipulator(acm, table, column);
+                                DataLaboratoryHelper.getDefault().executeAttributeColumnsManipulator(acm, table, column);
                             }
                         });
                         popup.addMenuButton(button);
@@ -924,7 +924,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         //Figure out the index to place the buttons, in order to put them between separator 2 and the boxGlue.
         int index = controlToolbar.getComponentIndex(boxGlue);
 
-        final DataLaboratoryHelper dlh = new DataLaboratoryHelper();
+        final DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
         JButton button;
         for (final GeneralActionsManipulator m : dlh.getGeneralActionsManipulators()) {
             button = new JButton(m.getName(), m.getIcon());
@@ -996,7 +996,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
             button.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    new DataLaboratoryHelper().executeManipulator(m);
+                    DataLaboratoryHelper.getDefault().executeManipulator(m);
                 }
             });
         } else {
@@ -1053,8 +1053,11 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         KeyEvent evt = (KeyEvent) event;
 
         if (evt.getID() == KeyEvent.KEY_RELEASED && (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) != 0 && evt.getKeyCode() == KeyEvent.VK_F) {
-            DataLaboratoryHelper dlh = new DataLaboratoryHelper();
-            dlh.executeManipulator(dlh.getSearchReplaceManipulator());
+            DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
+            GeneralActionsManipulator gam=dlh.getGeneralActionsManipulatorByName("SearchReplace");
+            if (gam!=null) {
+                dlh.executeManipulator(gam);
+            }
             evt.consume();
         }
     }
