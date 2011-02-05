@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import org.gephi.statistics.plugin.EigenvectorCentrality;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -70,7 +71,7 @@ public class EigenvectorCentralityUI implements StatisticsUI {
     }
 
     public String getDisplayName() {
-        return "Eigenvector Centrality ";
+        return NbBundle.getMessage(getClass(), "EigenvectorCentralityUI.name");
     }
 
     public String getCategory() {

@@ -53,6 +53,7 @@ import org.netbeans.swing.outline.RenderDataProvider;
 import org.netbeans.swing.outline.RowModel;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
 /**
@@ -152,7 +153,7 @@ public class ReportPanel extends javax.swing.JPanel {
     private void fillIssues(Report report) {
         final List<Issue> issues = report.getIssues();
         if (issues.isEmpty()) {
-            JLabel label = new JLabel("No issue found during import");
+            JLabel label = new JLabel(NbBundle.getMessage(getClass(), "ReportPanel.noIssues"));
             label.setHorizontalAlignment(SwingConstants.CENTER);
             tab1ScrollPane.setViewportView(label);
         } else {
@@ -239,8 +240,8 @@ public class ReportPanel extends javax.swing.JPanel {
                 }
 
                 //Dynamic & Hierarchical graph
-                dynamicLabel.setText(container.isDynamicGraph() ? "yes" : "no");
-                hierarchicalLabel.setText(container.isHierarchicalGraph() ? "yes" : "no");
+                dynamicLabel.setText(container.isDynamicGraph() ? NbBundle.getMessage(getClass(), "ReportPanel.yes") : NbBundle.getMessage(getClass(), "ReportPanel.no"));
+                hierarchicalLabel.setText(container.isHierarchicalGraph() ? NbBundle.getMessage(getClass(), "ReportPanel.yes") : NbBundle.getMessage(getClass(), "ReportPanel.no"));
             }
         });
     }

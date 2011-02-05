@@ -22,7 +22,6 @@ package org.gephi.layout.plugin.multilevel;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.SwingUtilities;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
@@ -31,6 +30,7 @@ import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout;
 import org.gephi.layout.plugin.force.yifanHu.YifanHuProportional;
 import org.gephi.layout.plugin.random.RandomLayout;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -146,30 +146,42 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
 
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class, "Minimum level size", MULTILEVEL_CATEGORY,
-                    "The minimum amount of nodes every level must have (bigger values mean less levels)",
+                    this, Integer.class, 
+                    NbBundle.getMessage(getClass(), "YifanHuMultiLevel.minimumLevelSize.name"),
+                    MULTILEVEL_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHuMultiLevel.minimumLevelSize.desc"),
                     "getMinSize", "setMinSize"));
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class, "Minimum coarsening rate", MULTILEVEL_CATEGORY,
-                    "The minimum relative size between two levels (smaller values mean less levels)",
+                    this, Double.class, 
+                    NbBundle.getMessage(getClass(), "YifanHuMultiLevel.minimumCoarseningRate.name"),
+                    MULTILEVEL_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHuMultiLevel.minimumCoarseningRate.desc"),
                     "getMinCoarseningRate", "setMinCoarseningRate"));
 
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Step ratio", YIFANHU_CATEGORY,
-                    "The ratio used to update the step size across iterations.",
+                    this, Float.class, 
+                    NbBundle.getMessage(getClass(), "YifanHuMultiLevel.stepRatio.name"),
+                    YIFANHU_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHuMultiLevel.stepRatio.desc"),
                     "getStepRatio", "setStepRatio"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Optimal Distance", YIFANHU_CATEGORY,
-                    "The natural length of the springs. Bigger values mean nodes will be farther apart.",
+                    this, Float.class, 
+                    NbBundle.getMessage(getClass(), "YifanHuMultiLevel.optimalDistance.name"),
+                    YIFANHU_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHuMultiLevel.optimalDistance.desc"),
                     "getOptimalDistance", "setOptimalDistance"));
 
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class, "Quadtree Max Level", BARNESHUT_CATEGORY,
-                    "The maximun level to be used in the quadtree representation. Greater values mean more accuracy.",
+                    this, Integer.class, 
+                    NbBundle.getMessage(getClass(), "YifanHuMultiLevel.quadtreeMaxLevel.name"),
+                    BARNESHUT_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHuMultiLevel.quadtreeMaxLevel.desc"),
                     "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Theta", BARNESHUT_CATEGORY,
-                    "The theta parameter for Barnes-Hut opening criteria. Smaller values mean more accuracy.",
+                    this, Float.class, 
+                    NbBundle.getMessage(getClass(), "YifanHuMultiLevel.theta.name"),
+                    BARNESHUT_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHuMultiLevel.theta.desc"),
                     "getBarnesHutTheta", "setBarnesHutTheta"));
         } catch (Exception e) {
             e.printStackTrace();

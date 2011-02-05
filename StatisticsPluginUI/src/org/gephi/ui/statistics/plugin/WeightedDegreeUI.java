@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import org.gephi.statistics.plugin.WeightedDegree;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -58,7 +59,7 @@ public class WeightedDegreeUI implements StatisticsUI {
     }
 
     public String getDisplayName() {
-        return "Average Weighted Degree";
+        return NbBundle.getMessage(getClass(), "WeightedDegreeUI.name");
     }
 
     public String getCategory() {

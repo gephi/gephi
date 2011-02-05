@@ -31,6 +31,7 @@ import org.gephi.layout.plugin.ForceVectorUtils;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -253,7 +254,11 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         final String LABELADJUST_CATEGORY = "LabelAdjust";
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class, "speed", LABELADJUST_CATEGORY, "speed", "getSpeed", "setSpeed"));
+                    this, Double.class, 
+                    NbBundle.getMessage(getClass(), "LabelAdjust.speed.name"),
+                    LABELADJUST_CATEGORY,
+                    NbBundle.getMessage(getClass(), "LabelAdjust.speed.desc"),
+                    "getSpeed", "setSpeed"));
         } catch (Exception e) {
             e.printStackTrace();
         }

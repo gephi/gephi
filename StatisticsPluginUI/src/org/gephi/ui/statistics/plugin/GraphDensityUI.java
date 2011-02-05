@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import org.gephi.statistics.plugin.GraphDensity;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = StatisticsUI.class)
@@ -65,7 +66,7 @@ public class GraphDensityUI implements StatisticsUI {
     }
 
     public String getDisplayName() {
-        return "Graph Density";
+        return NbBundle.getMessage(getClass(), "ConnectedComponentUI.name");
     }
 
     public String getCategory() {

@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import org.gephi.statistics.plugin.PageRank;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = StatisticsUI.class)
@@ -68,7 +69,7 @@ public class PageRankUI implements StatisticsUI {
     }
 
     public String getDisplayName() {
-        return "PageRank";
+        return NbBundle.getMessage(getClass(), "PageRankUI.name");
     }
 
     public String getCategory() {
