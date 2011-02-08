@@ -169,9 +169,11 @@ final class DefaultPanel extends javax.swing.JPanel {
 
         labelBackgroundPanel.add(backgroundColor);
 
-        labelBackgroundColor.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelBackgroundColor.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         org.openide.awt.Mnemonics.setLocalizedText(labelBackgroundColor, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.labelBackgroundColor.text")); // NOI18N
-        labelBackgroundColor.setPreferredSize(new java.awt.Dimension(28, 14));
+        labelBackgroundColor.setMaximumSize(new java.awt.Dimension(141, 15));
+        labelBackgroundColor.setMinimumSize(new java.awt.Dimension(141, 15));
+        labelBackgroundColor.setPreferredSize(new java.awt.Dimension(141, 14));
         labelBackgroundPanel.add(labelBackgroundColor);
 
         org.openide.awt.Mnemonics.setLocalizedText(resetButton, org.openide.util.NbBundle.getMessage(DefaultPanel.class, "DefaultPanel.resetButton.text")); // NOI18N
@@ -204,9 +206,9 @@ final class DefaultPanel extends javax.swing.JPanel {
                     .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labelColor)
-                            .addComponent(labelFont, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(labelFont, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(labelColor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(65, 65, 65)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
