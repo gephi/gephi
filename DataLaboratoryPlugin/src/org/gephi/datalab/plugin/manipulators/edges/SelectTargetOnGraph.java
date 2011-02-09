@@ -22,7 +22,6 @@ package org.gephi.datalab.plugin.manipulators.edges;
 
 import javax.swing.Icon;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
@@ -33,7 +32,7 @@ import org.openide.util.NbBundle;
  * Edges manipulator that shows the target node of an edge centered in graph view.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class SelectTargetOnGraph implements EdgesManipulator{
+public class SelectTargetOnGraph extends BasicEdgesManipulator {
     private Edge clickedEdge;
 
     public void setup(Edge[] edges, Edge clickedEdge) {

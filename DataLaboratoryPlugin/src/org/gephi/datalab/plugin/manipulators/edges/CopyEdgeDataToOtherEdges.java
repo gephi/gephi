@@ -29,7 +29,6 @@ import org.gephi.datalab.api.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsAndRowChooser;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralChooseColumnsAndRowUI;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -39,7 +38,7 @@ import org.openide.util.NbBundle;
  * Edges manipulator that copies the given columns data of one edge to the other selected edges.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class CopyEdgeDataToOtherEdges implements EdgesManipulator, GeneralColumnsAndRowChooser {
+public class CopyEdgeDataToOtherEdges extends BasicEdgesManipulator implements GeneralColumnsAndRowChooser {
 
     private Edge clickedEdge;
     private Edge[] edges;

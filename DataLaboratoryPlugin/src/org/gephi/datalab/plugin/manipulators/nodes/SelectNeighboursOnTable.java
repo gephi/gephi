@@ -24,7 +24,6 @@ import javax.swing.Icon;
 import org.gephi.datalab.api.DataTablesController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -34,7 +33,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that selects in nodes table all neighbours of a node.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class SelectNeighboursOnTable implements NodesManipulator {
+public class SelectNeighboursOnTable extends BasicNodesManipulator{
     private Node node;
     private Node[] neighbours;
 

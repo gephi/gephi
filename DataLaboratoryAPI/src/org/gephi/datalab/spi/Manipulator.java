@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -25,7 +24,7 @@ import javax.swing.Icon;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
 
 /**
- * <p>General and abstract manipulation action to use for Data Laboratory table UI.</p>
+ * <p>General and abstract manipulation action to use for Data Laboratory table UI and other actions like Graph context menu items in Overview.</p>
  * <p>Different subtypes of manipulators are defined for every type of action in the UI.</p>
  * <p>All manipulator types are able to:</p>
  * <ul>

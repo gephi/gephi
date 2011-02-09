@@ -23,7 +23,6 @@ package org.gephi.datalab.plugin.manipulators.nodes;
 import javax.swing.Icon;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -33,7 +32,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that groups one or more nodes into a new group node hierarchically.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class Group implements NodesManipulator{
+public class Group extends BasicNodesManipulator {
     private Node[] nodes;
 
     public void setup(Node[] nodes, Node clickedNode) {

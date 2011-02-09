@@ -30,7 +30,6 @@ import org.gephi.datalab.api.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnAndValueChooser;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralColumnAndValueChooserUI;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -40,7 +39,7 @@ import org.openide.util.NbBundle;
  * Edges manipulator that fills the given column of multiple edges with a value.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class TagEdges implements EdgesManipulator, GeneralColumnAndValueChooser {
+public class TagEdges extends BasicEdgesManipulator implements GeneralColumnAndValueChooser {
 
     private Edge[] edges;
     private AttributeColumn column;

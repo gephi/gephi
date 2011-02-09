@@ -23,8 +23,6 @@ package org.gephi.visualization.apiimpl.contextmenuitems;
 import java.awt.event.KeyEvent;
 import javax.swing.Icon;
 import org.gephi.datalab.api.GraphElementsController;
-import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.graph.api.Node;
 import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -37,13 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = GraphContextMenuItem.class)
-public class Delete implements GraphContextMenuItem {
-
-    private Node[] nodes;
-
-    public void setup(HierarchicalGraph graph, Node[] nodes) {
-        this.nodes = nodes;
-    }
+public class Delete extends BasicItem {
 
     public void execute() {
         NotifyDescriptor.Confirmation notifyDescriptor = new NotifyDescriptor.Confirmation(
@@ -55,20 +47,8 @@ public class Delete implements GraphContextMenuItem {
         }
     }
 
-    public GraphContextMenuItem[] getSubItems() {
-        return null;
-    }
-
     public String getName() {
         return NbBundle.getMessage(Delete.class, "GraphContextMenu_Delete");
-    }
-
-    public String getDescription() {
-        return null;
-    }
-
-    public boolean isAvailable() {
-        return true;
     }
 
     public boolean canExecute() {
@@ -87,6 +67,7 @@ public class Delete implements GraphContextMenuItem {
         return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/delete.png", false);
     }
 
+    @Override
     public Integer getMnemonicKey() {
         return KeyEvent.VK_D;
     }

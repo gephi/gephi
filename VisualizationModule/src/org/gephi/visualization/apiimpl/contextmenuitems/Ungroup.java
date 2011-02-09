@@ -23,7 +23,6 @@ package org.gephi.visualization.apiimpl.contextmenuitems;
 import java.awt.event.KeyEvent;
 import javax.swing.Icon;
 import org.gephi.datalab.api.GraphElementsController;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.util.ImageUtilities;
@@ -35,33 +34,15 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = GraphContextMenuItem.class)
-public class Ungroup implements GraphContextMenuItem {
-
-    private Node[] nodes;
-
-    public void setup(HierarchicalGraph graph, Node[] nodes) {
-        this.nodes = nodes;
-    }
+public class Ungroup extends BasicItem {
 
     public void execute() {
         GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
         gec.ungroupNodes(nodes);
     }
 
-    public GraphContextMenuItem[] getSubItems() {
-        return null;
-    }
-
     public String getName() {
         return NbBundle.getMessage(Ungroup.class, "GraphContextMenu_Ungroup");
-    }
-
-    public String getDescription() {
-        return null;
-    }
-
-    public boolean isAvailable() {
-        return true;
     }
 
     public boolean canExecute() {
@@ -85,6 +66,7 @@ public class Ungroup implements GraphContextMenuItem {
         return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/ungroup.png", false);
     }
 
+    @Override
     public Integer getMnemonicKey() {
         return KeyEvent.VK_U;
     }

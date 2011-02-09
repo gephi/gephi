@@ -23,7 +23,6 @@ package org.gephi.datalab.plugin.manipulators.nodes;
 import javax.swing.Icon;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -32,7 +31,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that removes a node from its group if it has one. If the last node of the group is removed, breaks the group.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class RemoveNodeFromGroup implements NodesManipulator {
+public class RemoveNodeFromGroup extends BasicNodesManipulator {
 
     private Node[] nodes;
 

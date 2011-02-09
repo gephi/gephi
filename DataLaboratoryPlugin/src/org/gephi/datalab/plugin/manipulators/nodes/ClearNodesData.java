@@ -29,7 +29,6 @@ import org.gephi.datalab.api.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsChooser;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralChooseColumnsUI;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -39,7 +38,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that clears the given columns data of one or more nodes except the id and computed attributes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class ClearNodesData implements NodesManipulator, GeneralColumnsChooser {
+public class ClearNodesData extends BasicNodesManipulator implements  GeneralColumnsChooser {
 
     private Node[] nodes;
     private AttributeColumn[] columnsToClearData;

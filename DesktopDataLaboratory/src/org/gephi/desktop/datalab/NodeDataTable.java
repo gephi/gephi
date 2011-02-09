@@ -578,7 +578,9 @@ public class NodeDataTable {
                     contextMenu.addSeparator();
                 }
                 lastManipulatorType = nm.getType();
-                contextMenu.add(PopupMenuUtils.createMenuItemFromManipulator(nm));
+                if (nm.isAvailable()) {
+                    contextMenu.add(PopupMenuUtils.createMenuItemFromNodesManipulator(nm, clickedNode, selectedNodes));
+                }
             }
 
             //Add AttributeValues manipulators submenu:

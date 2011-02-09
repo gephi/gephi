@@ -24,7 +24,6 @@ import javax.swing.Icon;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.plugin.manipulators.nodes.ui.CopyNodesUI;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -34,7 +33,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that copies one or more nodes one or more times.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class CopyNodes implements NodesManipulator {
+public class CopyNodes extends BasicNodesManipulator {
 
     private Node[] nodes;
     private int copies = 1;

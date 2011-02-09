@@ -22,7 +22,6 @@ package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.api.EditWindowController;
 import org.openide.util.ImageUtilities;
@@ -33,7 +32,7 @@ import org.openide.util.NbBundle;
  * Opens the selected node(s) one or various in Edit window.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class OpenInEditNodeWindow implements NodesManipulator {
+public class OpenInEditNodeWindow extends BasicNodesManipulator {
 
     private Node[] nodes;
 

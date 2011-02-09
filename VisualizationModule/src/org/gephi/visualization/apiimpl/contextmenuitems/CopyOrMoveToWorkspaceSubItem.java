@@ -23,6 +23,7 @@ package org.gephi.visualization.apiimpl.contextmenuitems;
 import javax.swing.Icon;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -32,19 +33,20 @@ import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceInformation;
-import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-public class CopyOrMoveToWorkspaceSubItem implements GraphContextMenuItem {
+public class CopyOrMoveToWorkspaceSubItem extends BasicItem implements NodesManipulator{
 
     private Workspace workspace;
     private boolean canExecute;
     private int type;
     private int position;
-    private HierarchicalGraph graph;
-    private Node[] nodes;
     private final boolean copy;
+
+    public void setup(Node[] nodes, Node clickedNode) {
+        this.nodes=nodes;
+    }
 
     /**
      * Constructor with copy or move settings
@@ -62,11 +64,6 @@ public class CopyOrMoveToWorkspaceSubItem implements GraphContextMenuItem {
         this.copy = copy;
     }
 
-    public void setup(HierarchicalGraph graph, Node[] nodes) {
-        this.graph = graph;
-        this.nodes = nodes;
-    }
-
     public void execute() {
         if (workspace == null) {
             workspace = Lookup.getDefault().lookup(ProjectControllerUI.class).newWorkspace();
@@ -78,24 +75,12 @@ public class CopyOrMoveToWorkspaceSubItem implements GraphContextMenuItem {
         }
     }
 
-    public GraphContextMenuItem[] getSubItems() {
-        return null;
-    }
-
     public String getName() {
         if (workspace != null) {
             return workspace.getLookup().lookup(WorkspaceInformation.class).getName();
         } else {
             return NbBundle.getMessage(CopyOrMoveToWorkspaceSubItem.class, copy ? "GraphContextMenu_CopyToWorkspace_NewWorkspace" : "GraphContextMenu_MoveToWorkspace_NewWorkspace");
         }
-    }
-
-    public String getDescription() {
-        return null;
-    }
-
-    public boolean isAvailable() {
-        return true;
     }
 
     public boolean canExecute() {
@@ -138,12 +123,9 @@ public class CopyOrMoveToWorkspaceSubItem implements GraphContextMenuItem {
     }
 
     public void delete() {
+        HierarchicalGraph hg=Lookup.getDefault().lookup(GraphController.class).getModel().getHierarchicalGraph();
         for (Node n : nodes) {
-            graph.removeNode(n);
+            hg.removeNode(n);
         }
-    }
-
-    public Integer getMnemonicKey() {
-        return null;
     }
 }

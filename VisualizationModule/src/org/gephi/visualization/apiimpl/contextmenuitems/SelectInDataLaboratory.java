@@ -35,9 +35,10 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = GraphContextMenuItem.class)
-public class SelectInDataLaboratory implements GraphContextMenuItem {
-    private Node[] nodes;
+public class SelectInDataLaboratory extends BasicItem {
     private DataTablesController dtc;
+
+    @Override
     public void setup(HierarchicalGraph graph, Node[] nodes) {
         this.nodes = nodes;
         dtc=Lookup.getDefault().lookup(DataTablesController.class);
@@ -48,18 +49,11 @@ public class SelectInDataLaboratory implements GraphContextMenuItem {
         dtc.selectNodesTable();
     }
 
-    public GraphContextMenuItem[] getSubItems() {
-        return null;
-    }
-
     public String getName() {
         return NbBundle.getMessage(SelectInDataLaboratory.class, "GraphContextMenu_SelectInDataLaboratory");
     }
 
-    public String getDescription() {
-        return null;
-    }
-
+    @Override
     public boolean isAvailable() {
         return dtc.isDataTablesReady();
     }
@@ -80,6 +74,7 @@ public class SelectInDataLaboratory implements GraphContextMenuItem {
         return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/table-select.png", false);
     }
 
+    @Override
     public Integer getMnemonicKey() {
         return KeyEvent.VK_L;
     }

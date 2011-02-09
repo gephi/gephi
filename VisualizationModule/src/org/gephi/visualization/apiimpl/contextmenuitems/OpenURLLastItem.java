@@ -26,10 +26,10 @@ import javax.swing.Icon;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
-import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -37,11 +37,16 @@ import org.openide.util.NbBundle;
 /**
  *
  */
-public class OpenURLLastItem implements GraphContextMenuItem {
+public class OpenURLLastItem extends BasicItem implements NodesManipulator{
 
     private Node node;
     private String column, url;
 
+    public void setup(Node[] nodes, Node clickedNode) {
+        setup(null, nodes);
+    }
+
+    @Override
     public void setup(HierarchicalGraph graph, Node[] nodes) {
         url = null;
         column = null;
@@ -81,20 +86,8 @@ public class OpenURLLastItem implements GraphContextMenuItem {
         }
     }
 
-    public GraphContextMenuItem[] getSubItems() {
-        return null;
-    }
-
     public String getName() {
         return NbBundle.getMessage(OpenURLLastItem.class, "GraphContextMenu_OpenURLLastItem", column != null ? column : "--");
-    }
-
-    public String getDescription() {
-        return null;
-    }
-
-    public boolean isAvailable() {
-        return true;
     }
 
     public boolean canExecute() {
@@ -113,6 +106,7 @@ public class OpenURLLastItem implements GraphContextMenuItem {
         return null;
     }
 
+    @Override
     public Integer getMnemonicKey() {
         return KeyEvent.VK_P;
     }

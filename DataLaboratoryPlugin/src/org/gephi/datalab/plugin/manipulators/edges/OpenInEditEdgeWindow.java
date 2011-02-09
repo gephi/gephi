@@ -22,7 +22,6 @@ package org.gephi.datalab.plugin.manipulators.edges;
 
 import javax.swing.Icon;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
 import org.gephi.tools.api.EditWindowController;
 import org.openide.util.ImageUtilities;
@@ -33,7 +32,7 @@ import org.openide.util.NbBundle;
  * Opens the selected edge(s) one or various in Edit window.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class OpenInEditEdgeWindow implements EdgesManipulator {
+public class OpenInEditEdgeWindow extends BasicEdgesManipulator  {
     Edge[] edges;
 
     public void setup(Edge[] edges, Edge clickedEdge) {

@@ -30,6 +30,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
+import org.gephi.datalab.api.DataLaboratoryHelper;
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
@@ -89,7 +91,7 @@ public class GraphContextMenu {
     }
 
     public JMenuItem createMenuItemFromGraphContextMenuItem(final GraphContextMenuItem item, final HierarchicalGraph graph, final Node[] nodes) {
-        GraphContextMenuItem[] subItems = item.getSubItems();
+        ContextMenuItemManipulator[] subItems = item.getSubItems();
         if (subItems != null && item.canExecute()) {
             JMenu subMenu = new JMenu();
             subMenu.setText(item.getName());
@@ -98,8 +100,8 @@ public class GraphContextMenu {
             }
             subMenu.setIcon(item.getIcon());
             Integer lastItemType = null;
-            for (GraphContextMenuItem subItem : subItems) {
-                subItem.setup(graph, nodes);
+            for (ContextMenuItemManipulator subItem : subItems) {
+                ((GraphContextMenuItem)subItem).setup(graph, nodes);
                 if (lastItemType == null) {
                     lastItemType = subItem.getType();
                 }
@@ -108,7 +110,7 @@ public class GraphContextMenu {
                 }
                 lastItemType = subItem.getType();
                 if (subItem.isAvailable()) {
-                    subMenu.add(createMenuItemFromGraphContextMenuItem(subItem, graph, nodes));
+                    subMenu.add(createMenuItemFromGraphContextMenuItem((GraphContextMenuItem)subItem, graph, nodes));
                 }
             }
             if(item.getMnemonicKey()!=null){
@@ -130,7 +132,7 @@ public class GraphContextMenu {
 
                             @Override
                             public void run() {
-                                item.execute();
+                                DataLaboratoryHelper.getDefault().executeManipulator(item);
                             }
                         }.start();
                     }

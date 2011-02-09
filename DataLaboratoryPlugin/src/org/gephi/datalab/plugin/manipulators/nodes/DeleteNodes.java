@@ -24,7 +24,6 @@ import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -34,7 +33,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that deletes one or more nodes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class DeleteNodes implements NodesManipulator {
+public class DeleteNodes extends BasicNodesManipulator {
 
     private Node[] nodes;
 

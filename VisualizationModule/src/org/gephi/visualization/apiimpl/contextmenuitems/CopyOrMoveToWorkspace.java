@@ -22,7 +22,8 @@ package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import java.util.ArrayList;
 import javax.swing.Icon;
-import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
+import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
@@ -33,18 +34,17 @@ import org.openide.util.Lookup;
 /**
  *
  */
-public abstract class CopyOrMoveToWorkspace implements GraphContextMenuItem {
-
-    private Node[] nodes;
-
-    public void setup(HierarchicalGraph graph, Node[] nodes) {
-        this.nodes = nodes;
-    }
+public abstract class CopyOrMoveToWorkspace extends BasicItem implements NodesManipulator {
 
     public void execute() {
     }
 
-    public GraphContextMenuItem[] getSubItems() {
+    public void setup(Node[] nodes, Node clickedNode) {
+        this.nodes=nodes;
+    }
+
+    @Override
+    public ContextMenuItemManipulator[] getSubItems() {
         if (nodes != null) {
             int i = 0;
             ArrayList<GraphContextMenuItem> subItems = new ArrayList<GraphContextMenuItem>();
@@ -56,21 +56,13 @@ public abstract class CopyOrMoveToWorkspace implements GraphContextMenuItem {
                     subItems.add(item);
                     i++;
                 }
-                return subItems.toArray(new GraphContextMenuItem[0]);
+                return subItems.toArray(new ContextMenuItemManipulator[0]);
             } else {
                 return null;
             }
         } else {
             return null;
         }
-    }
-
-    public String getDescription() {
-        return null;
-    }
-
-    public boolean isAvailable() {
-        return true;
     }
 
     public boolean canExecute() {
@@ -82,10 +74,6 @@ public abstract class CopyOrMoveToWorkspace implements GraphContextMenuItem {
     }
 
     public Icon getIcon() {
-        return null;
-    }
-
-    public Integer getMnemonicKey() {
         return null;
     }
 

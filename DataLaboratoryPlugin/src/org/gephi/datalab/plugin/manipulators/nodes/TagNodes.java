@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalab.plugin.manipulators.nodes;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import javax.swing.Icon;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -30,8 +31,9 @@ import org.gephi.datalab.api.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnAndValueChooser;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralColumnAndValueChooserUI;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
+import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -40,7 +42,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that fills the given column of multiple nodes with a value.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class TagNodes implements NodesManipulator, GeneralColumnAndValueChooser {
+public class TagNodes extends BasicNodesManipulator implements GeneralColumnAndValueChooser, GraphContextMenuItem{
 
     private Node[] nodes;
     private AttributeColumn column;
@@ -50,6 +52,15 @@ public class TagNodes implements NodesManipulator, GeneralColumnAndValueChooser 
 
     public void setup(Node[] nodes, Node clickedNode) {
         this.nodes = nodes;
+        prepareData();
+    }
+
+    public void setup(HierarchicalGraph graph, Node[] nodes) {
+        this.nodes = nodes;
+        prepareData();
+    }
+
+    private void prepareData(){
         table = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         ArrayList<AttributeColumn> availableColumnsList = new ArrayList<AttributeColumn>();
@@ -99,6 +110,11 @@ public class TagNodes implements NodesManipulator, GeneralColumnAndValueChooser 
 
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/tag-label.png", true);
+    }
+
+    @Override
+    public Integer getMnemonicKey() {
+        return KeyEvent.VK_T;
     }
 
     public AttributeColumn[] getColumns() {

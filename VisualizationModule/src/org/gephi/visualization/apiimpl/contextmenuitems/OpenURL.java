@@ -20,10 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.visualization.apiimpl.contextmenuitems;
 
-import java.util.ArrayList;
 import javax.swing.Icon;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
+import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.spi.GraphContextMenuItem;
@@ -35,10 +34,15 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = GraphContextMenuItem.class)
-public class OpenURL implements GraphContextMenuItem {
+public class OpenURL extends BasicItem implements NodesManipulator{
 
     private Node node;
 
+    public void setup(Node[] nodes, Node clickedNode) {
+        setup(null, nodes);
+    }
+
+    @Override
     public void setup(HierarchicalGraph graph, Node[] nodes) {
         if (nodes.length == 1) {
             node = nodes[0];
@@ -50,7 +54,8 @@ public class OpenURL implements GraphContextMenuItem {
     public void execute() {
     }
 
-    public GraphContextMenuItem[] getSubItems() {
+    @Override
+    public ContextMenuItemManipulator[] getSubItems() {
         GraphContextMenuItem[] subItems=new GraphContextMenuItem[2];
 
         //Always provide subitems so their shortcuts are available:
@@ -63,10 +68,12 @@ public class OpenURL implements GraphContextMenuItem {
         return NbBundle.getMessage(OpenURL.class, "GraphContextMenu_OpenURL");
     }
 
+    @Override
     public String getDescription() {
         return NbBundle.getMessage(OpenURL.class, "GraphContextMenu_OpenURL.description");
     }
 
+    @Override
     public boolean isAvailable() {
         return node != null;
     }
@@ -85,9 +92,5 @@ public class OpenURL implements GraphContextMenuItem {
 
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/globe-network.png", false);
-    }
-
-    public Integer getMnemonicKey() {
-        return null;
     }
 }

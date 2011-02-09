@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -19,22 +18,20 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalab.spi.edges;
+package org.gephi.datalab.plugin.manipulators.nodes;
 
-import org.gephi.datalab.spi.ContextMenuItemManipulator;
-import org.gephi.datalab.spi.Manipulator;
-import org.gephi.graph.api.Edge;
+import org.gephi.visualization.spi.GraphContextMenuItem;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Manipulator for edges.
- * @see Manipulator
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * Same action as tag nodes but with different position (for graph view)
+ * @author Eduardo
  */
-public interface EdgesManipulator extends ContextMenuItemManipulator{
-    /**
-     * Prepare edges for this action.
-     * @param edges All selected edges to operate
-     * @param clickedEdge The right clicked edge of all edges
-     */
-    void setup(Edge[] edges, Edge clickedEdge);
+@ServiceProvider(service=GraphContextMenuItem.class)
+public class TagNodesForGraphView extends TagNodes {
+
+    @Override
+    public int getType() {
+        return 400;
+    }
 }

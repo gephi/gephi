@@ -22,7 +22,6 @@ package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import java.awt.event.KeyEvent;
 import javax.swing.Icon;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.spi.GraphContextMenuItem;
@@ -34,15 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = GraphContextMenuItem.class)
-public class Expand implements GraphContextMenuItem {
-
-    private Node[] nodes;
-    private HierarchicalGraph graph;
-
-    public void setup(HierarchicalGraph graph, Node[] nodes) {
-        this.nodes = nodes;
-        this.graph=graph;
-    }
+public class Expand extends BasicItem {
 
     public void execute() {
         try {
@@ -81,22 +72,9 @@ public class Expand implements GraphContextMenuItem {
         }
     }
 
-    public GraphContextMenuItem[] getSubItems() {
-        return null;
-    }
-
     public String getName() {
         return NbBundle.getMessage(Expand.class, "GraphContextMenu_Expand");
     }
-
-    public String getDescription() {
-        return null;
-    }
-
-    public boolean isAvailable() {
-        return true;
-    }
-
     public boolean canExecute() {
         for (Node n : nodes) {
             if (graph.getDescendantCount(n)>0) {
@@ -118,6 +96,7 @@ public class Expand implements GraphContextMenuItem {
         return ImageUtilities.loadImageIcon("org/gephi/visualization/api/resources/expand.png", false);
     }
 
+    @Override
     public Integer getMnemonicKey() {
         return KeyEvent.VK_E;
     }

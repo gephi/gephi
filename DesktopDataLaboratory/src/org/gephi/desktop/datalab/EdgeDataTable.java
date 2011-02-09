@@ -587,7 +587,9 @@ public class EdgeDataTable {
                     contextMenu.addSeparator();
                 }
                 lastManipulatorType = em.getType();
-                contextMenu.add(PopupMenuUtils.createMenuItemFromManipulator(em));
+                if (em.isAvailable()) {
+                    contextMenu.add(PopupMenuUtils.createMenuItemFromEdgesManipulator(em, clickedEdge, selectedEdges));
+                }
             }
 
             //Add AttributeValues manipulators submenu:

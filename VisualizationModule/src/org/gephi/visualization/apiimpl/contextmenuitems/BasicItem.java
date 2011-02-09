@@ -19,24 +19,44 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalab.spi.nodes;
+package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
-import org.gephi.datalab.spi.Manipulator;
+import org.gephi.datalab.spi.ManipulatorUI;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
+import org.gephi.visualization.spi.GraphContextMenuItem;
 
 /**
- * <p><b>Please note that the methods offered in this service are the same as Visualization API GraphContextMenuItem.
- * It is possible to reuse actions implementations by adding both <code>ServiceProvider</code> annotations.</b></p>
- * Manipulator for nodes.
- * @see Manipulator
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ *
+ * @author Eduardo
  */
-public interface NodesManipulator extends ContextMenuItemManipulator {
-    /**
-     * Prepare nodes for this action.
-     * @param nodes All selected nodes to operate
-     * @param clickedNode The right clicked node of all nodes
-     */
-    void setup(Node[] nodes, Node clickedNode);
+public abstract class BasicItem implements GraphContextMenuItem{
+    protected Node[] nodes;
+    protected HierarchicalGraph graph;
+
+    public void setup(HierarchicalGraph graph, Node[] nodes) {
+        this.nodes = nodes;
+        this.graph = graph;
+    }
+
+    public String getDescription() {
+        return null;
+    }
+
+    public ManipulatorUI getUI() {
+        return null;
+    }
+
+    public boolean isAvailable() {
+        return true;
+    }
+
+    public ContextMenuItemManipulator[] getSubItems() {
+        return null;
+    }
+
+    public Integer getMnemonicKey() {
+        return null;
+    }
 }

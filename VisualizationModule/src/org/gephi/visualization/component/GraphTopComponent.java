@@ -34,6 +34,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import org.gephi.datalab.api.DataLaboratoryHelper;
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.project.api.ProjectController;
 import org.gephi.tools.api.ToolController;
 import org.gephi.ui.utils.UIUtils;
@@ -59,7 +61,7 @@ final class GraphTopComponent extends TopComponent implements AWTEventListener {
     private AbstractEngine engine;
     private VizBarController vizBarController;
     private final DHNSEventBridge eventBridge;
-    private Map<Integer, GraphContextMenuItem> keyActionMappings = new HashMap<Integer, GraphContextMenuItem>();
+    private Map<Integer, ContextMenuItemManipulator> keyActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();
 
     private GraphTopComponent() {
         initComponents();
@@ -191,18 +193,18 @@ final class GraphTopComponent extends TopComponent implements AWTEventListener {
         mapItems(Lookup.getDefault().lookupAll(GraphContextMenuItem.class).toArray(new GraphContextMenuItem[0]));
     }
 
-    private void mapItems(GraphContextMenuItem[] items){
+    private void mapItems(ContextMenuItemManipulator[] items) {
         Integer key;
-        GraphContextMenuItem[] subItems;
-        for (GraphContextMenuItem item : items) {
+        ContextMenuItemManipulator[] subItems;
+        for (ContextMenuItemManipulator item : items) {
             key = item.getMnemonicKey();
             if (key != null) {
                 if (!keyActionMappings.containsKey(key)) {
                     keyActionMappings.put(key, item);
                 }
             }
-            subItems=item.getSubItems();
-            if(subItems!=null){
+            subItems = item.getSubItems();
+            if (subItems != null) {
                 mapItems(subItems);
             }
         }
@@ -215,16 +217,11 @@ final class GraphTopComponent extends TopComponent implements AWTEventListener {
         KeyEvent evt = (KeyEvent) event;
 
         if (evt.getID() == KeyEvent.KEY_RELEASED && (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK) {
-            final GraphContextMenuItem item = keyActionMappings.get(evt.getKeyCode());
+            final ContextMenuItemManipulator item = keyActionMappings.get(evt.getKeyCode());
             if (item != null) {
-                item.setup(eventBridge.getGraph(), eventBridge.getSelectedNodes());
+                ((GraphContextMenuItem) item).setup(eventBridge.getGraph(), eventBridge.getSelectedNodes());
                 if (item.isAvailable() && item.canExecute()) {
-                    new Thread(new Runnable() {
-
-                        public void run() {
-                            item.execute();
-                        }
-                    }).start();
+                    DataLaboratoryHelper.getDefault().executeManipulator(item);
                 }
                 evt.consume();
             }
