@@ -62,6 +62,15 @@ msgstr ""
 msgid "ReportPanel.autoscaleCheckbox.text"
 msgstr "Auto-scale"
 
+msgid "ReportPanel.noIssues"
+msgstr "No issue found during import"
+
+msgid "ReportPanel.yes"
+msgstr "yes"
+
+msgid "ReportPanel.no"
+msgstr "no"
+
 msgid "DesktopImportControllerUI.spigotSource"
 msgstr "Spigot {0}"
 

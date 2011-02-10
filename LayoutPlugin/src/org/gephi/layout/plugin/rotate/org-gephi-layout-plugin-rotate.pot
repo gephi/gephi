@@ -26,3 +26,9 @@ msgstr "Clockwise Rotate"
 
 msgid "clockwise.description"
 msgstr "Rotate the graph by 90 degrees"
+
+msgid "clockwise.angle.name"
+msgstr "Angle"
+
+msgid "clockwise.angle.desc"
+msgstr "Clockwise rotation angle in degrees"

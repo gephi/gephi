@@ -26,3 +26,9 @@ msgstr "Contraction"
 
 msgid "contract.description"
 msgstr "Contracts the layout around its center."
+
+msgid "ScaleLayout.scaleFactor.name"
+msgstr "Scale factor"
+
+msgid "ScaleLayout.scaleFactor.desc"
+msgstr "Scale factor"

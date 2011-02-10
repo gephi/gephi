@@ -17,9 +17,3 @@ msgstr ""
 
 msgid "Cell.Popup.subMenu.text"
 msgstr "Cell"
-
-msgid "SettingsPanel.title"
-msgstr "{0} - Settings"
-
-msgid "DataLaboratoryHelper.ui.okButton.text"
-msgstr "Ok"

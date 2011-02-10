@@ -17,20 +17,20 @@ msgstr ""
 
 msgid "BooleanLogicOperationsUI.descriptionLabel.text"
 msgstr ""
-"<html><center>Choose the logical operations to use between each pair of "
-"columns</center></html>"
+"<html><center>Choose the logical operations between each pair of columns</"
+"center></html>"
 
 msgid "BooleanLogicOperationsUI.titleLabel.text"
-msgstr "Title of the new column:"
+msgstr "New column title:"
 
 msgid "JoinWithSeparatorUI.titleLabel.text"
-msgstr "Title of the new column:"
+msgstr "New column title:"
 
 msgid "JoinWithSeparatorUI.separatorLabel.text"
 msgstr "Separator text:"
 
 msgid "GeneralColumnTitleChooserUI.titleLabel.text"
-msgstr "Choose a title for the new column:"
+msgstr "New column title:"
 
 msgid "CreateTimeIntervalUI.startColumnLabel.text"
 msgstr "Start time column:"

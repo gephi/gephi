@@ -67,7 +67,7 @@ msgid "PageRankPanel.directedRadioButton.text"
 msgstr "Directed"
 
 msgid "PageRankPanel.undirectedRadioButton.text"
-msgstr "UnDirected"
+msgstr "Undirected"
 
 msgid "GraphDensityPanel.header.title"
 msgstr "Density"
@@ -205,3 +205,39 @@ msgstr "UnDirected"
 
 msgid "GraphDistancePanel.normalizeButton.text"
 msgstr "Normalize Centralities in [0,1]"
+
+msgid "ConnectedComponentUI.name"
+msgstr "Connected Components"
+
+msgid "ClusteringCoefficientUI.name"
+msgstr "Avg. Clustering Coefficient"
+
+msgid "DegreeDistributionUI.name"
+msgstr "Degree Power Law"
+
+msgid "EigenvectorCentralityUI.name"
+msgstr "Eigenvector Centrality"
+
+msgid "GraphDensityUI.name"
+msgstr "Graph Density"
+
+msgid "HitsUI.name"
+msgstr "HITS"
+
+msgid "InOutDegreeUI.name"
+msgstr "Average Degree"
+
+msgid "ModularityUI.name"
+msgstr "Modularity"
+
+msgid "PageRankUI.name"
+msgstr "PageRank"
+
+msgid "PathLengthUI.name"
+msgstr "Avg. Path Length"
+
+msgid "WeightedDegreeUI.name"
+msgstr "Avg. Weighted Degree"
+
+msgid "PageRankPanel.edgeWeightCheckbox.text"
+msgstr "Use edge weight"

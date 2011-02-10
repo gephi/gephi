@@ -19,9 +19,7 @@ msgid "ClearAttributeValue.name"
 msgstr "Clear value"
 
 msgid "NumberListStatisticsReport.name"
-msgstr "Show statistics report"
+msgstr "Show statistics"
 
 msgid "NumberListStatisticsReport.description"
-msgstr ""
-"Calculates statistics of a dynamic number or number list cell and shows a "
-"report"
+msgstr "Calculates statistics of a dynamic number or number list cell."

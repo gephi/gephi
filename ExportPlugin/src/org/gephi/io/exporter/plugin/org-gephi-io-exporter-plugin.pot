@@ -32,15 +32,3 @@ msgstr "GraphML Files"
 
 msgid "fileType_CSV_Name"
 msgstr "CSV Files"
-
-msgid "ExporterGDF_name"
-msgstr "GDF"
-
-msgid "ExporterGEXF_name"
-msgstr "GEXF"
-
-msgid "ExporterGraphML_name"
-msgstr "GraphML"
-
-msgid "ExporterCSV_name"
-msgstr "CSV"

@@ -17,8 +17,8 @@ msgstr ""
 
 msgid "LinkNodesUI.descriptionLabel.text"
 msgstr ""
-"<html>Choose the source node and type of the edge(s).<br>Edges between "
-"source node and the other selected nodes will be created if possible.</html>"
+"<html>Choose the source node and type of the edges.<br />Edges between "
+"source node and the other selected nodes are created if possible.</html>"
 
 msgid "LinkNodesUI.directedEdge.text"
 msgstr "Directed"
@@ -33,10 +33,10 @@ msgid "LinkNodesUI.edgeTypeLabel.text"
 msgstr "Edge type:"
 
 msgid "MoveNodeToGroupUI.descriptionLabel.text"
-msgstr "Choose the group to move the nodes"
+msgstr "New group:"
 
 msgid "CopyNodesUI.descriptionLabel.text"
-msgstr "Choose the number of copies:"
+msgstr "Number of copies:"
 
 msgid "SetNodesSizeUI.sizeLabel.text"
-msgstr "New size for the node(s):"
+msgstr "New nodes size:"

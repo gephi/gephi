@@ -28,7 +28,7 @@ msgid "DataTableTopComponent.tableScrollPane.busyMessage"
 msgstr "Fetching data..."
 
 msgid "DataTableTopComponent.tableScrollPane.error"
-msgstr "An error occurend while feching data..."
+msgstr "An error occured while feching data..."
 
 msgid "DataTableTopComponent.labelFilter.text"
 msgstr "Filter:"
@@ -43,10 +43,10 @@ msgid "DataTableTopComponent.refreshButton.text"
 msgstr "Refresh"
 
 msgid "DataTableTopComponent.labelBanner.text"
-msgstr "Data have been updated. Do you want to refresh the table?"
+msgstr "Data updated. Do you want to refresh the table?"
 
 msgid "DataTableTopComponent.filterTextField.toolTipText"
-msgstr "Regular expression use is permitted"
+msgstr "Regular expression is permitted"
 
 msgid "DataTableTopComponent.attributeColumnsPanel.title"
 msgstr "Attribute columns"
@@ -55,13 +55,13 @@ msgid "DataTableTopComponent.RichToolTip.title.text"
 msgstr "Description"
 
 msgid "DataTableTopComponent.addColumnButton.text"
-msgstr "Add new column"
+msgstr "Add column"
 
 msgid "DataTableTopComponent.mergeColumnsButton.text"
 msgstr "Merge columns"
 
 msgid "DataTableTopComponent.dialogs.okButton.text"
-msgstr "Ok"
+msgstr "OK"
 
 msgid "DataTableTopComponent.general.actions.plugins.button.text"
 msgstr "More actions"
@@ -97,28 +97,25 @@ msgid "ConfigurationPanel.onlyVisibleCheckBox.text"
 msgstr "Visible graph only"
 
 msgid "ConfigurationPanel.useSparklinesCheckBox.text"
-msgstr "Show number lists and dynamic numbers as sparklines"
+msgstr "Sparklines replaces number lists and dynamic numbers"
 
 msgid "ConfigurationPanel.showEdgesNodesLabelsCheckBox.text"
-msgstr "Show label of source and target nodes of edges"
+msgstr "Show label of source and target nodes"
 
 msgid "DataTableTopComponent.configurationButton.text"
 msgstr "Configuration"
 
-msgid "ConfigurationPanel.descriptionLabel.text"
-msgstr "Data table configuration:"
-
 msgid "ConfigurationPanel.timeIntervalsGraphicsCheckBox.text"
-msgstr "Show time intervals graphics"
+msgstr "Time intervals as graphics"
 
 msgid "DataTableTopComponent.availableColumnsButton.toolTipText"
-msgstr "Configure available columns"
+msgstr "Configure displayed columns"
 
 msgid "AvailableColumnsPanel.title"
-msgstr "Available columns settings"
+msgstr "Display settings"
 
 msgid "AvailableColumnsPanel.descriptionLabel.text"
-msgstr "Choose the columns that should be available:"
+msgstr "Choose the columns to display:"
 
 msgid "AvailableColumnsPanel.maximum-available-columns.info"
-msgstr "Maximum number of available columns reached"
+msgstr "Maximum number of columns reached"

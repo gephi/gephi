@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "DeleteEdgesWithNodesUI.description"
-msgstr "Choose the nodes to delete of the selected edge(s)."
+msgstr "Choose the nodes to delete."
 
 msgid "DeleteEdgesWithNodesUI.deleteSource.text"
 msgstr "Delete source node"

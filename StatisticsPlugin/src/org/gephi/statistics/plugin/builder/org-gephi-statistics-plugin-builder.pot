@@ -44,3 +44,6 @@ msgstr "Connected Components"
 
 msgid "EigenvectorCentrality.name"
 msgstr "Eigenvector Centrality"
+
+msgid "WeightedDegree.name"
+msgstr "Weighted Degree"

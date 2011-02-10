@@ -16,34 +16,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "CopyDataToOtherColumnUI.sourceColumnLabel.text"
-msgstr "Copying data from source column ''{0}''"
+msgstr "Copy data from ''{0}''"
 
 msgid "CopyDataToOtherColumnUI.descriptionLabel.text"
-msgstr "Choose target column to copy the data:"
+msgstr "Copy to:"
 
 msgid "DuplicateColumnUI.titleLabel.text"
-msgstr "Title of the column:"
+msgstr "Title:"
 
 msgid "DuplicateColumnUI.typeLabel.text"
-msgstr "Type of the column:"
+msgstr "Type:"
 
 msgid "DuplicateColumnUI.new.title"
 msgstr "{0}_copy"
 
 msgid "DuplicateColumnUI.descriptionLabel.text"
-msgstr "Duplicate the column ''{0}''."
+msgstr "Duplicate ''{0}''."
 
 msgid "GeneralCreateColumnFromRegexUI.descriptionLabel.text.boolean"
-msgstr "Creating a new boolean matches column from column ''{0}''"
+msgstr "Create a new boolean matches column from ''{0}''"
 
 msgid "GeneralCreateColumnFromRegexUI.descriptionLabel.text.matching_groups"
-msgstr "Creating a new list of matching groups column from column ''{0}''"
+msgstr "Create a new list of matching groups column from ''{0}''"
 
 msgid "GeneralCreateColumnFromRegexUI.regexLabel.text"
 msgstr "Regular expression:"
 
 msgid "GeneralCreateColumnFromRegexUI.titleLabel.text"
-msgstr "Title of the column:"
+msgstr "Title:"
 
 msgid "ColumnValuesFrequencyUI.configurePieChartButton.text"
 msgstr "Configure pie chart"
@@ -61,7 +61,7 @@ msgid "NumberColumnStatisticsReportUI.configureScatterPlotButton.text"
 msgstr "Configure scatter plot"
 
 msgid "NumberColumnStatisticsReportUI.configureHistogramButton.text"
-msgstr "Configure Histogram"
+msgstr "Configure histogram"
 
 msgid "NumberColumnStatisticsReportUI.useLinesCheckBox.text"
 msgstr "Show lines"

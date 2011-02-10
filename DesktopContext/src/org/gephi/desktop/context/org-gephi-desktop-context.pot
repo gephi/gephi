@@ -41,3 +41,9 @@ msgstr "Mixed Graph"
 
 msgid "ContextPanel.visible"
 msgstr "Visible"
+
+msgid "ContextPieChart.visible"
+msgstr "Visible"
+
+msgid "ContextPieChart.notVisible"
+msgstr "Not visible"
