@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-05 04:58+0000\n"
+"X-Launchpad-Export-Date: 2011-02-11 04:58+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
 msgid "GraphDistancePanel.directedRadioButton.text"
@@ -111,13 +111,13 @@ msgstr ""
 "réseau."
 
 msgid "GraphDistancePanel.jLabel1.text"
-msgstr "Betweeness Centrality :"
+msgstr "Betweenness Centrality :"
 
 msgid "GraphDistancePanel.jLabel2.text"
 msgstr "Closeness Centrality :"
 
 msgid "GraphDistancePanel.jLabel3.text"
-msgstr "Eccentricity :"
+msgstr "Eccentricité :"
 
 msgid "GraphDistancePanel.header.description"
 msgstr ""
@@ -206,3 +206,39 @@ msgstr "Non dirigé"
 
 msgid "GraphDistancePanel.normalizeButton.text"
 msgstr "Normalise entre [0,1]"
+
+msgid "ConnectedComponentUI.name"
+msgstr ""
+
+msgid "ClusteringCoefficientUI.name"
+msgstr ""
+
+msgid "DegreeDistributionUI.name"
+msgstr ""
+
+msgid "EigenvectorCentralityUI.name"
+msgstr ""
+
+msgid "GraphDensityUI.name"
+msgstr ""
+
+msgid "HitsUI.name"
+msgstr ""
+
+msgid "InOutDegreeUI.name"
+msgstr ""
+
+msgid "ModularityUI.name"
+msgstr ""
+
+msgid "PageRankUI.name"
+msgstr ""
+
+msgid "PathLengthUI.name"
+msgstr ""
+
+msgid "WeightedDegreeUI.name"
+msgstr ""
+
+msgid "PageRankPanel.edgeWeightCheckbox.text"
+msgstr ""

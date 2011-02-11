@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-05 04:57+0000\n"
+"X-Launchpad-Export-Date: 2011-02-11 04:58+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
 msgid "CTL_PreviewAction"
@@ -35,11 +35,32 @@ msgstr "Paramètres d'aperçu"
 msgid "HINT_PreviewTopComponent"
 msgstr "Aperçu"
 
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Aperçu et paramétrages"
+
 msgid "GenericColorizerPanel.CustomColorRadioButton.text"
 msgstr "Couleur personnalisée"
 
-msgid "OpenIDE-Module-Short-Description"
-msgstr "Aperçu et paramétrages"
+msgid "PreviewNode.displayName"
+msgstr ""
+
+msgid "PreviewNode.Node.displayName"
+msgstr ""
+
+msgid "PreviewNode.Edge.displayName"
+msgstr ""
+
+msgid "PreviewNode.SelfLoop.displayName"
+msgstr ""
+
+msgid "PreviewNode.Directed.displayName"
+msgstr ""
+
+msgid "PreviewNode.Undirected.displayName"
+msgstr ""
+
+msgid "PreviewNode.Mutual.displayName"
+msgstr ""
 
 msgid "PreviewSettingsTopComponent.savePreset.input"
 msgstr "Nom"

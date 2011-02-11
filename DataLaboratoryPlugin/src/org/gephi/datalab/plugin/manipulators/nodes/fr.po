@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-05 04:59+0000\n"
+"X-Launchpad-Export-Date: 2011-02-11 04:58+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
 msgid "OpenInEditNodeWindow.name"
@@ -49,6 +49,12 @@ msgstr "Tout supprimer"
 msgid "DeleteNodes.confirmation.message"
 msgstr "Confirmer la suppression des noeuds ?"
 
+msgid "TagNodes.name.multiple"
+msgstr ""
+
+msgid "TagNodes.name.single"
+msgstr ""
+
 msgid "ClearNodesData.name.single"
 msgstr "Effacer..."
 
@@ -67,8 +73,11 @@ msgstr "Ecraser les données des autres noeuds sélectionnés..."
 msgid "CopyNodeDataToOtherNodes.description"
 msgstr "Copier les colonnes du noeud vers les autres noeuds sélectionnés"
 
-msgid "CopyNodeDataToOtherNodes.ui.description"
-msgstr "Colonnes :"
+msgid "CopyNodeDataToOtherNodes.ui.rowDescription"
+msgstr ""
+
+msgid "CopyNodeDataToOtherNodes.ui.columnsDescription"
+msgstr ""
 
 msgid "Group.name"
 msgstr "Grouper"
@@ -131,3 +140,6 @@ msgstr "Dupliquer"
 
 msgid "CopyNodes.name.multiple"
 msgstr "Tout dupliquer"
+
+#~ msgid "CopyNodeDataToOtherNodes.ui.description"
+#~ msgstr "Colonnes :"

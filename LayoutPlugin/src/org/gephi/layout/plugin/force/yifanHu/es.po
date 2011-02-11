@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-05 04:58+0000\n"
+"X-Launchpad-Export-Date: 2011-02-11 04:58+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
 msgid "YifanHu.name"
@@ -33,3 +33,51 @@ msgid "YifanHuProportional.description"
 msgstr ""
 "Versión modificada de Yifan Hu que usa un plan de desplazamiento "
 "proporcional."
+
+msgid "YifanHu.optimalDistance.name"
+msgstr ""
+
+msgid "YifanHu.optimalDistance.desc"
+msgstr ""
+
+msgid "YifanHu.relativeStrength.name"
+msgstr ""
+
+msgid "YifanHu.relativeStrength.desc"
+msgstr ""
+
+msgid "YifanHu.initialStepSize.name"
+msgstr ""
+
+msgid "YifanHu.initialStepSize.desc"
+msgstr ""
+
+msgid "YifanHu.stepRatio.name"
+msgstr ""
+
+msgid "YifanHu.stepRatio.desc"
+msgstr ""
+
+msgid "YifanHu.adaptativeCooling.name"
+msgstr ""
+
+msgid "YifanHu.adaptativeCooling.desc"
+msgstr ""
+
+msgid "YifanHu.convergenceThreshold.name"
+msgstr ""
+
+msgid "YifanHu.convergenceThreshold.desc"
+msgstr ""
+
+msgid "YifanHu.quadTreeMaxLevel.name"
+msgstr ""
+
+msgid "YifanHu.quadTreeMaxLevel.desc"
+msgstr ""
+
+msgid "YifanHu.theta.name"
+msgstr ""
+
+msgid "YifanHu.theta.desc"
+msgstr ""

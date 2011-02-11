@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-05 04:59+0000\n"
+"X-Launchpad-Export-Date: 2011-02-11 04:58+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
 msgid "OpenInEditEdgeWindow.name"
@@ -58,6 +58,12 @@ msgstr "Eliminar arista con sus nodos..."
 msgid "DeleteEdgesWithNodes.name.multiple"
 msgstr "Eliminar aristas con sus nodos..."
 
+msgid "TagEdges.name.single"
+msgstr ""
+
+msgid "TagEdges.name.multiple"
+msgstr ""
+
 msgid "ClearEdgesData.name.single"
 msgstr "Borrar datos de la arista..."
 
@@ -79,5 +85,11 @@ msgstr ""
 "Copia las columnas deseadas de la arista seleccionada a las otras aristas "
 "seleccionadas"
 
-msgid "CopyEdgeDataToOtherEdges.ui.description"
-msgstr "Elige columnas de las que copiar los datos:"
+msgid "CopyEdgeDataToOtherEdges.ui.rowDescription"
+msgstr ""
+
+msgid "CopyEdgeDataToOtherEdges.ui.columnsDescription"
+msgstr ""
+
+#~ msgid "CopyEdgeDataToOtherEdges.ui.description"
+#~ msgstr "Elige columnas de las que copiar los datos:"

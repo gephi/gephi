@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-05 04:56+0000\n"
+"X-Launchpad-Export-Date: 2011-02-11 04:58+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
 msgid "OpenIDE-Module-Short-Description"
@@ -63,6 +63,15 @@ msgstr ""
 
 msgid "ReportPanel.autoscaleCheckbox.text"
 msgstr "Échelle auto"
+
+msgid "ReportPanel.noIssues"
+msgstr ""
+
+msgid "ReportPanel.yes"
+msgstr ""
+
+msgid "ReportPanel.no"
+msgstr ""
 
 msgid "DesktopImportControllerUI.spigotSource"
 msgstr "Tuyaux {0}"

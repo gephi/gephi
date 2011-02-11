@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-05 04:57+0000\n"
+"X-Launchpad-Export-Date: 2011-02-11 04:58+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
 msgid "name"
@@ -30,3 +30,39 @@ msgid "YifanHuMultiLevel.description"
 msgstr ""
 "El algoritmo Yifan Hu multi-nivel es adecuado para grafos muy grandes. Hace "
 "el grafo más grueso de forma que reduce la computación."
+
+msgid "YifanHuMultiLevel.minimumLevelSize.name"
+msgstr ""
+
+msgid "YifanHuMultiLevel.minimumLevelSize.desc"
+msgstr ""
+
+msgid "YifanHuMultiLevel.minimumCoarseningRate.name"
+msgstr ""
+
+msgid "YifanHuMultiLevel.minimumCoarseningRate.desc"
+msgstr ""
+
+msgid "YifanHuMultiLevel.stepRatio.name"
+msgstr ""
+
+msgid "YifanHuMultiLevel.stepRatio.desc"
+msgstr ""
+
+msgid "YifanHuMultiLevel.optimalDistance.name"
+msgstr ""
+
+msgid "YifanHuMultiLevel.optimalDistance.desc"
+msgstr ""
+
+msgid "YifanHuMultiLevel.quadtreeMaxLevel.name"
+msgstr ""
+
+msgid "YifanHuMultiLevel.quadtreeMaxLevel.desc"
+msgstr ""
+
+msgid "YifanHuMultiLevel.theta.name"
+msgstr ""
+
+msgid "YifanHuMultiLevel.theta.desc"
+msgstr ""

@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-05 04:59+0000\n"
+"X-Launchpad-Export-Date: 2011-02-11 04:58+0000\n"
 "X-Generator: Launchpad (build 12177)\n"
 
 msgid "OpenInEditNodeWindow.name"
@@ -52,6 +52,12 @@ msgstr "Eliminar todos"
 msgid "DeleteNodes.confirmation.message"
 msgstr "¿Estás seguro de que quieres eliminar lo(s) nodo(s)?"
 
+msgid "TagNodes.name.multiple"
+msgstr ""
+
+msgid "TagNodes.name.single"
+msgstr ""
+
 msgid "ClearNodesData.name.single"
 msgstr "Borrar datos del nodo..."
 
@@ -73,8 +79,11 @@ msgstr ""
 "Copia las columnas deseadas del nodo seleccionado a los otras nodos "
 "seleccionados"
 
-msgid "CopyNodeDataToOtherNodes.ui.description"
-msgstr "Elige columnas de las que copiar los datos:"
+msgid "CopyNodeDataToOtherNodes.ui.rowDescription"
+msgstr ""
+
+msgid "CopyNodeDataToOtherNodes.ui.columnsDescription"
+msgstr ""
 
 msgid "Group.name"
 msgstr "Agrupar"
@@ -139,3 +148,6 @@ msgstr "Copiar nodo"
 
 msgid "CopyNodes.name.multiple"
 msgstr "Copiar todos los nodos"
+
+#~ msgid "CopyNodeDataToOtherNodes.ui.description"
+#~ msgstr "Elige columnas de las que copiar los datos:"
