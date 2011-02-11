@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.linkfluence
+OpenIDE-Module-Localizing-Bundle: org/gephi/linkfluence/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
