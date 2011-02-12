@@ -147,6 +147,7 @@ public class ImporterCSV implements FileImporter, LongTask {
                         if (!data.isEmpty() && !data.toLowerCase().equals("null")) {
                             if (count == 0) {
                                 sourceID = data;
+                                addNode(sourceID, data);
                             } else {
                                 //Create Edge
                                 addEdge(sourceID, data);
