@@ -420,6 +420,8 @@ public class NodeDataTable {
                 return TimeInterval.class;
             } else if (attributeUtils.isNumberColumn(column)) {
                 return column.getType().getType();//Number columns should not be treated as Strings because the sorting would be alphabetic instead of numeric
+            } else if (column.getType() == AttributeType.BOOLEAN) {
+                return Boolean.class;
             } else {
                 return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
             }
@@ -442,6 +444,8 @@ public class NodeDataTable {
             } else if (column.getType() == AttributeType.TIME_INTERVAL) {
                 return value;
             } else if (attributeUtils.isNumberColumn(column)) {
+                return value;
+            } else if (column.getType() == AttributeType.BOOLEAN) {
                 return value;
             } else {
                 //Show values as Strings like in Edit window and other parts of the program to be consistent
