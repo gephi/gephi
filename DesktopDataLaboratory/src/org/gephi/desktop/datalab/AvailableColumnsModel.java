@@ -63,6 +63,13 @@ public class AvailableColumnsModel {
     }
 
     /**
+     * Clear all available columns
+     */
+    public void removeAllColumns(){
+        availableColumns.clear();
+    }
+
+    /**
      * Indicates if more columns can be made available a the moment
      * @return
      */
