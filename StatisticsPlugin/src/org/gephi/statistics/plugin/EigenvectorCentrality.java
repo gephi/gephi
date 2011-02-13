@@ -37,6 +37,7 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.TempDirUtils;
@@ -156,7 +157,7 @@ public class EigenvectorCentrality implements Statistics, LongTask {
                 if (isDirected) {
                     iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(u);
                 } else {
-                    iter = hgraph.getEdges(u);
+                    iter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(u);
                 }
 
                 for (Edge e : iter) {

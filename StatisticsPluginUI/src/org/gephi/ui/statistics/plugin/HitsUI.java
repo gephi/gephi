@@ -71,7 +71,7 @@ public class HitsUI implements StatisticsUI {
     }
 
     public String getDisplayName() {
-        return NbBundle.getMessage(getClass(), "ConnectedComponentUI.name");
+        return NbBundle.getMessage(getClass(), "HitsUI.name");
     }
 
     public String getCategory() {

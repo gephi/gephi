@@ -217,10 +217,10 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         HierarchicalGraph hgraph = null;
-        if (!isDirected) {
-            hgraph = graphModel.getHierarchicalUndirectedGraphVisible();
-        } else {
+        if (isDirected) {
             hgraph = graphModel.getHierarchicalDirectedGraphVisible();
+        } else {
+            hgraph = graphModel.getHierarchicalUndirectedGraphVisible();
         }
 
         execute(hgraph, attributeModel);

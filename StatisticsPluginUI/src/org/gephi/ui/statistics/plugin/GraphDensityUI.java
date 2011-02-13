@@ -66,7 +66,7 @@ public class GraphDensityUI implements StatisticsUI {
     }
 
     public String getDisplayName() {
-        return NbBundle.getMessage(getClass(), "ConnectedComponentUI.name");
+        return NbBundle.getMessage(getClass(), "GraphDensityUI.name");
     }
 
     public String getCategory() {
