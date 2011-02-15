@@ -271,10 +271,10 @@ public class EdgeDataTable {
         }
 
         if (model == null) {
-            model = new EdgeDataTableModel(graph.getEdges().toArray(), columns.toArray(new EdgeDataColumn[0]));
+            model = new EdgeDataTableModel(graph.getEdgesAndMetaEdges().toArray(), columns.toArray(new EdgeDataColumn[0]));
             table.setModel(model);
         } else {
-            model.setEdges(graph.getEdges().toArray());
+            model.setEdges(graph.getEdgesAndMetaEdges().toArray());
             model.setColumns(columns.toArray(new EdgeDataColumn[0]));
         }
 
