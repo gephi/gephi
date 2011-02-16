@@ -354,6 +354,7 @@ public class NodeDataTable {
     private class NodeRowModel implements RowModel {
 
         private NodeDataColumn[] columns;
+        private final int length;
 
         public NodeRowModel(AttributeColumn[] attributeColumns) {
 
@@ -362,22 +363,32 @@ public class NodeDataTable {
                 cols.add(new AttributeNodeDataColumn(c));
             }
             columns = cols.toArray(new NodeDataColumn[0]);
+            length = columns.length;
         }
 
         public int getColumnCount() {
-            return columns.length;
+            return length;
         }
 
         public Object getValueFor(Object node, int column) {
+            if (outOfBounds(column)) {
+                return null;
+            }
             ImmutableTreeNode treeNode = (ImmutableTreeNode) node;
             return columns[column].getValueFor(treeNode);
         }
 
         public Class getColumnClass(int column) {
+            if (outOfBounds(column)) {
+                return Object.class;
+            }
             return columns[column].getColumnClass();
         }
 
         public boolean isCellEditable(Object node, int column) {
+            if (outOfBounds(column)) {
+                return false;
+            }
             return columns[column].isEditable();
         }
 
@@ -386,7 +397,14 @@ public class NodeDataTable {
         }
 
         public String getColumnName(int column) {
+            if (outOfBounds(column)) {
+                return null;
+            }
             return columns[column].getColumnName();
+        }
+
+        private boolean outOfBounds(int position) {
+            return position >= length;
         }
     }
 
