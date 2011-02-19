@@ -22,8 +22,9 @@ package org.gephi.datalab.impl;
 
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalab.api.DataTablesController;
-import org.gephi.datalab.api.DataTablesEventListener;
+import org.gephi.datalab.api.datatables.DataTablesController;
+import org.gephi.datalab.api.datatables.DataTablesEventListener;
+import org.gephi.datalab.api.datatables.DataTablesEventListenerBuilder;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
@@ -185,5 +186,13 @@ public class DataTablesControllerImpl implements DataTablesController {
         if (listener != null) {
             listener.setShowEdgesNodesLabels(showEdgesNodesLabels);
         }
+    }
+
+    public boolean prepareDataTables() {
+        DataTablesEventListenerBuilder builder=Lookup.getDefault().lookup(DataTablesEventListenerBuilder.class);
+        if(builder!=null){
+            listener=builder.getDataTablesEventListener();
+        }
+        return isDataTablesReady();
     }
 }

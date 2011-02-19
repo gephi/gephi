@@ -18,7 +18,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalab.api;
+package org.gephi.datalab.api.datatables;
 
 import org.gephi.data.attributes.api.AttributeTable;
 
@@ -29,7 +29,7 @@ import org.gephi.data.attributes.api.AttributeTable;
  * <b>Note that data table ui will not be registered to listen to the events of this controller until it is instanced opening Data Laboratory Group</b></p>
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface DataTablesController extends DataTablesEventListener{
+public interface DataTablesController extends DataTablesCommonInterface {
 
     /**
      * Request the tables implementation to show the given table (nodes or edges table)
@@ -55,4 +55,10 @@ public interface DataTablesController extends DataTablesEventListener{
      * @return True if Data Table UI is prepared, false otherwise
      */
     boolean isDataTablesReady();
+
+    /**
+     * Looks for an available <code>DataTablesEventListenerBuilder</code> and sets its <code>DataTablesEventListener</code>.
+     * @return True if listener found, false otherwise
+     */
+    boolean prepareDataTables();
 }

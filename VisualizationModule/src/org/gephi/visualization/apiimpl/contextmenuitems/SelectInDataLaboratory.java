@@ -22,7 +22,7 @@ package org.gephi.visualization.apiimpl.contextmenuitems;
 
 import java.awt.event.KeyEvent;
 import javax.swing.Icon;
-import org.gephi.datalab.api.DataTablesController;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.spi.GraphContextMenuItem;
@@ -36,12 +36,16 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphContextMenuItem.class)
 public class SelectInDataLaboratory extends BasicItem {
+
     private DataTablesController dtc;
 
     @Override
     public void setup(HierarchicalGraph graph, Node[] nodes) {
         this.nodes = nodes;
-        dtc=Lookup.getDefault().lookup(DataTablesController.class);
+        dtc = Lookup.getDefault().lookup(DataTablesController.class);
+        if(!dtc.isDataTablesReady()){
+            dtc.prepareDataTables();
+        }
     }
 
     public void execute() {
@@ -55,11 +59,11 @@ public class SelectInDataLaboratory extends BasicItem {
 
     @Override
     public boolean isAvailable() {
-        return dtc.isDataTablesReady();
+        return true;
     }
 
     public boolean canExecute() {
-        return nodes.length>=1;
+        return nodes.length >= 1 && dtc.isDataTablesReady();
     }
 
     public int getType() {

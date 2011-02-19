@@ -73,6 +73,7 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.datalab.api</package>
+                <package>org.gephi.datalab.api.datatables</package>
                 <package>org.gephi.datalab.spi</package>
                 <package>org.gephi.datalab.spi.columns</package>
                 <package>org.gephi.datalab.spi.columns.merge</package>

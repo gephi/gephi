@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalab.api;
 
+import org.gephi.datalab.api.datatables.DataTablesController;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;

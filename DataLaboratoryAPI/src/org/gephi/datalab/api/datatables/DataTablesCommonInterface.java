@@ -18,18 +18,17 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalab.api;
+package org.gephi.datalab.api.datatables;
 
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
 /**
- * <p>This is the interface for a listener of <code>DataTablesController</code> requests.</p>
- * <p><b>Only data table UI should be an implementation of this listener</b></p>
- * @see DataTablesController
- * @author Eduardo Ramos <eduramiba@gmail.com>
+ * Common interface for <code>DataTablesEventListener</code> and <code>DataTablesController</code>
+ * @author Eduardo
  */
-public interface DataTablesEventListener {
+interface DataTablesCommonInterface {
+
     /**
      * Requests the tables implementation to show nodes table.
      */
@@ -130,7 +129,8 @@ public interface DataTablesEventListener {
      */
     void setShowEdgesNodesLabels(boolean showEdgesNodesLabels);
 
-    public enum ExportMode{
+    public enum ExportMode {
+
         CSV
     }
 

@@ -28,7 +28,7 @@ import java.text.MessageFormat;
 import javax.swing.JComponent;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.datalab.api.AttributeColumnsController;
-import org.gephi.datalab.api.DataTablesController;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.openide.DialogDisplayer;
 import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
