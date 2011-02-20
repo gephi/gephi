@@ -20,23 +20,22 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.data.attributes;
 
+import java.io.StringReader;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLReporter;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.data.attributes.serialization.AttributeModelSerializer;
 import java.io.StringWriter;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.model.IndexedAttributeModel;
 import org.gephi.data.attributes.type.StringList;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openide.util.Exceptions;
 import org.w3c.dom.Element;
@@ -69,30 +68,58 @@ public class AttributeModelSerializerTest {
 
     @Test
     public void testSerializer() {
-        AttributeModelSerializer serializer = new AttributeModelSerializer();
-        Element e1 = serializer.writeModel(serializer.createDocument(), model);
-        String s1 = printXML(e1);
-        System.out.println(s1);
-        IndexedAttributeModel model2 = new IndexedAttributeModel();
-        serializer.readModel(e1, model2);
-        Element e2 = serializer.writeModel(serializer.createDocument(), model2);
-        String s2 = printXML(e2);
-        System.out.println(s2);
-        assertEquals(s1, s2);
+        try {
+            AttributeModelSerializer serializer = new AttributeModelSerializer();
+            StringWriter stringWriter = new StringWriter();
+            XMLStreamWriter writer = createWriter(stringWriter);
+            serializer.writeModel(writer, model);
+            writer.close();
+            String s1 = stringWriter.toString();
+            System.out.println(s1);
+            IndexedAttributeModel model2 = new IndexedAttributeModel();
+            StringReader stringReader = new StringReader(s1);
+            XMLStreamReader reader = createReader(stringReader);
+            serializer.readModel(reader, model2);
+            stringWriter = new StringWriter();
+            writer = createWriter(stringWriter);
+            serializer.writeModel(writer, model2);
+            String s2 = stringWriter.toString();
+            System.out.println(s2);
+            assertEquals(s1, s2);
+        } catch (XMLStreamException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
-    private String printXML(org.w3c.dom.Node node) {
+    private XMLStreamWriter createWriter(StringWriter stringWriter) {
+        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+        outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
+
         try {
-            Source source = new DOMSource(node);
-            StringWriter writer = new StringWriter();
-            Result result = new StreamResult(writer);
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.transform(source, result);
-            return writer.toString();
-        } catch (Exception ex) {
+            XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(stringWriter);
+            xmlWriter.writeStartDocument("UTF-8", "1.0");
+            return xmlWriter;
+        } catch (XMLStreamException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null;
+    }
+
+    private XMLStreamReader createReader(StringReader stringReader) {
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+            inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+        }
+        inputFactory.setXMLReporter(new XMLReporter() {
+
+            @Override
+            public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                System.out.println("Error:" + errorType + ", message : " + message);
+            }
+        });
+        try {
+            return inputFactory.createXMLStreamReader(stringReader);
+        } catch (XMLStreamException ex) {
             Exceptions.printStackTrace(ex);
         }
         return null;

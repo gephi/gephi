@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.project.io;
 
 import java.io.IOException;
@@ -25,13 +25,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Project;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -42,7 +37,6 @@ import org.openide.filesystems.FileUtil;
 
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
-import org.w3c.dom.Document;
 
 /**
  *
@@ -87,17 +81,12 @@ public class SaveTask implements LongTask, Runnable {
             zipOut.putNextEntry(new ZipEntry("Project"));
             gephiWriter = new GephiWriter();
 
-            //Write Document
-            Document document = gephiWriter.writeAll(project);
-
-            //Write file output
-            Source source = new DOMSource(document);
-            Result result = new StreamResult(zipOut);
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.transform(source, result);
+            //Create Writer and write project
+            XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+            outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
+            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(zipOut);
+            gephiWriter.writeAll(project, writer);
+            writer.close();
 
             //Close
             zipOut.closeEntry();

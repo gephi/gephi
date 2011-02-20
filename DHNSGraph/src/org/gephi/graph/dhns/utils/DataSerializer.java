@@ -20,6 +20,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.graph.dhns.utils;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.events.XMLEvent;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.NodeData;
 import org.gephi.graph.dhns.core.Dhns;
@@ -32,10 +36,6 @@ import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.NodeDataImpl;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
 import org.gephi.graph.dhns.predicate.Tautology;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -49,10 +49,10 @@ public class DataSerializer {
     private static final String ELEMENT_NODEDATA_COLOR = "color";
     private static final String ELEMENT_NODEDATA_SIZE = "size";
     private static final String ELEMENT_EDGEDATA = "edgedata";
-    private static final String ELEMENT_EDGEDATA_COLOR = "edgedata";
+    private static final String ELEMENT_EDGEDATA_COLOR = "color";
 
-    public Element writeData(Document document, Dhns dhns) {
-        Element dataE = document.createElement(ELEMENT_DATA);
+    public void writeData(XMLStreamWriter writer, Dhns dhns) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_DATA);
 
         TreeStructure treeStructure = dhns.getGraphStructure().getMainView().getStructure();
         TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1);
@@ -60,8 +60,7 @@ public class DataSerializer {
             AbstractNode absNode = itr.next();
             NodeDataImpl nodeData = absNode.getNodeData();
             if (nodeData != null) {
-                Element nodeDataE = writeNodeData(document, nodeData);
-                dataE.appendChild(nodeDataE);
+                writeNodeData(writer, nodeData);
             }
         }
 
@@ -69,128 +68,142 @@ public class DataSerializer {
         for (; edgeIterator.hasNext();) {
             EdgeDataImpl edgeData = edgeIterator.next().getEdgeData();
             if (edgeData != null) {
-                Element edgeDataE = writeEdgeData(document, edgeData);
-                dataE.appendChild(edgeDataE);
+                writeEdgeData(writer, edgeData);
             }
         }
 
-        return dataE;
+        writer.writeEndElement();
     }
 
-    public void readData(Element dataE, Dhns dhns) {
+    public void readData(XMLStreamReader reader, Dhns dhns) throws XMLStreamException {
 
         GraphStructure structure = dhns.getGraphStructure();
         TreeStructure treeStructure = structure.getMainView().getStructure();
-        NodeList dataListE = dataE.getChildNodes();
-        for (int i = 0; i < dataListE.getLength(); i++) {
-            if (dataListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element itemE = (Element) dataListE.item(i);
-                if (itemE.getTagName().equals(ELEMENT_NODEDATA)) {
-                    AbstractNode node = treeStructure.getNodeAt(Integer.parseInt(itemE.getAttribute("nodepre")));
+
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            Integer eventType = reader.next();
+            if (eventType.equals(XMLEvent.START_ELEMENT)) {
+                String name = reader.getLocalName();
+                if (ELEMENT_NODEDATA.equalsIgnoreCase(name)) {
+                    AbstractNode node = treeStructure.getNodeAt(Integer.parseInt(reader.getAttributeValue(null, "nodepre")));
                     NodeDataImpl nodeDataImpl = (NodeDataImpl) node.getNodeData();
-                    readNodeData(itemE, nodeDataImpl, structure);
-                } else if (itemE.getTagName().equals(ELEMENT_EDGEDATA)) {
-                    AbstractNode source = treeStructure.getNodeAt(Integer.parseInt(itemE.getAttribute("sourcepre")));
-                    AbstractNode target = treeStructure.getNodeAt(Integer.parseInt(itemE.getAttribute("targetpre")));
+                    readNodeData(reader, nodeDataImpl, structure);
+                } else if (ELEMENT_EDGEDATA.equalsIgnoreCase(name)) {
+                    AbstractNode source = treeStructure.getNodeAt(Integer.parseInt(reader.getAttributeValue(null, "sourcepre")));
+                    AbstractNode target = treeStructure.getNodeAt(Integer.parseInt(reader.getAttributeValue(null, "targetpre")));
                     AbstractEdge edge = source.getEdgesOutTree().getItem(target.getId());
                     EdgeDataImpl edgeDataImpl = (EdgeDataImpl) edge.getEdgeData();
-                    readEdgeData(itemE, edgeDataImpl, structure);
+                    readEdgeData(reader, edgeDataImpl, structure);
+                }
+            } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                if (ELEMENT_DATA.equalsIgnoreCase(reader.getLocalName())) {
+                    end = true;
                 }
             }
         }
-
     }
 
-    public Element writeNodeData(Document document, NodeDataImpl nodeData) {
-        Element nodeDataE = document.createElement(ELEMENT_NODEDATA);
+    public void writeNodeData(XMLStreamWriter writer, NodeDataImpl nodeData) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_NODEDATA);
         AbstractNode node = nodeData.getRootNode();
 
-        nodeDataE.setAttribute("nodepre", String.valueOf(node.getPre()));
+        writer.writeAttribute("nodepre", String.valueOf(node.getPre()));
 
         if (nodeData.getId() != null && !nodeData.getId().equals("" + node.getId())) {
-            nodeDataE.setAttribute("id", nodeData.getId());
+            writer.writeAttribute("id", nodeData.getId());
         }
 
-        Element positionE = document.createElement(ELEMENT_NODEDATA_POSITION);
-        positionE.setAttribute("x", String.valueOf(nodeData.x()));
-        positionE.setAttribute("y", String.valueOf(nodeData.y()));
-        positionE.setAttribute("z", String.valueOf(nodeData.z()));
-        nodeDataE.appendChild(positionE);
+        writer.writeStartElement(ELEMENT_NODEDATA_POSITION);
+        writer.writeAttribute("x", String.valueOf(nodeData.x()));
+        writer.writeAttribute("y", String.valueOf(nodeData.y()));
+        writer.writeAttribute("z", String.valueOf(nodeData.z()));
+        writer.writeEndElement();
 
-        Element colorE = document.createElement(ELEMENT_NODEDATA_COLOR);
-        colorE.setAttribute("r", String.valueOf(nodeData.r()));
-        colorE.setAttribute("g", String.valueOf(nodeData.g()));
-        colorE.setAttribute("b", String.valueOf(nodeData.b()));
-        colorE.setAttribute("a", String.valueOf(nodeData.alpha()));
-        nodeDataE.appendChild(colorE);
+        writer.writeStartElement(ELEMENT_NODEDATA_COLOR);
+        writer.writeAttribute("r", String.valueOf(nodeData.r()));
+        writer.writeAttribute("g", String.valueOf(nodeData.g()));
+        writer.writeAttribute("b", String.valueOf(nodeData.b()));
+        writer.writeAttribute("a", String.valueOf(nodeData.alpha()));
+        writer.writeEndElement();
 
-        Element sizeE = document.createElement(ELEMENT_NODEDATA_SIZE);
-        sizeE.setAttribute("value", String.valueOf(nodeData.getSize()));
-        nodeDataE.appendChild(sizeE);
+        writer.writeStartElement(ELEMENT_NODEDATA_SIZE);
+        writer.writeAttribute("value", String.valueOf(nodeData.getSize()));
+        writer.writeEndElement();
 
-        return nodeDataE;
+        writer.writeEndElement();
     }
 
-    public void readNodeData(Element nodeDataE, NodeData nodeData, GraphStructure structure) {
-        if (nodeDataE.hasAttribute("id")) {
-            structure.setNodeId((NodeDataImpl) nodeData, nodeDataE.getAttribute("id"));
+    public void readNodeData(XMLStreamReader reader, NodeData nodeData, GraphStructure structure) throws XMLStreamException {
+        if (reader.getAttributeValue(null, "id") != null) {
+            structure.setNodeId((NodeDataImpl) nodeData, reader.getAttributeValue(null, "id"));
         }
 
-        NodeList dataE = nodeDataE.getChildNodes();
-        for (int i = 0; i < dataE.getLength(); i++) {
-            if (dataE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element itemE = (Element) dataE.item(i);
-                if (itemE.getTagName().equals(ELEMENT_NODEDATA_POSITION)) {
-                    nodeData.setX(Float.parseFloat(itemE.getAttribute("x")));
-                    nodeData.setY(Float.parseFloat(itemE.getAttribute("y")));
-                    nodeData.setZ(Float.parseFloat(itemE.getAttribute("z")));
-                } else if (itemE.getTagName().equals(ELEMENT_NODEDATA_COLOR)) {
-                    nodeData.setR(Float.parseFloat(itemE.getAttribute("r")));
-                    nodeData.setG(Float.parseFloat(itemE.getAttribute("g")));
-                    nodeData.setB(Float.parseFloat(itemE.getAttribute("b")));
-                    nodeData.setAlpha(Float.parseFloat(itemE.getAttribute("a")));
-                } else if (itemE.getTagName().equals(ELEMENT_NODEDATA_SIZE)) {
-                    nodeData.setSize(Float.parseFloat(itemE.getAttribute("value")));
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            Integer eventType = reader.next();
+            if (eventType.equals(XMLEvent.START_ELEMENT)) {
+                String name = reader.getLocalName();
+                if (ELEMENT_NODEDATA_POSITION.equalsIgnoreCase(name)) {
+                    nodeData.setX(Float.parseFloat(reader.getAttributeValue(null, "x")));
+                    nodeData.setY(Float.parseFloat(reader.getAttributeValue(null, "y")));
+                    nodeData.setZ(Float.parseFloat(reader.getAttributeValue(null, "z")));
+                } else if (ELEMENT_NODEDATA_COLOR.equalsIgnoreCase(name)) {
+                    nodeData.setR(Float.parseFloat(reader.getAttributeValue(null, "r")));
+                    nodeData.setG(Float.parseFloat(reader.getAttributeValue(null, "g")));
+                    nodeData.setB(Float.parseFloat(reader.getAttributeValue(null, "b")));
+                    nodeData.setAlpha(Float.parseFloat(reader.getAttributeValue(null, "a")));
+                } else if (ELEMENT_NODEDATA_SIZE.equalsIgnoreCase(name)) {
+                    nodeData.setSize(Float.parseFloat(reader.getAttributeValue(0)));
+                }
+            } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                if (ELEMENT_NODEDATA.equalsIgnoreCase(reader.getLocalName())) {
+                    end = true;
                 }
             }
         }
     }
 
-    public Element writeEdgeData(Document document, EdgeDataImpl edgeData) {
-        Element edgeDataE = document.createElement(ELEMENT_EDGEDATA);
+    public void writeEdgeData(XMLStreamWriter writer, EdgeDataImpl edgeData) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_EDGEDATA);
         AbstractEdge edge = edgeData.getEdge();
 
-        edgeDataE.setAttribute("sourcepre", String.valueOf(edge.getSource().getPre()));
-        edgeDataE.setAttribute("targetpre", String.valueOf(edge.getTarget().getPre()));
+        writer.writeAttribute("sourcepre", String.valueOf(edge.getSource().getPre()));
+        writer.writeAttribute("targetpre", String.valueOf(edge.getTarget().getPre()));
 
         if (edgeData.getId() != null && !edgeData.getId().equals("" + edge.getId())) {
-            edgeDataE.setAttribute("id", edgeData.getId());
+            writer.writeAttribute("id", edgeData.getId());
         }
 
-        Element colorE = document.createElement(ELEMENT_NODEDATA_COLOR);
-        colorE.setAttribute("r", String.valueOf(edgeData.r()));
-        colorE.setAttribute("g", String.valueOf(edgeData.g()));
-        colorE.setAttribute("b", String.valueOf(edgeData.b()));
-        colorE.setAttribute("a", String.valueOf(edgeData.alpha()));
-        edgeDataE.appendChild(colorE);
+        writer.writeStartElement(ELEMENT_EDGEDATA_COLOR);
+        writer.writeAttribute("r", String.valueOf(edgeData.r()));
+        writer.writeAttribute("g", String.valueOf(edgeData.g()));
+        writer.writeAttribute("b", String.valueOf(edgeData.b()));
+        writer.writeAttribute("a", String.valueOf(edgeData.alpha()));
+        writer.writeEndElement();
 
-        return edgeDataE;
+        writer.writeEndElement();
     }
 
-    public void readEdgeData(Element edgeDataE, EdgeData edgeData, GraphStructure structure) {
-        if (edgeDataE.hasAttribute("id")) {
-            structure.setEdgeId((AbstractEdge) edgeData.getEdge(), edgeDataE.getAttribute("id"));
+    public void readEdgeData(XMLStreamReader reader, EdgeData edgeData, GraphStructure structure) throws XMLStreamException {
+        if (reader.getAttributeValue(null, "id") != null) {
+            structure.setEdgeId((AbstractEdge) edgeData.getEdge(), reader.getAttributeValue(null, "id"));
         }
 
-        NodeList dataE = edgeDataE.getChildNodes();
-        for (int i = 0; i < dataE.getLength(); i++) {
-            if (dataE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element itemE = (Element) dataE.item(i);
-                if (itemE.getTagName().equals(ELEMENT_EDGEDATA_COLOR)) {
-                    edgeData.setR(Float.parseFloat(itemE.getAttribute("r")));
-                    edgeData.setG(Float.parseFloat(itemE.getAttribute("g")));
-                    edgeData.setB(Float.parseFloat(itemE.getAttribute("b")));
-                    edgeData.setAlpha(Float.parseFloat(itemE.getAttribute("a")));
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            Integer eventType = reader.next();
+            if (eventType.equals(XMLEvent.START_ELEMENT)) {
+                String name = reader.getLocalName();
+                if (ELEMENT_EDGEDATA_COLOR.equalsIgnoreCase(name)) {
+                    edgeData.setR(Float.parseFloat(reader.getAttributeValue(null, "r")));
+                    edgeData.setG(Float.parseFloat(reader.getAttributeValue(null, "g")));
+                    edgeData.setB(Float.parseFloat(reader.getAttributeValue(null, "b")));
+                    edgeData.setAlpha(Float.parseFloat(reader.getAttributeValue(null, "a")));
+                }
+            } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                if (ELEMENT_EDGEDATA.equalsIgnoreCase(reader.getLocalName())) {
+                    end = true;
                 }
             }
         }

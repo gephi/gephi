@@ -17,17 +17,18 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.serialization;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.data.attributes.AbstractAttributeModel;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.model.IndexedAttributeModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  *
@@ -36,19 +37,26 @@ import org.w3c.dom.Element;
 @ServiceProvider(service = WorkspacePersistenceProvider.class, position = 10)
 public class AttributeModelPersistenceProvider implements WorkspacePersistenceProvider {
 
-    public Element writeXML(Document document, Workspace workspace) {
+    public void writeXML(XMLStreamWriter writer, Workspace workspace) {
         AttributeModel model = workspace.getLookup().lookup(AttributeModel.class);
         AttributeModelSerializer serializer = new AttributeModelSerializer();
         if (model instanceof AbstractAttributeModel) {
-            return serializer.writeModel(document, (AbstractAttributeModel) model);
+            try {
+                serializer.writeModel(writer, (AbstractAttributeModel) model);
+            } catch (XMLStreamException ex) {
+                throw new RuntimeException(ex);
+            }
         }
-        return null;
     }
 
-    public void readXML(Element element, Workspace workspace) {
+    public void readXML(XMLStreamReader reader, Workspace workspace) {
         IndexedAttributeModel model = new IndexedAttributeModel();
         AttributeModelSerializer serializer = new AttributeModelSerializer();
-        serializer.readModel(element, model);
+        try {
+            serializer.readModel(reader, model);
+        } catch (XMLStreamException ex) {
+            throw new RuntimeException(ex);
+        }
         workspace.add(model);
     }
 

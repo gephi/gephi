@@ -21,8 +21,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.project.io;
 
 import java.io.File;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLReporter;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.ProjectInformationImpl;
 import org.gephi.project.api.Project;
@@ -34,7 +37,6 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
-import org.w3c.dom.Document;
 
 /**
  *
@@ -61,25 +63,27 @@ public class LoadTask implements LongTask, Runnable {
                 fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
             }
 
-            //Parse documcent
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(fileObject.getInputStream());
+            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+            if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+                inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+            }
+            inputFactory.setXMLReporter(new XMLReporter() {
+
+                @Override
+                public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                    System.out.println("Error:" + errorType + ", message : " + message);
+                }
+            });
+            XMLStreamReader reader = inputFactory.createXMLStreamReader(fileObject.getInputStream());
 
             if (!cancel) {
                 //Project instance
                 Project project = new ProjectImpl();
                 project.getLookup().lookup(ProjectInformationImpl.class).setFile(file);
 
-                //Version
-                String version = doc.getDocumentElement().getAttribute("version");
-                if (version == null || version.isEmpty() || Double.parseDouble(version) != 0.7) {
-                    throw new GephiFormatException("Gephi project file version must be at least 0.7");
-                }
-
                 //GephiReader
                 gephiReader = new GephiReader();
-                project = gephiReader.readAll(doc.getDocumentElement(), project);
+                project = gephiReader.readAll(reader, project);
 
                 //Add project
                 if (!cancel) {
