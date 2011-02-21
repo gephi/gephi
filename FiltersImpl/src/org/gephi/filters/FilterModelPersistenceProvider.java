@@ -99,14 +99,14 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
         if (parentId != -1) {
             writer.writeAttribute("parent", String.valueOf(parentId));
         }
+        FilterBuilder builder = model.getLibrary().getBuilder(query.getFilter());
+        writer.writeAttribute("builder", builder.getClass().getName());
+
         //Params
         for (int i = 0; i < query.getPropertiesCount(); i++) {
             FilterProperty prop = query.getFilter().getProperties()[i];
             writeParameter(writer, i, prop);
         }
-        //Filter
-        FilterBuilder builder = model.getLibrary().getBuilder(query.getFilter());
-        writer.writeAttribute("builder", builder.getClass().getName());
 
         writer.writeEndElement();
 

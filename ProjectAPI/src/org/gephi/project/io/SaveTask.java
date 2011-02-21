@@ -84,7 +84,7 @@ public class SaveTask implements LongTask, Runnable {
             //Create Writer and write project
             XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
             outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
-            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(zipOut);
+            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(zipOut, "UTF-8");
             gephiWriter.writeAll(project, writer);
             writer.close();
 

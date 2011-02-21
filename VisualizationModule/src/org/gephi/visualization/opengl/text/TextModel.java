@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
@@ -213,9 +214,9 @@ public class TextModel {
         return nodeTextColumns;
     }
 
-    public void readXML(XMLStreamReader reader) throws XMLStreamException {
+    public void readXML(XMLStreamReader reader, Workspace workspace) throws XMLStreamException {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
-        AttributeModel attributeModel = attributeController != null ? attributeController.getModel() : null;
+        AttributeModel attributeModel = attributeController != null ? attributeController.getModel(workspace) : null;
         List<AttributeColumn> nodeCols = new ArrayList<AttributeColumn>();
         List<AttributeColumn> edgeCols = new ArrayList<AttributeColumn>();
 
@@ -276,12 +277,12 @@ public class TextModel {
                         edgeColumn = true;
                     } else if ("column".equalsIgnoreCase(name)) {
                         String id = reader.getAttributeValue(null, "id");
-                        if (nodeColumn) {
+                        if (nodeColumn && attributeModel != null) {
                             AttributeColumn col = attributeModel.getNodeTable().getColumn(id);
                             if (col != null) {
                                 nodeCols.add(col);
                             }
-                        } else if (edgeColumn) {
+                        } else if (edgeColumn && attributeModel != null) {
                             AttributeColumn col = attributeModel.getEdgeTable().getColumn(id);
                             if (col != null) {
                                 edgeCols.add(col);

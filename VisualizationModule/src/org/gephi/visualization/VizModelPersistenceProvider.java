@@ -48,7 +48,7 @@ public class VizModelPersistenceProvider implements WorkspacePersistenceProvider
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         VizModel vizModel = new VizModel();
         try {
-            vizModel.readXML(reader);
+            vizModel.readXML(reader, workspace);
         } catch (XMLStreamException ex) {
             throw new RuntimeException(ex);
         }

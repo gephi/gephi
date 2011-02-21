@@ -44,6 +44,7 @@ public class GephiReader implements Cancellable {
     private ProjectImpl project;
     private boolean cancel = false;
     private Map<String, WorkspacePersistenceProvider> providers;
+    private WorkspacePersistenceProvider currentProvider;
 
     public GephiReader() {
         providers = new LinkedHashMap<String, WorkspacePersistenceProvider>();
@@ -66,6 +67,7 @@ public class GephiReader implements Cancellable {
     public Project readAll(XMLStreamReader reader, Project project) throws Exception {
         ProjectInformationImpl info = project.getLookup().lookup(ProjectInformationImpl.class);
         WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
+        this.project = (ProjectImpl) project;
 
         boolean end = false;
         while (reader.hasNext() && !end) {
@@ -95,8 +97,6 @@ public class GephiReader implements Cancellable {
             }
         }
 
-        //Project
-        this.project = (ProjectImpl) project;
         return project;
     }
 
@@ -119,6 +119,10 @@ public class GephiReader implements Cancellable {
 
         //WorkspacePersistent
         readWorkspaceChildren(workspace, reader);
+        if (currentProvider != null) {
+            //One provider not correctly closed
+            throw new GephiFormatException("The '" + currentProvider.getIdentifier() + "' persistence provider is not ending read.");
+        }
 
         return workspace;
     }
@@ -131,6 +135,7 @@ public class GephiReader implements Cancellable {
                 String name = reader.getLocalName();
                 WorkspacePersistenceProvider pp = providers.get(name);
                 if (pp != null) {
+                    currentProvider = pp;
                     try {
                         pp.readXML(reader, workspace);
                     } catch (UnsupportedOperationException e) {
@@ -139,6 +144,7 @@ public class GephiReader implements Cancellable {
             } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
                 if ("workspace".equalsIgnoreCase(reader.getLocalName())) {
                     end = true;
+                    currentProvider = null;
                 }
             }
         }

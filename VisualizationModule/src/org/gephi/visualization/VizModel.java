@@ -30,12 +30,11 @@ import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.text.TextModel;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  *
@@ -370,7 +369,7 @@ public class VizModel {
     }
 
     //XML
-    public void readXML(XMLStreamReader reader) throws XMLStreamException {
+    public void readXML(XMLStreamReader reader, Workspace workspace) throws XMLStreamException {
 
         boolean end = false;
         while (reader.hasNext() && !end) {
@@ -380,7 +379,7 @@ public class VizModel {
                 case XMLStreamReader.START_ELEMENT:
                     String name = reader.getLocalName();
                     if ("textmodel".equalsIgnoreCase(name)) {
-                        textModel.readXML(reader);
+                        textModel.readXML(reader, workspace);
                     } else if ("cameraposition".equalsIgnoreCase(name)) {
                         cameraPosition[0] = Float.parseFloat(reader.getAttributeValue(null, "x"));
                         cameraPosition[1] = Float.parseFloat(reader.getAttributeValue(null, "y"));

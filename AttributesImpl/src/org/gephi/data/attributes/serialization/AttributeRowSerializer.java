@@ -93,7 +93,7 @@ public class AttributeRowSerializer {
                             AttributeRowImpl row = (AttributeRowImpl) node.getNodeData().getAttributes();
                             readRow(reader, attributeModel, attributeModel.getNodeTable(), row);
                         }
-                    } else if (ELEMENT_NODE_ROW.equalsIgnoreCase(name)) {
+                    } else if (ELEMENT_EDGE_ROW.equalsIgnoreCase(name)) {
                         int id = Integer.parseInt(reader.getAttributeValue(null, "for"));
                         Edge edge = hierarchicalGraph.getEdge(id);
                         if (edge.getEdgeData().getAttributes() != null && edge.getEdgeData().getAttributes() instanceof AttributeRowImpl) {
@@ -150,18 +150,19 @@ public class AttributeRowSerializer {
                     }
                     break;
                 case XMLStreamReader.END_ELEMENT:
-                    if (ELEMENT_ROWS.equalsIgnoreCase(reader.getLocalName())) {
+                    if (ELEMENT_NODE_ROW.equalsIgnoreCase(reader.getLocalName()) || ELEMENT_EDGE_ROW.equalsIgnoreCase(reader.getLocalName())) {
                         end = true;
                     }
+                    if (!value.isEmpty() && col != null) {
+                        AttributeType type = col.getType();
+                        Object v = type.parse(value);
+                        v = model.getManagedValue(v, type);
+                        row.setValue(col, value);
+                    }
+                    value = "";
                     col = null;
                     break;
             }
-        }
-        if (!value.isEmpty() && col != null) {
-            AttributeType type = col.getType();
-            Object v = type.parse(value);
-            v = model.getManagedValue(v, type);
-            row.setValue(col, value);
         }
     }
 }
