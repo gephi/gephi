@@ -106,7 +106,7 @@ public class DataLaboratoryPersistenceProvider implements WorkspacePersistencePr
             if (eventType.equals(XMLEvent.START_ELEMENT)) {
                 String name = reader.getLocalName();
                 if (NODE_COLUMN.equalsIgnoreCase(name)) {
-                    String id = reader.getAttributeValue(null, "id");
+                    Integer id = Integer.parseInt(reader.getAttributeValue(null, "id"));
                     AttributeColumn column = nodesTable.getColumn(id);
                     if (column != null) {
                         nodeColumns.addAvailableColumn(column);
