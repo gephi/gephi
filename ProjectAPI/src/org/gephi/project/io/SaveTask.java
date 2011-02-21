@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.project.io;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -84,14 +85,17 @@ public class SaveTask implements LongTask, Runnable {
             //Create Writer and write project
             XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
             outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
-            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(zipOut, "UTF-8");
+            BufferedOutputStream bufferedOutputStream=new BufferedOutputStream(zipOut);
+            XMLStreamWriter writer = outputFactory.createXMLStreamWriter(bufferedOutputStream, "UTF-8");
             gephiWriter.writeAll(project, writer);
             writer.close();
 
             //Close
             zipOut.closeEntry();
             zipOut.finish();
-            zipOut.close();
+            bufferedOutputStream.close();
+
+
 
             //Clean and copy
             if (useTempFile && !cancel) {
