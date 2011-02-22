@@ -160,7 +160,7 @@ public class TextDataPersistenceProvider implements WorkspacePersistenceProvider
                     }
                     break;
                 case XMLStreamReader.END_ELEMENT:
-                    if (ELEMENT_EDGEDATA_TEXTDATA.equalsIgnoreCase(reader.getLocalName())) {
+                    if (ELEMENT_EDGEDATA_TEXTDATA.equalsIgnoreCase(reader.getLocalName())||ELEMENT_NODEDATA_TEXTDATA.equalsIgnoreCase(reader.getLocalName())) {
                         end = true;
                     }
                     break;

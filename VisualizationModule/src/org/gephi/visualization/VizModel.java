@@ -454,6 +454,7 @@ public class VizModel {
 
         //TextModel
         textModel.writeXML(writer);
+        writer.writeEndElement();
 
         //Camera
         writer.writeStartElement("cameraposition");
