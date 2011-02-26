@@ -57,7 +57,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
     private static final String GRAPH = "graph";
     private static final String GRAPH_DEFAULT_EDGETYPE = "defaultedgetype";
     private static final String GRAPH_TIMEFORMAT = "timeformat";
-    private static final String GRAPH_TIMEFORMAT2 = "timetype";
+    private static final String GRAPH_TIMEFORMAT2 = "timetype"; // GEXF 1.1
     private static final String START = "start";
     private static final String END = "end";
     private static final String START_OPEN = "startopen";
@@ -69,7 +69,8 @@ public class ImporterGEXF implements FileImporter, LongTask {
     private static final String NODE_POSITION = "position";
     private static final String NODE_COLOR = "color";
     private static final String NODE_SIZE = "size";
-    private static final String NODE_SLICE = "slice";
+    private static final String NODE_SPELL = "slice"; // GEXF 1.1
+    private static final String NODE_SPELL2 = "spell";
     private static final String EDGE = "edge";
     private static final String EDGE_ID = "id";
     private static final String EDGE_SOURCE = "source";
@@ -78,19 +79,20 @@ public class ImporterGEXF implements FileImporter, LongTask {
     private static final String EDGE_TYPE = "type";
     private static final String EDGE_WEIGHT = "weight";
     private static final String EDGE_COLOR = "color";
-    private static final String EDGE_SLICE = "slice";
+    private static final String EDGE_SPELL = "slice"; // GEXF 1.1
+    private static final String EDGE_SPELL2 = "spell";
     private static final String ATTRIBUTE = "attribute";
     private static final String ATTRIBUTE_ID = "id";
     private static final String ATTRIBUTE_TITLE = "title";
     private static final String ATTRIBUTE_TYPE = "type";
     private static final String ATTRIBUTE_DEFAULT = "default";
     private static final String ATTRIBUTES = "attributes";
-    private static final String ATTRIBUTES_CLASS = "class";
+    private static final String ATTRIBUTES_CLASS = "class"; // GEXF 1.0
     private static final String ATTRIBUTES_TYPE = "type";
     private static final String ATTRIBUTES_TYPE2 = "mode";
     private static final String ATTVALUE = "attvalue";
     private static final String ATTVALUE_FOR = "for";
-    private static final String ATTVALUE_FOR2 = "id";
+    private static final String ATTVALUE_FOR2 = "id"; // GEXF 1.0
     private static final String ATTVALUE_VALUE = "value";
     private static final String ATTVALUE_START = "start";
     private static final String ATTVALUE_END = "end";
@@ -174,6 +176,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
     }
 
     private void readGraph(XMLStreamReader reader) throws Exception {
+        String mode = "";
         String defaultEdgeType = "";
         String start = "";
         String end = "";
@@ -184,6 +187,8 @@ public class ImporterGEXF implements FileImporter, LongTask {
             String attName = reader.getAttributeName(i).getLocalPart();
             if (GRAPH_DEFAULT_EDGETYPE.equalsIgnoreCase(attName)) {
                 defaultEdgeType = reader.getAttributeValue(i);
+            } else if (ATTRIBUTES_TYPE2.equalsIgnoreCase(attName)) {
+                mode = reader.getAttributeValue(i);
             } else if (START.equalsIgnoreCase(attName)) {
                 start = reader.getAttributeValue(i);
             } else if (END.equalsIgnoreCase(attName)) {
@@ -212,7 +217,12 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 container.setTimeFormat(TimeFormat.DOUBLE);
             } else if ("date".equalsIgnoreCase(timeFormat)) {
                 container.setTimeFormat(TimeFormat.DATE);
+            } else if ("datetime".equalsIgnoreCase(timeFormat) ||
+                    "dateTime".equalsIgnoreCase(timeFormat)) {
+                container.setTimeFormat(TimeFormat.DATETIME);
             }
+        } else if (mode.equals("dynamic")) {
+            container.setTimeFormat(TimeFormat.DOUBLE);
         }
 
         //Start & End
@@ -301,8 +311,8 @@ public class ImporterGEXF implements FileImporter, LongTask {
                         readNodeColor(reader, node);
                     } else if (NODE_SIZE.equalsIgnoreCase(name)) {
                         readNodeSize(reader, node);
-                    } else if (NODE_SLICE.equalsIgnoreCase(name)) {
-                        readNodeSlice(reader, node);
+                    } else if (NODE_SPELL.equalsIgnoreCase(name) || NODE_SPELL2.equalsIgnoreCase(name)) {
+                        readNodeSpell(reader, node);
                         slices = true;
                     } else if (NODE.equalsIgnoreCase(name)) {
                         readNode(reader, node);
@@ -385,6 +395,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
         String rStr = "";
         String gStr = "";
         String bStr = "";
+        String aStr = "";
 
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String attName = reader.getAttributeName(i).getLocalPart();
@@ -394,12 +405,27 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 gStr = reader.getAttributeValue(i);
             } else if ("b".equalsIgnoreCase(attName)) {
                 bStr = reader.getAttributeValue(i);
+            } else if ("a".equalsIgnoreCase(attName)) {
+                aStr = reader.getAttributeValue(i);
             }
         }
 
         int r = (rStr.isEmpty()) ? 0 : Integer.parseInt(rStr);
         int g = (gStr.isEmpty()) ? 0 : Integer.parseInt(gStr);
         int b = (bStr.isEmpty()) ? 0 : Integer.parseInt(bStr);
+        float a = (aStr.isEmpty()) ? 0 : Float.parseFloat(aStr); //not used
+        if(r < 0 || r > 255) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodecolorvalue", rStr, node, "r"), Issue.Level.WARNING));
+        }
+        if(g < 0 || g > 255) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodecolorvalue", gStr, node, "g"), Issue.Level.WARNING));
+        }
+        if(b < 0 || b > 255) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodecolorvalue", bStr, node, "b"), Issue.Level.WARNING));
+        }
+        if(a < 0f || a > 1f) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_nodeopacityvalue", aStr, node), Issue.Level.WARNING));
+        }
 
         node.setColor(new Color(r, g, b));
     }
@@ -461,7 +487,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
         }
     }
 
-    private void readNodeSlice(XMLStreamReader reader, NodeDraft node) throws Exception {
+    private void readNodeSpell(XMLStreamReader reader, NodeDraft node) throws Exception {
         String start = "";
         String end = "";
         boolean startOpen = false;
@@ -574,7 +600,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
         container.addEdge(edge);
 
         boolean end = false;
-        boolean slices = false;
+        boolean spells = false;
         while (reader.hasNext() && !end) {
             int type = reader.next();
 
@@ -584,9 +610,10 @@ public class ImporterGEXF implements FileImporter, LongTask {
                         readEdgeAttValue(reader, edge);
                     } else if (EDGE_COLOR.equalsIgnoreCase(xmlReader.getLocalName())) {
                         readEdgeColor(reader, edge);
-                    } else if (EDGE_SLICE.equalsIgnoreCase(xmlReader.getLocalName())) {
-                        readEdgeSlice(reader, edge);
-                        slices = true;
+                    } else if (EDGE_SPELL.equalsIgnoreCase(xmlReader.getLocalName()) ||
+                            EDGE_SPELL2.equalsIgnoreCase(xmlReader.getLocalName())) {
+                        readEdgeSpell(reader, edge);
+                        spells = true;
                     }
                     break;
 
@@ -599,7 +626,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
         }
 
         //Dynamic
-        if (!slices && (!startDate.isEmpty() || !endDate.isEmpty())) {
+        if (!spells && (!startDate.isEmpty() || !endDate.isEmpty())) {
             try {
                 edge.addTimeInterval(startDate, endDate, startOpen, endOpen);
             } catch (IllegalArgumentException e) {
@@ -665,6 +692,7 @@ public class ImporterGEXF implements FileImporter, LongTask {
         String rStr = "";
         String gStr = "";
         String bStr = "";
+        String aStr = "";
 
         for (int i = 0; i < reader.getAttributeCount(); i++) {
             String attName = reader.getAttributeName(i).getLocalPart();
@@ -674,17 +702,32 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 gStr = reader.getAttributeValue(i);
             } else if ("b".equalsIgnoreCase(attName)) {
                 bStr = reader.getAttributeValue(i);
+            } else if ("a".equalsIgnoreCase(attName)) {
+                aStr = reader.getAttributeValue(i);
             }
         }
 
         int r = (rStr.isEmpty()) ? 0 : Integer.parseInt(rStr);
         int g = (gStr.isEmpty()) ? 0 : Integer.parseInt(gStr);
         int b = (bStr.isEmpty()) ? 0 : Integer.parseInt(bStr);
+        float a = (aStr.isEmpty()) ? 0 : Float.parseFloat(aStr); //not used
+        if(r < 0 || r > 255) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgecolorvalue", rStr, edge, "r"), Issue.Level.WARNING));
+        }
+        if(g < 0 || g > 255) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgecolorvalue", gStr, edge, "g"), Issue.Level.WARNING));
+        }
+        if(b < 0 || b > 255) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgecolorvalue", bStr, edge, "b"), Issue.Level.WARNING));
+        }
+        if(a < 0f || a > 1f) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_edgeopacityvalue", aStr, edge), Issue.Level.WARNING));
+        }
 
         edge.setColor(new Color(r, g, b));
     }
 
-    private void readEdgeSlice(XMLStreamReader reader, EdgeDraft edge) throws Exception {
+    private void readEdgeSpell(XMLStreamReader reader, EdgeDraft edge) throws Exception {
         String start = "";
         String end = "";
         boolean startOpen = false;
