@@ -298,7 +298,7 @@ public class DHNSSerializer {
         //Nodes
         for (TreeListIterator itr = new TreeListIterator(graphView.getStructure().getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
-            writer.writeStartElement(ELEMENT_TREESTRUCTURE_NODE);
+            writer.writeStartElement(ELEMENT_VIEW_NODE);
             writer.writeAttribute("mainpre", String.valueOf(node.getInView(0).pre));
             writer.writeAttribute("enabled", String.valueOf(node.isEnabled()));
             writer.writeAttribute("pre", String.valueOf(node.pre));
@@ -316,8 +316,6 @@ public class DHNSSerializer {
             for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
                 AbstractEdge edge = edgeIterator.next();
                 writer.writeStartElement(ELEMENT_VIEW_EDGE);
-                writer.writeAttribute("source", String.valueOf(node.pre));
-                writer.writeAttribute("target", String.valueOf(edge.getTarget(graphView.getViewId()).pre));
                 writer.writeAttribute("id", String.valueOf(edge.getId()));
                 writer.writeEndElement();
             }
@@ -359,8 +357,8 @@ public class DHNSSerializer {
                         treeStructure.insertAsChild(node, parentNode);
                     } else if (ELEMENT_VIEW_EDGE.equalsIgnoreCase(name)) {
                         AbstractEdge edge = graphStructure.getEdgeFromDictionnary(Integer.parseInt(reader.getAttributeValue(null, "id")));
-                        AbstractNode source = treeStructure.getNodeAt(Integer.parseInt(reader.getAttributeValue(null, "source")));
-                        AbstractNode target = treeStructure.getNodeAt(Integer.parseInt(reader.getAttributeValue(null, "target")));
+                        AbstractNode source = edge.getSource(graphView.getViewId());
+                        AbstractNode target = edge.getTarget(graphView.getViewId());
                         source.getEdgesOutTree().add(edge);
                         target.getEdgesInTree().add(edge);
                     }
