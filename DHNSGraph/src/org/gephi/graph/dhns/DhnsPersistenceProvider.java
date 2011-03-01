@@ -50,14 +50,13 @@ public class DhnsPersistenceProvider implements WorkspacePersistenceProvider {
 
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         DhnsGraphController graphController = Lookup.getDefault().lookup(DhnsGraphController.class);
-        Dhns dhns = new Dhns(graphController, workspace);
+        Dhns dhns = (Dhns) graphController.getModel(workspace);
         DHNSSerializer serializer = new DHNSSerializer();
         try {
             serializer.readDhns(reader, dhns);
         } catch (XMLStreamException ex) {
             throw new RuntimeException(ex);
         }
-        workspace.add(dhns);
     }
 
     public String getIdentifier() {

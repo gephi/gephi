@@ -29,6 +29,7 @@ import org.gephi.project.impl.ProjectInformationImpl;
 import org.gephi.project.impl.WorkspaceProviderImpl;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.workspace.impl.WorkspaceImpl;
 import org.gephi.workspace.impl.WorkspaceInformationImpl;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
@@ -117,12 +118,17 @@ public class GephiReader implements Cancellable {
             info.invalid();
         }
 
+        //Hack to set this workspace active, when readers need to use attributes for instance
+        ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+        pc.setTemporaryOpeningWorkspace(workspace);
+
         //WorkspacePersistent
         readWorkspaceChildren(workspace, reader);
         if (currentProvider != null) {
             //One provider not correctly closed
             throw new GephiFormatException("The '" + currentProvider.getIdentifier() + "' persistence provider is not ending read.");
         }
+        pc.setTemporaryOpeningWorkspace(null);
 
         return workspace;
     }

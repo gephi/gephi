@@ -37,7 +37,7 @@ public class AttributeColumnPropertyEditor extends PropertyEditorSupport {
 
     @Override
     public void setValue(Object value) {
-        this.column = (AttributeColumn) column;
+        this.column = (AttributeColumn) value;
     }
 
     @Override
@@ -50,9 +50,9 @@ public class AttributeColumnPropertyEditor extends PropertyEditorSupport {
         if (column != null) {
             AttributeModel model = Lookup.getDefault().lookup(AttributeController.class).getModel();
             if (model.getNodeTable().hasColumn(column.getTitle())) {
-                return "NODE*-*" + column.getId() + "*-*" + column.getType().toString();
+                return "NODE*-*" + column.getId() + "*-*" + column.getType().getTypeString();
             } else if (model.getEdgeTable().hasColumn(column.getTitle())) {
-                return "EDGE*-*" + column.getId() + "*-*" + column.getType().toString();
+                return "EDGE*-*" + column.getId() + "*-*" + column.getType().getTypeString();
             }
         }
         return "null";
@@ -63,7 +63,7 @@ public class AttributeColumnPropertyEditor extends PropertyEditorSupport {
     public void setAsText(String text) throws IllegalArgumentException {
         if (!text.equals("null")) {
             AttributeModel model = Lookup.getDefault().lookup(AttributeController.class).getModel();
-            String[] arr = text.split(" - ");
+            String[] arr = text.split("\\*-\\*");
             if (arr[0].equals("NODE")) {
                 column = model.getNodeTable().getColumn(arr[1], AttributeType.valueOf(arr[2]));
             } else if (arr[0].equals("EDGE")) {
