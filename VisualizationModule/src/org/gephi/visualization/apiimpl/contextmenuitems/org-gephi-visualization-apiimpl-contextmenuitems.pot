@@ -33,9 +33,6 @@ msgstr "Settle"
 msgid "GraphContextMenu_Free"
 msgstr "Free"
 
-msgid "GraphContextMenu_TagNodes"
-msgstr "Tag nodes..."
-
 msgid "GraphContextMenu_Delete"
 msgstr "Delete"
 
