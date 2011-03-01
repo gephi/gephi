@@ -51,12 +51,6 @@ msgstr "Delete edge with nodes..."
 msgid "DeleteEdgesWithNodes.name.multiple"
 msgstr "Delete all edges with nodes..."
 
-msgid "TagEdges.name.single"
-msgstr "Tag edge..."
-
-msgid "TagEdges.name.multiple"
-msgstr "Tag edges..."
-
 msgid "ClearEdgesData.name.single"
 msgstr "Clear..."
 

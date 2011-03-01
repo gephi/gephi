@@ -221,6 +221,9 @@ msgstr "Eigenvector Centrality"
 msgid "GraphDensityUI.name"
 msgstr "Graph Density"
 
+msgid "DiameterUI.name"
+msgstr "Network Diameter"
+
 msgid "HitsUI.name"
 msgstr "HITS"
 

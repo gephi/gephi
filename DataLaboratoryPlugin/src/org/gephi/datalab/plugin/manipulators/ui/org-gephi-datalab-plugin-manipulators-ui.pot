@@ -35,12 +35,3 @@ msgstr "Configure Histogram"
 
 msgid "GeneralNumberListStatisticsReportUI.divisionsLabel.text"
 msgstr "Divisions:"
-
-msgid "GeneralColumnAndValueChooserUI.columnLabel.text"
-msgstr "Column:"
-
-msgid "GeneralColumnAndValueChooserUI.valueLabel.text"
-msgstr "Value:"
-
-msgid "GeneralColumnAndValueChooserUI.autoComplete.text"
-msgstr "Auto- complete"

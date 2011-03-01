@@ -59,18 +59,3 @@ msgstr "Delete nodes"
 
 msgid "GraphContextMenu_SelectInDataLaboratory"
 msgstr "Select in data laboratory"
-
-msgid "GraphContextMenu_OpenURL"
-msgstr "Open in web browser"
-
-msgid "GraphContextMenu_OpenURL.description"
-msgstr "Open URL in an attribute of the node"
-
-msgid "GraphContextMenu_OpenURLSubItem"
-msgstr "Choose column..."
-
-msgid "GraphContextMenu_OpenURLSubItem.message"
-msgstr "Column:"
-
-msgid "GraphContextMenu_OpenURLLastItem"
-msgstr "Last column opened ({0})"
