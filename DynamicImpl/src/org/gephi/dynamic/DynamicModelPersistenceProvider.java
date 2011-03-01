@@ -76,6 +76,8 @@ public class DynamicModelPersistenceProvider implements WorkspacePersistenceProv
             writer.writeAttribute("value", "double");
         }
         writer.writeEndElement();
+
+        writer.writeEndElement();
     }
 
     public void readModel(XMLStreamReader reader, DynamicModelImpl model) throws XMLStreamException {
