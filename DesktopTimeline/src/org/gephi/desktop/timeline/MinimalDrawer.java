@@ -215,7 +215,7 @@ public class MinimalDrawer extends JPanel
                 st = 1.0 * (double) width;
                 newfrom = sf * (1.0 / width);
                 newto = st * (1.0 / width);
-            } 
+            }
         }
 
 
@@ -243,7 +243,7 @@ public class MinimalDrawer extends JPanel
         System.out.println("all date max: " + new DateTime(new Date(max)));
          */
 
-        if (max <= min 
+        if (max <= min
                 || min == Double.NEGATIVE_INFINITY
                 || max == Double.POSITIVE_INFINITY
                 || max == Double.NEGATIVE_INFINITY
@@ -254,7 +254,7 @@ public class MinimalDrawer extends JPanel
         if (model.getFromFloat() == Double.NEGATIVE_INFINITY
                 || model.getToFloat() == Double.POSITIVE_INFINITY) {
             System.out.println("cannot show a selection with negative values");
-                    return;
+            return;
         }
 
         /*
@@ -599,23 +599,40 @@ public class MinimalDrawer extends JPanel
     }
 
     public void mouseClicked(MouseEvent e) {
+        latestMousePositionX = e.getX();
+        currentMousePositionX = latestMousePositionX;
         //throw new UnsupportedOperationException("Not supported yet.");
+        /*
+        int w = getWidth();
+        // small feature: when the zone is too small, and if we double-click,
+        // we want to expand the timeline
+        if (e.getClickCount() == 2) {
+        if (w != 0) {
+        if (sf > 0.1 && st < 0.9) {
+        newfrom = 0;
+        newto = w;
+        repaint();
+        }
+        }
+        
+        } else if (e.getClickCount() == 2) {
+        if (w != 0) {
+        newto = st * (1.0 / w);
+        repaint(); // so it will repaint all panels
+        }
+        
+        }
+         */
     }
 
     public void mousePressed(MouseEvent e) {
         if (model == null) {
             return;
         }
-
         int x = e.getX();
-        float w = getWidth();
+        latestMousePositionX = x;
+        currentMousePositionX = latestMousePositionX;
         int r = 16;//skin.getSelectionHookSideLength();
-
-        // SELECTED ZONE BEGIN POSITION, IN PIXELS
-        //int sf = (int) (model.getFromFloat() * (double) w);
-
-        // SELECTED ZONE END POSITION, IN PIXELS
-        //int st = (int) (model.getToFloat() * (double) w);
 
         if (currentState == TimelineState.IDLE) {
             if (inRange(x, (int) sf - 1, (int) sf + r + 1)) {
@@ -633,8 +650,10 @@ public class MinimalDrawer extends JPanel
 
     public void mouseEntered(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet.");
-        latestMousePositionX = e.getX();
-        currentMousePositionX = latestMousePositionX;
+        if (currentState == TimelineState.IDLE) {
+            latestMousePositionX = e.getX();
+            currentMousePositionX = latestMousePositionX;
+        }
         mouseInside = true;
     }
 
@@ -642,6 +661,8 @@ public class MinimalDrawer extends JPanel
         //throw new UnsupportedOperationException("Not supported yet.");
         if (currentState == TimelineState.IDLE) {
             highlightedComponent = HighlightedComponent.NONE;
+            latestMousePositionX = e.getX();
+            currentMousePositionX = latestMousePositionX;
         }
         mouseInside = false;
         repaint();
@@ -653,7 +674,8 @@ public class MinimalDrawer extends JPanel
 
     public void mouseReleased(MouseEvent evt) {
 
-        latestMousePositionX = null;
+        latestMousePositionX = evt.getX();
+        currentMousePositionX = latestMousePositionX;
         //highlightedComponent = HighlightedComponent.NONE;
         currentState = TimelineState.IDLE;
         this.getParent().repaint(); // so it will repaint upper and bottom panes
@@ -750,26 +772,45 @@ public class MinimalDrawer extends JPanel
         }
         latestMousePositionX = x;
 
+        // minimal selection zone width (a security to not crush it!)
+        int s = settings.selection.minimalWidth;
+
         switch (currentState) {
             case RESIZE_FROM:
-                if ((sf + delta <= 0)) {
-                    sf = 0;
-                } else if (Math.abs(st - sf + delta) > settings.selection.minimalWidth) {
-                    sf += delta;
+
+                //problem: moving the left part will crush the security zone
+                if ((sf + delta) >= (st - s)) {
+                    sf = st - s;
                 } else {
+                    if (sf + delta <= 0) {
+                        sf = 0;
+                    } else {
+                        sf += delta;
+                    }
                 }
+
+
+
                 break;
             case RESIZE_TO:
-                if ((st + delta >= w)) {
-                    st = w;
-                } else if (Math.abs((st + delta) - sf) > settings.selection.minimalWidth) {
-                    st += delta;
+                if ((st + delta) <= (sf + s)) {
+                    st = sf + s;
+                } else {
+                    if ((st + delta >= w)) {
+                        st = w;
+                    } else {
+                        st += delta;
+                    }
                 }
                 break;
             case MOVING:
-                if ((sf + delta <= 0)) {
+                // collision on the left..
+                if ((sf + delta) < 0) {
+                    st = (st - sf);
                     sf = 0;
-                } else if (st + delta >= w) {
+                    // .. or the right
+                } else if ((st + delta) >= w) {
+                    sf = w - (st - sf);
                     st = w;
                 } else {
                     sf += delta;
