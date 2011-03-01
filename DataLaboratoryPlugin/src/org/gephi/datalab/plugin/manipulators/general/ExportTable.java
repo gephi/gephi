@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalab.plugin.manipulators.general;
 
 import javax.swing.Icon;
-import org.gephi.datalab.api.DataTablesController;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.general.GeneralActionsManipulator;
 import org.openide.util.ImageUtilities;

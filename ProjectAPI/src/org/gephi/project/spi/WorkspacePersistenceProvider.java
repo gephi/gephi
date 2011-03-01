@@ -20,9 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.project.spi;
 
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Interface modules implement to notify the system they can read/write part
@@ -45,9 +45,9 @@ import org.w3c.dom.Element;
  */
 public interface WorkspacePersistenceProvider {
 
-    public Element writeXML(Document document, Workspace workspace);
+    public void writeXML(XMLStreamWriter writer, Workspace workspace);
 
-    public void readXML(Element element, Workspace workspace);
+    public void readXML(XMLStreamReader reader, Workspace workspace);
 
     public String getIdentifier();
 }

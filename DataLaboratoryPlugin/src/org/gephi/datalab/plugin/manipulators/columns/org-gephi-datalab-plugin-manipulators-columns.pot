@@ -19,13 +19,13 @@ msgid "DeleteColumn.name"
 msgstr "Delete column"
 
 msgid "DeleteColumn.confirmation.message"
-msgstr "Are you sure you want to delete the column ''{0}''?"
+msgstr "Confirm to delete ''{0}''?"
 
 msgid "ClearColumnData.name"
-msgstr "Clear column data"
+msgstr "Clear column"
 
 msgid "ClearColumnData.confirmation.message"
-msgstr "Are you sure you want to clear the column ''{0}'' data?"
+msgstr "Confirm to clear ''{0}''?"
 
 msgid "CopyDataToOtherColumn.name"
 msgstr "Copy data to other column"
@@ -34,21 +34,19 @@ msgid "FillColumnWithValue.name"
 msgstr "Fill column with a value"
 
 msgid "FillColumnWithValue.inputDialog.text"
-msgstr "Choose a value to use to fill all rows of the column"
+msgstr "Choose a value to fill all rows:"
 
 msgid "DuplicateColumn.name"
 msgstr "Duplicate column"
 
 msgid "ColumnValuesFrequency.name"
-msgstr "Calculate column values frequency"
+msgstr "Calculate values frequency"
 
 msgid "ColumnValuesFrequency.description"
-msgstr ""
-"Calculates the frequency of appearance of each value of the column and shows "
-"a report"
+msgstr "Calculate the frequency of each value appearance."
 
 msgid "ColumnValuesFrequency.report.header"
-msgstr "<h1>Values frequencies report for column ''{0}''</h1>"
+msgstr "<h1>Values frequencies report ''{0}''</h1>"
 
 msgid "ColumnValuesFrequency.report.piechart.title"
 msgstr "Values frequencies pie chart"
@@ -57,27 +55,26 @@ msgid "ColumnValuesFrequency.report.piechart.not-shown"
 msgstr "There are more than 100 different values, pie chart is not shown."
 
 msgid "NumberColumnStatisticsReport.name"
-msgstr "Calculate number column statistics"
+msgstr "Calculate statistics"
 
 msgid "NumberColumnStatisticsReport.description"
-msgstr ""
-"Calculates statistics of a number or number list column and shows a report"
+msgstr "Calculate statistics on a number or number list column."
 
 msgid "CreateBooleanMatchesColumn.name"
-msgstr "Create boolean column from regex match"
+msgstr "Create a boolean column from regex match"
 
 msgid "CreateBooleanMatchesColumn.description"
 msgstr ""
-"Creates a new boolean column with values that indicate if each of the "
-"selected column values match the given regular expression"
+"Create a boolean column with values indicating if each of the selected "
+"values matches the regular expression."
 
 msgid "CreateFoundGroupsListColumn.name"
 msgstr "Create column with list of regex matching groups"
 
 msgid "CreateFoundGroupsListColumn.description"
 msgstr ""
-"Creates a new string list column with values that are the list of matching "
-"groups of the given regular expression"
+"Create a string list column in which values are the matching groups results "
+"of the regular expression."
 
 msgid "NegateBooleanColumn.name"
-msgstr "Negate boolean column values"
+msgstr "Negate boolean values"

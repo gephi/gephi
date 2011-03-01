@@ -24,7 +24,6 @@ import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -34,7 +33,7 @@ import org.openide.util.NbBundle;
  * Edges manipulator that deletes one or more edges.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class DeleteEdges implements EdgesManipulator {
+public class DeleteEdges extends BasicEdgesManipulator {
 
     private Edge[] edges;
 

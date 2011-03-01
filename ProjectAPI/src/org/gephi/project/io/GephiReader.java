@@ -17,28 +17,24 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.project.io;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.events.XMLEvent;
 import org.gephi.project.impl.ProjectImpl;
 import org.gephi.project.impl.ProjectInformationImpl;
 import org.gephi.project.impl.WorkspaceProviderImpl;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.Workspace;
+import org.gephi.project.impl.ProjectControllerImpl;
 import org.gephi.workspace.impl.WorkspaceImpl;
 import org.gephi.workspace.impl.WorkspaceInformationImpl;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.Cancellable;
 import org.openide.util.Lookup;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -49,6 +45,7 @@ public class GephiReader implements Cancellable {
     private ProjectImpl project;
     private boolean cancel = false;
     private Map<String, WorkspacePersistenceProvider> providers;
+    private WorkspacePersistenceProvider currentProvider;
 
     public GephiReader() {
         providers = new LinkedHashMap<String, WorkspacePersistenceProvider>();
@@ -68,59 +65,51 @@ public class GephiReader implements Cancellable {
         return true;
     }
 
-    public Project readAll(Element root, Project project) throws Exception {
-        //XPath
-        XPathFactory factory = XPathFactory.newInstance();
-        XPath xpath = factory.newXPath();
-
-        //Calculate the task max
-        readCore(xpath, root);
-
-        //Project
+    public Project readAll(XMLStreamReader reader, Project project) throws Exception {
+        ProjectInformationImpl info = project.getLookup().lookup(ProjectInformationImpl.class);
+        WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
         this.project = (ProjectImpl) project;
-        XPathExpression exp = xpath.compile("./project");
-        Element projectE = (Element) exp.evaluate(root, XPathConstants.NODE);
-        readProject(xpath, projectE);
+
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            Integer eventType = reader.next();
+            if (eventType.equals(XMLEvent.START_ELEMENT)) {
+                String name = reader.getLocalName();
+                if ("gephiFile".equalsIgnoreCase(name)) {
+                    //Version
+                    String version = reader.getAttributeValue(null, "version");
+                    if (version == null || version.isEmpty() || Double.parseDouble(version) < 0.7) {
+                        throw new GephiFormatException("Gephi project file version must be at least 0.7");
+                    }
+                } else if ("project".equalsIgnoreCase(name)) {
+                    info.setName(reader.getAttributeValue(null, "name"));
+                } else if ("workspace".equalsIgnoreCase(name)) {
+                    Workspace workspace = readWorkspace(reader);
+
+                    //Current workspace
+                    if (workspace.getLookup().lookup(WorkspaceInformationImpl.class).isOpen()) {
+                        workspaces.setCurrentWorkspace(workspace);
+                    }
+                }
+            } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                if ("project".equalsIgnoreCase(reader.getLocalName())) {
+                    end = true;
+                }
+            }
+        }
+
         return project;
     }
 
-    public void readCore(XPath xpath, Element root) throws Exception {
-        XPathExpression exp = xpath.compile("./core");
-        Element coreE = (Element) exp.evaluate(root, XPathConstants.NODE);
-        int max = Integer.parseInt(coreE.getAttribute("tasks"));
-        //System.out.println(max);
-    }
-
-    public void readProject(XPath xpath, Element projectE) throws Exception {
-        ProjectInformationImpl info = project.getLookup().lookup(ProjectInformationImpl.class);
-        WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
-
-        info.setName(projectE.getAttribute("name"));
-
-        //WorkSpaces
-        XPathExpression exp = xpath.compile("./workspaces/workspace");
-        NodeList workSpaceList = (NodeList) exp.evaluate(projectE, XPathConstants.NODESET);
-
-        for (int i = 0; i < workSpaceList.getLength() && !cancel; i++) {
-            Element workspaceE = (Element) workSpaceList.item(i);
-            Workspace workspace = readWorkspace(xpath, workspaceE);
-
-            //Current workspace
-            if (workspace.getLookup().lookup(WorkspaceInformationImpl.class).isOpen()) {
-                workspaces.setCurrentWorkspace(workspace);
-            }
-        }
-    }
-
-    public Workspace readWorkspace(XPath xpath, Element workspaceE) throws Exception {
+    public Workspace readWorkspace(XMLStreamReader reader) throws Exception {
         WorkspaceImpl workspace = project.getLookup().lookup(WorkspaceProviderImpl.class).newWorkspace();
         WorkspaceInformationImpl info = workspace.getLookup().lookup(WorkspaceInformationImpl.class);
 
         //Name
-        info.setName(workspaceE.getAttribute("name"));
+        info.setName(reader.getAttributeValue(null, "name"));
 
         //Status
-        String workspaceStatus = workspaceE.getAttribute("status");
+        String workspaceStatus = reader.getAttributeValue(null, "status");
         if (workspaceStatus.equals("open")) {
             info.open();
         } else if (workspaceStatus.equals("closed")) {
@@ -129,27 +118,41 @@ public class GephiReader implements Cancellable {
             info.invalid();
         }
 
+        //Hack to set this workspace active, when readers need to use attributes for instance
+        ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+        pc.setTemporaryOpeningWorkspace(workspace);
+
         //WorkspacePersistent
-        readWorkspaceChildren(workspace, workspaceE);
+        readWorkspaceChildren(workspace, reader);
+        if (currentProvider != null) {
+            //One provider not correctly closed
+            throw new GephiFormatException("The '" + currentProvider.getIdentifier() + "' persistence provider is not ending read.");
+        }
+        pc.setTemporaryOpeningWorkspace(null);
 
         return workspace;
     }
 
-    public void readWorkspaceChildren(Workspace workspace, Element workspaceE) throws Exception {
-        NodeList children = workspaceE.getChildNodes();
-        for (int i = 0; i < children.getLength() && !cancel; i++) {
-            Node child = children.item(i);
-            if (child.getNodeType() == Node.ELEMENT_NODE) {
-                Element childE = (Element) child;
-                WorkspacePersistenceProvider pp = providers.get(childE.getTagName());
+    public void readWorkspaceChildren(Workspace workspace, XMLStreamReader reader) throws Exception {
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            Integer eventType = reader.next();
+            if (eventType.equals(XMLEvent.START_ELEMENT)) {
+                String name = reader.getLocalName();
+                WorkspacePersistenceProvider pp = providers.get(name);
                 if (pp != null) {
+                    currentProvider = pp;
                     try {
-                        pp.readXML(childE, workspace);
+                        pp.readXML(reader, workspace);
                     } catch (UnsupportedOperationException e) {
                     }
                 }
+            } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                if ("workspace".equalsIgnoreCase(reader.getLocalName())) {
+                    end = true;
+                    currentProvider = null;
+                }
             }
-
         }
     }
 }

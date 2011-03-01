@@ -32,6 +32,11 @@ public class DataTablesModel {
     private AvailableColumnsModel nodeAvailableColumnsModel;
     private AvailableColumnsModel edgeAvailableColumnsModel;
 
+    public DataTablesModel() {
+        nodeAvailableColumnsModel = new AvailableColumnsModel();
+        edgeAvailableColumnsModel = new AvailableColumnsModel();
+    }
+
     public DataTablesModel(AttributeTable nodeTable, AttributeTable edgeTable) {
         nodeAvailableColumnsModel = new AvailableColumnsModel();
         edgeAvailableColumnsModel = new AvailableColumnsModel();

@@ -1,4 +1,3 @@
-
 /*
 Copyright 2008-2010 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
@@ -25,13 +24,13 @@ import javax.swing.Icon;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
 
 /**
- * <p>General and abstract manipulation action to use for Data Laboratory table UI.</p>
+ * <p>General and abstract manipulation action to use for Data Laboratory table UI and other actions like Graph context menu items in Overview.</p>
  * <p>Different subtypes of manipulators are defined for every type of action in the UI.</p>
  * <p>All manipulator types are able to:</p>
  * <ul>
  *  <li>Execute an action</li>
  *  <li>Provide a name, description, type and order of appearance (position in group of its type)</li>
- *  <li>Indicate wether they have to be executable or not</li>
+ *  <li>Indicate wether they have to be executable (enabled in the context menu) or not</li>
  *  <li>Provide and UI or not</li>
  *  <li>Provide and icon or not</li>
  * </ul>
@@ -64,9 +63,9 @@ public interface Manipulator {
     String getDescription();
 
     /**
-     * Indicates if this Manipulator has to be shown.
+     * Indicates if this Manipulator has to be executable.
      * Implementations should evaluate the current data and conditions.
-     * @return True if it has to be shown, false otherwise
+     * @return True if it has to be executable, false otherwise
      */
     boolean canExecute();
 

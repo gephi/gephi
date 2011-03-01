@@ -21,8 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics;
 
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
@@ -38,6 +36,9 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.codec.binary.Base64;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.api.StatisticsModel;
@@ -46,10 +47,6 @@ import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.utils.TempDirUtils;
 import org.gephi.utils.TempDirUtils.TempDir;
 import org.openide.util.Lookup;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -157,96 +154,81 @@ public class StatisticsModelImpl implements StatisticsModel {
         }
     }
 
-    public Element writeXML(Document document) {
-        Element modelE = document.createElement("statisticsmodel");
+    public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("statisticsmodel");
 
-        Element resultsE = document.createElement("results");
+        writer.writeStartElement("results");
         for (Map.Entry<StatisticsUI, String> entry : resultMap.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                Element resultE = document.createElement("result");
-                resultE.setAttribute("class", entry.getKey().getClass().getName());
-                resultE.setAttribute("value", entry.getValue());
-                resultsE.appendChild(resultE);
+                writer.writeStartElement("result");
+                writer.writeAttribute("class", entry.getKey().getClass().getName());
+                writer.writeAttribute("value", entry.getValue());
+                writer.writeEndElement();
             }
         }
-        modelE.appendChild(resultsE);
+        writer.writeEndElement();
 
-        Element reportsE = document.createElement("reports");
+        writer.writeStartElement("reports");
         for (Map.Entry<Class, String> entry : reportMap.entrySet()) {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                Element reportE = document.createElement("report");
+                writer.writeStartElement("report");
                 String report = entry.getValue();
                 report = embedImages(report);
-                reportE.setAttribute("class", entry.getKey().getName());
-                reportE.setAttribute("value", report);
-                reportsE.appendChild(reportE);
+                writer.writeAttribute("class", entry.getKey().getName());
+                writer.writeAttribute("value", report);
+                writer.writeEndElement();
             }
         }
-        modelE.appendChild(reportsE);
+        writer.writeEndElement();
 
-        return modelE;
+        writer.writeEndElement();
     }
 
-    public void readXML(Element modelE) {
-        Element resultsE = getNextElementByTagName(modelE, "results");
-        if (resultsE != null) {
-            Collection<? extends StatisticsUI> uis = Lookup.getDefault().lookupAll(StatisticsUI.class);
-            for (Element resultE : getElementsByTagName(resultsE, "result")) {
-                String classStr = resultE.getAttribute("class");
-                StatisticsUI resultUI = null;
-                for (StatisticsUI ui : uis) {
-                    if (ui.getClass().getName().equals(classStr)) {
-                        resultUI = ui;
+    public void readXML(XMLStreamReader reader) throws XMLStreamException {
+        Collection<? extends StatisticsUI> uis = Lookup.getDefault().lookupAll(StatisticsUI.class);
+        Collection<? extends StatisticsBuilder> builders = Lookup.getDefault().lookupAll(StatisticsBuilder.class);
+
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+                    if ("result".equalsIgnoreCase(name)) {
+                        String classStr = reader.getAttributeValue(null, "class");
+                        StatisticsUI resultUI = null;
+                        for (StatisticsUI ui : uis) {
+                            if (ui.getClass().getName().equals(classStr)) {
+                                resultUI = ui;
+                            }
+                        }
+                        if (resultUI != null) {
+                            String value = reader.getAttributeValue(null, "value");
+                            resultMap.put(resultUI, value);
+                        }
+                    } else if ("report".equalsIgnoreCase(name)) {
+                        String classStr = reader.getAttributeValue(null, "class");
+                        Class reportClass = null;
+                        for (StatisticsBuilder builder : builders) {
+                            if (builder.getStatisticsClass().getName().equals(classStr)) {
+                                reportClass = builder.getStatisticsClass();
+                            }
+                        }
+                        if (reportClass != null) {
+                            String report = reader.getAttributeValue(null, "value");
+                            report = unembedImages(report);
+                            reportMap.put(reportClass, report);
+                        }
                     }
-                }
-                if (resultUI != null) {
-                    String value = resultE.getAttribute("value");
-                    resultMap.put(resultUI, value);
-                }
-            }
-        }
-
-        Element reportsE = getNextElementByTagName(modelE, "reports");
-        if (reportsE != null) {
-            Collection<? extends StatisticsBuilder> builders = Lookup.getDefault().lookupAll(StatisticsBuilder.class);
-            for (Element reportE : getElementsByTagName(reportsE, "report")) {
-                String classStr = reportE.getAttribute("class");
-                Class reportClass = null;
-                for (StatisticsBuilder builder : builders) {
-                    if (builder.getStatisticsClass().getName().equals(classStr)) {
-                        reportClass = builder.getStatisticsClass();
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    if ("statisticsmodel".equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
                     }
-                }
-                if (reportClass != null) {
-                    String report = reportE.getAttribute("value");
-                    report = unembedImages(report);
-                    reportMap.put(reportClass, report);
-                }
+                    break;
             }
         }
-    }
-
-    private Element getNextElementByTagName(Element node, String name) {
-        NodeList list = node.getChildNodes();
-        for (int i = 0; i < list.getLength(); i++) {
-            Node n = list.item(i);
-            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase(name)) {
-                return (Element) n;
-            }
-        }
-        return null;
-    }
-
-    private Element[] getElementsByTagName(Element node, String name) {
-        NodeList list = node.getElementsByTagName(name);
-        Element[] res = new Element[list.getLength()];
-        for (int i = 0; i < list.getLength(); i++) {
-            Node n = list.item(i);
-            if (n.getNodeType() == Node.ELEMENT_NODE) {
-                res[i] = (Element) n;
-            }
-        }
-        return res;
     }
 
     private String unembedImages(String report) {

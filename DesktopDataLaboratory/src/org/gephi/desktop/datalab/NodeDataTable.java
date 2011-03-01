@@ -58,6 +58,7 @@ import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.NumberList;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.datalab.api.AttributeColumnsController;
+import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
@@ -71,7 +72,6 @@ import org.netbeans.swing.outline.RowModel;
 import org.openide.awt.MouseUtils;
 import org.openide.util.Lookup;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
-import org.gephi.desktop.datalab.utils.DataLaboratoryHelper;
 import org.gephi.graph.api.Attributes;
 import org.gephi.tools.api.EditWindowController;
 import org.gephi.desktop.datalab.utils.PopupMenuUtils;
@@ -148,10 +148,10 @@ public class NodeDataTable {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+                    DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
                     Node[] selectedNodes = getNodesFromSelectedRows();
                     if (selectedNodes.length > 0) {
-                        DataLaboratoryHelper dlh = new DataLaboratoryHelper();
-                        NodesManipulator del = dlh.getDeleteNodesManipulator();
+                        NodesManipulator del = dlh.getNodesManipulatorByName("DeleteNodes");
                         if (del != null) {
                             del.setup(selectedNodes, null);
                             if (del.canExecute()) {
@@ -354,6 +354,7 @@ public class NodeDataTable {
     private class NodeRowModel implements RowModel {
 
         private NodeDataColumn[] columns;
+        private final int length;
 
         public NodeRowModel(AttributeColumn[] attributeColumns) {
 
@@ -362,22 +363,32 @@ public class NodeDataTable {
                 cols.add(new AttributeNodeDataColumn(c));
             }
             columns = cols.toArray(new NodeDataColumn[0]);
+            length = columns.length;
         }
 
         public int getColumnCount() {
-            return columns.length;
+            return length;
         }
 
         public Object getValueFor(Object node, int column) {
+            if (outOfBounds(column)) {
+                return null;
+            }
             ImmutableTreeNode treeNode = (ImmutableTreeNode) node;
             return columns[column].getValueFor(treeNode);
         }
 
         public Class getColumnClass(int column) {
+            if (outOfBounds(column)) {
+                return Object.class;
+            }
             return columns[column].getColumnClass();
         }
 
         public boolean isCellEditable(Object node, int column) {
+            if (outOfBounds(column)) {
+                return false;
+            }
             return columns[column].isEditable();
         }
 
@@ -386,7 +397,14 @@ public class NodeDataTable {
         }
 
         public String getColumnName(int column) {
+            if (outOfBounds(column)) {
+                return null;
+            }
             return columns[column].getColumnName();
+        }
+
+        private boolean outOfBounds(int position) {
+            return position >= length;
         }
     }
 
@@ -420,6 +438,8 @@ public class NodeDataTable {
                 return TimeInterval.class;
             } else if (attributeUtils.isNumberColumn(column)) {
                 return column.getType().getType();//Number columns should not be treated as Strings because the sorting would be alphabetic instead of numeric
+            } else if (column.getType() == AttributeType.BOOLEAN) {
+                return Boolean.class;
             } else {
                 return String.class;//Treat all columns as Strings. Also fix the fact that the table implementation does not allow to edit Character cells.
             }
@@ -442,6 +462,8 @@ public class NodeDataTable {
             } else if (column.getType() == AttributeType.TIME_INTERVAL) {
                 return value;
             } else if (attributeUtils.isNumberColumn(column)) {
+                return value;
+            } else if (column.getType() == AttributeType.BOOLEAN) {
                 return value;
             } else {
                 //Show values as Strings like in Edit window and other parts of the program to be consistent
@@ -567,7 +589,7 @@ public class NodeDataTable {
             JPopupMenu contextMenu = new JPopupMenu();
 
             //First add nodes manipulators items:
-            DataLaboratoryHelper dlh = new DataLaboratoryHelper();
+            DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
             Integer lastManipulatorType = null;
             for (NodesManipulator nm : dlh.getNodesManipulators()) {
                 nm.setup(selectedNodes, clickedNode);
@@ -578,7 +600,9 @@ public class NodeDataTable {
                     contextMenu.addSeparator();
                 }
                 lastManipulatorType = nm.getType();
-                contextMenu.add(PopupMenuUtils.createMenuItemFromManipulator(nm));
+                if (nm.isAvailable()) {
+                    contextMenu.add(PopupMenuUtils.createMenuItemFromNodesManipulator(nm, clickedNode, selectedNodes));
+                }
             }
 
             //Add AttributeValues manipulators submenu:

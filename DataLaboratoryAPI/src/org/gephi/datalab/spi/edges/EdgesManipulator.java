@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalab.spi.edges;
 
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.graph.api.Edge;
 
@@ -29,7 +30,7 @@ import org.gephi.graph.api.Edge;
  * @see Manipulator
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface EdgesManipulator extends Manipulator{
+public interface EdgesManipulator extends ContextMenuItemManipulator{
     /**
      * Prepare edges for this action.
      * @param edges All selected edges to operate

@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.statistics.plugin;
 
 import java.io.File;
@@ -74,6 +74,7 @@ public class PageRank implements Statistics, LongTask {
     private double epsilon = 0.001;
     /** */
     private double probability = 0.85;
+    private boolean useEdgeWeight = false;
     /** */
     private double[] pageranks;
     /** */
@@ -85,13 +86,13 @@ public class PageRank implements Statistics, LongTask {
             isDirected = graphController.getModel().isDirected();
         }
     }
-    
+
     public void setDirected(boolean isDirected) {
         this.isDirected = isDirected;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean getDirected() {
@@ -120,9 +121,27 @@ public class PageRank implements Statistics, LongTask {
         int index = 0;
 
         Progress.start(progress);
+        double[] weights = null;
+        if (useEdgeWeight) {
+            weights = new double[N];
+        }
+
         for (Node s : hgraph.getNodes()) {
             indicies.put(s, index);
             pageranks[index] = 1.0f / N;
+            if (useEdgeWeight) {
+                double sum = 0;
+                EdgeIterable eIter;
+                if (isDirected) {
+                    eIter = ((HierarchicalDirectedGraph) hgraph).getOutEdgesAndMetaOutEdges(s);
+                } else {
+                    eIter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(s);
+                }
+                for (Edge edge : eIter) {
+                    sum += edge.getWeight();
+                }
+                weights[index] = sum;
+            }
             index++;
         }
 
@@ -169,8 +188,13 @@ public class PageRank implements Statistics, LongTask {
                     } else {
                         normalize = ((HierarchicalUndirectedGraph) hgraph).getTotalDegree(neighbor);
                     }
+                    if (useEdgeWeight) {
+                        double weight = edge.getWeight() / weights[neigh_index];
+                        temp[s_index] += probability * pageranks[neigh_index] * weight;
+                    } else {
+                        temp[s_index] += probability * (pageranks[neigh_index] / normalize);
+                    }
 
-                    temp[s_index] += probability * (pageranks[neigh_index] / normalize);
                 }
 
                 if ((temp[s_index] - pageranks[s_index]) / pageranks[s_index] >= epsilon) {
@@ -257,10 +281,10 @@ public class PageRank implements Statistics, LongTask {
         ValueAxis domainAxis = plot.getDomainAxis();
         domainAxis.setLowerMargin(1.0);
         domainAxis.setUpperMargin(1.0);
-        domainAxis.setRange(dSeries.getMinX()-1, dSeries.getMaxX()+1);
+        domainAxis.setRange(dSeries.getMinX() - 1, dSeries.getMaxX() + 1);
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setRange(-1, dSeries.getMaxY()+0.1*dSeries.getMaxY());
+        rangeAxis.setRange(-1, dSeries.getMaxY() + 0.1 * dSeries.getMaxY());
 
         String imageFile = "";
         try {
@@ -304,7 +328,7 @@ public class PageRank implements Statistics, LongTask {
     }
 
     /**
-     * 
+     *
      * @param prob
      */
     public void setProbability(double prob) {
@@ -333,5 +357,13 @@ public class PageRank implements Statistics, LongTask {
      */
     public double getEpsilon() {
         return epsilon;
+    }
+
+    public boolean isUseEdgeWeight() {
+        return useEdgeWeight;
+    }
+
+    public void setUseEdgeWeight(boolean useEdgeWeight) {
+        this.useEdgeWeight = useEdgeWeight;
     }
 }

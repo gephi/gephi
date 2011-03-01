@@ -20,19 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.data.attributes.serialization;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.data.attributes.AbstractAttributeModel;
 import org.gephi.data.attributes.AttributeColumnImpl;
 import org.gephi.data.attributes.AttributeTableImpl;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeType;
-import org.openide.util.Exceptions;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -50,153 +45,171 @@ public class AttributeModelSerializer {
     private static final String ELEMENT_COLUMN_ORIGIN = "origin";
     private static final String ELEMENT_COLUMN_DEFAULT = "default";
 
-    public Document createDocument() {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.newDocument();
-            document.setXmlVersion("1.0");
-            document.setXmlStandalone(true);
-            return document;
-        } catch (ParserConfigurationException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        return null;
-    }
-
-    public Element writeModel(Document document, AbstractAttributeModel model) {
-        Element modelE = document.createElement(ELEMENT_MODEL);
+    public void writeModel(XMLStreamWriter writer, AbstractAttributeModel model) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_MODEL);
 
         if (model != null) {
             for (AttributeTableImpl table : model.getTables()) {
-                Element tableE = writeTable(document, table);
-                tableE.setAttribute("nodetable", String.valueOf(table == model.getNodeTable()));
-                tableE.setAttribute("edgetable", String.valueOf(table == model.getEdgeTable()));
-                modelE.appendChild(tableE);
+                writeTable(writer, table, model);
             }
         }
 
-        return modelE;
+        writer.writeEndElement();
     }
 
-    public void readModel(Element modelE, AbstractAttributeModel model) {
-        NodeList modelListE = modelE.getChildNodes();
-        for (int i = 0; i < modelListE.getLength(); i++) {
-            if (modelListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element itemE = (Element) modelListE.item(i);
-                if (itemE.getTagName().equals(ELEMENT_TABLE)) {
-                    AttributeTableImpl table;
-                    if (Boolean.parseBoolean(itemE.getAttribute("nodetable"))) {
-                        table = model.getNodeTable();
-                    } else if (Boolean.parseBoolean(itemE.getAttribute("edgetable"))) {
-                        table = model.getEdgeTable();
-                    } else {
-                        table = new AttributeTableImpl(model, "");
+    public void readModel(XMLStreamReader reader, AbstractAttributeModel model) throws XMLStreamException {
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+                    if (ELEMENT_TABLE.equalsIgnoreCase(name)) {
+                        AttributeTableImpl table;
+                        if (Boolean.parseBoolean(reader.getAttributeValue(null, "nodetable"))) {
+                            table = model.getNodeTable();
+                        } else if (Boolean.parseBoolean(reader.getAttributeValue(null, "edgetable"))) {
+                            table = model.getEdgeTable();
+                        } else {
+                            table = new AttributeTableImpl(model, "");
+                        }
+                        readTable(reader, table);
+                        if (table != model.getNodeTable() && table != model.getEdgeTable()) {
+                            model.addTable(table);
+                        }
                     }
-                    readTable(itemE, table);
-                    if (table != model.getNodeTable() && table != model.getEdgeTable()) {
-                        model.addTable(table);
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    if (ELEMENT_MODEL.equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
                     }
-                }
+                    break;
             }
         }
     }
 
-    public Element writeTable(Document document, AttributeTableImpl table) {
-        Element tableE = document.createElement(ELEMENT_TABLE);
+    public void writeTable(XMLStreamWriter writer, AttributeTableImpl table, AbstractAttributeModel model) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_TABLE);
 
-        tableE.setAttribute("name", table.getName());
-        tableE.setAttribute("version", String.valueOf(table.getVersion()));
+        writer.writeAttribute("name", table.getName());
+        writer.writeAttribute("version", String.valueOf(table.getVersion()));
+        writer.writeAttribute("nodetable", String.valueOf(table == model.getNodeTable()));
+        writer.writeAttribute("edgetable", String.valueOf(table == model.getEdgeTable()));
 
         for (AttributeColumnImpl columnImpl : table.getColumns()) {
-            Element columnE = writeColumn(document, columnImpl);
-            tableE.appendChild(columnE);
+            writeColumn(writer, columnImpl);
         }
-        return tableE;
+        writer.writeEndElement();
     }
 
-    public void readTable(Element tableE, AttributeTableImpl table) {
-        table.setName(tableE.getAttribute("name"));
+    public void readTable(XMLStreamReader reader, AttributeTableImpl table) throws XMLStreamException {
+        table.setName(reader.getAttributeValue(null, "name"));
+        int version = Integer.parseInt(reader.getAttributeValue(null, "version"));
 
-        NodeList tableListE = tableE.getChildNodes();
-        for (int i = 0; i < tableListE.getLength(); i++) {
-            if (tableListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element itemE = (Element) tableListE.item(i);
-                if (itemE.getTagName().equals(ELEMENT_COLUMN)) {
-                    readColumn(itemE, table);
-                }
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+                    if (ELEMENT_COLUMN.equalsIgnoreCase(name)) {
+                        readColumn(reader, table);
+                    }
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    if (ELEMENT_TABLE.equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
+                    }
+                    break;
             }
         }
 
-        table.setVersion(Integer.parseInt(tableE.getAttribute("version")));
+        table.setVersion(version);
     }
 
-    public Element writeColumn(Document document, AttributeColumnImpl column) {
-        Element columnE = document.createElement(ELEMENT_COLUMN);
+    public void writeColumn(XMLStreamWriter writer, AttributeColumnImpl column) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_COLUMN);
 
-        Element indexE = document.createElement(ELEMENT_COLUMN_INDEX);
-        indexE.setTextContent(String.valueOf(column.getIndex()));
-        columnE.appendChild(indexE);
+        writer.writeStartElement(ELEMENT_COLUMN_INDEX);
+        writer.writeCharacters(String.valueOf(column.getIndex()));
+        writer.writeEndElement();
 
-        Element idE = document.createElement(ELEMENT_COLUMN_ID);
-        idE.setTextContent(String.valueOf(column.getId()));
-        columnE.appendChild(idE);
+        writer.writeStartElement(ELEMENT_COLUMN_ID);
+        writer.writeCharacters(String.valueOf(column.getId()));
+        writer.writeEndElement();
 
-        Element titleE = document.createElement(ELEMENT_COLUMN_TITLE);
-        titleE.setTextContent(String.valueOf(column.getTitle()));
-        columnE.appendChild(titleE);
+        writer.writeStartElement(ELEMENT_COLUMN_TITLE);
+        writer.writeCharacters(String.valueOf(column.getTitle()));
+        writer.writeEndElement();
 
-        Element typeE = document.createElement(ELEMENT_COLUMN_TYPE);
-        typeE.setTextContent(column.getType().getTypeString());
-        columnE.appendChild(typeE);
+        writer.writeStartElement(ELEMENT_COLUMN_TYPE);
+        writer.writeCharacters(column.getType().getTypeString());
+        writer.writeEndElement();
 
-        Element origineE = document.createElement(ELEMENT_COLUMN_ORIGIN);
-        origineE.setTextContent(column.getOrigin().name());
-        columnE.appendChild(origineE);
+        writer.writeStartElement(ELEMENT_COLUMN_ORIGIN);
+        writer.writeCharacters(column.getOrigin().name());
+        writer.writeEndElement();
 
-        Element defaultE = document.createElement(ELEMENT_COLUMN_DEFAULT);
+        writer.writeStartElement(ELEMENT_COLUMN_DEFAULT);
         if (column.getDefaultValue() != null) {
-            defaultE.setTextContent(column.getDefaultValue().toString());
+            writer.writeCharacters(column.getDefaultValue().toString());
         }
-        columnE.appendChild(defaultE);
+        writer.writeEndElement();
 
-        return columnE;
+        writer.writeEndElement();
     }
 
-    public void readColumn(Element columnE, AttributeTableImpl table) {
+    public void readColumn(XMLStreamReader reader, AttributeTableImpl table) throws XMLStreamException {
 
         int index = 0;
         String id = "";
         String title = "";
         AttributeType type = AttributeType.STRING;
         AttributeOrigin origin = AttributeOrigin.DATA;
-        Object defaultValue = null;
+        String defaultValue = "";
 
-        NodeList columnListE = columnE.getChildNodes();
-        for (int i = 0; i < columnListE.getLength(); i++) {
-            if (columnListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element itemE = (Element) columnListE.item(i);
-                if (itemE.getTagName().equals(ELEMENT_COLUMN_INDEX)) {
-                    index = Integer.parseInt(itemE.getTextContent());
-                } else if (itemE.getTagName().equals(ELEMENT_COLUMN_ID)) {
-                    id = itemE.getTextContent();
-                } else if (itemE.getTagName().equals(ELEMENT_COLUMN_TITLE)) {
-                    title = itemE.getTextContent();
-                } else if (itemE.getTagName().equals(ELEMENT_COLUMN_TYPE)) {
-                    type = AttributeType.valueOf(itemE.getTextContent());
-                } else if (itemE.getTagName().equals(ELEMENT_COLUMN_ORIGIN)) {
-                    origin = AttributeOrigin.valueOf(itemE.getTextContent());
-                } else if (itemE.getTagName().equals(ELEMENT_COLUMN_DEFAULT)) {
-                    if (!itemE.getTextContent().isEmpty()) {
-                        defaultValue = type.parse(itemE.getTextContent());
+        boolean end = false;
+        String name = null;
+        while (reader.hasNext() && !end) {
+            int t = reader.next();
+
+            switch (t) {
+                case XMLStreamReader.START_ELEMENT:
+                    name = reader.getLocalName();
+                    break;
+                case XMLStreamReader.CHARACTERS:
+                    if (!reader.isWhiteSpace()) {
+                        if (ELEMENT_COLUMN_INDEX.equalsIgnoreCase(name)) {
+                            index = Integer.parseInt(reader.getText());
+                        } else if (ELEMENT_COLUMN_ID.equalsIgnoreCase(name)) {
+                            id += reader.getText();
+                        } else if (ELEMENT_COLUMN_TITLE.equalsIgnoreCase(name)) {
+                            title += reader.getText();
+                        } else if (ELEMENT_COLUMN_TYPE.equalsIgnoreCase(name)) {
+                            type = AttributeType.valueOf(reader.getText());
+                        } else if (ELEMENT_COLUMN_ORIGIN.equalsIgnoreCase(name)) {
+                            origin = AttributeOrigin.valueOf(reader.getText());
+                        } else if (ELEMENT_COLUMN_DEFAULT.equalsIgnoreCase(name)) {
+                            if (!reader.getText().isEmpty()) {
+                                defaultValue += reader.getText();
+                            }
+                        }
                     }
-                }
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    if (ELEMENT_COLUMN.equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
+                    }
+                    break;
             }
         }
+        Object defaultVal = !defaultValue.isEmpty() ? type.parse(defaultValue) : null;
         if (!table.hasColumn(title)) {
-            table.addColumn(id, title, type, origin, defaultValue);
+            table.addColumn(id, title, type, origin, defaultVal);
         } else {
-            table.replaceColumn(table.getColumn(title), id, title, type, origin, defaultValue);
+            table.replaceColumn(table.getColumn(title), id, title, type, origin, defaultVal);
         }
     }
 }

@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.project.impl;
 
 import java.io.File;
@@ -53,6 +53,7 @@ public class ProjectControllerImpl implements ProjectController {
     //Data
     private final ProjectsImpl projects = new ProjectsImpl();
     private final List<WorkspaceListener> listeners;
+    private WorkspaceImpl temporaryOpeningWorkspace;
 
     public ProjectControllerImpl() {
 
@@ -183,7 +184,7 @@ public class ProjectControllerImpl implements ProjectController {
                 openWorkspace(toSelectWorkspace);
             }
         }
-        
+
     }
 
     public void openProject(Project project) {
@@ -217,7 +218,10 @@ public class ProjectControllerImpl implements ProjectController {
 
     public WorkspaceImpl getCurrentWorkspace() {
         if (projects.hasCurrentProject()) {
+            temporaryOpeningWorkspace = null;
             return getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).getCurrentWorkspace();
+        } else if (temporaryOpeningWorkspace != null) {
+            return temporaryOpeningWorkspace;
         }
         return null;
     }
@@ -266,6 +270,14 @@ public class ProjectControllerImpl implements ProjectController {
 
     public void setSource(Workspace workspace, String source) {
         workspace.getLookup().lookup(WorkspaceInformationImpl.class).setSource(source);
+    }
+
+    /**
+     * Hack to have a current workpace when opening workspace
+     * @param temporaryOpeningWorkspace the opening workspace or null
+     */
+    public void setTemporaryOpeningWorkspace(WorkspaceImpl temporaryOpeningWorkspace) {
+        this.temporaryOpeningWorkspace = temporaryOpeningWorkspace;
     }
 
     public void addWorkspaceListener(WorkspaceListener workspaceListener) {

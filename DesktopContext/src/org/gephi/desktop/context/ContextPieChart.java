@@ -29,6 +29,7 @@ import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.ui.RectangleInsets;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -59,8 +60,8 @@ public class ContextPieChart {
         plot.setInteriorGap(0);
         plot.setBackgroundPaint(null);
         plot.setBackgroundAlpha(1f);
-        plot.setSectionPaint("Visible", new Color(0x222222));
-        plot.setSectionPaint("Not visible", new Color(0xDDDDDD));
+        plot.setSectionPaint(NbBundle.getMessage(getClass(), "ContextPieChart.visible"), new Color(0x222222));
+        plot.setSectionPaint(NbBundle.getMessage(getClass(), "ContextPieChart.notVisible"), new Color(0xDDDDDD));
         chartPanel = new ChartPanel(chart, 100, 100, 10, 10, 300, 300, true, false, false, false, false, false);
         ((FlowLayout) chartPanel.getLayout()).setHgap(0);
         ((FlowLayout) chartPanel.getLayout()).setVgap(0);
@@ -69,8 +70,8 @@ public class ContextPieChart {
     }
 
     public void refreshChart(double visiblePercentage) {
-        data.setValue("Visible", visiblePercentage);
-        data.setValue("Not visible", 1 - visiblePercentage);
+        data.setValue(NbBundle.getMessage(getClass(), "ContextPieChart.visible"), visiblePercentage);
+        data.setValue(NbBundle.getMessage(getClass(), "ContextPieChart.notVisible"), 1 - visiblePercentage);
     }
 
     public void setChartVisible(boolean visible) {

@@ -15,23 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-# English (en) translation for Gephi.
-# Copyright (C) 2010 Gephi contributors.
-# This file is distributed under the same license as the Gephi package.
-# Gephi Team <gephi.team@lists.launchpad.net>, 2010.
-#
-msgid ""
-msgstr ""
-"Project-Id-Version: Gephi 0.7\n"
-"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
-"POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-04-07 13:16+0200\n"
-"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
-"Language-Team: English <https://launchpad.net/~gephi.team>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-
 msgid "CTL_PreviewAction"
 msgstr "Preview"
 
@@ -52,11 +35,32 @@ msgstr "Preview Settings"
 msgid "HINT_PreviewTopComponent"
 msgstr "Preview"
 
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Preview and Preview settings components"
+
 msgid "GenericColorizerPanel.CustomColorRadioButton.text"
 msgstr "Custom Color"
 
-msgid "OpenIDE-Module-Short-Description"
-msgstr "Preview and Preview settings components"
+msgid "PreviewNode.displayName"
+msgstr "Preview Settings"
+
+msgid "PreviewNode.Node.displayName"
+msgstr "Node"
+
+msgid "PreviewNode.Edge.displayName"
+msgstr "Edge"
+
+msgid "PreviewNode.SelfLoop.displayName"
+msgstr "Self-Loop"
+
+msgid "PreviewNode.Directed.displayName"
+msgstr "Directed"
+
+msgid "PreviewNode.Undirected.displayName"
+msgstr "Undirected"
+
+msgid "PreviewNode.Mutual.displayName"
+msgstr "Mutual"
 
 msgid "PreviewSettingsTopComponent.savePreset.input"
 msgstr "Name"

@@ -27,7 +27,6 @@ import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.attributes.type.DynamicLong;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
@@ -281,7 +280,8 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         Double end = null;
         if (dateFrom != null && !dateFrom.isEmpty()) {
             try {
-                if (container.getTimeFormat().equals(TimeFormat.DATE)) {
+                if (container.getTimeFormat().equals(TimeFormat.DATE) ||
+                        container.getTimeFormat().equals(TimeFormat.DATETIME)) {
                     start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
                 } else {
                     start = Double.parseDouble(dateFrom);
@@ -293,7 +293,8 @@ public class NodeDraftImpl implements NodeDraft, NodeDraftGetter {
         }
         if (dateTo != null && !dateTo.isEmpty()) {
             try {
-                if (container.getTimeFormat().equals(TimeFormat.DATE)) {
+                if (container.getTimeFormat().equals(TimeFormat.DATE) ||
+                        container.getTimeFormat().equals(TimeFormat.DATETIME)) {
                     end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
                 } else {
                     end = Double.parseDouble(dateTo);

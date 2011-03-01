@@ -51,6 +51,7 @@ import org.openide.nodes.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 
 public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeListener {
 
@@ -132,14 +133,17 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
                 saveItem.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {
+                        String lastPresetName = NbPreferences.forModule(LayoutPanel.class).get("LayoutPanel.lastPresetName", "");
                         NotifyDescriptor.InputLine question = new NotifyDescriptor.InputLine(
                                 NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePreset.input"),
                                 NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.presetsButton.savePreset.input.name"));
+                        question.setInputText(lastPresetName);
                         if (DialogDisplayer.getDefault().notify(question) == NotifyDescriptor.OK_OPTION) {
                             String input = question.getInputText();
                             if (input != null && !input.isEmpty()) {
                                 layoutPresetPersistence.savePreset(input, model.getSelectedLayout());
                                 StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(LayoutPanel.class, "LayoutPanel.status.savePreset", model.getSelectedBuilder().getName(), input));
+                                NbPreferences.forModule(LayoutPanel.class).put("LayoutPanel.lastPresetName", input);
                             }
                         }
                     }

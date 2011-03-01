@@ -19,7 +19,7 @@ msgid "AddNodeToGraph.name"
 msgstr "Add node"
 
 msgid "AddNodeToGraph.dialog.text"
-msgstr "Choose a label for the new node"
+msgstr "Label:"
 
 msgid "AddEdgeToGraph.name"
 msgstr "Add edge"
@@ -29,8 +29,8 @@ msgstr "Clear graph"
 
 msgid "ClearGraph.dialog.text"
 msgstr ""
-"<html><b>Are you sure you want to clear the graph?<br>All nodes and edges "
-"will be deleted!</b></html>"
+"<html><b>Confirm to clear the graph?<br>All nodes and edges will be deleted."
+"</b></html>"
 
 msgid "ClearEdges.name"
 msgstr "Clear edges"
@@ -42,7 +42,7 @@ msgid "SearchReplace.window.close"
 msgstr "Close"
 
 msgid "ImportCSV.name"
-msgstr "Import CSV"
+msgstr "Import Spreadsheet"
 
 msgid "ExportTable.name"
 msgstr "Export table"

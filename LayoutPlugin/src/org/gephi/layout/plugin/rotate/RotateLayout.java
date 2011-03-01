@@ -28,6 +28,7 @@ import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.openide.util.NbBundle;
 
 /**
  * Sample layout that simply rotates the graph.
@@ -75,8 +76,11 @@ public class RotateLayout extends AbstractLayout implements Layout {
         List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class, "Angle", null,
-                    "Clockwise rotation angle in degrees", "getAngle", "setAngle"));
+                    this, Double.class, 
+                    NbBundle.getMessage(getClass(), "clockwise.angle.name"),
+                    null,
+                    NbBundle.getMessage(getClass(), "clockwise.angle.desc"),
+                    "getAngle", "setAngle"));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -17,18 +17,19 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLReporter;
+import java.io.StringReader;
+import javax.xml.stream.XMLOutputFactory;
 import java.io.StringWriter;
 import java.util.HashMap;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.dhns.DhnsGraphController;
@@ -45,7 +46,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.w3c.dom.Element;
 import static org.junit.Assert.*;
 
 /**
@@ -133,57 +133,57 @@ public class DhnsTestSerializer {
     }
 
     @Test
-    public void testTreeStructureSerializer() {
-        DHNSSerializer dHNSSerializer = new DHNSSerializer();
-        Element e1 = dHNSSerializer.writeTreeStructure(dHNSSerializer.createDocument(), dhns1.getGraphStructure().getMainView());
-        String s1 = printXML(e1);
-        graph1.clear();
-        dHNSSerializer.readTreeStructure(e1, dhns1.getGraphStructure(), dhns1.factory());
-        Element e2 = dHNSSerializer.writeTreeStructure(dHNSSerializer.createDocument(), dhns1.getGraphStructure().getMainView());
-        String s2 = printXML(e2);
-        assertEquals(s1, s2);
-    }
-
-    @Test
-    public void testEdgesSerializer() {
-        DHNSSerializer dHNSSerializer = new DHNSSerializer();
-        Element e1 = dHNSSerializer.writeEdges(dHNSSerializer.createDocument(), dhns2.getGraphStructure().getMainView().getStructure());
-        String s1 = printXML(e1);
-        graph2.clearEdges();
-        dHNSSerializer.readEdges(e1, dhns2.getGraphStructure(), dhns2.factory());
-        Element e2 = dHNSSerializer.writeEdges(dHNSSerializer.createDocument(), dhns2.getGraphStructure().getMainView().getStructure());
-        String s2 = printXML(e2);
-        assertEquals(s1, s2);
-    }
-
-    @Test
     public void testDhnsSerializer() {
-        DHNSSerializer dHNSSerializer = new DHNSSerializer();
-        Element e1 = dHNSSerializer.writeDhns(dHNSSerializer.createDocument(), dhns2);
-        String s1 = printXML(e1);
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        Workspace workspace3 = pc.newWorkspace(pc.getCurrentProject());
-        pc.openWorkspace(workspace3);
-        Lookup.getDefault().lookup(AttributeController.class).getModel();
-        Dhns d2 = new Dhns(new DhnsGraphController(), workspace3);
-        dHNSSerializer.readDhns(e1, d2);
-        Element e2 = dHNSSerializer.writeDhns(dHNSSerializer.createDocument(), d2);
-        String s2 = printXML(e2);
-        assertEquals(s1, s2);
+        try {
+            DHNSSerializer dHNSSerializer = new DHNSSerializer();
+            StringWriter stringWriter = new StringWriter();
+            dHNSSerializer.writeDhns(createWriter(stringWriter), dhns2);
+            String s1 = stringWriter.toString();
+            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            Workspace workspace3 = pc.newWorkspace(pc.getCurrentProject());
+            pc.openWorkspace(workspace3);
+            Lookup.getDefault().lookup(AttributeController.class).getModel();
+            Dhns d2 = new Dhns(new DhnsGraphController(), workspace3);
+            StringReader stringReader = new StringReader(s1);
+            dHNSSerializer.readDhns(createReader(stringReader), d2);
+            stringWriter = new StringWriter();
+            dHNSSerializer.writeDhns(createWriter(stringWriter), d2);
+            String s2 = stringWriter.toString();
+            assertEquals(s1, s2);
+        } catch (XMLStreamException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
-    private String printXML(org.w3c.dom.Node node) {
+    private XMLStreamWriter createWriter(StringWriter stringWriter) {
+        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+        outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
+
         try {
-            Source source = new DOMSource(node);
-            StringWriter writer = new StringWriter();
-            Result result = new StreamResult(writer);
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.transform(source, result);
-            return writer.toString();
-        } catch (Exception ex) {
+            XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(stringWriter);
+            xmlWriter.writeStartDocument("UTF-8", "1.0");
+            return xmlWriter;
+        } catch (XMLStreamException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null;
+    }
+
+    private XMLStreamReader createReader(StringReader stringReader) {
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+            inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+        }
+        inputFactory.setXMLReporter(new XMLReporter() {
+
+            @Override
+            public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                System.out.println("Error:" + errorType + ", message : " + message);
+            }
+        });
+        try {
+            return inputFactory.createXMLStreamReader(stringReader);
+        } catch (XMLStreamException ex) {
             Exceptions.printStackTrace(ex);
         }
         return null;

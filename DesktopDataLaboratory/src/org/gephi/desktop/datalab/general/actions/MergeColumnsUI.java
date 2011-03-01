@@ -32,8 +32,8 @@ import javax.swing.event.ListDataListener;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.columns.merge.AttributeColumnsMergeStrategy;
-import org.gephi.desktop.datalab.utils.DataLaboratoryHelper;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
@@ -153,7 +153,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         if (columnsToMerge.length < 1) {
             return;
         }
-        AttributeColumnsMergeStrategy[] strategies = new DataLaboratoryHelper().getAttributeColumnsMergeStrategies();
+        AttributeColumnsMergeStrategy[] strategies = DataLaboratoryHelper.getDefault().getAttributeColumnsMergeStrategies();
         ArrayList<AttributeColumnsMergeStrategy> availableStrategiesList = new ArrayList<AttributeColumnsMergeStrategy>();
         for (AttributeColumnsMergeStrategy strategy : strategies) {
             strategy.setup(table, columnsToMerge);
@@ -205,7 +205,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
     public void execute() {
         int index = availableStrategiesComboBox.getSelectedIndex();
         if (index != -1) {
-            new DataLaboratoryHelper().executeManipulator(availableMergeStrategies[index]);
+            DataLaboratoryHelper.getDefault().executeManipulator(availableMergeStrategies[index]);
         }
     }
 
@@ -352,7 +352,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
         });
 
         infoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        infoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/datatable/resources/info.png"))); // NOI18N
+        infoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/datalab/resources/info.png"))); // NOI18N
         infoLabel.setText(org.openide.util.NbBundle.getMessage(MergeColumnsUI.class, "MergeColumnsUI.infoLabel.text")); // NOI18N
         infoLabel.setEnabled(false);
 
@@ -386,7 +386,7 @@ public class MergeColumnsUI extends javax.swing.JPanel {
                                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(availableStrategiesComboBox, 0, 232, Short.MAX_VALUE)
+                                .addComponent(availableStrategiesComboBox, 0, 218, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(infoLabel)
                                 .addContainerGap())))))

@@ -20,3 +20,9 @@ msgstr "API/SPI for interacting with the Data Laboratory and extending it."
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "API/SPI for interacting with the Data Laboratory and extending it"
+
+msgid "DataLaboratoryHelper.ui.okButton.text"
+msgstr "Ok"
+
+msgid "SettingsPanel.title"
+msgstr "{0}"

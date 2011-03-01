@@ -50,6 +50,14 @@ public class PageRankPanel extends javax.swing.JPanel {
         return 0.85;
     }
 
+    public boolean isEdgeWeight() {
+        return edgeWeightCheckbox.isSelected();
+    }
+
+    public void setEdgeWeight(boolean edgeWeight) {
+        edgeWeightCheckbox.setSelected(edgeWeight);
+    }
+
     public void setDirected(boolean directed) {
         directedButtonGroup.setSelected(directed ? directedRadioButton.getModel() : undirectedRadioButton.getModel(), true);
     }
@@ -78,10 +86,10 @@ public class PageRankPanel extends javax.swing.JPanel {
         epsilonTextField = new javax.swing.JTextField();
         undirectedRadioButton = new javax.swing.JRadioButton();
         directedRadioButton = new javax.swing.JRadioButton();
-        descriptionLabel = new org.jdesktop.swingx.JXLabel();
         jXHeader1 = new org.jdesktop.swingx.JXHeader();
         jXLabel1 = new org.jdesktop.swingx.JXLabel();
         jXLabel2 = new org.jdesktop.swingx.JXLabel();
+        edgeWeightCheckbox = new javax.swing.JCheckBox();
 
         labelP.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.labelP.text")); // NOI18N
 
@@ -101,8 +109,6 @@ public class PageRankPanel extends javax.swing.JPanel {
         directedButtonGroup.add(directedRadioButton);
         directedRadioButton.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.directedRadioButton.text")); // NOI18N
 
-        descriptionLabel.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.descriptionLabel.text")); // NOI18N
-
         jXHeader1.setDescription(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.jXHeader1.description")); // NOI18N
         jXHeader1.setTitle(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.jXHeader1.title")); // NOI18N
 
@@ -116,20 +122,25 @@ public class PageRankPanel extends javax.swing.JPanel {
         jXLabel2.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.jXLabel2.text")); // NOI18N
         jXLabel2.setFont(jXLabel2.getFont().deriveFont(jXLabel2.getFont().getSize()-1f));
 
+        edgeWeightCheckbox.setText(org.openide.util.NbBundle.getMessage(PageRankPanel.class, "PageRankPanel.edgeWeightCheckbox.text")); // NOI18N
+        edgeWeightCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jXHeader1, javax.swing.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE)
+            .addComponent(jXHeader1, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
+                    .addComponent(directedRadioButton)
+                    .addComponent(undirectedRadioButton))
+                .addGap(45, 45, 45)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(directedRadioButton)
-                            .addComponent(undirectedRadioButton))
-                        .addGap(45, 45, 45)
+                        .addComponent(edgeWeightCheckbox)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(labelP)
@@ -140,8 +151,8 @@ public class PageRankPanel extends javax.swing.JPanel {
                                 .addGap(45, 45, 45)
                                 .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jXLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jXLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(10, 10, 10))
+                            .addComponent(jXLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(10, 10, 10))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,15 +173,15 @@ public class PageRankPanel extends javax.swing.JPanel {
                     .addComponent(epsilonTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jXLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(57, 57, 57)
-                .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(18, 18, 18)
+                .addComponent(edgeWeightCheckbox)
+                .addContainerGap(36, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private org.jdesktop.swingx.JXLabel descriptionLabel;
     private javax.swing.ButtonGroup directedButtonGroup;
     protected javax.swing.JRadioButton directedRadioButton;
+    private javax.swing.JCheckBox edgeWeightCheckbox;
     protected javax.swing.JTextField epsilonTextField;
     private org.jdesktop.swingx.JXHeader jXHeader1;
     private org.jdesktop.swingx.JXLabel jXLabel1;

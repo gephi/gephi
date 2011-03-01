@@ -22,20 +22,16 @@ msgid "OpenInEditEdgeWindow.name.multiple"
 msgstr "Edit all edges"
 
 msgid "OpenInEditEdgeWindow.description"
-msgstr ""
-"Opens edit window to edit the selected edge. It allows to edit color of the "
-"edge and also the attributes."
+msgstr "Change colors and attributes."
 
 msgid "OpenInEditEdgeWindow.description.multiple"
-msgstr ""
-"Opens edit window to edit the selected edges. Fields will be blank at first. "
-"It allows to edit color of the edge and also the attributes."
+msgstr "Change colors and attributes. Fields will be blank at first."
 
 msgid "SelectSourceOnGraph.name"
-msgstr "Select source node on graph view"
+msgstr "Select source node on Overview"
 
 msgid "SelectTargetOnGraph.name"
-msgstr "Select target node on graph view"
+msgstr "Select target node on Overview"
 
 msgid "SelectNodesOnTable.name"
 msgstr "Select source and target on nodes table"
@@ -47,7 +43,7 @@ msgid "DeleteEdges.name.multiple"
 msgstr "Delete all"
 
 msgid "DeleteEdges.confirmation.message"
-msgstr "Are you sure you want to delete the edge(s)?"
+msgstr "Confirm edge deletion?"
 
 msgid "DeleteEdgesWithNodes.name.single"
 msgstr "Delete edge with nodes..."
@@ -56,23 +52,25 @@ msgid "DeleteEdgesWithNodes.name.multiple"
 msgstr "Delete all edges with nodes..."
 
 msgid "ClearEdgesData.name.single"
-msgstr "Clear edge data..."
+msgstr "Clear..."
 
 msgid "ClearEdgesData.name.multiple"
-msgstr "Clear all edges data..."
+msgstr "Clear all..."
 
 msgid "ClearEdgesData.description"
-msgstr "Clears the desired columns data of the selected edge(s)"
+msgstr "Clear data of the selected edges"
 
 msgid "ClearEdgesData.ui.description"
-msgstr "Choose columns to clear data:"
+msgstr "Clear columns:"
 
 msgid "CopyEdgeDataToOtherEdges.name"
-msgstr "Copy edge data to the other selected edges..."
+msgstr "Overwrite data to other selected edges..."
 
 msgid "CopyEdgeDataToOtherEdges.description"
-msgstr ""
-"Copies the desired columns of the selected edge to the other selected edges"
+msgstr "Copy the selected edge columns to the other selected edges."
 
-msgid "CopyEdgeDataToOtherEdges.ui.description"
-msgstr "Choose columns to copy data:"
+msgid "CopyEdgeDataToOtherEdges.ui.rowDescription"
+msgstr "Copy edge:"
+
+msgid "CopyEdgeDataToOtherEdges.ui.columnsDescription"
+msgstr "Overwrite columns:"

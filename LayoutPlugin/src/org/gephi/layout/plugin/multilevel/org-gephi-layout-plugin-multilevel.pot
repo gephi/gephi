@@ -28,3 +28,49 @@ msgid "YifanHuMultiLevel.description"
 msgstr ""
 "YifanHu's Multilevel Algorithm is suitable for very large graphs. It coersen "
 "the graphs and therefore reduce computation."
+
+msgid "YifanHuMultiLevel.minimumLevelSize.name"
+msgstr "Minimum level size"
+
+msgid "YifanHuMultiLevel.minimumLevelSize.desc"
+msgstr ""
+"The minimum amount of nodes every level must have (bigger values mean less "
+"levels)"
+
+msgid "YifanHuMultiLevel.minimumCoarseningRate.name"
+msgstr "Minimum coarsening rate"
+
+msgid "YifanHuMultiLevel.minimumCoarseningRate.desc"
+msgstr ""
+"The minimum relative size between two levels (smaller values mean less "
+"levels)"
+
+msgid "YifanHuMultiLevel.stepRatio.name"
+msgstr "Step ratio"
+
+msgid "YifanHuMultiLevel.stepRatio.desc"
+msgstr "The ratio used to update the step size across iterations."
+
+msgid "YifanHuMultiLevel.optimalDistance.name"
+msgstr "Optimal Distance"
+
+msgid "YifanHuMultiLevel.optimalDistance.desc"
+msgstr ""
+"The natural length of the springs. Bigger values mean nodes will be farther "
+"apart."
+
+msgid "YifanHuMultiLevel.quadtreeMaxLevel.name"
+msgstr "Quadtree Max Level"
+
+msgid "YifanHuMultiLevel.quadtreeMaxLevel.desc"
+msgstr ""
+"The maximun level to be used in the quadtree representation. Greater values "
+"mean more accuracy."
+
+msgid "YifanHuMultiLevel.theta.name"
+msgstr "Theta"
+
+msgid "YifanHuMultiLevel.theta.desc"
+msgstr ""
+"The theta parameter for Barnes-Hut opening criteria. Smaller values mean "
+"more accuracy."

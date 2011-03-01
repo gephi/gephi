@@ -320,6 +320,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         showNodeLabelsCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
 
         labelNodeFont.setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.labelNodeFont.text")); // NOI18N
+        labelNodeFont.setMaximumSize(new java.awt.Dimension(60, 15));
 
         labelNodeColor.setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.labelNodeColor.text")); // NOI18N
 
@@ -347,8 +348,8 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                             .addGap(18, 18, 18)
                             .addComponent(nodeSizeSlider, 0, 0, Short.MAX_VALUE))
                         .addGroup(nodePanelLayout.createSequentialGroup()
-                            .addComponent(labelNodeFont, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(9, 9, 9)
+                            .addComponent(labelNodeFont, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(nodeFontButton)
                             .addGap(23, 23, 23)
                             .addComponent(labelNodeColor)
@@ -361,12 +362,12 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
             .addGroup(nodePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(showNodeLabelsCheckbox)
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addContainerGap(112, Short.MAX_VALUE))
             .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(nodePanelLayout.createSequentialGroup()
                     .addGap(31, 31, 31)
                     .addGroup(nodePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelNodeFont)
+                        .addComponent(labelNodeFont, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(labelNodeColor)
                         .addComponent(nodeColorButton)
                         .addComponent(nodeFontButton))
@@ -377,7 +378,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                         .addGroup(nodePanelLayout.createSequentialGroup()
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(nodeSizeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addContainerGap(25, Short.MAX_VALUE)))
+                    .addContainerGap(50, Short.MAX_VALUE)))
         );
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -391,6 +392,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         showEdgeLabelsCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
 
         labelEdgeFont.setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.labelEdgeFont.text")); // NOI18N
+        labelEdgeFont.setMaximumSize(new java.awt.Dimension(60, 15));
 
         edgeFontButton.setText(org.openide.util.NbBundle.getMessage(LabelSettingsPanel.class, "LabelSettingsPanel.edgeFontButton.text")); // NOI18N
 
@@ -416,8 +418,8 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addComponent(edgeSizeSlider, 0, 0, Short.MAX_VALUE))
                             .addGroup(edgePanelLayout.createSequentialGroup()
-                                .addComponent(labelEdgeFont, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(9, 9, 9)
+                                .addComponent(labelEdgeFont, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(edgeFontButton)
                                 .addGap(23, 23, 23)
                                 .addComponent(labelEdgeColor)
@@ -433,7 +435,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                 .addComponent(showEdgeLabelsCheckbox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(edgePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelEdgeFont)
+                    .addComponent(labelEdgeFont, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelEdgeColor)
                     .addComponent(edgeColorButton)
                     .addComponent(edgeFontButton))
@@ -444,7 +446,7 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                     .addGroup(edgePanelLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(edgeSizeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -497,10 +499,10 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+            .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
             .addComponent(nodePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(edgePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+            .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -512,11 +514,11 @@ public class LabelSettingsPanel extends javax.swing.JPanel {
                     .addComponent(labelColorMode))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(hideNonSelectedCheckbox)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(44, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(configureLabelsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addContainerGap(84, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

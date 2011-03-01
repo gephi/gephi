@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import org.gephi.statistics.plugin.ClusteringCoefficient;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -67,7 +68,7 @@ public class ClusteringCoefficientUI implements StatisticsUI {
     }
 
     public String getDisplayName() {
-        return "Avg. Clustering Coefficient";
+        return NbBundle.getMessage(getClass(), "ClusteringCoefficientUI.name");
     }
 
     public String getCategory() {

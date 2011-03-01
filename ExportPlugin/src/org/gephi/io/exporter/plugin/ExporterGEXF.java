@@ -108,8 +108,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private static final String END = "end";
     private static final String START_OPEN = "startopen";
     private static final String END_OPEN = "endopen";
-    private static final String SLICES = "slices";
-    private static final String SLICE = "slice";
+    private static final String SPELLS = "spells";
+    private static final String SPELL = "spell";
     private static final String ATTRIBUTE = "attribute";
     private static final String ATTRIBUTE_ID = "id";
     private static final String ATTRIBUTE_TITLE = "title";
@@ -299,7 +299,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeAttributes(XMLStreamWriter xmlWriter, AttributeColumn[] cols, String mode, String attClass) throws Exception {
-        if(exportAttributes) {
+        if(exportAttributes && cols.length != 0) {
             xmlWriter.writeStartElement(ATTRIBUTES);
             xmlWriter.writeAttribute(ATTRIBUTES_CLASS, attClass);
             xmlWriter.writeAttribute(ATTRIBUTES_MODE, mode);
@@ -506,9 +506,9 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     private void writeTimeInterval(XMLStreamWriter xmlWriter, TimeInterval timeInterval) throws Exception {
         List<Interval<Double[]>> intervals = timeInterval.getIntervals(visibleInterval.getLow(), visibleInterval.getHigh());
         if (intervals.size() > 1) {
-            xmlWriter.writeStartElement(SLICES);
+            xmlWriter.writeStartElement(SPELLS);
             for (Interval<Double[]> interval : intervals) {
-                xmlWriter.writeStartElement(SLICE);
+                xmlWriter.writeStartElement(SPELL);
                 if (!Double.isInfinite(interval.getLow())) {
                     String intervalLow = formatTime(interval.getLow());
                     xmlWriter.writeAttribute(interval.isLowExcluded() ? START_OPEN : START, intervalLow);
@@ -641,6 +641,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 t = t.substring(0, t.length() - 13);
             }
             return t;
+        } else if (dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATETIME)) {
+            return DynamicUtilities.getXMLDateStringFromDouble(time);
         } else {
             return Double.toString(time);
         }

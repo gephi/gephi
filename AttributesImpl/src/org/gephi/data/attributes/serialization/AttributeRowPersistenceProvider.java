@@ -17,17 +17,18 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.serialization;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.data.attributes.AbstractAttributeModel;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  *
@@ -36,22 +37,29 @@ import org.w3c.dom.Element;
 @ServiceProvider(service = WorkspacePersistenceProvider.class, position = 15000)
 public class AttributeRowPersistenceProvider implements WorkspacePersistenceProvider {
 
-    public Element writeXML(Document document, Workspace workspace) {
+    public void writeXML(XMLStreamWriter writer, Workspace workspace) {
         AttributeModel model = workspace.getLookup().lookup(AttributeModel.class);
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
         AttributeRowSerializer serializer = new AttributeRowSerializer();
         if (model != null && graphModel != null && model instanceof AbstractAttributeModel) {
-            return serializer.writeRows(document, graphModel);
+            try {
+                serializer.writeRows(writer, graphModel);
+            } catch (XMLStreamException ex) {
+                throw new RuntimeException(ex);
+            }
         }
-        return null;
     }
 
-    public void readXML(Element element, Workspace workspace) {
+    public void readXML(XMLStreamReader reader, Workspace workspace) {
         AttributeModel model = workspace.getLookup().lookup(AttributeModel.class);
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
         AttributeRowSerializer serializer = new AttributeRowSerializer();
         if (model != null && graphModel != null && model instanceof AbstractAttributeModel) {
-            serializer.readRows(element, graphModel, (AbstractAttributeModel) model);
+            try {
+                serializer.readRows(reader, graphModel, (AbstractAttributeModel) model);
+            } catch (XMLStreamException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 

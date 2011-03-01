@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization;
 
 import java.awt.Color;
@@ -27,12 +27,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.SwingUtilities;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.text.TextModel;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  *
@@ -348,7 +350,6 @@ public class VizModel {
     }
 
     public void setCameraDistance(float distance) {
-        
     }
 
     //EVENTS
@@ -368,139 +369,83 @@ public class VizModel {
     }
 
     //XML
-    public void readXML(Element vizModelElement) {
+    public void readXML(XMLStreamReader reader, Workspace workspace) throws XMLStreamException {
 
-        //TextModel
-        Element textModelE = (Element) vizModelElement.getElementsByTagName("textmodel").item(0);
-        textModel.readXML(textModelE);
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
 
-        //Camera
-        Element cameraPostionE = (Element) vizModelElement.getElementsByTagName("cameraposition").item(0);
-        cameraPosition[0] = Float.parseFloat(cameraPostionE.getAttribute("x"));
-        cameraPosition[1] = Float.parseFloat(cameraPostionE.getAttribute("y"));
-        cameraPosition[2] = Float.parseFloat(cameraPostionE.getAttribute("z"));
-        Element cameraTargetE = (Element) vizModelElement.getElementsByTagName("cameratarget").item(0);
-        cameraTarget[0] = Float.parseFloat(cameraTargetE.getAttribute("x"));
-        cameraTarget[1] = Float.parseFloat(cameraTargetE.getAttribute("y"));
-        cameraTarget[2] = Float.parseFloat(cameraTargetE.getAttribute("z"));
-
-        //Boolean values
-        if (vizModelElement.getElementsByTagName("use3d").getLength() > 0) {
-            Element use3dE = (Element) vizModelElement.getElementsByTagName("use3d").item(0);
-            use3d = Boolean.parseBoolean(use3dE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("lighting").getLength() > 0) {
-            Element lightingE = (Element) vizModelElement.getElementsByTagName("lighting").item(0);
-            lighting = Boolean.parseBoolean(lightingE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("culling").getLength() > 0) {
-            Element cullingE = (Element) vizModelElement.getElementsByTagName("culling").item(0);
-            culling = Boolean.parseBoolean(cullingE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("material").getLength() > 0) {
-            Element materialE = (Element) vizModelElement.getElementsByTagName("material").item(0);
-            material = Boolean.parseBoolean(materialE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("rotatingenable").getLength() > 0) {
-            Element rotatingEnableE = (Element) vizModelElement.getElementsByTagName("rotatingenable").item(0);
-            rotatingEnable = Boolean.parseBoolean(rotatingEnableE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("showedges").getLength() > 0) {
-            Element showEdgesE = (Element) vizModelElement.getElementsByTagName("showedges").item(0);
-            showEdges = Boolean.parseBoolean(showEdgesE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("lightennonselectedauto").getLength() > 0) {
-            Element lightenNonSelectedAutoE = (Element) vizModelElement.getElementsByTagName("lightennonselectedauto").item(0);
-            lightenNonSelectedAuto = Boolean.parseBoolean(lightenNonSelectedAutoE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("autoselectneighbor").getLength() > 0) {
-            Element autoSelectNeighborE = (Element) vizModelElement.getElementsByTagName("autoselectneighbor").item(0);
-            autoSelectNeighbor = Boolean.parseBoolean(autoSelectNeighborE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("hidenonselectededges").getLength() > 0) {
-            Element hideNonSelectedEdgesE = (Element) vizModelElement.getElementsByTagName("hidenonselectededges").item(0);
-            hideNonSelectedEdges = Boolean.parseBoolean(hideNonSelectedEdgesE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("unicolorselected").getLength() > 0) {
-            Element uniColorSelectedE = (Element) vizModelElement.getElementsByTagName("unicolorselected").item(0);
-            uniColorSelected = Boolean.parseBoolean(uniColorSelectedE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("edgehasunicolor").getLength() > 0) {
-            Element edgeHasUniColorE = (Element) vizModelElement.getElementsByTagName("edgehasunicolor").item(0);
-            edgeHasUniColor = Boolean.parseBoolean(edgeHasUniColorE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("adjustbytext").getLength() > 0) {
-            Element adjustByTextE = (Element) vizModelElement.getElementsByTagName("adjustbytext").item(0);
-            adjustByText = Boolean.parseBoolean(adjustByTextE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("edgeSelectionColor").getLength() > 0) {
-            Element edgeSelectionColorE = (Element) vizModelElement.getElementsByTagName("edgeSelectionColor").item(0);
-            edgeSelectionColor = Boolean.parseBoolean(edgeSelectionColorE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("showHulls").getLength() > 0) {
-            Element showHullsE = (Element) vizModelElement.getElementsByTagName("showHulls").item(0);
-            showHulls = Boolean.parseBoolean(showHullsE.getAttribute("value"));
-        }
-
-        //Colors
-        if (vizModelElement.getElementsByTagName("backgroundcolor").getLength() > 0) {
-            Element backgroundColorE = (Element) vizModelElement.getElementsByTagName("backgroundcolor").item(0);
-            backgroundColor = ColorUtils.decode(backgroundColorE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("edgeunicolor").getLength() > 0) {
-            Element edgeUniColorE = (Element) vizModelElement.getElementsByTagName("edgeunicolor").item(0);
-            edgeUniColor = ColorUtils.decode(edgeUniColorE.getAttribute("value")).getRGBComponents(null);
-        }
-
-        if (vizModelElement.getElementsByTagName("edgeInSelectionColor").getLength() > 0) {
-            Element edgeInSelectionColorE = (Element) vizModelElement.getElementsByTagName("edgeInSelectionColor").item(0);
-            edgeInSelectionColor = ColorUtils.decode(edgeInSelectionColorE.getAttribute("value")).getRGBComponents(null);
-        }
-
-        if (vizModelElement.getElementsByTagName("edgeOutSelectionColor").getLength() > 0) {
-            Element edgeOutSelectionColorE = (Element) vizModelElement.getElementsByTagName("edgeOutSelectionColor").item(0);
-            edgeOutSelectionColor = ColorUtils.decode(edgeOutSelectionColorE.getAttribute("value")).getRGBComponents(null);
-        }
-
-        if (vizModelElement.getElementsByTagName("edgeBothSelectionColor").getLength() > 0) {
-            Element edgeBothSelectionColorE = (Element) vizModelElement.getElementsByTagName("edgeBothSelectionColor").item(0);
-            edgeBothSelectionColor = ColorUtils.decode(edgeBothSelectionColorE.getAttribute("value")).getRGBComponents(null);
-        }
-
-        //Misc
-        if (vizModelElement.getElementsByTagName("nodemodeler").getLength() > 0) {
-            Element nodeModelerE = (Element) vizModelElement.getElementsByTagName("nodemodeler").item(0);
-            nodeModeler = nodeModelerE.getAttribute("value");
-        }
-
-        //Float
-        if (vizModelElement.getElementsByTagName("edgeScale").getLength() > 0) {
-            Element edgeScaleE = (Element) vizModelElement.getElementsByTagName("edgeScale").item(0);
-            edgeScale = Float.parseFloat(edgeScaleE.getAttribute("value"));
-        }
-
-        if (vizModelElement.getElementsByTagName("metaEdgeScale").getLength() > 0) {
-            Element metaEdgeScaleE = (Element) vizModelElement.getElementsByTagName("metaEdgeScale").item(0);
-            metaEdgeScale = Float.parseFloat(metaEdgeScaleE.getAttribute("value"));
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+                    if ("textmodel".equalsIgnoreCase(name)) {
+                        textModel.readXML(reader, workspace);
+                    } else if ("cameraposition".equalsIgnoreCase(name)) {
+                        cameraPosition[0] = Float.parseFloat(reader.getAttributeValue(null, "x"));
+                        cameraPosition[1] = Float.parseFloat(reader.getAttributeValue(null, "y"));
+                        cameraPosition[2] = Float.parseFloat(reader.getAttributeValue(null, "z"));
+                    } else if ("cameratarget".equalsIgnoreCase(name)) {
+                        cameraTarget[0] = Float.parseFloat(reader.getAttributeValue(null, "x"));
+                        cameraTarget[1] = Float.parseFloat(reader.getAttributeValue(null, "y"));
+                        cameraTarget[2] = Float.parseFloat(reader.getAttributeValue(null, "z"));
+                    } else if ("use3d".equalsIgnoreCase(name)) {
+                        use3d = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("lighting".equalsIgnoreCase(name)) {
+                        lighting = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("culling".equalsIgnoreCase(name)) {
+                        culling = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("material".equalsIgnoreCase(name)) {
+                        material = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("rotatingenable".equalsIgnoreCase(name)) {
+                        rotatingEnable = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("showedges".equalsIgnoreCase(name)) {
+                        showEdges = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("lightennonselectedauto".equalsIgnoreCase(name)) {
+                        lightenNonSelectedAuto = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("autoselectneighbor".equalsIgnoreCase(name)) {
+                        autoSelectNeighbor = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("hidenonselectededges".equalsIgnoreCase(name)) {
+                        hideNonSelectedEdges = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("unicolorselected".equalsIgnoreCase(name)) {
+                        uniColorSelected = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("edgehasunicolor".equalsIgnoreCase(name)) {
+                        edgeHasUniColor = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("adjustbytext".equalsIgnoreCase(name)) {
+                        adjustByText = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("edgeSelectionColor".equalsIgnoreCase(name)) {
+                        edgeSelectionColor = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("showHulls".equalsIgnoreCase(name)) {
+                        showHulls = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("backgroundcolor".equalsIgnoreCase(name)) {
+                        backgroundColor = ColorUtils.decode(reader.getAttributeValue(null, "value"));
+                    } else if ("edgeunicolor".equalsIgnoreCase(name)) {
+                        edgeUniColor = ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null);
+                    } else if ("edgeInSelectionColor".equalsIgnoreCase(name)) {
+                        edgeInSelectionColor = ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null);
+                    } else if ("edgeOutSelectionColor".equalsIgnoreCase(name)) {
+                        edgeOutSelectionColor = ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null);
+                    } else if ("edgeBothSelectionColor".equalsIgnoreCase(name)) {
+                        edgeBothSelectionColor = ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null);
+                    } else if ("nodemodeler".equalsIgnoreCase(name)) {
+                        nodeModeler = reader.getAttributeValue(null, "value");
+                    } else if ("edgeScale".equalsIgnoreCase(name)) {
+                        edgeScale = Float.parseFloat(reader.getAttributeValue(null, "value"));
+                    } else if ("metaEdgeScale".equalsIgnoreCase(name)) {
+                        metaEdgeScale = Float.parseFloat(reader.getAttributeValue(null, "value"));
+                    }
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    if ("vizmodel".equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
+                    }
+                    break;
+            }
         }
     }
 
-    public Element writeXML(Document document) {
-        Element vizModelE = document.createElement("vizmodel");
+    public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
+
+        writer.writeStartElement("vizmodel");
 
         //Fast refreh
         GraphDrawable drawable = VizController.getInstance().getDrawable();
@@ -508,113 +453,112 @@ public class VizModel {
         cameraTarget = Arrays.copyOf(drawable.getCameraTarget(), 3);
 
         //TextModel
-        Element textModelE = textModel.writeXML(document);
-        vizModelE.appendChild(textModelE);
+        textModel.writeXML(writer);
 
         //Camera
-        Element cameraPostionE = document.createElement("cameraposition");
-        cameraPostionE.setAttribute("x", Float.toString(cameraPosition[0]));
-        cameraPostionE.setAttribute("y", Float.toString(cameraPosition[1]));
-        cameraPostionE.setAttribute("z", Float.toString(cameraPosition[2]));
-        vizModelE.appendChild(cameraPostionE);
-        Element cameraTargetE = document.createElement("cameratarget");
-        cameraTargetE.setAttribute("x", Float.toString(cameraTarget[0]));
-        cameraTargetE.setAttribute("y", Float.toString(cameraTarget[1]));
-        cameraTargetE.setAttribute("z", Float.toString(cameraTarget[2]));
-        vizModelE.appendChild(cameraTargetE);
+        writer.writeStartElement("cameraposition");
+        writer.writeAttribute("x", Float.toString(cameraPosition[0]));
+        writer.writeAttribute("y", Float.toString(cameraPosition[1]));
+        writer.writeAttribute("z", Float.toString(cameraPosition[2]));
+        writer.writeEndElement();
+        writer.writeStartElement("cameratarget");
+        writer.writeAttribute("x", Float.toString(cameraTarget[0]));
+        writer.writeAttribute("y", Float.toString(cameraTarget[1]));
+        writer.writeAttribute("z", Float.toString(cameraTarget[2]));
+        writer.writeEndElement();
 
         //Boolean values
-        Element use3dE = document.createElement("use3d");
-        use3dE.setAttribute("value", String.valueOf(use3d));
-        vizModelE.appendChild(use3dE);
+        writer.writeStartElement("use3d");
+        writer.writeAttribute("value", String.valueOf(use3d));
+        writer.writeEndElement();
 
-        Element lightingE = document.createElement("lighting");
-        lightingE.setAttribute("value", String.valueOf(lighting));
-        vizModelE.appendChild(lightingE);
+        writer.writeStartElement("lighting");
+        writer.writeAttribute("value", String.valueOf(lighting));
+        writer.writeEndElement();
 
-        Element cullingE = document.createElement("culling");
-        cullingE.setAttribute("value", String.valueOf(culling));
-        vizModelE.appendChild(cullingE);
+        writer.writeStartElement("culling");
+        writer.writeAttribute("value", String.valueOf(culling));
+        writer.writeEndElement();
 
-        Element materialE = document.createElement("material");
-        materialE.setAttribute("value", String.valueOf(material));
-        vizModelE.appendChild(materialE);
+        writer.writeStartElement("material");
+        writer.writeAttribute("value", String.valueOf(material));
+        writer.writeEndElement();
 
-        Element rotatingEnableE = document.createElement("rotatingenable");
-        rotatingEnableE.setAttribute("value", String.valueOf(rotatingEnable));
-        vizModelE.appendChild(rotatingEnableE);
+        writer.writeStartElement("rotatingenable");
+        writer.writeAttribute("value", String.valueOf(rotatingEnable));
+        writer.writeEndElement();
 
-        Element showEdgesE = document.createElement("showedges");
-        showEdgesE.setAttribute("value", String.valueOf(showEdges));
-        vizModelE.appendChild(showEdgesE);
+        writer.writeStartElement("showedges");
+        writer.writeAttribute("value", String.valueOf(showEdges));
+        writer.writeEndElement();
 
-        Element lightenNonSelectedAutoE = document.createElement("lightennonselectedauto");
-        lightenNonSelectedAutoE.setAttribute("value", String.valueOf(lightenNonSelectedAuto));
-        vizModelE.appendChild(lightenNonSelectedAutoE);
+        writer.writeStartElement("lightennonselectedauto");
+        writer.writeAttribute("value", String.valueOf(lightenNonSelectedAuto));
+        writer.writeEndElement();
 
-        Element autoSelectNeighborE = document.createElement("autoselectneighbor");
-        autoSelectNeighborE.setAttribute("value", String.valueOf(autoSelectNeighbor));
-        vizModelE.appendChild(autoSelectNeighborE);
+        writer.writeStartElement("autoselectneighbor");
+        writer.writeAttribute("value", String.valueOf(autoSelectNeighbor));
+        writer.writeEndElement();
 
-        Element hideNonSelectedEdgesE = document.createElement("hidenonselectededges");
-        hideNonSelectedEdgesE.setAttribute("value", String.valueOf(hideNonSelectedEdges));
-        vizModelE.appendChild(hideNonSelectedEdgesE);
+        writer.writeStartElement("hidenonselectededges");
+        writer.writeAttribute("value", String.valueOf(hideNonSelectedEdges));
+        writer.writeEndElement();
 
-        Element uniColorSelectedE = document.createElement("unicolorselected");
-        uniColorSelectedE.setAttribute("value", String.valueOf(uniColorSelected));
-        vizModelE.appendChild(uniColorSelectedE);
+        writer.writeStartElement("unicolorselected");
+        writer.writeAttribute("value", String.valueOf(uniColorSelected));
+        writer.writeEndElement();
 
-        Element edgeHasUniColorE = document.createElement("edgehasunicolor");
-        edgeHasUniColorE.setAttribute("value", String.valueOf(edgeHasUniColor));
-        vizModelE.appendChild(edgeHasUniColorE);
+        writer.writeStartElement("edgehasunicolor");
+        writer.writeAttribute("value", String.valueOf(edgeHasUniColor));
+        writer.writeEndElement();
 
-        Element adjustByTextE = document.createElement("adjustbytext");
-        adjustByTextE.setAttribute("value", String.valueOf(adjustByText));
-        vizModelE.appendChild(adjustByTextE);
+        writer.writeStartElement("adjustbytext");
+        writer.writeAttribute("value", String.valueOf(adjustByText));
+        writer.writeEndElement();
 
-        Element edgeSelectionColorE = document.createElement("edgeSelectionColor");
-        edgeSelectionColorE.setAttribute("value", String.valueOf(edgeSelectionColor));
-        vizModelE.appendChild(edgeSelectionColorE);
+        writer.writeStartElement("edgeSelectionColor");
+        writer.writeAttribute("value", String.valueOf(edgeSelectionColor));
+        writer.writeEndElement();
 
-        Element showHullsE = document.createElement("showHulls");
-        showHullsE.setAttribute("value", String.valueOf(showHulls));
-        vizModelE.appendChild(showHullsE);
+        writer.writeStartElement("showHulls");
+        writer.writeAttribute("value", String.valueOf(showHulls));
+        writer.writeEndElement();
 
         //Colors
-        Element backgroundColorE = document.createElement("backgroundcolor");
-        backgroundColorE.setAttribute("value", ColorUtils.encode(backgroundColor));
-        vizModelE.appendChild(backgroundColorE);
+        writer.writeStartElement("backgroundcolor");
+        writer.writeAttribute("value", ColorUtils.encode(backgroundColor));
+        writer.writeEndElement();
 
-        Element edgeUniColorE = document.createElement("edgeunicolor");
-        edgeUniColorE.setAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeUniColor)));
-        vizModelE.appendChild(edgeUniColorE);
+        writer.writeStartElement("edgeunicolor");
+        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeUniColor)));
+        writer.writeEndElement();
 
-        Element edgeInSelectionColorE = document.createElement("edgeInSelectionColor");
-        edgeInSelectionColorE.setAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeInSelectionColor)));
-        vizModelE.appendChild(edgeInSelectionColorE);
+        writer.writeStartElement("edgeInSelectionColor");
+        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeInSelectionColor)));
+        writer.writeEndElement();
 
-        Element edgeOutSelectionColorE = document.createElement("edgeOutSelectionColor");
-        edgeOutSelectionColorE.setAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeOutSelectionColor)));
-        vizModelE.appendChild(edgeOutSelectionColorE);
+        writer.writeStartElement("edgeOutSelectionColor");
+        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeOutSelectionColor)));
+        writer.writeEndElement();
 
-        Element edgeBothSelectionColorE = document.createElement("edgeBothSelectionColor");
-        edgeBothSelectionColorE.setAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeBothSelectionColor)));
-        vizModelE.appendChild(edgeBothSelectionColorE);
+        writer.writeStartElement("edgeBothSelectionColor");
+        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeBothSelectionColor)));
+        writer.writeEndElement();
 
         //Misc
-        Element nodeModelerE = document.createElement("nodemodeler");
-        nodeModelerE.setAttribute("value", nodeModeler);
-        vizModelE.appendChild(nodeModelerE);
+        writer.writeStartElement("nodemodeler");
+        writer.writeAttribute("value", nodeModeler);
+        writer.writeEndElement();
 
         //Float
-        Element edgeScaleE = document.createElement("edgeScale");
-        edgeScaleE.setAttribute("value", String.valueOf(edgeScale));
-        vizModelE.appendChild(edgeScaleE);
+        writer.writeStartElement("edgeScale");
+        writer.writeAttribute("value", String.valueOf(edgeScale));
+        writer.writeEndElement();
 
-        Element metaEdgeScaleE = document.createElement("metaEdgeScale");
-        metaEdgeScaleE.setAttribute("value", String.valueOf(metaEdgeScale));
-        vizModelE.appendChild(metaEdgeScaleE);
+        writer.writeStartElement("metaEdgeScale");
+        writer.writeAttribute("value", String.valueOf(metaEdgeScale));
+        writer.writeEndElement();
 
-        return vizModelE;
+        writer.writeEndElement();
     }
 }

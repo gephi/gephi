@@ -17,23 +17,22 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes.serialization;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.data.attributes.AbstractAttributeModel;
 import org.gephi.data.attributes.AttributeColumnImpl;
 import org.gephi.data.attributes.AttributeRowImpl;
 import org.gephi.data.attributes.AttributeTableImpl;
-import org.gephi.data.attributes.AttributeValueImpl;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -46,17 +45,17 @@ public class AttributeRowSerializer {
     private static final String ELEMENT_EDGE_ROW = "edgerow";
     private static final String ELEMENT_VALUE = "attvalue";
 
-    public Element writeRows(Document document, GraphModel graphModel) {
-        Element rowsE = document.createElement(ELEMENT_ROWS);
+    public void writeRows(XMLStreamWriter writer, GraphModel graphModel) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_ROWS);
 
         HierarchicalGraph hierarchicalGraph = graphModel.getHierarchicalGraph();
         for (Node node : hierarchicalGraph.getNodesTree()) {
             if (node.getNodeData().getAttributes() != null && node.getNodeData().getAttributes() instanceof AttributeRowImpl) {
                 AttributeRowImpl row = (AttributeRowImpl) node.getNodeData().getAttributes();
-                Element rowE = document.createElement(ELEMENT_NODE_ROW);
-                rowE.setAttribute("for", String.valueOf(node.getId()));
-                if (writeRow(document, rowE, row)) {
-                    rowsE.appendChild(rowE);
+                writer.writeStartElement(ELEMENT_NODE_ROW);
+                writer.writeAttribute("for", String.valueOf(node.getId()));
+                if (writeRow(writer, row)) {
+                    writer.writeEndElement();
                 }
             }
         }
@@ -65,75 +64,105 @@ public class AttributeRowSerializer {
             for (Edge edge : hierarchicalGraph.getEdges(node)) {
                 if (edge.getEdgeData().getAttributes() != null && edge.getEdgeData().getAttributes() instanceof AttributeRowImpl) {
                     AttributeRowImpl row = (AttributeRowImpl) edge.getEdgeData().getAttributes();
-                    Element rowE = document.createElement(ELEMENT_EDGE_ROW);
-                    rowE.setAttribute("for", String.valueOf(edge.getId()));
-                    if (writeRow(document, rowE, row)) {
-                        rowsE.appendChild(rowE);
+                    writer.writeStartElement(ELEMENT_EDGE_ROW);
+                    writer.writeAttribute("for", String.valueOf(edge.getId()));
+                    if (writeRow(writer, row)) {
+                        writer.writeEndElement();
                     }
                 }
             }
         }
 
-        return rowsE;
+        writer.writeEndElement();
     }
 
-    public void readRows(Element rowsE, GraphModel graphModel, AbstractAttributeModel attributeModel) {
+    public void readRows(XMLStreamReader reader, GraphModel graphModel, AbstractAttributeModel attributeModel) throws XMLStreamException {
         HierarchicalGraph hierarchicalGraph = graphModel.getHierarchicalGraph();
 
-        NodeList rowList = rowsE.getChildNodes();
-        for (int i = 0; i < rowList.getLength(); i++) {
-            if (rowList.item(i).getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-                Element itemE = (Element) rowList.item(i);
-                if (itemE.getTagName().equals(ELEMENT_NODE_ROW)) {
-                    int id = Integer.parseInt(itemE.getAttribute("for"));
-                    Node node = hierarchicalGraph.getNode(id);
-                    if (node.getNodeData().getAttributes() != null && node.getNodeData().getAttributes() instanceof AttributeRowImpl) {
-                        AttributeRowImpl row = (AttributeRowImpl) node.getNodeData().getAttributes();
-                        readRow(itemE, attributeModel, attributeModel.getNodeTable(), row);
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+                    if (ELEMENT_NODE_ROW.equalsIgnoreCase(name)) {
+                        int id = Integer.parseInt(reader.getAttributeValue(null, "for"));
+                        Node node = hierarchicalGraph.getNode(id);
+                        if (node.getNodeData().getAttributes() != null && node.getNodeData().getAttributes() instanceof AttributeRowImpl) {
+                            AttributeRowImpl row = (AttributeRowImpl) node.getNodeData().getAttributes();
+                            readRow(reader, attributeModel, attributeModel.getNodeTable(), row);
+                        }
+                    } else if (ELEMENT_EDGE_ROW.equalsIgnoreCase(name)) {
+                        int id = Integer.parseInt(reader.getAttributeValue(null, "for"));
+                        Edge edge = hierarchicalGraph.getEdge(id);
+                        if (edge.getEdgeData().getAttributes() != null && edge.getEdgeData().getAttributes() instanceof AttributeRowImpl) {
+                            AttributeRowImpl row = (AttributeRowImpl) edge.getEdgeData().getAttributes();
+                            readRow(reader, attributeModel, attributeModel.getEdgeTable(), row);
+                        }
                     }
-                } else if (itemE.getTagName().equals(ELEMENT_EDGE_ROW)) {
-                    int id = Integer.parseInt(itemE.getAttribute("for"));
-                    Edge edge = hierarchicalGraph.getEdge(id);
-                    if (edge.getEdgeData().getAttributes() != null && edge.getEdgeData().getAttributes() instanceof AttributeRowImpl) {
-                        AttributeRowImpl row = (AttributeRowImpl) edge.getEdgeData().getAttributes();
-                        readRow(itemE, attributeModel, attributeModel.getEdgeTable(), row);
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    if (ELEMENT_ROWS.equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
                     }
-                }
+                    break;
             }
         }
     }
 
-    public boolean writeRow(Document document, Element rowE, AttributeRowImpl row) {
-        rowE.setAttribute("version", String.valueOf(row.getRowVersion()));
+    public boolean writeRow(XMLStreamWriter writer, AttributeRowImpl row) throws XMLStreamException {
+        writer.writeAttribute("version", String.valueOf(row.getRowVersion()));
         int writtenRows = 0;
         for (AttributeValue value : row.getValues()) {
             int index = value.getColumn().getIndex();
             Object obj = value.getValue();
             if (obj != null) {
                 writtenRows++;
-                Element valueE = document.createElement(ELEMENT_VALUE);
-                valueE.setAttribute("index", String.valueOf(index));
-                valueE.setTextContent(obj.toString());
-                rowE.appendChild(valueE);
+                writer.writeStartElement(ELEMENT_VALUE);
+                writer.writeAttribute("index", String.valueOf(index));
+                writer.writeCharacters(obj.toString());
+                writer.writeEndElement();
             }
         }
         return writtenRows > 0;
     }
 
-    public void readRow(Element rowE, AbstractAttributeModel model, AttributeTableImpl table, AttributeRowImpl row) {
-        NodeList rowList = rowE.getChildNodes();
-        for (int i = 0; i < rowList.getLength(); i++) {
-            if (rowList.item(i).getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-                Element itemE = (Element) rowList.item(i);
-                if (itemE.getTagName().equals(ELEMENT_VALUE)) {
-                    AttributeColumnImpl col = (AttributeColumnImpl) table.getColumn(Integer.parseInt(itemE.getAttribute("index")));
-                    AttributeType type = col.getType();
-                    Object value = type.parse(itemE.getTextContent());
-                    value = model.getManagedValue(value, type);
-                    row.setValue(col, value);
-                }
+    public void readRow(XMLStreamReader reader, AbstractAttributeModel model, AttributeTableImpl table, AttributeRowImpl row) throws XMLStreamException {
+        row.setRowVersion(Integer.parseInt(reader.getAttributeValue(null, "version")));
+        AttributeColumnImpl col = null;
+        String value = "";
+
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int t = reader.next();
+
+            switch (t) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+                    if (ELEMENT_VALUE.equalsIgnoreCase(name)) {
+                        col = (AttributeColumnImpl) table.getColumn(Integer.parseInt(reader.getAttributeValue(null, "index")));
+                    }
+                    break;
+                case XMLStreamReader.CHARACTERS:
+                    if (!reader.isWhiteSpace() && col != null) {
+                        value += reader.getText();
+                    }
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    if (ELEMENT_NODE_ROW.equalsIgnoreCase(reader.getLocalName()) || ELEMENT_EDGE_ROW.equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
+                    }
+                    if (!value.isEmpty() && col != null) {
+                        AttributeType type = col.getType();
+                        Object v = type.parse(value);
+                        v = model.getManagedValue(v, type);
+                        row.setValue(col, value);
+                    }
+                    value = "";
+                    col = null;
+                    break;
             }
         }
-        row.setRowVersion(Integer.parseInt(rowE.getAttribute("version")));
     }
 }

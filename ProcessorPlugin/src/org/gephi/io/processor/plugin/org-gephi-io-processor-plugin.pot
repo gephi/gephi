@@ -23,7 +23,7 @@ msgid "AppendProcessor.displayName"
 msgstr "Append Graph"
 
 msgid "DefaultProcessor.displayName"
-msgstr "Add full graph"
+msgstr "New graph"
 
 msgid "DynamicProcessor.displayName"
 msgstr "Time frame"

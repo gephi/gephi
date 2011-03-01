@@ -22,3 +22,9 @@ msgid "description"
 msgstr ""
 "Label Adjust works on text size to repulse nodes and therefore makes every "
 "label readable."
+
+msgid "LabelAdjust.speed.name"
+msgstr "speed"
+
+msgid "LabelAdjust.speed.desc"
+msgstr "speed"

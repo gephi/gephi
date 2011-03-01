@@ -24,7 +24,6 @@ import javax.swing.Icon;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.plugin.manipulators.nodes.ui.LinkNodesUI;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -38,7 +37,7 @@ import org.openide.util.NbBundle;
  * It will create edges between the source node and all of the other nodes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class LinkNodes implements NodesManipulator{
+public class LinkNodes extends BasicNodesManipulator{
     private Node[] nodes;
     private Node sourceNode;
     private static boolean directed;

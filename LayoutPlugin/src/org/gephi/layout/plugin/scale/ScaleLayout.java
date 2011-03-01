@@ -29,6 +29,7 @@ import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.openide.util.NbBundle;
 
 /**
  * Sample layout that scales the graph.
@@ -76,8 +77,11 @@ public class ScaleLayout extends AbstractLayout implements Layout {
         List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class, "Scale factor", null,
-                    "Scale factor", "getScale", "setScale"));
+                    this, Double.class, 
+                    NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.name"),
+                    null,
+                    NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.desc"),
+                    "getScale", "setScale"));
         } catch (Exception e) {
             e.printStackTrace();
         }

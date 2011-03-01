@@ -17,16 +17,14 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.project.io;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.impl.WorkspaceProviderImpl;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectInformation;
@@ -36,8 +34,6 @@ import org.gephi.project.api.WorkspaceInformation;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.Cancellable;
 import org.openide.util.Lookup;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  *
@@ -46,7 +42,6 @@ import org.w3c.dom.Element;
 public class GephiWriter implements Cancellable {
 
     private int tasks = 0;
-    private Document doc;
     private Map<String, WorkspacePersistenceProvider> providers;
 
     public GephiWriter() {
@@ -62,114 +57,98 @@ public class GephiWriter implements Cancellable {
         }
     }
 
-    private Document createDocument() throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.newDocument();
+    public void writeAll(Project project, XMLStreamWriter writer) throws Exception {
+        writer.writeStartDocument("UTF-8", "1.0");
+        writer.writeStartElement("gephiFile");
+        writer.writeAttribute("version", "0.7");
+        writer.writeComment("File saved from Gephi 0.8");
 
-        document.setXmlVersion("1.0");
-        document.setXmlStandalone(true);
+        writeCore(writer);
+        writeProject(writer, project);
 
-        return document;
+        writer.writeEndElement();
+        writer.writeEndDocument();
     }
 
-    public Document writeAll(Project project) throws Exception {
-        doc = createDocument();
-
-        Element root = writeCore();
-        Element projectE = writeProject(project);
-
-        root.appendChild(projectE);
-        doc.appendChild(root);
-
-        return doc;
-    }
-
-    public Element writeCore() throws Exception {
-        Element root = doc.createElement("gephiFile");
-        root.setAttribute("version", "0.7");
-        root.appendChild(doc.createComment("File saved from Gephi 0.7"));
-
+    public void writeCore(XMLStreamWriter writer) throws Exception {
         //Core
-        Element core = doc.createElement("core");
-        core.setAttribute("tasks", String.valueOf(tasks));
-        Element lastModifiedDate = doc.createElement("lastModifiedDate");
+        writer.writeStartElement("core");
+        writer.writeAttribute("tasks", String.valueOf(tasks));
+        writer.writeStartElement("lastModifiedDate");
 
         //LastModifiedDate
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        lastModifiedDate.setTextContent(sdf.format(cal.getTime()));
-        lastModifiedDate.appendChild(doc.createComment("yyyy-MM-dd HH:mm:ss"));
+        writer.writeCharacters(sdf.format(cal.getTime()));
+        writer.writeComment("yyyy-MM-dd HH:mm:ss");
 
         //Append
-        core.appendChild(lastModifiedDate);
-        root.appendChild(core);
-
-        return root;
+        writer.writeEndElement();
+        writer.writeEndElement();
     }
 
-    public Element writeProject(Project project) throws Exception {
+    public void writeProject(XMLStreamWriter writer, Project project) throws Exception {
         ProjectInformation info = project.getLookup().lookup(ProjectInformation.class);
         ProjectMetaData metaData = project.getLookup().lookup(ProjectMetaData.class);
         WorkspaceProviderImpl workspaces = project.getLookup().lookup(WorkspaceProviderImpl.class);
 
-        Element projectE = doc.createElement("project");
-        projectE.setAttribute("name", info.getName());
+        writer.writeStartElement("project");
+        writer.writeAttribute("name", info.getName());
 
         //MetaData
-        Element projectMetaDataE = doc.createElement("metadata");
-        Element titleE = doc.createElement("title");
-        titleE.setTextContent(metaData.getTitle());
-        Element keywordsE = doc.createElement("keywords");
-        keywordsE.setTextContent(metaData.getKeywords());
-        Element descriptionE = doc.createElement("description");
-        descriptionE.setTextContent(metaData.getDescription());
-        Element authorE = doc.createElement("author");
-        authorE.setTextContent(metaData.getAuthor());
-        projectMetaDataE.appendChild(titleE);
-        projectMetaDataE.appendChild(authorE);
-        projectMetaDataE.appendChild(keywordsE);
-        projectMetaDataE.appendChild(descriptionE);
-        projectE.appendChild(projectMetaDataE);
+        writer.writeStartElement("metadata");
+
+        writer.writeStartElement("title");
+        writer.writeCharacters(metaData.getTitle());
+        writer.writeEndElement();
+
+        writer.writeStartElement("keywords");
+        writer.writeCharacters(metaData.getKeywords());
+        writer.writeEndElement();
+
+        writer.writeStartElement("description");
+        writer.writeCharacters(metaData.getDescription());
+        writer.writeEndElement();
+
+        writer.writeStartElement("author");
+        writer.writeCharacters(metaData.getAuthor());
+        writer.writeEndElement();
+
+        writer.writeEndElement();
 
         //Workspaces
-        Element workspacesE = doc.createElement("workspaces");
+        writer.writeStartElement("workspaces");
         for (Workspace ws : workspaces.getWorkspaces()) {
-            workspacesE.appendChild(writeWorkspace(ws));
+            writeWorkspace(writer, ws);
         }
-        projectE.appendChild(workspacesE);
-
-        return projectE;
+        writer.writeEndElement();
+        writer.writeEndElement();
     }
 
-    public Element writeWorkspace(Workspace workspace) throws Exception {
+    public void writeWorkspace(XMLStreamWriter writer, Workspace workspace) throws Exception {
         WorkspaceInformation info = workspace.getLookup().lookup(WorkspaceInformation.class);
 
-        Element workspaceE = doc.createElement("workspace");
-        workspaceE.setAttribute("name", info.getName());
+        writer.writeStartElement("workspace");
+        writer.writeAttribute("name", info.getName());
         if (info.isOpen()) {
-            workspaceE.setAttribute("status", "open");
+            writer.writeAttribute("status", "open");
         } else if (info.isClosed()) {
-            workspaceE.setAttribute("status", "closed");
+            writer.writeAttribute("status", "closed");
         } else {
-            workspaceE.setAttribute("status", "invalid");
+            writer.writeAttribute("status", "invalid");
         }
 
-        writeWorkspaceChildren(workspace, workspaceE);
+        writeWorkspaceChildren(writer, workspace);
 
-        return workspaceE;
+        writer.writeEndElement();
     }
 
-    public void writeWorkspaceChildren(Workspace workspace, Element workspaceE) {
+    public void writeWorkspaceChildren(XMLStreamWriter writer, Workspace workspace) throws Exception {
         for (WorkspacePersistenceProvider pp : providers.values()) {
-            Element childE = null;
             try {
-                childE = pp.writeXML(doc, workspace);
+                writer.writeComment("Persistence from " + pp.getClass().getName());
+                pp.writeXML(writer, workspace);
             } catch (UnsupportedOperationException e) {
-            }
-            if (childE != null) {
-                workspaceE.appendChild(doc.createComment("Persistence from " + pp.getClass().getName()));
-                workspaceE.appendChild(childE);
             }
         }
     }

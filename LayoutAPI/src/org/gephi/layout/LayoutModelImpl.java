@@ -29,6 +29,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.events.XMLEvent;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.api.LayoutModel;
@@ -37,10 +41,6 @@ import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.api.LongTaskListener;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -212,42 +212,54 @@ public class LayoutModelImpl implements LayoutModel {
         }
     }
 
-    public Element writeXML(Document document) {
-        Element layoutModelE = document.createElement("layoutmodel");
+    public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("layoutmodel");
 
         if (selectedLayout != null) {
             saveProperties(selectedLayout);
         }
 
         //Properties
-        Element propertiesE = document.createElement("properties");
+        writer.writeStartElement("properties");
         for (Entry<LayoutPropertyKey, Object> entry : savedProperties.entrySet()) {
             if (entry.getValue() != null) {
-                Element propertyE = document.createElement("property");
-                propertyE.setAttribute("layout", entry.getKey().layoutClassName);
-                propertyE.setAttribute("property", entry.getKey().name);
-                propertyE.setAttribute("class", entry.getValue().getClass().getName());
-                propertyE.setTextContent(entry.getValue().toString());
-                propertiesE.appendChild(propertyE);
+                writer.writeStartElement("property");
+                writer.writeAttribute("layout", entry.getKey().layoutClassName);
+                writer.writeAttribute("property", entry.getKey().name);
+                writer.writeAttribute("class", entry.getValue().getClass().getName());
+                writer.writeCharacters(entry.getValue().toString());
+                writer.writeEndElement();
             }
         }
 
-        layoutModelE.appendChild(propertiesE);
+        writer.writeEndElement();
 
-        return layoutModelE;
+        writer.writeEndElement();
     }
 
-    public void readXML(Element layoutModelElement) {
-        NodeList propertyList = layoutModelElement.getElementsByTagName("property");
-        for (int i = 0; i < propertyList.getLength(); i++) {
-            Node n = propertyList.item(i);
-            if (n.getNodeType() == Node.ELEMENT_NODE) {
-                Element propertyE = (Element) n;
-
-                LayoutPropertyKey key = new LayoutPropertyKey(propertyE.getAttribute("property"), propertyE.getAttribute("layout"));
-                Object value = parse(propertyE.getAttribute("class"), propertyE.getTextContent());
-                if (value != null) {
-                    savedProperties.put(key, value);
+    public void readXML(XMLStreamReader reader) throws XMLStreamException {
+        boolean end = false;
+        LayoutPropertyKey key = null;
+        String classStr = null;
+        while (reader.hasNext() && !end) {
+            Integer eventType = reader.next();
+            if (eventType.equals(XMLEvent.START_ELEMENT)) {
+                String name = reader.getLocalName();
+                if ("property".equalsIgnoreCase(name)) {
+                    key = new LayoutPropertyKey(reader.getAttributeValue(null, "property"), reader.getAttributeValue(null, "layout"));
+                    classStr = reader.getAttributeValue(null, "class");
+                }
+            } else if (eventType.equals(XMLEvent.CHARACTERS)) {
+                if (key != null && !reader.isWhiteSpace()) {
+                    Object value = parse(classStr, reader.getText());
+                    if (value != null) {
+                        savedProperties.put(key, value);
+                    }
+                }
+            } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                key = null;
+                if ("layoutmodel".equalsIgnoreCase(reader.getLocalName())) {
+                    end = true;
                 }
             }
         }

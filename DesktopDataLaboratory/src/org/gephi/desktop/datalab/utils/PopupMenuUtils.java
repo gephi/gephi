@@ -22,12 +22,20 @@ package org.gephi.desktop.datalab.utils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.datalab.api.DataLaboratoryHelper;
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.datalab.spi.Manipulator;
+import org.gephi.datalab.spi.edges.EdgesManipulator;
+import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.datalab.spi.values.AttributeValueManipulator;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
@@ -36,6 +44,122 @@ import org.openide.util.NbBundle;
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class PopupMenuUtils {
+
+    public static JMenuItem createMenuItemFromNodesManipulator(final NodesManipulator item, final Node clickedNode,final Node[] nodes) {
+        ContextMenuItemManipulator[] subItems = item.getSubItems();
+        if (subItems != null && item.canExecute()) {
+            JMenu subMenu = new JMenu();
+            subMenu.setText(item.getName());
+            if (item.getDescription() != null && !item.getDescription().isEmpty()) {
+                subMenu.setToolTipText(item.getDescription());
+            }
+            subMenu.setIcon(item.getIcon());
+            Integer lastItemType = null;
+            for (ContextMenuItemManipulator subItem : subItems) {
+                ((NodesManipulator)subItem).setup(nodes,clickedNode);
+                if (lastItemType == null) {
+                    lastItemType = subItem.getType();
+                }
+                if (lastItemType != subItem.getType()) {
+                    subMenu.addSeparator();
+                }
+                lastItemType = subItem.getType();
+                if (subItem.isAvailable()) {
+                    subMenu.add(createMenuItemFromNodesManipulator((NodesManipulator) subItem,clickedNode,nodes));
+                }
+            }
+            if(item.getMnemonicKey()!=null){
+                subMenu.setMnemonic(item.getMnemonicKey());//Mnemonic for opening a sub menu
+            }
+            return subMenu;
+        } else {
+            JMenuItem menuItem = new JMenuItem();
+            menuItem.setText(item.getName());
+            if (item.getDescription() != null && !item.getDescription().isEmpty()) {
+                menuItem.setToolTipText(item.getDescription());
+            }
+            menuItem.setIcon(item.getIcon());
+            if (item.canExecute()) {
+                menuItem.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        new Thread() {
+
+                            @Override
+                            public void run() {
+                                DataLaboratoryHelper.getDefault().executeManipulator(item);
+                            }
+                        }.start();
+                    }
+                });
+            } else {
+                menuItem.setEnabled(false);
+            }
+            if(item.getMnemonicKey()!=null){
+                menuItem.setMnemonic(item.getMnemonicKey());//Mnemonic for executing the action
+                menuItem.setAccelerator(KeyStroke.getKeyStroke(item.getMnemonicKey(),KeyEvent.CTRL_DOWN_MASK));//And the same key mnemonic + ctrl for executing the action (and as a help display for the user!).
+            }
+            return menuItem;
+        }
+    }
+
+    public static JMenuItem createMenuItemFromEdgesManipulator(final EdgesManipulator item, final Edge clickedEdge,final Edge[] edges) {
+        ContextMenuItemManipulator[] subItems = item.getSubItems();
+        if (subItems != null && item.canExecute()) {
+            JMenu subMenu = new JMenu();
+            subMenu.setText(item.getName());
+            if (item.getDescription() != null && !item.getDescription().isEmpty()) {
+                subMenu.setToolTipText(item.getDescription());
+            }
+            subMenu.setIcon(item.getIcon());
+            Integer lastItemType = null;
+            for (ContextMenuItemManipulator subItem : subItems) {
+                ((EdgesManipulator)subItem).setup(edges,clickedEdge);
+                if (lastItemType == null) {
+                    lastItemType = subItem.getType();
+                }
+                if (lastItemType != subItem.getType()) {
+                    subMenu.addSeparator();
+                }
+                lastItemType = subItem.getType();
+                if (subItem.isAvailable()) {
+                    subMenu.add(createMenuItemFromEdgesManipulator((EdgesManipulator) subItem,clickedEdge,edges));
+                }
+            }
+            if(item.getMnemonicKey()!=null){
+                subMenu.setMnemonic(item.getMnemonicKey());//Mnemonic for opening a sub menu
+            }
+            return subMenu;
+        } else {
+            JMenuItem menuItem = new JMenuItem();
+            menuItem.setText(item.getName());
+            if (item.getDescription() != null && !item.getDescription().isEmpty()) {
+                menuItem.setToolTipText(item.getDescription());
+            }
+            menuItem.setIcon(item.getIcon());
+            if (item.canExecute()) {
+                menuItem.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        new Thread() {
+
+                            @Override
+                            public void run() {
+                                DataLaboratoryHelper.getDefault().executeManipulator(item);
+                            }
+                        }.start();
+                    }
+                });
+            } else {
+                menuItem.setEnabled(false);
+            }
+            if(item.getMnemonicKey()!=null){
+                menuItem.setMnemonic(item.getMnemonicKey());//Mnemonic for executing the action
+                menuItem.setAccelerator(KeyStroke.getKeyStroke(item.getMnemonicKey(),KeyEvent.CTRL_DOWN_MASK));//And the same key mnemonic + ctrl for executing the action (and as a help display for the user!).
+            }
+            return menuItem;
+        }
+    }
 
     public static JMenuItem createMenuItemFromManipulator(final Manipulator nm) {
         JMenuItem menuItem = new JMenuItem();
@@ -48,7 +172,7 @@ public class PopupMenuUtils {
             menuItem.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    DataLaboratoryHelper dlh = new DataLaboratoryHelper();
+                    DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
                     dlh.executeManipulator(nm);
                 }
             });
@@ -59,7 +183,7 @@ public class PopupMenuUtils {
     }
 
     public static JMenu createSubMenuFromRowColumn(AttributeRow row, AttributeColumn column) {
-        DataLaboratoryHelper dlh = new DataLaboratoryHelper();
+        DataLaboratoryHelper dlh = DataLaboratoryHelper.getDefault();
         JMenu subMenu = new JMenu(NbBundle.getMessage(PopupMenuUtils.class, "Cell.Popup.subMenu.text"));
         subMenu.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/table-select.png", true));
 

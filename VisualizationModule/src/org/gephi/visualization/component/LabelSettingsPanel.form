@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <AuxValues>
@@ -47,10 +47,10 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jSeparator1" alignment="0" pref="127" max="32767" attributes="1"/>
+          <Component id="jSeparator1" alignment="0" pref="136" max="32767" attributes="1"/>
           <Component id="nodePanel" alignment="0" max="32767" attributes="1"/>
           <Component id="edgePanel" alignment="0" max="32767" attributes="0"/>
-          <Component id="jSeparator2" alignment="0" pref="127" max="32767" attributes="1"/>
+          <Component id="jSeparator2" alignment="0" pref="136" max="32767" attributes="1"/>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -69,7 +69,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="configureLabelsButton" min="-2" pref="46" max="-2" attributes="0"/>
-              <EmptySpace pref="70" max="32767" attributes="0"/>
+              <EmptySpace pref="84" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -98,8 +98,8 @@
                               <Component id="nodeSizeSlider" min="0" pref="0" max="32767" attributes="1"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="labelNodeFont" min="-2" pref="29" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                              <Component id="labelNodeFont" min="-2" pref="32" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="nodeFontButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                               <Component id="labelNodeColor" min="-2" max="-2" attributes="0"/>
@@ -117,7 +117,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="showNodeLabelsCheckbox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="101" max="32767" attributes="0"/>
+                  <EmptySpace pref="112" max="32767" attributes="0"/>
               </Group>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
@@ -138,7 +138,7 @@
                               <Component id="nodeSizeSlider" min="-2" pref="34" max="-2" attributes="1"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="33" max="32767" attributes="0"/>
+                      <EmptySpace pref="50" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -164,6 +164,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="org/gephi/visualization/component/Bundle.properties" key="LabelSettingsPanel.labelNodeFont.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </Property>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[60, 15]"/>
             </Property>
           </Properties>
         </Component>
@@ -230,8 +233,8 @@
                                   <Component id="edgeSizeSlider" min="0" pref="0" max="32767" attributes="1"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="labelEdgeFont" min="-2" pref="29" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                                  <Component id="labelEdgeFont" min="-2" pref="32" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="edgeFontButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                                   <Component id="labelEdgeColor" min="-2" max="-2" attributes="0"/>
@@ -268,7 +271,7 @@
                           <Component id="edgeSizeSlider" min="-2" pref="34" max="-2" attributes="1"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="32" max="32767" attributes="0"/>
+                  <EmptySpace pref="51" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -293,6 +296,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="org/gephi/visualization/component/Bundle.properties" key="LabelSettingsPanel.labelEdgeFont.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </Property>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[60, 15]"/>
             </Property>
           </Properties>
         </Component>

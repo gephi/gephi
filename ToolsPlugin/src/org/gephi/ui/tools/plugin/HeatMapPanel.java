@@ -65,7 +65,8 @@ public class HeatMapPanel extends javax.swing.JPanel {
         dontPaintUnreachableCheckbox.setSelected(dontPaintUnreachable);
         dontPaintUnreachableCheckbox.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         dontPaintUnreachableCheckbox.setText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.dontPaintUnreachableCheckbox.text")); // NOI18N
-        dontPaintUnreachableCheckbox.setPreferredSize(new java.awt.Dimension(139, 28));
+        dontPaintUnreachableCheckbox.setToolTipText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.dontPaintUnreachableCheckbox.text")); // NOI18N
+        dontPaintUnreachableCheckbox.setPreferredSize(new java.awt.Dimension(160, 28));
         gradientPanel.add(dontPaintUnreachableCheckbox);
 
         //Invert
@@ -118,6 +119,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
 
     public void setStatus(String status) {
         statusLabel.setText(status);
+        statusLabel.setToolTipText(status);
     }
 
     public Color[] getGradientColors() {

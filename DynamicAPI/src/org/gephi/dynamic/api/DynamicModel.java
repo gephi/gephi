@@ -59,12 +59,12 @@ public interface DynamicModel {
     public static final String TIMEINTERVAL_COLUMN = "time_interval";
 
     /**
-     * The way the time is represented, either a simple real value (DOUBLE) or
-     * a date.
+     * The way the time is represented, either a simple real value (DOUBLE),
+     * a date or a datetime.
      */
     public enum TimeFormat {
 
-        DATE, DOUBLE
+        DATE, DATETIME, DOUBLE
     };
 
     /**

@@ -338,7 +338,7 @@ public class DesktopImportControllerUI implements ImportControllerUI {
             }
 
             //Execute task
-            final String containerSource = database.getName();
+            final String containerSource = database != null ? database.getName() : (ui != null ? ui.getDisplayName() : importer.getClass().getSimpleName());
             final Database db = database;
             String taskName = NbBundle.getMessage(DesktopImportControllerUI.class, "DesktopImportControllerUI.taskName", containerSource);
             executor.execute(task, new Runnable() {

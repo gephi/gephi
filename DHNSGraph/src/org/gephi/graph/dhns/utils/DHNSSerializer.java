@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.utils;
 
 import java.beans.XMLDecoder;
@@ -25,9 +25,10 @@ import java.beans.XMLEncoder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Map.Entry;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.events.XMLEvent;
 import org.gephi.utils.collection.avl.ParamAVLIterator;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.core.GraphFactoryImpl;
@@ -43,11 +44,6 @@ import org.gephi.graph.dhns.edge.ProperEdgeImpl;
 import org.gephi.graph.dhns.edge.SelfLoopImpl;
 import org.gephi.graph.dhns.node.AbstractNode;
 import org.gephi.graph.dhns.node.iterators.TreeListIterator;
-import org.openide.util.Exceptions;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -72,220 +68,245 @@ public class DHNSSerializer {
     private static final String ELEMENT_SETTINGS_PROPERTY = "Property";
     private static final String ELEMENT_IDGEN = "IDGen";
 
-    public Document createDocument() {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.newDocument();
-            document.setXmlVersion("1.0");
-            document.setXmlStandalone(true);
-            return document;
-        } catch (ParserConfigurationException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        return null;
-    }
+    public void writeDhns(XMLStreamWriter writer, Dhns dhns) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_DHNS);
 
-    public Element writeDhns(Document document, Dhns dhns) {
-        Element dhnsE = document.createElement(ELEMENT_DHNS);
+        writer.writeStartElement(ELEMENT_DHNS_STATUS);
+        writer.writeAttribute("directed", String.valueOf(dhns.isDirected()));
+        writer.writeAttribute("undirected", String.valueOf(dhns.isUndirected()));
+        writer.writeAttribute("mixed", String.valueOf(dhns.isMixed()));
+        writer.writeAttribute("hierarchical", String.valueOf(dhns.isHierarchical()));
+        writer.writeEndElement();
 
-        Element dhnsStatusE = document.createElement(ELEMENT_DHNS_STATUS);
-        dhnsStatusE.setAttribute("directed", String.valueOf(dhns.isDirected()));
-        dhnsStatusE.setAttribute("undirected", String.valueOf(dhns.isUndirected()));
-        dhnsStatusE.setAttribute("mixed", String.valueOf(dhns.isMixed()));
-        dhnsStatusE.setAttribute("hierarchical", String.valueOf(dhns.isHierarchical()));
-        dhnsE.appendChild(dhnsStatusE);
-
-        Element idGenE = writeIDGen(document, dhns.getIdGen());
-        dhnsE.appendChild(idGenE);
-        Element settingsE = writeSettings(document, dhns.getSettingsManager());
-        dhnsE.appendChild(settingsE);
-        Element graphVersionE = writeGraphVersion(document, dhns.getGraphVersion());
-        dhnsE.appendChild(graphVersionE);
-        Element treeStructureE = writeTreeStructure(document, dhns.getGraphStructure().getMainView());
-        dhnsE.appendChild(treeStructureE);
-        Element edgesE = writeEdges(document, dhns.getGraphStructure().getMainView().getStructure());
-        dhnsE.appendChild(edgesE);
+        writeIDGen(writer, dhns.getIdGen());
+        writeSettings(writer, dhns.getSettingsManager());
+        writeGraphVersion(writer, dhns.getGraphVersion());
+        writeTreeStructure(writer, dhns.getGraphStructure().getMainView());
+        writeEdges(writer, dhns.getGraphStructure().getMainView().getStructure());
 
         for (GraphViewImpl view : dhns.getGraphStructure().getViews()) {
             if (view != dhns.getGraphStructure().getMainView()) {
-                Element viewE = writeGraphView(document, view);
-                dhnsE.appendChild(viewE);
+                writeGraphView(writer, view);
             }
         }
 
-        return dhnsE;
+        writer.writeEndElement();
     }
 
-    public void readDhns(Element dhnsE, Dhns dhns) {
-        NodeList dhnsListE = dhnsE.getChildNodes();
-        for (int i = 0; i < dhnsListE.getLength(); i++) {
-            if (dhnsListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element itemE = (Element) dhnsListE.item(i);
-                if (itemE.getTagName().equals(ELEMENT_DHNS_STATUS)) {
-                    dhns.setDirected(Boolean.parseBoolean(itemE.getAttribute("directed")));
-                    dhns.setUndirected(Boolean.parseBoolean(itemE.getAttribute("undirected")));
-                    dhns.setMixed(Boolean.parseBoolean(itemE.getAttribute("mixed")));
-                } else if (itemE.getTagName().equals(ELEMENT_IDGEN)) {
-                    readIDGen(itemE, dhns.getIdGen());
-                } else if (itemE.getTagName().equals(ELEMENT_SETTINGS)) {
-                    readSettings(itemE, dhns.getSettingsManager());
-                } else if (itemE.getTagName().equals(ELEMENT_GRAPHVERSION)) {
-                    readGraphVersion(itemE, dhns.getGraphVersion());
-                } else if (itemE.getTagName().equals(ELEMENT_TREESTRUCTURE)) {
-                    readTreeStructure(itemE, dhns.getGraphStructure(), dhns.factory());
-                } else if (itemE.getTagName().equals(ELEMENT_EDGES)) {
-                    readEdges(itemE, dhns.getGraphStructure(), dhns.factory());
-                } else if (itemE.getTagName().equals(ELEMENT_VIEW)) {
-                    readGraphView(itemE, dhns.getGraphStructure());
+    public void readDhns(XMLStreamReader reader, Dhns dhns) throws XMLStreamException {
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            Integer eventType = reader.next();
+            if (eventType.equals(XMLEvent.START_ELEMENT)) {
+                String name = reader.getLocalName();
+                if (ELEMENT_DHNS_STATUS.equalsIgnoreCase(name)) {
+                    for (int i = 0; i < reader.getAttributeCount(); i++) {
+                        String attName = reader.getAttributeName(i).getLocalPart();
+                        if ("directed".equalsIgnoreCase(attName)) {
+                            dhns.setDirected(Boolean.parseBoolean(reader.getAttributeValue(i)));
+                        } else if ("undirected".equalsIgnoreCase(attName)) {
+                            dhns.setUndirected(Boolean.parseBoolean(reader.getAttributeValue(i)));
+                        } else if ("mixed".equalsIgnoreCase(attName)) {
+                            dhns.setMixed(Boolean.parseBoolean(reader.getAttributeValue(i)));
+                        }
+                    }
+                } else if (ELEMENT_IDGEN.equalsIgnoreCase(name)) {
+                    readIDGen(reader, dhns.getIdGen());
+                } else if (ELEMENT_SETTINGS.equalsIgnoreCase(name)) {
+                    readSettings(reader, dhns.getSettingsManager());
+                } else if (ELEMENT_GRAPHVERSION.equalsIgnoreCase(name)) {
+                    readGraphVersion(reader, dhns.getGraphVersion());
+                } else if (ELEMENT_TREESTRUCTURE.equalsIgnoreCase(name)) {
+                    readTreeStructure(reader, dhns.getGraphStructure(), dhns.factory());
+                } else if (ELEMENT_EDGES.equalsIgnoreCase(name)) {
+                    readEdges(reader, dhns.getGraphStructure(), dhns.factory());
+                } else if (ELEMENT_VIEW.equalsIgnoreCase(name)) {
+                    readGraphView(reader, dhns.getGraphStructure());
+                }
+            } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
+                if (ELEMENT_DHNS.equalsIgnoreCase(reader.getLocalName())) {
+                    end = true;
                 }
             }
         }
     }
 
-    public Element writeEdges(Document document, TreeStructure treeStructure) {
-        Element edgesE = document.createElement(ELEMENT_EDGES);
+    public void writeEdges(XMLStreamWriter writer, TreeStructure treeStructure) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_EDGES);
 
         ParamAVLIterator<AbstractEdge> edgeIterator = new ParamAVLIterator<AbstractEdge>();
         for (TreeListIterator itr = new TreeListIterator(treeStructure.getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
             for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
                 AbstractEdge edge = edgeIterator.next();
-                Element edgeE;
                 if (edge.isSelfLoop()) {
-                    edgeE = document.createElement(ELEMENT_EDGES_SELFLOOP);
+                    writer.writeStartElement(ELEMENT_EDGES_SELFLOOP);
                 } else if (edge.isMixed()) {
-                    edgeE = document.createElement(ELEMENT_EDGES_MIXED);
-                    edgeE.setAttribute("directed", String.valueOf(edge.isDirected()));
+                    writer.writeStartElement(ELEMENT_EDGES_MIXED);
+                    writer.writeAttribute("directed", String.valueOf(edge.isDirected()));
                 } else {
-                    edgeE = document.createElement(ELEMENT_EDGES_PROPER);
+                    writer.writeStartElement(ELEMENT_EDGES_PROPER);
                 }
-                edgeE.setAttribute("source", String.valueOf(edge.getSource().pre));
-                edgeE.setAttribute("target", String.valueOf(edge.getTarget().pre));
-                edgeE.setAttribute("weight", String.valueOf(edge.getWeight()));
-                edgeE.setAttribute("id", String.valueOf(edge.getId()));
-                edgesE.appendChild(edgeE);
+                writer.writeAttribute("source", String.valueOf(edge.getSource().pre));
+                writer.writeAttribute("target", String.valueOf(edge.getTarget().pre));
+                writer.writeAttribute("weight", String.valueOf(edge.getWeight()));
+                writer.writeAttribute("id", String.valueOf(edge.getId()));
+                writer.writeEndElement();
             }
         }
 
-        return edgesE;
+        writer.writeEndElement();
     }
 
-    public void readEdges(Element edgesE, GraphStructure graphStructure, GraphFactoryImpl factory) {
-        NodeList edgesListE = edgesE.getChildNodes();
+    public void readEdges(XMLStreamReader reader, GraphStructure graphStructure, GraphFactoryImpl factory) throws XMLStreamException {
         TreeStructure treeStructure = graphStructure.getMainView().getStructure();
-        for (int i = 0; i < edgesListE.getLength(); i++) {
-            if (edgesListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element edgeE = (Element) edgesListE.item(i);
-                Integer id = Integer.parseInt(edgeE.getAttribute("id"));
-                AbstractNode source = treeStructure.getNodeAt(Integer.parseInt(edgeE.getAttribute("source")));
-                AbstractNode target = treeStructure.getNodeAt(Integer.parseInt(edgeE.getAttribute("target")));
-                AbstractEdge edge;
-                if (edgeE.getTagName().equals(ELEMENT_EDGES_PROPER)) {
-                    edge = new ProperEdgeImpl(id, source, target);
-                } else if (edgeE.getTagName().equals(ELEMENT_EDGES_MIXED)) {
-                    edge = new MixedEdgeImpl(id, source, target, Boolean.parseBoolean(edgeE.getAttribute("directed")));
-                } else {
-                    edge = new SelfLoopImpl(id, source);
-                }
-                edge.setWeight(Float.parseFloat(edgeE.getAttribute("weight")));
-                edge.getEdgeData().setAttributes(factory.newEdgeAttributes(edge.getEdgeData()));
-                edge.getEdgeData().setTextData(factory.newTextData());
-                source.getEdgesOutTree().add(edge);
-                target.getEdgesInTree().add(edge);
-                graphStructure.addToDictionnary(edge);
+
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+
+                    Integer source = 0;
+                    Integer target = 0;
+                    Integer id = 0;
+                    Boolean directed = false;
+                    Float weight = 0f;
+
+                    for (int i = 0; i < reader.getAttributeCount(); i++) {
+                        String attName = reader.getAttributeName(i).getLocalPart();
+                        if ("id".equalsIgnoreCase(attName)) {
+                            id = Integer.parseInt(reader.getAttributeValue(i));
+                        } else if ("source".equalsIgnoreCase(attName)) {
+                            source = Integer.parseInt(reader.getAttributeValue(i));
+                        } else if ("target".equalsIgnoreCase(attName)) {
+                            target = Integer.parseInt(reader.getAttributeValue(i));
+                        } else if ("directed".equalsIgnoreCase(attName)) {
+                            directed = Boolean.parseBoolean(reader.getAttributeValue(i));
+                        } else if ("weight".equalsIgnoreCase(attName)) {
+                            weight = Float.parseFloat(reader.getAttributeValue(i));
+                        }
+                    }
+                    AbstractNode srcNode = treeStructure.getNodeAt(source);
+                    AbstractNode destNode = treeStructure.getNodeAt(target);
+                    AbstractEdge edge;
+                    if (ELEMENT_EDGES_PROPER.equalsIgnoreCase(name)) {
+                        edge = new ProperEdgeImpl(id, srcNode, destNode);
+                    } else if (ELEMENT_EDGES_MIXED.equalsIgnoreCase(name)) {
+                        edge = new MixedEdgeImpl(id, srcNode, destNode, directed);
+                    } else {
+                        edge = new SelfLoopImpl(id, srcNode);
+                    }
+                    edge.setWeight(weight);
+                    edge.getEdgeData().setAttributes(factory.newEdgeAttributes(edge.getEdgeData()));
+                    edge.getEdgeData().setTextData(factory.newTextData());
+                    srcNode.getEdgesOutTree().add(edge);
+                    destNode.getEdgesInTree().add(edge);
+                    graphStructure.addToDictionnary(edge);
+                    break;
+
+                case XMLStreamReader.END_ELEMENT:
+                    if (ELEMENT_EDGES.equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
+                    }
+                    break;
             }
         }
         graphStructure.getMainView().getStructureModifier().getEdgeProcessor().computeMetaEdges();
     }
 
-    public Element writeTreeStructure(Document document, GraphViewImpl view) {
-        Element treeStructureE = document.createElement(ELEMENT_TREESTRUCTURE);
-        treeStructureE.setAttribute("edgesenabled", String.valueOf(view.getEdgesCountEnabled()));
-        treeStructureE.setAttribute("edgestotal", String.valueOf(view.getEdgesCountTotal()));
-        treeStructureE.setAttribute("mutualedgesenabled", String.valueOf(view.getMutualEdgesEnabled()));
-        treeStructureE.setAttribute("mutualedgestotal", String.valueOf(view.getMutualEdgesTotal()));
-        treeStructureE.setAttribute("nodesenabled", String.valueOf(view.getNodesEnabled()));
+    public void writeTreeStructure(XMLStreamWriter writer, GraphViewImpl view) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_TREESTRUCTURE);
+        writer.writeAttribute("edgesenabled", String.valueOf(view.getEdgesCountEnabled()));
+        writer.writeAttribute("edgestotal", String.valueOf(view.getEdgesCountTotal()));
+        writer.writeAttribute("mutualedgesenabled", String.valueOf(view.getMutualEdgesEnabled()));
+        writer.writeAttribute("mutualedgestotal", String.valueOf(view.getMutualEdgesTotal()));
+        writer.writeAttribute("nodesenabled", String.valueOf(view.getNodesEnabled()));
 
-        Element treeE = document.createElement(ELEMENT_TREESTRUCTURE_TREE);
+        writer.writeStartElement(ELEMENT_TREESTRUCTURE_TREE);
         for (TreeListIterator itr = new TreeListIterator(view.getStructure().getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
-            Element nodeE = document.createElement(ELEMENT_TREESTRUCTURE_NODE);
-            nodeE.setAttribute("id", String.valueOf(node.getId()));
-            nodeE.setAttribute("enabled", String.valueOf(node.isEnabled()));
-            nodeE.setAttribute("pre", String.valueOf(node.pre));
-            nodeE.setAttribute("parent", String.valueOf(node.parent.pre));
-            nodeE.setAttribute("enabledindegree", String.valueOf(node.getEnabledInDegree()));
-            nodeE.setAttribute("enabledoutdegree", String.valueOf(node.getEnabledOutDegree()));
-            nodeE.setAttribute("enabledmutualdegree", String.valueOf(node.getEnabledMutualDegree()));
-            treeE.appendChild(nodeE);
+            writer.writeStartElement(ELEMENT_TREESTRUCTURE_NODE);
+            writer.writeAttribute("id", String.valueOf(node.getId()));
+            writer.writeAttribute("enabled", String.valueOf(node.isEnabled()));
+            writer.writeAttribute("pre", String.valueOf(node.pre));
+            writer.writeAttribute("parent", String.valueOf(node.parent.pre));
+            writer.writeAttribute("enabledindegree", String.valueOf(node.getEnabledInDegree()));
+            writer.writeAttribute("enabledoutdegree", String.valueOf(node.getEnabledOutDegree()));
+            writer.writeAttribute("enabledmutualdegree", String.valueOf(node.getEnabledMutualDegree()));
+            writer.writeEndElement();
         }
-        treeStructureE.appendChild(treeE);
+        writer.writeEndElement();
 
-        return treeStructureE;
+        writer.writeEndElement();
     }
 
-    public void readTreeStructure(Element treeStructureE, GraphStructure graphStructure, GraphFactoryImpl factory) {
-        graphStructure.getMainView().setEdgesCountEnabled(Integer.parseInt(treeStructureE.getAttribute("edgesenabled")));
-        graphStructure.getMainView().setEdgesCountTotal(Integer.parseInt(treeStructureE.getAttribute("edgestotal")));
-        graphStructure.getMainView().setMutualEdgesEnabled(Integer.parseInt(treeStructureE.getAttribute("mutualedgesenabled")));
-        graphStructure.getMainView().setMutualEdgesTotal(Integer.parseInt(treeStructureE.getAttribute("mutualedgestotal")));
-        graphStructure.getMainView().setNodesEnabled(Integer.parseInt(treeStructureE.getAttribute("nodesenabled")));
+    public void readTreeStructure(XMLStreamReader reader, GraphStructure graphStructure, GraphFactoryImpl factory) throws XMLStreamException {
+        graphStructure.getMainView().setEdgesCountEnabled(Integer.parseInt(reader.getAttributeValue(null, "edgesenabled")));
+        graphStructure.getMainView().setEdgesCountTotal(Integer.parseInt(reader.getAttributeValue(null, "edgestotal")));
+        graphStructure.getMainView().setMutualEdgesEnabled(Integer.parseInt(reader.getAttributeValue(null, "mutualedgesenabled")));
+        graphStructure.getMainView().setMutualEdgesTotal(Integer.parseInt(reader.getAttributeValue(null, "mutualedgestotal")));
+        graphStructure.getMainView().setNodesEnabled(Integer.parseInt(reader.getAttributeValue(null, "nodesenabled")));
 
-        NodeList nodesE = treeStructureE.getChildNodes();
-        NodeList nodesListE = null;
         TreeStructure treeStructure = graphStructure.getMainView().getStructure();
-        for (int i = 0; i < nodesE.getLength(); i++) {
-            if (nodesE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                if (((Element) nodesE.item(i)).getTagName().equals(ELEMENT_TREESTRUCTURE_TREE)) {
-                    nodesListE = ((Element) nodesE.item(i)).getChildNodes();
+
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+                    if (ELEMENT_TREESTRUCTURE_NODE.equalsIgnoreCase(name)) {
+                        Boolean enabled = Boolean.parseBoolean(reader.getAttributeValue(null, "enabled"));
+                        AbstractNode parentNode = treeStructure.getNodeAt(Integer.parseInt(reader.getAttributeValue(null, "parent")));
+                        AbstractNode absNode = new AbstractNode(Integer.parseInt(reader.getAttributeValue(null, "id")), 0, 0, 0, 0, parentNode);
+                        absNode.setEnabled(enabled);
+                        Integer inDegree = Integer.parseInt(reader.getAttributeValue(null, "enabledindegree"));
+                        Integer outDegree = Integer.parseInt(reader.getAttributeValue(null, "enabledoutdegree"));
+                        Integer mutualDegree = Integer.parseInt(reader.getAttributeValue(null, "enabledmutualdegree"));
+                        absNode.setEnabledInDegree(inDegree);
+                        absNode.setEnabledOutDegree(outDegree);
+                        absNode.setEnabledMutualDegree(mutualDegree);
+                        absNode.getNodeData().setAttributes(factory.newNodeAttributes(absNode.getNodeData()));
+                        absNode.getNodeData().setTextData(factory.newTextData());
+                        treeStructure.insertAsChild(absNode, parentNode);
+                        graphStructure.addToDictionnary(absNode);
+                    }
                     break;
-                }
-            }
-        }
-        if (nodesListE != null) {
-            for (int i = 0; i < nodesListE.getLength(); i++) {
-                if (nodesListE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                    Element nodeE = (Element) nodesListE.item(i);
-                    Boolean enabled = Boolean.parseBoolean(nodeE.getAttribute("enabled"));
-                    AbstractNode parentNode = treeStructure.getNodeAt(Integer.parseInt(nodeE.getAttribute("parent")));
-                    AbstractNode absNode = new AbstractNode(Integer.parseInt(nodeE.getAttribute("id")), 0, 0, 0, 0, parentNode);
-                    absNode.setEnabled(enabled);
-                    Integer inDegree = Integer.parseInt(nodeE.getAttribute("enabledindegree"));
-                    Integer outDegree = Integer.parseInt(nodeE.getAttribute("enabledoutdegree"));
-                    Integer mutualDegree = Integer.parseInt(nodeE.getAttribute("enabledmutualdegree"));
-                    absNode.setEnabledInDegree(inDegree);
-                    absNode.setEnabledOutDegree(outDegree);
-                    absNode.setEnabledMutualDegree(mutualDegree);
-                    absNode.getNodeData().setAttributes(factory.newNodeAttributes(absNode.getNodeData()));
-                    absNode.getNodeData().setTextData(factory.newTextData());
-                    treeStructure.insertAsChild(absNode, parentNode);
-                    graphStructure.addToDictionnary(absNode);
-                }
+
+                case XMLStreamReader.END_ELEMENT:
+                    if (ELEMENT_TREESTRUCTURE.equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
+                    }
+                    break;
             }
         }
     }
 
-    public Element writeGraphView(Document document, GraphViewImpl graphView) {
-        Element viewE = document.createElement(ELEMENT_VIEW);
-        viewE.setAttribute("id", String.valueOf(graphView.getViewId()));
-        viewE.setAttribute("edgesenabled", String.valueOf(graphView.getEdgesCountEnabled()));
-        viewE.setAttribute("edgestotal", String.valueOf(graphView.getEdgesCountTotal()));
-        viewE.setAttribute("mutualedgesenabled", String.valueOf(graphView.getMutualEdgesEnabled()));
-        viewE.setAttribute("mutualedgestotal", String.valueOf(graphView.getMutualEdgesTotal()));
-        viewE.setAttribute("nodesenabled", String.valueOf(graphView.getNodesEnabled()));
+    public void writeGraphView(XMLStreamWriter writer, GraphViewImpl graphView) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_VIEW);
+        writer.writeAttribute("id", String.valueOf(graphView.getViewId()));
+        writer.writeAttribute("edgesenabled", String.valueOf(graphView.getEdgesCountEnabled()));
+        writer.writeAttribute("edgestotal", String.valueOf(graphView.getEdgesCountTotal()));
+        writer.writeAttribute("mutualedgesenabled", String.valueOf(graphView.getMutualEdgesEnabled()));
+        writer.writeAttribute("mutualedgestotal", String.valueOf(graphView.getMutualEdgesTotal()));
+        writer.writeAttribute("nodesenabled", String.valueOf(graphView.getNodesEnabled()));
 
         //Nodes
         for (TreeListIterator itr = new TreeListIterator(graphView.getStructure().getTree(), 1); itr.hasNext();) {
             AbstractNode node = itr.next();
-            Element nodeE = document.createElement(ELEMENT_TREESTRUCTURE_NODE);
-            nodeE.setAttribute("mainpre", String.valueOf(node.getInView(0).pre));
-            nodeE.setAttribute("enabled", String.valueOf(node.isEnabled()));
-            nodeE.setAttribute("pre", String.valueOf(node.pre));
-            nodeE.setAttribute("parent", String.valueOf(node.parent.pre));
-            nodeE.setAttribute("enabledindegree", String.valueOf(node.getEnabledInDegree()));
-            nodeE.setAttribute("enabledoutdegree", String.valueOf(node.getEnabledOutDegree()));
-            nodeE.setAttribute("enabledmutualdegree", String.valueOf(node.getEnabledMutualDegree()));
+            writer.writeStartElement(ELEMENT_VIEW_NODE);
+            writer.writeAttribute("mainpre", String.valueOf(node.getInView(0).pre));
+            writer.writeAttribute("enabled", String.valueOf(node.isEnabled()));
+            writer.writeAttribute("pre", String.valueOf(node.pre));
+            writer.writeAttribute("parent", String.valueOf(node.parent.pre));
+            writer.writeAttribute("enabledindegree", String.valueOf(node.getEnabledInDegree()));
+            writer.writeAttribute("enabledoutdegree", String.valueOf(node.getEnabledOutDegree()));
+            writer.writeAttribute("enabledmutualdegree", String.valueOf(node.getEnabledMutualDegree()));
+            writer.writeEndElement();
         }
 
         //Edges
@@ -294,110 +315,129 @@ public class DHNSSerializer {
             AbstractNode node = itr.next();
             for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
                 AbstractEdge edge = edgeIterator.next();
-                Element edgeE = document.createElement(ELEMENT_VIEW_EDGE);
-                edgeE.setAttribute("source", String.valueOf(node.pre));
-                edgeE.setAttribute("target", String.valueOf(edge.getTarget(graphView.getViewId()).pre));
-                edgeE.setAttribute("id", String.valueOf(edge.getId()));
+                writer.writeStartElement(ELEMENT_VIEW_EDGE);
+                writer.writeAttribute("id", String.valueOf(edge.getId()));
+                writer.writeEndElement();
             }
         }
 
-        return viewE;
+        writer.writeEndElement();
     }
 
-    public void readGraphView(Element graphViewE, GraphStructure graphStructure) {
-        GraphViewImpl graphView = graphStructure.createView(Integer.parseInt(graphViewE.getAttribute("id")));
-        graphView.setEdgesCountEnabled(Integer.parseInt(graphViewE.getAttribute("edgesenabled")));
-        graphView.setEdgesCountTotal(Integer.parseInt(graphViewE.getAttribute("edgestotal")));
-        graphView.setMutualEdgesEnabled(Integer.parseInt(graphViewE.getAttribute("mutualedgesenabled")));
-        graphView.setMutualEdgesTotal(Integer.parseInt(graphViewE.getAttribute("mutualedgestotal")));
-        graphView.setNodesEnabled(Integer.parseInt(graphViewE.getAttribute("nodesenabled")));
+    public void readGraphView(XMLStreamReader reader, GraphStructure graphStructure) throws XMLStreamException {
+        GraphViewImpl graphView = graphStructure.createView(Integer.parseInt(reader.getAttributeValue(null, "id")));
+        graphView.setEdgesCountEnabled(Integer.parseInt(reader.getAttributeValue(null, "edgesenabled")));
+        graphView.setEdgesCountTotal(Integer.parseInt(reader.getAttributeValue(null, "edgestotal")));
+        graphView.setMutualEdgesEnabled(Integer.parseInt(reader.getAttributeValue(null, "mutualedgesenabled")));
+        graphView.setMutualEdgesTotal(Integer.parseInt(reader.getAttributeValue(null, "mutualedgestotal")));
+        graphView.setNodesEnabled(Integer.parseInt(reader.getAttributeValue(null, "nodesenabled")));
 
         TreeStructure mainStructure = graphStructure.getMainView().getStructure();
         TreeStructure treeStructure = graphView.getStructure();
 
-        NodeList nodesE = graphViewE.getChildNodes();
-        for (int i = 0; i < nodesE.getLength(); i++) {
-            if (nodesE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                if (((Element) nodesE.item(i)).getTagName().equals(ELEMENT_VIEW_NODE)) {
-                    Element nodeViewE = (Element) nodesE.item(i);
-                    Boolean enabled = Boolean.parseBoolean(nodeViewE.getAttribute("enabled"));
-                    AbstractNode mainNode = mainStructure.getNodeAt(Integer.parseInt(nodeViewE.getAttribute("mainpre")));
-                    AbstractNode parentNode = treeStructure.getNodeAt(Integer.parseInt(nodeViewE.getAttribute("parent")));
-                    AbstractNode node = new AbstractNode(mainNode.getNodeData(), graphView.getViewId(), 0, 0, 0, parentNode);
-                    Integer inDegree = Integer.parseInt(nodeViewE.getAttribute("enabledindegree"));
-                    Integer outDegree = Integer.parseInt(nodeViewE.getAttribute("enabledoutdegree"));
-                    Integer mutualDegree = Integer.parseInt(nodeViewE.getAttribute("enabledmutualdegree"));
-                    node.setEnabledInDegree(inDegree);
-                    node.setEnabledOutDegree(outDegree);
-                    node.setEnabledMutualDegree(mutualDegree);
-                    node.setEnabled(enabled);
-                    treeStructure.insertAsChild(node, parentNode);
-                } else if (((Element) nodesE.item(i)).getTagName().equals(ELEMENT_VIEW_EDGE)) {
-                    Element edgeViewE = (Element) nodesE.item(i);
-                    AbstractEdge edge = graphStructure.getEdgeFromDictionnary(Integer.parseInt(edgeViewE.getAttribute("id")));
-                    AbstractNode source = treeStructure.getNodeAt(Integer.parseInt(edgeViewE.getAttribute("source")));
-                    AbstractNode target = treeStructure.getNodeAt(Integer.parseInt(edgeViewE.getAttribute("target")));
-                    source.getEdgesOutTree().add(edge);
-                    target.getEdgesInTree().add(edge);
-                }
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+                    if (ELEMENT_VIEW_NODE.equalsIgnoreCase(name)) {
+                        Boolean enabled = Boolean.parseBoolean(reader.getAttributeValue(null, "enabled"));
+                        AbstractNode mainNode = mainStructure.getNodeAt(Integer.parseInt(reader.getAttributeValue(null, "mainpre")));
+                        AbstractNode parentNode = treeStructure.getNodeAt(Integer.parseInt(reader.getAttributeValue(null, "parent")));
+                        AbstractNode node = new AbstractNode(mainNode.getNodeData(), graphView.getViewId(), 0, 0, 0, parentNode);
+                        Integer inDegree = Integer.parseInt(reader.getAttributeValue(null, "enabledindegree"));
+                        Integer outDegree = Integer.parseInt(reader.getAttributeValue(null, "enabledoutdegree"));
+                        Integer mutualDegree = Integer.parseInt(reader.getAttributeValue(null, "enabledmutualdegree"));
+                        node.setEnabledInDegree(inDegree);
+                        node.setEnabledOutDegree(outDegree);
+                        node.setEnabledMutualDegree(mutualDegree);
+                        node.setEnabled(enabled);
+                        treeStructure.insertAsChild(node, parentNode);
+                    } else if (ELEMENT_VIEW_EDGE.equalsIgnoreCase(name)) {
+                        AbstractEdge edge = graphStructure.getEdgeFromDictionnary(Integer.parseInt(reader.getAttributeValue(null, "id")));
+                        AbstractNode source = edge.getSource(graphView.getViewId());
+                        AbstractNode target = edge.getTarget(graphView.getViewId());
+                        source.getEdgesOutTree().add(edge);
+                        target.getEdgesInTree().add(edge);
+                    }
+                    break;
+
+                case XMLStreamReader.END_ELEMENT:
+                    if (ELEMENT_VIEW.equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
+                    }
+                    break;
             }
         }
 
         graphView.getStructureModifier().getEdgeProcessor().computeMetaEdges();
     }
 
-    public Element writeGraphVersion(Document document, GraphVersion graphVersion) {
-        Element graphVersionE = document.createElement(ELEMENT_GRAPHVERSION);
-        graphVersionE.setAttribute("node", String.valueOf(graphVersion.getNodeVersion()));
-        graphVersionE.setAttribute("edge", String.valueOf(graphVersion.getEdgeVersion()));
-        return graphVersionE;
+    public void writeGraphVersion(XMLStreamWriter writer, GraphVersion graphVersion) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_GRAPHVERSION);
+        writer.writeAttribute("node", String.valueOf(graphVersion.getNodeVersion()));
+        writer.writeAttribute("edge", String.valueOf(graphVersion.getEdgeVersion()));
+        writer.writeEndElement();
     }
 
-    public void readGraphVersion(Element graphVersionE, GraphVersion graphVersion) {
-        int nodeVersion = Integer.parseInt(graphVersionE.getAttribute("node"));
-        int edgeVersion = Integer.parseInt(graphVersionE.getAttribute("edge"));
+    public void readGraphVersion(XMLStreamReader reader, GraphVersion graphVersion) {
+        int nodeVersion = Integer.parseInt(reader.getAttributeValue(null, "node"));
+        int edgeVersion = Integer.parseInt(reader.getAttributeValue(null, "edge"));
         graphVersion.setVersion(nodeVersion, edgeVersion);
     }
 
-    public Element writeSettings(Document document, SettingsManager settingsManager) {
-        Element settingsE = document.createElement(ELEMENT_SETTINGS);
+    public void writeSettings(XMLStreamWriter writer, SettingsManager settingsManager) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_SETTINGS);
         for (Entry<String, Object> entry : settingsManager.getClientProperties().entrySet()) {
-            Element propertyE = document.createElement(ELEMENT_SETTINGS_PROPERTY);
-            propertyE.setAttribute("key", entry.getKey());
+            writer.writeStartElement(ELEMENT_SETTINGS_PROPERTY);
+            writer.writeAttribute("key", entry.getKey());
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             XMLEncoder xmlEncoder = new XMLEncoder(stream);
             xmlEncoder.writeObject(entry.getValue());
             xmlEncoder.close();
-            propertyE.setAttribute("value", stream.toString());
-            settingsE.appendChild(propertyE);
+            writer.writeAttribute("value", stream.toString());
+            writer.writeEndElement();
         }
-        return settingsE;
+        writer.writeEndElement();
     }
 
-    public void readSettings(Element settingsE, SettingsManager settingsManager) {
-        NodeList propertiesE = settingsE.getChildNodes();
-        for (int i = 0; i < propertiesE.getLength(); i++) {
-            if (propertiesE.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element propertyE = (Element) propertiesE.item(i);
-                String key = propertyE.getAttribute("key");
-                String valueXML = propertyE.getAttribute("value");
-                XMLDecoder xmlDecoder = new XMLDecoder(new ByteArrayInputStream(valueXML.getBytes()));
-                Object value = xmlDecoder.readObject();
-                settingsManager.putClientProperty(key, value);
+    public void readSettings(XMLStreamReader reader, SettingsManager settingsManager) throws XMLStreamException {
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+                    if (ELEMENT_SETTINGS_PROPERTY.equalsIgnoreCase(name)) {
+                        String key = reader.getAttributeValue(null, "key");
+                        String valueXML = reader.getAttributeValue(null, "value");
+                        XMLDecoder xmlDecoder = new XMLDecoder(new ByteArrayInputStream(valueXML.getBytes()));
+                        Object value = xmlDecoder.readObject();
+                        settingsManager.putClientProperty(key, value);
+                    }
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    if (ELEMENT_SETTINGS.equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
+                    }
+                    break;
             }
         }
     }
 
-    public Element writeIDGen(Document document, IDGen idGen) {
-        Element idGenE = document.createElement(ELEMENT_IDGEN);
-        idGenE.setAttribute("node", String.valueOf(idGen.getNodeGen()));
-        idGenE.setAttribute("edge", String.valueOf(idGen.getEdgeGen()));
-        return idGenE;
+    public void writeIDGen(XMLStreamWriter writer, IDGen idGen) throws XMLStreamException {
+        writer.writeStartElement(ELEMENT_IDGEN);
+        writer.writeAttribute("node", String.valueOf(idGen.getNodeGen()));
+        writer.writeAttribute("edge", String.valueOf(idGen.getEdgeGen()));
+        writer.writeEndElement();
     }
 
-    public void readIDGen(Element idGenE, IDGen idGen) {
-        int nodeGen = Integer.parseInt(idGenE.getAttribute("node"));
-        int edgeGen = Integer.parseInt(idGenE.getAttribute("edge"));
+    public void readIDGen(XMLStreamReader reader, IDGen idGen) {
+        int nodeGen = Integer.parseInt(reader.getAttributeValue(null, "node"));
+        int edgeGen = Integer.parseInt(reader.getAttributeValue(null, "edge"));
         idGen.setNodeGen(nodeGen);
         idGen.setEdgeGen(edgeGen);
     }

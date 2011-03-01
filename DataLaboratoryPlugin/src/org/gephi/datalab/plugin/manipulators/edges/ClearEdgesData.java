@@ -25,11 +25,10 @@ import javax.swing.Icon;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.datalab.api.AttributeColumnsController;
-import org.gephi.datalab.api.DataTablesController;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsChooser;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralChooseColumnsUI;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.edges.EdgesManipulator;
 import org.gephi.graph.api.Edge;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -39,7 +38,7 @@ import org.openide.util.NbBundle;
  * Edges manipulator that clears the given columns data of one or more edges except the id and computed attributes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class ClearEdgesData implements EdgesManipulator, GeneralColumnsChooser {
+public class ClearEdgesData extends BasicEdgesManipulator implements GeneralColumnsChooser {
 
     private Edge[] edges;
     private AttributeColumn[] columnsToClearData;
@@ -89,7 +88,7 @@ public class ClearEdgesData implements EdgesManipulator, GeneralColumnsChooser {
     }
 
     public int getPosition() {
-        return 0;
+        return 100;
     }
 
     public Icon getIcon() {

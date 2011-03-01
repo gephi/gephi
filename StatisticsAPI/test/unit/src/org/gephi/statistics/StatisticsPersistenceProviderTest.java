@@ -4,17 +4,15 @@
  */
 package org.gephi.statistics;
 
+import java.io.StringReader;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLReporter;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.StringWriter;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.GraphController;
@@ -27,7 +25,6 @@ import org.gephi.ui.statistics.plugin.ClusteringCoefficientUI;
 import org.junit.Test;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import static org.junit.Assert.*;
 
@@ -63,42 +60,57 @@ public class StatisticsPersistenceProviderTest {
         graphDistance.execute(graphModel, attributeModel);
         model.addReport(graphDistance);
 
-        Element e1 = model.writeXML(createDocument());
-        String s1 = printXML(e1);
-        System.out.println(s1);
-        StatisticsModelImpl model2 = new StatisticsModelImpl();
-        model2.readXML(e1);
-        Element e2 = model2.writeXML(createDocument());
-        String s2 = printXML(e2);
-        assertEquals(s1, s2);
+        try {
+            StringWriter stringWriter = new StringWriter();
+            XMLStreamWriter writer = createWriter(stringWriter);
+            model.writeXML(writer);
+            writer.close();
+            String s1 = stringWriter.toString();
+            StatisticsModelImpl model2 = new StatisticsModelImpl();
+            StringReader stringReader = new StringReader(s1);
+            XMLStreamReader reader = createReader(stringReader);
+            model2.readXML(reader);
+            reader.close();
+            stringWriter = new StringWriter();
+            writer = createWriter(stringWriter);
+            model2.writeXML(writer);
+            writer.close();
+            String s2 = stringWriter.toString();
+            assertEquals(s1, s2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private String printXML(org.w3c.dom.Node node) {
+    private XMLStreamWriter createWriter(StringWriter stringWriter) {
+        XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+        outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.FALSE);
+
         try {
-            Source source = new DOMSource(node);
-            StringWriter writer = new StringWriter();
-            Result result = new StreamResult(writer);
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.transform(source, result);
-            return writer.toString();
-        } catch (Exception ex) {
+            XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(stringWriter);
+            xmlWriter.writeStartDocument("UTF-8", "1.0");
+            return xmlWriter;
+        } catch (XMLStreamException ex) {
             Exceptions.printStackTrace(ex);
         }
         return null;
     }
 
-    public Document createDocument() {
+    private XMLStreamReader createReader(StringReader stringReader) {
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        if (inputFactory.isPropertySupported("javax.xml.stream.isValidating")) {
+            inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
+        }
+        inputFactory.setXMLReporter(new XMLReporter() {
+
+            @Override
+            public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
+                System.out.println("Error:" + errorType + ", message : " + message);
+            }
+        });
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.newDocument();
-            document.setXmlVersion("1.0");
-            document.setXmlStandalone(true);
-            return document;
-        } catch (ParserConfigurationException ex) {
+            return inputFactory.createXMLStreamReader(stringReader);
+        } catch (XMLStreamException ex) {
             Exceptions.printStackTrace(ex);
         }
         return null;

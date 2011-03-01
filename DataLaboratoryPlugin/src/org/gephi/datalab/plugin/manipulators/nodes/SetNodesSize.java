@@ -23,7 +23,6 @@ package org.gephi.datalab.plugin.manipulators.nodes;
 import javax.swing.Icon;
 import org.gephi.datalab.plugin.manipulators.nodes.ui.SetNodesSizeUI;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
@@ -32,7 +31,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that sets a given size for all the selected nodes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class SetNodesSize implements NodesManipulator {
+public class SetNodesSize extends BasicNodesManipulator {
 
     private Node[] nodes;
     private float size = 1.0f;

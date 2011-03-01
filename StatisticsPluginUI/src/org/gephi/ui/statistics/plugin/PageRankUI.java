@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import org.gephi.statistics.plugin.PageRank;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = StatisticsUI.class)
@@ -45,6 +46,7 @@ public class PageRankUI implements StatisticsUI {
             panel.setEpsilon(pageRank.getEpsilon());
             panel.setProbability(pageRank.getProbability());
             panel.setDirected(pageRank.getDirected());
+            panel.setEdgeWeight(pageRank.isUseEdgeWeight());
         }
     }
 
@@ -53,6 +55,7 @@ public class PageRankUI implements StatisticsUI {
             pageRank.setEpsilon(panel.getEpsilon());
             pageRank.setProbability(panel.getProbability());
             pageRank.setDirected(panel.isDirected());
+            pageRank.setUseEdgeWeight(panel.isEdgeWeight());
             settings.save(pageRank);
         }
         panel = null;
@@ -68,7 +71,7 @@ public class PageRankUI implements StatisticsUI {
     }
 
     public String getDisplayName() {
-        return "PageRank";
+        return NbBundle.getMessage(getClass(), "PageRankUI.name");
     }
 
     public String getCategory() {
@@ -83,15 +86,18 @@ public class PageRankUI implements StatisticsUI {
 
         private double epsilon = 0.001;
         private double probability = 0.85;
+        private boolean useEdgeWeight = false;
 
         private void save(PageRank stat) {
             this.epsilon = stat.getEpsilon();
             this.probability = stat.getProbability();
+            this.useEdgeWeight = stat.isUseEdgeWeight();
         }
 
         private void load(PageRank stat) {
             stat.setEpsilon(epsilon);
             stat.setProbability(probability);
+            stat.setUseEdgeWeight(useEdgeWeight);
         }
     }
 }

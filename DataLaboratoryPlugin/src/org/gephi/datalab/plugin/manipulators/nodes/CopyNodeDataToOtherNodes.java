@@ -25,11 +25,10 @@ import javax.swing.Icon;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.datalab.api.AttributeColumnsController;
-import org.gephi.datalab.api.DataTablesController;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.plugin.manipulators.GeneralColumnsAndRowChooser;
 import org.gephi.datalab.plugin.manipulators.ui.GeneralChooseColumnsAndRowUI;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -39,7 +38,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that copies the given columns data of one node to the other selected nodes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class CopyNodeDataToOtherNodes implements NodesManipulator, GeneralColumnsAndRowChooser {
+public class CopyNodeDataToOtherNodes extends BasicNodesManipulator implements GeneralColumnsAndRowChooser {
 
     private Node clickedNode;
     private Node[] nodes;
@@ -87,7 +86,7 @@ public class CopyNodeDataToOtherNodes implements NodesManipulator, GeneralColumn
     }
 
     public int getPosition() {
-        return 100;
+        return 200;
     }
 
     public Icon getIcon() {

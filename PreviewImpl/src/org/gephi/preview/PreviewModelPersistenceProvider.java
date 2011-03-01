@@ -17,33 +17,41 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.preview;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=WorkspacePersistenceProvider.class)
+@ServiceProvider(service = WorkspacePersistenceProvider.class)
 public class PreviewModelPersistenceProvider implements WorkspacePersistenceProvider {
 
-    public Element writeXML(Document document, Workspace workspace) {
+    public void writeXML(XMLStreamWriter writer, Workspace workspace) {
         PreviewModelImpl model = workspace.getLookup().lookup(PreviewModelImpl.class);
         if (model != null) {
-            return model.writeXML(document);
+            try {
+                model.writeXML(writer);
+            } catch (XMLStreamException ex) {
+                throw new RuntimeException(ex);
+            }
         }
-        return null;
     }
 
-    public void readXML(Element element, Workspace workspace) {
+    public void readXML(XMLStreamReader reader, Workspace workspace) {
         PreviewModelImpl model = new PreviewModelImpl();
-        model.readXML(element);
+        try {
+            model.readXML(reader);
+        } catch (XMLStreamException ex) {
+            throw new RuntimeException(ex);
+        }
         workspace.add(model);
     }
 

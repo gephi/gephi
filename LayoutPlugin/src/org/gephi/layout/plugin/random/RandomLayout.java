@@ -29,6 +29,7 @@ import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -61,6 +62,7 @@ public class RandomLayout extends AbstractLayout implements Layout {
         converged = true;
     }
 
+    @Override
     public boolean canAlgo() {
         return !converged;
     }
@@ -72,8 +74,10 @@ public class RandomLayout extends AbstractLayout implements Layout {
         List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class, "Space size", null,
-                    "The size of the space to randomly distribute the nodes.",
+                    this, Double.class, 
+                    NbBundle.getMessage(getClass(), "Random.spaceSize.name"),
+                    null,
+                    NbBundle.getMessage(getClass(), "Random.spaceSize.desc"),
                     "getSize", "setSize"));
         } catch (Exception e) {
             e.printStackTrace();

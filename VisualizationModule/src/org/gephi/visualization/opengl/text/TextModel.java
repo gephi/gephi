@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.opengl.text;
 
 import java.awt.Color;
@@ -26,17 +26,17 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.openide.util.Lookup;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -214,192 +214,196 @@ public class TextModel {
         return nodeTextColumns;
     }
 
-    public void readXML(Element textModelElement) {
-
-        //Show
-        Element showNodeE = (Element) textModelElement.getElementsByTagName("shownodelabels").item(0);
-        showNodeLabels = Boolean.parseBoolean(showNodeE.getAttribute("enable"));
-        Element showEdgeE = (Element) textModelElement.getElementsByTagName("showedgelabels").item(0);
-        showEdgeLabels = Boolean.parseBoolean(showEdgeE.getAttribute("enable"));
-
-        //Selectedonly
-        Element selectedOnlyE = (Element) textModelElement.getElementsByTagName("selectedOnly").item(0);
-        selectedOnly = Boolean.parseBoolean(selectedOnlyE.getAttribute("value"));
-
-        //Font
-        Element nodeFontE = (Element) textModelElement.getElementsByTagName("nodefont").item(0);
-        String nodeFontName = nodeFontE.getAttribute("name");
-        int nodeFontSize = Integer.parseInt(nodeFontE.getAttribute("size"));
-        int nodeFontStyle = Integer.parseInt(nodeFontE.getAttribute("style"));
-        nodeFont = new Font(nodeFontName, nodeFontStyle, nodeFontSize);
-
-        Element edgeFontE = (Element) textModelElement.getElementsByTagName("edgefont").item(0);
-        String edgeFontName = edgeFontE.getAttribute("name");
-        int edgeFontSize = Integer.parseInt(edgeFontE.getAttribute("size"));
-        int edgeFontStyle = Integer.parseInt(edgeFontE.getAttribute("style"));
-        edgeFont = new Font(edgeFontName, edgeFontStyle, edgeFontSize);
-
-        //Color
-        Element nodeColorE = (Element) textModelElement.getElementsByTagName("nodecolor").item(0);
-        nodeColor = ColorUtils.decode(nodeColorE.getAttribute("value")).getRGBComponents(null);
-
-        Element edgeColorE = (Element) textModelElement.getElementsByTagName("edgecolor").item(0);
-        edgeColor = ColorUtils.decode(edgeColorE.getAttribute("value")).getRGBComponents(null);
-
-        //Size factor
-        Element nodeSizeFactorE = (Element) textModelElement.getElementsByTagName("nodesizefactor").item(0);
-        nodeSizeFactor = Float.parseFloat(nodeSizeFactorE.getTextContent());
-
-        Element edgeSizeFactorE = (Element) textModelElement.getElementsByTagName("edgesizefactor").item(0);
-        edgeSizeFactor = Float.parseFloat(edgeSizeFactorE.getTextContent());
-
-        //ColorMode
-        Element colorModeE = (Element) textModelElement.getElementsByTagName("colormode").item(0);
-        String colorModeClass = colorModeE.getAttribute("class");
-        if (colorModeClass.equals("UniqueColorMode")) {
-            colorMode = VizController.getInstance().getTextManager().getColorModes()[0];
-        } else if (colorModeClass.equals("ObjectColorMode")) {
-            colorMode = VizController.getInstance().getTextManager().getColorModes()[1];
-        }
-
-        //SizeMode
-        Element sizeModeE = (Element) textModelElement.getElementsByTagName("sizemode").item(0);
-        String sizeModeClass = sizeModeE.getAttribute("class");
-        if (sizeModeClass.equals("FixedSizeMode")) {
-//            sizeMode = new FixedSizeMode(this);
-            sizeMode = VizController.getInstance().getTextManager().getSizeModes()[0];
-        } else if (sizeModeClass.equals("ProportionalSizeMode")) {
-//            sizeMode = new ProportionalSizeMode(this);
-            sizeMode = VizController.getInstance().getTextManager().getSizeModes()[2];
-        } else if (sizeModeClass.equals("ScaledSizeMode")) {
-//            sizeMode = new ScaledSizeMode(this);
-            sizeMode = VizController.getInstance().getTextManager().getSizeModes()[1];
-        }
-
-        //NodeColumns
+    public void readXML(XMLStreamReader reader, Workspace workspace) throws XMLStreamException {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
-        if (attributeController != null && attributeController.getModel() != null) {
-            AttributeModel attributeModel = attributeController.getModel();
-            List<AttributeColumn> nodeCols = new ArrayList<AttributeColumn>();
-            List<AttributeColumn> edgeCols = new ArrayList<AttributeColumn>();
+        AttributeModel attributeModel = attributeController != null ? attributeController.getModel(workspace) : null;
+        List<AttributeColumn> nodeCols = new ArrayList<AttributeColumn>();
+        List<AttributeColumn> edgeCols = new ArrayList<AttributeColumn>();
 
-            Element nodeColumnsE = (Element) textModelElement.getElementsByTagName("nodecolumns").item(0);
-            NodeList nodeColumnList = nodeColumnsE.getElementsByTagName("column");
-            for (int i = 0; i < nodeColumnList.getLength(); i++) {
-                if (nodeColumnList.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                    Element nodeColumnE = (Element) nodeColumnList.item(i);
-                    String id = nodeColumnE.getAttribute("id");
-                    AttributeColumn col = attributeModel.getNodeTable().getColumn(id);
-                    if (col != null) {
-                        nodeCols.add(col);
+        boolean nodeColumn = false;
+        boolean edgeColumn = false;
+        boolean nodeSizeFac = false;
+        boolean edgeSizeFac = false;
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+                    if ("shownodelabels".equalsIgnoreCase(name)) {
+                        showNodeLabels = Boolean.parseBoolean(reader.getAttributeValue(null, "enable"));
+                    } else if ("showedgelabels".equalsIgnoreCase(name)) {
+                        showEdgeLabels = Boolean.parseBoolean(reader.getAttributeValue(null, "enable"));
+                    } else if ("selectedOnly".equalsIgnoreCase(name)) {
+                        selectedOnly = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                    } else if ("nodefont".equalsIgnoreCase(name)) {
+                        String nodeFontName = reader.getAttributeValue(null, "name");
+                        int nodeFontSize = Integer.parseInt(reader.getAttributeValue(null, "size"));
+                        int nodeFontStyle = Integer.parseInt(reader.getAttributeValue(null, "style"));
+                        nodeFont = new Font(nodeFontName, nodeFontStyle, nodeFontSize);
+                    } else if ("edgefont".equalsIgnoreCase(name)) {
+                        String edgeFontName = reader.getAttributeValue(null, "name");
+                        int edgeFontSize = Integer.parseInt(reader.getAttributeValue(null, "size"));
+                        int edgeFontStyle = Integer.parseInt(reader.getAttributeValue(null, "style"));
+                        edgeFont = new Font(edgeFontName, edgeFontStyle, edgeFontSize);
+                    } else if ("nodecolor".equalsIgnoreCase(name)) {
+                        nodeColor = ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null);
+                    } else if ("edgecolor".equalsIgnoreCase(name)) {
+                        edgeColor = ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null);
+                    } else if ("nodesizefactor".equalsIgnoreCase(name)) {
+                        nodeSizeFac = true;
+                    } else if ("edgesizefactor".equalsIgnoreCase(name)) {
+                        edgeSizeFac = true;
+                    } else if ("colormode".equalsIgnoreCase(name)) {
+                        String colorModeClass = reader.getAttributeValue(null, "class");
+                        if (colorModeClass.equals("UniqueColorMode")) {
+                            colorMode = VizController.getInstance().getTextManager().getColorModes()[0];
+                        } else if (colorModeClass.equals("ObjectColorMode")) {
+                            colorMode = VizController.getInstance().getTextManager().getColorModes()[1];
+                        }
+                    } else if ("sizemode".equalsIgnoreCase(name)) {
+                        String sizeModeClass = reader.getAttributeValue(null, "class");
+                        if (sizeModeClass.equals("FixedSizeMode")) {
+                            sizeMode = VizController.getInstance().getTextManager().getSizeModes()[0];
+                        } else if (sizeModeClass.equals("ProportionalSizeMode")) {
+                            sizeMode = VizController.getInstance().getTextManager().getSizeModes()[2];
+                        } else if (sizeModeClass.equals("ScaledSizeMode")) {
+                            sizeMode = VizController.getInstance().getTextManager().getSizeModes()[1];
+                        }
+                    } else if ("nodecolumns".equalsIgnoreCase(name)) {
+                        nodeColumn = true;
+                    } else if ("edgecolumns".equalsIgnoreCase(name)) {
+                        edgeColumn = true;
+                    } else if ("column".equalsIgnoreCase(name)) {
+                        String id = reader.getAttributeValue(null, "id");
+                        if (nodeColumn && attributeModel != null) {
+                            AttributeColumn col = attributeModel.getNodeTable().getColumn(id);
+                            if (col != null) {
+                                nodeCols.add(col);
+                            }
+                        } else if (edgeColumn && attributeModel != null) {
+                            AttributeColumn col = attributeModel.getEdgeTable().getColumn(id);
+                            if (col != null) {
+                                edgeCols.add(col);
+                            }
+                        }
                     }
-                }
-            }
 
-            Element edgeColumnsE = (Element) textModelElement.getElementsByTagName("edgecolumns").item(0);
-            NodeList edgeColumnList = edgeColumnsE.getElementsByTagName("column");
-            for (int i = 0; i < edgeColumnList.getLength(); i++) {
-                if (edgeColumnList.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                    Element edgeColumnE = (Element) edgeColumnList.item(i);
-                    String id = edgeColumnE.getAttribute("id");
-                    AttributeColumn col = attributeModel.getEdgeTable().getColumn(id);
-                    if (col != null) {
-                        edgeCols.add(col);
+                    break;
+                case XMLStreamReader.CHARACTERS:
+                    if (!reader.isWhiteSpace() && nodeSizeFac) {
+                        nodeSizeFactor = Float.parseFloat(reader.getText());
+                    } else if (!reader.isWhiteSpace() && edgeSizeFac) {
+                        edgeSizeFactor = Float.parseFloat(reader.getText());
                     }
-                }
-            }
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    nodeSizeFac = false;
+                    edgeSizeFac = false;
+                    if ("nodecolumns".equalsIgnoreCase(reader.getLocalName())) {
+                        nodeColumn = false;
+                    } else if ("edgecolumns".equalsIgnoreCase(reader.getLocalName())) {
+                        edgeColumn = false;
+                    } else if ("textmodel".equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
+                    }
 
-            nodeTextColumns = nodeCols.toArray(new AttributeColumn[0]);
-            edgeTextColumns = edgeCols.toArray(new AttributeColumn[0]);
+                    break;
+            }
         }
+
+        nodeTextColumns = nodeCols.toArray(new AttributeColumn[0]);
+        edgeTextColumns = edgeCols.toArray(new AttributeColumn[0]);
+
     }
 
-    public Element writeXML(Document document) {
+    public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
 
-        Element textModelE = document.createElement("textmodel");
+        writer.writeStartElement("textmodel");
 
         //Show
-        Element showNodeE = document.createElement("shownodelabels");
-        showNodeE.setAttribute("enable", String.valueOf(showNodeLabels));
-        textModelE.appendChild(showNodeE);
-        Element showEdgeE = document.createElement("showedgelabels");
-        showEdgeE.setAttribute("enable", String.valueOf(showEdgeLabels));
-        textModelE.appendChild(showEdgeE);
+        writer.writeStartElement("shownodelabels");
+        writer.writeAttribute("enable", String.valueOf(showNodeLabels));
+        writer.writeEndElement();
+        writer.writeStartElement("showedgelabels");
+        writer.writeAttribute("enable", String.valueOf(showEdgeLabels));
+        writer.writeEndElement();
 
         //Selectedonly
-        Element selectedOnlyE = document.createElement("selectedOnly");
-        selectedOnlyE.setAttribute("value", String.valueOf(selectedOnly));
-        textModelE.appendChild(selectedOnlyE);
+        writer.writeStartElement("selectedOnly");
+        writer.writeAttribute("value", String.valueOf(selectedOnly));
+        writer.writeEndElement();
 
         //Font
-        Element nodeFontE = document.createElement("nodefont");
-        nodeFontE.setAttribute("name", nodeFont.getName());
-        nodeFontE.setAttribute("size", Integer.toString(nodeFont.getSize()));
-        nodeFontE.setAttribute("style", Integer.toString(nodeFont.getStyle()));
-        textModelE.appendChild(nodeFontE);
+        writer.writeStartElement("nodefont");
+        writer.writeAttribute("name", nodeFont.getName());
+        writer.writeAttribute("size", Integer.toString(nodeFont.getSize()));
+        writer.writeAttribute("style", Integer.toString(nodeFont.getStyle()));
+        writer.writeEndElement();
 
-        Element edgeFontE = document.createElement("edgefont");
-        edgeFontE.setAttribute("name", edgeFont.getName());
-        edgeFontE.setAttribute("size", Integer.toString(edgeFont.getSize()));
-        edgeFontE.setAttribute("style", Integer.toString(edgeFont.getStyle()));
-        textModelE.appendChild(edgeFontE);
+        writer.writeStartElement("edgefont");
+        writer.writeAttribute("name", edgeFont.getName());
+        writer.writeAttribute("size", Integer.toString(edgeFont.getSize()));
+        writer.writeAttribute("style", Integer.toString(edgeFont.getStyle()));
+        writer.writeEndElement();
 
         //Size factor
-        Element nodeSizeFactorE = document.createElement("nodesizefactor");
-        nodeSizeFactorE.setTextContent(String.valueOf(nodeSizeFactor));
-        textModelE.appendChild(nodeSizeFactorE);
+        writer.writeStartElement("nodesizefactor");
+        writer.writeCharacters(String.valueOf(nodeSizeFactor));
+        writer.writeEndElement();
 
-        Element edgeSizeFactorE = document.createElement("edgesizefactor");
-        edgeSizeFactorE.setTextContent(String.valueOf(edgeSizeFactor));
-        textModelE.appendChild(edgeSizeFactorE);
+        writer.writeStartElement("edgesizefactor");
+        writer.writeCharacters(String.valueOf(edgeSizeFactor));
+        writer.writeEndElement();
 
         //Colors
-        Element nodeColorE = document.createElement("nodecolor");
-        nodeColorE.setAttribute("value", ColorUtils.encode(ColorUtils.decode(nodeColor)));
-        textModelE.appendChild(nodeColorE);
+        writer.writeStartElement("nodecolor");
+        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(nodeColor)));
+        writer.writeEndElement();
 
-        Element edgeColorE = document.createElement("edgecolor");
-        edgeColorE.setAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeColor)));
-        textModelE.appendChild(edgeColorE);
+        writer.writeStartElement("edgecolor");
+        writer.writeAttribute("value", ColorUtils.encode(ColorUtils.decode(edgeColor)));
+        writer.writeEndElement();
 
         //Colormode
-        Element colorModeE = document.createElement("colormode");
+        writer.writeStartElement("colormode");
         if (colorMode instanceof UniqueColorMode) {
-            colorModeE.setAttribute("class", "UniqueColorMode");
+            writer.writeAttribute("class", "UniqueColorMode");
         } else if (colorMode instanceof ObjectColorMode) {
-            colorModeE.setAttribute("class", "ObjectColorMode");
+            writer.writeAttribute("class", "ObjectColorMode");
         }
-        textModelE.appendChild(colorModeE);
+        writer.writeEndElement();
 
         //SizeMode
-        Element sizeModeE = document.createElement("sizemode");
+        writer.writeStartElement("sizemode");
         if (sizeMode instanceof FixedSizeMode) {
-            sizeModeE.setAttribute("class", "FixedSizeMode");
+            writer.writeAttribute("class", "FixedSizeMode");
         } else if (sizeMode instanceof ProportionalSizeMode) {
-            sizeModeE.setAttribute("class", "ProportionalSizeMode");
+            writer.writeAttribute("class", "ProportionalSizeMode");
         } else if (sizeMode instanceof ScaledSizeMode) {
-            sizeModeE.setAttribute("class", "ScaledSizeMode");
+            writer.writeAttribute("class", "ScaledSizeMode");
         }
-        textModelE.appendChild(sizeModeE);
+        writer.writeEndElement();
 
         //NodeColumns
-        Element nodeColumnsE = document.createElement("nodecolumns");
+        writer.writeStartElement("nodecolumns");
         for (AttributeColumn c : nodeTextColumns) {
-            Element nodeColumnE = document.createElement("column");
-            nodeColumnE.setAttribute("id", c.getId());
-            nodeColumnsE.appendChild(nodeColumnE);
+            writer.writeStartElement("column");
+            writer.writeAttribute("id", c.getId());
+            writer.writeEndElement();
         }
-        textModelE.appendChild(nodeColumnsE);
+        writer.writeEndElement();
 
         //EdgeColumns
-        Element edgeColumnsE = document.createElement("edgecolumns");
+        writer.writeStartElement("edgecolumns");
         for (AttributeColumn c : edgeTextColumns) {
-            Element edgeColumnE = document.createElement("column");
-            edgeColumnE.setAttribute("id", c.getId());
-            edgeColumnsE.appendChild(edgeColumnE);
+            writer.writeStartElement("column");
+            writer.writeAttribute("id", c.getId());
+            writer.writeEndElement();
         }
-        textModelE.appendChild(edgeColumnsE);
+        writer.writeEndElement();
 
-        return textModelE;
+        writer.writeEndElement();
     }
 }

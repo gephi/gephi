@@ -22,7 +22,6 @@ package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
 import org.openide.util.ImageUtilities;
@@ -32,7 +31,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that centers the graph view to show a node.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class SelectOnGraph implements NodesManipulator {
+public class SelectOnGraph extends BasicNodesManipulator {
     private Node node;
 
     public void setup(Node[] nodes, Node clickedNode) {

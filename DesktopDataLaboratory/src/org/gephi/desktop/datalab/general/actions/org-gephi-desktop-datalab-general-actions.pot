@@ -16,19 +16,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "AddColumnUI.title"
-msgstr "Add new column - Settings"
+msgstr "Add column - Settings"
 
 msgid "AddColumnUI.descriptionLabel.text.nodes"
-msgstr "<html><b>Add new column to nodes table</b><html>"
+msgstr "<html><b>Add column to nodes</b><html>"
 
 msgid "AddColumnUI.descriptionLabel.text.edges"
-msgstr "<html><b>Add new column to edges table</b><html>"
+msgstr "<html><b>Add column to edges</b><html>"
 
 msgid "AddColumnUI.typeLabel.text"
-msgstr "Type of the column:"
+msgstr "Type:"
 
 msgid "AddColumnUI.titleLabel.text"
-msgstr "Title of the column:"
+msgstr "Title:"
 
 msgid "MergeColumnsUI.title"
 msgstr "Merge columns"
@@ -40,23 +40,22 @@ msgid "MergeColumnsUI.columnsToMergeLabel.text"
 msgstr "Columns to merge:"
 
 msgid "MergeColumnsUI.availableStrategiesLabel.text"
-msgstr "Available merge strategies:"
+msgstr "Merge strategy:"
 
 msgid "MergeColumnsUI.description.text"
-msgstr "<html>Choose the columns to merge and a merge strategy</html>"
+msgstr "<html>Choose the columns to merge and a merge strategy.</html>"
 
 msgid "MergeColumnsUI.problems.less_than_2_columns_selected"
-msgstr "At least 1 column has to be selected to merge"
+msgstr "At least one column must be selected."
 
 msgid "MergeColumnsUI.problems.not_executable_strategy"
-msgstr ""
-"The selected strategy cannot be executed with the given columns to merge"
+msgstr "This merge strategy cannot be executed to the given columns."
 
 msgid "CSVExportUI.title"
 msgstr "Export table to CSV file"
 
 msgid "CSVExportUI.separatorLabel.text"
-msgstr "Values separator:"
+msgstr "Separator:"
 
 msgid "CSVExportUI.comma"
 msgstr "Comma"
@@ -71,12 +70,7 @@ msgid "CSVExportUI.tab"
 msgstr "Tab"
 
 msgid "CSVExportUI.columnsLabel.text"
-msgstr "Columns to export:"
+msgstr "Columns:"
 
 msgid "CSVExportUI.charsetLabel.text"
 msgstr "Charset:"
-
-msgid "CSVExportUI.descriptionLabel.text"
-msgstr ""
-"<html>Table data will be exported to a CSV file with the selected charset</"
-"html>"

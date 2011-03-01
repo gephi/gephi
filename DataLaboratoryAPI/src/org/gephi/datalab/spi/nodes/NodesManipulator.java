@@ -21,15 +21,18 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalab.spi.nodes;
 
+import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.graph.api.Node;
 
 /**
+ * <p><b>Please note that the methods offered in this service are the same as Visualization API GraphContextMenuItem.
+ * It is possible to reuse actions implementations by adding both <code>ServiceProvider</code> annotations.</b></p>
  * Manipulator for nodes.
  * @see Manipulator
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public interface NodesManipulator extends Manipulator {
+public interface NodesManipulator extends ContextMenuItemManipulator {
     /**
      * Prepare nodes for this action.
      * @param nodes All selected nodes to operate

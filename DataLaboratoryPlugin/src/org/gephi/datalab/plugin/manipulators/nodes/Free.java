@@ -21,10 +21,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.datalab.plugin.manipulators.nodes;
 
 import javax.swing.Icon;
-import org.gephi.datalab.api.DataTablesController;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.graph.api.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -34,7 +33,7 @@ import org.openide.util.NbBundle;
  * Nodes manipulator that frees (not fixed position) one or more nodes.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class Free implements NodesManipulator {
+public class Free extends BasicNodesManipulator {
 
     private Node[] nodes;
     private Node clickedNode;

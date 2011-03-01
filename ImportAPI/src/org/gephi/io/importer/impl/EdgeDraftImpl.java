@@ -235,7 +235,8 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         Double end = null;
         if (dateFrom != null && !dateFrom.isEmpty()) {
             try {
-                if (container.getTimeFormat().equals(TimeFormat.DATE)) {
+                if (container.getTimeFormat().equals(TimeFormat.DATE) ||
+                        container.getTimeFormat().equals(TimeFormat.DATETIME)) {
                     start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
                 } else {
                     start = Double.parseDouble(dateFrom);
@@ -247,7 +248,8 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
         }
         if (dateTo != null && !dateTo.isEmpty()) {
             try {
-                if (container.getTimeFormat().equals(TimeFormat.DATE)) {
+                if (container.getTimeFormat().equals(TimeFormat.DATE) ||
+                        container.getTimeFormat().equals(TimeFormat.DATETIME)) {
                     end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
                 } else {
                     end = Double.parseDouble(dateTo);

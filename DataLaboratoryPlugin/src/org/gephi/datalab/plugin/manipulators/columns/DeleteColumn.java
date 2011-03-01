@@ -25,7 +25,7 @@ import javax.swing.JOptionPane;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalab.api.AttributeColumnsController;
-import org.gephi.datalab.api.DataTablesController;
+import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulator;
 import org.gephi.datalab.spi.columns.AttributeColumnsManipulatorUI;
 import org.openide.util.ImageUtilities;

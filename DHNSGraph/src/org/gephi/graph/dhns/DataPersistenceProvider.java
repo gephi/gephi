@@ -20,13 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.graph.dhns;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.graph.dhns.core.Dhns;
 import org.gephi.graph.dhns.utils.DataSerializer;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.lookup.ServiceProvider;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  *
@@ -35,16 +36,24 @@ import org.w3c.dom.Element;
 @ServiceProvider(service = WorkspacePersistenceProvider.class, position = 12000)
 public class DataPersistenceProvider implements WorkspacePersistenceProvider {
 
-    public Element writeXML(Document document, Workspace workspace) {
+    public void writeXML(XMLStreamWriter writer, Workspace workspace) {
         Dhns dhns = workspace.getLookup().lookup(Dhns.class);
         DataSerializer serializer = new DataSerializer();
-        return serializer.writeData(document, dhns);
+        try {
+            serializer.writeData(writer, dhns);
+        } catch (XMLStreamException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    public void readXML(Element element, Workspace workspace) {
+    public void readXML(XMLStreamReader reader, Workspace workspace) {
         Dhns dhns = workspace.getLookup().lookup(Dhns.class);
         DataSerializer serializer = new DataSerializer();
-        serializer.readData(element, dhns);
+        try {
+            serializer.readData(reader, dhns);
+        } catch (XMLStreamException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public String getIdentifier() {

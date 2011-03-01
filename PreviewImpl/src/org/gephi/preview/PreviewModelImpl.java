@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.preview;
 
 import java.awt.Color;
@@ -26,6 +26,9 @@ import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
 import org.gephi.graph.api.GraphModel;
@@ -47,10 +50,6 @@ import org.gephi.preview.supervisors.UndirectedEdgeSupervisorImpl;
 import org.gephi.preview.supervisors.UnidirectionalEdgeSupervisorImpl;
 import org.gephi.project.api.Workspace;
 import org.openide.nodes.Node.Property;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -225,31 +224,31 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
     }
 
     //PERSISTENCE
-    public Element writeXML(Document document) {
-        Element previewModelE = document.createElement("previewmodel");
+    public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("previewmodel");
 
         //Ratio
-        Element visibilityRatioE = document.createElement("ratio");
-        visibilityRatioE.setTextContent(String.valueOf(visibilityRatio));
-        previewModelE.appendChild(visibilityRatioE);
+        writer.writeStartElement("ratio");
+        writer.writeCharacters(String.valueOf(visibilityRatio));
+        writer.writeEndElement();
 
         //Color
-        Element colorE = document.createElement("backgroundcolor");
-        colorE.setTextContent("" + backgroundColor.getRGB());
-        previewModelE.appendChild(colorE);
+        writer.writeStartElement("backgroundcolor");
+        writer.writeCharacters("" + backgroundColor.getRGB());
+        writer.writeEndElement();
 
         //Properties
-        writeProperties(document, previewModelE, nodeSupervisor);
-        writeProperties(document, previewModelE, globalEdgeSupervisor);
-        writeProperties(document, previewModelE, selfLoopSupervisor);
-        writeProperties(document, previewModelE, uniEdgeSupervisor);
-        writeProperties(document, previewModelE, biEdgeSupervisor);
-        writeProperties(document, previewModelE, undirectedEdgeSupervisor);
+        writeProperties(writer, nodeSupervisor);
+        writeProperties(writer, globalEdgeSupervisor);
+        writeProperties(writer, selfLoopSupervisor);
+        writeProperties(writer, uniEdgeSupervisor);
+        writeProperties(writer, biEdgeSupervisor);
+        writeProperties(writer, undirectedEdgeSupervisor);
 
-        return previewModelE;
+        writer.writeEndElement();
     }
 
-    private void writeProperties(Document document, Element parent, Supervisor supervisor) {
+    private void writeProperties(XMLStreamWriter writer, Supervisor supervisor) {
         for (SupervisorPropery p : supervisor.getProperties()) {
             String propertyName = p.getProperty().getName();
             try {
@@ -260,11 +259,11 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
                         editor = PropertyEditorManager.findEditor(p.getProperty().getValueType());
                     }
                     if (editor != null) {
-                        Element propertyE = document.createElement("previewproperty");
-                        propertyE.setAttribute("name", propertyName);
+                        writer.writeStartElement("previewproperty");
+                        writer.writeAttribute("name", propertyName);
                         editor.setValue(propertyValue);
-                        propertyE.setTextContent(editor.getAsText());
-                        parent.appendChild(propertyE);
+                        writer.writeCharacters(editor.getAsText());
+                        writer.writeEndElement();
                     }
                 }
             } catch (Exception e) {
@@ -273,38 +272,63 @@ public class PreviewModelImpl implements PreviewModel, GraphListener {
         }
     }
 
-    public void readXML(Element previewModelE) {
+    public void readXML(XMLStreamReader reader) throws XMLStreamException {
         Map<String, Property> propertiesMap = getPropertiesMap();
 
-        NodeList childList = previewModelE.getChildNodes();
-        for (int i = 0; i < childList.getLength(); i++) {
-            Node n = childList.item(i);
-            if (n.getNodeType() == Node.ELEMENT_NODE) {
-                Element childE = (Element) n;
-                if (childE.getNodeName().equals("ratio")) {
-                    visibilityRatio = Float.parseFloat(childE.getTextContent());
-                } else if (childE.getNodeName().equals("backgroundcolor")) {
-                    backgroundColor = new Color(Integer.parseInt(childE.getTextContent()));
-                } else if (childE.getNodeName().equals("previewproperty")) {
-                    String name = childE.getAttribute("name");
-                    Property p = propertiesMap.get(name);
-                    if (p != null) {
-                        PropertyEditor editor = p.getPropertyEditor();
-                        if (editor == null) {
-                            editor = PropertyEditorManager.findEditor(p.getValueType());
-                        }
-                        if (editor != null) {
-                            editor.setAsText(childE.getTextContent());
-                            if (editor.getValue() != null) {
-                                try {
-                                    p.setValue(editor.getValue());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+        boolean ratio = false;
+        boolean bgColor = false;
+        String propName = null;
+
+        boolean end = false;
+        while (reader.hasNext() && !end) {
+            int type = reader.next();
+
+            switch (type) {
+                case XMLStreamReader.START_ELEMENT:
+                    String name = reader.getLocalName();
+                    if ("ratio".equalsIgnoreCase(name)) {
+                        ratio = true;
+                    } else if ("backgroundcolor".equalsIgnoreCase(name)) {
+                        bgColor = true;
+                    } else if ("previewproperty".equalsIgnoreCase(name)) {
+                        propName = reader.getAttributeValue(null, "name");
+                    }
+                    break;
+                case XMLStreamReader.CHARACTERS:
+                    if (!reader.isWhiteSpace()) {
+                        if (ratio) {
+                            visibilityRatio = Float.parseFloat(reader.getText());
+                        } else if (bgColor) {
+                            backgroundColor = new Color(Integer.parseInt(reader.getText()));
+                        } else if (propName != null) {
+                            Property p = propertiesMap.get(propName);
+                            if (p != null) {
+                                PropertyEditor editor = p.getPropertyEditor();
+                                if (editor == null) {
+                                    editor = PropertyEditorManager.findEditor(p.getValueType());
+                                }
+                                if (editor != null) {
+                                    editor.setAsText(reader.getText());
+                                    if (editor.getValue() != null) {
+                                        try {
+                                            p.setValue(editor.getValue());
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                }
+                    break;
+                case XMLStreamReader.END_ELEMENT:
+                    if ("previewmodel".equalsIgnoreCase(reader.getLocalName())) {
+                        end = true;
+                    }
+                    bgColor = false;
+                    ratio = false;
+                    name = null;
+                    break;
             }
         }
     }

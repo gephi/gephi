@@ -180,7 +180,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
 
     public Node getOpposite(Node node, Edge edge) {
         checkNode(node);
-        AbstractEdge absEdge = checkEdge(edge);
+        AbstractEdge absEdge = checkEdgeOrMetaEdge(edge);
         if (absEdge.getSource(view.getViewId()) == node) {
             return absEdge.getTarget(view.getViewId());
         } else if (absEdge.getTarget(view.getViewId()) == node) {

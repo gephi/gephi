@@ -183,10 +183,20 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                     }
                 }
                 file = FileUtil.normalizeFile(file);
-
+                final String SaveAsFileName = file.getName();
                 //File exist now, Save project
                 Project project = controller.getCurrentProject();
                 saveProject(project, file);
+
+                //Modifying Title bar
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+                        String title = frame.getTitle();
+                        title = title.substring(0, title.indexOf('-') - 1)+ " - " + SaveAsFileName;
+                        frame.setTitle(title);
+                    }
+                });
 
             } catch (Exception e) {
                 Logger.getLogger("").log(Level.WARNING, "", e);

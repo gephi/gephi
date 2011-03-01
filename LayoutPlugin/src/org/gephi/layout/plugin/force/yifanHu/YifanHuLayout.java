@@ -37,6 +37,7 @@ import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.layout.plugin.force.quadtree.QuadTree;
+import org.openide.util.NbBundle;
 
 /**
  * Hu's basic algorithm
@@ -126,38 +127,54 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
 
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Optimal Distance", YIFANHU_CATEGORY,
-                    "The natural length of the springs. Bigger values mean nodes will be farther apart.",
+                    this, Float.class, 
+                    NbBundle.getMessage(getClass(), "YifanHu.optimalDistance.name"),
+                    YIFANHU_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHu.optimalDistance.desc"),
                     "getOptimalDistance", "setOptimalDistance"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Relative Strength", YIFANHU_CATEGORY,
-                    "The relative strength between electrical force (repulsion) and spring force (attraction).",
+                    this, Float.class, 
+                    NbBundle.getMessage(getClass(), "YifanHu.relativeStrength.name"),
+                    YIFANHU_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHu.relativeStrength.desc"),
                     "getRelativeStrength", "setRelativeStrength"));
 
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Initial Step size", YIFANHU_CATEGORY,
-                    "The initial step size used in the integration phase. Set this value to a meaningful size compared to the optimal distance (10% is a good starting point).",
+                    this, Float.class, 
+                    NbBundle.getMessage(getClass(), "YifanHu.initialStepSize.name"),
+                    YIFANHU_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHu.initialStepSize.desc"),
                     "getInitialStep", "setInitialStep"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Step ratio", YIFANHU_CATEGORY,
-                    "The ratio used to update the step size across iterations.",
+                    this, Float.class, 
+                    NbBundle.getMessage(getClass(), "YifanHu.stepRatio.name"),
+                    YIFANHU_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHu.stepRatio.desc"),
                     "getStepRatio", "setStepRatio"));
             properties.add(LayoutProperty.createProperty(
-                    this, Boolean.class, "Adaptive Cooling", YIFANHU_CATEGORY,
-                    "Controls the use of adaptive cooling. It is used help the layout algoritm to avoid energy local minima.",
+                    this, Boolean.class, 
+                    NbBundle.getMessage(getClass(), "YifanHu.adaptativeCooling.name"),
+                    YIFANHU_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHu.adaptativeCooling.desc"),
                     "isAdaptiveCooling", "setAdaptiveCooling"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Convergence Threshold", YIFANHU_CATEGORY,
-                    "Relative energy convergence threshold. Smaller values mean more accuracy.",
+                    this, Float.class, 
+                    NbBundle.getMessage(getClass(), "YifanHu.convergenceThreshold.name"),
+                    YIFANHU_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHu.convergenceThreshold.desc"),
                     "getConvergenceThreshold", "setConvergenceThreshold"));
 
             properties.add(LayoutProperty.createProperty(
-                    this, Integer.class, "Quadtree Max Level", BARNESHUT_CATEGORY,
-                    "The maximun level to be used in the quadtree representation. Greater values mean more accuracy.",
+                    this, Integer.class, 
+                    NbBundle.getMessage(getClass(), "YifanHu.quadTreeMaxLevel.name"),
+                    BARNESHUT_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHu.quadTreeMaxLevel.desc"),
                     "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
             properties.add(LayoutProperty.createProperty(
-                    this, Float.class, "Theta", BARNESHUT_CATEGORY,
-                    "The theta parameter for Barnes-Hut opening criteria. Smaller values mean more accuracy.",
+                    this, Float.class, 
+                    NbBundle.getMessage(getClass(), "YifanHu.theta.name"),
+                    BARNESHUT_CATEGORY,
+                    NbBundle.getMessage(getClass(), "YifanHu.theta.desc"),
                     "getBarnesHutTheta", "setBarnesHutTheta"));
         } catch (Exception e) {
             e.printStackTrace();
