@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-04-30 08:01+0000\n"
+"PO-Revision-Date: 2011-01-11 22:43+0000\n"
 "Last-Translator: Sébastien Heymann <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-10-03 04:58+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-03-02 04:35+0000\n"
+"X-Generator: Launchpad (build 12351)\n"
 
 msgid "CTL_PreviewAction"
 msgstr "Aperçu"
@@ -35,11 +35,32 @@ msgstr "Paramètres d'aperçu"
 msgid "HINT_PreviewTopComponent"
 msgstr "Aperçu"
 
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Aperçu et paramétrages"
+
 msgid "GenericColorizerPanel.CustomColorRadioButton.text"
 msgstr "Couleur personnalisée"
 
-msgid "OpenIDE-Module-Short-Description"
-msgstr "Aperçu et paramétrages"
+msgid "PreviewNode.displayName"
+msgstr ""
+
+msgid "PreviewNode.Node.displayName"
+msgstr ""
+
+msgid "PreviewNode.Edge.displayName"
+msgstr ""
+
+msgid "PreviewNode.SelfLoop.displayName"
+msgstr ""
+
+msgid "PreviewNode.Directed.displayName"
+msgstr ""
+
+msgid "PreviewNode.Undirected.displayName"
+msgstr ""
+
+msgid "PreviewNode.Mutual.displayName"
+msgstr ""
 
 msgid "PreviewSettingsTopComponent.savePreset.input"
 msgstr "Nom"
@@ -91,9 +112,3 @@ msgstr "Export :"
 
 msgid "PreviewSettingsTopComponent.svgExportButton.toolTipText"
 msgstr "Exporter au format SVG ou PDF"
-
-#~ msgid "OpenIDE-Module-Name"
-#~ msgstr "Desktop Preview"
-
-#~ msgid "OpenIDE-Module-Display-Category"
-#~ msgstr "Gephi UI"

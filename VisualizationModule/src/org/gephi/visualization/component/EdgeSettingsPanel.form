@@ -33,14 +33,14 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="selectionColorPanel" min="-2" pref="176" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="metaScalePanel" min="-2" pref="126" max="-2" attributes="0"/>
+                      <Component id="metaScalePanel" min="-2" pref="134" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="showEdgesCheckbox" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="10" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -63,8 +63,8 @@
                               <Component id="sourceNodeColorCheckbox" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="scalePanel" alignment="0" pref="61" max="32767" attributes="1"/>
-                          <Component id="metaScalePanel" alignment="0" pref="61" max="32767" attributes="1"/>
                           <Component id="selectionColorPanel" alignment="0" pref="61" max="32767" attributes="1"/>
+                          <Component id="metaScalePanel" alignment="0" pref="61" max="32767" attributes="1"/>
                       </Group>
                   </Group>
               </Group>
@@ -134,10 +134,13 @@
             <Property name="horizontalAlignment" type="int" value="2"/>
             <Property name="horizontalTextPosition" type="int" value="2"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[150, 18]"/>
+              <Dimension value="[160, 18]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[160, 18]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[150, 18]"/>
+              <Dimension value="[160, 18]"/>
             </Property>
           </Properties>
           <Constraints>

@@ -8,20 +8,20 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-12-26 20:28+0000\n"
+"PO-Revision-Date: 2011-02-11 23:46+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-12-27 04:43+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-03-02 04:37+0000\n"
+"X-Generator: Launchpad (build 12351)\n"
 
 msgid "ClearEdgesUI.deleteDirectedCheckbox.text"
 msgstr "Eliminar aristas dirigidas"
 
 msgid "ClearEdgesUI.descriptionLabel.text"
-msgstr "Elige los tipos de aristas que eliminar:"
+msgstr "Tipos de aristas a eliminar:"
 
 msgid "ClearEdgesUI.deleteUndirectedChekbox.text"
 msgstr "Eliminar aristas no dirigidas"
@@ -95,8 +95,11 @@ msgstr "{0} ocurrencias fueron reemplazadas"
 msgid "SearchReplaceUI.column"
 msgstr "Columna: ''{0}''"
 
+msgid "SearchReplaceUI.allColumns"
+msgstr "--Todas columnas--"
+
 msgid "ImportCSVUIWizardAction.name"
-msgstr "Importar archivo CSV a una tabla"
+msgstr "Importar hoja de cálculo"
 
 msgid "ImportCSVUIVisualPanel1.name"
 msgstr "Opciones generales"
@@ -123,7 +126,7 @@ msgid "ImportCSVUIVisualPanel1.filechooser.csvDescription"
 msgstr "CSV"
 
 msgid "ImportCSVUIVisualPanel1.tableLabel.text"
-msgstr "Selecciona qué tabla usar:"
+msgstr "Tabla:"
 
 msgid "ImportCSVUIVisualPanel1.fileButton.text"
 msgstr "..."
@@ -147,7 +150,7 @@ msgid "ImportCSVUIVisualPanel1.validation.no-columns"
 msgstr "El archivo no contiene ninguna columna"
 
 msgid "ImportCSVUIVisualPanel1.validation.repeated-columns"
-msgstr "El archivo no puede tener nombre de columnas repetidos"
+msgstr "El archivo no puede tener nombres de columnas repetidos"
 
 msgid "ImportCSVUIVisualPanel1.validation.error"
 msgstr "Error"
@@ -166,7 +169,7 @@ msgid "ImportCSVUIVisualPanel2.name"
 msgstr "Parámetros de importación:"
 
 msgid "ImportCSVUIVisualPanel2.columnsLabel.text"
-msgstr "Escoge qué columnas importar:"
+msgstr "Importar columnas:"
 
 msgid "ImportCSVUIVisualPanel2.nodes.description"
 msgstr ""
@@ -177,7 +180,7 @@ msgstr ""
 "actualizados con los datos del archivo CSV</html>"
 
 msgid "ImportCSVUIVisualPanel2.nodes.assign-ids-checkbox"
-msgstr "Asignar un nuevo id a un nodo cuando ya existe"
+msgstr "Forzar que los nodos sean creados nuevos"
 
 msgid "ImportCSVUIVisualPanel2.edges.description"
 msgstr ""
@@ -191,7 +194,10 @@ msgstr ""
 "ningún dato.</html>"
 
 msgid "ImportCSVUIVisualPanel2.edges.create-new-nodes-checkbox"
-msgstr "Reemplazar en modo expresión regular"
+msgstr "Crear nodos inexistentes"
 
 msgid "SearchReplaceUI.regexReplaceCheckBox.text"
+msgstr "Reemplazar en modo expresión regular"
+
+msgid "SearchReplaceUI.columnsToSearchLabel.text"
 msgstr "Columnas en las que buscar/reemplazar:"

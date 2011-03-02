@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-09-07 15:28+0000\n"
+"PO-Revision-Date: 2011-03-01 20:07+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-10-03 04:58+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-03-02 04:36+0000\n"
+"X-Generator: Launchpad (build 12351)\n"
 
 msgid "GraphDistancePanel.directedRadioButton.text"
 msgstr "Dirigido"
@@ -208,3 +208,42 @@ msgstr "No dirigido"
 
 msgid "GraphDistancePanel.normalizeButton.text"
 msgstr "Normalizar centralidades en el rango [0,1]"
+
+msgid "ConnectedComponentUI.name"
+msgstr "Componentes conexos"
+
+msgid "ClusteringCoefficientUI.name"
+msgstr "Coeficiente medio de clustering"
+
+msgid "DegreeDistributionUI.name"
+msgstr "Ley de potencias de grado"
+
+msgid "EigenvectorCentralityUI.name"
+msgstr "Centralidad de vector propio"
+
+msgid "GraphDensityUI.name"
+msgstr "Densidad de grafo"
+
+msgid "DiameterUI.name"
+msgstr "Diámetro de la red"
+
+msgid "HitsUI.name"
+msgstr "HITS"
+
+msgid "InOutDegreeUI.name"
+msgstr "Grado medio"
+
+msgid "ModularityUI.name"
+msgstr "Modularidad"
+
+msgid "PageRankUI.name"
+msgstr "PageRank"
+
+msgid "PathLengthUI.name"
+msgstr "Longitud media de camino"
+
+msgid "WeightedDegreeUI.name"
+msgstr "Grado medio con pesos"
+
+msgid "PageRankPanel.edgeWeightCheckbox.text"
+msgstr "Utilizar peso de aristas"
