@@ -1,0 +1,60 @@
+# German translation for gephi
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the gephi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gephi\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-04-07 13:16+0200\n"
+"PO-Revision-Date: 2011-03-01 15:47+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: German <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2011-03-02 04:35+0000\n"
+"X-Generator: Launchpad (build 12351)\n"
+
+msgid "DegreeRangeBuilder.name"
+msgstr ""
+
+msgid "DegreeRangeBuilder.description"
+msgstr ""
+
+msgid "InDegreeRangeBuilder.name"
+msgstr ""
+
+msgid "InDegreeRangeBuilder.description"
+msgstr ""
+
+msgid "OutDegreeRangeBuilder.name"
+msgstr ""
+
+msgid "OutDegreeRangeBuilder.description"
+msgstr ""
+
+msgid "MutualDegreeRangeBuilder.name"
+msgstr ""
+
+msgid "MutualDegreeRangeBuilder.description"
+msgstr ""
+
+msgid "EgoBuilder.name"
+msgstr ""
+
+msgid "EgoBuilder.description"
+msgstr ""
+
+msgid "GiantComponentBuilder.name"
+msgstr ""
+
+msgid "GiantComponentBuilder.description"
+msgstr ""
+
+msgid "NeighborsBuilder.name"
+msgstr ""
+
+msgid "NeighborsBuilder.description"
+msgstr ""

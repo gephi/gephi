@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-02-11 04:58+0000\n"
-"X-Generator: Launchpad (build 12177)\n"
+"X-Launchpad-Export-Date: 2011-03-02 04:37+0000\n"
+"X-Generator: Launchpad (build 12351)\n"
 
 msgid "OpenInEditNodeWindow.name"
 msgstr "Editer le noeud"
@@ -48,12 +48,6 @@ msgstr "Tout supprimer"
 
 msgid "DeleteNodes.confirmation.message"
 msgstr "Confirmer la suppression des noeuds ?"
-
-msgid "TagNodes.name.multiple"
-msgstr ""
-
-msgid "TagNodes.name.single"
-msgstr ""
 
 msgid "ClearNodesData.name.single"
 msgstr "Effacer..."
