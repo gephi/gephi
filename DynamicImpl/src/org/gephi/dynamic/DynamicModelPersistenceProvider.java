@@ -70,9 +70,12 @@ public class DynamicModelPersistenceProvider implements WorkspacePersistenceProv
         writer.writeStartElement("dynamicmodel");
 
         writer.writeStartElement("timeformat");
-        if (model.getTimeFormat().equals(DynamicModel.TimeFormat.DATE)) {
+        if (model.getTimeFormat().equals(DynamicModel.TimeFormat.DATETIME)) {
+            writer.writeAttribute("value", "datetime");
+        } else if (model.getTimeFormat().equals(DynamicModel.TimeFormat.DATE)) {
             writer.writeAttribute("value", "date");
-        } else {
+        } else { 
+            // default: if equals(DynamicModel.TimeFormat.DOUBLE)
             writer.writeAttribute("value", "double");
         }
         writer.writeEndElement();
@@ -88,8 +91,10 @@ public class DynamicModelPersistenceProvider implements WorkspacePersistenceProv
                 case XMLStreamReader.START_ELEMENT:
                     if ("timeformat".equalsIgnoreCase(reader.getLocalName())) {
                         String val = reader.getAttributeValue(null, "value");
-                        if (val.equals("date")) {
+                        if (val.equalsIgnoreCase("date")) {
                             model.setTimeFormat(DynamicModel.TimeFormat.DATE);
+                        } if (val.equalsIgnoreCase("datetime")) {
+                            model.setTimeFormat(DynamicModel.TimeFormat.DATETIME);
                         } else {
                             model.setTimeFormat(DynamicModel.TimeFormat.DOUBLE);
                         }
@@ -102,5 +107,14 @@ public class DynamicModelPersistenceProvider implements WorkspacePersistenceProv
                     break;
             }
         }
+        // Start & End
+        /*
+        if (!start.isEmpty()) {
+            container.setTimeIntervalMin(start);
+        }
+        if (!end.isEmpty()) {
+            container.setTimeIntervalMax(end);
+        }
+         */
     }
 }

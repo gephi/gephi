@@ -210,18 +210,16 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_defaultedgetype", defaultEdgeType), Issue.Level.SEVERE));
             }
         }
-
         //TimeFormat
         if (!timeFormat.isEmpty()) {
             if ("double".equalsIgnoreCase(timeFormat) || "float".equalsIgnoreCase(timeFormat)) {
                 container.setTimeFormat(TimeFormat.DOUBLE);
             } else if ("date".equalsIgnoreCase(timeFormat)) {
                 container.setTimeFormat(TimeFormat.DATE);
-            } else if ("datetime".equalsIgnoreCase(timeFormat) ||
-                    "dateTime".equalsIgnoreCase(timeFormat)) {
+            } else if ("datetime".equalsIgnoreCase(timeFormat)) {
                 container.setTimeFormat(TimeFormat.DATETIME);
             }
-        } else if (mode.equals("dynamic")) {
+        } else if (mode.equalsIgnoreCase("dynamic")) {
             container.setTimeFormat(TimeFormat.DOUBLE);
         }
 

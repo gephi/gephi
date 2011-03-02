@@ -62,7 +62,8 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
         enabled = !Double.isInfinite(dynamicModel.getVisibleInterval().getLow()) && !Double.isInfinite(dynamicModel.getVisibleInterval().getHigh());
         dynamicController.addModelListener(this);
 
-        unit = dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE) ? DateTime.class : null;
+        unit = (dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE)
+              ||dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATETIME)) ? DateTime.class : Double.class;
         customMin = Double.NEGATIVE_INFINITY;
         customMax = Double.POSITIVE_INFINITY;
         modelMin = Double.NEGATIVE_INFINITY;
@@ -85,6 +86,11 @@ public class TimelineModelImpl implements TimelineModel, DynamicModelListener {
 
     public void dynamicModelChanged(DynamicModelEvent event) {
         if (event.getSource() == dynamicModel) {
+            
+            // TODO: should be in its own event "UNIT_CHANGED"
+             unit = (dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE)
+              ||dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATETIME)) ? DateTime.class : Double.class;
+             
             switch (event.getEventType()) {
                 case VISIBLE_INTERVAL:
                     fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.VISIBLE_INTERVAL, this, event.getData()));

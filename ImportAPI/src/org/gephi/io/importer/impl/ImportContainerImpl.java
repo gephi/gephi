@@ -372,7 +372,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     public void setTimeIntervalMax(String timeIntervalMax) {
-        if (timeFormat.equals(TimeFormat.DATE)) {
+        if (timeFormat.equals(TimeFormat.DATE) || timeFormat.equals(TimeFormat.DATETIME)) {
             try {
                 this.timeIntervalMax = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMax);
             } catch (Exception ex) {
@@ -388,7 +388,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     public void setTimeIntervalMin(String timeIntervalMin) {
-        if (timeFormat.equals(TimeFormat.DATE)) {
+        if (timeFormat.equals(TimeFormat.DATE) || timeFormat.equals(TimeFormat.DATETIME)) {
             try {
                 this.timeIntervalMin = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMin);
             } catch (Exception ex) {
