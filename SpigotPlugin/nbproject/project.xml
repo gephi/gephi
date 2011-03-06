@@ -15,6 +15,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.gephi.lib.javamail</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.gephi.utils.longtask</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -41,6 +49,8 @@
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.io.spigot.plugin</package>
+                <package>org.gephi.io.spigot.plugin.email</package>
+                <package>org.gephi.io.spigot.plugin.email.spi</package>
             </public-packages>
         </data>
     </configuration>
