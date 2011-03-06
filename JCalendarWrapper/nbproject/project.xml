@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.apisupport.project</type>
+    <configuration>
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
+            <code-name-base>org.gephi.lib.jcalendar</code-name-base>
+            <suite-component/>
+            <module-dependencies/>
+            <public-packages>
+                <package>com.jgoodies.looks</package>
+                <package>com.jgoodies.looks.common</package>
+                <package>com.jgoodies.looks.plastic</package>
+                <package>com.jgoodies.looks.plastic.theme</package>
+                <package>com.jgoodies.looks.windows</package>
+                <package>com.toedter.calendar</package>
+                <package>com.toedter.calendar.demo</package>
+                <package>com.toedter.components</package>
+                <package>com.toedter.plaf</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/looks-2.0.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/looks-2.0.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jcalendar-1.3.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jcalendar-1.3.3.jar</binary-origin>
+            </class-path-extension>
+        </data>
+    </configuration>
+</project>
