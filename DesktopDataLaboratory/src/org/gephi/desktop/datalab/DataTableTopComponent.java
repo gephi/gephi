@@ -83,16 +83,6 @@ import org.gephi.desktop.datalab.general.actions.MergeColumnsUI;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.utils.TableCSVExporter;
-import org.jvnet.flamingo.common.CommandButtonDisplayState;
-import org.jvnet.flamingo.common.JCommandButton;
-import org.jvnet.flamingo.common.JCommandButtonPanel;
-import org.jvnet.flamingo.common.JCommandButtonStrip;
-import org.jvnet.flamingo.common.JCommandMenuButton;
-import org.jvnet.flamingo.common.RichTooltip;
-import org.jvnet.flamingo.common.icon.ImageWrapperResizableIcon;
-import org.jvnet.flamingo.common.popup.JCommandPopupMenu;
-import org.jvnet.flamingo.common.popup.JPopupPanel;
-import org.jvnet.flamingo.common.popup.PopupPanelCallback;
 import org.netbeans.swing.etable.ETableColumnModel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -103,6 +93,16 @@ import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
+import org.pushingpixels.flamingo.api.common.CommandButtonDisplayState;
+import org.pushingpixels.flamingo.api.common.JCommandButton;
+import org.pushingpixels.flamingo.api.common.JCommandButtonPanel;
+import org.pushingpixels.flamingo.api.common.JCommandButtonStrip;
+import org.pushingpixels.flamingo.api.common.JCommandMenuButton;
+import org.pushingpixels.flamingo.api.common.RichTooltip;
+import org.pushingpixels.flamingo.api.common.icon.ImageWrapperResizableIcon;
+import org.pushingpixels.flamingo.api.common.popup.JCommandPopupMenu;
+import org.pushingpixels.flamingo.api.common.popup.JPopupPanel;
+import org.pushingpixels.flamingo.api.common.popup.PopupPanelCallback;
 
 /**
  *
