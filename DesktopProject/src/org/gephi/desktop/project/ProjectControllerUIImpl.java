@@ -190,10 +190,11 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
                 //Modifying Title bar
                 SwingUtilities.invokeLater(new Runnable() {
+
                     public void run() {
                         JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
                         String title = frame.getTitle();
-                        title = title.substring(0, title.indexOf('-') - 1)+ " - " + SaveAsFileName;
+                        title = title.substring(0, title.indexOf('-') - 1) + " - " + SaveAsFileName;
                         frame.setTitle(title);
                     }
                 });
@@ -257,46 +258,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             }
         }
         loadProject(file);
-    }
-
-    public void openProject() {
-        final String LAST_PATH = "OpenProject_Last_Path";
-        final String LAST_PATH_DEFAULT = "OpenProject_Last_Path_Default";
-
-        if (controller.getCurrentProject() != null) {
-            if (!closeCurrentProject()) {
-                return;
-            }
-        }
-
-        //Open Dialog
-        DialogFileFilter filter = new DialogFileFilter(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject_filechooser_filter"));
-        filter.addExtension(".gephi");
-
-        //Get last directory
-        String lastPathDefault = NbPreferences.forModule(ProjectControllerUIImpl.class).get(LAST_PATH_DEFAULT, null);
-        String lastPath = NbPreferences.forModule(ProjectControllerUIImpl.class).get(LAST_PATH, lastPathDefault);
-
-        final JFileChooser chooser = new JFileChooser(lastPath);
-        chooser.addChoosableFileFilter(filter);
-
-        int returnFile = chooser.showOpenDialog(null);
-
-        if (returnFile == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
-            file = FileUtil.normalizeFile(file);
-
-            //Save last path
-            NbPreferences.forModule(ProjectControllerUIImpl.class).put(LAST_PATH, file.getAbsolutePath());
-
-            try {
-                loadProject(file);
-            } catch (Exception ew) {
-                ew.printStackTrace();
-                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject.defaulterror"), NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(msg);
-            }
-        }
     }
 
     private void loadProject(File file) {
@@ -375,10 +336,6 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         return openFile;
     }
 
-    public boolean canOpenProject() {
-        return openProject;
-    }
-
     public boolean canSave() {
         return saveProject;
     }
@@ -446,7 +403,11 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
         //Init dialog
         final JFileChooser chooser = new JFileChooser(lastPath);
+        DialogFileFilter gephiFilter = new DialogFileFilter(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject_filechooser_filter"));
+        gephiFilter.addExtension(".gephi");
+
         DialogFileFilter graphFilter = new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_graphfilter"));
+        graphFilter.addExtension(".gephi");
 
         ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
         for (FileType fileType : importController.getImportController().getFileTypes()) {
@@ -459,8 +420,9 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         DialogFileFilter zipFileFilter = new DialogFileFilter(NbBundle.getMessage(getClass(), "OpenFile_filechooser_zipfilter"));
         zipFileFilter.addExtensions(new String[]{".zip", ".gz", ".bz2"});
         chooser.addChoosableFileFilter(zipFileFilter);
+        chooser.addChoosableFileFilter(gephiFilter);
         chooser.addChoosableFileFilter(graphFilter);
-
+        
         //Open dialog
         int returnFile = chooser.showOpenDialog(null);
 
@@ -472,7 +434,25 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             //Save last path
             NbPreferences.forModule(ProjectControllerUIImpl.class).put(LAST_PATH, file.getAbsolutePath());
 
-            importController.importFile(fileObject);
+            if (fileObject.getExt().equalsIgnoreCase("gephi")) {
+                //Project
+                if (controller.getCurrentProject() != null) {
+                    if (!closeCurrentProject()) {
+                        return;
+                    }
+                }
+
+                try {
+                    loadProject(file);
+                } catch (Exception ew) {
+                    ew.printStackTrace();
+                    NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject.defaulterror"), NotifyDescriptor.WARNING_MESSAGE);
+                    DialogDisplayer.getDefault().notify(msg);
+                }
+            } else {
+                //Import
+                importController.importFile(fileObject);
+            }
         }
     }
 
