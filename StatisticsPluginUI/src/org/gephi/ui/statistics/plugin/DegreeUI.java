@@ -22,7 +22,7 @@ package org.gephi.ui.statistics.plugin;
 
 import java.text.DecimalFormat;
 import javax.swing.JPanel;
-import org.gephi.statistics.plugin.InOutDegree;
+import org.gephi.statistics.plugin.Degree;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.openide.util.NbBundle;
@@ -33,16 +33,16 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = StatisticsUI.class)
-public class InOutDegreeUI implements StatisticsUI {
+public class DegreeUI implements StatisticsUI {
 
-    private InOutDegree inOutDegree;
+    private Degree inOutDegree;
 
     public JPanel getSettingsPanel() {
         return null;
     }
 
     public void setup(Statistics statistics) {
-        this.inOutDegree = (InOutDegree) statistics;
+        this.inOutDegree = (Degree) statistics;
     }
 
     public void unsetup() {
@@ -50,7 +50,7 @@ public class InOutDegreeUI implements StatisticsUI {
     }
 
     public Class<? extends Statistics> getStatisticsClass() {
-        return InOutDegree.class;
+        return Degree.class;
     }
 
     public String getValue() {

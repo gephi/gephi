@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.statistics.plugin.builder;
 
-import org.gephi.statistics.plugin.InOutDegree;
+import org.gephi.statistics.plugin.Degree;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
 import org.openide.util.NbBundle;
@@ -31,17 +31,17 @@ import org.openide.util.lookup.ServiceProvider;
  * @author pjmcswee
  */
 @ServiceProvider(service = StatisticsBuilder.class)
-public class InOutDegreeBuilder implements StatisticsBuilder {
+public class DegreeBuilder implements StatisticsBuilder {
 
     public String getName() {
-        return NbBundle.getMessage(InOutDegreeBuilder.class, "InOutDegree.name");
+        return NbBundle.getMessage(DegreeBuilder.class, "InOutDegree.name");
     }
 
     public Statistics getStatistics() {
-        return new InOutDegree();
+        return new Degree();
     }
 
     public Class<? extends Statistics> getStatisticsClass() {
-        return InOutDegree.class;
+        return Degree.class;
     }
 }

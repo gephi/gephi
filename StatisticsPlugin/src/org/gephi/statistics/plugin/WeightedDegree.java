@@ -22,7 +22,9 @@ package org.gephi.statistics.plugin;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -37,6 +39,11 @@ import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -48,6 +55,7 @@ public class WeightedDegree implements Statistics, LongTask {
     private boolean isCanceled;
     private ProgressTicket progress;
     private double avgWDegree;
+    private Map<Float, Integer> degreeDist;
 
     public double getAverageDegree() {
         return avgWDegree;
@@ -60,6 +68,7 @@ public class WeightedDegree implements Statistics, LongTask {
 
     public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
         isCanceled = false;
+        degreeDist = new HashMap<Float, Integer>();
 
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn degCol = nodeTable.getColumn(WDEGREE);
@@ -83,6 +92,11 @@ public class WeightedDegree implements Statistics, LongTask {
             row.setValue(degCol, totalWeight);
             avgWDegree += totalWeight;
 
+            if (!degreeDist.containsKey(totalWeight)) {
+                degreeDist.put(totalWeight, 0);
+            }
+            degreeDist.put(totalWeight, degreeDist.get(totalWeight) + 1);
+
             if (isCanceled) {
                 break;
             }
@@ -96,13 +110,31 @@ public class WeightedDegree implements Statistics, LongTask {
     }
 
     public String getReport() {
+        //Distribution series
+        XYSeries dSeries = ChartUtils.createXYSeries(degreeDist, "Degree Distribution");
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(dSeries);
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Degree Distribution",
+                "Value",
+                "Count",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        ChartUtils.decorateChart(chart);
+        ChartUtils.scaleChart(chart, dSeries, false);
+        String degreeImageFile = ChartUtils.renderChart(chart, "w-degree-distribution.png");
+
         NumberFormat f = new DecimalFormat("#0.000");
 
         String report = "<HTML> <BODY> <h1>Weighted Degree Report </h1> "
                 + "<hr>"
-                + "<br>"
                 + "<br> <h2> Results: </h2>"
                 + "Average Weighted Degree: " + f.format(avgWDegree)
+                + "<br /><br />"+degreeImageFile
                 + "</BODY></HTML>";
 
         return report;

@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2010 Gephi
+Copyright 2008-2011 Gephi
 Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
 Website : http://www.gephi.org
 

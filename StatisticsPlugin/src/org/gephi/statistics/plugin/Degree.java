@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2010 Gephi
+Copyright 2008-2011 Gephi
 Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
 Website : http://www.gephi.org
 
@@ -22,6 +22,8 @@ package org.gephi.statistics.plugin;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -37,22 +39,26 @@ import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
-public class InOutDegree implements Statistics, LongTask {
+public class Degree implements Statistics, LongTask {
 
     public static final String INDEGREE = "indegree";
     public static final String OUTDEGREE = "outdegree";
     public static final String DEGREE = "degree";
-    /** The Average Node In-Degree. */
-    private double avgInDegree;
-    /** The Average Node Out-Degree. */
-    private double avgOutDegree;
     /** Remembers if the Cancel function has been called. */
     private boolean isCanceled;
     /** Keep track of the work done. */
     private ProgressTicket progress;
     /**     */
     private double avgDegree;
+    private Map<Integer, Integer> inDegreeDist;
+    private Map<Integer, Integer> outDegreeDist;
+    private Map<Integer, Integer> degreeDist;
 
     /**
      *
@@ -73,7 +79,9 @@ public class InOutDegree implements Statistics, LongTask {
 
     public void execute(HierarchicalGraph graph, AttributeModel attributeModel) {
         isCanceled = false;
-        avgInDegree = avgOutDegree = 0.0;
+        inDegreeDist = new HashMap<Integer, Integer>();
+        outDegreeDist = new HashMap<Integer, Integer>();
+        degreeDist = new HashMap<Integer, Integer>();
 
         //Attributes cols
         AttributeTable nodeTable = attributeModel.getNodeTable();
@@ -104,14 +112,27 @@ public class InOutDegree implements Statistics, LongTask {
             AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
             if (graph instanceof DirectedGraph) {
                 HierarchicalDirectedGraph hdg = graph.getGraphModel().getHierarchicalDirectedGraph();
-                row.setValue(inCol, hdg.getTotalInDegree(n));
-                row.setValue(outCol, hdg.getTotalOutDegree(n));
-                avgInDegree += hdg.getTotalInDegree(n);
-                avgOutDegree += hdg.getTotalOutDegree(n);
+                int inDegree = hdg.getTotalInDegree(n);
+                int outDegree = hdg.getTotalOutDegree(n);
+                row.setValue(inCol, inDegree);
+                row.setValue(outCol, outDegree);
+                if (!inDegreeDist.containsKey(inDegree)) {
+                    inDegreeDist.put(inDegree, 0);
+                }
+                inDegreeDist.put(inDegree, inDegreeDist.get(inDegree) + 1);
+                if (!outDegreeDist.containsKey(outDegree)) {
+                    outDegreeDist.put(outDegree, 0);
+                }
+                outDegreeDist.put(outDegree, outDegreeDist.get(outDegree) + 1);
             }
-            row.setValue(degCol, graph.getTotalDegree(n));
-            avgDegree += graph.getTotalDegree(n);
-            
+            int degree = graph.getTotalDegree(n);
+            row.setValue(degCol, degree);
+            avgDegree += degree;
+            if (!degreeDist.containsKey(degree)) {
+                degreeDist.put(degree, 0);
+            }
+            degreeDist.put(degree, degreeDist.get(degree) + 1);
+
             if (isCanceled) {
                 break;
             }
@@ -119,8 +140,6 @@ public class InOutDegree implements Statistics, LongTask {
             Progress.progress(progress, i);
         }
 
-        avgInDegree /= graph.getNodeCount();
-        avgOutDegree /= graph.getNodeCount();
         avgDegree /= graph.getNodeCount();
 
         graph.readUnlockAll();
@@ -131,15 +150,68 @@ public class InOutDegree implements Statistics, LongTask {
      * @return
      */
     public String getReport() {
+        //Distribution series
+        XYSeries dSeries = ChartUtils.createXYSeries(degreeDist, "Degree Distribution");
+        XYSeries idSeries = ChartUtils.createXYSeries(inDegreeDist, "In-Degree Distribution");
+        XYSeries odSeries = ChartUtils.createXYSeries(outDegreeDist, "Out-Degree Distribution");
+
+        XYSeriesCollection dataset1 = new XYSeriesCollection();
+        dataset1.addSeries(dSeries);
+
+        XYSeriesCollection dataset2 = new XYSeriesCollection();
+        dataset2.addSeries(idSeries);
+
+        XYSeriesCollection dataset3 = new XYSeriesCollection();
+        dataset3.addSeries(odSeries);
+
+        JFreeChart chart1 = ChartFactory.createXYLineChart(
+                "Degree Distribution",
+                "Value",
+                "Count",
+                dataset1,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        ChartUtils.decorateChart(chart1);
+        ChartUtils.scaleChart(chart1, dSeries, false);
+        String degreeImageFile = ChartUtils.renderChart(chart1, "degree-distribution.png");
+
+        JFreeChart chart2 = ChartFactory.createXYLineChart(
+                "In-Degree Distribution",
+                "Value",
+                "Count",
+                dataset2,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        ChartUtils.decorateChart(chart2);
+        ChartUtils.scaleChart(chart2, dSeries, false);
+        String indegreeImageFile = ChartUtils.renderChart(chart2, "indegree-distribution.png");
+
+        JFreeChart chart3 = ChartFactory.createXYLineChart(
+                "Out-Degree Distribution",
+                "Value",
+                "Count",
+                dataset3,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        ChartUtils.decorateChart(chart3);
+        ChartUtils.scaleChart(chart3, dSeries, false);
+        String outdegreeImageFile = ChartUtils.renderChart(chart3, "outdegree-distribution.png");
+        
         NumberFormat f = new DecimalFormat("#0.000");
 
         String report = "<HTML> <BODY> <h1>Degree Report </h1> "
                 + "<hr>"
-                + "<br>"
                 + "<br> <h2> Results: </h2>"
                 + "Average Degree: " + f.format(avgDegree)
-                + (avgInDegree > 0 ? ("<br >Average In Degree: " + f.format(avgInDegree)) : "")
-                + (avgOutDegree > 0 ? ("<br >Average Out Degree: " + f.format(avgOutDegree)) : "")
+                + "<br /><br />"+degreeImageFile
+                + "<br /><br />"+indegreeImageFile
+                + "<br /><br />"+outdegreeImageFile
                 + "</BODY></HTML>";
 
         return report;

@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2010 Gephi
+Copyright 2008-2011 Gephi
 Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
 Website : http://www.gephi.org
 
@@ -20,10 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.plugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import org.gephi.data.attributes.api.AttributeTable;
@@ -41,24 +38,14 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.HierarchicalUndirectedGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.spi.Statistics;
-import org.gephi.utils.TempDirUtils;
-import org.gephi.utils.TempDirUtils.TempDir;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartRenderingInfo;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -253,127 +240,70 @@ public class Hits implements Statistics, LongTask {
      * @return
      */
     public String getReport() {
-        String imageFile1 = "";
-        String imageFile2 = "";
-        try {
-            //distribution of hub values
-            Map<Double, Integer> distHubs = new HashMap<Double, Integer>();
-            for (Node node : hub_list) {
-                int n_index = indicies.get(node);
-                Double d = hubs[n_index];
-                if (distHubs.containsKey(d)) {
-                    Integer v = distHubs.get(d);
-                    distHubs.put(d, v + 1);
-                } else {
-                    distHubs.put(d, 1);
-                }
+        //distribution of hub values
+        Map<Double, Integer> distHubs = new HashMap<Double, Integer>();
+        for (Node node : hub_list) {
+            int n_index = indicies.get(node);
+            Double d = hubs[n_index];
+            if (distHubs.containsKey(d)) {
+                Integer v = distHubs.get(d);
+                distHubs.put(d, v + 1);
+            } else {
+                distHubs.put(d, 1);
             }
-
-            //distribution of authority values
-            Map<Double, Integer> distAuthorities = new HashMap<Double, Integer>();
-            for (Node node : auth_list) {
-                int n_index = indicies.get(node);
-                Double d = authority[n_index];
-                if (distAuthorities.containsKey(d)) {
-                    Integer v = distAuthorities.get(d);
-                    distAuthorities.put(d, v + 1);
-                } else {
-                    distAuthorities.put(d, 1);
-                }
-            }
-
-            //Distribution of hub series
-            XYSeries dHubsSeries = new XYSeries("Hubs");
-            for (Iterator it = distHubs.entrySet().iterator(); it.hasNext();) {
-                Map.Entry d = (Map.Entry) it.next();
-                Double x = (Double) d.getKey();
-                Integer y = (Integer) d.getValue();
-                dHubsSeries.add(x, y);
-            }
-
-            //Distribution of authority series
-            XYSeries dAuthsSeries = new XYSeries("Authority");
-            for (Iterator it = distAuthorities.entrySet().iterator(); it.hasNext();) {
-                Map.Entry d = (Map.Entry) it.next();
-                Double x = (Double) d.getKey();
-                Integer y = (Integer) d.getValue();
-                dAuthsSeries.add(x, y);
-            }
-
-            XYSeriesCollection datasetHubs = new XYSeriesCollection();
-            datasetHubs.addSeries(dHubsSeries);
-
-            XYSeriesCollection datasetAuths = new XYSeriesCollection();
-            datasetAuths.addSeries(dAuthsSeries);
-
-            JFreeChart chart = ChartFactory.createXYLineChart(
-                    "Hubs Distribution",
-                    "Hub scores",
-                    "Count",
-                    datasetHubs,
-                    PlotOrientation.VERTICAL,
-                    true,
-                    false,
-                    false);
-            XYPlot plot = (XYPlot) chart.getPlot();
-            XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-            renderer.setSeriesLinesVisible(0, false);
-            renderer.setSeriesShapesVisible(0, true);
-            renderer.setSeriesShape(0, new java.awt.geom.Ellipse2D.Double(0, 0, 2, 2));
-            plot.setBackgroundPaint(java.awt.Color.WHITE);
-            plot.setDomainGridlinePaint(java.awt.Color.GRAY);
-            plot.setRangeGridlinePaint(java.awt.Color.GRAY);
-            plot.setRenderer(renderer);
-
-            ValueAxis domainAxis = plot.getDomainAxis();
-            domainAxis.setLowerMargin(1.0);
-            domainAxis.setUpperMargin(1.0);
-            domainAxis.setRange(dHubsSeries.getMinX() - 1, dHubsSeries.getMaxX() + 1);
-            domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-            NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-            rangeAxis.setRange(-1, dHubsSeries.getMaxY() + 0.1 * dHubsSeries.getMaxY());
-
-            //Create temporary directory
-            TempDir tempDir = TempDirUtils.createTempDir();
-
-            final ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            final String fileName = "hubs.png";
-            final File file1 = tempDir.createFile(fileName);
-            imageFile1 = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
-            ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
-
-            JFreeChart chart2 = ChartFactory.createXYLineChart(
-                    "Authority Distribution",
-                    "Authority scores",
-                    "Count",
-                    datasetAuths,
-                    PlotOrientation.VERTICAL,
-                    true,
-                    false,
-                    false);
-            XYPlot plot2 = (XYPlot) chart2.getPlot();
-            plot2.setBackgroundPaint(java.awt.Color.WHITE);
-            plot2.setDomainGridlinePaint(java.awt.Color.GRAY);
-            plot2.setRangeGridlinePaint(java.awt.Color.GRAY);
-            plot2.setRenderer(renderer);
-
-            ValueAxis domainAxis2 = plot.getDomainAxis();
-            domainAxis2.setLowerMargin(1.0);
-            domainAxis2.setUpperMargin(1.0);
-            domainAxis2.setRange(dAuthsSeries.getMinX() - 1, dAuthsSeries.getMaxX() + 1);
-            domainAxis2.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-            NumberAxis rangeAxis2 = (NumberAxis) plot.getRangeAxis();
-            rangeAxis2.setRange(-1, dAuthsSeries.getMaxY() + 0.1 * dAuthsSeries.getMaxY());
-
-            final ChartRenderingInfo info2 = new ChartRenderingInfo(new StandardEntityCollection());
-            final String fileName2 = "authority.png";
-            final File file2 = tempDir.createFile(fileName2);
-            imageFile2 = "<IMG SRC=\"file:" + file2.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
-
-            ChartUtilities.saveChartAsPNG(file2, chart2, 600, 400, info2);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
         }
+
+        //distribution of authority values
+        Map<Double, Integer> distAuthorities = new HashMap<Double, Integer>();
+        for (Node node : auth_list) {
+            int n_index = indicies.get(node);
+            Double d = authority[n_index];
+            if (distAuthorities.containsKey(d)) {
+                Integer v = distAuthorities.get(d);
+                distAuthorities.put(d, v + 1);
+            } else {
+                distAuthorities.put(d, 1);
+            }
+        }
+
+        //Distribution of hub series
+        XYSeries dHubsSeries = ChartUtils.createXYSeries(distHubs, "Hubs");
+
+        //Distribution of authority series
+        XYSeries dAuthsSeries = ChartUtils.createXYSeries(distAuthorities, "Authority");
+
+        XYSeriesCollection datasetHubs = new XYSeriesCollection();
+        datasetHubs.addSeries(dHubsSeries);
+
+        XYSeriesCollection datasetAuths = new XYSeriesCollection();
+        datasetAuths.addSeries(dAuthsSeries);
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Hubs Distribution",
+                "Score",
+                "Count",
+                datasetHubs,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        ChartUtils.decorateChart(chart);
+        ChartUtils.scaleChart(chart, dHubsSeries, true);
+        String imageFile1 = ChartUtils.renderChart(chart, "hubs.png");
+
+        JFreeChart chart2 = ChartFactory.createXYLineChart(
+                "Authority Distribution",
+                "Score",
+                "Count",
+                datasetAuths,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        ChartUtils.decorateChart(chart2);
+        ChartUtils.scaleChart(chart, dAuthsSeries, true);
+        String imageFile2 = ChartUtils.renderChart(chart, "authorities.png");
+
 
         String report = "<HTML> <BODY> <h1> HITS Metric Report </h1> <br> "
                 + "<hr>"

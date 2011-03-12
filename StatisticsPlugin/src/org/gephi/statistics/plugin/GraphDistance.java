@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2010 Gephi
+Copyright 2008-2011 Gephi
 Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
 Website : http://www.gephi.org
 
@@ -20,10 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.statistics.plugin;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.graph.api.*;
 import java.util.LinkedList;
@@ -42,15 +40,8 @@ import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartRenderingInfo;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Exceptions;
@@ -85,7 +76,7 @@ public class GraphDistance implements Statistics, LongTask {
     /** */
     private boolean isCanceled;
     private int shortestPaths;
-    private boolean isRelativeValues;
+    private boolean isNormalized;
 
     public GraphDistance() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
@@ -251,7 +242,7 @@ public class GraphDistance implements Statistics, LongTask {
             if (!isDirected) {
                 betweenness[s_index] /= 2;
             }
-            if (isRelativeValues) {
+            if (isNormalized) {
                 closeness[s_index] = (closeness[s_index] == 0) ? 0 : 1.0 / closeness[s_index];
                 betweenness[s_index] /= isDirected ? (N - 1) * (N - 2) : (N - 1) * (N - 2) / 2;
             }
@@ -262,26 +253,14 @@ public class GraphDistance implements Statistics, LongTask {
         hgraph.readUnlock();
     }
 
-    /**
-     * 
-     * @param pRelative
-     */
-    public void setRelative(boolean isRelative) {
-        this.isRelativeValues = isRelative;
+    public void setNormalized(boolean isNormalized) {
+        this.isNormalized = isNormalized;
     }
 
-    /**
-     *
-     * @param pRelative
-     */
-    public boolean useRelative() {
-        return this.isRelativeValues;
+    public boolean isNormalized() {
+        return isNormalized;
     }
 
-    /**
-     * 
-     * @param pDirected
-     */
     public void setDirected(boolean isDirected) {
         this.isDirected = isDirected;
     }
@@ -290,7 +269,7 @@ public class GraphDistance implements Statistics, LongTask {
         return isDirected;
     }
 
-    private String createImageFile(TempDir tempDir, double[] pVals, String pName, String pX, String pY) throws IOException {
+    private String createImageFile(TempDir tempDir, double[] pVals, String pName, String pX, String pY) {
         //distribution of values
         Map<Double, Integer> dist = new HashMap<Double, Integer>();
         for (int i = 0; i < N; i++) {
@@ -304,13 +283,7 @@ public class GraphDistance implements Statistics, LongTask {
         }
 
         //Distribution series
-        XYSeries dSeries = new XYSeries(pName);
-        for (Iterator it = dist.entrySet().iterator(); it.hasNext();) {
-            Map.Entry d = (Map.Entry) it.next();
-            Double x = (Double) d.getKey();
-            Integer y = (Integer) d.getValue();
-            dSeries.add(x, y);
-        }
+        XYSeries dSeries = ChartUtils.createXYSeries(dist, pName);
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(dSeries);
@@ -324,34 +297,9 @@ public class GraphDistance implements Statistics, LongTask {
                 true,
                 false,
                 false);
-        XYPlot plot = (XYPlot) chart.getPlot();
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesLinesVisible(0, false);
-        renderer.setSeriesShapesVisible(0, true);
-        renderer.setSeriesShape(0, new java.awt.geom.Ellipse2D.Double(0, 0, 2, 2));
-        plot.setBackgroundPaint(java.awt.Color.WHITE);
-        plot.setDomainGridlinePaint(java.awt.Color.GRAY);
-        plot.setRangeGridlinePaint(java.awt.Color.GRAY);
-        plot.setRenderer(renderer);
-
-        ValueAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setLowerMargin(1.0);
-        domainAxis.setUpperMargin(1.0);
-        domainAxis.setRange(dSeries.getMinX()-1, dSeries.getMaxX()+1);
-        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setRange(-1, dSeries.getMaxY()+0.1*dSeries.getMaxY());
-
-        String imageFile = "";
-
-        ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-        String fileName = pName + ".png";
-        File file1 = tempDir.createFile(fileName);
-        imageFile = "<IMG SRC=\"file:" + file1.getAbsolutePath() + "\" " + "WIDTH=\"600\" HEIGHT=\"400\" BORDER=\"0\" USEMAP=\"#chart\"></IMG>";
-
-        ChartUtilities.saveChartAsPNG(file1, chart, 600, 400, info);
-
-        return imageFile;
+        ChartUtils.decorateChart(chart);
+        ChartUtils.scaleChart(chart, dSeries, isNormalized);
+        return ChartUtils.renderChart(chart, pName + ".png");
     }
 
     /**
@@ -364,9 +312,9 @@ public class GraphDistance implements Statistics, LongTask {
         String htmlIMG3 = "";
         try {
             TempDir tempDir = TempDirUtils.createTempDir();
-            htmlIMG1 = createImageFile(tempDir, betweenness, "Betweenness Centrality Distribution", "Values", "Count");
-            htmlIMG2 = createImageFile(tempDir, closeness, "Closeness Centrality Distribution", "Values", "Count");
-            htmlIMG3 = createImageFile(tempDir, eccentricity, "Eccentricity Distribution", "Values", "Count");
+            htmlIMG1 = createImageFile(tempDir, betweenness, "Betweenness Centrality Distribution", "Value", "Count");
+            htmlIMG2 = createImageFile(tempDir, closeness, "Closeness Centrality Distribution", "Value", "Count");
+            htmlIMG3 = createImageFile(tempDir, eccentricity, "Eccentricity Distribution", "Value", "Count");
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -375,14 +323,14 @@ public class GraphDistance implements Statistics, LongTask {
                 + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
-                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
-                + "<br> <h2> Results: </h2>"
-                + "Diameter: " + diameter + "<br>"
-                + "Radius: " + radius + "<br>"
-                + "Average Path length: " + avgDist + "<br>"
-                + "Number of shortest paths: " + shortestPaths + "<br>"
-                + htmlIMG1 + "<br>"
-                + htmlIMG2 + "<br>"
+                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br />"
+                + "<br /> <h2> Results: </h2>"
+                + "Diameter: " + diameter + "<br />"
+                + "Radius: " + radius + "<br />"
+                + "Average Path length: " + avgDist + "<br />"
+                + "Number of shortest paths: " + shortestPaths + "<br /><br />"
+                + htmlIMG1 + "<br /><br />"
+                + htmlIMG2 + "<br /><br />"
                 + htmlIMG3
                 + "</BODY></HTML>";
 

@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2010 Gephi
+Copyright 2008-2011 Gephi
 Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
 Website : http://www.gephi.org
 
@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.statistics.plugin;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
@@ -491,13 +493,14 @@ public class Modularity implements Statistics, LongTask {
     }
 
     public String getReport() {
+        NumberFormat f = new DecimalFormat("#0.000");
 
         String report = "<HTML> <BODY> <h1>Modularity Report </h1> "
                 + "<hr>"
                 + "<h2> Parameters: </h2>"
                 + "Randomize:  " + (isRandomized ? "On" : "Off") + "<br>"
                 + "<br> <h2> Results: </h2>"
-                + "Modularity: " + modularity + "<br>"
+                + "Modularity: " + f.format(modularity) + "<br>"
                 + "Number of Communities: " + structure.communities.size()
                 + "</BODY></HTML>";
 
