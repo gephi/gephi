@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2011-01-12 05:08+0000\n"
+"PO-Revision-Date: 2011-03-12 18:55+0000\n"
 "Last-Translator: Sébastien Heymann <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-02 04:36+0000\n"
-"X-Generator: Launchpad (build 12351)\n"
+"X-Launchpad-Export-Date: 2011-03-13 04:48+0000\n"
+"X-Generator: Launchpad (build 12559)\n"
 
 msgid "GraphDistancePanel.directedRadioButton.text"
 msgstr "Dirigé"
@@ -208,40 +208,40 @@ msgid "GraphDistancePanel.normalizeButton.text"
 msgstr "Normalise entre [0,1]"
 
 msgid "ConnectedComponentUI.name"
-msgstr ""
+msgstr "Composantes Connexes"
 
 msgid "ClusteringCoefficientUI.name"
-msgstr ""
+msgstr "Coefficient de Clustering"
 
 msgid "DegreeDistributionUI.name"
 msgstr ""
 
 msgid "EigenvectorCentralityUI.name"
-msgstr ""
+msgstr "Centralité Eigenvector"
 
 msgid "GraphDensityUI.name"
-msgstr ""
+msgstr "Densité"
 
 msgid "DiameterUI.name"
-msgstr ""
+msgstr "Diamètre"
 
 msgid "HitsUI.name"
-msgstr ""
+msgstr "HITS"
 
 msgid "InOutDegreeUI.name"
-msgstr ""
+msgstr "Degré"
 
 msgid "ModularityUI.name"
-msgstr ""
+msgstr "Modularité"
 
 msgid "PageRankUI.name"
-msgstr ""
+msgstr "PageRank"
 
 msgid "PathLengthUI.name"
-msgstr ""
+msgstr "Plus courts chemins"
 
 msgid "WeightedDegreeUI.name"
-msgstr ""
+msgstr "Degré pondéré"
 
 msgid "PageRankPanel.edgeWeightCheckbox.text"
-msgstr ""
+msgstr "Utiliser le poids des liens"
