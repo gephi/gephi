@@ -189,7 +189,7 @@ public class PreviewControllerImpl implements PreviewController {
             previewGraph = factory.createPreviewGraph(model, graphModel.getHierarchicalUndirectedGraphVisible());
         } else if (graphModel.isDirected()) {
             previewGraph = factory.createPreviewGraph(model, graphModel.getHierarchicalDirectedGraphVisible());
-        } else if (graphModel.isMixed()) {
+        } else {
             previewGraph = factory.createPreviewGraph(model, graphModel.getHierarchicalMixedGraphVisible());
         }
 
