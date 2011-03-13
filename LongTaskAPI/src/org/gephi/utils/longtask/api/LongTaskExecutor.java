@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.utils.longtask.api;
 
 import java.util.Timer;
@@ -219,6 +219,8 @@ public final class LongTaskExecutor {
                 });
                 if (task != null) {
                     task.setProgressTicket(progress);
+                } else {
+                    progress.start();
                 }
             }
         }
@@ -234,7 +236,7 @@ public final class LongTaskExecutor {
                 }
                 if (err != null) {
                     err.fatalError(e);
-                } else if(defaultErrorHandler != null) {
+                } else if (defaultErrorHandler != null) {
                     defaultErrorHandler.fatalError(e);
                 } else {
                     Logger.getLogger("").log(Level.SEVERE, "", e);
@@ -285,7 +287,14 @@ public final class LongTaskExecutor {
         @Override
         public void run() {
             if (runningTask != null) {
+                System.out.println("Interrupt task");
+                cancelTimer = null;
+                if (runningTask.progress != null) {
+                    runningTask.progress.finish();
+                }
+                finished();
                 executor.shutdownNow();
+                executor = null;
             }
         }
     }
