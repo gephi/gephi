@@ -1,6 +1,6 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Copyright 2008-2011 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Sébastien Heymann <sebastien.heymann@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -20,31 +20,21 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.filters;
 
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorManager;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
-import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -57,6 +47,7 @@ public class FilterModelImpl implements FilterModel {
     private FilterThread filterThread;
     private Query currentQuery;
     private boolean filtering;
+    private boolean selecting;
     private GraphView currentResult;
     private boolean autoRefresh;
     private FilterAutoRefreshor autoRefreshor;
@@ -92,6 +83,7 @@ public class FilterModelImpl implements FilterModel {
 
     public void addFirst(Query function) {
         queries.addFirst(function);
+        currentQuery = function;
         fireChangeEvent();
     }
 
@@ -105,6 +97,7 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public void remove(Query query) {
+        currentQuery = query.getParent();
         queries.remove(query);
         destroyQuery(query);
         fireChangeEvent();
@@ -127,6 +120,7 @@ public class FilterModelImpl implements FilterModel {
         //Set
         AbstractQueryImpl impl = (AbstractQueryImpl) query;
         impl.addSubQuery(subQuery);
+        currentQuery = subQuery;
         fireChangeEvent();
         autoRefreshor.manualRefresh();
     }
@@ -135,6 +129,7 @@ public class FilterModelImpl implements FilterModel {
         AbstractQueryImpl impl = (AbstractQueryImpl) parent;
         impl.removeSubQuery(query);
         ((AbstractQueryImpl) query).setParent(null);
+        currentQuery = parent;
         fireChangeEvent();
         autoRefreshor.manualRefresh();
     }
@@ -155,14 +150,16 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public boolean isSelecting() {
-        return currentQuery != null && !filtering;
+        return currentQuery != null && selecting;
     }
 
     public void setFiltering(boolean filtering) {
         this.filtering = filtering;
+        this.selecting = !filtering;
     }
 
     public void setSelecting(boolean selecting) {
+        this.selecting = selecting;
         this.filtering = !selecting;
     }
 

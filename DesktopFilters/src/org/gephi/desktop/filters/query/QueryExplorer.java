@@ -1,6 +1,6 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Copyright 2008-2011 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Sébastien Heymann <sebastien.heymann@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -130,6 +130,7 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
+                uiModel.setSelectedQuery(model.getCurrentQuery());
                 saveExpandStatus(QueryExplorer.this.manager.getRootContext());
                 QueryExplorer.this.manager.setRootContext(new RootNode(new QueryChildren(QueryExplorer.this.model.getQueries())));
                 loadExpandStatus(QueryExplorer.this.manager.getRootContext());
