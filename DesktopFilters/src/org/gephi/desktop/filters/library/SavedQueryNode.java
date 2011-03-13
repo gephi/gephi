@@ -1,6 +1,6 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Copyright 2008-2011 Gephi
+Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Sébastien Heymann <sebastien.heymann@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -20,10 +20,16 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.desktop.filters.library;
 
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.gephi.filters.api.FilterController;
+import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Query;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -41,7 +47,7 @@ public class SavedQueryNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean context) {
-        return new Action[0];
+        return new Action[]{new RemoveAction()};
     }
 
     @Override
@@ -78,5 +84,18 @@ public class SavedQueryNode extends AbstractNode {
         }
         res += ")";
         return res;
+    }
+
+    private class RemoveAction extends AbstractAction {
+
+        public RemoveAction() {
+            super(NbBundle.getMessage(SavedQueryNode.class, "SavedQueryNode.actions.remove"));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
+            FilterLibrary filterLibrary = filterController.getModel().getLibrary();
+            filterLibrary.deleteQuery(query);
+        }
     }
 }
