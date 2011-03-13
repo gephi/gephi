@@ -278,6 +278,10 @@ public class ProjectControllerImpl implements ProjectController {
      */
     public void setTemporaryOpeningWorkspace(WorkspaceImpl temporaryOpeningWorkspace) {
         this.temporaryOpeningWorkspace = temporaryOpeningWorkspace;
+        if (temporaryOpeningWorkspace != null) {
+            //Init controllers with empty models
+            fireWorkspaceEvent(EventType.INITIALIZE, temporaryOpeningWorkspace);
+        }
     }
 
     public void addWorkspaceListener(WorkspaceListener workspaceListener) {

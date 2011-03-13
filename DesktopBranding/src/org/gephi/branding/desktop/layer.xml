@@ -59,9 +59,6 @@
             <file name="org-gephi-branding-desktop-actions-OpenFile.instance">
                 <attr name="position" intvalue="300"/>
             </file>
-            <file name="org-gephi-branding-desktop-actions-OpenProject.instance">
-                <attr name="position" intvalue="200"/>
-            </file>
             <file name="org-gephi-branding-desktop-actions-ProjectProperties.instance">
                 <attr name="position" intvalue="500"/>
             </file>
@@ -159,9 +156,6 @@
         </file>
         <file name="DS-N.shadow">
             <attr name="originalFile" stringvalue="Menu/File/org-gephi-branding-desktop-actions-NewProject.instance"/>
-        </file>
-        <file name="DS-O.shadow">
-            <attr name="originalFile" stringvalue="Menu/File/org-gephi-branding-desktop-actions-OpenProject.instance"/>
         </file>
     </folder>
     <file name="Toolbars_hidden"/>

@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.visualization.options;
 
 import java.awt.Color;
@@ -38,7 +38,6 @@ import org.openide.util.NbPreferences;
 final class OpenGLPanel extends javax.swing.JPanel {
 
     private final OpenGLOptionsPanelController controller;
-
     //Settings
     private int antiAliasing = 0;
 
@@ -487,7 +486,9 @@ final class OpenGLPanel extends javax.swing.JPanel {
 
         //OpenGLInfo
         GraphicalConfiguration gc = VizController.getInstance().getDrawable().getGraphicalConfiguration();
-        openInfoText.setText(gc.getVendor() + "\n" + gc.getRenderer() + "\nOpenGL " + gc.getVersionStr());
+        if (gc != null) {
+            openInfoText.setText(gc.getVendor() + "\n" + gc.getRenderer() + "\nOpenGL " + gc.getVersionStr());
+        }
     }
 
     void store() {
@@ -527,7 +528,6 @@ final class OpenGLPanel extends javax.swing.JPanel {
         // TODO check whether form is consistent and complete
         return true;
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ambientAmbiantColorButton;
     private javax.swing.JButton ambientDiffuseColorButton;

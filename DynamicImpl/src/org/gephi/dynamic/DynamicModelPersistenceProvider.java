@@ -52,13 +52,17 @@ public class DynamicModelPersistenceProvider implements WorkspacePersistenceProv
     @Override
     public void readXML(XMLStreamReader reader, Workspace workspace) {
         DynamicControllerImpl dynamicController = (DynamicControllerImpl) Lookup.getDefault().lookup(DynamicController.class);
-        DynamicModelImpl dynamicModelImpl = new DynamicModelImpl(dynamicController, workspace);
+        DynamicModelImpl dynamicModelImpl = (DynamicModelImpl) workspace.getLookup().lookup(DynamicModel.class);
+        if (dynamicModelImpl == null) {
+            dynamicModelImpl = new DynamicModelImpl(dynamicController, workspace);
+            workspace.add(dynamicModelImpl);
+        }
         try {
             readModel(reader, dynamicModelImpl);
         } catch (XMLStreamException ex) {
             throw new RuntimeException(ex);
         }
-        workspace.add(dynamicModelImpl);
+
     }
 
     @Override
@@ -74,7 +78,7 @@ public class DynamicModelPersistenceProvider implements WorkspacePersistenceProv
             writer.writeAttribute("value", "datetime");
         } else if (model.getTimeFormat().equals(DynamicModel.TimeFormat.DATE)) {
             writer.writeAttribute("value", "date");
-        } else { 
+        } else {
             // default: if equals(DynamicModel.TimeFormat.DOUBLE)
             writer.writeAttribute("value", "double");
         }
@@ -93,7 +97,7 @@ public class DynamicModelPersistenceProvider implements WorkspacePersistenceProv
                         String val = reader.getAttributeValue(null, "value");
                         if (val.equalsIgnoreCase("date")) {
                             model.setTimeFormat(DynamicModel.TimeFormat.DATE);
-                        } if (val.equalsIgnoreCase("datetime")) {
+                        } else if (val.equalsIgnoreCase("datetime")) {
                             model.setTimeFormat(DynamicModel.TimeFormat.DATETIME);
                         } else {
                             model.setTimeFormat(DynamicModel.TimeFormat.DOUBLE);
@@ -110,10 +114,10 @@ public class DynamicModelPersistenceProvider implements WorkspacePersistenceProv
         // Start & End
         /*
         if (!start.isEmpty()) {
-            container.setTimeIntervalMin(start);
+        container.setTimeIntervalMin(start);
         }
         if (!end.isEmpty()) {
-            container.setTimeIntervalMax(end);
+        container.setTimeIntervalMax(end);
         }
          */
     }

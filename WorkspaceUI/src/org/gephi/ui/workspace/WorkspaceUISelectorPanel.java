@@ -125,8 +125,10 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel implements Chan
     }
 
     public void refreshList() {
-        leftArrowButton.setEnabled(getPrecedentWorkspace(workspace) != null);
-        rightArrowButton.setEnabled(getNextWorkspace(workspace) != null);
+        if (workspace != null) {
+            leftArrowButton.setEnabled(getPrecedentWorkspace(workspace) != null);
+            rightArrowButton.setEnabled(getNextWorkspace(workspace) != null);
+        }
     }
 
     public void stateChanged(ChangeEvent e) {

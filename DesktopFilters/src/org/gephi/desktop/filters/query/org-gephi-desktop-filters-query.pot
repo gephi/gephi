@@ -27,6 +27,9 @@ msgstr "Rename"
 msgid "QueryNode.actions.remove"
 msgstr "Remove"
 
+msgid "QueryNode.actions.save"
+msgstr "Save"
+
 msgid "RootNode.name"
 msgstr "Queries"
 

@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2010 Gephi
+Copyright 2008-2011 Gephi
 Authors : Patick J. McSweeney <pjmcswee@syr.edu>, Sebastien Heymann <seb@gephi.org>
 Website : http://www.gephi.org
 
@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.statistics.plugin;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -81,13 +83,15 @@ public class GraphDensity implements Statistics {
      * @return
      */
     public String getReport() {
+        NumberFormat f = new DecimalFormat("#0.000");
+
         return "<HTML> <BODY> <h1>Graph Density  Report </h1> "
                 + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
-                + "Density: " + density
+                + "Density: " + f.format(density)
                 + "</BODY></HTML>";
     }
 }

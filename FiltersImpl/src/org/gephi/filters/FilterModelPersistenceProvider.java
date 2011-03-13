@@ -61,7 +61,11 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
     }
 
     public void readXML(XMLStreamReader reader, Workspace workspace) {
-        FilterModelImpl filterModel = new FilterModelImpl(workspace);
+        FilterModelImpl filterModel = workspace.getLookup().lookup(FilterModelImpl.class);
+        if (filterModel == null) {
+            filterModel = new FilterModelImpl(workspace);
+            workspace.add(filterModel);
+        }
         this.model = filterModel;
         try {
             readXML(reader);
@@ -69,7 +73,6 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
             this.model = null;
             throw new RuntimeException(ex);
         }
-        workspace.add(filterModel);
         this.model = null;
     }
 

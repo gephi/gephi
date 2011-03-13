@@ -34,8 +34,6 @@ public interface ProjectControllerUI {
 
     public void saveAsProject();
 
-    public void openProject();
-
     public void openProject(File file);
 
     public void renameProject(final String name);
@@ -59,8 +57,6 @@ public interface ProjectControllerUI {
     public void renameWorkspace(final String name);
 
     public boolean canNewProject();
-
-    public boolean canOpenProject();
 
     public boolean canCloseProject();
 

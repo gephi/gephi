@@ -43,14 +43,14 @@ public class PathLengthUI implements StatisticsUI {
         this.graphDistance = (GraphDistance) statistics;
         if (panel != null) {
             panel.setDirected(graphDistance.isDirected());
-            panel.doNormalize(graphDistance.useRelative());
+            panel.doNormalize(graphDistance.isNormalized());
         }
     }
 
     public void unsetup() {
         if (panel != null) {
             graphDistance.setDirected(panel.isDirected());
-            graphDistance.setRelative(panel.normalize());
+            graphDistance.setNormalized(panel.normalize());
         }
         graphDistance = null;
         panel = null;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <AuxValues>
@@ -19,7 +19,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jXTitledSeparator1" alignment="0" pref="630" max="32767" attributes="1"/>
+                  <Component id="jXTitledSeparator1" alignment="0" pref="677" max="32767" attributes="1"/>
                   <Component id="resetButton" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
@@ -107,7 +107,7 @@
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jXTitledSeparator3" pref="424" max="32767" attributes="1"/>
+                          <Component id="jXTitledSeparator3" pref="473" max="32767" attributes="1"/>
                           <Group type="102" attributes="0">
                               <EmptySpace min="10" pref="10" max="10" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">

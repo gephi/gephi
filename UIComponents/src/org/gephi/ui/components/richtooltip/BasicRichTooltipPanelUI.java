@@ -50,8 +50,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.plaf.BorderUIResource;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.UIResource;
-import org.jvnet.flamingo.common.ui.RichTooltipPanelUI;
-import org.jvnet.flamingo.utils.FlamingoUtilities;
+import org.pushingpixels.flamingo.internal.utils.FlamingoUtilities;
 
 /**
  *

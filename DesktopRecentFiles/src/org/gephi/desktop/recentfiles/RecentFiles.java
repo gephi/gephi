@@ -27,7 +27,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
+import org.gephi.desktop.project.api.ProjectControllerUI;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -38,6 +41,8 @@ import org.openide.util.actions.CallableSystemAction;
  * @author Sébastien Heymann
  */
 public class RecentFiles extends CallableSystemAction {
+
+    private static final String GEPHI_EXTENSION = "gephi";
 
     @Override
     public void performAction() {
@@ -67,8 +72,20 @@ public class RecentFiles extends CallableSystemAction {
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
-                        importController.importFile(FileUtil.toFileObject(file));
+                        FileObject fileObject = FileUtil.toFileObject(file);
+                        if (fileObject.hasExt(GEPHI_EXTENSION)) {
+                            ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
+                            try {
+                                pc.openProject(file);
+                            } catch (Exception ex) {
+                                Exceptions.printStackTrace(ex);
+                            }
+                        } else {
+                            ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
+                            if (importController.getImportController().isFileSupported(file)) {
+                                importController.importFile(fileObject);
+                            }
+                        }
                     }
                 });
                 menu.add(menuItem);

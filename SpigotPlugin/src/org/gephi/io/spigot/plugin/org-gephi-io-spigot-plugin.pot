@@ -17,3 +17,6 @@ msgstr ""
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Spigot core implementations"
+
+msgid "EmailImporterBuilder.name"
+msgstr "Import Emails"

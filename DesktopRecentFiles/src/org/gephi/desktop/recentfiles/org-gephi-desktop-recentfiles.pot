@@ -15,5 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Menu in File for recently used files"
+
 msgid "CTL_OpenRecentFiles"
 msgstr "Open Recent..."
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Menu in File for recently used files"
