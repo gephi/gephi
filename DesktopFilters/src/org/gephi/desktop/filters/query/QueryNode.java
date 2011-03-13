@@ -23,8 +23,8 @@ package org.gephi.desktop.filters.query;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import org.gephi.desktop.filters.FiltersTopComponent;
 import org.gephi.filters.api.FilterController;
+import org.gephi.filters.api.FilterLibrary;
 import org.gephi.filters.api.Query;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -92,7 +92,7 @@ public class QueryNode extends AbstractNode {
     @Override
     public Action[] getActions(boolean context) {
         //System.out.println("getActions " + context);
-        return new Action[]{new RemoveAction(), new RenameAction()};
+        return new Action[]{new RemoveAction(), new RenameAction(), new SaveAction()};
     }
 
     public Query getQuery() {
@@ -132,6 +132,23 @@ public class QueryNode extends AbstractNode {
                 if (input != null && !input.isEmpty()) {
                     filterController.rename(query, input);
                 }
+            }
+        }
+    }
+
+    private class SaveAction extends AbstractAction {
+
+        public SaveAction() {
+            super(NbBundle.getMessage(QueryNode.class, "QueryNode.actions.save"));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
+            FilterLibrary filterLibrary = filterController.getModel().getLibrary();
+            if (query.getParent() == null) {
+                filterLibrary.saveQuery(query);
+            } else {
+                filterLibrary.saveQuery(query.getParent());
             }
         }
     }
