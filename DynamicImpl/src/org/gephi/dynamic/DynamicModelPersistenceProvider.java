@@ -97,8 +97,7 @@ public class DynamicModelPersistenceProvider implements WorkspacePersistenceProv
                         String val = reader.getAttributeValue(null, "value");
                         if (val.equalsIgnoreCase("date")) {
                             model.setTimeFormat(DynamicModel.TimeFormat.DATE);
-                        }
-                        if (val.equalsIgnoreCase("datetime")) {
+                        } else if (val.equalsIgnoreCase("datetime")) {
                             model.setTimeFormat(DynamicModel.TimeFormat.DATETIME);
                         } else {
                             model.setTimeFormat(DynamicModel.TimeFormat.DOUBLE);
