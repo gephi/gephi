@@ -46,13 +46,16 @@ public class StatisticsPersistenceProvider implements WorkspacePersistenceProvid
     }
 
     public void readXML(XMLStreamReader reader, Workspace workspace) {
-        StatisticsModelImpl statModel = new StatisticsModelImpl();
+        StatisticsModelImpl statModel = workspace.getLookup().lookup(StatisticsModelImpl.class);
+        if (statModel == null) {
+            statModel = new StatisticsModelImpl();
+            workspace.add(statModel);
+        }
         try {
             statModel.readXML(reader);
         } catch (XMLStreamException ex) {
             throw new RuntimeException(ex);
-        }
-        workspace.add(statModel);
+        }    
     }
 
     public String getIdentifier() {

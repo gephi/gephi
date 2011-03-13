@@ -46,13 +46,16 @@ public class LayoutModelPersistenceProvider implements WorkspacePersistenceProvi
     }
 
     public void readXML(XMLStreamReader reader, Workspace workspace) {
-        LayoutModelImpl model = new LayoutModelImpl();
+        LayoutModelImpl model = workspace.getLookup().lookup(LayoutModelImpl.class);
+        if (model == null) {
+            model = new LayoutModelImpl();
+            workspace.add(model);
+        }
         try {
             model.readXML(reader);
         } catch (XMLStreamException ex) {
             throw new RuntimeException(ex);
         }
-        workspace.add(model);
     }
 
     public String getIdentifier() {

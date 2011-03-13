@@ -43,7 +43,11 @@ public class PartitionModelPersistenceProvider implements WorkspacePersistencePr
     }
 
     public void readXML(XMLStreamReader reader, Workspace workspace) {
-        workspace.add(new PartitionModelImpl());
+        PartitionModelImpl partitionModel = workspace.getLookup().lookup(PartitionModelImpl.class);
+        if (partitionModel == null) {
+            partitionModel = new PartitionModelImpl();
+            workspace.add(partitionModel);
+        }
     }
 
     public String getIdentifier() {

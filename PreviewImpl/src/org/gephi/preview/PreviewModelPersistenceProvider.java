@@ -46,13 +46,16 @@ public class PreviewModelPersistenceProvider implements WorkspacePersistenceProv
     }
 
     public void readXML(XMLStreamReader reader, Workspace workspace) {
-        PreviewModelImpl model = new PreviewModelImpl();
+        PreviewModelImpl model = workspace.getLookup().lookup(PreviewModelImpl.class);
+        if (model == null) {
+            model = new PreviewModelImpl();
+            workspace.add(model);
+        }
         try {
             model.readXML(reader);
         } catch (XMLStreamException ex) {
             throw new RuntimeException(ex);
         }
-        workspace.add(model);
     }
 
     public String getIdentifier() {

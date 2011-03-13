@@ -50,14 +50,17 @@ public class AttributeModelPersistenceProvider implements WorkspacePersistencePr
     }
 
     public void readXML(XMLStreamReader reader, Workspace workspace) {
-        IndexedAttributeModel model = new IndexedAttributeModel();
+        IndexedAttributeModel model = workspace.getLookup().lookup(IndexedAttributeModel.class);
+        if (model == null) {
+            model = new IndexedAttributeModel();
+            workspace.add(model);
+        }
         AttributeModelSerializer serializer = new AttributeModelSerializer();
         try {
             serializer.readModel(reader, model);
         } catch (XMLStreamException ex) {
             throw new RuntimeException(ex);
         }
-        workspace.add(model);
     }
 
     public String getIdentifier() {
