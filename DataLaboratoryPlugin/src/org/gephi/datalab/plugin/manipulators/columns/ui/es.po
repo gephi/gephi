@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-13 04:49+0000\n"
+"X-Launchpad-Export-Date: 2011-03-14 04:45+0000\n"
 "X-Generator: Launchpad (build 12559)\n"
 
 msgid "CopyDataToOtherColumnUI.sourceColumnLabel.text"
@@ -28,6 +28,9 @@ msgstr "Título:"
 
 msgid "DuplicateColumnUI.typeLabel.text"
 msgstr "Tipo:"
+
+msgid "DuplicateColumnUI.titleTextField.text"
+msgstr ""
 
 msgid "DuplicateColumnUI.new.title"
 msgstr "{0}_copia"
@@ -45,8 +48,14 @@ msgstr ""
 msgid "GeneralCreateColumnFromRegexUI.regexLabel.text"
 msgstr "Expresión regular:"
 
+msgid "GeneralCreateColumnFromRegexUI.regexTextField.text"
+msgstr ""
+
 msgid "GeneralCreateColumnFromRegexUI.titleLabel.text"
 msgstr "Título:"
+
+msgid "GeneralCreateColumnFromRegexUI.titleTextField.text"
+msgstr ""
 
 msgid "ColumnValuesFrequencyUI.configurePieChartButton.text"
 msgstr "Configurar gráfico de tarta"
