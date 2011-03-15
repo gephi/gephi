@@ -94,15 +94,15 @@ public class VizConfig {
     public static final boolean DEFAULT_EDGE_LABELS = false;
     public static final boolean DEFAULT_SHOW_EDGES = true;
     public static final boolean DEFAULT_HIGHLIGHT = true;
-    public static final boolean DEFAULT_NEIGHBOUR_SELECT = false;
+    public static final boolean DEFAULT_NEIGHBOUR_SELECT = true;
     public static final boolean DEFAULT_HIDE_NONSELECTED_EDGES = false;
     public static final boolean DEFAULT_SELECTEDNODE_UNIQUE_COLOR = false;
     public static final boolean DEFAULT_EDGE_HAS_UNIQUE_COLOR = false;
     public static final Color DEFAULT_EDGE_UNIQUE_COLOR = new Color(0.5f, 0.5f, 0.5f, 0.5f);
     public static final Color DEFAULT_NODE_LABEL_COLOR = new Color(0f, 0f, 0f, 1f);
     public static final Color DEFAULT_EDGE_LABEL_COLOR = new Color(0.5f, 0.5f, 0.5f, 1f);
-    public static final Font DEFAULT_NODE_LABEL_FONT = new Font("Arial", Font.BOLD, 20);
-    public static final Font DEFAULT_EDGE_LABEL_FONT = new Font("Arial", Font.BOLD, 20);
+    public static final Font DEFAULT_NODE_LABEL_FONT = new Font("Arial", Font.BOLD, 32);
+    public static final Font DEFAULT_EDGE_LABEL_FONT = new Font("Arial", Font.BOLD, 32);
     public static final boolean DEFAULT_LABEL_SELECTION_ONLY = false;
     public static final boolean DEFAULT_SELECTEDEDGE_HAS_COLOR = false;
     public static final Color DEFAULT_SELECTEDEDGE_IN_COLOR = new Color(32, 95, 154, 255);
@@ -139,8 +139,8 @@ public class VizConfig {
     public static final boolean DEFAULT_MOUSE_SELECTION_WHILE_DRAGGING = false;
     public static final boolean DEFAULT_DISABLE_LOD = false;
     public static final boolean DEFAULT_SHOW_HULLS = true;
-    public static final float DEFAULT_EDGE_SCALE = 1f;
-    public static final float DEFAULT_META_EDGE_SCALE = 1f;
+    public static final float DEFAULT_EDGE_SCALE = 2f;
+    public static final float DEFAULT_META_EDGE_SCALE = 2f;
     //Default config - loaded in the VizModel
     protected boolean defaultUse3d = NbPreferences.forModule(VizConfig.class).getBoolean(USE_3D, DEFAULT_USE_3D);
     protected boolean defaultLighting = false;  //Overriden by use3d
