@@ -36,6 +36,7 @@ public class ImportContainerParameters {
     private boolean undirectedSumDirectedEdgesWeight = false;
     private boolean removeIntervalsOverlapping = true;
     private boolean mergeParallelEdgesWeight = true;
+    private boolean mergeParallelEdgesAttributes = true;
     private boolean duplicateWithLabels = false;
     private EdgeDefault edgeDefault = EdgeDefault.DIRECTED;
 
@@ -117,5 +118,13 @@ public class ImportContainerParameters {
 
     public void setDuplicateWithLabels(boolean duplicateWithLabels) {
         this.duplicateWithLabels = duplicateWithLabels;
+    }
+
+    public boolean isMergeParallelEdgesAttributes() {
+        return mergeParallelEdgesAttributes;
+    }
+
+    public void setMergeParallelEdgesAttributes(boolean mergeParallelEdgesAttributes) {
+        this.mergeParallelEdgesAttributes = mergeParallelEdgesAttributes;
     }
 }
