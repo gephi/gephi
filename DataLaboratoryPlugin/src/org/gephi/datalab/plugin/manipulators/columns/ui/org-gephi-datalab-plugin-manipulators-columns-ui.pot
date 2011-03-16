@@ -27,9 +27,6 @@ msgstr "Title:"
 msgid "DuplicateColumnUI.typeLabel.text"
 msgstr "Type:"
 
-msgid "DuplicateColumnUI.titleTextField.text"
-msgstr ""
-
 msgid "DuplicateColumnUI.new.title"
 msgstr "{0}_copy"
 
@@ -45,14 +42,8 @@ msgstr "Create a new list of matching groups column from ''{0}''"
 msgid "GeneralCreateColumnFromRegexUI.regexLabel.text"
 msgstr "Regular expression:"
 
-msgid "GeneralCreateColumnFromRegexUI.regexTextField.text"
-msgstr ""
-
 msgid "GeneralCreateColumnFromRegexUI.titleLabel.text"
 msgstr "Title:"
-
-msgid "GeneralCreateColumnFromRegexUI.titleTextField.text"
-msgstr ""
 
 msgid "ColumnValuesFrequencyUI.configurePieChartButton.text"
 msgstr "Configure pie chart"

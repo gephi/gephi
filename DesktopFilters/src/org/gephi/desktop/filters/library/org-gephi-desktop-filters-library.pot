@@ -23,3 +23,6 @@ msgstr "Saved queries"
 
 msgid "RootNode.name"
 msgstr "Library"
+
+msgid "SavedQueryNode.actions.remove"
+msgstr "Remove"
