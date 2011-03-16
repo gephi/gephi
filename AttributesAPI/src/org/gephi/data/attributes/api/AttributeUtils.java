@@ -67,6 +67,8 @@ public abstract class AttributeUtils {
 
     public abstract AttributeColumn[] getStringColumns(AttributeTable table);
 
+    public abstract AttributeColumn[] getAllCollums(AttributeModel model);
+
     @SuppressWarnings("rawtypes")
     public abstract Comparable getMin(AttributeColumn column, Comparable[] values);
 
