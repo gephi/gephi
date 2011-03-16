@@ -314,7 +314,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
     private void attributesNodeColumns(AttributeModel attributeModel) {
         List<AttributeColumn> cols = new ArrayList<AttributeColumn>();
-        if (attributeModel != null) {
+        if (exportAttributes && attributeModel != null) {
             for (AttributeColumn column : attributeModel.getNodeTable().getColumns()) {
                 if (!isNodeDefaultColumn(column.getId())) {
                     cols.add(column);
@@ -326,7 +326,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
 
     private void attributesEdgeColumns(AttributeModel attributeModel) {
         List<AttributeColumn> cols = new ArrayList<AttributeColumn>();
-        if (attributeModel != null) {
+        if (exportAttributes && attributeModel != null) {
             for (AttributeColumn column : attributeModel.getEdgeTable().getColumns()) {
                 if (!isEdgeDefaultColumn(column.getId())) {
                     cols.add(column);
