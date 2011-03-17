@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.components;
 
 import com.sun.java.swing.plaf.windows.WindowsSliderUI;
@@ -125,6 +125,25 @@ public class JRangeSlider extends JSlider {
         setExtent(newExtent);
     }
 
+    public void setValues(int low, int high) {
+        boolean changeLow = low != getValue();
+        boolean changeHigh = high != getUpperValue();
+        if (changeHigh || changeLow) {
+            int extent = getExtent();
+
+            extent = Math.min(Math.max(0, high - low), getMaximum() - low);
+
+            // Compute new value and extent to maintain upper value.
+            int oldExtent = getExtent();
+            int newValue = Math.min(Math.max(getMinimum(), low), getValue() + oldExtent);
+//        int newExtent = oldExtent + oldValue - newValue;
+
+            // Set new value and extent, and fire a single change event.
+            getModel().setRangeProperties(newValue, extent, getMinimum(),
+                    getMaximum(), getValueIsAdjusting());
+        }
+    }
+
     private static class JRangeSliderWindowsUI extends WindowsSliderUI {
 
         /** Color of selected range. */
@@ -146,10 +165,10 @@ public class JRangeSlider extends JSlider {
         public JRangeSliderWindowsUI(JSlider slider) {
             super(slider);
 
-        /*Color rColor = UIManager.getColor("Slider.focus");
-        if(rColor!=null) {
-        rangeColor = rColor;
-        }*/
+            /*Color rColor = UIManager.getColor("Slider.focus");
+            if(rColor!=null) {
+            rangeColor = rColor;
+            }*/
         }
 
         /**
@@ -250,26 +269,26 @@ public class JRangeSlider extends JSlider {
             thumbRect = upperThumbRect;
             paintThumb(g);
             thumbRect = r;
-        //paintThumb(g);
+            //paintThumb(g);
         /*Rectangle clipRect = g.getClipBounds();
-        if (upperThumbSelected) {
-        // Paint lower thumb first, then upper thumb.
-        if (clipRect.intersects(thumbRect)) {
-        paintLowerThumb(g);
-        }
-        if (clipRect.intersects(upperThumbRect)) {
-        paintUpperThumb(g);
-        }
+            if (upperThumbSelected) {
+            // Paint lower thumb first, then upper thumb.
+            if (clipRect.intersects(thumbRect)) {
+            paintLowerThumb(g);
+            }
+            if (clipRect.intersects(upperThumbRect)) {
+            paintUpperThumb(g);
+            }
 
-        } else {
-        // Paint upper thumb first, then lower thumb.
-        if (clipRect.intersects(upperThumbRect)) {
-        paintUpperThumb(g);
-        }
-        if (clipRect.intersects(thumbRect)) {
-        paintLowerThumb(g);
-        }
-        }*/
+            } else {
+            // Paint upper thumb first, then lower thumb.
+            if (clipRect.intersects(upperThumbRect)) {
+            paintUpperThumb(g);
+            }
+            if (clipRect.intersects(thumbRect)) {
+            paintLowerThumb(g);
+            }
+            }*/
         }
 
         /**
@@ -713,10 +732,10 @@ public class JRangeSlider extends JSlider {
         public JRangeSliderBasicUI(JSlider slider) {
             super(slider);
 
-        /*Color rColor = UIManager.getColor("Slider.focus");
-        if(rColor!=null) {
-        rangeColor = rColor;
-        }*/
+            /*Color rColor = UIManager.getColor("Slider.focus");
+            if(rColor!=null) {
+            rangeColor = rColor;
+            }*/
         }
 
         /**
@@ -817,26 +836,26 @@ public class JRangeSlider extends JSlider {
             thumbRect = upperThumbRect;
             paintThumb(g);
             thumbRect = r;
-        //paintThumb(g);
+            //paintThumb(g);
         /*Rectangle clipRect = g.getClipBounds();
-        if (upperThumbSelected) {
-        // Paint lower thumb first, then upper thumb.
-        if (clipRect.intersects(thumbRect)) {
-        paintLowerThumb(g);
-        }
-        if (clipRect.intersects(upperThumbRect)) {
-        paintUpperThumb(g);
-        }
+            if (upperThumbSelected) {
+            // Paint lower thumb first, then upper thumb.
+            if (clipRect.intersects(thumbRect)) {
+            paintLowerThumb(g);
+            }
+            if (clipRect.intersects(upperThumbRect)) {
+            paintUpperThumb(g);
+            }
 
-        } else {
-        // Paint upper thumb first, then lower thumb.
-        if (clipRect.intersects(upperThumbRect)) {
-        paintUpperThumb(g);
-        }
-        if (clipRect.intersects(thumbRect)) {
-        paintLowerThumb(g);
-        }
-        }*/
+            } else {
+            // Paint upper thumb first, then lower thumb.
+            if (clipRect.intersects(upperThumbRect)) {
+            paintUpperThumb(g);
+            }
+            if (clipRect.intersects(thumbRect)) {
+            paintLowerThumb(g);
+            }
+            }*/
         }
 
         /**

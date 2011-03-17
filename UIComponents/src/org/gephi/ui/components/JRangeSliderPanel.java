@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.components;
 
 import java.awt.event.ActionEvent;
@@ -38,14 +38,14 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
     public static final String LOWER_BOUND = "lowerbound";
     public static final String UPPER_BOUND = "upperbound";
     private static final int SLIDER_MAXIMUM = 1000;
-    private String lowerBound = "NaN";
-    private String upperBound = "NaN";
+    private String lowerBound = "N/A";
+    private String upperBound = "N/A";
     private Range range;
 
     /** Creates new form JRangeSliderPanel */
     public JRangeSliderPanel() {
         initComponents();
-        ((JRangeSlider)rangeSlider).setUpperValue(1000);
+        ((JRangeSlider) rangeSlider).setUpperValue(1000);
         rangeSlider.setOpaque(false);
         lowerBoundTextField.setOpaque(false);
         upperBoundTextField.setOpaque(false);
@@ -150,8 +150,8 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             range.refreshSlider();
             refreshBoundTexts();
         } else {
-            lowerBound = "NaN";
-            upperBound = "NaN";
+            lowerBound = "N/A";
+            upperBound = "N/A";
             lowerBoundTextField.setText(lowerBound);
             upperBoundTextField.setText(upperBound);
         }
@@ -373,8 +373,9 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
             }
             sliderLowValue = (int) (normalizedLow * SLIDER_MAXIMUM);
             sliderUpValue = (int) (normalizedUp * SLIDER_MAXIMUM);
-            slider.getSlider().setValue(sliderLowValue);
-            slider.getSlider().setUpperValue(sliderUpValue);
+            slider.getSlider().setValues(sliderLowValue, sliderUpValue);
+//            slider.getSlider().setUpperValue(sliderUpValue);
+//            slider.getSlider().setValue(sliderLowValue);
         }
 
         private void refreshBounds() {
