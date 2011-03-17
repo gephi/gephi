@@ -33,8 +33,4 @@ public interface RangeFilter extends Filter {
     public FilterProperty getRangeProperty();
 
     public Object[] getValues();
-
-    public Object getMinimum();
-
-    public Object getMaximum();
 }

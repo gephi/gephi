@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.filters.plugin.graph;
 
 import java.beans.PropertyChangeEvent;
@@ -54,45 +54,50 @@ public class RangePanel extends javax.swing.JPanel {
         new Thread(new Runnable() {
 
             public void run() {
-                final JRangeSliderPanel r = (JRangeSliderPanel) rangeSliderPanel;
+                final JRangeSliderPanel rangeSlider = (JRangeSliderPanel) rangeSliderPanel;
                 values = rangeFilter.getValues();
                 final Range range = (Range) rangeFilter.getRangeProperty().getValue();
 
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    public void run() {
-                        r.setRange(new JRangeSliderPanel.Range(
-                                r, rangeFilter.getMinimum(), rangeFilter.getMaximum(), range.getLowerBound(), range.getUpperBound()));
-                    }
-                });
-
-
-                r.addPropertyChangeListener(new PropertyChangeListener() {
+                rangeSlider.addPropertyChangeListener(new PropertyChangeListener() {
 
                     public void propertyChange(PropertyChangeEvent evt) {
                         try {
                             if (evt.getPropertyName().equals(JRangeSliderPanel.LOWER_BOUND)) {
-                                final Range newRange = new Range(r.getRange().getLowerBound(), r.getRange().getUpperBound());
-                                filter.getRangeProperty().setValue(newRange);
-                                new Thread(new Runnable() {
+                                Range oldRange = (Range) filter.getRangeProperty().getValue();
+                                final Range newRange = new Range((Number) rangeSlider.getRange().getLowerBound(), (Number) rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(), oldRange.getMaximum());
+                                if (!oldRange.equals(newRange)) {
+                                    filter.getRangeProperty().setValue(newRange);
+                                    new Thread(new Runnable() {
 
-                                    public void run() {
-                                        setupHistogram(filter, newRange);
-                                    }
-                                }).start();
+                                        public void run() {
+                                            setupHistogram(filter, newRange);
+                                        }
+                                    }).start();
+                                }
                             } else if (evt.getPropertyName().equals(JRangeSliderPanel.UPPER_BOUND)) {
-                                final Range newRange = new Range(r.getRange().getLowerBound(), r.getRange().getUpperBound());
-                                filter.getRangeProperty().setValue(newRange);
-                                new Thread(new Runnable() {
+                                final Range oldRange = (Range) filter.getRangeProperty().getValue();
+                                final Range newRange = new Range((Number) rangeSlider.getRange().getLowerBound(), (Number) rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(), oldRange.getMaximum());
+                                if (!oldRange.equals(newRange)) {
+                                    filter.getRangeProperty().setValue(newRange);
+                                    new Thread(new Runnable() {
 
-                                    public void run() {
-                                        setupHistogram(filter, newRange);
-                                    }
-                                }).start();
+                                        public void run() {
+                                            setupHistogram(filter, newRange);
+                                        }
+                                    }).start();
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                    }
+                });
+
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        rangeSlider.setRange(new JRangeSliderPanel.Range(
+                                rangeSlider, range.getMinimum(), range.getMaximum(), range.getLowerBound(), range.getUpperBound()));
                     }
                 });
                 setupHistogram(rangeFilter, range);

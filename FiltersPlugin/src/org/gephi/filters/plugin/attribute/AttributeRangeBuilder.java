@@ -150,11 +150,9 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         private FilterProperty[] filterProperties;
         private Range range;
         private AttributeColumn column;
-        private Object min = 0;
-        private Object max = 0;
         private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
         //States
-        private List<Object> values;
+        private Comparable[] values;
 
         public AttributeRangeFilter(AttributeColumn column) {
             this.column = column;
@@ -164,22 +162,19 @@ public class AttributeRangeBuilder implements CategoryBuilder {
             return column.getTitle() + " " + NbBundle.getMessage(AttributeRangeBuilder.class, "AttributeRangeBuilder.name");
         }
 
-        private void refreshRange() {
-            if (range == null) {
-                range = new Range(min, max);
-            } else if (!min.equals(max)) {
-                range.trimBounds(min, max);
-            }
-        }
-
         public boolean init(Graph graph) {
             HierarchicalGraph hg = graph.getGraphModel().getHierarchicalGraphVisible();
-            dynamicHelper = new DynamicAttributesHelper(this, hg);
-            if (range == null) {
-                getValues();
-                refreshRange();
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                if (graph.getNodeCount() == 0) {
+                    return false;
+                }
+            } else if (AttributeUtils.getDefault().isEdgeColumn(column)) {
+                if (hg.getTotalEdgeCount() == 0) {
+                    return false;
+                }
             }
-            values = new ArrayList<Object>();
+            dynamicHelper = new DynamicAttributesHelper(this, hg);
+            refreshValues(hg);
             return true;
         }
 
@@ -187,8 +182,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
             Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
             val = dynamicHelper.getDynamicValue(val);
             if (val != null) {
-                values.add(val);
-                return range.isInRange(val);
+                return range.isInRange((Number) val);
             }
             return false;
 
@@ -198,58 +192,51 @@ public class AttributeRangeBuilder implements CategoryBuilder {
             Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
             val = dynamicHelper.getDynamicValue(val);
             if (val != null) {
-                values.add(val);
-                return range.isInRange(val);
+                return range.isInRange((Number) val);
             }
             return false;
         }
 
         public void finish() {
-            refreshRange();
+        }
+
+        public void refreshValues(HierarchicalGraph graph) {
+            List<Object> vals = new ArrayList<Object>();
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                for (Node n : graph.getNodes()) {
+                    Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
+                    val = dynamicHelper.getDynamicValue(val);
+                    if (val != null) {
+                        vals.add(val);
+                    }
+                }
+            } else {
+                for (Edge e : graph.getEdgesAndMetaEdges()) {
+                    Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
+                    val = dynamicHelper.getDynamicValue(val);
+                    if (val != null) {
+                        vals.add(val);
+                    }
+                }
+            }
+
+            if (vals.isEmpty()) {
+                vals.add(0);
+            }
+
+            values = ComparableArrayConverter.convert(vals);
+
+            Number min = (Number) AttributeUtils.getDefault().getMin(column, values /*valuesArray*/);
+            Number max = (Number) AttributeUtils.getDefault().getMax(column, values /*valuesArray*/);
+            if (range == null) {
+                range = new Range(min, max, min, max);
+            } else {
+                range.setMinMax(min, max);
+            }
         }
 
         public Object[] getValues() {
-            if (values == null) {
-                GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-                HierarchicalGraph hgraph = gm.getHierarchicalGraphVisible();
-                List<Object> vals = new ArrayList<Object>();
-                if (AttributeUtils.getDefault().isNodeColumn(column)) {
-                    for (Node n : hgraph.getNodes()) {
-                        Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
-                        val = dynamicHelper.getDynamicValue(val);
-                        if (val != null) {
-                            vals.add(val);
-                        }
-                    }
-                } else {
-                    for (Edge e : hgraph.getEdgesAndMetaEdges()) {
-                        Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
-                        val = dynamicHelper.getDynamicValue(val);
-                        if (val != null) {
-                            vals.add(val);
-                        }
-                    }
-                }
-                //If the column is empty for every node/edge
-                if (vals.isEmpty()) {
-                    vals.add(0);
-                }
-
-                //Object[] valuesArray = vals.toArray();
-                Comparable[] comparableArray = ComparableArrayConverter.convert(vals);
-
-                min = AttributeUtils.getDefault().getMin(column, comparableArray /*valuesArray*/);
-                max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
-                refreshRange();
-                return comparableArray;//valuesArray;
-            } else {
-                //Object[] valuesArray = values.toArray();
-                Comparable[] comparableArray = ComparableArrayConverter.convert(values);
-
-                min = AttributeUtils.getDefault().getMin(column, comparableArray /*valuesArray*/);
-                max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
-                return comparableArray;//valuesArray;
-            }
+            return values;
         }
 
         public FilterProperty[] getProperties() {
@@ -268,14 +255,6 @@ public class AttributeRangeBuilder implements CategoryBuilder {
 
         public FilterProperty getRangeProperty() {
             return getProperties()[1];
-        }
-
-        public Object getMinimum() {
-            return min;
-        }
-
-        public Object getMaximum() {
-            return max;
         }
 
         public Range getRange() {

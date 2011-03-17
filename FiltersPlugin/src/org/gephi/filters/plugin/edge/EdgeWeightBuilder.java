@@ -36,8 +36,6 @@ import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -84,10 +82,8 @@ public class EdgeWeightBuilder implements FilterBuilder {
 
     public static class EdgeWeightFilter implements RangeFilter, EdgeFilter {
 
-        private Float min = 0f;
-        private Float max = 0f;
         private Range range;
-        private DynamicAttributesHelper dynamicHelper= new DynamicAttributesHelper(this, null);
+        private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
         //States
         private List<Float> values;
 
@@ -95,57 +91,43 @@ public class EdgeWeightBuilder implements FilterBuilder {
             return NbBundle.getMessage(EdgeWeightBuilder.class, "EdgeWeightBuilder.name");
         }
 
-        private void refreshRange() {
-            if (range == null) {
-                range = new Range(min, max);
-            } else {
-                range.trimBounds(min, max);
-            }
-        }
-
         public boolean init(Graph graph) {
             HierarchicalGraph hgraph = (HierarchicalGraph) graph;
-            dynamicHelper = new DynamicAttributesHelper(this, hgraph);
-            if (range == null) {
-                getValues();
-                refreshRange();
+            if (hgraph.getTotalEdgeCount() == 0) {
+                return false;
             }
-            values = new ArrayList<Float>(hgraph.getTotalEdgeCount());
-            min = Float.POSITIVE_INFINITY;
-            max = Float.NEGATIVE_INFINITY;
+            dynamicHelper = new DynamicAttributesHelper(this, hgraph);
+            refreshValues(graph);
             return true;
         }
 
         public boolean evaluate(Graph graph, Edge edge) {
             float weight = dynamicHelper.getEdgeWeight(edge);
-            min = Math.min(min, weight);
-            max = Math.max(max, weight);
-            values.add(new Float(weight));
             return range.isInRange(weight);
         }
 
         public void finish() {
-            refreshRange();
         }
 
         public Object[] getValues() {
-            if (values == null) {
-                GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-                HierarchicalGraph hgraph = gm.getHierarchicalGraphVisible();
-                Float[] weights = new Float[hgraph.getTotalEdgeCount()];
-                int i = 0;
-                min = Float.MAX_VALUE;
-                max = Float.MIN_VALUE;
-                for (Edge e : hgraph.getEdgesAndMetaEdges()) {
-                    float weight = dynamicHelper.getEdgeWeight(e);
-                    min = Math.min(min, weight);
-                    max = Math.max(max, weight);
-                    weights[i++] = weight;
-                }
-                refreshRange();
-                return weights;
+            return values.toArray(new Float[0]);
+        }
+
+        private void refreshValues(Graph graph) {
+            Float min = Float.MAX_VALUE;
+            Float max = Float.MIN_VALUE;
+            HierarchicalGraph hgraph = (HierarchicalGraph) graph;
+            values = new ArrayList<Float>(hgraph.getTotalEdgeCount());
+            for (Edge e : hgraph.getEdgesAndMetaEdges()) {
+                float weight = dynamicHelper.getEdgeWeight(e);
+                min = Math.min(min, weight);
+                max = Math.max(max, weight);
+                values.add(weight);
+            }
+            if (range == null) {
+                range = new Range(min, max, min, max);
             } else {
-                return values.toArray(new Float[0]);
+                range.setMinMax(min, max);
             }
         }
 
@@ -162,14 +144,6 @@ public class EdgeWeightBuilder implements FilterBuilder {
 
         public FilterProperty getRangeProperty() {
             return getProperties()[0];
-        }
-
-        public Object getMinimum() {
-            return min;
-        }
-
-        public Object getMaximum() {
-            return max;
         }
 
         public Range getRange() {

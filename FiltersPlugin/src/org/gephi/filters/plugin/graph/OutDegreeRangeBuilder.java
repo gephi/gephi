@@ -84,8 +84,6 @@ public class OutDegreeRangeBuilder implements FilterBuilder {
 
     public static class OutDegreeRangeFilter implements RangeFilter, NodeFilter {
 
-        private Integer min = 0;
-        private Integer max = 0;
         private Range range;
         //States
         private List<Integer> values;
@@ -94,58 +92,43 @@ public class OutDegreeRangeBuilder implements FilterBuilder {
             return NbBundle.getMessage(OutDegreeRangeBuilder.class, "OutDegreeRangeBuilder.name");
         }
 
-        private void refreshRange() {
-            if (range == null) {
-                range = new Range(min, max);
-            } else {
-                range.trimBounds(min, max);
-            }
-        }
-
         public boolean init(Graph graph) {
-            if (!(graph instanceof DirectedGraph)) {
+            if (graph.getNodeCount() == 0 || !(graph instanceof DirectedGraph)) {
                 return false;
             }
-            if (range == null) {
-                getValues();
-                refreshRange();
-            }
-            values = new ArrayList<Integer>(((HierarchicalGraph)graph).getNodeCount());
-            min = Integer.MAX_VALUE;
-            max = Integer.MIN_VALUE;
+            refreshValues(graph);
             return true;
         }
 
         public boolean evaluate(Graph graph, Node node) {
             int degree = ((HierarchicalDirectedGraph) graph).getTotalOutDegree(node);
-            min = Math.min(min, degree);
-            max = Math.max(max, degree);
-            values.add(new Integer(degree));
             return range.isInRange(degree);
         }
 
         public void finish() {
-            refreshRange();
         }
 
         public Object[] getValues() {
-            if (values == null) {
-                GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-                HierarchicalDirectedGraph graph = gm.getHierarchicalDirectedGraph();
-                Integer[] degrees = new Integer[graph.getNodeCount()];
-                int i = 0;
-                min = Integer.MAX_VALUE;
-                max = Integer.MIN_VALUE;
-                for (Node n : graph.getNodes()) {
-                    int degree = graph.getTotalOutDegree(n);
-                    min = Math.min(min, degree);
-                    max = Math.max(max, degree);
-                    degrees[i++] = degree;
-                }
-                refreshRange();
-                return degrees;
+            return values.toArray(new Integer[0]);
+        }
+
+        private void refreshValues(Graph graph) {
+            Integer min = 0;
+            Integer max = 0;
+            HierarchicalDirectedGraph hgraph = (HierarchicalDirectedGraph) graph;
+            values = new ArrayList<Integer>(((HierarchicalGraph) graph).getNodeCount());
+            min = Integer.MAX_VALUE;
+            max = Integer.MIN_VALUE;
+            for (Node n : hgraph.getNodes()) {
+                int degree = hgraph.getMutualDegree(n);
+                min = Math.min(min, degree);
+                max = Math.max(max, degree);
+                values.add(degree);
+            }
+            if (range == null) {
+                range = new Range(min, max, min, max);
             } else {
-                return values.toArray(new Integer[0]);
+                range.setMinMax(min, max);
             }
         }
 
@@ -162,14 +145,6 @@ public class OutDegreeRangeBuilder implements FilterBuilder {
 
         public FilterProperty getRangeProperty() {
             return getProperties()[0];
-        }
-
-        public Object getMinimum() {
-            return min;
-        }
-
-        public Object getMaximum() {
-            return max;
         }
 
         public Range getRange() {
