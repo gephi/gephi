@@ -45,6 +45,7 @@ public class FilterModelImpl implements FilterModel {
     private FilterLibraryImpl filterLibraryImpl;
     private LinkedList<Query> queries;
     private FilterThread filterThread;
+    private GraphModel graphModel;
     private Query currentQuery;
     private boolean filtering;
     private boolean selecting;
@@ -60,7 +61,7 @@ public class FilterModelImpl implements FilterModel {
         listeners = new ArrayList<ChangeListener>();
         autoRefresh = true;
 
-        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
+        graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(workspace);
         autoRefreshor = new FilterAutoRefreshor(this, graphModel);
     }
 
@@ -155,12 +156,16 @@ public class FilterModelImpl implements FilterModel {
 
     public void setFiltering(boolean filtering) {
         this.filtering = filtering;
-        this.selecting = !filtering;
+        if (filtering) {
+            this.selecting = false;
+        }
     }
 
     public void setSelecting(boolean selecting) {
         this.selecting = selecting;
-        this.filtering = !selecting;
+        if (selecting) {
+            this.filtering = false;
+        }
     }
 
     public boolean isAutoRefresh() {
@@ -239,6 +244,10 @@ public class FilterModelImpl implements FilterModel {
 
     public GraphView getCurrentResult() {
         return currentResult;
+    }
+
+    public GraphModel getGraphModel() {
+        return graphModel;
     }
 
     public void destroy() {
