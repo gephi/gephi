@@ -17,17 +17,14 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.layout.plugin.labelAdjust;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.layout.plugin.AbstractLayout;
-import org.gephi.layout.plugin.ForceVectorUtils;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
@@ -43,11 +40,13 @@ public class LabelAdjust extends AbstractLayout implements Layout {
     protected Graph graph;
     //Settings
     private double speed = 1;
-    private final double RADIUS_SCALE = 2;
-    private double xmin;
-    private double xmax;
-    private double ymin;
-    private double ymax;
+    private boolean adjustBySize = true;
+    private float radiusScale = 1.1f;
+    //Graph size
+    private float xmin;
+    private float xmax;
+    private float ymin;
+    private float ymax;
 
     public LabelAdjust(LayoutBuilder layoutBuilder) {
         super(layoutBuilder);
@@ -55,6 +54,8 @@ public class LabelAdjust extends AbstractLayout implements Layout {
 
     public void resetPropertiesValues() {
         speed = 1;
+        radiusScale = 1.1f;
+        adjustBySize = true;
     }
 
     public void initAlgo() {
@@ -62,7 +63,6 @@ public class LabelAdjust extends AbstractLayout implements Layout {
     }
 
     public void goAlgo() {
-        boolean somethingMoved = false;
         this.graph = graphModel.getGraphVisible();
         graph.readLock();
         Node[] nodes = graph.getNodes().toArray();
@@ -73,16 +73,16 @@ public class LabelAdjust extends AbstractLayout implements Layout {
                 n.getNodeData().setLayoutData(new LabelAdjustLayoutData());
             }
             LabelAdjustLayoutData layoutData = n.getNodeData().getLayoutData();
-            layoutData.neighbours.clear();
+            layoutData.freeze = 0;
             layoutData.dx = 0;
             layoutData.dy = 0;
         }
 
         // Get xmin, xmax, ymin, ymax
-        this.xmin = Double.MAX_VALUE;
-        this.xmax = Double.MIN_VALUE;
-        this.ymin = Double.MAX_VALUE;
-        this.ymax = Double.MIN_VALUE;
+        xmin = Float.MAX_VALUE;
+        xmax = Float.MIN_VALUE;
+        ymin = Float.MAX_VALUE;
+        ymax = Float.MIN_VALUE;
 
         List<Node> correctNodes = new ArrayList<Node>();
         for (Node n : nodes) {
@@ -94,153 +94,142 @@ public class LabelAdjust extends AbstractLayout implements Layout {
 
             if (w > 0 && h > 0) {
                 // Get the rectangle occupied by the node (size + label)
-                double nxmin = Math.min(x - w / 2, x - radius);
-                double nxmax = Math.max(x + w / 2, x + radius);
-                double nymin = Math.min(y - h / 2, y - radius);
-                double nymax = Math.max(y + h / 2, y + radius);
+                float nxmin = Math.min(x - w / 2, x - radius);
+                float nxmax = Math.max(x + w / 2, x + radius);
+                float nymin = Math.min(y - h / 2, y - radius);
+                float nymax = Math.max(y + h / 2, y + radius);
 
                 // Update global boundaries
-                this.xmin = Math.min(this.xmin, nxmin);
-                this.xmax = Math.max(this.xmax, nxmax);
-                this.ymin = Math.min(this.ymin, nymin);
-                this.ymax = Math.max(this.ymax, nymax);
+                xmin = Math.min(this.xmin, nxmin);
+                xmax = Math.max(this.xmax, nxmax);
+                ymin = Math.min(this.ymin, nymin);
+                ymax = Math.max(this.ymax, nymax);
 
                 correctNodes.add(n);
             }
         }
 
-        if (correctNodes.isEmpty()) {
+        if (correctNodes.isEmpty() || xmin == xmax || ymin == ymax) {
             graph.readUnlock();
             return;
         }
 
-        // Secure the bounds
-        double xwidth = this.xmax - this.xmin;
-        double yheight = this.ymax - this.ymin;
-        double xcenter = (this.xmin + this.xmax) / 2;
-        double ycenter = (this.ymin + this.ymax) / 2;
-        double ratio = 1.1;
-        this.xmin = xcenter - ratio * xwidth / 2;
-        this.xmax = xcenter + ratio * xwidth / 2;
-        this.ymin = ycenter - ratio * yheight / 2;
-        this.ymax = ycenter + ratio * yheight / 2;
-        //System.out.println("BOUNDS this.xmin="+this.xmin+" this.xmax="+this.xmax+" this.ymin="+this.ymin+" this.ymax="+this.ymax);
+        long timeStamp = 1;
+        boolean someCollision = false;
 
-        SpatialGrid grid = new SpatialGrid();
-
-        // Put nodes in their boxes
+        //Add all nodes in the quadtree
+        QuadTree quadTree = new QuadTree(correctNodes.size(), (xmax - xmin) / (ymax - ymin));
         for (Node n : correctNodes) {
-            grid.add(n);
+            quadTree.add(n);
         }
 
-        // Now we have boxes with nodes in it. Nodes that are in the same box, or in adjacent boxes, are tested for repulsion.
-        // But they are not repulsed several times, even if they are in several boxes...
-        // So we build a relation of proximity between nodes.
-
-        // Build proximities
-        for (int row = 0; row < grid.countRows(); row++) {
-            for (int col = 0; col < grid.countColumns(); col++) {
-                for (Node n : grid.getContent(row, col)) {
-                    LabelAdjustLayoutData lald = n.getNodeData().getLayoutData();
-
-                    // For node n in the box "box"...
-                    // We search nodes that are in the boxes that are adjacent or the same.
-                    for (int row2 = Math.max(0, row - 1); row2 <= Math.min(row + 1, grid.countRows() - 1); row2++) {
-                        for (int col2 = Math.max(0, col - 1); col2 <= Math.min(col + 1, grid.countColumns() - 1); col2++) {
-                            for (Node n2 : grid.getContent(row2, col2)) {
-                                if (n2 != n && !lald.neighbours.contains(n2)) {
-                                    lald.neighbours.add(n2);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Proximities are built !
-
-        // Apply repulsion force - along proximities...
-        for (Node n1 : correctNodes) {
-            LabelAdjustLayoutData lald = n1.getNodeData().getLayoutData();
-            for (Node n2 : lald.neighbours) {
-                float n1x = n1.getNodeData().x();
-                float n1y = n1.getNodeData().y();
-                float n2x = n2.getNodeData().x();
-                float n2y = n2.getNodeData().y();
-                float n1w = n1.getNodeData().getTextData().getWidth();
-                float n2w = n2.getNodeData().getTextData().getWidth();
-                float n1h = n1.getNodeData().getTextData().getHeight();
-                float n2h = n2.getNodeData().getTextData().getHeight();
-
-                // Check sizes (spheric)
-                double xDist = Math.abs(n1x - n2x);
-                double yDist = Math.abs(n1.getNodeData().y() - n2.getNodeData().y());
-                boolean sphereCollision = Math.sqrt(xDist * xDist + yDist * yDist) < RADIUS_SCALE * (n1.getNodeData().getRadius() + n2.getNodeData().getRadius());
-                if (sphereCollision) {
-                    ForceVectorUtils.fcUniRepulsor(n1.getNodeData(), n2.getNodeData(), 0.1 * n1.getNodeData().getRadius());
-                    somethingMoved = true;
-                }
-
-                // Check labels, but when no label keep a rectangle equivalent to the sphere
-                double n1xmin = n1x - 0.5 * n1w;
-                double n2xmin = n2x - 0.5 * n2w;
-                double n1ymin = n1y - 0.5 * n1h;
-                double n2ymin = n2y - 0.5 * n2h;
-                double n1xmax = n1x + 0.5 * n1w;
-                double n2xmax = n2x + 0.5 * n2w;
-                double n1ymax = n1y + 0.5 * n1h;
-                double n2ymax = n2y + 0.5 * n2h;
-
-                double upDifferential = n1ymax - n2ymin;
-                double downDifferential = n2ymax - n1ymin;
-                double labelCollisionXleft = n2xmax - n1xmin;
-                double labelCollisionXright = n1xmax - n2xmin;
-                LabelAdjustLayoutData layoutData = n2.getNodeData().getLayoutData();
-
-                if (upDifferential > 0 && downDifferential > 0) { // Potential collision
-                    if (labelCollisionXleft > 0 && labelCollisionXright > 0) {// Collision
-                        if (upDifferential > downDifferential) {
-                            // N1 pushes N2 up
-                            layoutData.dy -= 0.01 * n1h * (0.8 + 0.4 * Math.random());
-                            somethingMoved = true;
-                        } else {
-                            // N1 pushes N2 down
-                            layoutData.dy += 0.01 * n1h * (0.8 + 0.4 * Math.random());
-                            somethingMoved = true;
-                        }
-                        if (labelCollisionXleft > labelCollisionXright) {
-                            // N1 pushes N2 right
-                            layoutData.dx += 0.01 * (n1h / 2) * (0.8 + 0.4 * Math.random());
-                            somethingMoved = true;
-                        } else {
-                            // N1 pushes N2 left
-                            layoutData.dx -= 0.01 * (n1h / 2) * (0.8 + 0.4 * Math.random());
-                            somethingMoved = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        // apply forces
+        //Compute repulsion - with neighbours in the 8 quadnodes around the node
         for (Node n : correctNodes) {
+            timeStamp++;
             LabelAdjustLayoutData layoutData = n.getNodeData().getLayoutData();
-            if (!n.getNodeData().isFixed()) {
-                layoutData.dx *= speed;
-                layoutData.dy *= speed;
-                float x = n.getNodeData().x() + layoutData.dx;
-                float y = n.getNodeData().y() + layoutData.dy;
+            QuadNode quad = quadTree.getQuadNode(layoutData.labelAdjustQuadNode);
 
-                n.getNodeData().setX(x);
-                n.getNodeData().setY(y);
+            //Repulse with adjacent quad - but only one per pair of nodes, timestamp is guaranteeing that
+            for (Node neighbour : quadTree.getAdjacentNodes(quad.row, quad.col)) {
+                LabelAdjustLayoutData neighborLayoutData = neighbour.getNodeData().getLayoutData();
+                if (neighbour != n && neighborLayoutData.freeze < timeStamp) {
+                    boolean collision = repulse(n, neighbour);
+                    someCollision = someCollision || collision;
+                }
+                neighborLayoutData.freeze = timeStamp; //Use the existing freeze float variable to set timestamp
             }
         }
 
-        if (!somethingMoved) {
+        if (!someCollision) {
             setConverged(true);
+        } else {
+            // apply forces
+            for (Node n : correctNodes) {
+                LabelAdjustLayoutData layoutData = n.getNodeData().getLayoutData();
+                if (!n.getNodeData().isFixed()) {
+                    layoutData.dx *= speed;
+                    layoutData.dy *= speed;
+                    float x = n.getNodeData().x() + layoutData.dx;
+                    float y = n.getNodeData().y() + layoutData.dy;
+
+                    n.getNodeData().setX(x);
+                    n.getNodeData().setY(y);
+                }
+            }
         }
+
         graph.readUnlock();
+    }
+
+    private boolean repulse(Node n1, Node n2) {
+        boolean collision = false;
+        float n1x = n1.getNodeData().x();
+        float n1y = n1.getNodeData().y();
+        float n2x = n2.getNodeData().x();
+        float n2y = n2.getNodeData().y();
+        float n1w = n1.getNodeData().getTextData().getWidth();
+        float n2w = n2.getNodeData().getTextData().getWidth();
+        float n1h = n1.getNodeData().getTextData().getHeight();
+        float n2h = n2.getNodeData().getTextData().getHeight();
+        LabelAdjustLayoutData n2Data = n2.getNodeData().getLayoutData();
+
+        double n1xmin = n1x - 0.5 * n1w;
+        double n2xmin = n2x - 0.5 * n2w;
+        double n1ymin = n1y - 0.5 * n1h;
+        double n2ymin = n2y - 0.5 * n2h;
+        double n1xmax = n1x + 0.5 * n1w;
+        double n2xmax = n2x + 0.5 * n2w;
+        double n1ymax = n1y + 0.5 * n1h;
+        double n2ymax = n2y + 0.5 * n2h;
+
+        //Sphere repulsion
+        if (adjustBySize) {
+            double xDist = n2x - n1x;
+            double yDist = n2y - n1y;
+            double dist = Math.sqrt(xDist * xDist + yDist * yDist);
+            boolean sphereCollision = dist < radiusScale * (n1.getNodeData().getRadius() + n2.getNodeData().getRadius());
+            if (sphereCollision) {
+                double f = 0.1 * n1.getNodeData().getRadius() / dist;
+                if (dist > 0) {
+                    n2Data.dx = (float) (n2Data.dx + xDist / dist * f);
+                    n2Data.dy = (float) (n2Data.dy + yDist / dist * f);
+                } else {
+                    n2Data.dx = (float) (n2Data.dx + 0.01 * (0.5 - Math.random()));
+                    n2Data.dy = (float) (n2Data.dy + 0.01 * (0.5 - Math.random()));
+                }
+                collision = true;
+            }
+        }
+
+        double upDifferential = n1ymax - n2ymin;
+        double downDifferential = n2ymax - n1ymin;
+        double labelCollisionXleft = n2xmax - n1xmin;
+        double labelCollisionXright = n1xmax - n2xmin;
+
+        if (upDifferential > 0 && downDifferential > 0) { // Potential collision
+            if (labelCollisionXleft > 0 && labelCollisionXright > 0) {// Collision
+                if (upDifferential > downDifferential) {
+                    // N1 pushes N2 up
+                    n2Data.dy = (float) (n2Data.dy - 0.02 * n1h * (0.8 + 0.4 * Math.random()));
+                    collision = true;
+                } else {
+                    // N1 pushes N2 down
+                    n2Data.dy = (float) (n2Data.dy + 0.02 * n1h * (0.8 + 0.4 * Math.random()));
+                    collision = true;
+                }
+                if (labelCollisionXleft > labelCollisionXright) {
+                    // N1 pushes N2 right
+                    n2Data.dx = (float) (n2Data.dx + 0.01 * (n1h * 2) * (0.8 + 0.4 * Math.random()));
+                    collision = true;
+                } else {
+                    // N1 pushes N2 left
+                    n2Data.dx = (float) (n2Data.dx - 0.01 * (n1h * 2) * (0.8 + 0.4 * Math.random()));
+                    collision = true;
+                }
+            }
+        }
+
+        return collision;
     }
 
     public void endAlgo() {
@@ -254,11 +243,17 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         final String LABELADJUST_CATEGORY = "LabelAdjust";
         try {
             properties.add(LayoutProperty.createProperty(
-                    this, Double.class, 
+                    this, Double.class,
                     NbBundle.getMessage(getClass(), "LabelAdjust.speed.name"),
                     LABELADJUST_CATEGORY,
                     NbBundle.getMessage(getClass(), "LabelAdjust.speed.desc"),
                     "getSpeed", "setSpeed"));
+            properties.add(LayoutProperty.createProperty(
+                    this, Boolean.class,
+                    NbBundle.getMessage(getClass(), "LabelAdjust.adjustBySize.name"),
+                    LABELADJUST_CATEGORY,
+                    NbBundle.getMessage(getClass(), "LabelAdjust.adjustBySize.desc"),
+                    "isAdjustBySize", "setAdjustBySize"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -273,32 +268,57 @@ public class LabelAdjust extends AbstractLayout implements Layout {
         this.speed = speed;
     }
 
-    private class SpatialGrid {
+    public Boolean isAdjustBySize() {
+        return adjustBySize;
+    }
 
-        //Param
-        private final int COLUMNS_ROWS = 20;
-        //Data
-        private Map<Cell, List<Node>> data = new HashMap<Cell, List<Node>>();
+    public void setAdjustBySize(Boolean adjustBySize) {
+        this.adjustBySize = adjustBySize;
+    }
 
-        public SpatialGrid() {
-            for (int row = 0; row < COLUMNS_ROWS; row++) {
-                for (int col = 0; col < COLUMNS_ROWS; col++) {
-                    List<Node> localnodes = new ArrayList<Node>();
-                    data.put(new Cell(row, col), localnodes);
+    private static class QuadNode {
+
+        private final int index;
+        private final int row;
+        private final int col;
+        private final List<Node> nodes;
+
+        public QuadNode(int index, int row, int col) {
+            this.index = index;
+            this.row = row;
+            this.col = col;
+            this.nodes = new ArrayList<Node>();
+        }
+
+        public List<Node> getNodes() {
+            return nodes;
+        }
+
+        public void add(Node n) {
+            nodes.add(n);
+        }
+    }
+
+    private class QuadTree {
+
+        private final QuadNode[] quads;
+        private final int COLUMNS;
+        private final int ROWS;
+
+        public QuadTree(int numberNodes, float aspectRatio) {
+            if (aspectRatio > 0) {
+                COLUMNS = (int) Math.ceil(numberNodes / 50f);
+                ROWS = (int) Math.ceil(COLUMNS / aspectRatio);
+            } else {
+                ROWS = (int) Math.ceil(numberNodes / 50f);
+                COLUMNS = (int) Math.ceil(ROWS / aspectRatio);
+            }
+            quads = new QuadNode[COLUMNS * ROWS];
+            for (int row = 0; row < ROWS; row++) {
+                for (int col = 0; col < COLUMNS; col++) {
+                    quads[row * COLUMNS + col] = new QuadNode(row * COLUMNS + col, row, col);
                 }
             }
-        }
-
-        public Iterable<Node> getContent(int row, int col) {
-            return data.get(new Cell(row, col));
-        }
-
-        public int countColumns() {
-            return COLUMNS_ROWS;
-        }
-
-        public int countRows() {
-            return COLUMNS_ROWS;
         }
 
         public void add(Node node) {
@@ -309,68 +329,53 @@ public class LabelAdjust extends AbstractLayout implements Layout {
             float radius = node.getNodeData().getRadius();
 
             // Get the rectangle occupied by the node (size + label)
-            double nxmin = Math.min(x - w / 2, x - radius);
-            double nxmax = Math.max(x + w / 2, x + radius);
-            double nymin = Math.min(y - h / 2, y - radius);
-            double nymax = Math.max(y + h / 2, y + radius);
+            float nxmin = Math.min(x - w / 2, x - radius);
+            float nxmax = Math.max(x + w / 2, x + radius);
+            float nymin = Math.min(y - h / 2, y - radius);
+            float nymax = Math.max(y + h / 2, y + radius);
 
             // Get the rectangle as boxes
-            int minXbox = (int) Math.floor((COLUMNS_ROWS - 1) * (nxmin - xmin) / (xmax - xmin));
-            int maxXbox = (int) Math.floor((COLUMNS_ROWS - 1) * (nxmax - xmin) / (xmax - xmin));
-            int minYbox = (int) Math.floor((COLUMNS_ROWS - 1) * (nymin - ymin) / (ymax - ymin));
-            int maxYbox = (int) Math.floor((COLUMNS_ROWS - 1) * (nymax - ymin) / (ymax - ymin));
-            for (int col = minXbox; col <= maxXbox; col++) {
-                for (int row = minYbox; row <= maxYbox; row++) {
-                    try {
-                        data.get(new Cell(row, col)).add(node);
-                    } catch (Exception e) {
-                        //e.printStackTrace();
-                        if (nxmin < xmin || nxmax > xmax) {
-                            System.err.println("Xerr0r* - " + node.getId() + " - nxmin=" + nxmin + " this.xmin=" + xmin + " nxmax=" + nxmax + " this.xmax=" + xmax);
-                        }
-                        if (nymin < ymin || nymax > ymax) {
-                            System.err.println("Yerr0r* - " + node.getId() + " - nymin=" + nymin + " this.ymin=" + ymin + " nymax=" + nymax + " this.ymax=" + ymax);
-                        }
-                    }
+            int minXbox = (int) Math.floor((COLUMNS - 1) * (nxmin - xmin) / (xmax - xmin));
+            int maxXbox = (int) Math.floor((COLUMNS - 1) * (nxmax - xmin) / (xmax - xmin));
+            int minYbox = (int) Math.floor((ROWS - 1) * (((ymax - ymin) - (nymax - ymin)) / (ymax - ymin)));
+            int maxYbox = (int) Math.floor((ROWS - 1) * (((ymax - ymin) - (nymin - ymin)) / (ymax - ymin)));
+            for (int col = minXbox; col <= maxXbox && col < COLUMNS && col >= 0; col++) {
+                for (int row = minYbox; row <= maxYbox && row < ROWS && row >= 0; row++) {
+                    quads[row * COLUMNS + col].add(node);
                 }
             }
-        }
-    }
 
-    private static class Cell {
-
-        private final int row;
-        private final int col;
-
-        public Cell(int row, int col) {
-            this.row = row;
-            this.col = col;
+            //Get the node center
+            int centerX = (int) Math.floor((COLUMNS - 1) * (x - xmin) / (xmax - xmin));
+            int centerY = (int) Math.floor((ROWS - 1) * (((ymax - ymin) - (y - ymin)) / (ymax - ymin)));
+            LabelAdjustLayoutData layoutData = node.getNodeData().getLayoutData();
+            layoutData.labelAdjustQuadNode = quads[centerY * COLUMNS + centerX].index;
         }
 
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final Cell other = (Cell) obj;
-            if (this.row != other.row) {
-                return false;
-            }
-            if (this.col != other.col) {
-                return false;
-            }
-            return true;
+        public List<Node> get(int row, int col) {
+            return quads[row * ROWS + col].getNodes();
         }
 
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 11 * hash + this.row;
-            hash = 11 * hash + this.col;
-            return hash;
+        public List<Node> getAdjacentNodes(int row, int col) {
+            if (quads.length == 1) {
+                return quads[0].getNodes();
+            }
+
+            List<Node> adjNodes = new ArrayList<Node>();
+            int left = Math.max(0, col - 1);
+            int top = Math.max(0, row - 1);
+            int right = Math.min(COLUMNS - 1, col + 1);
+            int bottom = Math.min(ROWS - 1, row + 1);
+            for (int i = left; i <= right; i++) {
+                for (int j = top; j <= bottom; j++) {
+                    adjNodes.addAll(quads[j * COLUMNS + i].getNodes());
+                }
+            }
+            return adjNodes;
+        }
+
+        public QuadNode getQuadNode(int index) {
+            return quads[index];
         }
     }
 }
