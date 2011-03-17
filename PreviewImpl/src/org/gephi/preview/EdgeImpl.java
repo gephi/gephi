@@ -118,7 +118,7 @@ public abstract class EdgeImpl extends AbstractEdge implements org.gephi.preview
     }
 
     public boolean hasLabel() {
-        return null != label;
+        return null != label && !label.isEmpty();
     }
 
     public Iterable<CubicBezierCurve> getCurves() {

@@ -84,7 +84,7 @@ public class NodeImpl implements Node, NodeColorizerClient {
     }
 
     public boolean hasLabel() {
-        return null != label;
+        return null != label && !label.isEmpty();
     }
 
     /**
