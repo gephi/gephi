@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-14 04:45+0000\n"
+"X-Launchpad-Export-Date: 2011-03-17 04:36+0000\n"
 "X-Generator: Launchpad (build 12559)\n"
 
 msgid "CopyDataToOtherColumnUI.sourceColumnLabel.text"
@@ -28,9 +28,6 @@ msgstr "Titre :"
 
 msgid "DuplicateColumnUI.typeLabel.text"
 msgstr "Type :"
-
-msgid "DuplicateColumnUI.titleTextField.text"
-msgstr ""
 
 msgid "DuplicateColumnUI.new.title"
 msgstr "{0}_copy"
@@ -47,14 +44,8 @@ msgstr "Créer une colonne de liste booléenne depuis ''{0}''"
 msgid "GeneralCreateColumnFromRegexUI.regexLabel.text"
 msgstr "Expression rationnelle :"
 
-msgid "GeneralCreateColumnFromRegexUI.regexTextField.text"
-msgstr ""
-
 msgid "GeneralCreateColumnFromRegexUI.titleLabel.text"
 msgstr "Titre :"
-
-msgid "GeneralCreateColumnFromRegexUI.titleTextField.text"
-msgstr ""
 
 msgid "ColumnValuesFrequencyUI.configurePieChartButton.text"
 msgstr "Configurer le diagramme circulaire"

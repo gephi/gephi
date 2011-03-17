@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-13 04:47+0000\n"
+"X-Launchpad-Export-Date: 2011-03-17 04:34+0000\n"
 "X-Generator: Launchpad (build 12559)\n"
 
 msgid "OpenIDE-Module-Long-Description"
@@ -35,6 +35,9 @@ msgid ""
 msgstr "Ensèrts tèrces"
 
 msgid "CommandLineProcessor.OutOfMemoryError.message"
+msgstr ""
+
+msgid "Menu/Workspace"
 msgstr ""
 
 msgid ""
