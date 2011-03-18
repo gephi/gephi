@@ -168,7 +168,7 @@ public class PartitionBuilder implements CategoryBuilder {
         }
 
         public boolean init(Graph graph) {
-            HierarchicalGraph hg = graph.getGraphModel().getHierarchicalGraphVisible();
+            HierarchicalGraph hg = (HierarchicalGraph)graph;
             this.partition = Lookup.getDefault().lookup(PartitionController.class).buildPartition(partition.getColumn(), hg);
             return true;
         }
