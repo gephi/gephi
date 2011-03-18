@@ -336,6 +336,29 @@ public final class Range {
         return rangeType;
     }
 
+    public static Number tribToBounds(Number min, Number max, Number value) {
+        if (min != null && max != null && value != null) {
+            if (min.getClass().equals(max) && max.getClass().equals(value.getClass())) {
+                if (min instanceof Long || min instanceof Integer || min instanceof Short || min instanceof Byte) {
+                    if (value.longValue() < min.longValue()) {
+                        value = min;
+                    } else if (value.longValue() > max.longValue()) {
+                        value = max;
+                    }
+                } else if (min instanceof Float || min instanceof Double) {
+                    if (value.doubleValue() < min.doubleValue()) {
+                        value = min;
+                    } else if (value.doubleValue() > max.doubleValue()) {
+                        value = max;
+                    }
+                }
+            } else {
+                throw new IllegalArgumentException("min, max and value must be the same class");
+            }
+        }
+        return value;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
