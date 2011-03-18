@@ -163,7 +163,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
 
         public boolean init(Graph graph) {
-            HierarchicalGraph hg = graph.getGraphModel().getHierarchicalGraphVisible();
+            HierarchicalGraph hg = (HierarchicalGraph)graph;
             if (AttributeUtils.getDefault().isNodeColumn(column)) {
                 if (graph.getNodeCount() == 0) {
                     return false;
