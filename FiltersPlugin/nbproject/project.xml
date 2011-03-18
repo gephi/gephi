@@ -102,14 +102,6 @@
                         <specification-version>8.3.1</specification-version>
                     </run-dependency>
                 </dependency>
-                <dependency>
-                    <code-name-base>org.openide.windows</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>6.30.1</specification-version>
-                    </run-dependency>
-                </dependency>
             </module-dependencies>
             <public-packages>
                 <package>org.gephi.filters.plugin</package>
