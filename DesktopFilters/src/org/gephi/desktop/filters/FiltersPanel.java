@@ -83,7 +83,7 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
                 for (Query query : filterModel.getQueries()) {
                     controller.remove(query);
                 }
-                uiModel.setSelectedQuery(null);
+//                uiModel.setSelectedQuery(null);
                 controller.selectVisible(null);
                 controller.filterVisible(null);
                 ((FiltersExplorer) libraryTree).setup(manager, filterModel, uiModel);
@@ -235,6 +235,14 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
             } else if (uiModel.getSelectedQuery() != null && selectButton.isSelected()) {
                 FilterController controller = Lookup.getDefault().lookup(FilterController.class);
                 controller.selectVisible(uiModel.getSelectedRoot());
+            }
+        } else if (e.getSource() instanceof FilterModel) {
+            if (uiModel.getSelectedQuery() != null && filterModel.getCurrentQuery() == null) {
+                //Remove case
+                uiModel.setSelectedQuery(null);
+            } else if (filterModel.getCurrentQuery() != null
+                    && filterModel.getCurrentQuery() != uiModel.getSelectedQuery()) {
+                uiModel.setSelectedQuery(filterModel.getCurrentQuery());
             }
         }
         updateControls();
