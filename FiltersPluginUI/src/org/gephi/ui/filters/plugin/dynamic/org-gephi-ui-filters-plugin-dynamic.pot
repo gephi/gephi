@@ -15,22 +15,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "name"
-msgstr "Label Adjust"
+msgid "DynamicRangePanel.timelineButton.closetext"
+msgstr "Close Timeline"
 
-msgid "description"
-msgstr ""
-"Label Adjust works on text size to repulse nodes and therefore makes every "
-"label readable."
+msgid "DynamicRangePanel.timelineButton.text"
+msgstr "Open Timeline"
 
-msgid "LabelAdjust.speed.name"
-msgstr "Speed"
+msgid "DynamicRangePanel.keepEmptyCheckbox.toolTipText"
+msgstr "Keep nodes/edges with a null or empty interval"
 
-msgid "LabelAdjust.speed.desc"
-msgstr "Speed factor"
-
-msgid "LabelAdjust.adjustBySize.name"
-msgstr "Include Node size"
-
-msgid "LabelAdjust.adjustBySize.desc"
-msgstr "Include node size in repulsion"
+msgid "DynamicRangePanel.keepEmptyCheckbox.text"
+msgstr "Keep empty values"
