@@ -4,13 +4,13 @@
   <dict>
 
     <key>CFBundleName</key>
-    <string>Gephi 0.7</string>
+    <string>Gephi</string>
     
     <key>CFBundleVersion</key>
     <string>0.1</string>
     
     <key>CFBundleExecutable</key>
-    <string>gephi07beta</string>
+    <string>gephi</string>
     
     <key>CFBundlePackageType</key>
     <string>APPL</string>
@@ -25,7 +25,7 @@
     <string>6.0</string>
     
     <key>CFBundleIconFile</key>
-    <string>gephi07beta.icns</string>
+    <string>gephi.icns</string>
 	
 	<key>CFBundleDocumentTypes</key>
     <array>
