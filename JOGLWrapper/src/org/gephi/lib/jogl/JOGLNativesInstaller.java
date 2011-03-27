@@ -44,7 +44,7 @@ public class JOGLNativesInstaller extends ModuleInstall {
     public void restored() {
         if (findCompatibleOsAndArch()) {
             String nativeArch = nativeLibInfo.getSubDirectoryPath();
-            File joglDistFolder = InstalledFileLocator.getDefault().locate("modules/lib/" + nativeArch, null, false);
+            File joglDistFolder = InstalledFileLocator.getDefault().locate("modules/lib/" + nativeArch, "org.gephi.lib.jogl", false);
             if (joglDistFolder != null) {
                loadNatives(joglDistFolder);
             } else {
