@@ -20,8 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.io.spigot.plugin;
 
-import com.sun.mail.imap.IMAPMessage;
-import com.sun.mail.pop3.POP3Message;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
@@ -476,23 +474,7 @@ public class EmailImporter extends EmailDataType implements SpigotImporter, Long
      */
     private InternetAddress constructFromAddress(Message msg) throws MessagingException{
         InternetAddress address = new InternetAddress();
-        if (msg instanceof POP3Message) {
-            String fromHeader = ((POP3Message) msg).getHeader("From")[0];
-            if (fromHeader.contains("<") && fromHeader.contains(">")) {
-                address.setAddress(fromHeader.substring(fromHeader.lastIndexOf('<') + 1, fromHeader.lastIndexOf('>')));
-            } else {
-                report.log("Can't parse pop3 message :"+ msg.toString());
-                return null;
-            }
-        } else if (msg instanceof IMAPMessage) {
-            String fromHeader = ((IMAPMessage) msg).getHeader("From")[0];
-            if (fromHeader.contains("<") && fromHeader.contains(">")) {
-                address.setAddress(fromHeader.substring(fromHeader.lastIndexOf('<') + 1, fromHeader.lastIndexOf('>')));
-            } else {
-                report.log("Can't parse imap message :"+ msg.toString());
-                return null;
-            }
-        } else if (msg instanceof MimeMessage) {
+        if (msg instanceof MimeMessage) {
             String fromHeader = msg.getHeader("From")[0];
             if (fromHeader.contains("<") && fromHeader.contains(">")) {
                 address.setAddress(fromHeader.substring(fromHeader.lastIndexOf('<') + 1, fromHeader.lastIndexOf('>')));
