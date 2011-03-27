@@ -38,7 +38,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLReporter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.apache.tools.bzip2.CBZip2InputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.gephi.utils.CharsetToolkit;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -167,14 +167,12 @@ public final class ImportUtils {
         final int BUFF_SIZE = 8192;
         final byte[] buffer = new byte[BUFF_SIZE];
 
-        CBZip2InputStream inputStream = null;
+        BZip2CompressorInputStream inputStream = null;
         FileOutputStream outStream = null;
 
         try {
             FileInputStream is = new FileInputStream(in.getPath());
-            is.read(); // 'B'
-            is.read(); // 'Z'
-            inputStream = new CBZip2InputStream(is);
+            inputStream = new BZip2CompressorInputStream(is);
             outStream = new FileOutputStream(out.getAbsolutePath());
 
             if (isTar) {
