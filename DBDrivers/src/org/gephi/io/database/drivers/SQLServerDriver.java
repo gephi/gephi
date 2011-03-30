@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.database.drivers;
 
 import java.sql.Connection;
@@ -32,6 +32,13 @@ public class SQLServerDriver implements SQLDriver {
 
     @Override
     public Connection getConnection(String connectionUrl, String username, String passwd) throws SQLException {
+        //Bug #745414
+        if (!connectionUrl.contains(";databaseName=")) {
+            String dbname = connectionUrl.substring(connectionUrl.lastIndexOf('/') + 1);
+            String url = connectionUrl.substring(0, connectionUrl.lastIndexOf('/'));
+            connectionUrl = url + ";databaseName=" + dbname;
+        }
+
         return DriverManager.getConnection(connectionUrl, username, passwd);
     }
 
@@ -44,7 +51,7 @@ public class SQLServerDriver implements SQLDriver {
     public String toString() {
         return "SQL Server";
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof SQLServerDriver) {
