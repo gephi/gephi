@@ -17,16 +17,11 @@
             </module-dependencies>
             <public-packages>
                 <package>processing.core</package>
-                <package>processing.opengl</package>
                 <package>processing.xml</package>
             </public-packages>
             <class-path-extension>
                 <runtime-relative-path>ext/core.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/core.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/opengl.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/opengl.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
