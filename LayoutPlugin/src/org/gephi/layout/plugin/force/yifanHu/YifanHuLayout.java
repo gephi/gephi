@@ -271,7 +271,7 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
         postAlgo();
 //        springEnergy = energy - electricEnergy;
 //        System.out.println("electric: " + electricEnergy + "    spring: " + springEnergy);
-        System.out.println("energy0 = " + energy0 + "   energy = " + energy);
+//        System.out.println("energy0 = " + energy0 + "   energy = " + energy);
         graph.readUnlock();
     }
 

@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.preview;
 
 import java.awt.Font;
@@ -72,6 +72,10 @@ public class NodeLabelImpl extends AbstractNodeChild
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public boolean isEmpty() {
+        return value != null ? value.isEmpty() : true;
     }
 
     public void setFont(Font font) {

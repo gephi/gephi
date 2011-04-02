@@ -73,7 +73,7 @@ public class TextModel {
         edgeColor = vizConfig.getDefaultEdgeLabelColor().getRGBComponents(null);
         selectedOnly = vizConfig.isDefaultShowLabelOnSelectedOnly();
         colorMode = VizController.getInstance().getTextManager().getColorModes()[0];
-        sizeMode = VizController.getInstance().getTextManager().getSizeModes()[0];
+        sizeMode = VizController.getInstance().getTextManager().getSizeModes()[1];
     }
 
     //Event

@@ -37,6 +37,9 @@ msgstr ""
 "Memory error. You need to increase the maximum memory settings (-Xmx) in the "
 "Gephi startup settings file."
 
+msgid "Menu/Workspace"
+msgstr "Workspace"
+
 msgid "Actions/Edit/org-gephi-branding-desktop-actions-CleanWorkspace.instance"
 msgstr "Clean workspace"
 

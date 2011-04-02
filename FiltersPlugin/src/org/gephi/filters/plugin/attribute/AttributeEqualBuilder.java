@@ -31,6 +31,7 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.filters.api.FilterLibrary;
+import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.DynamicAttributesHelper;
 import org.gephi.filters.spi.Category;
 import org.gephi.filters.spi.CategoryBuilder;
@@ -306,10 +307,10 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         private FilterProperty[] filterProperties;
         private Number match;
         private AttributeColumn column;
-        private Object min;
-        private Object max;
+        private Number min;
+        private Number max;
         //State
-        private List<Object> values;
+        private Comparable[] values;
         private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
 
         public EqualNumberFilter(AttributeColumn column) {
@@ -323,8 +324,17 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
         public boolean init(Graph graph) {
             HierarchicalGraph hg = (HierarchicalGraph) graph;
-            values = new ArrayList<Object>();
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                if (graph.getNodeCount() == 0) {
+                    return false;
+                }
+            } else if (AttributeUtils.getDefault().isEdgeColumn(column)) {
+                if (hg.getTotalEdgeCount() == 0) {
+                    return false;
+                }
+            }
             dynamicHelper = new DynamicAttributesHelper(this, hg);
+            refreshValues(hg);
             return true;
         }
 
@@ -332,7 +342,6 @@ public class AttributeEqualBuilder implements CategoryBuilder {
             Object val = node.getNodeData().getAttributes().getValue(column.getIndex());
             val = dynamicHelper.getDynamicValue(val);
             if (val != null) {
-                values.add(val);
                 return val.equals(match);
             }
             return false;
@@ -342,51 +351,43 @@ public class AttributeEqualBuilder implements CategoryBuilder {
             Object val = edge.getEdgeData().getAttributes().getValue(column.getIndex());
             val = dynamicHelper.getDynamicValue(val);
             if (val != null) {
-                values.add(val);
                 return val.equals(match);
             }
             return false;
         }
 
         public void finish() {
-            //Object[] valuesArray = values.toArray();
-            Comparable[] comparableArray = ComparableArrayConverter.convert(values);
-
-            min = AttributeUtils.getDefault().getMin(column, comparableArray /*valuesArray*/);
-            max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
-            values = null;
         }
 
-        private void refreshValues() {
-            //Default min-max
-            GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
-            HierarchicalGraph hgraph = gm.getHierarchicalGraphVisible();
+        public void refreshValues(HierarchicalGraph graph) {
             List<Object> vals = new ArrayList<Object>();
             if (AttributeUtils.getDefault().isNodeColumn(column)) {
-                for (Node n : hgraph.getNodes()) {
+                for (Node n : graph.getNodes()) {
                     Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
+                    val = dynamicHelper.getDynamicValue(val);
                     if (val != null) {
                         vals.add(val);
                     }
                 }
             } else {
-                for (Edge e : hgraph.getEdgesAndMetaEdges()) {
+                for (Edge e : graph.getEdgesAndMetaEdges()) {
                     Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
+                    val = dynamicHelper.getDynamicValue(val);
                     if (val != null) {
                         vals.add(val);
                     }
                 }
             }
-            //If the column is empty for every node/edge
+
             if (vals.isEmpty()) {
                 vals.add(0);
             }
 
-            //Object[] valuesArray = vals.toArray();
-            Comparable[] comparableArray = ComparableArrayConverter.convert(vals);
+            values = ComparableArrayConverter.convert(vals);
 
-            min = AttributeUtils.getDefault().getMin(column, comparableArray /*valuesArray*/);
-            max = AttributeUtils.getDefault().getMax(column, comparableArray /*valuesArray*/);
+            min = (Number) AttributeUtils.getDefault().getMin(column, values /*valuesArray*/);
+            max = (Number) AttributeUtils.getDefault().getMax(column, values /*valuesArray*/);
+            match = Range.tribToBounds(min, max, match);
         }
 
         public FilterProperty[] getProperties() {
@@ -412,16 +413,10 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
 
         public Object getMinimun() {
-            if (min == null) {
-                refreshValues();
-            }
             return min;
         }
 
         public Object getMaximum() {
-            if (max == null) {
-                refreshValues();
-            }
             return max;
         }
 

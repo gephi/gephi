@@ -39,8 +39,6 @@ import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.NodeFilter;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.partition.api.EdgePartition;
@@ -157,8 +155,6 @@ public class PartitionCountBuilder implements CategoryBuilder {
 
         private Partition partition;
         private FilterProperty[] filterProperties;
-        private Integer min = 0;
-        private Integer max = 0;
         private Range range = new Range(0, 0);
         //States
         private Integer[] values;
@@ -167,22 +163,14 @@ public class PartitionCountBuilder implements CategoryBuilder {
             this.partition = partition;
         }
 
-        private void refreshRange() {
-            Integer lowerBound = range.getLowerInteger();
-            Integer upperBound = range.getUpperInteger();
-            if ((Integer) min > lowerBound || (Integer) max < lowerBound || lowerBound.equals(upperBound)) {
-                lowerBound = (Integer) min;
-            }
-            if ((Integer) min > upperBound || (Integer) max < upperBound || lowerBound.equals(upperBound)) {
-                upperBound = (Integer) max;
-            }
-            range = new Range(lowerBound, upperBound);
-        }
-
         public boolean init(Graph graph) {
-            HierarchicalGraph hg = graph.getGraphModel().getHierarchicalGraphVisible();
+            HierarchicalGraph hg = (HierarchicalGraph) graph;
             this.partition = Lookup.getDefault().lookup(PartitionController.class).buildPartition(partition.getColumn(), hg);
-            return true;
+            if (partition.getParts().length > 0) {
+                refreshValues(graph);
+                return true;
+            }
+            return false;
         }
 
         public boolean evaluate(Graph graph, Node node) {
@@ -204,7 +192,28 @@ public class PartitionCountBuilder implements CategoryBuilder {
         }
 
         public void finish() {
-            refreshRange();
+        }
+
+        private void refreshValues(Graph graph) {
+            Integer min = Integer.MAX_VALUE;
+            Integer max = Integer.MIN_VALUE;
+            if (partition.getPartsCount() == 0) {
+                //build partition
+                this.partition = Lookup.getDefault().lookup(PartitionController.class).buildPartition(partition.getColumn(), graph);
+            }
+            values = new Integer[partition.getPartsCount()];
+            Part[] parts = partition.getParts();
+            for (int i = 0; i < parts.length; i++) {
+                int partCount = parts[i].getObjects().length;
+                min = Math.min(min, partCount);
+                max = Math.max(max, partCount);
+                values[i] = partCount;
+            }
+            if (range == null) {
+                range = new Range(min, max, min, max);
+            } else {
+                range.setMinMax(min, max);
+            }
         }
 
         public String getName() {
@@ -230,33 +239,7 @@ public class PartitionCountBuilder implements CategoryBuilder {
         }
 
         public Object[] getValues() {
-            if (values == null) {
-                min = Integer.MAX_VALUE;
-                max = Integer.MIN_VALUE;
-                if (partition.getPartsCount() == 0) {
-                    //build partition
-                    GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-                    this.partition = Lookup.getDefault().lookup(PartitionController.class).buildPartition(partition.getColumn(), graphModel.getHierarchicalGraphVisible());
-                }
-                values = new Integer[partition.getPartsCount()];
-                Part[] parts = partition.getParts();
-                for (int i = 0; i < parts.length; i++) {
-                    int partCount = parts[i].getObjects().length;
-                    min = Math.min(min, partCount);
-                    max = Math.max(max, partCount);
-                    values[i] = partCount;
-                }
-                refreshRange();
-            }
             return values;
-        }
-
-        public Object getMinimum() {
-            return min;
-        }
-
-        public Object getMaximum() {
-            return max;
         }
 
         public Range getRange() {

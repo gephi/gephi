@@ -166,7 +166,6 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
         /** Make the slider reflect this object */
         public void install() {
             polish();
-
             slider.setValues(positions, values);
             slider.setSelectedThumb(selectedThumb);
         }
@@ -495,9 +494,10 @@ public abstract class MultiThumbSliderUI extends ComponentUI implements MouseLis
         if (slider.isEnabled() == false) {
             return;
         }
+        boolean mousDownFox = mouseIsDown;    //Mousedown fix
 
         mouseIsDown = false;
-        if (pressedState != null && slider.getThumbCount() <= pressedState.positions.length) {
+        if (mousDownFox && pressedState != null && slider.getThumbCount() <= pressedState.positions.length) {
             mouseDragged(e); //go ahead and commit this final location
         }
         if (slider.isValueAdjusting()) {

@@ -52,6 +52,7 @@ public class EventManager implements Runnable {
     private final AtomicReference<Thread> thread = new AtomicReference<Thread>();
     private final LinkedBlockingQueue<AbstractEvent> eventQueue;
     private final Object lock = new Object();
+    private int eventRate = 1;
     //Flag
     private boolean stop;
 
@@ -63,11 +64,17 @@ public class EventManager implements Runnable {
 
     @Override
     public void run() {
+        int rate = 0;
         while (!stop) {
-            try {
-                Thread.sleep(DELAY);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+            if (rate == eventRate) {
+                try {
+                    Thread.sleep(DELAY);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+                eventRate = (int) (eventQueue.size() * 0.1f);
+                eventRate = Math.max(1, eventRate);
+                rate++;
             }
             List<Object> eventCompress = null;
 
@@ -95,8 +102,11 @@ public class EventManager implements Runnable {
                     l.graphChanged(event);
                 }
             }
+            rate++;
 
             while (eventQueue.isEmpty()) {
+                rate = 0;
+                eventRate = 1;
                 try {
                     synchronized (lock) {
                         lock.wait();

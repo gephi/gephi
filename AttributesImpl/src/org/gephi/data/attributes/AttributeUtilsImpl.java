@@ -23,6 +23,7 @@ package org.gephi.data.attributes;
 import java.util.ArrayList;
 import java.util.List;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
@@ -139,7 +140,7 @@ public class AttributeUtilsImpl extends AttributeUtils {
         }
     }
 
-    public boolean areAllDynamicNumberColumns(AttributeColumn[] columns){
+    public boolean areAllDynamicNumberColumns(AttributeColumn[] columns) {
         for (AttributeColumn column : columns) {
             if (!isDynamicNumberColumn(column)) {
                 return false;
@@ -248,5 +249,15 @@ public class AttributeUtilsImpl extends AttributeUtils {
             }
         }
         return res.toArray(new AttributeColumn[0]);
+    }
+
+    @Override
+    public AttributeColumn[] getAllCollums(AttributeModel model) {
+        List<AttributeColumn> cols = new ArrayList<AttributeColumn>();
+        for (AttributeTable t : model.getTables()) {
+            AttributeTableImpl tableImpl = (AttributeTableImpl) t;
+            cols.addAll(tableImpl.columns);
+        }
+        return cols.toArray(new AttributeColumn[0]);
     }
 }

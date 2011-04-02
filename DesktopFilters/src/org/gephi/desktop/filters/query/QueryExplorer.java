@@ -130,7 +130,7 @@ public class QueryExplorer extends BeanTreeView implements PropertyChangeListene
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                uiModel.setSelectedQuery(model.getCurrentQuery());
+                //uiModel.setSelectedQuery(model.getCurrentQuery());
                 saveExpandStatus(QueryExplorer.this.manager.getRootContext());
                 QueryExplorer.this.manager.setRootContext(new RootNode(new QueryChildren(QueryExplorer.this.model.getQueries())));
                 loadExpandStatus(QueryExplorer.this.manager.getRootContext());

@@ -124,6 +124,10 @@ public class FilterLibraryImpl implements FilterLibrary {
         content.add(query);
     }
 
+    public void deleteQuery(Query query) {
+        content.remove(query);
+    }
+
     private static class HierarchicalGraphMask implements FilterLibraryMask {
 
         public Category getCategory() {

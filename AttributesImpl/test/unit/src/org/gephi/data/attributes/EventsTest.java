@@ -27,6 +27,7 @@ import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.event.AttributeEventManager;
 import org.gephi.data.attributes.model.IndexedAttributeModel;
 import org.junit.Test;
 import org.openide.util.Exceptions;
@@ -36,6 +37,46 @@ import org.openide.util.Exceptions;
  * @author Mathieu Bastian
  */
 public class EventsTest {
+
+    private int countEvents = 0;
+    private int countElements = 0;
+
+    @Test
+    public void testEventsPerformance() {
+        IndexedAttributeModel attModel = new IndexedAttributeModel();
+        attModel.addAttributeListener(new AttributeListener() {
+
+            public void attributesChanged(AttributeEvent event) {
+                if(event.is(AttributeEvent.EventType.SET_VALUE)) {
+                    countEvents++;
+                    countElements+=event.getData().getTouchedValues().length;
+                }
+            }
+        });
+
+        //Add table
+        AttributeTableImpl table = new AttributeTableImpl(attModel, "table");
+        attModel.addTable(table);
+
+        //Add Column
+        AttributeColumnImpl col = table.addColumn("test", AttributeType.DOUBLE);
+
+        AttributeRowImpl r1 = attModel.getFactory().newRowForTable("table", 1.0);
+        AttributeRowImpl r2 = attModel.getFactory().newRowForTable("table", 1.0);
+
+        for(int i=0;i<1000000;i++) {
+            r1.setValue(col.getIndex(), Math.random());
+            r2.setValue(col.getIndex(), Math.random());
+        }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        System.out.println("Number events: "+countEvents+"  with "+countElements+" elements touched");
+    }
 
     @Test
     public void testEvents() {

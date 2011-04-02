@@ -41,7 +41,7 @@ import org.openide.util.actions.CallableSystemAction;
 
 public final class LanguageAction extends CallableSystemAction {
 
-    private static final String APPNAME = "gephi07beta";
+    private static final String APPNAME = "gephi";
 
     public enum Language {
 

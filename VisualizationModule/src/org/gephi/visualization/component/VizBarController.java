@@ -80,6 +80,9 @@ public class VizBarController {
                 if (evt.getPropertyName().equals("init")) {
                     VizModel model = VizController.getInstance().getVizModel();
                     toolbar.setEnable(!model.isDefaultModel());
+                    ((NodeGroupBar)groups[1]).setModelValues(model);
+                    ((EdgeGroupBar)groups[2]).setModelValues(model);
+                    ((LabelGroupBar)groups[3]).setModelValues(model);
                 }
             }
         });
@@ -170,13 +173,18 @@ public class VizBarController {
 
     private static class NodeGroupBar implements VizToolbarGroup {
 
+        JComponent[] components = new JComponent[2];
+
         public String getName() {
             return "Nodes";
         }
 
-        public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[2];
+        public void setModelValues(VizModel vizModel) {
+            ((JToggleButton) components[0]).setSelected(vizModel.getTextModel().isShowNodeLabels());
+            ((JToggleButton) components[1]).setSelected(vizModel.isShowHulls());
+        }
 
+        public JComponent[] getToolbarComponents() {
             //Show labels buttons
             VizModel vizModel = VizController.getInstance().getVizModel();
             final JToggleButton showLabelsButton = new JToggleButton();
@@ -246,13 +254,20 @@ public class VizBarController {
 
     private static class EdgeGroupBar implements VizToolbarGroup {
 
+        JComponent[] components = new JComponent[4];
+
         public String getName() {
             return "Edges";
         }
 
-        public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[4];
+        public void setModelValues(VizModel vizModel) {
+            //((JToggleButton) components[0]).setSelected(vizModel.isShowEdges());
+            //((JToggleButton) components[1]).setSelected(!vizModel.isEdgeHasUniColor());
+            ((JToggleButton) components[2]).setSelected(vizModel.getTextModel().isShowEdgeLabels());
+            ((JSlider) components[3]).setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
+        }
 
+        public JComponent[] getToolbarComponents() {
             //Show edges buttons
             VizModel vizModel = VizController.getInstance().getVizModel();
             final JToggleButton showEdgeButton = new JToggleButton();
@@ -374,12 +389,21 @@ public class VizBarController {
 
     private static class LabelGroupBar implements VizToolbarGroup {
 
+        JComponent[] components = new JComponent[6];
+
         public String getName() {
             return "Labels";
         }
 
-        public JComponent[] getToolbarComponents() {
-            JComponent[] components = new JComponent[6];
+        public void setModelValues(VizModel vizModel) {
+            TextModel model = vizModel.getTextModel();
+            ((JPopupButton) components[0]).setSelectedItem(model.getSizeMode());
+            ((JPopupButton) components[1]).setSelectedItem(model.getColorMode());
+            ((JButton) components[2]).setText(model.getNodeFont().getFontName() + ", " + model.getNodeFont().getSize());
+            ((JSlider) components[3]).setValue((int) (model.getNodeSizeFactor() * 100f));
+        }
+
+        public JComponent[] getToolbarComponents() {          
             TextModel model = VizController.getInstance().getVizModel().getTextModel();
 
             //Mode

@@ -38,6 +38,7 @@ import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.NodeFilter;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -136,6 +137,16 @@ public class AttributeNonNullBuilder implements CategoryBuilder {
         }
 
         public boolean init(Graph graph) {
+            HierarchicalGraph hg = (HierarchicalGraph)graph;
+            if (AttributeUtils.getDefault().isNodeColumn(column)) {
+                if (graph.getNodeCount() == 0) {
+                    return false;
+                }
+            } else if (AttributeUtils.getDefault().isEdgeColumn(column)) {
+                if (hg.getTotalEdgeCount() == 0) {
+                    return false;
+                }
+            }
             return true;
         }
 

@@ -120,6 +120,8 @@ public class EgoBuilder implements FilterBuilder {
 
             if (self) {
                 result.addAll(nodes);
+            } else {
+                result.removeAll(nodes);
             }
 
             for (Node node : hgraph.getNodes().toArray()) {

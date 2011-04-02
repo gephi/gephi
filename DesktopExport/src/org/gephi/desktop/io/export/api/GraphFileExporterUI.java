@@ -121,6 +121,8 @@ public final class GraphFileExporterUI implements ExporterClassUI {
             @Override
             protected JDialog createDialog(Component parent) throws HeadlessException {
                 JDialog dialog = super.createDialog(parent);
+                dialog.setSize(640, 480);
+                dialog.setResizable(true);
                 Component c = dialog.getContentPane().getComponent(0);
                 if (c != null && c instanceof JComponent) {
                     Insets insets = ((JComponent) c).getInsets();

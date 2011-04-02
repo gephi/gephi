@@ -37,19 +37,22 @@ msgid "CTL_ProjectProperties"
 msgstr "Properties..."
 
 msgid "CTL_NewWorkspace"
-msgstr "New workspace"
+msgstr "New"
 
 msgid "CTL_DuplicateWorkspace"
-msgstr "Duplicate workspace"
+msgstr "Duplicate"
 
 msgid "CTL_DeleteWorkspace"
-msgstr "Delete workspace"
+msgstr "Delete"
 
 msgid "CTL_CleanWorkspace"
-msgstr "Clean workspace"
+msgstr "Clean"
 
 msgid "CTL_RenameWorkspace"
-msgstr "Rename workspace"
+msgstr "Rename"
+
+msgid "CTL_OpenOnlineDoc"
+msgstr "Online docs and support"
 
 msgid "RenameWorkspace.dialog.title"
 msgstr "Rename Workspace"

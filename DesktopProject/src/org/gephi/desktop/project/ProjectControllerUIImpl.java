@@ -422,7 +422,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         chooser.addChoosableFileFilter(zipFileFilter);
         chooser.addChoosableFileFilter(gephiFilter);
         chooser.addChoosableFileFilter(graphFilter);
-        
+
         //Open dialog
         int returnFile = chooser.showOpenDialog(null);
 
@@ -491,6 +491,29 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     }
 
     public void deleteWorkspace() {
+        if (controller.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces().length == 1) {
+            //Close project
+            //Actions
+            saveProject = false;
+            saveAsProject = false;
+            projectProperties = false;
+            closeProject = false;
+            newWorkspace = false;
+            deleteWorkspace = false;
+            cleanWorkspace = false;
+            duplicateWorkspace = false;
+
+            //Title bar
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                    JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+                    String title = frame.getTitle();
+                    title = title.substring(0, title.indexOf('-') - 1);
+                    frame.setTitle(title);
+                }
+            });
+        }
         controller.deleteWorkspace(controller.getCurrentWorkspace());
     }
 

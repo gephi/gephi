@@ -133,4 +133,11 @@ public interface FilterLibrary extends Lookup.Provider {
      * @param query         the query that is to be saved
      */
     public void saveQuery(Query query);
+
+    /**
+     * Delete a saved <code>query</code> from the library. Deleted
+     * queries are deleted from the project.
+     * @param query         the query that is to be deleted
+     */
+    public void deleteQuery(Query query);
 }

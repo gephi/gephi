@@ -24,7 +24,13 @@ msgstr ""
 "label readable."
 
 msgid "LabelAdjust.speed.name"
-msgstr "speed"
+msgstr "Speed"
 
 msgid "LabelAdjust.speed.desc"
-msgstr "speed"
+msgstr "Speed factor"
+
+msgid "LabelAdjust.adjustBySize.name"
+msgstr "Include Node size"
+
+msgid "LabelAdjust.adjustBySize.desc"
+msgstr "Include node size in repulsion"

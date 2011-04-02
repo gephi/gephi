@@ -34,6 +34,7 @@ public class DynamicAttributesHelper {
             Workspace workspace = graph.getGraphModel().getWorkspace();
             FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
             filterModel = filterController.getModel(workspace);
+
             DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
             dynamicModel = dynamicController.getModel(workspace);
             dynamic = isDynamic(filter);
@@ -45,6 +46,9 @@ public class DynamicAttributesHelper {
     }
 
     private boolean isDynamic(Filter filter) {
+        if (filterModel.getCurrentQuery() == null) {
+            return false;
+        }
         Query filterQuery = null;
         for (Query q : filterModel.getCurrentQuery().getQueries(filter.getClass())) {
             if (q.getFilter() == filter) {

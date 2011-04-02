@@ -205,7 +205,7 @@ public final class BannerTopComponent extends TopComponent {
         bannerBackground = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setLayout(new java.awt.BorderLayout());
 
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));

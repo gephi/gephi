@@ -261,7 +261,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         xmlWriter.writeAttribute(META_LASTMODIFIEDDATE, getDateTime());
 
         xmlWriter.writeStartElement(META_CREATOR);
-        xmlWriter.writeCharacters("Gephi 0.7");
+        xmlWriter.writeCharacters("Gephi 0.8");
         xmlWriter.writeEndElement();
 
         xmlWriter.writeStartElement(META_DESCRIPTION);

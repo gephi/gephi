@@ -30,6 +30,8 @@ import java.util.LinkedHashMap;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.type.DynamicType;
@@ -230,14 +232,19 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_edgeExist"), Level.WARNING));
                 return;
             } else {
+                EdgeDraftImpl existingEdge = edgeMap.get(id);
+                if (existingEdge == null) {
+                    existingEdge = edgeSourceTargetMap.get(sourceTargetId);
+                }
+
                 //Manage parallel edges
                 if (parameters.isMergeParallelEdgesWeight()) {
-                    EdgeDraftImpl existingEdge = edgeMap.get(id);
-                    if (existingEdge == null) {
-                        existingEdge = edgeSourceTargetMap.get(sourceTargetId);
-                    }
                     existingEdge.setWeight(existingEdge.getWeight() + edgeDraftImpl.getWeight());
                 }
+                if (parameters.isMergeParallelEdgesAttributes()) {
+                    mergeAttributes(existingEdge.getAttributeRow(), edgeDraftImpl.getAttributeRow());
+                }
+
                 report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge", id), Level.INFO));
                 return;
             }
@@ -255,10 +262,13 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                     report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_edgeExist"), Level.WARNING));
                     return;
                 } else {
+                    EdgeDraftImpl existingEdge = edgeSourceTargetMap.get(sourceTargetId);
                     //Manage parallel edges
                     if (parameters.isMergeParallelEdgesWeight()) {
-                        EdgeDraftImpl existingEdge = edgeSourceTargetMap.get(sourceTargetId);
                         existingEdge.setWeight(existingEdge.getWeight() + edgeDraftImpl.getWeight());
+                    }
+                    if (parameters.isMergeParallelEdgesAttributes()) {
+                        mergeAttributes(existingEdge.getAttributeRow(), edgeDraftImpl.getAttributeRow());
                     }
                     report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Parallel_Edge", id), Level.INFO));
                     return;
@@ -267,6 +277,18 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
 
             edgeSourceTargetMap.put(sourceTargetId, edgeDraftImpl);
             edgeMap.put(id, edgeDraftImpl);
+        }
+    }
+
+    private void mergeAttributes(AttributeRow srcRow, AttributeRow dstRow) {
+        for (AttributeValue v : srcRow.getValues()) {
+            AttributeColumn col = v.getColumn();
+            if (!col.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+                Object existingVal = dstRow.getValue(col.getIndex());
+                if (v.getValue() != null && existingVal == null) {
+                    dstRow.setValue(col.getIndex(), existingVal);
+                }
+            }
         }
     }
 

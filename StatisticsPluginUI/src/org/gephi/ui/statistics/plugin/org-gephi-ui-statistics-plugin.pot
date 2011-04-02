@@ -244,3 +244,30 @@ msgstr "Avg. Weighted Degree"
 
 msgid "PageRankPanel.edgeWeightCheckbox.text"
 msgstr "Use edge weight"
+
+msgid "DynamicPanel.timeIntervalLabel.AccessibleContext.accessibleName"
+msgstr "timeIntervalLabel"
+
+msgid "DynamicPanel.jLabel1.AccessibleContext.accessibleName"
+msgstr "separatorTimeInterval"
+
+msgid "DynamicPanel.windowLabel.AccessibleContext.accessibleName"
+msgstr "windowLabel"
+
+msgid "DynamicPanel.estimatorLabel.AccessibleContext.accessibleName"
+msgstr "estimatorLabel"
+
+msgid "DynamicPanel.separatorTimeInterval2.text"
+msgstr "-"
+
+msgid "DynamicPanel.separatorTimeInterval1.text"
+msgstr "-"
+
+msgid "DynamicPanel.timeIntervalLabel.text"
+msgstr "Set a time interval:"
+
+msgid "DynamicPanel.windowLabel.text"
+msgstr "Set a window as a part of the time interval (in %):"
+
+msgid "DynamicPanel.estimatorLabel.text"
+msgstr "Set an estimator:"

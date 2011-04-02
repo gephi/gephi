@@ -48,7 +48,7 @@ import org.openide.util.NbBundle;
 public class ActionsToolbar extends JToolBar {
 
     //Settings
-    private Color color = Color.BLACK;
+    private Color color = new Color(0.6f, 0.6f, 0.6f);
     private float size = 1f;
 
     public ActionsToolbar() {

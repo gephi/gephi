@@ -45,9 +45,9 @@ public class NodeDataImpl implements NodeData, GroupData {
     protected float x;
     protected float y;
     protected float z;
-    protected float r = 0f;
-    protected float g = 0f;
-    protected float b = 0f;
+    protected float r = 0.6f;
+    protected float g = 0.6f;
+    protected float b = 0.6f;
     protected float alpha = 1f;
     protected float size = 1f;
     protected Model model;

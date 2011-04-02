@@ -45,13 +45,12 @@ import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.NodeFilter;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.timeline.api.TimelineController;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  *
@@ -114,25 +113,11 @@ public class DynamicRangeBuilder implements CategoryBuilder {
 
         public JPanel getPanel(Filter filter) {
             final DynamicRangeFilter dynamicRangeFilter = (DynamicRangeFilter) filter;
-            JPanel panel = new JPanel();
-            final TopComponent topComponent = WindowManager.getDefault().findTopComponent("TimelineTopComponent");
-            final JButton button = new JButton(topComponent.isOpened() ? "Close Timeline" : "Open Timeline");
-            button.addActionListener(new ActionListener() {
-
-                public void actionPerformed(ActionEvent e) {
-
-                    if (!topComponent.isOpened()) {
-                        topComponent.open();
-                        topComponent.requestActive();
-                        button.setText("Close Timeline");
-                    } else {
-                        topComponent.close();
-                        button.setText("Open Timeline");
-                    }
-                }
-            });
-            panel.add(button);
-            return panel;
+            DynamicRangeUI ui = Lookup.getDefault().lookup(DynamicRangeUI.class);
+            if (ui != null) {
+                return ui.getPanel(dynamicRangeFilter);
+            }
+            return null;
         }
 
         public void destroy(Filter filter) {
@@ -151,7 +136,8 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         private FilterProperty[] filterProperties;
         private Double min;
         private Double max;
-        private boolean keepNonDynamic = true;
+        private Range range;
+        private boolean keepNull = true;
 
         public DynamicRangeFilter(TimelineController timelineController, DynamicController dynamicController, AttributeColumn nodeColumn, AttributeColumn edgeColumn) {
             this.nodeColumn = nodeColumn;
@@ -159,20 +145,19 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             this.dynamicController = dynamicController;
             this.dynamicModel = dynamicController.getModel();
             this.timelineController = timelineController;
-            min = dynamicModel.getMin();
-            max = dynamicModel.getMax();
-            if (timelineController != null) {
-                timelineController.setMin(min);
-                timelineController.setMax(max);
-            }
-            visibleInterval = dynamicModel.getVisibleInterval();
+//            min = dynamicModel.getMin();
+//            max = dynamicModel.getMax();
+//            if (timelineController != null) {
+//                timelineController.setMin(min);
+//                timelineController.setMax(max);
+//            }
         }
 
         public boolean init(Graph graph) {
             dynamicController.addModelListener(this);
             visibleInterval = dynamicModel.getVisibleInterval();
-            min = Double.POSITIVE_INFINITY;
-            max = Double.NEGATIVE_INFINITY;
+            //Refresh minmax
+            refreshValues((HierarchicalGraph) graph);
             return true;
         }
 
@@ -181,12 +166,11 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                 Object obj = node.getNodeData().getAttributes().getValue(nodeColumn.getIndex());
                 if (obj != null) {
                     TimeInterval timeInterval = (TimeInterval) obj;
-                    min = Math.min(min, Double.isInfinite(timeInterval.getLow()) ? min : timeInterval.getLow());
-                    max = Math.max(max, Double.isInfinite(timeInterval.getHigh()) ? max : timeInterval.getHigh());
                     return timeInterval.isInRange(visibleInterval.getLow(), visibleInterval.getHigh());
                 }
+                return keepNull;
             }
-            return keepNonDynamic;
+            return true;
         }
 
         public boolean evaluate(Graph graph, Edge edge) {
@@ -194,20 +178,50 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                 Object obj = edge.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
                 if (obj != null) {
                     TimeInterval timeInterval = (TimeInterval) obj;
-                    min = Math.min(min, Double.isInfinite(timeInterval.getLow()) ? min : timeInterval.getLow());
-                    max = Math.max(max, Double.isInfinite(timeInterval.getHigh()) ? max : timeInterval.getHigh());
                     return timeInterval.isInRange(visibleInterval.getLow(), visibleInterval.getHigh());
                 }
+                return keepNull;
             }
-            return keepNonDynamic;
+            return true;
         }
 
         public void finish() {
+        }
+
+        public void refreshValues(HierarchicalGraph graph) {
+            min = Double.POSITIVE_INFINITY;
+            max = Double.NEGATIVE_INFINITY;
+
+            if (nodeColumn != null) {
+                for (Node n : graph.getNodes()) {
+                    Object obj = n.getNodeData().getAttributes().getValue(nodeColumn.getIndex());
+                    if (obj != null) {
+                        TimeInterval timeInterval = (TimeInterval) obj;
+                        min = Math.min(min, Double.isInfinite(timeInterval.getLow()) ? min : timeInterval.getLow());
+                        max = Math.max(max, Double.isInfinite(timeInterval.getHigh()) ? max : timeInterval.getHigh());
+                    }
+                }
+            }
+            if (edgeColumn != null) {
+                for (Edge e : graph.getEdgesAndMetaEdges()) {
+                    Object obj = e.getEdgeData().getAttributes().getValue(nodeColumn.getIndex());
+                    if (obj != null) {
+                        TimeInterval timeInterval = (TimeInterval) obj;
+                        min = Math.min(min, Double.isInfinite(timeInterval.getLow()) ? min : timeInterval.getLow());
+                        max = Math.max(max, Double.isInfinite(timeInterval.getHigh()) ? max : timeInterval.getHigh());
+                    }
+                }
+            }
+            if (range == null) {
+                range = new Range(visibleInterval.getLow(), visibleInterval.getHigh(), min, max);
+            } else {
+                range.setMinMax(min, max);
+            }
             if (!Double.isInfinite(min) && timelineController != null) {
-                //timelineController.setMin(min);
+                timelineController.setMin(min);
             }
             if (!Double.isInfinite(max) && timelineController != null) {
-                //timelineController.setMax(max);
+                timelineController.setMax(max);
             }
         }
 
@@ -220,7 +234,8 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                 filterProperties = new FilterProperty[0];
                 try {
                     filterProperties = new FilterProperty[]{
-                                FilterProperty.createProperty(this, Range.class, "range")};
+                                FilterProperty.createProperty(this, Range.class, "range"),
+                                FilterProperty.createProperty(this, Boolean.class, "keepNull")};
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -232,7 +247,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             switch (event.getEventType()) {
                 case VISIBLE_INTERVAL:
                     TimeInterval interval = (TimeInterval) event.getData();
-                    getProperties()[0].setValue(new Range(interval.getLow(), interval.getHigh()));
+                    getProperties()[0].setValue(new Range(interval.getLow(), interval.getHigh(), min, max));
                     break;
             }
         }
@@ -249,8 +264,16 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             return max;
         }
 
+        public boolean isKeepNull() {
+            return keepNull;
+        }
+
+        public void setKeepNull(boolean keepNull) {
+            this.keepNull = keepNull;
+        }
+
         public Range getRange() {
-            return new Range(visibleInterval.getLow(), visibleInterval.getHigh());
+            return new Range(visibleInterval.getLow(), visibleInterval.getHigh(), min, max);
         }
 
         public void setRange(Range range) {
