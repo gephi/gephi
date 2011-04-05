@@ -20,9 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.importer.plugin.file;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDraft;
@@ -41,6 +43,107 @@ import org.openide.util.NbBundle;
  * @author Mathieu Bastian
  */
 public class ImporterPajek implements FileImporter, LongTask {
+
+    // Crayola colors used by Pajek
+    private static final HashMap<String, Integer> PAJEK_COLORS = new HashMap<String, Integer>();
+    static {
+        PAJEK_COLORS.put("Apricot", 0xFDD9B5);
+        PAJEK_COLORS.put("Aquamarine", 0x78DBE2);
+        PAJEK_COLORS.put("Bittersweet", 0xFD7C6E);
+        PAJEK_COLORS.put("Black", 0x232323);
+        PAJEK_COLORS.put("Blue", 0x1F75FE);
+        PAJEK_COLORS.put("BlueGreen", 0x199EBD);
+        PAJEK_COLORS.put("BlueViolet", 0x7366BD);
+        PAJEK_COLORS.put("BrickRed", 0xCB4154);
+        PAJEK_COLORS.put("Brown", 0xB4674D);
+        PAJEK_COLORS.put("BurntOrange", 0xFF7F49);
+        PAJEK_COLORS.put("CadetBlue", 0xB0B7C6);
+        PAJEK_COLORS.put("Canary", 0xFFFF99);
+        PAJEK_COLORS.put("CarnationPink", 0xFFAACC);
+        PAJEK_COLORS.put("Cerulean", 0x1DACD6);
+        PAJEK_COLORS.put("CornflowerBlue", 0x9ACEEB);
+        PAJEK_COLORS.put("Cyan", 0x00FFFF);
+        PAJEK_COLORS.put("Dandelion", 0xFDDB6D);
+        PAJEK_COLORS.put("DarkOrchid", 0xFDDB7D);
+        PAJEK_COLORS.put("Emerald", 0x50C878);
+        PAJEK_COLORS.put("ForestGreen", 0x6DAE81);
+        PAJEK_COLORS.put("Fuchsia", 0xC364C5);
+        PAJEK_COLORS.put("Goldenrod", 0xFCD975);
+        PAJEK_COLORS.put("Gray", 0x95918C);
+        PAJEK_COLORS.put("Gray05", 0x0D0D0D);
+        PAJEK_COLORS.put("Gray10", 0x1A1A1A);
+        PAJEK_COLORS.put("Gray15", 0x262626);
+        PAJEK_COLORS.put("Gray20", 0x333333);
+        PAJEK_COLORS.put("Gray25", 0x404040);
+        PAJEK_COLORS.put("Gray30", 0x4D4D4D);
+        PAJEK_COLORS.put("Gray35", 0x595959);
+        PAJEK_COLORS.put("Gray40", 0x666666);
+        PAJEK_COLORS.put("Gray45", 0x737373);
+        PAJEK_COLORS.put("Gray55", 0x8C8C8C);
+        PAJEK_COLORS.put("Gray60", 0x999999);
+        PAJEK_COLORS.put("Gray65", 0xA6A6A6);
+        PAJEK_COLORS.put("Gray70", 0xB3B3B3);
+        PAJEK_COLORS.put("Gray75", 0xBFBFBF);
+        PAJEK_COLORS.put("Gray80", 0xCCCCCC);
+        PAJEK_COLORS.put("Gray85", 0xD9D9D9);
+        PAJEK_COLORS.put("Gray90", 0xE5E5E5);
+        PAJEK_COLORS.put("Gray95", 0xF2F2F2);
+        PAJEK_COLORS.put("Green", 0x1CAC78);
+        PAJEK_COLORS.put("GreenYellow", 0xF0E891);
+        PAJEK_COLORS.put("JungleGreen", 0x3BB08F);
+        PAJEK_COLORS.put("Lavender", 0xFCB4D5);
+        PAJEK_COLORS.put("LFadedGreen", 0x548B54);
+        PAJEK_COLORS.put("LightCyan", 0xE0FFFF);
+        PAJEK_COLORS.put("LightGreen", 0x90EE90);
+        PAJEK_COLORS.put("LightMagenta", 0xFF00FF);
+        PAJEK_COLORS.put("LightOrange", 0xFF6F1A);
+        PAJEK_COLORS.put("LightPurple", 0xE066FF);
+        PAJEK_COLORS.put("LightYellow", 0xFFFFE0);
+        PAJEK_COLORS.put("LimeGreen", 0x32CD32);
+        PAJEK_COLORS.put("LSkyBlue", 0x87CEFA);
+        PAJEK_COLORS.put("Magenta", 0xF664AF);
+        PAJEK_COLORS.put("Mahogany", 0xCD4A4A);
+        PAJEK_COLORS.put("Maroon", 0xC8385A);
+        PAJEK_COLORS.put("Melon", 0xFDBCB4);
+        PAJEK_COLORS.put("MidnightBlue", 0x1A4876);
+        PAJEK_COLORS.put("Mulberry", 0xAA709F);
+        PAJEK_COLORS.put("NavyBlue", 0x1974D2);
+        PAJEK_COLORS.put("OliveGreen", 0xBAB86C);
+        PAJEK_COLORS.put("Orange", 0xFF7538);
+        PAJEK_COLORS.put("OrangeRed", 0xFF5349);
+        PAJEK_COLORS.put("Orchid", 0xE6A8D7);
+        PAJEK_COLORS.put("Peach", 0xFFCFAB);
+        PAJEK_COLORS.put("Periwinkle", 0xC5D0E6);
+        PAJEK_COLORS.put("PineGreen", 0x158078);
+        PAJEK_COLORS.put("Pink", 0xFFC0CB);
+        PAJEK_COLORS.put("Plum", 0x8E4585);
+        PAJEK_COLORS.put("ProcessBlue", 0x4169E1);
+        PAJEK_COLORS.put("Purple", 0x926EAE);
+        PAJEK_COLORS.put("RawSienna", 0xD68A59);
+        PAJEK_COLORS.put("Red", 0xEE204D);
+        PAJEK_COLORS.put("RedOrange", 0xFF5349);
+        PAJEK_COLORS.put("RedViolet", 0xC0448F);
+        PAJEK_COLORS.put("Rhodamine", 0xE0119D);
+        PAJEK_COLORS.put("RoyalBlue", 0x4169E1);
+        PAJEK_COLORS.put("RoyalPurple", 0x7851A9);
+        PAJEK_COLORS.put("RubineRed", 0xCA005D);
+        PAJEK_COLORS.put("Salmon", 0xFF9BAA);
+        PAJEK_COLORS.put("SeaGreen", 0x9FE2BF);
+        PAJEK_COLORS.put("Sepia", 0xA5694F);
+        PAJEK_COLORS.put("SkyBlue", 0x80DAEB);
+        PAJEK_COLORS.put("SpringGreen", 0xECEABE);
+        PAJEK_COLORS.put("Tan", 0xFAA76C);
+        PAJEK_COLORS.put("TealBlue", 0x008080);
+        PAJEK_COLORS.put("Thistle", 0xD8BFD8);
+        PAJEK_COLORS.put("Turquoise", 0x77DDE7);
+        PAJEK_COLORS.put("Violet", 0x926EAE);
+        PAJEK_COLORS.put("VioletRed", 0xF75394);
+        PAJEK_COLORS.put("White", 0xEDEDED);
+        PAJEK_COLORS.put("WildStrawberry", 0xFF43A4);
+        PAJEK_COLORS.put("Yellow", 0xFCE883);
+        PAJEK_COLORS.put("YellowGreen", 0xC5E384);
+        PAJEK_COLORS.put("YellowOrange", 0xFFB653);
+    }
 
     //Architecture
     private Reader reader;
@@ -205,7 +308,14 @@ public class ImporterPajek implements FileImporter, LongTask {
                 }
             }
 
-            if (parts[i].equals("ic")) {
+            // parse colors
+            for (; i < parts.length - 1; i++) {
+                // node's internal color
+                if ("ic".equals(parts[i])) {
+                    String colorName = parts[i + 1].replaceAll(" ", ""); // remove spaces from color's name so we can look it up
+                    Color color = getPajekColorFromName(colorName);
+                    node.setColor(color);
+                }
             }
         }
     }
@@ -283,6 +393,17 @@ public class ImporterPajek implements FileImporter, LongTask {
             }
         }
         return nextLine;
+    }
+
+    private Color getPajekColorFromName(String colorName) {
+        Integer colorHex = PAJEK_COLORS.get(colorName);
+
+        Color color = null;
+        if (colorHex != null) {
+            color = new Color(colorHex);
+        }
+
+        return color;
     }
 
     private String skip(BufferedReader br, String str) throws Exception {
