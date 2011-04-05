@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2011-02-11 22:57+0000\n"
+"PO-Revision-Date: 2011-03-16 13:04+0000\n"
 "Last-Translator: Eduardo Ramos <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-13 04:47+0000\n"
+"X-Launchpad-Export-Date: 2011-03-21 04:43+0000\n"
 "X-Generator: Launchpad (build 12559)\n"
 
 msgid "CTL_NewProject"
@@ -39,19 +39,22 @@ msgid "CTL_ProjectProperties"
 msgstr "Propiedades..."
 
 msgid "CTL_NewWorkspace"
-msgstr "Nuevo espacio de trabajo"
+msgstr "Nuevo"
 
 msgid "CTL_DuplicateWorkspace"
-msgstr "Duplicar espacio de trabajo"
+msgstr "Duplicar"
 
 msgid "CTL_DeleteWorkspace"
-msgstr "Borrar espacio de trabajo"
+msgstr "Eliminar"
 
 msgid "CTL_CleanWorkspace"
-msgstr "Limpiar espacio de trabajo"
+msgstr "Limpiar"
 
 msgid "CTL_RenameWorkspace"
-msgstr "Renombrar espacio de trabajo"
+msgstr "Renombrar"
+
+msgid "CTL_OpenOnlineDoc"
+msgstr "Documentación online y soporte"
 
 msgid "RenameWorkspace.dialog.title"
 msgstr "Renombrar espacio de trabajo"

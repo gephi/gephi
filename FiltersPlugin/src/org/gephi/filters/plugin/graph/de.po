@@ -8,53 +8,53 @@ msgstr ""
 "Project-Id-Version: gephi\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2011-03-01 15:47+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2011-04-03 19:18+0000\n"
+"Last-Translator: Jonas Chromik <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-13 04:47+0000\n"
+"X-Launchpad-Export-Date: 2011-04-04 05:51+0000\n"
 "X-Generator: Launchpad (build 12559)\n"
 
 msgid "DegreeRangeBuilder.name"
-msgstr ""
+msgstr "GradBereichErsteller.Name"
 
 msgid "DegreeRangeBuilder.description"
-msgstr ""
+msgstr "GradBereichErsteller.Beschreibung"
 
 msgid "InDegreeRangeBuilder.name"
-msgstr ""
+msgstr "EingangsGradBereichErsteller.Name"
 
 msgid "InDegreeRangeBuilder.description"
-msgstr ""
+msgstr "EingangsGradBereichErsteller.Beschreibung"
 
 msgid "OutDegreeRangeBuilder.name"
-msgstr ""
+msgstr "AusgangsGradBereichErsteller.Name"
 
 msgid "OutDegreeRangeBuilder.description"
-msgstr ""
+msgstr "AusgangsGradBereichErsteller.Beschreibung"
 
 msgid "MutualDegreeRangeBuilder.name"
-msgstr ""
+msgstr "GemeinsamerGradBereichErsteller.Name"
 
 msgid "MutualDegreeRangeBuilder.description"
-msgstr ""
+msgstr "GemeinsamerGradBereichErsteller.Beschreibung"
 
 msgid "EgoBuilder.name"
-msgstr ""
+msgstr "EgoErsteller.Name"
 
 msgid "EgoBuilder.description"
-msgstr ""
+msgstr "EgoErsteller.Beschreibung"
 
 msgid "GiantComponentBuilder.name"
-msgstr ""
+msgstr "RiesenKomponentenErsteller.Name"
 
 msgid "GiantComponentBuilder.description"
-msgstr ""
+msgstr "RiesenKomponentenErsteller.Beschreibung"
 
 msgid "NeighborsBuilder.name"
-msgstr ""
+msgstr "NachbarErsteller.Name"
 
 msgid "NeighborsBuilder.description"
-msgstr ""
+msgstr "NachbarErsteller.Beschreibung"
