@@ -67,6 +67,7 @@ public final class GraphFileExporterUI implements ExporterClassUI {
     private GraphExporter selectedExporter;
     private File selectedFile;
     private boolean visibleOnlyGraph = false;
+    private JDialog dialog;
 
     public String getName() {
         return NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_title");
@@ -101,8 +102,12 @@ public final class GraphFileExporterUI implements ExporterClassUI {
                 if (exporterUI != null) {
                     JPanel panel = exporterUI.getPanel();
                     exporterUI.setup(selectedExporter);
+
                     DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(GraphFileExporterUI.class, "GraphFileExporterUI_optionsDialog_title", selectedBuilder.getName()));
-                    Object result = DialogDisplayer.getDefault().notify(dd);
+                    TopDialog topDialog = new TopDialog(dialog, dd.getTitle(), dd.isModal(), dd, dd.getClosingOptions(), dd.getButtonListener());
+                    topDialog.setVisible(true);
+                    Object result = (dd.getValue() != null) ? dd.getValue() : NotifyDescriptor.CLOSED_OPTION;
+//                    Object result = DialogDisplayer.getDefault().notify(dd);
                     exporterUI.unsetup(result == NotifyDescriptor.OK_OPTION);
                 }
             }
@@ -120,7 +125,7 @@ public final class GraphFileExporterUI implements ExporterClassUI {
 
             @Override
             protected JDialog createDialog(Component parent) throws HeadlessException {
-                JDialog dialog = super.createDialog(parent);
+                dialog = super.createDialog(parent);
                 dialog.setSize(640, 480);
                 dialog.setResizable(true);
                 Component c = dialog.getContentPane().getComponent(0);
@@ -213,6 +218,7 @@ public final class GraphFileExporterUI implements ExporterClassUI {
             selectedExporter.setExportVisible(visibleOnlyGraph);
             exportController.exportFile(fileObject, selectedExporter);
         }
+        dialog = null;
     }
 
     private boolean canExport(JFileChooser chooser) {

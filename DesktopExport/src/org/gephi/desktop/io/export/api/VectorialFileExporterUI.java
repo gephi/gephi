@@ -65,6 +65,7 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
     private VectorFileExporterBuilder selectedBuilder;
     private VectorExporter selectedExporter;
     private File selectedFile;
+    private JDialog dialog;
 
     public String getName() {
         return NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_title");
@@ -100,7 +101,10 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
                     JPanel panel = exporterUI.getPanel();
                     exporterUI.setup(selectedExporter);
                     DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(VectorialFileExporterUI.class, "VectorialFileExporterUI_optionsDialog_title", selectedBuilder.getName()));
-                    Object result = DialogDisplayer.getDefault().notify(dd);
+                    TopDialog topDialog = new TopDialog(dialog, dd.getTitle(), dd.isModal(), dd, dd.getClosingOptions(), dd.getButtonListener());
+                    topDialog.setVisible(true);
+                    Object result = (dd.getValue() != null) ? dd.getValue() : NotifyDescriptor.CLOSED_OPTION;
+//                    Object result = DialogDisplayer.getDefault().notify(dd);
                     exporterUI.unsetup(result == NotifyDescriptor.OK_OPTION);
                 }
             }
@@ -115,7 +119,7 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
 
             @Override
             protected JDialog createDialog(Component parent) throws HeadlessException {
-                JDialog dialog = super.createDialog(parent);
+                dialog = super.createDialog(parent);
                 Component c = dialog.getContentPane().getComponent(0);
                 if (c != null && c instanceof JComponent) {
                     Insets insets = ((JComponent) c).getInsets();
@@ -202,6 +206,7 @@ public final class VectorialFileExporterUI implements ExporterClassUI {
             //Do
             exportController.exportFile(fileObject, selectedExporter);
         }
+        dialog = null;
     }
 
     private boolean canExport(JFileChooser chooser) {
