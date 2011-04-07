@@ -84,6 +84,7 @@
             </file>
         </folder>
         <folder name="Workspace">
+            <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#Menu/Workspace"/>
             <attr name="position" intvalue="200"/>
             <file name="Separator1.instance_hidden"/>
             <file name="Separator2.instance_hidden"/>
