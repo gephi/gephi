@@ -98,7 +98,9 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public void remove(Query query) {
-        currentQuery = query.getParent();
+        if (query == currentQuery) {
+            currentQuery = query.getParent();
+        }
         queries.remove(query);
         destroyQuery(query);
         fireChangeEvent();
@@ -117,11 +119,13 @@ public class FilterModelImpl implements FilterModel {
         if (subQuery.getParent() != null) {
             ((AbstractQueryImpl) subQuery.getParent()).removeSubQuery(subQuery);
         }
+        if (subQuery == currentQuery) {
+            currentQuery = ((AbstractQueryImpl) query).getRoot();
+        }
 
         //Set
         AbstractQueryImpl impl = (AbstractQueryImpl) query;
         impl.addSubQuery(subQuery);
-        currentQuery = subQuery;
         fireChangeEvent();
         autoRefreshor.manualRefresh();
     }
@@ -130,7 +134,9 @@ public class FilterModelImpl implements FilterModel {
         AbstractQueryImpl impl = (AbstractQueryImpl) parent;
         impl.removeSubQuery(query);
         ((AbstractQueryImpl) query).setParent(null);
-        currentQuery = parent;
+        if (query == currentQuery) {
+            currentQuery = parent;
+        }
         fireChangeEvent();
         autoRefreshor.manualRefresh();
     }
@@ -187,8 +193,13 @@ public class FilterModelImpl implements FilterModel {
     }
 
     public void setCurrentQuery(Query currentQuery) {
-        this.currentQuery = currentQuery;
-        fireChangeEvent();
+        if (currentQuery != null) {
+            currentQuery = ((AbstractQueryImpl) currentQuery).getRoot();
+        }
+        if (this.currentQuery != currentQuery) {
+            this.currentQuery = currentQuery;
+            fireChangeEvent();
+        }
     }
 
     public void updateParameters(Query query) {

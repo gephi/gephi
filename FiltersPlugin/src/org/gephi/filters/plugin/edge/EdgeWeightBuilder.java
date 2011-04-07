@@ -151,7 +151,12 @@ public class EdgeWeightBuilder implements FilterBuilder {
         }
 
         public void setRange(Range range) {
-            this.range = range;
+            if (range.getMinimum() == null && range.getMaximum() == null) {
+                //Opening project
+                this.range = new Range(range.getLowerBound(), range.getUpperBound(), this.range.getMinimum(), this.range.getMaximum());
+            } else {
+                this.range = range;
+            }
         }
     }
 }

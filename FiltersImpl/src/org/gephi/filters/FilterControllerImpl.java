@@ -174,7 +174,7 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         if (query != null && model.getCurrentQuery() == query && model.isFiltering()) {
             return;
         }
-        model.setFiltering(query!=null);
+        model.setFiltering(query != null);
         model.setCurrentQuery(query);
 
         if (model.getFilterThread() != null) {
@@ -203,10 +203,10 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     public void selectVisible(Query query) {
-        if (query != null && model.getCurrentQuery() == query && !model.isFiltering()) {
+        if (query != null && model.getCurrentQuery() == query && model.isSelecting()) {
             return;
         }
-        model.setSelecting(query!=null);
+        model.setSelecting(query != null);
         model.setCurrentQuery(query);
 
         if (model.getFilterThread() != null) {
@@ -330,6 +330,12 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     public void setAutoRefresh(boolean autoRefresh) {
         if (model != null) {
             model.setAutoRefresh(autoRefresh);
+        }
+    }
+
+    public void setCurrentQuery(Query query) {
+        if (model != null) {
+            model.setCurrentQuery(query);
         }
     }
 

@@ -320,7 +320,7 @@ public final class Range {
         return lowerNumber;
     }
 
-    public Object getUpperBound() {
+    public Number getUpperBound() {
         return upperNumber;
     }
 

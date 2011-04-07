@@ -25,6 +25,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.FilterLibrary;
+import org.gephi.filters.api.FilterModel;
 import org.gephi.filters.api.Query;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -54,7 +55,8 @@ public class QueryNode extends AbstractNode {
 
     private boolean isSelected() {
         FilterController fc = Lookup.getDefault().lookup(FilterController.class);
-        return fc.getModel().getCurrentQuery() == query;
+        FilterModel fm = fc.getModel();
+        return (fm.isFiltering() || fm.isSelecting()) && fc.getModel().getCurrentQuery() == query;
         //return FiltersTopComponent.findInstance().getUiModel().getSelectedRoot() == query;
     }
 

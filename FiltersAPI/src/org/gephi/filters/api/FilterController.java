@@ -160,6 +160,8 @@ public interface FilterController {
 
     public void setAutoRefresh(boolean autoRefresh);
 
+    public void setCurrentQuery(Query query);
+
     /**
      * Returns the filter's model.
      * @return              the filter's model

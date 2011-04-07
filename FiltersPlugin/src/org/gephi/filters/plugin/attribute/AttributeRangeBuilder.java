@@ -163,7 +163,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
 
         public boolean init(Graph graph) {
-            HierarchicalGraph hg = (HierarchicalGraph)graph;
+            HierarchicalGraph hg = (HierarchicalGraph) graph;
             if (AttributeUtils.getDefault().isNodeColumn(column)) {
                 if (graph.getNodeCount() == 0) {
                     return false;
@@ -262,7 +262,12 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
 
         public void setRange(Range range) {
-            this.range = range;
+            if (range.getMinimum() == null && range.getMaximum() == null) {
+                //Opening project
+                this.range = new Range(range.getLowerBound(), range.getUpperBound(), this.range.getMinimum(), this.range.getMaximum());
+            } else {
+                this.range = range;
+            }
         }
 
         public AttributeColumn getColumn() {
