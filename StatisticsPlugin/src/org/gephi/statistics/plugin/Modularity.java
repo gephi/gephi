@@ -502,7 +502,9 @@ public class Modularity implements Statistics, LongTask {
                 + "<br> <h2> Results: </h2>"
                 + "Modularity: " + f.format(modularity) + "<br>"
                 + "Number of Communities: " + structure.communities.size()
-                + "</BODY></HTML>";
+                + "<br /><br />" + "<h2> Algorithm: </h2>"
+                + "Vincent D Blondel, Jean-Loup Guillaume, Renaud Lambiotte, Etienne Lefebvre, <i>Fast unfolding of communities in large networks</i>, in Journal of Statistical Mechanics: Theory and Experiment 2008 (10), P1000<br />"
+                + "</BODY> </HTML>";
 
         return report;
     }

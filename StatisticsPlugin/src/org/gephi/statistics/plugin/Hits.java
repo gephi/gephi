@@ -49,6 +49,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 
 /**
+ * Ref: Jon M. Kleinberg, Authoritative Sources in a Hyperlinked Environment,
+ * in Journal of the ACM 46 (5): 604–632 (1999)
  *
  * @author pjmcswee
  */
@@ -305,12 +307,15 @@ public class Hits implements Statistics, LongTask {
         String imageFile2 = ChartUtils.renderChart(chart, "authorities.png");
 
 
-        String report = "<HTML> <BODY> <h1> HITS Metric Report </h1> <br> "
+        String report = "<HTML> <BODY> <h1> HITS Metric Report </h1>"
                 + "<hr>"
-                + "<br>"
-                + "<h2> Parameters: </h2>  <br> &#917; = " + this.epsilon
-                + "<br> <h2> Results: </h2><br>"
-                + imageFile1 + "<br>" + imageFile2 + "</BODY> </HTML>";
+                + "<br />"
+                + "<h2> Parameters: </h2>  &#917; = " + this.epsilon
+                + "<br /> <h2> Results: </h2><br />"
+                + imageFile1 + "<br />" + imageFile2
+                + "<br /><br />" + "<h2> Algorithm: </h2>"
+                + "Jon M. Kleinberg, <i>Authoritative Sources in a Hyperlinked Environment</i>, in Journal of the ACM 46 (5): 604–632 (1999)<br />"
+                + "</BODY> </HTML>";
 
         return report;
     }

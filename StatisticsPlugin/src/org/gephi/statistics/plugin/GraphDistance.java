@@ -48,6 +48,8 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
+ * Ref: Ulrik Brandes, A Faster Algorithm for Betweenness Centrality,
+ * in Journal of Mathematical Sociology 25(2):163-177, (2001)
  *
  * @author pjmcswee
  */
@@ -332,7 +334,9 @@ public class GraphDistance implements Statistics, LongTask {
                 + htmlIMG1 + "<br /><br />"
                 + htmlIMG2 + "<br /><br />"
                 + htmlIMG3
-                + "</BODY></HTML>";
+                + "<br /><br />" + "<h2> Algorithm: </h2>"
+                + "Ulrik Brandes, <i>A Faster Algorithm for Betweenness Centrality</i>, in Journal of Mathematical Sociology 25(2):163-177, (2001)<br />"
+                + "</BODY> </HTML>";
 
         return report;
     }

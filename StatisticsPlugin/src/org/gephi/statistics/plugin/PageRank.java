@@ -48,6 +48,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 
 /**
+ * Ref: Sergey Brin, Lawrence Page, The Anatomy of a Large-Scale Hypertextual Web Search Engine, 
+ * in Proceedings of the seventh International Conference on the World Wide Web (WWW1998):107-117
  *
  * @author pjmcswee
  */
@@ -255,13 +257,15 @@ public class PageRank implements Statistics, LongTask {
         String imageFile = ChartUtils.renderChart(chart, "pageranks.png");
         
         String report = "<HTML> <BODY> <h1>PageRank Report </h1> "
-                + "<hr> <br>"
+                + "<hr> <br />"
                 + "<h2> Parameters: </h2>"
                 + "Epsilon = " + epsilon + "<br>"
                 + "Probability = " + probability
                 + "<br> <h2> Results: </h2>"
                 + imageFile
-                + "</BODY></HTML>";
+                + "<br /><br />" + "<h2> Algorithm: </h2>"
+                + "Sergey Brin, Lawrence Page, <i>The Anatomy of a Large-Scale Hypertextual Web Search Engine</i>, in Proceedings of the seventh International Conference on the World Wide Web (WWW1998):107-117<br />"
+                + "</BODY> </HTML>";
 
         return report;
 

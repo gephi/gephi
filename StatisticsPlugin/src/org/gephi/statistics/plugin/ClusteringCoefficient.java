@@ -39,7 +39,6 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.graph.api.NodeIterable;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -51,6 +50,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 
 /**
+ * Ref: Matthieu Latapy, Main-memory Triangle Computations for Very Large (Sparse (Power-Law)) Graphs,
+ * in Theoretical Computer Science (TCS) 407 (1-3), pages 458-473, 2008
  *
  * @author pjmcswee
  */
@@ -68,7 +69,7 @@ class Renumbering implements Comparator<EdgeWrapper> {
 }
 
 /**
- * 
+ *
  * @author pjmcswee
  */
 class EdgeWrapper {
@@ -83,7 +84,7 @@ class EdgeWrapper {
 }
 
 /**
- * 
+ *
  * @author pjmcswee
  */
 class ArrayWrapper implements Comparable {
@@ -149,7 +150,7 @@ class ArrayWrapper implements Comparable {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int length() {
@@ -157,7 +158,7 @@ class ArrayWrapper implements Comparable {
     }
 
     /**
-     * 
+     *
      * @param o
      * @return
      */
@@ -220,8 +221,8 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
 
-        //triangles(hgraph, attributeModel);
-        bruteForce(hgraph, attributeModel);
+        triangles(hgraph, attributeModel);
+        //bruteForce(hgraph, attributeModel);
     }
 
     private int closest_in_array(int v) {
@@ -412,8 +413,12 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             clusteringCol = nodeTable.addColumn(CLUSTERING_COEFF, "Clustering Coefficient", AttributeType.DOUBLE, AttributeOrigin.COMPUTED, new Double(0));
         }
 
-        for (Node s : hgraph.getNodes()) {
-            int v = indicies.get(s);
+        AttributeColumn triCount = nodeTable.getColumn("Triangles");
+        if (triCount == null) {
+            triCount = nodeTable.addColumn("Triangles", "Number of triangles", AttributeType.INT, AttributeOrigin.COMPUTED, new Integer(0));
+        }
+
+        for (int v = 0; v < N; v++) {
             if (network[v].length() > 1) {
                 double cc = triangles[v];
                 totalTriangles += triangles[v];
@@ -422,8 +427,9 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                     cc *= 2.0f;
                 }
                 nodeClustering[v] = cc;
-                AttributeRow row = (AttributeRow) s.getNodeData().getAttributes();
+                AttributeRow row = (AttributeRow) network[v].node.getNodeData().getAttributes();
                 row.setValue(clusteringCol, cc);
+                row.setValue(triCount, triangles[v]);
                 avgClusteringCoeff += cc;
             }
             Progress.progress(progress, ++ProgressCount);
@@ -439,7 +445,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         hgraph.readUnlock();
     }
 
-    private void bruteForce(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+    /*private void bruteForce(HierarchicalGraph hgraph, AttributeModel attributeModel) {
         //The atrributes computed by the statistics
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn clusteringCol = nodeTable.getColumn("clustering");
@@ -506,7 +512,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         avgClusteringCoeff = totalCC / hgraph.getNodeCount();
 
         hgraph.readUnlockAll();
-    }
+    }*/
 
     public String getReport() {
         //distribution of values
@@ -543,12 +549,16 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         return "<HTML> <BODY> <h1> Clustering Coefficient Metric Report </h1> "
                 + "<hr>"
-                + "<br>" + "<h2> Parameters: </h2>"
-                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
+                + "<br />" + "<h2> Parameters: </h2>"
+                + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br />"
                 + "<br>" + "<h2> Results: </h2>"
-                + "Average Clustering Coefficient: " + f.format(avgClusteringCoeff) + "<br>"
-                //+ "Total triangles: " + totalTriangles + "<br>"
-                + imageFile + "<br>" + "</BODY> </HTML>";
+                + "Average Clustering Coefficient: " + f.format(avgClusteringCoeff) + "<br />"
+                + "Total triangles: " + totalTriangles + "<br />"
+                + "The Average Clustering Coefficient is the mean value of individual coefficients.<br /><br />"
+                + imageFile
+                + "<br /><br />" + "<h2> Algorithm: </h2>"
+                + "Matthieu Latapy, <i>Main-memory Triangle Computations for Very Large (Sparse (Power-Law)) Graphs</i>, in Theoretical Computer Science (TCS) 407 (1-3), pages 458-473, 2008<br />"
+                + "</BODY> </HTML>";
     }
 
     public void setDirected(boolean isDirected) {
