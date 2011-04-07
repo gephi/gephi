@@ -50,27 +50,10 @@ public final class PreviewTopComponent extends TopComponent {
 
         // inits the preview applet
         sketch = new ProcessingPreview();
+        sketch.init();
+        sketch.registerPost(processingListener);
+        sketch.registerPre(processingListener);
         sketchPanel.add(sketch, BorderLayout.CENTER);
-
-        Thread initProcessing = new Thread(new Runnable() {
-
-            public void run() {
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    public void run() {
-                        sketch.init();
-                        sketch.registerPost(processingListener);
-                        sketch.registerPre(processingListener);
-                    }
-                });
-            }
-        });
-        initProcessing.start();
 
         // forces the controller instanciation
         PreviewUIController.findInstance();

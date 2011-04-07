@@ -90,6 +90,13 @@ public class ProcessingPreview extends PApplet implements GraphRenderer, MouseWh
     }
 
     @Override
+    protected void resizeRenderer(int i, int i1) {
+        if (i > 0 && i1 > 0) {
+            super.resizeRenderer(i, i1);
+        }
+    }
+
+    @Override
     public void mousePressed() {
         ref.set(mouseX, mouseY, 0);
     }
