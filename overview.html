@@ -13,6 +13,7 @@
         <hr/>
         <h2>API Changes</h2>
         <ul>
+			<li>(April 6 2011) Add <code>setCurrentQuery()</code> method on <code>FilterController</code>.</li>
             <li>(February 21 2011) Important change how modules save/load data into project files. The <code>WorkspacePersistenceProvider</code> interface
                 from ProjectAPI now uses StAX instead of DOM. The <code>writeXML()</code> method now uses <code>XMLStreamWriter</code> and <code>readXML()</code>
                 <code>XMLStreamReader</code>. Backward compatibility can't be assured, modules have to use switch to StAX.
