@@ -28,7 +28,7 @@ import org.gephi.data.attributes.type.TimeInterval;
  * 
  * @author Cezary Bartosiak
  */
-public interface DynamicStatistics extends Statistics {
+interface DynamicStatistics extends Statistics {
 
     /**
      * Sets a time interval for which the statistics is executed.
