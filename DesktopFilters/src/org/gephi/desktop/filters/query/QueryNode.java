@@ -94,7 +94,7 @@ public class QueryNode extends AbstractNode {
     @Override
     public Action[] getActions(boolean context) {
         //System.out.println("getActions " + context);
-        return new Action[]{new RemoveAction(), new RenameAction(), new SaveAction()};
+        return new Action[]{new RemoveAction(), new RenameAction(), new SaveAction(), new DuplicateAction()};
     }
 
     public Query getQuery() {
@@ -151,6 +151,26 @@ public class QueryNode extends AbstractNode {
                 filterLibrary.saveQuery(query);
             } else {
                 filterLibrary.saveQuery(query.getParent());
+            }
+        }
+    }
+
+    private class DuplicateAction extends AbstractAction {
+
+        public DuplicateAction() {
+            super(NbBundle.getMessage(QueryNode.class, "QueryNode.actions.duplicate"));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
+            if (query.getParent() == null) {
+                //filterController.add(query);
+                Query q = filterController.createQuery(query.getFilter());
+                filterController.add(q);
+            } else {
+                //filterController.add(query.getParent());
+                Query q = filterController.createQuery(query.getParent().getFilter());
+                filterController.add(q);
             }
         }
     }

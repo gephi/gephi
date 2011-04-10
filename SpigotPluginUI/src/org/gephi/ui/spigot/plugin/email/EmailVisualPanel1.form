@@ -34,13 +34,13 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jPanelReceiveFromServer" alignment="0" pref="471" max="32767" attributes="1"/>
+                  <Component id="jPanelReceiveFromServer" alignment="0" pref="488" max="32767" attributes="1"/>
                   <Component id="jCheckBoxDisplayNameSameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="jCheckBoxUseBccLine" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="jCheckBoxUseCcLine" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="jRadioButtonFromLocalFile" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="jRadioButtonFromServer" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel4" alignment="0" pref="471" max="32767" attributes="0"/>
+                  <Component id="jLabel4" alignment="0" pref="488" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -77,7 +77,7 @@
               <Component id="jCheckBoxUseBccLine" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jCheckBoxDisplayNameSameLabel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="22" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -120,24 +120,24 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="jTextFieldEmailAddr" pref="285" max="32767" attributes="1"/>
+                          <Component id="jTextFieldEmailAddr" pref="290" max="32767" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
-                          <Component id="jComboBoxServerType" pref="175" max="32767" attributes="1"/>
+                          <Component id="jComboBoxServerType" pref="195" max="32767" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
-                          <Component id="jTextFieldServerAddr" pref="285" max="32767" attributes="1"/>
+                          <Component id="jTextFieldServerAddr" pref="290" max="32767" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jPasswordField1" pref="285" max="32767" attributes="1"/>
+                          <Component id="jPasswordField1" pref="290" max="32767" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -173,7 +173,7 @@
                       <Component id="jTextFieldServerAddr" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="13" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
