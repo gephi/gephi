@@ -108,7 +108,7 @@ public final class LanguageAction extends CallableSystemAction {
 
     private void setLanguage(Language language) {
         String homePath;
-        if (Utilities.isMac()) {
+        if (Utilities.isMac() || Utilities.isUnix()) {
             homePath = System.getProperty("netbeans.home");
         } else {
             homePath = System.getProperty("user.dir");
