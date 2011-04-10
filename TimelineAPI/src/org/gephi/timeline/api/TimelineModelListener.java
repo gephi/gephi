@@ -1,5 +1,5 @@
 /*
-Copyright 2010 WebAtlas
+Copyright 2008-2010 Gephi
 Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Patrick J. McSweeney
 Website : http://www.gephi.org
 

@@ -19,7 +19,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="scroll" alignment="0" pref="220" max="32767" attributes="0"/>
+                  <Component id="scroll" alignment="0" pref="235" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="separatorLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -29,7 +29,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="charsetLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="charsetComboBox" pref="174" max="32767" attributes="0"/>
+                      <Component id="charsetComboBox" pref="176" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
