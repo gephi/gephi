@@ -60,10 +60,6 @@
                 <runtime-relative-path>ext/swingx-beaninfo-1.6.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/swingx-beaninfo-1.6.1.jar</binary-origin>
             </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/MultipleGradientPaint.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/MultipleGradientPaint.jar</binary-origin>
-            </class-path-extension>
         </data>
     </configuration>
 </project>
