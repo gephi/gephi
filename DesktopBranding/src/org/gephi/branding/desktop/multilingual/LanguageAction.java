@@ -87,7 +87,7 @@ public final class LanguageAction extends CallableSystemAction {
             JMenuItem menuItem = new JMenuItem(new AbstractAction(lang.getName()) {
 
                 public void actionPerformed(ActionEvent e) {
-                    String msg = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.message" + (Utilities.isMac() ? ".mac" : ""));
+                    String msg = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.message" + (Utilities.isMac() || Utilities.isUnix() ? ".mac" : ""));
                     String title = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.title");
                     DialogDescriptor.Confirmation dd = new DialogDescriptor.Confirmation(msg, title, DialogDescriptor.YES_NO_OPTION);
                     if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.YES_OPTION)) {
