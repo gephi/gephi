@@ -29,10 +29,10 @@ import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
@@ -91,7 +91,11 @@ public final class LanguageAction extends CallableSystemAction {
                     String title = NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.title");
                     DialogDescriptor.Confirmation dd = new DialogDescriptor.Confirmation(msg, title, DialogDescriptor.YES_NO_OPTION);
                     if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.YES_OPTION)) {
-                        setLanguage(lang);
+                        try {
+                            setLanguage(lang);
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(null, NbBundle.getMessage(LanguageAction.class, "ChangeLang.Error.message"), NbBundle.getMessage(LanguageAction.class, "ChangeLang.Confirm.title"), JOptionPane.ERROR_MESSAGE);
+                        }
                     }
                 }
             });
@@ -106,7 +110,7 @@ public final class LanguageAction extends CallableSystemAction {
         return menu;
     }
 
-    private void setLanguage(Language language) {
+    private void setLanguage(Language language) throws Exception{
         String homePath;
         if (Utilities.isMac() || Utilities.isUnix()) {
             homePath = System.getProperty("netbeans.home");
@@ -120,45 +124,42 @@ public final class LanguageAction extends CallableSystemAction {
             etc = new File(base, "etc");
         }
 
-        File confFile = new File(etc, APPNAME+".conf");
-        try {
-            StringBuilder outputBuilder = new StringBuilder();
-            String match = "-J-Duser.language=";
-            int langLength = 2;
+        File confFile = new File(etc, APPNAME + ".conf");
+        StringBuilder outputBuilder = new StringBuilder();
+        String match = "-J-Duser.language=";
+        int langLength = 2;
 
-            //In
-            BufferedReader reader = new BufferedReader(new FileReader(confFile));
-            String strLine;
-            while ((strLine = reader.readLine()) != null) {
-                int i = 0;
-                if ((i = strLine.indexOf(match)) != -1) {
-                    String locale = strLine.substring(i + match.length());
-                    locale = locale.substring(0, langLength);
-                    String before = strLine.substring(0, i + match.length());
-                    String after = strLine.substring(i + match.length() + langLength);
-                    outputBuilder.append(before);
-                    outputBuilder.append(language.getLocale());
-                    outputBuilder.append(after);
-                } else {
-                    outputBuilder.append(strLine);
-                }
-                outputBuilder.append("\n");
+        //In
+        BufferedReader reader = new BufferedReader(new FileReader(confFile));
+        String strLine;
+        while ((strLine = reader.readLine()) != null) {
+            int i = 0;
+            if ((i = strLine.indexOf(match)) != -1) {
+                String locale = strLine.substring(i + match.length());
+                locale = locale.substring(0, langLength);
+                String before = strLine.substring(0, i + match.length());
+                String after = strLine.substring(i + match.length() + langLength);
+                outputBuilder.append(before);
+                outputBuilder.append(language.getLocale());
+                outputBuilder.append(after);
+            } else {
+                outputBuilder.append(strLine);
             }
-            reader.close();
-
-            //Out
-            FileWriter writer = new FileWriter(confFile);
-            writer.write(outputBuilder.toString());
-            writer.close();
-
-            //Restart
-            if (!Utilities.isMac()) {
-                //On Mac the change is applied only if restarted manually
-                LifecycleManager.getDefault().markForRestart();
-            }
-            LifecycleManager.getDefault().exit();
-        } catch (Exception e) {
-            Exceptions.printStackTrace(e);
+            outputBuilder.append("\n");
         }
+        reader.close();
+
+        //Out
+        FileWriter writer = new FileWriter(confFile);
+        writer.write(outputBuilder.toString());
+        writer.close();
+
+        //Restart
+        if (!Utilities.isMac() && !Utilities.isUnix()) {
+            //On Mac the change is applied only if restarted manually
+            LifecycleManager.getDefault().markForRestart();
+        }
+        LifecycleManager.getDefault().exit();
+
     }
 }
