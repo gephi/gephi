@@ -71,6 +71,10 @@ public class MinimalDrawer extends JPanel
     private static Cursor CURSOR_LEFT_HOOK = new Cursor(Cursor.E_RESIZE_CURSOR);
     private static Cursor CURSOR_CENTRAL_HOOK = new Cursor(Cursor.MOVE_CURSOR);
     private static Cursor CURSOR_RIGHT_HOOK = new Cursor(Cursor.W_RESIZE_CURSOR);
+    private static final int LOC_RESIZE_FROM = 1;
+    private static final int LOC_RESIZE_TO = 2;
+    private static final int LOC_RESIZE_CENTER = 3;
+    private static final int LOC_RESIZE_UNKNOWN = -1;
     private static Locale LOCALE = Locale.ENGLISH;
     private double newfrom = 0;
     private double newto = 1;
@@ -598,6 +602,34 @@ public class MinimalDrawer extends JPanel
         return (a < x && x < b);
     }
 
+    /**
+     * Position of current x.
+     * @param x current location
+     * @param r width of slider
+     * @return LOC_RESIZE_*
+     */
+    private int inPosition(int x, int r) {
+        boolean resizeFrom = inRange(x, (int) sf - 1, (int) sf + r + 1);
+        boolean resizeTo = inRange(x, (int) st - r - 1, (int) st + 1);
+        if (resizeFrom & resizeTo) {
+            if (inRange(x, (int) sf - 1, (int) (sf + st) / 2)) {
+                return LOC_RESIZE_FROM;
+            } else if (inRange(x, (int) (sf + st) / 2, (int) st + 1)) {
+                return LOC_RESIZE_TO;
+            }
+        }
+        if (resizeFrom) {
+            return LOC_RESIZE_FROM;
+        } else if (inRange(x, (int) sf + r, (int) st - r)) {
+            return LOC_RESIZE_CENTER;
+        } else if (resizeTo) {
+            return LOC_RESIZE_TO;
+        } else {
+            return LOC_RESIZE_UNKNOWN;
+        }
+
+    }
+
     public void mouseClicked(MouseEvent e) {
         latestMousePositionX = e.getX();
         currentMousePositionX = latestMousePositionX;
@@ -635,15 +667,22 @@ public class MinimalDrawer extends JPanel
         int r = 16;//skin.getSelectionHookSideLength();
 
         if (currentState == TimelineState.IDLE) {
-            if (inRange(x, (int) sf - 1, (int) sf + r + 1)) {
-                highlightedComponent = HighlightedComponent.LEFT_HOOK;
-                currentState = TimelineState.RESIZE_FROM;
-            } else if (inRange(x, (int) sf + r, (int) st - r)) {
-                highlightedComponent = HighlightedComponent.CENTER_HOOK;
-                currentState = TimelineState.MOVING;
-            } else if (inRange(x, (int) st - r - 1, (int) st + 1)) {
-                highlightedComponent = HighlightedComponent.RIGHT_HOOK;
-                currentState = TimelineState.RESIZE_TO;
+            int position = inPosition(x, r);
+            switch(position){
+                case LOC_RESIZE_FROM:
+                    highlightedComponent = HighlightedComponent.LEFT_HOOK;
+                    currentState = TimelineState.RESIZE_FROM;
+                    break;
+                case LOC_RESIZE_CENTER:
+                    highlightedComponent = HighlightedComponent.CENTER_HOOK;
+                    currentState = TimelineState.MOVING;
+                    break;
+                case LOC_RESIZE_TO:
+                    highlightedComponent = HighlightedComponent.RIGHT_HOOK;
+                    currentState = TimelineState.RESIZE_TO;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -704,18 +743,24 @@ public class MinimalDrawer extends JPanel
 
         int a = 0;//settings.selection.invisibleHookMargin;
 
-        if (inRange(x, (int) sf - 1, (int) sf + r + 1)) {
-            newCursor = CURSOR_LEFT_HOOK;
-            highlightedComponent = HighlightedComponent.LEFT_HOOK;
-        } else if (inRange(x, (int) sf + r, (int) st - r)) {
-            highlightedComponent = HighlightedComponent.CENTER_HOOK;
-            newCursor = CURSOR_CENTRAL_HOOK;
-        } else if (inRange(x, (int) st - r - 1, (int) st + 1)) {
-            highlightedComponent = HighlightedComponent.RIGHT_HOOK;
-            newCursor = CURSOR_RIGHT_HOOK;
-        } else {
-            highlightedComponent = HighlightedComponent.NONE;
-            newCursor = CURSOR_DEFAULT;
+        int position = inPosition(x, r);
+        switch (position) {
+            case LOC_RESIZE_FROM:
+                newCursor = CURSOR_LEFT_HOOK;
+                highlightedComponent = HighlightedComponent.LEFT_HOOK;
+                break;
+            case LOC_RESIZE_CENTER:
+                highlightedComponent = HighlightedComponent.CENTER_HOOK;
+                newCursor = CURSOR_CENTRAL_HOOK;
+                break;
+            case LOC_RESIZE_TO:
+                highlightedComponent = HighlightedComponent.RIGHT_HOOK;
+                newCursor = CURSOR_RIGHT_HOOK;
+                break;
+            default:
+                highlightedComponent = HighlightedComponent.NONE;
+                newCursor = CURSOR_DEFAULT;
+                break;
         }
         if (newCursor != getCursor()) {
             setCursor(newCursor);
@@ -755,15 +800,22 @@ public class MinimalDrawer extends JPanel
         //st = (model.getToFloat() * w);
 
         if (currentState == TimelineState.IDLE) {
-            if (inRange(x, (int) sf - 1, (int) sf + r + 1)) {
-                highlightedComponent = HighlightedComponent.LEFT_HOOK;
-                currentState = TimelineState.RESIZE_FROM;
-            } else if (inRange(x, (int) sf + r, (int) st - r)) {
-                highlightedComponent = HighlightedComponent.CENTER_HOOK;
-                currentState = TimelineState.MOVING;
-            } else if (inRange(x, (int) st - r - 1, (int) st + 1)) {
-                highlightedComponent = HighlightedComponent.RIGHT_HOOK;
-                currentState = TimelineState.RESIZE_TO;
+            int position = inPosition(x, r);
+            switch (position) {
+                case LOC_RESIZE_FROM:
+                    highlightedComponent = HighlightedComponent.LEFT_HOOK;
+                    currentState = TimelineState.RESIZE_FROM;
+                    break;
+                case LOC_RESIZE_CENTER:
+                    highlightedComponent = HighlightedComponent.CENTER_HOOK;
+                    currentState = TimelineState.MOVING;
+                    break;
+                case LOC_RESIZE_TO:
+                    highlightedComponent = HighlightedComponent.RIGHT_HOOK;
+                    currentState = TimelineState.RESIZE_TO;
+                    break;
+                default:
+                    break;
             }
         }
         double delta = 0;
@@ -788,9 +840,6 @@ public class MinimalDrawer extends JPanel
                         sf += delta;
                     }
                 }
-
-
-
                 break;
             case RESIZE_TO:
                 if ((st + delta) <= (sf + s)) {
