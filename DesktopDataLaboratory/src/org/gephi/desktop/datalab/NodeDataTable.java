@@ -404,7 +404,7 @@ public class NodeDataTable {
         }
 
         private boolean outOfBounds(int position) {
-            return position >= length;
+            return position >= length || position < 0;
         }
     }
 
