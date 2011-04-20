@@ -121,7 +121,7 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
             writer.append("*Arcs\n");
         }
 
-        for (Edge edge : graph.getEdges()) {
+        for (Edge edge : graph.getEdgesAndMetaEdges()) {
             if (cancel) {
                 break;
             }
