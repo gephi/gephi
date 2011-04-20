@@ -23,8 +23,8 @@ package org.gephi.io.exporter.plugin;
 import java.io.Writer;
 import java.util.HashMap;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
 import org.gephi.io.exporter.spi.CharacterExporter;
@@ -81,11 +81,11 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
 
     public boolean execute() {
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
-        Graph graph = null;
+        HierarchicalGraph graph = null;
         if (exportVisible) {
-            graph = graphModel.getGraphVisible();
+            graph = graphModel.getHierarchicalGraphVisible();
         } else {
-            graph = graphModel.getGraph();
+            graph = graphModel.getHierarchicalGraph();
         }
         try {
             exportData(graph);
@@ -96,11 +96,12 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
         return !cancel;
     }
 
-    private void exportData(Graph graph) throws Exception {
+    private void exportData(HierarchicalGraph graph) throws Exception {
         int max = graph.getNodeCount(), i=1;
-        HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>(3*max/2+1);
+        HashMap<String, Integer> idx = new HashMap<String, Integer>(3*max/2+1);
 
         Progress.start(progressTicket, max);
+        graph.readLock();
 
         writer.append("*Vertices " + max + "\n");
 
@@ -111,7 +112,7 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
                 writer.append(" "+node.getNodeData().x()+" "+node.getNodeData().y()+" "+node.getNodeData().z());
             }
             writer.append("\n");
-            idx.put(node.getId(), i++); // assign Ids from the interval [1..max]
+            idx.put(node.getNodeData().getId(), i++); // assigns Ids from the interval [1..max]
         }
 
         if (graph instanceof UndirectedGraph) {
@@ -125,8 +126,8 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
                 break;
             }
             if (edge != null) {
-                writer.append(Integer.toString(idx.get(edge.getSource().getId())) + " ");
-                writer.append(Integer.toString(idx.get(edge.getTarget().getId())));
+                writer.append(Integer.toString(idx.get(edge.getSource().getNodeData().getId())) + " ");
+                writer.append(Integer.toString(idx.get(edge.getTarget().getNodeData().getId())));
                 if (edgeWeight) {
                     writer.append(" " + edge.getWeight());
                 }
