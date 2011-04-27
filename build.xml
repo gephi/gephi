@@ -75,8 +75,8 @@
     </target>
 
     <target name="download-l10n-jars" description="Download Netbeans Platform Localization JARs on the website">
-        <property name="l10n.url" value="http://netbeans.org/project_downloads/nblocalization/6.9/"/>
-        <property name="l10n.file" value="nb69_platform_l10n.zip"/>
+        <property name="l10n.url" value="http://netbeans.org/project_downloads/nblocalization/7.0/"/>
+        <property name="l10n.file" value="nb70_platform_l10n.zip"/>
         <property name="l10n.dir" value="l10n"/>
         <get src="${l10n.url}${l10n.file}" dest="${dist.dir}" verbose="true" skipexisting="true" ignoreerrors="true"/>      
     </target>
