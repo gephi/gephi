@@ -154,6 +154,7 @@
             <file name="org-netbeans-core-actions-GlobalPropertiesAction.shadow_hidden"/>
             <file name="org-netbeans-core-windows-actions-GlobalPropertiesAction.shadow_hidden"/>
             <file name="org-netbeans-core-windows-actions-ResetWindowsAction.shadow_hidden"/>
+            <file name="org-netbeans-modules-favorites-View.shadow_hidden"/>
         </folder>
     </folder>
     <folder name="Services">
