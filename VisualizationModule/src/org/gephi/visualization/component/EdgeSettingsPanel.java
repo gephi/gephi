@@ -170,11 +170,11 @@ public class EdgeSettingsPanel extends javax.swing.JPanel {
         if (!edgeInSelectionColorChooser.getColor().equals(in)) {
             edgeInSelectionColorChooser.setColor(in);
         }
-        if (!edgeBothSelectionColorChooser.getColor().equals(out)) {
-            edgeBothSelectionColorChooser.setColor(out);
+        if (!edgeBothSelectionColorChooser.getColor().equals(both)) {
+            edgeBothSelectionColorChooser.setColor(both);
         }
-        if (!edgeOutSelectionColorChooser.getColor().equals(both)) {
-            edgeOutSelectionColorChooser.setColor(both);
+        if (!edgeOutSelectionColorChooser.getColor().equals(out)) {
+            edgeOutSelectionColorChooser.setColor(out);
         }
         if (scaleSlider.getValue() / 10f + 0.1f != vizModel.getEdgeScale()) {
             scaleSlider.setValue((int) ((vizModel.getEdgeScale() - 0.1f) * 10));
