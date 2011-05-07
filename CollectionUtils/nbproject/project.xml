@@ -16,12 +16,12 @@
                 <package>org.gephi.utils.collection.avl</package>
             </public-packages>
             <class-path-extension>
-                <runtime-relative-path>ext/trove-2.1.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/trove-2.1.0.jar</binary-origin>
+                <runtime-relative-path>ext/google-collect-1.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/google-collect-1.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/google-collect-1.0-rc3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/google-collect-1.0-rc3.jar</binary-origin>
+                <runtime-relative-path>ext/trove-2.1.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/trove-2.1.0.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
