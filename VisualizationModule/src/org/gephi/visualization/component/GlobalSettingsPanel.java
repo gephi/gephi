@@ -158,6 +158,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
         autoSelectNeigborCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         autoSelectNeigborCheckbox.setMargin(new java.awt.Insets(2, 0, 2, 2));
 
+        zoomPanel.setOpaque(false);
         zoomPanel.setLayout(new java.awt.GridBagLayout());
 
         labelZoom.setText(org.openide.util.NbBundle.getMessage(GlobalSettingsPanel.class, "GlobalSettingsPanel.labelZoom.text")); // NOI18N
