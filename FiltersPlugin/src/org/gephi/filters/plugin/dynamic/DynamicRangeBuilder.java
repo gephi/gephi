@@ -204,7 +204,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             }
             if (edgeColumn != null) {
                 for (Edge e : graph.getEdgesAndMetaEdges()) {
-                    Object obj = e.getEdgeData().getAttributes().getValue(nodeColumn.getIndex());
+                    Object obj = e.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
                     if (obj != null) {
                         TimeInterval timeInterval = (TimeInterval) obj;
                         min = Math.min(min, Double.isInfinite(timeInterval.getLow()) ? min : timeInterval.getLow());
