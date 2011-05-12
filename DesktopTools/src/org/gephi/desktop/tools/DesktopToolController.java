@@ -42,6 +42,7 @@ import org.gephi.tools.spi.NodePressAndDraggingEventListener;
 import org.gephi.tools.spi.ToolEventListener;
 import org.gephi.tools.spi.ToolSelectionType;
 import org.gephi.tools.spi.ToolUI;
+import org.gephi.tools.spi.UnselectToolException;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.VizEvent;
 import org.gephi.visualization.apiimpl.VizEvent.Type;
@@ -175,8 +176,14 @@ public class DesktopToolController implements ToolController {
                         toolbar.clearSelection();
                         unselect();
                     } else {
-                        select(tool);
-                        propertiesBar.select(toolUI.getPropertiesBar(tool));
+                        try {
+                            select(tool);
+                            propertiesBar.select(toolUI.getPropertiesBar(tool));
+                        }
+                        catch (UnselectToolException unselectToolException) {
+                            toolbar.clearSelection();
+                            unselect();
+                        }
                     }
                 }
             });
