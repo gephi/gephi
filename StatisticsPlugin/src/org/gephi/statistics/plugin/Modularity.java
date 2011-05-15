@@ -96,6 +96,9 @@ public class Modularity implements Statistics, LongTask {
         int N;
         HashMap<Integer, Community> invMap;
 
+        HashMap<Integer, Node> mapRev;//Added
+        int uniq;
+        
         CommunityStructure(HierarchicalUndirectedGraph hgraph) {
             this.graph = hgraph;
             N = hgraph.getNodeCount();
@@ -103,12 +106,14 @@ public class Modularity implements Statistics, LongTask {
             nodeConnections = new HashMap[N];
             nodeCommunities = new Community[N];
             map = new HashMap<Node, Integer>();
+            mapRev = new HashMap<Integer, Node>();//ADDED
             topology = new LinkedList[N];
             communities = new LinkedList<Community>();
             int index = 0;
             weights = new double[N];
             for (Node node : hgraph.getNodes()) {
                 map.put(node, index);
+                mapRev.put(index, node);//ADDED
                 nodeCommunities[index] = new Community(this);
                 nodeConnections[index] = new HashMap<Community, Integer>();
                 weights[index] = hgraph.getTotalDegree(node);
@@ -117,8 +122,12 @@ public class Modularity implements Statistics, LongTask {
                 hidden.nodes.add(index);
                 invMap.put(index, hidden);
                 communities.add(nodeCommunities[index]);
-                index++;
+                
 
+                nodeCommunities[index].name = uniq;//ADDED
+                uniq++;//ADDED
+                 
+                index++;
                 if (isCanceled) {
                     return;
                 }
@@ -253,6 +262,7 @@ public class Modularity implements Statistics, LongTask {
 
         private void zoomOut() {
             int M = communities.size();
+            System.out.println("Sizecom :" + M);
             LinkedList<ModEdge>[] newTopology = new LinkedList[M];
             int index = 0;
             nodeCommunities = new Community[M];
@@ -260,6 +270,7 @@ public class Modularity implements Statistics, LongTask {
             HashMap<Integer, Community> newInvMap = new HashMap<Integer, Community>();
             for (int i = 0; i < communities.size(); i++) {//Community com : mCommunities) {
                 Community com = communities.get(i);
+                System.out.println("Comsize " + i + " : " + com.size());
                 nodeConnections[index] = new HashMap<Community, Integer>();
                 newTopology[index] = new LinkedList<ModEdge>();
                 nodeCommunities[index] = new Community(com);
@@ -289,6 +300,8 @@ public class Modularity implements Statistics, LongTask {
 
             for (int i = 0; i < M; i++) {
                 Community com = nodeCommunities[i];
+                com.name = uniq;//ADDED
+                uniq++;//ADDED
                 communities.add(com);
                 for (ModEdge e : newTopology[i]) {
                     nodeConnections[i].put(nodeCommunities[e.target], e.weight);
@@ -304,7 +317,7 @@ public class Modularity implements Statistics, LongTask {
     }
 
     class Community {
-
+        int name; //ADDED
         double weightSum;
         CommunityStructure structure;
         LinkedList<Integer> nodes;
@@ -401,10 +414,13 @@ public class Modularity implements Statistics, LongTask {
                     double best = 0;
                     double current = q(i, structure.nodeCommunities[i]);
                     Community bestCommunity = null;
+                    Community nodecom = structure.nodeCommunities[i];
                     int smallest = Integer.MAX_VALUE;
                     Set<Community> iter = structure.nodeConnections[i].keySet();
+                    System.out.println("Node : " + structure.mapRev.get(i) + " Totw:" + structure.graphWeightSum + " degn:" + structure.weights[i] + " num_neigh" + iter.size());
                     for(Community com : iter) {
                         double qValue = q(i, com) - current;
+                        System.out.print("com:"+com.name+" dnc:" + structure.nodeConnections[i].get(com) + " incr:" + qValue + "best" + best + " better" + (qValue > best));
                         if (qValue > best) {
                             best = qValue;
                             bestCommunity = com;
@@ -417,7 +433,12 @@ public class Modularity implements Statistics, LongTask {
                     }
                     if ((structure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
                         structure.moveNodeTo(i, bestCommunity);
+                        System.out.print("Moving" + structure.mapRev.get(i) + " from " + nodecom.name + " to " + bestCommunity.name + " for " + best);
                         localChange = true;
+                    }
+                    else
+                    {
+                        System.out.println("Static" + structure.mapRev.get(i) + " from " + nodecom.name);
                     }
                     if (isCanceled) {
                         hgraph.readUnlockAll();
