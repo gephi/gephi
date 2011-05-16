@@ -202,9 +202,44 @@
 
         <jar destfile="${toolkit.dir}/temp_final.jar" filesetmanifest="merge" duplicate="preserve">
             <zipgroupfileset dir="${toolkit.tempdir}" includes="*.jar"/>
-
-            <manifest>
+            
+            <!-- Next service declarations fix problem of having service providers in different modules (duplicated files) -->
+            <service type="org.openide.filesystems.URLMapper">
+                <provider classname="org.netbeans.modules.masterfs.MasterURLMapper"/>
+                <provider classname="org.netbeans.modules.openide.filesystems.DefaultURLMapperProxy"/>
+                <provider classname="org.openide.filesystems.MemoryFileSystem$Mapper"/>
+            </service>
+            
+            <service type="javax.annotation.processing.Processor">
+                <provider classname="org.netbeans.modules.openide.filesystems.CleaningAnnotationProcessor"/>
+                <provider classname="org.netbeans.modules.openide.util.NbBundleProcessor"/>
+                <provider classname="org.netbeans.modules.openide.util.URLStreamHandlerRegistrationProcessor"/>
+                <provider classname="org.netbeans.modules.openide.util.ServiceProviderProcessor"/>
+            </service>
+            
+            <service type="java.sql.Driver">
+                <provider classname="com.mysql.jdbc.Driver"/>
+                <provider classname="org.postgresql.Driver"/>
+                <provider classname="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+            </service>
+            
+            <service type="org.gephi.project.spi.WorkspacePersistenceProvider">
+                <provider classname="org.gephi.data.attributes.serialization.AttributeModelPersistenceProvider"/>
+                <provider classname="org.gephi.graph.dhns.DhnsPersistenceProvider"/>
+                <provider classname="org.gephi.graph.dhns.DataPersistenceProvider"/>
+                <provider classname="org.gephi.data.attributes.serialization.AttributeRowPersistenceProvider"/>
+                <provider classname="org.gephi.dynamic.DynamicModelPersistenceProvider"/>
+                <provider classname="org.gephi.filters.FilterModelPersistenceProvider"/>
+                <provider classname="org.gephi.layout.LayoutModelPersistenceProvider"/>
+                <provider classname="org.gephi.partition.impl.PartitionModelPersistenceProvider"/>
+            </service>
+            
+            <service type="org.gephi.project.spi.WorkspaceDuplicateProvider">
+                <provider classname="org.gephi.data.attributes.AttributeModelDuplicateProvider"/>
+                <provider classname="org.gephi.graph.dhns.DhnsDuplicateProvider"/>
+            </service>
                 
+            <manifest>
             </manifest>
         </jar>
 
