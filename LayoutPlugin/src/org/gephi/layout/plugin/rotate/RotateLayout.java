@@ -79,6 +79,7 @@ public class RotateLayout extends AbstractLayout implements Layout {
                     this, Double.class, 
                     NbBundle.getMessage(getClass(), "clockwise.angle.name"),
                     null,
+                    "clockwise.angle.name",
                     NbBundle.getMessage(getClass(), "clockwise.angle.desc"),
                     "getAngle", "setAngle"));
         } catch (Exception e) {

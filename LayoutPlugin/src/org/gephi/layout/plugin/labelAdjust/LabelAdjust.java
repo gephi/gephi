@@ -246,12 +246,14 @@ public class LabelAdjust extends AbstractLayout implements Layout {
                     this, Double.class,
                     NbBundle.getMessage(getClass(), "LabelAdjust.speed.name"),
                     LABELADJUST_CATEGORY,
+                    "LabelAdjust.speed.name",
                     NbBundle.getMessage(getClass(), "LabelAdjust.speed.desc"),
                     "getSpeed", "setSpeed"));
             properties.add(LayoutProperty.createProperty(
                     this, Boolean.class,
                     NbBundle.getMessage(getClass(), "LabelAdjust.adjustBySize.name"),
                     LABELADJUST_CATEGORY,
+                    "LabelAdjust.adjustBySize.name",
                     NbBundle.getMessage(getClass(), "LabelAdjust.adjustBySize.desc"),
                     "isAdjustBySize", "setAdjustBySize"));
         } catch (Exception e) {

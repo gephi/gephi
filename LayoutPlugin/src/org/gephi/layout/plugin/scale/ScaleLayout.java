@@ -80,6 +80,7 @@ public class ScaleLayout extends AbstractLayout implements Layout {
                     this, Double.class, 
                     NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.name"),
                     null,
+                    "ScaleLayout.scaleFactor.name",
                     NbBundle.getMessage(getClass(), "ScaleLayout.scaleFactor.desc"),
                     "getScale", "setScale"));
         } catch (Exception e) {

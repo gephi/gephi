@@ -130,12 +130,14 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
                     this, Float.class, 
                     NbBundle.getMessage(getClass(), "YifanHu.optimalDistance.name"),
                     YIFANHU_CATEGORY,
+                    "YifanHu.optimalDistance.name",
                     NbBundle.getMessage(getClass(), "YifanHu.optimalDistance.desc"),
                     "getOptimalDistance", "setOptimalDistance"));
             properties.add(LayoutProperty.createProperty(
                     this, Float.class, 
                     NbBundle.getMessage(getClass(), "YifanHu.relativeStrength.name"),
                     YIFANHU_CATEGORY,
+                    "YifanHu.relativeStrength.name",
                     NbBundle.getMessage(getClass(), "YifanHu.relativeStrength.desc"),
                     "getRelativeStrength", "setRelativeStrength"));
 
@@ -143,37 +145,42 @@ public class YifanHuLayout extends AbstractLayout implements Layout {
                     this, Float.class, 
                     NbBundle.getMessage(getClass(), "YifanHu.initialStepSize.name"),
                     YIFANHU_CATEGORY,
+                    "YifanHu.initialStepSize.name",
                     NbBundle.getMessage(getClass(), "YifanHu.initialStepSize.desc"),
                     "getInitialStep", "setInitialStep"));
             properties.add(LayoutProperty.createProperty(
                     this, Float.class, 
                     NbBundle.getMessage(getClass(), "YifanHu.stepRatio.name"),
                     YIFANHU_CATEGORY,
+                    "YifanHu.stepRatio.name",
                     NbBundle.getMessage(getClass(), "YifanHu.stepRatio.desc"),
                     "getStepRatio", "setStepRatio"));
             properties.add(LayoutProperty.createProperty(
                     this, Boolean.class, 
                     NbBundle.getMessage(getClass(), "YifanHu.adaptativeCooling.name"),
                     YIFANHU_CATEGORY,
+                    "YifanHu.adaptativeCooling.name",
                     NbBundle.getMessage(getClass(), "YifanHu.adaptativeCooling.desc"),
                     "isAdaptiveCooling", "setAdaptiveCooling"));
             properties.add(LayoutProperty.createProperty(
                     this, Float.class, 
                     NbBundle.getMessage(getClass(), "YifanHu.convergenceThreshold.name"),
                     YIFANHU_CATEGORY,
+                    "YifanHu.convergenceThreshold.name",
                     NbBundle.getMessage(getClass(), "YifanHu.convergenceThreshold.desc"),
                     "getConvergenceThreshold", "setConvergenceThreshold"));
-
             properties.add(LayoutProperty.createProperty(
                     this, Integer.class, 
                     NbBundle.getMessage(getClass(), "YifanHu.quadTreeMaxLevel.name"),
                     BARNESHUT_CATEGORY,
+                    "YifanHu.quadTreeMaxLevel.name",
                     NbBundle.getMessage(getClass(), "YifanHu.quadTreeMaxLevel.desc"),
                     "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
             properties.add(LayoutProperty.createProperty(
                     this, Float.class, 
                     NbBundle.getMessage(getClass(), "YifanHu.theta.name"),
                     BARNESHUT_CATEGORY,
+                    "YifanHu.theta.name",
                     NbBundle.getMessage(getClass(), "YifanHu.theta.desc"),
                     "getBarnesHutTheta", "setBarnesHutTheta"));
         } catch (Exception e) {

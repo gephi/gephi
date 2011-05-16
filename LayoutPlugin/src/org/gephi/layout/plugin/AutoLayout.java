@@ -82,13 +82,13 @@ public class AutoLayout {
         for (int i = 0; i < properties.length; i++) {
             AbstractDynamicProperty property = (AbstractDynamicProperty) properties[i];
             for (LayoutProperty lp : layout.getProperties()) {
-                if (lp.getProperty().getName().equalsIgnoreCase(property.getName())) {
+                if (lp.getCanonicalName().equalsIgnoreCase(property.getCanonicalName()) ) {
                     property.setProperty(lp.getProperty());
                     break;
                 }
             }
             if (property.getProperty() == null) {
-                throw new IllegalArgumentException(property.getName() + " property cannot be found in layout");
+                throw new IllegalArgumentException(property.getCanonicalName() + " property cannot be found in layout");
             }
         }
         layouts.add(new LayoutScenario(layout, ratio, properties));
@@ -211,7 +211,7 @@ public class AutoLayout {
 
         public Property getProperty();
 
-        public String getName();
+        public String getCanonicalName();
     }
 
     public enum Interpolation {
@@ -221,11 +221,11 @@ public class AutoLayout {
 
     private static abstract class AbstractDynamicProperty implements DynamicProperty {
 
-        private final String propertyName;
+        private final String propertyCanonicalName;
         protected Property property;
 
         public AbstractDynamicProperty(String propertyName) {
-            this.propertyName = propertyName;
+            this.propertyCanonicalName = propertyName;
         }
 
         @Override
@@ -238,8 +238,8 @@ public class AutoLayout {
         }
 
         @Override
-        public String getName() {
-            return propertyName;
+        public String getCanonicalName() {
+            return propertyCanonicalName;
         }
     }
 

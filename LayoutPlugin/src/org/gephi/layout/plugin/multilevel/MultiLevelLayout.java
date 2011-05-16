@@ -149,12 +149,14 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
                     this, Integer.class, 
                     NbBundle.getMessage(getClass(), "YifanHuMultiLevel.minimumLevelSize.name"),
                     MULTILEVEL_CATEGORY,
+                    "YifanHuMultiLevel.minimumLevelSize.name",
                     NbBundle.getMessage(getClass(), "YifanHuMultiLevel.minimumLevelSize.desc"),
                     "getMinSize", "setMinSize"));
             properties.add(LayoutProperty.createProperty(
                     this, Double.class, 
                     NbBundle.getMessage(getClass(), "YifanHuMultiLevel.minimumCoarseningRate.name"),
                     MULTILEVEL_CATEGORY,
+                    "YifanHuMultiLevel.minimumCoarseningRate.name",
                     NbBundle.getMessage(getClass(), "YifanHuMultiLevel.minimumCoarseningRate.desc"),
                     "getMinCoarseningRate", "setMinCoarseningRate"));
 
@@ -162,12 +164,14 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
                     this, Float.class, 
                     NbBundle.getMessage(getClass(), "YifanHuMultiLevel.stepRatio.name"),
                     YIFANHU_CATEGORY,
+                    "YifanHuMultiLevel.stepRatio.name",
                     NbBundle.getMessage(getClass(), "YifanHuMultiLevel.stepRatio.desc"),
                     "getStepRatio", "setStepRatio"));
             properties.add(LayoutProperty.createProperty(
                     this, Float.class, 
                     NbBundle.getMessage(getClass(), "YifanHuMultiLevel.optimalDistance.name"),
                     YIFANHU_CATEGORY,
+                    "YifanHuMultiLevel.optimalDistance.name",
                     NbBundle.getMessage(getClass(), "YifanHuMultiLevel.optimalDistance.desc"),
                     "getOptimalDistance", "setOptimalDistance"));
 
@@ -175,12 +179,14 @@ public class MultiLevelLayout extends AbstractLayout implements Layout {
                     this, Integer.class, 
                     NbBundle.getMessage(getClass(), "YifanHuMultiLevel.quadtreeMaxLevel.name"),
                     BARNESHUT_CATEGORY,
+                    "YifanHuMultiLevel.quadtreeMaxLevel.name",
                     NbBundle.getMessage(getClass(), "YifanHuMultiLevel.quadtreeMaxLevel.desc"),
                     "getQuadTreeMaxLevel", "setQuadTreeMaxLevel"));
             properties.add(LayoutProperty.createProperty(
                     this, Float.class, 
                     NbBundle.getMessage(getClass(), "YifanHuMultiLevel.theta.name"),
                     BARNESHUT_CATEGORY,
+                    "YifanHuMultiLevel.theta.name",
                     NbBundle.getMessage(getClass(), "YifanHuMultiLevel.theta.desc"),
                     "getBarnesHutTheta", "setBarnesHutTheta"));
         } catch (Exception e) {

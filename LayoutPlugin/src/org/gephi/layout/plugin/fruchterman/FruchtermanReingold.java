@@ -172,18 +172,21 @@ public class FruchtermanReingold extends AbstractLayout implements Layout {
                     this, Float.class,
                     NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.area.name"),
                     FRUCHTERMAN_REINGOLD,
+                    "fruchtermanReingold.area.name",
                     NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.area.desc"),
                     "getArea", "setArea"));
             properties.add(LayoutProperty.createProperty(
                     this, Double.class,
                     NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.gravity.name"),
                     FRUCHTERMAN_REINGOLD,
+                    "fruchtermanReingold.gravity.name",
                     NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.gravity.desc"),
                     "getGravity", "setGravity"));
             properties.add(LayoutProperty.createProperty(
                     this, Double.class,
                     NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.speed.name"),
                     FRUCHTERMAN_REINGOLD,
+                    "fruchtermanReingold.speed.name",
                     NbBundle.getMessage(FruchtermanReingold.class, "fruchtermanReingold.speed.desc"),
                     "getSpeed", "setSpeed"));
         } catch (Exception e) {

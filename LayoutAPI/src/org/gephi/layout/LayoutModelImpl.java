@@ -145,7 +145,7 @@ public class LayoutModelImpl implements LayoutModel {
             try {
                 Object value = p.getProperty().getValue();
                 if (value != null) {
-                    savedProperties.put(new LayoutPropertyKey(p.getProperty().getName(), layout.getClass().getName()), value);
+                    savedProperties.put(new LayoutPropertyKey(p.getCanonicalName(), layout.getClass().getName()), value);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -162,7 +162,8 @@ public class LayoutModelImpl implements LayoutModel {
         }
         for (LayoutProperty property : layout.getProperties()) {
             for (LayoutPropertyKey l : layoutValues) {
-                if (property.getProperty().getName().equals(l.name)) {
+                if (property.getCanonicalName().equalsIgnoreCase(l.name) 
+                        || property.getProperty().getName().equalsIgnoreCase(l.name)) {//Also compare with property name to maintain compatibility with old saved properties
                     try {
                         property.getProperty().setValue(savedProperties.get(l));
                     } catch (Exception e) {

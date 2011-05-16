@@ -94,7 +94,8 @@ public class LayoutPresetPersistence {
     public void loadPreset(Preset preset, Layout layout) {
         for (LayoutProperty p : layout.getProperties()) {
             for (int i = 0; i < preset.propertyNames.size(); i++) {
-                if (p.getProperty().getName().equals(preset.propertyNames.get(i))) {
+                if (p.getCanonicalName().equalsIgnoreCase(preset.propertyNames.get(i))
+                        || p.getProperty().getName().equalsIgnoreCase(preset.propertyNames.get(i))) {//Also compare with property name to maintain compatibility with old presets
                     try {
                         p.getProperty().setValue(preset.propertyValues.get(i));
                     } catch (Exception ex) {
@@ -135,8 +136,8 @@ public class LayoutPresetPersistence {
             layoutPresets = new ArrayList<Preset>();
             presets.put(preset.layoutClassName, layoutPresets);
         }
-        for(Preset p : layoutPresets) {
-            if(p.equals(preset)) {
+        for (Preset p : layoutPresets) {
+            if (p.equals(preset)) {
                 return p;
             }
         }
@@ -158,7 +159,7 @@ public class LayoutPresetPersistence {
                 try {
                     Object value = p.getProperty().getValue();
                     if (value != null) {
-                        propertyNames.add(p.getProperty().getName());
+                        propertyNames.add(p.getCanonicalName());
                         propertyValues.add(value);
                     }
                 } catch (Exception e) {

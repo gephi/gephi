@@ -77,6 +77,7 @@ public class RandomLayout extends AbstractLayout implements Layout {
                     this, Double.class, 
                     NbBundle.getMessage(getClass(), "Random.spaceSize.name"),
                     null,
+                    "Random.spaceSize.name",
                     NbBundle.getMessage(getClass(), "Random.spaceSize.desc"),
                     "getSize", "setSize"));
         } catch (Exception e) {
