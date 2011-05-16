@@ -106,6 +106,7 @@ public class Modularity implements Statistics, LongTask {
             nodeConnections = new HashMap[N];
             nodeCommunities = new Community[N];
             map = new HashMap<Node, Integer>();
+            uniq = 0; //ADDED
             mapRev = new HashMap<Integer, Node>();//ADDED
             topology = new LinkedList[N];
             communities = new LinkedList<Community>();
@@ -149,7 +150,7 @@ public class Modularity implements Statistics, LongTask {
                     nodeCommunities[node_index].connections.put(adjCom, 1);
                     nodeConnections[neighbor_index].put(nodeCommunities[node_index], 1);
                     nodeCommunities[neighbor_index].connections.put(nodeCommunities[node_index], 1);
-                    graphWeightSum++;
+                    graphWeightSum++;//WARNING : may be an issue with self_loop
                 }
 
                 if (isCanceled) {
@@ -286,8 +287,10 @@ public class Modularity implements Statistics, LongTask {
                 for(Community adjCom : iter) {
                     int target = communities.indexOf(adjCom);
                     int weight = com.connections.get(adjCom);
-
-                    weightSum += weight;
+                    if(target == index)
+                        weightSum += 2*weight;
+                    else
+                        weightSum += weight;
                     ModEdge e = new ModEdge(index, target, weight);
                     newTopology[index].add(e);
                 }
@@ -322,7 +325,6 @@ public class Modularity implements Statistics, LongTask {
         CommunityStructure structure;
         LinkedList<Integer> nodes;
         HashMap<Community, Integer> connections;
-        Integer min;
 
         public int size() {
             return nodes.size();
@@ -332,7 +334,6 @@ public class Modularity implements Statistics, LongTask {
             structure = com.structure;
             connections = new HashMap<Community, Integer>();
             nodes = new LinkedList<Integer>();
-            min = Integer.MAX_VALUE;
             //mHidden = pCom.mHidden;
         }
 
@@ -345,15 +346,11 @@ public class Modularity implements Statistics, LongTask {
         public void seed(int node) {
             nodes.add(node);
             weightSum += structure.weights[node];
-            min = node;
         }
 
         public boolean add(int node) {
             nodes.addLast(new Integer(node));
             weightSum += structure.weights[node];
-            if (!isRandomized) {
-                min = Math.min(node, min);
-            }
             return true;
         }
 
@@ -363,19 +360,7 @@ public class Modularity implements Statistics, LongTask {
             if (nodes.size() == 0) {
                 structure.communities.remove(this);
             }
-            if (!isRandomized) {
-                if (node == min.intValue()) {
-                    min = Integer.MAX_VALUE;
-                    for (Integer other : nodes) {
-                        min = Math.min(other, min);
-                    }
-                }
-            }
             return result;
-        }
-
-        public int getMin() {
-            return min;
         }
     }
 
@@ -388,9 +373,7 @@ public class Modularity implements Statistics, LongTask {
         isCanceled = false;
         Progress.start(progress);
         Random rand = new Random();
-
         hgraph.readLock();
-
         structure = new CommunityStructure(hgraph);
         if (isCanceled) {
             hgraph.readUnlockAll();
@@ -400,8 +383,6 @@ public class Modularity implements Statistics, LongTask {
         while (someChange) {
             someChange = false;
             boolean localChange = true;
-
-
             while (localChange) {
                 localChange = false;
                 int start = 0;
@@ -411,29 +392,22 @@ public class Modularity implements Statistics, LongTask {
                 int step = 0;
                 for (int i = start; step < structure.N; i = (i + 1) % structure.N) {
                     step++;
-                    double best = 0;
-                    double current = q(i, structure.nodeCommunities[i]);
+                    double best = 0.;
                     Community bestCommunity = null;
                     Community nodecom = structure.nodeCommunities[i];
-                    int smallest = Integer.MAX_VALUE;
                     Set<Community> iter = structure.nodeConnections[i].keySet();
                     System.out.println("Node : " + structure.mapRev.get(i) + " Totw:" + structure.graphWeightSum + " degn:" + structure.weights[i] + " num_neigh" + iter.size());
                     for(Community com : iter) {
-                        double qValue = q(i, com) - current;
-                        System.out.print("com:"+com.name+" dnc:" + structure.nodeConnections[i].get(com) + " incr:" + qValue + "best" + best + " better" + (qValue > best));
+                        double qValue = q(i, com);
+                        System.out.println("com:"+com.name+" dnc:" + structure.nodeConnections[i].get(com) + " incr:" + qValue + "best" + best + " better" + (qValue > best));
                         if (qValue > best) {
                             best = qValue;
                             bestCommunity = com;
-                            smallest = com.getMin();
-                        } else if ((qValue == best) && (com.getMin() < smallest)) {
-                            best = qValue;
-                            bestCommunity = com;
-                            smallest = com.getMin();
-                        }
+                        } 
                     }
                     if ((structure.nodeCommunities[i] != bestCommunity) && (bestCommunity != null)) {
                         structure.moveNodeTo(i, bestCommunity);
-                        System.out.print("Moving" + structure.mapRev.get(i) + " from " + nodecom.name + " to " + bestCommunity.name + " for " + best);
+                        System.out.println("Moving" + structure.mapRev.get(i) + " from " + nodecom.name + " to " + bestCommunity.name + " for " + best);
                         localChange = true;
                     }
                     else
@@ -539,7 +513,6 @@ public class Modularity implements Statistics, LongTask {
         }
         double weightSum = community.weightSum;
         double nodeWeight = structure.weights[node];
-        //double penalty = (nodeWeight * weightSum) / (2.0 * mStructure.graphWeightSum);
         double qValue = edgesTo - (nodeWeight * weightSum) / (2.0 * structure.graphWeightSum);
         if ((structure.nodeCommunities[node] == community) && (structure.nodeCommunities[node].size() > 1)) {
             qValue = edgesTo - (nodeWeight * (weightSum - nodeWeight)) / (2.0 * structure.graphWeightSum);
