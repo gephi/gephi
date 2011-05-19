@@ -112,7 +112,7 @@ public class DataLaboratoryPersistenceProvider implements WorkspacePersistencePr
                         nodeColumns.addAvailableColumn(column);
                     }
                 } else if (EDGE_COLUMN.equalsIgnoreCase(name)) {
-                    String id = reader.getAttributeValue(null, "id");
+                    Integer id = Integer.parseInt(reader.getAttributeValue(null, "id"));
                     AttributeColumn column = edgesTable.getColumn(id);
                     if (column != null) {
                         edgeColumns.addAvailableColumn(column);
