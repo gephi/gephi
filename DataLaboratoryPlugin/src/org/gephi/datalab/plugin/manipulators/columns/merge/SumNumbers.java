@@ -37,7 +37,7 @@ import org.openide.util.NbBundle;
  * calculates the sum of all the values and creates a new BigDecimal column with the result of each row.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class SumNumbers implements AttributeColumnsMergeStrategy {
+public class SumNumbers implements AttributeColumnsMergeStrategy, GeneralColumnTitleChooser {
 
     private AttributeTable table;
     private AttributeColumn[] columns;
