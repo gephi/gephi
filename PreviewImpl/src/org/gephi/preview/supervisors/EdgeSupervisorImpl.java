@@ -63,8 +63,8 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
     public void addEdge(EdgeImpl edge) {
         getSupervisedEdges().add(edge);
         colorEdge(edge);
-        colorEdgeLabel(edge);
         updateEdgeLabelValue(edge);
+        colorEdgeLabel(edge);
         adjustEdgeLabelFont(edge);
 
         if (visualizationController == null) {
@@ -278,7 +278,7 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * @param edge  the edge to shorten the label
      */
     private void shortenEdgeLabel(EdgeImpl edge) {
-        if (edge.hasLabel()) {
+        if (edge.getLabel() != null && edge.getLabel().getOriginalValue() != null) {
             shortenEdgeLabel(edge.getLabel());
         }
     }
@@ -307,7 +307,7 @@ public abstract class EdgeSupervisorImpl implements EdgeSupervisor {
      * @param edge  the edge to revert the label
      */
     private void revertEdgeLabel(EdgeImpl edge) {
-        if (edge.hasLabel()) {
+        if (edge.getLabel() != null && edge.getLabel().getOriginalValue() != null) {
             revertEdgeLabel(edge.getLabel());
         }
     }
