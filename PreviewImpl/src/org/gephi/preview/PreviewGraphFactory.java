@@ -24,6 +24,7 @@ import java.util.HashMap;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicController;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.HierarchicalMixedGraph;
@@ -383,6 +384,7 @@ public class PreviewGraphFactory {
      * @return              true if the source edge is bidirectional
      */
     private boolean isBidirectional(org.gephi.graph.api.MixedGraph sourceGraph, org.gephi.graph.api.Edge sourceEdge) {
-        return sourceGraph.getEdge(sourceEdge.getTarget(), sourceEdge.getSource()) != null;
+        Edge edge=sourceGraph.getEdge(sourceEdge.getTarget(), sourceEdge.getSource());
+        return edge!=null && edge.getTarget()==sourceEdge.getSource();
     }
 }
