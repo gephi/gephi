@@ -31,7 +31,6 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.openide.util.Lookup;
 
 /**
  * <p>This interface defines part of the Data Laboratory API basic actions.</p>
@@ -359,7 +358,7 @@ public interface AttributeColumnsController {
      * <p>Method for importing csv data to edges table.</p>
      * <p>Column named 'Source' and 'Target' (case insensitive) should be provided. Any row that does not provide a source and target nodes ids will be ignored.</p>
      * <p>If no 'Type' (case insensitive) column is provided, all edges will be directed.</p>
-     * <p>If an edge already exists or cannot be created, it will be ignored, and no data will be updated.</p>
+     * <p>If an edge already exists and cannot be created, it will be ignored but the weight of the existing edge will be increased with each repetition.</p>
      *
      * <p>Special cases are id, source, target and type columns:
      * <ul>

@@ -637,6 +637,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     for (AttributeColumn column : columnsList) {
                         setAttributeValue(reader.get(column.getTitle()), edgeAttributes, column);
                     }
+                }else{
+                    //Do not ignore repeated edge, instead increase edge weight
+                    edge=graph.getEdge(source, target);
+                    if(edge!=null){
+                        edge.getEdgeData().getAttributes().setValue(PropertiesColumn.EDGE_WEIGHT.getIndex(), edge.getWeight()+1);
+                    }
                 }
             }
         } catch (FileNotFoundException ex) {
