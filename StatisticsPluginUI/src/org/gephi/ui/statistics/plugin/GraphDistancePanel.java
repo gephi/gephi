@@ -36,6 +36,9 @@ public class GraphDistancePanel extends javax.swing.JPanel {
 
     public void setDirected(boolean directed) {
         directedButtonGroup.setSelected(directed ? directedRadioButton.getModel() : undirectedRadioButton.getModel(), true);
+        if (!directed) {
+            directedRadioButton.setEnabled(false);
+        }
     }
     public boolean normalize(){
         return this.normalizeButton.isSelected();

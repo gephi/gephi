@@ -37,7 +37,10 @@ public class EigenvectorCentralityPanel extends javax.swing.JPanel {
 
     public void setDirected(boolean pDirected){
         this.jRadioButton1.setSelected(pDirected);
-        this.jRadioButton1.setSelected(!pDirected);
+        this.jRadioButton2.setSelected(!pDirected);
+        if (!pDirected) {
+            jRadioButton1.setEnabled(false);
+        }
     }
 
     public void setNumRuns(int mRuns){

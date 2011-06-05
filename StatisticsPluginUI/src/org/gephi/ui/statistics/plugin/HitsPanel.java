@@ -44,6 +44,9 @@ public class HitsPanel extends javax.swing.JPanel {
 
     public void setDirected(boolean directed) {
         directedButtonGroup.setSelected(directed ? directedRadioButton.getModel() : undirectedRadioButton.getModel(), true);
+        if (!directed) {
+            directedRadioButton.setEnabled(false);
+        }
     }
 
     public void setEpsilon(double epsilon) {

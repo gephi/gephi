@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
@@ -46,7 +46,7 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jXLabel3" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jXLabel3" alignment="0" pref="460" max="32767" attributes="0"/>
                   <Component id="jXLabel2" max="32767" attributes="0"/>
                   <Component id="jXLabel1" alignment="1" max="32767" attributes="0"/>
               </Group>
@@ -85,7 +85,7 @@
                   <Group type="102" attributes="0">
                       <Component id="jXLabel3" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
-                      <Component id="descriptionLabel" pref="14" max="32767" attributes="0"/>
+                      <Component id="descriptionLabel" max="32767" attributes="0"/>
                   </Group>
                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
               </Group>
