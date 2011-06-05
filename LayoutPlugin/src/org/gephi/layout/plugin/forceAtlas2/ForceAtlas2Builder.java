@@ -1,6 +1,6 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Helder Suzuki <heldersuzuki@gephi.org>
+Copyright 2008-2011 Gephi
+Authors : Mathieu Jacomy <mathieu.jacomy@gmail.com>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,7 +18,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.layout.plugin.forceAtlas;
+package org.gephi.layout.plugin.forceAtlas2;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
@@ -29,46 +29,55 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
- * @author Helder Suzuki <heldersuzuki@gephi.org>
+ * Layout Builder
+ * @author Mathieu Jacomy
  */
 @ServiceProvider(service = LayoutBuilder.class)
-public class ForceAtlas implements LayoutBuilder {
+public class ForceAtlas2Builder implements LayoutBuilder {
 
-    private ForceAtlasLayoutUI ui = new ForceAtlasLayoutUI();
+    private ForceAtlas2UI ui = new ForceAtlas2UI();
 
+    @Override
     public String getName() {
-        return NbBundle.getMessage(ForceAtlasLayout.class, "name");
+        return NbBundle.getMessage(ForceAtlas2.class, "ForceAtlas2.name");
     }
 
-    public ForceAtlasLayout buildLayout() {
-        return new ForceAtlasLayout(this);
-    }
-
+    @Override
     public LayoutUI getUI() {
         return ui;
     }
 
-    private static class ForceAtlasLayoutUI implements LayoutUI {
+    @Override
+    public ForceAtlas2 buildLayout() {
+        ForceAtlas2 layout = new ForceAtlas2(this);
+        return layout;
+    }
 
+    private class ForceAtlas2UI implements LayoutUI {
+
+        @Override
         public String getDescription() {
-            return NbBundle.getMessage(ForceAtlas.class, "description");
+            return NbBundle.getMessage(ForceAtlas2.class, "ForceAtlas2.description");
         }
 
+        @Override
         public Icon getIcon() {
             return null;
         }
 
+        @Override
         public JPanel getSimplePanel(Layout layout) {
             return null;
         }
 
+        @Override
         public int getQualityRank() {
-            return 5;
+            return 4;
         }
 
+        @Override
         public int getSpeedRank() {
-            return 3;
+            return 4;
         }
     }
 }
