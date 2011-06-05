@@ -519,7 +519,11 @@ public class DesktopImportControllerUI implements ImportControllerUI {
     private FileObject getArchivedFile(FileObject fileObject) {
         // ZIP and JAR archives
         if (FileUtil.isArchiveFile(fileObject)) {
-            fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
+            try {
+                fileObject = FileUtil.getArchiveRoot(fileObject).getChildren()[0];
+            } catch (Exception e) {
+                throw new RuntimeException("The archive can't be opened, be sure it has no password and contains a single file, without folders");
+            }
         } else { // GZ or BZIP2 archives
             boolean isGz = fileObject.getExt().equalsIgnoreCase("gz");
             boolean isBzip = fileObject.getExt().equalsIgnoreCase("bz2");
