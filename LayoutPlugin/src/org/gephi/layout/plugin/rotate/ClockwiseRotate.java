@@ -38,7 +38,7 @@ public class ClockwiseRotate implements LayoutBuilder {
     private ClockwiseRotateLayoutUI ui = new ClockwiseRotateLayoutUI();
 
     public Layout buildLayout() {
-        return new RotateLayout(this, -90);
+        return new RotateLayout(this, 90);
     }
 
     public String getName() {
