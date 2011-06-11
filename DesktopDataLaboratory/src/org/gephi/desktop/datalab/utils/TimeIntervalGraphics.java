@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Mathieu Jacomy, Julian Bilcke, Eduardo Ramos
+Authors : Eduardo Ramos
 Website : http://www.gephi.org
 
 This file is part of Gephi.

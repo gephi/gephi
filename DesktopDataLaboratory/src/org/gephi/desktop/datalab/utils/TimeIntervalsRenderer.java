@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Eduardo Ramos
+Authors : Eduardo Ramos
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -32,6 +32,7 @@ import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 
 /**
  * TableCellRenderer for drawing time intervals graphics from cells that have a TimeInterval as their value.
+ * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class TimeIntervalsRenderer extends DefaultTableCellRenderer {
 

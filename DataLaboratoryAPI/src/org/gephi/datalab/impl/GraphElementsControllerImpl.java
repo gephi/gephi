@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
@@ -464,7 +465,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         //Copy attributes:
         AttributeRow row = (AttributeRow) nodeData.getAttributes();
         for (int i = 0; i < row.countValues(); i++) {
-            if (row.getValues()[i].getColumn().getOrigin() == AttributeOrigin.DATA) {
+            if (row.getValues()[i].getColumn().getIndex()!=PropertiesColumn.NODE_ID.getIndex()) {
                 copyData.getAttributes().setValue(i, row.getValue(i));
             }
         }

@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Eduardo Ramos
+Authors : Eduardo Ramos
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -36,6 +36,7 @@ import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 
 /**
  * TableCellRenderer for drawing sparklines from cells that have a NumberList or DynamicNumber as their value.
+ * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class SparkLinesRenderer extends DefaultTableCellRenderer {
 

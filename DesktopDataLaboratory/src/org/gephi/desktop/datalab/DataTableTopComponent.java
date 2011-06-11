@@ -1179,6 +1179,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         controlToolbar.add(edgesButton);
         controlToolbar.add(separator);
 
+        configurationButton.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         configurationButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/datalab/resources/gear-small.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(configurationButton, org.openide.util.NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.configurationButton.text")); // NOI18N
         configurationButton.setFocusable(false);

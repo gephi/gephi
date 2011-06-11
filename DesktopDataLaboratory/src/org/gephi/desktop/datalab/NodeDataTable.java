@@ -76,6 +76,7 @@ import org.gephi.graph.api.Attributes;
 import org.gephi.tools.api.EditWindowController;
 import org.gephi.desktop.datalab.utils.PopupMenuUtils;
 import org.gephi.desktop.datalab.utils.SparkLinesRenderer;
+import org.gephi.desktop.datalab.utils.TimeIntervalCellEditor;
 import org.gephi.desktop.datalab.utils.TimeIntervalsRenderer;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
@@ -100,6 +101,7 @@ public class NodeDataTable {
     private static final int FAKE_COLUMNS_COUNT = 1;
     private SparkLinesRenderer sparkLinesRenderer;
     private TimeIntervalsRenderer timeIntervalsRenderer;
+    private TimeIntervalCellEditor timeIntervalCellEditor;
     private TimeFormat currentTimeFormat;
 
     public NodeDataTable() {
@@ -195,7 +197,7 @@ public class NodeDataTable {
         outlineTable.setDefaultEditor(DynamicInteger.class, new DefaultCellEditor(new JTextField()));
         outlineTable.setDefaultEditor(DynamicLong.class, new DefaultCellEditor(new JTextField()));
         outlineTable.setDefaultEditor(DynamicShort.class, new DefaultCellEditor(new JTextField()));
-        outlineTable.setDefaultEditor(TimeInterval.class, new DefaultCellEditor(new JTextField()));
+        outlineTable.setDefaultEditor(TimeInterval.class, timeIntervalCellEditor=new TimeIntervalCellEditor(new JTextField()));
     }
 
     public Outline getOutlineTable() {
@@ -234,6 +236,7 @@ public class NodeDataTable {
             timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
             currentTimeFormat = dm.getTimeFormat();
             timeIntervalsRenderer.setTimeFormat(currentTimeFormat);
+            timeIntervalCellEditor.setTimeFormat(currentTimeFormat);
             sparkLinesRenderer.setTimeFormat(currentTimeFormat);
         }
         timeIntervalsRenderer.setDrawGraphics(timeIntervalGraphics);

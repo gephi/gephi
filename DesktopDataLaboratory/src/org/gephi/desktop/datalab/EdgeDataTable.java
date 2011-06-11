@@ -70,6 +70,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.gephi.desktop.datalab.utils.PopupMenuUtils;
 import org.gephi.desktop.datalab.utils.SparkLinesRenderer;
+import org.gephi.desktop.datalab.utils.TimeIntervalCellEditor;
 import org.gephi.desktop.datalab.utils.TimeIntervalsRenderer;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
@@ -95,6 +96,7 @@ public class EdgeDataTable {
     private static final int FAKE_COLUMNS_COUNT = 3;
     private EdgeDataTableModel model;
     private TimeIntervalsRenderer timeIntervalsRenderer;
+    private TimeIntervalCellEditor timeIntervalCellEditor;
     private TimeFormat currentTimeFormat;
     private SparkLinesRenderer sparkLinesRenderer;
 
@@ -230,6 +232,7 @@ public class EdgeDataTable {
         table.setDefaultEditor(DynamicLong.class, new DefaultCellEditor(new JTextField()));
         table.setDefaultEditor(DynamicShort.class, new DefaultCellEditor(new JTextField()));
         table.setDefaultEditor(TimeInterval.class, new DefaultCellEditor(new JTextField()));
+        table.setDefaultEditor(TimeInterval.class, timeIntervalCellEditor=new TimeIntervalCellEditor(new JTextField()));
     }
 
     public JXTable getTable() {
@@ -256,6 +259,7 @@ public class EdgeDataTable {
             timeIntervalsRenderer.setMinMax(dm.getMin(), dm.getMax());
             currentTimeFormat = dm.getTimeFormat();
             timeIntervalsRenderer.setTimeFormat(currentTimeFormat);
+            timeIntervalCellEditor.setTimeFormat(currentTimeFormat);
             sparkLinesRenderer.setTimeFormat(currentTimeFormat);
         }
         timeIntervalsRenderer.setDrawGraphics(timeIntervalGraphics);

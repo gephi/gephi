@@ -69,6 +69,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="configurationButton">
           <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tahoma" size="11" style="1"/>
+            </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/org/gephi/desktop/datalab/resources/gear-small.png"/>
             </Property>
