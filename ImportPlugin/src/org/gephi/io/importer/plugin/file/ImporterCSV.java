@@ -198,6 +198,7 @@ public class ImporterCSV implements FileImporter, LongTask {
             edge = container.factory().newEdgeDraft();
             edge.setSource(sourceNode);
             edge.setTarget(targetNode);
+            edge.setWeight(weight);
             container.addEdge(edge);
         } else {
             edge.setWeight(edge.getWeight() + weight);
