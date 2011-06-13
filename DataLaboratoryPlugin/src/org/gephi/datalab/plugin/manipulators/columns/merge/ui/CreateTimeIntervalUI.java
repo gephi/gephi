@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -93,6 +94,10 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         dateFormatComboBox.addItem("MM/dd/yyyy");
         dateFormatComboBox.setSelectedIndex(0);
     }
+    
+    private AttributeColumn getComboBoxColumn(JComboBox comboBox){
+        return ((ColumnWrapper) comboBox.getSelectedItem()).column;
+    }
 
     private void readSavedParameters() {
         parseNumbersRadioButton.setSelected(NbPreferences.forModule(CreateTimeIntervalUI.class).getBoolean(PARSE_NUMBERS_SAVED_PARAMETER, true));
@@ -144,6 +149,10 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         startColumnComboBox.addItem(column2);
         endColumnComboBox.addItem(column1);
         endColumnComboBox.addItem(column2);
+        if(columns.length==2){//Make possible to choose null column even when 2 columns were chosen to merge 
+            startColumnComboBox.addItem(new ColumnWrapper(null));
+            endColumnComboBox.addItem(new ColumnWrapper(null));
+        }
         readSavedParameters();
         refreshTimeParseMode();
         refreshOkButton();
@@ -153,8 +162,8 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
         if (dialogControls.isOkButtonEnabled()) {
             boolean parseNumbers = parseNumbersRadioButton.isSelected();
             manipulator.setParseNumbers(parseNumbers);
-            manipulator.setStartColumn(((ColumnWrapper) startColumnComboBox.getSelectedItem()).column);
-            manipulator.setEndColumn(((ColumnWrapper) endColumnComboBox.getSelectedItem()).column);
+            manipulator.setStartColumn(getComboBoxColumn(startColumnComboBox));
+            manipulator.setEndColumn(getComboBoxColumn(endColumnComboBox));
             if (parseNumbers) {
                 if (defaultStartNumberText.getText().trim().isEmpty()) {
                     manipulator.setStartNumber(Double.NEGATIVE_INFINITY);
@@ -212,7 +221,8 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
 
     private void refreshOkButton() {
         boolean enabled=validateNumberOrEmpty(defaultStartNumberText);
-        enabled=validateNumberOrEmpty(defaultEndNumberText)&&enabled;
+        enabled&=validateNumberOrEmpty(defaultEndNumberText);
+        enabled&=getComboBoxColumn(startColumnComboBox)!=null || getComboBoxColumn(endColumnComboBox)!=null;//At least 1 column not null
         dialogControls.setOkButtonEnabled(enabled);
     }
 
@@ -423,20 +433,13 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
     }//GEN-LAST:event_parseDatesRadioButtonActionPerformed
 
     private void startColumnComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startColumnComboBoxActionPerformed
-        if (startColumnComboBox.getSelectedItem() == column1) {
-            endColumnComboBox.setSelectedItem(column2);
-        } else {
-            endColumnComboBox.setSelectedItem(column1);
-        }
+        refreshOkButton();
     }//GEN-LAST:event_startColumnComboBoxActionPerformed
 
     private void endColumnComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endColumnComboBoxActionPerformed
-        if (endColumnComboBox.getSelectedItem() == column1) {
-            startColumnComboBox.setSelectedItem(column2);
-        } else {
-            startColumnComboBox.setSelectedItem(column1);
-        }
+        refreshOkButton();
     }//GEN-LAST:event_endColumnComboBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JLabel dateDefaultEndLabel;
