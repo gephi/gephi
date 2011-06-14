@@ -27,29 +27,47 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
+import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.util.NbBundle;
 
 /**
  *
- * @author danielb
+ * @author Daniel Bernardes
  */
 public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask {
 
     // Options
-    private boolean nodeCoords = true;
-    private boolean edgeWeight = true;
+    private boolean exportPosition = true;
+    private boolean exportEdgeWeight = true;
     // Architecture
     private Workspace workspace;
     private Writer writer;
     private boolean exportVisible;
     private boolean cancel = false;
     private ProgressTicket progressTicket;
+    
+    public void setExportEdgeWeight(boolean exportEdgeWeight) {
+        this.exportEdgeWeight = exportEdgeWeight;
+    }
+    
+    public boolean isExportEdgeWeight() {
+        return exportEdgeWeight;
+    }
 
+    public void setExportPosition(boolean exportPosition) {
+        this.exportPosition = exportPosition;
+    }
+    
+    public boolean isExportPosition() {
+        return exportPosition;
+    }
+    
     public boolean cancel() {
         cancel = true;
         return true;
@@ -77,6 +95,15 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
 
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
+    }
+    
+    public String getName() {
+        return NbBundle.getMessage(getClass(), "ExporterPajek_name");
+    }
+
+    public FileType[] getFileTypes() {
+        FileType ft = new FileType(".net", NbBundle.getMessage(getClass(), "fileType_Pajek_Name"));
+        return new FileType[]{ft};
     }
 
     public boolean execute() {
@@ -108,7 +135,7 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
         for (Node node : graph.getNodes()) {
             writer.append(Integer.toString(i));
             writer.append(" \"" + node.getNodeData().getLabel() + "\"");
-            if(nodeCoords) {
+            if(exportPosition) {
                 writer.append(" "+node.getNodeData().x()+" "+node.getNodeData().y()+" "+node.getNodeData().z());
             }
             writer.append("\n");
@@ -128,7 +155,7 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
             if (edge != null) {
                 writer.append(Integer.toString(idx.get(edge.getSource().getNodeData().getId())) + " ");
                 writer.append(Integer.toString(idx.get(edge.getTarget().getNodeData().getId())));
-                if (edgeWeight) {
+                if (exportEdgeWeight) {
                     writer.append(" " + edge.getWeight());
                 }
                 writer.append("\n");
@@ -141,4 +168,5 @@ public class ExporterPajek implements GraphExporter, CharacterExporter, LongTask
 
         Progress.finish(progressTicket);
     }
+
 }

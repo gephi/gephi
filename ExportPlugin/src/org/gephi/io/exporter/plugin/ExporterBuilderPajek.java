@@ -28,7 +28,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * @author danielb
+ * @author Daniel Bernardes
  */
 @ServiceProvider(service = GraphFileExporterBuilder.class)
 public class ExporterBuilderPajek implements GraphFileExporterBuilder {
@@ -38,11 +38,11 @@ public class ExporterBuilderPajek implements GraphFileExporterBuilder {
     }
 
     public FileType[] getFileTypes() {
-        FileType ft = new FileType(".net", "Pajek files");
+        FileType ft = new FileType(".net", NbBundle.getMessage(ExporterBuilderCSV.class, "fileType_Pajek_Name"));
         return new FileType[]{ft};
     }
 
     public String getName() {
-        return "NET";
+        return "Pajek";
     }
 }
