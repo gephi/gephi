@@ -46,10 +46,11 @@ public final class ImporterBuilderCSV implements FileImporterBuilder {
 
     public FileType[] getFileTypes() {
         FileType ft = new FileType(".csv", NbBundle.getMessage(getClass(), "fileType_CSV_Name"));
-        return new FileType[]{ft};
+        FileType ft2 = new FileType(".edges", NbBundle.getMessage(getClass(), "fileType_Edges_Name"));
+        return new FileType[]{ft, ft2};
     }
 
     public boolean isMatchingImporter(FileObject fileObject) {
-        return fileObject.getExt().equalsIgnoreCase("csv");
+        return fileObject.getExt().equalsIgnoreCase("csv") || fileObject.getExt().equalsIgnoreCase("edges");
     }
 }
