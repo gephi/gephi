@@ -106,6 +106,7 @@ public class EqualStringPanel extends javax.swing.JPanel implements ActionListen
         regexCheckbox = new javax.swing.JCheckBox();
         okButton = new javax.swing.JButton();
 
+        setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
 
         labelPattern.setText(org.openide.util.NbBundle.getMessage(EqualStringPanel.class, "EqualStringPanel.labelPattern.text")); // NOI18N

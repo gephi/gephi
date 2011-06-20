@@ -69,6 +69,8 @@ public class EqualBooleanPanel extends javax.swing.JPanel implements ActionListe
         trueButton = new javax.swing.JToggleButton();
         falseButton = new javax.swing.JToggleButton();
 
+        setOpaque(false);
+
         group.add(trueButton);
         trueButton.setText(org.openide.util.NbBundle.getMessage(EqualBooleanPanel.class, "EqualBooleanPanel.trueButton.text")); // NOI18N
         add(trueButton);

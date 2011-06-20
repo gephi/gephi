@@ -130,6 +130,7 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
         minLabel = new javax.swing.JLabel();
         maxLabel = new javax.swing.JLabel();
 
+        setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
 
         labelValue.setText(org.openide.util.NbBundle.getMessage(EqualNumberPanel.class, "EqualNumberPanel.labelValue.text")); // NOI18N
