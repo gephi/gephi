@@ -63,12 +63,12 @@ public class AttributeClassTest {
 
     @Before
     public void setUp() {
-        manager = new TemporaryAttributeModel();
+        manager = new TemporaryAttributeModel();//Id and Label columns are automatically created at indexes 0 and 1
         nodeClass = manager.getNodeTable();
         factory = new AttributeFactoryImpl(manager);
         columnMap = new HashMap<String, AttributeColumnImpl>();
         rows = new ArrayList<AttributeRowImpl>();
-
+        
         AttributeColumnImpl co1 = nodeClass.addColumn("col1", "Column 1", AttributeType.STRING, AttributeOrigin.DATA, "nil");
         AttributeColumnImpl co2 = nodeClass.addColumn("col2", "Column 2", AttributeType.INT, AttributeOrigin.PROPERTY, 0);
         AttributeColumnImpl co3 = nodeClass.addColumn("col3", "Column 3", AttributeType.LIST_STRING, AttributeOrigin.DATA, new StringList("nothing", ","));
@@ -89,7 +89,7 @@ public class AttributeClassTest {
             r.setValue(co1, "col1value " + i);
             r.setValue("col2", i);
             r.setValue("Column 3", null);
-            r.setValue(3, "col4value " + i);
+            r.setValue(5, "col4value " + i);
             r.setValue(factory.newValue(co5, false));
             rows.add(r);
         }
@@ -105,7 +105,7 @@ public class AttributeClassTest {
     public void testGetColumn() {
         assertSame(columnMap.get("col1"), nodeClass.getColumn("col1"));
         assertSame(columnMap.get("col1"), nodeClass.getColumn("Column 1"));
-        assertSame(columnMap.get("col1"), nodeClass.getColumn(0));
+        assertSame(columnMap.get("col1"), nodeClass.getColumn(2));
         assertTrue(nodeClass.hasColumn("col1"));
         assertTrue(nodeClass.hasColumn("Column 1"));
     }
