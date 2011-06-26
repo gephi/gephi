@@ -130,16 +130,20 @@
         <property name="toolkit.tempdir" value="${toolkit.dir}/${toolkit.jar.name}"/>
         <mkdir dir="${toolkit.tempdir}"/>
         <property name="toolkit.platformdir" value="${platform.dir}"/>
+        <copy file="${toolkit.platformdir}/core/core.jar" tofile="${toolkit.tempdir}/core-netbeans.jar"/>
         <copy file="${toolkit.platformdir}/core/org-openide-filesystems.jar" todir="${toolkit.tempdir}"/>
         <copy file="${toolkit.platformdir}/lib/org-openide-util.jar" todir="${toolkit.tempdir}"/>
         <copy file="${toolkit.platformdir}/lib/org-openide-util-lookup.jar" todir="${toolkit.tempdir}"/>
+        <copy file="${toolkit.platformdir}/lib/org-openide-modules.jar" todir="${toolkit.tempdir}"/>
         <copy todir="${toolkit.tempdir}">
             <fileset dir="${toolkit.platformdir}/modules">
                 <include name="org-openide-nodes.jar"/>
                 <include name="org-netbeans-modules-masterfs.jar"/>
                 <include name="org-openide-dialogs.jar"/>
+                <include name="org-netbeans-modules-queries.jar"/>
             </fileset>
         </copy>
+        <copy file="${toolkit.platformdir}/modules/ext/jna-3.2.7.jar" todir="${toolkit.tempdir}"/>
         <copy todir="${toolkit.tempdir}">
             <fileset dir="${build.dir}">
                 <include name="org-gephi-algorithms.jar"/>
@@ -208,6 +212,7 @@
                 <provider classname="org.netbeans.modules.masterfs.MasterURLMapper"/>
                 <provider classname="org.netbeans.modules.openide.filesystems.DefaultURLMapperProxy"/>
                 <provider classname="org.openide.filesystems.MemoryFileSystem$Mapper"/>
+                <provider classname="org.netbeans.core.startup.layers.ArchiveURLMapper"/>
             </service>
             
             <service type="javax.annotation.processing.Processor">
@@ -239,6 +244,11 @@
                 <provider classname="org.gephi.graph.dhns.DhnsDuplicateProvider"/>
             </service>
                 
+            <!-- These are services from core.startup modules. We disable them because they deal with the startup only -->
+            <service type="org.openide.util.Lookup" provider="" />
+            <service type="org.openide.filesystems.Repository" provider="" />
+            <service type="org.openide.util.NbPreferences$Provider" provider="" />
+            
             <manifest>
             </manifest>
         </jar>
