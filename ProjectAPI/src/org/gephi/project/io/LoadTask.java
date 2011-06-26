@@ -56,7 +56,7 @@ public class LoadTask implements LongTask, Runnable {
     public void run() {
         try {
             Progress.start(progressTicket);
-            Progress.setDisplayName(progressTicket, NbBundle.getMessage(SaveTask.class, "LoadTask.name"));
+            Progress.setDisplayName(progressTicket, NbBundle.getMessage(LoadTask.class, "LoadTask.name"));
             FileObject fileObject = FileUtil.toFileObject(file);
             if (FileUtil.isArchiveFile(fileObject)) {
                 //Unzip
