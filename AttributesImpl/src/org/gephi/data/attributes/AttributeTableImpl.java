@@ -107,7 +107,7 @@ public class AttributeTableImpl implements AttributeTable {
         columns.add(column);
         columnsMap.put(id, column);
         if (title != null && !title.equals(id)) {
-            columnsMap.put(title.toLowerCase(), column);
+            columnsMap.put(title, column);
         }
         columnsSet.put(column, column);
 
