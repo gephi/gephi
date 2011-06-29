@@ -143,7 +143,11 @@
                 <include name="org-netbeans-modules-queries.jar"/>
             </fileset>
         </copy>
-        <copy file="${toolkit.platformdir}/modules/ext/jna-3.2.7.jar" todir="${toolkit.tempdir}"/>
+        <copy todir="${toolkit.tempdir}">
+            <fileset dir="${toolkit.platformdir}/modules/ext/">
+                <include name="jna-*.jar"/>
+            </fileset>
+        </copy>
         <copy todir="${toolkit.tempdir}">
             <fileset dir="${build.dir}">
                 <include name="org-gephi-algorithms.jar"/>
