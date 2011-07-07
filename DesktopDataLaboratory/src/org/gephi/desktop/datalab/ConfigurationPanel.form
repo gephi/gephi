@@ -16,15 +16,18 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Component id="onlyVisibleCheckBox" alignment="0" max="32767" attributes="1"/>
-                  <Component id="useSparklinesCheckBox" alignment="0" max="32767" attributes="1"/>
-                  <Component id="showEdgesNodesLabelsCheckBox" alignment="0" max="32767" attributes="1"/>
-                  <Component id="timeIntervalsGraphicsCheckBox" alignment="0" max="32767" attributes="1"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="onlyVisibleCheckBox" alignment="0" max="32767" attributes="1"/>
+                      <Component id="useSparklinesCheckBox" alignment="0" max="32767" attributes="1"/>
+                      <Component id="showEdgesNodesLabelsCheckBox" alignment="0" max="32767" attributes="1"/>
+                      <Component id="timeIntervalsGraphicsCheckBox" alignment="0" max="32767" attributes="1"/>
+                  </Group>
+                  <Component id="timeIntervalsAsDates" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="44" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -35,6 +38,8 @@
               <Component id="onlyVisibleCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="useSparklinesCheckBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="timeIntervalsAsDates" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="timeIntervalsGraphicsCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -83,6 +88,16 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="timeIntervalsGraphicsCheckBoxActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="timeIntervalsAsDates">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/desktop/datalab/Bundle.properties" key="ConfigurationPanel.timeIntervalsAsDates.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="timeIntervalsAsDatesActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

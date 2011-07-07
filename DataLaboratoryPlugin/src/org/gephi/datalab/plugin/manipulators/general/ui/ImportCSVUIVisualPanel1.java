@@ -458,7 +458,7 @@ public class ImportCSVUIVisualPanel1 extends javax.swing.JPanel {
     private void fileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileButtonActionPerformed
         String lastPath = NbPreferences.forModule(ImportCSVUIVisualPanel1.class).get(LAST_PATH, null);
         final JFileChooser chooser = new JFileChooser(lastPath);
-        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setAcceptAllFileFilterUsed(true);
         DialogFileFilter dialogFileFilter = new DialogFileFilter(NbBundle.getMessage(ImportCSVUIVisualPanel1.class, "ImportCSVUIVisualPanel1.filechooser.csvDescription"));
         dialogFileFilter.addExtension("csv");
         chooser.addChoosableFileFilter(dialogFileFilter);
