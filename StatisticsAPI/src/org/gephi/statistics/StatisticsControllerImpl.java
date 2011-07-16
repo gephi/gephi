@@ -107,7 +107,7 @@ public class StatisticsControllerImpl implements StatisticsController {
         model.setRunning(pStatistics, true);
 
         if (pStatistics instanceof LongTask) {
-            LongTaskExecutor executor = new LongTaskExecutor(true, builder.getName(), 10);
+            LongTaskExecutor executor = new LongTaskExecutor(true, "Statistics "+builder.getName(), 10);
 //            executor.addLongTaskListener(this);
             if (listener != null) {
                 executor.setLongTaskListener(listener);

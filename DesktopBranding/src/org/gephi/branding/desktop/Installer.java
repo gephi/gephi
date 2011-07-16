@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.branding.desktop;
 
 import java.util.logging.Logger;
@@ -26,6 +26,7 @@ import org.gephi.branding.desktop.reporter.ReporterHandler;
 import org.gephi.project.api.ProjectController;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
 
 /**
@@ -45,7 +46,15 @@ public class Installer extends ModuleInstall {
         UIManager.put("Slider.paintValue", Boolean.FALSE);
 
         //Handler
-        Logger.getLogger("").addHandler(new ReporterHandler());
+        if (NbPreferences.forModule(Installer.class).getBoolean("CrashReporter.enabled", true)) {
+            Logger.getLogger("").addHandler(new ReporterHandler());
+        }
+
+        //Memory Starvation Manager
+        if (NbPreferences.forModule(Installer.class).getBoolean("MemoryStarvationManager.enabled", true)) {
+            MemoryStarvationManager memoryStarvationManager = new MemoryStarvationManager();
+            memoryStarvationManager.startup();
+        }
     }
 
     private void initGephi() {

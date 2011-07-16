@@ -51,6 +51,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
     protected float[] cameraTarget;
     protected double[] draggingMarker = new double[2];//The drag mesure for a moving of 1 to the viewport
     protected Vec3f cameraVector = new Vec3f();
+    protected MouseAdapter graphMouseAdapter;
 
     public GraphDrawableImpl() {
         super();
@@ -69,7 +70,7 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
         if (vizController.getVizConfig().isReduceFpsWhenMouseOut()) {
             final int minVal = vizController.getVizConfig().getReduceFpsWhenMouseOutValue();
             final int maxVal = 30;
-            graphComponent.addMouseListener(new MouseAdapter() {
+            graphMouseAdapter = new MouseAdapter() {
 
                 private float lastTarget = 0.1f;
 
@@ -97,9 +98,10 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
                     lastTarget = target;
                     scheduler.setFps(target);
                 }
-            });
+            };
+            graphComponent.addMouseListener(graphMouseAdapter);
         } else if (vizController.getVizConfig().isPauseLoopWhenMouseOut()) {
-            graphComponent.addMouseListener(new MouseAdapter() {
+            graphMouseAdapter = new MouseAdapter() {
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
@@ -110,7 +112,8 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
                 public void mouseExited(MouseEvent e) {
                     engine.stopDisplay();
                 }
-            });
+            };
+            graphComponent.addMouseListener(graphMouseAdapter);
         }
     }
 
@@ -119,6 +122,12 @@ public class GraphDrawableImpl extends GLAbstractListener implements VizArchitec
         //System.out.println("init");
         graphComponent.setCursor(Cursor.getDefaultCursor());
         engine.initEngine(gl, glu);
+    }
+    
+    public void destroy() {
+        if(graphMouseAdapter != null) {
+            graphComponent.removeMouseListener(graphMouseAdapter);
+        }
     }
 
     public void refreshDraggingMarker() {
