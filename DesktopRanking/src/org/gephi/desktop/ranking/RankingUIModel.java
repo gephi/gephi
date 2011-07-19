@@ -45,6 +45,7 @@ public class RankingUIModel implements RankingListener {
     public static final String BARCHART_VISIBLE = "barChartVisible";
     public static final String CURRENT_ELEMENT_TYPE = "currentElementType";
     public static final String RANKINGS = "rankings";
+    public static final String APPLY_TRANSFORMER = "applyTransformer";
     //Current model
     private String currentElementType;
     private final Map<String, Ranking> currentRanking;
@@ -63,17 +64,22 @@ public class RankingUIModel implements RankingListener {
         model = rankingModel;
         controller = rankingUIController;
         currentElementType = Ranking.NODE_ELEMENT;
+        listVisible = false;
 
         //Set default transformer - the first
         for (String elementType : controller.getElementTypes()) {
             currentTransformer.put(elementType, controller.getTransformers(elementType)[0]);
         }
-        
+
         model.addRankingListener(this);
     }
 
     public void rankingChanged(RankingEvent event) {
-        firePropertyChangeEvent(RANKINGS, null, null);
+        if (event.is(RankingEvent.EventType.REFRESH_RANKING)) {
+            firePropertyChangeEvent(RANKINGS, null, null);
+        } else if (event.is(RankingEvent.EventType.APPLY_TRANSFORMER)) {
+            firePropertyChangeEvent(APPLY_TRANSFORMER, null, null);
+        }
     }
 
     public void setCurrentTransformer(Transformer transformer) {

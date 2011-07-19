@@ -44,7 +44,7 @@ public interface RankingEvent {
      */
     public enum EventType {
 
-        REFRESH_RANKING
+        REFRESH_RANKING, APPLY_TRANSFORMER
     };
 
     /**
@@ -58,6 +58,18 @@ public interface RankingEvent {
      * @return the source of the event
      */
     public RankingModel getSource();
+    
+    /**
+     * Returns the ranking associated to the event, or <code>null</code>.
+     * @return the ranking associated to the event or <code>null</code>
+     */
+    public Ranking getRanking();
+    
+    /**
+     * Returns the transformer associated to the event, or <code>null</code>.
+     * @return the ranking associated to the event or <code>null</code> 
+     */
+    public Transformer getTransformer();
 
     /**
      * Returns <code>true</code> if this event is one of these in parameters.

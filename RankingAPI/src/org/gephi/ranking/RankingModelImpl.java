@@ -144,7 +144,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         listeners.remove(listener);
     }
     
-    private void fireRankingListener(RankingEvent rankingEvent) {
+    public void fireRankingListener(RankingEvent rankingEvent) {
         for (RankingListener listener : listeners) {
             listener.rankingChanged(rankingEvent);
         }

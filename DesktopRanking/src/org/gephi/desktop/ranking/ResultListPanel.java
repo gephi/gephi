@@ -27,9 +27,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
@@ -39,10 +43,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -72,18 +80,53 @@ public class ResultListPanel extends JScrollPane {
     //Variable
     private JXTable table;
     private JPopupMenu popupMenu;
+    private RankingUIModel model;
+    private PropertyChangeListener rankingUiModelListener;
 
     public ResultListPanel() {
         initTable();
         initTablePopup();
     }
 
-    public void refreshTable(RankingUIModel model) {
+    public void select(RankingUIModel model) {
+        this.model = model;
+
+        refreshTable();
+
+        rankingUiModelListener = new PropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent pce) {
+                if (pce.getPropertyName().equals(RankingUIModel.APPLY_TRANSFORMER)) {
+                    refreshTable();
+                }
+            }
+        };
+        model.addPropertyChangeListener(rankingUiModelListener);
+    }
+
+    public void unselect() {
+        if (model != null) {
+            if (rankingUiModelListener != null) {
+                model.removePropertyChangeListener(rankingUiModelListener);
+            }
+        }
+        rankingUiModelListener = null;
+        model = null;
+    }
+
+    private void refreshTable() {
         Ranking ranking = model.getCurrentRanking();
         Transformer transformer = model.getCurrentTransformer();
 
-        if (isVisible()) {
+        if (model.isListVisible()) {
             fetchTable(ranking, transformer);
+        } else {
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                    table.setModel(new ResultListTableModel(new RankCell[0]));
+                }
+            });
         }
     }
 
@@ -103,6 +146,7 @@ public class ResultListPanel extends JScrollPane {
 
         table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(true);
+
         setViewportView(table);
     }
 
@@ -178,22 +222,20 @@ public class ResultListPanel extends JScrollPane {
     }
 
     private void fetchTable(Ranking ranking, Transformer transformer) {
-        List<RankCell> cells = new ArrayList<RankCell>();
-        List<String> labels = new ArrayList<String>();
+        final List<RankCell> cells = new ArrayList<RankCell>();
 
         if (ranking.getElementType().equals(Ranking.NODE_ELEMENT)) {
             GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
             Graph graph = graphController.getModel().getGraphVisible();
             for (Node n : graph.getNodes()) {
-                labels.add(n.getNodeData().getLabel());
-                String rank = ranking.getValue(n).toString();
+                Number rank = ranking.getValue(n);
                 if (transformer instanceof AbstractColorTransformer) {
                     Color c = new Color(n.getNodeData().r(), n.getNodeData().g(), n.getNodeData().b());
-                    RankCellColor rankCellColor = new RankCellColor(c, rank);
+                    RankCellColor rankCellColor = new RankCellColor(c, rank, n.getNodeData().getLabel());
                     cells.add(rankCellColor);
                 } else if (transformer instanceof AbstractSizeTransformer) {
                     float size = n.getNodeData().getSize();
-                    RankCellSize rankCellSize = new RankCellSize(size, rank);
+                    RankCellSize rankCellSize = new RankCellSize(size, rank, n.getNodeData().getLabel());
                     cells.add(rankCellSize);
                 }
             }
@@ -202,38 +244,53 @@ public class ResultListPanel extends JScrollPane {
             GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
             HierarchicalGraph graph = graphController.getModel().getHierarchicalGraphVisible();
             for (Edge e : graph.getEdgesAndMetaEdges()) {
-                labels.add(e.getEdgeData().getLabel());
-                String rank = ranking.getValue(e).toString();
+                Number rank = ranking.getValue(e);
                 if (transformer instanceof AbstractColorTransformer) {
                     Color c = new Color(e.getEdgeData().r(), e.getEdgeData().g(), e.getEdgeData().b());
-                    RankCellColor rankCellColor = new RankCellColor(c, rank);
+                    RankCellColor rankCellColor = new RankCellColor(c, rank, e.getEdgeData().getLabel());
                     cells.add(rankCellColor);
                 } else if (transformer instanceof AbstractSizeTransformer) {
                     float size = e.getEdgeData().getSize();
-                    RankCellSize rankCellSize = new RankCellSize(size, rank);
+                    RankCellSize rankCellSize = new RankCellSize(size, rank, e.getEdgeData().getLabel());
                     cells.add(rankCellSize);
                 }
             }
         }
 
+        Collections.sort(cells);
 
-        ResultListTableModel model = new ResultListTableModel(cells.toArray(new RankCell[0]), labels.toArray(new String[0]));
-        table.setDefaultRenderer(RankCell.class, new RankCellRenderer());
-        table.setModel(model);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                ResultListTableModel m = new ResultListTableModel(cells.toArray(new RankCell[0]));
+                table.setDefaultRenderer(RankCell.class, new RankCellRenderer());
+                TableRowSorter tableRowSorter = new TableRowSorter(m);
+                tableRowSorter.setComparator(0, new Comparator<RankCell>() {
+
+                    public int compare(RankCell t, RankCell t1) {
+                        return t.compareTo(t1);
+                    }
+                });
+                List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+                sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+                tableRowSorter.setSortKeys(sortKeys);
+
+                table.setRowSorter(tableRowSorter);
+                table.setModel(m);
+            }
+        });
     }
 
     private class ResultListTableModel implements TableModel {
 
         private RankCell[] ranks;
-        private String[] labels;
 
-        public ResultListTableModel(RankCell[] ranks, String[] labels) {
+        public ResultListTableModel(RankCell[] ranks) {
             this.ranks = ranks;
-            this.labels = labels;
         }
 
         public int getRowCount() {
-            return labels.length;
+            return ranks.length;
         }
 
         public int getColumnCount() {
@@ -242,9 +299,9 @@ public class ResultListPanel extends JScrollPane {
 
         public String getColumnName(int columnIndex) {
             if (columnIndex == 0) {
-                return "Rank";
+                return NbBundle.getMessage(ResultListPanel.class, "ResultListPanel.column.rank");
             } else {
-                return "Label";
+                return NbBundle.getMessage(ResultListPanel.class, "ResultListPanel.column.label");
             }
         }
 
@@ -264,7 +321,7 @@ public class ResultListPanel extends JScrollPane {
             if (columnIndex == 0) {
                 return ranks[rowIndex];
             } else {
-                return labels[rowIndex];
+                return ranks[rowIndex].getLabel();
             }
         }
 
@@ -272,7 +329,7 @@ public class ResultListPanel extends JScrollPane {
             if (columnIndex == 0) {
                 ranks[rowIndex] = (RankCell) aValue;
             } else {
-                labels[rowIndex] = (String) aValue;
+                ranks[rowIndex].setLabel((String) aValue);
             }
         }
 
@@ -283,19 +340,25 @@ public class ResultListPanel extends JScrollPane {
         }
     }
 
-    private static interface RankCell {
+    private static interface RankCell extends Comparable<RankCell> {
 
         public void render(JLabel label);
+
+        public String getLabel();
+
+        public void setLabel(String label);
     }
 
     private static class RankCellColor implements RankCell {
 
-        private Color color;
-        private Object rank;
+        private final Color color;
+        private final Number rank;
+        private String label;
 
-        public RankCellColor(Color color, Object rank) {
+        public RankCellColor(Color color, Number rank, String label) {
             this.color = color;
             this.rank = rank;
+            this.label = label;
         }
 
         public void render(JLabel label) {
@@ -303,20 +366,60 @@ public class ResultListPanel extends JScrollPane {
             label.setForeground(UIUtils.getForegroundColorForBackground(color));
             label.setText(rank.toString());
         }
+
+        public int compareTo(RankCell t) {
+            double d2 = rank.doubleValue();
+            double d1 = ((RankCellColor) t).rank.doubleValue();
+            if (d1 < d2) {
+                return -1;
+            } else if (d1 > d2) {
+                return 1;
+            }
+            return 0;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
     }
 
     private static class RankCellSize implements RankCell {
 
-        private Float size;
-        private Object rank;
+        private final Float size;
+        private final Number rank;
+        private String label;
 
-        public RankCellSize(Float size, Object rank) {
+        public RankCellSize(Float size, Number rank, String label) {
             this.size = size;
             this.rank = rank;
+            this.label = label;
         }
 
         public void render(JLabel label) {
             label.setText(rank.toString());
+        }
+
+        public int compareTo(RankCell t) {
+            double d2 = rank.doubleValue();
+            double d1 = ((RankCellSize) t).rank.doubleValue();
+            if (d1 < d2) {
+                return -1;
+            } else if (d1 > d2) {
+                return 1;
+            }
+            return 0;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
         }
     }
 

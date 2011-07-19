@@ -31,6 +31,7 @@ import org.gephi.project.api.WorkspaceListener;
 import org.gephi.ranking.api.Interpolator;
 import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.RankingController;
+import org.gephi.ranking.api.RankingEvent;
 import org.gephi.ranking.api.RankingModel;
 import org.gephi.ranking.spi.RankingBuilder;
 import org.gephi.ranking.api.Transformer;
@@ -142,5 +143,8 @@ public class RankingControllerImpl implements RankingController {
                 }
             }
         }
+        
+        //Send Event
+        model.fireRankingListener(new RankingEventImpl(RankingEvent.EventType.APPLY_TRANSFORMER, model, ranking, transformer));
     }
 }

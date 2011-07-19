@@ -38,7 +38,7 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 final class RankingTopComponent extends TopComponent implements Lookup.Provider, PropertyChangeListener {
-
+    
     private static RankingTopComponent instance;
     static final String ICON_PATH = "org/gephi/desktop/ranking/resources/small.png";
     private static final String PREFERRED_ID = "RankingTopComponent";
@@ -48,30 +48,30 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider,
     private transient RankingUIController controller;
     private transient RankingUIModel model;
     private transient ChangeListener modelChangeListener;
-
+    
     private RankingTopComponent() {
         setName(NbBundle.getMessage(RankingTopComponent.class, "CTL_RankingTopComponent"));
 //        setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "HINT_RankingTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
-
+        
         modelChangeListener = new ChangeListener() {
-
+            
             public void stateChanged(ChangeEvent ce) {
                 refreshModel((RankingUIModel) ce.getSource());
             }
         };
         controller = new RankingUIController(modelChangeListener);
         model = controller.getModel();
-
+        
         initComponents();
         initSouth();
         if (UIUtils.isAquaLookAndFeel()) {
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
-
+        
         refreshModel(model);
     }
-
+    
     public void refreshModel(RankingUIModel model) {
         if (this.model != null) {
             this.model.removePropertyChangeListener(this);
@@ -88,7 +88,9 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider,
         revalidate();
         repaint();
         }*/
+        ((ResultListPanel) listResultPanel).unselect();
         if (model != null) {
+            ((ResultListPanel) listResultPanel).select(model);
             if (listResultPanel.isVisible() != model.isListVisible()) {
                 listResultPanel.setVisible(model.isListVisible());
                 revalidate();
@@ -109,15 +111,20 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider,
         //Toolbar
         ((RankingToolbar) rankingToolbar).refreshModel(model);
     }
-
+    
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
             listButton.setSelected((Boolean) pce.getNewValue());
+            if (listResultPanel.isVisible() != model.isListVisible()) {
+                listResultPanel.setVisible(model.isListVisible());
+                revalidate();
+                repaint();
+            }
         } else if (pce.getPropertyName().equals(RankingUIModel.BARCHART_VISIBLE)) {
             //barChartButton.setSelected((Boolean)pce.getNewValue());
         }
     }
-
+    
     private void initSouth() {
         listButton = new JToggleButton();
         listButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/ranking/resources/list.png"))); // NOI18N
@@ -134,9 +141,9 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider,
 
         //BarChartPanel & ListPanel
         listResultPanel.setVisible(false);
-
+        
         listButton.addActionListener(new ActionListener() {
-
+            
             public void actionPerformed(ActionEvent e) {
                 model.setListVisible(listButton.isSelected());
             }
@@ -149,7 +156,7 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider,
         }
         });*/
     }
-
+    
     private void refreshEnable() {
         boolean modelEnabled = isModelEnabled();
 
@@ -159,7 +166,7 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider,
         rankingToolbar.setEnabled(modelEnabled);
         listResultPanel.setEnabled(modelEnabled);
     }
-
+    
     private boolean isModelEnabled() {
         return model != null;
     }
@@ -269,17 +276,17 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider,
                 + "' ID. That is a potential source of errors and unexpected behavior.");
         return getDefault();
     }
-
+    
     @Override
     public int getPersistenceType() {
         return TopComponent.PERSISTENCE_ALWAYS;
     }
-
+    
     @Override
     public void componentOpened() {
         // TODO add custom code on component opening
     }
-
+    
     @Override
     public void componentClosed() {
         // TODO add custom code on component closing
@@ -290,16 +297,16 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider,
     public Object writeReplace() {
         return new ResolvableHelper();
     }
-
+    
     @Override
     protected String preferredID() {
         return PREFERRED_ID;
     }
-
+    
     final static class ResolvableHelper implements Serializable {
-
+        
         private static final long serialVersionUID = 1L;
-
+        
         public Object readResolve() {
             return RankingTopComponent.getDefault();
         }
