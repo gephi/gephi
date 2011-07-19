@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.graph.dhns.node;
 
+import org.gephi.graph.api.Attributes;
 import org.gephi.utils.collection.avl.AVLItem;
 import org.gephi.graph.api.Group;
 import org.gephi.graph.api.GroupData;
@@ -121,6 +122,10 @@ public class AbstractNode implements Node, Group, AVLItem {
     @Override
     public GroupData getGroupData() {
         return nodeData;
+    }
+
+    public Attributes getAttributes() {
+        return nodeData.getAttributes();
     }
 
     public EdgeOppositeTree getEdgesInTree() {

@@ -29,7 +29,7 @@ import org.gephi.graph.spi.LayoutData;
  * @author Mathieu Bastian
  * @see #getAttributes()
  */
-public interface EdgeData extends Renderable {
+public interface EdgeData extends Renderable, Attributable {
 
     /**
      * Returns the edge this edge data belongs.

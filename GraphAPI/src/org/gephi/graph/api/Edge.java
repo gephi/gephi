@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.api;
 
 /**
@@ -34,7 +34,7 @@ package org.gephi.graph.api;
  * 
  * @author Mathieu Bastian
  */
-public interface Edge {
+public interface Edge extends Attributable {
 
     /**
      * Returns the unique identifier of the edge.

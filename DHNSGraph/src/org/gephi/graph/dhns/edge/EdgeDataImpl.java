@@ -123,7 +123,7 @@ public class EdgeDataImpl implements EdgeData {
     }
 
     public void setSize(float size) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        edge.setWeight(size);
     }
 
     public float r() {

@@ -21,22 +21,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.graph.api;
 
 /**
- * A graph node.
- *
+ * Attributable is an interface for graph elements (i.e. nodes and egdes) and
+ * represent the ability to carry attribute values.
+ * 
  * @author Mathieu Bastian
  */
-public interface Node extends Attributable {
+public interface Attributable {
 
     /**
-     * Returns the unique identifier. This id is created by the system, use
-     * <b><code>NodeData.getId()</code></b> to get the string id from import.
-     * @return  the node id, created by the system
+     * Returns element's attributes. Attributes are the data associated to the
+     * element.
+     * @return              element's attributes
      */
-    public int getId();
-
-    /**
-     * Returns the extended data that belongs to this node.
-     * @return  the node data instance
-     */
-    public NodeData getNodeData();
+    public Attributes getAttributes();
 }

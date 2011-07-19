@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.graph.dhns.edge;
 
 import org.gephi.utils.collection.avl.AVLItem;
@@ -85,6 +85,10 @@ public abstract class AbstractEdge implements Edge, AVLItem {
 
     public EdgeDataImpl getEdgeData() {
         return edgeData;
+    }
+
+    public Attributes getAttributes() {
+        return edgeData.getAttributes();
     }
 
     public AbstractEdge getUndirected(int viewId) {

@@ -34,7 +34,7 @@ import org.gephi.graph.spi.LayoutData;
  * @author Mathieu Bastian
  * @see Node
  */
-public interface NodeData extends Renderable {
+public interface NodeData extends Renderable, Attributable {
 
     /**
      * Returns the node this node data belongs in the <b>main</b> view. To get
@@ -107,10 +107,4 @@ public interface NodeData extends Renderable {
      * @param fixed         the fixed attribute value
      */
     public void setFixed(boolean fixed);
-
-    /**
-     * Returns node's attributes.
-     * @return              node's attributes
-     */
-    public Attributes getAttributes();
 }
