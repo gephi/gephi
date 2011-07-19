@@ -23,12 +23,10 @@ package org.gephi.ui.ranking.plugin;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import org.gephi.ranking.api.LabelColorTransformer;
 import org.gephi.ranking.api.Ranking;
-import org.gephi.ranking.api.RankingController;
+import org.gephi.ranking.plugin.transformer.LabelColorTransformerBuilder.LabelColorTransformer;
 import org.gephi.ranking.api.Transformer;
-import org.gephi.ranking.api.TransformerUI;
-import org.openide.util.Lookup;
+import org.gephi.ranking.spi.TransformerUI;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -43,25 +41,12 @@ public class LabelColorTransformerUI implements TransformerUI {
         return new ImageIcon(getClass().getResource("/org/gephi/ui/ranking/plugin/resources/labelcolor.png"));
     }
 
-    public String getName() {
+    public String getDisplayName() {
         return NbBundle.getMessage(LabelColorTransformerUI.class, "LabelColorTransformerUI.name");
     }
 
-    public boolean isNodeTransformer() {
-        return true;
-    }
-
-    public boolean isEdgeTransformer() {
-        return true;
-    }
-
-    public Class getTransformerClass() {
-        return LabelColorTransformer.class;
-    }
-
-    public Transformer buildTransformer(Ranking ranking) {
-        RankingController rc = Lookup.getDefault().lookup(RankingController.class);
-        return rc.getLabelColorTransformer(ranking);
+    public boolean isUIForTransformer(Transformer transformer) {
+        return transformer instanceof LabelColorTransformer;
     }
 
     public JPanel getPanel(Transformer transformer, Ranking ranking) {

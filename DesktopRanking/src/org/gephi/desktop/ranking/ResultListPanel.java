@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.ranking;
 
 import java.awt.Color;
@@ -30,7 +30,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
@@ -45,18 +44,18 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
-import org.gephi.ranking.api.ColorTransformer;
-import org.gephi.ranking.api.NodeRanking;
-import org.gephi.ranking.api.RankingController;
-import org.gephi.ranking.api.RankingResult;
-import org.gephi.ranking.api.SizeTransformer;
+import org.gephi.ranking.api.Ranking;
+import org.gephi.ranking.plugin.transformer.AbstractColorTransformer;
+import org.gephi.ranking.plugin.transformer.AbstractSizeTransformer;
+import org.gephi.ranking.api.Transformer;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.ui.utils.UIUtils;
 import org.jdesktop.swingx.JXTable;
 import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
@@ -65,36 +64,26 @@ import org.openide.windows.WindowManager;
  *
  * @author Mathieu Bastian
  */
-public class ResultListPanel extends JScrollPane implements LookupListener {
+public class ResultListPanel extends JScrollPane {
 
     //Const
     private final String LAST_PATH = "ResultListPanel_TableScreenshot_Last_Path";
     private final String LAST_PATH_DEFAULT = "ResultListPanel_TableScreenshot_Last_Path_Default";
-
     //Variable
-    private Lookup.Result<RankingResult> result;
     private JXTable table;
     private JPopupMenu popupMenu;
 
     public ResultListPanel() {
-        //Lookup listener
-        RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
-        Lookup eventBus = rankingController.getEventBus();
-        result = eventBus.lookupResult(RankingResult.class);
-        result.addLookupListener(this);
-
         initTable();
         initTablePopup();
     }
 
-    public void resultChanged(LookupEvent ev) {
-        Lookup.Result<RankingResult> r = (Lookup.Result<RankingResult>) ev.getSource();
-        RankingResult[] res = r.allInstances().toArray(new RankingResult[0]);
-        if (res.length > 0) {
-            RankingResult lastResult = res[0];
-            if (isVisible()) {
-                fetchTable(lastResult);
-            }
+    public void refreshTable(RankingUIModel model) {
+        Ranking ranking = model.getCurrentRanking();
+        Transformer transformer = model.getCurrentTransformer();
+
+        if (isVisible()) {
+            fetchTable(ranking, transformer);
         }
     }
 
@@ -188,32 +177,45 @@ public class ResultListPanel extends JScrollPane implements LookupListener {
         }
     }
 
-    private void fetchTable(RankingResult result) {
-        List<RankingResult.RankingResultLine> results = new ArrayList<RankingResult.RankingResultLine>();
-        results.addAll(result.getResultLines());
-        Collections.reverse(results);
-        boolean nodeRanking = result.getRanking() instanceof NodeRanking;
+    private void fetchTable(Ranking ranking, Transformer transformer) {
         List<RankCell> cells = new ArrayList<RankCell>();
         List<String> labels = new ArrayList<String>();
-        for (RankingResult.RankingResultLine line : results) {
-            if (line.getResult() != null) {
-                if (result.getTransformer() instanceof ColorTransformer) {
-                    RankCellColor rankCellColor = new RankCellColor((Color) line.getResult(), line.getRank());
+
+        if (ranking.getElementType().equals(Ranking.NODE_ELEMENT)) {
+            GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+            Graph graph = graphController.getModel().getGraphVisible();
+            for (Node n : graph.getNodes()) {
+                labels.add(n.getNodeData().getLabel());
+                String rank = ranking.getValue(n).toString();
+                if (transformer instanceof AbstractColorTransformer) {
+                    Color c = new Color(n.getNodeData().r(), n.getNodeData().g(), n.getNodeData().b());
+                    RankCellColor rankCellColor = new RankCellColor(c, rank);
                     cells.add(rankCellColor);
-                } else if (result.getTransformer() instanceof SizeTransformer) {
-                    RankCellSize rankCellSize = new RankCellSize((Float) line.getResult(), line.getRank());
+                } else if (transformer instanceof AbstractSizeTransformer) {
+                    float size = n.getNodeData().getSize();
+                    RankCellSize rankCellSize = new RankCellSize(size, rank);
                     cells.add(rankCellSize);
-                } else {
                 }
-                if (nodeRanking) {
-                    Node n = (Node) line.getTarget();
-                    labels.add(n.getNodeData().getLabel());
-                } else {
-                    Edge e = (Edge) line.getTarget();
-                    labels.add(e.getEdgeData().getLabel());
+            }
+
+        } else if (ranking.getElementType().equals(Ranking.EDGE_ELEMENT)) {
+            GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+            HierarchicalGraph graph = graphController.getModel().getHierarchicalGraphVisible();
+            for (Edge e : graph.getEdgesAndMetaEdges()) {
+                labels.add(e.getEdgeData().getLabel());
+                String rank = ranking.getValue(e).toString();
+                if (transformer instanceof AbstractColorTransformer) {
+                    Color c = new Color(e.getEdgeData().r(), e.getEdgeData().g(), e.getEdgeData().b());
+                    RankCellColor rankCellColor = new RankCellColor(c, rank);
+                    cells.add(rankCellColor);
+                } else if (transformer instanceof AbstractSizeTransformer) {
+                    float size = e.getEdgeData().getSize();
+                    RankCellSize rankCellSize = new RankCellSize(size, rank);
+                    cells.add(rankCellSize);
                 }
             }
         }
+
 
         ResultListTableModel model = new ResultListTableModel(cells.toArray(new RankCell[0]), labels.toArray(new String[0]));
         table.setDefaultRenderer(RankCell.class, new RankCellRenderer());

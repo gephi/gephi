@@ -17,18 +17,16 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.ranking.plugin;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import org.gephi.ranking.api.ObjectColorTransformer;
 import org.gephi.ranking.api.Ranking;
-import org.gephi.ranking.api.RankingController;
+import org.gephi.ranking.plugin.transformer.RenderableColorTransformerBuilder.RenderableColorTransformer;
 import org.gephi.ranking.api.Transformer;
-import org.gephi.ranking.api.TransformerUI;
-import org.openide.util.Lookup;
+import org.gephi.ranking.spi.TransformerUI;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -43,28 +41,15 @@ public class ColorTransformerUI implements TransformerUI {
         return new ImageIcon(getClass().getResource("/org/gephi/ui/ranking/plugin/resources/color.png"));
     }
 
-    public String getName() {
-        return NbBundle.getMessage(ColorTransformerUI.class, "ColorTransformerUI.name");
-    }
-
-    public boolean isNodeTransformer() {
-        return true;
-    }
-
-    public boolean isEdgeTransformer() {
-        return true;
-    }
-
-    public Class getTransformerClass() {
-        return ObjectColorTransformer.class;
-    }
-
-    public Transformer buildTransformer(Ranking ranking) {
-        RankingController rc = Lookup.getDefault().lookup(RankingController.class);
-        return rc.getObjectColorTransformer(ranking);
+    public boolean isUIForTransformer(Transformer transformer) {
+        return transformer instanceof RenderableColorTransformer;
     }
 
     public JPanel getPanel(Transformer transformer, Ranking ranking) {
         return new ColorTransformerPanel(transformer, ranking);
+    }
+
+    public String getDisplayName() {
+        return NbBundle.getMessage(ColorTransformerUI.class, "ColorTransformerUI.name");
     }
 }

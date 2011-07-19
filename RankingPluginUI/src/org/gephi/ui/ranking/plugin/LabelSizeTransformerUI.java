@@ -23,12 +23,10 @@ package org.gephi.ui.ranking.plugin;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import org.gephi.ranking.api.LabelSizeTransformer;
 import org.gephi.ranking.api.Ranking;
-import org.gephi.ranking.api.RankingController;
+import org.gephi.ranking.plugin.transformer.LabelSizeTransformerBuilder.LabelSizeTransformer;
 import org.gephi.ranking.api.Transformer;
-import org.gephi.ranking.api.TransformerUI;
-import org.openide.util.Lookup;
+import org.gephi.ranking.spi.TransformerUI;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -43,28 +41,15 @@ public class LabelSizeTransformerUI implements TransformerUI {
         return new ImageIcon(getClass().getResource("/org/gephi/ui/ranking/plugin/resources/labelsize.png"));
     }
 
-    public String getName() {
+    public String getDisplayName() {
         return NbBundle.getMessage(LabelSizeTransformerUI.class, "LabelSizeTransformerUI.name");
     }
 
-    public boolean isNodeTransformer() {
-        return true;
-    }
-
-    public boolean isEdgeTransformer() {
-        return true;
+    public boolean isUIForTransformer(Transformer transformer) {
+        return transformer instanceof LabelSizeTransformer;
     }
 
     public JPanel getPanel(Transformer transformer, Ranking ranking) {
         return new SizeTransformerPanel(transformer, ranking);
-    }
-
-    public Class getTransformerClass() {
-        return LabelSizeTransformer.class;
-    }
-
-    public Transformer buildTransformer(Ranking ranking) {
-        RankingController rc = Lookup.getDefault().lookup(RankingController.class);
-        return rc.getLabelSizeTransformer(ranking);
     }
 }

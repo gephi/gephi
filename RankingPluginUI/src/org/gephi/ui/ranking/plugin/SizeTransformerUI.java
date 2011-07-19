@@ -17,18 +17,16 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.ranking.plugin;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import org.gephi.ranking.api.ObjectSizeTransformer;
 import org.gephi.ranking.api.Ranking;
-import org.gephi.ranking.api.RankingController;
+import org.gephi.ranking.plugin.transformer.RenderableSizeTransformerBuilder.RenderableSizeTransformer;
 import org.gephi.ranking.api.Transformer;
-import org.gephi.ranking.api.TransformerUI;
-import org.openide.util.Lookup;
+import org.gephi.ranking.spi.TransformerUI;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -43,28 +41,15 @@ public class SizeTransformerUI implements TransformerUI {
         return new ImageIcon(getClass().getResource("/org/gephi/ui/ranking/plugin/resources/size.png"));
     }
 
-    public String getName() {
+    public String getDisplayName() {
         return NbBundle.getMessage(SizeTransformerUI.class, "SizeTransformerUI.name");
     }
 
-    public boolean isNodeTransformer() {
-        return true;
-    }
-
-    public boolean isEdgeTransformer() {
-        return true;
+    public boolean isUIForTransformer(Transformer transformer) {
+        return transformer instanceof RenderableSizeTransformer;
     }
 
     public JPanel getPanel(Transformer transformer, Ranking ranking) {
         return new SizeTransformerPanel(transformer, ranking);
-    }
-
-    public Class getTransformerClass() {
-        return ObjectSizeTransformer.class;
-    }
-
-    public Transformer buildTransformer(Ranking ranking) {
-        RankingController rc = Lookup.getDefault().lookup(RankingController.class);
-        return rc.getObjectSizeTransformer(ranking);
     }
 }

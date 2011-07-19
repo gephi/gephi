@@ -17,21 +17,19 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.ranking;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.logging.Logger;
 import javax.swing.JToggleButton;
 import javax.swing.UIManager;
-import org.gephi.project.api.ProjectController;
-import org.gephi.ranking.api.RankingController;
-import org.gephi.ranking.api.RankingModel;
-import org.gephi.ranking.api.RankingUIModel;
-import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -39,7 +37,7 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-final class RankingTopComponent extends TopComponent implements Lookup.Provider {
+final class RankingTopComponent extends TopComponent implements Lookup.Provider, PropertyChangeListener {
 
     private static RankingTopComponent instance;
     static final String ICON_PATH = "org/gephi/desktop/ranking/resources/small.png";
@@ -47,29 +45,76 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
     //UI
     private JToggleButton listButton;
     //Model
-    private RankingUIModel model;
-    private RankingModel rankingModel;
-    private boolean enabled = false;
+    private transient RankingUIController controller;
+    private transient RankingUIModel model;
+    private transient ChangeListener modelChangeListener;
 
     private RankingTopComponent() {
         setName(NbBundle.getMessage(RankingTopComponent.class, "CTL_RankingTopComponent"));
 //        setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "HINT_RankingTopComponent"));
         setIcon(ImageUtilities.loadImage(ICON_PATH));
 
-        RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
-        rankingModel = rankingController.getRankingModel();
+        modelChangeListener = new ChangeListener() {
 
-        initEvents();
+            public void stateChanged(ChangeEvent ce) {
+                refreshModel((RankingUIModel) ce.getSource());
+            }
+        };
+        controller = new RankingUIController(modelChangeListener);
+        model = controller.getModel();
+
         initComponents();
         initSouth();
         if (UIUtils.isAquaLookAndFeel()) {
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
-        refreshModel();
 
-        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        if (pc.getCurrentWorkspace() != null) {
-            ((RankingChooser) rankingChooser).refreshModel();
+        refreshModel(model);
+    }
+
+    public void refreshModel(RankingUIModel model) {
+        if (this.model != null) {
+            this.model.removePropertyChangeListener(this);
+        }
+        this.model = model;
+        if (model != null) {
+            model.addPropertyChangeListener(this);
+        }
+        refreshEnable();
+
+        //South visible
+        /*if (barChartPanel.isVisible() != model.isBarChartVisible()) {
+        barChartPanel.setVisible(model.isBarChartVisible());
+        revalidate();
+        repaint();
+        }*/
+        if (model != null) {
+            if (listResultPanel.isVisible() != model.isListVisible()) {
+                listResultPanel.setVisible(model.isListVisible());
+                revalidate();
+                repaint();
+            }
+
+            //barChartButton.setSelected(model.isBarChartVisible());
+            listButton.setSelected(model.isListVisible());
+        } else {
+            listResultPanel.setVisible(false);
+            listButton.setSelected(false);
+        }
+
+
+        //Chooser
+        ((RankingChooser) rankingChooser).refreshModel(model);
+
+        //Toolbar
+        ((RankingToolbar) rankingToolbar).refreshModel(model);
+    }
+
+    public void propertyChange(PropertyChangeEvent pce) {
+        if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
+            listButton.setSelected((Boolean) pce.getNewValue());
+        } else if (pce.getPropertyName().equals(RankingUIModel.BARCHART_VISIBLE)) {
+            //barChartButton.setSelected((Boolean)pce.getNewValue());
         }
     }
 
@@ -94,87 +139,29 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
 
             public void actionPerformed(ActionEvent e) {
                 model.setListVisible(listButton.isSelected());
-                refreshModel();
             }
         });
 
         /*barChartButton.addActionListener(new ActionListener() {
-
+        
         public void actionPerformed(ActionEvent e) {
         model.setBarChartVisible(barChartButton.isSelected());
-        refreshModel();
         }
         });*/
     }
 
-    private void initEvents() {
-        model = new RankingUIModel();
+    private void refreshEnable() {
+        boolean modelEnabled = isModelEnabled();
 
-        final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        pc.addWorkspaceListener(new WorkspaceListener() {
-
-            public void initialize(Workspace workspace) {
-                workspace.add(new RankingUIModel());
-            }
-
-            public void select(Workspace workspace) {
-                //Enable
-                enabled = true;
-                RankingUIModel newModel = workspace.getLookup().lookup(RankingUIModel.class);
-                if (newModel != null) {
-                    model.loadModel(newModel);
-                }
-                refreshModel();
-            }
-
-            public void unselect(Workspace workspace) {
-                RankingUIModel oldModel = workspace.getLookup().lookup(RankingUIModel.class);
-                if (oldModel != null) {
-                    workspace.remove(oldModel);
-                }
-                workspace.add(model.saveModel());
-            }
-
-            public void close(Workspace workspace) {
-            }
-
-            public void disable() {
-                enabled = false;
-                refreshModel();
-            }
-        });
-
-        if (pc.getCurrentWorkspace() != null) {
-            enabled = true;
-            RankingUIModel newModel = pc.getCurrentWorkspace().getLookup().lookup(RankingUIModel.class);
-            if (newModel != null) {
-                model.loadModel(newModel);
-            }
-        }
+        //barChartButton.setEnabled(modelEnabled);
+        listButton.setEnabled(modelEnabled);
+        rankingChooser.setEnabled(modelEnabled);
+        rankingToolbar.setEnabled(modelEnabled);
+        listResultPanel.setEnabled(modelEnabled);
     }
 
-    private void refreshModel() {
-        //South visible
-        /*if (barChartPanel.isVisible() != model.isBarChartVisible()) {
-        barChartPanel.setVisible(model.isBarChartVisible());
-        revalidate();
-        repaint();
-        }*/
-        if (listResultPanel.isVisible() != model.isListVisible()) {
-            listResultPanel.setVisible(model.isListVisible());
-            revalidate();
-            repaint();
-        }
-
-        //Enabled
-        //barChartButton.setEnabled(enabled);
-        listButton.setEnabled(enabled);
-        rankingChooser.setEnabled(enabled);
-        rankingToolbar.setEnabled(enabled);
-        listResultPanel.setEnabled(enabled);
-
-        //barChartButton.setSelected(model.isBarChartVisible());
-        listButton.setSelected(model.isListVisible());
+    private boolean isModelEnabled() {
+        return model != null;
     }
 
     /** This method is called from within the constructor to
@@ -187,8 +174,8 @@ final class RankingTopComponent extends TopComponent implements Lookup.Provider 
         java.awt.GridBagConstraints gridBagConstraints;
 
         mainPanel = new javax.swing.JPanel();
-        rankingToolbar = new RankingToolbar(model);
-        rankingChooser = new RankingChooser(model, rankingModel);
+        rankingToolbar = new RankingToolbar(controller);
+        rankingChooser = new RankingChooser(controller);
         listResultContainerPanel = new javax.swing.JPanel();
         listResultPanel = new ResultListPanel();
         southToolbar = new javax.swing.JToolBar();

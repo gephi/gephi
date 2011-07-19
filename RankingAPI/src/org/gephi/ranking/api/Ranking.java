@@ -17,29 +17,90 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ranking.api;
 
+import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.NodeData;
+
 /**
- *
+ * Rankings role is to provide numerical values from objects. These values are
+ * then send to transformer to be converted in visual signs (e.g. color or size).
+ * <p>
+ * For instance for nodes, ranking can be the degree of the node or a numerical
+ * value like an 'age' or 'duration'.
+ * <p>
+ * The <code>getElementType()</code> method should return either
+ * <code>Ranking.NODE_ELEMENT</code> or <code>Ranking.EDGE_ELEMENT</code> to
+ * define if it works with node or edge elements. This is important because it
+ * defines which objects the <code>getValue()</code> eventually receives. For nodes,
+ * it is given a {@link NodeData} object and for edges a {@link EdgeData}.
+ * <p>
+ * One can reuse the <code>AbstractRanking</code> class defined in the
+ * <code>RankingPlugin</code> module.
+ * 
+ * @see Transformer
  * @author Mathieu Bastian
  */
-public interface Ranking<Element, Type> {
+public interface Ranking<Element> {
 
-    public Type getValue(Element element);
+    /**
+     * Element type for nodes. The ranking receives a <code>NodeData</code>
+     * object.
+     */
+    public static final String NODE_ELEMENT = "nodes";
+    /**
+     * Element type for edges. The ranking receives a <code>EdgeData</code>
+     * object.
+     */
+    public static final String EDGE_ELEMENT = "edges";
 
-    public Type getMinimumValue();
+    /**
+     * Returns the value of the element. 
+     * @param element the element to get the value from
+     * @return the element's value
+     */
+    public Number getValue(Element element);
 
-    public Type getMaximumValue();
+    /**
+     * Returns the minimum value of this ranking.
+     * @return the minimum value
+     */
+    public Number getMinimumValue();
 
-    public float normalize(Type value);
+    /**
+     * Returns the maximum value of this ranking.
+     * @return the maximum value
+     */
+    public Number getMaximumValue();
 
-    public Type unNormalize(float normalizedValue);
+    /**
+     * Normalize <code>value</code> between 0 and 1 using the minimum and the
+     * maximum value. For example if <code>value</code> is equal to the maximum,
+     * it returns 1.0.
+     * @param value the value to normalize
+     * @return the normalized value between zero and one
+     */
+    public float normalize(Number value);
 
+    /**
+     * Unnormalize <code>normalizedValue</code> and returns the original element
+     * value.
+     * @param normalizedValue the value to unnormalize
+     * @return the original value of the element
+     */
+    public Number unNormalize(float normalizedValue);
+
+    /**
+     * Returns the name of this ranking.
+     * @return the display name of this ranking
+     */
     public String getName();
 
-    @Override
-    public String toString();
-
-    public Class getType();
+    /**
+     * Return the type of element this ranking is manipulating. Value can either be
+     * <code>Ranking.NODE_ELEMENT</code> or <code>Ranking.EDGE_ELEMENT</code>.
+     * @return the type of element this ranking is manipulating
+     */
+    public String getElementType();
 }

@@ -65,7 +65,7 @@
                   <Component id="lowerBoundLabel" alignment="3" min="-2" max="-2" attributes="1"/>
                   <Component id="upperBoundLabel" alignment="3" min="-2" max="-2" attributes="1"/>
               </Group>
-              <EmptySpace pref="23" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -88,7 +88,6 @@
     <Component class="javax.swing.JSlider" name="rangeSlider">
       <Properties>
         <Property name="focusable" type="boolean" value="false"/>
-        <Property name="opaque" type="boolean" value="false"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JRangeSlider()"/>

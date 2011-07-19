@@ -20,25 +20,51 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.ranking.api;
 
-import org.openide.util.Lookup;
+import org.gephi.project.api.Workspace;
 
 /**
- *
+ * Controller that maintains the ranking models, one per workspace.
+ * <p>
+ * This controller is a service and can therefore be found in Lookup:
+ * <pre>RankingController rc = Lookup.getDefault().lookup(RankingController.class);</pre>
+ * 
+ * @see RankingModel
  * @author Mathieu Bastian
  */
 public interface RankingController {
 
-    public RankingModel getRankingModel();
+    /**
+     * Returns the ranking model of the current workspace.
+     * @return the ranking model of the current workspace
+     */
+    public RankingModel getModel();
+    
+    /**
+     * Returns the ranking model of <code>workspace</code>. If it doesn't exists,
+     * it creates one and put it in the workspace.
+     * @param workspace the workspace containing the model
+     * @return the ranking model of this workspace
+     */
+    public RankingModel getModel(Workspace workspace);
+    
+    /**
+     * Sets the interpolator to be used when transforming values. This is set to the
+     * current model only. If the model is changed (i.e. switch workspace), call 
+     * this again.
+     * <p>
+     * Default interpolator implementations can be found in the {@link Interpolator}
+     * class.
+     * @param interpolator the interpolator to use for transformation. 
+     */
+    public void setInterpolator(Interpolator interpolator);
 
-    public void transform(Transformer transformer);
-
-    public ColorTransformer getObjectColorTransformer(Ranking ranking);
-
-    public SizeTransformer getObjectSizeTransformer(Ranking nodeRanking);
-
-    public ColorTransformer getLabelColorTransformer(Ranking ranking);
-
-    public SizeTransformer getLabelSizeTransformer(Ranking nodeRanking);
-
-    public Lookup getEventBus();
+    /**
+     * Apply the transformation of <code>transformer</code> on <code>ranking</code>.
+     * The transformer will modify element's color or size according to the values
+     * returned by the ranking. Before passing values to the transformer, they may
+     * be transformer by the current interpolator.
+     * @param ranking the ranking to give to the transformer
+     * @param transformer the transformer to apply on the ranking's elements
+     */
+    public void transform(Ranking ranking, Transformer transformer);
 }

@@ -34,8 +34,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.ranking.api.ColorTransformer;
 import org.gephi.ranking.api.Ranking;
+import org.gephi.ranking.plugin.transformer.AbstractColorTransformer;
 import org.gephi.ranking.api.Transformer;
 import org.gephi.ui.components.JRangeSlider;
 import org.gephi.ui.components.PaletteIcon;
@@ -51,7 +51,7 @@ import org.openide.util.NbPreferences;
 public class ColorTransformerPanel extends javax.swing.JPanel {
 
     private static final int SLIDER_MAXIMUM = 100;
-    private ColorTransformer colorTransformer;
+    private AbstractColorTransformer colorTransformer;
     private GradientSlider gradientSlider;
     private Ranking ranking;
 
@@ -61,7 +61,7 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
         final String POSITIONS = "ColorTransformerPanel_" + transformer.getClass().getSimpleName() + "_positions";
         final String COLORS = "ColorTransformerPanel_" + transformer.getClass().getSimpleName() + "_colors";
 
-        colorTransformer = (ColorTransformer) transformer;
+        colorTransformer = (AbstractColorTransformer) transformer;
         this.ranking = ranking;
 
         float[] positionsStart = colorTransformer.getColorPositions();

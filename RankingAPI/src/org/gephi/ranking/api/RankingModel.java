@@ -17,33 +17,85 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ranking.api;
 
-import javax.swing.event.ChangeListener;
-import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.project.api.Workspace;
 
 /**
- *
+ * Model for ranking data. 
+ * <p>
+ * That includes the list of rankings currently available,
+ * separated in categories with different element types. It can returns all rankings
+ * for nodes or edges, or any element type.
+ * <p>
+ * Rankings are builds thanks to <code>RankingBuilder</code> implementation. Implement
+ * a new <code>RankingBuider</code> service to create new rankings.
+ * <p>
+ * The model also hosts the currently defined interpolator.
+ * 
+ * @see Ranking
+ * @see Transformer
  * @author Mathieu Bastian
  */
 public interface RankingModel {
 
-    public NodeRanking getDegreeRanking();
+    /**
+     * Get all rankings for node elements. Rankings are classified with the type
+     * of element they are manipulating. Rankings specific to node elements are
+     * defined by the <code>Ranking.NODE_ELEMENT</code>.
+     * @return All rankings for node elements
+     */
+    public Ranking[] getNodeRankings();
 
-    public NodeRanking getInDegreeRanking();
+    /**
+     * Get all rankings for edge elements. Rankings are classified with the type
+     * of element they are manipulating. Rankings specific to edge elements are
+     * defined by the <code>Ranking.EDGE_ELEMENT</code>.
+     * @return All rankings for edge elements
+     */
+    public Ranking[] getEdgeRankings();
 
-    public NodeRanking getOutDegreeRanking();
+    /**
+     * Get all rankings for <code>elementType</code> elements. Rankings are 
+     * classified with the type of element they are manipulating. If 
+     * <code>elementType</code> equals <code>Ranking.NODE_ELEMENT</code> this is
+     * equivalent to {@link RankingModel#getNodeRankings() } method.
+     * @return All rankings for <code>elementType</code>
+     */
+    public Ranking[] getRankings(String elementType);
 
-    public NodeRanking getNodeAttributeRanking(AttributeColumn column);
+    /**
+     * Return the specific ranking for <code>elementType</code> and with
+     * the given <code>name</code>. Returns <code>null</code> if not found.
+     * @param elementType the element type of the ranking
+     * @param name the name of the ranking
+     * @return the found ranking or <code>null</code> if not found
+     */
+    public Ranking getRanking(String elementType, String name);
+    
+    /**
+     * Returns the current interpolator. The default interpolator is a simple
+     * linear interpolation.
+     * @return the current interpolator
+     */
+    public Interpolator getInterpolator();
 
-    public EdgeRanking getEdgeAttributeRanking(AttributeColumn column);
+    /**
+     * Return the workspace this model is associated with
+     * @return the workspace of this model
+     */
+    public Workspace getWorkspace();
 
-    public NodeRanking[] getNodeRanking();
+    /**
+     * Add <code>listener</code> as a ranking listener of this model
+     * @param listener the listener to add
+     */
+    public void addRankingListener(RankingListener listener);
 
-    public EdgeRanking[] getEdgeRanking();
-
-    public void addChangeListener(ChangeListener changeListener);
-
-    public void removeChangeListener(ChangeListener changeListener);
+    /**
+     * Remove <code>listener</code> as a ranking listener of this model
+     * @param listener the listener to remove
+     */
+    public void removeRankingListener(RankingListener listener);
 }

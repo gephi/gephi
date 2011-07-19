@@ -17,13 +17,13 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.ranking.plugin;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.ranking.api.Ranking;
-import org.gephi.ranking.api.SizeTransformer;
+import org.gephi.ranking.plugin.transformer.AbstractSizeTransformer;
 import org.gephi.ranking.api.Transformer;
 import org.gephi.ui.components.JRangeSlider;
 import org.openide.util.NbPreferences;
@@ -35,7 +35,7 @@ import org.openide.util.NbPreferences;
 public class SizeTransformerPanel extends javax.swing.JPanel {
 
     private static final int SLIDER_MAXIMUM = 100;
-    private SizeTransformer sizeTransformer;
+    private AbstractSizeTransformer sizeTransformer;
     private Ranking ranking;
 
     public SizeTransformerPanel(Transformer transformer, Ranking ranking) {
@@ -44,7 +44,7 @@ public class SizeTransformerPanel extends javax.swing.JPanel {
         final String MIN_SIZE = "SizeTransformerPanel_" + transformer.getClass().getSimpleName() + "_min";
         final String MAX_SIZE = "SizeTransformerPanel_" + transformer.getClass().getSimpleName() + "_max";
 
-        sizeTransformer = (SizeTransformer) transformer;
+        sizeTransformer = (AbstractSizeTransformer) transformer;
         this.ranking = ranking;
 
         float minSizeStart = NbPreferences.forModule(SizeTransformerPanel.class).getFloat(MIN_SIZE, sizeTransformer.getMinSize());
