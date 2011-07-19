@@ -24,6 +24,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.gephi.ranking.api.Ranking;
@@ -31,6 +32,8 @@ import org.gephi.ranking.api.RankingEvent;
 import org.gephi.ranking.api.RankingListener;
 import org.gephi.ranking.api.RankingModel;
 import org.gephi.ranking.api.Transformer;
+import org.gephi.ranking.spi.TransformerBuilder;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -47,6 +50,7 @@ public class RankingUIModel implements RankingListener {
     public static final String RANKINGS = "rankings";
     public static final String APPLY_TRANSFORMER = "applyTransformer";
     //Current model
+    private final Map<String, LinkedHashMap<String, Transformer>> transformers;
     private String currentElementType;
     private final Map<String, Ranking> currentRanking;
     private final Map<String, Transformer> currentTransformer;
@@ -58,6 +62,7 @@ public class RankingUIModel implements RankingListener {
     private final RankingModel model;
 
     public RankingUIModel(RankingUIController rankingUIController, RankingModel rankingModel) {
+        transformers = new HashMap<String, LinkedHashMap<String, Transformer>>();    
         listeners = new ArrayList<PropertyChangeListener>();
         currentRanking = new HashMap<String, Ranking>();
         currentTransformer = new HashMap<String, Transformer>();
@@ -65,10 +70,12 @@ public class RankingUIModel implements RankingListener {
         controller = rankingUIController;
         currentElementType = Ranking.NODE_ELEMENT;
         listVisible = false;
+        
+        initTransformers();
 
         //Set default transformer - the first
         for (String elementType : controller.getElementTypes()) {
-            currentTransformer.put(elementType, controller.getTransformers(elementType)[0]);
+            currentTransformer.put(elementType, getTransformers(elementType)[0]);
         }
 
         model.addRankingListener(this);
@@ -166,9 +173,29 @@ public class RankingUIModel implements RankingListener {
         }
         return rankings;
     }
+    
+    private void initTransformers() {
+        for (String elementType : controller.getElementTypes()) {
+            LinkedHashMap<String, Transformer> elmtTransformers = new LinkedHashMap<String, Transformer>();
+            transformers.put(elementType, elmtTransformers);
+        }
+
+        for (TransformerBuilder builder : Lookup.getDefault().lookupAll(TransformerBuilder.class)) {
+            for (String elementType : controller.getElementTypes()) {
+                Map<String, Transformer> elmtTransformers = transformers.get(elementType);
+                if (builder.isTransformerForElement(elementType)) {
+                    elmtTransformers.put(builder.getName(), builder.buildTransformer());
+                }
+            }
+        }
+    }
+    
+    public Transformer[] getTransformers(String elementType) {
+        return transformers.get(elementType).values().toArray(new Transformer[0]);
+    }
 
     public Transformer[] getTransformers() {
-        return controller.getTransformers(currentElementType);
+        return getTransformers(currentElementType);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {

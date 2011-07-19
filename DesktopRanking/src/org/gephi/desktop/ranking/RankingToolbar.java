@@ -38,7 +38,6 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
-import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.Transformer;
 import org.openide.util.NbBundle;
 
@@ -55,7 +54,6 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
     public RankingToolbar(RankingUIController controller) {
         this.controller = controller;
         initComponents();
-        initTransformersUI();
     }
 
     public void refreshModel(RankingUIModel model) {
@@ -67,38 +65,45 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
             model.addPropertyChangeListener(this);
         }
 
-        //Transformers
-        int index = 0;
-        for (String elmtType : controller.getElementTypes()) {
-            ButtonGroup g = buttonGroups.get(index);
-            boolean active = model == null ? false : model.getCurrentElementType().equals(elmtType);
-            g.clearSelection();
-            String selected = model == null ? "" : controller.getUI(model.getCurrentTransformer(elmtType)).getDisplayName();
-            for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
-                AbstractButton btn = btns.nextElement();
-                btn.setVisible(active);
-                if (btn.getName().equals(selected)) {
-                    g.setSelected(btn.getModel(), true);
-                }
-            }
-            index++;
-        }
+        SwingUtilities.invokeLater(new Runnable() {
 
-        //Emnt
-        if (model != null) {
-            ButtonModel buttonModel = null;
-            Enumeration<AbstractButton> en = elementGroup.getElements();
-            for (String elmtType : controller.getElementTypes()) {
-                if (elmtType.equals(model.getCurrentElementType())) {
-                    buttonModel = en.nextElement().getModel();
-                    break;
+            public void run() {
+                initTransformersUI();
+
+                if (RankingToolbar.this.model != null) {
+                    //Select the right transformer
+                    int index = 0;
+                    for (String elmtType : controller.getElementTypes()) {
+                        ButtonGroup g = buttonGroups.get(index);
+                        boolean active = RankingToolbar.this.model == null ? false : RankingToolbar.this.model.getCurrentElementType().equals(elmtType);
+                        g.clearSelection();
+                        String selected = RankingToolbar.this.model == null ? "" : controller.getUI(RankingToolbar.this.model.getCurrentTransformer(elmtType)).getDisplayName();
+                        for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
+                            AbstractButton btn = btns.nextElement();
+                            btn.setVisible(active);
+                            if (btn.getName().equals(selected)) {
+                                g.setSelected(btn.getModel(), true);
+                            }
+                        }
+                        index++;
+                    }
+
+                    //Select the right element group
+                    ButtonModel buttonModel = null;
+                    Enumeration<AbstractButton> en = elementGroup.getElements();
+                    for (String elmtType : controller.getElementTypes()) {
+                        if (elmtType.equals(RankingToolbar.this.model.getCurrentElementType())) {
+                            buttonModel = en.nextElement().getModel();
+                            break;
+                        }
+                        en.nextElement();
+                    }
+                    elementGroup.setSelected(buttonModel, true);
+                } else {
+                    elementGroup.clearSelection();
                 }
-                en.nextElement();
             }
-            elementGroup.setSelected(buttonModel, true);
-        } else {
-            elementGroup.clearSelection();
-        }
+        });
     }
 
     public void propertyChange(PropertyChangeEvent pce) {
@@ -134,27 +139,37 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
     }
 
     private void initTransformersUI() {
-        for (String elmtType : controller.getElementTypes()) {
-            ButtonGroup buttonGroup = new ButtonGroup();
-            for (final Transformer t : controller.getTransformers(elmtType)) {
-                TransformerUI u = controller.getUI(t);
-                if (u != null) {
-                    //Build button
-                    JToggleButton btn = new JToggleButton(u.getIcon());
-                    btn.setToolTipText(u.getDisplayName());
-                    btn.addActionListener(new ActionListener() {
-
-                        public void actionPerformed(ActionEvent e) {
-                            model.setCurrentTransformer(t);
-                        }
-                    });
-                    btn.setName(u.getDisplayName());
-                    btn.setFocusPainted(false);
-                    buttonGroup.add(btn);
-                    add(btn);
-                }
+        //Clear precent buttons
+        for (ButtonGroup bg : buttonGroups) {
+            for (Enumeration<AbstractButton> btns = bg.getElements(); btns.hasMoreElements();) {
+                AbstractButton btn = btns.nextElement();
+                remove(btn);
             }
-            buttonGroups.add(buttonGroup);
+        }
+        if (model != null) {
+            //Add transformers buttons, separate them by element group
+            for (String elmtType : controller.getElementTypes()) {
+                ButtonGroup buttonGroup = new ButtonGroup();
+                for (final Transformer t : model.getTransformers(elmtType)) {
+                    TransformerUI u = controller.getUI(t);
+                    if (u != null) {
+                        //Build button
+                        JToggleButton btn = new JToggleButton(u.getIcon());
+                        btn.setToolTipText(u.getDisplayName());
+                        btn.addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                model.setCurrentTransformer(t);
+                            }
+                        });
+                        btn.setName(u.getDisplayName());
+                        btn.setFocusPainted(false);
+                        buttonGroup.add(btn);
+                        add(btn);
+                    }
+                }
+                buttonGroups.add(buttonGroup);
+            }
         }
     }
 

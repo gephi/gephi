@@ -20,9 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.ranking;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.project.api.ProjectController;
@@ -32,7 +29,6 @@ import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.RankingController;
 import org.gephi.ranking.api.RankingModel;
 import org.gephi.ranking.api.Transformer;
-import org.gephi.ranking.spi.TransformerBuilder;
 import org.gephi.ranking.spi.TransformerUI;
 import org.openide.util.Lookup;
 
@@ -42,14 +38,10 @@ import org.openide.util.Lookup;
  */
 public class RankingUIController {
 
-    private final Map<String, LinkedHashMap<String, Transformer>> transformers;
     private final String[] elementTypes = new String[]{Ranking.NODE_ELEMENT, Ranking.EDGE_ELEMENT};
     private RankingUIModel model;
 
     public RankingUIController(final ChangeListener modelChangeListener) {
-        transformers = new HashMap<String, LinkedHashMap<String, Transformer>>();
-        initTransformers();
-
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         final RankingController rc = Lookup.getDefault().lookup(RankingController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
@@ -92,26 +84,6 @@ public class RankingUIController {
 
     public RankingUIModel getModel() {
         return model;
-    }
-
-    private void initTransformers() {
-        for (String elementType : elementTypes) {
-            LinkedHashMap<String, Transformer> elmtTransformers = new LinkedHashMap<String, Transformer>();
-            transformers.put(elementType, elmtTransformers);
-        }
-
-        for (TransformerBuilder builder : Lookup.getDefault().lookupAll(TransformerBuilder.class)) {
-            for (String elementType : elementTypes) {
-                Map<String, Transformer> elmtTransformers = transformers.get(elementType);
-                if (builder.isTransformerForElement(elementType)) {
-                    elmtTransformers.put(builder.getName(), builder.buildTransformer());
-                }
-            }
-        }
-    }
-
-    public Transformer[] getTransformers(String elementType) {
-        return transformers.get(elementType).values().toArray(new Transformer[0]);
     }
 
     public TransformerUI getUI(Transformer transformer) {
