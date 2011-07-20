@@ -80,7 +80,7 @@ public class LinkNodes extends BasicNodesManipulator{
     }
 
     public int getPosition() {
-        return 0;
+        return 100;
     }
 
     public Icon getIcon() {

@@ -74,7 +74,7 @@ public class CopyNodes extends BasicNodesManipulator {
     }
 
     public int getPosition() {
-        return 100;
+        return 200;
     }
 
     public Icon getIcon() {

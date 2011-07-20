@@ -47,6 +47,7 @@ import org.gephi.data.attributes.type.StringList;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
+import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
@@ -401,6 +402,10 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     public Number[] getColumnNumbers(AttributeTable table, AttributeColumn column) {
+        return getRowsColumnNumbers(getTableAttributeRows(table), column);
+    }
+
+    public Number[] getRowsColumnNumbers(Attributes[] rows, AttributeColumn column) {
         AttributeUtils attributeUtils = AttributeUtils.getDefault();
         if (!attributeUtils.isNumberOrNumberListColumn(column)) {
             throw new IllegalArgumentException("The column has to be a number or number list column");
@@ -410,14 +415,14 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         final int columnIndex = column.getIndex();
         Number number;
         if (attributeUtils.isNumberColumn(column)) {//Number column
-            for (Attributes row : getTableAttributeRows(table)) {
+            for (Attributes row : rows) {
                 number = (Number) row.getValue(columnIndex);
                 if (number != null) {
                     numbers.add(number);
                 }
             }
         } else {//Number list column
-            for (Attributes row : getTableAttributeRows(table)) {
+            for (Attributes row : rows) {
                 numbers.addAll(getNumberListColumnNumbers(row, column));
             }
         }
@@ -664,6 +669,30 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             Exceptions.printStackTrace(ex);
         } finally {
             reader.close();
+        }
+    }
+
+    public void mergeRowsValues(AttributeTable table, AttributeRowsMergeStrategy[] mergeStrategies, Attributes[] rows, Attributes selectedRow, Attributes resultRow) {
+        AttributeColumn[] columns = table.getColumns();
+        if (columns.length != mergeStrategies.length) {
+            throw new IllegalArgumentException("The number of columns must be equal to the number of merge strategies provided");
+        }
+        if (selectedRow == null) {
+            selectedRow = rows[0];
+        }
+
+        AttributeRowsMergeStrategy mergeStrategy;
+        Object value;
+        for (int i = 0; i < columns.length; i++) {
+            mergeStrategy = mergeStrategies[i];
+            if (mergeStrategy != null) {
+                mergeStrategy.setup(rows, selectedRow, columns[i]);
+                mergeStrategy.execute();
+                value = mergeStrategy.getReducedValue();
+            } else {
+                value = selectedRow.getValue(columns[i].getIndex());
+            }
+            setAttributeValue(value, resultRow, columns[i]);
         }
     }
 

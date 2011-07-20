@@ -80,6 +80,7 @@
                 <package>org.gephi.datalab.spi.edges</package>
                 <package>org.gephi.datalab.spi.general</package>
                 <package>org.gephi.datalab.spi.nodes</package>
+                <package>org.gephi.datalab.spi.rows.merge</package>
                 <package>org.gephi.datalab.spi.values</package>
             </public-packages>
         </data>

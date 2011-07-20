@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2010 Gephi
+Copyright 2008-2011 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
 Website : http://www.gephi.org
 
@@ -18,54 +18,72 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.datalab.plugin.manipulators.columns.merge;
+package org.gephi.datalab.plugin.manipulators.rows.merge;
 
 import javax.swing.Icon;
 import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.datalab.api.AttributeColumnsMergeStrategiesController;
-import org.gephi.datalab.plugin.manipulators.columns.merge.ui.JoinWithSeparatorUI;
+import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.datalab.plugin.manipulators.rows.merge.ui.JoinWithSeparatorUI;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.columns.merge.AttributeColumnsMergeStrategy;
+import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.Attributes;
 import org.openide.util.ImageUtilities;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
 /**
- * AttributeColumnsMergeStrategy that joins columns of any type into a new column
- * using the separator string that the user provides.
+ * AttributeRowsMergeStrategy for any String or list column that joins the row values with a separator.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-public class JoinWithSeparator implements AttributeColumnsMergeStrategy {
+public class JoinWithSeparator implements AttributeRowsMergeStrategy {
 
     public static final String SEPARATOR_SAVED_PREFERENCES = "JoinWithSeparator_Separator";
     private static final String DEFAULT_SEPARATOR = ",";
-    private AttributeTable table;
-    private AttributeColumn[] columns;
-    private String newColumnTitle, separator;
+    private Attributes[] rows;
+    private AttributeColumn column;
+    private String separator, result;
 
-    public void setup(AttributeTable table, AttributeColumn[] columns) {
-        this.table = table;
-        this.columns = columns;
-        separator=NbPreferences.forModule(JoinWithSeparator.class).get(SEPARATOR_SAVED_PREFERENCES, DEFAULT_SEPARATOR);
+    public void setup(Attributes[] rows, Attributes selectedRow, AttributeColumn column) {
+        this.rows = rows;
+        this.column = column;
+        separator = NbPreferences.forModule(JoinWithSeparator.class).get(SEPARATOR_SAVED_PREFERENCES, DEFAULT_SEPARATOR);
+    }
+
+    public Object getReducedValue() {
+        return result;
     }
 
     public void execute() {
         NbPreferences.forModule(JoinWithSeparator.class).put(SEPARATOR_SAVED_PREFERENCES, separator);
-        Lookup.getDefault().lookup(AttributeColumnsMergeStrategiesController.class).joinWithSeparatorMerge(table, columns, null, newColumnTitle, separator);
+        
+        Object value;
+        StringBuilder sb;
+        final int rowsCount = rows.length;
+        final int columnIndex=column.getIndex();
+        
+        sb = new StringBuilder();
+        for (int i = 0; i < rows.length; i++) {
+            value = rows[i].getValue(columnIndex);
+            if (value != null) {
+                sb.append(value.toString());
+                if (i < rowsCount - 1) {
+                    sb.append(separator);
+                }
+            }
+        }
+        result=sb.toString();
     }
 
     public String getName() {
-        return NbBundle.getMessage(JoinWithSeparator.class, "JoinWithSeparator.name");
+        return NbBundle.getMessage(AverageNumber.class, "JoinWithSeparator.name");
     }
 
     public String getDescription() {
-        return NbBundle.getMessage(JoinWithSeparator.class, "JoinWithSeparator.description");
+        return NbBundle.getMessage(AverageNumber.class, "JoinWithSeparator.description");
     }
 
     public boolean canExecute() {
-        return true;
+        return column.getType().isListType() || column.getType() == AttributeType.STRING;
     }
 
     public ManipulatorUI getUI() {
@@ -77,19 +95,11 @@ public class JoinWithSeparator implements AttributeColumnsMergeStrategy {
     }
 
     public int getPosition() {
-        return 0;
+        return 100;
     }
 
     public Icon getIcon() {
         return ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/join.png", true);
-    }
-
-    public String getNewColumnTitle() {
-        return newColumnTitle;
-    }
-
-    public void setNewColumnTitle(String newColumnTitle) {
-        this.newColumnTitle = newColumnTitle;
     }
 
     public String getSeparator() {
@@ -98,9 +108,5 @@ public class JoinWithSeparator implements AttributeColumnsMergeStrategy {
 
     public void setSeparator(String separator) {
         this.separator = separator;
-    }
-
-    public AttributeTable getTable() {
-        return table;
     }
 }

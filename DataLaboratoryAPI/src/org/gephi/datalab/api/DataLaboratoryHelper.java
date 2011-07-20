@@ -49,6 +49,8 @@ import org.gephi.datalab.spi.general.GeneralActionsManipulator;
 import org.gephi.datalab.spi.general.PluginGeneralActionsManipulator;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
 import org.gephi.datalab.spi.nodes.NodesManipulatorBuilder;
+import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategyBuilder;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.Lookup;
@@ -58,8 +60,8 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Helper class for simplifying the use of Data Laboratory API and SPI.
  */
-@ServiceProvider(service=DataLaboratoryHelper.class)
-public class DataLaboratoryHelper{
+@ServiceProvider(service = DataLaboratoryHelper.class)
+public class DataLaboratoryHelper {
 
     /**
      * <p>Prepares an array with one new instance of every NodesManipulator
@@ -157,6 +159,20 @@ public class DataLaboratoryHelper{
         return strategies.toArray(new AttributeColumnsMergeStrategy[0]);
     }
 
+    /**
+     * <p>Prepares an array that has one new instance of every AttributeRowsMergeStrategy implementation that is registered.</p>
+     * <p>It also returns the manipulators ordered first by type and then by position.</p>
+     * @return Array of all AttributeRowsMergeStrategy implementations
+     */
+    public AttributeRowsMergeStrategy[] getAttributeRowsMergeStrategies() {
+        ArrayList<AttributeRowsMergeStrategy> strategies = new ArrayList<AttributeRowsMergeStrategy>();
+        for (AttributeRowsMergeStrategyBuilder cs : Lookup.getDefault().lookupAll(AttributeRowsMergeStrategyBuilder.class)) {
+            strategies.add(cs.getAttributeRowsMergeStrategy());
+        }
+        sortManipulators(strategies);
+        return strategies.toArray(new AttributeRowsMergeStrategy[0]);
+    }
+
     private void sortManipulators(ArrayList<? extends Manipulator> m) {
         Collections.sort(m, new Comparator<Manipulator>() {
 
@@ -233,6 +249,38 @@ public class DataLaboratoryHelper{
         }
     }
 
+    /**
+     * This method shows the UI of an AttributeRowsMergeStrategy if it is provided and the AttributeRowsMergeStrategy can be executed.
+     * These UI only configures (calls unSetup) the AttributeRowsMergeStrategy if the dialog is accepted,
+     * and it does not execute the AttributeRowsMergeStrategy.
+     * @param m AttributeRowsMergeStrategy
+     * @return True if the AttributeRowsMergeStrategy UI is provided
+     */
+    public boolean showAttributeRowsMergeStrategyUIDialog(final AttributeRowsMergeStrategy m) {
+        final ManipulatorUI ui = m.getUI();
+        //Show a dialog for the manipulator UI if it provides one. If not, execute the manipulator directly:
+        if (ui != null && m.canExecute()) {
+            final JButton okButton = new JButton(NbBundle.getMessage(DataLaboratoryHelper.class, "DataLaboratoryHelper.ui.okButton.text"));
+            DialogControls dialogControls = new DialogControlsImpl(okButton);
+            ui.setup(m, dialogControls);
+            JPanel settingsPanel = ui.getSettingsPanel();
+            DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(DataLaboratoryHelper.class, "SettingsPanel.title", ui.getDisplayName()), ui.isModal(), new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    if (e.getSource().equals(okButton)) {
+                        ui.unSetup();
+                    }
+                }
+            });
+            dd.setOptions(new Object[]{okButton, DialogDescriptor.CANCEL_OPTION});
+            dd.setClosingOptions(null);//All options close
+            Dialog dialog = DialogDisplayer.getDefault().createDialog(dd);
+            dialog.setVisible(true);
+            return true;
+        }
+        return false;
+    }
+
     private void executeManipulatorInOtherThread(final Manipulator m) {
         new Thread() {
 
@@ -305,9 +353,9 @@ public class DataLaboratoryHelper{
     /**
      * Returns the AttributeColumnsMergeStrategy with that class name or null if it does not exist
      */
-    public NodesManipulator getNodesManipulatorByName(String name){
+    public NodesManipulator getNodesManipulatorByName(String name) {
         for (NodesManipulatorBuilder nm : Lookup.getDefault().lookupAll(NodesManipulatorBuilder.class)) {
-            if(nm.getNodesManipulator().getClass().getSimpleName().equals(name)){
+            if (nm.getNodesManipulator().getClass().getSimpleName().equals(name)) {
                 return nm.getNodesManipulator();
             }
         }
@@ -317,9 +365,9 @@ public class DataLaboratoryHelper{
     /**
      * Returns the AttributeColumnsMergeStrategy with that class name or null if it does not exist
      */
-    public EdgesManipulator getEdgesManipulatorByName(String name){
+    public EdgesManipulator getEdgesManipulatorByName(String name) {
         for (EdgesManipulatorBuilder nm : Lookup.getDefault().lookupAll(EdgesManipulatorBuilder.class)) {
-            if(nm.getEdgesManipulator().getClass().getSimpleName().equals(name)){
+            if (nm.getEdgesManipulator().getClass().getSimpleName().equals(name)) {
                 return nm.getEdgesManipulator();
             }
         }
@@ -331,7 +379,7 @@ public class DataLaboratoryHelper{
      */
     public GeneralActionsManipulator getGeneralActionsManipulatorByName(String name) {
         for (GeneralActionsManipulator m : Lookup.getDefault().lookupAll(GeneralActionsManipulator.class)) {
-            if(m.getClass().getSimpleName().equals(name)){
+            if (m.getClass().getSimpleName().equals(name)) {
                 return m;
             }
         }
@@ -343,7 +391,7 @@ public class DataLaboratoryHelper{
      */
     public PluginGeneralActionsManipulator getPluginGeneralActionsManipulatorByName(String name) {
         for (PluginGeneralActionsManipulator m : Lookup.getDefault().lookupAll(PluginGeneralActionsManipulator.class)) {
-            if(m.getClass().getSimpleName().equals(name)){
+            if (m.getClass().getSimpleName().equals(name)) {
                 return m;
             }
         }
@@ -355,7 +403,7 @@ public class DataLaboratoryHelper{
      */
     public AttributeColumnsManipulator getAttributeColumnsManipulatorByName(String name) {
         for (AttributeColumnsManipulator m : Lookup.getDefault().lookupAll(AttributeColumnsManipulator.class)) {
-            if(m.getClass().getSimpleName().equals(name)){
+            if (m.getClass().getSimpleName().equals(name)) {
                 return m;
             }
         }
@@ -367,7 +415,7 @@ public class DataLaboratoryHelper{
      */
     public AttributeValueManipulator getAttributeValueManipulatorByName(String name) {
         for (AttributeValueManipulatorBuilder am : Lookup.getDefault().lookupAll(AttributeValueManipulatorBuilder.class)) {
-            if(am.getAttributeValueManipulator().getClass().getSimpleName().equals(name)){
+            if (am.getAttributeValueManipulator().getClass().getSimpleName().equals(name)) {
                 return am.getAttributeValueManipulator();
             }
         }
@@ -377,10 +425,22 @@ public class DataLaboratoryHelper{
     /**
      * Returns the AttributeColumnsMergeStrategy with that class name or null if it does not exist
      */
-    public AttributeColumnsMergeStrategy getAttributeColumnsMergeStrategieByName(String name) {
+    public AttributeColumnsMergeStrategy getAttributeColumnsMergeStrategyByName(String name) {
         for (AttributeColumnsMergeStrategyBuilder cs : Lookup.getDefault().lookupAll(AttributeColumnsMergeStrategyBuilder.class)) {
-            if(cs.getAttributeColumnsMergeStrategy().getClass().getSimpleName().equals(name)){
+            if (cs.getAttributeColumnsMergeStrategy().getClass().getSimpleName().equals(name)) {
                 return cs.getAttributeColumnsMergeStrategy();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the AttributeRowsMergeStrategy with that class name or null if it does not exist
+     */
+    public AttributeRowsMergeStrategy getAttributeRowsMergeStrategyByName(String name) {
+        for (AttributeRowsMergeStrategyBuilder cs : Lookup.getDefault().lookupAll(AttributeRowsMergeStrategyBuilder.class)) {
+            if (cs.getAttributeRowsMergeStrategy().getClass().getSimpleName().equals(name)) {
+                return cs.getAttributeRowsMergeStrategy();
             }
         }
         return null;
@@ -398,12 +458,12 @@ public class DataLaboratoryHelper{
             okButton.setEnabled(enabled);
         }
 
-        public boolean isOkButtonEnabled(){
+        public boolean isOkButtonEnabled() {
             return okButton.isEnabled();
         }
     }
 
-    public static DataLaboratoryHelper getDefault(){
+    public static DataLaboratoryHelper getDefault() {
         return Lookup.getDefault().lookup(DataLaboratoryHelper.class);
     }
 }
