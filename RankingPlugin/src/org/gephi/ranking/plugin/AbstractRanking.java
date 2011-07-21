@@ -40,12 +40,14 @@ import org.gephi.ranking.api.Ranking;
  */
 public abstract class AbstractRanking<Element> implements Ranking<Element> {
 
+    private final String name;
     private final String elementType;
     protected Number minimum;
     protected Number maximum;
 
-    public AbstractRanking(String elementType) {
+    public AbstractRanking(String elementType, String name) {
         this.elementType = elementType;
+        this.name = name;
     }
 
     @Override
@@ -69,6 +71,11 @@ public abstract class AbstractRanking<Element> implements Ranking<Element> {
     @Override
     public String getElementType() {
         return elementType;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     /**

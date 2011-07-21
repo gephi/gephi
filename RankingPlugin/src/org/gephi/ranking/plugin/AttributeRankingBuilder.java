@@ -137,7 +137,7 @@ public class AttributeRankingBuilder implements RankingBuilder {
         private final Graph graph;
 
         public AttributeRanking(String elementType, AttributeColumn column, Graph graph) {
-            super(elementType);
+            super(elementType, column.getId());
             this.column = column;
             this.graph = graph;
         }
@@ -176,7 +176,7 @@ public class AttributeRankingBuilder implements RankingBuilder {
         }
 
         @Override
-        public String getName() {
+        public String getDisplayName() {
             return column.getTitle();
         }
 
@@ -205,7 +205,7 @@ public class AttributeRankingBuilder implements RankingBuilder {
         private final Estimator estimator;
 
         public DynamicAttributeRanking(String elementType, AttributeColumn column, Graph graph, TimeInterval timeInterval, Estimator estimator) {
-            super(elementType);
+            super(elementType, column.getId());
             this.column = column;
             this.timeInterval = timeInterval;
             this.estimator = estimator;
@@ -251,7 +251,7 @@ public class AttributeRankingBuilder implements RankingBuilder {
         }
 
         @Override
-        public String getName() {
+        public String getDisplayName() {
             return column.getTitle();
         }
 

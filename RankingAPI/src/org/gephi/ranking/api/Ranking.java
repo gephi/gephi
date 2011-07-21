@@ -92,7 +92,13 @@ public interface Ranking<Element> {
     public Number unNormalize(float normalizedValue);
 
     /**
-     * Returns the name of this ranking.
+     * Returns the display name of this ranking.
+     * @return the display name of this ranking
+     */
+    public String getDisplayName();
+    
+    /**
+     * Returns the name of this ranking. It should be unique.
      * @return the display name of this ranking
      */
     public String getName();
