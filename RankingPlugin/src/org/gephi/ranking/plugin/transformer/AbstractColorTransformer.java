@@ -49,6 +49,14 @@ public abstract class AbstractColorTransformer<Target> extends AbstractTransform
         this.linearGradient = new LinearGradient(colors, positions);
     }
 
+    public LinearGradient getLinearGradient() {
+        return linearGradient;
+    }
+
+    public void setLinearGradient(LinearGradient linearGradient) {
+        this.linearGradient = linearGradient;
+    }
+
     public float[] getColorPositions() {
         return linearGradient.getPositions();
     }

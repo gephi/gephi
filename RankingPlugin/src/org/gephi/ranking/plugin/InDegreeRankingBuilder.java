@@ -88,7 +88,7 @@ public class InDegreeRankingBuilder implements RankingBuilder {
         }
 
         @Override
-        public String getDiaplayName() {
+        public String getDisplayName() {
             return NbBundle.getMessage(InDegreeRankingBuilder.class, "InDegreeRanking.name");
         }
 

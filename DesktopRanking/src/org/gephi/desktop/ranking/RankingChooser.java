@@ -104,24 +104,9 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
             Ranking selectedRanking = refreshCombo();
 
             if (selectedRanking != null) {
-                Transformer transformer = model.getCurrentTransformer();
-                TransformerUI transformerUI = controller.getUI(transformer);
-                if (!Double.isNaN(selectedRanking.getMinimumValue().doubleValue())
-                        && !Double.isNaN(selectedRanking.getMaximumValue().doubleValue())
-                        && selectedRanking.getMinimumValue() != selectedRanking.getMaximumValue()) {
-                    applyButton.setEnabled(true);
-                } else {
-                    applyButton.setEnabled(false);
-                }
-                centerPanel = transformerUI.getPanel(transformer, selectedRanking);
-                centerPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5), BorderFactory.createEtchedBorder()));
-                centerPanel.setOpaque(false);
-                add(centerPanel, BorderLayout.CENTER);
-                applyButton.setVisible(true);
-                splineButton.setVisible(true);
+                refreshTransformerPanel(selectedRanking);
             }
         }
-
 
         revalidate();
         repaint();
@@ -142,21 +127,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
             splineButton.setVisible(false);
 
             if (selectedRanking != null) {
-                Transformer transformer = model.getCurrentTransformer();
-                TransformerUI transformerUI = controller.getUI(transformer);
-                if (!Double.isNaN(selectedRanking.getMinimumValue().doubleValue())
-                        && !Double.isNaN(selectedRanking.getMaximumValue().doubleValue())
-                        && selectedRanking.getMinimumValue() != selectedRanking.getMaximumValue()) {
-                    applyButton.setEnabled(true);
-                } else {
-                    applyButton.setEnabled(false);
-                }
-                centerPanel = transformerUI.getPanel(transformer, selectedRanking);
-                centerPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5), BorderFactory.createEtchedBorder()));
-                centerPanel.setOpaque(false);
-                add(centerPanel, BorderLayout.CENTER);
-                applyButton.setVisible(true);
-                splineButton.setVisible(true);
+                refreshTransformerPanel(selectedRanking);
             }
 
             revalidate();
@@ -164,6 +135,24 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         } else if (pce.getPropertyName().equals(RankingUIModel.RANKINGS)) {
             refreshCombo();
         }
+    }
+
+    private void refreshTransformerPanel(Ranking selectedRanking) {
+        Transformer transformer = model.getCurrentTransformer();
+        TransformerUI transformerUI = controller.getUI(transformer);
+        if (!Double.isNaN(selectedRanking.getMinimumValue().doubleValue())
+                && !Double.isNaN(selectedRanking.getMaximumValue().doubleValue())
+                && selectedRanking.getMinimumValue() != selectedRanking.getMaximumValue()) {
+            applyButton.setEnabled(true);
+        } else {
+            applyButton.setEnabled(false);
+        }
+        centerPanel = transformerUI.getPanel(transformer, selectedRanking);
+        centerPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5), BorderFactory.createEtchedBorder()));
+        centerPanel.setOpaque(false);
+        add(centerPanel, BorderLayout.CENTER);
+        applyButton.setVisible(true);
+        splineButton.setVisible(true);
     }
 
     private Ranking refreshCombo() {
@@ -175,7 +164,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         comboBoxModel.setSelectedItem(NO_SELECTION);
         for (Ranking r : model.getRankings()) {
             comboBoxModel.addElement(r);
-            if (selectedRanking != null && selectedRanking.getName().equals(r.getName()) && selectedRanking.getClass().equals(r.getClass())) {
+            if (selectedRanking != null && selectedRanking.getName().equals(r.getName())) {
                 comboBoxModel.setSelectedItem(r);
             }
         }
@@ -303,7 +292,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         @Override
         public Component getListCellRendererComponent(JList jlist, Object o, int i, boolean bln, boolean bln1) {
             if (o instanceof Ranking) {
-                return super.getListCellRendererComponent(jlist, ((Ranking) o).getName(), i, bln, bln1);
+                return super.getListCellRendererComponent(jlist, ((Ranking) o).getDisplayName(), i, bln, bln1);
             } else {
                 return super.getListCellRendererComponent(jlist, o, i, bln, bln1);
             }

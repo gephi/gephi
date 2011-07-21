@@ -27,6 +27,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.RankingEvent;
 import org.gephi.ranking.api.RankingListener;
@@ -50,10 +54,10 @@ public class RankingUIModel implements RankingListener {
     public static final String RANKINGS = "rankings";
     public static final String APPLY_TRANSFORMER = "applyTransformer";
     //Current model
-    private final Map<String, LinkedHashMap<String, Transformer>> transformers;
-    private String currentElementType;
-    private final Map<String, Ranking> currentRanking;
-    private final Map<String, Transformer> currentTransformer;
+    protected final Map<String, LinkedHashMap<String, Transformer>> transformers;
+    protected String currentElementType;
+    protected final Map<String, Ranking> currentRanking;
+    protected final Map<String, Transformer> currentTransformer;
     protected boolean barChartVisible;
     protected boolean listVisible;
     //Architecture
@@ -62,7 +66,7 @@ public class RankingUIModel implements RankingListener {
     private final RankingModel model;
 
     public RankingUIModel(RankingUIController rankingUIController, RankingModel rankingModel) {
-        transformers = new HashMap<String, LinkedHashMap<String, Transformer>>();    
+        transformers = new HashMap<String, LinkedHashMap<String, Transformer>>();
         listeners = new ArrayList<PropertyChangeListener>();
         currentRanking = new HashMap<String, Ranking>();
         currentTransformer = new HashMap<String, Transformer>();
@@ -70,7 +74,7 @@ public class RankingUIModel implements RankingListener {
         controller = rankingUIController;
         currentElementType = Ranking.NODE_ELEMENT;
         listVisible = false;
-        
+
         initTransformers();
 
         //Set default transformer - the first
@@ -159,21 +163,25 @@ public class RankingUIModel implements RankingListener {
         return listVisible;
     }
 
-    public Ranking[] getRankings() {
-        Ranking[] rankings = model.getRankings(currentElementType);
+    public Ranking[] getRankings(String elmType) {
+        Ranking[] rankings = model.getRankings(elmType);
         Ranking current = getCurrentRanking();
         if (current != null) {
             //Update selectedRanking with latest version
             for (Ranking r : rankings) {
-                if (r.getName().equals(current.getName()) && r.getClass().equals(current.getClass())) {
-                    currentRanking.put(currentElementType, r);
+                if (r.getName().equals(current.getName())) {
+                    currentRanking.put(elmType, r);
                     break;
                 }
             }
         }
         return rankings;
     }
-    
+
+    public Ranking[] getRankings() {
+        return getRankings(currentElementType);
+    }
+
     private void initTransformers() {
         for (String elementType : controller.getElementTypes()) {
             LinkedHashMap<String, Transformer> elmtTransformers = new LinkedHashMap<String, Transformer>();
@@ -189,7 +197,7 @@ public class RankingUIModel implements RankingListener {
             }
         }
     }
-    
+
     public Transformer[] getTransformers(String elementType) {
         return transformers.get(elementType).values().toArray(new Transformer[0]);
     }

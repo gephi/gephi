@@ -20,9 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.ranking.plugin.transformer;
 
-import org.gephi.ranking.api.Interpolator;
+import java.io.Serializable;
 import org.gephi.ranking.api.Transformer;
-import org.gephi.ranking.api.Ranking;
 
 /**
  * Abstract transformer implementation. Use the given ranking and interpolator to
@@ -30,9 +29,8 @@ import org.gephi.ranking.api.Ranking;
  * 
  * @author Mathieu Bastian
  */
-public abstract class AbstractTransformer<Target> implements Transformer<Target> {
+public abstract class AbstractTransformer<Target> implements Transformer<Target>, Serializable {
 
-    protected Ranking ranking;
     protected float lowerBound = 0f;
     protected float upperBound = 1f;
 
@@ -66,13 +64,5 @@ public abstract class AbstractTransformer<Target> implements Transformer<Target>
 
     public boolean isInBounds(float value) {
         return value >= lowerBound && value <= upperBound;
-    }
-
-    public Ranking getRanking() {
-        return ranking;
-    }
-
-    public void setRanking(Ranking ranking) {
-        this.ranking = ranking;
     }
 }
