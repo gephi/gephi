@@ -21,7 +21,10 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ranking.plugin.transformer;
 
 import java.awt.Color;
+import java.io.Serializable;
+import java.util.Arrays;
 import org.gephi.ranking.api.Transformer;
+import org.openide.util.Exceptions;
 
 /**
  * Color transformer. Uses a linear gradient to apply colors to objects.
@@ -50,7 +53,12 @@ public abstract class AbstractColorTransformer<Target> extends AbstractTransform
     }
 
     public LinearGradient getLinearGradient() {
-        return linearGradient;
+        try {
+            return (LinearGradient)linearGradient.clone();
+        } catch (CloneNotSupportedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null;
     }
 
     public void setLinearGradient(LinearGradient linearGradient) {
@@ -77,7 +85,7 @@ public abstract class AbstractColorTransformer<Target> extends AbstractTransform
         return linearGradient.getValue(normalizedValue);
     }
 
-    public static class LinearGradient {
+    public static class LinearGradient implements Serializable, Cloneable {
 
         private Color[] colors;
         private float[] positions;
@@ -134,6 +142,38 @@ public abstract class AbstractColorTransformer<Target> extends AbstractTransform
 
         public void setPositions(float[] positions) {
             this.positions = positions;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final LinearGradient other = (LinearGradient) obj;
+            if (!Arrays.deepEquals(this.colors, other.colors)) {
+                return false;
+            }
+            if (!Arrays.equals(this.positions, other.positions)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 17 * hash + Arrays.deepHashCode(this.colors);
+            hash = 17 * hash + Arrays.hashCode(this.positions);
+            return hash;
+        }
+
+        @Override
+        protected Object clone() throws CloneNotSupportedException {
+            LinearGradient cl = new LinearGradient(colors, positions);
+            return cl;
         }
     }
 }
