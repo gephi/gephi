@@ -146,6 +146,7 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
                 remove(btn);
             }
         }
+        buttonGroups.clear();
         if (model != null) {
             //Add transformers buttons, separate them by element group
             for (String elmtType : controller.getElementTypes()) {
