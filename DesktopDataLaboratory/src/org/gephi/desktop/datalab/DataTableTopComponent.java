@@ -80,6 +80,9 @@ import org.gephi.ui.components.WrapLayout;
 import org.gephi.desktop.datalab.general.actions.AddColumnUI;
 import org.gephi.desktop.datalab.general.actions.CSVExportUI;
 import org.gephi.desktop.datalab.general.actions.MergeColumnsUI;
+import org.gephi.project.api.ProjectInformation;
+import org.gephi.project.api.WorkspaceInformation;
+import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.utils.TableCSVExporter;
@@ -716,24 +719,63 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
     public void exportCurrentTable(ExportMode exportMode) {
         JTable table;
+        String fileName = prepareTableExportFileName();
+
         if (classDisplayed == classDisplayed.NODE) {
             table = nodeTable.getOutlineTable();
+            fileName += " [Nodes]";
         } else {
             table = edgeTable.getTable();
+            fileName += " [Edges]";
         }
+        fileName += ".csv";
 
         switch (exportMode) {
             case CSV:
-                showCSVExportUI(table);
+                showCSVExportUI(table, fileName);
                 break;
         }
     }
 
-    private void showCSVExportUI(JTable table) {
+    private String prepareTableExportFileName() {
+        String fileName = null;
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        ProjectInformation projectInfo = pc.getCurrentProject().getLookup().lookup(ProjectInformation.class);
+        if (projectInfo.hasFile()) {
+            fileName = removeFileNameExtension(projectInfo.getFileName());
+        }
+        WorkspaceProvider wp = pc.getCurrentProject().getLookup().lookup(WorkspaceProvider.class);
+        if (wp.getWorkspaces().length > 1 || fileName == null) {
+            if (fileName != null) {
+                fileName += " - ";
+            } else {
+                fileName = "";
+            }
+
+            WorkspaceInformation workspaceInfo = pc.getCurrentWorkspace().getLookup().lookup(WorkspaceInformation.class);
+            if (workspaceInfo.hasSource()) {
+                fileName += removeFileNameExtension(workspaceInfo.getSource());
+            } else {
+                fileName += workspaceInfo.getName();
+            }
+        }
+
+        return fileName;
+    }
+
+    private String removeFileNameExtension(String fileName) {
+        int extensionIndex = fileName.lastIndexOf(".");
+        if (extensionIndex != -1) {
+            fileName = fileName.substring(0, extensionIndex);
+        }
+        return fileName;
+    }
+
+    private void showCSVExportUI(JTable table, String fileName) {
         CSVExportUI csvUI = new CSVExportUI(table);
         DialogDescriptor dd = new DialogDescriptor(csvUI, csvUI.getDisplayName());
         if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION)) {
-            DataTableTopComponent.exportTableAsCSV(this, table, csvUI.getSelectedSeparator(), csvUI.getSelectedCharset(), csvUI.getSelectedColumnsIndexes());
+            DataTableTopComponent.exportTableAsCSV(this, table, csvUI.getSelectedSeparator(), csvUI.getSelectedCharset(), csvUI.getSelectedColumnsIndexes(), fileName);
         }
         csvUI.unSetup();
     }
@@ -1433,14 +1475,14 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
      * @param charset Charset encoding for the file
      * @param columnsToExport Indicates the indexes of the columns to export. All columns will be exported if null
      */
-    public static void exportTableAsCSV(JComponent parent, JTable table, Character separator, Charset charset, Integer[] columnsToExport) {
+    public static void exportTableAsCSV(JComponent parent, JTable table, Character separator, Charset charset, Integer[] columnsToExport, String fileName) {
         String lastPath = NbPreferences.forModule(TableCSVExporter.class).get(LAST_PATH, null);
         final JFileChooser chooser = new JFileChooser(lastPath);
         chooser.setAcceptAllFileFilterUsed(false);
         DialogFileFilter dialogFileFilter = new DialogFileFilter(NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.filechooser.csvDescription"));
         dialogFileFilter.addExtension("csv");
         chooser.addChoosableFileFilter(dialogFileFilter);
-        File selectedFile = new File(chooser.getCurrentDirectory(), "table.csv");
+        File selectedFile = new File(chooser.getCurrentDirectory(), fileName);
         chooser.setSelectedFile(selectedFile);
         int returnFile = chooser.showSaveDialog(null);
         if (returnFile != JFileChooser.APPROVE_OPTION) {
