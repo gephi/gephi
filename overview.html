@@ -13,7 +13,17 @@
         <hr/>
         <h2>API Changes</h2>
         <ul>
-			<li>(April 6 2011) Add <code>setCurrentQuery()</code> method on <code>FilterController</code>.</li>
+            <li>(July 19 2011) Complete refactoring of the Ranking API to improve modularity and reach a stable version of the API. The API now also has
+                an SPI for ranking builders and transformers. Instead of <code>getNodeRanking()</code> and <code>getEdgeRanking</code> in the model, we
+                introduce the concept of <b>element type</b> and generalize methods to it. Use <code>Ranking.NODE_ELEMENT</code> to obtain a node
+                ranking and <code>Ranking.EDGE_ELEMENT</code> for an edge ranking. Same idea for transformers, which are now defined by a unique name.
+                Default transformers' name can be found in the <code>Transformer</code> interface. A <code>RankingEvent</code> has also been created.
+                API users have to update to their client code to be compatible.</li>
+            <li>(July 18 2011) Add a new interface nodes and edges share: <code>Attributable</code>. That allows to manipulate objects with attributes
+                regardless if the object is a node or an edge. <code>Node</code>, <code>Edge</code>, <code>NodeData</code> and <code>EdgeData</code> now
+                now implements this interface, and a <code>getAttributes()</code> method has been added to <code>Node</code> and <code>Edge</code> to
+                make development easier.</li>
+            <li>(April 6 2011) Add <code>setCurrentQuery()</code> method on <code>FilterController</code>.</li>
             <li>(February 21 2011) Important change how modules save/load data into project files. The <code>WorkspacePersistenceProvider</code> interface
                 from ProjectAPI now uses StAX instead of DOM. The <code>writeXML()</code> method now uses <code>XMLStreamWriter</code> and <code>readXML()</code>
                 <code>XMLStreamReader</code>. Backward compatibility can't be assured, modules have to use switch to StAX.
@@ -172,7 +182,7 @@
             <li><span class="unstable"><b>Partition API</b></span>  - API for manipulating partition within data.</li>
             <li><span class="unstable"><b>Preview API</b></span>  - API for building the graph preview structure.</li>
             <li><b>Project API</b> - Project API/SPI for project and worskpaces manipulation.</li>
-            <li><span class="unstable"><b>Ranking API</b></span>  - API/SPI for ranking data values and create transformers.</li>
+            <li><b>Ranking API</b>  - API/SPI for ranking data values and transform values in visual signs like color or size.</li>
             <li><b>Statistics API</b> - Statistics and Metrics API/SPI provides asynchronous algorithms execution and UI infrastructure.</li>
             <li><b>Tools API</b> - Tool API/SPI defines interactive actions users can make with the visualization.</li>
             <li><b>Visualization API</b> - API/SPI for interacting with visualization and providing context menu actions.</li>

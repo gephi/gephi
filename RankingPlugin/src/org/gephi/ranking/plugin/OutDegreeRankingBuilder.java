@@ -44,7 +44,6 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = RankingBuilder.class, position = 300)
 public class OutDegreeRankingBuilder implements RankingBuilder {
 
-    public static final String RANKING_NAME = "outdegree";
     private final GraphController graphController;
 
     public OutDegreeRankingBuilder() {
@@ -68,7 +67,7 @@ public class OutDegreeRankingBuilder implements RankingBuilder {
         private final DirectedGraph graph;
 
         public OutDegreeRanking(String elementType, DirectedGraph graph) {
-            super(elementType, RANKING_NAME);
+            super(elementType, Ranking.OUTDEGREE_RANKING);
             this.graph = graph;
         }
 

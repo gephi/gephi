@@ -29,6 +29,9 @@ package org.gephi.ranking.api;
  * <li><b>REFRESH_RANKING:</b> The list of available ranking has been
  * updated. The listeners can call <code>RankingModel.getRankings()</code>
  * to get the newly created rankings</li>
+ * <li><b>APPLY_TRANSFORMER:</b> A transformer has just been applied. The listeners
+ * can retried the transformer and ranking directly from the event.</li>
+ * </ul>
  * 
  * @see RankingListener
  * @author Mathieu Bastian
@@ -40,6 +43,8 @@ public interface RankingEvent {
      * <li><b>REFRESH_RANKING:</b> The list of available ranking has been
      * updated. The listeners can call <code>RankingModel.getRankings()</code>
      * to get the newly created rankings</li>
+     * <li><b>APPLY_TRANSFORMER:</b> A transformer has just been applied. The listeners
+     * can retried the transformer and ranking directly from the event.</li>
      * </ul>
      */
     public enum EventType {
@@ -58,13 +63,13 @@ public interface RankingEvent {
      * @return the source of the event
      */
     public RankingModel getSource();
-    
+
     /**
      * Returns the ranking associated to the event, or <code>null</code>.
      * @return the ranking associated to the event or <code>null</code>
      */
     public Ranking getRanking();
-    
+
     /**
      * Returns the transformer associated to the event, or <code>null</code>.
      * @return the ranking associated to the event or <code>null</code> 

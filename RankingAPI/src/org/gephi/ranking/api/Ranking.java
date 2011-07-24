@@ -54,6 +54,18 @@ public interface Ranking<Element> {
      * object.
      */
     public static final String EDGE_ELEMENT = "edges";
+    /**
+     * Default in degree ranking's name
+     */
+    public static final String DEGREE_RANKING = "degree";
+    /**
+     * Default out degree ranking's name
+     */
+    public static final String INDEGREE_RANKING = "indegree";
+    /**
+     * Default out degree ranking's name
+     */
+    public static final String OUTDEGREE_RANKING = "outdegree";
 
     /**
      * Returns the value of the element. 
@@ -96,7 +108,7 @@ public interface Ranking<Element> {
      * @return the display name of this ranking
      */
     public String getDisplayName();
-    
+
     /**
      * Returns the name of this ranking. It should be unique.
      * @return the display name of this ranking

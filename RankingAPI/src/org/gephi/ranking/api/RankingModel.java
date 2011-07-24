@@ -60,7 +60,8 @@ public interface RankingModel {
      * Get all rankings for <code>elementType</code> elements. Rankings are 
      * classified with the type of element they are manipulating. If 
      * <code>elementType</code> equals <code>Ranking.NODE_ELEMENT</code> this is
-     * equivalent to {@link RankingModel#getNodeRankings() } method.
+     * equivalent to {@link RankingModel#getNodeRankings() } method
+     * @param  the element type of the rankings
      * @return All rankings for <code>elementType</code>
      */
     public Ranking[] getRankings(String elementType);
@@ -68,11 +69,33 @@ public interface RankingModel {
     /**
      * Return the specific ranking for <code>elementType</code> and with
      * the given <code>name</code>. Returns <code>null</code> if not found.
+     * <p>
+     * Default ranking names can be found in the {@link Ranking} interface. For 
+     * attribute rankings, simply use the column identifier.
      * @param elementType the element type of the ranking
      * @param name the name of the ranking
      * @return the found ranking or <code>null</code> if not found
      */
     public Ranking getRanking(String elementType, String name);
+    
+    /**
+     * Return all transformers specific to <code>elementType</code>. A transformer
+     * defines his ability to transformer different element types. 
+     * @param elementType the element type of the transformers
+     * @return all transformers working with <code>elementType</code>
+     */
+    public Transformer[] getTransformers(String elementType);
+    
+    /**
+     * Returns the specific transformer for <code>elementType</code> and with the
+     * given <code>name</code>. Returns <code>null</code> if not found.
+     * <p>
+     * Default transformers name can be found in the {@link Transformer} interface.
+     * @param elementType
+     * @param name
+     * @return 
+     */
+    public Transformer getTransformer(String elementType, String name);
     
     /**
      * Returns the current interpolator. The default interpolator is a simple

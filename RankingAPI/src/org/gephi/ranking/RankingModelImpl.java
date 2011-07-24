@@ -36,7 +36,9 @@ import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.ranking.api.RankingEvent;
 import org.gephi.ranking.api.RankingListener;
+import org.gephi.ranking.api.Transformer;
 import org.gephi.ranking.spi.RankingBuilder;
+import org.gephi.ranking.spi.TransformerBuilder;
 import org.openide.util.Lookup;
 
 /**
@@ -45,22 +47,22 @@ import org.openide.util.Lookup;
  * @author Mathieu Bastian
  */
 public class RankingModelImpl implements RankingModel, AttributeListener {
-    
+
     private final Workspace workspace;
     private final List<RankingListener> listeners;
     private Interpolator interpolator;
-    
+
     public RankingModelImpl(Workspace workspace) {
         this.workspace = workspace;
         this.listeners = Collections.synchronizedList(new ArrayList<RankingListener>());
         this.interpolator = Interpolator.LINEAR;
     }
-    
+
     public void select() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
         attributeController.getModel(workspace).addAttributeListener(this);
     }
-    
+
     public void unselect() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
         attributeController.getModel(workspace).removeAttributeListener(this);
@@ -74,7 +76,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
                 refreshTimer.restart();
             } else {
                 refreshTimer = new Timer(500, new ActionListener() {
-                    
+
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         RankingEvent rankingEvent = new RankingEventImpl(RankingEvent.EventType.REFRESH_RANKING, RankingModelImpl.this);
@@ -86,19 +88,19 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
             }
         }
     }
-    
+
     public Workspace getWorkspace() {
         return workspace;
     }
-    
+
     public Ranking[] getNodeRankings() {
-        return getRankings(Ranking.EDGE_ELEMENT);
+        return getRankings(Ranking.NODE_ELEMENT);
     }
-    
+
     public Ranking[] getEdgeRankings() {
         return getRankings(Ranking.EDGE_ELEMENT);
     }
-    
+
     public Ranking[] getRankings(String elementType) {
         List<Ranking> rankings = new ArrayList<Ranking>();
         Collection<? extends RankingBuilder> builders = Lookup.getDefault().lookupAll(RankingBuilder.class);
@@ -112,7 +114,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         }
         return rankings.toArray(new Ranking[0]);
     }
-    
+
     public Ranking getRanking(String elementType, String name) {
         Ranking[] rankings = getRankings(elementType);
         for (Ranking r : rankings) {
@@ -123,27 +125,46 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         return null;
     }
 
+    public Transformer getTransformer(String elementType, String name) {
+        for (TransformerBuilder builder : Lookup.getDefault().lookupAll(TransformerBuilder.class)) {
+            if (builder.isTransformerForElement(elementType) && builder.getName().equals(name)) {
+                return builder.buildTransformer();
+            }
+        }
+        return null;
+    }
+
+    public Transformer[] getTransformers(String elementType) {
+        List<Transformer> transformers = new ArrayList<Transformer>();
+        for (TransformerBuilder builder : Lookup.getDefault().lookupAll(TransformerBuilder.class)) {
+            if (builder.isTransformerForElement(elementType)) {
+                transformers.add(builder.buildTransformer());
+            }
+        }
+        return transformers.toArray(new Transformer[0]);
+    }
+
     public Interpolator getInterpolator() {
         return interpolator;
     }
 
     public void setInterpolator(Interpolator interpolator) {
-        if(interpolator == null) {
+        if (interpolator == null) {
             throw new NullPointerException();
         }
         this.interpolator = interpolator;
     }
-    
+
     public void addRankingListener(RankingListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
-    
+
     public void removeRankingListener(RankingListener listener) {
         listeners.remove(listener);
     }
-    
+
     public void fireRankingListener(RankingEvent rankingEvent) {
         for (RankingListener listener : listeners) {
             listener.rankingChanged(rankingEvent);
