@@ -249,7 +249,7 @@ public class JDropDownButton extends JButton {
         return icon;
     }
 
-    JPopupMenu getPopupMenu() {
+    public JPopupMenu getPopupMenu() {
         Object menu = getClientProperty(PROP_DROP_DOWN_MENU);
         if (menu instanceof JPopupMenu) {
             return (JPopupMenu) menu;

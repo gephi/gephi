@@ -142,6 +142,15 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
                 }
             }
         });
+        
+        //Color Swatch
+        colorSwatchButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent ae) {
+                JPopupMenu popupMenu = getPalettePopupMenu();
+                popupMenu.show(colorSwatchToolbar, -popupMenu.getPreferredSize().width, 0);
+            }
+        });
 
         //Listen to apply button to add recent palettes
         RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
@@ -317,6 +326,8 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
         labelRange = new javax.swing.JLabel();
         upperBoundLabel = new javax.swing.JLabel();
         lowerBoundLabel = new javax.swing.JLabel();
+        colorSwatchToolbar = new javax.swing.JToolBar();
+        colorSwatchButton = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(225, 114));
 
@@ -335,15 +346,27 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
         upperBoundLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         upperBoundLabel.setText(org.openide.util.NbBundle.getMessage(ColorTransformerPanel.class, "ColorTransformerPanel.upperBoundLabel.text")); // NOI18N
 
-        lowerBoundLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
+        lowerBoundLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         lowerBoundLabel.setForeground(new java.awt.Color(102, 102, 102));
         lowerBoundLabel.setText(org.openide.util.NbBundle.getMessage(ColorTransformerPanel.class, "ColorTransformerPanel.lowerBoundLabel.text")); // NOI18N
+
+        colorSwatchToolbar.setFloatable(false);
+        colorSwatchToolbar.setRollover(true);
+        colorSwatchToolbar.setOpaque(false);
+
+        colorSwatchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/ranking/plugin/resources/color-swatch.png"))); // NOI18N
+        colorSwatchButton.setFocusable(false);
+        colorSwatchButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        colorSwatchButton.setIconTextGap(0);
+        colorSwatchButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        colorSwatchButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        colorSwatchToolbar.add(colorSwatchButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -360,27 +383,33 @@ public class ColorTransformerPanel extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addComponent(upperBoundLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(rangeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addComponent(colorSwatchToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(labelColor, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gradientPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rangeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelRange, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lowerBoundLabel)
-                    .addComponent(upperBoundLabel))
-                .addContainerGap(23, Short.MAX_VALUE))
+                    .addComponent(colorSwatchToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(labelColor, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(gradientPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(rangeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(labelRange, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lowerBoundLabel)
+                            .addComponent(upperBoundLabel))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton colorSwatchButton;
+    private javax.swing.JToolBar colorSwatchToolbar;
     private javax.swing.JPanel gradientPanel;
     private javax.swing.JLabel labelColor;
     private javax.swing.JLabel labelRange;
