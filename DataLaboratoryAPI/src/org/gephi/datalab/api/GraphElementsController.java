@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.datalab.api;
 
+import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
@@ -80,7 +81,7 @@ public interface GraphElementsController {
      * @param directed Indicates if the edge has to be directed
      * @return New edge if the edge was created succesfully, null otherwise
      */
-    Edge createEdge(String id,Node source, Node target, boolean directed);
+    Edge createEdge(String id, Node source, Node target, boolean directed);
 
     /**
      * <p>Tries to create edges between the source node and all other edges, directed or undirected.</p>
@@ -179,6 +180,17 @@ public interface GraphElementsController {
      * @return True if the node can be ungrouped, false otherwise
      */
     boolean canUngroupNode(Node node);
+
+    /**
+     * Merges 2 or more nodes into a new one node that has all the edges of the merged nodes.
+     * An AttributeRowsMergeStrategy must be provided for each column of the nodes.
+     * @param nodes Nodes to merge
+     * @param selectedNode Main selected node of the nodes to merge
+     * @param mergeStrategies Strategies to merge rows of each column of the nodes
+     * @param deleteMergedNodes Indicates if merged nodes should be deleted
+     * @return New resulting node
+     */
+    Node mergeNodes(Node[] nodes, Node selectedNode, AttributeRowsMergeStrategy[] mergeStrategies, boolean deleteMergedNodes);
 
     /**
      * Moves a node to a group of nodes if it is possible.
@@ -280,7 +292,7 @@ public interface GraphElementsController {
      * @return Edges count
      */
     int getEdgesCount();
-	
+
     /**
      * Checks if a node is contained in the main view graph.
      * @param node Node to check

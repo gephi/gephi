@@ -24,10 +24,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
+import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
+import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
@@ -265,6 +269,65 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         return canUngroup;
     }
 
+    public Node mergeNodes(Node[] nodes, Node selectedNode, AttributeRowsMergeStrategy[] mergeStrategies, boolean deleteMergedNodes) {
+        AttributeTable nodesTable = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
+        //Create empty new node:
+        Node newNode = createNode("");
+
+        //Set properties (position, size and color) using the selected node properties:
+        NodeData newNodeData = newNode.getNodeData();
+        NodeData selectedNodeData = selectedNode.getNodeData();
+        newNodeData.setX(selectedNodeData.x());
+        newNodeData.setY(selectedNodeData.y());
+        newNodeData.setZ(selectedNodeData.z());
+        newNodeData.setSize(selectedNodeData.getSize());
+        newNodeData.setColor(selectedNodeData.r(), selectedNodeData.g(), selectedNodeData.b());
+        newNodeData.setAlpha(selectedNodeData.alpha());
+
+        //Prepare node rows:
+        Attributes[] rows = new Attributes[nodes.length];
+        for (int i = 0; i < nodes.length; i++) {
+            rows[i] = nodes[i].getAttributes();
+        }
+
+        //Merge attributes:        
+        AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        ac.mergeRowsValues(nodesTable, mergeStrategies, rows, selectedNode.getAttributes(), newNode.getAttributes());
+
+        //Assign edges to the new node:
+        Edge newEdge;
+        for (Node node : nodes) {
+            for (Edge edge : getNodeEdges(node)) {
+                if (edge.getSource() == node) {
+                    if (edge.getTarget() == node) {
+                        newEdge = createEdge(newNode, newNode, edge.isDirected());//Self loop because of edge between merged nodes
+                    } else {
+                        newEdge = createEdge(newNode, edge.getTarget(), edge.isDirected());
+                    }
+                } else {
+                    newEdge = createEdge(edge.getSource(), newNode, edge.isDirected());
+                }
+
+                if (newEdge != null) {//Edge may not be created if repeated
+                    //Copy edge attributes:
+                    AttributeRow row = (AttributeRow) edge.getAttributes();
+                    for (int i = 0; i < row.countValues(); i++) {
+                        if (row.getAttributeValueAt(i).getColumn().getIndex() != PropertiesColumn.EDGE_ID.getIndex()) {
+                            newEdge.getAttributes().setValue(i, row.getValue(i));
+                        }
+                    }
+                }
+            }
+        }
+
+        //Finally delete merged nodes:
+        if (deleteMergedNodes) {
+            deleteNodes(nodes);
+        }
+
+        return newNode;
+    }
+
     public boolean moveNodeToGroup(Node node, Node group) {
         if (canMoveNodeToGroup(node, group)) {
             getHierarchicalGraph().moveToGroup(node, group);
@@ -465,7 +528,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         //Copy attributes:
         AttributeRow row = (AttributeRow) nodeData.getAttributes();
         for (int i = 0; i < row.countValues(); i++) {
-            if (row.getValues()[i].getColumn().getIndex()!=PropertiesColumn.NODE_ID.getIndex()) {
+            if (row.getAttributeValueAt(i).getColumn().getIndex() != PropertiesColumn.NODE_ID.getIndex()) {
                 copyData.getAttributes().setValue(i, row.getValue(i));
             }
         }
