@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.io.exporter.ucinet
+OpenIDE-Module-Localizing-Bundle: org/gephi/io/exporter/ucinet/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
