@@ -106,9 +106,11 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         Collection<? extends RankingBuilder> builders = Lookup.getDefault().lookupAll(RankingBuilder.class);
         for (RankingBuilder builder : builders) {
             Ranking[] builtRankings = builder.buildRanking(this);
-            for (Ranking r : builtRankings) {
-                if (r.getElementType().equals(elementType)) {
-                    rankings.add(r);
+            if (builtRankings != null) {
+                for (Ranking r : builtRankings) {
+                    if (r.getElementType().equals(elementType)) {
+                        rankings.add(r);
+                    }
                 }
             }
         }
