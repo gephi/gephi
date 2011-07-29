@@ -201,6 +201,7 @@ public class DHNSSerializer {
                     }
                     edge.setWeight(weight);
                     edge.getEdgeData().setAttributes(factory.newEdgeAttributes(edge.getEdgeData()));
+                    edge.getEdgeData().setId(String.valueOf(edge.getId()));//Set edge Id attribute the same as the int id at first because Id attribute is not serialized in DataSerializer if they are equal
                     edge.getEdgeData().setTextData(factory.newTextData());
                     srcNode.getEdgesOutTree().add(edge);
                     destNode.getEdgesInTree().add(edge);
@@ -271,6 +272,7 @@ public class DHNSSerializer {
                         absNode.setEnabledOutDegree(outDegree);
                         absNode.setEnabledMutualDegree(mutualDegree);
                         absNode.getNodeData().setAttributes(factory.newNodeAttributes(absNode.getNodeData()));
+                        absNode.getNodeData().setId(String.valueOf(absNode.getId()));//Set node Id attribute the same as the int id at first because Id attribute is not serialized in DataSerializer if they are equal
                         absNode.getNodeData().setTextData(factory.newTextData());
                         treeStructure.insertAsChild(absNode, parentNode);
                         graphStructure.addToDictionnary(absNode);

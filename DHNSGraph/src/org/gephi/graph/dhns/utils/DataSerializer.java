@@ -110,7 +110,7 @@ public class DataSerializer {
 
         writer.writeAttribute("nodepre", String.valueOf(node.getPre()));
 
-        if (nodeData.getId() != null && !nodeData.getId().equals("" + node.getId())) {
+        if (nodeData.getId() != null && !nodeData.getId().equals(String.valueOf(node.getId()))) {
             writer.writeAttribute("id", nodeData.getId());
         }
 
@@ -171,7 +171,7 @@ public class DataSerializer {
         writer.writeAttribute("sourcepre", String.valueOf(edge.getSource().getPre()));
         writer.writeAttribute("targetpre", String.valueOf(edge.getTarget().getPre()));
 
-        if (edgeData.getId() != null && !edgeData.getId().equals("" + edge.getId())) {
+        if (edgeData.getId() != null && !edgeData.getId().equals(String.valueOf(edge.getId()))) {
             writer.writeAttribute("id", edgeData.getId());
         }
 
