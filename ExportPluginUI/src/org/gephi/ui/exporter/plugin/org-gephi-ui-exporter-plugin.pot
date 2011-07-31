@@ -30,6 +30,12 @@ msgstr "GraphML"
 msgid "UIExporterCSV.name"
 msgstr "CSV"
 
+msgid "UIExporterPajek.name"
+msgstr "Pajek"
+
+msgid "UIExporterDL.name"
+msgstr "Exporter DL"
+
 msgid "UIExporterGDFPanel.jRadioButton1.text"
 msgstr "Simple quotes"
 
@@ -143,3 +149,12 @@ msgstr "Complete node tree without meta edges"
 
 msgid "UIExporterGEXFPanel.hierarchyCheckbox.text"
 msgstr "Export hierarchy"
+
+msgid "UIExporterPajekPanel.labelExport.text"
+msgstr "Export:"
+
+msgid "UIExporterPajekPanel.positionExportCheckbox.text"
+msgstr "Position (x,y)"
+
+msgid "UIExporterPajekPanel.edgeWeightCheckbox.text"
+msgstr "Edge weights"

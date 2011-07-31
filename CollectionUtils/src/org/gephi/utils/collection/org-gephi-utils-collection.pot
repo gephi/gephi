@@ -16,7 +16,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "OpenIDE-Module-Long-Description"
-msgstr "Custom collections and libraries utilities"
+msgstr ""
+"Custom collections and libraries utilities:\n"
+"- Goolgle Collections\n"
+"- Trove"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Custom collections and libraries utilities"

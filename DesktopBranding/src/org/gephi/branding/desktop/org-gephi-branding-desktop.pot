@@ -92,3 +92,32 @@ msgstr "The file ''{0}'' has not been found, please check if the file exists"
 
 msgid "CommandLineProcessor.fileNotSupported"
 msgstr "The file format is not supported"
+
+msgid "OutOfMemoryError.canIncreaseMemory.message"
+msgstr ""
+"Gephi reached the maximum amount of memory ({0}). This happens when the "
+"volume of data is too large. The limit can be increased up to {1} on your "
+"computer.\n"
+"\n"
+"Gephi will try to save your project before exiting. If cancel, it's likely "
+"Gephi will stop respond."
+
+msgid "OutOfMemoryError.alreadyMax.message"
+msgstr ""
+"Gephi reached the maximum amount of memory ({0}). This happens when the "
+"volume of data is too large. The limit is already set at it's maximum.\n"
+"\n"
+"Gephi will try to save your project before exiting. If cancel, it's likely "
+"Gephi will stop respond."
+
+msgid "OutOfMemoryError.title"
+msgstr "Gephi is running out of memory"
+
+msgid "OutOfMemoryError.canIncreaseMemory.button"
+msgstr "Increase memory and restart Gephi"
+
+msgid "OutOfMemoryError.alreadyMax.button"
+msgstr "Save project and restart Gephi"
+
+msgid "OutOfMemoryError.cancel"
+msgstr "Cancel"

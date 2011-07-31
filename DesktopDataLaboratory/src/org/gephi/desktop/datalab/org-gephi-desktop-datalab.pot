@@ -119,3 +119,6 @@ msgstr "Choose the columns to display:"
 
 msgid "AvailableColumnsPanel.maximum-available-columns.info"
 msgstr "Maximum number of columns reached"
+
+msgid "ConfigurationPanel.timeIntervalsAsDates.text"
+msgstr "Time intervals as dates"

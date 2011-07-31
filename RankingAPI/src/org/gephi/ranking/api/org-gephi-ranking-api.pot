@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "OpenIDE-Module-Long-Description"
-msgstr "API/SPI for ranking data values and create transformers"
+msgstr "API/SPI for ranking data values and create transformers."
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "API/SPI for ranking data values and create transformers"

@@ -74,6 +74,12 @@ msgstr ""
 msgid "ResultListPanel.tablescreenshot.error.title"
 msgstr "Error"
 
+msgid "ResultListPanel.column.rank"
+msgstr "Rank"
+
+msgid "ResultListPanel.column.label"
+msgstr "Label"
+
 msgid "RankingChooser.choose.text"
 msgstr "---Choose a rank parameter"
 

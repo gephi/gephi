@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module: net.java.pdfRenderer
-OpenIDE-Module-Localizing-Bundle: net/java/pdfRenderer/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-
