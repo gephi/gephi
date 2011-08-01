@@ -44,7 +44,7 @@ public class UIExporterPNG implements ExporterUI {
     public JPanel getPanel() {
         panel = new UIExporterPNGPanel();
         validationPanel = UIExporterPNGPanel.createValidationPanel(panel);
-        return panel;
+        return validationPanel;
     }
 
     @Override

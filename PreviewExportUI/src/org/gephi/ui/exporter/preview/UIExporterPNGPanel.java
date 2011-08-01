@@ -39,13 +39,16 @@ public class UIExporterPNGPanel extends javax.swing.JPanel implements Validation
     }
 
     void unsetup(PNGExporter exporter) {
-        exporter.setWidth(Integer.parseInt(widthTextField.getText()));
-        exporter.setHeight(Integer.parseInt(heightTextField.getText()));
+        try {
+            exporter.setWidth(Integer.parseInt(widthTextField.getText()));
+            exporter.setHeight(Integer.parseInt(heightTextField.getText()));
 
-        exporter.setLeftMargin(Integer.parseInt(leftTextField.getText()));
-        exporter.setRightMargin(Integer.parseInt(rightTextField.getText()));
-        exporter.setBottomMargin(Integer.parseInt(bottomTextField.getText()));
-        exporter.setTopMargin(Integer.parseInt(topTextField.getText()));
+            exporter.setLeftMargin(Integer.parseInt(leftTextField.getText()));
+            exporter.setRightMargin(Integer.parseInt(rightTextField.getText()));
+            exporter.setBottomMargin(Integer.parseInt(bottomTextField.getText()));
+            exporter.setTopMargin(Integer.parseInt(topTextField.getText()));
+        } catch (Exception ex) {
+        }
     }
 
     public UIExporterPNGPanel() {
