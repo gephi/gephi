@@ -152,6 +152,10 @@
                 <package>org.gephi.io.exporter.preview</package>
                 <package>org.gephi.io.exporter.preview.util</package>
             </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/PDFRenderer-0.9.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/PDFRenderer-0.9.0.jar</binary-origin>
+            </class-path-extension>
         </data>
     </configuration>
 </project>
