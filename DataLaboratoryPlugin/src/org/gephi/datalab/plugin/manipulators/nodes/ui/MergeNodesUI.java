@@ -22,6 +22,8 @@ package org.gephi.datalab.plugin.manipulators.nodes.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
@@ -40,6 +42,7 @@ import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.datalab.spi.rows.merge.AttributeRowsMergeStrategy;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Node;
+import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
@@ -109,13 +112,13 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
         strategiesComboBoxes = new StrategyComboBox[columns.length];
         for (int i = 0; i < columns.length; i++) {
             //Strategy information label:
-            JLabel infoLabel = new JLabel(INFO_LABELS_ICON);
+            StrategyInfoLabel infoLabel = new StrategyInfoLabel(i);
 
             //Strategy configuration button:
             strategiesConfigurationButtons[i] = new StrategyConfigurationButton(i);
 
             //Strategy selection:
-            StrategyComboBox strategyComboBox = new StrategyComboBox(i, strategiesConfigurationButtons[i], infoLabel);
+            StrategyComboBox strategyComboBox = new StrategyComboBox(strategiesConfigurationButtons[i],infoLabel);
             strategiesComboBoxes[i] = strategyComboBox;
             for (AttributeRowsMergeStrategy strategy : getColumnAvailableStrategies(columns[i])) {
                 strategyComboBox.addItem(new StrategyWrapper(strategy));
@@ -208,31 +211,77 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
     }
 
     class StrategyComboBox extends JComboBox implements ActionListener {
-
-        private int strategyIndex;
         private StrategyConfigurationButton button;
-        private JLabel infoLabel;
+        private StrategyInfoLabel infoLabel;
 
-        public StrategyComboBox(int strategyIndex, StrategyConfigurationButton button, JLabel infoLabel) {
-            this.strategyIndex = strategyIndex;
+        public StrategyComboBox(StrategyConfigurationButton button, StrategyInfoLabel infoLabel) {
             this.button = button;
             this.infoLabel = infoLabel;
             this.addActionListener(this);
         }
-
+        
         public void refresh() {
             button.refreshEnabledState();
-            AttributeRowsMergeStrategy strategy = getStrategy(strategyIndex);
-            if (strategy != null) {
-                infoLabel.setToolTipText(strategy.getDescription());
-            } else {
-                infoLabel.setToolTipText(null);
-            }
+            infoLabel.refreshEnabledState();
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             refresh();
+        }
+    }
+
+    class StrategyInfoLabel extends JLabel {
+
+        private int strategyIndex;
+
+        public StrategyInfoLabel(int strategyIndex) {
+            this.strategyIndex = strategyIndex;
+            setIcon(INFO_LABELS_ICON);
+            prepareRichTooltip();
+        }
+
+        public void refreshEnabledState() {
+            AttributeRowsMergeStrategy strategy = getStrategy(strategyIndex);
+            setEnabled(strategy != null && strategy.getDescription() != null && !strategy.getDescription().isEmpty());
+        }
+
+        private void prepareRichTooltip() {
+            addMouseListener(new MouseAdapter() {
+
+                RichTooltip richTooltip;
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    if (isEnabled()) {
+                        richTooltip = buildTooltip(getStrategy(strategyIndex));
+                    }
+
+                    if (richTooltip != null) {
+                        richTooltip.showTooltip(StrategyInfoLabel.this);
+                    }
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    if (richTooltip != null) {
+                        richTooltip.hideTooltip();
+                        richTooltip = null;
+                    }
+                }
+
+                private RichTooltip buildTooltip(AttributeRowsMergeStrategy strategy) {
+                    if (strategy.getDescription() != null && !strategy.getDescription().isEmpty()) {
+                        RichTooltip tooltip = new RichTooltip(strategy.getName(), strategy.getDescription());
+                        if (strategy.getIcon() != null) {
+                            tooltip.setMainImage(ImageUtilities.icon2Image(strategy.getIcon()));
+                        }
+                        return tooltip;
+                    } else {
+                        return null;
+                    }
+                }
+            });
         }
     }
 
