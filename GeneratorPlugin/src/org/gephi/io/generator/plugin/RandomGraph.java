@@ -29,6 +29,7 @@ import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -82,7 +83,7 @@ public class RandomGraph implements Generator {
     }
 
     public String getName() {
-        return "Random Graph";
+        return NbBundle.getMessage(RandomGraph.class, "RandomGraph.name");
     }
 
     public GeneratorUI getUI() {

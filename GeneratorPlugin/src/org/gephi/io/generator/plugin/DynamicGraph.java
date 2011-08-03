@@ -33,6 +33,7 @@ import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.utils.progress.ProgressTicket;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -102,7 +103,7 @@ public class DynamicGraph implements Generator {
     }
 
     public String getName() {
-        return "Dynamic Graph Example";
+        return NbBundle.getMessage(DynamicGraph.class, "DynamicGraph.name");
     }
 
     public GeneratorUI getUI() {
