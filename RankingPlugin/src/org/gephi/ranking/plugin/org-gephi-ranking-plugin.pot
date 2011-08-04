@@ -17,9 +17,18 @@ msgstr ""
 
 msgid "OpenIDE-Module-Long-Description"
 msgstr ""
-"Custom collections and libraries utilities:\n"
-"- Goolgle Collections\n"
-"- Trove"
+"Implement Ranking and Transformer builders. Ranking builders provide the "
+"source of rankings (e.g. Degree, Attributes) and transformers the method to "
+"convert numerical values to color or sizes."
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Custom collections and libraries utilities"
+msgstr "Implement Ranking and Transformer builders"
+
+msgid "DegreeRanking.name"
+msgstr "Degree"
+
+msgid "InDegreeRanking.name"
+msgstr "InDegree"
+
+msgid "OutDegreeRanking.name"
+msgstr "OutDegree"

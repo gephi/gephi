@@ -15,11 +15,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Implements user interface for transformers"
+
 msgid "ColorTransformerUI.name"
 msgstr "Color"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Ranking transformers implementations"
+msgstr "Ranking transformers UI implementations"
 
 msgid "SizeTransformerUI.name"
 msgstr "Size/Weight"
@@ -62,3 +65,6 @@ msgstr "Default"
 
 msgid "PalettePopup.invert"
 msgstr "Invert"
+
+msgid "PalettePopup.recent"
+msgstr "Recent"

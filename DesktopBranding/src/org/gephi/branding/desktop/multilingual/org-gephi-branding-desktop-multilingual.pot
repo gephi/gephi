@@ -28,3 +28,10 @@ msgstr ""
 
 msgid "ChangeLang.Confirm.title"
 msgstr "Language"
+
+msgid "ChangeLang.Error.message"
+msgstr ""
+"Language could not be changed. Please make sure you have permissions to "
+"change files.\n"
+"If the problem persists you can manually change language by editing {gephi "
+"installation}/etc/gephi.conf file."

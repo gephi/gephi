@@ -32,3 +32,9 @@ msgstr "GraphML Files"
 
 msgid "fileType_CSV_Name"
 msgstr "CSV Files"
+
+msgid "fileType_Pajek_Name"
+msgstr "NET Files (Pajek)"
+
+msgid "fileType_DL_Name"
+msgstr "DL files (UCINET)"

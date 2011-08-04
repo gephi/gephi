@@ -36,11 +36,17 @@ msgstr "TLP Files"
 msgid "fileType_CSV_Name"
 msgstr "CSV Files"
 
+msgid "fileType_Edges_Name"
+msgstr "Edge List"
+
 msgid "fileType_GraphViz_Name"
 msgstr "GraphViz Files"
 
 msgid "fileType_DL_Name"
 msgstr "DL Files (UCINET)"
+
+msgid "fileType_VNA_Name"
+msgstr "VNA Files"
 
 msgid "importerGDF_error_dataformat1"
 msgstr "The file must start with the \"nodedef> name\" line."
@@ -66,7 +72,7 @@ msgstr "Column type is not found for ''{0}'', string is used instead."
 msgid "importerGDF_error_dataformat7"
 msgstr ""
 "Line ''{0}'' has more columns than defined in header. Please verify the "
-"number of comas."
+"number of commas."
 
 msgid "importerGDF_error_dataformat8"
 msgstr "The node column ''{0}'' can't be added because it already exists"

@@ -25,7 +25,7 @@ msgid "MouseSelectionPopupPanel.labelDiameter.text"
 msgstr "Diameter"
 
 msgid "MouseSelectionPopupPanel.proportionnalZoomCheckbox.text"
-msgstr "Proportionnal to zoom"
+msgstr "Proportional to zoom"
 
 msgid "SelectionBar.statusLabel.rectangleSelection"
 msgstr "Rectangle selection"

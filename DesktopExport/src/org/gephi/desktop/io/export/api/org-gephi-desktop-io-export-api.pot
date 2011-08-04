@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "VectorialFileExporterUI_title"
-msgstr "SVG/PDF file..."
+msgstr "SVG/PDF/PNG file..."
 
 msgid "VectorialFileExporterUI_filechooser_title"
 msgstr "Export"

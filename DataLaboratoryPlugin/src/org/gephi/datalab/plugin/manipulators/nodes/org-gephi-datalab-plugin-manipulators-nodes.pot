@@ -118,6 +118,14 @@ msgstr "Set node size..."
 msgid "SetNodesSize.name.multiple"
 msgstr "Set all nodes size..."
 
+msgid "MergeNodes.name"
+msgstr "Merge nodes..."
+
+msgid "MergeNodes.description"
+msgstr ""
+"All nodes are merged into a new one, combining the edges and values using "
+"different strategies"
+
 msgid "LinkNodes.name"
 msgstr "Link to nodes..."
 

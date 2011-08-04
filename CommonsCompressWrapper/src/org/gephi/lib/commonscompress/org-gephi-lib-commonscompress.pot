@@ -17,9 +17,8 @@ msgstr ""
 
 msgid "OpenIDE-Module-Long-Description"
 msgstr ""
-"Custom collections and libraries utilities:\n"
-"- Goolgle Collections\n"
-"- Trove"
+"Commons Compress defines an API for working with ar, cpio, tar, zip, gzip "
+"and bzip2 files."
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Custom collections and libraries utilities"
+msgstr "Compression Utility Classes"

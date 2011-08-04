@@ -30,6 +30,9 @@ msgstr "Remove"
 msgid "QueryNode.actions.save"
 msgstr "Save"
 
+msgid "QueryNode.actions.duplicate"
+msgstr "Duplicate"
+
 msgid "RootNode.name"
 msgstr "Queries"
 

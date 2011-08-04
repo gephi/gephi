@@ -20,3 +20,9 @@ msgstr "Standard generators implementations"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Standard generators implementations"
+
+msgid "RandomGraph.name"
+msgstr "Random Graph"
+
+msgid "DynamicGraph.name"
+msgstr "Dynamic Graph Example"

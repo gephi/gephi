@@ -96,3 +96,15 @@ msgstr ""
 "target. Name node primary key column \"id\" and edge columns \"source\" and "
 "\"target\". Columns \"label\", \"x\", \"y\" and \"size\" for nodes and "
 "\"label\" and \"weight\" for edges are optionnal."
+
+msgid "ImporterVnaUI.displayName"
+msgstr "VNA import"
+
+msgid "ImporterVnaUI.message.linear"
+msgstr "Line width increases linearly with its value."
+
+msgid "ImporterVnaUI.message.square_root"
+msgstr "Line width increases with a square root of its value."
+
+msgid "ImporterVnaUI.message.logarithmic"
+msgstr "Line width increases logarithmically with its value."
