@@ -1,21 +1,21 @@
-# Spanish translation for gephi
-# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
-# This file is distributed under the same license as the gephi package.
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: gephi\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2011-03-01 20:04+0000\n"
-"Last-Translator: Eduardo Ramos <Unknown>\n"
-"Language-Team: Spanish <es@li.org>\n"
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-05 11:03+0000\n"
+"Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
+"Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/gephi/team/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-21 04:44+0000\n"
-"X-Generator: Launchpad (build 12559)\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 msgid "fileType_GDF_Name"
 msgstr "Archivos GDF (GUESS)"
@@ -38,11 +38,17 @@ msgstr "Archivos TLP"
 msgid "fileType_CSV_Name"
 msgstr "Archivos CSV"
 
+msgid "fileType_Edges_Name"
+msgstr ""
+
 msgid "fileType_GraphViz_Name"
 msgstr "Archivos GraphViz"
 
 msgid "fileType_DL_Name"
 msgstr "Archivos DL (UCINET)"
+
+msgid "fileType_VNA_Name"
+msgstr ""
 
 msgid "importerGDF_error_dataformat1"
 msgstr "El archivo debe comenzar con la línea \"nodedef> name\""
@@ -54,8 +60,8 @@ msgstr ""
 
 msgid "importerGDF_error_dataformat3"
 msgstr ""
-"Fallo al importar la columna ''{0}'' para el nodo ''{1}''. Error en el valor "
-"''{2}''."
+"Fallo al importar la columna ''{0}'' para el nodo ''{1}''. Error en el valor"
+" ''{2}''."
 
 msgid "importerGDF_error_dataformat4"
 msgstr ""
@@ -80,8 +86,7 @@ msgid "importerGDF_error_dataformat8"
 msgstr "La columna ''{0}'' del nodo no puede ser añadida porque ya existe"
 
 msgid "importerGDF_error_dataformat9"
-msgstr ""
-"La columna ''{0}'' de la arista no puede ser añadida porque ya existe"
+msgstr "La columna ''{0}'' de la arista no puede ser añadida porque ya existe"
 
 msgid "importerTPL_error_dataformat1"
 msgstr "Mal formato de arista en la línea {0}."
@@ -93,8 +98,7 @@ msgid "importerNET_error_dataformat2"
 msgstr "Línea en blanco detectada en la línea {0}."
 
 msgid "importerNET_error_dataformat3"
-msgstr ""
-"Número desequilibrado (o demasiado alto) de comillas en la línea {0}."
+msgstr "Número desequilibrado (o demasiado alto) de comillas en la línea {0}."
 
 msgid "importerNET_error_dataformat4"
 msgstr "El número de vértice ''{0}'' no está en el rango [1,{1}]."
@@ -175,8 +179,8 @@ msgstr ""
 
 msgid "importerGraphML_error_edgetype"
 msgstr ""
-"El tipo ''{0}'' de la arista ''{1}'' no puede ser reconocido. Se ha usado el "
-"valor por defecto."
+"El tipo ''{0}'' de la arista ''{1}'' no puede ser reconocido. Se ha usado el"
+" valor por defecto."
 
 msgid "importerGML_error_listtoken"
 msgstr "Tipo de símbolo inesperado en la línea {0}"
@@ -289,8 +293,7 @@ msgid "importerGEXF_error_notnode"
 msgstr "El elemento ''{0}'' no es un nodo. El elemento va a ser ignorado."
 
 msgid "importerGEXF_error_pid_notfound"
-msgstr ""
-"El padre con pid ''{0}'' no pudo ser encontrado para el nodo ''{1}''."
+msgstr "El padre con pid ''{0}'' no pudo ser encontrado para el nodo ''{1}''."
 
 msgid "importerGEXF_error_parsingdatetype"
 msgstr ""
@@ -319,8 +322,8 @@ msgstr ""
 
 msgid "importerGEXF_error_edgeattribute_timeinterval_parseerror"
 msgstr ""
-"El intervalo de tiempo para el atributo de la arista ''{0}''. Usa un formato "
-"de tipo 'Date' o 'Double'."
+"El intervalo de tiempo para el atributo de la arista ''{0}''. Usa un formato"
+" de tipo 'Date' o 'Double'."
 
 msgid "importerGEXF_error_nodecolorvalue"
 msgstr ""
@@ -334,8 +337,8 @@ msgstr ""
 
 msgid "importerGEXF_error_nodeopacityvalue"
 msgstr ""
-"El nodo con id ''{1}'' tiene una opacidad errónea a=''{0}''. Debería ser 0.0 "
-"< a < 1.0."
+"El nodo con id ''{1}'' tiene una opacidad errónea a=''{0}''. Debería ser 0.0"
+" < a < 1.0."
 
 msgid "importerGEXF_error_edgeopacityvalue"
 msgstr ""
@@ -386,8 +389,7 @@ msgstr ""
 "'format=fullmatrix' solamente."
 
 msgid "importerDL_error_nmissing"
-msgstr ""
-"La cabecera del archivo DL debe contener la etiqueta 'n = <numNodes>'"
+msgstr "La cabecera del archivo DL debe contener la etiqueta 'n = <numNodes>'"
 
 msgid "importerDL_error_mmissing"
 msgstr ""
@@ -409,7 +411,8 @@ msgstr ""
 
 msgid "importerDL_error_matriciescount"
 msgstr ""
-"El número de conjunto de matricies ({0}) es diferente de la etiqueta nm ({1})"
+"El número de conjunto de matricies ({0}) es diferente de la etiqueta nm "
+"({1})"
 
 msgid "importerDL_error_matrixentriescount"
 msgstr ""
@@ -451,5 +454,4 @@ msgstr ""
 msgid "importerDOT_error_weightunreachable"
 msgstr "Imposible analizar el peso de la arista en la línea {0}"
 
-#~ msgid "fileType_DOT_Name"
-#~ msgstr "Archivos DOT (GraphViz)"
+

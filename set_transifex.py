@@ -23,6 +23,7 @@ import re
 project = "gephi"
 
 #This script sets the initial state of transifex for existing .pot files
+#See http://wiki.gephi.org/index.php/Localization for more information
 #!!Transifex client must be in the system path to run this script
 #If you add 1 or a few pot files, it is faster to do set it manually using a command like the following:
 #tx set --auto-local -r gephi.org-gephi-data-attributes-api --source-language=en --source-file org-gephi-data-attributes-api.pot "<lang>.po" --execute#

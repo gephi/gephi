@@ -1,69 +1,64 @@
-# Russian translation for gephi
-# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
-# This file is distributed under the same license as the gephi package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
-#
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: gephi\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2010-12-01 08:10+0000\n"
-"Last-Translator: Altsoph <Unknown>\n"
-"Language-Team: Russian <ru@li.org>\n"
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-04 21:54+0000\n"
+"Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
+"Language-Team: Russian (http://www.transifex.net/projects/p/gephi/team/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-21 04:43+0000\n"
-"X-Generator: Launchpad (build 12559)\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
 msgid "OutOfMemoryError.message"
 msgstr ""
-"Недостаточно памяти. Увеличьте максимально доступный объем памяти, установив "
-"параметр (-Xmx) в файле настроек запуска Gephi."
 
 msgid "ReportPanel.jLabel1.text"
-msgstr "Краткое описание:"
+msgstr ""
 
 msgid "ReportPanel.jLabel2.text"
-msgstr "Опишите ваши действия, предшествующие возникновению проблемы:"
+msgstr ""
 
 msgid "ReportPanel.followCheckBox.text"
-msgstr "Подписаться на информацию по ошибке"
+msgstr ""
 
 msgid "ReportPanel.labelEmail.text"
-msgstr "Email:"
+msgstr ""
 
 msgid "ReportPanel.helpLabel.text"
 msgstr ""
-"Укажите свой email для получения информации о прогрессе решения данной "
-"проблемы"
 
 msgid "ReportPanel.dialog.title"
-msgstr "Сообщить о проблеме"
+msgstr ""
 
 msgid "ReportPanel.dialog.sendButton"
-msgstr "Отослать"
+msgstr ""
 
 msgid "ReportHandler.button"
-msgstr "Сообщить о проблеме"
+msgstr ""
 
 msgid "ReportController.status.sending"
-msgstr "Отсылка отчета"
+msgstr ""
 
 msgid "ReportController.status.sent"
-msgstr "Отчет о проблеме отослан, спасибо."
+msgstr ""
 
 msgid "ReportController.status.failed"
-msgstr "Во время отправки отчета возникла проблема."
+msgstr ""
 
 msgid "ReportPanel.jLabel3.text"
 msgstr ""
-"Отчеты об ошибках позволяют нам улучшать Gephi. Они не содержат персональных "
-"данных."
 
 msgid "ReportPanel.viewDataButton.text"
-msgstr "Просмотр данных"
+msgstr ""
 
 msgid "ReportPanel.viewData.title"
-msgstr "Просмотр данных отчета"
+msgstr ""
+
+
