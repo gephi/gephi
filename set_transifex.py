@@ -34,6 +34,7 @@ project = "gephi"
 #Assumes an executable called transifex in the repository
 #This script should be run from gephi repository root
 #The result transifex config file exists in .tx/config
+#!!Resources with names longer than 50 chars are shortened so they can be correctly pushed
 #!!After this script, you should run tx push -s to push new .pot files and optionally -l to push also existing translations
 
 #To update .po translations from Transifex website you have to execute tx pull
@@ -43,7 +44,7 @@ print "!Important: please make sure to execute a project clean from Netbeans bef
 if os.path.exists("build"):
 	print "Please remove build dir before executing this script to avoid .pot files conflicts"
 	exit()
-
+	
 directories = ["."]
 while len(directories) > 0:
     directory = directories.pop()
@@ -53,6 +54,11 @@ while len(directories) > 0:
 			dir, filename = os.path.split(fullpath)
 			resource, extension = os.path.splitext(filename)
 			if extension == ".pot":
+				resourceLen = len(resource)
+				if resourceLen > 50: #Maximum of 50 chars for a resource slug, shorten it:
+					print "\n!!Necessary to shorten the following resource (longer than 50 chars): ", resource
+					start = "s-"
+					resource = start + resource[(resourceLen-50+len(start)):resourceLen]
 				print "\n", resource
 				#set transifex resource
 				command="tx set --auto-local -r "+project+"."+resource+" --source-language=en --source-file "+fullpath+" \""+dir+"/<lang>.po\" --execute"

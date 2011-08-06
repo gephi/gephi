@@ -2,817 +2,817 @@
 host = gephi
 
 [gephi.org-gephi-ui-workspace]
-file_filter = WorkspaceUI/src/org/gephi/ui/workspace/<lang>.po
-source_file = WorkspaceUI/src/org/gephi/ui/workspace/org-gephi-ui-workspace.pot
+file_filter = WorkspaceUI\src\org\gephi\ui\workspace\<lang>.po
+source_file = WorkspaceUI\src\org\gephi\ui\workspace\org-gephi-ui-workspace.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-welcome]
-file_filter = WelcomeScreen/src/org/gephi/desktop/welcome/<lang>.po
-source_file = WelcomeScreen/src/org/gephi/desktop/welcome/org-gephi-desktop-welcome.pot
+file_filter = WelcomeScreen\src\org\gephi\desktop\welcome\<lang>.po
+source_file = WelcomeScreen\src\org\gephi\desktop\welcome\org-gephi-desktop-welcome.pot
 source_lang = en
 
 [gephi.org-gephi-visualization]
-file_filter = VisualizationModule/src/org/gephi/visualization/<lang>.po
-source_file = VisualizationModule/src/org/gephi/visualization/org-gephi-visualization.pot
+file_filter = VisualizationModule\src\org\gephi\visualization\<lang>.po
+source_file = VisualizationModule\src\org\gephi\visualization\org-gephi-visualization.pot
 source_lang = en
 
 [gephi.org-gephi-visualization-screenshot]
-file_filter = VisualizationModule/src/org/gephi/visualization/screenshot/<lang>.po
-source_file = VisualizationModule/src/org/gephi/visualization/screenshot/org-gephi-visualization-screenshot.pot
+file_filter = VisualizationModule\src\org\gephi\visualization\screenshot\<lang>.po
+source_file = VisualizationModule\src\org\gephi\visualization\screenshot\org-gephi-visualization-screenshot.pot
 source_lang = en
 
 [gephi.org-gephi-visualization-options]
-file_filter = VisualizationModule/src/org/gephi/visualization/options/<lang>.po
-source_file = VisualizationModule/src/org/gephi/visualization/options/org-gephi-visualization-options.pot
+file_filter = VisualizationModule\src\org\gephi\visualization\options\<lang>.po
+source_file = VisualizationModule\src\org\gephi\visualization\options\org-gephi-visualization-options.pot
 source_lang = en
 
 [gephi.org-gephi-visualization-config]
-file_filter = VisualizationModule/src/org/gephi/visualization/config/<lang>.po
-source_file = VisualizationModule/src/org/gephi/visualization/config/org-gephi-visualization-config.pot
+file_filter = VisualizationModule\src\org\gephi\visualization\config\<lang>.po
+source_file = VisualizationModule\src\org\gephi\visualization\config\org-gephi-visualization-config.pot
 source_lang = en
 
 [gephi.org-gephi-visualization-component]
-file_filter = VisualizationModule/src/org/gephi/visualization/component/<lang>.po
-source_file = VisualizationModule/src/org/gephi/visualization/component/org-gephi-visualization-component.pot
+file_filter = VisualizationModule\src\org\gephi\visualization\component\<lang>.po
+source_file = VisualizationModule\src\org\gephi\visualization\component\org-gephi-visualization-component.pot
 source_lang = en
 
 [gephi.org-gephi-visualization-apiimpl-contextmenuitems]
-file_filter = VisualizationModule/src/org/gephi/visualization/apiimpl/contextmenuitems/<lang>.po
-source_file = VisualizationModule/src/org/gephi/visualization/apiimpl/contextmenuitems/org-gephi-visualization-apiimpl-contextmenuitems.pot
+file_filter = VisualizationModule\src\org\gephi\visualization\apiimpl\contextmenuitems\<lang>.po
+source_file = VisualizationModule\src\org\gephi\visualization\apiimpl\contextmenuitems\org-gephi-visualization-apiimpl-contextmenuitems.pot
 source_lang = en
 
 [gephi.org-gephi-visualization-api]
-file_filter = VisualizationAPI/src/org/gephi/visualization/api/<lang>.po
-source_file = VisualizationAPI/src/org/gephi/visualization/api/org-gephi-visualization-api.pot
+file_filter = VisualizationAPI\src\org\gephi\visualization\api\<lang>.po
+source_file = VisualizationAPI\src\org\gephi\visualization\api\org-gephi-visualization-api.pot
 source_lang = en
 
 [gephi.org-gephi-lib-validation]
-file_filter = ValidationAPI/src/org/gephi/lib/validation/<lang>.po
-source_file = ValidationAPI/src/org/gephi/lib/validation/org-gephi-lib-validation.pot
+file_filter = ValidationAPI\src\org\gephi\lib\validation\<lang>.po
+source_file = ValidationAPI\src\org\gephi\lib\validation\org-gephi-lib-validation.pot
 source_lang = en
 
 [gephi.org-gephi-utils]
-file_filter = Utils/src/org/gephi/utils/<lang>.po
-source_file = Utils/src/org/gephi/utils/org-gephi-utils.pot
+file_filter = Utils\src\org\gephi\utils\<lang>.po
+source_file = Utils\src\org\gephi\utils\org-gephi-utils.pot
 source_lang = en
 
 [gephi.org-gephi-ui-utils]
-file_filter = UIUtils/src/org/gephi/ui/utils/<lang>.po
-source_file = UIUtils/src/org/gephi/ui/utils/org-gephi-ui-utils.pot
+file_filter = UIUtils\src\org\gephi\ui\utils\<lang>.po
+source_file = UIUtils\src\org\gephi\ui\utils\org-gephi-ui-utils.pot
 source_lang = en
 
 [gephi.org-gephi-ui-components]
-file_filter = UIComponents/src/org/gephi/ui/components/<lang>.po
-source_file = UIComponents/src/org/gephi/ui/components/org-gephi-ui-components.pot
+file_filter = UIComponents\src\org\gephi\ui\components\<lang>.po
+source_file = UIComponents\src\org\gephi\ui\components\org-gephi-ui-components.pot
 source_lang = en
 
 [gephi.org-gephi-ui-tools-plugin]
-file_filter = ToolsPlugin/src/org/gephi/ui/tools/plugin/<lang>.po
-source_file = ToolsPlugin/src/org/gephi/ui/tools/plugin/org-gephi-ui-tools-plugin.pot
+file_filter = ToolsPlugin\src\org\gephi\ui\tools\plugin\<lang>.po
+source_file = ToolsPlugin\src\org\gephi\ui\tools\plugin\org-gephi-ui-tools-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-ui-tools-plugin-edit]
-file_filter = ToolsPlugin/src/org/gephi/ui/tools/plugin/edit/<lang>.po
-source_file = ToolsPlugin/src/org/gephi/ui/tools/plugin/edit/org-gephi-ui-tools-plugin-edit.pot
+file_filter = ToolsPlugin\src\org\gephi\ui\tools\plugin\edit\<lang>.po
+source_file = ToolsPlugin\src\org\gephi\ui\tools\plugin\edit\org-gephi-ui-tools-plugin-edit.pot
 source_lang = en
 
 [gephi.org-gephi-tools-plugin]
-file_filter = ToolsPlugin/src/org/gephi/tools/plugin/<lang>.po
-source_file = ToolsPlugin/src/org/gephi/tools/plugin/org-gephi-tools-plugin.pot
+file_filter = ToolsPlugin\src\org\gephi\tools\plugin\<lang>.po
+source_file = ToolsPlugin\src\org\gephi\tools\plugin\org-gephi-tools-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-tools-api]
-file_filter = ToolsAPI/src/org/gephi/tools/api/<lang>.po
-source_file = ToolsAPI/src/org/gephi/tools/api/org-gephi-tools-api.pot
+file_filter = ToolsAPI\src\org\gephi\tools\api\<lang>.po
+source_file = ToolsAPI\src\org\gephi\tools\api\org-gephi-tools-api.pot
 source_lang = en
 
 [gephi.org-gephi-timeline]
-file_filter = TimelineAPI/src/org/gephi/timeline/<lang>.po
-source_file = TimelineAPI/src/org/gephi/timeline/org-gephi-timeline.pot
+file_filter = TimelineAPI\src\org\gephi\timeline\<lang>.po
+source_file = TimelineAPI\src\org\gephi\timeline\org-gephi-timeline.pot
 source_lang = en
 
 [gephi.org-jdesktop-swingx]
-file_filter = SwingX/src/org/jdesktop/swingx/<lang>.po
-source_file = SwingX/src/org/jdesktop/swingx/org-jdesktop-swingx.pot
+file_filter = SwingX\src\org\jdesktop\swingx\<lang>.po
+source_file = SwingX\src\org\jdesktop\swingx\org-jdesktop-swingx.pot
 source_lang = en
 
 [gephi.org-gephi-lib-staxutils]
-file_filter = StaxUtils/src/org/gephi/lib/staxutils/<lang>.po
-source_file = StaxUtils/src/org/gephi/lib/staxutils/org-gephi-lib-staxutils.pot
+file_filter = StaxUtils\src\org\gephi\lib\staxutils\<lang>.po
+source_file = StaxUtils\src\org\gephi\lib\staxutils\org-gephi-lib-staxutils.pot
 source_lang = en
 
 [gephi.org-gephi-ui-statistics-plugin]
-file_filter = StatisticsPluginUI/src/org/gephi/ui/statistics/plugin/<lang>.po
-source_file = StatisticsPluginUI/src/org/gephi/ui/statistics/plugin/org-gephi-ui-statistics-plugin.pot
+file_filter = StatisticsPluginUI\src\org\gephi\ui\statistics\plugin\<lang>.po
+source_file = StatisticsPluginUI\src\org\gephi\ui\statistics\plugin\org-gephi-ui-statistics-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-statistics-plugin]
-file_filter = StatisticsPlugin/src/org/gephi/statistics/plugin/<lang>.po
-source_file = StatisticsPlugin/src/org/gephi/statistics/plugin/org-gephi-statistics-plugin.pot
+file_filter = StatisticsPlugin\src\org\gephi\statistics\plugin\<lang>.po
+source_file = StatisticsPlugin\src\org\gephi\statistics\plugin\org-gephi-statistics-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-statistics-plugin-builder]
-file_filter = StatisticsPlugin/src/org/gephi/statistics/plugin/builder/<lang>.po
-source_file = StatisticsPlugin/src/org/gephi/statistics/plugin/builder/org-gephi-statistics-plugin-builder.pot
+file_filter = StatisticsPlugin\src\org\gephi\statistics\plugin\builder\<lang>.po
+source_file = StatisticsPlugin\src\org\gephi\statistics\plugin\builder\org-gephi-statistics-plugin-builder.pot
 source_lang = en
 
 [gephi.org-gephi-statistics-spi]
-file_filter = StatisticsAPI/src/org/gephi/statistics/spi/<lang>.po
-source_file = StatisticsAPI/src/org/gephi/statistics/spi/org-gephi-statistics-spi.pot
+file_filter = StatisticsAPI\src\org\gephi\statistics\spi\<lang>.po
+source_file = StatisticsAPI\src\org\gephi\statistics\spi\org-gephi-statistics-spi.pot
 source_lang = en
 
 [gephi.org-gephi-statistics-api]
-file_filter = StatisticsAPI/src/org/gephi/statistics/api/<lang>.po
-source_file = StatisticsAPI/src/org/gephi/statistics/api/org-gephi-statistics-api.pot
+file_filter = StatisticsAPI\src\org\gephi\statistics\api\<lang>.po
+source_file = StatisticsAPI\src\org\gephi\statistics\api\org-gephi-statistics-api.pot
 source_lang = en
 
 [gephi.org-gephi-ui-components-SplineEditor]
-file_filter = SplineEditor/src/org/gephi/ui/components/SplineEditor/<lang>.po
-source_file = SplineEditor/src/org/gephi/ui/components/SplineEditor/org-gephi-ui-components-SplineEditor.pot
+file_filter = SplineEditor\src\org\gephi\ui\components\SplineEditor\<lang>.po
+source_file = SplineEditor\src\org\gephi\ui\components\SplineEditor\org-gephi-ui-components-SplineEditor.pot
 source_lang = en
 
 [gephi.org-gephi-ui-spigot-plugin]
-file_filter = SpigotPluginUI/src/org/gephi/ui/spigot/plugin/<lang>.po
-source_file = SpigotPluginUI/src/org/gephi/ui/spigot/plugin/org-gephi-ui-spigot-plugin.pot
+file_filter = SpigotPluginUI\src\org\gephi\ui\spigot\plugin\<lang>.po
+source_file = SpigotPluginUI\src\org\gephi\ui\spigot\plugin\org-gephi-ui-spigot-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-ui-spigot-plugin-email]
-file_filter = SpigotPluginUI/src/org/gephi/ui/spigot/plugin/email/<lang>.po
-source_file = SpigotPluginUI/src/org/gephi/ui/spigot/plugin/email/org-gephi-ui-spigot-plugin-email.pot
+file_filter = SpigotPluginUI\src\org\gephi\ui\spigot\plugin\email\<lang>.po
+source_file = SpigotPluginUI\src\org\gephi\ui\spigot\plugin\email\org-gephi-ui-spigot-plugin-email.pot
 source_lang = en
 
 [gephi.org-gephi-io-spigot-plugin]
-file_filter = SpigotPlugin/src/org/gephi/io/spigot/plugin/<lang>.po
-source_file = SpigotPlugin/src/org/gephi/io/spigot/plugin/org-gephi-io-spigot-plugin.pot
+file_filter = SpigotPlugin\src\org\gephi\io\spigot\plugin\<lang>.po
+source_file = SpigotPlugin\src\org\gephi\io\spigot\plugin\org-gephi-io-spigot-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-io-spigot-plugin-email]
-file_filter = SpigotPlugin/src/org/gephi/io/spigot/plugin/email/<lang>.po
-source_file = SpigotPlugin/src/org/gephi/io/spigot/plugin/email/org-gephi-io-spigot-plugin-email.pot
+file_filter = SpigotPlugin\src\org\gephi\io\spigot\plugin\email\<lang>.po
+source_file = SpigotPlugin\src\org\gephi\io\spigot\plugin\email\org-gephi-io-spigot-plugin-email.pot
 source_lang = en
 
 [gephi.org-gephi-ui-ranking-plugin]
-file_filter = RankingPluginUI/src/org/gephi/ui/ranking/plugin/<lang>.po
-source_file = RankingPluginUI/src/org/gephi/ui/ranking/plugin/org-gephi-ui-ranking-plugin.pot
+file_filter = RankingPluginUI\src\org\gephi\ui\ranking\plugin\<lang>.po
+source_file = RankingPluginUI\src\org\gephi\ui\ranking\plugin\org-gephi-ui-ranking-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-ranking-plugin]
-file_filter = RankingPlugin/src/org/gephi/ranking/plugin/<lang>.po
-source_file = RankingPlugin/src/org/gephi/ranking/plugin/org-gephi-ranking-plugin.pot
+file_filter = RankingPlugin\src\org\gephi\ranking\plugin\<lang>.po
+source_file = RankingPlugin\src\org\gephi\ranking\plugin\org-gephi-ranking-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-ranking-api]
-file_filter = RankingAPI/src/org/gephi/ranking/api/<lang>.po
-source_file = RankingAPI/src/org/gephi/ranking/api/org-gephi-ranking-api.pot
+file_filter = RankingAPI\src\org\gephi\ranking\api\<lang>.po
+source_file = RankingAPI\src\org\gephi\ranking\api\org-gephi-ranking-api.pot
 source_lang = en
 
 [gephi.org-gephi-ui-project]
-file_filter = ProjectUI/src/org/gephi/ui/project/<lang>.po
-source_file = ProjectUI/src/org/gephi/ui/project/org-gephi-ui-project.pot
+file_filter = ProjectUI\src\org\gephi\ui\project\<lang>.po
+source_file = ProjectUI\src\org\gephi\ui\project\org-gephi-ui-project.pot
 source_lang = en
 
 [gephi.org-gephi-project-explorer]
-file_filter = ProjectExplorer/src/org/gephi/project/explorer/<lang>.po
-source_file = ProjectExplorer/src/org/gephi/project/explorer/org-gephi-project-explorer.pot
+file_filter = ProjectExplorer\src\org\gephi\project\explorer\<lang>.po
+source_file = ProjectExplorer\src\org\gephi\project\explorer\org-gephi-project-explorer.pot
 source_lang = en
 
 [gephi.org-gephi-project-io]
-file_filter = ProjectAPI/src/org/gephi/project/io/<lang>.po
-source_file = ProjectAPI/src/org/gephi/project/io/org-gephi-project-io.pot
+file_filter = ProjectAPI\src\org\gephi\project\io\<lang>.po
+source_file = ProjectAPI\src\org\gephi\project\io\org-gephi-project-io.pot
 source_lang = en
 
 [gephi.org-gephi-project-impl]
-file_filter = ProjectAPI/src/org/gephi/project/impl/<lang>.po
-source_file = ProjectAPI/src/org/gephi/project/impl/org-gephi-project-impl.pot
+file_filter = ProjectAPI\src\org\gephi\project\impl\<lang>.po
+source_file = ProjectAPI\src\org\gephi\project\impl\org-gephi-project-impl.pot
 source_lang = en
 
 [gephi.org-gephi-project-api]
-file_filter = ProjectAPI/src/org/gephi/project/api/<lang>.po
-source_file = ProjectAPI/src/org/gephi/project/api/org-gephi-project-api.pot
+file_filter = ProjectAPI\src\org\gephi\project\api\<lang>.po
+source_file = ProjectAPI\src\org\gephi\project\api\org-gephi-project-api.pot
 source_lang = en
 
 [gephi.org-gephi-ui-processor-plugin]
-file_filter = ProcessorPluginUI/src/org/gephi/ui/processor/plugin/<lang>.po
-source_file = ProcessorPluginUI/src/org/gephi/ui/processor/plugin/org-gephi-ui-processor-plugin.pot
+file_filter = ProcessorPluginUI\src\org\gephi\ui\processor\plugin\<lang>.po
+source_file = ProcessorPluginUI\src\org\gephi\ui\processor\plugin\org-gephi-ui-processor-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-io-processor-plugin]
-file_filter = ProcessorPlugin/src/org/gephi/io/processor/plugin/<lang>.po
-source_file = ProcessorPlugin/src/org/gephi/io/processor/plugin/org-gephi-io-processor-plugin.pot
+file_filter = ProcessorPlugin\src\org\gephi\io\processor\plugin\<lang>.po
+source_file = ProcessorPlugin\src\org\gephi\io\processor\plugin\org-gephi-io-processor-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-lib-processing]
-file_filter = ProcessingWrapper/src/org/gephi/lib/processing/<lang>.po
-source_file = ProcessingWrapper/src/org/gephi/lib/processing/org-gephi-lib-processing.pot
+file_filter = ProcessingWrapper\src\org\gephi\lib\processing\<lang>.po
+source_file = ProcessingWrapper\src\org\gephi\lib\processing\org-gephi-lib-processing.pot
 source_lang = en
 
 [gephi.org-gephi-preview]
-file_filter = PreviewImpl/src/org/gephi/preview/<lang>.po
-source_file = PreviewImpl/src/org/gephi/preview/org-gephi-preview.pot
+file_filter = PreviewImpl\src\org\gephi\preview\<lang>.po
+source_file = PreviewImpl\src\org\gephi\preview\org-gephi-preview.pot
 source_lang = en
 
 [gephi.org-gephi-preview-propertyeditors]
-file_filter = PreviewImpl/src/org/gephi/preview/propertyeditors/<lang>.po
-source_file = PreviewImpl/src/org/gephi/preview/propertyeditors/org-gephi-preview-propertyeditors.pot
+file_filter = PreviewImpl\src\org\gephi\preview\propertyeditors\<lang>.po
+source_file = PreviewImpl\src\org\gephi\preview\propertyeditors\org-gephi-preview-propertyeditors.pot
 source_lang = en
 
 [gephi.org-gephi-preview-presets]
-file_filter = PreviewImpl/src/org/gephi/preview/presets/<lang>.po
-source_file = PreviewImpl/src/org/gephi/preview/presets/org-gephi-preview-presets.pot
+file_filter = PreviewImpl\src\org\gephi\preview\presets\<lang>.po
+source_file = PreviewImpl\src\org\gephi\preview\presets\org-gephi-preview-presets.pot
 source_lang = en
 
 [gephi.org-gephi-ui-exporter-preview]
-file_filter = PreviewExportUI/src/org/gephi/ui/exporter/preview/<lang>.po
-source_file = PreviewExportUI/src/org/gephi/ui/exporter/preview/org-gephi-ui-exporter-preview.pot
+file_filter = PreviewExportUI\src\org\gephi\ui\exporter\preview\<lang>.po
+source_file = PreviewExportUI\src\org\gephi\ui\exporter\preview\org-gephi-ui-exporter-preview.pot
 source_lang = en
 
 [gephi.org-gephi-io-exporter-preview]
-file_filter = PreviewExport/src/org/gephi/io/exporter/preview/<lang>.po
-source_file = PreviewExport/src/org/gephi/io/exporter/preview/org-gephi-io-exporter-preview.pot
+file_filter = PreviewExport\src\org\gephi\io\exporter\preview\<lang>.po
+source_file = PreviewExport\src\org\gephi\io\exporter\preview\org-gephi-io-exporter-preview.pot
 source_lang = en
 
 [gephi.org-gephi-preview-api]
-file_filter = PreviewAPI/src/org/gephi/preview/api/<lang>.po
-source_file = PreviewAPI/src/org/gephi/preview/api/org-gephi-preview-api.pot
+file_filter = PreviewAPI\src\org\gephi\preview\api\<lang>.po
+source_file = PreviewAPI\src\org\gephi\preview\api\org-gephi-preview-api.pot
 source_lang = en
 
 [gephi.org-gephi-ui-partition-plugin]
-file_filter = PartitionPluginUI/src/org/gephi/ui/partition/plugin/<lang>.po
-source_file = PartitionPluginUI/src/org/gephi/ui/partition/plugin/org-gephi-ui-partition-plugin.pot
+file_filter = PartitionPluginUI\src\org\gephi\ui\partition\plugin\<lang>.po
+source_file = PartitionPluginUI\src\org\gephi\ui\partition\plugin\org-gephi-ui-partition-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-partition-plugin]
-file_filter = PartitionPlugin/src/org/gephi/partition/plugin/<lang>.po
-source_file = PartitionPlugin/src/org/gephi/partition/plugin/org-gephi-partition-plugin.pot
+file_filter = PartitionPlugin\src\org\gephi\partition\plugin\<lang>.po
+source_file = PartitionPlugin\src\org\gephi\partition\plugin\org-gephi-partition-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-partition-api]
-file_filter = PartitionAPI/src/org/gephi/partition/api/<lang>.po
-source_file = PartitionAPI/src/org/gephi/partition/api/org-gephi-partition-api.pot
+file_filter = PartitionAPI\src\org\gephi\partition\api\<lang>.po
+source_file = PartitionAPI\src\org\gephi\partition\api\org-gephi-partition-api.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-mrufiles-api]
-file_filter = MostRecentFilesAPI/src/org/gephi/desktop/mrufiles/api/<lang>.po
-source_file = MostRecentFilesAPI/src/org/gephi/desktop/mrufiles/api/org-gephi-desktop-mrufiles-api.pot
+file_filter = MostRecentFilesAPI\src\org\gephi\desktop\mrufiles\api\<lang>.po
+source_file = MostRecentFilesAPI\src\org\gephi\desktop\mrufiles\api\org-gephi-desktop-mrufiles-api.pot
 source_lang = en
 
 [gephi.org-gephi-utils-longtask]
-file_filter = LongTaskAPI/src/org/gephi/utils/longtask/<lang>.po
-source_file = LongTaskAPI/src/org/gephi/utils/longtask/org-gephi-utils-longtask.pot
+file_filter = LongTaskAPI\src\org\gephi\utils\longtask\<lang>.po
+source_file = LongTaskAPI\src\org\gephi\utils\longtask\org-gephi-utils-longtask.pot
 source_lang = en
 
 [gephi.org-gephi-layout-plugin]
-file_filter = LayoutPlugin/src/org/gephi/layout/plugin/<lang>.po
-source_file = LayoutPlugin/src/org/gephi/layout/plugin/org-gephi-layout-plugin.pot
+file_filter = LayoutPlugin\src\org\gephi\layout\plugin\<lang>.po
+source_file = LayoutPlugin\src\org\gephi\layout\plugin\org-gephi-layout-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-layout-plugin-scale]
-file_filter = LayoutPlugin/src/org/gephi/layout/plugin/scale/<lang>.po
-source_file = LayoutPlugin/src/org/gephi/layout/plugin/scale/org-gephi-layout-plugin-scale.pot
+file_filter = LayoutPlugin\src\org\gephi\layout\plugin\scale\<lang>.po
+source_file = LayoutPlugin\src\org\gephi\layout\plugin\scale\org-gephi-layout-plugin-scale.pot
 source_lang = en
 
 [gephi.org-gephi-layout-plugin-rotate]
-file_filter = LayoutPlugin/src/org/gephi/layout/plugin/rotate/<lang>.po
-source_file = LayoutPlugin/src/org/gephi/layout/plugin/rotate/org-gephi-layout-plugin-rotate.pot
+file_filter = LayoutPlugin\src\org\gephi\layout\plugin\rotate\<lang>.po
+source_file = LayoutPlugin\src\org\gephi\layout\plugin\rotate\org-gephi-layout-plugin-rotate.pot
 source_lang = en
 
 [gephi.org-gephi-layout-plugin-random]
-file_filter = LayoutPlugin/src/org/gephi/layout/plugin/random/<lang>.po
-source_file = LayoutPlugin/src/org/gephi/layout/plugin/random/org-gephi-layout-plugin-random.pot
+file_filter = LayoutPlugin\src\org\gephi\layout\plugin\random\<lang>.po
+source_file = LayoutPlugin\src\org\gephi\layout\plugin\random\org-gephi-layout-plugin-random.pot
 source_lang = en
 
 [gephi.org-gephi-layout-plugin-multilevel]
-file_filter = LayoutPlugin/src/org/gephi/layout/plugin/multilevel/<lang>.po
-source_file = LayoutPlugin/src/org/gephi/layout/plugin/multilevel/org-gephi-layout-plugin-multilevel.pot
+file_filter = LayoutPlugin\src\org\gephi\layout\plugin\multilevel\<lang>.po
+source_file = LayoutPlugin\src\org\gephi\layout\plugin\multilevel\org-gephi-layout-plugin-multilevel.pot
 source_lang = en
 
 [gephi.org-gephi-layout-plugin-labelAdjust]
-file_filter = LayoutPlugin/src/org/gephi/layout/plugin/labelAdjust/<lang>.po
-source_file = LayoutPlugin/src/org/gephi/layout/plugin/labelAdjust/org-gephi-layout-plugin-labelAdjust.pot
+file_filter = LayoutPlugin\src\org\gephi\layout\plugin\labelAdjust\<lang>.po
+source_file = LayoutPlugin\src\org\gephi\layout\plugin\labelAdjust\org-gephi-layout-plugin-labelAdjust.pot
 source_lang = en
 
 [gephi.org-gephi-layout-plugin-fruchterman]
-file_filter = LayoutPlugin/src/org/gephi/layout/plugin/fruchterman/<lang>.po
-source_file = LayoutPlugin/src/org/gephi/layout/plugin/fruchterman/org-gephi-layout-plugin-fruchterman.pot
+file_filter = LayoutPlugin\src\org\gephi\layout\plugin\fruchterman\<lang>.po
+source_file = LayoutPlugin\src\org\gephi\layout\plugin\fruchterman\org-gephi-layout-plugin-fruchterman.pot
 source_lang = en
 
 [gephi.org-gephi-layout-plugin-forceAtlas2]
-file_filter = LayoutPlugin/src/org/gephi/layout/plugin/forceAtlas2/<lang>.po
-source_file = LayoutPlugin/src/org/gephi/layout/plugin/forceAtlas2/org-gephi-layout-plugin-forceAtlas2.pot
+file_filter = LayoutPlugin\src\org\gephi\layout\plugin\forceAtlas2\<lang>.po
+source_file = LayoutPlugin\src\org\gephi\layout\plugin\forceAtlas2\org-gephi-layout-plugin-forceAtlas2.pot
 source_lang = en
 
 [gephi.org-gephi-layout-plugin-forceAtlas]
-file_filter = LayoutPlugin/src/org/gephi/layout/plugin/forceAtlas/<lang>.po
-source_file = LayoutPlugin/src/org/gephi/layout/plugin/forceAtlas/org-gephi-layout-plugin-forceAtlas.pot
+file_filter = LayoutPlugin\src\org\gephi\layout\plugin\forceAtlas\<lang>.po
+source_file = LayoutPlugin\src\org\gephi\layout\plugin\forceAtlas\org-gephi-layout-plugin-forceAtlas.pot
 source_lang = en
 
 [gephi.org-gephi-layout-plugin-force-yifanHu]
-file_filter = LayoutPlugin/src/org/gephi/layout/plugin/force/yifanHu/<lang>.po
-source_file = LayoutPlugin/src/org/gephi/layout/plugin/force/yifanHu/org-gephi-layout-plugin-force-yifanHu.pot
+file_filter = LayoutPlugin\src\org\gephi\layout\plugin\force\yifanHu\<lang>.po
+source_file = LayoutPlugin\src\org\gephi\layout\plugin\force\yifanHu\org-gephi-layout-plugin-force-yifanHu.pot
 source_lang = en
 
 [gephi.org-gephi-layout-api]
-file_filter = LayoutAPI/src/org/gephi/layout/api/<lang>.po
-source_file = LayoutAPI/src/org/gephi/layout/api/org-gephi-layout-api.pot
+file_filter = LayoutAPI\src\org\gephi\layout\api\<lang>.po
+source_file = LayoutAPI\src\org\gephi\layout\api\org-gephi-layout-api.pot
 source_lang = en
 
 [gephi.org-gephi-lib-jogl]
-file_filter = JOGLWrapper/src/org/gephi/lib/jogl/<lang>.po
-source_file = JOGLWrapper/src/org/gephi/lib/jogl/org-gephi-lib-jogl.pot
+file_filter = JOGLWrapper\src\org\gephi\lib\jogl\<lang>.po
+source_file = JOGLWrapper\src\org\gephi\lib\jogl\org-gephi-lib-jogl.pot
 source_lang = en
 
 [gephi.org-gephi-lib-jcalendar]
-file_filter = JCalendarWrapper/src/org/gephi/lib/jcalendar/<lang>.po
-source_file = JCalendarWrapper/src/org/gephi/lib/jcalendar/org-gephi-lib-jcalendar.pot
+file_filter = JCalendarWrapper\src\org\gephi\lib\jcalendar\<lang>.po
+source_file = JCalendarWrapper\src\org\gephi\lib\jcalendar\org-gephi-lib-jcalendar.pot
 source_lang = en
 
 [gephi.org-gephi-lib-javamail]
-file_filter = JavaMailWrapper/src/org/gephi/lib/javamail/<lang>.po
-source_file = JavaMailWrapper/src/org/gephi/lib/javamail/org-gephi-lib-javamail.pot
+file_filter = JavaMailWrapper\src\org\gephi\lib\javamail\<lang>.po
+source_file = JavaMailWrapper\src\org\gephi\lib\javamail\org-gephi-lib-javamail.pot
 source_lang = en
 
 [gephi.org-gephi-lib-javacsv]
-file_filter = JavaCSVWrapper/src/org/gephi/lib/javacsv/<lang>.po
-source_file = JavaCSVWrapper/src/org/gephi/lib/javacsv/org-gephi-lib-javacsv.pot
+file_filter = JavaCSVWrapper\src\org\gephi\lib\javacsv\<lang>.po
+source_file = JavaCSVWrapper\src\org\gephi\lib\javacsv\org-gephi-lib-javacsv.pot
 source_lang = en
 
 [gephi.org-gephi-lib-itext]
-file_filter = iTextWrapper/src/org/gephi/lib/itext/<lang>.po
-source_file = iTextWrapper/src/org/gephi/lib/itext/org-gephi-lib-itext.pot
+file_filter = iTextWrapper\src\org\gephi\lib\itext\<lang>.po
+source_file = iTextWrapper\src\org\gephi\lib\itext\org-gephi-lib-itext.pot
 source_lang = en
 
 [gephi.org-gephi-ui-importer-plugin]
-file_filter = ImportPluginUI/src/org/gephi/ui/importer/plugin/<lang>.po
-source_file = ImportPluginUI/src/org/gephi/ui/importer/plugin/org-gephi-ui-importer-plugin.pot
+file_filter = ImportPluginUI\src\org\gephi\ui\importer\plugin\<lang>.po
+source_file = ImportPluginUI\src\org\gephi\ui\importer\plugin\org-gephi-ui-importer-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-io-importer-plugin]
-file_filter = ImportPlugin/src/org/gephi/io/importer/plugin/<lang>.po
-source_file = ImportPlugin/src/org/gephi/io/importer/plugin/org-gephi-io-importer-plugin.pot
+file_filter = ImportPlugin\src\org\gephi\io\importer\plugin\<lang>.po
+source_file = ImportPlugin\src\org\gephi\io\importer\plugin\org-gephi-io-importer-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-io-importer-plugin-file]
-file_filter = ImportPlugin/src/org/gephi/io/importer/plugin/file/<lang>.po
-source_file = ImportPlugin/src/org/gephi/io/importer/plugin/file/org-gephi-io-importer-plugin-file.pot
+file_filter = ImportPlugin\src\org\gephi\io\importer\plugin\file\<lang>.po
+source_file = ImportPlugin\src\org\gephi\io\importer\plugin\file\org-gephi-io-importer-plugin-file.pot
 source_lang = en
 
 [gephi.org-gephi-io-importer-impl]
-file_filter = ImportAPI/src/org/gephi/io/importer/impl/<lang>.po
-source_file = ImportAPI/src/org/gephi/io/importer/impl/org-gephi-io-importer-impl.pot
+file_filter = ImportAPI\src\org\gephi\io\importer\impl\<lang>.po
+source_file = ImportAPI\src\org\gephi\io\importer\impl\org-gephi-io-importer-impl.pot
 source_lang = en
 
 [gephi.org-gephi-io-importer-api]
-file_filter = ImportAPI/src/org/gephi/io/importer/api/<lang>.po
-source_file = ImportAPI/src/org/gephi/io/importer/api/org-gephi-io-importer-api.pot
+file_filter = ImportAPI\src\org\gephi\io\importer\api\<lang>.po
+source_file = ImportAPI\src\org\gephi\io\importer\api\org-gephi-io-importer-api.pot
 source_lang = en
 
 [gephi.org-gephi-graph-api]
-file_filter = GraphAPI/src/org/gephi/graph/api/<lang>.po
-source_file = GraphAPI/src/org/gephi/graph/api/org-gephi-graph-api.pot
+file_filter = GraphAPI\src\org\gephi\graph\api\<lang>.po
+source_file = GraphAPI\src\org\gephi\graph\api\org-gephi-graph-api.pot
 source_lang = en
 
 [gephi.org-gephi-lib-gleem]
-file_filter = Gleem/src/org/gephi/lib/gleem/<lang>.po
-source_file = Gleem/src/org/gephi/lib/gleem/org-gephi-lib-gleem.pot
+file_filter = Gleem\src\org\gephi\lib\gleem\<lang>.po
+source_file = Gleem\src\org\gephi\lib\gleem\org-gephi-lib-gleem.pot
 source_lang = en
 
 [gephi.org-gephi-ui-generator-plugin]
-file_filter = GeneratorPluginUI/src/org/gephi/ui/generator/plugin/<lang>.po
-source_file = GeneratorPluginUI/src/org/gephi/ui/generator/plugin/org-gephi-ui-generator-plugin.pot
+file_filter = GeneratorPluginUI\src\org\gephi\ui\generator\plugin\<lang>.po
+source_file = GeneratorPluginUI\src\org\gephi\ui\generator\plugin\org-gephi-ui-generator-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-io-generator-plugin]
-file_filter = GeneratorPlugin/src/org/gephi/io/generator/plugin/<lang>.po
-source_file = GeneratorPlugin/src/org/gephi/io/generator/plugin/org-gephi-io-generator-plugin.pot
+file_filter = GeneratorPlugin\src\org\gephi\io\generator\plugin\<lang>.po
+source_file = GeneratorPlugin\src\org\gephi\io\generator\plugin\org-gephi-io-generator-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-io-generator-api]
-file_filter = GeneratorAPI/src/org/gephi/io/generator/api/<lang>.po
-source_file = GeneratorAPI/src/org/gephi/io/generator/api/org-gephi-io-generator-api.pot
+file_filter = GeneratorAPI\src\org\gephi\io\generator\api\<lang>.po
+source_file = GeneratorAPI\src\org\gephi\io\generator\api\org-gephi-io-generator-api.pot
 source_lang = en
 
 [gephi.org-gephi-lib-flamingo]
-file_filter = FlamingoWrapper/src/org/gephi/lib/flamingo/<lang>.po
-source_file = FlamingoWrapper/src/org/gephi/lib/flamingo/org-gephi-lib-flamingo.pot
+file_filter = FlamingoWrapper\src\org\gephi\lib\flamingo\<lang>.po
+source_file = FlamingoWrapper\src\org\gephi\lib\flamingo\org-gephi-lib-flamingo.pot
 source_lang = en
 
 [gephi.org-gephi-ui-filters-plugin]
-file_filter = FiltersPluginUI/src/org/gephi/ui/filters/plugin/<lang>.po
-source_file = FiltersPluginUI/src/org/gephi/ui/filters/plugin/org-gephi-ui-filters-plugin.pot
+file_filter = FiltersPluginUI\src\org\gephi\ui\filters\plugin\<lang>.po
+source_file = FiltersPluginUI\src\org\gephi\ui\filters\plugin\org-gephi-ui-filters-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-ui-filters-plugin-partition]
-file_filter = FiltersPluginUI/src/org/gephi/ui/filters/plugin/partition/<lang>.po
-source_file = FiltersPluginUI/src/org/gephi/ui/filters/plugin/partition/org-gephi-ui-filters-plugin-partition.pot
+file_filter = FiltersPluginUI\src\org\gephi\ui\filters\plugin\partition\<lang>.po
+source_file = FiltersPluginUI\src\org\gephi\ui\filters\plugin\partition\org-gephi-ui-filters-plugin-partition.pot
 source_lang = en
 
 [gephi.org-gephi-ui-filters-plugin-operator]
-file_filter = FiltersPluginUI/src/org/gephi/ui/filters/plugin/operator/<lang>.po
-source_file = FiltersPluginUI/src/org/gephi/ui/filters/plugin/operator/org-gephi-ui-filters-plugin-operator.pot
+file_filter = FiltersPluginUI\src\org\gephi\ui\filters\plugin\operator\<lang>.po
+source_file = FiltersPluginUI\src\org\gephi\ui\filters\plugin\operator\org-gephi-ui-filters-plugin-operator.pot
 source_lang = en
 
 [gephi.org-gephi-ui-filters-plugin-graph]
-file_filter = FiltersPluginUI/src/org/gephi/ui/filters/plugin/graph/<lang>.po
-source_file = FiltersPluginUI/src/org/gephi/ui/filters/plugin/graph/org-gephi-ui-filters-plugin-graph.pot
+file_filter = FiltersPluginUI\src\org\gephi\ui\filters\plugin\graph\<lang>.po
+source_file = FiltersPluginUI\src\org\gephi\ui\filters\plugin\graph\org-gephi-ui-filters-plugin-graph.pot
 source_lang = en
 
 [gephi.org-gephi-ui-filters-plugin-dynamic]
-file_filter = FiltersPluginUI/src/org/gephi/ui/filters/plugin/dynamic/<lang>.po
-source_file = FiltersPluginUI/src/org/gephi/ui/filters/plugin/dynamic/org-gephi-ui-filters-plugin-dynamic.pot
+file_filter = FiltersPluginUI\src\org\gephi\ui\filters\plugin\dynamic\<lang>.po
+source_file = FiltersPluginUI\src\org\gephi\ui\filters\plugin\dynamic\org-gephi-ui-filters-plugin-dynamic.pot
 source_lang = en
 
 [gephi.org-gephi-ui-filters-plugin-attribute]
-file_filter = FiltersPluginUI/src/org/gephi/ui/filters/plugin/attribute/<lang>.po
-source_file = FiltersPluginUI/src/org/gephi/ui/filters/plugin/attribute/org-gephi-ui-filters-plugin-attribute.pot
+file_filter = FiltersPluginUI\src\org\gephi\ui\filters\plugin\attribute\<lang>.po
+source_file = FiltersPluginUI\src\org\gephi\ui\filters\plugin\attribute\org-gephi-ui-filters-plugin-attribute.pot
 source_lang = en
 
 [gephi.org-gephi-filters-plugin]
-file_filter = FiltersPlugin/src/org/gephi/filters/plugin/<lang>.po
-source_file = FiltersPlugin/src/org/gephi/filters/plugin/org-gephi-filters-plugin.pot
+file_filter = FiltersPlugin\src\org\gephi\filters\plugin\<lang>.po
+source_file = FiltersPlugin\src\org\gephi\filters\plugin\org-gephi-filters-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-filters-plugin-partition]
-file_filter = FiltersPlugin/src/org/gephi/filters/plugin/partition/<lang>.po
-source_file = FiltersPlugin/src/org/gephi/filters/plugin/partition/org-gephi-filters-plugin-partition.pot
+file_filter = FiltersPlugin\src\org\gephi\filters\plugin\partition\<lang>.po
+source_file = FiltersPlugin\src\org\gephi\filters\plugin\partition\org-gephi-filters-plugin-partition.pot
 source_lang = en
 
 [gephi.org-gephi-filters-plugin-operator]
-file_filter = FiltersPlugin/src/org/gephi/filters/plugin/operator/<lang>.po
-source_file = FiltersPlugin/src/org/gephi/filters/plugin/operator/org-gephi-filters-plugin-operator.pot
+file_filter = FiltersPlugin\src\org\gephi\filters\plugin\operator\<lang>.po
+source_file = FiltersPlugin\src\org\gephi\filters\plugin\operator\org-gephi-filters-plugin-operator.pot
 source_lang = en
 
 [gephi.org-gephi-filters-plugin-hierarchy]
-file_filter = FiltersPlugin/src/org/gephi/filters/plugin/hierarchy/<lang>.po
-source_file = FiltersPlugin/src/org/gephi/filters/plugin/hierarchy/org-gephi-filters-plugin-hierarchy.pot
+file_filter = FiltersPlugin\src\org\gephi\filters\plugin\hierarchy\<lang>.po
+source_file = FiltersPlugin\src\org\gephi\filters\plugin\hierarchy\org-gephi-filters-plugin-hierarchy.pot
 source_lang = en
 
 [gephi.org-gephi-filters-plugin-graph]
-file_filter = FiltersPlugin/src/org/gephi/filters/plugin/graph/<lang>.po
-source_file = FiltersPlugin/src/org/gephi/filters/plugin/graph/org-gephi-filters-plugin-graph.pot
+file_filter = FiltersPlugin\src\org\gephi\filters\plugin\graph\<lang>.po
+source_file = FiltersPlugin\src\org\gephi\filters\plugin\graph\org-gephi-filters-plugin-graph.pot
 source_lang = en
 
 [gephi.org-gephi-filters-plugin-edge]
-file_filter = FiltersPlugin/src/org/gephi/filters/plugin/edge/<lang>.po
-source_file = FiltersPlugin/src/org/gephi/filters/plugin/edge/org-gephi-filters-plugin-edge.pot
+file_filter = FiltersPlugin\src\org\gephi\filters\plugin\edge\<lang>.po
+source_file = FiltersPlugin\src\org\gephi\filters\plugin\edge\org-gephi-filters-plugin-edge.pot
 source_lang = en
 
 [gephi.org-gephi-filters-plugin-dynamic]
-file_filter = FiltersPlugin/src/org/gephi/filters/plugin/dynamic/<lang>.po
-source_file = FiltersPlugin/src/org/gephi/filters/plugin/dynamic/org-gephi-filters-plugin-dynamic.pot
+file_filter = FiltersPlugin\src\org\gephi\filters\plugin\dynamic\<lang>.po
+source_file = FiltersPlugin\src\org\gephi\filters\plugin\dynamic\org-gephi-filters-plugin-dynamic.pot
 source_lang = en
 
 [gephi.org-gephi-filters-plugin-attribute]
-file_filter = FiltersPlugin/src/org/gephi/filters/plugin/attribute/<lang>.po
-source_file = FiltersPlugin/src/org/gephi/filters/plugin/attribute/org-gephi-filters-plugin-attribute.pot
+file_filter = FiltersPlugin\src\org\gephi\filters\plugin\attribute\<lang>.po
+source_file = FiltersPlugin\src\org\gephi\filters\plugin\attribute\org-gephi-filters-plugin-attribute.pot
 source_lang = en
 
 [gephi.org-gephi-filters]
-file_filter = FiltersImpl/src/org/gephi/filters/<lang>.po
-source_file = FiltersImpl/src/org/gephi/filters/org-gephi-filters.pot
+file_filter = FiltersImpl\src\org\gephi\filters\<lang>.po
+source_file = FiltersImpl\src\org\gephi\filters\org-gephi-filters.pot
 source_lang = en
 
 [gephi.org-gephi-filters-api]
-file_filter = FiltersAPI/src/org/gephi/filters/api/<lang>.po
-source_file = FiltersAPI/src/org/gephi/filters/api/org-gephi-filters-api.pot
+file_filter = FiltersAPI\src\org\gephi\filters\api\<lang>.po
+source_file = FiltersAPI\src\org\gephi\filters\api\org-gephi-filters-api.pot
 source_lang = en
 
 [gephi.org-gephi-ui-exporter-plugin]
-file_filter = ExportPluginUI/src/org/gephi/ui/exporter/plugin/<lang>.po
-source_file = ExportPluginUI/src/org/gephi/ui/exporter/plugin/org-gephi-ui-exporter-plugin.pot
+file_filter = ExportPluginUI\src\org\gephi\ui\exporter\plugin\<lang>.po
+source_file = ExportPluginUI\src\org\gephi\ui\exporter\plugin\org-gephi-ui-exporter-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-io-exporter-plugin]
-file_filter = ExportPlugin/src/org/gephi/io/exporter/plugin/<lang>.po
-source_file = ExportPlugin/src/org/gephi/io/exporter/plugin/org-gephi-io-exporter-plugin.pot
+file_filter = ExportPlugin\src\org\gephi\io\exporter\plugin\<lang>.po
+source_file = ExportPlugin\src\org\gephi\io\exporter\plugin\org-gephi-io-exporter-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-io-exporter-impl]
-file_filter = ExportAPI/src/org/gephi/io/exporter/impl/<lang>.po
-source_file = ExportAPI/src/org/gephi/io/exporter/impl/org-gephi-io-exporter-impl.pot
+file_filter = ExportAPI\src\org\gephi\io\exporter\impl\<lang>.po
+source_file = ExportAPI\src\org\gephi\io\exporter\impl\org-gephi-io-exporter-impl.pot
 source_lang = en
 
 [gephi.org-gephi-io-exporter-api]
-file_filter = ExportAPI/src/org/gephi/io/exporter/api/<lang>.po
-source_file = ExportAPI/src/org/gephi/io/exporter/api/org-gephi-io-exporter-api.pot
+file_filter = ExportAPI\src\org\gephi\io\exporter\api\<lang>.po
+source_file = ExportAPI\src\org\gephi\io\exporter\api\org-gephi-io-exporter-api.pot
 source_lang = en
 
 [gephi.org-gephi-dynamic]
-file_filter = DynamicImpl/src/org/gephi/dynamic/<lang>.po
-source_file = DynamicImpl/src/org/gephi/dynamic/org-gephi-dynamic.pot
+file_filter = DynamicImpl\src\org\gephi\dynamic\<lang>.po
+source_file = DynamicImpl\src\org\gephi\dynamic\org-gephi-dynamic.pot
 source_lang = en
 
 [gephi.org-gephi-dynamic-api]
-file_filter = DynamicAPI/src/org/gephi/dynamic/api/<lang>.po
-source_file = DynamicAPI/src/org/gephi/dynamic/api/org-gephi-dynamic-api.pot
+file_filter = DynamicAPI\src\org\gephi\dynamic\api\<lang>.po
+source_file = DynamicAPI\src\org\gephi\dynamic\api\org-gephi-dynamic-api.pot
 source_lang = en
 
 [gephi.org-netbeans-swing-dirchooser]
-file_filter = DirectoryChooser/src/org/netbeans/swing/dirchooser/<lang>.po
-source_file = DirectoryChooser/src/org/netbeans/swing/dirchooser/org-netbeans-swing-dirchooser.pot
+file_filter = DirectoryChooser\src\org\netbeans\swing\dirchooser\<lang>.po
+source_file = DirectoryChooser\src\org\netbeans\swing\dirchooser\org-netbeans-swing-dirchooser.pot
 source_lang = en
 
 [gephi.org-gephi-graph-dhns]
-file_filter = DHNSGraph/src/org/gephi/graph/dhns/<lang>.po
-source_file = DHNSGraph/src/org/gephi/graph/dhns/org-gephi-graph-dhns.pot
+file_filter = DHNSGraph\src\org\gephi\graph\dhns\<lang>.po
+source_file = DHNSGraph\src\org\gephi\graph\dhns\org-gephi-graph-dhns.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-tools]
-file_filter = DesktopTools/src/org/gephi/desktop/tools/<lang>.po
-source_file = DesktopTools/src/org/gephi/desktop/tools/org-gephi-desktop-tools.pot
+file_filter = DesktopTools\src\org\gephi\desktop\tools\<lang>.po
+source_file = DesktopTools\src\org\gephi\desktop\tools\org-gephi-desktop-tools.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-timeline]
-file_filter = DesktopTimeline/src/org/gephi/desktop/timeline/<lang>.po
-source_file = DesktopTimeline/src/org/gephi/desktop/timeline/org-gephi-desktop-timeline.pot
+file_filter = DesktopTimeline\src\org\gephi\desktop\timeline\<lang>.po
+source_file = DesktopTimeline\src\org\gephi\desktop\timeline\org-gephi-desktop-timeline.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-statistics]
-file_filter = DesktopStatistics/src/org/gephi/desktop/statistics/<lang>.po
-source_file = DesktopStatistics/src/org/gephi/desktop/statistics/org-gephi-desktop-statistics.pot
+file_filter = DesktopStatistics\src\org\gephi\desktop\statistics\<lang>.po
+source_file = DesktopStatistics\src\org\gephi\desktop\statistics\org-gephi-desktop-statistics.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-spigot]
-file_filter = DesktopSpigot/src/org/gephi/desktop/spigot/<lang>.po
-source_file = DesktopSpigot/src/org/gephi/desktop/spigot/org-gephi-desktop-spigot.pot
+file_filter = DesktopSpigot\src\org\gephi\desktop\spigot\<lang>.po
+source_file = DesktopSpigot\src\org\gephi\desktop\spigot\org-gephi-desktop-spigot.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-recentfiles]
-file_filter = DesktopRecentFiles/src/org/gephi/desktop/recentfiles/<lang>.po
-source_file = DesktopRecentFiles/src/org/gephi/desktop/recentfiles/org-gephi-desktop-recentfiles.pot
+file_filter = DesktopRecentFiles\src\org\gephi\desktop\recentfiles\<lang>.po
+source_file = DesktopRecentFiles\src\org\gephi\desktop\recentfiles\org-gephi-desktop-recentfiles.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-ranking]
-file_filter = DesktopRanking/src/org/gephi/desktop/ranking/<lang>.po
-source_file = DesktopRanking/src/org/gephi/desktop/ranking/org-gephi-desktop-ranking.pot
+file_filter = DesktopRanking\src\org\gephi\desktop\ranking\<lang>.po
+source_file = DesktopRanking\src\org\gephi\desktop\ranking\org-gephi-desktop-ranking.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-project]
-file_filter = DesktopProject/src/org/gephi/desktop/project/<lang>.po
-source_file = DesktopProject/src/org/gephi/desktop/project/org-gephi-desktop-project.pot
+file_filter = DesktopProject\src\org\gephi\desktop\project\<lang>.po
+source_file = DesktopProject\src\org\gephi\desktop\project\org-gephi-desktop-project.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-progress]
-file_filter = DesktopProgress/src/org/gephi/desktop/progress/<lang>.po
-source_file = DesktopProgress/src/org/gephi/desktop/progress/org-gephi-desktop-progress.pot
+file_filter = DesktopProgress\src\org\gephi\desktop\progress\<lang>.po
+source_file = DesktopProgress\src\org\gephi\desktop\progress\org-gephi-desktop-progress.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-preview]
-file_filter = DesktopPreview/src/org/gephi/desktop/preview/<lang>.po
-source_file = DesktopPreview/src/org/gephi/desktop/preview/org-gephi-desktop-preview.pot
+file_filter = DesktopPreview\src\org\gephi\desktop\preview\<lang>.po
+source_file = DesktopPreview\src\org\gephi\desktop\preview\org-gephi-desktop-preview.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-perspective]
-file_filter = DesktopPerspective/src/org/gephi/desktop/perspective/<lang>.po
-source_file = DesktopPerspective/src/org/gephi/desktop/perspective/org-gephi-desktop-perspective.pot
+file_filter = DesktopPerspective\src\org\gephi\desktop\perspective\<lang>.po
+source_file = DesktopPerspective\src\org\gephi\desktop\perspective\org-gephi-desktop-perspective.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-perspective-plugin]
-file_filter = DesktopPerspective/src/org/gephi/desktop/perspective/plugin/<lang>.po
-source_file = DesktopPerspective/src/org/gephi/desktop/perspective/plugin/org-gephi-desktop-perspective-plugin.pot
+file_filter = DesktopPerspective\src\org\gephi\desktop\perspective\plugin\<lang>.po
+source_file = DesktopPerspective\src\org\gephi\desktop\perspective\plugin\org-gephi-desktop-perspective-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-partition]
-file_filter = DesktopPartition/src/org/gephi/desktop/partition/<lang>.po
-source_file = DesktopPartition/src/org/gephi/desktop/partition/org-gephi-desktop-partition.pot
+file_filter = DesktopPartition\src\org\gephi\desktop\partition\<lang>.po
+source_file = DesktopPartition\src\org\gephi\desktop\partition\org-gephi-desktop-partition.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-layout]
-file_filter = DesktopLayout/src/org/gephi/desktop/layout/<lang>.po
-source_file = DesktopLayout/src/org/gephi/desktop/layout/org-gephi-desktop-layout.pot
+file_filter = DesktopLayout\src\org\gephi\desktop\layout\<lang>.po
+source_file = DesktopLayout\src\org\gephi\desktop\layout\org-gephi-desktop-layout.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-importer]
-file_filter = DesktopImport/src/org/gephi/desktop/importer/<lang>.po
-source_file = DesktopImport/src/org/gephi/desktop/importer/org-gephi-desktop-importer.pot
+file_filter = DesktopImport\src\org\gephi\desktop\importer\<lang>.po
+source_file = DesktopImport\src\org\gephi\desktop\importer\org-gephi-desktop-importer.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-hierarchy]
-file_filter = DesktopHierarchy/src/org/gephi/desktop/hierarchy/<lang>.po
-source_file = DesktopHierarchy/src/org/gephi/desktop/hierarchy/org-gephi-desktop-hierarchy.pot
+file_filter = DesktopHierarchy\src\org\gephi\desktop\hierarchy\<lang>.po
+source_file = DesktopHierarchy\src\org\gephi\desktop\hierarchy\org-gephi-desktop-hierarchy.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-generate]
-file_filter = DesktopGenerate/src/org/gephi/desktop/generate/<lang>.po
-source_file = DesktopGenerate/src/org/gephi/desktop/generate/org-gephi-desktop-generate.pot
+file_filter = DesktopGenerate\src\org\gephi\desktop\generate\<lang>.po
+source_file = DesktopGenerate\src\org\gephi\desktop\generate\org-gephi-desktop-generate.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-filters]
-file_filter = DesktopFilters/src/org/gephi/desktop/filters/<lang>.po
-source_file = DesktopFilters/src/org/gephi/desktop/filters/org-gephi-desktop-filters.pot
+file_filter = DesktopFilters\src\org\gephi\desktop\filters\<lang>.po
+source_file = DesktopFilters\src\org\gephi\desktop\filters\org-gephi-desktop-filters.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-filters-query]
-file_filter = DesktopFilters/src/org/gephi/desktop/filters/query/<lang>.po
-source_file = DesktopFilters/src/org/gephi/desktop/filters/query/org-gephi-desktop-filters-query.pot
+file_filter = DesktopFilters\src\org\gephi\desktop\filters\query\<lang>.po
+source_file = DesktopFilters\src\org\gephi\desktop\filters\query\org-gephi-desktop-filters-query.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-filters-library]
-file_filter = DesktopFilters/src/org/gephi/desktop/filters/library/<lang>.po
-source_file = DesktopFilters/src/org/gephi/desktop/filters/library/org-gephi-desktop-filters-library.pot
+file_filter = DesktopFilters\src\org\gephi\desktop\filters\library\<lang>.po
+source_file = DesktopFilters\src\org\gephi\desktop\filters\library\org-gephi-desktop-filters-library.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-io-export]
-file_filter = DesktopExport/src/org/gephi/desktop/io/export/<lang>.po
-source_file = DesktopExport/src/org/gephi/desktop/io/export/org-gephi-desktop-io-export.pot
+file_filter = DesktopExport\src\org\gephi\desktop\io\export\<lang>.po
+source_file = DesktopExport\src\org\gephi\desktop\io\export\org-gephi-desktop-io-export.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-io-export-api]
-file_filter = DesktopExport/src/org/gephi/desktop/io/export/api/<lang>.po
-source_file = DesktopExport/src/org/gephi/desktop/io/export/api/org-gephi-desktop-io-export-api.pot
+file_filter = DesktopExport\src\org\gephi\desktop\io\export\api\<lang>.po
+source_file = DesktopExport\src\org\gephi\desktop\io\export\api\org-gephi-desktop-io-export-api.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-datalab]
-file_filter = DesktopDataLaboratory/src/org/gephi/desktop/datalab/<lang>.po
-source_file = DesktopDataLaboratory/src/org/gephi/desktop/datalab/org-gephi-desktop-datalab.pot
+file_filter = DesktopDataLaboratory\src\org\gephi\desktop\datalab\<lang>.po
+source_file = DesktopDataLaboratory\src\org\gephi\desktop\datalab\org-gephi-desktop-datalab.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-datalab-utils]
-file_filter = DesktopDataLaboratory/src/org/gephi/desktop/datalab/utils/<lang>.po
-source_file = DesktopDataLaboratory/src/org/gephi/desktop/datalab/utils/org-gephi-desktop-datalab-utils.pot
+file_filter = DesktopDataLaboratory\src\org\gephi\desktop\datalab\utils\<lang>.po
+source_file = DesktopDataLaboratory\src\org\gephi\desktop\datalab\utils\org-gephi-desktop-datalab-utils.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-datalab-general-actions]
-file_filter = DesktopDataLaboratory/src/org/gephi/desktop/datalab/general/actions/<lang>.po
-source_file = DesktopDataLaboratory/src/org/gephi/desktop/datalab/general/actions/org-gephi-desktop-datalab-general-actions.pot
+file_filter = DesktopDataLaboratory\src\org\gephi\desktop\datalab\general\actions\<lang>.po
+source_file = DesktopDataLaboratory\src\org\gephi\desktop\datalab\general\actions\org-gephi-desktop-datalab-general-actions.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-context]
-file_filter = DesktopContext/src/org/gephi/desktop/context/<lang>.po
-source_file = DesktopContext/src/org/gephi/desktop/context/org-gephi-desktop-context.pot
+file_filter = DesktopContext\src\org\gephi\desktop\context\<lang>.po
+source_file = DesktopContext\src\org\gephi\desktop\context\org-gephi-desktop-context.pot
 source_lang = en
 
 [gephi.org-gephi-desktop-clustering]
-file_filter = DesktopClustering/src/org/gephi/desktop/clustering/<lang>.po
-source_file = DesktopClustering/src/org/gephi/desktop/clustering/org-gephi-desktop-clustering.pot
+file_filter = DesktopClustering\src\org\gephi\desktop\clustering\<lang>.po
+source_file = DesktopClustering\src\org\gephi\desktop\clustering\org-gephi-desktop-clustering.pot
 source_lang = en
 
 [gephi.org-gephi-branding-desktop]
-file_filter = DesktopBranding/src/org/gephi/branding/desktop/<lang>.po
-source_file = DesktopBranding/src/org/gephi/branding/desktop/org-gephi-branding-desktop.pot
+file_filter = DesktopBranding\src\org\gephi\branding\desktop\<lang>.po
+source_file = DesktopBranding\src\org\gephi\branding\desktop\org-gephi-branding-desktop.pot
 source_lang = en
 
 [gephi.org-gephi-branding-desktop-reporter]
-file_filter = DesktopBranding/src/org/gephi/branding/desktop/reporter/<lang>.po
-source_file = DesktopBranding/src/org/gephi/branding/desktop/reporter/org-gephi-branding-desktop-reporter.pot
+file_filter = DesktopBranding\src\org\gephi\branding\desktop\reporter\<lang>.po
+source_file = DesktopBranding\src\org\gephi\branding\desktop\reporter\org-gephi-branding-desktop-reporter.pot
 source_lang = en
 
 [gephi.org-gephi-branding-desktop-multilingual]
-file_filter = DesktopBranding/src/org/gephi/branding/desktop/multilingual/<lang>.po
-source_file = DesktopBranding/src/org/gephi/branding/desktop/multilingual/org-gephi-branding-desktop-multilingual.pot
+file_filter = DesktopBranding\src\org\gephi\branding\desktop\multilingual\<lang>.po
+source_file = DesktopBranding\src\org\gephi\branding\desktop\multilingual\org-gephi-branding-desktop-multilingual.pot
 source_lang = en
 
 [gephi.org-gephi-branding-desktop-actions]
-file_filter = DesktopBranding/src/org/gephi/branding/desktop/actions/<lang>.po
-source_file = DesktopBranding/src/org/gephi/branding/desktop/actions/org-gephi-branding-desktop-actions.pot
+file_filter = DesktopBranding\src\org\gephi\branding\desktop\actions\<lang>.po
+source_file = DesktopBranding\src\org\gephi\branding\desktop\actions\org-gephi-branding-desktop-actions.pot
 source_lang = en
 
 [gephi.org-gephi-io-database-drivers]
-file_filter = DBDrivers/src/org/gephi/io/database/drivers/<lang>.po
-source_file = DBDrivers/src/org/gephi/io/database/drivers/org-gephi-io-database-drivers.pot
+file_filter = DBDrivers\src\org\gephi\io\database\drivers\<lang>.po
+source_file = DBDrivers\src\org\gephi\io\database\drivers\org-gephi-io-database-drivers.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-plugin]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/org-gephi-datalab-plugin.pot
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\org-gephi-datalab-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-plugin-manipulators-values]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/values/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/values/org-gephi-datalab-plugin-manipulators-values.pot
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\values\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\values\org-gephi-datalab-plugin-manipulators-values.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-plugin-manipulators-ui]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/ui/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/ui/org-gephi-datalab-plugin-manipulators-ui.pot
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\ui\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\ui\org-gephi-datalab-plugin-manipulators-ui.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-plugin-manipulators-rows-merge]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/rows/merge/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/rows/merge/org-gephi-datalab-plugin-manipulators-rows-merge.pot
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\rows\merge\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\rows\merge\org-gephi-datalab-plugin-manipulators-rows-merge.pot
 source_lang = en
 
-[gephi.org-gephi-datalab-plugin-manipulators-rows-merge-ui]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/rows/merge/ui/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/rows/merge/ui/org-gephi-datalab-plugin-manipulators-rows-merge-ui.pot
+[gephi.s--gephi-datalab-plugin-manipulators-rows-merge-ui]
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\rows\merge\ui\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\rows\merge\ui\org-gephi-datalab-plugin-manipulators-rows-merge-ui.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-plugin-manipulators-nodes]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/nodes/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/nodes/org-gephi-datalab-plugin-manipulators-nodes.pot
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\nodes\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\nodes\org-gephi-datalab-plugin-manipulators-nodes.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-plugin-manipulators-nodes-ui]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/nodes/ui/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/nodes/ui/org-gephi-datalab-plugin-manipulators-nodes-ui.pot
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\nodes\ui\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\nodes\ui\org-gephi-datalab-plugin-manipulators-nodes-ui.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-plugin-manipulators-general]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/general/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/general/org-gephi-datalab-plugin-manipulators-general.pot
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\general\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\general\org-gephi-datalab-plugin-manipulators-general.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-plugin-manipulators-general-ui]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/general/ui/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/general/ui/org-gephi-datalab-plugin-manipulators-general-ui.pot
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\general\ui\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\general\ui\org-gephi-datalab-plugin-manipulators-general-ui.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-plugin-manipulators-edges]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/edges/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/edges/org-gephi-datalab-plugin-manipulators-edges.pot
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\edges\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\edges\org-gephi-datalab-plugin-manipulators-edges.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-plugin-manipulators-edges-ui]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/edges/ui/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/edges/ui/org-gephi-datalab-plugin-manipulators-edges-ui.pot
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\edges\ui\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\edges\ui\org-gephi-datalab-plugin-manipulators-edges-ui.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-plugin-manipulators-columns]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/columns/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/columns/org-gephi-datalab-plugin-manipulators-columns.pot
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\columns\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\columns\org-gephi-datalab-plugin-manipulators-columns.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-plugin-manipulators-columns-ui]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/columns/ui/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/columns/ui/org-gephi-datalab-plugin-manipulators-columns-ui.pot
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\columns\ui\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\columns\ui\org-gephi-datalab-plugin-manipulators-columns-ui.pot
 source_lang = en
 
-[gephi.org-gephi-datalab-plugin-manipulators-columns-merge]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/columns/merge/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/columns/merge/org-gephi-datalab-plugin-manipulators-columns-merge.pot
+[gephi.s--gephi-datalab-plugin-manipulators-columns-merge]
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\columns\merge\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\columns\merge\org-gephi-datalab-plugin-manipulators-columns-merge.pot
 source_lang = en
 
-[gephi.org-gephi-datalab-plugin-manipulators-columns-merge-ui]
-file_filter = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/columns/merge/ui/<lang>.po
-source_file = DataLaboratoryPlugin/src/org/gephi/datalab/plugin/manipulators/columns/merge/ui/org-gephi-datalab-plugin-manipulators-columns-merge-ui.pot
+[gephi.s-phi-datalab-plugin-manipulators-columns-merge-ui]
+file_filter = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\columns\merge\ui\<lang>.po
+source_file = DataLaboratoryPlugin\src\org\gephi\datalab\plugin\manipulators\columns\merge\ui\org-gephi-datalab-plugin-manipulators-columns-merge-ui.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-impl]
-file_filter = DataLaboratoryAPI/src/org/gephi/datalab/impl/<lang>.po
-source_file = DataLaboratoryAPI/src/org/gephi/datalab/impl/org-gephi-datalab-impl.pot
+file_filter = DataLaboratoryAPI\src\org\gephi\datalab\impl\<lang>.po
+source_file = DataLaboratoryAPI\src\org\gephi\datalab\impl\org-gephi-datalab-impl.pot
 source_lang = en
 
 [gephi.org-gephi-datalab-api]
-file_filter = DataLaboratoryAPI/src/org/gephi/datalab/api/<lang>.po
-source_file = DataLaboratoryAPI/src/org/gephi/datalab/api/org-gephi-datalab-api.pot
+file_filter = DataLaboratoryAPI\src\org\gephi\datalab\api\<lang>.po
+source_file = DataLaboratoryAPI\src\org\gephi\datalab\api\org-gephi-datalab-api.pot
 source_lang = en
 
 [gephi.org-gephi-lib-commonscompress]
-file_filter = CommonsCompressWrapper/src/org/gephi/lib/commonscompress/<lang>.po
-source_file = CommonsCompressWrapper/src/org/gephi/lib/commonscompress/org-gephi-lib-commonscompress.pot
+file_filter = CommonsCompressWrapper\src\org\gephi\lib\commonscompress\<lang>.po
+source_file = CommonsCompressWrapper\src\org\gephi\lib\commonscompress\org-gephi-lib-commonscompress.pot
 source_lang = en
 
 [gephi.org-gephi-lib-commons-codec]
-file_filter = CommonsCodec/src/org/gephi/lib/commons/codec/<lang>.po
-source_file = CommonsCodec/src/org/gephi/lib/commons/codec/org-gephi-lib-commons-codec.pot
+file_filter = CommonsCodec\src\org\gephi\lib\commons\codec\<lang>.po
+source_file = CommonsCodec\src\org\gephi\lib\commons\codec\org-gephi-lib-commons-codec.pot
 source_lang = en
 
 [gephi.org-gephi-utils-collection]
-file_filter = CollectionUtils/src/org/gephi/utils/collection/<lang>.po
-source_file = CollectionUtils/src/org/gephi/utils/collection/org-gephi-utils-collection.pot
+file_filter = CollectionUtils\src\org\gephi\utils\collection\<lang>.po
+source_file = CollectionUtils\src\org\gephi\utils\collection\org-gephi-utils-collection.pot
 source_lang = en
 
 [gephi.org-gephi-clustering-plugin]
-file_filter = ClusteringPlugin/src/org/gephi/clustering/plugin/<lang>.po
-source_file = ClusteringPlugin/src/org/gephi/clustering/plugin/org-gephi-clustering-plugin.pot
+file_filter = ClusteringPlugin\src\org\gephi\clustering\plugin\<lang>.po
+source_file = ClusteringPlugin\src\org\gephi\clustering\plugin\org-gephi-clustering-plugin.pot
 source_lang = en
 
 [gephi.org-gephi-clustering-plugin-mcl]
-file_filter = ClusteringPlugin/src/org/gephi/clustering/plugin/mcl/<lang>.po
-source_file = ClusteringPlugin/src/org/gephi/clustering/plugin/mcl/org-gephi-clustering-plugin-mcl.pot
+file_filter = ClusteringPlugin\src\org\gephi\clustering\plugin\mcl\<lang>.po
+source_file = ClusteringPlugin\src\org\gephi\clustering\plugin\mcl\org-gephi-clustering-plugin-mcl.pot
 source_lang = en
 
 [gephi.org-gephi-clustering-api]
-file_filter = ClusteringAPI/src/org/gephi/clustering/api/<lang>.po
-source_file = ClusteringAPI/src/org/gephi/clustering/api/org-gephi-clustering-api.pot
+file_filter = ClusteringAPI\src\org\gephi\clustering\api\<lang>.po
+source_file = ClusteringAPI\src\org\gephi\clustering\api\org-gephi-clustering-api.pot
 source_lang = en
 
 [gephi.org-gephi-lib-beansbinding]
-file_filter = BeansBindingWrapper/src/org/gephi/lib/beansbinding/<lang>.po
-source_file = BeansBindingWrapper/src/org/gephi/lib/beansbinding/org-gephi-lib-beansbinding.pot
+file_filter = BeansBindingWrapper\src\org\gephi\lib\beansbinding\<lang>.po
+source_file = BeansBindingWrapper\src\org\gephi\lib\beansbinding\org-gephi-lib-beansbinding.pot
 source_lang = en
 
 [gephi.org-gephi-lib-batik]
-file_filter = BatikWrapper/src/org/gephi/lib/batik/<lang>.po
-source_file = BatikWrapper/src/org/gephi/lib/batik/org-gephi-lib-batik.pot
+file_filter = BatikWrapper\src\org\gephi\lib\batik\<lang>.po
+source_file = BatikWrapper\src\org\gephi\lib\batik\org-gephi-lib-batik.pot
 source_lang = en
 
 [gephi.org-gephi-data-attributes]
-file_filter = AttributesImpl/src/org/gephi/data/attributes/<lang>.po
-source_file = AttributesImpl/src/org/gephi/data/attributes/org-gephi-data-attributes.pot
+file_filter = AttributesImpl\src\org\gephi\data\attributes\<lang>.po
+source_file = AttributesImpl\src\org\gephi\data\attributes\org-gephi-data-attributes.pot
 source_lang = en
 
 [gephi.org-gephi-data-attributes-api]
-file_filter = AttributesAPI/src/org/gephi/data/attributes/api/<lang>.po
-source_file = AttributesAPI/src/org/gephi/data/attributes/api/org-gephi-data-attributes-api.pot
+file_filter = AttributesAPI\src\org\gephi\data\attributes\api\<lang>.po
+source_file = AttributesAPI\src\org\gephi\data\attributes\api\org-gephi-data-attributes-api.pot
 source_lang = en
 
 [gephi.org-gephi-ui-propertyeditor]
-file_filter = AttributeColumnPropertyEditor/src/org/gephi/ui/propertyeditor/<lang>.po
-source_file = AttributeColumnPropertyEditor/src/org/gephi/ui/propertyeditor/org-gephi-ui-propertyeditor.pot
+file_filter = AttributeColumnPropertyEditor\src\org\gephi\ui\propertyeditor\<lang>.po
+source_file = AttributeColumnPropertyEditor\src\org\gephi\ui\propertyeditor\org-gephi-ui-propertyeditor.pot
 source_lang = en
 
 [gephi.org-gephi-algorithms]
-file_filter = Algorithms/src/org/gephi/algorithms/<lang>.po
-source_file = Algorithms/src/org/gephi/algorithms/org-gephi-algorithms.pot
+file_filter = Algorithms\src\org\gephi\algorithms\<lang>.po
+source_file = Algorithms\src\org\gephi\algorithms\org-gephi-algorithms.pot
 source_lang = en
 
