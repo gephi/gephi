@@ -37,8 +37,6 @@ import javax.management.NotificationEmitter;
 import javax.management.NotificationListener;
 import javax.management.openmbean.CompositeData;
 import org.gephi.desktop.project.api.ProjectControllerUI;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.Node;
 import org.gephi.visualization.VizController;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
@@ -49,7 +47,12 @@ import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
 /**
- *
+ * Utility class that tracks memory consumption and informs users when the free memory
+ * is under 20mb.
+ * <p>
+ * The user has the choice to cancel or let this class increase the maximum memory and
+ * reboot. It will also try to save the project.
+ * 
  * @author Mathieu Bastian
  */
 public class MemoryStarvationManager implements NotificationListener {
@@ -69,7 +72,6 @@ public class MemoryStarvationManager implements NotificationListener {
         MemoryPoolMXBean biggestHeap = null;
         long biggestSize = 0;
         for (MemoryPoolMXBean b : mpbeans) {
-            System.out.println("Found heap (" + b.getName() + ") of type " + b.getType());
             if (b.getType() == MemoryType.HEAP) {
                 /* Here we are making the leap of faith that the biggest
                  * heap is the tenured heap
@@ -228,8 +230,8 @@ public class MemoryStarvationManager implements NotificationListener {
     private long getMaximumXmx() {
         OperatingSystemMXBean mxbean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
         long totalMemory = mxbean.getTotalPhysicalMemorySize();
-//        System.out.println("Total Memory = " + getMb(totalMemory));
-        if (getMb(totalMemory) < 2100) {
+        String arch = System.getProperty("sun.arch.data.model");
+        if (getMb(totalMemory) < 2100 || arch.equals("32")) {
             return getBytes(1300);
         } else {
             return (long) (totalMemory * 0.7);
