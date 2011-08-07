@@ -1,3 +1,4 @@
 org.gephi.io.database.drivers.MySQLDriver
 org.gephi.io.database.drivers.SQLServerDriver
 org.gephi.io.database.drivers.PostgreSQLDriver
+org.gephi.io.database.drivers.SQLiteDriver

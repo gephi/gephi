@@ -17,9 +17,10 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 package org.gephi.io.database.drivers;
+
+import org.openide.util.Lookup;
 
 /**
  *
@@ -27,14 +28,23 @@ package org.gephi.io.database.drivers;
  */
 public class SQLUtils {
 
+    public static SQLDriver getDriver(String prefix) {
+        for (SQLDriver driver : Lookup.getDefault().lookupAll(SQLDriver.class)) {
+            if (driver.getPrefix().equalsIgnoreCase(prefix)) {
+                return driver;
+            }
+        }
+        return null;
+    }
+
     public static String getUrl(SQLDriver driver, String host, int port, String dbname) {
         String res = "jdbc:";
-        res += driver!=null?driver.getPrefix():"";
+        res += driver != null ? driver.getPrefix() : "";
         res += "://";
-        res += host!=null?host:"";
+        res += host != null ? host : "";
         res += ":";
-        res += port!=0?port:"";
-        res += dbname!=null?"/"+dbname:"";
+        res += port != 0 ? port : "";
+        res += dbname != null ? "/" + dbname : "";
         return res;
     }
 }

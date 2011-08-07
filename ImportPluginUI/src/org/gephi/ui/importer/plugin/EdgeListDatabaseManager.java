@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.importer.plugin;
 
 import java.io.EOFException;
@@ -48,7 +48,7 @@ public class EdgeListDatabaseManager {
         load();
     }
 
-    public Collection<Database> getEdgeListDatabases() {
+    public List<Database> getEdgeListDatabases() {
         return edgeListDatabases;
     }
 
@@ -84,12 +84,11 @@ public class EdgeListDatabaseManager {
             try {
                 is = databaseConfigurations.getInputStream();
                 ObjectInputStream ois = new ObjectInputStream(is);
-                List<Database> unserialized =
-                        (List<Database>) ois.readObject();
+                List<Database> unserialized = (List<Database>) ois.readObject();
                 if (unserialized != null) {
                     edgeListDatabases = unserialized;
                 }
-
+            } catch (java.io.InvalidClassException e) {
             } catch (EOFException eofe) {
                 // Empty configuration: do nothing
             } catch (IOException e) {

@@ -17,10 +17,11 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.io.importer.api;
 
 import org.gephi.io.database.drivers.SQLDriver;
+import org.gephi.io.database.drivers.SQLUtils;
 
 /**
  *
@@ -30,13 +31,12 @@ public abstract class AbstractDatabase implements Database {
 
     //Database attributes
     protected String name;
-    protected SQLDriver SQLDriver;
+    protected String driver;
     protected String host;
     protected int port;
     protected String username;
     protected String passwd;
     protected String DBName;
-
     //PropertiesAssociations
     protected PropertiesAssociations properties = new PropertiesAssociations();
 
@@ -49,11 +49,13 @@ public abstract class AbstractDatabase implements Database {
     }
 
     public SQLDriver getSQLDriver() {
-        return SQLDriver;
+        return SQLUtils.getDriver(driver);
     }
 
-    public void setSQLDriver(SQLDriver SQLDriver) {
-        this.SQLDriver = SQLDriver;
+    public void setSQLDriver(SQLDriver driver) {
+        if (driver != null) {
+            this.driver = driver.getPrefix();
+        }
     }
 
     public String getHost() {

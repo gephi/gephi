@@ -5,7 +5,16 @@
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
             <code-name-base>org.gephi.io.database.drivers</code-name-base>
             <suite-component/>
-            <module-dependencies/>
+            <module-dependencies>
+                <dependency>
+                    <code-name-base>org.openide.util.lookup</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>8.8.1</specification-version>
+                    </run-dependency>
+                </dependency>
+            </module-dependencies>
             <public-packages>
                 <package>com.microsoft.sqlserver.jdbc</package>
                 <package>com.mysql.jdbc</package>
@@ -49,12 +58,16 @@
                 <binary-origin>release/modules/ext/sqljdbc4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/postgresql-8.4-701.jdbc4.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/postgresql-8.4-701.jdbc4.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/mysql-connector-java-5.1.7-bin.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/mysql-connector-java-5.1.7-bin.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/postgresql-8.4-701.jdbc4.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/postgresql-8.4-701.jdbc4.jar</binary-origin>
+                <runtime-relative-path>ext/sqlite-jdbc-3.7.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/sqlite-jdbc-3.7.2.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>

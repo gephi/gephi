@@ -46,13 +46,14 @@ public class EdgeListDatabaseImporterUI implements ImporterUI {
         this.importer = (DatabaseImporter) importer;
         if (panel == null) {
             panel = new EdgeListPanel();
-        }
-        panel.setup();
+        }    
 
         //Driver Combo
         SQLDriver[] driverArray = new SQLDriver[0];
         driverArray = Lookup.getDefault().lookupAll(SQLDriver.class).toArray(driverArray);
         panel.setSQLDrivers(driverArray);
+        
+        panel.setup();
     }
 
     public JPanel getPanel() {

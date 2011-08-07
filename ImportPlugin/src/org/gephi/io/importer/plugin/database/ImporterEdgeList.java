@@ -111,14 +111,14 @@ public class ImporterEdgeList implements DatabaseImporter {
         PropertiesAssociations properties = database.getPropertiesAssociations();
 
         Statement s = connection.createStatement();
+        ResultSet rs = null;
         try {
-            s.executeQuery(database.getNodeQuery());
+            rs = s.executeQuery(database.getNodeQuery());
         } catch (SQLException ex) {
             report.logIssue(new Issue("Failed to execute Node query", Issue.Level.SEVERE, ex));
             return;
         }
 
-        ResultSet rs = s.getResultSet();
         findNodeAttributesColumns(rs);
         AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
         ResultSetMetaData metaData = rs.getMetaData();
@@ -154,13 +154,13 @@ public class ImporterEdgeList implements DatabaseImporter {
         PropertiesAssociations properties = database.getPropertiesAssociations();
 
         Statement s = connection.createStatement();
+        ResultSet rs = null;
         try {
-            s.executeQuery(database.getEdgeQuery());
+            rs = s.executeQuery(database.getEdgeQuery());
         } catch (SQLException ex) {
             report.logIssue(new Issue("Failed to execute Edge query", Issue.Level.SEVERE, ex));
             return;
         }
-        ResultSet rs = s.getResultSet();
         findEdgeAttributesColumns(rs);
         AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
         ResultSetMetaData metaData = rs.getMetaData();

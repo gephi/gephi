@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <AuxValues>
@@ -37,7 +37,7 @@
                       <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="configurationCombo" pref="421" max="32767" attributes="1"/>
+                              <Component id="configurationCombo" pref="423" max="32767" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="removeConfigurationButton" min="-2" pref="21" max="-2" attributes="0"/>
                           </Group>
@@ -47,11 +47,15 @@
                           <Component id="edgeQueryTextField" alignment="1" pref="448" max="32767" attributes="1"/>
                           <Component id="nodeQueryTextField" alignment="1" pref="448" max="32767" attributes="1"/>
                           <Component id="portTextField" alignment="0" pref="448" max="32767" attributes="1"/>
-                          <Component id="hostTextField" alignment="0" pref="448" max="32767" attributes="1"/>
                           <Component id="dbTextField" alignment="1" pref="448" max="32767" attributes="1"/>
                           <Component id="userTextField" alignment="1" pref="448" max="32767" attributes="1"/>
                           <Component id="driverComboBox" alignment="0" min="-2" pref="98" max="-2" attributes="1"/>
                           <Component id="pwdTextField" alignment="0" pref="448" max="32767" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="hostTextField" pref="351" max="32767" attributes="1"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="browseButton" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
@@ -61,7 +65,7 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
-          <Component id="jXHeader1" alignment="0" pref="603" max="32767" attributes="0"/>
+          <Component id="jXHeader1" alignment="0" pref="655" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -88,6 +92,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="hostLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="hostTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="browseButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -131,7 +136,7 @@
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="testConnection" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="39" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -178,9 +183,6 @@
     </Component>
     <Component class="javax.swing.JTextField" name="portTextField">
       <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.port.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
         <Property name="name" type="java.lang.String" value="port" noResource="true"/>
       </Properties>
       <AuxValues>
@@ -210,9 +212,6 @@
     </Component>
     <Component class="javax.swing.JTextField" name="dbTextField">
       <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.database.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
         <Property name="name" type="java.lang.String" value="database" noResource="true"/>
       </Properties>
       <AuxValues>
@@ -221,9 +220,6 @@
     </Component>
     <Component class="javax.swing.JTextField" name="userTextField">
       <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.user name.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
         <Property name="name" type="java.lang.String" value="user name" noResource="true"/>
       </Properties>
       <AuxValues>
@@ -327,9 +323,6 @@
     </Component>
     <Component class="javax.swing.JPasswordField" name="pwdTextField">
       <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/database/standard/Bundle.properties" key="EdgeListPanel.password.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
         <Property name="name" type="java.lang.String" value="password" noResource="true"/>
       </Properties>
       <AuxValues>
@@ -338,9 +331,6 @@
     </Component>
     <Component class="javax.swing.JTextField" name="configNameTextField">
       <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/desktop/importer/impl/Bundle.properties" key="EdgeListPanel.configName.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
         <Property name="name" type="java.lang.String" value="configName" noResource="true"/>
       </Properties>
     </Component>
@@ -374,6 +364,13 @@
         </Property>
         <Property name="title" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/ui/importer/plugin/Bundle.properties" key="EdgeListPanel.jXHeader1.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="browseButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/ui/importer/plugin/Bundle.properties" key="EdgeListPanel.browseButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
