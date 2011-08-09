@@ -26,7 +26,6 @@ import javax.swing.UIManager;
 import org.gephi.branding.desktop.reporter.ReporterHandler;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.gephi.project.api.ProjectController;
-import org.openide.LifecycleManager;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;

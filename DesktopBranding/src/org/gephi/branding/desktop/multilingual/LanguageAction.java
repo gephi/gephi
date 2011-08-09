@@ -47,21 +47,33 @@ public final class LanguageAction extends CallableSystemAction {
 
         EN_US("en", "English"),
         FR_FR("fr", "Français"),
-        ES_ES("es", "Español");
-        private String locale;
+        ES_ES("es", "Español"),
+        PT_BR("pt", "BR", "Português do Brasil");
+        private String language;
+        private String country = null;
         private String name;
 
         private Language(String locale, String name) {
-            this.locale = locale;
+            this.language = locale;
             this.name = name;
+        }
+
+        private Language(String language, String country, String name) {
+            this.language = language;
+            this.name = name;
+            this.country = country;
         }
 
         public String getName() {
             return name;
         }
 
-        public String getLocale() {
-            return locale;
+        public String getLanguage() {
+            return language;
+        }
+
+        public String getCountry() {
+            return country;
         }
     }
 
@@ -100,7 +112,12 @@ public final class LanguageAction extends CallableSystemAction {
                 }
             });
             //Flag icons from http://www.famfamfam.com
-            Icon icon = ImageUtilities.loadImageIcon("org/gephi/branding/desktop/multilingual/resources/" + lang.getLocale() + ".png", false);
+            String iconFile="org/gephi/branding/desktop/multilingual/resources/" + lang.getLanguage();
+            if(lang.getCountry()!=null){
+                iconFile+="_"+lang.getCountry();
+            }
+            iconFile+=".png";
+            Icon icon = ImageUtilities.loadImageIcon(iconFile, false);
             if (icon != null) {
                 menuItem.setIcon(icon);
             }
@@ -110,7 +127,7 @@ public final class LanguageAction extends CallableSystemAction {
         return menu;
     }
 
-    private void setLanguage(Language language) throws Exception{
+    private void setLanguage(Language language) throws Exception {
         String homePath;
         if (Utilities.isMac() || Utilities.isUnix()) {
             homePath = System.getProperty("netbeans.home");
@@ -126,25 +143,31 @@ public final class LanguageAction extends CallableSystemAction {
 
         File confFile = new File(etc, APPNAME + ".conf");
         StringBuilder outputBuilder = new StringBuilder();
-        String match = "-J-Duser.language=";
-        int langLength = 2;
+        
+        String matchOptionsLIne = "default_options=";
 
         //In
         BufferedReader reader = new BufferedReader(new FileReader(confFile));
         String strLine;
         while ((strLine = reader.readLine()) != null) {
-            int i = 0;
-            if ((i = strLine.indexOf(match)) != -1) {
-                String locale = strLine.substring(i + match.length());
-                locale = locale.substring(0, langLength);
-                String before = strLine.substring(0, i + match.length());
-                String after = strLine.substring(i + match.length() + langLength);
-                outputBuilder.append(before);
-                outputBuilder.append(language.getLocale());
-                outputBuilder.append(after);
-            } else {
-                outputBuilder.append(strLine);
+            if (strLine.indexOf(matchOptionsLIne) != -1) {
+                //Remove old language and country:
+                strLine = strLine.replaceFirst(" -J-Duser\\.language=..", "");
+                strLine = strLine.replaceFirst(" -J-Duser\\.country=..", "");
+                
+                //Get string up to closing '"':
+                strLine=strLine.substring(0, strLine.lastIndexOf("\""));
+                //Set new language
+                strLine+=" -J-Duser.language="+language.getLanguage();                
+                //Set new country if necessary
+                if (language.getCountry() != null) {
+                    strLine+=" -J-Duser.country="+language.getCountry();
+                }
+                //Close options with '"'
+                strLine+="\"";
             }
+
+            outputBuilder.append(strLine);
             outputBuilder.append("\n");
         }
         reader.close();
@@ -160,6 +183,5 @@ public final class LanguageAction extends CallableSystemAction {
             LifecycleManager.getDefault().markForRestart();
         }
         LifecycleManager.getDefault().exit();
-
     }
 }
