@@ -89,12 +89,13 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
             graph = graphModel.getDirectedGraph();
         }
         progressTicket.start(graph.getNodeCount() + graph.getEdgeCount());
-
+        
+        graph.readLock();
+        
         if (normalize) {
             computeNormalizeValues(graph);
         }
 
-        graph.readLock();
         try {
             exportData(graph);
         } catch (IOException ex) {
@@ -168,8 +169,8 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
             for (int i = 0; i < edge.getAttributes().countValues(); i++) {
                 String s = attributeModel.getEdgeTable().getColumn(i).getTitle();
                 //due to gml documentation, all parameters that start with capital letter become invalid after graph change
-                if (s.charAt(0) >= 'a' && s.charAt(0) <= 'z' && edge.getAttributes().getValue(i) != null) {
-                    printTag(attributeModel.getEdgeTable().getColumn(i).getTitle() + " " + (String) edge.getAttributes().getValue(i));
+                if (!(s.charAt(0) >= 'A' && s.charAt(0) <= 'Z') && edge.getAttributes().getValue(i) != null) {
+                    printTag(attributeModel.getEdgeTable().getColumn(i).getTitle() + " \"" + (String) edge.getAttributes().getValue(i) + "\"");
                 }
             }
         }
@@ -219,8 +220,8 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
                 String s = attributeModel.getNodeTable().getColumn(i).getTitle();
                 //due to gml documentation, all parameters that start with capital letter become invalid after graph changes
                 //"d" has already been exported at exportNodeSize section 
-                if (s.charAt(0) >= 'a' && s.charAt(0) <= 'z' && node.getAttributes().getValue(i) != null && !s.equals("d")) {
-                    printTag(attributeModel.getNodeTable().getColumn(i).getTitle() + " " + (String) node.getAttributes().getValue(i));
+                if (!(s.charAt(0) >= 'A' && s.charAt(0) <= 'Z') && node.getAttributes().getValue(i) != null && !s.equals("d")) {
+                    printTag(attributeModel.getNodeTable().getColumn(i).getTitle() + " \"" + (String) node.getAttributes().getValue(i) +"\"");
                 }
             }
         }
