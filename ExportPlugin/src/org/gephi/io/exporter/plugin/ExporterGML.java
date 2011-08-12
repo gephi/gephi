@@ -89,9 +89,9 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
             graph = graphModel.getDirectedGraph();
         }
         progressTicket.start(graph.getNodeCount() + graph.getEdgeCount());
-        
+
         graph.readLock();
-        
+
         if (normalize) {
             computeNormalizeValues(graph);
         }
@@ -156,6 +156,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
 
     private void printEdge(Edge edge) throws IOException {
         printOpen("edge");
+        printTag("id " + edge.getId());
         printTag("source " + edge.getSource().getId());
         printTag("target " + edge.getTarget().getId());
         if (exportLabel && edge.getEdgeData().getLabel() != null) {
@@ -168,9 +169,9 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         if (exportNotRecognizedElements) {
             for (int i = 0; i < edge.getAttributes().countValues(); i++) {
                 String s = attributeModel.getEdgeTable().getColumn(i).getTitle();
-                //due to gml documentation, all parameters that start with capital letter become invalid after graph change
-                if (!(s.charAt(0) >= 'A' && s.charAt(0) <= 'Z') && edge.getAttributes().getValue(i) != null) {
-                    printTag(attributeModel.getEdgeTable().getColumn(i).getTitle() + " \"" + (String) edge.getAttributes().getValue(i) + "\"");
+                //don't print again standart attributes
+                if (edge.getAttributes().getValue(i) != null && !s.equals("Weight") && !s.equals("Id")) {
+                    printTag(attributeModel.getEdgeTable().getColumn(i).getTitle().replace(" ", "") + " \"" + edge.getAttributes().getValue(i) + "\"");
                 }
             }
         }
@@ -218,10 +219,9 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         if (exportNotRecognizedElements) {
             for (int i = 0; i < node.getAttributes().countValues(); i++) {
                 String s = attributeModel.getNodeTable().getColumn(i).getTitle();
-                //due to gml documentation, all parameters that start with capital letter become invalid after graph changes
-                //"d" has already been exported at exportNodeSize section 
-                if (!(s.charAt(0) >= 'A' && s.charAt(0) <= 'Z') && node.getAttributes().getValue(i) != null && !s.equals("d")) {
-                    printTag(attributeModel.getNodeTable().getColumn(i).getTitle() + " \"" + (String) node.getAttributes().getValue(i) +"\"");
+                //don't print again standart attributes
+                if (node.getAttributes().getValue(i) != null && !s.equals("d") && !s.equals("Label") && !s.equals("Id")) {
+                    printTag(attributeModel.getNodeTable().getColumn(i).getTitle().replace(" ", "") + " \"" + node.getAttributes().getValue(i) + "\"");
                 }
             }
         }

@@ -92,8 +92,7 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
 
         exportEdgeWeightCheckBox.setText(org.openide.util.NbBundle.getMessage(UIExporterGMLPanel.class, "edgeWeightLabel.text")); // NOI18N
 
-        exportNotRecognizedCheckBox.setText(org.openide.util.NbBundle.getMessage(UIExporterGMLPanel.class, "otherLabel.text")); // NOI18N
-        exportNotRecognizedCheckBox.setToolTipText(org.openide.util.NbBundle.getMessage(UIExporterGMLPanel.class, "USE IF YOU IMPORTED GML FILE AND WANT TO KEEP RARE FIELDS")); // NOI18N
+        exportNotRecognizedCheckBox.setLabel("Other");
 
         normalizeCheckBox.setLabel(org.openide.util.NbBundle.getMessage(UIExporterGMLPanel.class, "normalizeLabel.text")); // NOI18N
 
@@ -124,7 +123,7 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
                     .add(exportLabelCheckBox)
                     .add(exportNotRecognizedCheckBox)
                     .add(spacesTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 60, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(90, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -154,7 +153,8 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
                 .add(21, 21, 21))
         );
 
-        exportNotRecognizedCheckBox.getAccessibleContext().setAccessibleDescription("use if this gml file imported");
+        exportNotRecognizedCheckBox.getAccessibleContext().setAccessibleName("\n"); // NOI18N
+        exportNotRecognizedCheckBox.getAccessibleContext().setAccessibleDescription("");
         spacesTextField.getAccessibleContext().setAccessibleName("Indentation");
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

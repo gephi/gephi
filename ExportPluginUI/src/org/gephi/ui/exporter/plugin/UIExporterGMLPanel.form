@@ -34,7 +34,7 @@
                   <Component id="exportNotRecognizedCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="spacesTextField" alignment="0" min="-2" pref="60" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="18" max="32767" attributes="0"/>
+              <EmptySpace pref="90" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -109,15 +109,11 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="exportNotRecognizedCheckBox">
       <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/exporter/plugin/Bundle.properties" key="otherLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/ui/exporter/plugin/Bundle.properties" key="USE IF YOU IMPORTED GML FILE AND WANT TO KEEP RARE FIELDS" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
+        <Property name="label" type="java.lang.String" value="Other"/>
       </Properties>
       <AccessibilityProperties>
-        <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="use if this gml file imported"/>
+        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="&#xa;" noResource="true"/>
+        <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value=""/>
       </AccessibilityProperties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="normalizeCheckBox">

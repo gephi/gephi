@@ -199,6 +199,7 @@ public class ImporterGML implements FileImporter, LongTask {
             } else if ("w".equals(key) && value instanceof Double) {
                 node.setSize(((Double) value).floatValue());
             } else if ("h".equals(key)) {
+            } else if ("d".equals(key)) { 
             } else if ("fill".equals(key)) {
                 int colorHex = -1;
                 if (value instanceof String) {
