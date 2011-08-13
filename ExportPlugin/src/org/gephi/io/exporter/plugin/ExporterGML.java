@@ -103,7 +103,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         }
         progressTicket.finish();
         graph.readUnlock();
-        return true;
+        return !cancel;
     }
 
     void printOpen(String s) throws IOException {
@@ -171,7 +171,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
                 String s = attributeModel.getEdgeTable().getColumn(i).getTitle();
                 //don't print again standart attributes
                 if (edge.getAttributes().getValue(i) != null && !s.equals("Weight") && !s.equals("Id")) {
-                    printTag(attributeModel.getEdgeTable().getColumn(i).getTitle().replace(" ", "") + " \"" + edge.getAttributes().getValue(i) + "\"");
+                    printTag(formatString(s) + " \"" + edge.getAttributes().getValue(i) + "\"");
                 }
             }
         }
@@ -221,7 +221,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
                 String s = attributeModel.getNodeTable().getColumn(i).getTitle();
                 //don't print again standart attributes
                 if (node.getAttributes().getValue(i) != null && !s.equals("d") && !s.equals("Label") && !s.equals("Id")) {
-                    printTag(attributeModel.getNodeTable().getColumn(i).getTitle().replace(" ", "") + " \"" + node.getAttributes().getValue(i) + "\"");
+                    printTag(formatString(s) + " \"" + node.getAttributes().getValue(i) + "\"");
                 }
             }
         }
@@ -332,5 +332,14 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
             minSize = Math.min(minSize, node.getNodeData().getSize());
             maxSize = Math.max(maxSize, node.getNodeData().getSize());
         }
+    }
+
+    //returns string that can be normally readed by import gml tokenizer. removes '"[]# and space, adds "column" to beginning of string if starts with digit
+    private String formatString(String s) {
+        String res = s.replace("\"", "").replace("\'", "").replace("[", "").replace("]", "").replace(" ", "").replace("#", "");
+        if (s.charAt(0) >= '0' && s.charAt(0) <= '9')
+            return ("column" + res);
+        else
+            return (res);
     }
 }

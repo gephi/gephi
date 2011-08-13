@@ -73,6 +73,12 @@ public class ImporterGML implements FileImporter, LongTask {
         tokenizer.ordinaryChar('[');
         tokenizer.ordinaryChar(']');
         tokenizer.wordChars('_', '_');
+        
+       
+        String allowed = "$%&!()*+,-^./:;<=>?@\\_`{|}~";
+        for (int i = 0; i < allowed.length(); i++)
+            tokenizer.wordChars(allowed.charAt(i), allowed.charAt(i));
+        
         list = parseList(tokenizer);
 
         boolean ret = false;
