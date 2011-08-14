@@ -116,7 +116,9 @@ public class DegreeRankingBuilder implements RankingBuilder {
 
         @Override
         protected DegreeRanking clone() {
-            return new DegreeRanking(elementType, graph);
+            GraphModel graphModel = graph.getGraphModel();
+            Graph currentGraph = graphModel.getGraphVisible();
+            return new DegreeRanking(elementType, currentGraph);
         }
     }
 }

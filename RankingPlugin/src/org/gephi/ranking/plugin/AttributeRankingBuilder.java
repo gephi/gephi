@@ -212,7 +212,9 @@ public class AttributeRankingBuilder implements RankingBuilder {
 
         @Override
         protected AttributeRanking clone() {
-            AttributeRanking newRanking = new AttributeRanking(elementType, column, graph);
+            GraphModel graphModel = graph.getGraphModel();
+            Graph currentGraph = graphModel.getGraphVisible();
+            AttributeRanking newRanking = new AttributeRanking(elementType, column, currentGraph);
             return newRanking;
         }
     }
@@ -244,7 +246,7 @@ public class AttributeRankingBuilder implements RankingBuilder {
 
         @Override
         public float normalize(Number value) {
-            return (value.floatValue() - minimum.floatValue()) / (float) (getMaximumValue().floatValue() - getMinimumValue().floatValue());
+            return (value.floatValue() - getMinimumValue().floatValue()) / (float) (getMaximumValue().floatValue() - getMinimumValue().floatValue());
         }
 
         @Override
@@ -293,7 +295,19 @@ public class AttributeRankingBuilder implements RankingBuilder {
 
         @Override
         protected DynamicAttributeRanking clone() {
-            DynamicAttributeRanking newRanking = new DynamicAttributeRanking(elementType, column, graph, timeInterval, estimator);
+            TimeInterval visibleInterval = timeInterval;
+            Estimator currentEstimator = estimator;
+            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+            if (dynamicController != null) {
+                DynamicModel dynamicModel = dynamicController.getModel();
+                if (dynamicModel != null) {
+                    visibleInterval = dynamicModel.getVisibleInterval();
+                    currentEstimator = dynamicModel.getNumberEstimator();
+                }
+            }
+            GraphModel graphModel = graph.getGraphModel();
+            Graph currentGraph = graphModel.getGraphVisible();
+            DynamicAttributeRanking newRanking = new DynamicAttributeRanking(elementType, column, currentGraph, visibleInterval, currentEstimator);
             return newRanking;
         }
     }

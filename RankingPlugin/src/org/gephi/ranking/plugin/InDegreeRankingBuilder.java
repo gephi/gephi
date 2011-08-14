@@ -121,7 +121,9 @@ public class InDegreeRankingBuilder implements RankingBuilder {
 
         @Override
         protected InDegreeRanking clone() {
-            return new InDegreeRanking(elementType, graph);
+            GraphModel graphModel = graph.getGraphModel();
+            DirectedGraph currentGraph = graphModel.getDirectedGraphVisible();
+            return new InDegreeRanking(elementType, currentGraph);
         }
     }
 }

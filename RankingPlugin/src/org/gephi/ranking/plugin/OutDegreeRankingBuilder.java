@@ -121,7 +121,9 @@ public class OutDegreeRankingBuilder implements RankingBuilder {
 
         @Override
         protected OutDegreeRanking clone() {
-            return new OutDegreeRanking(elementType, graph);
+            GraphModel graphModel = graph.getGraphModel();
+            DirectedGraph currentGraph = graphModel.getDirectedGraphVisible();
+            return new OutDegreeRanking(elementType, currentGraph);
         }
     }
 }
