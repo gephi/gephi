@@ -13,9 +13,12 @@
         <hr/>
         <h2>API Changes</h2>
         <ul>
-		     <li>(July 26 2011) Added a new <code>AttributeRowsMergeStrategy</code> interface to Data Laboratory API. This is a type of manipulator that defines
-			     and strategy for merging values of a row (node or edge) for an specific column. It should be used by other manipulators such as 
-				 <code>NodesManipulator MergeNodes</code></li>
+            <li>(August 13 2011) Add new <code>startAutoTransform()</code> and <code>stopAutoTransform()</code> in Ranking API to control auto transformations.
+                The model also allows to retrieve the ranking used in the auto transformation. An additional <code>refreshRanking()</code> method has been added
+                in the <code>RankingBuilder</code> SPI for a smoother auto transformation support.</li>
+            <li>(July 26 2011) Added a new <code>AttributeRowsMergeStrategy</code> interface to Data Laboratory API. This is a type of manipulator that defines
+                and strategy for merging values of a row (node or edge) for an specific column. It should be used by other manipulators such as 
+                <code>NodesManipulator MergeNodes</code></li>
             <li>(July 19 2011) Complete refactoring of the Ranking API to improve modularity and reach a stable version of the API. The API now also has
                 an SPI for ranking builders and transformers. Instead of <code>getNodeRanking()</code> and <code>getEdgeRanking</code> in the model, we
                 introduce the concept of <b>element type</b> and generalize methods to it. Use <code>Ranking.NODE_ELEMENT</code> to obtain a node
