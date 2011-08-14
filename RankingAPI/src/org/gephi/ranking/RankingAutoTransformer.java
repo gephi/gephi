@@ -33,14 +33,16 @@ import org.gephi.ranking.api.Interpolator;
 import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.Transformer;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 
 /**
- *
- * @author mbastian
+ * Scheduled thread executor executing the ranking at a fixed delay.
+ * 
+ * @author Mathieu Bastian
  */
 public class RankingAutoTransformer implements Runnable {
 
-    private final long delayInMs = 1000;
+    private static final long DEFAULT_DELAY = 500;
     private ScheduledExecutorService executor;
     private final RankingModelImpl model;
     private final GraphController graphController;
@@ -61,7 +63,7 @@ public class RankingAutoTransformer implements Runnable {
                     return t;
                 }
             });
-            executor.scheduleWithFixedDelay(this, 0, delayInMs, TimeUnit.MILLISECONDS);
+            executor.scheduleWithFixedDelay(this, 0, getDelayInMs(), TimeUnit.MILLISECONDS);
         }
     }
 
@@ -103,5 +105,10 @@ public class RankingAutoTransformer implements Runnable {
                 }
             }
         }
+    }
+
+    private long getDelayInMs() {
+        long defaultDelay = NbPreferences.forModule(RankingAutoTransformer.class).getLong("Ranking_Auto_Transformer_Default_Delay", DEFAULT_DELAY);
+        return NbPreferences.forModule(RankingAutoTransformer.class).getLong("Ranking_Auto_Transformer_Delay", defaultDelay);
     }
 }
