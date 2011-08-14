@@ -91,6 +91,16 @@ public class Progress {
             progressTicket.setDisplayName(newDisplayName);
         }
     }
+    
+    /**
+     * Returns the current task's display name, or an empty string.
+     */
+    public static String getDisplayName(ProgressTicket progressTicket) {
+        if(progressTicket != null) {
+            return progressTicket.getDisplayName();
+        }
+        return "";
+    }
 
     /**
      * Start the progress indication for indeterminate task.

@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.progress;
 
 import org.gephi.utils.progress.ProgressTicket;
@@ -31,7 +31,8 @@ import org.openide.util.Cancellable;
  */
 public final class ProgressTicketImpl implements ProgressTicket {
 
-    private ProgressHandle handle;
+    private final ProgressHandle handle;
+    private String displayName;
     private int progress100 = 0;
     private int progressTotal;
     private int currentUnit = 0;
@@ -39,6 +40,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
 
     public ProgressTicketImpl(String displayName, Cancellable cancellable) {
         handle = ProgressHandleFactory.createHandle(displayName, cancellable);
+        this.displayName = displayName;
     }
 
     /**
@@ -109,7 +111,16 @@ public final class ProgressTicketImpl implements ProgressTicket {
     public void setDisplayName(String newDisplayName) {
         if (handle != null) {
             handle.setDisplayName(newDisplayName);
+            this.displayName = displayName;
         }
+    }
+
+    /**
+     * Returns the current display name.
+     * @return the current task's display name
+     */
+    public String getDisplayName() {
+        return displayName;
     }
 
     /**

@@ -24,17 +24,14 @@ package org.gephi.io.exporter.preview;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.DefaultFontMapper;
-import com.itextpdf.text.pdf.FontMapper;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.geom.AffineTransform;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.gephi.io.exporter.spi.ByteExporter;
@@ -64,8 +61,7 @@ import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
-import sun.font.FontManager;
+import org.openide.util.NbBundle;
 
 /**
  * Class exporting the preview graph as a PDF file.
@@ -81,6 +77,7 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
     private boolean cancel = false;
     private PdfContentByte cb;
     private Document document;
+    private static boolean fontRegistered = false;
     //Parameters
     private float marginTop = 18f;
     private float marginBottom = 18f;
@@ -88,12 +85,9 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
     private float marginRight = 18f;
     private boolean landscape = false;
     private Rectangle pageSize = PageSize.A4;
-    private FontMapper fontMapper;
 
-    static {
-        //Required in Headless to not get NPE on FontManager.getFileNameForFontName()
-        GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        e.getAllFonts();
+    public PDFExporter() {
+        FontFactory.register("/org/gephi/io/exporter/preview/fonts/LiberationSans.ttf", "ArialMT");
     }
 
     public boolean execute() {
@@ -431,89 +425,50 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
      */
     private BaseFont genBaseFont(java.awt.Font font) throws DocumentException, IOException {
         if (font != null) {
-            try {
-                loadFont(font);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return BaseFont.createFont();
-            }
+            BaseFont baseFont = null;
+            if (!font.getFontName().equals(FontFactory.COURIER)
+                    && !font.getFontName().equals(FontFactory.COURIER_BOLD)
+                    && !font.getFontName().equals(FontFactory.COURIER_OBLIQUE)
+                    && !font.getFontName().equals(FontFactory.COURIER_BOLDOBLIQUE)
+                    && !font.getFontName().equals(FontFactory.HELVETICA)
+                    && !font.getFontName().equals(FontFactory.HELVETICA_BOLD)
+                    && !font.getFontName().equals(FontFactory.HELVETICA_BOLDOBLIQUE)
+                    && !font.getFontName().equals(FontFactory.HELVETICA_OBLIQUE)
+                    && !font.getFontName().equals(FontFactory.SYMBOL)
+                    && !font.getFontName().equals(FontFactory.TIMES_ROMAN)
+                    && !font.getFontName().equals(FontFactory.TIMES_BOLD)
+                    && !font.getFontName().equals(FontFactory.TIMES_ITALIC)
+                    && !font.getFontName().equals(FontFactory.TIMES_BOLDITALIC)
+                    && !font.getFontName().equals(FontFactory.ZAPFDINGBATS)
+                    && !font.getFontName().equals(FontFactory.COURIER_BOLD)
+                    && !font.getFontName().equals(FontFactory.COURIER_BOLD)
+                    && !font.getFontName().equals(FontFactory.COURIER_BOLD)) {
 
-            return fontMapper.awtToPdf(font);
-        }
-        return BaseFont.createFont();
-    }
+                com.itextpdf.text.Font itextFont = FontFactory.getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
+                baseFont = itextFont.getBaseFont();
+                if (baseFont == null && !PDFExporter.fontRegistered) {
 
-    private void loadFont(java.awt.Font font) throws Exception {
-        if (fontMapper == null) {
-            fontMapper = new DefaultFontMapper();
-        }
-        if (fontMapper instanceof DefaultFontMapper) {
-            if (Utilities.isMac()) {
-                String fontName = font.getName();
-                if (!((DefaultFontMapper) fontMapper).getMapper().containsKey(fontName)) {
-                    File homeLibraryFonts = new File(System.getProperty("user.home") + "/Library/Fonts");
-                    File systemLibraryFonts = new File("/System/Library/Fonts");
-                    File libraryFonts = new File("/Library/Fonts");
-                    File fontResult = lookFor(fontName, homeLibraryFonts);
-                    fontResult = fontResult != null ? fontResult : lookFor(fontName, systemLibraryFonts);
-                    fontResult = fontResult != null ? fontResult : lookFor(fontName, libraryFonts);
-                    if (fontResult != null) {
-                        fontName = fontResult.getName();
-                        String fontFilePath = fontResult.getAbsolutePath();
-                        loadFont(fontName, fontFilePath);
-                    }
+                    String displayName = progress.getDisplayName();
+                    Progress.setDisplayName(progress, NbBundle.getMessage(PDFExporter.class, "ExporterPDF.font.registration"));
+                    FontFactory.registerDirectories();
+                    Progress.setDisplayName(progress, displayName);
+
+                    itextFont = FontFactory.getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
+                    baseFont = itextFont.getBaseFont();
+
+                    PDFExporter.fontRegistered = true;
                 }
             } else {
-                String fontName = FontManager.getFileNameForFontName(font.getFontName());
-                if (!((DefaultFontMapper) fontMapper).getMapper().containsKey(fontName)) {
-                    String fontFilePath = FontManager.getFontPath(false);
-                    fontFilePath = fontFilePath + "/" + fontName;
-                    loadFont(fontName, fontFilePath);
-                }
+                com.itextpdf.text.Font itextFont = FontFactory.getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
+                baseFont = itextFont.getBaseFont();
             }
-        }
-    }
 
-    private void loadFont(String fontName, String fontFilePath) throws Exception {
-        if (fontName != null && !fontName.isEmpty()) {
-            fontName = fontName.toLowerCase();
-            if (fontFilePath != null && !fontFilePath.isEmpty()) {
-                if (fontName.endsWith(".ttf") || fontName.endsWith(".otf") || fontName.endsWith(".afm")) {
-                    Object allNames[] = BaseFont.getAllFontNames(fontFilePath, BaseFont.CP1252, null);
-                    ((DefaultFontMapper) fontMapper).insertNames(allNames, fontFilePath);
-                } else if (fontName.endsWith(".ttc")) {
-                    String ttcs[] = BaseFont.enumerateTTCNames(fontFilePath);
-                    for (int j = 0; j < ttcs.length; ++j) {
-                        String nt = fontFilePath + "," + j;
-                        Object allNames[] = BaseFont.getAllFontNames(nt, BaseFont.CP1252, null);
-                        ((DefaultFontMapper) fontMapper).insertNames(allNames, nt);
-                    }
-                }
+            if (baseFont != null) {
+                return baseFont;
             }
+            return BaseFont.createFont();
         }
-    }
-
-    private File lookFor(String fileName, File folder) {
-        if (!folder.isDirectory()) {
-            return null;
-        }
-        File lookFile = new File(folder, fileName + ".ttf");
-        if (lookFile.exists()) {
-            return lookFile;
-        }
-        lookFile = new File(folder, fileName + ".otf");
-        if (lookFile.exists()) {
-            return lookFile;
-        }
-        lookFile = new File(folder, fileName + ".ttc");
-        if (lookFile.exists()) {
-            return lookFile;
-        }
-        lookFile = new File(folder, fileName + ".afm");
-        if (lookFile.exists()) {
-            return lookFile;
-        }
-        return null;
+        return BaseFont.createFont();
     }
 
     /**
@@ -622,13 +577,5 @@ public class PDFExporter implements GraphRenderer, ByteExporter, VectorExporter,
 
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
-    }
-
-    public void setFontMapper(FontMapper fontMapper) {
-        this.fontMapper = fontMapper;
-    }
-
-    public FontMapper getFontMapper() {
-        return fontMapper;
     }
 }

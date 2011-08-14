@@ -60,6 +60,8 @@ public interface ProgressTicket {
      * @param newDisplayName the new display name
      */
     void setDisplayName(String newDisplayName);
+    
+    String getDisplayName();
 
     /**
      * Start the progress indication for indeterminate task.
