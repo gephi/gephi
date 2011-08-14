@@ -73,6 +73,12 @@ public class ImporterGML implements FileImporter, LongTask {
         tokenizer.ordinaryChar('[');
         tokenizer.ordinaryChar(']');
         tokenizer.wordChars('_', '_');
+        
+       
+        String allowed = "$%&!()*+,-^./:;<=>?@\\_`{|}~";
+        for (int i = 0; i < allowed.length(); i++)
+            tokenizer.wordChars(allowed.charAt(i), allowed.charAt(i));
+        
         list = parseList(tokenizer);
 
         boolean ret = false;
@@ -199,6 +205,7 @@ public class ImporterGML implements FileImporter, LongTask {
             } else if ("w".equals(key) && value instanceof Double) {
                 node.setSize(((Double) value).floatValue());
             } else if ("h".equals(key)) {
+            } else if ("d".equals(key)) { 
             } else if ("fill".equals(key)) {
                 int colorHex = -1;
                 if (value instanceof String) {
