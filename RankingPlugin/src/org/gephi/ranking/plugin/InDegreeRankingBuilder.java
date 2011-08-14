@@ -62,6 +62,18 @@ public class InDegreeRankingBuilder implements RankingBuilder {
         return null;
     }
 
+    @Override
+    public Ranking refreshRanking(Ranking ranking) {
+        if (ranking == null) {
+            throw new NullPointerException();
+        }
+        if (ranking instanceof InDegreeRanking) {
+            return ((InDegreeRanking) ranking).clone();
+        } else {
+            throw new IllegalArgumentException("Ranking must be an DegreeRanking");
+        }
+    }
+
     private static class InDegreeRanking extends AbstractRanking<Node> {
 
         private final DirectedGraph graph;
@@ -105,6 +117,11 @@ public class InDegreeRankingBuilder implements RankingBuilder {
                 AbstractRanking.refreshMinMax(this, graph);
             }
             return minimum;
+        }
+
+        @Override
+        protected InDegreeRanking clone() {
+            return new InDegreeRanking(elementType, graph);
         }
     }
 }

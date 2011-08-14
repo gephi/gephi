@@ -2,4 +2,4 @@ Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.ranking.plugin
 OpenIDE-Module-Localizing-Bundle: org/gephi/ranking/plugin/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.8
+OpenIDE-Module-Specification-Version: 0.8.1

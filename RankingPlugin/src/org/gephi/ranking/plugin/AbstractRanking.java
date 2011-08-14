@@ -41,7 +41,7 @@ import org.gephi.ranking.api.Ranking;
 public abstract class AbstractRanking<Element> implements Ranking<Element> {
 
     private final String name;
-    private final String elementType;
+    protected final String elementType;
     protected Number minimum;
     protected Number maximum;
 

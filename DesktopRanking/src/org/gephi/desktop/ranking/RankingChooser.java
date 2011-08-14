@@ -31,6 +31,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JPanel;
@@ -39,6 +40,7 @@ import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.RankingController;
 import org.gephi.ranking.api.Transformer;
 import org.gephi.ui.components.SplineEditor.SplineEditor;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -61,7 +63,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         NO_SELECTION = NbBundle.getMessage(RankingChooser.class, "RankingChooser.choose.text");
         this.controller = controller;
         initComponents();
-        initApply();
+        initControls();
 
         rankingItemListener = new ItemListener() {
 
@@ -96,6 +98,8 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
             remove(centerPanel);
         }
         applyButton.setVisible(false);
+        autoApplyButton.setVisible(false);
+        enableAutoButton.setVisible(false);
         splineButton.setVisible(false);
 
         if (model != null) {
@@ -118,16 +122,21 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         } else if (pce.getPropertyName().equals(RankingUIModel.CURRENT_RANKING)
                 || pce.getPropertyName().equals(RankingUIModel.CURRENT_TRANSFORMER)) {
 
-            Ranking selectedRanking = model.getCurrentRanking();
+            final Ranking selectedRanking = model.getCurrentRanking();
             //CenterPanel
             if (centerPanel != null) {
                 remove(centerPanel);
             }
             applyButton.setVisible(false);
+            autoApplyButton.setVisible(false);
+            enableAutoButton.setVisible(false);
             splineButton.setVisible(false);
 
             if (selectedRanking != null) {
                 refreshTransformerPanel(selectedRanking);
+                if (rankingComboBox.getSelectedItem() != selectedRanking) {
+                    refreshCombo();
+                }
             }
 
             revalidate();
@@ -139,6 +148,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
 
     private void refreshTransformerPanel(Ranking selectedRanking) {
         Transformer transformer = model.getCurrentTransformer();
+        boolean autoTransformer = model.isAutoTransformer(transformer);
         TransformerUI transformerUI = controller.getUI(transformer);
         if (!Double.isNaN(selectedRanking.getMinimumValue().doubleValue())
                 && !Double.isNaN(selectedRanking.getMaximumValue().doubleValue())
@@ -151,8 +161,17 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         centerPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5), BorderFactory.createEtchedBorder()));
         centerPanel.setOpaque(false);
         add(centerPanel, BorderLayout.CENTER);
-        applyButton.setVisible(true);
         splineButton.setVisible(true);
+        if (autoTransformer) {
+            autoApplyButton.setVisible(true);
+            enableAutoButton.setSelected(true);
+            setAutoApplySelected(true);
+            autoApplyButton.setSelected(true);
+        } else {
+            applyButton.setVisible(true);
+            enableAutoButton.setSelected(false);
+        }
+        enableAutoButton.setVisible(true);
     }
 
     private Ranking refreshCombo() {
@@ -179,7 +198,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         return selectedRanking;
     }
 
-    private void initApply() {
+    private void initControls() {
         applyButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -209,6 +228,30 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
                 interpolator = splineEditor.getCurrentInterpolator();
             }
         });
+        autoApplyButton.setVisible(false);
+        enableAutoButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent ae) {
+                if (enableAutoButton.isSelected()) {
+                    autoApplyButton.setVisible(true);
+                    setAutoApplySelected(false);
+                    autoApplyButton.setSelected(false);
+                    applyButton.setVisible(false);
+                } else {
+                    autoApplyButton.setVisible(false);
+                    applyButton.setVisible(true);
+                    model.setAutoTransformer(model.getCurrentTransformer(), false);
+                }
+
+            }
+        });
+        autoApplyButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent ae) {
+                model.setAutoTransformer(model.getCurrentTransformer(), autoApplyButton.isSelected());
+                setAutoApplySelected(autoApplyButton.isSelected());
+            }
+        });
     }
 
     @Override
@@ -216,6 +259,18 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         applyButton.setEnabled(enabled);
         rankingComboBox.setEnabled(enabled);
         splineButton.setEnabled(enabled);
+        autoApplyButton.setEnabled(enabled);
+        autoApplyToolbar.setEnabled(enabled);
+    }
+
+    private void setAutoApplySelected(boolean selected) {
+        if (!selected) {
+            autoApplyButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/ranking/resources/apply.gif", false));
+            autoApplyButton.setToolTipText(NbBundle.getMessage(RankingChooser.class, "RankingChooser.autoApplyButton.toolTipText"));
+        } else {
+            autoApplyButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/layout/resources/stop.png", false));
+            autoApplyButton.setToolTipText(NbBundle.getMessage(RankingChooser.class, "RankingChooser.autoApplyButton.stop.toolTipText"));
+        }
     }
 
     /** This method is called from within the constructor to
@@ -233,6 +288,9 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         controlPanel = new javax.swing.JPanel();
         applyButton = new javax.swing.JButton();
         splineButton = new org.jdesktop.swingx.JXHyperlink();
+        autoApplyButton = new javax.swing.JToggleButton();
+        autoApplyToolbar = new javax.swing.JToolBar();
+        enableAutoButton = new javax.swing.JToggleButton();
 
         setOpaque(false);
         setLayout(new java.awt.BorderLayout());
@@ -260,11 +318,10 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         applyButton.setToolTipText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.applyButton.toolTipText")); // NOI18N
         applyButton.setMargin(new java.awt.Insets(0, 14, 0, 14));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 3, 5);
+        gridBagConstraints.insets = new java.awt.Insets(0, 18, 3, 5);
         controlPanel.add(applyButton, gridBagConstraints);
 
         splineButton.setClickedColor(new java.awt.Color(0, 51, 255));
@@ -277,12 +334,48 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
         controlPanel.add(splineButton, gridBagConstraints);
 
+        autoApplyButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/ranking/resources/apply.gif"))); // NOI18N
+        autoApplyButton.setText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.autoApplyButton.text")); // NOI18N
+        autoApplyButton.setToolTipText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.autoApplyButton.toolTipText")); // NOI18N
+        autoApplyButton.setFocusable(false);
+        autoApplyButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        autoApplyButton.setMargin(new java.awt.Insets(0, 7, 0, 7));
+        autoApplyButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 3, 3, 5);
+        controlPanel.add(autoApplyButton, gridBagConstraints);
+
+        autoApplyToolbar.setFloatable(false);
+        autoApplyToolbar.setRollover(true);
+        autoApplyToolbar.setOpaque(false);
+
+        enableAutoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/ranking/resources/chain.png"))); // NOI18N
+        enableAutoButton.setToolTipText(org.openide.util.NbBundle.getMessage(RankingChooser.class, "RankingChooser.enableAutoButton.toolTipText")); // NOI18N
+        enableAutoButton.setFocusable(false);
+        enableAutoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        enableAutoButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        autoApplyToolbar.add(Box.createHorizontalGlue());
+        autoApplyToolbar.add(enableAutoButton);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        controlPanel.add(autoApplyToolbar, gridBagConstraints);
+
         add(controlPanel, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
+    private javax.swing.JToggleButton autoApplyButton;
+    private javax.swing.JToolBar autoApplyToolbar;
     private javax.swing.JPanel chooserPanel;
     private javax.swing.JPanel controlPanel;
+    private javax.swing.JToggleButton enableAutoButton;
     private javax.swing.JComboBox rankingComboBox;
     private org.jdesktop.swingx.JXHyperlink splineButton;
     // End of variables declaration//GEN-END:variables

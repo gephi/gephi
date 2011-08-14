@@ -33,12 +33,15 @@ import java.util.MissingResourceException;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
+import javax.swing.Icon;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.gephi.ranking.api.Transformer;
+import org.gephi.ui.components.DecoratedIcon;
+import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 
 /**
@@ -90,6 +93,10 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
                 || pce.getPropertyName().equals(RankingUIModel.CURRENT_ELEMENT_TYPE)) {
             refreshTransformers();
         }
+        if (pce.getPropertyName().equalsIgnoreCase(RankingUIModel.START_AUTO_TRANSFORMER)
+                || pce.getPropertyName().equalsIgnoreCase(RankingUIModel.STOP_AUTO_TRANSFORMER)) {
+            refreshDecoratedIcons();
+        }
     }
 
     private void refreshTransformers() {
@@ -110,6 +117,24 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
             }
             index++;
         }
+    }
+
+    private void refreshDecoratedIcons() {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                int index = 0;
+                for (String elmtType : controller.getElementTypes()) {
+                    ButtonGroup g = buttonGroups.get(index++);
+                    boolean active = model == null ? false : model.getCurrentElementType().equals(elmtType);
+                    if (active) {
+                        for (Enumeration<AbstractButton> btns = g.getElements(); btns.hasMoreElements();) {
+                            btns.nextElement().repaint();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private void refreshSelectedElmntGroup(String selected) {
@@ -142,7 +167,9 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
                     TransformerUI u = controller.getUI(t);
                     if (u != null) {
                         //Build button
-                        JToggleButton btn = new JToggleButton(u.getIcon());
+                        Icon icon = u.getIcon();
+                        DecoratedIcon decoratedIcon = getDecoratedIcon(icon, t);
+                        JToggleButton btn = new JToggleButton(decoratedIcon);
                         btn.setToolTipText(u.getDisplayName());
                         btn.addActionListener(new ActionListener() {
 
@@ -209,4 +236,14 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
     }
     private javax.swing.JLabel box;
     private javax.swing.ButtonGroup elementGroup;
+
+    private DecoratedIcon getDecoratedIcon(Icon icon, final Transformer transformer) {
+        Icon decoration = ImageUtilities.image2Icon(ImageUtilities.loadImage("org/gephi/desktop/ranking/resources/chain.png", false));
+        return new DecoratedIcon(icon, decoration, new DecoratedIcon.DecorationController() {
+
+            public boolean isDecorated() {
+                return model.isAutoTransformer(transformer);
+            }
+        });
+    }
 }

@@ -31,6 +31,8 @@ package org.gephi.ranking.api;
  * to get the newly created rankings</li>
  * <li><b>APPLY_TRANSFORMER:</b> A transformer has just been applied. The listeners
  * can retried the transformer and ranking directly from the event.</li>
+ * <li><b>START_AUTO_TRANSFORM:</b> A auto transformer has just been started.</li>
+ * <li><b>STOP_AUTO_TRANSFORM:</b> A auto transformer has just been stopped.</li>
  * </ul>
  * 
  * @see RankingListener
@@ -45,11 +47,13 @@ public interface RankingEvent {
      * to get the newly created rankings</li>
      * <li><b>APPLY_TRANSFORMER:</b> A transformer has just been applied. The listeners
      * can retried the transformer and ranking directly from the event.</li>
+     * <li><b>START_AUTO_TRANSFORM:</b> A auto transformer has just been started.</li>
+     * <li><b>STOP_AUTO_TRANSFORM:</b> A auto transformer has just been stopped.</li>
      * </ul>
      */
     public enum EventType {
 
-        REFRESH_RANKING, APPLY_TRANSFORMER
+        REFRESH_RANKING, APPLY_TRANSFORMER, START_AUTO_TRANSFORM, STOP_AUTO_TRANSFORM
     };
 
     /**

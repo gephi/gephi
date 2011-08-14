@@ -62,6 +62,18 @@ public class OutDegreeRankingBuilder implements RankingBuilder {
         return null;
     }
 
+    @Override
+    public Ranking refreshRanking(Ranking ranking) {
+        if (ranking == null) {
+            throw new NullPointerException();
+        }
+        if (ranking instanceof OutDegreeRanking) {
+            return ((OutDegreeRanking) ranking).clone();
+        } else {
+            throw new IllegalArgumentException("Ranking must be an DegreeRanking");
+        }
+    }
+
     private static class OutDegreeRanking extends AbstractRanking<Node> {
 
         private final DirectedGraph graph;
@@ -105,6 +117,11 @@ public class OutDegreeRankingBuilder implements RankingBuilder {
                 AbstractRanking.refreshMinMax(this, graph);
             }
             return minimum;
+        }
+
+        @Override
+        protected OutDegreeRanking clone() {
+            return new OutDegreeRanking(elementType, graph);
         }
     }
 }

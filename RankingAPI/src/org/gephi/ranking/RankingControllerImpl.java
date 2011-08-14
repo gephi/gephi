@@ -33,7 +33,6 @@ import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.RankingController;
 import org.gephi.ranking.api.RankingEvent;
 import org.gephi.ranking.api.RankingModel;
-import org.gephi.ranking.spi.RankingBuilder;
 import org.gephi.ranking.api.Transformer;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -48,10 +47,8 @@ public class RankingControllerImpl implements RankingController {
 
     private final GraphController graphController;
     private RankingModelImpl model;
-    private RankingBuilder[] rankingBuilders;
 
     public RankingControllerImpl() {
-        rankingBuilders = Lookup.getDefault().lookupAll(RankingBuilder.class).toArray(new RankingBuilder[0]);
         graphController = Lookup.getDefault().lookup(GraphController.class);
 
         //Workspace events
@@ -106,7 +103,7 @@ public class RankingControllerImpl implements RankingController {
     }
 
     public void setInterpolator(Interpolator interpolator) {
-        if(model != null) {
+        if (model != null) {
             model.setInterpolator(interpolator);
         }
     }
@@ -143,8 +140,23 @@ public class RankingControllerImpl implements RankingController {
                 }
             }
         }
-        
+
         //Send Event
         model.fireRankingListener(new RankingEventImpl(RankingEvent.EventType.APPLY_TRANSFORMER, model, ranking, transformer));
+    }
+
+    public void startAutoTransform(Ranking ranking, Transformer transformer) {
+        model.addAutoRanking(ranking, transformer);
+
+        //Send Event
+        model.fireRankingListener(new RankingEventImpl(RankingEvent.EventType.START_AUTO_TRANSFORM, model, ranking, transformer));
+    }
+
+    public void stopAutoTransform(Transformer transformer) {
+        Ranking ranking = model.getAutoTransformerRanking(transformer);
+        model.removeAutoRanking(transformer);
+
+        //Send Event
+        model.fireRankingListener(new RankingEventImpl(RankingEvent.EventType.STOP_AUTO_TRANSFORM, model, ranking, transformer));
     }
 }

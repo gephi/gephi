@@ -41,4 +41,12 @@ public interface RankingBuilder {
      * @return an array of rankings
      */
     public Ranking[] buildRanking(RankingModel model);
+    
+    /**
+     * Return a new instance of the same ranking, but with refresh minimum and
+     * maximum value.
+     * @param ranking the ranking to refresh
+     * @return a new instance of the same ranking, but refreshed
+     */
+    public Ranking refreshRanking(Ranking ranking);
 }

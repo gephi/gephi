@@ -111,7 +111,7 @@ public interface Ranking<Element> {
 
     /**
      * Returns the name of this ranking. It should be unique.
-     * @return the display name of this ranking
+     * @return the name of this ranking
      */
     public String getName();
 

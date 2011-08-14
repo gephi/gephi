@@ -27,11 +27,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
 import org.gephi.ranking.api.Ranking;
+import org.gephi.ranking.api.RankingController;
 import org.gephi.ranking.api.RankingEvent;
 import org.gephi.ranking.api.RankingListener;
 import org.gephi.ranking.api.RankingModel;
@@ -53,6 +50,8 @@ public class RankingUIModel implements RankingListener {
     public static final String CURRENT_ELEMENT_TYPE = "currentElementType";
     public static final String RANKINGS = "rankings";
     public static final String APPLY_TRANSFORMER = "applyTransformer";
+    public static final String START_AUTO_TRANSFORMER = "startAutoTransformer";
+    public static final String STOP_AUTO_TRANSFORMER = "stopAutoTransformer";
     //Current model
     protected final Map<String, LinkedHashMap<String, Transformer>> transformers;
     protected String currentElementType;
@@ -64,7 +63,7 @@ public class RankingUIModel implements RankingListener {
     private final List<PropertyChangeListener> listeners;
     private RankingUIController controller;
     private final RankingModel model;
-
+    
     public RankingUIModel(RankingUIController rankingUIController, RankingModel rankingModel) {
         transformers = new HashMap<String, LinkedHashMap<String, Transformer>>();
         listeners = new ArrayList<PropertyChangeListener>();
@@ -74,17 +73,17 @@ public class RankingUIModel implements RankingListener {
         controller = rankingUIController;
         currentElementType = Ranking.NODE_ELEMENT;
         listVisible = false;
-
+        
         initTransformers();
 
         //Set default transformer - the first
         for (String elementType : controller.getElementTypes()) {
             currentTransformer.put(elementType, getTransformers(elementType)[0]);
         }
-
+        
         model.addRankingListener(this);
     }
-
+    
     public void rankingChanged(RankingEvent event) {
         if (event.is(RankingEvent.EventType.REFRESH_RANKING)) {
             firePropertyChangeEvent(RANKINGS, null, null);
@@ -92,16 +91,19 @@ public class RankingUIModel implements RankingListener {
             firePropertyChangeEvent(APPLY_TRANSFORMER, null, null);
         }
     }
-
+    
     public void setCurrentTransformer(Transformer transformer) {
         if (currentTransformer.get(currentElementType) == transformer) {
             return;
         }
         Transformer oldValue = currentTransformer.get(currentElementType);
         currentTransformer.put(currentElementType, transformer);
+        if (model.getAutoTransformerRanking(transformer) != null) {
+            setCurrentRanking(model.getAutoTransformerRanking(transformer));
+        }
         firePropertyChangeEvent(CURRENT_TRANSFORMER, oldValue, transformer);
     }
-
+    
     public void setCurrentRanking(Ranking ranking) {
         if ((currentRanking.get(currentElementType) == null && ranking == null)
                 || (currentRanking.get(currentElementType) != null && currentRanking.get(currentElementType) == ranking)) {
@@ -111,7 +113,7 @@ public class RankingUIModel implements RankingListener {
         currentRanking.put(currentElementType, ranking);
         firePropertyChangeEvent(CURRENT_RANKING, oldValue, ranking);
     }
-
+    
     public void setListVisible(boolean listVisible) {
         if (this.listVisible == listVisible) {
             return;
@@ -120,7 +122,7 @@ public class RankingUIModel implements RankingListener {
         this.listVisible = listVisible;
         firePropertyChangeEvent(LIST_VISIBLE, oldValue, listVisible);
     }
-
+    
     public void setBarChartVisible(boolean barChartVisible) {
         if (this.barChartVisible == barChartVisible) {
             return;
@@ -129,7 +131,7 @@ public class RankingUIModel implements RankingListener {
         this.barChartVisible = barChartVisible;
         firePropertyChangeEvent(BARCHART_VISIBLE, oldValue, barChartVisible);
     }
-
+    
     public void setCurrentElementType(String elementType) {
         if (this.currentElementType.equals(elementType)) {
             return;
@@ -138,31 +140,31 @@ public class RankingUIModel implements RankingListener {
         this.currentElementType = elementType;
         firePropertyChangeEvent(CURRENT_ELEMENT_TYPE, oldValue, elementType);
     }
-
+    
     public Ranking getCurrentRanking() {
         return currentRanking.get(currentElementType);
     }
-
+    
     public Transformer getCurrentTransformer() {
         return currentTransformer.get(currentElementType);
     }
-
+    
     public Transformer getCurrentTransformer(String elementType) {
         return currentTransformer.get(elementType);
     }
-
+    
     public String getCurrentElementType() {
         return currentElementType;
     }
-
+    
     public boolean isBarChartVisible() {
         return barChartVisible;
     }
-
+    
     public boolean isListVisible() {
         return listVisible;
     }
-
+    
     public Ranking[] getRankings(String elmType) {
         Ranking[] rankings = model.getRankings(elmType);
         Ranking current = getCurrentRanking();
@@ -177,17 +179,32 @@ public class RankingUIModel implements RankingListener {
         }
         return rankings;
     }
-
+    
     public Ranking[] getRankings() {
         return getRankings(currentElementType);
     }
-
+    
+    public boolean isAutoTransformer(Transformer transformer) {
+        return model.getAutoTransformerRanking(transformer) != null;
+    }
+    
+    public void setAutoTransformer(Transformer transformer, boolean enable) {
+        RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
+        if (enable) {
+            rankingController.startAutoTransform(getCurrentRanking(), transformer);
+            firePropertyChangeEvent(START_AUTO_TRANSFORMER, null, transformer);
+        } else {
+            rankingController.stopAutoTransform(transformer);
+            firePropertyChangeEvent(STOP_AUTO_TRANSFORMER, null, transformer);
+        }
+    }
+    
     private void initTransformers() {
         for (String elementType : controller.getElementTypes()) {
             LinkedHashMap<String, Transformer> elmtTransformers = new LinkedHashMap<String, Transformer>();
             transformers.put(elementType, elmtTransformers);
         }
-
+        
         for (TransformerBuilder builder : Lookup.getDefault().lookupAll(TransformerBuilder.class)) {
             for (String elementType : controller.getElementTypes()) {
                 Map<String, Transformer> elmtTransformers = transformers.get(elementType);
@@ -197,25 +214,25 @@ public class RankingUIModel implements RankingListener {
             }
         }
     }
-
+    
     public Transformer[] getTransformers(String elementType) {
         return transformers.get(elementType).values().toArray(new Transformer[0]);
     }
-
+    
     public Transformer[] getTransformers() {
         return getTransformers(currentElementType);
     }
-
+    
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
-
+    
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         listeners.remove(listener);
     }
-
+    
     private void firePropertyChangeEvent(String propertyName, Object beforeValue, Object afterValue) {
         PropertyChangeEvent event = new PropertyChangeEvent(this, propertyName, beforeValue, afterValue);
         for (PropertyChangeListener listener : listeners) {

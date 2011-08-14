@@ -50,22 +50,30 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
 
     private final Workspace workspace;
     private final List<RankingListener> listeners;
+    private final List<AutoRanking> autoRankings;
+    private final RankingAutoTransformer autoTransformer;
     private Interpolator interpolator;
 
     public RankingModelImpl(Workspace workspace) {
         this.workspace = workspace;
         this.listeners = Collections.synchronizedList(new ArrayList<RankingListener>());
+        this.autoRankings = Collections.synchronizedList(new ArrayList<AutoRanking>());
         this.interpolator = Interpolator.LINEAR;
+        this.autoTransformer = new RankingAutoTransformer(this);
     }
 
     public void select() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
         attributeController.getModel(workspace).addAttributeListener(this);
+        if (!autoRankings.isEmpty()) {
+            autoTransformer.start();
+        }
     }
 
     public void unselect() {
         AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
         attributeController.getModel(workspace).removeAttributeListener(this);
+        autoTransformer.stop();
     }
     private Timer refreshTimer; //hack
 
@@ -157,6 +165,37 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
         this.interpolator = interpolator;
     }
 
+    public void addAutoRanking(Ranking ranking, Transformer transformer) {
+        AutoRanking autoRanking = new AutoRanking(ranking, transformer);
+        removeAutoRanking(transformer);
+        autoRankings.add(autoRanking);
+        autoTransformer.start();
+    }
+
+    public void removeAutoRanking(Transformer transformer) {
+        for (AutoRanking r : autoRankings.toArray(new AutoRanking[0])) {
+            if (r.getTransformer().equals(transformer)) {
+                autoRankings.remove(r);
+            }
+        }
+        if (autoRankings.isEmpty()) {
+            autoTransformer.stop();
+        }
+    }
+
+    public Ranking getAutoTransformerRanking(Transformer transformer) {
+        for (AutoRanking autoRanking : autoRankings) {
+            if (autoRanking.getTransformer().equals(transformer)) {
+                return autoRanking.getRanking();
+            }
+        }
+        return null;
+    }
+
+    public List<AutoRanking> getAutoRankings() {
+        return autoRankings;
+    }
+
     public void addRankingListener(RankingListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
@@ -170,6 +209,45 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
     public void fireRankingListener(RankingEvent rankingEvent) {
         for (RankingListener listener : listeners) {
             listener.rankingChanged(rankingEvent);
+        }
+    }
+
+    public class AutoRanking {
+
+        private final RankingBuilder builder;
+        private final Ranking ranking;
+        private final Transformer transformer;
+
+        public AutoRanking(Ranking ranking, Transformer transformer) {
+            this.ranking = ranking;
+            this.transformer = transformer;
+            this.builder = getBuilder(ranking);
+        }
+
+        public Ranking getRanking() {
+            if (builder != null) {
+                return builder.refreshRanking(ranking);
+            }
+            return ranking;
+        }
+
+        public Transformer getTransformer() {
+            return transformer;
+        }
+
+        private RankingBuilder getBuilder(Ranking ranking) {
+            Collection<? extends RankingBuilder> builders = Lookup.getDefault().lookupAll(RankingBuilder.class);
+            for (RankingBuilder b : builders) {
+                Ranking[] builtRankings = b.buildRanking(RankingModelImpl.this);
+                if (builtRankings != null) {
+                    for (Ranking r : builtRankings) {
+                        if (r.getElementType().equals(ranking.getElementType()) && r.getName().equals(ranking.getName())) {
+                            return b;
+                        }
+                    }
+                }
+            }
+            return null;
         }
     }
 }

@@ -77,7 +77,7 @@ public interface RankingModel {
      * @return the found ranking or <code>null</code> if not found
      */
     public Ranking getRanking(String elementType, String name);
-    
+
     /**
      * Return all transformers specific to <code>elementType</code>. A transformer
      * defines his ability to transformer different element types. 
@@ -85,7 +85,7 @@ public interface RankingModel {
      * @return all transformers working with <code>elementType</code>
      */
     public Transformer[] getTransformers(String elementType);
-    
+
     /**
      * Returns the specific transformer for <code>elementType</code> and with the
      * given <code>name</code>. Returns <code>null</code> if not found.
@@ -96,7 +96,7 @@ public interface RankingModel {
      * @return 
      */
     public Transformer getTransformer(String elementType, String name);
-    
+
     /**
      * Returns the current interpolator. The default interpolator is a simple
      * linear interpolation.
@@ -109,6 +109,14 @@ public interface RankingModel {
      * @return the workspace of this model
      */
     public Workspace getWorkspace();
+
+    /**
+     * If <code>transformer</code> is an auto transformer, returns the ranking
+     * associated to it. 
+     * @param transformer the transformer to obtain the ranking from
+     * @return the ranking associated to <code>transformer</code> or <code>null</code>
+     */
+    public Ranking getAutoTransformerRanking(Transformer transformer);
 
     /**
      * Add <code>listener</code> as a ranking listener of this model
