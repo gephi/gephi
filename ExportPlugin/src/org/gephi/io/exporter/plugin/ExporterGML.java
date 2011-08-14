@@ -55,7 +55,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportNodeSize = true;
     private boolean exportEdgeSize = true;
     private boolean exportColor = true;
-    private boolean exportNotRecognizedElements = false;
+    private boolean exportNotRecognizedElements = true;
     //data to normalize
     private boolean normalize = false;
     double minX, maxX;

@@ -75,7 +75,7 @@ public class UIExporterGML implements ExporterUI {
         private boolean exportNodeSize = true;
         private boolean exportEdgeSize = true;
         private boolean exportColor = true;
-        private boolean exportNotRecognizedElements = false;
+        private boolean exportNotRecognizedElements = true;
         private boolean normalize = false;
         private int spaces = 2;
 

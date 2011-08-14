@@ -109,12 +109,15 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="exportNotRecognizedCheckBox">
       <Properties>
-        <Property name="label" type="java.lang.String" value="Other"/>
+        <Property name="text" type="java.lang.String" value="Attributes"/>
       </Properties>
       <AccessibilityProperties>
         <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="&#xa;" noResource="true"/>
         <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value=""/>
       </AccessibilityProperties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportNotRecognizedCheckBoxActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JCheckBox" name="normalizeCheckBox">
       <Properties>

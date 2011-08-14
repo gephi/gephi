@@ -92,7 +92,12 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
 
         exportEdgeWeightCheckBox.setText(org.openide.util.NbBundle.getMessage(UIExporterGMLPanel.class, "edgeWeightLabel.text")); // NOI18N
 
-        exportNotRecognizedCheckBox.setLabel("Other");
+        exportNotRecognizedCheckBox.setText("Attributes");
+        exportNotRecognizedCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportNotRecognizedCheckBoxActionPerformed(evt);
+            }
+        });
 
         normalizeCheckBox.setLabel(org.openide.util.NbBundle.getMessage(UIExporterGMLPanel.class, "normalizeLabel.text")); // NOI18N
 
@@ -157,6 +162,11 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
         exportNotRecognizedCheckBox.getAccessibleContext().setAccessibleDescription("");
         spacesTextField.getAccessibleContext().setAccessibleName("Indentation");
     }// </editor-fold>//GEN-END:initComponents
+
+private void exportNotRecognizedCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportNotRecognizedCheckBoxActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_exportNotRecognizedCheckBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox exportColorsCheckBox;
     private javax.swing.JCheckBox exportEdgeWeightCheckBox;
