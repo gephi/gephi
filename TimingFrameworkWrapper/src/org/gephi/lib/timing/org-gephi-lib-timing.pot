@@ -16,25 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "OpenIDE-Module-Long-Description"
-msgstr "Vector exporters implementations"
+msgstr "The library for making Java animation and timing-based control easier."
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Vector exporters implementations"
-
-msgid "ExporterPDF_name"
-msgstr "PDF"
-
-msgid "fileType_PDF_Name"
-msgstr "PDF Files"
-
-msgid "fileType_SVG_Name"
-msgstr "SVG Files"
-
-msgid "ExporterSVG_name"
-msgstr "SVG"
-
-msgid "fileType_PNG_Name"
-msgstr "PNG Files"
-
-msgid "ExporterPDF.font.registration"
-msgstr "Registering system fonts"
+msgstr "Wrapper for the TimingFramework library"

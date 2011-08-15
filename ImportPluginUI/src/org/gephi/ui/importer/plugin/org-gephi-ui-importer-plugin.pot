@@ -27,6 +27,9 @@ msgstr "Configuration:"
 msgid "EdgeListPanel.hostLabel.text"
 msgstr "Host:"
 
+msgid "EdgeListPanel.fileLabel.text"
+msgstr "File:"
+
 msgid "EdgeListPanel.portLabel.text"
 msgstr "Port:"
 
@@ -97,6 +100,12 @@ msgstr ""
 "\"target\". Columns \"label\", \"x\", \"y\" and \"size\" for nodes and "
 "\"label\" and \"weight\" for edges are optionnal."
 
+msgid "EdgeListPanel.sqliteFileChooser.title"
+msgstr "Database file"
+
+msgid "EdgeListPanel.sqliteFileChooser.filefilter"
+msgstr "SQLite database"
+
 msgid "ImporterVnaUI.displayName"
 msgstr "VNA import"
 
@@ -108,3 +117,6 @@ msgstr "Line width increases with a square root of its value."
 
 msgid "ImporterVnaUI.message.logarithmic"
 msgstr "Line width increases logarithmically with its value."
+
+msgid "EdgeListPanel.browseButton.text"
+msgstr "Browse"

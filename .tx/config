@@ -66,6 +66,11 @@ file_filter = UIComponents\src\org\gephi\ui\components\<lang>.po
 source_file = UIComponents\src\org\gephi\ui\components\org-gephi-ui-components.pot
 source_lang = en
 
+[gephi.org-gephi-lib-timing]
+file_filter = TimingFrameworkWrapper\src\org\gephi\lib\timing\<lang>.po
+source_file = TimingFrameworkWrapper\src\org\gephi\lib\timing\org-gephi-lib-timing.pot
+source_lang = en
+
 [gephi.org-gephi-ui-tools-plugin]
 file_filter = ToolsPlugin\src\org\gephi\ui\tools\plugin\<lang>.po
 source_file = ToolsPlugin\src\org\gephi\ui\tools\plugin\org-gephi-ui-tools-plugin.pot

@@ -24,6 +24,9 @@ msgstr "GDF"
 msgid "UIExporterGEXF.name"
 msgstr "GEXF"
 
+msgid "UIExporterGML.name"
+msgstr "GML"
+
 msgid "UIExporterGraphML.name"
 msgstr "GraphML"
 
@@ -34,7 +37,7 @@ msgid "UIExporterPajek.name"
 msgstr "Pajek"
 
 msgid "UIExporterDL.name"
-msgstr "Exporter DL"
+msgstr "DL"
 
 msgid "UIExporterGDFPanel.jRadioButton1.text"
 msgstr "Simple quotes"
@@ -158,3 +161,33 @@ msgstr "Position (x,y)"
 
 msgid "UIExporterPajekPanel.edgeWeightCheckbox.text"
 msgstr "Edge weights"
+
+msgid "UIExporterGML.attributes.text"
+msgstr "Attributes"
+
+msgid "UIExporterGML.exportLabel.text"
+msgstr "Export:"
+
+msgid "UIExporterGML.positionLabel.text"
+msgstr "Position (x, y)"
+
+msgid "UIExporterGML.colorsLabel.text"
+msgstr "Colors"
+
+msgid "UIExporterGML.sizeLabel.text"
+msgstr "Size"
+
+msgid "UIExporterGML.edgeWeightLabel.text"
+msgstr "Edge weight"
+
+msgid "UIExporterGML.labelLabel.text"
+msgstr "Label"
+
+msgid "UIExporterGML.normalize.text"
+msgstr "Normalize"
+
+msgid "UIExporterGML.normalizeHintLabel.text"
+msgstr "Scale position and size between 0 and 1"
+
+msgid "UIExporterGML.indentationLabel.text"
+msgstr "Indentation:"

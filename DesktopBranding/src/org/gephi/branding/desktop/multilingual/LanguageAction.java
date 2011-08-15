@@ -144,16 +144,16 @@ public final class LanguageAction extends CallableSystemAction {
         File confFile = new File(etc, APPNAME + ".conf");
         StringBuilder outputBuilder = new StringBuilder();
         
-        String matchOptionsLIne = "default_options=";
+        String matchOptionsLine = "default_options=";
 
         //In
         BufferedReader reader = new BufferedReader(new FileReader(confFile));
         String strLine;
         while ((strLine = reader.readLine()) != null) {
-            if (strLine.indexOf(matchOptionsLIne) != -1) {
+            if (strLine.indexOf(matchOptionsLine) != -1) {
                 //Remove old language and country:
-                strLine = strLine.replaceFirst(" -J-Duser\\.language=..", "");
-                strLine = strLine.replaceFirst(" -J-Duser\\.country=..", "");
+                strLine = strLine.replaceAll(" -J-Duser\\.language=..", "");
+                strLine = strLine.replaceAll(" -J-Duser\\.country=..", "");
                 
                 //Get string up to closing '"':
                 strLine=strLine.substring(0, strLine.lastIndexOf("\""));

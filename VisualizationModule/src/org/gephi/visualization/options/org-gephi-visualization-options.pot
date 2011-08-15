@@ -99,17 +99,11 @@ msgstr "FPS (Frames Per Second)"
 msgid "OpenGLPanel.jXTitledSeparator3.title"
 msgstr "Lighting"
 
-msgid "OpenGLPanel.labelAmbiant.text"
-msgstr "Ambiant:"
-
 msgid "OpenGLPanel.ambientDiffuseColorButton.text"
 msgstr "Diffuse"
 
 msgid "OpenGLPanel.ambientSpecularColorButton.text"
 msgstr "Specular"
-
-msgid "OpenGLPanel.ambientAmbiantColorButton.text"
-msgstr "Ambiant"
 
 msgid "OpenGLPanel.light1Checkbox.text"
 msgstr "1"
@@ -119,9 +113,6 @@ msgstr "2"
 
 msgid "OpenGLPanel.light3Checkbox.text"
 msgstr "3"
-
-msgid "OpenGLPanel.light1AmbiantColorButton.text"
-msgstr "Ambiant"
 
 msgid "OpenGLPanel.light1DiffuseColorButton.text"
 msgstr "Diffuse"
@@ -134,9 +125,6 @@ msgstr "Diffuse"
 
 msgid "OpenGLPanel.light2SpecularColorButton.text"
 msgstr "Specular"
-
-msgid "OpenGLPanel.light3AmbiantColorButton.text"
-msgstr "Ambiant"
 
 msgid "OpenGLPanel.light3DiffuseColorButton.text"
 msgstr "Diffuse"
@@ -174,9 +162,6 @@ msgstr "Y"
 msgid "OpenGLPanel.jLabel7.text"
 msgstr "X"
 
-msgid "OpenGLPanel.light2AmbiantColorButton.text"
-msgstr "Ambiant"
-
 msgid "OpenGLPanel.resetButton.text"
 msgstr "Reset Default"
 
@@ -185,3 +170,18 @@ msgstr "Reset defaults"
 
 msgid "OpenGLPanel.jLabel10.text"
 msgstr "Lighting settings have effect only in 3d mode"
+
+msgid "OpenGLPanel.ambientAmbientColorButton.text"
+msgstr "Ambient"
+
+msgid "OpenGLPanel.light1AmbientColorButton.text"
+msgstr "Ambient"
+
+msgid "OpenGLPanel.light2AmbientColorButton.text"
+msgstr "Ambient"
+
+msgid "OpenGLPanel.light3AmbientColorButton.text"
+msgstr "Ambient"
+
+msgid "OpenGLPanel.labelAmbient.text"
+msgstr "Ambient:"

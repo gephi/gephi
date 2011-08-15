@@ -85,3 +85,15 @@ msgstr "---Choose a rank parameter"
 
 msgid "RankingChooser.splineEditor.title"
 msgstr "Interpolate"
+
+msgid "RankingChooser.autoApplyButton.text"
+msgstr "Auto Apply"
+
+msgid "RankingChooser.autoApplyButton.toolTipText"
+msgstr "Apply continuously even when the values changes"
+
+msgid "RankingChooser.autoApplyButton.stop.toolTipText"
+msgstr "Stop applying this transformation"
+
+msgid "RankingChooser.enableAutoButton.toolTipText"
+msgstr "Enable auto transformation - applied continuously"
