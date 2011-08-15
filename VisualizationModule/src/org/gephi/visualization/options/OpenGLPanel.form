@@ -19,7 +19,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jXTitledSeparator1" alignment="0" pref="677" max="32767" attributes="1"/>
+                  <Component id="jXTitledSeparator1" alignment="0" pref="679" max="32767" attributes="1"/>
                   <Component id="resetButton" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
@@ -271,7 +271,7 @@
     <Component class="javax.swing.JLabel" name="labelAmbiant">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/visualization/options/Bundle.properties" key="OpenGLPanel.labelAmbiant.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/visualization/options/Bundle.properties" key="OpenGLPanel.labelAmbient.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
@@ -298,7 +298,7 @@
     <Component class="javax.swing.JButton" name="ambientAmbiantColorButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/visualization/options/Bundle.properties" key="OpenGLPanel.ambientAmbiantColorButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/visualization/options/Bundle.properties" key="OpenGLPanel.ambientAmbientColorButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -315,7 +315,7 @@
     <Component class="javax.swing.JButton" name="light1AmbiantColorButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/visualization/options/Bundle.properties" key="OpenGLPanel.light1AmbiantColorButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/visualization/options/Bundle.properties" key="OpenGLPanel.light1AmbientColorButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -359,7 +359,7 @@
     <Component class="javax.swing.JButton" name="light2AmbiantColorButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/visualization/options/Bundle.properties" key="OpenGLPanel.light2AmbiantColorButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/visualization/options/Bundle.properties" key="OpenGLPanel.light2AmbientColorButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <AuxValues>
@@ -396,7 +396,7 @@
     <Component class="javax.swing.JButton" name="light3AmbiantColorButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/gephi/visualization/options/Bundle.properties" key="OpenGLPanel.light3AmbiantColorButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/gephi/visualization/options/Bundle.properties" key="OpenGLPanel.light3AmbientColorButton.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
       <AuxValues>

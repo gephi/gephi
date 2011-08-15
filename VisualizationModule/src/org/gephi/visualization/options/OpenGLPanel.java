@@ -139,17 +139,17 @@ final class OpenGLPanel extends javax.swing.JPanel {
 
         jXTitledSeparator3.setTitle(org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jXTitledSeparator3.title")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(labelAmbiant, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.labelAmbiant.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(labelAmbiant, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.labelAmbient.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(ambientDiffuseColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.ambientDiffuseColorButton.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(ambientSpecularColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.ambientSpecularColorButton.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(ambientAmbiantColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.ambientAmbiantColorButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(ambientAmbiantColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.ambientAmbientColorButton.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(labelDirectional, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.labelDirectional.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(light1AmbiantColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light1AmbiantColorButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(light1AmbiantColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light1AmbientColorButton.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(light1DiffuseColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light1DiffuseColorButton.text")); // NOI18N
 
@@ -159,7 +159,7 @@ final class OpenGLPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(light2Checkbox, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light2Checkbox.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(light2AmbiantColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light2AmbiantColorButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(light2AmbiantColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light2AmbientColorButton.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(light2DiffuseColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light2DiffuseColorButton.text")); // NOI18N
 
@@ -167,7 +167,7 @@ final class OpenGLPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(light3Checkbox, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light3Checkbox.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(light3AmbiantColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light3AmbiantColorButton.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(light3AmbiantColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light3AmbientColorButton.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(light3DiffuseColorButton, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.light3DiffuseColorButton.text")); // NOI18N
 
@@ -216,7 +216,7 @@ final class OpenGLPanel extends javax.swing.JPanel {
             }
         });
 
-        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 10));
         org.openide.awt.Mnemonics.setLocalizedText(jLabel10, org.openide.util.NbBundle.getMessage(OpenGLPanel.class, "OpenGLPanel.jLabel10.text")); // NOI18N
         jLabel10.setForeground(new java.awt.Color(102, 102, 102));
 
@@ -224,7 +224,7 @@ final class OpenGLPanel extends javax.swing.JPanel {
 
         openInfoText.setColumns(5);
         openInfoText.setEditable(false);
-        openInfoText.setFont(new java.awt.Font("Monospaced", 0, 11)); // NOI18N
+        openInfoText.setFont(new java.awt.Font("Monospaced", 0, 11));
         openInfoText.setRows(3);
         openInfoText.setText("Vendor\nModel\nVersion"); // NOI18N
         openInfoText.setOpaque(false);
@@ -243,7 +243,7 @@ final class OpenGLPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jXTitledSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)
+                    .addComponent(jXTitledSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
                     .addComponent(resetButton)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
@@ -322,7 +322,7 @@ final class OpenGLPanel extends javax.swing.JPanel {
                                 .addComponent(light1ZPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jXTitledSeparator3, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+                            .addComponent(jXTitledSeparator3, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(10, 10, 10)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
