@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.ui.components.SplineEditor;
 
 import java.awt.BorderLayout;
@@ -112,14 +112,7 @@ class SplineControlPanel extends JPanel {
                 new Insets(0, 0, 0, 0),
                 0, 0));
 
-        JButton saveTemplate = addButton(debugPanel, "Enregistrer");
-        JButton removeTemplate = addButton(debugPanel, "Supprimer");
-        saveTemplate.setEnabled(false);
-        removeTemplate.setEnabled(false);
-
         addEmptySpace(debugPanel, 6);
-
-        addSeparator(debugPanel, NbBundle.getMessage(SplineEditor.class, "splineEditor_controls"));
 
         JButton closeButton = addButton(debugPanel, NbBundle.getMessage(SplineEditor.class, "splineEditor_close"));
         closeButton.addActionListener(new ActionListener() {

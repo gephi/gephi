@@ -36,6 +36,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.gephi.ranking.api.Interpolator;
 import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.RankingController;
 import org.gephi.ranking.api.Transformer;
@@ -57,7 +58,7 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
     private JPanel centerPanel;
     //Spline
     private SplineEditor splineEditor;
-    private org.jdesktop.animation.timing.interpolation.Interpolator interpolator;
+    private Interpolator interpolator;
 
     public RankingChooser(RankingUIController controller) {
         NO_SELECTION = NbBundle.getMessage(RankingChooser.class, "RankingChooser.choose.text");

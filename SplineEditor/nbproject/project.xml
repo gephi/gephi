@@ -7,6 +7,22 @@
             <suite-component/>
             <module-dependencies>
                 <dependency>
+                    <code-name-base>org.gephi.lib.timing</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.gephi.ranking.api</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.8.1.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.jdesktop.swingx</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -34,14 +50,7 @@
             <public-packages>
                 <package>org.gephi.ui.components.SplineEditor</package>
                 <package>org.gephi.ui.components.SplineEditor.equation</package>
-                <package>org.jdesktop.animation.timing</package>
-                <package>org.jdesktop.animation.timing.interpolation</package>
-                <package>org.jdesktop.animation.timing.triggers</package>
             </public-packages>
-            <class-path-extension>
-                <runtime-relative-path>ext/TimingFramework-1.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/TimingFramework-1.0.jar</binary-origin>
-            </class-path-extension>
         </data>
     </configuration>
 </project>

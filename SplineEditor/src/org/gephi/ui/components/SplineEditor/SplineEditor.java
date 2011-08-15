@@ -28,7 +28,8 @@ import java.awt.geom.Point2D;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 
-import org.jdesktop.animation.timing.interpolation.Interpolator;
+import org.gephi.ranking.api.Interpolator;
+import org.gephi.ranking.api.Interpolator.BezierInterpolator;
 import org.jdesktop.swingx.JXHeader;
 import org.openide.util.NbBundle;
 import org.openide.windows.WindowManager;

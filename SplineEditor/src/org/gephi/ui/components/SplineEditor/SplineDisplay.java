@@ -17,8 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 package org.gephi.ui.components.SplineEditor;
 
 import java.awt.BasicStroke;
@@ -45,253 +44,251 @@ import java.io.OutputStream;
 import javax.imageio.ImageIO;
 import org.gephi.ui.components.SplineEditor.equation.EquationDisplay;
 
-
 public class SplineDisplay extends EquationDisplay {
-	private static final double CONTROL_POINT_SIZE = 12.0;
 
-	private Point2D control1 = new Point2D.Double(0, 0);
-	private Point2D control2 = new Point2D.Double(1, 1);
+    private static final double CONTROL_POINT_SIZE = 12.0;
+    private Point2D control1 = new Point2D.Double(0, 0);
+    private Point2D control2 = new Point2D.Double(1, 1);
+    private Point2D selected = null;
+    private Point dragStart = null;
+    private boolean isSaving = false;
+    private PropertyChangeSupport support;
 
-	private Point2D selected = null;
-	private Point dragStart = null;
+    SplineDisplay() {
+        super(0.0, 0.0,
+                -0.1, 1.1, -0.1, 1.1,
+                0.2, 6,
+                0.2, 6);
 
-	private boolean isSaving = false;
+        setEnabled(false);
 
-	private PropertyChangeSupport support;
+        addMouseMotionListener(new ControlPointsHandler());
+        addMouseListener(new SelectionHandler());
 
-	SplineDisplay() {
-		super(0.0, 0.0,
-				-0.1, 1.1, -0.1, 1.1,
-				0.2, 6,
-				0.2, 6);
+        support = new PropertyChangeSupport(this);
+    }
 
-		setEnabled(false);
+    @Override
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        support.addPropertyChangeListener(propertyName, listener);
+    }
 
-		addMouseMotionListener(new ControlPointsHandler());
-		addMouseListener(new SelectionHandler());
+    @Override
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        support.removePropertyChangeListener(propertyName, listener);
+    }
 
-		support = new PropertyChangeSupport(this);
-	}
+    public Point2D getControl1() {
+        return (Point2D) control1.clone();
+    }
 
-	@Override
-	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		support.addPropertyChangeListener(propertyName, listener);
-	}
+    public Point2D getControl2() {
+        return (Point2D) control2.clone();
+    }
 
-	@Override
-	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		support.removePropertyChangeListener(propertyName, listener);
-	}
+    public void setControl1(Point2D control1) {
+        support.firePropertyChange("control1",
+                this.control1.clone(),
+                control1.clone());
+        this.control1 = (Point2D) control1.clone();
+        repaint();
+    }
 
-	public Point2D getControl1() {
-		return (Point2D) control1.clone();
-	}
+    public void setControl2(Point2D control2) {
+        support.firePropertyChange("control2",
+                this.control2.clone(),
+                control2.clone());
+        this.control2 = (Point2D) control2.clone();
+        repaint();
+    }
 
-	public Point2D getControl2() {
-		return (Point2D) control2.clone();
-	}
+    synchronized void saveAsTemplate(OutputStream out) {
+        BufferedImage image = Java2dHelper.createCompatibleImage(getWidth(), getHeight());
+        Graphics g = image.getGraphics();
+        isSaving = true;
+        setDrawText(false);
+        paint(g);
+        setDrawText(true);
+        isSaving = false;
+        g.dispose();
 
-	public void setControl1(Point2D control1) {
-		support.firePropertyChange("control1",
-				this.control1.clone(),
-				control1.clone());
-		this.control1 = (Point2D) control1.clone();
-		repaint();
-	}
+        BufferedImage subImage = image.getSubimage((int) xPositionToPixel(0.0),
+                (int) yPositionToPixel(1.0),
+                (int) (xPositionToPixel(1.0) - xPositionToPixel(0.0)) + 1,
+                (int) (yPositionToPixel(0.0) - yPositionToPixel(1.0)) + 1);
 
-	public void setControl2(Point2D control2) {
-		support.firePropertyChange("control2",
-				this.control2.clone(),
-				control2.clone());
-		this.control2 = (Point2D) control2.clone();
-		repaint();
-	}
+        try {
+            ImageIO.write(subImage, "PNG", out);
+        } catch (IOException e) {
+        }
 
-	synchronized void saveAsTemplate(OutputStream out) {
-		BufferedImage image = Java2dHelper.createCompatibleImage(getWidth(), getHeight());
-		Graphics g = image.getGraphics();
-		isSaving = true;
-		setDrawText(false);
-		paint(g);
-		setDrawText(true);
-		isSaving = false;
-		g.dispose();
+        image.flush();
+        subImage = null;
+        image = null;
+    }
 
-		BufferedImage subImage = image.getSubimage((int) xPositionToPixel(0.0),
-				(int) yPositionToPixel(1.0),
-				(int) (xPositionToPixel(1.0) - xPositionToPixel(0.0)) + 1,
-				(int) (yPositionToPixel(0.0) - yPositionToPixel(1.0)) + 1);
+    @Override
+    protected void paintInformation(Graphics2D g2) {
+        if (!isSaving) {
+            paintControlPoints(g2);
+        }
+        paintSpline(g2);
+    }
 
-		try {
-			ImageIO.write(subImage, "PNG", out);
-		} catch (IOException e) {
-		}
+    private void paintControlPoints(Graphics2D g2) {
+        paintControlPoint(g2, control1);
+        paintControlPoint(g2, control2);
+    }
 
-		image.flush();
-		subImage = null;
-		image = null;
-	}
+    private void paintControlPoint(Graphics2D g2, Point2D control) {
+        double origin_x = xPositionToPixel(control.getX());
+        double origin_y = yPositionToPixel(control.getY());
+        double pos = control == control1 ? 0.0 : 1.0;
 
-	@Override
-	protected void paintInformation(Graphics2D g2) {
-		if (!isSaving) {
-			paintControlPoints(g2);
-		}
-		paintSpline(g2);
-	}
+        Ellipse2D outer = getDraggableArea(control);
+        Ellipse2D inner = new Ellipse2D.Double(origin_x + 2.0 - CONTROL_POINT_SIZE / 2.0,
+                origin_y + 2.0 - CONTROL_POINT_SIZE / 2.0,
+                8.0, 8.0);
 
-	private void paintControlPoints(Graphics2D g2) {
-		paintControlPoint(g2, control1);
-		paintControlPoint(g2, control2);
-	}
+        Area circle = new Area(outer);
+        circle.subtract(new Area(inner));
 
-	private void paintControlPoint(Graphics2D g2, Point2D control) {
-		double origin_x = xPositionToPixel(control.getX());
-		double origin_y = yPositionToPixel(control.getY());
-		double pos = control == control1 ? 0.0 : 1.0;
+        Stroke stroke = g2.getStroke();
+        g2.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
+                5, new float[]{5, 5}, 0));
+        g2.setColor(new Color(1.0f, 0.0f, 0.0f, 0.4f));
+        g2.drawLine(0, (int) origin_y, (int) origin_x, (int) origin_y);
+        g2.drawLine((int) origin_x, (int) origin_y, (int) origin_x, getHeight());
+        g2.setStroke(stroke);
 
-		Ellipse2D outer = getDraggableArea(control);
-		Ellipse2D inner = new Ellipse2D.Double(origin_x + 2.0 - CONTROL_POINT_SIZE / 2.0,
-				origin_y + 2.0 - CONTROL_POINT_SIZE / 2.0,
-				8.0, 8.0);
+        if (selected == control) {
+            g2.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        } else {
+            g2.setColor(new Color(0.8f, 0.8f, 0.8f, 0.6f));
+        }
+        g2.fill(inner);
 
-		Area circle = new Area(outer);
-		circle.subtract(new Area(inner));
+        g2.setColor(new Color(0.0f, 0.0f, 0.5f, 0.5f));
+        g2.fill(circle);
 
-		Stroke stroke = g2.getStroke();
-		g2.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER,
-				5, new float[] { 5, 5 }, 0));
-		g2.setColor(new Color(1.0f, 0.0f, 0.0f, 0.4f));
-		g2.drawLine(0, (int) origin_y, (int) origin_x, (int) origin_y);
-		g2.drawLine((int) origin_x, (int) origin_y, (int) origin_x, getHeight());
-		g2.setStroke(stroke);
+        g2.drawLine((int) origin_x, (int) origin_y,
+                (int) xPositionToPixel(pos), (int) yPositionToPixel(pos));
+    }
 
-		if (selected == control) {
-			g2.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f));
-		} else {
-			g2.setColor(new Color(0.8f, 0.8f, 0.8f, 0.6f));
-		}
-		g2.fill(inner);
+    private Ellipse2D getDraggableArea(Point2D control) {
+        Ellipse2D outer = new Ellipse2D.Double(xPositionToPixel(control.getX()) - CONTROL_POINT_SIZE / 2.0,
+                yPositionToPixel(control.getY()) - CONTROL_POINT_SIZE / 2.0,
+                CONTROL_POINT_SIZE, CONTROL_POINT_SIZE);
+        return outer;
+    }
 
-		g2.setColor(new Color(0.0f, 0.0f, 0.5f, 0.5f));
-		g2.fill(circle);
+    private void paintSpline(Graphics2D g2) {
+        CubicCurve2D spline = new CubicCurve2D.Double(xPositionToPixel(0.0), yPositionToPixel(0.0),
+                xPositionToPixel(control1.getX()),
+                yPositionToPixel(control1.getY()),
+                xPositionToPixel(control2.getX()),
+                yPositionToPixel(control2.getY()),
+                xPositionToPixel(1.0), yPositionToPixel(1.0));
+        g2.setColor(new Color(0.0f, 0.3f, 0.0f, 1.0f));
+        g2.draw(spline);
+    }
 
-		g2.drawLine((int) origin_x, (int) origin_y,
-				(int) xPositionToPixel(pos), (int) yPositionToPixel(pos));
-	}
+    private void resetSelection() {
+        Point2D oldSelected = selected;
+        selected = null;
 
-	private Ellipse2D getDraggableArea(Point2D control) {
-		Ellipse2D outer = new Ellipse2D.Double(xPositionToPixel(control.getX()) - CONTROL_POINT_SIZE / 2.0,
-				yPositionToPixel(control.getY()) - CONTROL_POINT_SIZE / 2.0,
-				CONTROL_POINT_SIZE, CONTROL_POINT_SIZE);
-		return outer;
-	}
+        if (oldSelected != null) {
+            Rectangle bounds = getDraggableArea(oldSelected).getBounds();
+            repaint(bounds.x, bounds.y, bounds.width, bounds.height);
+        }
+    }
 
-	private void paintSpline(Graphics2D g2) {
-		CubicCurve2D spline = new CubicCurve2D.Double(xPositionToPixel(0.0), yPositionToPixel(0.0),
-				xPositionToPixel(control1.getX()),
-				yPositionToPixel(control1.getY()),
-				xPositionToPixel(control2.getX()),
-				yPositionToPixel(control2.getY()),
-				xPositionToPixel(1.0), yPositionToPixel(1.0));
-		g2.setColor(new Color(0.0f, 0.3f, 0.0f, 1.0f));
-		g2.draw(spline);
-	}
+    private class ControlPointsHandler extends MouseMotionAdapter {
 
-	private void resetSelection() {
-		Point2D oldSelected = selected;
-		selected = null;
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            Ellipse2D area1 = getDraggableArea(control1);
+            Ellipse2D area2 = getDraggableArea(control2);
 
-		if (oldSelected != null) {
-			Rectangle bounds = getDraggableArea(oldSelected).getBounds();
-			repaint(bounds.x, bounds.y, bounds.width, bounds.height);
-		}
-	}
+            if (area1.contains(e.getPoint()) || area2.contains(e.getPoint())) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            } else {
+                setCursor(Cursor.getDefaultCursor());
+            }
+        }
 
-	private class ControlPointsHandler extends MouseMotionAdapter {
-		@Override
-		public void mouseMoved(MouseEvent e) {
-			Ellipse2D area1 = getDraggableArea(control1);
-			Ellipse2D area2 = getDraggableArea(control2);
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            if (selected == null) {
+                return;
+            }
 
-			if (area1.contains(e.getPoint()) || area2.contains(e.getPoint())) {
-				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			} else {
-				setCursor(Cursor.getDefaultCursor());
-			}
-		}
+            Point dragEnd = e.getPoint();
 
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			if (selected == null) {
-				return;
-			}
+            double distance = xPixelToPosition(dragEnd.getX())
+                    - xPixelToPosition(dragStart.getX());
+            double x = selected.getX() + distance;
+            if (x < 0.0) {
+                x = 0.0;
+            } else if (x > 1.0) {
+                x = 1.0;
+            }
 
-			Point dragEnd = e.getPoint();
+            distance = yPixelToPosition(dragEnd.getY())
+                    - yPixelToPosition(dragStart.getY());
+            double y = selected.getY() + distance;
+            if (y < 0.0) {
+                y = 0.0;
+            } else if (y > 1.0) {
+                y = 1.0;
+            }
 
-			double distance = xPixelToPosition(dragEnd.getX()) -
-			xPixelToPosition(dragStart.getX());
-			double x = selected.getX() + distance;
-			if (x < 0.0) {
-				x = 0.0;
-			} else if (x > 1.0) {
-				x = 1.0;
-			}
+            Point2D selectedCopy = (Point2D) selected.clone();
+            selected.setLocation(x, y);
+            support.firePropertyChange("control" + (selected == control1 ? "1" : "2"),
+                    selectedCopy, selected.clone());
 
-			distance = yPixelToPosition(dragEnd.getY()) -
-			yPixelToPosition(dragStart.getY());
-			double y = selected.getY() + distance;
-			if (y < 0.0) {
-				y = 0.0;
-			} else if (y > 1.0) {
-				y = 1.0;
-			}
+            repaint();
 
-			Point2D selectedCopy = (Point2D) selected.clone();
-			selected.setLocation(x, y);
-			support.firePropertyChange("control" + (selected == control1 ? "1" : "2"),
-					selectedCopy, selected.clone());
+            double xPos = xPixelToPosition(dragEnd.getX());
+            double yPos = -yPixelToPosition(dragEnd.getY());
 
-			repaint();
+            if (xPos >= 0.0 && xPos <= 1.0) {
+                dragStart.setLocation(dragEnd.getX(), dragStart.getY());
+            }
+            if (yPos >= 0.0 && yPos <= 1.0) {
+                dragStart.setLocation(dragStart.getX(), dragEnd.getY());
+            }
+        }
+    }
 
-			double xPos = xPixelToPosition(dragEnd.getX());
-			double yPos = -yPixelToPosition(dragEnd.getY());
+    private class SelectionHandler extends MouseAdapter {
 
-			if (xPos >= 0.0 && xPos <= 1.0) {
-				dragStart.setLocation(dragEnd.getX(), dragStart.getY());
-			}
-			if (yPos >= 0.0 && yPos <= 1.0) {
-				dragStart.setLocation(dragStart.getX(), dragEnd.getY());
-			}
-		}
-	}
+        @Override
+        public void mousePressed(MouseEvent e) {
+            Ellipse2D area1 = getDraggableArea(control1);
+            Ellipse2D area2 = getDraggableArea(control2);
 
-	private class SelectionHandler extends MouseAdapter {
-		@Override
-		public void mousePressed(MouseEvent e) {
-			Ellipse2D area1 = getDraggableArea(control1);
-			Ellipse2D area2 = getDraggableArea(control2);
+            if (area1.contains(e.getPoint())) {
+                selected = control1;
+                dragStart = e.getPoint();
 
-			if (area1.contains(e.getPoint())) {
-				selected = control1;
-				dragStart = e.getPoint();
+                Rectangle bounds = area1.getBounds();
+                repaint(bounds.x, bounds.y, bounds.width, bounds.height);
+            } else if (area2.contains(e.getPoint())) {
+                selected = control2;
+                dragStart = e.getPoint();
 
-				Rectangle bounds = area1.getBounds();
-				repaint(bounds.x, bounds.y, bounds.width, bounds.height);
-			} else if (area2.contains(e.getPoint())) {
-				selected = control2;
-				dragStart = e.getPoint();
+                Rectangle bounds = area2.getBounds();
+                repaint(bounds.x, bounds.y, bounds.width, bounds.height);
+            } else {
+                resetSelection();
+            }
+        }
 
-				Rectangle bounds = area2.getBounds();
-				repaint(bounds.x, bounds.y, bounds.width, bounds.height);
-			} else {
-				resetSelection();
-			}
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			resetSelection();
-		}
-	}
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            resetSelection();
+        }
+    }
 }
