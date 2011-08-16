@@ -389,7 +389,7 @@ public class VizModel {
                         cameraTarget[1] = Float.parseFloat(reader.getAttributeValue(null, "y"));
                         cameraTarget[2] = Float.parseFloat(reader.getAttributeValue(null, "z"));
                     } else if ("use3d".equalsIgnoreCase(name)) {
-                        use3d = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                        setUse3d(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("lighting".equalsIgnoreCase(name)) {
                         lighting = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
                     } else if ("culling".equalsIgnoreCase(name)) {
@@ -399,39 +399,39 @@ public class VizModel {
                     } else if ("rotatingenable".equalsIgnoreCase(name)) {
                         rotatingEnable = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
                     } else if ("showedges".equalsIgnoreCase(name)) {
-                        showEdges = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                        setShowEdges(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("lightennonselectedauto".equalsIgnoreCase(name)) {
-                        lightenNonSelectedAuto = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                        setLightenNonSelectedAuto(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("autoselectneighbor".equalsIgnoreCase(name)) {
-                        autoSelectNeighbor = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                        setAutoSelectNeighbor(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("hidenonselectededges".equalsIgnoreCase(name)) {
-                        hideNonSelectedEdges = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                        setHideNonSelectedEdges(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("unicolorselected".equalsIgnoreCase(name)) {
-                        uniColorSelected = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                        setUniColorSelected(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("edgehasunicolor".equalsIgnoreCase(name)) {
-                        edgeHasUniColor = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                        setEdgeHasUniColor(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("adjustbytext".equalsIgnoreCase(name)) {
-                        adjustByText = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                        setAdjustByText(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("edgeSelectionColor".equalsIgnoreCase(name)) {
-                        edgeSelectionColor = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                        setEdgeSelectionColor(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("showHulls".equalsIgnoreCase(name)) {
-                        showHulls = Boolean.parseBoolean(reader.getAttributeValue(null, "value"));
+                        setShowHulls(Boolean.parseBoolean(reader.getAttributeValue(null, "value")));
                     } else if ("backgroundcolor".equalsIgnoreCase(name)) {
-                        backgroundColor = ColorUtils.decode(reader.getAttributeValue(null, "value"));
+                        setBackgroundColor(ColorUtils.decode(reader.getAttributeValue(null, "value")));
                     } else if ("edgeunicolor".equalsIgnoreCase(name)) {
-                        edgeUniColor = ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null);
+                        setEdgeUniColor(ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null));
                     } else if ("edgeInSelectionColor".equalsIgnoreCase(name)) {
-                        edgeInSelectionColor = ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null);
+                        setEdgeInSelectionColor(ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null));
                     } else if ("edgeOutSelectionColor".equalsIgnoreCase(name)) {
-                        edgeOutSelectionColor = ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null);
+                        setEdgeOutSelectionColor(ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null));
                     } else if ("edgeBothSelectionColor".equalsIgnoreCase(name)) {
-                        edgeBothSelectionColor = ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null);
+                        setEdgeBothSelectionColor(ColorUtils.decode(reader.getAttributeValue(null, "value")).getRGBComponents(null));
                     } else if ("nodemodeler".equalsIgnoreCase(name)) {
-                        nodeModeler = reader.getAttributeValue(null, "value");
+                        setNodeModeler(reader.getAttributeValue(null, "value"));
                     } else if ("edgeScale".equalsIgnoreCase(name)) {
-                        edgeScale = Float.parseFloat(reader.getAttributeValue(null, "value"));
+                        setEdgeScale(Float.parseFloat(reader.getAttributeValue(null, "value")));
                     } else if ("metaEdgeScale".equalsIgnoreCase(name)) {
-                        metaEdgeScale = Float.parseFloat(reader.getAttributeValue(null, "value"));
+                        setMetaEdgeScale(Float.parseFloat(reader.getAttributeValue(null, "value")));
                     }
                     break;
                 case XMLStreamReader.END_ELEMENT:

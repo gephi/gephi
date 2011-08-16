@@ -36,6 +36,7 @@ import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import net.java.dev.colorchooser.ColorChooser;
+import org.gephi.ui.components.JColorBlackWhiteSwitcher;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.components.JDropDownButton;
 import org.gephi.ui.components.JPopupButton;
@@ -111,13 +112,13 @@ public class VizBarController {
 
             //Background color
             VizModel vizModel = VizController.getInstance().getVizModel();
-            final JButton backgroundColorButton = new JColorButton(vizModel.getBackgroundColor());
+            final JButton backgroundColorButton = new JColorBlackWhiteSwitcher(vizModel.getBackgroundColor());
             backgroundColorButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.background"));
             backgroundColorButton.addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
 
                 public void propertyChange(PropertyChangeEvent evt) {
                     VizModel vizModel = VizController.getInstance().getVizModel();
-                    vizModel.setBackgroundColor(((JColorButton) backgroundColorButton).getColor());
+                    vizModel.setBackgroundColor(((JColorBlackWhiteSwitcher) backgroundColorButton).getColor());
                 }
             });
             vizModel.addPropertyChangeListener(new PropertyChangeListener() {
@@ -125,8 +126,8 @@ public class VizBarController {
                 public void propertyChange(PropertyChangeEvent evt) {
                     if (evt.getPropertyName().equals("backgroundColor")) {
                         VizModel vizModel = VizController.getInstance().getVizModel();
-                        if (!(((JColorButton) backgroundColorButton).getColor()).equals(vizModel.getBackgroundColor())) {
-                            ((JColorButton) backgroundColorButton).setColor(vizModel.getBackgroundColor());
+                        if (!(((JColorBlackWhiteSwitcher) backgroundColorButton).getColor()).equals(vizModel.getBackgroundColor())) {
+                            ((JColorBlackWhiteSwitcher) backgroundColorButton).setColor(vizModel.getBackgroundColor());
                         }
                     }
                 }

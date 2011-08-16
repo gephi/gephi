@@ -31,7 +31,9 @@ msgid "GraphTopComponent.waitingLabel.text"
 msgstr "Initializing..."
 
 msgid "VizToolbar.Global.background"
-msgstr "Background color"
+msgstr ""
+"Background color (left click to switch black-white, right click to choose "
+"color)"
 
 msgid "VizToolbar.Global.screenshot"
 msgstr "Take screenshot"

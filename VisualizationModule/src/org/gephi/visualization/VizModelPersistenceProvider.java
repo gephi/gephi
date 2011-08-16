@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,6 +52,7 @@ public class VizModelPersistenceProvider implements WorkspacePersistenceProvider
             vizModel = new VizModel();
             workspace.add(vizModel);
         }
+        Lookup.getDefault().lookup(VizController.class).refreshWorkspace();//Necessary to get events from reading xml properties such as background color changed
         try {
             vizModel.readXML(reader, workspace);
         } catch (XMLStreamException ex) {

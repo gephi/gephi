@@ -236,14 +236,17 @@ msgstr ""
 msgid "importerGEXF_error_edgeid"
 msgstr "Edge id is missing. An id has been generated."
 
+msgid "importerGEXF_error_edgesource"
+msgstr "Edge source is missing. The edge is ignored."
+
+msgid "importerGEXF_error_edgetarget"
+msgstr "Edge target is missing. The edge is ignored."
+
 msgid "importerGEXF_error_edgeweight"
 msgstr "Edge weight of id ''{0}'' is not a float. Weight is ignored."
 
 msgid "importerGEXF_error_nodeid"
 msgstr "Node id is missing. The node is ignored."
-
-msgid "importerGEXF_error_nodelabel"
-msgstr "Node label ''{0}'' is missing. The node is ignored."
 
 msgid "importerGEXF_error_nodeposition"
 msgstr "Node ''{0}'' has a wrong position on ''{1}'' (not a float)."
