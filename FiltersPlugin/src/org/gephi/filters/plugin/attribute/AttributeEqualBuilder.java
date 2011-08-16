@@ -387,7 +387,7 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
             min = (Number) AttributeUtils.getDefault().getMin(column, values /*valuesArray*/);
             max = (Number) AttributeUtils.getDefault().getMax(column, values /*valuesArray*/);
-            match = Range.tribToBounds(min, max, match);
+            match = Range.trimToBounds(min, max, match);
         }
 
         public FilterProperty[] getProperties() {

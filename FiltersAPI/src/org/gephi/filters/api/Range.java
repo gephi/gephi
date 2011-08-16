@@ -336,9 +336,9 @@ public final class Range {
         return rangeType;
     }
 
-    public static Number tribToBounds(Number min, Number max, Number value) {
+    public static Number trimToBounds(Number min, Number max, Number value) {
         if (min != null && max != null && value != null) {
-            if (min.getClass().equals(max) && max.getClass().equals(value.getClass())) {
+            if (min.getClass().equals(max.getClass()) && max.getClass().equals(value.getClass())) {
                 if (min instanceof Long || min instanceof Integer || min instanceof Short || min instanceof Byte) {
                     if (value.longValue() < min.longValue()) {
                         value = min;
@@ -384,6 +384,17 @@ public final class Range {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 19 * hash + (this.rangeType != null ? this.rangeType.hashCode() : 0);
+        hash = 19 * hash + (this.lowerNumber != null ? this.lowerNumber.hashCode() : 0);
+        hash = 19 * hash + (this.upperNumber != null ? this.upperNumber.hashCode() : 0);
+        hash = 19 * hash + (this.min != null ? this.min.hashCode() : 0);
+        hash = 19 * hash + (this.max != null ? this.max.hashCode() : 0);
+        return hash;
     }
 
     @Override
