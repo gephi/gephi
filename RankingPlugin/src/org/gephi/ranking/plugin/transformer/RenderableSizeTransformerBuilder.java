@@ -43,7 +43,7 @@ public class RenderableSizeTransformerBuilder implements TransformerBuilder {
 
     @Override
     public boolean isTransformerForElement(String elementType) {
-        return elementType.equals(Ranking.NODE_ELEMENT) || elementType.equals(Ranking.EDGE_ELEMENT);
+        return elementType.equals(Ranking.NODE_ELEMENT);
     }
 
     @Override
