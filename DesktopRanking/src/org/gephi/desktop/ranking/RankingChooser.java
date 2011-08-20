@@ -30,6 +30,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
@@ -182,7 +187,14 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         final DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
         comboBoxModel.addElement(NO_SELECTION);
         comboBoxModel.setSelectedItem(NO_SELECTION);
-        for (Ranking r : model.getRankings()) {
+        Ranking[] rankings = model.getRankings();
+        Arrays.sort(rankings, new Comparator() {
+
+            public int compare(Object o1, Object o2) {
+                return ((Ranking) o1).getDisplayName().compareTo(((Ranking) o2).getDisplayName());
+            }
+        });
+        for (Ranking r : rankings) {
             comboBoxModel.addElement(r);
             if (selectedRanking != null && selectedRanking.getName().equals(r.getName())) {
                 comboBoxModel.setSelectedItem(r);
