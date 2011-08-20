@@ -32,6 +32,9 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JMenuItem;
@@ -200,7 +203,13 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         comboBoxModel.addElement(NO_SELECTION);
         comboBoxModel.setSelectedItem(NO_SELECTION);
         if (model != null) {
-            for (LayoutBuilder builder : Lookup.getDefault().lookupAll(LayoutBuilder.class)) {
+            List<LayoutBuilder> builders = new ArrayList<LayoutBuilder>(Lookup.getDefault().lookupAll(LayoutBuilder.class));
+            Collections.sort(builders, new Comparator() {
+                public int compare(Object o1, Object o2) {
+                    return ((LayoutBuilder)o1).getName().compareTo(((LayoutBuilder)o2).getName());
+                }
+            });
+            for (LayoutBuilder builder : builders) {
                 LayoutBuilderWrapper item = new LayoutBuilderWrapper(builder);
                 comboBoxModel.addElement(item);
                 if (model.getSelectedLayout() != null && builder == model.getSelectedBuilder()) {
