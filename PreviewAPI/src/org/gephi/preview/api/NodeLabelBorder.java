@@ -47,4 +47,11 @@ public interface NodeLabelBorder {
      * @return the node label border's related label
      */
     public NodeLabel getLabel();
+
+    /**
+     * Returns the node label's parent's id.
+     *
+     * @return the node label's parent's id.
+     */
+    public String getId();
 }

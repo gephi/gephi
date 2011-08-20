@@ -37,6 +37,7 @@ public class NodeLabelImpl extends AbstractNodeChild
     private final float labelSizeFactor;
     private String value;
     private Font font;
+    private String Id;
 
     /**
      * Constructor.
@@ -48,6 +49,7 @@ public class NodeLabelImpl extends AbstractNodeChild
         super(parent);
         this.originalValue = value;
         this.labelSizeFactor = labelSize;
+        this.Id = parent.getId();
     }
 
     public Font getFont() {
@@ -84,5 +86,9 @@ public class NodeLabelImpl extends AbstractNodeChild
 
     public void revertOriginalValue() {
         setValue(originalValue);
+    }
+
+    public String getParentId() {
+        return Id;
     }
 }

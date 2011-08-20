@@ -76,7 +76,7 @@ public abstract class EdgeMiniLabelImpl extends AbstractEdgeLabel
         return parent.getAngle();
     }
 
-    public EdgeColorizerClient getParentEdge() {
+    public DirectedEdgeImpl getParentEdge() {
         return parent;
     }
 

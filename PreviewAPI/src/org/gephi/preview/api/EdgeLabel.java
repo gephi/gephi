@@ -63,4 +63,11 @@ public interface EdgeLabel {
      * @return the edge label's font
      */
     public Font getFont();
+
+    /**
+     * Returns the parent edge.
+     *
+     * @return the parent edge
+     */
+    public Edge getParentEdge();
 }

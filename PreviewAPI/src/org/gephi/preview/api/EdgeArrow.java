@@ -54,4 +54,11 @@ public interface EdgeArrow {
      * @return the edge arrow's third point
      */
     public Point getPt3();
+
+    /**
+     * Returns the edge arrow's parent edge.
+     *
+     * @return the edge arrow's parent edge.
+     */
+    public DirectedEdge getParentEdge();
 }

@@ -71,4 +71,11 @@ public interface EdgeMiniLabel {
      * @return the edge mini-label font
      */
     public Font getFont();
+
+    /**
+     * Returns the parent edge.
+     *
+     * @return the parent edge.
+     */
+    public Edge getParentEdge();
 }

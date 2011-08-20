@@ -216,6 +216,7 @@ public class PreviewGraphFactory {
 
         NodeImpl previewNode = new NodeImpl(
                 previewGraph,
+                sourceNodeData.getId(),
                 sourceNodeData.x(),
                 -sourceNodeData.y(), // different referential from the workspace one
                 sourceNodeData.getRadius(),

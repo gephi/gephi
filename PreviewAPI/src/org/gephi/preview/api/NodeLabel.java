@@ -55,4 +55,10 @@ public interface NodeLabel {
      * @return the node label's font
      */
     public Font getFont();
+
+    /**
+     * Returns the node label's parent node's id.
+     * @return node label's parent node's id
+     */
+    public String getParentId();
 }

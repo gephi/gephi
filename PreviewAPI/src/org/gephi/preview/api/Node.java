@@ -126,4 +126,11 @@ public interface Node {
      * @return the node's color holder
      */
     public Holder<Color> getColorHolder();
+
+    /**
+     * Returns the node's ID.  The ID is a human-readable name created at import.
+     *
+     * @return node ID
+     */
+    public String getId();
 }

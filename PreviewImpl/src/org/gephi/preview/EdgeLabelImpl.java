@@ -88,7 +88,7 @@ public class EdgeLabelImpl extends AbstractEdgeLabel
         return parent.getAngle();
     }
 
-    public EdgeColorizerClient getParentEdge() {
+    public EdgeImpl getParentEdge() {
         return parent;
     }
 

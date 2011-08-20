@@ -265,6 +265,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
 
     public void renderNode(Node node) {
         Element nodeElem = createElement("circle");
+        nodeElem.setAttribute("class", node.getId());
         nodeElem.setAttribute("cx", node.getPosition().getX().toString());
         nodeElem.setAttribute("cy", node.getPosition().getY().toString());
         nodeElem.setAttribute("r", node.getRadius().toString());
@@ -280,6 +281,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         Text labelText = createTextNode(label.getValue());
 
         Element labelElem = createElement("text");
+        labelElem.setAttribute("class", label.getParentId());
         labelElem.setAttribute("x", label.getPosition().getX().toString());
         labelElem.setAttribute("y", label.getPosition().getY().toString());
         labelElem.setAttribute("style", "text-anchor: middle");
@@ -297,7 +299,9 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         // retrieve label's bounding box
         SVGRect rect = nodeLabelMap.get(border.getLabel()).getBBox();
 
+
         Element borderElem = createElement("rect");
+        borderElem.setAttribute("class", border.getId());
         borderElem.setAttribute("x", Float.toString(rect.getX()));
         borderElem.setAttribute("y", Float.toString(rect.getY()));
         borderElem.setAttribute("width", Float.toString(rect.getWidth()));
@@ -315,6 +319,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
                 curve.getPt2().getX(), curve.getPt2().getY(),
                 curve.getPt3().getX(), curve.getPt3().getY(),
                 curve.getPt4().getX(), curve.getPt4().getY()));
+        selfLoopElem.setAttribute("class", selfLoop.getNode().getId());
         selfLoopElem.setAttribute("stroke", selfLoop.getColor().toHexString());
         selfLoopElem.setAttribute("stroke-width", Float.toString(selfLoop.getThickness() * selfLoop.getScale() * scaleRatio));
         selfLoopElem.setAttribute("fill", "none");
@@ -344,6 +349,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         Point boundary2 = edge.getNode2().getPosition();
 
         Element edgeElem = createElement("path");
+        edgeElem.setAttribute("class", createClassString(edge));
         edgeElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f L %f,%f",
                 boundary1.getX(), boundary1.getY(),
                 boundary2.getX(), boundary2.getY()));
@@ -360,6 +366,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
                     curve.getPt2().getX(), curve.getPt2().getY(),
                     curve.getPt3().getX(), curve.getPt3().getY(),
                     curve.getPt4().getX(), curve.getPt4().getY()));
+            curveElem.setAttribute("class", createClassString(edge));
             curveElem.setAttribute("stroke", edge.getColor().toHexString());
             curveElem.setAttribute("stroke-width", Float.toString(edge.getThickness() * edge.getScale() * scaleRatio));
             curveElem.setAttribute("fill", "none");
@@ -385,6 +392,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
                 arrow.getPt1().getX(), arrow.getPt1().getY(),
                 arrow.getPt2().getX(), arrow.getPt2().getY(),
                 arrow.getPt3().getX(), arrow.getPt3().getY()));
+        arrowElem.setAttribute("class", createClassString(arrow.getParentEdge()));
         arrowElem.setAttribute("fill", arrow.getColor().toHexString());
         arrowElem.setAttribute("stroke", "none");
         edgeGroupElem.appendChild(arrowElem);
@@ -394,6 +402,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         Text text = createTextNode(label.getValue());
 
         Element labelElem = createElement("text");
+        labelElem.setAttribute("class", createClassString(label.getParentEdge()));
         labelElem.setAttribute("x", "0");
         labelElem.setAttribute("y", "0");
         labelElem.setAttribute("style", "text-anchor: middle");
@@ -411,6 +420,7 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
         Text text = createTextNode(miniLabel.getValue());
 
         Element miniLabelElem = createElement("text");
+        miniLabelElem.setAttribute("class", createClassString(miniLabel.getParentEdge()));
         miniLabelElem.setAttribute("x", "0");
         miniLabelElem.setAttribute("y", "0");
         miniLabelElem.setAttribute("style", miniLabel.getHAlign().toCSS());
@@ -422,6 +432,12 @@ public class SVGExporter implements GraphRenderer, CharacterExporter, VectorExpo
                 Math.toDegrees(miniLabel.getAngle())));
         miniLabelElem.appendChild(text);
         labelGroupElem.appendChild(miniLabelElem);
+    }
+    String createClassString(Edge edge) {
+        String id1 = edge.getNode1().getId();
+        String id2 = edge.getNode2().getId();
+
+        return id1 + " " + id2;
     }
 
     /**

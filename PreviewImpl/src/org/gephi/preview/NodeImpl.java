@@ -39,6 +39,7 @@ import org.gephi.preview.util.Vector;
 public class NodeImpl implements Node, NodeColorizerClient {
 
     private final GraphImpl parent;
+    private final String Id;
     private final Point position;
     private final Float radius;
     private final Color originalColor;
@@ -59,8 +60,9 @@ public class NodeImpl implements Node, NodeColorizerClient {
      * @param g       the green color component
      * @param b       the blue color component
      */
-    public NodeImpl(GraphImpl parent, float x, float y, float radius, String label, float labelSize, float r, float g, float b) {
+    public NodeImpl(GraphImpl parent, String Id, float x, float y, float radius, String label, float labelSize, float r, float g, float b) {
         this.parent = parent;
+        this.Id = Id;
         this.position = new PointImpl(x, y);
         this.radius = radius;
         this.originalColor = new SimpleColor(r, g, b, 0);
@@ -172,5 +174,9 @@ public class NodeImpl implements Node, NodeColorizerClient {
 
     public Boolean showLabelBorders() {
         return getNodeSupervisor().getShowNodeLabelBorders();
+    }
+
+    public String getId() {
+        return Id;
     }
 }

@@ -36,4 +36,7 @@ public class NodeLabelBorderImpl extends AbstractNodeChild
     public final NodeLabelImpl getLabel() {
         return parent.getLabel();
     }
+    public final String getId() {
+        return parent.getId();
+    }
 }

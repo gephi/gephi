@@ -89,7 +89,7 @@ public abstract class EdgeArrowImpl implements EdgeArrow, EdgeChildColorizerClie
         return colorHolder.getComponent();
     }
 
-    public EdgeColorizerClient getParentEdge() {
+    public DirectedEdgeImpl getParentEdge() {
         return parent;
     }
 
