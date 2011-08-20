@@ -43,6 +43,10 @@ public class EdgeListDatabaseImpl extends AbstractDatabase {
         properties.addNodePropertyAssociation(NodeProperties.X, "x");
         properties.addNodePropertyAssociation(NodeProperties.Y, "y");
         properties.addNodePropertyAssociation(NodeProperties.SIZE, "size");
+        properties.addNodePropertyAssociation(NodeProperties.START, "start");
+        properties.addNodePropertyAssociation(NodeProperties.END, "end");
+        properties.addNodePropertyAssociation(NodeProperties.START, "start_open");
+        properties.addNodePropertyAssociation(NodeProperties.END_OPEN, "end_open");
 
         //Default edge associations
         properties.addEdgePropertyAssociation(EdgeProperties.ID, "id");
@@ -50,6 +54,10 @@ public class EdgeListDatabaseImpl extends AbstractDatabase {
         properties.addEdgePropertyAssociation(EdgeProperties.TARGET, "target");
         properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "label");
         properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "weight");
+        properties.addEdgePropertyAssociation(EdgeProperties.START, "start");
+        properties.addEdgePropertyAssociation(EdgeProperties.END, "end");
+        properties.addEdgePropertyAssociation(EdgeProperties.START, "start_open");
+        properties.addEdgePropertyAssociation(EdgeProperties.END_OPEN, "end_open");
     }
 
     public String getEdgeAttributesQuery() {

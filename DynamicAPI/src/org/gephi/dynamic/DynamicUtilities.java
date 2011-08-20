@@ -22,9 +22,12 @@ package org.gephi.dynamic;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -69,8 +72,20 @@ public final class DynamicUtilities {
     public static double getDoubleFromXMLDateString(String str) {
         try {
             DatatypeFactory dateFactory = DatatypeFactory.newInstance();
-            return dateFactory.newXMLGregorianCalendar(str.length() > 23 ? str.substring(0, 23) : str).
-                    toGregorianCalendar().getTimeInMillis();
+            try {
+                return dateFactory.newXMLGregorianCalendar(str.length() > 23 ? str.substring(0, 23) : str).
+                        toGregorianCalendar().getTimeInMillis();
+            } catch (IllegalArgumentException ex) {
+                //Try simple format
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try {
+                    Date date = dateFormat.parse(str);
+                    return date.getTime();
+                } catch (ParseException ex1) {
+                    Exceptions.printStackTrace(ex1);
+                    return 0.0;
+                }
+            }
         } catch (DatatypeConfigurationException ex) {
             Exceptions.printStackTrace(ex);
             return 0.0;

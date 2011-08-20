@@ -21,7 +21,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.importer.api;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,12 +32,12 @@ public final class PropertiesAssociations implements Serializable {
 
     public enum NodeProperties {
 
-        X, Y, Z, R, G, B, SIZE, ID, LABEL, FIXED;
+        X, Y, Z, R, G, B, COLOR, SIZE, ID, LABEL, FIXED, START, END, START_OPEN, END_OPEN;
     }
 
     public enum EdgeProperties {
 
-        R, G, B, WEIGHT, ID, LABEL, ALPHA, SOURCE, TARGET;
+        R, G, B, COLOR, WEIGHT, ID, LABEL, ALPHA, SOURCE, TARGET, START, END, START_OPEN, END_OPEN;
     }
     //PropertiesAssociations association
     private List<PropertyAssociation<NodeProperties>> nodePropertyAssociations = new LinkedList<PropertyAssociation<NodeProperties>>();
