@@ -487,6 +487,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             Node node;
             Attributes nodeAttributes;
             reader = new CsvReader(new FileInputStream(file), separator, charset);
+            reader.setTrimWhitespace(false);
             reader.readHeaders();
             while (reader.readRecord()) {
                 //Prepare the correct node to assign the attributes:
@@ -572,6 +573,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             boolean directed;
             Attributes edgeAttributes;
             reader = new CsvReader(new FileInputStream(file), separator, charset);
+            reader.setTrimWhitespace(false);
             reader.readHeaders();
             while (reader.readRecord()) {
                 sourceId = reader.get(sourceColumn);
