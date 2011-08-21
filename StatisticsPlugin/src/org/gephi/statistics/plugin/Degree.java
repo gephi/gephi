@@ -107,13 +107,17 @@ public class Degree implements Statistics, LongTask {
         graph.readLock();
 
         Progress.start(progress, graph.getNodeCount());
+        
+        HierarchicalDirectedGraph directedGraph = null;
+        if(isDirected) {
+            directedGraph = graph.getGraphModel().getHierarchicalDirectedGraphVisible();
+        }
 
         for (Node n : graph.getNodes()) {
             AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
             if (isDirected) {
-                HierarchicalDirectedGraph hdg = graph.getGraphModel().getHierarchicalDirectedGraph();
-                int inDegree = hdg.getTotalInDegree(n);
-                int outDegree = hdg.getTotalOutDegree(n);
+                int inDegree = directedGraph.getTotalInDegree(n);
+                int outDegree = directedGraph.getTotalOutDegree(n);
                 row.setValue(inCol, inDegree);
                 row.setValue(outCol, outDegree);
                 if (!inDegreeDist.containsKey(inDegree)) {
