@@ -21,11 +21,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.statistics.api;
 
+import org.gephi.project.api.Workspace;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
-import java.util.List;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.utils.longtask.api.LongTaskListener;
+import org.gephi.utils.longtask.spi.LongTask;
 
 /**
  * Controller for executing Statistics/Metrics algorithms.
@@ -39,14 +40,22 @@ import org.gephi.utils.longtask.api.LongTaskListener;
 public interface StatisticsController {
 
     /**
-     * Execute the statistics algorithm. If <code>statistics</code> implements
-     * <code>LongTask</code>, execution is performed in a background thread and
-     * therefore this method returns immedialtely.
+     * Execute the statistics algorithm in a background thread and notify
+     * <code>listener</code> when finished. The <code>statistics</code> should
+     * implement {@link LongTask}.
      * @param statistics    the statistics algorithm instance
      * @param listener      a listener that is notified when execution finished
+     * @throws IllegalArgumentException if <code>statistics</code> doesn't
+     * implement {@link LongTask}
      */
     public void execute(Statistics statistics, LongTaskListener listener);
 
+    /**
+     * Executes <code>statistics</code> in the current thread.
+     * @param statistics    the statistics to execute
+     */
+    public void execute(Statistics statistics);
+    
     /**
      * Finds the builder from the statistics class.
      * @param statistics    the statistics class
@@ -55,16 +64,17 @@ public interface StatisticsController {
     public StatisticsBuilder getBuilder(Class<? extends Statistics> statistics);
 
     /**
-     * Sets the visible state for a given <code>StatisticsUI</code>.
-     * @param ui            the UI instance
-     * @param visible       <code>true</code> to display the front-end
-     */
-    public void setStatisticsUIVisible(StatisticsUI ui, boolean visible);
-
-    /**
      * Returns the current <code>StatisticsModel</code>, from the current
      * workspace
      * @return              the current <code>StatisticsModel</code>
      */
     public StatisticsModel getModel();
+    
+    /**
+     * Returns the <code>StatisticsModel</code> for <code>workspace</code>
+     * @param               workspace the workspace to return the model for
+     * @return              the <code>StatisticsModel</code> associated to
+     *                      <code>workspace</code>
+     */
+    public StatisticsModel getModel(Workspace workspace);
 }

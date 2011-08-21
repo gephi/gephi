@@ -67,7 +67,6 @@ public class StatisticsPersistenceProviderTest {
         clusteringCoefficient.execute(graphModel, attributeModel);
         model.addReport(clusteringCoefficient);
         clusteringCoefficientUI.setup(clusteringCoefficient);
-        model.addResult(clusteringCoefficientUI);
 
         GraphDensity graphDensity = new GraphDensity();
         graphDensity.execute(graphModel, attributeModel);

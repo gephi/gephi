@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.statistics.api.StatisticsModel;
+import org.gephi.desktop.statistics.api.StatisticsModelUI;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.ui.components.JSqueezeBoxPanel;
 import org.openide.util.Lookup;
@@ -54,7 +54,7 @@ public class StatisticsPanel extends JPanel {
         initFrontEnds();
     }
 
-    public void refreshModel(StatisticsModel model) {
+    public void refreshModel(StatisticsModelUI model) {
         boolean needRefreshVisible = false;
         for (UIFrontEnd entry : frontEnds) {
             entry.getFrontEnd().refreshModel(model);

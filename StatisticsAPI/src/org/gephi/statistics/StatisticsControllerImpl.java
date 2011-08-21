@@ -23,15 +23,12 @@ package org.gephi.statistics;
 
 import org.gephi.statistics.spi.StatisticsBuilder;
 import org.gephi.statistics.spi.Statistics;
-import java.util.ArrayList;
 import org.gephi.statistics.api.*;
-import java.util.List;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.ProjectController;
-import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.api.LongTaskListener;
@@ -48,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsController.class)
 public class StatisticsControllerImpl implements StatisticsController {
 
-    private StatisticsBuilder[] statisticsBuilders;
+    private final StatisticsBuilder[] statisticsBuilders;
     private StatisticsModelImpl model;
 
     public StatisticsControllerImpl() {
@@ -90,62 +87,28 @@ public class StatisticsControllerImpl implements StatisticsController {
         }
     }
 
-    /**
-     *
-     * @param statistics
-     */
-    public void execute(final Statistics pStatistics, LongTaskListener listener) {
+    public void execute(final Statistics statistics, LongTaskListener listener) {
+        StatisticsBuilder builder = getBuilder(statistics.getClass());
+        LongTaskExecutor executor = new LongTaskExecutor(true, "Statistics " + builder.getName(), 10);
+        if (listener != null) {
+            executor.setLongTaskListener(listener);
+        }
+        LongTask task = statistics instanceof LongTask ? (LongTask) statistics : null;
+
+        executor.execute(task, new Runnable() {
+
+            public void run() {
+                execute(statistics);
+            }
+        }, builder.getName(), null);
+    }
+
+    public void execute(Statistics statistics) {
         final GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         final GraphModel graphModel = graphController.getModel();
         final AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
-        StatisticsBuilder builder = getBuilder(pStatistics.getClass());
-        final StatisticsUI[] uis = getUI(pStatistics);
-
-        for (StatisticsUI s : uis) {
-            s.setup(pStatistics);
-        }
-        model.setRunning(pStatistics, true);
-
-        if (pStatistics instanceof LongTask) {
-            LongTaskExecutor executor = new LongTaskExecutor(true, "Statistics "+builder.getName(), 10);
-//            executor.addLongTaskListener(this);
-            if (listener != null) {
-                executor.setLongTaskListener(listener);
-            }
-            executor.execute((LongTask) pStatistics, new Runnable() {
-
-                public void run() {
-                    pStatistics.execute(graphModel, attributeModel);
-                    model.setRunning(pStatistics, false);
-                    for (StatisticsUI s : uis) {
-                        model.addResult(s);
-                        s.unsetup();
-                    }
-                    model.addReport(pStatistics);
-                }
-            }, builder.getName(), null);
-        } else {
-            pStatistics.execute(graphModel, attributeModel);
-            model.setRunning(pStatistics, false);
-            for (StatisticsUI s : uis) {              
-                model.addResult(s);
-                s.unsetup();
-            }
-            model.addReport(pStatistics);
-            if (listener != null) {
-                listener.taskFinished(null);
-            }
-        }
-    }
-
-    public StatisticsUI[] getUI(Statistics statistics) {
-        ArrayList<StatisticsUI> list = new ArrayList<StatisticsUI>();
-        for (StatisticsUI sui : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
-            if (sui.getStatisticsClass().equals(statistics.getClass())) {
-                list.add(sui);
-            }
-        }
-        return list.toArray(new StatisticsUI[0]);
+        statistics.execute(graphModel, attributeModel);
+        model.addReport(statistics);
     }
 
     public StatisticsBuilder getBuilder(Class<? extends Statistics> statisticsClass) {
@@ -157,11 +120,16 @@ public class StatisticsControllerImpl implements StatisticsController {
         return null;
     }
 
-    public void setStatisticsUIVisible(StatisticsUI ui, boolean visible) {
-        model.setVisible(ui, visible);
-    }
-
     public StatisticsModelImpl getModel() {
         return model;
+    }
+
+    public StatisticsModel getModel(Workspace workspace) {
+        StatisticsModel statModel = workspace.getLookup().lookup(StatisticsModelImpl.class);
+        if (statModel == null) {
+            statModel = new StatisticsModelImpl();
+            workspace.add(statModel);
+        }
+        return statModel;
     }
 }

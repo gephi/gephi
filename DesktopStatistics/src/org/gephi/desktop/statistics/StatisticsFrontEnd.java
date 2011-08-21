@@ -27,10 +27,11 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.gephi.desktop.statistics.api.StatisticsControllerUI;
+import org.gephi.desktop.statistics.api.StatisticsModelUI;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsBuilder;
 import org.gephi.statistics.api.StatisticsController;
-import org.gephi.statistics.api.StatisticsModel;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.ui.components.SimpleHTMLReport;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -56,7 +57,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     private final ImageIcon RUN_ICON;
     private final ImageIcon STOP_ICON;
     private Statistics currentStatistics;
-    private StatisticsModel currentModel;
+    private StatisticsModelUI currentModel;
 
     //Img
     ;
@@ -99,7 +100,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         reportButton.setEnabled(false);
     }
 
-    public void refreshModel(StatisticsModel model) {
+    public void refreshModel(StatisticsModelUI model) {
         currentModel = model;
         if (model == null) {
             runButton.setText(RUN);
@@ -133,7 +134,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         }
     }
 
-    private void refreshResult(StatisticsModel model) {
+    private void refreshResult(StatisticsModelUI model) {
         //Find a computed stats
         String result = model.getResult(statisticsUI);
 
@@ -150,6 +151,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     private void run() {
         //Create Statistics
         StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
+        StatisticsControllerUI controllerUI = Lookup.getDefault().lookup(StatisticsControllerUI.class);
         StatisticsBuilder builder = controller.getBuilder(statisticsUI.getStatisticsClass());
         currentStatistics = builder.getStatistics();
         if (currentStatistics != null) {
@@ -166,11 +168,11 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
                 DialogDescriptor dd = new DialogDescriptor(settingsPanel, NbBundle.getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title", builder.getName()));
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                     statisticsUI.unsetup();
-                    controller.execute(currentStatistics, listener);
+                    controllerUI.execute(currentStatistics, listener);
                 }
             } else {
                 statisticsUI.setup(currentStatistics);
-                controller.execute(currentStatistics, listener);
+                controllerUI.execute(currentStatistics, listener);
             }
         }
     }
@@ -246,7 +248,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         runButton.setText(org.openide.util.NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.runButton.text")); // NOI18N
         runButton.setFocusable(false);
         runButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        runButton.setOpaque(false);
+        runButton.setMargin(new java.awt.Insets(1, 2, 1, 2));
         runButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(runButton);
 
@@ -254,7 +256,6 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
         reportButton.setToolTipText(org.openide.util.NbBundle.getMessage(StatisticsFrontEnd.class, "StatisticsFrontEnd.reportButton.toolTipText")); // NOI18N
         reportButton.setFocusable(false);
         reportButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        reportButton.setOpaque(false);
         reportButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toolbar.add(reportButton);
 

@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.desktop.statistics;
 
 import java.awt.BorderLayout;
@@ -31,8 +31,8 @@ import java.util.Map;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
-import org.gephi.statistics.api.StatisticsController;
-import org.gephi.statistics.api.StatisticsModel;
+import org.gephi.desktop.statistics.api.StatisticsControllerUI;
+import org.gephi.desktop.statistics.api.StatisticsModelUI;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.ui.components.JSqueezeBoxPanel;
 import org.openide.util.Lookup;
@@ -51,8 +51,8 @@ public class AvailableStatisticsChooser extends javax.swing.JPanel {
         metricsPanel.add(squeezeBoxPanel, BorderLayout.CENTER);
     }
 
-    public void setup(StatisticsModel model, StatisticsCategory[] categories) {
-        
+    public void setup(StatisticsModelUI model, StatisticsCategory[] categories) {
+
         //Sort categories by position
         Arrays.sort(categories, new Comparator() {
 
@@ -66,8 +66,7 @@ public class AvailableStatisticsChooser extends javax.swing.JPanel {
         //Get UI
         StatisticsUI[] statisticsUIs = Lookup.getDefault().lookupAll(StatisticsUI.class).toArray(new StatisticsUI[0]);
 
-        for (StatisticsCategory category : categories )
-        {
+        for (StatisticsCategory category : categories) {
             MigLayout migLayout = new MigLayout("insets 0 0 0 0");
             migLayout.setColumnConstraints("[grow,fill]");
             migLayout.setRowConstraints("[min!]");
@@ -75,8 +74,8 @@ public class AvailableStatisticsChooser extends javax.swing.JPanel {
 
             //Find uis in this category
             List<StatisticsUI> uis = new ArrayList<StatisticsUI>();
-            for(StatisticsUI sui : statisticsUIs) {
-                if(sui.getCategory().equals(category.getName())) {
+            for (StatisticsUI sui : statisticsUIs) {
+                if (sui.getCategory().equals(category.getName())) {
                     uis.add(sui);
                 }
             }
@@ -84,13 +83,14 @@ public class AvailableStatisticsChooser extends javax.swing.JPanel {
             //Sort it by position
             Collections.sort(uis, new Comparator() {
 
-            public int compare(Object o1, Object o2) {
-                Integer p1 = ((StatisticsUI) o1).getPosition();
-                Integer p2 = ((StatisticsUI) o2).getPosition();
-                return p1.compareTo(p2);
-            }});
+                public int compare(Object o1, Object o2) {
+                    Integer p1 = ((StatisticsUI) o1).getPosition();
+                    Integer p2 = ((StatisticsUI) o2).getPosition();
+                    return p1.compareTo(p2);
+                }
+            });
 
-            for(StatisticsUI sui : uis) {
+            for (StatisticsUI sui : uis) {
                 JCheckBox checkBox = new JCheckBox(sui.getDisplayName());
                 checkBox.setOpaque(false);
                 checkBox.setSelected(model.isStatisticsUIVisible(sui));
@@ -98,7 +98,7 @@ public class AvailableStatisticsChooser extends javax.swing.JPanel {
                 innerPanel.add(checkBox, "wrap");
             }
 
-            if(uis.size()>0) {
+            if (uis.size() > 0) {
                 squeezeBoxPanel.addPanel(innerPanel, category.getName());
             }
         }
@@ -106,9 +106,9 @@ public class AvailableStatisticsChooser extends javax.swing.JPanel {
 
     public void unsetup() {
         //Only called when OK
-        StatisticsController controller = Lookup.getDefault().lookup(StatisticsController.class);
+        StatisticsControllerUI controller = Lookup.getDefault().lookup(StatisticsControllerUI.class);
 
-        for(Map.Entry<JCheckBox, StatisticsUI> entry : uiMap.entrySet()) {
+        for (Map.Entry<JCheckBox, StatisticsUI> entry : uiMap.entrySet()) {
             controller.setStatisticsUIVisible(entry.getValue(), entry.getKey().isSelected());
         }
     }

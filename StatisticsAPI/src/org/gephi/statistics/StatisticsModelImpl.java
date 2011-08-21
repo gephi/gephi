@@ -27,15 +27,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -55,118 +50,23 @@ import org.openide.util.Lookup;
  */
 public class StatisticsModelImpl implements StatisticsModel {
 
-    //Model
-    private final List<StatisticsUI> invisibleList;
-    private final List<Statistics> runningList;
-    private final Map<StatisticsUI, String> resultMap;
+    //Model  
     private final Map<Class, String> reportMap;
-    //Listeners
-    private final List<ChangeListener> listeners;
 
     public StatisticsModelImpl() {
-        invisibleList = new ArrayList<StatisticsUI>();
-        runningList = Collections.synchronizedList(new ArrayList<Statistics>());
-        listeners = new ArrayList<ChangeListener>();
-        resultMap = new HashMap<StatisticsUI, String>();
         reportMap = new HashMap<Class, String>();
     }
 
     public void addReport(Statistics statistics) {
         reportMap.put(statistics.getClass(), statistics.getReport());
-        fireChangeEvent();
-    }
-
-    public void addResult(StatisticsUI ui) {
-        if (resultMap.containsKey(ui) && ui.getValue() == null) {
-            resultMap.remove(ui);
-        } else {
-            resultMap.put(ui, ui.getValue());
-        }
-        fireChangeEvent();
     }
 
     public String getReport(Class<? extends Statistics> statisticsClass) {
         return reportMap.get(statisticsClass);
     }
 
-    public String getResult(StatisticsUI statisticsUI) {
-        return resultMap.get(statisticsUI);
-    }
-
-    public boolean isStatisticsUIVisible(StatisticsUI statisticsUI) {
-        return !invisibleList.contains(statisticsUI);
-    }
-
-    public boolean isRunning(StatisticsUI statisticsUI) {
-        for (Statistics s : runningList.toArray(new Statistics[0])) {
-            if (statisticsUI.getStatisticsClass().equals(s.getClass())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void setRunning(Statistics statistics, boolean running) {
-        if (!running) {
-            if (runningList.remove(statistics)) {
-                fireChangeEvent();
-            }
-        } else if (!runningList.contains(statistics)) {
-            runningList.add(statistics);
-            fireChangeEvent();
-        }
-    }
-
-    public Statistics getRunning(StatisticsUI statisticsUI) {
-        for (Statistics s : runningList.toArray(new Statistics[0])) {
-            if (statisticsUI.getStatisticsClass().equals(s)) {
-                return s;
-            }
-        }
-        return null;
-    }
-
-    public void setVisible(StatisticsUI statisticsUI, boolean visible) {
-        if (visible) {
-            if (invisibleList.remove(statisticsUI)) {
-                fireChangeEvent();
-            }
-        } else if (!invisibleList.contains(statisticsUI)) {
-            invisibleList.add(statisticsUI);
-            fireChangeEvent();
-        }
-    }
-
-    public void addChangeListener(ChangeListener changeListener) {
-        if (!listeners.contains(changeListener)) {
-            listeners.add(changeListener);
-        }
-    }
-
-    public void removeChangeListener(ChangeListener changeListener) {
-        listeners.remove(changeListener);
-    }
-
-    public void fireChangeEvent() {
-        ChangeEvent evt = new ChangeEvent(this);
-        for (ChangeListener listener : listeners) {
-            listener.stateChanged(evt);
-        }
-    }
-
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
         writer.writeStartElement("statisticsmodel");
-
-        writer.writeStartElement("results");
-        for (Map.Entry<StatisticsUI, String> entry : resultMap.entrySet()) {
-            if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                writer.writeStartElement("result");
-                writer.writeAttribute("class", entry.getKey().getClass().getName());
-                writer.writeAttribute("value", entry.getValue());
-                writer.writeEndElement();
-            }
-        }
-        writer.writeEndElement();
 
         writer.writeStartElement("reports");
         for (Map.Entry<Class, String> entry : reportMap.entrySet()) {
@@ -195,19 +95,7 @@ public class StatisticsModelImpl implements StatisticsModel {
             switch (type) {
                 case XMLStreamReader.START_ELEMENT:
                     String name = reader.getLocalName();
-                    if ("result".equalsIgnoreCase(name)) {
-                        String classStr = reader.getAttributeValue(null, "class");
-                        StatisticsUI resultUI = null;
-                        for (StatisticsUI ui : uis) {
-                            if (ui.getClass().getName().equals(classStr)) {
-                                resultUI = ui;
-                            }
-                        }
-                        if (resultUI != null) {
-                            String value = reader.getAttributeValue(null, "value");
-                            resultMap.put(resultUI, value);
-                        }
-                    } else if ("report".equalsIgnoreCase(name)) {
+                    if ("report".equalsIgnoreCase(name)) {
                         String classStr = reader.getAttributeValue(null, "class");
                         Class reportClass = null;
                         for (StatisticsBuilder builder : builders) {
