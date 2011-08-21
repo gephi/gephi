@@ -241,6 +241,7 @@
                 <provider classname="org.gephi.filters.FilterModelPersistenceProvider"/>
                 <provider classname="org.gephi.layout.LayoutModelPersistenceProvider"/>
                 <provider classname="org.gephi.partition.impl.PartitionModelPersistenceProvider"/>
+                <provider classname="org.gephi.desktop.statistics.StatisticsUIPersistenceProvider"/>
             </service>
             
             <service type="org.gephi.project.spi.WorkspaceDuplicateProvider">
