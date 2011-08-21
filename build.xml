@@ -230,6 +230,7 @@
                 <provider classname="com.mysql.jdbc.Driver"/>
                 <provider classname="org.postgresql.Driver"/>
                 <provider classname="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+                <provider classname="org.gephi.io.database.drivers.SQLiteDriver"/>
             </service>
             
             <service type="org.gephi.project.spi.WorkspacePersistenceProvider">
@@ -241,7 +242,7 @@
                 <provider classname="org.gephi.filters.FilterModelPersistenceProvider"/>
                 <provider classname="org.gephi.layout.LayoutModelPersistenceProvider"/>
                 <provider classname="org.gephi.partition.impl.PartitionModelPersistenceProvider"/>
-                <provider classname="org.gephi.desktop.statistics.StatisticsUIPersistenceProvider"/>
+                <provider classname="org.gephi.statistics.StatisticsPersistenceProvider"/>
             </service>
             
             <service type="org.gephi.project.spi.WorkspaceDuplicateProvider">
