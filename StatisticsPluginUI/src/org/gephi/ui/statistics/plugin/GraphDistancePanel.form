@@ -20,18 +20,18 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="header" alignment="0" pref="633" max="32767" attributes="0"/>
+          <Component id="header" alignment="0" pref="746" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="262" max="-2" attributes="0"/>
-                      <Component id="descriptionLabel" pref="355" max="32767" attributes="0"/>
+                      <Component id="descriptionLabel" pref="447" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="directedRadioButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="230" max="32767" attributes="0"/>
+                      <EmptySpace pref="259" max="32767" attributes="0"/>
                       <Component id="normalizeButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="165" max="-2" attributes="0"/>
                   </Group>
@@ -46,7 +46,7 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jXLabel3" alignment="0" pref="460" max="32767" attributes="0"/>
+                  <Component id="jXLabel3" alignment="0" max="32767" attributes="0"/>
                   <Component id="jXLabel2" max="32767" attributes="0"/>
                   <Component id="jXLabel1" alignment="1" max="32767" attributes="0"/>
               </Group>
@@ -55,7 +55,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="undirectedRadioButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="548" max="32767" attributes="0"/>
+              <EmptySpace pref="627" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

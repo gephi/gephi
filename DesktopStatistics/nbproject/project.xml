@@ -7,6 +7,30 @@
             <suite-component/>
             <module-dependencies>
                 <dependency>
+                    <code-name-base>org.gephi.data.attributes.api</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.8.0.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.gephi.dynamic.api</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.8.0.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.gephi.lib.validation</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.4</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.gephi.project.api</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -44,6 +68,15 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>0.7</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.jdesktop.layout</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>1</release-version>
+                        <specification-version>1.17.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

@@ -26,14 +26,22 @@ import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.api.*;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.type.Interval;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicGraph;
+import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.project.api.ProjectController;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.api.LongTaskListener;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.statistics.spi.DynamicStatistics;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -104,10 +112,46 @@ public class StatisticsControllerImpl implements StatisticsController {
     }
 
     public void execute(Statistics statistics) {
-        final GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        final GraphModel graphModel = graphController.getModel();
-        final AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
+        if (statistics instanceof DynamicStatistics) {
+            execute((DynamicStatistics) statistics);
+        } else {
+            GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+            GraphModel graphModel = graphController.getModel();
+            AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
+            statistics.execute(graphModel, attributeModel);
+            model.addReport(statistics);
+        }
+    }
+
+    public void execute(DynamicStatistics statistics) {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        GraphModel graphModel = graphController.getModel();
+        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
+        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        DynamicModel dynamicModel = dynamicController.getModel();
+        AttributeModel attributeModel = attributeController.getModel();
+
+        double window = statistics.getWindow();
+        double tick = statistics.getTick();
+        Interval bounds = statistics.getBounds();
+
+        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+        DynamicGraph dynamicGraph = dynamicModel.createDynamicGraph(graph, bounds);
+
+        //Init
         statistics.execute(graphModel, attributeModel);
+
+        //Loop
+        for (double low = bounds.getLow(); low <= bounds.getHigh() - window;
+                low += tick) {
+            double high = low + window;
+
+            Graph g = dynamicGraph.getSnapshotGraph(low, high);
+
+
+            statistics.loop(g.getView(), new Interval(low, high));
+        }
+        statistics.end();
         model.addReport(statistics);
     }
 

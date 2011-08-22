@@ -31,6 +31,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.gephi.project.api</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>0.8</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.gephi.statistics.api</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -115,6 +123,8 @@
             <public-packages>
                 <package>org.gephi.statistics.plugin</package>
                 <package>org.gephi.statistics.plugin.builder</package>
+                <package>org.gephi.statistics.plugin.dynamic</package>
+                <package>org.gephi.statistics.plugin.dynamic.builder</package>
             </public-packages>
         </data>
     </configuration>

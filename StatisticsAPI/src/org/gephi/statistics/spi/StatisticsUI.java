@@ -42,6 +42,7 @@ public interface StatisticsUI {
     public static final String CATEGORY_NETWORK_OVERVIEW = NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.networkOverview");
     public static final String CATEGORY_NODE_OVERVIEW = NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.nodeOverview");
     public static final String CATEGORY_EDGE_OVERVIEW = NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.edgeOverview");
+    public static final String CATEGORY_DYNAMIC = NbBundle.getMessage(StatisticsUI.class, "StatisticsUI.category.dynamic");
 
     /**
      * Returns a settings panel instance.
@@ -86,7 +87,8 @@ public interface StatisticsUI {
      * <ul>
      * <li>{@link StatisticsUI#CATEGORY_NETWORK_OVERVIEW}</li>
      * <li>{@link StatisticsUI#CATEGORY_NODE_OVERVIEW}</li>
-     * <li>{@link StatisticsUI#CATEGORY_EDGE_OVERVIEW}</li></ul>
+     * <li>{@link StatisticsUI#CATEGORY_EDGE_OVERVIEW}</li>
+     * <li>{@link StatisticsUI#CATEGORY_DYNAMIC}</li></ul>
      * Returns a custom String for defining a new category.
      * @return              this statistics' category
      */
