@@ -24,6 +24,7 @@ package org.gephi.dynamic.api;
 import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.DynamicInteger;
 import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.graph.api.Graph;
 
@@ -78,13 +79,14 @@ public interface DynamicModel {
 
     /**
      * Builds a new {@code DynamicGraph} from the given {@code Graph} instance
-     * wrapping the given {@code TimeInterval}.
+     * wrapping the given {@code Interval}.
      *
      * @param graph the underlying graph
+     * @param interval the interval to filter the graph
      *
      * @return a new a new {@code DynamicGraph}.
      */
-    public DynamicGraph createDynamicGraph(Graph graph, TimeInterval interval);
+    public DynamicGraph createDynamicGraph(Graph graph, Interval interval);
 
     /**
      * Returns the time interval wrapped by the {@code DynamicGraph} of
@@ -142,9 +144,23 @@ public interface DynamicModel {
 
     /**
      * Returns <code>true</code> if the graph in the current workspace is dynamic,
-     * i.e. when the graph has either dynamic topology, attribute sor both.
+     * i.e. when the graph has either dynamic topology, attributes or both.
      * @return <code>true</code> if the graph is dynamic, <code>false</code>
      * otherwise
      */
     public boolean isDynamicGraph();
+    
+    /**
+     * Returns <code>true</code> if the graph in the current workspace has dynamic
+     * nodes. In other words if nodes are added or removed dynamically.
+     * @return  <code>true</code> if the graph has dynamic nodes
+     */
+    public boolean hasDynamicNodes();
+    
+    /**
+     * Returns <code>true</code> if the graph in the current workspace has dynamic
+     * edges. In other words if edges are added or removed dynamically.
+     * @return  <code>true</code> if the graph has dynamic edges
+     */
+    public boolean hasDynamicEdges();
 }

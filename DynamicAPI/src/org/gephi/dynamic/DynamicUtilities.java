@@ -49,6 +49,10 @@ import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.Node;
 import org.openide.util.Exceptions;
 
 /**
@@ -675,5 +679,34 @@ public final class DynamicUtilities {
             return new Interval<String>(low, high, lopen, ropen, (String) value);
         }
         return null;
+    }
+
+    public static int getNodeCount(Graph graph, Interval timeInterval) {
+        int nodeCount = 0;
+        for (Node n : graph.getNodes()) {
+            TimeInterval tnode = (TimeInterval) n.getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
+            if (tnode.isInRange(timeInterval.getLow(), timeInterval.getHigh())) {
+                nodeCount++;
+            }
+        }
+        return nodeCount;
+    }
+
+    public static int getEdgeCount(Graph graph, Interval timeInterval) {
+        int edgeCount = 0;
+        for (Edge e : ((HierarchicalGraph) graph).getEdgesAndMetaEdges()) {
+            TimeInterval tedge = (TimeInterval) e.getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
+            if (tedge.isInRange(timeInterval.getLow(), timeInterval.getHigh())) {
+
+                TimeInterval tsource = (TimeInterval) e.getSource().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
+                TimeInterval tdest = (TimeInterval) e.getTarget().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
+                if (tsource.isInRange(timeInterval.getLow(), timeInterval.getHigh())
+                        && tdest.isInRange(timeInterval.getLow(), timeInterval.getHigh())) {
+                    edgeCount++;
+                }
+
+            }
+        }
+        return edgeCount;
     }
 }
