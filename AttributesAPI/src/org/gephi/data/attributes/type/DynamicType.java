@@ -377,6 +377,15 @@ public abstract class DynamicType<T> {
 			result.add(i.getValue());
 		return result;
 	}
+        
+        /**
+	 * Returns a list of all intervals.
+	 *
+	 * @return a list of intervals which overlap with a given time interval.
+	 */
+	public List<Interval<T>> getIntervals() {
+		return intervalTree.getIntervals();
+	}
 
 	/**
 	 * Returns a list of intervals which overlap with a given time interval.

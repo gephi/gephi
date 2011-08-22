@@ -417,6 +417,17 @@ public final class IntervalTree<T> {
 	public boolean isEmpty() {
 		return root.left == nil;
 	}
+        
+        /**
+         * Returns all intervals.
+         * 
+         * @return all intervals
+         */
+        public List<Interval<T>> getIntervals() {
+                List<Interval<T>> list = new ArrayList<Interval<T>>();
+		inorderTreeWalk(root.left, list);
+                return list;
+        }
 
 	/**
 	 * Returns all intervals overlapping with a given {@code Interval}.
