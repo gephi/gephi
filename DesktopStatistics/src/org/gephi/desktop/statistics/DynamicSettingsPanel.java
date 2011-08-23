@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.statistics;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.concurrent.TimeUnit;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -36,6 +38,7 @@ import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
 
 /**
  *
@@ -43,8 +46,33 @@ import org.openide.util.NbBundle;
  */
 public class DynamicSettingsPanel extends javax.swing.JPanel {
 
+    private TimeUnit windowTimeUnit = TimeUnit.DAYS;
+    private TimeUnit tickTimeUnit = TimeUnit.DAYS;
+
     public DynamicSettingsPanel() {
         initComponents();
+
+        //Lod timeunit's combo
+        windowTimeUnitCombo.setModel(getTimeUnitModel());
+        tickTimeUnitCombo.setModel(getTimeUnitModel());
+
+        windowTimeUnitCombo.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getItem() != windowTimeUnitCombo.getSelectedItem()) {
+                    refreshWindowTimeUnit();
+                }
+            }
+        });
+
+        tickTimeUnitCombo.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getItem() != tickTimeUnitCombo.getSelectedItem()) {
+                    refreshTickTimeUnit();
+                }
+            }
+        });
     }
     Interval bounds = null;
 
@@ -74,14 +102,24 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         }
         currentIntervalLabel.setText(boundsStr);
 
-        //Window and tick
-        windowTextField.setText(dynamicStatistics.getWindow() + "");
-        tickTextField.setText(dynamicStatistics.getWindow() + "");
-
         //TimeUnit
         if (model.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) {
             windowTimeUnitCombo.setVisible(false);
             tickTimeUnitCombo.setVisible(false);
+        }
+
+        //Set latest selected item
+        if (!model.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) {
+            loadDefaultTimeUnits();
+        }
+
+        //Window and tick
+        if (model.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) {
+            windowTextField.setText(dynamicStatistics.getWindow() + "");
+            tickTextField.setText(dynamicStatistics.getWindow() + "");
+        } else {
+            windowTextField.setText("" + windowTimeUnit.convert((long) dynamicStatistics.getWindow(), TimeUnit.MILLISECONDS));
+            tickTextField.setText("" + tickTimeUnit.convert((long) dynamicStatistics.getTick(), TimeUnit.MILLISECONDS));
         }
     }
 
@@ -108,9 +146,14 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
             tick = Double.parseDouble(tickTextField.getText());
         } else {
             TimeUnit timeUnit = getSelectedTimeUnit(tickTimeUnitCombo.getModel());
-            window = getTimeInMilliseconds(tickTextField.getText(), timeUnit);
+            tick = getTimeInMilliseconds(tickTextField.getText(), timeUnit);
         }
         dynamicStatistics.setTick(tick);
+
+        //Save latest selected item
+        if (!model.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) {
+            saveDefaultTimeUnits();
+        }
     }
 
     public void createValidation(ValidationGroup group) {
@@ -154,9 +197,56 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         return null;
     }
 
-    public double getTimeInMilliseconds(String text, TimeUnit timeUnit) {
+    private double getTimeInMilliseconds(String text, TimeUnit timeUnit) {
         Integer t = Integer.parseInt(text);
         return TimeUnit.MILLISECONDS.convert(t, timeUnit);
+    }
+
+    private void refreshWindowTimeUnit() {
+        TimeUnit tu = getSelectedTimeUnit(windowTimeUnitCombo.getModel());
+        Integer value = Integer.parseInt(windowTextField.getText());
+        long newValue = tu.convert(value, windowTimeUnit);
+        windowTextField.setText("" + newValue);
+        windowTimeUnit = tu;
+    }
+
+    private void refreshTickTimeUnit() {
+        TimeUnit tu = getSelectedTimeUnit(tickTimeUnitCombo.getModel());
+        Integer value = Integer.parseInt(tickTextField.getText());
+        long newValue = tu.convert(value, tickTimeUnit);
+        tickTextField.setText("" + newValue);
+        tickTimeUnit = tu;
+    }
+
+    private void loadDefaultTimeUnits() {
+        String windowDuration = NbPreferences.forModule(DynamicSettingsPanel.class).get("DynamicSettingsPanel_window_timeunit", windowTimeUnit.name());
+        windowTimeUnit = TimeUnit.valueOf(windowDuration);
+        String tickDuration = NbPreferences.forModule(DynamicSettingsPanel.class).get("DynamicSettingsPanel_tick_timeunit", tickTimeUnit.name());
+        tickTimeUnit = TimeUnit.valueOf(tickDuration);
+        windowTimeUnitCombo.setSelectedItem(getTimeUnit(windowTimeUnit));
+        tickTimeUnitCombo.setSelectedItem(getTimeUnit(tickTimeUnit));
+    }
+
+    private void saveDefaultTimeUnits() {
+        TimeUnit windowTimeUnit = getSelectedTimeUnit(windowTimeUnitCombo.getModel());
+        TimeUnit tickTimeUnit = getSelectedTimeUnit(tickTimeUnitCombo.getModel());
+        NbPreferences.forModule(DynamicSettingsPanel.class).put("DynamicSettingsPanel_window_timeunit", windowTimeUnit.name());
+        NbPreferences.forModule(DynamicSettingsPanel.class).put("DynamicSettingsPanel_tick_timeunit", tickTimeUnit.name());
+    }
+
+    private String getTimeUnit(TimeUnit timeUnit) {
+        if (timeUnit.equals(TimeUnit.DAYS)) {
+            return DAYS;
+        } else if (timeUnit.equals(TimeUnit.HOURS)) {
+            return HOURS;
+        } else if (timeUnit.equals(TimeUnit.MILLISECONDS)) {
+            return MILLISECONDS;
+        } else if (timeUnit.equals(TimeUnit.MINUTES)) {
+            return MINUTES;
+        } else if (timeUnit.equals(TimeUnit.SECONDS)) {
+            return SECONDS;
+        }
+        return null;
     }
 
     /** This method is called from within the constructor to
