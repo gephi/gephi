@@ -20,14 +20,17 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.statistics.api;
 
-import org.gephi.project.api.Workspace;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.gephi.utils.longtask.api.LongTaskListener;
 import org.gephi.utils.longtask.spi.LongTask;
 
 /**
- *
+ * Controller for executing Statistics/Metrics algorithms with UI support.
+ * <p>
+ * This controller is a service and can therefore be found in Lookup:
+ * <pre>StatisticsControllerUI sc = Lookup.getDefault().lookup(StatisticsControllerUI.class);</pre>
+ * 
  * @author Mathieu Bastian
  */
 public interface StatisticsControllerUI {
