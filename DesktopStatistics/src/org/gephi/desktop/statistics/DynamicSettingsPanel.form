@@ -35,9 +35,9 @@
                           <Component id="windowTextField" alignment="0" pref="127" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="tickTimeUnitCombo" min="-2" pref="115" max="-2" attributes="0"/>
-                          <Component id="windowTimeUnitCombo" alignment="0" min="-2" pref="115" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="tickTimeUnitCombo" max="32767" attributes="1"/>
+                          <Component id="windowTimeUnitCombo" alignment="0" pref="135" max="32767" attributes="1"/>
                       </Group>
                   </Group>
               </Group>

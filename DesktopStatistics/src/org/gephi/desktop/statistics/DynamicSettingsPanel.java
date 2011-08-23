@@ -33,6 +33,8 @@ import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.lib.validation.PositiveNumberValidator;
 import org.gephi.statistics.spi.DynamicStatistics;
+import org.netbeans.validation.api.Problems;
+import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
@@ -55,24 +57,6 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         //Lod timeunit's combo
         windowTimeUnitCombo.setModel(getTimeUnitModel());
         tickTimeUnitCombo.setModel(getTimeUnitModel());
-
-        windowTimeUnitCombo.addItemListener(new ItemListener() {
-
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getItem() != windowTimeUnitCombo.getSelectedItem()) {
-                    refreshWindowTimeUnit();
-                }
-            }
-        });
-
-        tickTimeUnitCombo.addItemListener(new ItemListener() {
-
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getItem() != tickTimeUnitCombo.getSelectedItem()) {
-                    refreshTickTimeUnit();
-                }
-            }
-        });
     }
     Interval bounds = null;
 
@@ -121,6 +105,25 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
             windowTextField.setText("" + windowTimeUnit.convert((long) dynamicStatistics.getWindow(), TimeUnit.MILLISECONDS));
             tickTextField.setText("" + tickTimeUnit.convert((long) dynamicStatistics.getTick(), TimeUnit.MILLISECONDS));
         }
+
+        //Add listeners
+        windowTimeUnitCombo.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getItem() != windowTimeUnitCombo.getSelectedItem()) {
+                    refreshWindowTimeUnit();
+                }
+            }
+        });
+
+        tickTimeUnitCombo.addItemListener(new ItemListener() {
+
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getItem() != tickTimeUnitCombo.getSelectedItem()) {
+                    refreshTickTimeUnit();
+                }
+            }
+        });
     }
 
     public void unsetup(DynamicStatistics dynamicStatistics) {
@@ -167,9 +170,11 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         } else {
             //TODO validation with dates
             group.add(windowTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                    new PositiveNumberValidator());
+                    new PositiveNumberValidator(),
+                    new DateRangeValidator(windowTimeUnitCombo.getModel()));
             group.add(tickTextField, Validators.REQUIRE_NON_EMPTY_STRING,
-                    new PositiveNumberValidator());
+                    new PositiveNumberValidator(),
+                    new DateRangeValidator(tickTimeUnitCombo.getModel()));
         }
     }
     private final String DAYS = NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.TimeUnit.DAYS");
@@ -228,8 +233,6 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
     }
 
     private void saveDefaultTimeUnits() {
-        TimeUnit windowTimeUnit = getSelectedTimeUnit(windowTimeUnitCombo.getModel());
-        TimeUnit tickTimeUnit = getSelectedTimeUnit(tickTimeUnitCombo.getModel());
         NbPreferences.forModule(DynamicSettingsPanel.class).put("DynamicSettingsPanel_window_timeunit", windowTimeUnit.name());
         NbPreferences.forModule(DynamicSettingsPanel.class).put("DynamicSettingsPanel_tick_timeunit", tickTimeUnit.name());
     }
@@ -298,9 +301,9 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
                             .add(tickTextField)
                             .add(windowTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(tickTimeUnitCombo, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 115, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(windowTimeUnitCombo, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 115, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(tickTimeUnitCombo, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(windowTimeUnitCombo, 0, 135, Short.MAX_VALUE))))
                 .addContainerGap())
             .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE)
         );
@@ -336,6 +339,34 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JTextField windowTextField;
     private javax.swing.JComboBox windowTimeUnitCombo;
     // End of variables declaration//GEN-END:variables
+
+    private class DateRangeValidator implements Validator<String> {
+
+        private ComboBoxModel combo;
+
+        public DateRangeValidator(ComboBoxModel comboBoxModel) {
+            this.combo = comboBoxModel;
+        }
+
+        public boolean validate(Problems prblms, String string, String t) {
+            Integer i = 0;
+            try {
+                i = Integer.parseInt(t);
+            } catch (NumberFormatException e) {
+                return false;
+            }
+            TimeUnit tu = getSelectedTimeUnit(combo);
+            long timeInMilli = (long) getTimeInMilliseconds(t, tu);
+            long limit = (long) (bounds.getHigh() - bounds.getLow());
+            if (i < 1 || timeInMilli > limit) {
+                String message = NbBundle.getMessage(DynamicSettingsPanel.class,
+                        "DateRangeValidator.NotInRange", i, 1, tu.convert(limit, TimeUnit.MILLISECONDS));
+                prblms.add(message);
+                return false;
+            }
+            return true;
+        }
+    }
 
     public static JPanel createCounpoundPanel(DynamicSettingsPanel dynamicPanel, JPanel innerPanel) {
         JPanel result = new JPanel();
