@@ -23,6 +23,7 @@ package org.gephi.desktop.progress;
 import org.gephi.utils.progress.ProgressTicket;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.openide.awt.StatusDisplayer;
 import org.openide.util.Cancellable;
 
 /**
@@ -55,6 +56,21 @@ public final class ProgressTicketImpl implements ProgressTicket {
             }
         }
     }
+
+    /**
+     * Finish the task and display a statusbar message
+     * @param finishMessage 
+     */
+    public void finish(String finishMessage) {
+        if (handle != null && started) {
+            try {
+                handle.finish();
+            } catch (Exception e) {
+                System.err.println("Progress Handle failed to finish");
+            }
+            StatusDisplayer.getDefault().setStatusText(finishMessage);
+        }
+    }  
 
     /**
      * Notify the user about a new completed unit. Equivalent to incrementing workunits by one.
@@ -111,7 +127,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
     public void setDisplayName(String newDisplayName) {
         if (handle != null) {
             handle.setDisplayName(newDisplayName);
-            this.displayName = displayName;
+            this.displayName = newDisplayName;
         }
     }
 

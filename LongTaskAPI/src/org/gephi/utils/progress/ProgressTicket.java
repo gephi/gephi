@@ -22,6 +22,7 @@ package org.gephi.utils.progress;
 
 /**
  * Progress task following, must be used from {@link Progress} class.
+ * 
  * @author Mathieu Bastian
  */
 public interface ProgressTicket {
@@ -30,6 +31,12 @@ public interface ProgressTicket {
      * Finish the progress task.
      */
     void finish();
+    
+    /**
+     * Finish the progress task and show and wrap-up message
+     * @param finishMessage a message about the finished task
+     */
+    void finish(String finishMessage);
 
     /**
      * Notify the user about a new completed unit. Equivalent to incrementing workunits by one.
@@ -61,6 +68,10 @@ public interface ProgressTicket {
      */
     void setDisplayName(String newDisplayName);
     
+    /**
+     * Returns the current display name
+     * @return the current display name
+     */
     String getDisplayName();
 
     /**

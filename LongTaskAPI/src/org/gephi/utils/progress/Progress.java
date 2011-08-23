@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.utils.progress;
 
 /**
@@ -34,6 +34,17 @@ public class Progress {
     public static void finish(ProgressTicket progressTicket) {
         if (progressTicket != null) {
             progressTicket.finish();
+        }
+    }
+
+    /**
+     * Finish the progress task and display a wrap-up message
+     * @param progressTicket the progress ticket of the task
+     * @param finishMessage a message about the finished task
+     */
+    public static void finish(ProgressTicket progressTicket, String finishMessage) {
+        if (progressTicket != null) {
+            progressTicket.finish(finishMessage);
         }
     }
 
@@ -91,12 +102,12 @@ public class Progress {
             progressTicket.setDisplayName(newDisplayName);
         }
     }
-    
+
     /**
      * Returns the current task's display name, or an empty string.
      */
     public static String getDisplayName(ProgressTicket progressTicket) {
-        if(progressTicket != null) {
+        if (progressTicket != null) {
             return progressTicket.getDisplayName();
         }
         return "";
