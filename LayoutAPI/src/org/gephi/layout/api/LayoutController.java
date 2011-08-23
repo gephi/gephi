@@ -17,7 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.layout.api;
 
 import org.gephi.layout.spi.Layout;
@@ -40,7 +40,7 @@ public interface LayoutController {
 
     /**
      * Sets the Layout to execute.
-     * @param layout the layous that is to be selected
+     * @param layout the layout that is to be selected
      */
     public void setLayout(Layout layout);
 
@@ -48,6 +48,12 @@ public interface LayoutController {
      * Executes the current Layout.
      */
     public void executeLayout();
+
+    /**
+     * Executes the current layout for <code>numIterations</code> iterations.
+     * @param numIterations the number of iterations of the algorithm
+     */
+    public void executeLayout(int numIterations);
 
     /**
      * Determine if the current Layout can be executed.

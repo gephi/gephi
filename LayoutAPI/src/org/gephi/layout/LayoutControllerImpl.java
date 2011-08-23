@@ -31,6 +31,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.utils.progress.Progress;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -103,6 +104,14 @@ public class LayoutControllerImpl implements LayoutController {
         }
     }
 
+    public void executeLayout(int numIterations) {
+        if (model.getSelectedLayout() != null) {
+            layoutRun = new LayoutRun(model.getSelectedLayout(), numIterations);
+            model.getExecutor().execute(layoutRun, layoutRun);
+            model.setRunning(true);
+        }
+    }
+
     public void injectGraph() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
         if (model.getSelectedLayout() != null && graphController.getModel() != null) {
@@ -124,23 +133,39 @@ public class LayoutControllerImpl implements LayoutController {
 
     private static class LayoutRun implements LongTask, Runnable {
 
-        private Layout layout;
+        private final Layout layout;
         private boolean stopRun = false;
         private ProgressTicket progressTicket;
+        private final Integer iterations;
 
         public LayoutRun(Layout layout) {
             this.layout = layout;
+            this.iterations = null;
+        }
+
+        public LayoutRun(Layout layout, int numIterations) {
+            this.layout = layout;
+            this.iterations = numIterations;
         }
 
         public void run() {
             Progress.setDisplayName(progressTicket, layout.getBuilder().getName());
             Progress.start(progressTicket);
             layout.initAlgo();
+            long i = 0;
             while (layout.canAlgo() && !stopRun) {
                 layout.goAlgo();
+                i++;
+                if (iterations != null && iterations.longValue() == i) {
+                    break;
+                }
             }
             layout.endAlgo();
-            Progress.finish(progressTicket);
+            if (i > 1) {
+                Progress.finish(progressTicket, NbBundle.getMessage(LayoutControllerImpl.class, "LayoutRun.end", layout.getBuilder().getName(), i));
+            } else {
+                Progress.finish(progressTicket);
+            }
         }
 
         public boolean cancel() {
