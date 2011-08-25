@@ -13,6 +13,11 @@
         <hr/>
         <h2>API Changes</h2>
         <ul>
+            <li>(August 24 2011) Important changes in graph events breaking API compatibility. The <code>ADD_NODES</code> and <code>ADD_EDGES</code> are merged
+                into a <code>ADD_NODES_AND_EDGES</code> event. Similarly <code>REMOVE_NODES</code> and <code>REMOVE_EDGES</code> are merged into a
+                <code>REMOVE_NODES_AND_EDGES</code> event. <code>GraphEventData</code> remains the same and still contains both added/removed nodes and
+                edges. Users may simply test if arrays returned by <code>addedNodes()</code>, <code>addedEdges()</code>, <code>removedNodes()</code> and
+                <code>removedEdges()</code> are <code>null</code> before using them.
             <li>(August 22 2011) Add new <code>executeLayout(numIterations)</code> method in <code>LayoutController</code>.
             <li>(August 20 2011) The <code>StatisticsController</code> now supports synchronous algorithm execution through the <code>execute(Statistics)</code>
                 method.</li>
@@ -192,7 +197,7 @@
             <li><span class="unstable"><b>Preview API</b></span>  - API for building the graph preview structure.</li>
             <li><b>Project API</b> - Project API/SPI for project and worskpaces manipulation.</li>
             <li><b>Ranking API</b>  - API/SPI for ranking data values and transform values in visual signs like color or size.</li>
-            <li><b>Statistics API</b> - Statistics and Metrics API/SPI provides asynchronous algorithms execution and UI infrastructure.</li>
+            <li><b>Statistics API</b> - Statistics and Metrics API/SPI provides (a)synchronous algorithms execution.</li>
             <li><b>Tools API</b> - Tool API/SPI defines interactive actions users can make with the visualization.</li>
             <li><b>Visualization API</b> - API/SPI for interacting with visualization and providing context menu actions.</li>
         </ul>
