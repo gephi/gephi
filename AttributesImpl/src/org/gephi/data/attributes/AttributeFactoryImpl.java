@@ -17,10 +17,11 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.api.AttributeValue;
@@ -47,7 +48,10 @@ public class AttributeFactoryImpl implements AttributeValueFactory, AttributeRow
         if (value.getClass() != column.getType().getType() && value.getClass() == String.class) {
             value = column.getType().parse((String) value);
         }
-        Object managedValue = model.getManagedValue(value, column.getType());
+        Object managedValue = value;
+        if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
+            managedValue = model.getManagedValue(value, column.getType());
+        }
         return new AttributeValueImpl((AttributeColumnImpl) column, managedValue);
     }
 
