@@ -22,6 +22,7 @@ package org.gephi.data.attributes.event;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,14 +39,15 @@ import org.gephi.data.attributes.api.AttributeValue;
 public class AttributeEventManager implements Runnable {
 
     //Const
-    private final static long DELAY = 1;
+    private final static long DELAY = 100;
     //Architecture
     private final AbstractAttributeModel model;
     private final List<AttributeListener> listeners;
     private final AtomicReference<Thread> thread = new AtomicReference<Thread>();
     private final LinkedBlockingQueue<AbstractEvent> eventQueue;
     private final Object lock = new Object();
-    private int eventRate = 1;
+    private final LinkedList<Integer> rateList = new LinkedList<Integer>();
+    private double avgRate = 1.0;
     //Flag
     private boolean stop;
 
@@ -59,14 +61,15 @@ public class AttributeEventManager implements Runnable {
     public void run() {
         int rate = 0;
         while (!stop) {
-            if (rate == eventRate) {
+            if (rate == (int) avgRate) {
                 try {
                     Thread.sleep(DELAY);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
-                eventRate = (int)(eventQueue.size()*0.1f);
-                eventRate = Math.max(1, eventRate);
+                int w = (int) (eventQueue.size() * 0.1f);
+                w = Math.max(1, w);
+                updateRate(w);
                 rate++;
             }
             List<Object> eventCompress = null;
@@ -104,11 +107,10 @@ public class AttributeEventManager implements Runnable {
                     l.attributesChanged(event);
                 }
             }
-            rate ++;
-            
+            rate++;
+
             while (eventQueue.isEmpty()) {
-                rate = 0;
-                eventRate = 1;
+                rate = (int) avgRate;
                 try {
                     synchronized (lock) {
                         lock.wait();
@@ -144,6 +146,17 @@ public class AttributeEventManager implements Runnable {
             eventData.setColumns(columns);
         }
         return attributeEvent;
+    }
+
+    private double updateRate(int n) {
+        int windowLength = 10;
+        if (rateList.size() == windowLength) {
+            Integer oldest = rateList.poll();
+            avgRate = ((avgRate * windowLength) - oldest) / (windowLength - 1);
+        }
+        avgRate = ((avgRate * rateList.size()) + n) / (rateList.size() + 1);
+        rateList.add(n);
+        return avgRate;
     }
 
     public void stop(boolean stop) {

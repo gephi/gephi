@@ -72,11 +72,9 @@ public class FilterAutoRefreshor extends Thread implements GraphListener {
     }
 
     public void graphChanged(GraphEvent event) {
-        if (event.getSource().isMainView() && event.is(GraphEvent.EventType.ADD_EDGES,
-                GraphEvent.EventType.ADD_NODES,
-                GraphEvent.EventType.MOVE_NODES,
-                GraphEvent.EventType.REMOVE_EDGES,
-                GraphEvent.EventType.REMOVE_NODES)) {
+        if (event.getSource().isMainView() && event.is(GraphEvent.EventType.ADD_NODES_AND_EDGES,
+                GraphEvent.EventType.REMOVE_NODES_AND_EDGES,
+                GraphEvent.EventType.MOVE_NODES)) {
             refresh.set(true);
             //System.out.println("set refresh true");
         }

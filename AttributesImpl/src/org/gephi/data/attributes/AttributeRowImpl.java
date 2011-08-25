@@ -121,7 +121,8 @@ public class AttributeRowImpl implements AttributeRow {
 
         this.values[index] = value;
 
-        if (!((oldValue == null && value == null) || (oldValue != null && oldValue.equals(value)))) {
+        if (!((oldValue == null && value == null) || (oldValue != null && oldValue.equals(value)))
+                && index > 0) {    //0 is the index of node id and edge id cols, not useful to send these events
             attributeTable.model.fireAttributeEvent(new ValueEvent(EventType.SET_VALUE, attributeTable, object, value));
         }
     }
@@ -175,10 +176,10 @@ public class AttributeRowImpl implements AttributeRow {
         return values.length;
     }
 
-     public AttributeColumn getColumnAt(int index){
-         updateColumns();
-         return attributeTable.getColumn(index);
-     }
+    public AttributeColumn getColumnAt(int index) {
+        updateColumns();
+        return attributeTable.getColumn(index);
+    }
 
     public Object getObject() {
         return object;

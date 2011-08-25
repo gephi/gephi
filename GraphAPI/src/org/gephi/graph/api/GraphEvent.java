@@ -26,10 +26,8 @@ package org.gephi.graph.api;
      * from the <code>getSource()</code> method.
      * <p>
      * <table>
-     * <tr><td><b>- ADD_NODES:</b></td><td>Add nodes to the graph</td></tr>
-     * <tr><td><b>- REMOVE_NODES:</b></td><td>Remove nodes from the graph, with their edges</td></tr>
-     * <tr><td><b>- ADD_EDGES:</b></td><td>Add edges to the graph</td></tr>
-     * <tr><td><b>- REMOVE_EDGES:</b></td><td>Remove edges from the graph</td></tr>
+     * <tr><td><b>- ADD_NODES_AND_EDGES:</b></td><td>Add nodes and edges to the graph</td></tr>
+     * <tr><td><b>- REMOVE_NODES_AND_EDGES:</b></td><td>Remove nodes and edges from the graph</td></tr>
      * <tr><td><b>- MOVE_NODE:</b></td><td>Move nodes on the hierarchy, parent node is changed</td></tr>
      * <tr><td><b>- VISIBLE_VIEW:</b></td><td>Current visible view is changed</td></tr>
      * <tr><td><b>- NEW_VIEW:</b></td><td>A new view is created</td></tr>
@@ -45,10 +43,8 @@ public interface GraphEvent {
 
     /**
      * <table>
-     * <tr><td><b>- ADD_NODES:</b></td><td>Add nodes to the graph</td></tr>
-     * <tr><td><b>- REMOVE_NODES:</b></td><td>Remove nodes from the graph, with their edges</td></tr>
-     * <tr><td><b>- ADD_EDGES:</b></td><td>Add edges to the graph</td></tr>
-     * <tr><td><b>- REMOVE_EDGES:</b></td><td>Remove edges from the graph</td></tr>
+     * <tr><td><b>- ADD_NODES_AND_EDGES:</b></td><td>Add nodes and edges to the graph</td></tr>
+     * <tr><td><b>- REMOVE_NODES_AND_EDGES:</b></td><td>Remove nodes and edges from the graph, with their edges</td></tr>
      * <tr><td><b>- MOVE_NODE:</b></td><td>Move nodes on the hierarchy, parent node is changed</td></tr>
      * <tr><td><b>- VISIBLE_VIEW:</b></td><td>Current visible view is changed</td></tr>
      * <tr><td><b>- NEW_VIEW:</b></td><td>A new view is created</td></tr>
@@ -59,10 +55,8 @@ public interface GraphEvent {
      */
     public enum EventType {
 
-        ADD_NODES,
-        REMOVE_NODES,
-        ADD_EDGES,
-        REMOVE_EDGES,
+        ADD_NODES_AND_EDGES,
+        REMOVE_NODES_AND_EDGES,
         MOVE_NODES,
         VISIBLE_VIEW,
         NEW_VIEW,

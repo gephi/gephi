@@ -22,6 +22,7 @@ package org.gephi.graph.dhns.core;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,35 +46,36 @@ import org.gephi.graph.dhns.event.ViewEvent;
 public class EventManager implements Runnable {
 
     //Const
-    private final static long DELAY = 1;
+    private final static long DELAY = 100;
     //Architecture
-    private final Dhns dhns;
     private final List<GraphListener> listeners;
     private final AtomicReference<Thread> thread = new AtomicReference<Thread>();
     private final LinkedBlockingQueue<AbstractEvent> eventQueue;
     private final Object lock = new Object();
-    private int eventRate = 1;
+    private final LinkedList<Integer> rateList = new LinkedList<Integer>();
+    private double avgRate = 1.0;
     //Flag
     private boolean stop;
 
     public EventManager(Dhns dhns) {
-        this.dhns = dhns;
         this.eventQueue = new LinkedBlockingQueue<AbstractEvent>();
         this.listeners = Collections.synchronizedList(new ArrayList<GraphListener>());
+        rateList.add(1);
     }
 
     @Override
     public void run() {
         int rate = 0;
         while (!stop) {
-            if (rate == eventRate) {
+            if (rate == (int) avgRate) {
                 try {
                     Thread.sleep(DELAY);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
-                eventRate = (int) (eventQueue.size() * 0.1f);
-                eventRate = Math.max(1, eventRate);
+                int w = (int) (eventQueue.size() * 0.1f);
+                w = Math.max(1, w);
+                updateRate(w);
                 rate++;
             }
             List<Object> eventCompress = null;
@@ -105,8 +107,7 @@ public class EventManager implements Runnable {
             rate++;
 
             while (eventQueue.isEmpty()) {
-                rate = 0;
-                eventRate = 1;
+                rate = (int) avgRate;
                 try {
                     synchronized (lock) {
                         lock.wait();
@@ -120,49 +121,92 @@ public class EventManager implements Runnable {
     private GraphEvent createEvent(AbstractEvent event, List<Object> compress) {
         final GraphEventDataImpl eventData = (event instanceof GeneralEvent) ? null : new GraphEventDataImpl();
         final GraphEventImpl graphEventImpl = new GraphEventImpl(event.getView(), event.getEventType(), eventData);
-        if (event instanceof NodeEvent) {
-            Node[] nodes;
+        if (event instanceof NodeEvent || event instanceof EdgeEvent) {
+            List<Node> nodes = null;
+            List<Edge> edges = null;
             if (compress != null) {
-                nodes = compress.toArray(new Node[0]);
+                for (Object o : compress) {
+                    if (o instanceof Node) {
+                        if (nodes == null) {
+                            nodes = new ArrayList<Node>();
+                        }
+                        nodes.add((Node) o);
+                    } else {
+                        if (edges == null) {
+                            edges = new ArrayList<Edge>();
+                        }
+                        edges.add((Edge) o);
+                    }
+                }
+                switch (event.getEventType()) {
+                    case ADD_NODES_AND_EDGES:
+                        if (nodes != null) {
+                            eventData.setAddedNodes(nodes.toArray(new Node[0]));
+                        }
+                        if (edges != null) {
+                            eventData.setAddedEdges(edges.toArray(new Edge[0]));
+                        }
+                        break;
+                    case REMOVE_NODES_AND_EDGES:
+                        if (nodes != null) {
+                            eventData.setRemovedNodes(nodes.toArray(new Node[0]));
+                        }
+                        if (edges != null) {
+                            eventData.setRemovedEdges(edges.toArray(new Edge[0]));
+                        }
+                        break;
+                    case EXPAND:
+                        eventData.setExpandedNodes(nodes.toArray(new Node[0]));
+                        break;
+                    case RETRACT:
+                        eventData.setRetractedNodes(nodes.toArray(new Node[0]));
+                        break;
+                    case MOVE_NODES:
+                        eventData.setMovedNodes(nodes.toArray(new Node[0]));
+                        break;
+                }
             } else {
-                nodes = new Node[]{(Node) event.getData()};
-            }
-            switch (event.getEventType()) {
-                case ADD_NODES:
-                    eventData.setAddedNodes(nodes);
-                    break;
-                case REMOVE_NODES:
-                    eventData.setRemovedNodes(nodes);
-                    break;
-                case EXPAND:
-                    eventData.setExpandedNodes(nodes);
-                    break;
-                case RETRACT:
-                    eventData.setRetractedNodes(nodes);
-                    break;
-                case MOVE_NODES:
-                    eventData.setMovedNodes(nodes);
-                    break;
-            }
-        } else if (event instanceof EdgeEvent) {
-            Edge[] edges;
-            if (compress != null) {
-                edges = compress.toArray(new Edge[0]);
-            } else {
-                edges = new Edge[]{(Edge) event.getData()};
-            }
-            switch (event.getEventType()) {
-                case ADD_EDGES:
-                    eventData.setAddedEdges(edges);
-                    break;
-                case REMOVE_EDGES:
-                    eventData.setRemovedEdges(edges);
-                    break;
+                switch (event.getEventType()) {
+                    case ADD_NODES_AND_EDGES:
+                        if (event instanceof NodeEvent) {
+                            eventData.setAddedNodes(new Node[]{(Node) event.getData()});
+                        } else {
+                            eventData.setAddedEdges(new Edge[]{(Edge) event.getData()});
+                        }
+                        break;
+                    case REMOVE_NODES_AND_EDGES:
+                        if (event instanceof NodeEvent) {
+                            eventData.setRemovedNodes(new Node[]{(Node) event.getData()});
+                        } else {
+                            eventData.setRemovedEdges(new Edge[]{(Edge) event.getData()});
+                        }
+                        break;
+                    case EXPAND:
+                        eventData.setExpandedNodes(new Node[]{(Node) event.getData()});
+                        break;
+                    case RETRACT:
+                        eventData.setRetractedNodes(new Node[]{(Node) event.getData()});
+                        break;
+                    case MOVE_NODES:
+                        eventData.setMovedNodes(new Node[]{(Node) event.getData()});
+                        break;
+                }
             }
         } else if (event instanceof ViewEvent) {
             eventData.setView((GraphView) event.getData());
         }
         return graphEventImpl;
+    }
+
+    private double updateRate(int n) {
+        int windowLength = 10;
+        if (rateList.size() == windowLength) {
+            Integer oldest = rateList.poll();
+            avgRate = ((avgRate * windowLength) - oldest) / (windowLength - 1);
+        }
+        avgRate = ((avgRate * rateList.size()) + n) / (rateList.size() + 1);
+        rateList.add(n);
+        return avgRate;
     }
 
     public void stop(boolean stop) {
