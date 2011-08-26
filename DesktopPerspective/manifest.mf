@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.desktop.perspective
+OpenIDE-Module-Install: org/gephi/desktop/perspective/Installer.class
 OpenIDE-Module-Layer: org/gephi/desktop/perspective/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/perspective/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.8.0.1
+OpenIDE-Module-Specification-Version: 0.8.0.2
 
