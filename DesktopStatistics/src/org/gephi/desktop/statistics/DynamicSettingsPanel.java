@@ -174,7 +174,8 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
                     new DateRangeValidator(windowTimeUnitCombo.getModel()));
             group.add(tickTextField, Validators.REQUIRE_NON_EMPTY_STRING,
                     new PositiveNumberValidator(),
-                    new DateRangeValidator(tickTimeUnitCombo.getModel()));
+                    new DateRangeValidator(tickTimeUnitCombo.getModel()),
+                    new TickUnderWindowValidator(!model.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)));
         }
     }
     private final String DAYS = NbBundle.getMessage(DynamicSettingsPanel.class, "DynamicSettingsPanel.TimeUnit.DAYS");
@@ -209,18 +210,24 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
 
     private void refreshWindowTimeUnit() {
         TimeUnit tu = getSelectedTimeUnit(windowTimeUnitCombo.getModel());
-        Integer value = Integer.parseInt(windowTextField.getText());
-        long newValue = tu.convert(value, windowTimeUnit);
-        windowTextField.setText("" + newValue);
-        windowTimeUnit = tu;
+        try {
+            Integer value = Integer.parseInt(windowTextField.getText());
+            long newValue = tu.convert(value, windowTimeUnit);
+            windowTextField.setText("" + newValue);
+            windowTimeUnit = tu;
+        } catch (Exception e) {
+        }
     }
 
     private void refreshTickTimeUnit() {
         TimeUnit tu = getSelectedTimeUnit(tickTimeUnitCombo.getModel());
-        Integer value = Integer.parseInt(tickTextField.getText());
-        long newValue = tu.convert(value, tickTimeUnit);
-        tickTextField.setText("" + newValue);
-        tickTimeUnit = tu;
+        try {
+            Integer value = Integer.parseInt(tickTextField.getText());
+            long newValue = tu.convert(value, tickTimeUnit);
+            tickTextField.setText("" + newValue);
+            tickTimeUnit = tu;
+        } catch (Exception e) {
+        }
     }
 
     private void loadDefaultTimeUnits() {
@@ -363,6 +370,54 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
                         "DateRangeValidator.NotInRange", i, 1, tu.convert(limit, TimeUnit.MILLISECONDS));
                 prblms.add(message);
                 return false;
+            }
+            return true;
+        }
+    }
+
+    private class TickUnderWindowValidator implements Validator<String> {
+
+        private boolean dates;
+
+        public TickUnderWindowValidator(boolean dates) {
+            this.dates = dates;
+        }
+
+        public boolean validate(Problems prblms, String string, String t) {
+            if (dates) {
+                Integer tick = 0;
+                Integer window = 0;
+                try {
+                    tick = Integer.parseInt(t);
+                    window = Integer.parseInt(windowTextField.getText());
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+                TimeUnit tu = getSelectedTimeUnit(tickTimeUnitCombo.getModel());
+                long tickInMilli = (long) getTimeInMilliseconds(t, tu);
+                tu = getSelectedTimeUnit(windowTimeUnitCombo.getModel());
+                long windowInMilli = (long) getTimeInMilliseconds(windowTextField.getText(), tu);
+                if (tickInMilli > windowInMilli) {
+                    String message = NbBundle.getMessage(DynamicSettingsPanel.class,
+                            "TickUnderWindowValidator.OverWindow");
+                    prblms.add(message);
+                    return false;
+                }
+            } else {
+                Double tick = 0.;
+                Double window = 0.;
+                try {
+                    tick = Double.parseDouble(t);
+                    window = Double.parseDouble(windowTextField.getText());
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+                if (tick > window) {
+                    String message = NbBundle.getMessage(DynamicSettingsPanel.class,
+                            "TickUnderWindowValidator.OverWindow");
+                    prblms.add(message);
+                    return false;
+                }
             }
             return true;
         }
