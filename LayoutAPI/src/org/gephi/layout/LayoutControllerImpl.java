@@ -60,7 +60,7 @@ public class LayoutControllerImpl implements LayoutController {
             }
 
             public void unselect(Workspace workspace) {
-                if (model.getSelectedLayout() != null) {
+                if (model != null && model.getSelectedLayout() != null) {
                     model.saveProperties(model.getSelectedLayout());
                 }
             }
