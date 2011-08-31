@@ -1,5 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
+Authors : Jérémy Subtil <jeremy.subtil@gephi.org>, Mathieu Bastian
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -16,8 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 package org.gephi.desktop.preview;
 
 import java.awt.BorderLayout;
@@ -33,26 +33,35 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import org.gephi.preview.api.GraphSheet;
+import org.gephi.desktop.preview.api.PreviewUIController;
+import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.api.ProcessingTarget;
+import org.gephi.preview.api.RenderTarget;
 import org.gephi.ui.components.JColorButton;
 import org.gephi.ui.utils.UIUtils;
 import org.jdesktop.swingx.JXBusyLabel;
-import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
+import processing.core.PApplet;
 
+/**
+ * 
+ * @author Jérémy Subtil, Mathieu Bastian
+ */
 public final class PreviewTopComponent extends TopComponent {
 
     private static PreviewTopComponent instance;
     static final String ICON_PATH = "org/gephi/desktop/preview/resources/preview.png";
     private static final String PREFERRED_ID = "PreviewTopComponent";
-    private final ProcessingPreview sketch;
-    private final ProcessingListener processingListener = new ProcessingListener();
+    private final transient ProcessingListener processingListener = new ProcessingListener();
+    //Data
+    private transient ProcessingTarget target;
+    private transient PApplet sketch;
 
     private PreviewTopComponent() {
         initComponents();
@@ -69,30 +78,35 @@ public final class PreviewTopComponent extends TopComponent {
         bannerPanel.setVisible(false);
 
         // inits the preview applet
-        sketch = new ProcessingPreview();
-        sketch.init();
-        sketch.registerPost(processingListener);
-        sketch.registerPre(processingListener);
-        sketchPanel.add(sketch, BorderLayout.CENTER);
-
-        // forces the controller instanciation
-        PreviewUIController.findInstance();
+        refreshModel();
 
         //background color
         ((JColorButton) backgroundButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-                controller.setBackgroundColor((Color) evt.getNewValue());
+                PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+                previewController.getModel().getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, (Color) evt.getNewValue());
             }
         });
         southBusyLabel.setVisible(false);
         resetZoomButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                sketch.resetZoom();
+                target.resetZoom();
             }
         });
+    }
+
+    public void refreshModel() {
+        PreviewUIController puic = Lookup.getDefault().lookup(PreviewUIController.class);
+        PreviewUIModel previewUIModel = puic.getModel();
+        if (previewUIModel == null) {
+            //Disable
+            initTarget(null);
+        } else {
+            initTarget(previewUIModel);
+            refreshPreview();
+        }
     }
 
     public void setRefresh(final boolean refresh) {
@@ -106,10 +120,27 @@ public final class PreviewTopComponent extends TopComponent {
         });
     }
 
+    public void initTarget(PreviewUIModel previewUIModel) {
+        // inits the preview applet
+        if (previewUIModel != null && target == null) {
+            PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+            target = (ProcessingTarget) previewController.getRenderTarget(RenderTarget.PROCESSING_TARGET);
+            if (target != null) {
+                sketch = target.getApplet();
+                sketch.init();
+                sketch.registerPost(processingListener);
+                sketch.registerPre(processingListener);
+                sketchPanel.add(sketch, BorderLayout.CENTER);
+            }
+        } else if (previewUIModel == null && target != null) {
+            sketchPanel.remove(sketch);
+        }
+    }
+
     public class ProcessingListener {
 
         public void post() {
-            final boolean isRedraw = sketch.isRedraw();
+            final boolean isRedraw = target.isRedrawn();
             SwingUtilities.invokeLater(new Runnable() {
 
                 public void run() {
@@ -120,7 +151,7 @@ public final class PreviewTopComponent extends TopComponent {
         }
 
         public void pre() {
-            final boolean isRedraw = sketch.isRedraw();
+            final boolean isRedraw = target.isRedrawn();
             SwingUtilities.invokeLater(new Runnable() {
 
                 public void run() {
@@ -270,7 +301,7 @@ public final class PreviewTopComponent extends TopComponent {
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
-        PreviewUIController.findInstance().refreshPreview();
+        Lookup.getDefault().lookup(PreviewUIController.class).refreshPreview();
     }//GEN-LAST:event_refreshButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backgroundButton;
@@ -356,15 +387,6 @@ public final class PreviewTopComponent extends TopComponent {
      * Refresh the preview applet.
      */
     public void refreshPreview() {
-        sketch.refresh();
-    }
-
-    /**
-     * Defines the preview graph to draw in the applet.
-     *
-     * @param graph  the preview graph to draw in the applet
-     */
-    public void setGraph(GraphSheet graphSheet) {
-        sketch.setGraphSheet(graphSheet);
+        target.refresh();
     }
 }

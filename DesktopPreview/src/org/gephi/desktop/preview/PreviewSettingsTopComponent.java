@@ -1,5 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
+Authors : Jérémy Subtil <jeremy.subtil@gephi.org>, Mathieu Bastian
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -16,8 +17,7 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 package org.gephi.desktop.preview;
 
 import java.awt.BorderLayout;
@@ -33,8 +33,8 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.desktop.io.export.api.VectorialFileExporterUI;
-import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.PreviewModel;
+import org.gephi.desktop.preview.api.PreviewUIController;
+import org.gephi.desktop.preview.api.PreviewUIModel;
 import org.gephi.preview.api.PreviewPreset;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.UIUtils;
@@ -49,6 +49,10 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
+/**
+ * 
+ * @author Jérémy Subtil, Mathieu Bastian
+ */
 public final class PreviewSettingsTopComponent extends TopComponent {
 
     private static PreviewSettingsTopComponent instance;
@@ -56,7 +60,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
     private static final String PREFERRED_ID = "PreviewSettingsTopComponent";
     private final String NO_SELECTION = "---";
     //Component
-    private PropertySheet propertySheet;
+    private transient PropertySheet propertySheet;
     //State
     private int defaultPresetLimit;
 
@@ -82,7 +86,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         }
 
         // forces the controller instanciation
-        PreviewUIController.findInstance();
+        PreviewUIController puic = Lookup.getDefault().lookup(PreviewUIController.class);
 
         //Ratio
         ratioSlider.addChangeListener(new ChangeListener() {
@@ -103,8 +107,8 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         presetComboBox.addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
-                PreviewController pc = Lookup.getDefault().lookup(PreviewController.class);
-                PreviewModel previewModel = pc.getModel();
+                PreviewUIController pc = Lookup.getDefault().lookup(PreviewUIController.class);
+                PreviewUIModel previewModel = pc.getModel();
                 if (previewModel != null && presetComboBox.getSelectedItem() instanceof PreviewPreset) {
                     if (previewModel.getCurrentPreset() != presetComboBox.getSelectedItem()) {
                         pc.setCurrentPreset((PreviewPreset) presetComboBox.getSelectedItem());
@@ -127,7 +131,8 @@ public final class PreviewSettingsTopComponent extends TopComponent {
 
     public void refreshModel() {
         propertySheet.setNodes(new Node[]{new PreviewNode()});
-        PreviewModel previewModel = Lookup.getDefault().lookup(PreviewController.class).getModel();
+        PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
+        PreviewUIModel previewModel = previewUIController.getModel();
         if (previewModel != null) {
             ratioSlider.setValue((int) (previewModel.getVisibilityRatio() * 100));
         }
@@ -142,14 +147,14 @@ public final class PreviewSettingsTopComponent extends TopComponent {
             saveButton.setEnabled(true);
             labelPreset.setEnabled(true);
             presetComboBox.setEnabled(true);
-            PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+            PreviewUIController controller = Lookup.getDefault().lookup(PreviewUIController.class);
             DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
             defaultPresetLimit = 0;
-            for (PreviewPreset preset : controller.getDefaultPresets()) {
+            for (PreviewPreset preset : previewUIController.getDefaultPresets()) {
                 comboBoxModel.addElement(preset);
                 defaultPresetLimit++;
             }
-            PreviewPreset[] userPresets = controller.getUserPresets();
+            PreviewPreset[] userPresets = previewUIController.getUserPresets();
             if (userPresets.length > 0) {
                 comboBoxModel.addElement(NO_SELECTION);
                 for (PreviewPreset preset : userPresets) {
@@ -398,11 +403,11 @@ public final class PreviewSettingsTopComponent extends TopComponent {
     }// </editor-fold>//GEN-END:initComponents
 
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
-        PreviewUIController.findInstance().refreshPreview();
+        Lookup.getDefault().lookup(PreviewUIController.class).refreshPreview();
 }//GEN-LAST:event_refreshButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+        PreviewUIController previewController = Lookup.getDefault().lookup(PreviewUIController.class);
         PreviewPreset preset = previewController.getModel().getCurrentPreset();
         boolean saved = false;
         if (isDefaultPreset(preset)) {
@@ -425,14 +430,13 @@ public final class PreviewSettingsTopComponent extends TopComponent {
 
         if (saved) {
             //refresh combo
-            PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
             DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
             defaultPresetLimit = 0;
-            for (PreviewPreset p : controller.getDefaultPresets()) {
+            for (PreviewPreset p : previewController.getDefaultPresets()) {
                 comboBoxModel.addElement(p);
                 defaultPresetLimit++;
             }
-            PreviewPreset[] userPresets = controller.getUserPresets();
+            PreviewPreset[] userPresets = previewController.getUserPresets();
             if (userPresets.length > 0) {
                 comboBoxModel.addElement(NO_SELECTION);
                 for (PreviewPreset p : userPresets) {

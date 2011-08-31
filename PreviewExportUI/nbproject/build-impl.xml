@@ -11,11 +11,8 @@
             </not>
         </condition>
     </fail>
-    <property file="nbproject/private/suite-private.properties"/>
-    <property file="nbproject/suite.properties"/>
-    <fail unless="suite.dir">You must set 'suite.dir' to point to your containing module suite</fail>
-    <property file="${suite.dir}/nbproject/private/platform-private.properties"/>
-    <property file="${suite.dir}/nbproject/platform.properties"/>
+    <property file="nbproject/private/platform-private.properties"/>
+    <property file="nbproject/platform.properties"/>
     <macrodef name="property" uri="http://www.netbeans.org/ns/nb-module-project/2">
         <attribute name="name"/>
         <attribute name="value"/>

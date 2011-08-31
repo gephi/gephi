@@ -1,6 +1,8 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Jérémy Subtil <jeremy.subtil@gephi.org>
+Copyright 2008-2011 Gephi
+Authors : Jérémy Subtil <jeremy.subtil@gephi.org>,
+          Yudi Xue <yudi.xue@usask.ca>,
+          Mathieu Bastian
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -17,19 +19,21 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 package org.gephi.desktop.preview;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.SupervisorPropery;
-import org.gephi.preview.api.supervisors.EdgeSupervisor;
-import org.gephi.preview.api.supervisors.GlobalEdgeSupervisor;
-import org.gephi.preview.api.supervisors.NodeSupervisor;
-import org.gephi.preview.api.supervisors.SelfLoopSupervisor;
+import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.Node;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.Lookup;
@@ -38,9 +42,9 @@ import org.openide.util.NbBundle;
 /**
  * This class provides some sets of properties for the preview UI.
  *
- * @author Jérémy Subtil <jeremy.subtil@gephi.org>
+ * @author Jérémy Subtil, Yudi Xue, Mathieu Bastian
  */
-public class PreviewNode extends AbstractNode {
+public class PreviewNode extends AbstractNode implements PropertyChangeListener {
 
     public PreviewNode() {
         super(Children.LEAF);
@@ -53,81 +57,124 @@ public class PreviewNode extends AbstractNode {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
         PreviewModel model = controller.getModel();
         if (model != null) {
-            NodeSupervisor ns = model.getNodeSupervisor();
-            GlobalEdgeSupervisor ges = model.getGlobalEdgeSupervisor();
-            SelfLoopSupervisor sls = model.getSelfLoopSupervisor();
-            EdgeSupervisor unes = model.getUndirectedEdgeSupervisor();
-            EdgeSupervisor ues = model.getUniEdgeSupervisor();
-            EdgeSupervisor bes = model.getBiEdgeSupervisor();
+            PreviewProperties properties = model.getProperties();
 
-            Sheet.Set nodeSet = Sheet.createPropertiesSet();
-            nodeSet.setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.Node.displayName"));
-            nodeSet.setName("nodes");
+            Map<String, Sheet.Set> sheetSets = new HashMap<String, Sheet.Set>();
+            for (PreviewProperty property : properties.getProperties()) {
+                String category = property.getCategory();
+                Sheet.Set sheetSet = sheetSets.get(category);
+                if (sheetSet == null) {
+                    sheetSet = Sheet.createPropertiesSet();
+                    sheetSet.setDisplayName(category);
+                    sheetSet.setName(category);
+                }
+                Node.Property nodeProperty = null;
+                PreviewProperty[] parents = properties.getParentProperties(property);
+                PreviewProperty[] children = properties.getChildProperties(property);
+                if (parents.length > 0) {
+                    nodeProperty = new ChildPreviewPropertyWrapper(property, parents);
+                } else if (children.length > 0) {
+                    nodeProperty = new ParentPreviewPropertyWrapper(property, children);
+                } else {
+                    nodeProperty = new PreviewPropertyWrapper(property);
+                }
 
-            Sheet.Set edgeSet = Sheet.createPropertiesSet();
-            edgeSet.setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.Edge.displayName"));
-            edgeSet.setName("edges");
-
-            Sheet.Set selfLoopSet = Sheet.createPropertiesSet();
-            selfLoopSet.setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.SelfLoop.displayName"));
-            selfLoopSet.setName("selfLoops");
-
-            Sheet.Set undirectedEdgeSet = Sheet.createPropertiesSet();
-            undirectedEdgeSet.setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.Undirected.displayName"));
-            undirectedEdgeSet.setName("undirectedEdges");
-
-            Sheet.Set uniEdgeSet = Sheet.createPropertiesSet();
-            uniEdgeSet.setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.Directed.displayName"));
-            uniEdgeSet.setName("uniEdges");
-
-            Sheet.Set biEdgeSet = Sheet.createPropertiesSet();
-            biEdgeSet.setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.Mutual.displayName"));
-            biEdgeSet.setName("biEdges");
-
-            for (SupervisorPropery p : ns.getProperties()) {
-                nodeSet.put(p.getProperty());
+                sheetSet.put(nodeProperty);
+                sheetSets.put(category, sheetSet);
             }
-
-            for (SupervisorPropery p : ges.getProperties()) {
-                edgeSet.put(p.getProperty());
+            for (Sheet.Set sheetSet : sheetSets.values()) {
+                sheet.put(sheetSet);
             }
-
-            for (SupervisorPropery p : sls.getProperties()) {
-                selfLoopSet.put(p.getProperty());
-            }
-
-            for (SupervisorPropery p : unes.getProperties()) {
-                undirectedEdgeSet.put(p.getProperty());
-            }
-
-            for (SupervisorPropery p : ues.getProperties()) {
-                uniEdgeSet.put(p.getProperty());
-            }
-
-            for (SupervisorPropery p : bes.getProperties()) {
-                biEdgeSet.put(p.getProperty());
-            }
-
-            sheet.put(nodeSet);
-            sheet.put(edgeSet);
-            sheet.put(selfLoopSet);
-            sheet.put(undirectedEdgeSet);
-            sheet.put(uniEdgeSet);
-            sheet.put(biEdgeSet);
         }
         return sheet;
     }
 
-    private PropertySupport.Reflection createProperty(Object o, Class type, String method, String name, String displayName) throws NoSuchMethodException {
-        PropertySupport.Reflection p = new PropertySupport.Reflection(o, type, method);
-        p.setName(name);
-        p.setDisplayName(displayName);
-        return p;
+    private static class PreviewPropertyWrapper extends PropertySupport.ReadWrite {
+
+        private final PreviewProperty property;
+
+        public PreviewPropertyWrapper(PreviewProperty previewProperty) {
+            super(previewProperty.getName(), previewProperty.getType(), previewProperty.getDisplayName(), previewProperty.getDescription());
+            this.property = previewProperty;
+        }
+
+        @Override
+        public Object getValue() throws IllegalAccessException, InvocationTargetException {
+            return property.getValue();
+        }
+
+        @Override
+        public void setValue(Object t) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+            property.setValue(t);
+        }
     }
 
-    private PropertySupport.Reflection createProperty(Object o, Class type, String method, String name, String displayName, Class editor) throws NoSuchMethodException {
-        PropertySupport.Reflection p = createProperty(o, type, method, name, displayName);
-        p.setPropertyEditorClass(editor);
-        return p;
+    private static class ChildPreviewPropertyWrapper extends PropertySupport.ReadWrite {
+
+        private final PreviewProperty property;
+        private final PreviewProperty[] parents;
+
+        public ChildPreviewPropertyWrapper(PreviewProperty previewProperty, PreviewProperty[] parents) {
+            super(previewProperty.getName(), previewProperty.getType(), previewProperty.getDisplayName(), previewProperty.getDescription());
+            this.property = previewProperty;
+            this.parents = parents;
+        }
+
+        @Override
+        public Object getValue() throws IllegalAccessException, InvocationTargetException {
+            return property.getValue();
+        }
+
+        @Override
+        public void setValue(Object t) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+            property.setValue(t);
+        }
+
+        @Override
+        public boolean canWrite() {
+            for (PreviewProperty parent : parents) {
+                if (parent.getType().equals(Boolean.class) && parent.getValue().equals(Boolean.FALSE)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    private class ParentPreviewPropertyWrapper extends PropertySupport.ReadWrite {
+
+        private final PreviewProperty property;
+        private final PreviewProperty[] children;
+
+        public ParentPreviewPropertyWrapper(PreviewProperty previewProperty, PreviewProperty[] children) {
+            super(previewProperty.getName(), previewProperty.getType(), previewProperty.getDisplayName(), previewProperty.getDescription());
+            this.property = previewProperty;
+            this.children = children;
+        }
+
+        @Override
+        public Object getValue() throws IllegalAccessException, InvocationTargetException {
+            return property.getValue();
+        }
+
+        @Override
+        public void setValue(Object t) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+            property.setValue(t);
+            for (PreviewProperty p : children) {
+                propertyChange(new PropertyChangeEvent(this, p.getName(), p.getValue(), p.getValue()));
+            }
+        }
+    }
+
+    /**
+     * default method for PropertyChangeListener, it is necessary to fire
+     * property change to update propertyEditor, which will refresh at runtime
+     * if a property value has been passively updated.
+     *
+     * @param pce a PropertyChangeEvent from a PreviewProperty object.
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent pce) {
+        firePropertyChange(pce.getPropertyName(), pce.getOldValue(), pce.getNewValue());
     }
 }
