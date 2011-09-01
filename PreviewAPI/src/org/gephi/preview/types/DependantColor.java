@@ -45,6 +45,14 @@ public final class DependantColor {
         this.mode = Mode.CUSTOM;
     }
 
+    public Color getCustomColor() {
+        return customColor;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+    
     public Color getColor(Color parentColor) {
         if (customColor == null) {
             return parentColor;

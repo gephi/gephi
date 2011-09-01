@@ -45,6 +45,14 @@ public class EdgeColor {
         this.mode = Mode.CUSTOM;
     }
 
+    public Mode getMode() {
+        return mode;
+    }
+
+    public Color getCustomColor() {
+        return customColor;
+    }
+
     public Color getColor(Color edgeColor, Color sourceColor, Color targetColor) {
         switch (mode) {
             case ORIGINAL:

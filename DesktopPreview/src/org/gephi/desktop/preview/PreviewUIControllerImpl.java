@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.preview;
 
+import java.beans.PropertyEditorManager;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,9 @@ import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
+import org.gephi.desktop.preview.propertyeditors.DependantColorPropertyEditor;
+import org.gephi.desktop.preview.propertyeditors.DependantOriginalColorPropertyEditor;
+import org.gephi.desktop.preview.propertyeditors.EdgeColorPropertyEditor;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphEvent;
 import org.gephi.graph.api.GraphListener;
@@ -36,6 +40,9 @@ import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.presets.DefaultPreset;
+import org.gephi.preview.types.DependantColor;
+import org.gephi.preview.types.DependantOriginalColor;
+import org.gephi.preview.types.EdgeColor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -128,6 +135,11 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
                 pc.getCurrentWorkspace().add(model);
             }
         }
+
+        //Register editors
+        PropertyEditorManager.registerEditor(EdgeColor.class, EdgeColorPropertyEditor.class);
+        PropertyEditorManager.registerEditor(DependantOriginalColor.class, DependantOriginalColorPropertyEditor.class);
+        PropertyEditorManager.registerEditor(DependantColor.class, DependantColorPropertyEditor.class);
     }
 
     /**
