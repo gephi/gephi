@@ -36,7 +36,7 @@ public final class DependantOriginalColor {
     private final Mode mode;
 
     public DependantOriginalColor(Mode mode) {
-        customColor = null;
+        customColor = Color.BLACK;
         this.mode = mode;
     }
 

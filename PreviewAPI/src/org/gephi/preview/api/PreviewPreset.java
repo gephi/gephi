@@ -33,37 +33,37 @@ import org.gephi.preview.presets.DefaultPreset;
  * @author Mathieu Bastian
  */
 public class PreviewPreset implements Comparable<PreviewPreset> {
-
+    
     protected final Map<String, Object> properties;
     protected final String name;
-
+    
     public PreviewPreset(String name) {
         properties = new HashMap<String, Object>();
         this.name = name;
     }
-
+    
     public PreviewPreset(String name, Map<String, Object> propertiesMap) {
         properties = propertiesMap;
         this.name = name;
     }
-
+    
     public Map<String, Object> getProperties() {
         return Collections.unmodifiableMap(properties);
     }
-
+    
     public String getName() {
         return name;
     }
-
+    
     @Override
     public String toString() {
         return name;
     }
-
+    
     public int compareTo(PreviewPreset o) {
         return o.name.compareTo(name);
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -77,7 +77,7 @@ public class PreviewPreset implements Comparable<PreviewPreset> {
         }
         return false;
     }
-
+    
     @Override
     public int hashCode() {
         int hash = 7;
@@ -85,7 +85,7 @@ public class PreviewPreset implements Comparable<PreviewPreset> {
         hash = 13 * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
     }
-
+    
     public static Map<String, String> serialize(PreviewPreset preset) {
         Map<String, String> result = new HashMap<String, String>();
         for (Entry<String, Object> entry : preset.properties.entrySet()) {
@@ -102,15 +102,16 @@ public class PreviewPreset implements Comparable<PreviewPreset> {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            
         }
         return result;
     }
-
+    
     public static PreviewPreset deserialize(String presetName, Map<String, String> propertiesString) {
         DefaultPreset defaultPreset = new DefaultPreset();
-        Map<String, Object> properties = defaultPreset.getProperties();
-
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.putAll(defaultPreset.getProperties());
+        
         for (Entry<String, String> entry : propertiesString.entrySet()) {
             String propertyName = entry.getKey();
             String propertyValueString = entry.getValue();
@@ -118,7 +119,7 @@ public class PreviewPreset implements Comparable<PreviewPreset> {
                 Object defaultPropertyValue = properties.get(propertyName);
                 if (defaultPropertyValue != null) {
                     PropertyEditor editor = PropertyEditorManager.findEditor(defaultPropertyValue.getClass());
-
+                    
                     if (editor != null) {
                         editor.setAsText(propertyValueString);
                         if (editor.getValue() != null) {

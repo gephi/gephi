@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.desktop.preview.propertyeditors;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.beans.PropertyEditorSupport;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,6 +32,13 @@ import org.gephi.preview.types.DependantColor;
  * @author Mathieu Bastian
  */
 public class DependantColorPropertyEditor extends PropertyEditorSupport {
+
+    @Override
+    public Component getCustomEditor() {
+        DependantColorPanel dependantColorPanel = new DependantColorPanel();
+        dependantColorPanel.setup(this);
+        return dependantColorPanel;
+    }
 
     @Override
     public String getAsText() {
@@ -64,6 +72,11 @@ public class DependantColorPropertyEditor extends PropertyEditorSupport {
         } else if (matchColorMode(s, DependantColor.Mode.PARENT.name().toLowerCase())) {
             setValue(new DependantColor());
         }
+    }
+
+    @Override
+    public boolean supportsCustomEditor() {
+        return true;
     }
 
     private boolean matchColorMode(String s, String identifier) {

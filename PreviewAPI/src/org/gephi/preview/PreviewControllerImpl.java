@@ -110,8 +110,8 @@ public class PreviewControllerImpl implements PreviewController {
         AttributeModel attributeModel = attributeController.getModel(model.getWorkspace());
         PreviewModelImpl previewModel = getModel(workspace);
         previewModel.clear();
-        
-         //Directed graph?
+
+        //Directed graph?
         previewModel.getProperties().putValue(PreviewProperty.DIRECTED, graphModel.isDirected() || graphModel.isMixed());
 
         //Build items
@@ -173,7 +173,6 @@ public class PreviewControllerImpl implements PreviewController {
 
             //Render items
             for (Renderer r : renderers) {
-                System.out.println("Renderer "+r);
                 for (String type : model.getItemTypes()) {
                     for (Item item : model.getItems(type)) {
                         if (r.isRendererForitem(item, properties)) {

@@ -39,6 +39,11 @@ public final class DependantColor {
         customColor = null;
         this.mode = Mode.PARENT;
     }
+    
+    public DependantColor(Mode mode) {
+        customColor = Color.BLACK;
+        this.mode = mode;
+    }
 
     public DependantColor(Color customColor) {
         this.customColor = customColor;
