@@ -59,7 +59,7 @@ public class EdgeRenderer implements Renderer {
     private EdgeColor defaultColor = new EdgeColor(EdgeColor.Mode.MIXED);
     private boolean defaultEdgeCurved = true;
     private float defaultBezierCurviness = 0.2f;
-
+    
     public void preProcess(PreviewModel previewModel) {
         PreviewProperties properties = previewModel.getProperties();
         Item[] edgeItems = previewModel.getItems(Item.EDGE);
@@ -78,7 +78,7 @@ public class EdgeRenderer implements Renderer {
         //Calculate max and min weight
         float minWeight = Float.POSITIVE_INFINITY;
         float maxWeight = Float.NEGATIVE_INFINITY;
-
+        
         for (Item edge : edgeItems) {
             minWeight = Math.min(minWeight, (Float) edge.getData(EdgeItem.WEIGHT));
             maxWeight = Math.max(maxWeight, (Float) edge.getData(EdgeItem.WEIGHT));
@@ -123,7 +123,7 @@ public class EdgeRenderer implements Renderer {
             }
         }
     }
-
+    
     public void render(Item item, RenderTarget target, PreviewProperties properties) {
         //Get nodes
         Item sourceItem = item.getData(SOURCE);
@@ -135,7 +135,7 @@ public class EdgeRenderer implements Renderer {
         Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
                 (Color) sourceItem.getData(NodeItem.COLOR),
                 (Color) targetItem.getData(NodeItem.COLOR));
-
+        
         if (sourceItem == targetItem) {
             renderSelfLoop(sourceItem, weight, color, properties, target);
         } else if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
@@ -144,18 +144,18 @@ public class EdgeRenderer implements Renderer {
             renderStraightEdge(item, sourceItem, targetItem, weight, color, properties, target);
         }
     }
-
+    
     public void renderSelfLoop(Item nodeItem, float thickness, Color color, PreviewProperties properties, RenderTarget renderTarget) {
         Float x = nodeItem.getData(NodeItem.X);
         Float y = nodeItem.getData(NodeItem.Y);
         Float size = nodeItem.getData(NodeItem.SIZE);
-
+        
         PVector v1 = new PVector(x, y);
         v1.add(size, -size, 0);
-
+        
         PVector v2 = new PVector(x, y);
         v2.add(size, size, 0);
-
+        
         if (renderTarget instanceof ProcessingTarget) {
             PGraphics graphics = ((ProcessingTarget) renderTarget).getGraphics();
             graphics.strokeWeight(thickness);
@@ -164,7 +164,7 @@ public class EdgeRenderer implements Renderer {
             graphics.bezier(x, y, v1.x, v1.y, v1.x, v2.y, x, y);
         }
     }
-
+    
     public void renderCurvedEdge(Item sourceItem, Item targetItem, float thickness, Color color, PreviewProperties properties, RenderTarget renderTarget) {
         Float x1 = sourceItem.getData(NodeItem.X);
         Float x2 = targetItem.getData(NodeItem.X);
@@ -176,7 +176,7 @@ public class EdgeRenderer implements Renderer {
         direction.sub(new PVector(x1, y1));
         float length = direction.mag();
         direction.normalize();
-
+        
         float factor = properties.getFloatValue(BEZIER_CURVENESS) * length;
 
         // normal vector to the edge
@@ -194,7 +194,7 @@ public class EdgeRenderer implements Renderer {
         v2.mult(-factor);
         v2.add(new PVector(x2, y2));
         v2.add(n);
-
+        
         if (renderTarget instanceof ProcessingTarget) {
             PGraphics graphics = ((ProcessingTarget) renderTarget).getGraphics();
             graphics.strokeWeight(thickness);
@@ -203,9 +203,9 @@ public class EdgeRenderer implements Renderer {
             graphics.bezier(x1, y1, v1.x, v1.y, v2.x, v2.y, x2, y2);
         }
     }
-
+    
     public void renderStraightEdge(Item edgeItem, Item sourceItem, Item targetItem, float thickness, Color color, PreviewProperties properties, RenderTarget renderTarget) {
-
+        
         Float x1 = sourceItem.getData(NodeItem.X);
         Float x2 = targetItem.getData(NodeItem.X);
         Float y1 = sourceItem.getData(NodeItem.Y);
@@ -223,7 +223,7 @@ public class EdgeRenderer implements Renderer {
             x2 = direction.x;
             y2 = direction.y;
         }
-
+        
         if (renderTarget instanceof ProcessingTarget) {
             PGraphics graphics = ((ProcessingTarget) renderTarget).getGraphics();
             graphics.strokeWeight(thickness);
@@ -232,7 +232,7 @@ public class EdgeRenderer implements Renderer {
             graphics.line(x1, y1, x2, y2);
         }
     }
-
+    
     public PreviewProperty[] getProperties() {
         return new PreviewProperty[]{
                     PreviewProperty.createProperty(this, PreviewProperty.SHOW_EDGES, Boolean.class,
@@ -256,9 +256,10 @@ public class EdgeRenderer implements Renderer {
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.description"),
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.category"), PreviewProperty.SHOW_EDGES).setValue(defaultEdgeCurved)};
     }
-
+    
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
-        if (item instanceof EdgeItem && properties.getBooleanValue(PreviewProperty.SHOW_EDGES)) {
+        if (item instanceof EdgeItem && properties.getBooleanValue(PreviewProperty.SHOW_EDGES)
+                && !properties.getBooleanValue(PreviewProperty.MOVING)) {
             return true;
         }
         return false;

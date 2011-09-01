@@ -127,6 +127,7 @@ public class ArrowRenderer implements Renderer {
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
         return item instanceof EdgeItem && properties.getBooleanValue(PreviewProperty.DIRECTED)
-                && (Boolean) item.getData(EdgeItem.DIRECTED) && !(Boolean) item.getData(EdgeItem.SELF_LOOP);
+                && (Boolean) item.getData(EdgeItem.DIRECTED) && !(Boolean) item.getData(EdgeItem.SELF_LOOP)
+                && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 }

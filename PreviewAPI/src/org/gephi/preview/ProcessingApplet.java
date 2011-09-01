@@ -128,7 +128,7 @@ public class ProcessingApplet extends PApplet implements MouseWheelListener {
 
     @Override
     public void mouseDragged() {
-        moving = true;
+        setMoving(true);
         trans.set(mouseX, mouseY, 0);
         trans.sub(ref);
         trans.div(scaling); // ensure const. moving speed whatever the zoom is
@@ -139,17 +139,18 @@ public class ProcessingApplet extends PApplet implements MouseWheelListener {
     @Override
     public void mouseReleased() {
         lastMove.set(trans);
-        moving = false;
+        setMoving(false);
         redraw();
     }
 
+    @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getUnitsToScroll() == 0) {
             return;
         }
         float way = -e.getUnitsToScroll() / Math.abs(e.getUnitsToScroll());
         scaling = scaling * (way > 0 ? 2f : 0.5f);
-        moving = true;
+        setMoving(true);
         if (wheelTimer != null) {
             wheelTimer.cancel();
             wheelTimer = null;
@@ -159,7 +160,7 @@ public class ProcessingApplet extends PApplet implements MouseWheelListener {
 
             @Override
             public void run() {
-                moving = false;
+                setMoving(false);
                 redraw();
                 wheelTimer = null;
             }
@@ -189,7 +190,13 @@ public class ProcessingApplet extends PApplet implements MouseWheelListener {
         scaling = 0;
         initAppletLayout();
         redraw();
+    }
 
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+        if (model != null) {
+            model.getProperties().putValue(PreviewProperty.MOVING, moving);
+        }
     }
 
     /**

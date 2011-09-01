@@ -51,6 +51,8 @@ public class PreviewProperty {
     public static final String NODE_LABEL_COLOR = "node.label.color";
     public static final String NODE_LABEL_SHORTEN = "node.label.shorten";
     public static final String NODE_LABEL_MAX_CHAR = "node.label.max-char";
+    //Constants UI helps
+    public static final String MOVING = "canvas.moving";
     //Variables
     protected final String name;
     protected final String displayName;
