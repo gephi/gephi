@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.preview.plugin.renderers;
 
 import java.awt.Color;
+import java.util.Locale;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.Item;
@@ -29,12 +30,14 @@ import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.ProcessingTarget;
 import org.gephi.preview.api.RenderTarget;
+import org.gephi.preview.api.SVGTarget;
 import org.gephi.preview.plugin.items.EdgeItem;
 import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.EdgeColor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.w3c.dom.Element;
 import processing.core.PGraphics;
 import processing.core.PVector;
 
@@ -59,7 +62,7 @@ public class EdgeRenderer implements Renderer {
     private EdgeColor defaultColor = new EdgeColor(EdgeColor.Mode.MIXED);
     private boolean defaultEdgeCurved = true;
     private float defaultBezierCurviness = 0.2f;
-    
+
     public void preProcess(PreviewModel previewModel) {
         PreviewProperties properties = previewModel.getProperties();
         Item[] edgeItems = previewModel.getItems(Item.EDGE);
@@ -78,7 +81,7 @@ public class EdgeRenderer implements Renderer {
         //Calculate max and min weight
         float minWeight = Float.POSITIVE_INFINITY;
         float maxWeight = Float.NEGATIVE_INFINITY;
-        
+
         for (Item edge : edgeItems) {
             minWeight = Math.min(minWeight, (Float) edge.getData(EdgeItem.WEIGHT));
             maxWeight = Math.max(maxWeight, (Float) edge.getData(EdgeItem.WEIGHT));
@@ -123,7 +126,7 @@ public class EdgeRenderer implements Renderer {
             }
         }
     }
-    
+
     public void render(Item item, RenderTarget target, PreviewProperties properties) {
         //Get nodes
         Item sourceItem = item.getData(SOURCE);
@@ -135,37 +138,50 @@ public class EdgeRenderer implements Renderer {
         Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
                 (Color) sourceItem.getData(NodeItem.COLOR),
                 (Color) targetItem.getData(NodeItem.COLOR));
-        
+
         if (sourceItem == targetItem) {
             renderSelfLoop(sourceItem, weight, color, properties, target);
         } else if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
-            renderCurvedEdge(sourceItem, targetItem, weight, color, properties, target);
+            renderCurvedEdge(item, sourceItem, targetItem, weight, color, properties, target);
         } else {
             renderStraightEdge(item, sourceItem, targetItem, weight, color, properties, target);
         }
     }
-    
+
     public void renderSelfLoop(Item nodeItem, float thickness, Color color, PreviewProperties properties, RenderTarget renderTarget) {
         Float x = nodeItem.getData(NodeItem.X);
         Float y = nodeItem.getData(NodeItem.Y);
         Float size = nodeItem.getData(NodeItem.SIZE);
-        
+        Node node = (Node) nodeItem.getSource();
+
         PVector v1 = new PVector(x, y);
         v1.add(size, -size, 0);
-        
+
         PVector v2 = new PVector(x, y);
         v2.add(size, size, 0);
-        
+
         if (renderTarget instanceof ProcessingTarget) {
             PGraphics graphics = ((ProcessingTarget) renderTarget).getGraphics();
             graphics.strokeWeight(thickness);
             graphics.stroke(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
             graphics.noFill();
             graphics.bezier(x, y, v1.x, v1.y, v1.x, v2.y, x, y);
+        } else if (renderTarget instanceof SVGTarget) {
+            SVGTarget svgTarget = (SVGTarget) renderTarget;
+
+            Element selfLoopElem = svgTarget.createElement("path");
+            selfLoopElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f C %f,%f %f,%f %f,%f",
+                    x, y, v1.x, v1.y, v2.x, v2.y, x, y));
+            selfLoopElem.setAttribute("class", node.getNodeData().getId());
+            selfLoopElem.setAttribute("stroke", svgTarget.toHexString(color));
+            selfLoopElem.setAttribute("stroke-width", Float.toString(thickness * svgTarget.getScaleRatio()));
+            selfLoopElem.setAttribute("fill", "none");
+            svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(selfLoopElem);
         }
     }
-    
-    public void renderCurvedEdge(Item sourceItem, Item targetItem, float thickness, Color color, PreviewProperties properties, RenderTarget renderTarget) {
+
+    public void renderCurvedEdge(Item edgeItem, Item sourceItem, Item targetItem, float thickness, Color color, PreviewProperties properties, RenderTarget renderTarget) {
+        Edge edge = (Edge) edgeItem;
         Float x1 = sourceItem.getData(NodeItem.X);
         Float x2 = targetItem.getData(NodeItem.X);
         Float y1 = sourceItem.getData(NodeItem.Y);
@@ -176,7 +192,7 @@ public class EdgeRenderer implements Renderer {
         direction.sub(new PVector(x1, y1));
         float length = direction.mag();
         direction.normalize();
-        
+
         float factor = properties.getFloatValue(BEZIER_CURVENESS) * length;
 
         // normal vector to the edge
@@ -194,18 +210,27 @@ public class EdgeRenderer implements Renderer {
         v2.mult(-factor);
         v2.add(new PVector(x2, y2));
         v2.add(n);
-        
+
         if (renderTarget instanceof ProcessingTarget) {
             PGraphics graphics = ((ProcessingTarget) renderTarget).getGraphics();
             graphics.strokeWeight(thickness);
             graphics.stroke(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
             graphics.noFill();
             graphics.bezier(x1, y1, v1.x, v1.y, v2.x, v2.y, x2, y2);
+        } else if (renderTarget instanceof SVGTarget) {
+            SVGTarget svgTarget = (SVGTarget) renderTarget;
+            Element edgeElem = svgTarget.createElement("path");
+            edgeElem.setAttribute("class", edge.getSource().getNodeData().getId() + " " + edge.getTarget().getNodeData().getId());
+            edgeElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f C %f,%f %f,%f %f,%f",
+                    x1, y1, v1.x, v1.y, v2.x, v2.y, x2, y2));
+            edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
+            edgeElem.setAttribute("stroke-width", Float.toString(thickness * svgTarget.getScaleRatio()));
+            svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(edgeElem);
         }
     }
-    
+
     public void renderStraightEdge(Item edgeItem, Item sourceItem, Item targetItem, float thickness, Color color, PreviewProperties properties, RenderTarget renderTarget) {
-        
+        Edge edge = (Edge) edgeItem;
         Float x1 = sourceItem.getData(NodeItem.X);
         Float x2 = targetItem.getData(NodeItem.X);
         Float y1 = sourceItem.getData(NodeItem.Y);
@@ -223,16 +248,25 @@ public class EdgeRenderer implements Renderer {
             x2 = direction.x;
             y2 = direction.y;
         }
-        
+
         if (renderTarget instanceof ProcessingTarget) {
             PGraphics graphics = ((ProcessingTarget) renderTarget).getGraphics();
             graphics.strokeWeight(thickness);
             graphics.stroke(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
             graphics.noFill();
             graphics.line(x1, y1, x2, y2);
+        } else if (renderTarget instanceof SVGTarget) {
+            SVGTarget svgTarget = (SVGTarget) renderTarget;
+            Element edgeElem = svgTarget.createElement("path");
+            edgeElem.setAttribute("class", edge.getSource().getNodeData().getId() + " " + edge.getTarget().getNodeData().getId());
+            edgeElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f L %f,%f",
+                    x1, y1, x2, y2));
+            edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
+            edgeElem.setAttribute("stroke-width", Float.toString(thickness * svgTarget.getScaleRatio()));
+            svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(edgeElem);
         }
     }
-    
+
     public PreviewProperty[] getProperties() {
         return new PreviewProperty[]{
                     PreviewProperty.createProperty(this, PreviewProperty.SHOW_EDGES, Boolean.class,
@@ -256,7 +290,7 @@ public class EdgeRenderer implements Renderer {
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.description"),
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.category"), PreviewProperty.SHOW_EDGES).setValue(defaultEdgeCurved)};
     }
-    
+
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
         if (item instanceof EdgeItem && properties.getBooleanValue(PreviewProperty.SHOW_EDGES)
                 && !properties.getBooleanValue(PreviewProperty.MOVING)) {

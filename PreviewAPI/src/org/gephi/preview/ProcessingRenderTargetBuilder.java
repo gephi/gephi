@@ -22,7 +22,6 @@ package org.gephi.preview;
 
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.ProcessingTarget;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.spi.RenderTargetBuilder;

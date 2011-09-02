@@ -20,11 +20,31 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview.api;
 
+import java.awt.Color;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+
 /**
  *
  * @author Mathieu Bastian
  */
 public interface SVGTarget extends RenderTarget {
-    
+
     public static final String SCALE_STROKES = "svg.scale.strokes";
+    public static final String TOP_NODES = "svg.top.nodes";
+    public static final String TOP_EDGES = "svg.top.edges";
+    public static final String TOP_NODE_LABELS = "svg.top.labels";
+
+    public Element createElement(String qualifiedName);
+
+    public Text createTextNode(String data);
+
+    public Element getTopElement(String name);
+
+    public Document getDocument();
+
+    public float getScaleRatio();
+
+    public String toHexString(Color color);
 }

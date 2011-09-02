@@ -21,18 +21,22 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.preview.plugin.renderers;
 
 import java.awt.Color;
+import java.util.Locale;
+import org.gephi.graph.api.Edge;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.ProcessingTarget;
 import org.gephi.preview.api.RenderTarget;
+import org.gephi.preview.api.SVGTarget;
 import org.gephi.preview.plugin.items.EdgeItem;
 import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.EdgeColor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.w3c.dom.Element;
 import processing.core.PGraphics;
 import processing.core.PVector;
 
@@ -75,16 +79,16 @@ public class ArrowRenderer implements Renderer {
         Float y1 = sourceItem.getData(NodeItem.Y);
         Float y2 = targetItem.getData(NodeItem.Y);
 
-
-        if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
-        } else {
-            renderStraight((ProcessingTarget) target, x1, y1, x2, y2, radius, size, color);
-
+        if (size > 0) {
+            if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
+            } else {
+                renderStraight((ProcessingTarget) target, item, x1, y1, x2, y2, radius, size, color);
+            }
         }
     }
 
-    public void renderStraight(RenderTarget target, float x1, float y1, float x2, float y2, float radius, float size, Color color) {
-
+    public void renderStraight(RenderTarget target, Item item, float x1, float y1, float x2, float y2, float radius, float size, Color color) {
+        Edge edge = (Edge) item.getSource();
         PVector direction = new PVector(x2, y2);
         direction.sub(new PVector(x1, y1));
         direction.normalize();
@@ -110,6 +114,14 @@ public class ArrowRenderer implements Renderer {
             graphics.noStroke();
             graphics.fill(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
             graphics.triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+        } else if (target instanceof SVGTarget) {
+            SVGTarget svgTarget = (SVGTarget) target;
+            Element arrowElem = svgTarget.createElement("polyline");
+            arrowElem.setAttribute("points", String.format(Locale.ENGLISH, "%f,%f %f,%f %f,%f",
+                    p1.x, p1.y, p2.x, p2.y, p3.x, p3.y));
+            arrowElem.setAttribute("class", edge.getSource().getNodeData().getId() + " " + edge.getTarget().getNodeData().getId());
+            arrowElem.setAttribute("fill", svgTarget.toHexString(color));
+            arrowElem.setAttribute("stroke", "none");
         }
     }
 

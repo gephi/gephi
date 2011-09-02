@@ -37,12 +37,15 @@ import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.ProcessingTarget;
 import org.gephi.preview.api.RenderTarget;
+import org.gephi.preview.api.SVGTarget;
 import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.plugin.items.NodeLabelItem;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.DependantOriginalColor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 import processing.core.PGraphics;
 import processing.core.PGraphicsJava2D;
 
@@ -118,6 +121,7 @@ public class NodeLabelRenderer implements Renderer {
     }
 
     public void render(Item item, RenderTarget target, PreviewProperties properties) {
+        Node node = (Node) item.getSource();
         //Label
         Color nodeColor = item.getData(NODE_COLOR);
         Color color = item.getData(NodeLabelItem.COLOR);
@@ -162,6 +166,22 @@ public class NodeLabelRenderer implements Renderer {
 
         g2.setColor(color);
         g2.drawString(label, posX, posY);
+    }
+
+    public void renderSVG(SVGTarget target, Node node, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor, float outlineTransparency) {
+        Text labelText = target.createTextNode(label);
+        Font font = fontCache.get(fontSize);
+
+        Element labelElem = target.createElement("text");
+        labelElem.setAttribute("class", node.getNodeData().getId());
+        labelElem.setAttribute("x", x + "");
+        labelElem.setAttribute("y", y + "");
+        labelElem.setAttribute("style", "text-anchor: middle");
+        labelElem.setAttribute("fill", target.toHexString(color));
+        labelElem.setAttribute("font-family", font.getFamily());
+        labelElem.setAttribute("font-size", fontSize + "");
+        labelElem.appendChild(labelText);
+        target.getTopElement(SVGTarget.TOP_NODE_LABELS);
     }
 
     public PreviewProperty[] getProperties() {
