@@ -20,10 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview.plugin.renderers;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Node;
@@ -62,6 +66,9 @@ public class NodeLabelRenderer implements Renderer {
     private final DependantOriginalColor defaultColor = new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL);
     private final int defaultMaxChar = 30;
     private final boolean defaultProportinalSize = true;
+    private final float defaultOutlineSize = 4;
+    private final Color defaultOutlineColor = Color.WHITE;
+    private final float defaultOutlineTransparency = 0.6f;
     //Font cache
     private Map<Integer, Font> fontCache;
 
@@ -111,6 +118,7 @@ public class NodeLabelRenderer implements Renderer {
     }
 
     public void render(Item item, RenderTarget target, PreviewProperties properties) {
+        //Label
         Color nodeColor = item.getData(NODE_COLOR);
         Color color = item.getData(NodeLabelItem.COLOR);
         DependantOriginalColor propColor = properties.getValue(PreviewProperty.NODE_LABEL_COLOR);
@@ -120,12 +128,18 @@ public class NodeLabelRenderer implements Renderer {
         Float x = item.getData(NODE_X);
         Float y = item.getData(NODE_Y);
 
+        //Outline
+        Color outlineColor = properties.getColorValue(PreviewProperty.NODE_LABEL_OUTLINE_COLOR);
+        Float outlineSize = properties.getFloatValue(PreviewProperty.NODE_LABEL_OUTLINE_SIZE);
+        outlineSize = outlineSize * (fontSize / 32f);
+        Float outlineTransparency = properties.getFloatValue(PreviewProperty.NODE_LABEL_OUTLINE_TRANSPARENCY);
+
         if (target instanceof ProcessingTarget) {
-            renderProcessing((ProcessingTarget) target, label, x, y, fontSize, color);
+            renderProcessing((ProcessingTarget) target, label, x, y, fontSize, color, outlineSize, outlineColor, outlineTransparency);
         }
     }
 
-    public void renderProcessing(ProcessingTarget target, String label, float x, float y, int fontSize, Color color) {
+    public void renderProcessing(ProcessingTarget target, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor, float outlineTransparency) {
         PGraphics graphics = target.getGraphics();
         Graphics2D g2 = ((PGraphicsJava2D) graphics).g2;
         graphics.textAlign(PGraphics.CENTER, PGraphics.CENTER);
@@ -136,6 +150,15 @@ public class NodeLabelRenderer implements Renderer {
         FontMetrics fm = g2.getFontMetrics();
         float posX = x - fm.stringWidth(label) / 2f;
         float posY = y + fm.getAscent() / 2f;
+
+        if (outlineSize > 0) {
+            FontRenderContext frc = g2.getFontRenderContext();
+            GlyphVector gv = font.createGlyphVector(frc, label);
+            Shape glyph = gv.getOutline(posX, posY);
+            g2.setColor(outlineColor);
+            g2.setStroke(new BasicStroke(outlineSize, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2.draw(glyph);
+        }
 
         g2.setColor(color);
         g2.drawString(label, posX, posY);
@@ -166,7 +189,19 @@ public class NodeLabelRenderer implements Renderer {
                     PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_MAX_CHAR, Integer.class,
                     NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.maxchar.displayName"),
                     NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.maxchar.description"),
-                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.category"), PreviewProperty.SHOW_NODE_LABELS).setValue(defaultMaxChar),};
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.category"), PreviewProperty.SHOW_NODE_LABELS).setValue(defaultMaxChar),
+                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_OUTLINE_SIZE, Float.class,
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineSize.displayName"),
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineSize.description"),
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.category"), PreviewProperty.SHOW_NODE_LABELS).setValue(defaultOutlineSize),
+                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_OUTLINE_COLOR, Color.class,
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineColor.displayName"),
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineColor.description"),
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.category"), PreviewProperty.SHOW_NODE_LABELS).setValue(defaultOutlineColor),
+                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_OUTLINE_TRANSPARENCY, Float.class,
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineTransparency.displayName"),
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineTransparency.description"),
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.category"), PreviewProperty.SHOW_NODE_LABELS).setValue(defaultOutlineTransparency),};
     }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {

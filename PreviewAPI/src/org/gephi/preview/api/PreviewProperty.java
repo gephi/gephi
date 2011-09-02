@@ -51,6 +51,9 @@ public class PreviewProperty {
     public static final String NODE_LABEL_COLOR = "node.label.color";
     public static final String NODE_LABEL_SHORTEN = "node.label.shorten";
     public static final String NODE_LABEL_MAX_CHAR = "node.label.max-char";
+    public static final String NODE_LABEL_OUTLINE_SIZE = "node.label.outline.size";
+    public static final String NODE_LABEL_OUTLINE_TRANSPARENCY = "node.label.outline.transparency";
+    public static final String NODE_LABEL_OUTLINE_COLOR = "node.label.outline.color";
     //Constants UI helps
     public static final String MOVING = "canvas.moving";
     //Variables
@@ -126,7 +129,7 @@ public class PreviewProperty {
     public Object getSource() {
         return source;
     }
-    
+
     /**
      * Return the category of the property
      */

@@ -107,7 +107,7 @@
                         <compile-dependency/>
                     </test-dependency>
                     <test-dependency>
-                        <code-name-base>org.gephi.preview</code-name-base>
+                        <code-name-base>org.gephi.preview.plugin</code-name-base>
                         <compile-dependency/>
                     </test-dependency>
                     <test-dependency>
