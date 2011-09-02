@@ -46,7 +46,7 @@ class BannerRootPanelLayout implements LayoutManager2 {
         int height = 0;
 
         JRootPane rootPane = (JRootPane) parent;
-        hideMenu(rootPane);
+//        hideMenu(rootPane);
 
         Insets insets = parent.getInsets();
         height += insets.top + insets.bottom;
@@ -106,7 +106,7 @@ class BannerRootPanelLayout implements LayoutManager2 {
     @Override
     public void layoutContainer(Container parent) {
         JRootPane rootPane = (JRootPane) parent;
-        hideMenu(rootPane);
+//        hideMenu(rootPane);
         Rectangle bounds = rootPane.getBounds();
         Insets insets = rootPane.getInsets();
         int y = insets.top;
@@ -155,6 +155,7 @@ class BannerRootPanelLayout implements LayoutManager2 {
 
     @Override
     public void addLayoutComponent(Component comp, Object constraints) {
+        System.out.println(comp);
     }
 
     @Override

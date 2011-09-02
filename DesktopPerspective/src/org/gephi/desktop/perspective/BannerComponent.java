@@ -68,7 +68,7 @@ public class BannerComponent extends javax.swing.JPanel {
         });
 
         //This defines the height of the banner bar
-        setPreferredSize(new Dimension(100, 45));
+        setPreferredSize(new Dimension(100, 35));
     }
 
     private void addGroupTabs() {
