@@ -20,7 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview.spi;
 
-import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.RenderTarget;
 
 /**
@@ -29,7 +29,7 @@ import org.gephi.preview.api.RenderTarget;
  */
 public interface RenderTargetBuilder {
     
-    public RenderTarget buildRenderTarget(PreviewProperties properties);
+    public RenderTarget buildRenderTarget(PreviewModel previewModel);
     
     public String getName();
 }

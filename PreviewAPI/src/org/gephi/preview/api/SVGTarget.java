@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2011 Gephi
-Authors : Yudi Xue <yudi.xue@usask.ca>, Mathieu Bastian
+Authors : Mathieu Bastian
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -22,10 +22,9 @@ package org.gephi.preview.api;
 
 /**
  *
- * @author Yudi Xue, Mathieu Bastian
+ * @author Mathieu Bastian
  */
-public interface RenderTarget {
+public interface SVGTarget extends RenderTarget {
     
-    public static final String PROCESSING_TARGET = "processing";
-    public static final String SVG_TARGET = "svg";
+    public static final String SCALE_STROKES = "svg.scale.strokes";
 }

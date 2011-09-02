@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.preview;
 
 import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.ProcessingTarget;
 import org.gephi.preview.api.RenderTarget;
@@ -40,9 +40,14 @@ import processing.core.PGraphics2D;
 public class ProcessingRenderTargetBuilder implements RenderTargetBuilder {
 
     @Override
-    public RenderTarget buildRenderTarget(PreviewProperties properties) {
-        int width = properties.getIntValue(PreviewProperty.WIDTH);
-        int height = properties.getIntValue(PreviewProperty.HEIGHT);
+    public RenderTarget buildRenderTarget(PreviewModel previewModel) {
+        int width = 500;
+        int height = 500;
+        if (previewModel.getDimensions() != null) {
+            width = (int) previewModel.getDimensions().getWidth();
+            height = (int) previewModel.getDimensions().getHeight();
+        }
+
         width = Math.max(1, width);
         height = Math.max(1, height);
         return new ProcessingTargetImpl(width, height);

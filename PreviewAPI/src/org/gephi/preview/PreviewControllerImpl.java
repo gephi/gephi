@@ -211,7 +211,7 @@ public class PreviewControllerImpl implements PreviewController {
         if (m != null) {
             for (RenderTargetBuilder rtb : Lookup.getDefault().lookupAll(RenderTargetBuilder.class)) {
                 if (rtb.getName().equals(name)) {
-                    return rtb.buildRenderTarget(m.getProperties());
+                    return rtb.buildRenderTarget(m);
                 }
             }
         }

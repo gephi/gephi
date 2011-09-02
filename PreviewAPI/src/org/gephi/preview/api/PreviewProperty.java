@@ -27,8 +27,6 @@ package org.gephi.preview.api;
 public class PreviewProperty {
 
     //Constants global
-    public static final String WIDTH = "width";
-    public static final String HEIGHT = "height";
     public static final String DIRECTED = "directed";
     public static final String BACKGROUND_COLOR = "background-color";
     public static final String VISIBILITY_RATIO = "visibility-ratio";
