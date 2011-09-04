@@ -35,7 +35,7 @@ public class DefaultPreset extends PreviewPreset {
     public DefaultPreset() {
         super(NbBundle.getMessage(DefaultPreset.class, "Default.name"));
         
-        properties.put(PreviewProperty.EDGE_CURVED, Boolean.FALSE);
+        properties.put(PreviewProperty.EDGE_CURVED, Boolean.TRUE);
         properties.put(PreviewProperty.BACKGROUND_COLOR, Color.WHITE);
         properties.put(PreviewProperty.EDGE_RESCALE_WEIGHT, Boolean.FALSE);
         properties.put(PreviewProperty.NODE_LABEL_COLOR, new DependantOriginalColor(Color.BLACK));

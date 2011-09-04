@@ -49,6 +49,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import processing.core.PGraphics;
 import processing.core.PGraphicsJava2D;
+import processing.core.PVector;
 
 /**
  *
@@ -97,6 +98,39 @@ public class EdgeLabelRenderer implements Renderer {
             NodeItem sourceItem = (NodeItem) edgeItem.getData(EdgeRenderer.SOURCE);
             NodeItem targetItem = (NodeItem) edgeItem.getData(EdgeRenderer.TARGET);
             if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
+                //Middle of the curve
+                Float x1 = sourceItem.getData(NodeItem.X);
+                Float x2 = targetItem.getData(NodeItem.X);
+                Float y1 = sourceItem.getData(NodeItem.Y);
+                Float y2 = targetItem.getData(NodeItem.Y);
+
+                //Curved edgs
+                PVector direction = new PVector(x2, y2);
+                direction.sub(new PVector(x1, y1));
+                float length = direction.mag();
+                direction.normalize();
+
+                float factor = properties.getFloatValue(EdgeRenderer.BEZIER_CURVENESS) * length;
+
+                // normal vector to the edge
+                PVector n = new PVector(direction.y, -direction.x);
+                n.mult(factor);
+
+                // first control point
+                PVector v1 = new PVector(direction.x, direction.y);
+                v1.mult(factor);
+                v1.add(new PVector(x1, y1));
+                v1.add(n);
+
+                // second control point
+                PVector v2 = new PVector(direction.x, direction.y);
+                v2.mult(-factor);
+                v2.add(new PVector(x2, y2));
+                v2.add(n);
+
+                PVector middle = bezierPoint(x1, y1, v1.x, v1.y, v2.x, v2.y, x2, y2, 0.5f);
+                item.setData(LABEL_X, middle.x);
+                item.setData(LABEL_Y, middle.y);
             } else {
                 Float x = ((Float) sourceItem.getData(NodeItem.X) + (Float) targetItem.getData(NodeItem.X)) / 2f;
                 Float y = ((Float) sourceItem.getData(NodeItem.Y) + (Float) targetItem.getData(NodeItem.Y)) / 2f;
@@ -208,5 +242,19 @@ public class EdgeLabelRenderer implements Renderer {
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
         return item instanceof EdgeLabelItem && properties.getBooleanValue(PreviewProperty.SHOW_EDGE_LABELS);
+    }
+
+    private PVector bezierPoint(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float c) {
+        PVector ab = linearInterpolation(x1, y1, x2, y2, c);
+        PVector bc = linearInterpolation(x2, y2, x3, y3, c);
+        PVector cd = linearInterpolation(x3, y3, x4, y4, c);
+        PVector abbc = linearInterpolation(ab.x, ab.y, bc.x, bc.y, c);
+        PVector bccd = linearInterpolation(bc.x, bc.y, cd.x, cd.y, c);
+        return linearInterpolation(abbc.x, abbc.y, bccd.x, bccd.y, c);
+    }
+
+    public PVector linearInterpolation(float x1, float y1, float x2, float y2, float c) {
+        PVector r = new PVector(x1 + (x2 - x1) * c, y1 + (y2 - y1) * c);
+        return r;
     }
 }
