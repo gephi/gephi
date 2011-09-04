@@ -130,6 +130,9 @@ public class StatisticsControllerImpl implements StatisticsController {
         DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
         DynamicModel dynamicModel = dynamicController.getModel();
         AttributeModel attributeModel = attributeController.getModel();
+        if (!dynamicModel.isDynamicGraph()) {
+            throw new IllegalArgumentException("The current graph must be a dynamic graph");
+        }
 
         double window = statistics.getWindow();
         double tick = statistics.getTick();
