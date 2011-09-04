@@ -87,9 +87,9 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         }
 
         //Write
-        
+
         Progress.finish(progress);
-        
+
         return !cancel;
     }
 
@@ -149,6 +149,30 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         return BaseFont.createFont();
     }
 
+    public boolean isLandscape() {
+        return landscape;
+    }
+
+    public float getMarginBottom() {
+        return marginBottom;
+    }
+
+    public float getMarginLeft() {
+        return marginLeft;
+    }
+
+    public float getMarginRight() {
+        return marginRight;
+    }
+
+    public float getMarginTop() {
+        return marginTop;
+    }
+
+    public Rectangle getPageSize() {
+        return pageSize;
+    }
+
     public void setMarginBottom(float marginBottom) {
         this.marginBottom = marginBottom;
     }
@@ -175,6 +199,10 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
 
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
+    }
+
+    public void setLandscape(boolean landscape) {
+        this.landscape = landscape;
     }
 
     public Workspace getWorkspace() {
