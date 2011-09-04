@@ -138,6 +138,11 @@ public class StatisticsModelUIImpl implements StatisticsModelUI {
         }
     }
 
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    //PERSISTENCE
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
         writer.writeStartElement("statisticsmodelui");
 

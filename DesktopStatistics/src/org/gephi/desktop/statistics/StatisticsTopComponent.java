@@ -56,7 +56,7 @@ public final class StatisticsTopComponent extends TopComponent implements Change
     static final String ICON_PATH = "org/gephi/desktop/statistics/resources/small.png";
     private static final String PREFERRED_ID = "StatisticsTopComponent";
     //Model
-    private StatisticsModelUIImpl model;
+    private transient StatisticsModelUIImpl model;
 
     public StatisticsTopComponent() {
         initComponents();

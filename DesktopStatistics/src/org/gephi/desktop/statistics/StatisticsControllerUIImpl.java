@@ -22,6 +22,7 @@ package org.gephi.desktop.statistics;
 
 import java.util.ArrayList;
 import org.gephi.desktop.statistics.api.StatisticsControllerUI;
+import org.gephi.dynamic.api.DynamicController;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -44,6 +45,25 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
 
     public void setup(StatisticsModelUIImpl model) {
         this.model = model;
+        unsetup();
+
+        if (model != null) {
+            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+            boolean isDynamic = dynamicController.getModel(model.getWorkspace()).isDynamicGraph();
+            if (!isDynamic) {
+                for (StatisticsUI ui : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
+                    if (ui.getCategory().equals(StatisticsUI.CATEGORY_DYNAMIC)) {
+                        setStatisticsUIVisible(ui, false);
+                    }
+                }
+            }
+        }
+    }
+
+    public void unsetup() {
+        if (model != null) {
+            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        }
     }
 
     public void execute(final Statistics statistics) {
@@ -92,6 +112,7 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
     }
 
     public StatisticsUI[] getUI(Statistics statistics) {
+        boolean dynamic = false;
         ArrayList<StatisticsUI> list = new ArrayList<StatisticsUI>();
         for (StatisticsUI sui : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
             if (sui.getStatisticsClass().equals(statistics.getClass())) {

@@ -154,8 +154,9 @@ public class StatisticsPanel extends JPanel {
         cats.put(StatisticsUI.CATEGORY_NETWORK_OVERVIEW, new StatisticsCategory(StatisticsUI.CATEGORY_NETWORK_OVERVIEW, 100));
         cats.put(StatisticsUI.CATEGORY_NODE_OVERVIEW, new StatisticsCategory(StatisticsUI.CATEGORY_NODE_OVERVIEW, 200));
         cats.put(StatisticsUI.CATEGORY_EDGE_OVERVIEW, new StatisticsCategory(StatisticsUI.CATEGORY_EDGE_OVERVIEW, 300));
-
-        int position = 400;
+        cats.put(StatisticsUI.CATEGORY_DYNAMIC, new StatisticsCategory(StatisticsUI.CATEGORY_DYNAMIC, 400));
+        
+        int position = 500;
         for (StatisticsUI uis : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
             String category = uis.getCategory();
             if (!cats.containsKey(category)) {
