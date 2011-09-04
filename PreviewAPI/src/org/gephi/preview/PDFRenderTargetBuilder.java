@@ -35,6 +35,8 @@ import org.gephi.preview.api.PDFTarget;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.spi.RenderTargetBuilder;
+import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -63,7 +65,7 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         return renderTarget;
     }
 
-    public static class PDFRenderTargetImpl implements PDFTarget {
+    public static class PDFRenderTargetImpl extends AbstractRenderTarget implements PDFTarget {
 
         private PdfContentByte cb;
         private Document document;

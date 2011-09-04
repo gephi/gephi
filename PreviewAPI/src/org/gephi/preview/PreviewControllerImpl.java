@@ -38,6 +38,8 @@ import org.gephi.preview.spi.Renderer;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.utils.progress.Progress;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -171,12 +173,35 @@ public class PreviewControllerImpl implements PreviewController {
             Renderer[] renderers = Lookup.getDefault().lookupAll(Renderer.class).toArray(new Renderer[0]);
             PreviewProperties properties = model.getProperties();
 
+            //Progress
+            ProgressTicket progressTicket = null;
+            if (target instanceof AbstractRenderTarget) {
+                int tasks = 0;
+                for (Renderer r : renderers) {
+                    for (String type : model.getItemTypes()) {
+                        for (Item item : model.getItems(type)) {
+                            if (r.isRendererForitem(item, properties)) {
+                                tasks++;
+                            }
+                        }
+                    }
+                    progressTicket = ((AbstractRenderTarget) target).getProgressTicket();
+                    Progress.switchToDeterminate(progressTicket, tasks);
+                }
+            }
+
             //Render items
             for (Renderer r : renderers) {
                 for (String type : model.getItemTypes()) {
                     for (Item item : model.getItems(type)) {
                         if (r.isRendererForitem(item, properties)) {
                             r.render(item, target, properties);
+                            Progress.progress(progressTicket);
+                            if (target instanceof AbstractRenderTarget) {
+                                if (((AbstractRenderTarget) target).isCancelled()) {
+                                    return;
+                                }
+                            }
                         }
                     }
                 }

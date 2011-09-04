@@ -25,6 +25,8 @@ import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.ProcessingTarget;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.spi.RenderTargetBuilder;
+import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 import processing.core.PApplet;
@@ -57,7 +59,7 @@ public class ProcessingRenderTargetBuilder implements RenderTargetBuilder {
         return RenderTarget.PROCESSING_TARGET;
     }
 
-    public static class ProcessingTargetImpl implements ProcessingTarget {
+    public static class ProcessingTargetImpl extends AbstractRenderTarget implements ProcessingTarget {
 
         private final PreviewController previewController;
         private final ProcessingApplet applet;
