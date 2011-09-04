@@ -43,6 +43,7 @@ public class DynamicIndex {
     public synchronized void add(Interval interval) {
         Double low = interval.getLow();
         Double high = interval.getHigh();
+        boolean empty = lowMap.isEmpty() && highMap.isEmpty();
         if (!Double.isInfinite(low)) {
             if (lowMap.get(low) != null) {
                 Integer counter = new Integer(lowMap.get(low) + 1);
@@ -66,6 +67,9 @@ public class DynamicIndex {
                     fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MAX_CHANGED, model, high));
                 }
             }
+        }
+        if (empty && !Double.isInfinite(low) && !Double.isInfinite(high)) {
+            fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.IS_DYNAMIC_GRAPH, model, Boolean.TRUE));
         }
     }
 
@@ -95,6 +99,9 @@ public class DynamicIndex {
             } else {
                 highMap.put(high, counter);
             }
+        }
+        if (lowMap.isEmpty() && highMap.isEmpty()) {
+            fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.IS_DYNAMIC_GRAPH, model, Boolean.FALSE));
         }
     }
 

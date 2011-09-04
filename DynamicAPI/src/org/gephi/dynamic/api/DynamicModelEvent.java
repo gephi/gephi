@@ -42,11 +42,12 @@ public final class DynamicModelEvent {
      * <li><b>VISIBLE_INTERVAL:</b> The visible interval set by the timeline has changed</li>
      * <li><b>MIN_CHANGED:</b> The minimum bound in time has changed</li>
      * <li><b>MAX_CHANGED:</b> The maximum bound in time has changed</li>
+     * <li><b>IS_DYNAMIC_GRAPH:</b> The graph is now a dynamic graph</li>
      * </ul>
      */
     public enum EventType {
 
-        VISIBLE_INTERVAL, MIN_CHANGED, MAX_CHANGED
+        VISIBLE_INTERVAL, MIN_CHANGED, MAX_CHANGED, IS_DYNAMIC_GRAPH
     };
     private final EventType type;
     private final DynamicModel source;
