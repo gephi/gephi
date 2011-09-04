@@ -24,6 +24,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import org.gephi.data.attributes.api.AttributeTable;
@@ -39,6 +40,11 @@ import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -466,6 +472,36 @@ public class Modularity implements Statistics, LongTask {
     }
 
     public String getReport() {
+        //Distribution series
+        Map<Integer, Integer> sizeDist = new HashMap<Integer, Integer>();
+        for(Node n : structure.graph.getNodes()) {
+            Integer v = (Integer) n.getNodeData().getAttributes().getValue(MODULARITY_CLASS);
+            if(!sizeDist.containsKey(v)) {
+                sizeDist.put(v, 0);
+            }
+            sizeDist.put(v, sizeDist.get(v) + 1);
+        }
+        
+        XYSeries dSeries = ChartUtils.createXYSeries(sizeDist, "Size Distribution");
+
+        XYSeriesCollection dataset1 = new XYSeriesCollection();
+        dataset1.addSeries(dSeries);
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Size Distribution",
+                "Modularity Class",
+                "Size (number of nodes)",
+                dataset1,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        chart.removeLegend();
+        ChartUtils.decorateChart(chart);
+        ChartUtils.scaleChart(chart, dSeries, false);
+        String imageFile = ChartUtils.renderChart(chart, "communities-size-distribution.png");
+
+        
         NumberFormat f = new DecimalFormat("#0.000");
 
         String report = "<HTML> <BODY> <h1>Modularity Report </h1> "
@@ -475,6 +511,7 @@ public class Modularity implements Statistics, LongTask {
                 + "<br> <h2> Results: </h2>"
                 + "Modularity: " + f.format(modularity) + "<br>"
                 + "Number of Communities: " + structure.communities.size()
+                + "<br /><br />"+imageFile
                 + "<br /><br />" + "<h2> Algorithm: </h2>"
                 + "Vincent D Blondel, Jean-Loup Guillaume, Renaud Lambiotte, Etienne Lefebvre, <i>Fast unfolding of communities in large networks</i>, in Journal of Statistical Mechanics: Theory and Experiment 2008 (10), P1000<br />"
                 + "</BODY> </HTML>";

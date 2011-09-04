@@ -541,6 +541,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
                 true,
                 false,
                 false);
+        chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dSeries, false);
         String imageFile = ChartUtils.renderChart(chart, "clustering-coefficient.png");

@@ -289,6 +289,7 @@ public class Hits implements Statistics, LongTask {
                 true,
                 false,
                 false);
+        chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dHubsSeries, true);
         String imageFile1 = ChartUtils.renderChart(chart, "hubs.png");
@@ -302,6 +303,7 @@ public class Hits implements Statistics, LongTask {
                 true,
                 false,
                 false);
+        chart2.removeLegend();
         ChartUtils.decorateChart(chart2);
         ChartUtils.scaleChart(chart, dAuthsSeries, true);
         String imageFile2 = ChartUtils.renderChart(chart, "authorities.png");

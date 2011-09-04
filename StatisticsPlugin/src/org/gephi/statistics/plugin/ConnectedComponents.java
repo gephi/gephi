@@ -20,10 +20,13 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.plugin;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -42,6 +45,11 @@ import org.gephi.statistics.spi.Statistics;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 
 /**
@@ -268,14 +276,46 @@ public class ConnectedComponents implements Statistics, LongTask {
     }
 
     public String getReport() {
+        Map<Integer, Integer> sizeDist = new HashMap<Integer, Integer>();
+        for(int v : componentsSize) {
+            if(!sizeDist.containsKey(v)) {
+                sizeDist.put(v, 0);
+            }
+            sizeDist.put(v, sizeDist.get(v) + 1);
+        }
+        
+        //Distribution series
+        XYSeries dSeries = ChartUtils.createXYSeries(sizeDist, "Size Distribution");
+
+        XYSeriesCollection dataset1 = new XYSeriesCollection();
+        dataset1.addSeries(dSeries);
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Size Distribution",
+                "Size (number of nodes)",
+                "Count",
+                dataset1,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        chart.removeLegend();
+        ChartUtils.decorateChart(chart);
+        ChartUtils.scaleChart(chart, dSeries, false);
+        String imageFile = ChartUtils.renderChart(chart, "cc-size-distribution.png");
+
+        NumberFormat f = new DecimalFormat("#0.000");
+
+
         String report = "<HTML> <BODY> <h1>Connected Components Report </h1> "
                 + "<hr>"
                 + "<br>"
                 + "<h2> Parameters: </h2>"
                 + "Network Interpretation:  " + (isDirected ? "directed" : "undirected") + "<br>"
                 + "<br> <h2> Results: </h2>"
-                + "Weakly Connected Components: " + componentCount + "<br>"
-                + (isDirected ? "Stronlgy Connected Components: " + stronglyCount + "<br>" : "")
+                + "Number of Weakly Connected Components: " + componentCount + "<br>"
+                + (isDirected ? "Number of Stronlgy Connected Components: " + stronglyCount + "<br>" : "")
+                + "<br /><br />"+imageFile
                 + "<br />" + "<h2> Algorithm: </h2>"
                 + "Robert Tarjan, <i>Depth-First Search and Linear Graph Algorithms</i>, in SIAM Journal on Computing 1 (2): 146–160 (1972)<br />"
                 + "</BODY> </HTML>";

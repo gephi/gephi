@@ -173,6 +173,7 @@ public class Degree implements Statistics, LongTask {
                     true,
                     false,
                     false);
+            chart1.removeLegend();
             ChartUtils.decorateChart(chart1);
             ChartUtils.scaleChart(chart1, dSeries, false);
             String degreeImageFile = ChartUtils.renderChart(chart1, "degree-distribution.png");
@@ -213,6 +214,7 @@ public class Degree implements Statistics, LongTask {
                 true,
                 false,
                 false);
+        chart1.removeLegend();
         ChartUtils.decorateChart(chart1);
         ChartUtils.scaleChart(chart1, dSeries, false);
         String degreeImageFile = ChartUtils.renderChart(chart1, "degree-distribution.png");
@@ -226,6 +228,7 @@ public class Degree implements Statistics, LongTask {
                 true,
                 false,
                 false);
+        chart2.removeLegend();
         ChartUtils.decorateChart(chart2);
         ChartUtils.scaleChart(chart2, dSeries, false);
         String indegreeImageFile = ChartUtils.renderChart(chart2, "indegree-distribution.png");
@@ -239,6 +242,7 @@ public class Degree implements Statistics, LongTask {
                 true,
                 false,
                 false);
+        chart3.removeLegend();
         ChartUtils.decorateChart(chart3);
         ChartUtils.scaleChart(chart3, dSeries, false);
         String outdegreeImageFile = ChartUtils.renderChart(chart3, "outdegree-distribution.png");

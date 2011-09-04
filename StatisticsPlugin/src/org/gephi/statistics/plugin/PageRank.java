@@ -252,6 +252,7 @@ public class PageRank implements Statistics, LongTask {
                 true,
                 false,
                 false);
+        chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dSeries, true);
         String imageFile = ChartUtils.renderChart(chart, "pageranks.png");

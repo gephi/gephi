@@ -299,6 +299,7 @@ public class GraphDistance implements Statistics, LongTask {
                 true,
                 false,
                 false);
+        chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dSeries, isNormalized);
         return ChartUtils.renderChart(chart, pName + ".png");

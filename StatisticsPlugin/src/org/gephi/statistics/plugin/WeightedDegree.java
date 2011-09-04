@@ -176,6 +176,7 @@ public class WeightedDegree implements Statistics, LongTask {
                     true,
                     false,
                     false);
+            chart1.removeLegend();
             ChartUtils.decorateChart(chart1);
             ChartUtils.scaleChart(chart1, dSeries, false);
             String degreeImageFile = ChartUtils.renderChart(chart1, "w-degree-distribution.png");
