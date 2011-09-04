@@ -20,8 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.statistics.plugin.dynamic;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -36,7 +40,13 @@ import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
+import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.spi.DynamicStatistics;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 
 /**
@@ -60,11 +70,13 @@ public class DynamicDegree implements DynamicStatistics {
     private AttributeColumn dynamicOutDegreeColumn;
     private AttributeColumn dynamicDegreeColumn;
     //Result
-    private List<Interval<Double>> averages;
+    //private List<Interval<Double>> averages;
+    private Map<Double, Double> degreeTs;
 
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         this.graphModel = graphModel;
-        this.averages = new ArrayList<Interval<Double>>();
+        //this.averages = new ArrayList<Interval<Double>>();
+        this.degreeTs = new HashMap<Double, Double>();
         this.isDirected = graphModel.isDirected();
         this.dynamicModel = Lookup.getDefault().lookup(DynamicController.class).getModel(graphModel.getWorkspace());
 
@@ -87,16 +99,40 @@ public class DynamicDegree implements DynamicStatistics {
     }
 
     public String getReport() {
+        //Time series
+        XYSeries dSeries = ChartUtils.createXYSeries(degreeTs, "Degree Time Series");
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(dSeries);
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Degree Time Series",
+                "Time",
+                "Average Degree",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        
+        chart.removeLegend();
+        ChartUtils.decorateChart(chart);
+        ChartUtils.scaleChart(chart, dSeries, false);
+        String degreeImageFile = ChartUtils.renderChart(chart, "degree-ts.png");
+        
+        NumberFormat f = new DecimalFormat("#0.000");
+
         String report = "<HTML> <BODY> <h1>Dynamic Degree Report </h1> "
                 + "<hr>"
-                + "<br> Bounds: " + bounds.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE))
+                + "<br> Bounds: from " + f.format(bounds.getLow()) + " to " + f.format(bounds.getHigh())
                 + "<br> Window: " + window
                 + "<br> Tick: " + tick
-                + "<br><br><h2> Average degrees: </h2>";
+                + "<br><br><h2> Average degrees over time: </h2>"
+                + "<br /><br />"+degreeImageFile;
 
-        for (Interval<Double> average : averages) {
+        /*for (Interval<Double> average : averages) {
             report += average.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
-        }
+        }*/
         report += "<br /><br /></BODY></HTML>";
         return report;
     }
@@ -144,7 +180,8 @@ public class DynamicDegree implements DynamicStatistics {
         }
 
         double average = sum / (double) graph.getNodeCount();
-        averages.add(new Interval<Double>(interval, average));
+        //averages.add(new Interval<Double>(interval, average));
+        degreeTs.put(interval.getHigh(), average);
     }
 
     public void end() {

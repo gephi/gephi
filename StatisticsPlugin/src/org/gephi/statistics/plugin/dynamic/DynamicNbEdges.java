@@ -4,8 +4,10 @@
  */
 package org.gephi.statistics.plugin.dynamic;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.dynamic.api.DynamicController;
@@ -13,7 +15,13 @@ import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.spi.DynamicStatistics;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
 
 /**
@@ -29,25 +37,51 @@ public class DynamicNbEdges implements DynamicStatistics {
     private double tick;
     private Interval bounds;
     //Result
-    private List<Interval<Integer>> counts;
+    //private List<Interval<Integer>> counts;
+    private Map<Double, Integer> countTs;
 
     public void execute(GraphModel graphModel, AttributeModel model) {
         this.graphModel = graphModel;
-        this.counts = new ArrayList<Interval<Integer>>();
+        //this.counts = new ArrayList<Interval<Integer>>();
+        this.countTs = new HashMap<Double, Integer>();
         this.dynamicModel = Lookup.getDefault().lookup(DynamicController.class).getModel(graphModel.getWorkspace());
     }
 
     public String getReport() {
+        //Time series
+        XYSeries dSeries = ChartUtils.createXYSeries(countTs, "Nb Edges Time Series");
+
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(dSeries);
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "# Edges Time Series",
+                "Time",
+                "# Edges",
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                false,
+                false);
+        
+        chart.removeLegend();
+        ChartUtils.decorateChart(chart);
+        ChartUtils.scaleChart(chart, dSeries, false);
+        String imageFile = ChartUtils.renderChart(chart, "nb-edges-ts.png");
+        
+        NumberFormat f = new DecimalFormat("#0.000");
+
         String report = "<HTML> <BODY> <h1>Dynamic Number of Edges Report </h1> "
                 + "<hr>"
-                + "<br> Bounds: " + bounds.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE))
+                + "<br> Bounds: from " + f.format(bounds.getLow()) + " to " + f.format(bounds.getHigh())
                 + "<br> Window: " + window
                 + "<br> Tick: " + tick
-                + "<br><br><h2> Number of edges: </h2>";
+                + "<br><br><h2> Number of edges over time: </h2>"
+                + "<br /><br />"+imageFile;
 
-        for (Interval<Integer> count : counts) {
+        /*for (Interval<Integer> count : counts) {
             report += count.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
-        }
+        }*/
         report += "<br /><br /></BODY></HTML>";
         return report;
     }
@@ -56,7 +90,8 @@ public class DynamicNbEdges implements DynamicStatistics {
         HierarchicalGraph graph = graphModel.getHierarchicalGraph(window);
         
         int count = graph.getEdgeCount();
-        counts.add(new Interval<Integer>(interval, count));
+        //counts.add(new Interval<Integer>(interval, count));
+        countTs.put(interval.getHigh(), count);
     }
 
     public void end() {
