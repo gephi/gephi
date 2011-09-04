@@ -102,61 +102,61 @@ public class UIExporterGMLPanel extends javax.swing.JPanel implements Validation
         normalizeCheckBox.setText(org.openide.util.NbBundle.getMessage(UIExporterGMLPanel.class, "UIExporterGML.normalize.text")); // NOI18N
         normalizeCheckBox.setLabel(org.openide.util.NbBundle.getMessage(UIExporterGMLPanel.class, "UIExporterGML.normalize.text")); // NOI18N
 
-        normalizeLabel.setFont(new java.awt.Font("Ubuntu", 0, 10)); // NOI18N
+        normalizeLabel.setFont(new java.awt.Font("Ubuntu", 0, 10));
         normalizeLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterGMLPanel.class, "UIExporterGML.normalizeHintLabel.text")); // NOI18N
 
         exportLabelCheckBox.setText(org.openide.util.NbBundle.getMessage(UIExporterGMLPanel.class, "UIExporterGML.labelLabel.text")); // NOI18N
 
         spacesLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterGMLPanel.class, "UIExporterGML.indentationLabel.text")); // NOI18N
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(exportLabel)
-                    .add(normalizeCheckBox)
-                    .add(spacesLabel))
-                .add(23, 23, 23)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(normalizeLabel)
-                    .add(exportEdgeWeightCheckBox)
-                    .add(exportSizeCheckBox)
-                    .add(exportColorsCheckBox)
-                    .add(exportPositionCheckBox)
-                    .add(exportLabelCheckBox)
-                    .add(exportNotRecognizedCheckBox)
-                    .add(spacesTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 60, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(exportLabel)
+                    .addComponent(normalizeCheckBox)
+                    .addComponent(spacesLabel))
+                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(normalizeLabel)
+                    .addComponent(exportEdgeWeightCheckBox)
+                    .addComponent(exportSizeCheckBox)
+                    .addComponent(exportColorsCheckBox)
+                    .addComponent(exportPositionCheckBox)
+                    .addComponent(exportLabelCheckBox)
+                    .addComponent(exportNotRecognizedCheckBox)
+                    .addComponent(spacesTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(90, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(exportLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(exportPositionCheckBox))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(exportColorsCheckBox)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(exportSizeCheckBox)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(exportEdgeWeightCheckBox)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(exportLabelCheckBox)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(exportNotRecognizedCheckBox)
-                .add(3, 3, 3)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(normalizeCheckBox)
-                    .add(normalizeLabel))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(spacesLabel)
-                    .add(spacesTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(21, 21, 21))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(exportLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(exportPositionCheckBox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(exportColorsCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(exportSizeCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(exportEdgeWeightCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(exportLabelCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(exportNotRecognizedCheckBox)
+                .addGap(3, 3, 3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(normalizeCheckBox)
+                    .addComponent(normalizeLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(spacesLabel)
+                    .addComponent(spacesTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21))
         );
 
         exportNotRecognizedCheckBox.getAccessibleContext().setAccessibleName("\n"); // NOI18N

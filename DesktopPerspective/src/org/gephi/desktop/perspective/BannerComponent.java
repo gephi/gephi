@@ -194,7 +194,7 @@ public class BannerComponent extends javax.swing.JPanel {
         logoButton.setBorder(null);
         logoButton.setBorderPainted(false);
         logoButton.setContentAreaFilled(false);
-        logoButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        logoButton.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         logoButton.setFocusPainted(false);
         logoButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         logoButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/perspective/resources/logo_glow.png"))); // NOI18N
