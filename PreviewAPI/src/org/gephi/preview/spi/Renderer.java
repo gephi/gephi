@@ -27,16 +27,53 @@ import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 
 /**
+ * Renderer describes how a particular Item object is rendered on a particular
+ * RenderTarget instance.
+ *
+ * In particular, a Renderer first pre-process all user-specified information
+ * from Properties. Then, the Renderer object will execute the render procedure
+ * provided by particular sub-types.
+ *
+ * Renderer should ONLY include information about the rendering procedure.
  *
  * @author Yudi Xue, Mathieu Bastian
  */
 public interface Renderer {
-    
+
+    /**
+     * Interpret user-specified properties from the PreviewModel.
+     *
+     * @param previewModel a PreviewModel object
+     */
     public void preProcess(PreviewModel previewModel);
-    
-    public void render(Item item, RenderTarget target, PreviewProperties properties);
-    
+
+
+    /**
+     * specify how to render the Item object to a RenderTarget.
+     *
+     * @param item an Item object
+     * @param target a RendererTarget object
+     * @param properties a PreviewProperties object
+     */
+    public void render(Item item, RenderTarget target,
+            PreviewProperties properties);
+
+    /**
+     * Return all associated properties from this Renderer object.
+     *
+     * @return a PreviewProperty array
+     */
     public PreviewProperty[] getProperties();
-    
-    public boolean isRendererForitem(Item item, PreviewProperties properties);
+
+    /**
+     * Based on current property state, determin whether this Renderer object
+     * is valid to render the provided Item object.
+     *
+     * @param item an Item object
+     * @param properties a PreviewProperties object
+     * @return  true - the Renderer is valid for the particular Item object
+     *          false - the Renderer is invalid for the particular Item object
+     */
+    public boolean isRendererForitem(Item item,
+            PreviewProperties properties);
 }
