@@ -20,8 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.preview;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
 import org.gephi.graph.api.GraphController;
@@ -91,10 +89,6 @@ public class PDFExporterTest {
         }
 
         PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
-        Font font = new Font("Broadway", Font.PLAIN, 15);
-        model.getNodeSupervisor().setBaseNodeLabelFont(font);
-        model.getNodeSupervisor().setShowNodeLabels(Boolean.TRUE);
-        Lookup.getDefault().lookup(PreviewController.class).setBackgroundColor(Color.GRAY);
 
         PDFExporter pDFExporter = new PDFExporter();
 
