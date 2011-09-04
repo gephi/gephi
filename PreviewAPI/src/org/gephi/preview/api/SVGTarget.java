@@ -34,7 +34,8 @@ public interface SVGTarget extends RenderTarget {
     public static final String SCALE_STROKES = "svg.scale.strokes";
     public static final String TOP_NODES = "svg.top.nodes";
     public static final String TOP_EDGES = "svg.top.edges";
-    public static final String TOP_NODE_LABELS = "svg.top.labels";
+    public static final String TOP_NODE_LABELS = "svg.top.node.labels";
+    public static final String TOP_EDGE_LABELS = "svg.top.edge.labels";
 
     public Element createElement(String qualifiedName);
 

@@ -28,4 +28,5 @@ public interface RenderTarget {
     
     public static final String PROCESSING_TARGET = "processing";
     public static final String SVG_TARGET = "svg";
+    public static final String PDF_TARGET = "pdf";
 }

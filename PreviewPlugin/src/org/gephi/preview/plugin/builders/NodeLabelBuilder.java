@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = ItemBuilder.class)
+@ServiceProvider(service = ItemBuilder.class, position = 200)
 public class NodeLabelBuilder implements ItemBuilder {
 
     public Item[] getItems(GraphModel graphModel, AttributeModel attributeModel) {

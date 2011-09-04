@@ -52,6 +52,15 @@ public class PreviewProperty {
     public static final String NODE_LABEL_OUTLINE_SIZE = "node.label.outline.size";
     public static final String NODE_LABEL_OUTLINE_TRANSPARENCY = "node.label.outline.transparency";
     public static final String NODE_LABEL_OUTLINE_COLOR = "node.label.outline.color";
+    //Constants edge labels
+    public static final String SHOW_EDGE_LABELS = "edge.label.show";
+    public static final String EDGE_LABEL_FONT = "edge.label.font";
+    public static final String EDGE_LABEL_COLOR = "edge.label.color";
+    public static final String EDGE_LABEL_SHORTEN = "edge.label.shorten";
+    public static final String EDGE_LABEL_MAX_CHAR = "edge.label.max-char";
+    public static final String EDGE_LABEL_OUTLINE_SIZE = "edge.label.outline.size";
+    public static final String EDGE_LABEL_OUTLINE_TRANSPARENCY = "edge.label.outline.transparency";
+    public static final String EDGE_LABEL_OUTLINE_COLOR = "edge.label.outline.color";
     //Constants UI helps
     public static final String MOVING = "canvas.moving";
     //Variables

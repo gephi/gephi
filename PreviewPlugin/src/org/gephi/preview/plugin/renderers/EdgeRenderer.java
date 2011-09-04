@@ -230,7 +230,7 @@ public class EdgeRenderer implements Renderer {
     }
 
     public void renderStraightEdge(Item edgeItem, Item sourceItem, Item targetItem, float thickness, Color color, PreviewProperties properties, RenderTarget renderTarget) {
-        Edge edge = (Edge) edgeItem;
+        Edge edge = (Edge) edgeItem.getSource();
         Float x1 = sourceItem.getData(NodeItem.X);
         Float x2 = targetItem.getData(NodeItem.X);
         Float y1 = sourceItem.getData(NodeItem.Y);

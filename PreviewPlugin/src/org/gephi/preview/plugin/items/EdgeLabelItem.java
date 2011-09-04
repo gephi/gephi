@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2011 Gephi
-Authors : Yudi Xue <yudi.xue@usask.ca>, Mathieu Bastian
+Authors : Mathieu Bastian
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -18,24 +18,25 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.gephi.preview.spi;
+package org.gephi.preview.plugin.items;
 
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Edge;
 import org.gephi.preview.api.Item;
 
 /**
  *
- * @author Yudi Xue, Mathieu Bastian
+ * @author Mathieu Bastian
  */
-public interface ItemBuilder {
-    
-    public static final String NODE_BUILDER = Item.NODE;
-    public static final String NODE_LABEL_BUILDER = Item.NODE_LABEL;
-    public static final String EDGE_BUILDER = Item.EDGE;
-    public static final String EDGE_LABEL_BUILDER = Item.EDGE_LABEL;
-    
-    public Item[] getItems(GraphModel graphModel, AttributeModel attributeModel);
-    
-    public String getType();
+public class EdgeLabelItem extends AbstractItem {
+
+    public static final String LABEL = "label";
+    public static final String COLOR = "color";
+    public static final String SIZE = "size";
+    public static final String WIDTH = "width";
+    public static final String HEIGHT = "height";
+    public static final String VISIBLE = "visible";
+
+    public EdgeLabelItem(Edge source) {
+        super(source, Item.EDGE_LABEL);
+    }
 }

@@ -35,7 +35,7 @@ public class NodeLabelItem extends AbstractItem {
     public static final String WIDTH = "width";
     public static final String HEIGHT = "height";
     public static final String VISIBLE = "visible";
-    
+
     public NodeLabelItem(Node source) {
         super(source, Item.NODE_LABEL);
     }

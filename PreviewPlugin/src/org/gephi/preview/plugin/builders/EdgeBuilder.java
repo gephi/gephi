@@ -40,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service = ItemBuilder.class)
+@ServiceProvider(service = ItemBuilder.class, position = 300)
 public class EdgeBuilder implements ItemBuilder {
 
     public Item[] getItems(GraphModel graphModel, AttributeModel attributeModel) {

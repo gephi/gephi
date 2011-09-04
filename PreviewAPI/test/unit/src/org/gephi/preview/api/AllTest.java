@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.JFrame;
 import org.gephi.desktop.welcome.WelcomeTopComponent;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphController;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.spi.FileImporter;
@@ -42,6 +44,12 @@ public class AllTest {
         Container container = importController.importFile(stream, fileImporter);
 
         importController.process(container, new DefaultProcessor(), workspace);
+
+        //Set label edges
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        for (Edge edge : graphController.getModel().getGraph().getEdges()) {
+            edge.getEdgeData().setLabel("Label test");
+        }
 
         PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
         previewController.refreshPreview();

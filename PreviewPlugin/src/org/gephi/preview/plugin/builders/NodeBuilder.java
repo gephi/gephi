@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author Mathieu Bastian
  */
-@ServiceProvider(service=ItemBuilder.class)
+@ServiceProvider(service = ItemBuilder.class, position = 100)
 public class NodeBuilder implements ItemBuilder {
 
     public Item[] getItems(GraphModel graphModel, AttributeModel attributeModel) {
@@ -47,7 +47,7 @@ public class NodeBuilder implements ItemBuilder {
             nodeItem.setData(NodeItem.X, n.getNodeData().x());
             nodeItem.setData(NodeItem.Y, -n.getNodeData().y());
             nodeItem.setData(NodeItem.Z, n.getNodeData().z());
-            nodeItem.setData(NodeItem.SIZE, n.getNodeData().getSize());
+            nodeItem.setData(NodeItem.SIZE, n.getNodeData().getSize() * 2f);
             nodeItem.setData(NodeItem.COLOR, new Color((int) (n.getNodeData().r() * 255),
                     (int) (n.getNodeData().g() * 255),
                     (int) (n.getNodeData().b() * 255),
