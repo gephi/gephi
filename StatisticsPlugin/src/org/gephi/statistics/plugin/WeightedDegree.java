@@ -104,10 +104,6 @@ public class WeightedDegree implements Statistics, LongTask {
         for (Node n : graph.getNodes()) {
             AttributeRow row = (AttributeRow) n.getNodeData().getAttributes();
             float totalWeight = 0;
-            for (Iterator it = graph.getEdgesAndMetaEdges(n).iterator(); it.hasNext();) {
-                Edge e = (Edge) it.next();
-                totalWeight += e.getWeight();
-            }
             if (isDirected) {
                 HierarchicalDirectedGraph hdg = graph.getGraphModel().getHierarchicalDirectedGraph();
                 float totalInWeight = 0;
@@ -121,6 +117,7 @@ public class WeightedDegree implements Statistics, LongTask {
                         totalInWeight += e.getWeight();
                     }
                 }
+                totalWeight = totalInWeight + totalOutWeight;
                 row.setValue(inCol, totalInWeight);
                 row.setValue(outCol, totalOutWeight);
                 if (!inDegreeDist.containsKey(totalInWeight)) {
@@ -131,6 +128,11 @@ public class WeightedDegree implements Statistics, LongTask {
                     outDegreeDist.put(totalOutWeight, 0);
                 }
                 outDegreeDist.put(totalOutWeight, outDegreeDist.get(totalOutWeight) + 1);
+            } else {
+                for (Iterator it = graph.getEdgesAndMetaEdges(n).iterator(); it.hasNext();) {
+                    Edge e = (Edge) it.next();
+                    totalWeight += e.getWeight();
+                }
             }
 
             row.setValue(degCol, totalWeight);
@@ -148,7 +150,7 @@ public class WeightedDegree implements Statistics, LongTask {
             Progress.progress(progress, i);
         }
 
-        avgWDegree /= graph.getNodeCount();
+        avgWDegree /= (isDirected) ? 2 * graph.getNodeCount() : graph.getNodeCount();
 
         graph.readUnlockAll();
     }

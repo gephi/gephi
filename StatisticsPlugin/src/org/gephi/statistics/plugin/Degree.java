@@ -144,7 +144,7 @@ public class Degree implements Statistics, LongTask {
             Progress.progress(progress, i);
         }
 
-        avgDegree /= graph.getNodeCount();
+        avgDegree /= (isDirected) ? 2 * graph.getNodeCount() : graph.getNodeCount();
 
         graph.readUnlockAll();
     }
