@@ -38,5 +38,9 @@ public interface PreviewController {
     
     public void render(RenderTarget target);
     
+    public void render(RenderTarget target, Workspace workspace);
+    
     public RenderTarget getRenderTarget(String name);
+
+    public RenderTarget getRenderTarget(String name, Workspace workspace);
 }

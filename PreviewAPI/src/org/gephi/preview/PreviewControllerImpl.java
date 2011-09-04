@@ -169,17 +169,26 @@ public class PreviewControllerImpl implements PreviewController {
 
     @Override
     public void render(RenderTarget target) {
-        if (model != null) {
+        render(target, getModel());
+    }
+
+    @Override
+    public void render(RenderTarget target, Workspace workspace) {
+        render(target, getModel(workspace));
+    }
+
+    private void render(RenderTarget target, PreviewModelImpl previewModel) {
+        if (previewModel != null) {
             Renderer[] renderers = Lookup.getDefault().lookupAll(Renderer.class).toArray(new Renderer[0]);
-            PreviewProperties properties = model.getProperties();
+            PreviewProperties properties = previewModel.getProperties();
 
             //Progress
             ProgressTicket progressTicket = null;
             if (target instanceof AbstractRenderTarget) {
                 int tasks = 0;
                 for (Renderer r : renderers) {
-                    for (String type : model.getItemTypes()) {
-                        for (Item item : model.getItems(type)) {
+                    for (String type : previewModel.getItemTypes()) {
+                        for (Item item : previewModel.getItems(type)) {
                             if (r.isRendererForitem(item, properties)) {
                                 tasks++;
                             }
@@ -192,8 +201,8 @@ public class PreviewControllerImpl implements PreviewController {
 
             //Render items
             for (Renderer r : renderers) {
-                for (String type : model.getItemTypes()) {
-                    for (Item item : model.getItems(type)) {
+                for (String type : previewModel.getItemTypes()) {
+                    for (Item item : previewModel.getItems(type)) {
                         if (r.isRendererForitem(item, properties)) {
                             r.render(item, target, properties);
                             Progress.progress(progressTicket);
@@ -232,7 +241,15 @@ public class PreviewControllerImpl implements PreviewController {
 
     @Override
     public RenderTarget getRenderTarget(String name) {
-        PreviewModel m = getModel();
+        return getRenderTarget(name, getModel());
+    }
+
+    @Override
+    public RenderTarget getRenderTarget(String name, Workspace workspace) {
+        return getRenderTarget(name, getModel(workspace));
+    }
+
+    private RenderTarget getRenderTarget(String name, PreviewModel m) {
         if (m != null) {
             for (RenderTargetBuilder rtb : Lookup.getDefault().lookupAll(RenderTargetBuilder.class)) {
                 if (rtb.getName().equals(name)) {

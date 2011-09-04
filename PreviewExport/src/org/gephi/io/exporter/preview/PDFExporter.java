@@ -21,19 +21,18 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.preview;
 
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.gephi.io.exporter.spi.ByteExporter;
 import org.gephi.io.exporter.spi.VectorExporter;
-
+import org.gephi.preview.api.PDFTarget;
 import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.RenderTarget;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
 import org.gephi.utils.progress.ProgressTicket;
@@ -52,10 +51,9 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
     private ProgressTicket progress;
     private Workspace workspace;
     private OutputStream stream;
-    private boolean cancel = false;
-    private PdfContentByte cb;
-    private Document document;
     private static boolean fontRegistered = false;
+    private boolean cancel = false;
+    private PDFTarget target;
     //Parameters
     private float marginTop = 18f;
     private float marginBottom = 18f;
@@ -69,15 +67,29 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
     }
 
     public boolean execute() {
-        // fetches the preview graph sheet
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        controller.refreshPreview(workspace);
+        target = (PDFTarget) controller.getRenderTarget(RenderTarget.PDF_TARGET, workspace);
+        target.setLandscape(landscape);
+        target.setMarginBottom(marginBottom);
+        target.setMarginLeft(marginLeft);
+        target.setMarginRight(marginRight);
+        target.setMarginTop(marginTop);
+        target.setPageSize(pageSize);
+        if (target instanceof LongTask) {
+            ((LongTask) target).setProgressTicket(progress);
+        }
 
         try {
-//            exportData(graph);
+            controller.render(target, workspace);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
+        //Write
+        
+        Progress.finish(progress);
+        
         return !cancel;
     }
 
@@ -170,7 +182,11 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
     }
 
     public boolean cancel() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.cancel = true;
+        if (target instanceof LongTask) {
+            ((LongTask) target).cancel();
+        }
+        return true;
     }
 
     public void setProgressTicket(ProgressTicket progressTicket) {

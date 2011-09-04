@@ -21,17 +21,21 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.io.exporter.preview;
 
 import java.io.Writer;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.VectorExporter;
 
 import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.RenderTarget;
+import org.gephi.preview.api.SVGTarget;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.progress.Progress;
 import org.openide.util.Lookup;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 
 /**
  * Class exporting the preview graph as an SVG image.
@@ -46,34 +50,50 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
     private boolean cancel = false;
     private Workspace workspace;
     private Writer writer;
+    private SVGTarget target;
     //Settings
     private final static float MARGIN = 25f;
     private boolean scaleStrokes = false;
-    //Helper
-
-    private Element svgRoot;
-    private Element nodeGroupElem;
-    private Element edgeGroupElem;
-    private Element labelGroupElem;
-    private Element labelBorderGroupElem;
-    private float scaleRatio = 1f;
 
     public boolean execute() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        controller.refreshPreview(workspace);
+        target = (SVGTarget) controller.getRenderTarget(RenderTarget.SVG_TARGET, workspace);
+        if (target instanceof LongTask) {
+            ((LongTask) target).setProgressTicket(progress);
+        }
 
         try {
-//            exportData(graphSheet);
+            controller.render(target, workspace);
+
+            // creates SVG-to-SVG transcoder
+            SVGTranscoder t = new SVGTranscoder();
+            t.addTranscodingHint(SVGTranscoder.KEY_XML_DECLARATION, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+
+            // sets transcoder input and output
+            TranscoderInput input = new TranscoderInput(doc);
+
+            // performs transcoding
+            try {
+                TranscoderOutput output = new TranscoderOutput(writer);
+                t.transcode(input, output);
+            } finally {
+                writer.close();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
+        Progress.finish(progress);
+
         return !cancel;
     }
 
- 
-
     public boolean cancel() {
         cancel = true;
+        if (target instanceof LongTask) {
+            ((LongTask) target).cancel();
+        }
         return true;
     }
 
