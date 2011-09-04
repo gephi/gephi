@@ -134,6 +134,20 @@ public class StatisticsControllerImpl implements StatisticsController {
         double window = statistics.getWindow();
         double tick = statistics.getTick();
         Interval bounds = statistics.getBounds();
+        if (bounds == null) {
+            TimeInterval visibleInterval = dynamicModel.getVisibleInterval();
+            double low = visibleInterval.getLow();
+            if (Double.isInfinite(low)) {
+                low = dynamicModel.getMin();
+            }
+            double high = visibleInterval.getHigh();
+            if (Double.isInfinite(high)) {
+                high = dynamicModel.getMax();
+            }
+            bounds = new Interval(low, high);
+            statistics.setBounds(bounds);
+        }
+
 
         HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
         DynamicGraph dynamicGraph = dynamicModel.createDynamicGraph(graph, bounds);
