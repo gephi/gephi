@@ -22,6 +22,7 @@ package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeEvent.EventType;
+import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
@@ -33,18 +34,18 @@ import org.gephi.data.attributes.event.ValueEvent;
  * @author Cezary Bartosiak
  */
 public class AttributeRowImpl implements AttributeRow {
-
+    
     protected final Object object;
     protected final AttributeTableImpl attributeTable;
     protected AttributeValueImpl[] values;
     protected int rowVersion = -1;
-
+    
     public AttributeRowImpl(AttributeTableImpl attributeTable, Object object) {
         this.attributeTable = attributeTable;
         this.object = object;
         reset();
     }
-
+    
     public void reset() {
         rowVersion = attributeTable.getVersion();
         int attSize = attributeTable.countColumns();
@@ -54,7 +55,7 @@ public class AttributeRowImpl implements AttributeRow {
         }
         this.values = newValues;
     }
-
+    
     public void setValues(AttributeRow attributeRow) {
         if (attributeRow == null) {
             throw new NullPointerException();
@@ -64,7 +65,7 @@ public class AttributeRowImpl implements AttributeRow {
             setValue(attValues[i]);
         }
     }
-
+    
     public void setValue(int index, Object value) {
         AttributeColumn column = attributeTable.getColumn(index);
         if (column != null) {
@@ -73,7 +74,7 @@ public class AttributeRowImpl implements AttributeRow {
             throw new IllegalArgumentException("The column doesn't exist");
         }
     }
-
+    
     public void setValue(String column, Object value) {
         if (column == null) {
             throw new NullPointerException("Column is null");
@@ -91,16 +92,16 @@ public class AttributeRowImpl implements AttributeRow {
             }
         }
     }
-
+    
     public void setValue(AttributeColumn column, Object value) {
         if (column == null) {
             throw new NullPointerException("Column is null");
         }
-
+        
         AttributeValue attValue = attributeTable.getFactory().newValue(column, value);
         setValue(attValue);
     }
-
+    
     public void setValue(AttributeValue value) {
         AttributeColumn column = value.getColumn();
         if (attributeTable.getColumn(column.getIndex()) != column) {
@@ -110,23 +111,23 @@ public class AttributeRowImpl implements AttributeRow {
             }
             value = attributeTable.getFactory().newValue(column, value.getValue());
         }
-
+        
         setValue(column.getIndex(), (AttributeValueImpl) value);
     }
-
+    
     private void setValue(int index, AttributeValueImpl value) {
         updateColumns();
-
+        
         AttributeValueImpl oldValue = this.values[index];
-
+        
         this.values[index] = value;
-
+        
         if (!((oldValue == null && value == null) || (oldValue != null && oldValue.equals(value)))
-                && index > 0) {    //0 is the index of node id and edge id cols, not useful to send these events
+                && index > 0 && !value.getColumn().getOrigin().equals(AttributeOrigin.COMPUTED)) {    //0 is the index of node id and edge id cols, not useful to send these events
             attributeTable.model.fireAttributeEvent(new ValueEvent(EventType.SET_VALUE, attributeTable, object, value));
         }
     }
-
+    
     public Object getValue(AttributeColumn column) {
         if (column == null) {
             throw new NullPointerException();
@@ -141,7 +142,7 @@ public class AttributeRowImpl implements AttributeRow {
         }
         return null;
     }
-
+    
     public Object getValue(int index) {
         updateColumns();
         if (checkIndexRange(index)) {
@@ -150,7 +151,7 @@ public class AttributeRowImpl implements AttributeRow {
         }
         return null;
     }
-
+    
     public Object getValue(String column) {
         updateColumns();
         AttributeColumn attributeColumn = attributeTable.getColumn(column);
@@ -159,41 +160,41 @@ public class AttributeRowImpl implements AttributeRow {
         }
         return null;
     }
-
+    
     public AttributeValue[] getValues() {
         return values;
     }
-
+    
     public AttributeValue getAttributeValueAt(int index) {
         if (checkIndexRange(index)) {
             return values[index];
         }
         return null;
     }
-
+    
     public int countValues() {
         updateColumns();
         return values.length;
     }
-
+    
     public AttributeColumn getColumnAt(int index) {
         updateColumns();
         return attributeTable.getColumn(index);
     }
-
+    
     public Object getObject() {
         return object;
     }
-
+    
     private void updateColumns() {
-
+        
         int tableVersion = attributeTable.getVersion();
         if (rowVersion < tableVersion) {
 
             //Need to update
             AttributeColumnImpl[] columns = attributeTable.getColumns();
             AttributeValueImpl[] newValues = new AttributeValueImpl[columns.length];
-
+            
             int j = 0;
             for (int i = 0; i < columns.length; i++) {
                 AttributeColumnImpl tableCol = columns[i];
@@ -212,19 +213,19 @@ public class AttributeRowImpl implements AttributeRow {
             rowVersion = tableVersion;
         }
     }
-
+    
     private boolean checkIndexRange(int index) {
         return index < values.length && index >= 0;
     }
-
+    
     public int getRowVersion() {
         return rowVersion;
     }
-
+    
     public void setRowVersion(int rowVersion) {
         this.rowVersion = rowVersion;
     }
-
+    
     public void setValues(AttributeValueImpl[] values) {
         this.values = values;
     }
