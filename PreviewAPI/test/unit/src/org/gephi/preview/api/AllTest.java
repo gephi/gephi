@@ -36,11 +36,6 @@ public class AllTest {
         //Append container to graph structure
         String sample = "/org/gephi/desktop/welcome/samples/Les Miserables.gexf";
         final InputStream stream = WelcomeTopComponent.class.getResourceAsStream(sample);
-        try {
-            stream.reset();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
         ImportController importController = Lookup.getDefault().lookup(ImportController.class);
         FileImporter fileImporter = importController.getFileImporter(".gexf");
         Container container = importController.importFile(stream, fileImporter);
@@ -72,6 +67,7 @@ public class AllTest {
         }
         previewController.render(target);
         target.refresh();
+        target.resetZoom();
 
         JFrame frame = new JFrame("Test Preview");
         frame.setLayout(new BorderLayout());

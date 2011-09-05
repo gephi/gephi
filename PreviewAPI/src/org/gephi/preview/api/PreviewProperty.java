@@ -30,6 +30,7 @@ public class PreviewProperty {
     public static final String DIRECTED = "directed";
     public static final String BACKGROUND_COLOR = "background-color";
     public static final String VISIBILITY_RATIO = "visibility-ratio";
+    public static final String MARGIN = "margin";
     //Constants nodes
     public static final String NODE_BORDER_WIDTH = "node.border.width";
     public static final String NODE_BORDER_COLOR = "node.border.color";

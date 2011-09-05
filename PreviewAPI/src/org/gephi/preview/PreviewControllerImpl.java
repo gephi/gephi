@@ -50,12 +50,12 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = PreviewController.class)
 public class PreviewControllerImpl implements PreviewController {
-
+    
     private PreviewModelImpl model;
     //Other controllers
     private final GraphController graphController;
     private final AttributeController attributeController;
-
+    
     public PreviewControllerImpl() {
         graphController = Lookup.getDefault().lookup(GraphController.class);
         attributeController = Lookup.getDefault().lookup(AttributeController.class);
@@ -63,11 +63,11 @@ public class PreviewControllerImpl implements PreviewController {
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.addWorkspaceListener(new WorkspaceListener() {
-
+            
             @Override
             public void initialize(Workspace workspace) {
             }
-
+            
             @Override
             public void select(Workspace workspace) {
                 model = workspace.getLookup().lookup(PreviewModelImpl.class);
@@ -76,22 +76,22 @@ public class PreviewControllerImpl implements PreviewController {
                     workspace.add(model);
                 }
             }
-
+            
             @Override
             public void unselect(Workspace workspace) {
                 model = null;
             }
-
+            
             @Override
             public void close(Workspace workspace) {
             }
-
+            
             @Override
             public void disable() {
                 model = null;
             }
         });
-
+        
         if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(PreviewModelImpl.class);
             if (model == null) {
@@ -100,12 +100,12 @@ public class PreviewControllerImpl implements PreviewController {
             }
         }
     }
-
+    
     @Override
     public void refreshPreview() {
         refreshPreview(model.getWorkspace());
     }
-
+    
     @Override
     public void refreshPreview(Workspace workspace) {
         GraphModel graphModel = graphController.getModel(workspace);
@@ -137,19 +137,18 @@ public class PreviewControllerImpl implements PreviewController {
             r.preProcess(model);
         }
     }
-
+    
     public void updateDimensions(PreviewModelImpl model, Item[] nodeItems) {
-        float margin = 0f;
+        float margin = model.getProperties().getFloatValue(PreviewProperty.MARGIN);  //percentage
         float topLeftX = 0f;
         float topLeftY = 0f;
         float bottomRightX = 0f;
         float bottomRightY = 0f;
-
-
+        
         for (Item nodeItem : nodeItems) {
             float x = (Float) nodeItem.getData("x");
             float y = (Float) nodeItem.getData("y");
-
+            
             if (x < topLeftX) {
                 topLeftX = x;
             }
@@ -163,20 +162,26 @@ public class PreviewControllerImpl implements PreviewController {
                 bottomRightY = y;
             }
         }
+        float marginWidth = (bottomRightX - topLeftX) * (margin / 100f);
+        float marginHeight = (bottomRightY - topLeftY) * (margin / 100f);
+        topLeftX -= marginWidth;
+        topLeftY -= marginHeight;
+        bottomRightX += marginWidth;
+        bottomRightY += marginHeight;
         model.setDimensions(new Dimension((int) (bottomRightX - topLeftX), (int) (bottomRightY - topLeftY)));
         model.setTopLeftPosition(new Point((int) topLeftX, (int) topLeftY));
     }
-
+    
     @Override
     public void render(RenderTarget target) {
         render(target, getModel());
     }
-
+    
     @Override
     public void render(RenderTarget target, Workspace workspace) {
         render(target, getModel(workspace));
     }
-
+    
     private void render(RenderTarget target, PreviewModelImpl previewModel) {
         if (previewModel != null) {
             Renderer[] renderers = Lookup.getDefault().lookupAll(Renderer.class).toArray(new Renderer[0]);
@@ -218,7 +223,7 @@ public class PreviewControllerImpl implements PreviewController {
             }
         }
     }
-
+    
     @Override
     public PreviewModelImpl getModel() {
         if (model == null) {
@@ -229,7 +234,7 @@ public class PreviewControllerImpl implements PreviewController {
         }
         return model;
     }
-
+    
     @Override
     public PreviewModelImpl getModel(Workspace workspace) {
         PreviewModelImpl m = workspace.getLookup().lookup(PreviewModelImpl.class);
@@ -239,17 +244,17 @@ public class PreviewControllerImpl implements PreviewController {
         }
         return m;
     }
-
+    
     @Override
     public RenderTarget getRenderTarget(String name) {
         return getRenderTarget(name, getModel());
     }
-
+    
     @Override
     public RenderTarget getRenderTarget(String name, Workspace workspace) {
         return getRenderTarget(name, getModel(workspace));
     }
-
+    
     private RenderTarget getRenderTarget(String name, PreviewModel m) {
         if (m != null) {
             for (RenderTargetBuilder rtb : Lookup.getDefault().lookupAll(RenderTargetBuilder.class)) {
