@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.TextData;
 import org.gephi.preview.api.Item;
@@ -41,11 +41,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ItemBuilder.class)
 public class EdgeLabelBuilder implements ItemBuilder {
 
-    public Item[] getItems(GraphModel graphModel, AttributeModel attributeModel) {
-        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+    public Item[] getItems(Graph graph, AttributeModel attributeModel) {
+        HierarchicalGraph hgraph = (HierarchicalGraph) graph;
 
         boolean useTextData = false;
-        for (Edge e : graph.getEdgesAndMetaEdges()) {
+        for (Edge e : hgraph.getEdgesAndMetaEdges()) {
             TextData textData = e.getEdgeData().getTextData();
             if (textData != null && textData.getText() != null && !textData.getText().isEmpty()) {
                 useTextData = true;
@@ -53,7 +53,7 @@ public class EdgeLabelBuilder implements ItemBuilder {
         }
 
         List<Item> items = new ArrayList<Item>();
-        for (Edge e : graph.getEdgesAndMetaEdges()) {
+        for (Edge e : hgraph.getEdgesAndMetaEdges()) {
             EdgeLabelItem labelItem = new EdgeLabelItem(e);
             String label = e.getEdgeData().getLabel();
             labelItem.setData(EdgeLabelItem.LABEL, label);

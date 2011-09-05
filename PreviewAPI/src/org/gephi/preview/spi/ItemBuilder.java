@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.preview.spi;
 
 import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Graph;
 import org.gephi.preview.api.Item;
 
 /**
@@ -35,7 +35,7 @@ public interface ItemBuilder {
     public static final String EDGE_BUILDER = Item.EDGE;
     public static final String EDGE_LABEL_BUILDER = Item.EDGE_LABEL;
     
-    public Item[] getItems(GraphModel graphModel, AttributeModel attributeModel);
+    public Item[] getItems(Graph graph, AttributeModel attributeModel);
     
     public String getType();
 }

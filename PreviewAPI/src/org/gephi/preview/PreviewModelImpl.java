@@ -46,7 +46,7 @@ import org.openide.util.Lookup;
  * @author Mathieu Bastian
  */
 public class PreviewModelImpl implements PreviewModel {
-
+    
     private final Workspace workspace;
     //Items
     private final Map<String, List<Item>> typeMap;
@@ -56,13 +56,13 @@ public class PreviewModelImpl implements PreviewModel {
     //Dimensions
     private Dimension dimensions;
     private Point topLeftPosition;
-
+    
     public PreviewModelImpl(Workspace workspace) {
         typeMap = new HashMap<String, List<Item>>();
         sourceMap = new HashMap<Object, Object>();
         this.workspace = workspace;
     }
-
+    
     private void initProperties() {
         if (properties == null) {
             properties = new PreviewProperties();
@@ -77,15 +77,18 @@ public class PreviewModelImpl implements PreviewModel {
 
             //Default preset
             properties.applyPreset(new DefaultPreset());
+
+            //Defaut values
+            properties.putValue(PreviewProperty.VISIBILITY_RATIO, 1f);
         }
     }
-
+    
     @Override
     public PreviewProperties getProperties() {
         initProperties();
         return properties;
     }
-
+    
     @Override
     public Item[] getItems(String type) {
         List<Item> list = typeMap.get(type);
@@ -94,7 +97,7 @@ public class PreviewModelImpl implements PreviewModel {
         }
         return new Item[0];
     }
-
+    
     @Override
     public Item getItem(String type, Object source) {
         Item[] items = getItems(source);
@@ -105,7 +108,7 @@ public class PreviewModelImpl implements PreviewModel {
         }
         return null;
     }
-
+    
     @Override
     public Item[] getItems(Object source) {
         Object value = sourceMap.get(source);
@@ -116,11 +119,11 @@ public class PreviewModelImpl implements PreviewModel {
         }
         return new Item[0];
     }
-
+    
     public String[] getItemTypes() {
         return typeMap.keySet().toArray(new String[0]);
     }
-
+    
     public void loadItems(String type, Item[] items) {
         //Add to type map
         List<Item> typeList = typeMap.get(type);
@@ -166,37 +169,37 @@ public class PreviewModelImpl implements PreviewModel {
             }
         }
     }
-
+    
     private Item mergeItems(Item item, Item toBeMerged) {
         for (String key : toBeMerged.getKeys()) {
             item.setData(key, toBeMerged.getData(key));
         }
         return item;
     }
-
+    
     public void clear() {
         typeMap.clear();
         sourceMap.clear();
     }
-
+    
     public Workspace getWorkspace() {
         return workspace;
     }
-
+    
     @Override
     public Dimension getDimensions() {
         return dimensions;
     }
-
+    
     @Override
     public Point getTopLeftPosition() {
         return topLeftPosition;
     }
-
+    
     public void setDimensions(Dimension dimensions) {
         this.dimensions = dimensions;
     }
-
+    
     public void setTopLeftPosition(Point topLeftPosition) {
         this.topLeftPosition = topLeftPosition;
     }
@@ -204,7 +207,7 @@ public class PreviewModelImpl implements PreviewModel {
     //PERSISTENCE
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
         writer.writeStartElement("previewmodel");
-
+        
         for (PreviewProperty property : properties.getProperties()) {
             String propertyName = property.getName();
             Object propertyValue = property.getValue();
@@ -219,19 +222,19 @@ public class PreviewModelImpl implements PreviewModel {
                 }
             }
         }
-
+        
         writer.writeEndElement();
     }
-
+    
     public void readXML(XMLStreamReader reader) throws XMLStreamException {
         PreviewProperties props = getProperties();
-
+        
         String propName = null;
-
+        
         boolean end = false;
         while (reader.hasNext() && !end) {
             int type = reader.next();
-
+            
             switch (type) {
                 case XMLStreamReader.START_ELEMENT:
                     String name = reader.getLocalName();

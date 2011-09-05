@@ -23,7 +23,6 @@ package org.gephi.preview.plugin.builders;
 import java.awt.Color;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.NodeItem;
@@ -37,8 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ItemBuilder.class, position = 100)
 public class NodeBuilder implements ItemBuilder {
 
-    public Item[] getItems(GraphModel graphModel, AttributeModel attributeModel) {
-        Graph graph = graphModel.getGraphVisible();
+    public Item[] getItems(Graph graph, AttributeModel attributeModel) {
 
         Item[] items = new NodeItem[graph.getNodeCount()];
         int i = 0;

@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.TextData;
 import org.gephi.preview.api.Item;
@@ -39,10 +38,9 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ItemBuilder.class, position = 200)
 public class NodeLabelBuilder implements ItemBuilder {
-    
-    public Item[] getItems(GraphModel graphModel, AttributeModel attributeModel) {
-        Graph graph = graphModel.getGraphVisible();
-        
+
+    public Item[] getItems(Graph graph, AttributeModel attributeModel) {
+
         boolean useTextData = false;
         for (Node n : graph.getNodes()) {
             TextData textData = n.getNodeData().getTextData();
@@ -50,7 +48,7 @@ public class NodeLabelBuilder implements ItemBuilder {
                 useTextData = true;
             }
         }
-        
+
         List<Item> items = new ArrayList<Item>();
         int i = 0;
         for (Node n : graph.getNodes()) {
@@ -78,7 +76,7 @@ public class NodeLabelBuilder implements ItemBuilder {
         }
         return items.toArray(new Item[0]);
     }
-    
+
     public String getType() {
         return ItemBuilder.NODE_LABEL_BUILDER;
     }

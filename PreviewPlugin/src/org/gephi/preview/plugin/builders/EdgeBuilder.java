@@ -26,7 +26,7 @@ import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.MetaEdge;
@@ -43,22 +43,22 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ItemBuilder.class, position = 300)
 public class EdgeBuilder implements ItemBuilder {
 
-    public Item[] getItems(GraphModel graphModel, AttributeModel attributeModel) {
+    public Item[] getItems(Graph graph, AttributeModel attributeModel) {
 
         //If the edge weight is dynamic, we'll need the time interval
         TimeInterval timeInterval = null;
         DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
         if (dynamicController != null) {
-            timeInterval = DynamicUtilities.getVisibleInterval(dynamicController.getModel(graphModel.getWorkspace()));
+            timeInterval = DynamicUtilities.getVisibleInterval(dynamicController.getModel(graph.getGraphModel().getWorkspace()));
         }
         if (timeInterval == null) {
             timeInterval = new TimeInterval();
         }
 
-        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
-        EdgeItem[] items = new EdgeItem[graph.getTotalEdgeCount()];
+        HierarchicalGraph hgraph = (HierarchicalGraph)graph;
+        EdgeItem[] items = new EdgeItem[hgraph.getTotalEdgeCount()];
         int i = 0;
-        for (Edge e : graph.getEdgesAndMetaEdges()) {
+        for (Edge e : hgraph.getEdgesAndMetaEdges()) {
             EdgeItem item = new EdgeItem(e);
             item.setData(EdgeItem.WEIGHT, e.getWeight(timeInterval.getLow(), timeInterval.getHigh()));
             item.setData(EdgeItem.DIRECTED, e.isDirected());

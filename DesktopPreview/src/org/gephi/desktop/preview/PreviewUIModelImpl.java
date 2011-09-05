@@ -20,11 +20,12 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.preview;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.gephi.desktop.preview.api.PreviewUIModel;
+import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewPreset;
+import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.presets.DefaultPreset;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -49,7 +50,8 @@ public class PreviewUIModelImpl implements PreviewUIModel {
 
     public void setVisibilityRatio(float visibilityRatio) {
         this.visibilityRatio = visibilityRatio;
-
+        PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+        previewController.getModel().getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, visibilityRatio);
     }
 
     public void setCurrentPreset(PreviewPreset preset) {

@@ -24,8 +24,11 @@ import java.awt.Dimension;
 import java.awt.Point;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphView;
+import org.gephi.graph.api.Node;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
@@ -116,16 +119,36 @@ public class PreviewControllerImpl implements PreviewController {
         //Directed graph?
         previewModel.getProperties().putValue(PreviewProperty.DIRECTED, graphModel.isDirected() || graphModel.isMixed());
 
+        //Graph
+        Graph graph = graphModel.getGraphVisible();
+        if (previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO) < 1f) {
+            float visibilityRatio = previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
+            GraphView reducedView = graphModel.copyView(graph.getView());
+            graph = graphModel.getGraph(reducedView);
+            Node[] nodes = graph.getNodes().toArray();
+            for (int i = 0; i < nodes.length; i++) {
+                float r = (float) i / (float) nodes.length;
+                if (r > visibilityRatio) {
+                    graph.removeNode(nodes[i]);
+                }
+            }
+        }
+
         //Build items
         for (ItemBuilder b : Lookup.getDefault().lookupAll(ItemBuilder.class)) {
             try {
-                Item[] items = b.getItems(graphModel, attributeModel);
+                Item[] items = b.getItems(graph, attributeModel);
                 if (items != null) {
                     previewModel.loadItems(b.getType(), items);
                 }
             } catch (Exception e) {
                 Exceptions.printStackTrace(e);
             }
+        }
+
+        //Destrow view
+        if (previewModel.getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO) < 1f) {
+            graphModel.destroyView(graph.getView());
         }
 
         //Refresh dimensions
