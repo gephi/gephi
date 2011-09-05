@@ -45,8 +45,9 @@ import processing.core.PGraphics;
 public class NodeRenderer implements Renderer {
 
     //Default values
-    private float defaultBorderWidth = 1;
+    private float defaultBorderWidth = 1f;
     private DependantColor defaultBorderColor = new DependantColor();
+    private float defaultTransparency = 0f;
 
     public void preProcess(PreviewModel previewModel) {
     }
@@ -67,15 +68,16 @@ public class NodeRenderer implements Renderer {
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
         float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        int alpha = (int) ((1f - properties.getFloatValue(PreviewProperty.NODE_TRANSPARENCY)) * 255f);
 
         //Graphics
         PGraphics graphics = target.getGraphics();
 
 //        x = x - size;
 //        y = y - size;
-        graphics.stroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), borderColor.getAlpha());
+        graphics.stroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha);
         graphics.strokeWeight(borderSize);
-        graphics.fill(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        graphics.fill(color.getRed(), color.getGreen(), color.getBlue(), alpha);
         graphics.ellipse(x, y, size, size);
     }
 
@@ -88,6 +90,9 @@ public class NodeRenderer implements Renderer {
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
         float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        int alpha = (int) ((1f - properties.getFloatValue(PreviewProperty.NODE_TRANSPARENCY)) * 255f);
+        color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+        borderColor = new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha);
 
         Element nodeElem = target.createElement("circle");
         nodeElem.setAttribute("class", node.getNodeData().getId());
@@ -109,7 +114,11 @@ public class NodeRenderer implements Renderer {
                     PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_COLOR, DependantColor.class,
                     NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.displayName"),
                     NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.description"),
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.category")).setValue(defaultBorderColor)};
+                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.category")).setValue(defaultBorderColor),
+                    PreviewProperty.createProperty(this, PreviewProperty.NODE_TRANSPARENCY, Float.class,
+                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.transparency.displayName"),
+                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.transparency.description"),
+                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.category")).setValue(defaultTransparency)};
     }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {

@@ -62,6 +62,7 @@ public class EdgeRenderer implements Renderer {
     private EdgeColor defaultColor = new EdgeColor(EdgeColor.Mode.MIXED);
     private boolean defaultEdgeCurved = true;
     private float defaultBezierCurviness = 0.2f;
+    private float defaultTransparency = 0f;
 
     public void preProcess(PreviewModel previewModel) {
         PreviewProperties properties = previewModel.getProperties();
@@ -138,6 +139,8 @@ public class EdgeRenderer implements Renderer {
         Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
                 (Color) sourceItem.getData(NodeItem.COLOR),
                 (Color) targetItem.getData(NodeItem.COLOR));
+        int alpha = (int) ((1f - properties.getFloatValue(PreviewProperty.EDGE_TRANSPARENCY)) * 255f);
+        color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 
         if (sourceItem == targetItem) {
             renderSelfLoop(sourceItem, weight, color, properties, target);
@@ -285,6 +288,10 @@ public class EdgeRenderer implements Renderer {
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.color.displayName"),
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.color.description"),
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.category"), PreviewProperty.SHOW_EDGES).setValue(defaultColor),
+                    PreviewProperty.createProperty(this, PreviewProperty.EDGE_TRANSPARENCY, Float.class,
+                    NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.transparency.displayName"),
+                    NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.transparency.description"),
+                    NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.category"), PreviewProperty.SHOW_EDGES).setValue(defaultTransparency),
                     PreviewProperty.createProperty(this, PreviewProperty.EDGE_CURVED, Boolean.class,
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.displayName"),
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.description"),

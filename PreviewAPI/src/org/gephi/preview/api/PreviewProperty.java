@@ -33,11 +33,13 @@ public class PreviewProperty {
     //Constants nodes
     public static final String NODE_BORDER_WIDTH = "node.border.width";
     public static final String NODE_BORDER_COLOR = "node.border.color";
+    public static final String NODE_TRANSPARENCY = "node.transparency";
     //Constants edges
     public static final String SHOW_EDGES = "edge.show";
     public static final String EDGE_THICKNESS = "edge.thickness";
     public static final String EDGE_CURVED = "edge.curved";
     public static final String EDGE_COLOR = "edge.color";
+    public static final String EDGE_TRANSPARENCY = "edge.transparency";
     public static final String EDGE_RESCALE_WEIGHT = "edge.rescale-weight";
     //Constants arrows
     public static final String ARROW_SIZE = "arrow.size";
