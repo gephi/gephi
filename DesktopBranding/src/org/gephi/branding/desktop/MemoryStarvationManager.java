@@ -60,6 +60,7 @@ public class MemoryStarvationManager implements NotificationListener {
     private static final String APPNAME = "gephi";
     private static double reservedMemory = 20971520;
     private static String IMPORTER_THREAD = "Importer";
+    private static String EXPORTER_THREAD = "Exporter";
     private static String GENERATOR_THREAD = "Generator";
     private static String PROJECT_THREAD = "Project IO";
     private static String STATISTICS_THREAD = "Statistics";
@@ -103,7 +104,7 @@ public class MemoryStarvationManager implements NotificationListener {
 
         //Dialog
         if (canIncreaseMemory()) {
-            String messageBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.message", getMb(Runtime.getRuntime().maxMemory())+" mb", getMb(getMaximumXmx())+" mb");
+            String messageBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.message", getMb(Runtime.getRuntime().maxMemory()) + " mb", getMb(getMaximumXmx()) + " mb");
             String titleBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.title");
             String increaseAndRestart = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.button");
             String cancelBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.cancel");
@@ -126,7 +127,7 @@ public class MemoryStarvationManager implements NotificationListener {
                 Exceptions.printStackTrace(ex);
             }
         } else {
-            String messageBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.message", getMb(Runtime.getRuntime().maxMemory())+" mb");
+            String messageBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.message", getMb(Runtime.getRuntime().maxMemory()) + " mb");
             String titleBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.title");
             String saveAndRestart = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.canIncreaseMemory.button");
             String cancelBundle = NbBundle.getMessage(MemoryStarvationManager.class, "OutOfMemoryError.cancel");
@@ -140,7 +141,7 @@ public class MemoryStarvationManager implements NotificationListener {
                 return;
             }
         }
-        
+
         interruptThreads();
 
         freeSomeMemory();
@@ -252,6 +253,7 @@ public class MemoryStarvationManager implements NotificationListener {
         for (Thread t : threadSet) {
             if (t.getName().startsWith(GENERATOR_THREAD)
                     || t.getName().startsWith(IMPORTER_THREAD)
+                    || t.getName().startsWith(EXPORTER_THREAD)
                     || t.getName().startsWith(PROJECT_THREAD)
                     || t.getName().startsWith(STATISTICS_THREAD)
                     || t.getName().startsWith(PREVIEW_THREAD)) {
@@ -269,6 +271,7 @@ public class MemoryStarvationManager implements NotificationListener {
         for (Thread t : threadSet) {
             if (t.getName().startsWith(GENERATOR_THREAD)
                     || t.getName().startsWith(IMPORTER_THREAD)
+                    || t.getName().startsWith(EXPORTER_THREAD)
                     || t.getName().startsWith(PROJECT_THREAD)
                     || t.getName().startsWith(STATISTICS_THREAD)
                     || t.getName().startsWith(PREVIEW_THREAD)) {
@@ -286,6 +289,7 @@ public class MemoryStarvationManager implements NotificationListener {
         for (Thread t : threadSet) {
             if (t.getName().startsWith(GENERATOR_THREAD)
                     || t.getName().startsWith(IMPORTER_THREAD)
+                    || t.getName().startsWith(EXPORTER_THREAD)
                     || t.getName().startsWith(STATISTICS_THREAD)
                     || t.getName().startsWith(PREVIEW_THREAD)) {
                 System.out.println("Interrupt Thread[" + t.getName() + ":" + t.getClass() + "]");
