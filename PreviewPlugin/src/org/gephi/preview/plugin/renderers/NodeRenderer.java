@@ -104,8 +104,10 @@ public class NodeRenderer implements Renderer {
         nodeElem.setAttribute("cy", y.toString());
         nodeElem.setAttribute("r", size.toString());
         nodeElem.setAttribute("fill", target.toHexString(color));
-        nodeElem.setAttribute("stroke", target.toHexString(borderColor));
-        nodeElem.setAttribute("stroke-width", new Float(borderSize * target.getScaleRatio()).toString());
+        if (borderSize > 0) {
+            nodeElem.setAttribute("stroke", target.toHexString(borderColor));
+            nodeElem.setAttribute("stroke-width", new Float(borderSize * target.getScaleRatio()).toString());
+        }
         target.getTopElement(SVGTarget.TOP_NODES).appendChild(nodeElem);
     }
 
