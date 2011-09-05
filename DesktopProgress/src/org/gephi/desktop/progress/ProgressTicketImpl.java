@@ -70,7 +70,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
             }
             StatusDisplayer.getDefault().setStatusText(finishMessage);
         }
-    }  
+    }
 
     /**
      * Notify the user about a new completed unit. Equivalent to incrementing workunits by one.
@@ -167,8 +167,12 @@ public final class ProgressTicketImpl implements ProgressTicket {
      */
     public void switchToDeterminate(int workunits) {
         if (handle != null) {
-            this.progressTotal = workunits;
-            handle.switchToDeterminate(100);
+            if (started) {
+                this.progressTotal = workunits;
+                handle.switchToDeterminate(100);
+            } else {
+                start(workunits);
+            }
         }
     }
 
