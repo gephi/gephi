@@ -20,18 +20,18 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview;
 
+import java.awt.Color;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.ProcessingTarget;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.spi.RenderTargetBuilder;
-import org.gephi.utils.longtask.spi.LongTask;
-import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 import processing.core.PApplet;
 import processing.core.PGraphics;
-import processing.core.PGraphics2D;
+import processing.core.PGraphicsJava2D;
 
 /**
  *
@@ -42,16 +42,17 @@ public class ProcessingRenderTargetBuilder implements RenderTargetBuilder {
 
     @Override
     public RenderTarget buildRenderTarget(PreviewModel previewModel) {
-        int width = 500;
-        int height = 500;
-        if (previewModel.getDimensions() != null) {
-            width = (int) previewModel.getDimensions().getWidth();
-            height = (int) previewModel.getDimensions().getHeight();
+        Integer width = previewModel.getProperties().getValue("width");
+        Integer height = previewModel.getProperties().getValue("height");
+        if (width != null && height != null) {
+            //Headless  mode
+            width = Math.max(1, width);
+            height = Math.max(1, height);
+            return new ProcessingTargetImpl(width, height);
+        } else {
+            //Applet mode
+            return new ProcessingTargetImpl();
         }
-
-        width = Math.max(1, width);
-        height = Math.max(1, height);
-        return new ProcessingTargetImpl(width, height);
     }
 
     @Override
@@ -63,18 +64,17 @@ public class ProcessingRenderTargetBuilder implements RenderTargetBuilder {
 
         private final PreviewController previewController;
         private final ProcessingApplet applet;
-        private final PGraphics graphics;
+        private final ProcessingGraphics graphics;
+
+        public ProcessingTargetImpl() {
+            applet = new ProcessingApplet();
+            graphics = null;
+            previewController = Lookup.getDefault().lookup(PreviewController.class);
+        }
 
         public ProcessingTargetImpl(int width, int height) {
-            if (System.getProperty("java.awt.headless") != null && System.getProperty("java.awt.headless").equals("true")) {
-                //Headless mode
-                graphics = new PGraphics2D();
-                graphics.setSize(width, height);
-                applet = null;
-            } else {
-                applet = new ProcessingApplet();
-                graphics = null;
-            }
+            graphics = new ProcessingGraphics(width, height);
+            applet = null;
             previewController = Lookup.getDefault().lookup(PreviewController.class);
         }
 
@@ -93,17 +93,26 @@ public class ProcessingRenderTargetBuilder implements RenderTargetBuilder {
 
         @Override
         public void resetZoom() {
-            applet.resetZoom();
+            if (applet != null) {
+                applet.resetZoom();
+            }
         }
 
         @Override
         public void refresh() {
-            applet.refresh(previewController.getModel(), this);
+            if (applet != null) {
+                applet.refresh(previewController.getModel(), this);
+            } else if (graphics != null) {
+                graphics.refresh(previewController.getModel(), this);
+            }
         }
 
         @Override
         public boolean isRedrawn() {
-            return applet.isRedrawn();
+            if (applet != null) {
+                return applet.isRedrawn();
+            }
+            return true;
         }
     }
 }

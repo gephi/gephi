@@ -31,22 +31,12 @@ public class UIExporterPNGPanel extends javax.swing.JPanel implements Validation
     void setup(PNGExporter exporter) {
         heightTextField.setText(Integer.toString(exporter.getHeight()));
         widthTextField.setText(Integer.toString(exporter.getWidth()));
-
-        leftTextField.setText(Integer.toString(exporter.getLeftMargin()));
-        rightTextField.setText(Integer.toString(exporter.getRightMargin()));
-        topTextField.setText(Integer.toString(exporter.getTopMargin()));
-        bottomTextField.setText(Integer.toString(exporter.getBottomMargin()));
     }
 
     void unsetup(PNGExporter exporter) {
         try {
             exporter.setWidth(Integer.parseInt(widthTextField.getText()));
             exporter.setHeight(Integer.parseInt(heightTextField.getText()));
-
-            exporter.setLeftMargin(Integer.parseInt(leftTextField.getText()));
-            exporter.setRightMargin(Integer.parseInt(rightTextField.getText()));
-            exporter.setBottomMargin(Integer.parseInt(bottomTextField.getText()));
-            exporter.setTopMargin(Integer.parseInt(topTextField.getText()));
         } catch (Exception ex) {
         }
     }
@@ -65,43 +55,18 @@ public class UIExporterPNGPanel extends javax.swing.JPanel implements Validation
 
         widthTextField = new javax.swing.JTextField();
         heightTextField = new javax.swing.JTextField();
-        marginsLabel = new javax.swing.JLabel();
-        topTextField = new javax.swing.JTextField();
-        bottomTextField = new javax.swing.JTextField();
-        leftTextField = new javax.swing.JTextField();
-        rightTextField = new javax.swing.JTextField();
-        topLabel = new javax.swing.JLabel();
-        leftLabel = new javax.swing.JLabel();
-        rightLabel = new javax.swing.JLabel();
-        bottomLabel = new javax.swing.JLabel();
         widthLabel = new javax.swing.JLabel();
         heightLabel = new javax.swing.JLabel();
-
-        marginsLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterPNGPanel.class, "UIExporterPNGPanel.marginsLabel.text")); // NOI18N
-
-        topTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                topTextFieldActionPerformed(evt);
-            }
-        });
-
-        leftTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                leftTextFieldActionPerformed(evt);
-            }
-        });
-
-        topLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterPNGPanel.class, "UIExporterPNGPanel.topLabel.text")); // NOI18N
-
-        leftLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterPNGPanel.class, "UIExporterPNGPanel.leftLabel.text")); // NOI18N
-
-        rightLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterPNGPanel.class, "UIExporterPNGPanel.rightLabel.text")); // NOI18N
-
-        bottomLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterPNGPanel.class, "UIExporterPNGPanel.bottomLabel.text")); // NOI18N
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         widthLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterPNGPanel.class, "UIExporterPNGPanel.widthLabel.text")); // NOI18N
 
         heightLabel.setText(org.openide.util.NbBundle.getMessage(UIExporterPNGPanel.class, "UIExporterPNGPanel.heightLabel.text")); // NOI18N
+
+        jLabel1.setText("px");
+
+        jLabel2.setText("px");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -110,34 +75,17 @@ public class UIExporterPNGPanel extends javax.swing.JPanel implements Validation
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(marginsLabel)
                     .addComponent(widthLabel)
                     .addComponent(heightLabel))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(heightTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(widthTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(heightTextField, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(widthTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE))
-                            .addComponent(topLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(topTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(bottomLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bottomTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(leftLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(leftTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(rightLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addGap(190, 190, 190))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -145,57 +93,22 @@ public class UIExporterPNGPanel extends javax.swing.JPanel implements Validation
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(widthLabel))
+                    .addComponent(widthLabel)
+                    .addComponent(jLabel1))
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(heightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(heightLabel))
-                .addGap(40, 40, 40)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(marginsLabel)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(leftLabel)
-                                        .addComponent(leftTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(16, 16, 16))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(topTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(topLabel)
-                                .addGap(18, 18, 18)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(bottomLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(bottomTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(rightLabel)))
-                    .addComponent(rightTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(heightLabel)
+                    .addComponent(jLabel2))
+                .addContainerGap(134, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void leftTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_leftTextFieldActionPerformed
-
-    private void topTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_topTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_topTextFieldActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel bottomLabel;
-    private javax.swing.JTextField bottomTextField;
     private javax.swing.JLabel heightLabel;
     private javax.swing.JTextField heightTextField;
-    private javax.swing.JLabel leftLabel;
-    private javax.swing.JTextField leftTextField;
-    private javax.swing.JLabel marginsLabel;
-    private javax.swing.JLabel rightLabel;
-    private javax.swing.JTextField rightTextField;
-    private javax.swing.JLabel topLabel;
-    private javax.swing.JTextField topTextField;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel widthLabel;
     private javax.swing.JTextField widthTextField;
     // End of variables declaration//GEN-END:variables
@@ -214,10 +127,5 @@ public class UIExporterPNGPanel extends javax.swing.JPanel implements Validation
     public void validate(ValidationGroup group) {
         group.add(widthTextField, Validators.REQUIRE_NON_EMPTY_STRING, Validators.REQUIRE_VALID_INTEGER, Validators.numberRange(1, Integer.MAX_VALUE));
         group.add(heightTextField, Validators.REQUIRE_NON_EMPTY_STRING, Validators.REQUIRE_VALID_INTEGER, Validators.numberRange(1, Integer.MAX_VALUE));
-
-        group.add(leftTextField, Validators.REQUIRE_NON_EMPTY_STRING, Validators.REQUIRE_NON_NEGATIVE_NUMBER, Validators.REQUIRE_VALID_INTEGER);
-        group.add(rightTextField, Validators.REQUIRE_NON_EMPTY_STRING, Validators.REQUIRE_NON_NEGATIVE_NUMBER, Validators.REQUIRE_VALID_INTEGER);
-        group.add(topTextField, Validators.REQUIRE_NON_EMPTY_STRING, Validators.REQUIRE_NON_NEGATIVE_NUMBER, Validators.REQUIRE_VALID_INTEGER);
-        group.add(bottomTextField, Validators.REQUIRE_NON_EMPTY_STRING, Validators.REQUIRE_NON_NEGATIVE_NUMBER, Validators.REQUIRE_VALID_INTEGER);
     }
 }

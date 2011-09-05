@@ -194,10 +194,11 @@ public class PreviewControllerImpl implements PreviewController {
                             }
                         }
                     }
-                    progressTicket = ((AbstractRenderTarget) target).getProgressTicket();
-                    Progress.switchToDeterminate(progressTicket, tasks);
                 }
+                progressTicket = ((AbstractRenderTarget) target).getProgressTicket();
+                Progress.switchToDeterminate(progressTicket, tasks);
             }
+
 
             //Render items
             for (Renderer r : renderers) {

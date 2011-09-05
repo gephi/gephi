@@ -79,27 +79,15 @@ public class UIExporterPNG implements ExporterUI {
 
         private int width = 1024;
         private int height = 1024;
-        private int leftMargin = 20;
-        private int rightMargin = 20;
-        private int topMargin = 20;
-        private int bottomMargin = 20;
 
         void load(PNGExporter exporter) {
             exporter.setHeight(height);
             exporter.setWidth(width);
-            exporter.setLeftMargin(leftMargin);
-            exporter.setRightMargin(rightMargin);
-            exporter.setBottomMargin(bottomMargin);
-            exporter.setTopMargin(topMargin);
         }
 
         void save(PNGExporter exporter) {
             height = exporter.getHeight();
             width = exporter.getWidth();
-            leftMargin = exporter.getLeftMargin();
-            rightMargin = exporter.getRightMargin();
-            topMargin = exporter.getTopMargin();
-            bottomMargin = exporter.getBottomMargin();
         }
     }
 }

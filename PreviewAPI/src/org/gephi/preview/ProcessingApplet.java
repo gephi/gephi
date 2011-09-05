@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
@@ -47,12 +48,11 @@ public class ProcessingApplet extends PApplet implements MouseWheelListener {
     private static final int WHEEL_TIMER = 500;
     private final static float MARGIN = 10f;
     //States
-    private PVector ref = new PVector();
-    private PVector trans = new PVector();
-    private PVector lastMove = new PVector();
+    private final PVector ref = new PVector();
+    private final PVector trans = new PVector();
+    private final PVector lastMove = new PVector();
     private float scaling;
-    private java.awt.Color background = java.awt.Color.WHITE;
-    private boolean moving = false;
+    private Color background = Color.WHITE;
     private Timer wheelTimer;
     //Data
     private final PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
@@ -86,7 +86,6 @@ public class ProcessingApplet extends PApplet implements MouseWheelListener {
     @Override
     public void setup() {
         size(1000, 1000, JAVA2D);
-        System.out.println("Setup PApplet and g=" + g);
         rectMode(CENTER);
         background(background.getRGB());
         smooth();
@@ -193,7 +192,6 @@ public class ProcessingApplet extends PApplet implements MouseWheelListener {
     }
 
     public void setMoving(boolean moving) {
-        this.moving = moving;
         if (model != null) {
             model.getProperties().putValue(PreviewProperty.MOVING, moving);
         }

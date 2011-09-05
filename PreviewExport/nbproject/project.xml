@@ -31,6 +31,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.gephi.lib.processing</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.5.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.gephi.preview.api</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -119,11 +127,15 @@
                         <compile-dependency/>
                     </test-dependency>
                     <test-dependency>
+                        <code-name-base>org.gephi.lib.commonscompress</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
+                    <test-dependency>
                         <code-name-base>org.gephi.lib.processing</code-name-base>
                         <compile-dependency/>
                     </test-dependency>
                     <test-dependency>
-                        <code-name-base>org.gephi.preview</code-name-base>
+                        <code-name-base>org.gephi.preview.plugin</code-name-base>
                         <compile-dependency/>
                     </test-dependency>
                     <test-dependency>
@@ -140,6 +152,14 @@
                     </test-dependency>
                     <test-dependency>
                         <code-name-base>org.gephi.visualization.api</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
+                    <test-dependency>
+                        <code-name-base>org.netbeans.libs.junit4</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
+                    <test-dependency>
+                        <code-name-base>org.openide.nodes</code-name-base>
                         <compile-dependency/>
                     </test-dependency>
                     <test-dependency>
