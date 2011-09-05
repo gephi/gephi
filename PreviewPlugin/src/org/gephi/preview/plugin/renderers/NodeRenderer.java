@@ -75,8 +75,12 @@ public class NodeRenderer implements Renderer {
 
 //        x = x - size;
 //        y = y - size;
-        graphics.stroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha);
-        graphics.strokeWeight(borderSize);
+        if (borderSize > 0) {
+            graphics.stroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha);
+            graphics.strokeWeight(borderSize);
+        } else {
+            graphics.noStroke();
+        }
         graphics.fill(color.getRed(), color.getGreen(), color.getBlue(), alpha);
         graphics.ellipse(x, y, size, size);
     }
