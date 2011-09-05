@@ -22,6 +22,10 @@ package org.gephi.layout.plugin.forceAtlas2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicController;
@@ -37,6 +41,7 @@ import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
 import org.gephi.project.api.Workspace;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
@@ -60,13 +65,18 @@ public class ForceAtlas2 implements Layout {
     private boolean barnesHutOptimize;
     private double barnesHutTheta;
     private boolean linLogMode;
+    private boolean strongGravityMode;
+    private int threadCount;
+    private int currentThreadCount;
     private Region rootRegion;
     double outboundAttCompensation = 1;
     //Dynamic Weight
     private TimeInterval timeInterval;
+    private ExecutorService pool;
 
     public ForceAtlas2(ForceAtlas2Builder layoutBuilder) {
         this.layoutBuilder = layoutBuilder;
+        this.threadCount = Math.min(4, Math.max(1, Runtime.getRuntime().availableProcessors() - 1));
     }
 
     @Override
@@ -93,6 +103,9 @@ public class ForceAtlas2 implements Layout {
             nLayout.dx = 0;
             nLayout.dy = 0;
         }
+
+        pool = Executors.newFixedThreadPool(threadCount);
+        currentThreadCount = threadCount;
     }
 
     @Override
@@ -140,31 +153,43 @@ public class ForceAtlas2 implements Layout {
             outboundAttCompensation /= nodes.length;
         }
 
-        // Repulsion
+        // Repulsion (and gravity)
+        // NB: Muti-threaded
         RepulsionForce Repulsion = ForceFactory.builder.buildRepulsion(isAdjustSizes(), getScalingRatio());
-        if (isBarnesHutOptimize()) {
-            for (Node n : nodes) {
-                rootRegion.applyForce(n, Repulsion, getBarnesHutTheta());
-            }
-        } else {
-            for (int n1Index = 0; n1Index < nodes.length; n1Index++) {
-                Node n1 = nodes[n1Index];
-                for (int n2Index = 0; n2Index < n1Index; n2Index++) {
-                    Node n2 = nodes[n2Index];
-                    Repulsion.apply(n1, n2);
-                }
+
+        int taskCount = 8 * currentThreadCount;  // The threadPool Executor Service will manage the fetching of tasks and threads.
+        // We make more tasks than threads because some tasks may need more time to compute.
+        ArrayList<Future> threads = new ArrayList();
+        for (int t = taskCount; t > 0; t--) {
+            int from = (int) Math.floor(nodes.length * (t - 1) / taskCount);
+            int to = (int) Math.floor(nodes.length * t / taskCount);
+            Future future = pool.submit(new NodesThread(nodes, from, to, isBarnesHutOptimize(), getBarnesHutTheta(), getGravity(), (isStrongGravityMode()) ? (ForceFactory.builder.getStrongGravity(getScalingRatio())) : (Repulsion), getScalingRatio(), rootRegion, Repulsion));
+            threads.add(future);
+        }
+        for (Future future : threads) {
+            try {
+                future.get();
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (ExecutionException ex) {
+                Exceptions.printStackTrace(ex);
             }
         }
 
         // Attraction
         AttractionForce Attraction = ForceFactory.builder.buildAttraction(isLinLogMode(), isOutboundAttractionDistribution(), isAdjustSizes(), 1 * ((isOutboundAttractionDistribution()) ? (outboundAttCompensation) : (1)));
-        for (Edge e : edges) {
-            Attraction.apply(e.getSource(), e.getTarget(), Math.pow(getWeight(e), getEdgeWeightInfluence()));
-        }
-
-        // Gravity
-        for (Node n : nodes) {
-            Repulsion.apply(n, getGravity() / getScalingRatio());
+        if (getEdgeWeightInfluence() == 0) {
+            for (Edge e : edges) {
+                Attraction.apply(e.getSource(), e.getTarget(), 1);
+            }
+        } else if (getEdgeWeightInfluence() == 1) {
+            for (Edge e : edges) {
+                Attraction.apply(e.getSource(), e.getTarget(), getWeight(e));
+            }
+        } else {
+            for (Edge e : edges) {
+                Attraction.apply(e.getSource(), e.getTarget(), Math.pow(getWeight(e), getEdgeWeightInfluence()));
+            }
         }
 
         // Auto adjust speed
@@ -242,6 +267,7 @@ public class ForceAtlas2 implements Layout {
         for (Node n : graph.getNodes()) {
             n.getNodeData().setLayoutData(null);
         }
+        pool.shutdown();
         graph.readUnlockAll();
     }
 
@@ -251,6 +277,7 @@ public class ForceAtlas2 implements Layout {
         final String FORCEATLAS2_TUNING = NbBundle.getMessage(getClass(), "ForceAtlas2.tuning");
         final String FORCEATLAS2_BEHAVIOR = NbBundle.getMessage(getClass(), "ForceAtlas2.behavior");
         final String FORCEATLAS2_PERFORMANCE = NbBundle.getMessage(getClass(), "ForceAtlas2.performance");
+        final String FORCEATLAS2_THREADS = NbBundle.getMessage(getClass(), "ForceAtlas2.threads");
 
         try {
             properties.add(LayoutProperty.createProperty(
@@ -259,6 +286,13 @@ public class ForceAtlas2 implements Layout {
                     FORCEATLAS2_TUNING,
                     NbBundle.getMessage(getClass(), "ForceAtlas2.scalingRatio.desc"),
                     "getScalingRatio", "setScalingRatio"));
+
+            properties.add(LayoutProperty.createProperty(
+                    this, Boolean.class,
+                    NbBundle.getMessage(getClass(), "ForceAtlas2.strongGravityMode.name"),
+                    FORCEATLAS2_TUNING,
+                    NbBundle.getMessage(getClass(), "ForceAtlas2.strongGravityMode.desc"),
+                    "isStrongGravityMode", "setStrongGravityMode"));
 
             properties.add(LayoutProperty.createProperty(
                     this, Double.class,
@@ -316,6 +350,13 @@ public class ForceAtlas2 implements Layout {
                     NbBundle.getMessage(getClass(), "ForceAtlas2.barnesHutTheta.desc"),
                     "getBarnesHutTheta", "setBarnesHutTheta"));
 
+            properties.add(LayoutProperty.createProperty(
+                    this, Integer.class,
+                    NbBundle.getMessage(getClass(), "ForceAtlas2.threads.name"),
+                    FORCEATLAS2_THREADS,
+                    NbBundle.getMessage(getClass(), "ForceAtlas2.threads.desc"),
+                    "getThreadsCount", "setThreadsCount"));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -337,6 +378,7 @@ public class ForceAtlas2 implements Layout {
         } else {
             setScalingRatio(10.0);
         }
+        setStrongGravityMode(false);
         setGravity(1.);
 
         // Behavior
@@ -359,6 +401,7 @@ public class ForceAtlas2 implements Layout {
             setBarnesHutOptimize(false);
         }
         setBarnesHutTheta(1.2);
+        setThreadsCount(2);
     }
 
     @Override
@@ -418,12 +461,32 @@ public class ForceAtlas2 implements Layout {
         this.scalingRatio = scalingRatio;
     }
 
+    public Boolean isStrongGravityMode() {
+        return strongGravityMode;
+    }
+
+    public void setStrongGravityMode(Boolean strongGravityMode) {
+        this.strongGravityMode = strongGravityMode;
+    }
+
     public Double getGravity() {
         return gravity;
     }
 
     public void setGravity(Double gravity) {
         this.gravity = gravity;
+    }
+
+    public Integer getThreadsCount() {
+        return threadCount;
+    }
+
+    public void setThreadsCount(Integer threadCount) {
+        if (threadCount < 1) {
+            setThreadsCount(1);
+        } else {
+            this.threadCount = threadCount;
+        }
     }
 
     public Boolean isOutboundAttractionDistribution() {

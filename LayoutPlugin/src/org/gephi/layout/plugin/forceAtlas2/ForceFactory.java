@@ -44,6 +44,10 @@ public class ForceFactory {
         }
     }
 
+    public RepulsionForce getStrongGravity(double coefficient) {
+        return new strongGravity(coefficient);
+    }
+
     public AttractionForce buildAttraction(boolean logAttraction, boolean distributedAttraction, boolean adjustBySize, double coefficient) {
         if (adjustBySize) {
             if (logAttraction) {
@@ -165,7 +169,7 @@ public class ForceFactory {
     }
 
     /*
-     * Repulsion force: Linear with Anti-collision
+     * Repulsion force: Strong Gravity (as a Repulsion Force because it is easier)
      */
     private class linRepulsion_antiCollision extends RepulsionForce {
 
@@ -245,6 +249,44 @@ public class ForceFactory {
             if (distance > 0) {
                 // NB: factor = force / distance
                 double factor = coefficient * nLayout.mass * g / distance;
+
+                nLayout.dx -= xDist * factor;
+                nLayout.dy -= yDist * factor;
+            }
+        }
+    }
+
+    private class strongGravity extends RepulsionForce {
+
+        private double coefficient;
+
+        public strongGravity(double c) {
+            coefficient = c;
+        }
+
+        @Override
+        public void apply(Node n1, Node n2) {
+            // Not Relevant
+        }
+
+        @Override
+        public void apply(Node n, Region r) {
+            // Not Relevant
+        }
+
+        @Override
+        public void apply(Node n, double g) {
+            NodeData nData = n.getNodeData();
+            ForceAtlas2LayoutData nLayout = nData.getLayoutData();
+
+            // Get the distance
+            double xDist = nData.x();
+            double yDist = nData.y();
+            double distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+
+            if (distance > 0) {
+                // NB: factor = force / distance
+                double factor = coefficient * nLayout.mass * g;
 
                 nLayout.dx -= xDist * factor;
                 nLayout.dy -= yDist * factor;

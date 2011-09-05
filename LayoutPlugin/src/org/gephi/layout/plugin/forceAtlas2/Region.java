@@ -37,8 +37,8 @@ public class Region {
     private double massCenterX;
     private double massCenterY;
     private double size;
-    private List<Node> nodes;
-    private List<Region> subregions = new ArrayList<Region>();
+    private final List<Node> nodes;
+    private final List<Region> subregions = new ArrayList<Region>();
 
     public Region(Node[] nodes) {
         this.nodes = new ArrayList<Node>();
@@ -51,7 +51,7 @@ public class Region {
         updateMassAndGeometry();
     }
 
-    public void updateMassAndGeometry() {
+    private void updateMassAndGeometry() {
         if (nodes.size() > 1) {
             // Compute Mass
             mass = 0;
@@ -77,7 +77,7 @@ public class Region {
         }
     }
 
-    public void buildSubRegions() {
+    public synchronized void buildSubRegions() {
         if (nodes.size() > 1) {
             ArrayList<Node> leftNodes = new ArrayList<Node>();
             ArrayList<Node> rightNodes = new ArrayList<Node>();
