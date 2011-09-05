@@ -54,8 +54,6 @@ import org.gephi.data.attributes.type.TimeInterval;
 public class DataIndex {
     @SuppressWarnings("rawtypes")
     private static final Class[] SUPPORTED_TYPES = {
-        Byte.class,       Short.class,          Integer.class,     Long.class,
-        Float.class,      Double.class,         Boolean.class,     Character.class,
         String.class,     BigInteger.class,     BigDecimal.class,  TimeInterval.class,
         ByteList.class,   ShortList.class,      IntegerList.class, LongList.class,
         FloatList.class,  DoubleList.class,     BooleanList.class, CharacterList.class,
