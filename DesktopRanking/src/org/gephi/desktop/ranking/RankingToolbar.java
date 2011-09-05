@@ -242,7 +242,7 @@ public class RankingToolbar extends JToolBar implements PropertyChangeListener {
         return new DecoratedIcon(icon, decoration, new DecoratedIcon.DecorationController() {
 
             public boolean isDecorated() {
-                return model.isAutoTransformer(transformer);
+                return model != null && model.isAutoTransformer(transformer);
             }
         });
     }
