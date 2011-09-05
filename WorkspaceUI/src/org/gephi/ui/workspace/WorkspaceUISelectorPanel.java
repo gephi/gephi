@@ -174,26 +174,18 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel implements Chan
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        jToolBar1 = new javax.swing.JToolBar();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
-        workspaceLabel = new javax.swing.JLabel();
+        workspaceButtonsBar = new javax.swing.JToolBar();
         leftArrowButton = new javax.swing.JButton();
         rightArrowButton = new javax.swing.JButton();
+        workspaceLabel = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JToolBar.Separator();
 
         setLayout(new java.awt.GridBagLayout());
 
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
-        jToolBar1.add(jSeparator1);
-
-        workspaceLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/workspace/resources/workspace.png"))); // NOI18N
-        workspaceLabel.setText(org.openide.util.NbBundle.getMessage(WorkspaceUISelectorPanel.class, "WorkspaceUISelectorPanel.workspaceLabel.text")); // NOI18N
-        workspaceLabel.setIconTextGap(7);
-        workspaceLabel.setMaximumSize(new java.awt.Dimension(120, 16));
-        workspaceLabel.setPreferredSize(new java.awt.Dimension(100, 16));
-        jToolBar1.add(workspaceLabel);
+        workspaceButtonsBar.setFloatable(false);
+        workspaceButtonsBar.setRollover(true);
 
         leftArrowButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/workspace/resources/leftArrow.png"))); // NOI18N
         leftArrowButton.setText(org.openide.util.NbBundle.getMessage(WorkspaceUISelectorPanel.class, "WorkspaceUISelectorPanel.leftArrowButton.text")); // NOI18N
@@ -202,7 +194,7 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel implements Chan
         leftArrowButton.setFocusable(false);
         leftArrowButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         leftArrowButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(leftArrowButton);
+        workspaceButtonsBar.add(leftArrowButton);
 
         rightArrowButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/workspace/resources/rightArrow.png"))); // NOI18N
         rightArrowButton.setText(org.openide.util.NbBundle.getMessage(WorkspaceUISelectorPanel.class, "WorkspaceUISelectorPanel.rightArrowButton.text")); // NOI18N
@@ -211,17 +203,36 @@ public class WorkspaceUISelectorPanel extends javax.swing.JPanel implements Chan
         rightArrowButton.setFocusable(false);
         rightArrowButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         rightArrowButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(rightArrowButton);
-        jToolBar1.add(jSeparator2);
+        workspaceButtonsBar.add(rightArrowButton);
 
-        add(jToolBar1, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        add(workspaceButtonsBar, gridBagConstraints);
+
+        workspaceLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        workspaceLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/ui/workspace/resources/workspace.png"))); // NOI18N
+        workspaceLabel.setText(org.openide.util.NbBundle.getMessage(WorkspaceUISelectorPanel.class, "WorkspaceUISelectorPanel.workspaceLabel.text")); // NOI18N
+        workspaceLabel.setIconTextGap(7);
+        workspaceLabel.setMaximumSize(new java.awt.Dimension(300, 16));
+        workspaceLabel.setPreferredSize(new java.awt.Dimension(300, 16));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 2);
+        add(workspaceLabel, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        add(jSeparator2, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
-    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JButton leftArrowButton;
     private javax.swing.JButton rightArrowButton;
+    private javax.swing.JToolBar workspaceButtonsBar;
     private javax.swing.JLabel workspaceLabel;
     // End of variables declaration//GEN-END:variables
 }
