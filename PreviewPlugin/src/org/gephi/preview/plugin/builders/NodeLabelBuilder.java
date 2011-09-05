@@ -39,17 +39,25 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ItemBuilder.class, position = 200)
 public class NodeLabelBuilder implements ItemBuilder {
-
+    
     public Item[] getItems(GraphModel graphModel, AttributeModel attributeModel) {
         Graph graph = graphModel.getGraphVisible();
-
+        
+        boolean useTextData = false;
+        for (Node n : graph.getNodes()) {
+            TextData textData = n.getNodeData().getTextData();
+            if (textData != null && textData.getText() != null && !textData.getText().isEmpty()) {
+                useTextData = true;
+            }
+        }
+        
         List<Item> items = new ArrayList<Item>();
         int i = 0;
         for (Node n : graph.getNodes()) {
             NodeLabelItem labelItem = new NodeLabelItem(n.getNodeData().getRootNode());
             labelItem.setData(NodeLabelItem.LABEL, n.getNodeData().getLabel());
             TextData textData = n.getNodeData().getTextData();
-            if (textData != null) {
+            if (textData != null && useTextData) {
                 if (textData.getR() != -1) {
                     labelItem.setData(NodeLabelItem.COLOR, new Color((int) (textData.getR() * 255),
                             (int) (textData.getG() * 255),
@@ -70,7 +78,7 @@ public class NodeLabelBuilder implements ItemBuilder {
         }
         return items.toArray(new Item[0]);
     }
-
+    
     public String getType() {
         return ItemBuilder.NODE_LABEL_BUILDER;
     }

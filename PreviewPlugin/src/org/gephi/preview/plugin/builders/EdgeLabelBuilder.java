@@ -44,13 +44,21 @@ public class EdgeLabelBuilder implements ItemBuilder {
     public Item[] getItems(GraphModel graphModel, AttributeModel attributeModel) {
         HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
 
+        boolean useTextData = false;
+        for (Edge e : graph.getEdgesAndMetaEdges()) {
+            TextData textData = e.getEdgeData().getTextData();
+            if (textData != null && textData.getText() != null && !textData.getText().isEmpty()) {
+                useTextData = true;
+            }
+        }
+
         List<Item> items = new ArrayList<Item>();
         for (Edge e : graph.getEdgesAndMetaEdges()) {
             EdgeLabelItem labelItem = new EdgeLabelItem(e);
             String label = e.getEdgeData().getLabel();
             labelItem.setData(EdgeLabelItem.LABEL, label);
             TextData textData = e.getEdgeData().getTextData();
-            if (textData != null) {
+            if (textData != null && useTextData) {
                 if (textData.getR() != -1) {
                     labelItem.setData(NodeLabelItem.COLOR, new Color((int) (textData.getR() * 255),
                             (int) (textData.getG() * 255),
