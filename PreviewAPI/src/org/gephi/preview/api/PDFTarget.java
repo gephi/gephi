@@ -23,9 +23,9 @@ package org.gephi.preview.api;
 import com.itextpdf.text.Rectangle;
 
 /**
- * The PDFTarget is a subtype of RenderTarge which used to specify a PDF render
- * target. The PDFTarget will be used by Renderer objects to render a graph
- * to PDF.
+ * Rendering target to PDF format.
+ * <p>
+ * This target is used by renderers objects to render a graph to PDF.
  *
  * @author Yudi Xue
  */
@@ -38,101 +38,105 @@ public interface PDFTarget extends RenderTarget {
     public static final String TOP_EDGE_LABELS = "pdf.top.edge.labels";
 
     /**
-     * Set left,right,top and bottom margins all at once.
-     * @param leftMargin - the left margin of page
-     * @param rightMargin - the left margin of page
-     * @param top - the top margin of page
-     * @param bottom - the left margin of page
+     * Sets left, right, top and bottom margins.
+     * 
+     * @param leftMargin    the left margin
+     * @param rightMargin   the right margin
+     * @param top           the top margin of page
+     * @param bottom        the bottom margin of page
      */
     public void setMargins(float leftMargin, float rightMargin, float top, float bottom);
 
     /**
-     * return the margin at the bottom of page
-     * @return float
+     * Returns the margin at the bottom of the page.
+     * 
+     * @return the bottom margin, in pixels
      */
     public float getMarginBottom();
 
     /**
-     * set the margin at the bottom of page.
+     * Sets the margin at the bottom of the page.
      *
-     * @param marginBottom float
+     * @param marginBottom tbe bottom margin, in pixels
      */
     public void setMarginBottom(float marginBottom);
 
     /**
-     * return the margin at the left of page.
+     * Returns the margin at the left of the page.
      *
-     * @return float
+     * @return the left margin, in pixels
      */
     public float getMarginLeft();
 
     /**
-     * set the margin at the left of page.
+     * Sets the margin at the left of the page.
      *
-     * @param marginBottom float
+     * @param marginBottom the left margin, in pixels
      */
     public void setMarginLeft(float marginLeft);
 
     /**
-     * return the margin at the right of page
+     * Returns the margin at the right of the page.
      *
-     * @return float
+     * @return the right margin, in pixels
      */
     public float getMarginRight();
 
     /**
-     * set the margin at the right of page.
+     * Sets the margin at the right of the page.
      *
-     * @param marginBottom float
+     * @param marginBottom the right margin, in pixels
      */
     public void setMarginRight(float marginRight);
 
     /**
-     * return the margin at the right of page.
+     * Returns the margin at the right of the page.
      *
-     * @return float
+     * @return the top margin, in pixels
      */
     public float getMarginTop();
 
     /**
-     * set the margin at the top of page.
+     * Sets the margin at the top of the page.
      *
-     * @param marginBottom float
+     * @param marginBottom the top margin, in pixels
      */
     public void setMarginTop(float marginTop);
 
     /**
-     * return whether the RenderTarget is in landscape.
+     * Returns whether the orientation is in landscape or portrait.
      *
-     * @return true the RenderTarget is in landscape; false the
-     * RenderTarget is in portrait
+     * @return <code>true</code> if the orientation is landscape, <code>false</code>
+     * if portrait.
      */
     public boolean isLandscape();
 
     /**
-     * set the margin at the bottom of page
-     * @param marginBottom float
+     * Sets the page orientation to landscape. Default is portrait.
+     * 
+     * @param landscape <code>true<code> for landscape, <code>false</code> for
+     * portrait
      */
     public void setLandscape(boolean landscape);
 
     /**
-     * return the size of page.
+     * Returns the page's size.
      *
-     * @return a Rectangle object containing such information
+     * @return the page size
      */
     public Rectangle getPageSize();
 
     /**
-     * set the size of page.
+     * Set the size of page.
      *
-     * @param a Rectangle object
+     * @param pageSize the size of the page
      */
     public void setPageSize(Rectangle pageSize);
-    
+
     /**
-     * return the scale ratio.
+     * Returns the scale ratio.
      * 
-     * @return float
+     * @return the scale ratio
      */
     public float getScaleRatio();
 }
