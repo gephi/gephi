@@ -225,6 +225,7 @@ public class NodeLabelRenderer implements Renderer {
     }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
-        return item instanceof NodeLabelItem && properties.getBooleanValue(PreviewProperty.SHOW_NODE_LABELS);
+        return item instanceof NodeLabelItem && properties.getBooleanValue(PreviewProperty.SHOW_NODE_LABELS)
+                && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 }

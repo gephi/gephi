@@ -37,6 +37,7 @@ public class DefaultPreset extends PreviewPreset {
         
         properties.put(PreviewProperty.EDGE_CURVED, Boolean.TRUE);
         properties.put(PreviewProperty.BACKGROUND_COLOR, Color.WHITE);
+        properties.put(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
         properties.put(PreviewProperty.EDGE_RESCALE_WEIGHT, Boolean.FALSE);
         properties.put(PreviewProperty.NODE_LABEL_COLOR, new DependantOriginalColor(Color.BLACK));
         properties.put(PreviewProperty.NODE_LABEL_PROPORTIONAL_SIZE, Boolean.TRUE);

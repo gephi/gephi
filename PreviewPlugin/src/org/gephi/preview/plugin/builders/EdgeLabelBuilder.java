@@ -46,29 +46,27 @@ public class EdgeLabelBuilder implements ItemBuilder {
 
         List<Item> items = new ArrayList<Item>();
         for (Edge e : graph.getEdgesAndMetaEdges()) {
-            if (!e.isSelfLoop()) {
-                EdgeLabelItem labelItem = new EdgeLabelItem(e);
-                String label = e.getEdgeData().getLabel();
-                labelItem.setData(EdgeLabelItem.LABEL, label);
-                TextData textData = e.getEdgeData().getTextData();
-                if (textData != null) {
-                    if (textData.getR() != -1) {
-                        labelItem.setData(NodeLabelItem.COLOR, new Color((int) (textData.getR() * 255),
-                                (int) (textData.getG() * 255),
-                                (int) (textData.getB() * 255),
-                                (int) (textData.getAlpha() * 255)));
-                    }
-                    labelItem.setData(EdgeLabelItem.WIDTH, textData.getWidth());
-                    labelItem.setData(EdgeLabelItem.HEIGHT, textData.getHeight());
-                    labelItem.setData(EdgeLabelItem.SIZE, textData.getSize());
-                    labelItem.setData(EdgeLabelItem.VISIBLE, textData.isVisible());
-                    labelItem.setData(EdgeLabelItem.LABEL, textData.getText());
-                    if (textData.isVisible() && textData.getText() != null && !textData.getText().isEmpty()) {
-                        items.add(labelItem);
-                    }
-                } else if (label != null && !label.isEmpty()) {
+            EdgeLabelItem labelItem = new EdgeLabelItem(e);
+            String label = e.getEdgeData().getLabel();
+            labelItem.setData(EdgeLabelItem.LABEL, label);
+            TextData textData = e.getEdgeData().getTextData();
+            if (textData != null) {
+                if (textData.getR() != -1) {
+                    labelItem.setData(NodeLabelItem.COLOR, new Color((int) (textData.getR() * 255),
+                            (int) (textData.getG() * 255),
+                            (int) (textData.getB() * 255),
+                            (int) (textData.getAlpha() * 255)));
+                }
+                labelItem.setData(EdgeLabelItem.WIDTH, textData.getWidth());
+                labelItem.setData(EdgeLabelItem.HEIGHT, textData.getHeight());
+                labelItem.setData(EdgeLabelItem.SIZE, textData.getSize());
+                labelItem.setData(EdgeLabelItem.VISIBLE, textData.isVisible());
+                labelItem.setData(EdgeLabelItem.LABEL, textData.getText());
+                if (textData.isVisible() && textData.getText() != null && !textData.getText().isEmpty()) {
                     items.add(labelItem);
                 }
+            } else if (label != null && !label.isEmpty()) {
+                items.add(labelItem);
             }
         }
         return items.toArray(new Item[0]);

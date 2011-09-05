@@ -97,7 +97,23 @@ public class EdgeLabelRenderer implements Renderer {
             item.setData(EDGE_COLOR, edgeItem.getData(EdgeItem.COLOR));
             NodeItem sourceItem = (NodeItem) edgeItem.getData(EdgeRenderer.SOURCE);
             NodeItem targetItem = (NodeItem) edgeItem.getData(EdgeRenderer.TARGET);
-            if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
+            if (edge.isSelfLoop()) {
+                //Middle
+                Float x = sourceItem.getData(NodeItem.X);
+                Float y = sourceItem.getData(NodeItem.Y);
+                Float size = sourceItem.getData(NodeItem.SIZE);
+
+                PVector v1 = new PVector(x, y);
+                v1.add(size, -size, 0);
+
+                PVector v2 = new PVector(x, y);
+                v2.add(size, size, 0);
+
+                PVector middle = bezierPoint(x, y, v1.x, v1.y, v2.x, v2.y, x, y, 0.5f);
+                item.setData(LABEL_X, middle.x);
+                item.setData(LABEL_Y, middle.y);
+
+            } else if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
                 //Middle of the curve
                 Float x1 = sourceItem.getData(NodeItem.X);
                 Float x2 = targetItem.getData(NodeItem.X);
@@ -241,7 +257,8 @@ public class EdgeLabelRenderer implements Renderer {
     }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
-        return item instanceof EdgeLabelItem && properties.getBooleanValue(PreviewProperty.SHOW_EDGE_LABELS);
+        return item instanceof EdgeLabelItem && properties.getBooleanValue(PreviewProperty.SHOW_EDGE_LABELS)
+                && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 
     private PVector bezierPoint(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float c) {

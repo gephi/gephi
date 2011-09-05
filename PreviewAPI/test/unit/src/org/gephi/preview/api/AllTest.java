@@ -6,7 +6,9 @@ import java.io.InputStream;
 import javax.swing.JFrame;
 import org.gephi.desktop.welcome.WelcomeTopComponent;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.Node;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.spi.FileImporter;
@@ -45,8 +47,14 @@ public class AllTest {
 
         importController.process(container, new DefaultProcessor(), workspace);
 
-        //Set label edges
+        //Add self loop
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        Graph graph = graphController.getModel().getGraph();
+        Node node = graph.getNode(12);
+        System.out.println("Self loop " + node.getNodeData().getLabel());
+        graph.addEdge(graphController.getModel().factory().newEdge(node, node, 31, true));
+
+        //Set label edges       
         for (Edge edge : graphController.getModel().getGraph().getEdges()) {
             edge.getEdgeData().setLabel("Label test");
         }
