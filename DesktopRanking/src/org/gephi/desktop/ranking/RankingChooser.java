@@ -261,6 +261,15 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
         autoApplyButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent ae) {
+                if (interpolator != null) {
+                    RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
+                    rankingController.setInterpolator(new org.gephi.ranking.api.Interpolator() {
+
+                        public float interpolate(float x) {
+                            return interpolator.interpolate(x);
+                        }
+                    });
+                }
                 model.setAutoTransformer(model.getCurrentTransformer(), autoApplyButton.isSelected());
                 setAutoApplySelected(autoApplyButton.isSelected());
             }

@@ -24,6 +24,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeEvent;
+import org.gephi.data.attributes.api.AttributeListener;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -40,22 +44,31 @@ import org.openide.util.NbPreferences;
  * 
  * @author Mathieu Bastian
  */
-public class RankingAutoTransformer implements Runnable {
+public class RankingAutoTransformer implements Runnable, AttributeListener {
 
-    private static final long DEFAULT_DELAY = 500;
+    private static final long DEFAULT_DELAY = 500;  //ms
     private ScheduledExecutorService executor;
     private final RankingModelImpl model;
     private final GraphController graphController;
+    private final AttributeModel attributeModel;
     private final GraphModel graphModel;
+    //Verisonning states
+    private int lastView = -1;
+    private int lastVersion = -1;
+    private boolean valueChanged = false;
 
     public RankingAutoTransformer(RankingModelImpl model) {
         this.model = model;
         graphController = Lookup.getDefault().lookup(GraphController.class);
         graphModel = graphController.getModel(model.getWorkspace());
+        attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel(model.getWorkspace());
     }
 
     public void start() {
         if (executor == null) {
+            //Attribute listening
+            attributeModel.addAttributeListener(this);
+
             executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
 
                 public Thread newThread(Runnable r) {
@@ -68,6 +81,12 @@ public class RankingAutoTransformer implements Runnable {
     }
 
     public void stop() {
+        //Attribute stop listening
+        attributeModel.removeAttributeListener(this);
+        lastVersion = -1;
+        lastView = -1;
+        valueChanged = false;
+
         if (executor != null && !executor.isShutdown()) {
             executor.shutdown();
             executor = null;
@@ -75,8 +94,20 @@ public class RankingAutoTransformer implements Runnable {
     }
 
     public void run() {
+        HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
+        int nodeVersion = graph.getNodeVersion();
+        int edgeVersion = graph.getEdgeVersion();
+        int viewId = graphModel.getVisibleView().getViewId();
+
+        //Test if something changed        
+        if (viewId == lastView && (nodeVersion + edgeVersion) == lastVersion && !valueChanged) {
+            return;
+        }
+        lastView = viewId;
+        lastVersion = edgeVersion + nodeVersion;
+        valueChanged = false;
+
         for (RankingModelImpl.AutoRanking autoRanking : model.getAutoRankings()) {
-            HierarchicalGraph graph = graphModel.getHierarchicalGraphVisible();
             Interpolator interpolator = model.getInterpolator();
             Ranking ranking = autoRanking.getRanking();
             Transformer transformer = autoRanking.getTransformer();
@@ -104,6 +135,12 @@ public class RankingAutoTransformer implements Runnable {
                     }
                 }
             }
+        }
+    }
+
+    public void attributesChanged(AttributeEvent event) {
+        if (event.getEventType().equals(AttributeEvent.EventType.SET_VALUE)) {
+            valueChanged = true;
         }
     }
 
