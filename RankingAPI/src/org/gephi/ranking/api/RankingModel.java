@@ -61,7 +61,7 @@ public interface RankingModel {
      * classified with the type of element they are manipulating. If 
      * <code>elementType</code> equals <code>Ranking.NODE_ELEMENT</code> this is
      * equivalent to {@link RankingModel#getNodeRankings() } method
-     * @param  the element type of the rankings
+     * @param elementType the element type of the rankings
      * @return All rankings for <code>elementType</code>
      */
     public Ranking[] getRankings(String elementType);
@@ -91,9 +91,10 @@ public interface RankingModel {
      * given <code>name</code>. Returns <code>null</code> if not found.
      * <p>
      * Default transformers name can be found in the {@link Transformer} interface.
-     * @param elementType
-     * @param name
-     * @return 
+     * @param elementType   the element type of the transformer
+     * @param name  the name of the transformer
+     * @return the transformer defined as <code>name</code> and <code>elementType</code>
+     * or <code>null</code> if not found
      */
     public Transformer getTransformer(String elementType, String name);
 

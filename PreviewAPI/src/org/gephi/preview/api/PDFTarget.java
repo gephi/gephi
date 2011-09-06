@@ -71,7 +71,7 @@ public interface PDFTarget extends RenderTarget {
     /**
      * Sets the margin at the left of the page.
      *
-     * @param marginBottom the left margin, in pixels
+     * @param marginLeft the left margin, in pixels
      */
     public void setMarginLeft(float marginLeft);
 
@@ -85,7 +85,7 @@ public interface PDFTarget extends RenderTarget {
     /**
      * Sets the margin at the right of the page.
      *
-     * @param marginBottom the right margin, in pixels
+     * @param marginRight the right margin, in pixels
      */
     public void setMarginRight(float marginRight);
 
@@ -99,7 +99,7 @@ public interface PDFTarget extends RenderTarget {
     /**
      * Sets the margin at the top of the page.
      *
-     * @param marginBottom the top margin, in pixels
+     * @param marginTop the top margin, in pixels
      */
     public void setMarginTop(float marginTop);
 

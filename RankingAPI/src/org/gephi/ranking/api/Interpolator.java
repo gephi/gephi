@@ -54,7 +54,7 @@ public abstract class Interpolator {
      * @param py1 the y-coordinate of first control point, between [0, 1]
      * @param px2 the x-coordinate of second control point, between [0, 1]
      * @param py2 the y-coordinate of second control point, between [0, 1]
-     * @return 
+     * @return new bezier interpolator
      */
     public static Interpolator newBezierInterpolator(float px1, float py1, float px2, float py2) {
         return new BezierInterpolator(px1, py1, px2, py2);
