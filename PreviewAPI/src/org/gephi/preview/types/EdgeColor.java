@@ -23,7 +23,14 @@ package org.gephi.preview.types;
 import java.awt.Color;
 
 /**
- *
+ * An edge color type. The color of an edge can be:
+ * <ul>
+ * <li>SOURCE: The source node's color</li>
+ * <li>TARGET: The target node's color</li>
+ * <li>MIXED: An average of source and target color</li>
+ * <li>CUSTOM: A custom color</li>
+ * <li>ORIGINAL: The original edge color, if exists</li></ul>
+ * 
  * @author Mathieu Bastian
  */
 public class EdgeColor {

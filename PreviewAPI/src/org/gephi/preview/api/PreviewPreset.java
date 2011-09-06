@@ -29,7 +29,8 @@ import java.util.Map.Entry;
 import org.gephi.preview.presets.DefaultPreset;
 
 /**
- *
+ * Read only set of {@link PreviewProperty} values.
+ * 
  * @author Mathieu Bastian
  */
 public class PreviewPreset implements Comparable<PreviewPreset> {
@@ -60,6 +61,7 @@ public class PreviewPreset implements Comparable<PreviewPreset> {
         return name;
     }
     
+    @Override
     public int compareTo(PreviewPreset o) {
         return o.name.compareTo(name);
     }
