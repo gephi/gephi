@@ -17,6 +17,7 @@ import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.ProcessingTarget;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.project.api.ProjectController;
@@ -54,6 +55,7 @@ public class PNGExporterTest {
         PreviewProperties props = controller.getModel(workspace).getProperties();
         props.putValue("width", 1300);
         props.putValue("height", 1000);
+        props.putValue(PreviewProperty.BACKGROUND_COLOR, null);
         ProcessingTarget target = (ProcessingTarget) controller.getRenderTarget(RenderTarget.PROCESSING_TARGET, workspace);
 
         try {
@@ -62,7 +64,7 @@ public class PNGExporterTest {
             PGraphicsJava2D pg2 = (PGraphicsJava2D) target.getGraphics();
             target.refresh();
 
-            BufferedImage img = new BufferedImage(pg2.width, pg2.height, BufferedImage.TYPE_INT_RGB);
+            BufferedImage img = new BufferedImage(pg2.width, pg2.height, BufferedImage.TYPE_INT_ARGB);
             img.setRGB(0, 0, pg2.width, pg2.height, pg2.pixels, 0, pg2.width);
             FileOutputStream fos = new FileOutputStream(file);
             ImageIO.write(img, "png", fos);

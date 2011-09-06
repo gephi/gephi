@@ -30,7 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * @author megaterik
+ * @author Taras Klaskovsky
  */
 @ServiceProvider(service = ExporterUI.class)
 public class UIExporterPNG implements ExporterUI {
@@ -79,15 +79,21 @@ public class UIExporterPNG implements ExporterUI {
 
         private int width = 1024;
         private int height = 1024;
+        private int margin = 4;
+        private boolean transparentBackground;
 
         void load(PNGExporter exporter) {
             exporter.setHeight(height);
             exporter.setWidth(width);
+            exporter.setMargin(margin);
+            exporter.setTransparentBackground(transparentBackground);
         }
 
         void save(PNGExporter exporter) {
             height = exporter.getHeight();
             width = exporter.getWidth();
+            margin = exporter.getMargin();
+            transparentBackground = exporter.isTransparentBackground();
         }
     }
 }
