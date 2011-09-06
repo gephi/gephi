@@ -29,5 +29,23 @@
                 be found by the system. Set <code>Renderer</code> as the
                 annotation parameter.</li>
         </ol>
+        <h3>Add data to an existing item</h3>
+        To add an additional data attribute to a Node or Edge item, you need to create
+        a new item builder for the specific type. For instance if one want to add
+        a new attribute to nodes create a new <code>ItemBuilder</code> for the
+        type <code>Item.Node</code>. Simply return item objects with the data you
+        want to add. The system will automatically merge your new data to node items.
+        <h3>Override a Renderer</h3>
+        Default renderers can be completely replaced by custom implementations. The
+        implementation needs to customize its <code>@ServiceProvider</code> annotation
+        with the renderer path it is overriding:
+        <ul>
+            <li><pre>@ServiceProvider(service=Renderer.class, supersedes="org.gephi.preview.plugin.renderers.NodeRenderer")</pre></li>
+            <li><pre>@ServiceProvider(service=Renderer.class, supersedes="org.gephi.preview.plugin.renderers.EdgeRenderer")</pre></li>
+            <li><pre>@ServiceProvider(service=Renderer.class, supersedes="org.gephi.preview.plugin.renderers.NodeLabelRenderer")</pre></li>
+            <li><pre>@ServiceProvider(service=Renderer.class, supersedes="org.gephi.preview.plugin.renderers.EdgeLabelRenderer")</pre></li>
+            <li><pre>@ServiceProvider(service=Renderer.class, supersedes="org.gephi.preview.plugin.renderers.ArrowRenderer")</pre></li>
+        </ul>
+        
     </body>
 </html>
