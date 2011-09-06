@@ -25,7 +25,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.preview.api.Item;
 
 /**
- * Builds and returns items given a graph.
+ * Builds and returns new {@link Item} instances.
  * <p>
  * Items are the visual elements representing the graph and are built by item
  * builders from the graph object. 

@@ -24,12 +24,29 @@ import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.RenderTarget;
 
 /**
- *
+ * Builds and returns new {@link RenderTarget} instances.
+ * <p>
+ * Render targets are the rendering container and are built by <code>RenderTargetBuilder</code>
+ * implementations. Each render target is associated to it's preview model and
+ * shouldn't be reused across models. The {@link PreviewModel} provides methods
+ * to retrieve properties and dimensions of the graph.
+ * 
  * @author Mathieu Bastian
  */
 public interface RenderTargetBuilder {
     
+    /**
+     * Builds a new render target using the properties and dimensions defined
+     * in <code>previewModel</code>.
+     * @param previewModel the preview model to get the dimensions and properties from
+     * @return a new render target instance
+     */
     public RenderTarget buildRenderTarget(PreviewModel previewModel);
     
+    /**
+     * Returns the name of the target builder. This value is used by the
+     * <code>PreviewController</code> to identify render targets.
+     * @return the name of the target builder
+     */
     public String getName();
 }
