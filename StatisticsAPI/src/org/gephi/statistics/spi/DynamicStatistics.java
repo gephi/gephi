@@ -27,26 +27,78 @@ import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 
 /**
- *
+ * Define a dynamic statistics implementation. A Dynamic Statistics uses
+ * a sliding window on a dynamc network to compute results.
+ * <p>
+ * The dynamic statistic execution is a three-steps process:
+ * <ol><li>The <code>execute()</code> method is called to init the statistic
+ * with the graph and attribute model.</li>
+ * <li>For every interval the <code>loop()</code> method is called with the
+ * network at this interval as parameter.</li>
+ * <li>The <code>end()</code> method is finally called.</li></ol>
+ * <p>
+ * 
  * @author Mathieu Bastian
  */
 public interface DynamicStatistics extends Statistics {
 
-    public void execute(GraphModel graphModel, AttributeModel model);
+    /**
+     * First method to be executed in the dynamic statistic process. Initialize
+     * the statistics with the graph and attributes. The graph model holds the
+     * graph structure and the attribute model the attribute columns.
+     * @param graphModel the graph model
+     * @param attributeModel the attribute model
+     */
+    public void execute(GraphModel graphModel, AttributeModel attributeModel);
 
+    /**
+     * Iteration of the dynamic statistics algorithm on a new interval. The 
+     * graph window is a snapshot of the graph at the current <code>interval</code>.
+     * @param window a snapshot of the graph at the current interval
+     * @param interval the interval of the current snapshot
+     */
     public void loop(GraphView window, Interval interval);
 
+    /**
+     * Called at the end of the process after all loops.
+     */
     public void end();
 
+    /**
+     * Sets the minimum and maximum bound
+     * @param bounds the min and max bounds
+     */
     public void setBounds(Interval bounds);
 
+    /**
+     * Sets the window duration
+     * @param window the window duration
+     */
     public void setWindow(double window);
 
+    /**
+     * Sets the tick. The tick is how much the window is moved to the right 
+     * at each iteration.
+     * @param tick the tick
+     */
     public void setTick(double tick);
 
+    /**
+     * Returns the window duration
+     * @return the window duration
+     */
     public double getWindow();
 
+    /**
+     * Returns the tick. The tick is how much the window is moved to the right 
+     * at each iteration.
+     * @return the tick
+     */
     public double getTick();
 
+    /**
+     * Returns the min and max bounds.
+     * @return the bounds
+     */
     public Interval getBounds();
 }
