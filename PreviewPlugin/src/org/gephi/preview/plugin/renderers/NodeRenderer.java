@@ -91,12 +91,11 @@ public class NodeRenderer implements Renderer {
         Float x = item.getData(NodeItem.X);
         Float y = item.getData(NodeItem.Y);
         Float size = item.getData(NodeItem.SIZE);
+        size /= 2f;
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
         float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
-        int alpha = (int) ((properties.getIntValue(PreviewProperty.NODE_OPACITY) / 100f) * 255f);
-        color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-        borderColor = new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha);
+        float alpha = properties.getIntValue(PreviewProperty.NODE_OPACITY) / 100f;
 
         Element nodeElem = target.createElement("circle");
         nodeElem.setAttribute("class", node.getNodeData().getId());
@@ -104,9 +103,11 @@ public class NodeRenderer implements Renderer {
         nodeElem.setAttribute("cy", y.toString());
         nodeElem.setAttribute("r", size.toString());
         nodeElem.setAttribute("fill", target.toHexString(color));
+        nodeElem.setAttribute("fill-opacity", "" + alpha);
         if (borderSize > 0) {
             nodeElem.setAttribute("stroke", target.toHexString(borderColor));
             nodeElem.setAttribute("stroke-width", new Float(borderSize * target.getScaleRatio()).toString());
+            nodeElem.setAttribute("stroke-opacity", "" + alpha);
         }
         target.getTopElement(SVGTarget.TOP_NODES).appendChild(nodeElem);
     }

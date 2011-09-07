@@ -122,7 +122,7 @@ public class EdgeRenderer implements Renderer {
                 Float weight = item.getData(EdgeItem.WEIGHT);
                 float radius = properties.getFloatValue(PreviewProperty.ARROW_RADIUS);
                 float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE) * weight;
-                radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f);
+                radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
                 item.setData(TARGET_RADIUS, radius - size);
             }
         }
@@ -177,6 +177,7 @@ public class EdgeRenderer implements Renderer {
                     x, y, v1.x, v1.y, v2.x, v2.y, x, y));
             selfLoopElem.setAttribute("class", node.getNodeData().getId());
             selfLoopElem.setAttribute("stroke", svgTarget.toHexString(color));
+            selfLoopElem.setAttribute("stroke-opacity", (color.getAlpha() / 255f) + "");
             selfLoopElem.setAttribute("stroke-width", Float.toString(thickness * svgTarget.getScaleRatio()));
             selfLoopElem.setAttribute("fill", "none");
             svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(selfLoopElem);
@@ -228,6 +229,8 @@ public class EdgeRenderer implements Renderer {
                     x1, y1, v1.x, v1.y, v2.x, v2.y, x2, y2));
             edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
             edgeElem.setAttribute("stroke-width", Float.toString(thickness * svgTarget.getScaleRatio()));
+            edgeElem.setAttribute("stroke-opacity", (color.getAlpha() / 255f) + "");
+            edgeElem.setAttribute("fill", "none");
             svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(edgeElem);
         }
     }
@@ -255,6 +258,7 @@ public class EdgeRenderer implements Renderer {
         if (renderTarget instanceof ProcessingTarget) {
             PGraphics graphics = ((ProcessingTarget) renderTarget).getGraphics();
             graphics.strokeWeight(thickness);
+            graphics.strokeCap(PGraphics.SQUARE);
             graphics.stroke(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
             graphics.noFill();
             graphics.line(x1, y1, x2, y2);
@@ -266,6 +270,8 @@ public class EdgeRenderer implements Renderer {
                     x1, y1, x2, y2));
             edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
             edgeElem.setAttribute("stroke-width", Float.toString(thickness * svgTarget.getScaleRatio()));
+            edgeElem.setAttribute("stroke-opacity", (color.getAlpha() / 255f) + "");
+            edgeElem.setAttribute("fill", "none");
             svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(edgeElem);
         }
     }

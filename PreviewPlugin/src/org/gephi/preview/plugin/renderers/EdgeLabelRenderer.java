@@ -217,12 +217,20 @@ public class EdgeLabelRenderer implements Renderer {
         labelElem.setAttribute("class", Edge.getEdgeData().getId());
         labelElem.setAttribute("x", x + "");
         labelElem.setAttribute("y", y + "");
-        labelElem.setAttribute("style", "text-anchor: middle");
+        labelElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
         labelElem.setAttribute("fill", target.toHexString(color));
         labelElem.setAttribute("font-family", font.getFamily());
         labelElem.setAttribute("font-size", font.getSize() + "");
+        if (outlineSize > 0) {
+            labelElem.setAttribute("stroke", target.toHexString(outlineColor));
+            labelElem.setAttribute("stroke-width", outlineSize + "px");
+            labelElem.setAttribute("stroke-linecap", "butt");
+            labelElem.setAttribute("stroke-linejoin", "miter");
+            labelElem.setAttribute("stroke-opacity", "" + (outlineColor.getAlpha() / 255f));
+
+        }
         labelElem.appendChild(labelText);
-        target.getTopElement(SVGTarget.TOP_EDGE_LABELS);
+        target.getTopElement(SVGTarget.TOP_EDGE_LABELS).appendChild(labelElem);
     }
 
     public PreviewProperty[] getProperties() {

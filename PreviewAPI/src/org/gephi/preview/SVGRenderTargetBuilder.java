@@ -120,6 +120,7 @@ public class SVGRenderTargetBuilder implements RenderTargetBuilder {
             if (topElement == null) {
                 topElement = createElement("g");
                 topElement.setAttribute("id", name);
+                topElements.put(name, topElement);
                 document.getDocumentElement().appendChild(topElement);
             }
             return topElement;

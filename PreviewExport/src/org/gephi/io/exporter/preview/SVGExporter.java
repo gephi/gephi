@@ -28,6 +28,8 @@ import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.VectorExporter;
 
 import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.api.SVGTarget;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -53,10 +55,14 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
     private SVGTarget target;
     //Settings
     private boolean scaleStrokes = false;
+    private float margin = 4;
 
     public boolean execute() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
         controller.refreshPreview(workspace);
+        PreviewProperties props = controller.getModel(workspace).getProperties();
+        props.putValue(SVGTarget.SCALE_STROKES, scaleStrokes);
+        props.putValue(PreviewProperty.MARGIN, new Float((float) margin));
         target = (SVGTarget) controller.getRenderTarget(RenderTarget.SVG_TARGET, workspace);
         if (target instanceof LongTask) {
             ((LongTask) target).setProgressTicket(progress);

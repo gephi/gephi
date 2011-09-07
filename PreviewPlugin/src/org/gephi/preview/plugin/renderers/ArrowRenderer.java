@@ -73,7 +73,7 @@ public class ArrowRenderer implements Renderer {
         //Size and radius
         float radius = properties.getFloatValue(PreviewProperty.ARROW_RADIUS);
         float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE) * weight;
-        radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f);
+        radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
 
         //3 points
         Float x1 = sourceItem.getData(NodeItem.X);
@@ -84,7 +84,7 @@ public class ArrowRenderer implements Renderer {
         if (size > 0) {
             if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
             } else {
-                renderStraight((ProcessingTarget) target, item, x1, y1, x2, y2, radius, size, color);
+                renderStraight(target, item, x1, y1, x2, y2, radius, size, color);
             }
         }
     }
@@ -123,7 +123,9 @@ public class ArrowRenderer implements Renderer {
                     p1.x, p1.y, p2.x, p2.y, p3.x, p3.y));
             arrowElem.setAttribute("class", edge.getSource().getNodeData().getId() + " " + edge.getTarget().getNodeData().getId());
             arrowElem.setAttribute("fill", svgTarget.toHexString(color));
+            arrowElem.setAttribute("fill-opacity", (color.getAlpha() / 255f) + "");
             arrowElem.setAttribute("stroke", "none");
+            svgTarget.getTopElement(SVGTarget.TOP_ARROWS).appendChild(arrowElem);
         }
     }
 

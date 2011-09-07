@@ -181,12 +181,20 @@ public class NodeLabelRenderer implements Renderer {
         labelElem.setAttribute("class", node.getNodeData().getId());
         labelElem.setAttribute("x", x + "");
         labelElem.setAttribute("y", y + "");
-        labelElem.setAttribute("style", "text-anchor: middle");
+        labelElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
         labelElem.setAttribute("fill", target.toHexString(color));
         labelElem.setAttribute("font-family", font.getFamily());
         labelElem.setAttribute("font-size", fontSize + "");
+        if (outlineSize > 0) {
+            labelElem.setAttribute("stroke", target.toHexString(outlineColor));
+            labelElem.setAttribute("stroke-width", outlineSize + "px");
+            labelElem.setAttribute("stroke-linecap", "butt");
+            labelElem.setAttribute("stroke-linejoin", "miter");
+            labelElem.setAttribute("stroke-opacity", "" + (outlineColor.getAlpha() / 255f));
+
+        }
         labelElem.appendChild(labelText);
-        target.getTopElement(SVGTarget.TOP_NODE_LABELS);
+        target.getTopElement(SVGTarget.TOP_NODE_LABELS).appendChild(labelElem);
     }
 
     public PreviewProperty[] getProperties() {

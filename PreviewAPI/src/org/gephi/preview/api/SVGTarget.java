@@ -36,6 +36,7 @@ public interface SVGTarget extends RenderTarget {
     public static final String TOP_EDGES = "svg.top.edges";
     public static final String TOP_NODE_LABELS = "svg.top.node.labels";
     public static final String TOP_EDGE_LABELS = "svg.top.edge.labels";
+    public static final String TOP_ARROWS = "svg.top.arrows";
 
     public Element createElement(String qualifiedName);
 
