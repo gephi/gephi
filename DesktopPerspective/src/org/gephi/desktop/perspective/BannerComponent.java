@@ -31,6 +31,7 @@ import org.gephi.desktop.perspective.spi.PerspectiveMember;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
 import org.openide.windows.TopComponentGroup;
 import org.openide.windows.WindowManager;
@@ -42,10 +43,13 @@ import org.openide.windows.WindowManager;
 public class BannerComponent extends javax.swing.JPanel {
 
     private String selectedPerspective;
+    private static final String SELECTED_PERSPECTIVE_PREFERENCE = "BannerComponent_selectedPerspective";
     private transient JToggleButton[] buttons;
 
     public BannerComponent() {
         initComponents();
+
+        selectedPerspective = NbPreferences.forModule(BannerComponent.class).get(SELECTED_PERSPECTIVE_PREFERENCE, null);
 
         addGroupTabs();
 
@@ -120,6 +124,7 @@ public class BannerComponent extends javax.swing.JPanel {
                     }
 
                     selectedPerspective = perspective.getName();
+                    NbPreferences.forModule(BannerComponent.class).put(SELECTED_PERSPECTIVE_PREFERENCE, selectedPerspective);
                 }
             });
             perspectivesButtonGroup.add(toggleButton);
