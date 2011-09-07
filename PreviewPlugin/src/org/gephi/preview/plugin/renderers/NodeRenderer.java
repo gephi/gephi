@@ -47,7 +47,7 @@ public class NodeRenderer implements Renderer {
     //Default values
     private float defaultBorderWidth = 1f;
     private DependantColor defaultBorderColor = new DependantColor();
-    private float defaultTransparency = 0f;
+    private float defaultOpacity = 100f;
 
     public void preProcess(PreviewModel previewModel) {
     }
@@ -68,7 +68,7 @@ public class NodeRenderer implements Renderer {
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
         float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
-        int alpha = (int) ((1f - properties.getFloatValue(PreviewProperty.NODE_TRANSPARENCY)) * 255f);
+        int alpha = (int) ((properties.getIntValue(PreviewProperty.NODE_OPACITY) / 100f) * 255f);
 
         //Graphics
         PGraphics graphics = target.getGraphics();
@@ -94,7 +94,7 @@ public class NodeRenderer implements Renderer {
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
         float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
-        int alpha = (int) ((1f - properties.getFloatValue(PreviewProperty.NODE_TRANSPARENCY)) * 255f);
+        int alpha = (int) ((properties.getIntValue(PreviewProperty.NODE_OPACITY) / 100f) * 255f);
         color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
         borderColor = new Color(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue(), alpha);
 
@@ -121,10 +121,10 @@ public class NodeRenderer implements Renderer {
                     NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.displayName"),
                     NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.description"),
                     NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.category")).setValue(defaultBorderColor),
-                    PreviewProperty.createProperty(this, PreviewProperty.NODE_TRANSPARENCY, Float.class,
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.transparency.displayName"),
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.transparency.description"),
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.category")).setValue(defaultTransparency)};
+                    PreviewProperty.createProperty(this, PreviewProperty.NODE_OPACITY, Float.class,
+                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.opacity.displayName"),
+                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.opacity.description"),
+                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.category")).setValue(defaultOpacity)};
     }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {

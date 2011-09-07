@@ -67,7 +67,7 @@ public class ArrowRenderer implements Renderer {
         Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
                 (Color) sourceItem.getData(NodeItem.COLOR),
                 (Color) targetItem.getData(NodeItem.COLOR));
-        int alpha = (int) ((1f - properties.getFloatValue(PreviewProperty.EDGE_TRANSPARENCY)) * 255f);
+        int alpha = (int) ((properties.getFloatValue(PreviewProperty.EDGE_OPACITY) / 100f) * 255f);
         color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 
         //Size and radius

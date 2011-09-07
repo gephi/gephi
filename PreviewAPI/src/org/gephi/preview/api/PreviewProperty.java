@@ -34,13 +34,13 @@ public class PreviewProperty {
     //Constants nodes
     public static final String NODE_BORDER_WIDTH = "node.border.width";
     public static final String NODE_BORDER_COLOR = "node.border.color";
-    public static final String NODE_TRANSPARENCY = "node.transparency";
+    public static final String NODE_OPACITY = "node.opacity";
     //Constants edges
     public static final String SHOW_EDGES = "edge.show";
     public static final String EDGE_THICKNESS = "edge.thickness";
     public static final String EDGE_CURVED = "edge.curved";
     public static final String EDGE_COLOR = "edge.color";
-    public static final String EDGE_TRANSPARENCY = "edge.transparency";
+    public static final String EDGE_OPACITY = "edge.opacity";
     public static final String EDGE_RESCALE_WEIGHT = "edge.rescale-weight";
     //Constants arrows
     public static final String ARROW_SIZE = "arrow.size";
@@ -53,7 +53,7 @@ public class PreviewProperty {
     public static final String NODE_LABEL_SHORTEN = "node.label.shorten";
     public static final String NODE_LABEL_MAX_CHAR = "node.label.max-char";
     public static final String NODE_LABEL_OUTLINE_SIZE = "node.label.outline.size";
-    public static final String NODE_LABEL_OUTLINE_TRANSPARENCY = "node.label.outline.transparency";
+    public static final String NODE_LABEL_OUTLINE_OPACITY = "node.label.outline.opacity";
     public static final String NODE_LABEL_OUTLINE_COLOR = "node.label.outline.color";
     //Constants edge labels
     public static final String SHOW_EDGE_LABELS = "edge.label.show";
@@ -62,7 +62,7 @@ public class PreviewProperty {
     public static final String EDGE_LABEL_SHORTEN = "edge.label.shorten";
     public static final String EDGE_LABEL_MAX_CHAR = "edge.label.max-char";
     public static final String EDGE_LABEL_OUTLINE_SIZE = "edge.label.outline.size";
-    public static final String EDGE_LABEL_OUTLINE_TRANSPARENCY = "edge.label.outline.transparency";
+    public static final String EDGE_LABEL_OUTLINE_OPACITY = "edge.label.outline.opacity";
     public static final String EDGE_LABEL_OUTLINE_COLOR = "edge.label.outline.color";
     //Constants UI helps
     public static final String MOVING = "canvas.moving";

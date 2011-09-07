@@ -42,6 +42,7 @@ import org.gephi.preview.plugin.items.EdgeLabelItem;
 
 import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.Renderer;
+import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -69,8 +70,8 @@ public class EdgeLabelRenderer implements Renderer {
     private final DependantOriginalColor defaultColor = new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL);
     private final int defaultMaxChar = 30;
     private final float defaultOutlineSize = 2;
-    private final Color defaultOutlineColor = Color.WHITE;
-    private final float defaultOutlineTransparency = 0.6f;
+    private final DependantColor defaultOutlineColor = new DependantColor(Color.WHITE);
+    private final int defaultOutlineOpacity = 40;
     //Font cache
     private Font font;
 
@@ -162,26 +163,30 @@ public class EdgeLabelRenderer implements Renderer {
     public void render(Item item, RenderTarget target, PreviewProperties properties) {
         Edge edge = (Edge) item.getSource();
         //Label
-        Color EdgeColor = item.getData(EDGE_COLOR);
+        Color edgeColor = item.getData(EDGE_COLOR);
         Color color = item.getData(EdgeLabelItem.COLOR);
         DependantOriginalColor propColor = properties.getValue(PreviewProperty.EDGE_LABEL_COLOR);
-        color = propColor.getColor(EdgeColor, color);
+        color = propColor.getColor(edgeColor, color);
         String label = item.getData(EdgeLabelItem.LABEL);
         Float x = item.getData(LABEL_X);
         Float y = item.getData(LABEL_Y);
 
         //Outline
-        Color outlineColor = properties.getColorValue(PreviewProperty.EDGE_LABEL_OUTLINE_COLOR);
+        DependantColor outlineDependantColor = properties.getValue(PreviewProperty.EDGE_LABEL_OUTLINE_COLOR);
         Float outlineSize = properties.getFloatValue(PreviewProperty.EDGE_LABEL_OUTLINE_SIZE);
         outlineSize = outlineSize * (font.getSize() / 32f);
-        Float outlineTransparency = properties.getFloatValue(PreviewProperty.EDGE_LABEL_OUTLINE_TRANSPARENCY);
+        int outlineAlpha = (int) ((properties.getFloatValue(PreviewProperty.EDGE_LABEL_OUTLINE_OPACITY) / 100f) * 255f);
+        Color outlineColor = outlineDependantColor.getColor(edgeColor);
+        outlineColor = new Color(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue(), outlineAlpha);
 
         if (target instanceof ProcessingTarget) {
-            renderProcessing((ProcessingTarget) target, label, x, y, color, outlineSize, outlineColor, outlineTransparency);
+            renderProcessing((ProcessingTarget) target, label, x, y, color, outlineSize, outlineColor);
+        } else if (target instanceof SVGTarget) {
+            renderSVG((SVGTarget) target, edge, label, x, y, color, outlineSize, outlineColor);
         }
     }
 
-    public void renderProcessing(ProcessingTarget target, String label, float x, float y, Color color, float outlineSize, Color outlineColor, float outlineTransparency) {
+    public void renderProcessing(ProcessingTarget target, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
         PGraphics graphics = target.getGraphics();
         Graphics2D g2 = ((PGraphicsJava2D) graphics).g2;
         graphics.textAlign(PGraphics.CENTER, PGraphics.CENTER);
@@ -205,7 +210,7 @@ public class EdgeLabelRenderer implements Renderer {
         g2.drawString(label, posX, posY);
     }
 
-    public void renderSVG(SVGTarget target, Edge Edge, String label, float x, float y, Color color, float outlineSize, Color outlineColor, float outlineTransparency) {
+    public void renderSVG(SVGTarget target, Edge Edge, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
         Text labelText = target.createTextNode(label);
 
         Element labelElem = target.createElement("text");
@@ -246,14 +251,14 @@ public class EdgeLabelRenderer implements Renderer {
                     NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineSize.displayName"),
                     NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineSize.description"),
                     NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.category"), PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultOutlineSize),
-                    PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_OUTLINE_COLOR, Color.class,
+                    PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_OUTLINE_COLOR, DependantColor.class,
                     NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineColor.displayName"),
                     NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineColor.description"),
                     NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.category"), PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultOutlineColor),
-                    PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_OUTLINE_TRANSPARENCY, Float.class,
-                    NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineTransparency.displayName"),
-                    NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineTransparency.description"),
-                    NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.category"), PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultOutlineTransparency),};
+                    PreviewProperty.createProperty(this, PreviewProperty.EDGE_LABEL_OUTLINE_OPACITY, Float.class,
+                    NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineOpacity.displayName"),
+                    NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineOpacity.description"),
+                    NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.category"), PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultOutlineOpacity),};
     }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
