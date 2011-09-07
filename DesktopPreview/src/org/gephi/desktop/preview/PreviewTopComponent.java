@@ -86,6 +86,8 @@ public final class PreviewTopComponent extends TopComponent {
             public void propertyChange(PropertyChangeEvent evt) {
                 PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
                 previewController.getModel().getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, (Color) evt.getNewValue());
+                PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
+                previewUIController.refreshPreview();
             }
         });
         southBusyLabel.setVisible(false);
