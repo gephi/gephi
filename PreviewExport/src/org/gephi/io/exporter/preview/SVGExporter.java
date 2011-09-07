@@ -52,7 +52,6 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
     private Writer writer;
     private SVGTarget target;
     //Settings
-    private final static float MARGIN = 25f;
     private boolean scaleStrokes = false;
 
     public boolean execute() {
@@ -71,7 +70,7 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
             t.addTranscodingHint(SVGTranscoder.KEY_XML_DECLARATION, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
             // sets transcoder input and output
-            TranscoderInput input = new TranscoderInput(doc);
+            TranscoderInput input = new TranscoderInput(target.getDocument());
 
             // performs transcoding
             try {

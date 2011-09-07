@@ -34,8 +34,6 @@ import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.api.SVGTarget;
 import org.gephi.preview.spi.RenderTargetBuilder;
-import org.gephi.utils.longtask.spi.LongTask;
-import org.gephi.utils.progress.ProgressTicket;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
