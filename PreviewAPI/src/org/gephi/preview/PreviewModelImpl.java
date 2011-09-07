@@ -63,7 +63,7 @@ public class PreviewModelImpl implements PreviewModel {
         this.workspace = workspace;
     }
     
-    private void initProperties() {
+    private synchronized void initProperties() {
         if (properties == null) {
             properties = new PreviewProperties();
 

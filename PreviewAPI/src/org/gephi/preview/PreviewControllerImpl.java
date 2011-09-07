@@ -110,7 +110,7 @@ public class PreviewControllerImpl implements PreviewController {
     }
     
     @Override
-    public void refreshPreview(Workspace workspace) {
+    public synchronized void refreshPreview(Workspace workspace) {
         GraphModel graphModel = graphController.getModel(workspace);
         AttributeModel attributeModel = attributeController.getModel(model.getWorkspace());
         PreviewModelImpl previewModel = getModel(workspace);
@@ -205,7 +205,7 @@ public class PreviewControllerImpl implements PreviewController {
         render(target, getModel(workspace));
     }
     
-    private void render(RenderTarget target, PreviewModelImpl previewModel) {
+    private synchronized void render(RenderTarget target, PreviewModelImpl previewModel) {
         if (previewModel != null) {
             Renderer[] renderers = Lookup.getDefault().lookupAll(Renderer.class).toArray(new Renderer[0]);
             PreviewProperties properties = previewModel.getProperties();
@@ -248,7 +248,7 @@ public class PreviewControllerImpl implements PreviewController {
     }
     
     @Override
-    public PreviewModelImpl getModel() {
+    public synchronized PreviewModelImpl getModel() {
         if (model == null) {
             ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
             if (pc.getCurrentWorkspace() != null) {
@@ -259,7 +259,7 @@ public class PreviewControllerImpl implements PreviewController {
     }
     
     @Override
-    public PreviewModelImpl getModel(Workspace workspace) {
+    public synchronized PreviewModelImpl getModel(Workspace workspace) {
         PreviewModelImpl m = workspace.getLookup().lookup(PreviewModelImpl.class);
         if (m == null) {
             m = new PreviewModelImpl(workspace);
@@ -278,7 +278,7 @@ public class PreviewControllerImpl implements PreviewController {
         return getRenderTarget(name, getModel(workspace));
     }
     
-    private RenderTarget getRenderTarget(String name, PreviewModel m) {
+    private synchronized RenderTarget getRenderTarget(String name, PreviewModel m) {
         if (m != null) {
             for (RenderTargetBuilder rtb : Lookup.getDefault().lookupAll(RenderTargetBuilder.class)) {
                 if (rtb.getName().equals(name)) {

@@ -105,7 +105,8 @@ public final class PreviewTopComponent extends TopComponent {
             initTarget(null);
         } else {
             initTarget(previewUIModel);
-            refreshPreview();
+//            refreshPreview();
+            puic.refreshPreview();
         }
     }
 
@@ -124,6 +125,7 @@ public final class PreviewTopComponent extends TopComponent {
         // inits the preview applet
         if (previewUIModel != null && target == null) {
             PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+
             target = (ProcessingTarget) previewController.getRenderTarget(RenderTarget.PROCESSING_TARGET);
             if (target != null) {
                 sketch = target.getApplet();
@@ -387,6 +389,11 @@ public final class PreviewTopComponent extends TopComponent {
      * Refresh the preview applet.
      */
     public void refreshPreview() {
-        target.refresh();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                target.refresh();
+            }
+        });
     }
 }
