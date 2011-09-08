@@ -85,10 +85,10 @@ public final class WorkspacePanePanel extends javax.swing.JPanel implements Mous
         detailsLabel = new javax.swing.JLabel();
         closeButton = new CloseButton();
 
-        workspaceLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
+        workspaceLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         workspaceLabel.setText(org.openide.util.NbBundle.getMessage(WorkspacePanePanel.class, "WorkspacePanePanel.workspaceLabel.text")); // NOI18N
 
-        detailsLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
+        detailsLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         detailsLabel.setForeground(new java.awt.Color(153, 153, 153));
         detailsLabel.setText(org.openide.util.NbBundle.getMessage(WorkspacePanePanel.class, "WorkspacePanePanel.detailsLabel.text")); // NOI18N
 
@@ -101,8 +101,8 @@ public final class WorkspacePanePanel extends javax.swing.JPanel implements Mous
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(detailsLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(workspaceLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 141, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 154, Short.MAX_VALUE)
+                    .addComponent(workspaceLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addComponent(closeButton)
                 .addContainerGap())
         );
