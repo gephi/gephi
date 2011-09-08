@@ -29,13 +29,18 @@ import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.gephi.desktop.io.export.api.VectorialFileExporterUI;
 import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.desktop.preview.api.PreviewUIModel;
+import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
+import org.gephi.preview.spi.PreviewUI;
 import org.gephi.project.api.ProjectController;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.DialogDisplayer;
@@ -54,16 +59,17 @@ import org.openide.windows.WindowManager;
  * @author Jérémy Subtil, Mathieu Bastian
  */
 public final class PreviewSettingsTopComponent extends TopComponent {
-
+    
     private static PreviewSettingsTopComponent instance;
     static final String ICON_PATH = "org/gephi/desktop/preview/resources/settings.png";
     private static final String PREFERRED_ID = "PreviewSettingsTopComponent";
     private final String NO_SELECTION = "---";
     //Component
     private transient PropertySheet propertySheet;
+    private transient JTabbedPane tabbedPane;
     //State
     private int defaultPresetLimit;
-
+    
     private PreviewSettingsTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(PreviewSettingsTopComponent.class, "CTL_PreviewSettingsTopComponent"));
@@ -77,7 +83,17 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         propertySheet = new PropertySheet();
         propertySheet.setNodes(new Node[]{new PreviewNode()});
         propertySheet.setDescriptionAreaVisible(false);
-        propertiesPanel.add(propertySheet, BorderLayout.CENTER);
+
+        //Tabs and PreviewUI
+        PreviewUI[] previewUIs = Lookup.getDefault().lookupAll(PreviewUI.class).toArray(new PreviewUI[0]);
+        if (previewUIs.length > 0) {
+            tabbedPane = new JTabbedPane();
+            tabbedPane.addTab(NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.propertySheetTab"), propertySheet);
+            propertiesPanel.add(tabbedPane, BorderLayout.CENTER);
+        } else {
+            propertiesPanel.add(propertySheet, BorderLayout.CENTER);
+        }
+
 
         // checks the state of the workspace
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -90,9 +106,9 @@ public final class PreviewSettingsTopComponent extends TopComponent {
 
         //Ratio
         ratioSlider.addChangeListener(new ChangeListener() {
-
+            
             NumberFormat formatter = NumberFormat.getPercentInstance();
-
+            
             public void stateChanged(ChangeEvent e) {
                 float val = ratioSlider.getValue() / 100f;
                 if (val == 0f) {
@@ -105,7 +121,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
 
         //Presets
         presetComboBox.addItemListener(new ItemListener() {
-
+            
             public void itemStateChanged(ItemEvent e) {
                 PreviewUIController pc = Lookup.getDefault().lookup(PreviewUIController.class);
                 PreviewUIModel previewModel = pc.getModel();
@@ -120,7 +136,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
 
         //Export
         svgExportButton.addActionListener(new ActionListener() {
-
+            
             public void actionPerformed(ActionEvent e) {
                 VectorialFileExporterUI ui = Lookup.getDefault().lookup(VectorialFileExporterUI.class);
                 ui.action();
@@ -128,7 +144,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         });
         refreshModel();
     }
-
+    
     public void refreshModel() {
         propertySheet.setNodes(new Node[]{new PreviewNode()});
         PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
@@ -147,7 +163,6 @@ public final class PreviewSettingsTopComponent extends TopComponent {
             saveButton.setEnabled(true);
             labelPreset.setEnabled(true);
             presetComboBox.setEnabled(true);
-            PreviewUIController controller = Lookup.getDefault().lookup(PreviewUIController.class);
             DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
             defaultPresetLimit = 0;
             for (PreviewPreset preset : previewUIController.getDefaultPresets()) {
@@ -164,6 +179,34 @@ public final class PreviewSettingsTopComponent extends TopComponent {
             presetComboBox.setSelectedItem(previewModel.getCurrentPreset());
             presetComboBox.setModel(comboBoxModel);
         }
+
+        //Refresh tabs
+        if (tabbedPane != null) {
+            int tabCount = tabbedPane.getTabCount();
+            for (int i = 1; i < tabCount; i++) {
+                tabbedPane.removeTabAt(i);
+            }
+            for (PreviewUI pui : Lookup.getDefault().lookupAll(PreviewUI.class)) {
+                pui.unsetup();
+            }
+            if (previewModel != null) {
+                PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+                PreviewModel pModel = previewController.getModel();
+                //Add new tabs
+                for (PreviewUI pui : Lookup.getDefault().lookupAll(PreviewUI.class)) {
+                    pui.setup(pModel);
+                    JPanel pluginPanel = pui.getPanel();
+                    if (UIUtils.isAquaLookAndFeel()) {
+                        pluginPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+                    }
+                    if (pui.getIcon() != null) {
+                        tabbedPane.addTab(pui.getPanelTitle(), pui.getIcon(), pluginPanel);
+                    } else {
+                        tabbedPane.addTab(pui.getPanelTitle(), pluginPanel);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -174,13 +217,13 @@ public final class PreviewSettingsTopComponent extends TopComponent {
      */
     public float getVisibilityRatio() {
         float value = (Integer) ratioSlider.getValue();
-
+        
         if (value < 0) {
             value = 0;
         } else if (value > 100) {
             value = 100;
         }
-
+        
         return value / 100;
     }
 
@@ -211,7 +254,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         labelExport.setEnabled(false);
         svgExportButton.setEnabled(false);
     }
-
+    
     private boolean isDefaultPreset(PreviewPreset preset) {
         int i = 0;
         for (i = 0; i < presetComboBox.getItemCount(); i++) {
@@ -375,12 +418,11 @@ public final class PreviewSettingsTopComponent extends TopComponent {
         southToolbar.setRollover(true);
         southToolbar.setOpaque(false);
 
-        labelExport.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelExport.setFont(new java.awt.Font("Tahoma", 0, 10));
         org.openide.awt.Mnemonics.setLocalizedText(labelExport, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.labelExport.text")); // NOI18N
         labelExport.setEnabled(false);
         southToolbar.add(labelExport);
 
-        svgExportButton.setFont(svgExportButton.getFont().deriveFont(svgExportButton.getFont().getSize()-1f));
         org.openide.awt.Mnemonics.setLocalizedText(svgExportButton, org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.svgExportButton.text")); // NOI18N
         svgExportButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.svgExportButton.toolTipText")); // NOI18N
         svgExportButton.setEnabled(false);
@@ -405,7 +447,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         Lookup.getDefault().lookup(PreviewUIController.class).refreshPreview();
 }//GEN-LAST:event_refreshButtonActionPerformed
-
+    
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         PreviewUIController previewController = Lookup.getDefault().lookup(PreviewUIController.class);
         PreviewPreset preset = previewController.getModel().getCurrentPreset();
@@ -427,7 +469,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
             saved = true;
             StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.savePreset.status", preset.getName()));
         }
-
+        
         if (saved) {
             //refresh combo
             DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
@@ -495,17 +537,17 @@ public final class PreviewSettingsTopComponent extends TopComponent {
                 + "' ID. That is a potential source of errors and unexpected behavior.");
         return getDefault();
     }
-
+    
     @Override
     public int getPersistenceType() {
         return TopComponent.PERSISTENCE_ALWAYS;
     }
-
+    
     @Override
     public void componentOpened() {
         // TODO add custom code on component opening
     }
-
+    
     @Override
     public void componentClosed() {
         // TODO add custom code on component closing
@@ -516,16 +558,16 @@ public final class PreviewSettingsTopComponent extends TopComponent {
     public Object writeReplace() {
         return new ResolvableHelper();
     }
-
+    
     @Override
     protected String preferredID() {
         return PREFERRED_ID;
     }
-
+    
     final static class ResolvableHelper implements Serializable {
-
+        
         private static final long serialVersionUID = 1L;
-
+        
         public Object readResolve() {
             return PreviewSettingsTopComponent.getDefault();
         }

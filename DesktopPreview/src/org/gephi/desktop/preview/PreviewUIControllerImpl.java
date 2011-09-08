@@ -85,7 +85,6 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
 
                 graphModel = graphController.getModel();
                 graphModel.addGraphListener(PreviewUIControllerImpl.this);
-                showRefreshNotification();
 
                 model = workspace.getLookup().lookup(PreviewUIModelImpl.class);
                 if (model == null) {
@@ -207,6 +206,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
             }
         });
     }
+    private boolean showingRefresh = false;
 
     /**
      * Shows a notification to invite the user to refresh the preview.
@@ -214,6 +214,10 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
      * The refresh action is enabled.
      */
     private void showRefreshNotification() {
+        if (showingRefresh) {
+            return;
+        }
+        showingRefresh = true;
         enableRefresh();
 
         SwingUtilities.invokeLater(new Runnable() {
@@ -221,7 +225,6 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
             public void run() {
                 PreviewTopComponent previewTopComponent = PreviewTopComponent.findInstance();
                 previewTopComponent.showBannerPanel();
-                PreviewSettingsTopComponent.findInstance().refreshModel();
             }
         });
     }
@@ -230,6 +233,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
      * Hides the preview refresh notification.
      */
     private void hideRefreshNotification() {
+        showingRefresh = false;
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {

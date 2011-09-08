@@ -24,6 +24,7 @@
         <ol><li>Create a new module and set <code>Preview API</code>, 
                 <code>GraphAPI</code>, <code>Processing Wrapper</code>, 
                 <code>iText Wrapper</code> and <code>Lookup</code> as dependencies.</li>
+            <li>Create a new class that implements <code>Renderer</code>.</li>
             <li>Implement the renderer methods. </li>
             <li>Add <b>@ServiceProvider</b> annotation to your builder, that it can
                 be found by the system. Set <code>Renderer</code> as the
@@ -46,6 +47,16 @@
             <li><pre>@ServiceProvider(service=Renderer.class, supersedes="org.gephi.preview.plugin.renderers.EdgeLabelRenderer")</pre></li>
             <li><pre>@ServiceProvider(service=Renderer.class, supersedes="org.gephi.preview.plugin.renderers.ArrowRenderer")</pre></li>
         </ul>
-        
+        <h3>Add a new PreviewUI settings panel</h3>
+        Plug-ins can add UI components to the Preview Settings module. Additional components are placed in new tabs and have access to the
+        current <code>PreviewModel</code> and therefore <code>PreviewProperties</code>.
+        <ol><li>Create a new module and set <code>Preview API</code> and 
+                <code>Lookup</code> as dependencies.</li>
+            <li>Create a new class that implements <code>PreviewUI</code> and implements
+                methods.</li>
+            <li>Add <b>@ServiceProvider</b> annotation to your builder, that it can
+                be found by the system. Set <code>PreviewUI</code> as the
+                'service' annotation parameter.</li>
+        </ol>
     </body>
 </html>

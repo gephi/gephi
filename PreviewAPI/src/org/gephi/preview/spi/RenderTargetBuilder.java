@@ -30,7 +30,11 @@ import org.gephi.preview.api.RenderTarget;
  * implementations. Each render target is associated to it's preview model and
  * shouldn't be reused across models. The {@link PreviewModel} provides methods
  * to retrieve properties and dimensions of the graph.
- * 
+ * <p>
+ * Render targets are singleton services and implementations need to add the
+ * following annotation to be recognized by the system:
+ * <p>
+ * <code>@ServiceProvider(service=RenderTargetBuilder.class)</code>
  * @author Mathieu Bastian
  */
 public interface RenderTargetBuilder {
