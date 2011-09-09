@@ -134,11 +134,11 @@ public class ArrowRenderer implements Renderer {
                     PreviewProperty.createProperty(this, PreviewProperty.ARROW_SIZE, Float.class,
                     NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.size.displayName"),
                     NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.size.description"),
-                    NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.category"), PreviewProperty.SHOW_EDGES).setValue(defaultArrowSize),
+                    PreviewProperty.CATEGORY_EDGE_ARROWS, PreviewProperty.SHOW_EDGES).setValue(defaultArrowSize),
                     PreviewProperty.createProperty(this, PreviewProperty.ARROW_RADIUS, Float.class,
                     NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.radius.displayName"),
                     NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.radius.description"),
-                    NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.category"), PreviewProperty.SHOW_EDGES).setValue(defaultArrowRadius),};
+                    PreviewProperty.CATEGORY_EDGE_ARROWS, PreviewProperty.SHOW_EDGES).setValue(defaultArrowRadius),};
     }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {

@@ -1,8 +1,8 @@
 /*
 Copyright 2008-2011 Gephi
 Authors : Jérémy Subtil <jeremy.subtil@gephi.org>,
-          Yudi Xue <yudi.xue@usask.ca>,
-          Mathieu Bastian
+Yudi Xue <yudi.xue@usask.ca>,
+Mathieu Bastian
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -81,6 +81,28 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
 
                 sheetSet.put(nodeProperty);
                 sheetSets.put(category, sheetSet);
+            }
+
+            //Ordered
+            Sheet.Set nodeSet = sheetSets.remove(PreviewProperty.CATEGORY_NODES);
+            Sheet.Set nodeLabelSet = sheetSets.remove(PreviewProperty.CATEGORY_NODE_LABELS);
+            Sheet.Set edgeSet = sheetSets.remove(PreviewProperty.CATEGORY_EDGES);
+            Sheet.Set arrowsSet = sheetSets.remove(PreviewProperty.CATEGORY_EDGE_ARROWS);
+            Sheet.Set edgeLabelSet = sheetSets.remove(PreviewProperty.CATEGORY_EDGE_LABELS);
+            if (nodeSet != null) {
+                sheet.put(nodeSet);
+            }
+            if (nodeLabelSet != null) {
+                sheet.put(nodeLabelSet);
+            }
+            if (edgeSet != null) {
+                sheet.put(edgeSet);
+            }
+            if (arrowsSet != null) {
+                sheet.put(arrowsSet);
+            }
+            if (edgeLabelSet != null) {
+                sheet.put(edgeLabelSet);
             }
             for (Sheet.Set sheetSet : sheetSets.values()) {
                 sheet.put(sheetSet);

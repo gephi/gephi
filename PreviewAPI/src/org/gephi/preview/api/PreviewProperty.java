@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview.api;
 
+import org.openide.util.NbBundle;
+
 /**
  *
  * @author Mathieu Bastian
@@ -66,6 +68,12 @@ public class PreviewProperty {
     public static final String EDGE_LABEL_OUTLINE_COLOR = "edge.label.outline.color";
     //Constants UI helps
     public static final String MOVING = "canvas.moving";
+    //Constants categories
+    public static final String CATEGORY_NODES = NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.Nodes");
+    public static final String CATEGORY_EDGES = NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.Edges");
+    public static final String CATEGORY_NODE_LABELS = NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.NodeLabels");
+    public static final String CATEGORY_EDGE_LABELS = NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.EdgeLabels");
+    public static final String CATEGORY_EDGE_ARROWS = NbBundle.getMessage(PreviewProperty.class, "PreviewProperty.Category.EdgeArrows");
     //Variables
     protected final String name;
     protected final String displayName;

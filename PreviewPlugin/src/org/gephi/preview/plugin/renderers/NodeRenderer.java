@@ -117,15 +117,15 @@ public class NodeRenderer implements Renderer {
                     PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_WIDTH, Float.class,
                     NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderWidth.displayName"),
                     NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderWidth.description"),
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.category")).setValue(defaultBorderWidth),
+                    PreviewProperty.CATEGORY_NODES).setValue(defaultBorderWidth),
                     PreviewProperty.createProperty(this, PreviewProperty.NODE_BORDER_COLOR, DependantColor.class,
                     NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.displayName"),
                     NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.borderColor.description"),
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.category")).setValue(defaultBorderColor),
+                    PreviewProperty.CATEGORY_NODES).setValue(defaultBorderColor),
                     PreviewProperty.createProperty(this, PreviewProperty.NODE_OPACITY, Float.class,
                     NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.opacity.displayName"),
                     NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.property.opacity.description"),
-                    NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.category")).setValue(defaultOpacity)};
+                    PreviewProperty.CATEGORY_NODES).setValue(defaultOpacity)};
     }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {

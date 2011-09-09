@@ -281,27 +281,27 @@ public class EdgeRenderer implements Renderer {
                     PreviewProperty.createProperty(this, PreviewProperty.SHOW_EDGES, Boolean.class,
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.display.displayName"),
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.display.description"),
-                    NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.category")).setValue(defaultShowEdges),
+                    PreviewProperty.CATEGORY_EDGES).setValue(defaultShowEdges),
                     PreviewProperty.createProperty(this, PreviewProperty.EDGE_THICKNESS, Float.class,
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.thickness.displayName"),
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.thickness.description"),
-                    NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.category"), PreviewProperty.SHOW_EDGES).setValue(defaultThickness),
+                    PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultThickness),
                     PreviewProperty.createProperty(this, PreviewProperty.EDGE_RESCALE_WEIGHT, Boolean.class,
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.displayName"),
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.rescaleWeight.description"),
-                    NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.category"), PreviewProperty.SHOW_EDGES).setValue(defaultRescaleWeight),
+                    PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultRescaleWeight),
                     PreviewProperty.createProperty(this, PreviewProperty.EDGE_COLOR, EdgeColor.class,
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.color.displayName"),
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.color.description"),
-                    NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.category"), PreviewProperty.SHOW_EDGES).setValue(defaultColor),
+                    PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultColor),
                     PreviewProperty.createProperty(this, PreviewProperty.EDGE_OPACITY, Float.class,
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.opacity.displayName"),
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.opacity.description"),
-                    NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.category"), PreviewProperty.SHOW_EDGES).setValue(defaultOpacity),
+                    PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultOpacity),
                     PreviewProperty.createProperty(this, PreviewProperty.EDGE_CURVED, Boolean.class,
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.displayName"),
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.description"),
-                    NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.category"), PreviewProperty.SHOW_EDGES).setValue(defaultEdgeCurved)};
+                    PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultEdgeCurved)};
     }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
