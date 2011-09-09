@@ -27,10 +27,12 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.SwingUtilities;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
+import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -46,8 +48,11 @@ import org.openide.util.NbBundle;
  */
 public class PreviewNode extends AbstractNode implements PropertyChangeListener {
 
-    public PreviewNode() {
+    private PropertySheet propertySheet;
+    
+    public PreviewNode(PropertySheet propertySheet) {
         super(Children.LEAF);
+        this.propertySheet = propertySheet;
         setDisplayName(NbBundle.getMessage(PreviewNode.class, "PreviewNode.displayName"));
     }
 
@@ -198,5 +203,11 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
     @Override
     public void propertyChange(PropertyChangeEvent pce) {
         firePropertyChange(pce.getPropertyName(), pce.getOldValue(), pce.getNewValue());
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                propertySheet.updateUI();
+            }
+        });
     }
 }

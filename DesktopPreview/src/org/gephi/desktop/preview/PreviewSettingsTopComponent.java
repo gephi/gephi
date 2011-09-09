@@ -81,7 +81,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
 
         // property sheet
         propertySheet = new PropertySheet();
-        propertySheet.setNodes(new Node[]{new PreviewNode()});
+        propertySheet.setNodes(new Node[]{new PreviewNode(propertySheet)});
         propertySheet.setDescriptionAreaVisible(false);
 
         //Tabs and PreviewUI
@@ -128,7 +128,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
                 if (previewModel != null && presetComboBox.getSelectedItem() instanceof PreviewPreset) {
                     if (previewModel.getCurrentPreset() != presetComboBox.getSelectedItem()) {
                         pc.setCurrentPreset((PreviewPreset) presetComboBox.getSelectedItem());
-                        propertySheet.setNodes(new Node[]{new PreviewNode()});
+                        propertySheet.setNodes(new Node[]{new PreviewNode(propertySheet)});
                     }
                 }
             }
@@ -146,7 +146,7 @@ public final class PreviewSettingsTopComponent extends TopComponent {
     }
     
     public void refreshModel() {
-        propertySheet.setNodes(new Node[]{new PreviewNode()});
+        propertySheet.setNodes(new Node[]{new PreviewNode(propertySheet)});
         PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
         PreviewUIModel previewModel = previewUIController.getModel();
         if (previewModel != null) {
