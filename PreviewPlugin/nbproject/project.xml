@@ -72,7 +72,9 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
+                <package>org.gephi.preview.plugin.builders</package>
                 <package>org.gephi.preview.plugin.items</package>
+                <package>org.gephi.preview.plugin.renderers</package>
             </public-packages>
         </data>
     </configuration>

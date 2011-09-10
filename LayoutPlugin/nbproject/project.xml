@@ -93,6 +93,7 @@
                 <package>org.gephi.layout.plugin.force.quadtree</package>
                 <package>org.gephi.layout.plugin.force.yifanHu</package>
                 <package>org.gephi.layout.plugin.forceAtlas</package>
+                <package>org.gephi.layout.plugin.forceAtlas2</package>
                 <package>org.gephi.layout.plugin.fruchterman</package>
                 <package>org.gephi.layout.plugin.labelAdjust</package>
                 <package>org.gephi.layout.plugin.multilevel</package>
