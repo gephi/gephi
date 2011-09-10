@@ -154,9 +154,9 @@ public class PartitionBuilder implements CategoryBuilder {
 
     public static abstract class PartitionFilter implements Filter {
 
-        private Partition partition;
-        private FilterProperty[] filterProperties;
-        private List<Part> parts;
+        protected Partition partition;
+        protected FilterProperty[] filterProperties;
+        protected List<Part> parts;
 
         public PartitionFilter(Partition partition) {
             this.partition = partition;
