@@ -7,6 +7,10 @@
             <suite-component/>
             <module-dependencies/>
             <public-packages>
+                <package>org.apache.avalon.framework</package>
+                <package>org.apache.avalon.framework.activity</package>
+                <package>org.apache.avalon.framework.configuration</package>
+                <package>org.apache.avalon.framework.container</package>
                 <package>org.apache.batik</package>
                 <package>org.apache.batik.anim</package>
                 <package>org.apache.batik.anim.timing</package>
@@ -64,6 +68,10 @@
                 <package>org.apache.batik.util.io</package>
                 <package>org.apache.batik.util.resources</package>
                 <package>org.apache.batik.xml</package>
+                <package>org.apache.commons.io</package>
+                <package>org.apache.commons.io.output</package>
+                <package>org.apache.commons.logging</package>
+                <package>org.apache.commons.logging.impl</package>
                 <package>org.apache.fop</package>
                 <package>org.apache.fop.apps</package>
                 <package>org.apache.fop.fo</package>
@@ -81,6 +89,14 @@
                 <package>org.apache.fop.render.ps.extensions</package>
                 <package>org.apache.fop.svg</package>
                 <package>org.apache.fop.util</package>
+                <package>org.apache.xmlgraphics.fonts</package>
+                <package>org.apache.xmlgraphics.java2d</package>
+                <package>org.apache.xmlgraphics.java2d.ps</package>
+                <package>org.apache.xmlgraphics.ps</package>
+                <package>org.apache.xmlgraphics.ps.dsc</package>
+                <package>org.apache.xmlgraphics.ps.dsc.events</package>
+                <package>org.apache.xmlgraphics.ps.dsc.tools</package>
+                <package>org.apache.xmlgraphics.util.io</package>
                 <package>org.w3c.css.sac</package>
                 <package>org.w3c.css.sac.helpers</package>
                 <package>org.w3c.dom</package>
