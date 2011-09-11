@@ -22,9 +22,7 @@ package org.gephi.statistics.plugin.dynamic;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.type.Interval;
@@ -47,7 +45,7 @@ import org.openide.util.Lookup;
  * @author Sébastien Heymann
  */
 public class DynamicNbNodes implements DynamicStatistics {
-    
+
     //Data
     private GraphModel graphModel;
     private DynamicModel dynamicModel;
@@ -81,12 +79,12 @@ public class DynamicNbNodes implements DynamicStatistics {
                 true,
                 false,
                 false);
-        
+
         chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dSeries, false);
         String imageFile = ChartUtils.renderChart(chart, "nb-nodes-ts.png");
-        
+
         NumberFormat f = new DecimalFormat("#0.000");
 
         String report = "<HTML> <BODY> <h1>Dynamic Number of Nodes Report </h1> "
@@ -95,18 +93,18 @@ public class DynamicNbNodes implements DynamicStatistics {
                 + "<br> Window: " + window
                 + "<br> Tick: " + tick
                 + "<br><br><h2> Number of nodes over time: </h2>"
-                + "<br /><br />"+imageFile;
+                + "<br /><br />" + imageFile;
 
         /*for (Interval<Integer> count : counts) {
-            report += count.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
+        report += count.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
         }*/
         report += "<br /><br /></BODY></HTML>";
         return report;
     }
-    
+
     public void loop(GraphView window, Interval interval) {
         HierarchicalGraph graph = graphModel.getHierarchicalGraph(window);
-        
+
         int count = graph.getNodeCount();
         //counts.add(new Interval<Integer>(interval, count));
         countTs.put(interval.getHigh(), count);
@@ -138,5 +136,4 @@ public class DynamicNbNodes implements DynamicStatistics {
     public Interval getBounds() {
         return bounds;
     }
-
 }
