@@ -20,9 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview.plugin.renderers;
 
+import com.itextpdf.text.pdf.PdfContentByte;
 import java.awt.Color;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.Item;
+import org.gephi.preview.api.PDFTarget;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
@@ -57,6 +59,8 @@ public class NodeRenderer implements Renderer {
             renderProcessing(item, (ProcessingTarget) target, properties);
         } else if (target instanceof SVGTarget) {
             renderSVG(item, (SVGTarget) target, properties);
+        } else if (target instanceof PDFTarget) {
+            renderPDF(item, (PDFTarget) target, properties);
         }
     }
 
@@ -110,6 +114,23 @@ public class NodeRenderer implements Renderer {
             nodeElem.setAttribute("stroke-opacity", "" + alpha);
         }
         target.getTopElement(SVGTarget.TOP_NODES).appendChild(nodeElem);
+    }
+
+    public void renderPDF(Item item, PDFTarget target, PreviewProperties properties) {
+        Float x = item.getData(NodeItem.X);
+        Float y = item.getData(NodeItem.Y);
+        Float size = item.getData(NodeItem.SIZE);
+        size /= 2f;
+        Color color = item.getData(NodeItem.COLOR);
+        Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
+        float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+
+        PdfContentByte cb = target.getContentByte();
+        cb.setRGBColorStroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue());
+        cb.setLineWidth(borderSize);
+        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
+        cb.circle(x, y, size);
+        cb.fillStroke();
     }
 
     public PreviewProperty[] getProperties() {
