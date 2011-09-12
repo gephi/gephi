@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview.plugin.renderers;
 
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfContentByte;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -28,8 +31,10 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.io.IOException;
 import org.gephi.graph.api.Edge;
 import org.gephi.preview.api.Item;
+import org.gephi.preview.api.PDFTarget;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
@@ -44,6 +49,7 @@ import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
@@ -183,6 +189,8 @@ public class EdgeLabelRenderer implements Renderer {
             renderProcessing((ProcessingTarget) target, label, x, y, color, outlineSize, outlineColor);
         } else if (target instanceof SVGTarget) {
             renderSVG((SVGTarget) target, edge, label, x, y, color, outlineSize, outlineColor);
+        } else if (target instanceof PDFTarget) {
+            renderPDF(null, edge, label, x, y, color, outlineSize, outlineColor);
         }
     }
 
@@ -231,6 +239,23 @@ public class EdgeLabelRenderer implements Renderer {
         }
         labelElem.appendChild(labelText);
         target.getTopElement(SVGTarget.TOP_EDGE_LABELS).appendChild(labelElem);
+    }
+
+    public void renderPDF(PDFTarget target, Edge Edge, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
+        if (target == null) {
+            return;
+        }
+        try {
+            PdfContentByte cb = target.getContentByte();
+            cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
+            BaseFont bf = target.loadBaseFont(font);
+            cb.beginText();
+            cb.setFontAndSize(bf, font.getSize());
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, y, 0f);
+            cb.endText();
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     public PreviewProperty[] getProperties() {
