@@ -20,8 +20,11 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview.api;
 
+import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
+import java.io.IOException;
 
 /**
  * Rendering target to PDF format.
@@ -37,7 +40,7 @@ public interface PDFTarget extends RenderTarget {
     public static final String TOP_EDGES = "pdf.top.edges";
     public static final String TOP_NODE_LABELS = "pdf.top.node.labels";
     public static final String TOP_EDGE_LABELS = "pdf.top.edge.labels";
-    
+
     /**
      * Returns the PDFContentBype instance of the PDFTarget. PDFContentByte
      * offers a set of drawing functions which can be used by Renderer objects.
@@ -45,6 +48,16 @@ public interface PDFTarget extends RenderTarget {
      * @return a PDFContentBype object 
      */
     public PdfContentByte getContentByte();
+
+    /**
+     * load a Java Font and return an iText BaseFont object.
+     *
+     * @param font  the reference font
+     * @return      the generated BaseFont
+     * @throws      DocumentException
+     * @throws      IOException
+     */
+    public BaseFont loadBaseFont(java.awt.Font font) throws DocumentException, IOException;     
 
     /**
      * Sets left, right, top and bottom margins.
