@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.preview.api;
 
 import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfContentByte;
 
 /**
  * Rendering target to PDF format.
@@ -36,6 +37,14 @@ public interface PDFTarget extends RenderTarget {
     public static final String TOP_EDGES = "pdf.top.edges";
     public static final String TOP_NODE_LABELS = "pdf.top.node.labels";
     public static final String TOP_EDGE_LABELS = "pdf.top.edge.labels";
+    
+    /**
+     * Returns the PDFContentBype instance of the PDFTarget. PDFContentByte
+     * offers a set of drawing functions which can be used by Renderer objects.
+     * 
+     * @return a PDFContentBype object 
+     */
+    public PdfContentByte getContentByte();
 
     /**
      * Sets left, right, top and bottom margins.

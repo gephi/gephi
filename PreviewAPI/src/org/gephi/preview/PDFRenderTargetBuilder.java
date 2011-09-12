@@ -120,6 +120,11 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         }
 
         @Override
+        public PdfContentByte getContentByte() {
+            return this.cb;
+        }
+        
+        @Override
         public void setMargins(float leftMargin, float rightMargin, float top, float bottom) {
             this.marginTop = top;
             this.marginBottom = bottom;
