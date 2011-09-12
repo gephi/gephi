@@ -30,6 +30,7 @@ import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.ProcessingTarget;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.api.SVGTarget;
+import org.gephi.preview.api.PDFTarget;
 import org.gephi.preview.plugin.items.EdgeItem;
 import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.Renderer;
@@ -126,6 +127,9 @@ public class ArrowRenderer implements Renderer {
             arrowElem.setAttribute("fill-opacity", (color.getAlpha() / 255f) + "");
             arrowElem.setAttribute("stroke", "none");
             svgTarget.getTopElement(SVGTarget.TOP_ARROWS).appendChild(arrowElem);
+        } else if (target instanceof PDFTarget) {
+            PDFTarget pdfTarget = (PDFTarget) target;
+            
         }
     }
 
