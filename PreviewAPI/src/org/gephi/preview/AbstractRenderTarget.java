@@ -29,8 +29,8 @@ import org.gephi.utils.progress.ProgressTicket;
  */
 public class AbstractRenderTarget implements LongTask {
 
-    private boolean cancel = false;
-    private ProgressTicket progressTicket;
+    protected boolean cancel = false;
+    protected ProgressTicket progressTicket;
 
     public boolean isCancelled() {
         return cancel;

@@ -240,20 +240,13 @@ public class EdgeLabelRenderer implements Renderer {
     }
 
     public void renderPDF(PDFTarget target, Edge Edge, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
-        if (target == null) {
-            return;
-        }
-        try {
-            PdfContentByte cb = target.getContentByte();
-            cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
-            BaseFont bf = target.loadBaseFont(font);
-            cb.beginText();
-            cb.setFontAndSize(bf, font.getSize());
-            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, y, 0f);
-            cb.endText();
-        } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        PdfContentByte cb = target.getContentByte();
+        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
+        BaseFont bf = target.getBaseFont(font);
+        cb.beginText();
+        cb.setFontAndSize(bf, font.getSize());
+        cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, y, 0f);
+        cb.endText();
     }
 
     public PreviewProperty[] getProperties() {

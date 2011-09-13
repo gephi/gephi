@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.preview.plugin.renderers;
 
 import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfGState;
 import java.awt.Color;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.Item;
@@ -124,12 +125,18 @@ public class NodeRenderer implements Renderer {
         Color color = item.getData(NodeItem.COLOR);
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
         float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
+        float alpha = properties.getIntValue(PreviewProperty.NODE_OPACITY) / 100f;
 
         PdfContentByte cb = target.getContentByte();
         cb.setRGBColorStroke(borderColor.getRed(), borderColor.getGreen(), borderColor.getBlue());
         cb.setLineWidth(borderSize);
         cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
-        cb.circle(x, y, size);
+        if (alpha < 1f) {
+            PdfGState gState = new PdfGState();
+            gState.setFillOpacity(alpha);
+            gState.setStrokeOpacity(alpha);
+        }
+        cb.circle(x, -y, size);
         cb.fillStroke();
     }
 

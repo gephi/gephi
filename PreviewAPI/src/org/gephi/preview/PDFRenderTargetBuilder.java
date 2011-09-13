@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2011 Gephi
-Authors : Yudi Xue <yudi.xue@usask.ca>
+Authors : Mathieu Bastian
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -20,36 +20,26 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.PageSize;
+import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.DefaultFontMapper;
 import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfWriter;
 
 import java.awt.geom.AffineTransform;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.gephi.preview.api.PDFTarget;
 import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.preview.spi.RenderTargetBuilder;
-import org.gephi.utils.longtask.spi.LongTask;
-import org.gephi.utils.progress.ProgressTicket;
+import org.gephi.utils.progress.Progress;
 import org.openide.util.Exceptions;
-import org.openide.util.Utilities;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-import sun.font.FontManager;
 
 /**
  * Default implementation to PDFRenderTargetBuilder.
  * 
- * @author Yudi Xue
+ * @author Mathieu Bastian
  */
 @ServiceProvider(service = RenderTargetBuilder.class)
 public class PDFRenderTargetBuilder implements RenderTargetBuilder {
@@ -67,43 +57,40 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         height = Math.max(1, height);
         int topLeftX = previewModel.getTopLeftPosition().x;
         int topLeftY = previewModel.getTopLeftPosition().y;
-        PDFRenderTargetImpl renderTarget = new PDFRenderTargetImpl(width, height, topLeftX, topLeftY);
+        PreviewProperties properties = previewModel.getProperties();
+        float marginBottom = properties.getFloatValue(PDFTarget.MARGIN_BOTTOM);
+        float marginLeft = properties.getFloatValue(PDFTarget.MARGIN_LEFT);
+        float marginRight = properties.getFloatValue(PDFTarget.MARGIN_RIGHT);
+        float marginTop = properties.getFloatValue(PDFTarget.MARGIN_TOP);
+        Rectangle pageSize = properties.getValue(PDFTarget.PAGESIZE);
+        boolean landscape = properties.getBooleanValue(PDFTarget.LANDSCAPE);
+        PdfContentByte cb = properties.getValue(PDFTarget.PDF_CONTENT_BYTE);
+        PDFRenderTargetImpl renderTarget = new PDFRenderTargetImpl(cb, width, height, topLeftX, topLeftY,
+                pageSize, marginLeft, marginRight, marginTop, marginBottom, landscape);
         return renderTarget;
     }
 
     public static class PDFRenderTargetImpl extends AbstractRenderTarget implements PDFTarget {
 
-        private PdfContentByte cb;
-        private Document document;
+        private final PdfContentByte cb;
         private static boolean fontRegistered = false;
         //Parameters
-        private float marginTop = 18f;
-        private float marginBottom = 18f;
-        private float marginLeft = 18f;
-        private float marginRight = 18f;
-        private boolean landscape = false;
-        private Rectangle pageSize = PageSize.A4;
-        private float scale;
-        private Map<String, Element> topElements = new HashMap<String, Element>();
-        private DefaultFontMapper dfm;
+        private final float marginTop;
+        private final float marginBottom;
+        private final float marginLeft;
+        private final float marginRight;
+        private final boolean landscape;
+        private final Rectangle pageSize;
 
-        public PDFRenderTargetImpl(double width, double height, double topLeftX, double topLeftY) {
-            Rectangle size = new Rectangle(pageSize);
-            if (landscape) {
-                size = new Rectangle(pageSize.rotate());
-            }
-            dfm = new DefaultFontMapper();
-
-            document = new Document(size);
-            PdfWriter pdfWriter = null;
-            try {
-                PdfWriter.getInstance(document, null);
-            } catch (DocumentException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-            document.open();
-            cb = pdfWriter.getDirectContent();
-            cb.saveState();
+        public PDFRenderTargetImpl(PdfContentByte cb, double width, double height, double topLeftX, double topLeftY,
+                Rectangle size, float marginLeft, float marginRight, float marginTop, float marginBottom, boolean landscape) {
+            this.cb = cb;
+            this.marginTop = marginTop;
+            this.marginLeft = marginLeft;
+            this.marginBottom = marginBottom;
+            this.marginRight = marginRight;
+            this.pageSize = size;
+            this.landscape = landscape;
 
             double centerX = topLeftX + width / 2;
             double centerY = topLeftY + height / 2;
@@ -113,102 +100,14 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
             double pageHeight = size.getHeight() - marginTop - marginBottom;
             double ratioWidth = pageWidth / width;
             double ratioHeight = pageHeight / height;
-            scale = (float) (ratioWidth < ratioHeight ? ratioWidth : ratioHeight);
+            double scale = (float) (ratioWidth < ratioHeight ? ratioWidth : ratioHeight);
             double translateX = (marginLeft + pageWidth / 2.) / scale;
             double translateY = (marginBottom + pageHeight / 2.) / scale;
             cb.transform(AffineTransform.getTranslateInstance(-centerX * scale, -centerY * scale));
             cb.transform(AffineTransform.getScaleInstance(scale, scale));
             cb.transform(AffineTransform.getTranslateInstance(translateX, translateY));
-            cb.restoreState();
-            document.close();
-        }
 
-        @Override
-        public BaseFont loadBaseFont(java.awt.Font font) throws DocumentException, IOException {
-            if (font != null) {
-                try {
-                    loadFont(font);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return BaseFont.createFont();
-                }
-
-                return dfm.awtToPdf(font);
-            }
-            return BaseFont.createFont();
-        }
-
-        private void loadFont(java.awt.Font font) throws DocumentException, IOException {
-            if (Utilities.isMac()) {
-                String fontName = font.getName();
-                if (!((DefaultFontMapper) dfm).getMapper().containsKey(fontName)) {
-                    File homeLibraryFonts = new File(System.getProperty("user.home") + "/Library/Fonts");
-                    File systemLibraryFonts = new File("/System/Library/Fonts");
-                    File libraryFonts = new File("/Library/Fonts");
-                    File fontResult = checkFileType(fontName, homeLibraryFonts);
-                    fontResult = fontResult != null ? fontResult : checkFileType(fontName, systemLibraryFonts);
-                    fontResult = fontResult != null ? fontResult : checkFileType(fontName, libraryFonts);
-                    if (fontResult != null) {
-                        fontName = fontResult.getName();
-                        String fontFilePath = fontResult.getAbsolutePath();
-                        loadFont(fontName, fontFilePath);
-                    }
-                }
-            } else {
-                String fontName = FontManager.getFileNameForFontName(font.getFontName());
-                if (!dfm.getMapper().containsKey(fontName)) {
-                    String fontFilePath = FontManager.getFontPath(false);
-                    fontFilePath = fontFilePath + "/" + fontName;
-                    loadFont(fontName, fontFilePath);
-                }
-            }
-        }
-
-        public final void loadFont(String fontName, String fontFilePath) throws DocumentException, IOException {
-            if (fontName != null && !fontName.isEmpty()) {
-                fontName = fontName.toLowerCase();
-                if (fontFilePath != null && !fontFilePath.isEmpty()) {
-                    if (fontName.endsWith(".ttf") || fontName.endsWith(".otf") || fontName.endsWith(".afm")) {
-                        Object allNames[] = BaseFont.getAllFontNames(fontFilePath, BaseFont.CP1252, null);
-                        dfm.insertNames(allNames, fontFilePath);
-                    } else if (fontName.endsWith(".ttc")) {
-                        String ttcs[] = BaseFont.enumerateTTCNames(fontFilePath);
-                        for (int j = 0; j < ttcs.length; ++j) {
-                            String nt = fontFilePath + "," + j;
-                            Object allNames[] = BaseFont.getAllFontNames(nt, BaseFont.CP1252, null);
-                            dfm.insertNames(allNames, nt);
-                        }
-                    }
-                }
-            }
-        }
-
-        private File checkFileType(String fileName, File absolutePath) {
-            if (!absolutePath.isDirectory()) {
-                return null;
-            }
-            File lookFile = new File(absolutePath, fileName + ".ttf");
-            if (lookFile.exists()) {
-                return lookFile;
-            }
-            lookFile = new File(absolutePath, fileName + ".otf");
-            if (lookFile.exists()) {
-                return lookFile;
-            }
-            lookFile = new File(absolutePath, fileName + ".ttc");
-            if (lookFile.exists()) {
-                return lookFile;
-            }
-            lookFile = new File(absolutePath, fileName + ".afm");
-            if (lookFile.exists()) {
-                return lookFile;
-            }
-            return null;
-        }
-
-        @Override
-        public float getScaleRatio() {
-            return this.scale;
+            FontFactory.register("/org/gephi/preview/fonts/LiberationSans.ttf", "ArialMT");
         }
 
         @Override
@@ -217,11 +116,59 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         }
 
         @Override
-        public void setMargins(float leftMargin, float rightMargin, float top, float bottom) {
-            this.marginTop = top;
-            this.marginBottom = bottom;
-            this.marginLeft = leftMargin;
-            this.marginRight = rightMargin;
+        public BaseFont getBaseFont(java.awt.Font font) {
+            try {
+                if (font != null) {
+                    BaseFont baseFont = null;
+                    if (!font.getFontName().equals(FontFactory.COURIER)
+                            && !font.getFontName().equals(FontFactory.COURIER_BOLD)
+                            && !font.getFontName().equals(FontFactory.COURIER_OBLIQUE)
+                            && !font.getFontName().equals(FontFactory.COURIER_BOLDOBLIQUE)
+                            && !font.getFontName().equals(FontFactory.HELVETICA)
+                            && !font.getFontName().equals(FontFactory.HELVETICA_BOLD)
+                            && !font.getFontName().equals(FontFactory.HELVETICA_BOLDOBLIQUE)
+                            && !font.getFontName().equals(FontFactory.HELVETICA_OBLIQUE)
+                            && !font.getFontName().equals(FontFactory.SYMBOL)
+                            && !font.getFontName().equals(FontFactory.TIMES_ROMAN)
+                            && !font.getFontName().equals(FontFactory.TIMES_BOLD)
+                            && !font.getFontName().equals(FontFactory.TIMES_ITALIC)
+                            && !font.getFontName().equals(FontFactory.TIMES_BOLDITALIC)
+                            && !font.getFontName().equals(FontFactory.ZAPFDINGBATS)
+                            && !font.getFontName().equals(FontFactory.COURIER_BOLD)
+                            && !font.getFontName().equals(FontFactory.COURIER_BOLD)
+                            && !font.getFontName().equals(FontFactory.COURIER_BOLD)) {
+
+                        com.itextpdf.text.Font itextFont = FontFactory.getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
+                        baseFont = itextFont.getBaseFont();
+                        if (baseFont == null && !PDFRenderTargetImpl.fontRegistered) {
+
+                            if (progressTicket != null) {
+                                String displayName = progressTicket.getDisplayName();
+                                Progress.setDisplayName(progressTicket, NbBundle.getMessage(PDFRenderTargetImpl.class, "PDFRenderTargetImpl.font.registration"));
+                                FontFactory.registerDirectories();
+                                Progress.setDisplayName(progressTicket, displayName);
+                            }
+
+                            itextFont = FontFactory.getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
+                            baseFont = itextFont.getBaseFont();
+
+                            PDFRenderTargetImpl.fontRegistered = true;
+                        }
+                    } else {
+                        com.itextpdf.text.Font itextFont = FontFactory.getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
+                        baseFont = itextFont.getBaseFont();
+                    }
+
+                    if (baseFont != null) {
+                        return baseFont;
+                    }
+                    return BaseFont.createFont();
+                }
+                return BaseFont.createFont();
+            } catch (Exception e) {
+                Exceptions.printStackTrace(e);
+            }
+            return null;
         }
 
         @Override
@@ -230,18 +177,8 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         }
 
         @Override
-        public void setMarginBottom(float marginBottom) {
-            this.marginBottom = marginBottom;
-        }
-
-        @Override
         public float getMarginLeft() {
             return marginLeft;
-        }
-
-        @Override
-        public void setMarginLeft(float marginLeft) {
-            this.marginLeft = marginLeft;
         }
 
         @Override
@@ -250,18 +187,8 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         }
 
         @Override
-        public void setMarginRight(float marginRight) {
-            this.marginRight = marginRight;
-        }
-
-        @Override
         public float getMarginTop() {
             return marginTop;
-        }
-
-        @Override
-        public void setMarginTop(float marginTop) {
-            this.marginTop = marginTop;
         }
 
         @Override
@@ -270,18 +197,8 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         }
 
         @Override
-        public void setLandscape(boolean landscape) {
-            this.landscape = landscape;
-        }
-
-        @Override
         public Rectangle getPageSize() {
             return pageSize;
-        }
-
-        @Override
-        public void setPageSize(Rectangle pageSize) {
-            this.pageSize = pageSize;
         }
     }
 }
