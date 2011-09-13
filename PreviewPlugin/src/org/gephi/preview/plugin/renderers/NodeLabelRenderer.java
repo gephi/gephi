@@ -64,17 +64,17 @@ public class NodeLabelRenderer implements Renderer {
     public static final String NODE_Y = "node.y";
     public static final String FONT_SIZE = "node.label.fontSize";
     //Default values
-    private final boolean defaultShowLabels = true;
-    private final Font defaultFont = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
-    private final boolean defaultShorten = false;
-    private final DependantOriginalColor defaultColor = new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL);
-    private final int defaultMaxChar = 30;
-    private final boolean defaultProportinalSize = true;
-    private final float defaultOutlineSize = 4;
-    private final DependantColor defaultOutlineColor = new DependantColor(Color.WHITE);
-    private final int defaultOutlineOpacity = 40;
+    protected final boolean defaultShowLabels = true;
+    protected final Font defaultFont = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
+    protected final boolean defaultShorten = false;
+    protected final DependantOriginalColor defaultColor = new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL);
+    protected final int defaultMaxChar = 30;
+    protected final boolean defaultProportinalSize = true;
+    protected final float defaultOutlineSize = 4;
+    protected final DependantColor defaultOutlineColor = new DependantColor(Color.WHITE);
+    protected final int defaultOutlineOpacity = 40;
     //Font cache
-    private Map<Integer, Font> fontCache;
+    protected Map<Integer, Font> fontCache;
 
     public void preProcess(PreviewModel previewModel) {
         PreviewProperties properties = previewModel.getProperties();

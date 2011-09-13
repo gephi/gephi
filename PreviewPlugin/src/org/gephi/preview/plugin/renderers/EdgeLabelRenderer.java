@@ -20,7 +20,6 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview.plugin.renderers;
 
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import java.awt.BasicStroke;
@@ -31,7 +30,6 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
-import java.io.IOException;
 import org.gephi.graph.api.Edge;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.api.PDFTarget;
@@ -70,16 +68,16 @@ public class EdgeLabelRenderer implements Renderer {
     public static final String LABEL_X = "edge.label.x";
     public static final String LABEL_Y = "edge.label.y";
     //Default values
-    private final boolean defaultShowLabels = true;
-    private final Font defaultFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
-    private final boolean defaultShorten = false;
-    private final DependantOriginalColor defaultColor = new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL);
-    private final int defaultMaxChar = 30;
-    private final float defaultOutlineSize = 2;
-    private final DependantColor defaultOutlineColor = new DependantColor(Color.WHITE);
-    private final int defaultOutlineOpacity = 40;
+    protected final boolean defaultShowLabels = true;
+    protected final Font defaultFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
+    protected final boolean defaultShorten = false;
+    protected final DependantOriginalColor defaultColor = new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL);
+    protected final int defaultMaxChar = 30;
+    protected final float defaultOutlineSize = 2;
+    protected final DependantColor defaultOutlineColor = new DependantColor(Color.WHITE);
+    protected final int defaultOutlineOpacity = 40;
     //Font cache
-    private Font font;
+    protected Font font;
 
     public void preProcess(PreviewModel previewModel) {
         PreviewProperties properties = previewModel.getProperties();
@@ -299,7 +297,7 @@ public class EdgeLabelRenderer implements Renderer {
                 && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 
-    private PVector bezierPoint(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float c) {
+    protected PVector bezierPoint(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float c) {
         PVector ab = linearInterpolation(x1, y1, x2, y2, c);
         PVector bc = linearInterpolation(x2, y2, x3, y3, c);
         PVector cd = linearInterpolation(x3, y3, x4, y4, c);
@@ -308,7 +306,7 @@ public class EdgeLabelRenderer implements Renderer {
         return linearInterpolation(abbc.x, abbc.y, bccd.x, bccd.y, c);
     }
 
-    public PVector linearInterpolation(float x1, float y1, float x2, float y2, float c) {
+    protected PVector linearInterpolation(float x1, float y1, float x2, float y2, float c) {
         PVector r = new PVector(x1 + (x2 - x1) * c, y1 + (y2 - y1) * c);
         return r;
     }

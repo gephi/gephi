@@ -49,10 +49,10 @@ import processing.core.PVector;
 public class ArrowRenderer implements Renderer {
 
     //Const
-    private final float BASE_RATIO = 0.5f;
+    protected final float BASE_RATIO = 0.5f;
     //Default values
-    private float defaultArrowSize = 3f;
-    private float defaultArrowRadius = 0f;
+    protected float defaultArrowSize = 3f;
+    protected float defaultArrowRadius = 0f;
 
     public void preProcess(PreviewModel previewModel) {
     }

@@ -52,17 +52,17 @@ public class EdgeRenderer implements Renderer {
     public static final String EDGE_MIN_WEIGHT = "edge.min-weight";
     public static final String EDGE_MAX_WEIGHT = "edge.max-weight";
     public static final String BEZIER_CURVENESS = "edge.bezier-curveness";
-    public static final String SOURCE = "edge.source";
-    public static final String TARGET = "edge.target";
+    public static final String SOURCE = "source";
+    public static final String TARGET = "target";
     public static final String TARGET_RADIUS = "edge.target.radius";
     //Default values
-    private boolean defaultShowEdges = true;
-    private float defaultThickness = 1;
-    private boolean defaultRescaleWeight = true;
-    private EdgeColor defaultColor = new EdgeColor(EdgeColor.Mode.MIXED);
-    private boolean defaultEdgeCurved = true;
-    private float defaultBezierCurviness = 0.2f;
-    private int defaultOpacity = 100;
+    protected boolean defaultShowEdges = true;
+    protected float defaultThickness = 1;
+    protected boolean defaultRescaleWeight = true;
+    protected EdgeColor defaultColor = new EdgeColor(EdgeColor.Mode.MIXED);
+    protected boolean defaultEdgeCurved = true;
+    protected float defaultBezierCurviness = 0.2f;
+    protected int defaultOpacity = 100;
 
     public void preProcess(PreviewModel previewModel) {
         PreviewProperties properties = previewModel.getProperties();

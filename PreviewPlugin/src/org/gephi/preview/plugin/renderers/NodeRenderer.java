@@ -47,9 +47,9 @@ import processing.core.PGraphics;
 public class NodeRenderer implements Renderer {
 
     //Default values
-    private float defaultBorderWidth = 1f;
-    private DependantColor defaultBorderColor = new DependantColor();
-    private float defaultOpacity = 100f;
+    protected float defaultBorderWidth = 1f;
+    protected DependantColor defaultBorderColor = new DependantColor();
+    protected float defaultOpacity = 100f;
 
     public void preProcess(PreviewModel previewModel) {
     }

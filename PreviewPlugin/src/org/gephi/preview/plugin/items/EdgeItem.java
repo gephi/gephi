@@ -34,7 +34,7 @@ public class EdgeItem extends AbstractItem {
     public static final String MUTUAL = "mutual";
     public static final String META_EDGE = "meta_edge";
     public static final String SELF_LOOP = "self_loop";
-    public static final String COLOR = "ecolor";
+    public static final String COLOR = "color";
     
     public EdgeItem(Edge source) {
         super(source, Item.EDGE);
