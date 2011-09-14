@@ -60,9 +60,9 @@ public final class DependantColor {
     }
     
     public Color getColor(Color parentColor) {
-        if (customColor == null) {
-            return parentColor;
+        if (mode.equals(Mode.CUSTOM) && customColor != null) {
+            return customColor;
         }
-        return customColor;
+        return parentColor;
     }
 }
