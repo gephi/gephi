@@ -58,6 +58,7 @@ public class EdgeRenderer implements Renderer {
     public static final String SOURCE = "source";
     public static final String TARGET = "target";
     public static final String TARGET_RADIUS = "edge.target.radius";
+    public static final String SOURCE_RADIUS = "edge.source.radius";
     //Default values
     protected boolean defaultShowEdges = true;
     protected float defaultThickness = 1;
@@ -66,6 +67,7 @@ public class EdgeRenderer implements Renderer {
     protected boolean defaultEdgeCurved = true;
     protected float defaultBezierCurviness = 0.2f;
     protected int defaultOpacity = 100;
+    protected float defaultRadius = 0f;
 
     public void preProcess(PreviewModel previewModel) {
         PreviewProperties properties = previewModel.getProperties();
@@ -118,15 +120,25 @@ public class EdgeRenderer implements Renderer {
             item.setData(EdgeItem.WEIGHT, weight);
         }
 
-        //Target radius
+        //Radius
         for (Item item : edgeItems) {
-            if ((Boolean) item.getData(EdgeItem.DIRECTED) && !(Boolean) item.getData(EdgeItem.SELF_LOOP)) {
-                Item targetItem = (Item) item.getData(TARGET);
-                Float weight = item.getData(EdgeItem.WEIGHT);
-                float radius = properties.getFloatValue(PreviewProperty.ARROW_RADIUS);
-                float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE) * weight;
-                radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
-                item.setData(TARGET_RADIUS, radius - size);
+            if (!(Boolean) item.getData(EdgeItem.SELF_LOOP)) {
+                if ((Boolean) item.getData(EdgeItem.DIRECTED) || properties.getFloatValue(PreviewProperty.EDGE_RADIUS) > 0f) {
+                    //Target
+                    Item targetItem = (Item) item.getData(TARGET);
+                    Float weight = item.getData(EdgeItem.WEIGHT);
+                    float radius = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
+                    float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE) * weight;
+                    radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
+                    item.setData(TARGET_RADIUS, radius - size);
+                }
+                if (properties.getFloatValue(PreviewProperty.EDGE_RADIUS) > 0) {
+                    //Source
+                    float radiusSource = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
+                    Item sourceItem = (Item) item.getData(SOURCE);
+                    radiusSource = -(radiusSource + (Float) sourceItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
+                    item.setData(SOURCE_RADIUS, radiusSource);
+                }
             }
         }
     }
@@ -283,7 +295,7 @@ public class EdgeRenderer implements Renderer {
 
         //Target radius - to start at the base of the arrow
         Float targetRadius = edgeItem.getData(TARGET_RADIUS);
-        if (targetRadius != 0) {
+        if (targetRadius != null && targetRadius != 0) {
             PVector direction = new PVector(x2, y2);
             direction.sub(new PVector(x1, y1));
             direction.normalize();
@@ -292,6 +304,18 @@ public class EdgeRenderer implements Renderer {
             direction.add(new PVector(x2, y2));
             x2 = direction.x;
             y2 = direction.y;
+        }
+        //Source radius
+        Float sourceRadius = edgeItem.getData(SOURCE_RADIUS);
+        if (sourceRadius != null && sourceRadius != 0) {
+            PVector direction = new PVector(x1, y1);
+            direction.sub(new PVector(x2, y2));
+            direction.normalize();
+            direction = new PVector(direction.x, direction.y);
+            direction.mult(sourceRadius);
+            direction.add(new PVector(x1, y1));
+            x1 = direction.x;
+            y1 = direction.y;
         }
 
         if (renderTarget instanceof ProcessingTarget) {
@@ -358,7 +382,11 @@ public class EdgeRenderer implements Renderer {
                     PreviewProperty.createProperty(this, PreviewProperty.EDGE_CURVED, Boolean.class,
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.displayName"),
                     NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.curvedEdges.description"),
-                    PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultEdgeCurved)};
+                    PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultEdgeCurved),
+                    PreviewProperty.createProperty(this, PreviewProperty.EDGE_RADIUS, Float.class,
+                    NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.radius.displayName"),
+                    NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.property.radius.description"),
+                    PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultRadius),};
     }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {

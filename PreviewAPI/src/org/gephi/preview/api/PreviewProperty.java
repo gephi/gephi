@@ -44,9 +44,9 @@ public class PreviewProperty {
     public static final String EDGE_COLOR = "edge.color";
     public static final String EDGE_OPACITY = "edge.opacity";
     public static final String EDGE_RESCALE_WEIGHT = "edge.rescale-weight";
+    public static final String EDGE_RADIUS = "edge.radius";
     //Constants arrows
     public static final String ARROW_SIZE = "arrow.size";
-    public static final String ARROW_RADIUS = "arrow.radius";
     //Constants node labels
     public static final String SHOW_NODE_LABELS = "node.label.show";
     public static final String NODE_LABEL_FONT = "node.label.font";

@@ -65,11 +65,7 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
     private float marginRight = 18f;
     private boolean landscape = false;
     private Rectangle pageSize = PageSize.A4;
-    
-    public PDFExporter() {
-        FontFactory.register("/org/gephi/io/exporter/preview/fonts/LiberationSans.ttf", "ArialMT");
-    }
-    
+
     public boolean execute() {
         Progress.start(progress);
         

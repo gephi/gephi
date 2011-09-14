@@ -54,7 +54,6 @@ public class ArrowRenderer implements Renderer {
     protected final float BASE_RATIO = 0.5f;
     //Default values
     protected float defaultArrowSize = 3f;
-    protected float defaultArrowRadius = 0f;
 
     public void preProcess(PreviewModel previewModel) {
     }
@@ -74,7 +73,7 @@ public class ArrowRenderer implements Renderer {
         color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 
         //Size and radius
-        float radius = properties.getFloatValue(PreviewProperty.ARROW_RADIUS);
+        float radius = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
         float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE) * weight;
         radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
 
@@ -156,11 +155,7 @@ public class ArrowRenderer implements Renderer {
                     PreviewProperty.createProperty(this, PreviewProperty.ARROW_SIZE, Float.class,
                     NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.size.displayName"),
                     NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.size.description"),
-                    PreviewProperty.CATEGORY_EDGE_ARROWS, PreviewProperty.SHOW_EDGES).setValue(defaultArrowSize),
-                    PreviewProperty.createProperty(this, PreviewProperty.ARROW_RADIUS, Float.class,
-                    NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.radius.displayName"),
-                    NbBundle.getMessage(EdgeRenderer.class, "ArrowRenderer.property.radius.description"),
-                    PreviewProperty.CATEGORY_EDGE_ARROWS, PreviewProperty.SHOW_EDGES).setValue(defaultArrowRadius),};
+                    PreviewProperty.CATEGORY_EDGE_ARROWS, PreviewProperty.SHOW_EDGES).setValue(defaultArrowSize)};
     }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
