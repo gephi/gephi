@@ -39,11 +39,11 @@ public class EdgeColor {
 
         SOURCE, TARGET, MIXED, CUSTOM, ORIGINAL
     };
-    private Color customColor = Color.BLACK;
+    private Color customColor;
     private final Mode mode;
 
     public EdgeColor(Mode mode) {
-        customColor = null;
+        customColor = Color.BLACK;
         this.mode = mode;
     }
 
