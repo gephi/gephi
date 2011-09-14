@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview.plugin.renderers;
 
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfGState;
 import java.awt.Color;
 import java.util.Locale;
 import org.gephi.graph.api.Edge;
@@ -129,7 +131,23 @@ public class ArrowRenderer implements Renderer {
             svgTarget.getTopElement(SVGTarget.TOP_ARROWS).appendChild(arrowElem);
         } else if (target instanceof PDFTarget) {
             PDFTarget pdfTarget = (PDFTarget) target;
-            
+            PdfContentByte cb = pdfTarget.getContentByte();
+            cb.moveTo(p1.x, -p1.y);
+            cb.lineTo(p2.x, -p2.y);
+            cb.lineTo(p3.x, -p3.y);
+            cb.closePath();
+            cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
+            if (color.getAlpha() < 255) {
+                cb.saveState();
+                float alpha = color.getAlpha() / 255f;
+                PdfGState gState = new PdfGState();
+                gState.setFillOpacity(alpha);
+                cb.setGState(gState);
+            }
+            cb.fill();
+            if (color.getAlpha() < 255) {
+                cb.restoreState();
+            }
         }
     }
 

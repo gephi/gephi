@@ -20,11 +20,14 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview.plugin.renderers;
 
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfGState;
 import java.awt.Color;
 import java.util.Locale;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.Item;
+import org.gephi.preview.api.PDFTarget;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
@@ -181,6 +184,24 @@ public class EdgeRenderer implements Renderer {
             selfLoopElem.setAttribute("stroke-width", Float.toString(thickness * svgTarget.getScaleRatio()));
             selfLoopElem.setAttribute("fill", "none");
             svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(selfLoopElem);
+        } else if (renderTarget instanceof PDFTarget) {
+            PDFTarget pdfTarget = (PDFTarget) renderTarget;
+            PdfContentByte cb = pdfTarget.getContentByte();
+            cb.moveTo(x, -y);
+            cb.curveTo(v1.x, -v1.y, v2.x, -v2.y, x, -y);
+            cb.setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
+            cb.setLineWidth(thickness);
+            if (color.getAlpha() < 255) {
+                cb.saveState();
+                float alpha = color.getAlpha() / 255f;
+                PdfGState gState = new PdfGState();
+                gState.setStrokeOpacity(alpha);
+                cb.setGState(gState);
+            }
+            cb.stroke();
+            if (color.getAlpha() < 255) {
+                cb.restoreState();
+            }
         }
     }
 
@@ -232,6 +253,24 @@ public class EdgeRenderer implements Renderer {
             edgeElem.setAttribute("stroke-opacity", (color.getAlpha() / 255f) + "");
             edgeElem.setAttribute("fill", "none");
             svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(edgeElem);
+        } else if (renderTarget instanceof PDFTarget) {
+            PDFTarget pdfTarget = (PDFTarget) renderTarget;
+            PdfContentByte cb = pdfTarget.getContentByte();
+            cb.moveTo(x1, -y1);
+            cb.curveTo(v1.x, -v1.y, v2.x, -v2.y, x2, -y2);
+            cb.setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
+            cb.setLineWidth(thickness);
+            if (color.getAlpha() < 255) {
+                cb.saveState();
+                float alpha = color.getAlpha() / 255f;
+                PdfGState gState = new PdfGState();
+                gState.setStrokeOpacity(alpha);
+                cb.setGState(gState);
+            }
+            cb.stroke();
+            if (color.getAlpha() < 255) {
+                cb.restoreState();
+            }
         }
     }
 
@@ -273,6 +312,24 @@ public class EdgeRenderer implements Renderer {
             edgeElem.setAttribute("stroke-opacity", (color.getAlpha() / 255f) + "");
             edgeElem.setAttribute("fill", "none");
             svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(edgeElem);
+        } else if (renderTarget instanceof PDFTarget) {
+            PDFTarget pdfTarget = (PDFTarget) renderTarget;
+            PdfContentByte cb = pdfTarget.getContentByte();
+            cb.moveTo(x1, -y1);
+            cb.lineTo(x2, -y2);
+            cb.setRGBColorStroke(color.getRed(), color.getGreen(), color.getBlue());
+            cb.setLineWidth(thickness);
+            if (color.getAlpha() < 255) {
+                cb.saveState();
+                float alpha = color.getAlpha() / 255f;
+                PdfGState gState = new PdfGState();
+                gState.setStrokeOpacity(alpha);
+                cb.setGState(gState);
+            }
+            cb.stroke();
+            if (color.getAlpha() < 255) {
+                cb.restoreState();
+            }
         }
     }
 

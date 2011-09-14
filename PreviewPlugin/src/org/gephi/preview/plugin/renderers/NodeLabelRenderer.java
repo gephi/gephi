@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview.plugin.renderers;
 
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfGState;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -32,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Node;
 import org.gephi.preview.api.Item;
+import org.gephi.preview.api.PDFTarget;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
@@ -145,6 +149,8 @@ public class NodeLabelRenderer implements Renderer {
             renderProcessing((ProcessingTarget) target, label, x, y, fontSize, color, outlineSize, outlineColor);
         } else if (target instanceof SVGTarget) {
             renderSVG((SVGTarget) target, node, label, x, y, fontSize, color, outlineSize, outlineColor);
+        } else if (target instanceof PDFTarget) {
+            renderPDF((PDFTarget) target, node, label, x, y, fontSize, color, outlineSize, outlineColor);
         }
     }
 
@@ -195,6 +201,46 @@ public class NodeLabelRenderer implements Renderer {
         }
         labelElem.appendChild(labelText);
         target.getTopElement(SVGTarget.TOP_NODE_LABELS).appendChild(labelElem);
+    }
+
+    public void renderPDF(PDFTarget target, Node node, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor) {
+        Font font = fontCache.get(fontSize);
+        PdfContentByte cb = target.getContentByte();
+        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
+        BaseFont bf = target.getBaseFont(font);
+        float textHeight = getTextHeight(bf, fontSize, label);
+        if (outlineSize > 0) {
+            cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_STROKE);
+            cb.setRGBColorStroke(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue());
+            cb.setLineWidth(outlineSize);
+            cb.setLineJoin(PdfContentByte.LINE_JOIN_ROUND);
+            cb.setLineCap(PdfContentByte.LINE_CAP_ROUND);
+            if (outlineColor.getAlpha() < 255) {
+                cb.saveState();
+                float alpha = outlineColor.getAlpha() / 255f;
+                PdfGState gState = new PdfGState();
+                gState.setStrokeOpacity(alpha);
+                cb.setGState(gState);
+            }
+            cb.beginText();
+            cb.setFontAndSize(bf, font.getSize());
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, -y - (textHeight / 2f), 0f);
+            cb.endText();
+            if (outlineColor.getAlpha() < 255) {
+                cb.restoreState();
+            }
+        }
+        cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL);
+        cb.beginText();
+        cb.setFontAndSize(bf, font.getSize());
+        cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, -y - (textHeight / 2f), 0f);
+        cb.endText();
+    }
+
+    private float getTextHeight(BaseFont baseFont, float fontSize, String text) {
+        float ascend = baseFont.getAscentPoint(text, fontSize);
+        float descend = baseFont.getDescentPoint(text, fontSize);
+        return ascend + descend;
     }
 
     public PreviewProperty[] getProperties() {

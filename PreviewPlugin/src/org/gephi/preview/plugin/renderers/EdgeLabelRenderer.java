@@ -22,6 +22,7 @@ package org.gephi.preview.plugin.renderers;
 
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfGState;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -47,7 +48,6 @@ import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
@@ -188,7 +188,7 @@ public class EdgeLabelRenderer implements Renderer {
         } else if (target instanceof SVGTarget) {
             renderSVG((SVGTarget) target, edge, label, x, y, color, outlineSize, outlineColor);
         } else if (target instanceof PDFTarget) {
-            renderPDF(null, edge, label, x, y, color, outlineSize, outlineColor);
+            renderPDF(((PDFTarget)target), label, x, y, color, outlineSize, outlineColor);
         }
     }
 
@@ -216,11 +216,11 @@ public class EdgeLabelRenderer implements Renderer {
         g2.drawString(label, posX, posY);
     }
 
-    public void renderSVG(SVGTarget target, Edge Edge, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
+    public void renderSVG(SVGTarget target, Edge edge, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
         Text labelText = target.createTextNode(label);
 
         Element labelElem = target.createElement("text");
-        labelElem.setAttribute("class", Edge.getEdgeData().getId());
+        labelElem.setAttribute("class", edge.getEdgeData().getId());
         labelElem.setAttribute("x", x + "");
         labelElem.setAttribute("y", y + "");
         labelElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
@@ -239,16 +239,45 @@ public class EdgeLabelRenderer implements Renderer {
         target.getTopElement(SVGTarget.TOP_EDGE_LABELS).appendChild(labelElem);
     }
 
-    public void renderPDF(PDFTarget target, Edge Edge, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
+    public void renderPDF(PDFTarget target, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
         PdfContentByte cb = target.getContentByte();
         cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
         BaseFont bf = target.getBaseFont(font);
+        float textHeight = getTextHeight(bf, font.getSize(), label);
+        if (outlineSize > 0) {
+            cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_STROKE);
+            cb.setRGBColorStroke(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue());
+            cb.setLineWidth(outlineSize);
+            cb.setLineJoin(PdfContentByte.LINE_JOIN_ROUND);
+            cb.setLineCap(PdfContentByte.LINE_CAP_ROUND);
+            if (outlineColor.getAlpha() < 255) {
+                cb.saveState();
+                float alpha = outlineColor.getAlpha() / 255f;
+                PdfGState gState = new PdfGState();
+                gState.setStrokeOpacity(alpha);
+                cb.setGState(gState);
+            }
+            cb.beginText();
+            cb.setFontAndSize(bf, font.getSize());
+            cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, -y - (textHeight / 2f), 0f);
+            cb.endText();
+            if (outlineColor.getAlpha() < 255) {
+                cb.restoreState();
+            }
+        }
+        cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_FILL);
         cb.beginText();
         cb.setFontAndSize(bf, font.getSize());
-        cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, y, 0f);
+        cb.showTextAligned(PdfContentByte.ALIGN_CENTER, label, x, -y - (textHeight / 2f), 0f);
         cb.endText();
     }
 
+    private float getTextHeight(BaseFont baseFont, float fontSize, String text) {
+        float ascend = baseFont.getAscentPoint(text, fontSize);
+        float descend = baseFont.getDescentPoint(text, fontSize);
+        return ascend + descend;
+    }
+    
     public PreviewProperty[] getProperties() {
         return new PreviewProperty[]{
                     PreviewProperty.createProperty(this, PreviewProperty.SHOW_EDGE_LABELS, Boolean.class,

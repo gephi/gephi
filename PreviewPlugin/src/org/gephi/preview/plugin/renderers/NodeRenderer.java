@@ -132,12 +132,17 @@ public class NodeRenderer implements Renderer {
         cb.setLineWidth(borderSize);
         cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
         if (alpha < 1f) {
+            cb.saveState();
             PdfGState gState = new PdfGState();
             gState.setFillOpacity(alpha);
             gState.setStrokeOpacity(alpha);
+            cb.setGState(gState);
         }
         cb.circle(x, -y, size);
         cb.fillStroke();
+        if (alpha < 1f) {
+            cb.restoreState();
+        }
     }
 
     public PreviewProperty[] getProperties() {

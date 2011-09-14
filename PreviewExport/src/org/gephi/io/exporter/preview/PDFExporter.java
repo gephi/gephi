@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.preview;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.FontFactory;
@@ -28,12 +29,14 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
+import java.awt.Color;
 import java.io.OutputStream;
 import org.gephi.io.exporter.spi.ByteExporter;
 import org.gephi.io.exporter.spi.VectorExporter;
 import org.gephi.preview.api.PDFTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.api.RenderTarget;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.Progress;
@@ -70,10 +73,15 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
     public boolean execute() {
         Progress.start(progress);
         
+        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        controller.refreshPreview(workspace);
+        PreviewProperties props = controller.getModel(workspace).getProperties();
+        
         Rectangle size = new Rectangle(pageSize);
         if (landscape) {
             size = new Rectangle(pageSize.rotate());
         }
+        size.setBackgroundColor(new BaseColor(props.getColorValue(PreviewProperty.BACKGROUND_COLOR)));
         
         Document document = new Document(size);
         PdfWriter pdfWriter = null;
@@ -86,9 +94,7 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         PdfContentByte cb = pdfWriter.getDirectContent();
         cb.saveState();
         
-        PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
-        controller.refreshPreview(workspace);
-        PreviewProperties props = controller.getModel(workspace).getProperties();
+        
         props.putValue(PDFTarget.LANDSCAPE, landscape);
         props.putValue(PDFTarget.PAGESIZE, size);
         props.putValue(PDFTarget.MARGIN_TOP, new Float((float) marginTop));

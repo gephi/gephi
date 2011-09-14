@@ -20,17 +20,22 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.io.exporter.preview;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import org.gephi.desktop.welcome.WelcomeTopComponent;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphController;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.api.PreviewProperty;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.junit.After;
@@ -85,7 +90,17 @@ public class PDFExporterTest {
 
         importController.process(container, new DefaultProcessor(), workspace);
 
+        //Set label edges
+//        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+//        for (Edge edge : graphController.getModel().getGraph().getEdges()) {
+//            edge.getEdgeData().setLabel("Label test");
+//        }
+
         PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
+
+        PreviewProperties props = model.getProperties();
+        props.putValue(PreviewProperty.EDGE_OPACITY, 20f);
+        props.putValue(PreviewProperty.BACKGROUND_COLOR, Color.BLACK);
 
         PDFExporter pDFExporter = new PDFExporter();
 
