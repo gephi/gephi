@@ -55,7 +55,7 @@ public final class DependantOriginalColor {
     }
 
     public Color getColor(Color parentColor, Color originalColor) {
-        if (customColor == null) {
+        if (!mode.equals(Mode.CUSTOM)) {
             if (mode.equals(Mode.ORIGINAL) && originalColor != null) {
                 return originalColor;
             }
