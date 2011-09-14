@@ -59,31 +59,38 @@ public class ArrowRenderer implements Renderer {
     }
 
     public void render(Item item, RenderTarget target, PreviewProperties properties) {
-        //Get nodes
-        Item sourceItem = item.getData(EdgeRenderer.SOURCE);
-        Item targetItem = item.getData(EdgeRenderer.TARGET);
-
-        //Weight and color
-        Float weight = item.getData(EdgeItem.WEIGHT);
-        EdgeColor edgeColor = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
-        Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
-                (Color) sourceItem.getData(NodeItem.COLOR),
-                (Color) targetItem.getData(NodeItem.COLOR));
-        int alpha = (int) ((properties.getFloatValue(PreviewProperty.EDGE_OPACITY) / 100f) * 255f);
-        color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-
-        //Size and radius
-        float radius = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
-        float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE) * weight;
-        radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
-
-        //3 points
-        Float x1 = sourceItem.getData(NodeItem.X);
-        Float x2 = targetItem.getData(NodeItem.X);
-        Float y1 = sourceItem.getData(NodeItem.Y);
-        Float y2 = targetItem.getData(NodeItem.Y);
-
+        float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE);
         if (size > 0) {
+            //Get nodes
+            Item sourceItem = item.getData(EdgeRenderer.SOURCE);
+            Item targetItem = item.getData(EdgeRenderer.TARGET);
+
+            //Weight and color
+            Float weight = item.getData(EdgeItem.WEIGHT);
+            EdgeColor edgeColor = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
+            Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
+                    (Color) sourceItem.getData(NodeItem.COLOR),
+                    (Color) targetItem.getData(NodeItem.COLOR));
+            int alpha = (int) ((properties.getFloatValue(PreviewProperty.EDGE_OPACITY) / 100f) * 255f);
+            color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+
+            //Size and radius
+            float radius = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
+
+            size *= weight;
+            radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
+
+            //Avoid arrow from passing the node's center:
+            if (radius > 0) {
+                radius = 0;
+            }
+            
+            //3 points
+            Float x1 = sourceItem.getData(NodeItem.X);
+            Float x2 = targetItem.getData(NodeItem.X);
+            Float y1 = sourceItem.getData(NodeItem.Y);
+            Float y2 = targetItem.getData(NodeItem.Y);
+
             if (properties.getBooleanValue(PreviewProperty.EDGE_CURVED)) {
             } else {
                 renderStraight(target, item, x1, y1, x2, y2, radius, size, color);

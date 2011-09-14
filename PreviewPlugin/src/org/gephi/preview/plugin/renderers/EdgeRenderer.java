@@ -123,21 +123,26 @@ public class EdgeRenderer implements Renderer {
         //Radius
         for (Item item : edgeItems) {
             if (!(Boolean) item.getData(EdgeItem.SELF_LOOP)) {
-                if ((Boolean) item.getData(EdgeItem.DIRECTED) || properties.getFloatValue(PreviewProperty.EDGE_RADIUS) > 0f) {
+                float edgeRadius = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
+                float targetRadius = 0;
+                if ((Boolean) item.getData(EdgeItem.DIRECTED) || edgeRadius > 0f) {
                     //Target
                     Item targetItem = (Item) item.getData(TARGET);
                     Float weight = item.getData(EdgeItem.WEIGHT);
-                    float radius = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
-                    float size = properties.getFloatValue(PreviewProperty.ARROW_SIZE) * weight;
-                    radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
-                    item.setData(TARGET_RADIUS, radius - size);
+                    //Avoid negative arrow size:
+                    float arrowSize = properties.getFloatValue(PreviewProperty.ARROW_SIZE);
+                    if (arrowSize < 0) {
+                        arrowSize = 0;
+                    }
+                    float size = arrowSize * weight;
+                    targetRadius = -(edgeRadius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
+                    item.setData(TARGET_RADIUS, targetRadius - size);
                 }
-                if (properties.getFloatValue(PreviewProperty.EDGE_RADIUS) > 0) {
+                if (edgeRadius > 0) {
                     //Source
-                    float radiusSource = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
                     Item sourceItem = (Item) item.getData(SOURCE);
-                    radiusSource = -(radiusSource + (Float) sourceItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
-                    item.setData(SOURCE_RADIUS, radiusSource);
+                    float sourceRadius = -(edgeRadius + (Float) sourceItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
+                    item.setData(SOURCE_RADIUS, sourceRadius);
                 }
             }
         }
@@ -295,7 +300,8 @@ public class EdgeRenderer implements Renderer {
 
         //Target radius - to start at the base of the arrow
         Float targetRadius = edgeItem.getData(TARGET_RADIUS);
-        if (targetRadius != null && targetRadius != 0) {
+        //Avoid edge from passing the node's center:
+        if (targetRadius != null && targetRadius < 0) {
             PVector direction = new PVector(x2, y2);
             direction.sub(new PVector(x1, y1));
             direction.normalize();
@@ -307,7 +313,8 @@ public class EdgeRenderer implements Renderer {
         }
         //Source radius
         Float sourceRadius = edgeItem.getData(SOURCE_RADIUS);
-        if (sourceRadius != null && sourceRadius != 0) {
+        //Avoid edge from passing the node's center:
+        if (sourceRadius != null && sourceRadius < 0) {
             PVector direction = new PVector(x1, y1);
             direction.sub(new PVector(x2, y2));
             direction.normalize();
