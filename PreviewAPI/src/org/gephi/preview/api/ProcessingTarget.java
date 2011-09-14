@@ -34,6 +34,10 @@ public interface ProcessingTarget extends RenderTarget {
     public PApplet getApplet();
 
     public void resetZoom();
+    
+    public void zoomPlus();
+    
+    public void zoomMinus();
 
     public void refresh();
 

@@ -94,8 +94,11 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
                 SwingUtilities.invokeLater(new Runnable() {
 
                     public void run() {
-                        PreviewSettingsTopComponent.findInstance().refreshModel();
-                        PreviewTopComponent.findInstance().refreshModel();
+                        PreviewSettingsTopComponent settingsTopComponent = PreviewSettingsTopComponent.findInstance();
+                        if(settingsTopComponent.isVisible()) {
+                            settingsTopComponent.refreshModel();
+                            PreviewTopComponent.findInstance().refreshModel();
+                        }
                     }
                 });
             }
@@ -168,7 +171,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
                 hideRefreshNotification();
                 previewController.refreshPreview();
 
-                previewTopComponent.refreshPreview();
+                previewTopComponent.refreshModel();
 
                 previewTopComponent.setRefresh(false);
                 enableRefresh();

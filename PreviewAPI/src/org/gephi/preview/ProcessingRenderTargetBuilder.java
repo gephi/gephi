@@ -111,5 +111,19 @@ public class ProcessingRenderTargetBuilder implements RenderTargetBuilder {
             }
             return true;
         }
+
+        @Override
+        public void zoomPlus() {
+            if (applet != null) {
+                applet.zoomPlus();
+            }
+        }
+
+        @Override
+        public void zoomMinus() {
+            if (applet != null) {
+                applet.zoomMinus();
+            }
+        }
     }
 }

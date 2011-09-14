@@ -77,9 +77,6 @@ public final class PreviewTopComponent extends TopComponent {
 
         bannerPanel.setVisible(false);
 
-        // inits the preview applet
-        refreshModel();
-
         //background color
         ((JColorButton) backgroundButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
 
@@ -97,6 +94,18 @@ public final class PreviewTopComponent extends TopComponent {
                 target.resetZoom();
             }
         });
+        plusButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                target.zoomPlus();
+            }
+        });
+        minusButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                target.zoomMinus();
+            }
+        });
     }
 
     public void refreshModel() {
@@ -107,8 +116,7 @@ public final class PreviewTopComponent extends TopComponent {
             initTarget(null);
         } else {
             initTarget(previewUIModel);
-//            refreshPreview();
-            puic.refreshPreview();
+            refreshPreview();
         }
     }
 
@@ -209,6 +217,8 @@ public final class PreviewTopComponent extends TopComponent {
         southToolbar = new javax.swing.JToolBar();
         backgroundButton = new JColorButton(Color.WHITE);
         resetZoomButton = new javax.swing.JButton();
+        minusButton = new javax.swing.JButton();
+        plusButton = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -296,6 +306,20 @@ public final class PreviewTopComponent extends TopComponent {
         resetZoomButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         southToolbar.add(resetZoomButton);
 
+        org.openide.awt.Mnemonics.setLocalizedText(minusButton, "-"); // NOI18N
+        minusButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.minusButton.toolTipText")); // NOI18N
+        minusButton.setFocusable(false);
+        minusButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        minusButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        southToolbar.add(minusButton);
+
+        org.openide.awt.Mnemonics.setLocalizedText(plusButton, "+"); // NOI18N
+        plusButton.setToolTipText(org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.plusButton.toolTipText")); // NOI18N
+        plusButton.setFocusable(false);
+        plusButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        plusButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        southToolbar.add(plusButton);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -312,6 +336,8 @@ public final class PreviewTopComponent extends TopComponent {
     private javax.swing.JLabel bannerLabel;
     private javax.swing.JPanel bannerPanel;
     private javax.swing.JLabel busyLabel;
+    private javax.swing.JButton minusButton;
+    private javax.swing.JButton plusButton;
     private javax.swing.JPanel previewPanel;
     private javax.swing.JButton refreshButton;
     private javax.swing.JPanel refreshPanel;
@@ -390,7 +416,7 @@ public final class PreviewTopComponent extends TopComponent {
     /**
      * Refresh the preview applet.
      */
-    public void refreshPreview() {
+    private void refreshPreview() {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {

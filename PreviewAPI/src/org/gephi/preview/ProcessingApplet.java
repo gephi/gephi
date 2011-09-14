@@ -185,6 +185,16 @@ public class ProcessingApplet extends PApplet implements MouseWheelListener {
         redraw();
     }
 
+    public void zoomPlus() {
+        scaling = scaling * 2f;
+        redraw();
+    }
+
+    public void zoomMinus() {
+        scaling = scaling / 2f;
+        redraw();
+    }
+
     public void resetZoom() {
         scaling = 0;
         initAppletLayout();
