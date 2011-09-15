@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2011 Gephi
-Authors : Yudi Xue <yudi.xue@usask.ca>
+Authors : Yudi Xue <yudi.xue@usask.ca>, Mathieu Bastian
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -27,9 +27,17 @@ import com.itextpdf.text.pdf.PdfContentByte;
 /**
  * Rendering target to PDF format.
  * <p>
- * This target is used by renderers objects to render a graph to PDF.
- *
- * @author Yudi Xue
+ * This target is used by renderers objects to render a graph to PDF and uses
+ * the <a href="http://itextpdf.com">iText</a> Java library.
+ * <p>
+ * The target give access to the <code>PDFContentBype</code> object from itext to
+ * draw items.
+ * <p>
+ * When this target is instanciated it uses property values defined in the
+ * {@link PreviewProperties}. Namely is uses <code>MARGIN_LEFT</code>, 
+ * <code>MARGIN_TOP</code>, <code>MARGIN_BOTTOM</code>, <code>MARGIN_RIGHT</code>, 
+ * <code>LANDCAPE</code> and <code>PAGESIZE</code>. 
+ * @author Yudi Xue, Mathieu Bastian
  */
 public interface PDFTarget extends RenderTarget {
 
@@ -42,7 +50,7 @@ public interface PDFTarget extends RenderTarget {
     public static final String PAGESIZE = "pdf.pagesize";
 
     /**
-     * Returns the PDFContentBype instance of the PDFTarget. PDFContentByte
+     * Returns the <code>PDFContentBype</code> instance of the PDFTarget. PDFContentByte
      * offers a set of drawing functions which can be used by Renderer objects.
      * 
      * @return a PDFContentBype object 
