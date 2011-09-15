@@ -52,9 +52,12 @@ public interface PreviewModel {
     public PreviewProperties getProperties();
 
     /**
-     * Returns all items with <code>type</code> s type.
-     * @param type
-     * @return 
+     * Returns all items with <code>type</code> as type.
+     * <p>
+     * Default types are {@link Item#NODE}, {@link Item#EDGE}, {@link Item#NODE_LABEL}
+     * and {@link Item#EDGE_LABEL}.
+     * @param type the item's type
+     * @return all items from this type
      */
     public Item[] getItems(String type);
 

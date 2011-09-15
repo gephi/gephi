@@ -42,7 +42,7 @@ public interface PreviewController {
      * This task built all items from <code>ItemBuilder</code> implementations,
      * refresh graph dimensions and call all <code>Renderer.preProcess()</code>
      * method.
-     * @param the workspace to get the preview model from
+     * @param workspace the workspace to get the preview model from
      */
     public void refreshPreview(Workspace workspace);
 
