@@ -35,7 +35,18 @@ import processing.core.PGraphics;
  * with zoom and pan control. The headless mode is tuned to work without GUI and 
  * is typically used in exports. Either way users should use <code>getGraphics()</code>
  * method for drawing.
- * 
+ * <h4>How to create a headless Processing canvas?</h4>
+ * Before creating a processing target with the {@link PreviewController#getRenderTarget(java.lang.String)}
+ * method users should define a <b>width</b> and <b>height</b> property in the
+ * {@link PreviewProperties}:
+ * <pre>
+ * PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+ * PreviewModel model = previewController.getModel();
+ * PreviewProperties props = model.getProperties();
+ * props.putValue("width", 800);
+ * props.putValue("height", 600);
+ * ProcessingTarget target = (ProcessingTarget)previewController.getRenderTarget(RenderTarget.PROCESSING_TARGET);
+ * </pre>
  * @author Mathieu Bastian
  */
 public interface ProcessingTarget extends RenderTarget {

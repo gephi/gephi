@@ -22,22 +22,79 @@ package org.gephi.preview.api;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.Node;
+import org.gephi.preview.spi.ItemBuilder;
+import org.gephi.preview.spi.Renderer;
 
 /**
- *
+ * The Preview Model contains all items and all preview properties.
+ * <p>
+ * Items are the visual elements built from the {@link Graph} by {@link ItemBuilder} 
+ * implementations and can be retrieved from this class. Each item has a type and
+ * default types are {@link Item#NODE}, {@link Item#EDGE}, {@link Item#NODE_LABEL}
+ * and {@link Item#EDGE_LABEL}.
+ * <p>
+ * A preview model is attached to it's workspace and can be retrieved from the
+ * {@link PreviewController}.
+ * 
  * @author Yudi Xue, Mathieu Bastian
+ * @see Item
+ * @see Renderer
  */
 public interface PreviewModel {
-    
+
+    /**
+     * Returns the preview properties attached to this model.
+     * @return the preview properties
+     */
     public PreviewProperties getProperties();
-    
+
+    /**
+     * Returns all items with <code>type</code> s type.
+     * @param type
+     * @return 
+     */
     public Item[] getItems(String type);
-    
+
+    /**
+     * Returns all items attached to <code>source</code>.
+     * <p>
+     * The source is the graph object behind the item (e.g.
+     * {@link Node} or {@link Edge}). Multiple items can be created from the same
+     * source object. For instance both <code>Item.NODE</code> and
+     * <code>Item.NODE_LABEL</code> have the node object as source.
+     * @param source the item's source
+     * @return all items with <code>source</code> as source
+     */
     public Item[] getItems(Object source);
-    
+
+    /**
+     * Returns the item attached to <code>source</code> and with the type
+     * <code>type</code>. 
+     * <p>
+     * The source is the graph object behind the item (e.g.
+     * {@link Node} or {@link Edge}) and the type a default or a custom type.
+     * <p>
+     * Default types are {@link Item#NODE}, {@link Item#EDGE}, {@link Item#NODE_LABEL}
+     * and {@link Item#EDGE_LABEL}.
+     * @param type the item's type
+     * @param source the item's source object
+     * @return the item or <code>null</code> if not found
+     */
     public Item getItem(String type, Object source);
-    
+
+    /**
+     * Returns the width and height of the graph in the graph coordinates.
+     * @return the graph dimensions
+     */
     public Dimension getDimensions();
-    
+
+    /**
+     * Returns the top left position in the graph coordinate (i.e. not the preview
+     * coordinates).
+     * @return the top left position point
+     */
     public Point getTopLeftPosition();
 }

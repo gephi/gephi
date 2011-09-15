@@ -31,8 +31,26 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- *
+ * Container for {@link PreviewProperty} attached to a {@link PreviewModel}.
+ * <p>
+ * This class holds all preview properties defined in the model. Each property
+ * has a unique name, a type and a value and can be configured by users.
+ * <p>
+ * Properties should be added using the <code>addProperty()</code> method before
+ * calling <code>putValue()</code> to properly register properties.
+ * <p>
+ * Besides holding well-defined properties this class acts also as a <em>map</em>
+ * and can store arbitrary (key,value) pairs. All (key,value) pairs are stored
+ * when calling the <code>putValue()</code> method but only properties added with
+ * the <code>addProperty()</code> method are returned when calling the
+ * <code>getProperties()</code> methods. Therefore this class can both be used
+ * for fixed properties and temporary variables.
+ * <p>
+ * To batch put a set of property values the best way is to create a <code>PreviewPreset</code>
+ * and call the <code>applyPreset()</code> method.
+ * 
  * @author Mathieu Bastian
+ * @see PreviewPreset
  */
 public class PreviewProperties {
 
@@ -44,6 +62,14 @@ public class PreviewProperties {
         simpleValues = new HashMap<String, Object>();
     }
 
+    /**
+     * Add <code>property</code> to the properties.
+     * <p>
+     * The property should have a unique name and the method will throw an exception
+     * if not.
+     * @param property the property to add to the properties
+     * @throws IllegalArgumentException if <code>property</code> already exists
+     */
     public void addProperty(PreviewProperty property) {
         if (properties.containsKey(property.getName())) {
             throw new RuntimeException("The property " + property.getName() + " already exists. Each property name should be unique.");
@@ -51,7 +77,7 @@ public class PreviewProperties {
         for (String parent : property.dependencies) {
             PreviewProperty p = properties.get(parent);
             if (p != null && !p.getType().equals(Boolean.class)) {
-                throw new RuntimeException("The property " + property.getName() + " has dependencies to non-boolean property " + p.getName());
+                throw new IllegalArgumentException("The property " + property.getName() + " has dependencies to non-boolean property " + p.getName());
             }
         }
         properties.put(property.getName(), property);
@@ -61,10 +87,20 @@ public class PreviewProperties {
         properties.remove(property.getName());
     }
 
+    /**
+     * Returns <code>true</code> if a property <code>name</code> exists.
+     * @param name the name of the property to lookup
+     * @return <code>true</code> if the property exists, <code>false</code> otherwise
+     */
     public boolean hasProperty(String name) {
         return simpleValues.containsKey(name) || properties.containsKey(name);
     }
 
+    /**
+     * Puts the property's value.
+     * @param name the name of the property
+     * @param value the value
+     */
     public void putValue(String name, Object value) {
         PreviewProperty property = getProperty(name);
         if (property != null) {
@@ -74,34 +110,83 @@ public class PreviewProperties {
         }
     }
 
+    /**
+     * Returns the property value as an int.
+     * @param property the property's name
+     * @return the property's value or <code>0</code> if not found
+     * @throws ClassCastException if the property can't be cast to <code>Number</code>
+     */
     public int getIntValue(String property) {
         return getNumberValue(property, new Integer(0)).intValue();
     }
 
+    /**
+     * Returns the property value as a float.
+     * @param property the property's name
+     * @return the property's value or <code>0</code> if not found
+     * @throws ClassCastException if the property can't be cast to <code>Number</code>
+     */
     public float getFloatValue(String property) {
         return getNumberValue(property, new Float(0f)).floatValue();
     }
 
+    /**
+     * Returns the property value as a double.
+     * @param property the property's name
+     * @return the property's value or <code>0.0</code> if not found
+     * @throws ClassCastException if the property can't be cast to <code>Number</code>
+     */
     public double getDoubleValue(String property) {
         return getNumberValue(property, new Double(0.)).doubleValue();
     }
 
+    /**
+     * Returns the property value as an string. If the value is not a <code>String</code>
+     * it calls the <code>toString()</code> method.
+     * @param property the property's name
+     * @return the property's value or <code>""</code> if not found
+     */
     public String getStringValue(String property) {
-        return getValue(property, "");
+        return getValue(property, "").toString();
     }
 
+    /**
+     * Returns an the property value as a <code>Color</code>.
+     * @param property the property's name
+     * @return the property's value or <code>null</code> if not found
+     * @throws ClassCastException if the property can't be cast to <code>Color</code>
+     */
     public Color getColorValue(String property) {
-        return getValue(property, Color.BLACK);
+        return getValue(property, null);
     }
 
+    /**
+     * Returns an the property value as a <code>Font</code>.
+     * @param property the property's name
+     * @return the property's value or <code>null</code> if not found
+     * @throws ClassCastException if the property can't be cast to <code>Font</code>
+     */
     public Font getFontValue(String property) {
         return getValue(property, null);
     }
 
+    /**
+     * Returns the property value as a boolean.
+     * @param property the property's name
+     * @return the property's value or <code>false</code> if not found
+     * @throws ClassCastException if the property can't be cast to <code>Boolean</code>
+     */
     public boolean getBooleanValue(String property) {
         return getValue(property, Boolean.FALSE);
     }
 
+    /**
+     * Returns the property value and cast it to the <code>T</code> type.
+     * @param <T> the type to cast the property value to
+     * @param property the property's name
+     * @return the property's value or <code>null</code> if not found
+     * @throws ClassCastException if the property can't be cast to <code>T</code>
+     */
     public <T> T getValue(String property) {
         PreviewProperty p = getProperty(property);
         if (p != null && p.getValue() != null) {
@@ -113,6 +198,14 @@ public class PreviewProperties {
         return null;
     }
 
+    /**
+     * Returns the property value and cast it to the <code>T</code> type.
+     * @param <T> the type to cast the property value to
+     * @param property the property's name
+     * @param defaultValue the default value if not found
+     * @return the property's value or <code>defaultValue</code> if not found
+     * @throws ClassCastException if the property can't be cast to <code>T</code>
+     */
     public <T> T getValue(String property, T defaultValue) {
         PreviewProperty p = getProperty(property);
         if (p != null && p.getValue() != null) {
@@ -124,6 +217,13 @@ public class PreviewProperties {
         return defaultValue;
     }
 
+    /**
+     * Returns the property value as a <code>Number</code>.
+     * @param property the property's name
+     * @param defaultValue the default value if not found
+     * @return the property's value or <code>defaultValue</code> if not found
+     * @throws ClassCastException if the property can't be cast to <code>Number</code>
+     */
     public Number getNumberValue(String property, Number defaultValue) {
         PreviewProperty p = getProperty(property);
         if (p != null && p.getValue() != null && p.getValue() instanceof Number) {
@@ -135,17 +235,21 @@ public class PreviewProperties {
         return defaultValue;
     }
 
+    /**
+     * Returns all properties.
+     * @return all properties
+     */
     public PreviewProperty[] getProperties() {
         PreviewProperty[] props = properties.values().toArray(new PreviewProperty[0]);
         Arrays.sort(props, new Comparator<PreviewProperty>() {
 
             @Override
             public int compare(PreviewProperty o1, PreviewProperty o2) {
-                boolean hasParent1 = o1.dependencies.length >0;
-                boolean hasParent2 = o2.dependencies.length >0;
-                if(hasParent1 && !hasParent2) {
+                boolean hasParent1 = o1.dependencies.length > 0;
+                boolean hasParent2 = o2.dependencies.length > 0;
+                if (hasParent1 && !hasParent2) {
                     return 1;
-                } else if(!hasParent1 && hasParent2) {
+                } else if (!hasParent1 && hasParent2) {
                     return -1;
                 } else {
                     return o1.displayName.compareTo(o2.displayName);
@@ -155,6 +259,13 @@ public class PreviewProperties {
         return props;
     }
 
+    /**
+     * Returns all properties with <code>category</code> as category. A property
+     * can belong to only one category. Default categories names are defined in
+     * {@link PreviewProperty}.
+     * @param category the category properties belong to
+     * @return all properties in <code>category</code>
+     */
     public PreviewProperty[] getProperties(String category) {
         List<PreviewProperty> props = new ArrayList<PreviewProperty>();
         for (PreviewProperty p : properties.values()) {
@@ -165,10 +276,21 @@ public class PreviewProperties {
         return props.toArray(new PreviewProperty[0]);
     }
 
+    /**
+     * Returns the property defined as <code>name</code>.
+     * @param name the property's name
+     * @return the property with this name or <code>null</code> if not found
+     */
     public PreviewProperty getProperty(String name) {
         return properties.get(name);
     }
 
+    /**
+     * Returns all properties with <code>source</code> as source. A property
+     * can belong to only one source.
+     * @param source the source properties belong to
+     * @return all properties in <code>source</code>
+     */
     public PreviewProperty[] getProperties(Object source) {
         List<PreviewProperty> props = new ArrayList<PreviewProperty>();
         for (PreviewProperty p : properties.values()) {
@@ -179,6 +301,11 @@ public class PreviewProperties {
         return props.toArray(new PreviewProperty[0]);
     }
 
+    /**
+     * Returns all properties which defined <code>property</code> as a dependency.
+     * @param property the parent property
+     * @return all properties with <code>property</code> as a parent property
+     */
     public PreviewProperty[] getChildProperties(PreviewProperty property) {
         List<PreviewProperty> props = new ArrayList<PreviewProperty>();
         for (PreviewProperty p : properties.values()) {
@@ -191,6 +318,11 @@ public class PreviewProperties {
         return props.toArray(new PreviewProperty[0]);
     }
 
+    /**
+     * Returns all properties <code>property</code> defined as dependencies.
+     * @param property the property to find parent properties from
+     * @return all properties <code>property</code> depends on
+     */
     public PreviewProperty[] getParentProperties(PreviewProperty property) {
         List<PreviewProperty> props = new ArrayList<PreviewProperty>();
         for (PreviewProperty p : properties.values()) {
@@ -203,6 +335,10 @@ public class PreviewProperties {
         return props.toArray(new PreviewProperty[0]);
     }
 
+    /**
+     * Sets all preset's property values to this properties.
+     * @param previewPreset the preset to get values from
+     */
     public void applyPreset(PreviewPreset previewPreset) {
         for (Entry<String, Object> entry : previewPreset.getProperties().entrySet()) {
             PreviewProperty prop = getProperty(entry.getKey());
