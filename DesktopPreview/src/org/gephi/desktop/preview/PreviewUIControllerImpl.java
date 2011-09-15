@@ -77,6 +77,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
 
             public void initialize(Workspace workspace) {
                 workspace.add(new PreviewUIModelImpl());
+                enableRefresh();
             }
 
             public void select(Workspace workspace) {

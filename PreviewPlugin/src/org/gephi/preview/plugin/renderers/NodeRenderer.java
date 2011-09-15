@@ -49,7 +49,7 @@ public class NodeRenderer implements Renderer {
 
     //Default values
     protected float defaultBorderWidth = 1f;
-    protected DependantColor defaultBorderColor = new DependantColor();
+    protected DependantColor defaultBorderColor = new DependantColor(Color.BLACK);
     protected float defaultOpacity = 100f;
 
     public void preProcess(PreviewModel previewModel) {
@@ -74,6 +74,9 @@ public class NodeRenderer implements Renderer {
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
         float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
         int alpha = (int) ((properties.getIntValue(PreviewProperty.NODE_OPACITY) / 100f) * 255f);
+        if (alpha > 255) {
+            alpha = 255;
+        }
 
         //Graphics
         PGraphics graphics = target.getGraphics();
@@ -101,6 +104,9 @@ public class NodeRenderer implements Renderer {
         Color borderColor = ((DependantColor) properties.getValue(PreviewProperty.NODE_BORDER_COLOR)).getColor(color);
         float borderSize = properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH);
         float alpha = properties.getIntValue(PreviewProperty.NODE_OPACITY) / 100f;
+        if (alpha > 1) {
+            alpha = 1;
+        }
 
         Element nodeElem = target.createElement("circle");
         nodeElem.setAttribute("class", node.getNodeData().getId());

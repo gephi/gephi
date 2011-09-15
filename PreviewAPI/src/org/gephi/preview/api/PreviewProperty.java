@@ -57,6 +57,9 @@ public class PreviewProperty {
     public static final String NODE_LABEL_OUTLINE_SIZE = "node.label.outline.size";
     public static final String NODE_LABEL_OUTLINE_OPACITY = "node.label.outline.opacity";
     public static final String NODE_LABEL_OUTLINE_COLOR = "node.label.outline.color";
+    public static final String NODE_LABEL_SHOW_BOX = "node.label.box";
+    public static final String NODE_LABEL_BOX_COLOR = "node.label.box.color";
+    public static final String NODE_LABEL_BOX_OPACITY = "node.label.box.opacity";
     //Constants edge labels
     public static final String SHOW_EDGE_LABELS = "edge.label.show";
     public static final String EDGE_LABEL_FONT = "edge.label.font";

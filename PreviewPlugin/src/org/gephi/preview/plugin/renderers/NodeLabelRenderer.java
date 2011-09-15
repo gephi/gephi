@@ -51,6 +51,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
+import org.w3c.dom.svg.SVGLocatable;
+import org.w3c.dom.svg.SVGRect;
 import processing.core.PGraphics;
 import processing.core.PGraphicsJava2D;
 
@@ -77,6 +79,9 @@ public class NodeLabelRenderer implements Renderer {
     protected final float defaultOutlineSize = 4;
     protected final DependantColor defaultOutlineColor = new DependantColor(Color.WHITE);
     protected final int defaultOutlineOpacity = 40;
+    protected final boolean defaultShowBox = false;
+    protected final DependantColor defaultBoxColor = new DependantColor(DependantColor.Mode.PARENT);
+    protected final int defaultBoxOpacity = 100;
     //Font cache
     protected Map<Integer, Font> fontCache;
 
@@ -142,19 +147,32 @@ public class NodeLabelRenderer implements Renderer {
         Float outlineSize = properties.getFloatValue(PreviewProperty.NODE_LABEL_OUTLINE_SIZE);
         outlineSize = outlineSize * (fontSize / 32f);
         int outlineAlpha = (int) ((properties.getFloatValue(PreviewProperty.NODE_LABEL_OUTLINE_OPACITY) / 100f) * 255f);
+        if (outlineAlpha > 255) {
+            outlineAlpha = 255;
+        }
         Color outlineColor = outlineDependantColor.getColor(nodeColor);
         outlineColor = new Color(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue(), outlineAlpha);
 
+        //Box
+        Boolean showBox = properties.getValue(PreviewProperty.NODE_LABEL_SHOW_BOX);
+        DependantColor boxDependantColor = properties.getValue(PreviewProperty.NODE_LABEL_BOX_COLOR);
+        Color boxColor = boxDependantColor.getColor(nodeColor);
+        int boxAlpha = (int) ((properties.getFloatValue(PreviewProperty.NODE_LABEL_BOX_OPACITY) / 100f) * 255f);
+        if (boxAlpha > 255) {
+            boxAlpha = 255;
+        }
+        boxColor = new Color(boxColor.getRed(), boxColor.getGreen(), boxColor.getBlue(), boxAlpha);
+
         if (target instanceof ProcessingTarget) {
-            renderProcessing((ProcessingTarget) target, label, x, y, fontSize, color, outlineSize, outlineColor);
+            renderProcessing((ProcessingTarget) target, label, x, y, fontSize, color, outlineSize, outlineColor, showBox, boxColor);
         } else if (target instanceof SVGTarget) {
-            renderSVG((SVGTarget) target, node, label, x, y, fontSize, color, outlineSize, outlineColor);
+            renderSVG((SVGTarget) target, node, label, x, y, fontSize, color, outlineSize, outlineColor, showBox, boxColor);
         } else if (target instanceof PDFTarget) {
-            renderPDF((PDFTarget) target, node, label, x, y, fontSize, color, outlineSize, outlineColor);
+            renderPDF((PDFTarget) target, node, label, x, y, fontSize, color, outlineSize, outlineColor, showBox, boxColor);
         }
     }
 
-    public void renderProcessing(ProcessingTarget target, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor) {
+    public void renderProcessing(ProcessingTarget target, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {
         PGraphics graphics = target.getGraphics();
         Graphics2D g2 = ((PGraphicsJava2D) graphics).g2;
         graphics.textAlign(PGraphics.CENTER, PGraphics.CENTER);
@@ -164,8 +182,17 @@ public class NodeLabelRenderer implements Renderer {
 
         FontMetrics fm = g2.getFontMetrics();
         float posX = x - fm.stringWidth(label) / 2f;
-        float posY = y + fm.getAscent() / 2f;
+        float posY = y + fm.getDescent();
 
+        //Box
+        if (showBox) {
+            graphics.noStroke();
+            graphics.fill(boxColor.getRed(), boxColor.getGreen(), boxColor.getBlue(), boxColor.getAlpha());
+            graphics.rectMode(PGraphics.CORNER);
+            graphics.rect(posX - outlineSize / 2f, y - (fm.getAscent() + fm.getDescent()) / 2f - outlineSize / 2f, fm.stringWidth(label) + outlineSize, fm.getAscent() + fm.getDescent() + outlineSize);
+        }
+
+        //Outline
         if (outlineSize > 0) {
             FontRenderContext frc = g2.getFontRenderContext();
             GlyphVector gv = font.createGlyphVector(frc, label);
@@ -179,35 +206,75 @@ public class NodeLabelRenderer implements Renderer {
         g2.drawString(label, posX, posY);
     }
 
-    public void renderSVG(SVGTarget target, Node node, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor) {
+    public void renderSVG(SVGTarget target, Node node, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {
         Text labelText = target.createTextNode(label);
         Font font = fontCache.get(fontSize);
 
         Element labelElem = target.createElement("text");
         labelElem.setAttribute("class", node.getNodeData().getId());
-        labelElem.setAttribute("x", x + "");
-        labelElem.setAttribute("y", y + "");
+        labelElem.setAttribute("x", String.valueOf(x));
+        labelElem.setAttribute("y", String.valueOf(y));
         labelElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
         labelElem.setAttribute("fill", target.toHexString(color));
         labelElem.setAttribute("font-family", font.getFamily());
-        labelElem.setAttribute("font-size", fontSize + "");
+        labelElem.setAttribute("font-size", String.valueOf(fontSize));
         if (outlineSize > 0) {
             labelElem.setAttribute("stroke", target.toHexString(outlineColor));
             labelElem.setAttribute("stroke-width", outlineSize + "px");
             labelElem.setAttribute("stroke-linecap", "butt");
             labelElem.setAttribute("stroke-linejoin", "miter");
-            labelElem.setAttribute("stroke-opacity", "" + (outlineColor.getAlpha() / 255f));
-
+            labelElem.setAttribute("stroke-opacity", String.valueOf(outlineColor.getAlpha() / 255f));
         }
         labelElem.appendChild(labelText);
         target.getTopElement(SVGTarget.TOP_NODE_LABELS).appendChild(labelElem);
+
+        //Trick to center text vertically on node:
+        SVGRect rect = ((SVGLocatable) labelElem).getBBox();
+        labelElem.setAttribute("y", String.valueOf(y + rect.getHeight() / 4f));
+
+        //Box
+        if (showBox) {
+            rect = ((SVGLocatable) labelElem).getBBox();
+            Element boxElem = target.createElement("rect");
+            boxElem.setAttribute("x", Float.toString(rect.getX() - outlineSize / 2f));
+            boxElem.setAttribute("y", Float.toString(rect.getY() - outlineSize / 2f));
+            boxElem.setAttribute("width", Float.toString(rect.getWidth() + outlineSize));
+            boxElem.setAttribute("height", Float.toString(rect.getHeight() + outlineSize));
+            boxElem.setAttribute("fill", target.toHexString(boxColor));
+            boxElem.setAttribute("opacity", String.valueOf(boxColor.getAlpha() / 255f));
+            target.getTopElement(SVGTarget.TOP_NODE_LABELS).insertBefore(boxElem, labelElem);
+        }
     }
 
-    public void renderPDF(PDFTarget target, Node node, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor) {
+    public void renderPDF(PDFTarget target, Node node, String label, float x, float y, int fontSize, Color color, float outlineSize, Color outlineColor, boolean showBox, Color boxColor) {
         Font font = fontCache.get(fontSize);
         PdfContentByte cb = target.getContentByte();
-        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
         BaseFont bf = target.getBaseFont(font);
+
+        //Box
+        if (showBox) {
+            cb.setRGBColorFill(boxColor.getRed(), boxColor.getGreen(), boxColor.getBlue());
+            if (boxColor.getAlpha() < 255) {
+                cb.saveState();
+                float alpha = boxColor.getAlpha() / 255f;
+                PdfGState gState = new PdfGState();
+                gState.setFillOpacity(alpha);
+                cb.setGState(gState);
+            }
+            float textWidth = getTextWidth(bf, fontSize, label);
+            float textHeight = getTextHeight(bf, fontSize, label);
+            
+            //A height of just textHeight seems to be half the text height sometimes
+            //BaseFont getAscentPoint and getDescentPoint may be not very precise
+            cb.rectangle(x - textWidth / 2f - outlineSize / 2f, -y - outlineSize / 2f - textHeight, textWidth + outlineSize, textHeight * 2f + outlineSize);            
+            
+            cb.fill();
+            if (boxColor.getAlpha() < 255) {
+                cb.restoreState();
+            }
+        }
+
+        cb.setRGBColorFill(color.getRed(), color.getGreen(), color.getBlue());
         float textHeight = getTextHeight(bf, fontSize, label);
         if (outlineSize > 0) {
             cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_STROKE);
@@ -241,6 +308,10 @@ public class NodeLabelRenderer implements Renderer {
         float ascend = baseFont.getAscentPoint(text, fontSize);
         float descend = baseFont.getDescentPoint(text, fontSize);
         return ascend + descend;
+    }
+
+    private float getTextWidth(BaseFont baseFont, float fontSize, String text) {
+        return baseFont.getWidthPoint(text, fontSize);
     }
 
     public PreviewProperty[] getProperties() {
@@ -280,7 +351,19 @@ public class NodeLabelRenderer implements Renderer {
                     PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_OUTLINE_OPACITY, Float.class,
                     NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineOpacity.displayName"),
                     NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.outlineOpacity.description"),
-                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultOutlineOpacity),};
+                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultOutlineOpacity),
+                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_SHOW_BOX, Boolean.class,
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.displayName"),
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.description"),
+                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultShowBox),
+                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_BOX_COLOR, DependantColor.class,
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.color.displayName"),
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.color.description"),
+                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.NODE_LABEL_SHOW_BOX, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultBoxColor),
+                    PreviewProperty.createProperty(this, PreviewProperty.NODE_LABEL_BOX_OPACITY, Float.class,
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.opacity.displayName"),
+                    NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.opacity.description"),
+                    PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.NODE_LABEL_SHOW_BOX, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultBoxOpacity),};
     }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {

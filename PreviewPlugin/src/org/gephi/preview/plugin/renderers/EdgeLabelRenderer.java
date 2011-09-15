@@ -180,6 +180,9 @@ public class EdgeLabelRenderer implements Renderer {
         Float outlineSize = properties.getFloatValue(PreviewProperty.EDGE_LABEL_OUTLINE_SIZE);
         outlineSize = outlineSize * (font.getSize() / 32f);
         int outlineAlpha = (int) ((properties.getFloatValue(PreviewProperty.EDGE_LABEL_OUTLINE_OPACITY) / 100f) * 255f);
+        if (outlineAlpha > 255) {
+            outlineAlpha = 255;
+        }
         Color outlineColor = outlineDependantColor.getColor(edgeColor);
         outlineColor = new Color(outlineColor.getRed(), outlineColor.getGreen(), outlineColor.getBlue(), outlineAlpha);
 
