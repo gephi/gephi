@@ -50,10 +50,17 @@ public interface PDFTarget extends RenderTarget {
     public PdfContentByte getContentByte();
 
     /**
-     * Get a the equivalent in iText of the Java font
+     * Get a the equivalent in iText of the Java font. Base fonts are either
+     * Type 1 fonts (PDF default's font) or valid system fonts. The first time
+     * a base font which is not a Type 1 is requested the system will
+     * register the system fonts in order to find the right font. This might
+     * take some time up to a minute.
+     * <p>
+     * If <code>font</code> can't be found in iText's default fonts or registered
+     * fonts it returns the default Helvetica font.
      *
      * @param font  the reference Java font
-     * @return      the iText BaseFont
+     * @return      the iText BaseFont, or Helvetica is not found
      */
     public BaseFont getBaseFont(java.awt.Font font);
 
@@ -79,7 +86,7 @@ public interface PDFTarget extends RenderTarget {
     public float getMarginRight();
 
     /**
-     * Returns the margin at the right of the page.
+     * Returns the margin at the top of the page.
      *
      * @return the top margin, in pixels
      */

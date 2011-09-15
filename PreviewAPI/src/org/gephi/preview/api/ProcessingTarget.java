@@ -24,22 +24,60 @@ import processing.core.PApplet;
 import processing.core.PGraphics;
 
 /**
- *
+ * Rendering target to the <a href="http://processing.org">Processing</a> library.
+ * <p>
+ * Processing is using a <b>Java2D</b> mode so the underlying Processing object
+ * used is a <a href="http://processing.googlecode.com/svn/trunk/processing/build/javadoc/core/index.html?processing/core/PGraphicsJava2D.html">PGraphicsJava2D</a>
+ * object. 
+ * <p>
+ * This render target supports two modes: <b>applet</b> or <b>headless</b>. The 
+ * applet mode is what is used in Gephi GUI and is backed by a <code>PApplet</code>
+ * with zoom and pan control. The headless mode is tuned to work without GUI and 
+ * is typically used in exports. Either way users should use <code>getGraphics()</code>
+ * method for drawing.
+ * 
  * @author Mathieu Bastian
  */
 public interface ProcessingTarget extends RenderTarget {
 
+    /**
+     * Returns the current graphics object. Use this method to draw to Processing.
+     * The <code>PGRraphics</code> object can be cast to <code>PGraphicsJava2D</code>.
+     * @return the current graphics to draw to
+     */
     public PGraphics getGraphics();
 
+    /**
+     * Returns the current applet if the mode is set to applet. If in headless
+     * mode returns <code>null</code>. Always use <code>getGraphics()</code>
+     * for drawing.
+     * @return the current applet or <code>null</code> if in headless mode
+     */
     public PApplet getApplet();
 
+    /**
+     * Resets the zoom level to default
+     */
     public void resetZoom();
-    
+
+    /**
+     * Zooms in
+     */
     public void zoomPlus();
-    
+
+    /**
+     * Zooms out
+     */
     public void zoomMinus();
 
+    /**
+     * Redraw the Processing canvas
+     */
     public void refresh();
 
+    /**
+     * Returns <code>true</code> if the applet is finished redrawing
+     * @return <code>true</code> if the applet is redrawn, <code>false</code> otherwise
+     */
     public boolean isRedrawn();
 }
