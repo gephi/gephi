@@ -13,6 +13,11 @@
         <hr/>
         <h2>API Changes</h2>
         <ul>
+            <li>(September 01 2011) Complete rewrite of the Preview API with a new SPI which allows to extend the Preview with new renderers, item
+                builders or render targets. The API also now offers better customization through a central property system and is optimized for
+                external applications as well. The API is also now considered as stable.</li>
+            <li>(August 28 2011) New <code>DynamicStatistics</code> SPI in the <code>StatisticsAPI</code> module. The interface extends <code>Statistics</code>
+                and implement the calculation of metrics over time.
             <li>(August 24 2011) Important changes in graph events breaking API compatibility. The <code>ADD_NODES</code> and <code>ADD_EDGES</code> are merged
                 into a <code>ADD_NODES_AND_EDGES</code> event. Similarly <code>REMOVE_NODES</code> and <code>REMOVE_EDGES</code> are merged into a
                 <code>REMOVE_NODES_AND_EDGES</code> event. <code>GraphEventData</code> remains the same and still contains both added/removed nodes and
@@ -194,12 +199,12 @@
             <li><b>Layout API</b> - Layout API/SPI provides real-time layout algorithms execution.</li>
             <li><b>LongTask API</b> - LongTask API provides utility features for long and asynchronous task execution.</li>
             <li><span class="unstable"><b>Partition API</b></span>  - API for manipulating partition within data.</li>
-            <li><span class="unstable"><b>Preview API</b></span>  - API for building the graph preview structure.</li>
+            <li><b>Preview API</b> - API for building the graph preview structure.</li>
             <li><b>Project API</b> - Project API/SPI for project and worskpaces manipulation.</li>
             <li><b>Ranking API</b>  - API/SPI for ranking data values and transform values in visual signs like color or size.</li>
             <li><b>Statistics API</b> - Statistics and Metrics API/SPI provides (a)synchronous algorithms execution.</li>
             <li><b>Tools API</b> - Tool API/SPI defines interactive actions users can make with the visualization.</li>
-            <li><b>Visualization API</b> - API/SPI for interacting with visualization and providing context menu actions.</li>
+            <li><span class="unstable"><b>Visualization API</b></span> - API/SPI for interacting with visualization and providing context menu actions.</li>
         </ul>
     </body>
 </html>
