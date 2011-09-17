@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class DynamicNbEdgesUI implements StatisticsUI {
 
     private DynamicNbEdges nbEdges;
-    
+
     public JPanel getSettingsPanel() {
         return null;
     }
@@ -67,5 +67,4 @@ public class DynamicNbEdgesUI implements StatisticsUI {
     public int getPosition() {
         return 1;
     }
-    
 }

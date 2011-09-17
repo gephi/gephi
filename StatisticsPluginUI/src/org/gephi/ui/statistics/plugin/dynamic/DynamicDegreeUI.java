@@ -38,9 +38,7 @@ public class DynamicDegreeUI implements StatisticsUI {
     private DynamicDegree degree;
 
     public JPanel getSettingsPanel() {
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("Test"));
-        return panel;
+        return null;
     }
 
     public void setup(Statistics statistics) {

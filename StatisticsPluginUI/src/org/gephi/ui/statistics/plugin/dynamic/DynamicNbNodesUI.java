@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class DynamicNbNodesUI implements StatisticsUI {
 
     private DynamicNbNodes nbNodes;
-    
+
     public JPanel getSettingsPanel() {
         return null;
     }
@@ -67,5 +67,4 @@ public class DynamicNbNodesUI implements StatisticsUI {
     public int getPosition() {
         return 1;
     }
-    
 }
