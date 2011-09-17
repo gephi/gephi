@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.ui.statistics.plugin;
 
+import org.gephi.graph.api.GraphController;
+import org.openide.util.Lookup;
+
 /**
  *
  * @author pjmcswee
@@ -28,6 +31,12 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
 
     public ClusteringCoefficientPanel() {
         initComponents();
+        
+        //Disable directed if the graph is undirecteds
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if(graphController.getModel().isUndirected()){
+            directedRadioButton.setEnabled(false);
+        }
     }
 
     public boolean isDirected() {
@@ -77,23 +86,23 @@ public class ClusteringCoefficientPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(undirectedRadioButton)
                     .addComponent(directedRadioButton))
-                .addContainerGap(397, Short.MAX_VALUE))
-            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
+                .addContainerGap(519, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(directedRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(undirectedRadioButton)
-                .addContainerGap(103, Short.MAX_VALUE))
+                .addContainerGap(95, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

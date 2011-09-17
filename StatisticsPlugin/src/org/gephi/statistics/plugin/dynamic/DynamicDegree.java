@@ -22,9 +22,7 @@ package org.gephi.statistics.plugin.dynamic;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
@@ -35,6 +33,7 @@ import org.gephi.data.attributes.type.DynamicInteger;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.HierarchicalDirectedGraph;
@@ -72,6 +71,13 @@ public class DynamicDegree implements DynamicStatistics {
     //Result
     //private List<Interval<Double>> averages;
     private Map<Double, Double> degreeTs;
+
+    public DynamicDegree() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (graphController != null && graphController.getModel() != null) {
+            isDirected = graphController.getModel().isDirected();
+        }
+    }
 
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         this.graphModel = graphModel;
@@ -114,12 +120,12 @@ public class DynamicDegree implements DynamicStatistics {
                 true,
                 false,
                 false);
-        
+
         chart.removeLegend();
         ChartUtils.decorateChart(chart);
         ChartUtils.scaleChart(chart, dSeries, false);
         String degreeImageFile = ChartUtils.renderChart(chart, "degree-ts.png");
-        
+
         NumberFormat f = new DecimalFormat("#0.000");
 
         String report = "<HTML> <BODY> <h1>Dynamic Degree Report </h1> "
@@ -128,10 +134,10 @@ public class DynamicDegree implements DynamicStatistics {
                 + "<br> Window: " + window
                 + "<br> Tick: " + tick
                 + "<br><br><h2> Average degrees over time: </h2>"
-                + "<br /><br />"+degreeImageFile;
+                + "<br /><br />" + degreeImageFile;
 
         /*for (Interval<Double> average : averages) {
-            report += average.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
+        report += average.toString(dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) + "<br />";
         }*/
         report += "<br /><br /></BODY></HTML>";
         return report;
@@ -209,5 +215,13 @@ public class DynamicDegree implements DynamicStatistics {
 
     public Interval getBounds() {
         return bounds;
+    }
+
+    public void setDirected(boolean isDirected) {
+        this.isDirected = isDirected;
+    }
+
+    public boolean isDirected() {
+        return isDirected;
     }
 }

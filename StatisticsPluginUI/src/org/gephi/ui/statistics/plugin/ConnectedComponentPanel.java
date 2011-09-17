@@ -20,6 +20,9 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.gephi.ui.statistics.plugin;
 
+import org.gephi.graph.api.GraphController;
+import org.openide.util.Lookup;
+
 /**
  *
  * @author pjmcswee
@@ -29,6 +32,12 @@ public class ConnectedComponentPanel extends javax.swing.JPanel {
     /** Creates new form ConnectedComponentPanel */
     public ConnectedComponentPanel() {
         initComponents();
+        
+        //Disable directed if the graph is undirecteds
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if(graphController.getModel().isUndirected()){
+            directedRadioButton.setEnabled(false);
+        }
     }
 
    public boolean isDirected() {
@@ -69,26 +78,26 @@ public class ConnectedComponentPanel extends javax.swing.JPanel {
         buttonGroup1.add(undirectedRadioButton);
         undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(ConnectedComponentPanel.class, "ConnectedComponentPanel.undirectedRadioButton.text")); // NOI18N
 
+        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
         jLabel1.setText(org.openide.util.NbBundle.getMessage(ConnectedComponentPanel.class, "ConnectedComponentPanel.jLabel1.text")); // NOI18N
 
+        jLabel2.setForeground(new java.awt.Color(102, 102, 102));
         jLabel2.setText(org.openide.util.NbBundle.getMessage(ConnectedComponentPanel.class, "ConnectedComponentPanel.jLabel2.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(undirectedRadioButton)
-                    .addComponent(directedRadioButton))
-                .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
-                .addContainerGap())
+                    .addComponent(directedRadioButton)
+                    .addComponent(undirectedRadioButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -97,12 +106,12 @@ public class ConnectedComponentPanel extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(directedRadioButton)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(undirectedRadioButton)
                     .addComponent(jLabel2))
-                .addContainerGap(115, Short.MAX_VALUE))
+                .addContainerGap(148, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

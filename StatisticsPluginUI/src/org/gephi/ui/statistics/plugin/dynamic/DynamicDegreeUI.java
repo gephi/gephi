@@ -36,6 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class DynamicDegreeUI implements StatisticsUI {
 
     private DynamicDegree degree;
+    private DynamicDegreePanel panel;
 
     public JPanel getSettingsPanel() {
         return null;
@@ -43,10 +44,17 @@ public class DynamicDegreeUI implements StatisticsUI {
 
     public void setup(Statistics statistics) {
         this.degree = (DynamicDegree) statistics;
+        if (panel != null) {
+            panel.setDirected(degree.isDirected());
+        }
     }
 
     public void unsetup() {
+        if (panel != null) {
+            degree.setDirected(panel.isDirected());
+        }
         degree = null;
+        panel = null;
     }
 
     public Class<? extends Statistics> getStatisticsClass() {

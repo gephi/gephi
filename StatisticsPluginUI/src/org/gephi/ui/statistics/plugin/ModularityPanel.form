@@ -16,12 +16,12 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="header" alignment="0" pref="436" max="32767" attributes="0"/>
+          <Component id="header" alignment="0" pref="579" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="randomizeCheckbox" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="desriptionLabel" alignment="0" pref="416" max="32767" attributes="0"/>
+                  <Component id="desriptionLabel" alignment="0" pref="539" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -34,7 +34,7 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="randomizeCheckbox" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
-              <Component id="desriptionLabel" pref="40" max="32767" attributes="0"/>
+              <Component id="desriptionLabel" pref="58" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>

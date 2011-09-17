@@ -86,7 +86,7 @@
                   <Component id="jXLabel3" alignment="0" min="-2" max="-2" attributes="1"/>
               </Group>
               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-              <Component id="descriptionLabel" pref="10" max="32767" attributes="0"/>
+              <Component id="descriptionLabel" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
