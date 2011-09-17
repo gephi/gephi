@@ -32,6 +32,7 @@ import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.io.processor.plugin.DefaultProcessor;
+import org.gephi.preview.api.PDFTarget;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewProperties;
@@ -77,7 +78,7 @@ public class PDFExporterTest {
         pc.newProject();
         Workspace workspace = pc.getCurrentWorkspace();
 
-        String sample = "/org/gephi/desktop/welcome/samples/Les Miserables.gexf";
+        String sample = "/org/gephi/desktop/welcome/samples/Java.gexf";
         final InputStream stream = WelcomeTopComponent.class.getResourceAsStream(sample);
         try {
             stream.reset();
@@ -99,10 +100,11 @@ public class PDFExporterTest {
         PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
 
         PreviewProperties props = model.getProperties();
+        props.putValue(PreviewProperty.SHOW_NODE_LABELS, false);
         props.putValue(PreviewProperty.EDGE_OPACITY, 20f);
-        props.putValue(PreviewProperty.BACKGROUND_COLOR, Color.BLACK);
 
         PDFExporter pDFExporter = new PDFExporter();
+        pDFExporter.setLandscape(true);
 
         pDFExporter.setWorkspace(workspace);
         try {

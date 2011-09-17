@@ -52,7 +52,7 @@ import org.openide.util.Lookup;
  * @author Mathieu Bastian
  */
 public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
-    
+
     private ProgressTicket progress;
     private Workspace workspace;
     private OutputStream stream;
@@ -68,29 +68,31 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
 
     public boolean execute() {
         Progress.start(progress);
-        
+
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
         controller.refreshPreview(workspace);
         PreviewProperties props = controller.getModel(workspace).getProperties();
-        
+
         Rectangle size = new Rectangle(pageSize);
         if (landscape) {
             size = new Rectangle(pageSize.rotate());
         }
         size.setBackgroundColor(new BaseColor(props.getColorValue(PreviewProperty.BACKGROUND_COLOR)));
-        
+
         Document document = new Document(size);
         PdfWriter pdfWriter = null;
         try {
             pdfWriter = PdfWriter.getInstance(document, stream);
+            pdfWriter.setPdfVersion(PdfWriter.PDF_VERSION_1_5);
+            pdfWriter.setFullCompression();
+
         } catch (DocumentException ex) {
             Exceptions.printStackTrace(ex);
         }
         document.open();
         PdfContentByte cb = pdfWriter.getDirectContent();
         cb.saveState();
-        
-        
+
         props.putValue(PDFTarget.LANDSCAPE, landscape);
         props.putValue(PDFTarget.PAGESIZE, size);
         props.putValue(PDFTarget.MARGIN_TOP, new Float((float) marginTop));
@@ -102,83 +104,83 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         if (target instanceof LongTask) {
             ((LongTask) target).setProgressTicket(progress);
         }
-        
+
         try {
             controller.render(target, workspace);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        
+
         cb.restoreState();
         document.close();
-        
+
         Progress.finish(progress);
-        
+
         props.putValue(PDFTarget.PDF_CONTENT_BYTE, null);
-        
+
         return !cancel;
     }
-    
+
     public boolean isLandscape() {
         return landscape;
     }
-    
+
     public float getMarginBottom() {
         return marginBottom;
     }
-    
+
     public float getMarginLeft() {
         return marginLeft;
     }
-    
+
     public float getMarginRight() {
         return marginRight;
     }
-    
+
     public float getMarginTop() {
         return marginTop;
     }
-    
+
     public Rectangle getPageSize() {
         return pageSize;
     }
-    
+
     public void setMarginBottom(float marginBottom) {
         this.marginBottom = marginBottom;
     }
-    
+
     public void setMarginLeft(float marginLeft) {
         this.marginLeft = marginLeft;
     }
-    
+
     public void setMarginRight(float marginRight) {
         this.marginRight = marginRight;
     }
-    
+
     public void setMarginTop(float marginTop) {
         this.marginTop = marginTop;
     }
-    
+
     public void setPageSize(Rectangle pageSize) {
         this.pageSize = pageSize;
     }
-    
+
     public void setOutputStream(OutputStream stream) {
         this.stream = stream;
     }
-    
+
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
     }
-    
+
     public void setLandscape(boolean landscape) {
         this.landscape = landscape;
     }
-    
+
     public Workspace getWorkspace() {
         return workspace;
     }
-    
+
     public boolean cancel() {
         this.cancel = true;
         if (target instanceof LongTask) {
@@ -186,7 +188,7 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         }
         return true;
     }
-    
+
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progress = progressTicket;
     }
