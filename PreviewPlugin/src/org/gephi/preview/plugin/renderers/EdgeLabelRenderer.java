@@ -69,7 +69,7 @@ public class EdgeLabelRenderer implements Renderer {
     public static final String LABEL_Y = "edge.label.y";
     //Default values
     protected final boolean defaultShowLabels = true;
-    protected final Font defaultFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
+    protected final Font defaultFont = new Font("Arial", Font.PLAIN, 10);
     protected final boolean defaultShorten = false;
     protected final DependantOriginalColor defaultColor = new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL);
     protected final int defaultMaxChar = 30;
