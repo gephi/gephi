@@ -185,6 +185,7 @@ public class PreviewControllerImpl implements PreviewController {
                 bottomRightY = y;
             }
         }
+
         float marginWidth = (bottomRightX - topLeftX) * (margin / 100f);
         float marginHeight = (bottomRightY - topLeftY) * (margin / 100f);
         topLeftX -= marginWidth;

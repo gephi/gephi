@@ -103,7 +103,7 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
             double scale = (float) (ratioWidth < ratioHeight ? ratioWidth : ratioHeight);
             double translateX = (marginLeft + pageWidth / 2.) / scale;
             double translateY = (marginBottom + pageHeight / 2.) / scale;
-            cb.transform(AffineTransform.getTranslateInstance(-centerX * scale, -centerY * scale));
+            cb.transform(AffineTransform.getTranslateInstance(-centerX * scale, centerY * scale));
             cb.transform(AffineTransform.getScaleInstance(scale, scale));
             cb.transform(AffineTransform.getTranslateInstance(translateX, translateY));
 
