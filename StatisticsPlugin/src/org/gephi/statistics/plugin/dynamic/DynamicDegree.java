@@ -64,6 +64,7 @@ public class DynamicDegree implements DynamicStatistics {
     private double tick;
     private Interval bounds;
     private boolean isDirected;
+    private boolean averageOnly;
     //Cols
     private AttributeColumn dynamicInDegreeColumn;
     private AttributeColumn dynamicOutDegreeColumn;
@@ -87,20 +88,22 @@ public class DynamicDegree implements DynamicStatistics {
         this.dynamicModel = Lookup.getDefault().lookup(DynamicController.class).getModel(graphModel.getWorkspace());
 
         //Attributes cols
-        AttributeTable nodeTable = attributeModel.getNodeTable();
-        dynamicInDegreeColumn = nodeTable.getColumn(DYNAMIC_INDEGREE);
-        dynamicOutDegreeColumn = nodeTable.getColumn(DYNAMIC_OUTDEGREE);
-        dynamicDegreeColumn = nodeTable.getColumn(DYNAMIC_DEGREE);
-        if (isDirected) {
-            if (dynamicInDegreeColumn == null) {
-                dynamicInDegreeColumn = nodeTable.addColumn(DYNAMIC_INDEGREE, "Dynamic In-Degree", AttributeType.DYNAMIC_INT, AttributeOrigin.COMPUTED, new DynamicInteger());
+        if (!averageOnly) {
+            AttributeTable nodeTable = attributeModel.getNodeTable();
+            dynamicInDegreeColumn = nodeTable.getColumn(DYNAMIC_INDEGREE);
+            dynamicOutDegreeColumn = nodeTable.getColumn(DYNAMIC_OUTDEGREE);
+            dynamicDegreeColumn = nodeTable.getColumn(DYNAMIC_DEGREE);
+            if (isDirected) {
+                if (dynamicInDegreeColumn == null) {
+                    dynamicInDegreeColumn = nodeTable.addColumn(DYNAMIC_INDEGREE, "Dynamic In-Degree", AttributeType.DYNAMIC_INT, AttributeOrigin.COMPUTED, new DynamicInteger());
+                }
+                if (dynamicOutDegreeColumn == null) {
+                    dynamicOutDegreeColumn = nodeTable.addColumn(DYNAMIC_OUTDEGREE, "Dynamic Out-Degree", AttributeType.DYNAMIC_INT, AttributeOrigin.COMPUTED, new DynamicInteger());
+                }
             }
-            if (dynamicOutDegreeColumn == null) {
-                dynamicOutDegreeColumn = nodeTable.addColumn(DYNAMIC_OUTDEGREE, "Dynamic Out-Degree", AttributeType.DYNAMIC_INT, AttributeOrigin.COMPUTED, new DynamicInteger());
+            if (dynamicDegreeColumn == null) {
+                dynamicDegreeColumn = nodeTable.addColumn(DYNAMIC_DEGREE, "Dynamic Degree", AttributeType.DYNAMIC_INT, AttributeOrigin.COMPUTED, new DynamicInteger());
             }
-        }
-        if (dynamicDegreeColumn == null) {
-            dynamicDegreeColumn = nodeTable.addColumn(DYNAMIC_DEGREE, "Dynamic Degree", AttributeType.DYNAMIC_INT, AttributeOrigin.COMPUTED, new DynamicInteger());
         }
     }
 
@@ -153,36 +156,40 @@ public class DynamicDegree implements DynamicStatistics {
         long sum = 0;
         for (Node n : graph.getNodes()) {
             int degree = graph.getTotalDegree(n);
-            Interval<Integer> degreeInInterval = new Interval<Integer>(interval, degree);
-            DynamicInteger val = (DynamicInteger) n.getAttributes().getValue(dynamicDegreeColumn.getIndex());
-            if (val == null) {
-                val = new DynamicInteger(degreeInInterval);
-            } else {
-                val = new DynamicInteger(val, degreeInInterval);
-            }
-            n.getAttributes().setValue(dynamicDegreeColumn.getIndex(), val);
-            sum += degree;
-            if (isDirected) {
-                int indegree = directedGraph.getTotalInDegree(n);
-                Interval<Integer> inDegreeInInterval = new Interval<Integer>(interval, indegree);
-                DynamicInteger inVal = (DynamicInteger) n.getAttributes().getValue(dynamicInDegreeColumn.getIndex());
-                if (inVal == null) {
-                    inVal = new DynamicInteger(inDegreeInInterval);
-                } else {
-                    inVal = new DynamicInteger(inVal, inDegreeInInterval);
-                }
-                n.getAttributes().setValue(dynamicInDegreeColumn.getIndex(), inVal);
 
-                int outdegree = directedGraph.getTotalOutDegree(n);
-                Interval<Integer> outDegreeInInterval = new Interval<Integer>(interval, outdegree);
-                DynamicInteger outVal = (DynamicInteger) n.getAttributes().getValue(dynamicOutDegreeColumn.getIndex());
-                if (outVal == null) {
-                    outVal = new DynamicInteger(outDegreeInInterval);
+            if (!averageOnly) {
+                Interval<Integer> degreeInInterval = new Interval<Integer>(interval, degree);
+                DynamicInteger val = (DynamicInteger) n.getAttributes().getValue(dynamicDegreeColumn.getIndex());
+                if (val == null) {
+                    val = new DynamicInteger(degreeInInterval);
                 } else {
-                    outVal = new DynamicInteger(outVal, outDegreeInInterval);
+                    val = new DynamicInteger(val, degreeInInterval);
                 }
-                n.getAttributes().setValue(dynamicOutDegreeColumn.getIndex(), outVal);
+                n.getAttributes().setValue(dynamicDegreeColumn.getIndex(), val);
+
+                if (isDirected) {
+                    int indegree = directedGraph.getTotalInDegree(n);
+                    Interval<Integer> inDegreeInInterval = new Interval<Integer>(interval, indegree);
+                    DynamicInteger inVal = (DynamicInteger) n.getAttributes().getValue(dynamicInDegreeColumn.getIndex());
+                    if (inVal == null) {
+                        inVal = new DynamicInteger(inDegreeInInterval);
+                    } else {
+                        inVal = new DynamicInteger(inVal, inDegreeInInterval);
+                    }
+                    n.getAttributes().setValue(dynamicInDegreeColumn.getIndex(), inVal);
+
+                    int outdegree = directedGraph.getTotalOutDegree(n);
+                    Interval<Integer> outDegreeInInterval = new Interval<Integer>(interval, outdegree);
+                    DynamicInteger outVal = (DynamicInteger) n.getAttributes().getValue(dynamicOutDegreeColumn.getIndex());
+                    if (outVal == null) {
+                        outVal = new DynamicInteger(outDegreeInInterval);
+                    } else {
+                        outVal = new DynamicInteger(outVal, outDegreeInInterval);
+                    }
+                    n.getAttributes().setValue(dynamicOutDegreeColumn.getIndex(), outVal);
+                }
             }
+            sum += degree;
         }
 
         double average = sum / (double) graph.getNodeCount();
@@ -223,5 +230,13 @@ public class DynamicDegree implements DynamicStatistics {
 
     public boolean isDirected() {
         return isDirected;
+    }
+
+    public void setAverageOnly(boolean averageOnly) {
+        this.averageOnly = averageOnly;
+    }
+
+    public boolean isAverageOnly() {
+        return averageOnly;
     }
 }

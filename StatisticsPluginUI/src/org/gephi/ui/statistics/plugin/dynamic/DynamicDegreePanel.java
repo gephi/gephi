@@ -50,6 +50,14 @@ public class DynamicDegreePanel extends javax.swing.JPanel {
             directedRadioButton.setEnabled(false);
         }
     }
+    
+    public boolean isAverageOnly() {
+        return averageOnlyCheckbox.isSelected();
+    }
+    
+    public void setAverageOnly(boolean averageOnly) {
+        averageOnlyCheckbox.setSelected(averageOnly);
+    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -64,6 +72,7 @@ public class DynamicDegreePanel extends javax.swing.JPanel {
         header = new org.jdesktop.swingx.JXHeader();
         directedRadioButton = new javax.swing.JRadioButton();
         undirectedRadioButton = new javax.swing.JRadioButton();
+        averageOnlyCheckbox = new javax.swing.JCheckBox();
 
         header.setDescription(org.openide.util.NbBundle.getMessage(DynamicDegreePanel.class, "DynamicDegreePanel.header.description")); // NOI18N
         header.setTitle(org.openide.util.NbBundle.getMessage(DynamicDegreePanel.class, "DynamicDegreePanel.header.title")); // NOI18N
@@ -73,6 +82,8 @@ public class DynamicDegreePanel extends javax.swing.JPanel {
 
         directedButtonGroup.add(undirectedRadioButton);
         undirectedRadioButton.setText(org.openide.util.NbBundle.getMessage(DynamicDegreePanel.class, "DynamicDegreePanel.undirectedRadioButton.text")); // NOI18N
+
+        averageOnlyCheckbox.setText(org.openide.util.NbBundle.getMessage(DynamicDegreePanel.class, "DynamicDegreePanel.averageOnlyCheckbox.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -85,6 +96,10 @@ public class DynamicDegreePanel extends javax.swing.JPanel {
                     .addComponent(undirectedRadioButton)
                     .addComponent(directedRadioButton))
                 .addContainerGap(281, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(averageOnlyCheckbox)
+                .addContainerGap(187, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -94,10 +109,13 @@ public class DynamicDegreePanel extends javax.swing.JPanel {
                 .addComponent(directedRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(undirectedRadioButton)
-                .addContainerGap(152, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(averageOnlyCheckbox)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox averageOnlyCheckbox;
     private javax.swing.ButtonGroup directedButtonGroup;
     protected javax.swing.JRadioButton directedRadioButton;
     private org.jdesktop.swingx.JXHeader header;
