@@ -221,7 +221,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     public void execute(HierarchicalGraph hgraph, AttributeModel attributeModel) {
         isCanceled = false;
 
-        triangles(hgraph, attributeModel);
+        triangles(hgraph);
         //bruteForce(hgraph, attributeModel);
 
         //Set results in columns
@@ -325,7 +325,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         }
     }
 
-    private void triangles(HierarchicalGraph hgraph, AttributeModel attributeModel) {
+    public void triangles(HierarchicalGraph hgraph) {
 
         int ProgressCount = 0;
         Progress.start(progress, 7 * hgraph.getNodeCount());
@@ -342,7 +342,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
         for (Node s : hgraph.getNodes()) {
-            indicies.put(s, index);
+            indicies.put(s.getNodeData().getRootNode(), index);
             network[index] = new ArrayWrapper();
             index++;
             Progress.progress(progress, ++ProgressCount);
@@ -428,6 +428,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
 
         //Results and average
         avgClusteringCoeff = 0;
+        totalTriangles = 0;
         for (int v = 0; v < N; v++) {
             if (network[v].length() > 1) {
                 double cc = triangles[v];
