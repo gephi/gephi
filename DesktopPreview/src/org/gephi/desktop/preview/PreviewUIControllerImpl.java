@@ -39,6 +39,7 @@ import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.presets.DefaultCurved;
 import org.gephi.preview.presets.DefaultPreset;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
@@ -258,7 +259,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
     }
 
     public PreviewPreset[] getDefaultPresets() {
-        return new PreviewPreset[]{new DefaultPreset()};
+        return new PreviewPreset[]{new DefaultPreset(), new DefaultCurved()};
     }
 
     public PreviewPreset[] getUserPresets() {
