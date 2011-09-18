@@ -65,6 +65,6 @@ public class DynamicNbEdgesUI implements StatisticsUI {
     }
 
     public int getPosition() {
-        return 1;
+        return 200;
     }
 }

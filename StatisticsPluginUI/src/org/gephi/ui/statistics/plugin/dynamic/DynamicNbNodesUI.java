@@ -65,6 +65,6 @@ public class DynamicNbNodesUI implements StatisticsUI {
     }
 
     public int getPosition() {
-        return 1;
+        return 100;
     }
 }

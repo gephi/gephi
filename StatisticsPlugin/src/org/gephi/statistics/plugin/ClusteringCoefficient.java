@@ -585,4 +585,24 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     public void setProgressTicket(ProgressTicket ProgressTicket) {
         this.progress = ProgressTicket;
     }
+
+    public double[] getCoefficientReuslts() {
+        double[] res = new double[N];
+        for (int v = 0; v < N; v++) {
+            if (network[v].length() > 1) {
+                res[v] = nodeClustering[v];
+            }
+        }
+        return res;
+    }
+
+    public double[] getTriangesReuslts() {
+        double[] res = new double[N];
+        for (int v = 0; v < N; v++) {
+            if (network[v].length() > 1) {
+                res[v] = triangles[v];
+            }
+        }
+        return res;
+    }
 }

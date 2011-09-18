@@ -21,7 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.ui.statistics.plugin.dynamic;
 
 import javax.swing.JPanel;
-import org.gephi.statistics.plugin.dynamic.DynamicDegree;
+import org.gephi.statistics.plugin.dynamic.DynamicClusteringCoefficient;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
 import org.openide.util.NbBundle;
@@ -32,65 +32,64 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = StatisticsUI.class)
-public class DynamicDegreeUI implements StatisticsUI {
-    
+public class DynamicClusteringCoefficientUI implements StatisticsUI {
+
     private final StatSettings settings = new StatSettings();
-    private DynamicDegree degree;
-    private DynamicDegreePanel panel;
-    
+    private DynamicClusteringCoefficient clusetingCoefficient;
+    private DynamicClusteringCoefficientPanel panel;
+
     public JPanel getSettingsPanel() {
-        panel = new DynamicDegreePanel();
+        panel = new DynamicClusteringCoefficientPanel();
         return panel;
     }
-    
+
     public void setup(Statistics statistics) {
-        this.degree = (DynamicDegree) statistics;
+        this.clusetingCoefficient = (DynamicClusteringCoefficient) statistics;
         if (panel != null) {
-            settings.load(degree);
-            panel.setDirected(degree.isDirected());
-            panel.setAverageOnly(degree.isAverageOnly());
+            settings.load(clusetingCoefficient);
+            panel.setDirected(clusetingCoefficient.isDirected());
+            panel.setAverageOnly(clusetingCoefficient.isAverageOnly());
         }
     }
-    
+
     public void unsetup() {
         if (panel != null) {
-            degree.setDirected(panel.isDirected());
-            degree.setAverageOnly(panel.isAverageOnly());
-            settings.save(degree);
+            clusetingCoefficient.setDirected(panel.isDirected());
+            clusetingCoefficient.setAverageOnly(panel.isAverageOnly());
+            settings.save(clusetingCoefficient);
         }
-        degree = null;
-        panel = null;
+        clusetingCoefficient = null;
     }
-    
+
     public Class<? extends Statistics> getStatisticsClass() {
-        return DynamicDegree.class;
+        return DynamicClusteringCoefficient.class;
     }
-    
+
     public String getValue() {
         return "";
     }
-    
+
     public String getDisplayName() {
-        return NbBundle.getMessage(getClass(), "DynamicDegreeUI.name");
+        return NbBundle.getMessage(getClass(), "DynamicClusteringCoefficientUI.name");
     }
-    
+
     public String getCategory() {
         return StatisticsUI.CATEGORY_DYNAMIC;
     }
-    
+
     public int getPosition() {
-        return 300;
+        return 400;
     }
-    
+
     private static class StatSettings {
-        
+
         private boolean averageOnly = false;
-        
-        private void save(DynamicDegree stat) {
+
+        private void save(DynamicClusteringCoefficient stat) {
             this.averageOnly = stat.isAverageOnly();
         }
-        
-        private void load(DynamicDegree stat) {
+
+        private void load(DynamicClusteringCoefficient stat) {
             stat.setAverageOnly(averageOnly);
         }
     }
