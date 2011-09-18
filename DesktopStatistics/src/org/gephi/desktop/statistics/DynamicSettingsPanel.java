@@ -37,7 +37,6 @@ import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.lib.validation.PositiveNumberValidator;
 import org.gephi.statistics.spi.DynamicStatistics;
 import org.gephi.ui.components.richtooltip.RichTooltip;
-import org.gephi.ui.utils.UIUtils;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
@@ -47,7 +46,6 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
-import org.openide.util.Utilities;
 
 /**
  *
@@ -130,7 +128,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         //Window and tick
         if (model.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) {
             windowTextField.setText(dynamicStatistics.getWindow() + "");
-            tickTextField.setText(dynamicStatistics.getWindow() + "");
+            tickTextField.setText(dynamicStatistics.getTick() + "");
         } else {
             windowTextField.setText("" + windowTimeUnit.convert((long) dynamicStatistics.getWindow(), TimeUnit.MILLISECONDS));
             tickTextField.setText("" + tickTimeUnit.convert((long) dynamicStatistics.getTick(), TimeUnit.MILLISECONDS));

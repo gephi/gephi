@@ -34,17 +34,26 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsUI.class)
 public class DynamicNbEdgesUI implements StatisticsUI {
 
+    private final StatSettings settings = new StatSettings();
     private DynamicNbEdges nbEdges;
+    private DynamicNbEdgesPanel panel;
 
     public JPanel getSettingsPanel() {
-        return null;
+        panel = new DynamicNbEdgesPanel();
+        return panel;
     }
 
     public void setup(Statistics statistics) {
         this.nbEdges = (DynamicNbEdges) statistics;
+        if (panel != null) {
+            settings.load(nbEdges);
+        }
     }
 
     public void unsetup() {
+        if (panel != null) {
+            settings.save(nbEdges);
+        }
         nbEdges = null;
     }
 
@@ -66,5 +75,21 @@ public class DynamicNbEdgesUI implements StatisticsUI {
 
     public int getPosition() {
         return 200;
+    }
+
+    private static class StatSettings {
+
+        private double window = 0.0;
+        private double tick = 0.0;
+
+        private void save(DynamicNbEdges stat) {
+            this.window = stat.getWindow();
+            this.tick = stat.getTick();
+        }
+
+        private void load(DynamicNbEdges stat) {
+            stat.setWindow(window);
+            stat.setTick(tick);
+        }
     }
 }

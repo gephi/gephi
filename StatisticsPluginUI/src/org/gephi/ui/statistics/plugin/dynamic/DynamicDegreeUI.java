@@ -33,16 +33,16 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = StatisticsUI.class)
 public class DynamicDegreeUI implements StatisticsUI {
-    
+
     private final StatSettings settings = new StatSettings();
     private DynamicDegree degree;
     private DynamicDegreePanel panel;
-    
+
     public JPanel getSettingsPanel() {
         panel = new DynamicDegreePanel();
         return panel;
     }
-    
+
     public void setup(Statistics statistics) {
         this.degree = (DynamicDegree) statistics;
         if (panel != null) {
@@ -51,7 +51,7 @@ public class DynamicDegreeUI implements StatisticsUI {
             panel.setAverageOnly(degree.isAverageOnly());
         }
     }
-    
+
     public void unsetup() {
         if (panel != null) {
             degree.setDirected(panel.isDirected());
@@ -61,37 +61,43 @@ public class DynamicDegreeUI implements StatisticsUI {
         degree = null;
         panel = null;
     }
-    
+
     public Class<? extends Statistics> getStatisticsClass() {
         return DynamicDegree.class;
     }
-    
+
     public String getValue() {
         return "";
     }
-    
+
     public String getDisplayName() {
         return NbBundle.getMessage(getClass(), "DynamicDegreeUI.name");
     }
-    
+
     public String getCategory() {
         return StatisticsUI.CATEGORY_DYNAMIC;
     }
-    
+
     public int getPosition() {
         return 300;
     }
-    
+
     private static class StatSettings {
-        
+
         private boolean averageOnly = false;
-        
+        private double window = 0.0;
+        private double tick = 0.0;
+
         private void save(DynamicDegree stat) {
             this.averageOnly = stat.isAverageOnly();
+            this.window = stat.getWindow();
+            this.tick = stat.getTick();
         }
-        
+
         private void load(DynamicDegree stat) {
             stat.setAverageOnly(averageOnly);
+            stat.setWindow(window);
+            stat.setTick(tick);
         }
     }
 }

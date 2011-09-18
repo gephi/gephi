@@ -84,13 +84,19 @@ public class DynamicClusteringCoefficientUI implements StatisticsUI {
     private static class StatSettings {
 
         private boolean averageOnly = false;
+        private double window = 0.0;
+        private double tick = 0.0;
 
         private void save(DynamicClusteringCoefficient stat) {
             this.averageOnly = stat.isAverageOnly();
+            this.window = stat.getWindow();
+            this.tick = stat.getTick();
         }
 
         private void load(DynamicClusteringCoefficient stat) {
             stat.setAverageOnly(averageOnly);
+            stat.setWindow(window);
+            stat.setTick(tick);
         }
     }
 }

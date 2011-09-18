@@ -168,9 +168,9 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
             JPanel settingsPanel = statisticsUI.getSettingsPanel();
             if (currentStatistics instanceof DynamicStatistics) {
                 DynamicSettingsPanel dynamicPanel = new DynamicSettingsPanel();
-                dynamicPanel.setup((DynamicStatistics) currentStatistics);
                 statisticsUI.setup(currentStatistics);
-
+                dynamicPanel.setup((DynamicStatistics) currentStatistics);
+                
                 JPanel dynamicSettingsPanel = DynamicSettingsPanel.createCounpoundPanel(dynamicPanel, settingsPanel);
                 final DialogDescriptor dd = new DialogDescriptor(dynamicSettingsPanel, NbBundle.getMessage(StatisticsTopComponent.class, "StatisticsFrontEnd.settingsPanel.title", builder.getName()));
                 if (dynamicSettingsPanel instanceof ValidationPanel) {
