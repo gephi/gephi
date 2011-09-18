@@ -59,9 +59,17 @@ public interface SVGTarget extends RenderTarget {
      */
     public static final String TOP_NODE_LABELS = "node-labels";
     /**
+     * Default top element name for node labels outline
+     */
+    public static final String TOP_NODE_LABELS_OUTLINE = "node-labels-outline";
+    /**
      * Default top element name for edge labels
      */
     public static final String TOP_EDGE_LABELS = "edge-labels";
+    /**
+     * Default top element name for edge labels outline
+     */
+    public static final String TOP_EDGE_LABELS_OUTLINE = "edge-labels-outline";
     /**
      * Default top element name for arrows
      */

@@ -191,7 +191,7 @@ public class EdgeLabelRenderer implements Renderer {
         } else if (target instanceof SVGTarget) {
             renderSVG((SVGTarget) target, edge, label, x, y, color, outlineSize, outlineColor);
         } else if (target instanceof PDFTarget) {
-            renderPDF(((PDFTarget)target), label, x, y, color, outlineSize, outlineColor);
+            renderPDF(((PDFTarget) target), label, x, y, color, outlineSize, outlineColor);
         }
     }
 
@@ -222,6 +222,25 @@ public class EdgeLabelRenderer implements Renderer {
     public void renderSVG(SVGTarget target, Edge edge, String label, float x, float y, Color color, float outlineSize, Color outlineColor) {
         Text labelText = target.createTextNode(label);
 
+        if (outlineSize > 0) {
+            Text labelTextOutline = target.createTextNode(label);
+            Element outlineElem = target.createElement("text");
+            outlineElem.setAttribute("class", edge.getEdgeData().getId());
+            outlineElem.setAttribute("x", String.valueOf(x));
+            outlineElem.setAttribute("y", String.valueOf(y));
+            outlineElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
+            outlineElem.setAttribute("fill", target.toHexString(color));
+            outlineElem.setAttribute("font-family", font.getFamily());
+            outlineElem.setAttribute("font-size", font.getSize() + "");
+            outlineElem.setAttribute("stroke", target.toHexString(outlineColor));
+            outlineElem.setAttribute("stroke-width", (outlineSize * target.getScaleRatio()) + "px");
+            outlineElem.setAttribute("stroke-linecap", "round");
+            outlineElem.setAttribute("stroke-linejoin", "round");
+            outlineElem.setAttribute("stroke-opacity", String.valueOf(outlineColor.getAlpha() / 255f));
+            outlineElem.appendChild(labelTextOutline);
+            target.getTopElement(SVGTarget.TOP_NODE_LABELS_OUTLINE).appendChild(outlineElem);
+        }
+
         Element labelElem = target.createElement("text");
         labelElem.setAttribute("class", edge.getEdgeData().getId());
         labelElem.setAttribute("x", x + "");
@@ -230,14 +249,6 @@ public class EdgeLabelRenderer implements Renderer {
         labelElem.setAttribute("fill", target.toHexString(color));
         labelElem.setAttribute("font-family", font.getFamily());
         labelElem.setAttribute("font-size", font.getSize() + "");
-        if (outlineSize > 0) {
-            labelElem.setAttribute("stroke", target.toHexString(outlineColor));
-            labelElem.setAttribute("stroke-width", outlineSize + "px");
-            labelElem.setAttribute("stroke-linecap", "butt");
-            labelElem.setAttribute("stroke-linejoin", "miter");
-            labelElem.setAttribute("stroke-opacity", "" + (outlineColor.getAlpha() / 255f));
-
-        }
         labelElem.appendChild(labelText);
         target.getTopElement(SVGTarget.TOP_EDGE_LABELS).appendChild(labelElem);
     }
@@ -280,7 +291,7 @@ public class EdgeLabelRenderer implements Renderer {
         float descend = baseFont.getDescentPoint(text, fontSize);
         return ascend + descend;
     }
-    
+
     public PreviewProperty[] getProperties() {
         return new PreviewProperty[]{
                     PreviewProperty.createProperty(this, PreviewProperty.SHOW_EDGE_LABELS, Boolean.class,

@@ -210,6 +210,29 @@ public class NodeLabelRenderer implements Renderer {
         Text labelText = target.createTextNode(label);
         Font font = fontCache.get(fontSize);
 
+        if (outlineSize > 0) {
+            Text labelTextOutline = target.createTextNode(label);
+            Element outlineElem = target.createElement("text");
+            outlineElem.setAttribute("class", node.getNodeData().getId());
+            outlineElem.setAttribute("x", String.valueOf(x));
+            outlineElem.setAttribute("y", String.valueOf(y));
+            outlineElem.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
+            outlineElem.setAttribute("fill", target.toHexString(color));
+            outlineElem.setAttribute("font-family", font.getFamily());
+            outlineElem.setAttribute("font-size", String.valueOf(fontSize));
+            outlineElem.setAttribute("stroke", target.toHexString(outlineColor));
+            outlineElem.setAttribute("stroke-width", (outlineSize * target.getScaleRatio()) + "px");
+            outlineElem.setAttribute("stroke-linecap", "round");
+            outlineElem.setAttribute("stroke-linejoin", "round");
+            outlineElem.setAttribute("stroke-opacity", String.valueOf(outlineColor.getAlpha() / 255f));
+            outlineElem.appendChild(labelTextOutline);
+            target.getTopElement(SVGTarget.TOP_NODE_LABELS_OUTLINE).appendChild(outlineElem);
+
+            //Trick to center text vertically on node:
+            SVGRect rect = ((SVGLocatable) outlineElem).getBBox();
+            outlineElem.setAttribute("y", String.valueOf(y + rect.getHeight() / 4f));
+        }
+
         Element labelElem = target.createElement("text");
         labelElem.setAttribute("class", node.getNodeData().getId());
         labelElem.setAttribute("x", String.valueOf(x));
@@ -218,13 +241,6 @@ public class NodeLabelRenderer implements Renderer {
         labelElem.setAttribute("fill", target.toHexString(color));
         labelElem.setAttribute("font-family", font.getFamily());
         labelElem.setAttribute("font-size", String.valueOf(fontSize));
-        if (outlineSize > 0) {
-            labelElem.setAttribute("stroke", target.toHexString(outlineColor));
-            labelElem.setAttribute("stroke-width", outlineSize + "px");
-            labelElem.setAttribute("stroke-linecap", "butt");
-            labelElem.setAttribute("stroke-linejoin", "miter");
-            labelElem.setAttribute("stroke-opacity", String.valueOf(outlineColor.getAlpha() / 255f));
-        }
         labelElem.appendChild(labelText);
         target.getTopElement(SVGTarget.TOP_NODE_LABELS).appendChild(labelElem);
 
@@ -263,11 +279,11 @@ public class NodeLabelRenderer implements Renderer {
             }
             float textWidth = getTextWidth(bf, fontSize, label);
             float textHeight = getTextHeight(bf, fontSize, label);
-            
+
             //A height of just textHeight seems to be half the text height sometimes
             //BaseFont getAscentPoint and getDescentPoint may be not very precise
-            cb.rectangle(x - textWidth / 2f - outlineSize / 2f, -y - outlineSize / 2f - textHeight, textWidth + outlineSize, textHeight * 2f + outlineSize);            
-            
+            cb.rectangle(x - textWidth / 2f - outlineSize / 2f, -y - outlineSize / 2f - textHeight, textWidth + outlineSize, textHeight * 2f + outlineSize);
+
             cb.fill();
             if (boxColor.getAlpha() < 255) {
                 cb.restoreState();
