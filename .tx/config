@@ -216,11 +216,6 @@ file_filter = PreviewAPI\src\org\gephi\preview\<lang>.po
 source_file = PreviewAPI\src\org\gephi\preview\org-gephi-preview.pot
 source_lang = en
 
-[gephi.org-gephi-preview-propertyeditors]
-file_filter = PreviewImpl\src\org\gephi\preview\propertyeditors\<lang>.po
-source_file = PreviewImpl\src\org\gephi\preview\propertyeditors\org-gephi-preview-propertyeditors.pot
-source_lang = en
-
 [gephi.org-gephi-preview-presets]
 file_filter = PreviewAPI\src\org\gephi\preview\presets\<lang>.po
 source_file = PreviewAPI\src\org\gephi\preview\presets\org-gephi-preview-presets.pot
