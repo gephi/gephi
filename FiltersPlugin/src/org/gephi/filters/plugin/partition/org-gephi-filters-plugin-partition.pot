@@ -27,3 +27,15 @@ msgstr "Partition Count"
 msgid "PartitionCountBuilder.description"
 msgstr ""
 "Keep nodes/edges that belongs to parts with a particular number of elements"
+
+msgid "IntraEdgesBuilder.name"
+msgstr "Intra Edges"
+
+msgid "IntraEdgesBuilder.description"
+msgstr "Keep only edges between elements from different parts"
+
+msgid "InterEdgesBuilder.name"
+msgstr "Inter Edges"
+
+msgid "InterEdgesBuilder.description"
+msgstr "Keep only edges between elements from the same part"

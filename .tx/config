@@ -212,8 +212,8 @@ source_file = ProcessingWrapper\src\org\gephi\lib\processing\org-gephi-lib-proce
 source_lang = en
 
 [gephi.org-gephi-preview]
-file_filter = PreviewImpl\src\org\gephi\preview\<lang>.po
-source_file = PreviewImpl\src\org\gephi\preview\org-gephi-preview.pot
+file_filter = PreviewAPI\src\org\gephi\preview\<lang>.po
+source_file = PreviewAPI\src\org\gephi\preview\org-gephi-preview.pot
 source_lang = en
 
 [gephi.org-gephi-preview-propertyeditors]
@@ -222,8 +222,8 @@ source_file = PreviewImpl\src\org\gephi\preview\propertyeditors\org-gephi-previe
 source_lang = en
 
 [gephi.org-gephi-preview-presets]
-file_filter = PreviewImpl\src\org\gephi\preview\presets\<lang>.po
-source_file = PreviewImpl\src\org\gephi\preview\presets\org-gephi-preview-presets.pot
+file_filter = PreviewAPI\src\org\gephi\preview\presets\<lang>.po
+source_file = PreviewAPI\src\org\gephi\preview\presets\org-gephi-preview-presets.pot
 source_lang = en
 
 [gephi.org-gephi-ui-exporter-preview]
@@ -819,5 +819,35 @@ source_lang = en
 [gephi.org-gephi-algorithms]
 file_filter = Algorithms\src\org\gephi\algorithms\<lang>.po
 source_file = Algorithms\src\org\gephi\algorithms\org-gephi-algorithms.pot
+source_lang = en
+
+[gephi.org-gephi-ui-statistics-plugin-dynamic]
+file_filter = StatisticsPluginUI\src\org\gephi\ui\statistics\plugin\dynamic\<lang>.po
+source_file = StatisticsPluginUI\src\org\gephi\ui\statistics\plugin\dynamic\org-gephi-ui-statistics-plugin-dynamic.pot
+source_lang = en
+
+[gephi.org-gephi-statistics-plugin-dynamic-builder]
+file_filter = StatisticsPlugin\src\org\gephi\statistics\plugin\dynamic\builder\<lang>.po
+source_file = StatisticsPlugin\src\org\gephi\statistics\plugin\dynamic\builder\org-gephi-statistics-plugin-dynamic-builder.pot
+source_lang = en
+
+[gephi.org-gephi-preview-plugin]
+file_filter = PreviewPlugin\src\org\gephi\preview\plugin\<lang>.po
+source_file = PreviewPlugin\src\org\gephi\preview\plugin\org-gephi-preview-plugin.pot
+source_lang = en
+
+[gephi.org-gephi-preview-plugin-renderers]
+file_filter = PreviewPlugin\src\org\gephi\preview\plugin\renderers\<lang>.po
+source_file = PreviewPlugin\src\org\gephi\preview\plugin\renderers\org-gephi-preview-plugin-renderers.pot
+source_lang = en
+
+[gephi.org-gephi-layout]
+file_filter = LayoutAPI\src\org\gephi\layout\<lang>.po
+source_file = LayoutAPI\src\org\gephi\layout\org-gephi-layout.pot
+source_lang = en
+
+[gephi.org-gephi-desktop-preview-propertyeditors]
+file_filter = DesktopPreview\src\org\gephi\desktop\preview\propertyeditors\<lang>.po
+source_file = DesktopPreview\src\org\gephi\desktop\preview\propertyeditors\org-gephi-desktop-preview-propertyeditors.pot
 source_lang = en
 

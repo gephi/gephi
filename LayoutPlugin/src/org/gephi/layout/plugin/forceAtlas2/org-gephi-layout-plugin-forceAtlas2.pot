@@ -32,6 +32,9 @@ msgstr "Behavior Alternatives"
 msgid "ForceAtlas2.performance"
 msgstr "Performance"
 
+msgid "ForceAtlas2.threads"
+msgstr "Threads"
+
 msgid "ForceAtlas2.scalingRatio.name"
 msgstr "Scaling"
 
@@ -43,6 +46,12 @@ msgstr "Gravity"
 
 msgid "ForceAtlas2.gravity.desc"
 msgstr "Attracts nodes to the center. Prevents islands from drifting away."
+
+msgid "ForceAtlas2.strongGravityMode.name"
+msgstr "Stronger Gravity"
+
+msgid "ForceAtlas2.strongGravityMode.desc"
+msgstr "A stronger gravity law"
 
 msgid "ForceAtlas2.distributedAttraction.name"
 msgstr "Dissuade Hubs"
@@ -95,3 +104,9 @@ msgid "ForceAtlas2.edgeWeightInfluence.desc"
 msgstr ""
 "How much influence you give to the edges weight. 0 is \"no influence\" and 1 "
 "is \"normal\"."
+
+msgid "ForceAtlas2.threads.name"
+msgstr "Threads number"
+
+msgid "ForceAtlas2.threads.desc"
+msgstr "More threads means more speed if your cores can handle it."

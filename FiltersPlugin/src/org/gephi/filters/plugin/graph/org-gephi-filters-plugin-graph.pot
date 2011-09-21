@@ -58,3 +58,9 @@ msgstr "Neighbors Network"
 
 msgid "NeighborsBuilder.description"
 msgstr "Keep neighbors at depth 1, 2, 3 or Max from the current graph."
+
+msgid "KCoreBuilder.name"
+msgstr "K-core"
+
+msgid "KCoreBuilder.description"
+msgstr "Keep graph in which all nodes have degree at least k."

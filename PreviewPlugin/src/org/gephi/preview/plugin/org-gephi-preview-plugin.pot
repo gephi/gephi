@@ -16,10 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "OpenIDE-Module-Long-Description"
-msgstr "SPI for perspectives and TopComponent management"
+msgstr "Implementations of Item Builders, Renderers ans RenderTargets"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "SPI for perspectives and TopComponent management"
-
-msgid "BannerComponent.logoButton.toolTipText"
-msgstr "Go on Gephi website www.gephi.org"
+msgstr "Implementation of Preview SPI"

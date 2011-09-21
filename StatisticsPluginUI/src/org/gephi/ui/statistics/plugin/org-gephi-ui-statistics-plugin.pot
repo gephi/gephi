@@ -178,10 +178,10 @@ msgid "ConnectedComponentPanel.header.title"
 msgstr "Connected Components"
 
 msgid "ConnectedComponentPanel.jLabel1.text"
-msgstr "(Will detect strongly & weakly connected components)"
+msgstr "Detects strongly & weakly connected components"
 
 msgid "ConnectedComponentPanel.jLabel2.text"
-msgstr "(Will detect only weakly connected components)"
+msgstr "Detects only weakly connected components)"
 
 msgid "EigenvectorCentralityPanel.header.description"
 msgstr ""

@@ -1,0 +1,109 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.8\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-05 14:52+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "NodeRenderer.property.borderWidth.displayName"
+msgstr "Border Width"
+
+msgid "NodeRenderer.property.borderColor.displayName"
+msgstr "Border Color"
+
+msgid "NodeRenderer.property.opacity.displayName"
+msgstr "opacity"
+
+msgid "EdgeRenderer.property.display.displayName"
+msgstr "Show Edges"
+
+msgid "EdgeRenderer.property.thickness.displayName"
+msgstr "Thickness"
+
+msgid "EdgeRenderer.property.rescaleWeight.displayName"
+msgstr "Rescale weight"
+
+msgid "EdgeRenderer.property.curvedEdges.displayName"
+msgstr "Curved"
+
+msgid "EdgeRenderer.property.color.displayName"
+msgstr "Color"
+
+msgid "EdgeRenderer.property.opacity.displayName"
+msgstr "Opacity"
+
+msgid "EdgeRenderer.property.radius.displayName"
+msgstr "Radius"
+
+msgid "NodeLabelRenderer.property.display.displayName"
+msgstr "Show Labels"
+
+msgid "NodeLabelRenderer.property.font.displayName"
+msgstr "Font"
+
+msgid "NodeLabelRenderer.property.proportionalSize.displayName"
+msgstr "Proportional size"
+
+msgid "NodeLabelRenderer.property.color.displayName"
+msgstr "Color"
+
+msgid "NodeLabelRenderer.property.shorten.displayName"
+msgstr "Shorten label"
+
+msgid "NodeLabelRenderer.property.maxchar.displayName"
+msgstr "Max characters"
+
+msgid "NodeLabelRenderer.property.outlineSize.displayName"
+msgstr "Outline size"
+
+msgid "NodeLabelRenderer.property.outlineColor.displayName"
+msgstr "Outline color"
+
+msgid "NodeLabelRenderer.property.outlineOpacity.displayName"
+msgstr "Outline opacity"
+
+msgid "NodeLabelRenderer.property.box.displayName"
+msgstr "Box"
+
+msgid "NodeLabelRenderer.property.box.color.displayName"
+msgstr "Box color"
+
+msgid "NodeLabelRenderer.property.box.opacity.displayName"
+msgstr "Box opacity"
+
+msgid "EdgeLabelRenderer.property.display.displayName"
+msgstr "Show Labels"
+
+msgid "EdgeLabelRenderer.property.font.displayName"
+msgstr "Font"
+
+msgid "EdgeLabelRenderer.property.color.displayName"
+msgstr "Color"
+
+msgid "EdgeLabelRenderer.property.shorten.displayName"
+msgstr "Shorten label"
+
+msgid "EdgeLabelRenderer.property.maxchar.displayName"
+msgstr "Max characters"
+
+msgid "EdgeLabelRenderer.property.outlineSize.displayName"
+msgstr "Outline size"
+
+msgid "EdgeLabelRenderer.property.outlineColor.displayName"
+msgstr "Outline color"
+
+msgid "EdgeLabelRenderer.property.outlineOpacity.displayName"
+msgstr "Outline opacity"
+
+msgid "ArrowRenderer.property.size.displayName"
+msgstr "Size"

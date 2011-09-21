@@ -16,10 +16,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "OpenIDE-Module-Long-Description"
-msgstr "SPI for perspectives and TopComponent management"
+msgstr "API/SPI for building the graph preview"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "SPI for perspectives and TopComponent management"
+msgstr "API/SPI for building the graph preview"
 
-msgid "BannerComponent.logoButton.toolTipText"
-msgstr "Go on Gephi website www.gephi.org"
+msgid "PreviewProperty.Category.Nodes"
+msgstr "Nodes"
+
+msgid "PreviewProperty.Category.Edges"
+msgstr "Edges"
+
+msgid "PreviewProperty.Category.NodeLabels"
+msgstr "Node Labels"
+
+msgid "PreviewProperty.Category.EdgeLabels"
+msgstr "Edge Labels"
+
+msgid "PreviewProperty.Category.EdgeArrows"
+msgstr "Edge Arrows"

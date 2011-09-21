@@ -44,24 +44,6 @@ msgstr "Custom Color"
 msgid "PreviewNode.displayName"
 msgstr "Preview Settings"
 
-msgid "PreviewNode.Node.displayName"
-msgstr "Node"
-
-msgid "PreviewNode.Edge.displayName"
-msgstr "Edge"
-
-msgid "PreviewNode.SelfLoop.displayName"
-msgstr "Self-Loop"
-
-msgid "PreviewNode.Directed.displayName"
-msgstr "Directed"
-
-msgid "PreviewNode.Undirected.displayName"
-msgstr "Undirected"
-
-msgid "PreviewNode.Mutual.displayName"
-msgstr "Mutual"
-
 msgid "PreviewSettingsTopComponent.savePreset.input"
 msgstr "Name"
 
@@ -98,6 +80,9 @@ msgstr "Presets"
 msgid "PreviewSettingsTopComponent.ratio.minimum"
 msgstr "Minimum"
 
+msgid "PreviewSettingsTopComponent.propertySheetTab"
+msgstr "Settings"
+
 msgid "PreviewTopComponent.backgroundButton.text"
 msgstr "Background"
 
@@ -112,3 +97,9 @@ msgstr "Export:"
 
 msgid "PreviewSettingsTopComponent.svgExportButton.toolTipText"
 msgstr "Export as SVG of PDF format"
+
+msgid "PreviewTopComponent.plusButton.toolTipText"
+msgstr "More zoom"
+
+msgid "PreviewTopComponent.minusButton.toolTipText"
+msgstr "Less zoom"

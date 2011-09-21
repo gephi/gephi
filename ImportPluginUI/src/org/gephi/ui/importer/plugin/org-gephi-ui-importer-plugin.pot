@@ -51,20 +51,8 @@ msgstr "Node Query:"
 msgid "EdgeListPanel.edgeQueryLabel.text"
 msgstr "Edge Query:"
 
-msgid "EdgeListPanel.nodeAttQueyLabel.text"
-msgstr "Node Attributes Query:"
-
-msgid "EdgeListPanel.edgeAttQueryLabel.text"
-msgstr "Edge Attributes Query:"
-
 msgid "EdgeListPanel.nodeQueryTextField.text"
 msgstr "SELECT * FROM nodes"
-
-msgid "EdgeListPanel.nodeAttQueryTextField.text"
-msgstr "SELECT * FROM nodesAttributes"
-
-msgid "EdgeListPanel.edgeAttQueryTextField.text"
-msgstr "SELECT * FROM edgesAttributes"
 
 msgid "EdgeListPanel.testConnection.text"
 msgstr "Test Connection"
@@ -98,7 +86,8 @@ msgstr ""
 "Nodes and edges database with an edge table with two columns: source and "
 "target. Name node primary key column \"id\" and edge columns \"source\" and "
 "\"target\". Columns \"label\", \"x\", \"y\" and \"size\" for nodes and "
-"\"label\" and \"weight\" for edges are optionnal."
+"\"label\" and \"weight\" for edges are optional. For dynamic networks, use "
+"'start' and 'end' columns with type date, datetime or double."
 
 msgid "EdgeListPanel.sqliteFileChooser.title"
 msgstr "Database file"

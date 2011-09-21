@@ -23,3 +23,6 @@ msgstr "Node Overview"
 
 msgid "StatisticsUI.category.edgeOverview"
 msgstr "Edge Overview"
+
+msgid "StatisticsUI.category.dynamic"
+msgstr "Dynamic"

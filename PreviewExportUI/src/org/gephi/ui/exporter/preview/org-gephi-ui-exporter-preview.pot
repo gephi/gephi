@@ -90,21 +90,6 @@ msgstr "Scale stroke-width"
 msgid "UIExporterSVGPanel.labelStrokeScale.text"
 msgstr "Recommended for Adobe Illustrator"
 
-msgid "UIExporterPNGPanel.marginsLabel.text"
-msgstr "Margins:"
-
-msgid "UIExporterPNGPanel.topLabel.text"
-msgstr "Top:"
-
-msgid "UIExporterPNGPanel.leftLabel.text"
-msgstr "Left:"
-
-msgid "UIExporterPNGPanel.rightLabel.text"
-msgstr "Right:"
-
-msgid "UIExporterPNGPanel.bottomLabel.text"
-msgstr "Bottom:"
-
 msgid "UIExporterPNGPanel.widthLabel.text"
 msgstr "Width:"
 
