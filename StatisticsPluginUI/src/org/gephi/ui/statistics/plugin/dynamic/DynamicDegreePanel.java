@@ -95,11 +95,11 @@ public class DynamicDegreePanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(undirectedRadioButton)
                     .addComponent(directedRadioButton))
-                .addContainerGap(281, Short.MAX_VALUE))
+                .addContainerGap(315, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(averageOnlyCheckbox)
-                .addContainerGap(187, Short.MAX_VALUE))
+                .addContainerGap(241, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

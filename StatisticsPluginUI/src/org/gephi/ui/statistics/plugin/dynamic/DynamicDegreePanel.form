@@ -27,12 +27,12 @@
                   <Component id="undirectedRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="directedRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="281" max="32767" attributes="0"/>
+              <EmptySpace pref="315" max="32767" attributes="0"/>
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="averageOnlyCheckbox" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="187" max="32767" attributes="0"/>
+              <EmptySpace pref="241" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
