@@ -119,10 +119,12 @@ public class VizBarController {
 
                 public void propertyChange(PropertyChangeEvent evt) {
                     VizModel vizModel = VizController.getInstance().getVizModel();
-                    vizModel.setBackgroundColor(((JColorBlackWhiteSwitcher) backgroundColorButton).getColor());
+                    Color backgroundColor=((JColorBlackWhiteSwitcher) backgroundColorButton).getColor();
+                    vizModel.setBackgroundColor(backgroundColor);
 
                     TextModel textModel = VizController.getInstance().getVizModel().getTextModel();
-                    textModel.setNodeColor(new Color(0xffffff - textModel.getNodeColor().getRGB()));
+                    boolean isDarkBackground = (backgroundColor.getRed() + backgroundColor.getGreen() + backgroundColor.getBlue()) / 3 < 128;
+                    textModel.setNodeColor(isDarkBackground ? Color.WHITE : Color.BLACK);
                 }
             });
             vizModel.addPropertyChangeListener(new PropertyChangeListener() {
