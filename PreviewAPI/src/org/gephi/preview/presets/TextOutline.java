@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Authors : Sebastien Heymann <sebastien.heymann@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -24,22 +24,19 @@ import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.api.PreviewProperty;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Mathieu Bastian
- */
-public class DefaultStraight extends PreviewPreset {
+public class TextOutline extends PreviewPreset {
 
-    public DefaultStraight() {
-        super(NbBundle.getMessage(DefaultStraight.class, "DefaultStraight.name"));
+    public TextOutline() {
+        super(NbBundle.getMessage(TextOutline.class, "TextOutline.name"));
 
         //Default
         DefaultPreset defaultPreset = new DefaultPreset();
         properties.putAll(defaultPreset.getProperties());
-        
+
         //Custom values
         properties.put(PreviewProperty.SHOW_EDGE_LABELS, Boolean.TRUE);
         properties.put(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
-        properties.put(PreviewProperty.EDGE_CURVED, false);
+        properties.put(PreviewProperty.NODE_LABEL_OUTLINE_SIZE, 4f);
+        properties.put(PreviewProperty.EDGE_LABEL_OUTLINE_SIZE, 2f);
     }
 }

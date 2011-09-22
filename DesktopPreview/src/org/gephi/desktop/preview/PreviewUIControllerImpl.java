@@ -39,8 +39,13 @@ import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.presets.BlackBackground;
 import org.gephi.preview.presets.DefaultCurved;
 import org.gephi.preview.presets.DefaultPreset;
+import org.gephi.preview.presets.DefaultStraight;
+import org.gephi.preview.presets.EdgesCustomColor;
+import org.gephi.preview.presets.TagCloud;
+import org.gephi.preview.presets.TextOutline;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
 import org.gephi.preview.types.EdgeColor;
@@ -97,7 +102,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
 
                     public void run() {
                         PreviewSettingsTopComponent settingsTopComponent = PreviewSettingsTopComponent.findInstance();
-                        if(settingsTopComponent.isVisible()) {
+                        if (settingsTopComponent.isVisible()) {
                             settingsTopComponent.refreshModel();
                             PreviewTopComponent.findInstance().refreshModel();
                         }
@@ -259,7 +264,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
     }
 
     public PreviewPreset[] getDefaultPresets() {
-        return new PreviewPreset[]{new DefaultPreset(), new DefaultCurved()};
+        return new PreviewPreset[]{new DefaultPreset(), new DefaultCurved(), new DefaultStraight(), new TextOutline(), new BlackBackground(), new EdgesCustomColor(), new TagCloud()};
     }
 
     public PreviewPreset[] getUserPresets() {

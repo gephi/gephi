@@ -75,7 +75,7 @@ public class EdgeLabelRenderer implements Renderer {
     protected final int defaultMaxChar = 30;
     protected final float defaultOutlineSize = 2;
     protected final DependantColor defaultOutlineColor = new DependantColor(Color.WHITE);
-    protected final int defaultOutlineOpacity = 40;
+    protected final float defaultOutlineOpacity = 40;
     //Font cache
     protected Font font;
 

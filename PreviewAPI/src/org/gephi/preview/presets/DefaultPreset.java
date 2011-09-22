@@ -26,6 +26,7 @@ import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
+import org.gephi.preview.types.EdgeColor;
 import org.openide.util.NbBundle;
 
 /**
@@ -37,25 +38,42 @@ public class DefaultPreset extends PreviewPreset {
     public DefaultPreset() {
         super(NbBundle.getMessage(DefaultPreset.class, "Default.name"));
 
-
+        properties.put(PreviewProperty.ARROW_SIZE, 3f);
         properties.put(PreviewProperty.BACKGROUND_COLOR, Color.WHITE);
 
+        properties.put(PreviewProperty.EDGE_COLOR, new EdgeColor(EdgeColor.Mode.MIXED));
+        properties.put(PreviewProperty.EDGE_CURVED, true);
         properties.put(PreviewProperty.EDGE_RESCALE_WEIGHT, Boolean.FALSE);
-        properties.put(PreviewProperty.NODE_LABEL_PROPORTIONAL_SIZE, Boolean.TRUE);
-        properties.put(PreviewProperty.NODE_LABEL_COLOR, new DependantOriginalColor(Color.BLACK));
-        properties.put(PreviewProperty.NODE_LABEL_OUTLINE_COLOR, new DependantColor(Color.WHITE));
-        properties.put(PreviewProperty.SHOW_NODE_LABELS, Boolean.FALSE);
+        properties.put(PreviewProperty.EDGE_OPACITY, 100f);
+        properties.put(PreviewProperty.EDGE_RADIUS, 0f);
+        properties.put(PreviewProperty.EDGE_THICKNESS, 1f);
 
-        properties.put(PreviewProperty.EDGE_CURVED, Boolean.TRUE);
-        properties.put(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
-        properties.put(PreviewProperty.SHOW_NODE_LABELS, Boolean.FALSE);
-        properties.put(PreviewProperty.NODE_LABEL_PROPORTIONAL_SIZE, Boolean.TRUE);
+        properties.put(PreviewProperty.EDGE_LABEL_COLOR, new DependantOriginalColor(DependantOriginalColor.Mode.ORIGINAL));
+        properties.put(PreviewProperty.EDGE_LABEL_FONT, new Font("Arial", Font.PLAIN, 10));
+        properties.put(PreviewProperty.EDGE_LABEL_MAX_CHAR, 30);
+        properties.put(PreviewProperty.EDGE_LABEL_OUTLINE_COLOR, new DependantColor(Color.WHITE));
+        properties.put(PreviewProperty.EDGE_LABEL_OUTLINE_OPACITY, 80f);
+        properties.put(PreviewProperty.EDGE_LABEL_OUTLINE_SIZE, 0);
+        properties.put(PreviewProperty.EDGE_LABEL_SHORTEN, false);
 
-        properties.put(PreviewProperty.NODE_LABEL_FONT, Font.decode("Arial Plain 12"));
-        properties.put(PreviewProperty.EDGE_LABEL_SHORTEN, Boolean.FALSE);
-        properties.put(PreviewProperty.NODE_LABEL_MAX_CHAR, 10);
-        properties.put(PreviewProperty.NODE_BORDER_WIDTH, 1.0f);
         properties.put(PreviewProperty.NODE_BORDER_COLOR, new DependantColor(Color.BLACK));
+        properties.put(PreviewProperty.NODE_BORDER_WIDTH, 1.0f);
+        properties.put(PreviewProperty.NODE_OPACITY, 100f);
 
+        properties.put(PreviewProperty.NODE_LABEL_BOX_COLOR, new DependantColor(DependantColor.Mode.PARENT));
+        properties.put(PreviewProperty.NODE_LABEL_BOX_OPACITY, 100f);
+        properties.put(PreviewProperty.NODE_LABEL_COLOR, new DependantOriginalColor(Color.BLACK));
+        properties.put(PreviewProperty.NODE_LABEL_FONT, new Font("Arial", Font.PLAIN, 12));
+        properties.put(PreviewProperty.NODE_LABEL_MAX_CHAR, 30);
+        properties.put(PreviewProperty.NODE_LABEL_OUTLINE_COLOR, new DependantColor(Color.WHITE));
+        properties.put(PreviewProperty.NODE_LABEL_OUTLINE_OPACITY, 80f);
+        properties.put(PreviewProperty.NODE_LABEL_OUTLINE_SIZE, 0);
+        properties.put(PreviewProperty.NODE_LABEL_PROPORTIONAL_SIZE, true);
+        properties.put(PreviewProperty.NODE_LABEL_SHORTEN, false);
+        properties.put(PreviewProperty.NODE_LABEL_SHOW_BOX, false);
+
+        properties.put(PreviewProperty.SHOW_EDGES, Boolean.TRUE);
+        properties.put(PreviewProperty.SHOW_EDGE_LABELS, Boolean.FALSE);
+        properties.put(PreviewProperty.SHOW_NODE_LABELS, Boolean.FALSE);
     }
 }

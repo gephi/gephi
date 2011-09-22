@@ -1,6 +1,6 @@
 /*
 Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Authors : Sebastien Heymann <sebastien.heymann@gephi.org>
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -20,26 +20,30 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.preview.presets;
 
+import java.awt.Color;
 import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.types.DependantColor;
+import org.gephi.preview.types.DependantOriginalColor;
 import org.openide.util.NbBundle;
 
-/**
- *
- * @author Mathieu Bastian
- */
-public class DefaultStraight extends PreviewPreset {
+public class BlackBackground extends PreviewPreset {
 
-    public DefaultStraight() {
-        super(NbBundle.getMessage(DefaultStraight.class, "DefaultStraight.name"));
+    public BlackBackground() {
+        super(NbBundle.getMessage(BlackBackground.class, "BlackBackground.name"));
 
         //Default
         DefaultPreset defaultPreset = new DefaultPreset();
         properties.putAll(defaultPreset.getProperties());
-        
+
         //Custom values
+        properties.put(PreviewProperty.BACKGROUND_COLOR, Color.BLACK);
         properties.put(PreviewProperty.SHOW_EDGE_LABELS, Boolean.TRUE);
         properties.put(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
-        properties.put(PreviewProperty.EDGE_CURVED, false);
+        properties.put(PreviewProperty.NODE_LABEL_COLOR, new DependantOriginalColor(Color.WHITE));
+        properties.put(PreviewProperty.EDGE_LABEL_COLOR, new DependantOriginalColor(Color.WHITE));
+        properties.put(PreviewProperty.NODE_LABEL_OUTLINE_COLOR, new DependantColor(DependantColor.Mode.PARENT));
+        properties.put(PreviewProperty.EDGE_LABEL_OUTLINE_COLOR, new DependantColor(DependantColor.Mode.PARENT));
+        properties.put(PreviewProperty.EDGE_OPACITY, 70f);
     }
 }
