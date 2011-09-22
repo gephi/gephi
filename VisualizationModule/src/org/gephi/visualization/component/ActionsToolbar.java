@@ -71,7 +71,7 @@ public class ActionsToolbar extends JToolBar {
         add(centerOnGraphButton);
 
         //Center on zero
-        final JButton centerOnZeroButton = new JButton();
+        /*final JButton centerOnZeroButton = new JButton();
         centerOnZeroButton.setToolTipText(NbBundle.getMessage(VizBarController.class, "ActionsToolbar.centerOnZero"));
         centerOnZeroButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/visualization/component/centerOnZero.png")));
         centerOnZeroButton.addActionListener(new ActionListener() {
@@ -80,7 +80,7 @@ public class ActionsToolbar extends JToolBar {
                 VizController.getInstance().getGraphIO().centerOnZero();
             }
         });
-        add(centerOnZeroButton);
+        add(centerOnZeroButton);*/
 
         //Reset colors
         final JColorButton resetColorButton = new JColorButton(color, true, false);
