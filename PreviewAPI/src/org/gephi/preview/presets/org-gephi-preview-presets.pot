@@ -18,12 +18,6 @@ msgstr ""
 msgid "Default.name"
 msgstr "Default"
 
-msgid "SmallLabels.name"
-msgstr "Small Labels"
-
-msgid "HighlightMutualEdges.name"
-msgstr "Highlight Mutual Edges"
-
 msgid "TagCloud.name"
 msgstr "Tag Cloud"
 
@@ -35,3 +29,9 @@ msgstr "Default Curved"
 
 msgid "EdgesCustomColor.name"
 msgstr "Edges Custom Color"
+
+msgid "TextOutline.name"
+msgstr "Text outline"
+
+msgid "BlackBackground.name"
+msgstr "Black Background"

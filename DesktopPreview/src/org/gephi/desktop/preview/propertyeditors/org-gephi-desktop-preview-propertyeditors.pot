@@ -42,7 +42,7 @@ msgstr "Custom"
 
 msgid "DependantOriginalColorPanel.jXHeader1.description"
 msgstr ""
-"Configures the color of the label. It can have a color of it''s own "
+"Configures the color of the label. It can have a color of it's own "
 "(original), a custom color or it's node/edge color."
 
 msgid "DependantOriginalColorPanel.originalRadio.text"
