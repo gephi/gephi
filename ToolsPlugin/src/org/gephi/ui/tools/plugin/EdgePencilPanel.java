@@ -70,19 +70,19 @@ public class EdgePencilPanel extends javax.swing.JPanel {
         colorButton = new JColorButton(Color.BLACK);
         labelColor = new javax.swing.JLabel();
 
-        statusLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        statusLabel.setFont(statusLabel.getFont().deriveFont((float)10));
         statusLabel.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.statusLabel.text")); // NOI18N
 
-        weightSpinner.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        weightSpinner.setFont(weightSpinner.getFont().deriveFont((float)10));
         weightSpinner.setModel(new javax.swing.SpinnerNumberModel(Float.valueOf(1.0f), Float.valueOf(0.0f), null, Float.valueOf(0.1f)));
 
-        labelWeight.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelWeight.setFont(labelWeight.getFont().deriveFont((float)10));
         labelWeight.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.labelWeight.text")); // NOI18N
 
         colorButton.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.colorButton.text")); // NOI18N
         colorButton.setContentAreaFilled(false);
 
-        labelColor.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelColor.setFont(labelColor.getFont().deriveFont((float)10));
         labelColor.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.labelColor.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -92,7 +92,7 @@ public class EdgePencilPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 185, Short.MAX_VALUE)
                 .addComponent(labelColor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)

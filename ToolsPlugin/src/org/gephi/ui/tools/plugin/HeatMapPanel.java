@@ -157,25 +157,25 @@ public class HeatMapPanel extends javax.swing.JPanel {
 
         setPreferredSize(new java.awt.Dimension(654, 28));
 
-        statusLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
+        statusLabel.setFont(statusLabel.getFont().deriveFont((float)10));
         statusLabel.setText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.statusLabel.text")); // NOI18N
 
-        labelMode.setFont(new java.awt.Font("Tahoma", 0, 10));
+        labelMode.setFont(labelMode.getFont().deriveFont((float)10));
         labelMode.setText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.labelMode.text")); // NOI18N
 
-        modeComboBox.setFont(new java.awt.Font("Tahoma", 0, 10));
+        modeComboBox.setFont(modeComboBox.getFont().deriveFont((float)10));
         modeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Gradient", "Palette" }));
 
         gradientPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        labelGradient.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelGradient.setFont(labelGradient.getFont().deriveFont((float)10));
         labelGradient.setText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.labelGradient.text")); // NOI18N
         labelGradient.setPreferredSize(new java.awt.Dimension(45, 28));
         gradientPanel.add(labelGradient);
 
         palettePanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
-        labelPalette.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelPalette.setFont(labelPalette.getFont().deriveFont((float)10));
         labelPalette.setText(org.openide.util.NbBundle.getMessage(HeatMapPanel.class, "HeatMapPanel.labelPalette.text")); // NOI18N
         labelPalette.setPreferredSize(new java.awt.Dimension(45, 28));
         palettePanel.add(labelPalette);
@@ -195,7 +195,7 @@ public class HeatMapPanel extends javax.swing.JPanel {
                 .addComponent(gradientPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(palettePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

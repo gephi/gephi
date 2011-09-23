@@ -103,7 +103,7 @@ public class SelectionBar extends javax.swing.JPanel {
             }
         } else {
             mouseSelection = false;
-            statusLabel.setText("No selection");
+            statusLabel.setText(NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.noSelection"));
         }
     }
 
@@ -123,8 +123,7 @@ public class SelectionBar extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(150, 28));
         setLayout(new java.awt.GridBagLayout());
 
-        statusLabel.setFont(new java.awt.Font("Tahoma", 0, 10));
-        statusLabel.setText(org.openide.util.NbBundle.getMessage(SelectionBar.class, "SelectionBar.statusLabel.text")); // NOI18N
+        statusLabel.setFont(statusLabel.getFont().deriveFont((float)10));
         statusLabel.setPreferredSize(new java.awt.Dimension(34, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

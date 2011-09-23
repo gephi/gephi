@@ -66,13 +66,13 @@ public class ShortestPathPanel extends javax.swing.JPanel {
 
         setPreferredSize(new java.awt.Dimension(400, 28));
 
-        statusLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        statusLabel.setFont(statusLabel.getFont().deriveFont((float)10));
         statusLabel.setText(org.openide.util.NbBundle.getMessage(ShortestPathPanel.class, "ShortestPathPanel.statusLabel.text")); // NOI18N
 
-        resultLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        resultLabel.setFont(resultLabel.getFont().deriveFont((float)10));
         resultLabel.setText(org.openide.util.NbBundle.getMessage(ShortestPathPanel.class, "ShortestPathPanel.resultLabel.text")); // NOI18N
 
-        labelColor.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelColor.setFont(labelColor.getFont().deriveFont((float)10));
         labelColor.setText(org.openide.util.NbBundle.getMessage(ShortestPathPanel.class, "ShortestPathPanel.labelColor.text")); // NOI18N
 
         colorButton.setText(org.openide.util.NbBundle.getMessage(ShortestPathPanel.class, "ShortestPathPanel.colorButton.text")); // NOI18N
@@ -86,7 +86,7 @@ public class ShortestPathPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(resultLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                .addComponent(resultLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(labelColor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

@@ -57,7 +57,7 @@ public class PainterPanel extends javax.swing.JPanel {
         colorButton.setContentAreaFilled(false);
         colorButton.setFocusPainted(false);
 
-        labelColor.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelColor.setFont(labelColor.getFont().deriveFont((float)10));
         labelColor.setText(org.openide.util.NbBundle.getMessage(PainterPanel.class, "PainterPanel.labelColor.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -69,7 +69,7 @@ public class PainterPanel extends javax.swing.JPanel {
                 .addComponent(labelColor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(468, Short.MAX_VALUE))
+                .addContainerGap(465, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

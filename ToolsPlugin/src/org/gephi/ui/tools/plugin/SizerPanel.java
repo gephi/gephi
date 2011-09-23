@@ -69,7 +69,7 @@ public class SizerPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel1.setFont(jLabel1.getFont().deriveFont((float)10));
         jLabel1.setText(org.openide.util.NbBundle.getMessage(SizerPanel.class, "SizerPanel.jLabel1.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -81,7 +81,7 @@ public class SizerPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 0);
         add(jLabel1, gridBagConstraints);
 
-        labelSize.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        labelSize.setFont(labelSize.getFont().deriveFont((float)10));
         labelSize.setText(org.openide.util.NbBundle.getMessage(SizerPanel.class, "SizerPanel.labelSize.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -90,7 +90,7 @@ public class SizerPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 4);
         add(labelSize, gridBagConstraints);
 
-        sizeLabel.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        sizeLabel.setFont(sizeLabel.getFont().deriveFont((float)10));
         sizeLabel.setText(org.openide.util.NbBundle.getMessage(SizerPanel.class, "SizerPanel.sizeLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
