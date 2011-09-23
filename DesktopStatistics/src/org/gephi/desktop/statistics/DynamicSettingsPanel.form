@@ -58,7 +58,7 @@
                           <Component id="labelCurrentTimeline" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="currentIntervalLabel" min="-2" pref="199" max="-2" attributes="0"/>
-                          <EmptySpace pref="61" max="32767" attributes="0"/>
+                          <EmptySpace pref="121" max="32767" attributes="0"/>
                           <Component id="windowInfoLabel" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -91,7 +91,7 @@
                       </Group>
                       <Component id="windowInfoLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="42" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

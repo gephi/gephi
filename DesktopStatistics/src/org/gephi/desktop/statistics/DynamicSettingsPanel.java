@@ -126,12 +126,16 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
         }
 
         //Window and tick
+        double initValue = 0.;
+        if(bounds.getHigh() - bounds.getLow() > 1) {
+            initValue = 1.;
+        }
         if (model.getTimeFormat().equals(DynamicModel.TimeFormat.DOUBLE)) {
-            windowTextField.setText(dynamicStatistics.getWindow() + "");
-            tickTextField.setText(dynamicStatistics.getTick() + "");
+            windowTextField.setText(initValue + "");
+            tickTextField.setText(initValue + "");
         } else {
-            windowTextField.setText("" + windowTimeUnit.convert((long) dynamicStatistics.getWindow(), TimeUnit.MILLISECONDS));
-            tickTextField.setText("" + tickTimeUnit.convert((long) dynamicStatistics.getTick(), TimeUnit.MILLISECONDS));
+            windowTextField.setText("" + windowTimeUnit.convert((long) initValue, TimeUnit.MILLISECONDS));
+            tickTextField.setText("" + tickTimeUnit.convert((long) initValue, TimeUnit.MILLISECONDS));
         }
 
         //Add listeners
