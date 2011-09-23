@@ -67,7 +67,7 @@ public abstract class ChartUtils {
             domainAxis.setRange(dSeries.getMinX() - 1, dSeries.getMaxX() + 1);
         }
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setRange(-1, dSeries.getMaxY() + 0.1 * dSeries.getMaxY());
+        rangeAxis.setRange(-0.1 * Math.sqrt(dSeries.getMaxY()), dSeries.getMaxY() + 0.1 * Math.sqrt(dSeries.getMaxY()));
     }
 
     public static String renderChart(JFreeChart chart, String fileName) {
