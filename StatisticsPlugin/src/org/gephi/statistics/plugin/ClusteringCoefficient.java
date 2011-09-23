@@ -342,7 +342,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         HashMap<Node, Integer> indicies = new HashMap<Node, Integer>();
         int index = 0;
         for (Node s : hgraph.getNodes()) {
-            indicies.put(s.getNodeData().getRootNode(), index);
+            indicies.put(s, index);
             network[index] = new ArrayWrapper();
             index++;
             Progress.progress(progress, ++ProgressCount);
@@ -353,17 +353,18 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             HashMap<Node, EdgeWrapper> neighborTable = new HashMap<Node, EdgeWrapper>();
 
             if (!isDirected) {
-                for (Node neighbor : hgraph.getNeighbors(node)) {
+                for (Edge edge : hgraph.getEdgesAndMetaEdges(node)) {
+                    Node neighbor = hgraph.getOpposite(node, edge);
                     neighborTable.put(neighbor, new EdgeWrapper(1, network[indicies.get(neighbor)]));
                 }
             } else {
                 for (Edge in : ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node)) {
-                    Node neighbor = in.getSource();
+                    Node neighbor = in.getSource().getNodeData().getNode(hgraph.getView().getViewId());
                     neighborTable.put(neighbor, new EdgeWrapper(1, network[indicies.get(neighbor)]));
                 }
 
                 for (Edge out : ((HierarchicalDirectedGraph) hgraph).getOutEdgesAndMetaOutEdges(node)) {
-                    Node neighbor = out.getTarget();
+                    Node neighbor = out.getTarget().getNodeData().getNode(hgraph.getView().getViewId());
                     EdgeWrapper ew = neighborTable.get(neighbor);
                     if (ew == null) {
                         neighborTable.put(neighbor, new EdgeWrapper(1, network[indicies.get(neighbor)]));
