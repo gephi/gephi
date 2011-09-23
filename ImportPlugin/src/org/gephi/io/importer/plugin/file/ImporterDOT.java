@@ -26,6 +26,9 @@ import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.util.HashMap;
 import java.util.Map;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
@@ -246,6 +249,25 @@ public class ImporterDOT implements FileImporter, LongTask {
                     }
                 } else {
                     //System.err.println("couldn't find style at line " + streamTokenizer.lineno());
+                    streamTokenizer.pushBack();
+                }
+            } else {
+                // other attributes
+                String attributeName = streamTokenizer.sval;
+                AttributeColumn column = container.getAttributeModel().getNodeTable().getColumn(attributeName);
+                if (column == null) {
+                    column = container.getAttributeModel().getNodeTable().addColumn(attributeName, attributeName, AttributeType.STRING, AttributeOrigin.DATA, "");
+                    report.log(NbBundle.getMessage(ImporterDOT.class, "importerDOT_log_nodeattribute", attributeName, AttributeType.STRING.getTypeString()));
+                }
+                streamTokenizer.nextToken();
+                if (streamTokenizer.ttype == '=') {
+                    streamTokenizer.nextToken();
+                    if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
+                        nodeDraft.addAttributeValue(column, streamTokenizer.sval);
+                    } else {
+                        streamTokenizer.pushBack();
+                    }
+                } else {
                     streamTokenizer.pushBack();
                 }
             }
