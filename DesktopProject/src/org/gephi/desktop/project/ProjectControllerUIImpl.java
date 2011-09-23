@@ -28,6 +28,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.desktop.project.api.ProjectControllerUI;
@@ -82,6 +83,9 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
     public ProjectControllerUIImpl() {
 
         controller = Lookup.getDefault().lookup(ProjectController.class);
+        
+        //Make sure the attribute controller is inited
+        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
 
         //Project IO executor
         longTaskExecutor = new LongTaskExecutor(true, "Project IO");
