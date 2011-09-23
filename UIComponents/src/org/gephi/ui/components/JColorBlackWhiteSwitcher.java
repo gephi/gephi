@@ -125,9 +125,9 @@ public class JColorBlackWhiteSwitcher extends JButton {
 
     private void refreshIcon() {
         if (color.equals(Color.WHITE)) {//White color, show a lightbulb on:
-            setIcon(ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/light-bulb.png", false));
+            setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/light-bulb.png", false));
         } else if (color.equals(Color.BLACK)) {//Black color, show a lightbulb off:
-            setIcon(ImageUtilities.loadImageIcon("/org/gephi/ui/components/resources/light-bulb-off.png", false));
+            setIcon(ImageUtilities.loadImageIcon("org/gephi/ui/components/resources/light-bulb-off.png", false));
         } else {
             setIcon(new ColorIcon());//Other color, show the color in a square as the icon
         }
