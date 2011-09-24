@@ -106,8 +106,8 @@ public class GraphStructure {
             if (!node.getEdgesOutTree().isEmpty()) {
                 for (edgeIterator.setNode(node.getEdgesOutTree()); edgeIterator.hasNext();) {
                     AbstractEdge edge = edgeIterator.next();
-                    AbstractNode sourceCopy = newStructure.getNodeAt(edge.getSource().getPre());
-                    AbstractNode targetCopy = newStructure.getNodeAt(edge.getTarget().getPre());
+                    AbstractNode sourceCopy = newStructure.getNodeAt(node.getPre());
+                    AbstractNode targetCopy = newStructure.getNodeAt(((AbstractNode) edge.getTarget().getNodeData().getNode(view.getViewId())).getPre());
                     sourceCopy.getEdgesOutTree().add(edge);
                     targetCopy.getEdgesInTree().add(edge);
                     addToDictionnary(edge);
