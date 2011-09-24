@@ -41,6 +41,8 @@ import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.spi.DynamicStatistics;
+import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
@@ -52,7 +54,7 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class DynamicDegree implements DynamicStatistics {
+public class DynamicDegree implements DynamicStatistics, LongTask {
 
     public static final String DYNAMIC_INDEGREE = "dynamic_indegree";
     public static final String DYNAMIC_OUTDEGREE = "dynamic_outdegree";
@@ -65,6 +67,7 @@ public class DynamicDegree implements DynamicStatistics {
     private Interval bounds;
     private boolean isDirected;
     private boolean averageOnly;
+    private boolean cancel = false;
     //Cols
     private AttributeColumn dynamicInDegreeColumn;
     private AttributeColumn dynamicOutDegreeColumn;
@@ -129,7 +132,7 @@ public class DynamicDegree implements DynamicStatistics {
         ChartUtils.scaleChart(chart, dSeries, false);
         String degreeImageFile = ChartUtils.renderChart(chart, "degree-ts.png");
 
-        NumberFormat f = new DecimalFormat("#0.000");
+        NumberFormat f = new DecimalFormat("#0.000000");
 
         String report = "<HTML> <BODY> <h1>Dynamic Degree Report </h1> "
                 + "<hr>"
@@ -154,7 +157,7 @@ public class DynamicDegree implements DynamicStatistics {
         }
 
         long sum = 0;
-        for (Node n : graph.getNodes()) {
+        for (Node n : graph.getNodes().toArray()) {
             int degree = graph.getTotalDegree(n);
 
             if (!averageOnly) {
@@ -190,6 +193,9 @@ public class DynamicDegree implements DynamicStatistics {
                 }
             }
             sum += degree;
+            if (cancel) {
+                break;
+            }
         }
 
         double average = sum / (double) graph.getNodeCount();
@@ -238,5 +244,13 @@ public class DynamicDegree implements DynamicStatistics {
 
     public boolean isAverageOnly() {
         return averageOnly;
+    }
+
+    public boolean cancel() {
+        cancel = true;
+        return true;
+    }
+
+    public void setProgressTicket(ProgressTicket progressTicket) {
     }
 }

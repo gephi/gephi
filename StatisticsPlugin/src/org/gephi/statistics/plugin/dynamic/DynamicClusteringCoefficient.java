@@ -41,6 +41,8 @@ import org.gephi.graph.api.Node;
 import org.gephi.statistics.plugin.ChartUtils;
 import org.gephi.statistics.plugin.ClusteringCoefficient;
 import org.gephi.statistics.spi.DynamicStatistics;
+import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.progress.ProgressTicket;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
@@ -52,7 +54,7 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class DynamicClusteringCoefficient implements DynamicStatistics {
+public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask {
 
     public static final String DYNAMIC_CLUSTERING_COEFFICIENT = "dynamic_clustering";
     //Data
@@ -63,6 +65,7 @@ public class DynamicClusteringCoefficient implements DynamicStatistics {
     private Interval bounds;
     private boolean isDirected;
     private boolean averageOnly;
+    private boolean cancel = false;
     private ClusteringCoefficient clusteringCoefficientStat;
     //Cols
     private AttributeColumn dynamicCoefficientColumn;
@@ -118,7 +121,7 @@ public class DynamicClusteringCoefficient implements DynamicStatistics {
         ChartUtils.scaleChart(chart, dSeries, false);
         String coefficientImageFile = ChartUtils.renderChart(chart, "coefficient-ts.png");
 
-        NumberFormat f = new DecimalFormat("#0.000");
+        NumberFormat f = new DecimalFormat("#0.000000");
 
         String report = "<HTML> <BODY> <h1>Dynamic Clustering Coefficient Report </h1> "
                 + "<hr>"
@@ -161,6 +164,9 @@ public class DynamicClusteringCoefficient implements DynamicStatistics {
                     val = new DynamicDouble(val, valInterval);
                 }
                 n.getAttributes().setValue(dynamicCoefficientColumn.getIndex(), val);
+                if (cancel) {
+                    break;
+                }
             }
         }
 
@@ -213,5 +219,13 @@ public class DynamicClusteringCoefficient implements DynamicStatistics {
 
     public boolean isAverageOnly() {
         return averageOnly;
+    }
+
+    public boolean cancel() {
+        cancel = true;
+        return true;
+    }
+
+    public void setProgressTicket(ProgressTicket progressTicket) {
     }
 }
