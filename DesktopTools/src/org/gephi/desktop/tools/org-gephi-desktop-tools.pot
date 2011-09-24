@@ -35,3 +35,6 @@ msgstr "Mouse selection"
 
 msgid "SelectionBar.statusLabel.dragging"
 msgstr "Dragging"
+
+msgid "SelectionBar.statusLabel.noSelection"
+msgstr "No selection"
