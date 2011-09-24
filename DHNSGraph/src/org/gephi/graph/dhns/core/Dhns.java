@@ -178,6 +178,23 @@ public class Dhns implements GraphModel {
         }
     }
 
+    public boolean conditionalWriteLock() {
+        if (readWriteLock.getReadHoldCount() > 0) {
+            throw new IllegalMonitorStateException("Impossible to acquire a write lock when currently holding a read lock. Use toArray() methods on NodeIterable and EdgeIterable to avoid holding a readLock.");
+        }
+        if (!readWriteLock.isWriteLockedByCurrentThread()) {
+            readWriteLock.writeLock().lock();
+            return true;
+        }
+        return false;
+    }
+    
+    public void conditionalWriteUnlock(boolean locked) {
+        if(locked) {
+            readWriteLock.writeLock().unlock();
+        }
+    }
+
     public void writeLock() {
         if (readWriteLock.getReadHoldCount() > 0) {
             throw new IllegalMonitorStateException("Impossible to acquire a write lock when currently holding a read lock. Use toArray() methods on NodeIterable and EdgeIterable to avoid holding a readLock.");
