@@ -20,6 +20,8 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.dynamic;
 
+import org.gephi.data.attributes.api.AttributeController;
+import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.Estimator;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
@@ -32,6 +34,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
+import org.openide.util.Lookup;
 
 /**
  * The wrapper for graph and time interval.
@@ -41,6 +44,7 @@ import org.gephi.graph.api.Node;
 public final class DynamicGraphImpl implements DynamicGraph {
 
     private GraphModel model;
+    private AttributeModel attributeModel;
     private GraphView sourceView;
     private GraphView currentView;
     private double low;
@@ -81,6 +85,9 @@ public final class DynamicGraphImpl implements DynamicGraph {
         model = graph.getGraphModel();
         sourceView = graph.getView();
         currentView = model.copyView(sourceView);
+
+        AttributeController ac = Lookup.getDefault().lookup(AttributeController.class);
+        attributeModel = ac.getModel(graph.getGraphModel().getWorkspace());
 
         this.low = low;
         this.high = high;
@@ -255,28 +262,43 @@ public final class DynamicGraphImpl implements DynamicGraph {
     public Graph getSnapshotGraph(Interval interval, Estimator estimator) {
         Graph graph = model.getGraph(sourceView);
         Graph vgraph = model.getGraph(currentView);
-        for (Node n : graph.getNodes().toArray()) {
-            TimeInterval ti = (TimeInterval) n.getNodeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
-            if (ti == null && !vgraph.contains(n)) {
-                vgraph.addNode(n);
-            } else if (ti != null && ti.getValue(interval, estimator) == null && vgraph.contains(n)) {
-                vgraph.removeNode(n);
-            } else if (ti != null && ti.getValue(interval, estimator) != null && !vgraph.contains(n)) {
-                vgraph.addNode(n);
+
+        graph.writeLock();
+
+        if (attributeModel.getNodeTable().hasColumn(DynamicModel.TIMEINTERVAL_COLUMN)) {
+            for (Node n : graph.getNodes().toArray()) {
+                TimeInterval ti = (TimeInterval) n.getNodeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
+                if (ti == null && !vgraph.contains(n)) {
+                    vgraph.addNode(n);
+                } else if (ti != null) {
+                    boolean isInRange = ti.isInRange(interval);
+                    boolean isInGraph = vgraph.contains(n);
+                    if (!isInRange && isInGraph) {
+                        vgraph.removeNode(n);
+                    } else if (isInRange && !isInGraph) {
+                        vgraph.addNode(n);
+                    }
+                }
             }
         }
-        for (Edge e : graph.getEdges().toArray()) {
-            TimeInterval ti = (TimeInterval) e.getEdgeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
-            if (ti == null && !vgraph.contains(e)
-                    && vgraph.contains(e.getSource()) && vgraph.contains(e.getTarget())) {
-                vgraph.addEdge(e);
-            } else if (ti != null && ti.getValue(interval, estimator) == null && vgraph.contains(e)) {
-                vgraph.removeEdge(e);
-            } else if (ti != null && ti.getValue(interval, estimator) != null && !vgraph.contains(e)
-                    && vgraph.contains(e.getSource()) && vgraph.contains(e.getTarget())) {
-                vgraph.addEdge(e);
+        if (attributeModel.getEdgeTable().hasColumn(DynamicModel.TIMEINTERVAL_COLUMN)) {
+            for (Edge e : graph.getEdges().toArray()) {
+                TimeInterval ti = (TimeInterval) e.getEdgeData().getAttributes().getValue(DynamicModel.TIMEINTERVAL_COLUMN);
+                if (ti == null && !vgraph.contains(e)
+                        && vgraph.contains(e.getSource()) && vgraph.contains(e.getTarget())) {
+                    vgraph.addEdge(e);
+                } else if (ti != null) {
+                    boolean isInRange = ti.isInRange(interval);
+                    boolean isInGraph = vgraph.contains(e);
+                    if (!isInRange && isInGraph) {
+                        vgraph.removeEdge(e);
+                    } else if (isInRange && !isInGraph && vgraph.contains(e.getSource()) && vgraph.contains(e.getTarget())) {
+                        vgraph.addEdge(e);
+                    }
+                }
             }
         }
+        graph.writeUnlock();
         return vgraph;
     }
 
