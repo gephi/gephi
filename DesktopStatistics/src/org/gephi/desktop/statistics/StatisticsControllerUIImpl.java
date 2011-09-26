@@ -23,9 +23,8 @@ package org.gephi.desktop.statistics;
 import java.util.ArrayList;
 import org.gephi.desktop.statistics.api.StatisticsControllerUI;
 import org.gephi.dynamic.api.DynamicController;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceListener;
+import org.gephi.dynamic.api.DynamicModelEvent;
+import org.gephi.dynamic.api.DynamicModelListener;
 import org.gephi.statistics.api.StatisticsController;
 import org.gephi.statistics.spi.Statistics;
 import org.gephi.statistics.spi.StatisticsUI;
@@ -42,6 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class StatisticsControllerUIImpl implements StatisticsControllerUI {
 
     private StatisticsModelUIImpl model;
+    private DynamicModelListener dynamicModelListener;
 
     public void setup(StatisticsModelUIImpl model) {
         this.model = model;
@@ -57,12 +57,28 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
                     }
                 }
             }
+            //Add listener
+            dynamicModelListener = new DynamicModelListener() {
+
+                public void dynamicModelChanged(DynamicModelEvent event) {
+                    if (event.getEventType().equals(DynamicModelEvent.EventType.IS_DYNAMIC_GRAPH)) {
+                        boolean isDynamic = (Boolean) event.getData();
+                        for (StatisticsUI ui : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
+                            if (ui.getCategory().equals(StatisticsUI.CATEGORY_DYNAMIC)) {
+                                setStatisticsUIVisible(ui, isDynamic);
+                            }
+                        }
+                    }
+                }
+            };
+            dynamicController.addModelListener(dynamicModelListener);
         }
     }
 
     public void unsetup() {
         if (model != null) {
             DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+            dynamicController.removeModelListener(dynamicModelListener);
         }
     }
 

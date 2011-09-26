@@ -107,7 +107,7 @@ public final class DynamicControllerImpl implements DynamicController {
     }
 
     @Override
-    public DynamicModel getModel() {
+    public synchronized DynamicModel getModel() {
         if (model == null) {
             ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
             if (projectController.getCurrentWorkspace() != null) {
@@ -119,7 +119,7 @@ public final class DynamicControllerImpl implements DynamicController {
     }
 
     @Override
-    public DynamicModel getModel(Workspace workspace) {
+    public synchronized  DynamicModel getModel(Workspace workspace) {
         if (workspace != null) {
             DynamicModel m = workspace.getLookup().lookup(DynamicModel.class);
             if (m != null) {

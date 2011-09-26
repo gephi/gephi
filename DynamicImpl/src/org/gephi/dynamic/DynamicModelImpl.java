@@ -342,7 +342,8 @@ public final class DynamicModelImpl implements DynamicModel {
 
     @Override
     public boolean isDynamicGraph() {
-        return !Double.isInfinite(timeIntervalIndex.getMax()) || !Double.isInfinite(timeIntervalIndex.getMin());
+        boolean res = !Double.isInfinite(timeIntervalIndex.getMax()) || !Double.isInfinite(timeIntervalIndex.getMin());
+        return res || !nodeDynamicColumns.isEmpty() || !edgeDynamicColumns.isEmpty();
     }
 
     @Override
