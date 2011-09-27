@@ -157,7 +157,7 @@ public class AttributeRowSerializer {
                         AttributeType type = col.getType();
                         Object v = type.parse(value);
                         v = model.getManagedValue(v, type);
-                        row.setValue(col, value);
+                        row.setValue(col, v);
                     }
                     value = "";
                     col = null;

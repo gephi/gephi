@@ -107,7 +107,7 @@ public class AttributeRowImpl implements AttributeRow {
         if (attributeTable.getColumn(column.getIndex()) != column) {
             column = attributeTable.getColumn(column);
             if (column == null) {
-                throw new IllegalArgumentException("The value column doesn't exist");
+                throw new IllegalArgumentException("The "+attributeTable.getName()+" value column "+value.getColumn().getId()+" with index "+value.getColumn().getIndex()+" doesn't exist");
             }
             value = attributeTable.getFactory().newValue(column, value.getValue());
         }
