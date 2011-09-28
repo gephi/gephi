@@ -66,6 +66,7 @@
                 <pathelement path="PreviewAPI/src"/>
                 <pathelement path="ProjectAPI/src"/>
                 <pathelement path="RankingAPI/src"/>
+                <pathelement path="RankingPlugin/src"/>
                 <pathelement path="StatisticsAPI/src"/>
                 <pathelement path="ToolsAPI/src"/>
             </sourcepath>
@@ -179,6 +180,7 @@
                 <include name="org-gephi-utils.jar"/>
                 <include name="org-gephi-utils-longtask.jar" />
                 <include name="org-gephi-ranking-api.jar"/>
+                <include name="org-gephi-ranking-plugin.jar"/>
                 <include name="org-gephi-partition-api.jar"/>
                 <include name="org-gephi-partition-plugin.jar"/>
                 <include name="org-gephi-io-generator-api.jar"/>
