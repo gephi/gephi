@@ -27,8 +27,12 @@ import org.gephi.preview.api.PreviewPreset;
  * @author Mathieu Bastian
  */
 public interface PreviewUIModel {
-    
+
     public PreviewPreset getCurrentPreset();
-    
+
     public float getVisibilityRatio();
+    
+    public boolean isRefreshing();
+    
+    public boolean isWorkspaceBarVisible();
 }

@@ -53,13 +53,14 @@ import processing.core.PApplet;
  * 
  * @author Jérémy Subtil, Mathieu Bastian
  */
-public final class PreviewTopComponent extends TopComponent {
+public final class PreviewTopComponent extends TopComponent implements PropertyChangeListener {
 
     private static PreviewTopComponent instance;
     static final String ICON_PATH = "org/gephi/desktop/preview/resources/preview.png";
     private static final String PREFERRED_ID = "PreviewTopComponent";
     private final transient ProcessingListener processingListener = new ProcessingListener();
     //Data
+    private transient PreviewUIModel model;
     private transient ProcessingTarget target;
     private transient PApplet sketch;
 
@@ -106,17 +107,36 @@ public final class PreviewTopComponent extends TopComponent {
                 target.zoomMinus();
             }
         });
+
+        PreviewUIController controller = Lookup.getDefault().lookup(PreviewUIController.class);
+        controller.addPropertyChangeListener(this);
+
+        PreviewUIModel m = controller.getModel();
+        if (m != null) {
+            this.model = m;
+            initTarget(model);
+        }
     }
 
-    public void refreshModel() {
-        PreviewUIController puic = Lookup.getDefault().lookup(PreviewUIController.class);
-        PreviewUIModel previewUIModel = puic.getModel();
-        if (previewUIModel == null) {
-            //Disable
-            initTarget(null);
-        } else {
-            initTarget(previewUIModel);
-            refreshPreview();
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(PreviewUIController.SELECT)) {
+            this.model = (PreviewUIModel) evt.getNewValue();
+            initTarget(model);
+        } else if (evt.getPropertyName().equals(PreviewUIController.REFRESHED)) {
+            SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                    target.refresh();
+                }
+            });
+        } else if (evt.getPropertyName().equals(PreviewUIController.REFRESHING)) {
+            setRefresh((Boolean) evt.getNewValue());
+        } else if (evt.getPropertyName().equals(PreviewUIController.GRAPH_CHANGED)) {
+            if ((Boolean) evt.getNewValue()) {
+                showBannerPanel();
+            } else {
+                hideBannerPanel();
+            }
         }
     }
 
@@ -180,12 +200,16 @@ public final class PreviewTopComponent extends TopComponent {
      * @see PreviewUIController#showRefreshNotification()
      */
     public void showBannerPanel() {
-        bannerPanel.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                bannerPanel.setVisible(true);
+            }
+        });
     }
 
     public void setBackgroundColor(Color color) {
         ((JColorButton) backgroundButton).setColor(color);
-
     }
 
     /**
@@ -194,7 +218,12 @@ public final class PreviewTopComponent extends TopComponent {
      * @see PreviewUIController#hideRefreshNotification()
      */
     public void hideBannerPanel() {
-        bannerPanel.setVisible(false);
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                bannerPanel.setVisible(false);
+            }
+        });
     }
 
     /** This method is called from within the constructor to
@@ -221,8 +250,6 @@ public final class PreviewTopComponent extends TopComponent {
         plusButton = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
-
-        org.openide.awt.Mnemonics.setLocalizedText(southBusyLabel, org.openide.util.NbBundle.getMessage(PreviewTopComponent.class, "PreviewTopComponent.southBusyLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -411,17 +438,5 @@ public final class PreviewTopComponent extends TopComponent {
         public Object readResolve() {
             return PreviewTopComponent.getDefault();
         }
-    }
-
-    /**
-     * Refresh the preview applet.
-     */
-    private void refreshPreview() {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            public void run() {
-                target.refresh();
-            }
-        });
     }
 }

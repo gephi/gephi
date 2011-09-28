@@ -33,8 +33,11 @@ import org.openide.util.Lookup;
  */
 public class PreviewUIModelImpl implements PreviewUIModel {
 
+    //Data
     private float visibilityRatio = 1f;
     private PreviewPreset currentPreset;
+    private boolean refreshing;
+    private boolean workspaceBarVisible;
 
     public PreviewUIModelImpl() {
         currentPreset = new DefaultPreset();
@@ -56,5 +59,21 @@ public class PreviewUIModelImpl implements PreviewUIModel {
 
     public void setCurrentPreset(PreviewPreset preset) {
         currentPreset = preset;
+    }
+
+    public boolean isRefreshing() {
+        return refreshing;
+    }
+
+    public boolean isWorkspaceBarVisible() {
+        return workspaceBarVisible;
+    }
+
+    public void setRefreshing(boolean refreshing) {
+        this.refreshing = refreshing;
+    }
+
+    public void setWorkspaceBarVisible(boolean workspaceBarVisible) {
+        this.workspaceBarVisible = workspaceBarVisible;
     }
 }

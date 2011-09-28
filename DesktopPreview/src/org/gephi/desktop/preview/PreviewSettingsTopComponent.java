@@ -25,6 +25,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.logging.Logger;
@@ -58,7 +60,7 @@ import org.openide.windows.WindowManager;
  * 
  * @author Jérémy Subtil, Mathieu Bastian
  */
-public final class PreviewSettingsTopComponent extends TopComponent {
+public final class PreviewSettingsTopComponent extends TopComponent implements PropertyChangeListener {
     
     private static PreviewSettingsTopComponent instance;
     static final String ICON_PATH = "org/gephi/desktop/preview/resources/settings.png";
@@ -94,16 +96,6 @@ public final class PreviewSettingsTopComponent extends TopComponent {
             propertiesPanel.add(propertySheet, BorderLayout.CENTER);
         }
 
-
-        // checks the state of the workspace
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        if (pc.getCurrentWorkspace() != null) {
-            enableRefreshButton();
-        }
-
-        // forces the controller instanciation
-        PreviewUIController puic = Lookup.getDefault().lookup(PreviewUIController.class);
-
         //Ratio
         ratioSlider.addChangeListener(new ChangeListener() {
             
@@ -116,6 +108,8 @@ public final class PreviewSettingsTopComponent extends TopComponent {
                 } else {
                     ratioLabel.setText(formatter.format(val));
                 }
+                PreviewUIController puic = Lookup.getDefault().lookup(PreviewUIController.class);
+                puic.setVisibilityRatio(getVisibilityRatio());
             }
         });
 
@@ -142,13 +136,41 @@ public final class PreviewSettingsTopComponent extends TopComponent {
                 ui.action();
             }
         });
-        refreshModel();
+        setup(null);
+        
+        PreviewUIController controller = Lookup.getDefault().lookup(PreviewUIController.class);
+        controller.addPropertyChangeListener(this);
+        
+        PreviewUIModel m = controller.getModel();
+        if (m != null) {
+            setup(m);
+            enableRefreshButton();
+        }
     }
     
-    public void refreshModel() {
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(PreviewUIController.SELECT)) {
+            PreviewUIModel model = (PreviewUIModel) evt.getNewValue();
+            setup(model);
+            if (model != null) {
+                enableRefreshButton();
+            } else {
+                disableRefreshButton();
+            }
+        } else if (evt.getPropertyName().equals(PreviewUIController.REFRESHED)) {
+        } else if (evt.getPropertyName().equals(PreviewUIController.REFRESHING)) {
+            boolean refrehsing = (Boolean) evt.getNewValue();
+            if (refrehsing) {
+                disableRefreshButton();
+            } else {
+                enableRefreshButton();
+            }
+        }
+    }
+    
+    public void setup(PreviewUIModel previewModel) {
         propertySheet.setNodes(new Node[]{new PreviewNode(propertySheet)});
         PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
-        PreviewUIModel previewModel = previewUIController.getModel();
         if (previewModel != null) {
             ratioSlider.setValue((int) (previewModel.getVisibilityRatio() * 100));
         }
@@ -207,6 +229,9 @@ public final class PreviewSettingsTopComponent extends TopComponent {
                 }
             }
         }
+    }
+    
+    public void unsetup() {
     }
 
     /**

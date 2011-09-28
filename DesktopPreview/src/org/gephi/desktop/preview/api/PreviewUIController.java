@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.preview.api;
 
+import java.beans.PropertyChangeListener;
 import org.gephi.preview.api.PreviewPreset;
 
 /**
@@ -27,6 +28,13 @@ import org.gephi.preview.api.PreviewPreset;
  * @author Mathieu Bastian
  */
 public interface PreviewUIController {
+
+    //Property
+    public static final String SELECT = "select";
+    public static final String UNSELECT = "unselect";
+    public static final String REFRESHED = "refreshed";
+    public static final String REFRESHING = "refreshing";
+    public static final String GRAPH_CHANGED = "graph_changed";
 
     public void refreshPreview();
 
@@ -43,4 +51,8 @@ public interface PreviewUIController {
     public void savePreset(String name);
 
     public PreviewUIModel getModel();
+
+    public void addPropertyChangeListener(PropertyChangeListener listener);
+
+    public void removePropertyChangeListener(PropertyChangeListener listener);
 }
