@@ -46,6 +46,7 @@ public class ImporterPajek implements FileImporter, LongTask {
 
     // Crayola colors used by Pajek
     private static final HashMap<String, Integer> PAJEK_COLORS = new HashMap<String, Integer>();
+
     static {
         PAJEK_COLORS.put("Apricot", 0xFDD9B5);
         PAJEK_COLORS.put("Aquamarine", 0x78DBE2);
@@ -144,7 +145,6 @@ public class ImporterPajek implements FileImporter, LongTask {
         PAJEK_COLORS.put("YellowGreen", 0xC5E384);
         PAJEK_COLORS.put("YellowOrange", 0xFFB653);
     }
-
     //Architecture
     private Reader reader;
     private LineNumberReader lineReader;
@@ -308,6 +308,19 @@ public class ImporterPajek implements FileImporter, LongTask {
                 }
             }
 
+            //Size
+            if (i < parts.length - 1) {
+                try {
+                    float size = Float.parseFloat(parts[i]);
+
+                    node.setSize(size);
+
+                    i++;
+                } catch (Exception e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat6", lineReader.getLineNumber()), Issue.Level.WARNING));
+                }
+            }
+
             // parse colors
             for (; i < parts.length - 1; i++) {
                 // node's internal color
@@ -315,6 +328,7 @@ public class ImporterPajek implements FileImporter, LongTask {
                     String colorName = parts[i + 1].replaceAll(" ", ""); // remove spaces from color's name so we can look it up
                     Color color = getPajekColorFromName(colorName);
                     node.setColor(color);
+                    break;
                 }
             }
         }
@@ -383,7 +397,7 @@ public class ImporterPajek implements FileImporter, LongTask {
                     try {
                         edgeWeight = new Float(st.nextToken());
                     } catch (Exception e) {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat5", lineReader.getLineNumber()), Issue.Level.WARNING));
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterPajek.class, "importerNET_error_dataformat7", lineReader.getLineNumber()), Issue.Level.WARNING));
                     }
 
                     edge.setWeight(edgeWeight);
