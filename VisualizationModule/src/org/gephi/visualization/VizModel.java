@@ -90,8 +90,10 @@ public class VizModel {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                for (PropertyChangeListener l : listeners) {
-                    l.propertyChange(evt);
+                if (listeners != null) {
+                    for (PropertyChangeListener l : listeners) {
+                        l.propertyChange(evt);
+                    }
                 }
             }
         });
