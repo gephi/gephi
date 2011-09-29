@@ -62,6 +62,7 @@ public abstract class AbstractTransformer<Target> implements Transformer<Target>
         this.upperBound = upperBound;
     }
 
+    @Override
     public boolean isInBounds(float value) {
         return value >= lowerBound && value <= upperBound;
     }

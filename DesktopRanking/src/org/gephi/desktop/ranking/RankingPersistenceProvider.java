@@ -91,9 +91,9 @@ public class RankingPersistenceProvider implements WorkspacePersistenceProvider 
                 Transformer transformer = t.getValue();
                 if (transformer instanceof Serializable) {
                     writer.writeStartElement(TRANSFORMER);
-                    writer.writeAttribute("name", entry.getKey());
+                    writer.writeAttribute("name", t.getKey());
                     writer.writeAttribute(ELEMENT_TYPE, entry.getKey());
-                    if (model.currentTransformer.get(entry.getKey()).equals(t)) {
+                    if (model.currentTransformer.get(entry.getKey()).equals(transformer)) {
                         writer.writeAttribute(TRANSFORMER_CURRENT, "true");
                     }
 

@@ -51,7 +51,7 @@ public class LabelColorTransformerBuilder implements TransformerBuilder {
         return Transformer.LABEL_COLOR;
     }
 
-    public class LabelColorTransformer extends AbstractColorTransformer<Renderable> {
+    public static class LabelColorTransformer extends AbstractColorTransformer<Renderable> {
 
         @Override
         public Object transform(Renderable target, float normalizedValue) {
