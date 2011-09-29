@@ -81,7 +81,6 @@ public class GiantComponentBuilder implements FilterBuilder {
         private AttributeColumn column;
 
         public GiantComponentFilter() {
-            attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         }
 
         public boolean init(Graph graph) {
@@ -93,6 +92,7 @@ public class GiantComponentBuilder implements FilterBuilder {
                 undirectedGraph = graph.getView().getGraphModel().getHierarchicalUndirectedGraph(graph.getView());
             }
 
+            attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel(graph.getGraphModel().getWorkspace());
             cc.weaklyConnected(undirectedGraph, attributeModel);
             componentId = cc.getGiantComponent();
             column = attributeModel.getNodeTable().getColumn(ConnectedComponents.WEAKLY);
