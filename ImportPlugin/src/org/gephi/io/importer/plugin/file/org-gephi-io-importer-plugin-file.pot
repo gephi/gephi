@@ -99,6 +99,12 @@ msgid "importerNET_error_dataformat5"
 msgstr ""
 "Vertex coordinates conversion problem at line {0}. Must be float number."
 
+msgid "importerNET_error_dataformat6"
+msgstr "Vertex size conversion problem at line {0}. Must be float number."
+
+msgid "importerNET_error_dataformat7"
+msgstr "Edge weight parsing issue at line {0}. Must be a float number."
+
 msgid "importerGraphML_error_syntax1"
 msgstr "Syntax error, the file must start with the <graphml> markup."
 

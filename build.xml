@@ -246,7 +246,7 @@
                 <provider classname="org.gephi.layout.LayoutModelPersistenceProvider"/>
                 <provider classname="org.gephi.partition.impl.PartitionModelPersistenceProvider"/>
                 <provider classname="org.gephi.statistics.StatisticsPersistenceProvider"/>
-                <provider classname="org.gephi.preview.PreviewModelPersistenceProvider"/>
+                <provider classname="org.gephi.preview.PreviewPersistenceProvider"/>
             </service>
             
             <service type="org.gephi.project.spi.WorkspaceDuplicateProvider">
