@@ -70,6 +70,7 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         Progress.start(progress);
 
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        controller.getModel(workspace).getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, 1.0);
         controller.refreshPreview(workspace);
         PreviewProperties props = controller.getModel(workspace).getProperties();
 

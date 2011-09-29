@@ -59,7 +59,9 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
 
     public boolean execute() {
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+        controller.getModel(workspace).getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, 1.0);
         controller.refreshPreview(workspace);
+        
         PreviewProperties props = controller.getModel(workspace).getProperties();
         props.putValue(SVGTarget.SCALE_STROKES, scaleStrokes);
         props.putValue(PreviewProperty.MARGIN, new Float((float) margin));

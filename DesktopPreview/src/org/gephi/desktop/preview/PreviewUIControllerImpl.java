@@ -163,6 +163,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
                 model.setRefreshing(true);
                 fireEvent(REFRESHING, true);
 
+                previewController.getModel().getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, model.getVisibilityRatio());
                 previewController.refreshPreview();
 
                 fireEvent(REFRESHED, model);

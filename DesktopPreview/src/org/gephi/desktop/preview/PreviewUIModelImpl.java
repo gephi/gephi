@@ -53,8 +53,6 @@ public class PreviewUIModelImpl implements PreviewUIModel {
 
     public void setVisibilityRatio(float visibilityRatio) {
         this.visibilityRatio = visibilityRatio;
-        PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-        previewController.getModel().getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, visibilityRatio);
     }
 
     public void setCurrentPreset(PreviewPreset preset) {
