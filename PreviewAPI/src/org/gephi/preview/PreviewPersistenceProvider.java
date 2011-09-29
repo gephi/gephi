@@ -32,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = WorkspacePersistenceProvider.class)
-public class PreviewModelPersistenceProvider implements WorkspacePersistenceProvider {
+public class PreviewPersistenceProvider implements WorkspacePersistenceProvider {
 
     @Override
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {
