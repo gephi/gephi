@@ -23,13 +23,22 @@ package org.gephi.preview.plugin.builders;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.Estimator;
+import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.gephi.graph.api.TextData;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.NodeLabelItem;
 import org.gephi.preview.spi.ItemBuilder;
+import org.gephi.visualization.api.VisualizationController;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -49,11 +58,20 @@ public class NodeLabelBuilder implements ItemBuilder {
             }
         }
 
+        //Build text
+        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        DynamicModel model = dynamicController != null ? dynamicController.getModel(graph.getGraphModel().getWorkspace()) : null;
+        TimeInterval timeInterval = model != null ? model.getVisibleInterval() : null;
+        Estimator estimator = model != null ? model.getEstimator() : null;
+        Estimator numberEstimator = model != null ? model.getNumberEstimator() : null;
+        VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
+        AttributeColumn[] nodeColumns = vizController != null ? vizController.getNodeTextColumns() : null;
+
         List<Item> items = new ArrayList<Item>();
-        int i = 0;
         for (Node n : graph.getNodes()) {
             NodeLabelItem labelItem = new NodeLabelItem(n.getNodeData().getRootNode());
-            labelItem.setData(NodeLabelItem.LABEL, n.getNodeData().getLabel());
+            String label = getLabel(n, nodeColumns, timeInterval, estimator, numberEstimator);
+            labelItem.setData(NodeLabelItem.LABEL, label);
             TextData textData = n.getNodeData().getTextData();
             if (textData != null && useTextData) {
                 if (textData.getR() != -1) {
@@ -67,14 +85,47 @@ public class NodeLabelBuilder implements ItemBuilder {
                 labelItem.setData(NodeLabelItem.SIZE, textData.getSize());
                 labelItem.setData(NodeLabelItem.VISIBLE, textData.isVisible());
                 labelItem.setData(NodeLabelItem.LABEL, textData.getText());
-                if (textData.isVisible() && textData.getText() != null && !textData.getText().isEmpty()) {
+                if (textData.isVisible() && label != null && !label.isEmpty()) {
                     items.add(labelItem);
                 }
-            } else if (!n.getNodeData().getLabel().isEmpty()) {
+            } else if (label != null && !label.isEmpty()) {
                 items.add(labelItem);
             }
         }
         return items.toArray(new Item[0]);
+    }
+
+    private String getLabel(Node n, AttributeColumn[] cols, TimeInterval interval, Estimator estimator, Estimator numberEstimator) {
+        NodeData nodeData = n.getNodeData();
+        String str = "";
+        if (cols != null) {
+            int i = 0;
+            for (AttributeColumn c : cols) {
+                if (i++ > 0) {
+                    str += " - ";
+                }
+                Object val = nodeData.getAttributes().getValue(c.getIndex());
+                if (val instanceof DynamicType) {
+                    DynamicType dynamicType = (DynamicType) val;
+                    if (estimator == null) {
+                        estimator = Estimator.FIRST;
+                    }
+                    if (Number.class.isAssignableFrom(dynamicType.getUnderlyingType())) {
+                        estimator = numberEstimator;
+                    }
+                    if (interval != null) {
+                        val = dynamicType.getValue(interval.getLow(), interval.getHigh(), estimator);
+                    } else {
+                        val = dynamicType.getValue(estimator);
+                    }
+                }
+                str += val != null ? val : "";
+            }
+        }
+        if(str.isEmpty()) {
+            str = nodeData.getLabel();
+        }
+        return str;
     }
 
     public String getType() {

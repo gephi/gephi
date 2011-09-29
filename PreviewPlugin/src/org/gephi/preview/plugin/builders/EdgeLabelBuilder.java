@@ -23,15 +23,23 @@ package org.gephi.preview.plugin.builders;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.Estimator;
+import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.api.DynamicController;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.TextData;
 import org.gephi.preview.api.Item;
 import org.gephi.preview.plugin.items.EdgeLabelItem;
-import org.gephi.preview.plugin.items.NodeLabelItem;
 import org.gephi.preview.spi.ItemBuilder;
+import org.gephi.visualization.api.VisualizationController;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,16 +59,25 @@ public class EdgeLabelBuilder implements ItemBuilder {
                 useTextData = true;
             }
         }
+        
+        //Build text
+        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        DynamicModel model = dynamicController != null ? dynamicController.getModel(graph.getGraphModel().getWorkspace()) : null;
+        TimeInterval timeInterval = model != null ? model.getVisibleInterval() : null;
+        Estimator estimator = model != null ? model.getEstimator() : null;
+        Estimator numberEstimator = model != null ? model.getNumberEstimator() : null;
+        VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
+        AttributeColumn[] nodeColumns = vizController != null ? vizController.getNodeTextColumns() : null;
 
         List<Item> items = new ArrayList<Item>();
         for (Edge e : hgraph.getEdgesAndMetaEdges()) {
             EdgeLabelItem labelItem = new EdgeLabelItem(e);
-            String label = e.getEdgeData().getLabel();
+            String label = getLabel(e, nodeColumns, timeInterval, estimator, numberEstimator);
             labelItem.setData(EdgeLabelItem.LABEL, label);
             TextData textData = e.getEdgeData().getTextData();
             if (textData != null && useTextData) {
                 if (textData.getR() != -1) {
-                    labelItem.setData(NodeLabelItem.COLOR, new Color((int) (textData.getR() * 255),
+                    labelItem.setData(EdgeLabelItem.COLOR, new Color((int) (textData.getR() * 255),
                             (int) (textData.getG() * 255),
                             (int) (textData.getB() * 255),
                             (int) (textData.getAlpha() * 255)));
@@ -69,7 +86,6 @@ public class EdgeLabelBuilder implements ItemBuilder {
                 labelItem.setData(EdgeLabelItem.HEIGHT, textData.getHeight());
                 labelItem.setData(EdgeLabelItem.SIZE, textData.getSize());
                 labelItem.setData(EdgeLabelItem.VISIBLE, textData.isVisible());
-                labelItem.setData(EdgeLabelItem.LABEL, textData.getText());
                 if (textData.isVisible() && textData.getText() != null && !textData.getText().isEmpty()) {
                     items.add(labelItem);
                 }
@@ -78,6 +94,39 @@ public class EdgeLabelBuilder implements ItemBuilder {
             }
         }
         return items.toArray(new Item[0]);
+    }
+    
+    private String getLabel(Edge n, AttributeColumn[] cols, TimeInterval interval, Estimator estimator, Estimator numberEstimator) {
+        EdgeData edgeData = n.getEdgeData();
+        String str = "";
+        if (cols != null) {
+            int i = 0;
+            for (AttributeColumn c : cols) {
+                if (i++ > 0) {
+                    str += " - ";
+                }
+                Object val = edgeData.getAttributes().getValue(c.getIndex());
+                if (val instanceof DynamicType) {
+                    DynamicType dynamicType = (DynamicType) val;
+                    if (estimator == null) {
+                        estimator = Estimator.FIRST;
+                    }
+                    if (Number.class.isAssignableFrom(dynamicType.getUnderlyingType())) {
+                        estimator = numberEstimator;
+                    }
+                    if (interval != null) {
+                        val = dynamicType.getValue(interval.getLow(), interval.getHigh(), estimator);
+                    } else {
+                        val = dynamicType.getValue(estimator);
+                    }
+                }
+                str += val != null ? val : "";
+            }
+        }
+        if(str.isEmpty()) {
+            str = edgeData.getLabel();
+        }
+        return str;
     }
 
     public String getType() {

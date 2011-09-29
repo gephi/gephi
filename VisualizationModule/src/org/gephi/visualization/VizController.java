@@ -21,6 +21,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
 package org.gephi.visualization;
 
 import java.util.Iterator;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
@@ -49,6 +50,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.visualization.api.VisualizationController;
 import org.gephi.visualization.apiimpl.ModelImpl;
+import org.gephi.visualization.opengl.text.TextModel;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -176,15 +178,15 @@ public class VizController implements VisualizationController {
             currentModel.init();
         }
     }
-    
+
     public void destroy() {
         engine.stopDisplay();
         drawable.destroy();
-        for(Iterator<ModelImpl> itr = engine.getOctree().getObjectIterator(AbstractEngine.CLASS_NODE);itr.hasNext();) {
+        for (Iterator<ModelImpl> itr = engine.getOctree().getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {
             ModelImpl m = itr.next();
             m.cleanModel();
         }
-        for(Iterator<ModelImpl> itr = engine.getOctree().getObjectIterator(AbstractEngine.CLASS_EDGE);itr.hasNext();) {
+        for (Iterator<ModelImpl> itr = engine.getOctree().getObjectIterator(AbstractEngine.CLASS_EDGE); itr.hasNext();) {
             ModelImpl m = itr.next();
             m.cleanModel();
         }
@@ -296,5 +298,21 @@ public class VizController implements VisualizationController {
             return currentModel.getMetaEdgeScale();
         }
         return 1f;
+    }
+
+    public AttributeColumn[] getNodeTextColumns() {
+        if (currentModel != null && currentModel.getTextModel() != null) {
+            TextModel textModel = currentModel.getTextModel();
+            return textModel.getNodeTextColumns();
+        }
+        return new AttributeColumn[0];
+    }
+
+    public AttributeColumn[] getEdgeTextColumns() {
+        if (currentModel != null && currentModel.getTextModel() != null) {
+            TextModel textModel = currentModel.getTextModel();
+            return textModel.getEdgeTextColumns();
+        }
+        return new AttributeColumn[0];
     }
 }
