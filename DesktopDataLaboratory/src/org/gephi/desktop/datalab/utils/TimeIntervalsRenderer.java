@@ -20,6 +20,7 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.datalab.utils;
 
+import org.gephi.utils.TimeIntervalGraphics;
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.image.BufferedImage;

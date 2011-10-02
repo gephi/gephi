@@ -20,19 +20,19 @@ along with Gephi.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.gephi.desktop.datalab.utils;
 
-import com.representqueens.spark.LineGraph;
-import com.representqueens.spark.SizeParams;
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
-import javax.swing.JTable;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.NumberList;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
+import org.gephi.utils.sparklines.SparklineGraph;
+import org.gephi.utils.sparklines.SparklineParameters;
 
 /**
  * TableCellRenderer for drawing sparklines from cells that have a NumberList or DynamicNumber as their value.
@@ -58,18 +58,17 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
             stringRepresentation = value.toString();
         } else if (value instanceof DynamicType) {
             numbers = getDynamicNumberNumbers((DynamicType) value);
-            stringRepresentation=((DynamicType) value).toString(timeFormat==TimeFormat.DOUBLE);
+            stringRepresentation = ((DynamicType) value).toString(timeFormat == TimeFormat.DOUBLE);
         } else {
             throw new IllegalArgumentException("Only number lists and dynamic numbers are supported for sparklines rendering");
         }
 
-        //If there is less than 2 elements, show as a String.
-        if (numbers.length < 2) {
+        //If there is less than 3 elements, show as a String.
+        if (numbers.length < 3) {
             return super.getTableCellRendererComponent(table, stringRepresentation, isSelected, hasFocus, row, column);
         }
 
         JLabel label = new JLabel();
-
         Color background;
         if (isSelected) {
             background = SELECTED_BACKGROUND;
@@ -77,8 +76,10 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
             background = UNSELECTED_BACKGROUND;
         }
 
-        final SizeParams size = new SizeParams(table.getColumnModel().getColumn(column).getWidth(), table.getRowHeight(row) - 1, 1);
-        final BufferedImage i = LineGraph.createGraph(numbers, size, Color.BLUE, background);
+        //Note: Can't use interactive SparklineComponent because TableCellEditors don't receive mouse events.
+
+        final SparklineParameters sparklineParameters = new SparklineParameters(table.getColumnModel().getColumn(column).getWidth() - 1, table.getRowHeight(row) - 1, Color.BLUE, background, Color.RED, Color.GREEN, null);
+        final BufferedImage i = SparklineGraph.draw(numbers, sparklineParameters);
         label.setIcon(new ImageIcon(i));
         label.setToolTipText(stringRepresentation);//String representation as tooltip
 

@@ -14,7 +14,7 @@
                         <specification-version>2.0</specification-version>
                     </run-dependency>
                 </dependency>
-                </module-dependencies>
+            </module-dependencies>
             <test-dependencies>
                 <test-type>
                     <name>unit</name>
@@ -26,6 +26,7 @@
             </test-dependencies>
             <public-packages>
                 <package>org.gephi.utils</package>
+                <package>org.gephi.utils.sparklines</package>
             </public-packages>
         </data>
     </configuration>
