@@ -72,10 +72,10 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
     //GEXF
     private static final String GEXF = "gexf";
-    private static final String GEXF_NAMESPACE = "http://www.gexf.net/1.1draft";
-    private static final String GEXF_NAMESPACE_LOCATION = "http://www.gexf.net/1.1draft http://www.gexf.net/1.1draft/gexf.xsd";
+    private static final String GEXF_NAMESPACE = "http://www.gexf.net/1.2draft";
+    private static final String GEXF_NAMESPACE_LOCATION = "http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd";
     private static final String VIZ = "viz";
-    private static final String VIZ_NAMESPACE = "http://www.gexf.net/1.1draft/viz";
+    private static final String VIZ_NAMESPACE = "http://www.gexf.net/1.2draft/viz";
     private static final String GEXF_VERSION = "version";
     private static final String GRAPH = "graph";
     private static final String GRAPH_MODE = "mode";
@@ -195,7 +195,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.setPrefix("", GEXF_NAMESPACE);
             xmlWriter.writeStartElement(GEXF_NAMESPACE, GEXF);
             xmlWriter.writeNamespace("", GEXF_NAMESPACE);
-            xmlWriter.writeAttribute(GEXF_VERSION, "1.1");
+            xmlWriter.writeAttribute(GEXF_VERSION, "1.2");
 
             if (exportColors || exportPosition || exportSize) {
                 xmlWriter.writeNamespace(VIZ, VIZ_NAMESPACE);
