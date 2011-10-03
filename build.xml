@@ -70,8 +70,8 @@
                 <pathelement path="StatisticsAPI/src"/>
                 <pathelement path="ToolsAPI/src"/>
             </sourcepath>
-            <doctitle>Gephi 0.8alpha API Index</doctitle>
-            <header>Gephi 0.8alpha Javadoc</header>
+            <doctitle>Gephi 0.8 beta API Index</doctitle>
+            <header>Gephi 0.8 beta Javadoc</header>
         </javadoc>
     </target>
 
