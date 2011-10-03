@@ -2,13 +2,15 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
+# Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#   <sebastien.heymann@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-04 22:56+0000\n"
+"PO-Revision-Date: 2011-08-17 10:11+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/gephi/team/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -101,17 +103,11 @@ msgstr "IPS (Image Par Seconde)"
 msgid "OpenGLPanel.jXTitledSeparator3.title"
 msgstr "Éclairage"
 
-msgid "OpenGLPanel.labelAmbiant.text"
-msgstr "Ambiant"
-
 msgid "OpenGLPanel.ambientDiffuseColorButton.text"
 msgstr "Diffusion"
 
 msgid "OpenGLPanel.ambientSpecularColorButton.text"
 msgstr "Specular"
-
-msgid "OpenGLPanel.ambientAmbiantColorButton.text"
-msgstr "Ambiant"
 
 msgid "OpenGLPanel.light1Checkbox.text"
 msgstr "1"
@@ -121,9 +117,6 @@ msgstr "2"
 
 msgid "OpenGLPanel.light3Checkbox.text"
 msgstr "3"
-
-msgid "OpenGLPanel.light1AmbiantColorButton.text"
-msgstr "Ambiant"
 
 msgid "OpenGLPanel.light1DiffuseColorButton.text"
 msgstr "Diffusion"
@@ -136,9 +129,6 @@ msgstr "Diffusion"
 
 msgid "OpenGLPanel.light2SpecularColorButton.text"
 msgstr "Specular"
-
-msgid "OpenGLPanel.light3AmbiantColorButton.text"
-msgstr "Ambiant"
 
 msgid "OpenGLPanel.light3DiffuseColorButton.text"
 msgstr "Diffusion"
@@ -176,9 +166,6 @@ msgstr "Y"
 msgid "OpenGLPanel.jLabel7.text"
 msgstr "X"
 
-msgid "OpenGLPanel.light2AmbiantColorButton.text"
-msgstr "Ambiant"
-
 msgid "OpenGLPanel.resetButton.text"
 msgstr "Retour aux valeurs par défaut"
 
@@ -187,5 +174,20 @@ msgstr "Retour aux valeurs par défaut"
 
 msgid "OpenGLPanel.jLabel10.text"
 msgstr "Les paramètres d'éclairage prennent effet en mode 3d uniquement."
+
+msgid "OpenGLPanel.ambientAmbientColorButton.text"
+msgstr "Ambiant"
+
+msgid "OpenGLPanel.light1AmbientColorButton.text"
+msgstr "Ambiant"
+
+msgid "OpenGLPanel.light2AmbientColorButton.text"
+msgstr "Ambiant"
+
+msgid "OpenGLPanel.light3AmbientColorButton.text"
+msgstr "Ambiant"
+
+msgid "OpenGLPanel.labelAmbient.text"
+msgstr "Ambiant"
 
 

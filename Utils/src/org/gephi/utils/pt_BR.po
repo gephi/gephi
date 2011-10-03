@@ -1,0 +1,41 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Célio CJr <celiofariajr@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-05 16:47+0000\n"
+"Last-Translator: celiofariajr <celiofariajr@gmail.com>\n"
+"Language-Team: Portuguese (Brazilian) (http://www.transifex.net/projects/p/gephi/team/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+
+msgid "OpenIDE-Module-Long-Description"
+msgstr "Classes utilitárias do núcleo do programa"
+
+msgid "OpenIDE-Module-Short-Description"
+msgstr "Classes utilitárias do núcleo do programa"
+
+msgid "TableCSVExporter.dialog.success"
+msgstr "Tabela exportada com sucesso"
+
+msgid "TableCSVExporter.dialog.error"
+msgstr ""
+"Ocorreu um erro ao escrever o arquivo. Verifique se o arquivo não está em "
+"uso e você tem permissões de acesso a ele"
+
+msgid "TableCSVExporter.dialog.error.title"
+msgstr "Erro"
+
+msgid "TableCSVExporter.filechooser.csvDescription"
+msgstr "CSV"
+
+

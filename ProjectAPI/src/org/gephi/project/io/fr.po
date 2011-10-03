@@ -2,6 +2,7 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
+# Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 msgid ""
 msgstr ""
@@ -19,12 +20,12 @@ msgstr ""
 
 msgid "gephiFormatException_import"
 msgstr ""
-"Echec de l'import du projet.\\n\\nException: %s : %s\\nFichier: %s\\nLigne :"
+"Echec de l'import du projet.\n\nException: %s : %s\nFichier: %s\nLigne :"
 " %d"
 
 msgid "gephiFormatException_export"
 msgstr ""
-"Echec de l'export du projet.\\n\\nException: %s : %s\\nFichier: %s\\nLigne :"
+"Echec de l'export du projet.\n\nException: %s : %s\nFichier: %s\nLigne :"
 " %d"
 
 msgid "LBL_Gephi_loader_name"

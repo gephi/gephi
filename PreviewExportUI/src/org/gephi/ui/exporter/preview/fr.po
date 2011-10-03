@@ -2,13 +2,15 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
+# Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#   <sebastien.heymann@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-05 11:01+0000\n"
+"PO-Revision-Date: 2011-09-21 21:21+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/gephi/team/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +29,7 @@ msgid "UIExporterSVG.name"
 msgstr "SVG"
 
 msgid "UIExporterPNG.name"
-msgstr ""
+msgstr "PNG"
 
 msgid "UIExporterPDFPanel.labelPageSize.text"
 msgstr "Format de page :"
@@ -92,25 +94,10 @@ msgstr "Mettre l'épaisseur du trait à l'échelle"
 msgid "UIExporterSVGPanel.labelStrokeScale.text"
 msgstr "Recommandé pour Adobe Illustrator"
 
-msgid "UIExporterPNGPanel.marginsLabel.text"
-msgstr ""
-
-msgid "UIExporterPNGPanel.topLabel.text"
-msgstr ""
-
-msgid "UIExporterPNGPanel.leftLabel.text"
-msgstr ""
-
-msgid "UIExporterPNGPanel.rightLabel.text"
-msgstr ""
-
-msgid "UIExporterPNGPanel.bottomLabel.text"
-msgstr ""
-
 msgid "UIExporterPNGPanel.widthLabel.text"
-msgstr ""
+msgstr "Largeur :"
 
 msgid "UIExporterPNGPanel.heightLabel.text"
-msgstr ""
+msgstr "Hauteur :"
 
 

@@ -1,0 +1,114 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Siro Kida <kida.siro@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-09-22 10:21+0000\n"
+"Last-Translator: sarang <kida.siro@gmail.com>\n"
+"Language-Team: Japanese (http://www.transifex.net/projects/p/gephi/team/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "NodeRenderer.property.borderWidth.displayName"
+msgstr "境界の幅"
+
+msgid "NodeRenderer.property.borderColor.displayName"
+msgstr "境界の色"
+
+msgid "NodeRenderer.property.opacity.displayName"
+msgstr "不透過度"
+
+msgid "EdgeRenderer.property.display.displayName"
+msgstr "辺を表示"
+
+msgid "EdgeRenderer.property.thickness.displayName"
+msgstr "厚さ"
+
+msgid "EdgeRenderer.property.rescaleWeight.displayName"
+msgstr "重みの再評価"
+
+msgid "EdgeRenderer.property.curvedEdges.displayName"
+msgstr "曲線"
+
+msgid "EdgeRenderer.property.color.displayName"
+msgstr "色"
+
+msgid "EdgeRenderer.property.opacity.displayName"
+msgstr "不透過度"
+
+msgid "EdgeRenderer.property.radius.displayName"
+msgstr "半径"
+
+msgid "NodeLabelRenderer.property.display.displayName"
+msgstr "ラベルの表示"
+
+msgid "NodeLabelRenderer.property.font.displayName"
+msgstr "フォント"
+
+msgid "NodeLabelRenderer.property.proportionalSize.displayName"
+msgstr "縦横比を保持したサイズ"
+
+msgid "NodeLabelRenderer.property.color.displayName"
+msgstr "色"
+
+msgid "NodeLabelRenderer.property.shorten.displayName"
+msgstr "ラベルの短縮"
+
+msgid "NodeLabelRenderer.property.maxchar.displayName"
+msgstr "最大文字"
+
+msgid "NodeLabelRenderer.property.outlineSize.displayName"
+msgstr "輪郭のサイズ"
+
+msgid "NodeLabelRenderer.property.outlineColor.displayName"
+msgstr "輪郭の色"
+
+msgid "NodeLabelRenderer.property.outlineOpacity.displayName"
+msgstr "輪郭の不透過度"
+
+msgid "NodeLabelRenderer.property.box.displayName"
+msgstr "箱"
+
+msgid "NodeLabelRenderer.property.box.color.displayName"
+msgstr "箱の色"
+
+msgid "NodeLabelRenderer.property.box.opacity.displayName"
+msgstr "箱の不透過度"
+
+msgid "EdgeLabelRenderer.property.display.displayName"
+msgstr "ラベルを短縮"
+
+msgid "EdgeLabelRenderer.property.font.displayName"
+msgstr "フォント"
+
+msgid "EdgeLabelRenderer.property.color.displayName"
+msgstr "色"
+
+msgid "EdgeLabelRenderer.property.shorten.displayName"
+msgstr "ラベルを短縮"
+
+msgid "EdgeLabelRenderer.property.maxchar.displayName"
+msgstr "最大文字"
+
+msgid "EdgeLabelRenderer.property.outlineSize.displayName"
+msgstr "輪郭サイズ"
+
+msgid "EdgeLabelRenderer.property.outlineColor.displayName"
+msgstr "輪郭の色"
+
+msgid "EdgeLabelRenderer.property.outlineOpacity.displayName"
+msgstr "輪郭の不透過度"
+
+msgid "ArrowRenderer.property.size.displayName"
+msgstr "サイズ"
+
+

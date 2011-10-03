@@ -1,0 +1,122 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Eduardo Ramos <eduramiba@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-09-22 21:42+0000\n"
+"Last-Translator: eduramiba <eduramiba@gmail.com>\n"
+"Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/gephi/team/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid "ForceAtlas2.name"
+msgstr "ForceAtlas 2"
+
+msgid "ForceAtlas2.description"
+msgstr ""
+"Distribución de calidad: un modelo de atracción lineal y repulsión lineal "
+"con unas pocas aproximaciones (BarnesHut). Velocidad calculada "
+"automáticamente."
+
+msgid "ForceAtlas2.tuning"
+msgstr "Puesta a punto"
+
+msgid "ForceAtlas2.behavior"
+msgstr "Alternativas de comportamiento"
+
+msgid "ForceAtlas2.performance"
+msgstr "Rendimiento"
+
+msgid "ForceAtlas2.threads"
+msgstr "Hilos"
+
+msgid "ForceAtlas2.scalingRatio.name"
+msgstr "Escalado"
+
+msgid "ForceAtlas2.scalingRatio.desc"
+msgstr ""
+"La cantidad de repulsión deseada. Valores mayores hacen grafos más "
+"dispersos."
+
+msgid "ForceAtlas2.gravity.name"
+msgstr "Gravedad"
+
+msgid "ForceAtlas2.gravity.desc"
+msgstr "Atrae los nodos al centro. Previene que las islas se alejen."
+
+msgid "ForceAtlas2.strongGravityMode.name"
+msgstr "Gravedad más fuerte"
+
+msgid "ForceAtlas2.strongGravityMode.desc"
+msgstr "Una ley de la gravedad más fuerte"
+
+msgid "ForceAtlas2.distributedAttraction.name"
+msgstr "Disuadir Hubs"
+
+msgid "ForceAtlas2.distributedAttraction.desc"
+msgstr ""
+"Distribuye la atracción a traves de las aristas salientes. Los Hubs atraen "
+"menos y por lo tanto son empujados a los bordes."
+
+msgid "ForceAtlas2.linLogMode.name"
+msgstr "Modo LinLog"
+
+msgid "ForceAtlas2.linLogMode.desc"
+msgstr ""
+"Cambiar el modelo de ForceAtlas de lin-lin a lin-log (tributo a Andreas "
+"Noack). Hace a los clusters más tensos."
+
+msgid "ForceAtlas2.adjustSizes.name"
+msgstr "Evitar el solapamiento"
+
+msgid "ForceAtlas2.adjustSizes.desc"
+msgstr ""
+"Utilizar sólo cuando ya está distribuido. No se debe utilizar con "
+"\"Aproximar Repulsión\""
+
+msgid "ForceAtlas2.jitterTolerance.name"
+msgstr "Tolerancia (velocidad)"
+
+msgid "ForceAtlas2.jitterTolerance.desc"
+msgstr ""
+"Cuánto balanceo permitir. Valores por encima de 1 desaconsejados. Valores "
+"menores dan menos velocidad y mayor precisión."
+
+msgid "ForceAtlas2.barnesHutOptimization.name"
+msgstr "Aproximar Repulsión"
+
+msgid "ForceAtlas2.barnesHutOptimization.desc"
+msgstr ""
+"Optimización Barnes Hut: complejidad n a complejidad n.ln(n) ; permite "
+"grafos mayores."
+
+msgid "ForceAtlas2.barnesHutTheta.name"
+msgstr "Aproximación"
+
+msgid "ForceAtlas2.barnesHutTheta.desc"
+msgstr "Valor Theta de la optimización Barnes Hut."
+
+msgid "ForceAtlas2.edgeWeightInfluence.name"
+msgstr "Influencia del peso de las aristas"
+
+msgid "ForceAtlas2.edgeWeightInfluence.desc"
+msgstr ""
+"Cúanta influencia dar al peso de las aristas. 0 es \"ninguna influencia\" y "
+"1 es \"normal\"."
+
+msgid "ForceAtlas2.threads.name"
+msgstr "Número de hilos"
+
+msgid "ForceAtlas2.threads.desc"
+msgstr "Más hilos significa más velocidad si tu procesador puede manejarlos."
+
+

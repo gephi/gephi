@@ -1,21 +1,23 @@
-# French translation for gephi
-# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
-# This file is distributed under the same license as the gephi package.
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Eduardo Ramos <eduramiba@gmail.com>, 2011.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: gephi\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2011-01-27 20:54+0000\n"
-"Last-Translator: Sébastien Heymann <Unknown>\n"
-"Language-Team: French <fr@li.org>\n"
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-06 14:45+0000\n"
+"Last-Translator: eduramiba <eduramiba@gmail.com>\n"
+"Language-Team: French (http://www.transifex.net/projects/p/gephi/team/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-21 04:45+0000\n"
-"X-Generator: Launchpad (build 12559)\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
 msgid "ClearEdgesUI.deleteDirectedCheckbox.text"
 msgstr "Supprimer liens dirigés"
@@ -27,8 +29,7 @@ msgid "ClearEdgesUI.deleteUndirectedChekbox.text"
 msgstr "Supprimer liens non dirigés"
 
 msgid "AddEdgeToGraphUI.descriptionLabel.text"
-msgstr ""
-"Sélectionnez le type du lien créé, ses noeuds source et destination :"
+msgstr "Sélectionnez le type du lien créé, ses noeuds source et destination :"
 
 msgid "AddEdgeToGraphUI.directedRadioButton.text"
 msgstr "Dirigé"
@@ -184,12 +185,14 @@ msgstr "Forcer les noeuds importés à être de nouveaux noeuds"
 
 msgid "ImportCSVUIVisualPanel2.edges.description"
 msgstr ""
-"<html>Les nouvelles colonnes ont le type spécifié.<br />Un identifiant est "
-"créé s'il est manquant ou déjà présent.<br />Les liens ont besoin de "
-"colonnes 'Source' et 'Target' contenant les ids des noeuds. Si une ligne "
-"n'en contient pas, elle est ignorée.<br />Sans colonne 'Type', les liens "
-"sont dirigés.<br />Si un lien existe ou ne peut être crééé, il est "
-"ignoré.</html>"
+"<html>Les nouvelles colonnes ont le type sp\\u00e9cifi\\u00e9.<br />Un "
+"identifiant est cr\\u00e9\\u00e9 s'il est manquant ou d\\u00e9j\\u00e0 "
+"pr\\u00e9sent.<br />Les liens ont besoin de colonnes 'Source' et 'Target' "
+"contenant les ids des noeuds. Si une ligne n'en contient pas, elle est "
+"ignor\\u00e9e.<br />Sans colonne 'Type', les liens sont dirig\\u00e9s.<br "
+"/>Les attributs sont ignor\\u00e9s si un lien est d\\u00e9j\\u00e0 "
+"pr\\u00e9sent, mais leurs poids sont additionn\\u00e9s (poids=1 par "
+"d\\u00e9faut)</html>"
 
 msgid "ImportCSVUIVisualPanel2.edges.create-new-nodes-checkbox"
 msgstr "Créer les noeuds manquants"
@@ -199,3 +202,5 @@ msgstr "Remplacement par expression rationnelle"
 
 msgid "SearchReplaceUI.columnsToSearchLabel.text"
 msgstr "Colonnes à chercher/remplacer :"
+
+

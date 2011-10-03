@@ -1,0 +1,102 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Célio CJr <celiofariajr@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-08 23:21+0000\n"
+"Last-Translator: celiofariajr <celiofariajr@gmail.com>\n"
+"Language-Team: Portuguese (Brazilian) (http://www.transifex.net/projects/p/gephi/team/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+
+msgid "YifanHu.name"
+msgstr "Yifan Hu"
+
+msgid "YifanHu.description"
+msgstr ""
+"Modelo original de atração-repulsão de Yifan Hu. Reduz o custo computacional"
+" por meio da realização do cálculo de força apenas em relação aos nós "
+"vizinhos. O algoritmo é capaz de parar por si só, já que possui um sistema "
+"de resfriamento adaptativo."
+
+msgid "YifanHuProportional.name"
+msgstr "Yifan Hu proporcional"
+
+msgid "YifanHuProportional.description"
+msgstr ""
+"Versão modificada do algoritmo Yifan Hu que usa um plano de deslocamento "
+"proporcional."
+
+msgid "YifanHu.optimalDistance.name"
+msgstr "Distância ótima"
+
+msgid "YifanHu.optimalDistance.desc"
+msgstr ""
+"Distância elástica natural. Valores maiores fazem com que os nós fiquem mais"
+" distantes."
+
+msgid "YifanHu.relativeStrength.name"
+msgstr "Força Relativa"
+
+msgid "YifanHu.relativeStrength.desc"
+msgstr ""
+"A força relativa entre a força elétrica (repulsão) e a força elástica "
+"(atração)."
+
+msgid "YifanHu.initialStepSize.name"
+msgstr "Tamanho inicial do passo"
+
+msgid "YifanHu.initialStepSize.desc"
+msgstr ""
+"Tamanho inicial do passo utilizado na fase de integração. Configure este "
+"valor para um valor adequado comparado à distância ótima (10% é um bom ponto"
+" de início)."
+
+msgid "YifanHu.stepRatio.name"
+msgstr "Relação de passo"
+
+msgid "YifanHu.stepRatio.desc"
+msgstr "A razão usada para atualizar o tamanho do passo entre iterações."
+
+msgid "YifanHu.adaptativeCooling.name"
+msgstr "Resfriamento adaptativo"
+
+msgid "YifanHu.adaptativeCooling.desc"
+msgstr ""
+"Controla o uso do resfriamento adaptativo. É usado para ajudar o algoritmo "
+"de distribuição a evitar mínimos locais de energia."
+
+msgid "YifanHu.convergenceThreshold.name"
+msgstr "Limiar de convergência"
+
+msgid "YifanHu.convergenceThreshold.desc"
+msgstr ""
+"Energia relativa do limiar de convergência. Valores menores melhoram a "
+"precisão."
+
+msgid "YifanHu.quadTreeMaxLevel.name"
+msgstr "Nível máximo Quadtree"
+
+msgid "YifanHu.quadTreeMaxLevel.desc"
+msgstr ""
+"Nível máximo a ser utilizado pela representação quadtree. Valores maiores "
+"melhoram a precisão."
+
+msgid "YifanHu.theta.name"
+msgstr "Theta"
+
+msgid "YifanHu.theta.desc"
+msgstr ""
+"Parâmetro theta do critério de Barnes-Hut. Valores menores melhoram a "
+"precisão."
+
+

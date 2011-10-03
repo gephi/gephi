@@ -2,13 +2,15 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
+# Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#   <sebastien.heymann@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-05 11:04+0000\n"
+"PO-Revision-Date: 2011-08-17 10:09+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/gephi/team/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -26,6 +28,9 @@ msgstr "GDF"
 msgid "UIExporterGEXF.name"
 msgstr "GEXF"
 
+msgid "UIExporterGML.name"
+msgstr "GML"
+
 msgid "UIExporterGraphML.name"
 msgstr "GraphML"
 
@@ -33,10 +38,10 @@ msgid "UIExporterCSV.name"
 msgstr "CSV"
 
 msgid "UIExporterPajek.name"
-msgstr ""
+msgstr "Pajek"
 
 msgid "UIExporterDL.name"
-msgstr ""
+msgstr "DL"
 
 msgid "UIExporterGDFPanel.jRadioButton1.text"
 msgstr "Guillemets simples"
@@ -90,7 +95,7 @@ msgid "UIExporterGEXFPanel.positionExportCheckbox.text"
 msgstr "Position (x,y)"
 
 msgid "UIExporterGEXFPanel.sizeExportCheckbox.text"
-msgstr "Tailler"
+msgstr "Taille"
 
 msgid "UIExporterGEXFPanel.normalizeCheckbox.text"
 msgstr "Normaliser"
@@ -153,12 +158,42 @@ msgid "UIExporterGEXFPanel.hierarchyCheckbox.text"
 msgstr "Exporter la hiérarchie"
 
 msgid "UIExporterPajekPanel.labelExport.text"
-msgstr ""
+msgstr "Export :"
 
 msgid "UIExporterPajekPanel.positionExportCheckbox.text"
-msgstr ""
+msgstr "Position (x,y)"
 
 msgid "UIExporterPajekPanel.edgeWeightCheckbox.text"
-msgstr ""
+msgstr "Poids des liens"
+
+msgid "UIExporterGML.attributes.text"
+msgstr "Attributs"
+
+msgid "UIExporterGML.exportLabel.text"
+msgstr "Export :"
+
+msgid "UIExporterGML.positionLabel.text"
+msgstr "Position (x, y)"
+
+msgid "UIExporterGML.colorsLabel.text"
+msgstr "Couleurs"
+
+msgid "UIExporterGML.sizeLabel.text"
+msgstr "Taille"
+
+msgid "UIExporterGML.edgeWeightLabel.text"
+msgstr "Poids des poids"
+
+msgid "UIExporterGML.labelLabel.text"
+msgstr "Label"
+
+msgid "UIExporterGML.normalize.text"
+msgstr "Normaliser"
+
+msgid "UIExporterGML.normalizeHintLabel.text"
+msgstr "Réduit les positions et tailles entre 0 et 1"
+
+msgid "UIExporterGML.indentationLabel.text"
+msgstr "Indentation :"
 
 

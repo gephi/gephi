@@ -2,6 +2,7 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
+# Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 msgid ""
 msgstr ""
@@ -19,7 +20,7 @@ msgstr ""
 
 msgid "ExportControllerImpl.error.nomatchingexporter"
 msgstr ""
-"Imposible encontrar un exportador compatible.\\nEl formato de archivo no "
+"Imposible encontrar un exportador compatible.\nEl formato de archivo no "
 "está soportado."
 
 

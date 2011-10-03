@@ -2,13 +2,15 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
+# Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#   <sebastien.heymann@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-05 11:05+0000\n"
+"PO-Revision-Date: 2011-09-23 16:13+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/gephi/team/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -43,24 +45,6 @@ msgstr "Couleur personnalisée"
 
 msgid "PreviewNode.displayName"
 msgstr "Paramètres d'aperçu"
-
-msgid "PreviewNode.Node.displayName"
-msgstr "Noeud"
-
-msgid "PreviewNode.Edge.displayName"
-msgstr "Lien"
-
-msgid "PreviewNode.SelfLoop.displayName"
-msgstr "Boucle"
-
-msgid "PreviewNode.Directed.displayName"
-msgstr "Dirigé"
-
-msgid "PreviewNode.Undirected.displayName"
-msgstr "Non dirigé"
-
-msgid "PreviewNode.Mutual.displayName"
-msgstr "Mutuel"
 
 msgid "PreviewSettingsTopComponent.savePreset.input"
 msgstr "Nom"
@@ -98,6 +82,9 @@ msgstr "Réglages"
 msgid "PreviewSettingsTopComponent.ratio.minimum"
 msgstr "Minimum"
 
+msgid "PreviewSettingsTopComponent.propertySheetTab"
+msgstr "Paramètres"
+
 msgid "PreviewTopComponent.backgroundButton.text"
 msgstr "Arrière-plan"
 
@@ -105,12 +92,18 @@ msgid "PreviewTopComponent.resetZoomButton.text"
 msgstr "Réinitialiser le zoom"
 
 msgid "PreviewSettingsTopComponent.svgExportButton.text"
-msgstr "SVG/PDF"
+msgstr "SVG/PDF/PNG"
 
 msgid "PreviewSettingsTopComponent.labelExport.text"
 msgstr "Export :"
 
 msgid "PreviewSettingsTopComponent.svgExportButton.toolTipText"
-msgstr "Exporter au format SVG ou PDF"
+msgstr "Exporter au format SVG, PNG ou PDF"
+
+msgid "PreviewTopComponent.plusButton.toolTipText"
+msgstr "Plus de zoom"
+
+msgid "PreviewTopComponent.minusButton.toolTipText"
+msgstr "Moins de zoom"
 
 

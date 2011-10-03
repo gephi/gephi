@@ -1,0 +1,78 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Siro Kida <kida.siro@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-18 08:15+0000\n"
+"Last-Translator: sarang <kida.siro@gmail.com>\n"
+"Language-Team: Japanese (http://www.transifex.net/projects/p/gephi/team/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Actions/Edit/org-gephi-project-explorer-NewProject.instance"
+msgstr "新規プロジェクト"
+
+msgid "Actions/Window/org-gephi-project-explorer-ProjectAction.instance"
+msgstr "プロジェクト"
+
+msgid "CTL_ProjectAction"
+msgstr "プロジェクト"
+
+msgid "CTL_ProjectTopComponent"
+msgstr "プロジェクトウィンドウ"
+
+msgid "HINT_ProjectTopComponent"
+msgstr "これはプロジェクトウィンドウです。"
+
+msgid "ProjectsNode_title"
+msgstr "プロジェクト"
+
+msgid "ProjectsNode_addProject"
+msgstr "プロジェクトを追加"
+
+msgid "ProjectNode_openProject"
+msgstr "プロジェクトを開く"
+
+msgid "ProjectNode_closeProject"
+msgstr "プロジェクトを閉じる"
+
+msgid "ProjectNode_removeProject"
+msgstr "プロジェクトを削除"
+
+msgid "ProjectNode_addWorkspace"
+msgstr "ワークスペースを追加"
+
+msgid "ProjectNode_renameProject_dialogTitle"
+msgstr "プロジェクト名の変更"
+
+msgid "ProjectNode_renameProject"
+msgstr "プロジェクト名の変更"
+
+msgid "ProjectNode_projectProperties"
+msgstr "プロパティ..."
+
+msgid "ProjectNode_projectProperties_dialogTitle"
+msgstr "プロジェクトのプロパティ"
+
+msgid "WorkspaceNode_closeWorkspace"
+msgstr "ワークスペースを閉じる"
+
+msgid "WorkspaceNode_renameWorkspace"
+msgstr "ワークスペース名の変更"
+
+msgid "WorkspaceNode_renameWorkspace_dialogTitle"
+msgstr "ワークスペース名の変更"
+
+msgid "WorkspaceNode_openWorkspace"
+msgstr "開く"
+
+

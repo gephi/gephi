@@ -1,0 +1,105 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Siro Kida <kida.siro@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-09-23 07:46+0000\n"
+"Last-Translator: sarang <kida.siro@gmail.com>\n"
+"Language-Team: Japanese (http://www.transifex.net/projects/p/gephi/team/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "ForceAtlas2.name"
+msgstr "ForceAtlas 2"
+
+msgid "ForceAtlas2.description"
+msgstr "品質のレイアウト:少ない近似の線形引力線形斥力モデル(BarnesHut)。早く、自動的に計算。"
+
+msgid "ForceAtlas2.tuning"
+msgstr "チューニング"
+
+msgid "ForceAtlas2.behavior"
+msgstr "動作の代替"
+
+msgid "ForceAtlas2.performance"
+msgstr "パフォーマンス"
+
+msgid "ForceAtlas2.threads"
+msgstr "スレッド"
+
+msgid "ForceAtlas2.scalingRatio.name"
+msgstr "スケーリング"
+
+msgid "ForceAtlas2.scalingRatio.desc"
+msgstr "希望の反発の程度。大きければそれだけ疎なグラフになります。"
+
+msgid "ForceAtlas2.gravity.name"
+msgstr "引力"
+
+msgid "ForceAtlas2.gravity.desc"
+msgstr "ノードを中心に牽引。島の漂流を防ぐ。"
+
+msgid "ForceAtlas2.strongGravityMode.name"
+msgstr "より強い引力"
+
+msgid "ForceAtlas2.strongGravityMode.desc"
+msgstr "より強い引力の法則"
+
+msgid "ForceAtlas2.distributedAttraction.name"
+msgstr "ハブを制止"
+
+msgid "ForceAtlas2.distributedAttraction.desc"
+msgstr "アウトバウンドエッジに沿って引力を配置。ハブの引力はより弱く、辺縁に押しやられます。"
+
+msgid "ForceAtlas2.linLogMode.name"
+msgstr "LinLog モード"
+
+msgid "ForceAtlas2.linLogMode.desc"
+msgstr "ForceAtlasモデルをlin-linからlin-logに切り替え。(Andreas Noackに捧ぐ)。クラスタをよりきつくします。"
+
+msgid "ForceAtlas2.adjustSizes.name"
+msgstr "重なりの回避"
+
+msgid "ForceAtlas2.adjustSizes.desc"
+msgstr "spatialized時にのみ使用。 \"概算引力\"と一緒に使用しないでください"
+
+msgid "ForceAtlas2.jitterTolerance.name"
+msgstr "許容値(速度)"
+
+msgid "ForceAtlas2.jitterTolerance.desc"
+msgstr "どのくらいのぶれを許可するか。 1以上をお勧め。以下では遅いが正確。"
+
+msgid "ForceAtlas2.barnesHutOptimization.name"
+msgstr "斥力の概算"
+
+msgid "ForceAtlas2.barnesHutOptimization.desc"
+msgstr "Barnes Hut 最適化: n complexity to n.ln(n) ; より大きなグラフを許可"
+
+msgid "ForceAtlas2.barnesHutTheta.name"
+msgstr "近似"
+
+msgid "ForceAtlas2.barnesHutTheta.desc"
+msgstr "Barnes Hut最適化のθ"
+
+msgid "ForceAtlas2.edgeWeightInfluence.name"
+msgstr "辺の重みの影響"
+
+msgid "ForceAtlas2.edgeWeightInfluence.desc"
+msgstr "辺の重みにどのくらいの影響を付与するか。 0は\"影響力なし\"、1は\"普通\"です。"
+
+msgid "ForceAtlas2.threads.name"
+msgstr "スレッド数"
+
+msgid "ForceAtlas2.threads.desc"
+msgstr "スレッドが多いことは、あなたのコアがそれを扱えれば、より高速になることを意味します。"
+
+

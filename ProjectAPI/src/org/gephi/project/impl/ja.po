@@ -1,0 +1,27 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Siro Kida <kida.siro@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-19 05:41+0000\n"
+"Last-Translator: sarang <kida.siro@gmail.com>\n"
+"Language-Team: Japanese (http://www.transifex.net/projects/p/gephi/team/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Services/MIMEResolver/GephiResolver.xml"
+msgstr "Gephiファイル"
+
+msgid "Templates/Other/GephiTemplate.gephi"
+msgstr "空のGephiファイル"
+
+

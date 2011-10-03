@@ -1,0 +1,49 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Célio CJr <celiofariajr@gmail.com>, 2011.
+# Célio Faria Jr. <celiofariajr@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-09-22 12:14+0000\n"
+"Last-Translator: celiofariajr <celiofariajr@gmail.com>\n"
+"Language-Team: Portuguese (Brazilian) (http://www.transifex.net/projects/p/gephi/team/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+
+msgid "PartitionBuilder.name"
+msgstr "Partição"
+
+msgid "PartitionBuilder.description"
+msgstr ""
+"Manter nós/arestas que pertençam a um conjunto de valores de uma partição"
+
+msgid "PartitionCountBuilder.name"
+msgstr "Número de partições"
+
+msgid "PartitionCountBuilder.description"
+msgstr ""
+"Manter nós/arestas que pertencem a partições com um determinado número de "
+"elementos"
+
+msgid "IntraEdgesBuilder.name"
+msgstr "Intra arestas"
+
+msgid "IntraEdgesBuilder.description"
+msgstr "Manter somente as arestas entre elementos de diferentes partições"
+
+msgid "InterEdgesBuilder.name"
+msgstr "Inter Arestas"
+
+msgid "InterEdgesBuilder.description"
+msgstr "Manter somente as arestas entre elementos da mesma partição"
+
+

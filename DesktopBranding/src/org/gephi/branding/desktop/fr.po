@@ -2,13 +2,15 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
+# Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#   <sebastien.heymann@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-05 11:06+0000\n"
+"PO-Revision-Date: 2011-09-23 16:17+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/gephi/team/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +37,7 @@ msgid ""
 msgstr "Greffons tierces"
 
 msgid "CloseConfirmation.message"
-msgstr ""
+msgstr "Sauvegarder les changements avant de fermer ?"
 
 msgid "CommandLineProcessor.OutOfMemoryError.message"
 msgstr ""
@@ -43,7 +45,7 @@ msgstr ""
 "configuration du démarrage de Gephi."
 
 msgid "Menu/Workspace"
-msgstr "Menu/Espace de travail"
+msgstr "Espace de travail"
 
 msgid ""
 "Actions/Edit/org-gephi-branding-desktop-actions-CleanWorkspace.instance"
@@ -101,20 +103,26 @@ msgstr "Format de fichier non supporté"
 
 msgid "OutOfMemoryError.canIncreaseMemory.message"
 msgstr ""
+"Gephi a atteint le maximum de mémoire allouée ({0}). Cela arrive quand le volume de données est trop grand. Cette limite peut être augmentée à {1} sur votre ordinateur.\n"
+"\n"
+"Gephi essayera de sauvegarder votre project avant de quitter. Si annulé, Gephi cessera de réagir."
 
 msgid "OutOfMemoryError.alreadyMax.message"
 msgstr ""
+"Gephi a atteint le maximum de mémoire allouée ({0}). Cela arrive quand le volume de données est trop grand. Cette limite est déjà à son maximum.\n"
+"\n"
+"Gephi essayera de sauvegarder votre project avant de quitter. Si annulé, Gephi cessera de réagir."
 
 msgid "OutOfMemoryError.title"
-msgstr ""
+msgstr "Gephi manque de mémoire"
 
 msgid "OutOfMemoryError.canIncreaseMemory.button"
-msgstr ""
+msgstr "Augmenter la mémoire et redémarrer Gephi"
 
 msgid "OutOfMemoryError.alreadyMax.button"
-msgstr ""
+msgstr "Sauvegarder le projet et redémarrer Gephi"
 
 msgid "OutOfMemoryError.cancel"
-msgstr ""
+msgstr "Annuler"
 
 

@@ -2,13 +2,15 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
+# Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#   <sebastien.heymann@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-05 11:03+0000\n"
+"PO-Revision-Date: 2011-08-22 17:49+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/gephi/team/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -28,6 +30,9 @@ msgstr "Configuration :"
 
 msgid "EdgeListPanel.hostLabel.text"
 msgstr "Hôte :"
+
+msgid "EdgeListPanel.fileLabel.text"
+msgstr "Fichier :"
 
 msgid "EdgeListPanel.portLabel.text"
 msgstr "Port :"
@@ -50,20 +55,8 @@ msgstr "Requête des noeuds :"
 msgid "EdgeListPanel.edgeQueryLabel.text"
 msgstr "Requête des liens :"
 
-msgid "EdgeListPanel.nodeAttQueyLabel.text"
-msgstr "Requête des attributs de noeuds :"
-
-msgid "EdgeListPanel.edgeAttQueryLabel.text"
-msgstr "Requête des attributs de liens :"
-
 msgid "EdgeListPanel.nodeQueryTextField.text"
 msgstr "SELECT * FROM nodes"
-
-msgid "EdgeListPanel.nodeAttQueryTextField.text"
-msgstr "SELECT * FROM nodesAttributes"
-
-msgid "EdgeListPanel.edgeAttQueryTextField.text"
-msgstr "SELECT * FROM edgesAttributes"
 
 msgid "EdgeListPanel.testConnection.text"
 msgstr "Tester la connection"
@@ -100,16 +93,25 @@ msgstr ""
 "Les colonnes \"label\", \"x\", \"y\" et \"size\" des noeuds ainsi que "
 "\"label\" et \"weight\" pour les liens sont optionnelles."
 
+msgid "EdgeListPanel.sqliteFileChooser.title"
+msgstr "Fichier de base de donnée"
+
+msgid "EdgeListPanel.sqliteFileChooser.filefilter"
+msgstr "Base de données SQLite"
+
 msgid "ImporterVnaUI.displayName"
-msgstr ""
+msgstr "Import VNA"
 
 msgid "ImporterVnaUI.message.linear"
-msgstr ""
+msgstr "La largeur de ligne augmente de façon linéaire avec sa valeur."
 
 msgid "ImporterVnaUI.message.square_root"
-msgstr ""
+msgstr "La largeur de ligne augmente de façon quadratique avec sa valeur."
 
 msgid "ImporterVnaUI.message.logarithmic"
-msgstr ""
+msgstr "La largeur de ligne augmente de façon logarithmique avec sa valeur."
+
+msgid "EdgeListPanel.browseButton.text"
+msgstr "Naviguer"
 
 

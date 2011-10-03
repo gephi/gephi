@@ -1,0 +1,94 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Siro Kida <kida.siro@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-09-04 09:37+0000\n"
+"Last-Translator: sarang <kida.siro@gmail.com>\n"
+"Language-Team: Japanese (http://www.transifex.net/projects/p/gephi/team/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "name"
+msgstr "Force Atlas"
+
+msgid "description"
+msgstr ""
+"ForceAtlasはグラフをコンパクトに、読みやすく、ハブ(引力分布オプション)よりも権威を表示することができます。自動安定化はレイアウトの最後に収束を向上させます。"
+
+msgid "forceAtlas.inertia.name"
+msgstr "慣性"
+
+msgid "forceAtlas.inertia.desc"
+msgstr "各新規パスでのノードの速度の保持"
+
+msgid "forceAtlas.repulsionStrength.name"
+msgstr "斥力"
+
+msgid "forceAtlas.repulsionStrength.desc"
+msgstr "どのくらいの強さでノードが反発しあうか"
+
+msgid "forceAtlas.attractionStrength.name"
+msgstr "引力"
+
+msgid "forceAtlas.attractionStrength.desc"
+msgstr "どのくらいの強さで連結したノード引き合うか"
+
+msgid "forceAtlas.maxDisplacement.name"
+msgstr "最大変位"
+
+msgid "forceAtlas.maxDisplacement.desc"
+msgstr "これは各ノードの変位を制限しています(ノードが近すぎる場合のスーパー拒否を避けるため)"
+
+msgid "forceAtlas.freezeBalance.name"
+msgstr "自動安定化機能"
+
+msgid "forceAtlas.freezeBalance.desc"
+msgstr "不安定なノードの凍結をアクティブにします。ある程度効率を犠牲にするが、ノードのちらつきの大半を防止"
+
+msgid "forceAtlas.freezeStrength.name"
+msgstr "自動安定力"
+
+msgid "forceAtlas.freezeStrength.desc"
+msgstr "自動安定機能の力"
+
+msgid "forceAtlas.freezeInertia.name"
+msgstr "自動安定感度"
+
+msgid "forceAtlas.freezeInertia.desc"
+msgstr "[0,1]このパラメータは、反ちらつき機能の自動適応性(実際には、凍結慣性)を表します。"
+
+msgid "forceAtlas.gravity.name"
+msgstr "重力"
+
+msgid "forceAtlas.gravity.desc"
+msgstr "この力は、切断されたコンポーネントの分散を避けるために、中央にすべてのノードを引き付ける"
+
+msgid "forceAtlas.outboundAttractionDistribution.name"
+msgstr "引力分布"
+
+msgid "forceAtlas.outboundAttractionDistribution.desc"
+msgstr "引力がアウトバウンドリンクに沿って分布。周囲にハブを押しやりオーソリティを中央に配置する傾向。"
+
+msgid "forceAtlas.adjustSizes.name"
+msgstr "大きさによる調整"
+
+msgid "forceAtlas.adjustSizes.desc"
+msgstr "ノードが重なるのを回避(それぞれのノードの大きさに依存)"
+
+msgid "forceAtlas.speed.name"
+msgstr "速度"
+
+msgid "forceAtlas.speed.desc"
+msgstr "値 > 0デフォルト1 ; 精度を犠牲に収束速度を上げます。"
+
+

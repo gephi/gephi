@@ -2,8 +2,9 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# Translators:
 #   <eduramiba@gmail.com>, 2011.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
@@ -37,7 +38,7 @@ msgstr "Langue"
 msgid "ChangeLang.Error.message"
 msgstr ""
 "La langue n'a pas pu être changée, veuillez vérifier les droits "
-"d'écriture.\\nSi le problème persiste, éditez directement le fichier {gephi "
+"d'écriture.\nSi le problème persiste, éditez directement le fichier {gephi "
 "installation}/etc/gephi.conf"
 
 

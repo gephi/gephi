@@ -1,0 +1,83 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Siro Kida <kida.siro@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-09-03 02:26+0000\n"
+"Last-Translator: sarang <kida.siro@gmail.com>\n"
+"Language-Team: Japanese (http://www.transifex.net/projects/p/gephi/team/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "YifanHu.name"
+msgstr "胡一凡"
+
+msgid "YifanHu.description"
+msgstr ""
+"オリジナルの胡一凡の引力-"
+"斥力モデル。隣接への力の計算を制限することにより、計算コストを削減。そのアルゴリズムには適応型冷却スキームがあるので、それ自体は停止します。"
+
+msgid "YifanHuProportional.name"
+msgstr "胡一凡比例式"
+
+msgid "YifanHuProportional.description"
+msgstr "比例変位スキームを使用した胡一凡修正版"
+
+msgid "YifanHu.optimalDistance.name"
+msgstr "最適距離"
+
+msgid "YifanHu.optimalDistance.desc"
+msgstr "バネの自然長。大きい値は、ノードがより遠く離れていることを意味。"
+
+msgid "YifanHu.relativeStrength.name"
+msgstr "相対的強さ"
+
+msgid "YifanHu.relativeStrength.desc"
+msgstr "電気力(斥力)とバネ力(引力)との間の相対的な強さ。"
+
+msgid "YifanHu.initialStepSize.name"
+msgstr "初期ステップサイズ"
+
+msgid "YifanHu.initialStepSize.desc"
+msgstr "統合フェーズで使用される初期ステップサイズ。最適な距離(10％は良い出発点である)と比較して意味のある大きさにこの値を設定します。"
+
+msgid "YifanHu.stepRatio.name"
+msgstr "ステップ比"
+
+msgid "YifanHu.stepRatio.desc"
+msgstr "比率は、反復ごとにステップサイズを更新するために使用。"
+
+msgid "YifanHu.adaptativeCooling.name"
+msgstr "適応型冷却"
+
+msgid "YifanHu.adaptativeCooling.desc"
+msgstr "適応型冷却の使用を制御します。レイアウトアルゴリズムがエネルギーの極小値を避けるのに使用されます。"
+
+msgid "YifanHu.convergenceThreshold.name"
+msgstr "収束閾値"
+
+msgid "YifanHu.convergenceThreshold.desc"
+msgstr "相対的なエネルギーの収束の閾値。値が小さいほど精確。"
+
+msgid "YifanHu.quadTreeMaxLevel.name"
+msgstr "四分木最大レベル"
+
+msgid "YifanHu.quadTreeMaxLevel.desc"
+msgstr "四分木表現で使用される最大のレベル。値が大きいほど精確。"
+
+msgid "YifanHu.theta.name"
+msgstr "θ値"
+
+msgid "YifanHu.theta.desc"
+msgstr "Barnes-Hutの開始基準のθパラメータ。値が小さいほど精確。"
+
+

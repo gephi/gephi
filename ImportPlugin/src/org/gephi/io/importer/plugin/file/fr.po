@@ -2,13 +2,15 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
+# Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#   <sebastien.heymann@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-05 11:03+0000\n"
+"PO-Revision-Date: 2011-10-02 07:08+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/gephi/team/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -39,7 +41,7 @@ msgid "fileType_CSV_Name"
 msgstr "Fichiers CSV"
 
 msgid "fileType_Edges_Name"
-msgstr ""
+msgstr "Liste de Liens"
 
 msgid "fileType_GraphViz_Name"
 msgstr "Fichiers GraphViz"
@@ -48,7 +50,7 @@ msgid "fileType_DL_Name"
 msgstr "Fichiers DL (UCINET)"
 
 msgid "fileType_VNA_Name"
-msgstr ""
+msgstr "Fichiers VNA"
 
 msgid "importerGDF_error_dataformat1"
 msgstr "Le fichier doit commencer par la ligne \"nodedef> name\"."
@@ -107,6 +109,16 @@ msgid "importerNET_error_dataformat5"
 msgstr ""
 "Problème lors de la conversion des coordonnées du sommet à la ligne {0}. Ils"
 " doivent être des nombres à virgule flottante."
+
+msgid "importerNET_error_dataformat6"
+msgstr ""
+"Problème de conversion de taille de noeud à la ligne {0}. Elle doit être un "
+"nombre flottant."
+
+msgid "importerNET_error_dataformat7"
+msgstr ""
+"Erreur de parsing du poids du lien à la ligne {0}. Il doit être un nombre "
+"flottant."
 
 msgid "importerGraphML_error_syntax1"
 msgstr "Erreur de syntaxe, le fichier doit commencer par la balise <graphml>."
@@ -258,15 +270,18 @@ msgstr ""
 msgid "importerGEXF_error_edgeid"
 msgstr "Identifiant de lien manquant. Un id a été généré."
 
+msgid "importerGEXF_error_edgesource"
+msgstr "Source du lien manquant. Le lien est ignoré."
+
+msgid "importerGEXF_error_edgetarget"
+msgstr "Destination du lien manquant. Le lien est ignoré."
+
 msgid "importerGEXF_error_edgeweight"
 msgstr ""
 "Le poids du lien ''{0}'' n'est pas de type float. Le poids est ignoré."
 
 msgid "importerGEXF_error_nodeid"
 msgstr "Identifiant du noeud ''{0}'' manquant. Le noeud est ignoré."
-
-msgid "importerGEXF_error_nodelabel"
-msgstr "Label du noeud ''{0}'' manquant. Le noeud est ignoré."
 
 msgid "importerGEXF_error_nodeposition"
 msgstr "Position du noeud ''{0}'' erronée à ''{1}'' (pas de type float)"
@@ -428,5 +443,8 @@ msgstr ""
 
 msgid "importerDOT_error_weightunreachable"
 msgstr "Impossible de lire le poids d'un lien à la ligne {0}"
+
+msgid "importerDOT_log_nodeattribute"
+msgstr "Attribut de noeud trouvé '{0}'' ({1})"
 
 

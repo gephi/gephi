@@ -2,14 +2,16 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# Translators:
+# Eduardo Ramos <eduramiba@gmail.com>, 2011.
 #   <eduramiba@gmail.com>, 2011.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-05 11:19+0000\n"
+"PO-Revision-Date: 2011-08-07 11:50+0000\n"
 "Last-Translator: eduramiba <eduramiba@gmail.com>\n"
 "Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/gephi/team/es/)\n"
 "MIME-Version: 1.0\n"
@@ -106,18 +108,24 @@ msgstr "El formato de archivo no está soportado"
 
 msgid "OutOfMemoryError.canIncreaseMemory.message"
 msgstr ""
+"Gephi ha alcanzado la máxima cantidad de memoria ({0}). Esto ocurre cuando el volumen de datos es demasiado grande. El límite puede ser incrementado hasta {1} en tu ordenador.\n"
+"\n"
+"Gephi intentará guardar tu proyecto antes de salir. Si cancelas, es probable que Gephi deje de responder."
 
 msgid "OutOfMemoryError.alreadyMax.message"
 msgstr ""
+"Gephi ha alcanzado la máxima cantidad de memoria ({0}). Esto ocurre cuando el volumen de datos es demasiado grande. El límite ya está configurado a su máximo.\n"
+"\n"
+"Gephi intentará guardar tu proyecto antes de salir. Si cancelas, es probable que Gephi deje de responder."
 
 msgid "OutOfMemoryError.title"
-msgstr ""
+msgstr "Gephi está agotando la memoria"
 
 msgid "OutOfMemoryError.canIncreaseMemory.button"
-msgstr ""
+msgstr "Incrementar memoria y reiniciar Gephi"
 
 msgid "OutOfMemoryError.alreadyMax.button"
-msgstr ""
+msgstr "Guardar proyecto y reiniciar Gephi"
 
 msgid "OutOfMemoryError.cancel"
 msgstr "Cancelar"

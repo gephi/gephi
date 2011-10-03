@@ -2,13 +2,15 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
+# Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#   <sebastien.heymann@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-05 11:05+0000\n"
+"PO-Revision-Date: 2011-09-21 21:35+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/gephi/team/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -68,21 +70,33 @@ msgstr "PNG"
 msgid "ResultListPanel.tablescreenshot.error"
 msgstr ""
 "Une erreur est survenue lors de la prise de la capture "
-"d'écran.\\n\\nException: {0}: {1}\\nFichier: {2}\\nLigne: {3}"
+"d'écran.\n\nException: {0}: {1}\nFichier: {2}\nLigne: {3}"
 
 msgid "ResultListPanel.tablescreenshot.error.title"
 msgstr "Erreur"
 
 msgid "ResultListPanel.column.rank"
-msgstr ""
+msgstr "Rang"
 
 msgid "ResultListPanel.column.label"
-msgstr ""
+msgstr "Label"
 
 msgid "RankingChooser.choose.text"
 msgstr "Choisir un paramètre de classement"
 
 msgid "RankingChooser.splineEditor.title"
 msgstr "Interpoler"
+
+msgid "RankingChooser.autoApplyButton.text"
+msgstr "Exécution auto"
+
+msgid "RankingChooser.autoApplyButton.toolTipText"
+msgstr "Exécute en continu même si les valeurs changent"
+
+msgid "RankingChooser.autoApplyButton.stop.toolTipText"
+msgstr "Arrête d'exécuter cette transformation"
+
+msgid "RankingChooser.enableAutoButton.toolTipText"
+msgstr "Active la transformation automatique - en continu"
 
 

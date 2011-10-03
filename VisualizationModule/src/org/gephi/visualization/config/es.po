@@ -2,6 +2,7 @@
 # Copyright (C) 2011 Gephi contributors.
 # This file is distributed under the same license as the Gephi package.
 # 
+# Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 msgid ""
 msgstr ""
@@ -18,11 +19,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 msgid "graphicalConfiguration_currentConfig"
-msgstr "\\nHardware actual:\\n%s\\n%s\\nVersión:%s;"
+msgstr "\nHardware actual:\n%s\n%s\nVersión:%s;"
 
 msgid "graphicalConfiguration_exception"
 msgstr ""
 "Tu versión de OpenGL (%s) es demasiado baja para mostrar el "
-"grafo.\\nActualiza los controladores gráficos o su configuración.%s"
+"grafo.\nActualiza los controladores gráficos o su configuración.%s"
 
 

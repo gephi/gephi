@@ -1,21 +1,23 @@
-# Spanish translation for gephi
-# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
-# This file is distributed under the same license as the gephi package.
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Eduardo Ramos <eduramiba@gmail.com>, 2011.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: gephi\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-04-07 13:16+0200\n"
-"PO-Revision-Date: 2011-02-11 23:55+0000\n"
-"Last-Translator: Eduardo Ramos <Unknown>\n"
-"Language-Team: Spanish <es@li.org>\n"
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-06 14:40+0000\n"
+"Last-Translator: eduramiba <eduramiba@gmail.com>\n"
+"Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/gephi/team/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2011-03-21 04:45+0000\n"
-"X-Generator: Launchpad (build 12559)\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 msgid "OpenInEditNodeWindow.name"
 msgstr "Editar nodo"
@@ -122,6 +124,14 @@ msgstr "Configurar tamaño del nodo..."
 msgid "SetNodesSize.name.multiple"
 msgstr "Configurar tamaño de los nodos..."
 
+msgid "MergeNodes.name"
+msgstr "Mezclar nodos..."
+
+msgid "MergeNodes.description"
+msgstr ""
+"Todos los nodos son mezclados creando uno nuevo, combinando las aristas y "
+"valores utilizando diferentes estrategias"
+
 msgid "LinkNodes.name"
 msgstr "Enlazar a nodos..."
 
@@ -136,5 +146,4 @@ msgstr "Duplicar"
 msgid "CopyNodes.name.multiple"
 msgstr "Duplicar todos"
 
-#~ msgid "CopyNodeDataToOtherNodes.ui.description"
-#~ msgstr "Elige columnas de las que copiar los datos:"
+
