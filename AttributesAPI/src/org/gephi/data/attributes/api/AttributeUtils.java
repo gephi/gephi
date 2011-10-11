@@ -44,7 +44,6 @@ package org.gephi.data.attributes.api;
 import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -53,6 +52,15 @@ import org.openide.util.Lookup;
  * @author Martin  Škurla
  */
 public abstract class AttributeUtils {
+
+    private static DatatypeFactory dateFactory;
+
+    static {
+        try {
+            dateFactory = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException ex) {
+        }
+    }
 
     public abstract boolean isNodeColumn(AttributeColumn column);
 
@@ -101,7 +109,7 @@ public abstract class AttributeUtils {
     }
 
     /**
-     * Used for export (writes XML date strings).
+     * Used for attributes representation.
      *
      * @param d a double to convert from
      *
@@ -110,19 +118,13 @@ public abstract class AttributeUtils {
      * @throws IllegalArgumentException if {@code d} is infinite.
      */
     public static String getXMLDateStringFromDouble(double d) {
-        try {
-            DatatypeFactory dateFactory = DatatypeFactory.newInstance();
-            if (d == Double.NEGATIVE_INFINITY) {
-                return "-Infinity";
-            } else if (d == Double.POSITIVE_INFINITY) {
-                return "Infinity";
-            }
-            GregorianCalendar gc = new GregorianCalendar();
-            gc.setTimeInMillis((long) d);
-            return dateFactory.newXMLGregorianCalendar(gc).toXMLFormat().substring(0, 23);
-        } catch (DatatypeConfigurationException ex) {
-            Exceptions.printStackTrace(ex);
-            return "";
+        if (d == Double.NEGATIVE_INFINITY) {
+            return "-Infinity";
+        } else if (d == Double.POSITIVE_INFINITY) {
+            return "Infinity";
         }
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTimeInMillis((long) d);
+        return dateFactory.newXMLGregorianCalendar(gc).toXMLFormat().substring(0, 23);
     }
 }

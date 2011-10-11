@@ -83,7 +83,15 @@ import org.openide.util.Exceptions;
  * @author Cezary Bartosiak
  */
 public final class DynamicUtilities {
+    private static DatatypeFactory dateFactory;
 
+    static {
+        try {
+            dateFactory = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException ex) {
+        }
+    }
+    
     /**
      * Used for import (parses XML date strings).
      *
@@ -96,24 +104,18 @@ public final class DynamicUtilities {
      */
     public static double getDoubleFromXMLDateString(String str) {
         try {
-            DatatypeFactory dateFactory = DatatypeFactory.newInstance();
+            return dateFactory.newXMLGregorianCalendar(str.length() > 23 ? str.substring(0, 23) : str).
+                    toGregorianCalendar().getTimeInMillis();
+        } catch (IllegalArgumentException ex) {
+            //Try simple format
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
-                return dateFactory.newXMLGregorianCalendar(str.length() > 23 ? str.substring(0, 23) : str).
-                        toGregorianCalendar().getTimeInMillis();
-            } catch (IllegalArgumentException ex) {
-                //Try simple format
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                try {
-                    Date date = dateFormat.parse(str);
-                    return date.getTime();
-                } catch (ParseException ex1) {
-                    Exceptions.printStackTrace(ex1);
-                    return 0.0;
-                }
+                Date date = dateFormat.parse(str);
+                return date.getTime();
+            } catch (ParseException ex1) {
+                Exceptions.printStackTrace(ex1);
+                return 0.0;
             }
-        } catch (DatatypeConfigurationException ex) {
-            Exceptions.printStackTrace(ex);
-            return 0.0;
         }
     }
 
@@ -127,20 +129,16 @@ public final class DynamicUtilities {
      * @throws IllegalArgumentException if {@code d} is infinite.
      */
     public static String getXMLDateStringFromDouble(double d) {
-        try {
-            DatatypeFactory dateFactory = DatatypeFactory.newInstance();
-            if (Double.isInfinite(d)) {
-                throw new IllegalArgumentException("The passed double cannot be infinite.");
-            }
-            GregorianCalendar gc = new GregorianCalendar();
-            gc.setTimeInMillis((long) d);
-            return dateFactory.newXMLGregorianCalendar(gc).toXMLFormat().substring(0, 23);
-        } catch (DatatypeConfigurationException ex) {
-            Exceptions.printStackTrace(ex);
-            return "";
+        if (d == Double.NEGATIVE_INFINITY) {
+            return "-Infinity";
+        } else if (d == Double.POSITIVE_INFINITY) {
+            return "Infinity";
         }
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTimeInMillis((long) d);
+        return dateFactory.newXMLGregorianCalendar(gc).toXMLFormat().substring(0, 23);
     }
-
+    
     /**
      * Returns a new {@code DynamicType} instance that contains a given
      * {@code Interval} in.
