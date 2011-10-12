@@ -135,6 +135,10 @@
                         <compile-dependency/>
                     </test-dependency>
                     <test-dependency>
+                        <code-name-base>org.gephi.visualization.api</code-name-base>
+                        <compile-dependency/>
+                    </test-dependency>
+                    <test-dependency>
                         <code-name-base>org.openide.nodes</code-name-base>
                         <compile-dependency/>
                     </test-dependency>
