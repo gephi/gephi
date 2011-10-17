@@ -132,8 +132,12 @@ public final class IntervalTree<T> {
 				x = x.left;
 			else x = x.right;
 			y.max = Math.max(z.max, y.max);
+			if (y.p == root)
+				root.max = y.max;
 		}
 		z.p = y;
+		if (y == root)
+			root.max = z.max;
 		if (y == root || compareLow(z.i, y.i))
 			y.left = z;
 		else y.right = z;
@@ -202,8 +206,11 @@ public final class IntervalTree<T> {
 
 	private void delete(Node z) {
 		z.max = Double.NEGATIVE_INFINITY;
-		for (Node i = z.p; i != root; i = i.p)
+		for (Node i = z.p; i != root; i = i.p) {
 			i.max = Math.max(i.left.max, i.right.max);
+			if (i.p == root)
+				root.max = i.max;
+		}
 
 		Node y;
 		Node x;
@@ -307,6 +314,8 @@ public final class IntervalTree<T> {
 		y.left = x;
 		x.p    = y;
 
+		if (y.p == root)
+			root.max = x.max;
 		y.max = x.max;
 		x.max = Math.max(x.i.getHigh(), Math.max(x.left.max, x.right.max));
 	}
@@ -324,6 +333,8 @@ public final class IntervalTree<T> {
 		y.right = x;
 		x.p     = y;
 
+		if (y.p == root)
+			root.max = x.max;
 		y.max = x.max;
 		x.max = Math.max(x.i.getHigh(), Math.max(x.left.max, x.right.max));
 	}
