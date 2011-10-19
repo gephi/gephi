@@ -80,14 +80,7 @@ public interface PerspectiveMember {
      * @return              <code>true</code> if this component opens,
      * <code>false</code> otherwise
      */
-    public boolean open(Perspective perspective);
+    public boolean isMemberOf(Perspective perspective);
 
-    /**
-     * Returns <code>true</code> if this component closes when
-     * <code>perspective</code> closes.
-     * @param perspective   the perspective that is to be closed
-     * @return              <code>true</code> if this component closes,
-     * <code>false</code> otherwise
-     */
-    public boolean close(Perspective perspective);
+    public String getTopComponentId();
 }

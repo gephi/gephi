@@ -48,14 +48,8 @@ import java.awt.event.ActionListener;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
 import org.gephi.desktop.perspective.spi.Perspective;
-import org.gephi.desktop.perspective.spi.PerspectiveMember;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.ImageUtilities;
-import org.openide.util.Lookup;
-import org.openide.util.NbPreferences;
-import org.openide.windows.TopComponent;
-import org.openide.windows.TopComponentGroup;
-import org.openide.windows.WindowManager;
 
 /**
  *
@@ -63,14 +57,15 @@ import org.openide.windows.WindowManager;
  */
 public class BannerComponent extends javax.swing.JPanel {
 
-    private String selectedPerspective;
-    private static final String SELECTED_PERSPECTIVE_PREFERENCE = "BannerComponent_selectedPerspective";
+    
     private transient JToggleButton[] buttons;
+    private transient PerspectiveController perspectiveController;
 
     public BannerComponent() {
         initComponents();
 
-        selectedPerspective = NbPreferences.forModule(BannerComponent.class).get(SELECTED_PERSPECTIVE_PREFERENCE, null);
+        //Init perspective controller
+        perspectiveController = new PerspectiveController();
 
         addGroupTabs();
 
@@ -97,55 +92,17 @@ public class BannerComponent extends javax.swing.JPanel {
     }
 
     private void addGroupTabs() {
-        final Perspective[] perspectives = Lookup.getDefault().lookupAll(Perspective.class).toArray(new Perspective[0]);
-
-        buttons = new JPerspectiveButton[perspectives.length];
+        buttons = new JPerspectiveButton[perspectiveController.getPerspectives().length];
         int i = 0;
 
         //Add tabs
-        for (final Perspective perspective : perspectives) {
+        for (final Perspective perspective : perspectiveController.getPerspectives()) {
             JPerspectiveButton toggleButton = new JPerspectiveButton(perspective.getDisplayName(), perspective.getIcon());
             toggleButton.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    //Close other perspective
-                    for (Perspective g : perspectives) {
-                        if (g != perspective) {
-                            TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(g.getName());
-                            tpg.close();
-                        }
-                    }
-
-                    //Open perspective
-                    TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(perspective.getName());
-                    tpg.open();
-
-                    PerspectiveMember[] members = Lookup.getDefault().lookupAll(PerspectiveMember.class).toArray(new PerspectiveMember[0]);
-
-                    //Close members
-                    Perspective closingPerspective = getPerspective(selectedPerspective);
-                    for (PerspectiveMember member : members) {
-                        if (member.close(closingPerspective)) {
-                            if (member instanceof TopComponent) {
-                                boolean closed = ((TopComponent) member).close();
-                                //System.out.println("Close "+member+" : "+closed);
-                            }
-                        }
-                    }
-
-                    //Open members
-                    for (PerspectiveMember member : members) {
-                        if (member.open(perspective)) {
-                            if (member instanceof TopComponent && !((TopComponent) member).isOpened()) {
-                                ((TopComponent) member).open();
-                                //System.out.println("Open "+member);
-                            }
-                        }
-                    }
-
-                    selectedPerspective = perspective.getName();
-                    NbPreferences.forModule(BannerComponent.class).put(SELECTED_PERSPECTIVE_PREFERENCE, selectedPerspective);
+                    perspectiveController.select(perspective);
                 }
             });
             perspectivesButtonGroup.add(toggleButton);
@@ -153,7 +110,8 @@ public class BannerComponent extends javax.swing.JPanel {
             buttons[i++] = toggleButton;
         }
 
-        refreshSelectedPerspective();
+        //Set currently selected button
+        perspectivesButtonGroup.setSelected(buttons[perspectiveController.getSelectedPerspectiveIndex()].getModel(), true);
     }
 
     //Not working
@@ -168,29 +126,6 @@ public class BannerComponent extends javax.swing.JPanel {
     }
     }
     }*/
-    private void refreshSelectedPerspective() {
-        Perspective[] perspectives = Lookup.getDefault().lookupAll(Perspective.class).toArray(new Perspective[0]);
-        if (selectedPerspective == null) {
-            perspectivesButtonGroup.setSelected(buttons[0].getModel(), true);
-            selectedPerspective = perspectives[0].getName();
-        } else {
-            for (int j = 0; j < perspectives.length; j++) {
-                String groupName = perspectives[j].getName();
-                if (selectedPerspective.equals(groupName)) {
-                    perspectivesButtonGroup.setSelected(buttons[j].getModel(), true);
-                }
-            }
-        }
-    }
-
-    private Perspective getPerspective(String name) {
-        for (Perspective p : Lookup.getDefault().lookupAll(Perspective.class)) {
-            if (p.getName().equals(name)) {
-                return p;
-            }
-        }
-        return null;
-    }
 
     /** This method is called from within the constructor to
      * initialize the form.
