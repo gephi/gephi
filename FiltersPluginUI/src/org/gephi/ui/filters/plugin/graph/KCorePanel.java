@@ -70,6 +70,7 @@ public class KCorePanel extends javax.swing.JPanel implements ChangeListener {
 
     public void setup(KCoreFilter filter) {
         this.filter = filter;
+        degreeSpinner.setModel(new javax.swing.SpinnerNumberModel(filter.getK(), Integer.valueOf(1), null, Integer.valueOf(1)));
         degreeSpinner.getModel().addChangeListener(WeakListeners.change(KCorePanel.this, degreeSpinner.getModel()));
     }
 
