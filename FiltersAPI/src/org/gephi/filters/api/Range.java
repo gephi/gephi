@@ -206,6 +206,9 @@ public final class Range {
         if (rangeType != min.getClass() || rangeType != max.getClass()) {
             throw new IllegalArgumentException("value must be " + rangeType.getName());
         }
+        if(min.equals(max) || lowerNumber.equals(upperNumber)) {
+            return;
+        }
         if (rangeType == Double.class) {
             Double minD = (Double) min;
             Double maxD = (Double) max;
