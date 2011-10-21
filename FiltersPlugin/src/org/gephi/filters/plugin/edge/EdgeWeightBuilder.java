@@ -106,7 +106,7 @@ public class EdgeWeightBuilder implements FilterBuilder {
         private Range range;
         private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
         //States
-        private List<Float> values;
+        private List<Float> values = new ArrayList<Float>();
 
         public String getName() {
             return NbBundle.getMessage(EdgeWeightBuilder.class, "EdgeWeightBuilder.name");
@@ -172,7 +172,7 @@ public class EdgeWeightBuilder implements FilterBuilder {
         }
 
         public void setRange(Range range) {
-            if (range.getMinimum() == null && range.getMaximum() == null) {
+            if (range.getMinimum() == null && range.getMaximum() == null && this.range != null) {
                 //Opening project
                 this.range = new Range(range.getLowerBound(), range.getUpperBound(), this.range.getMinimum(), this.range.getMaximum());
             } else {

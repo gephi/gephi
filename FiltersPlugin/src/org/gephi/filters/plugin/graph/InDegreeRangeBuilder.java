@@ -105,7 +105,7 @@ public class InDegreeRangeBuilder implements FilterBuilder {
 
         private Range range;
         //States
-        private List<Integer> values;
+        private List<Integer> values = new ArrayList<Integer>();
 
         public String getName() {
             return NbBundle.getMessage(InDegreeRangeBuilder.class, "InDegreeRangeBuilder.name");
@@ -171,7 +171,7 @@ public class InDegreeRangeBuilder implements FilterBuilder {
         }
 
         public void setRange(Range range) {
-            if (range.getMinimum() == null && range.getMaximum() == null) {
+            if (range.getMinimum() == null && range.getMaximum() == null && this.range != null) {
                 //Opening project
                 this.range = new Range(range.getLowerBound(), range.getUpperBound(), this.range.getMinimum(), this.range.getMaximum());
             } else {
