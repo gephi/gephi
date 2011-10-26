@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.layout;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -59,6 +60,7 @@ import java.util.Comparator;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import org.gephi.layout.api.LayoutController;
@@ -248,8 +250,30 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     private void refreshProperties() {
         if (model == null || model.getSelectedLayout() == null) {
             ((PropertySheet) propertySheet).setNodes(new Node[0]);
+            layoutProvidedPanel.setVisible(false);
+            propertySheet.setVisible(true);
+            layoutProvidedPanel.removeAll();
         } else {
             LayoutNode layoutNode = new LayoutNode(model.getSelectedLayout());
+            
+            JPanel simplePanel = null;
+            try {
+                simplePanel = layoutNode.getLayout().getBuilder().getUI().getSimplePanel(layoutNode.getLayout());
+            } catch (Exception ex) {
+                // Tried and failed to getSimplePanel
+            }
+            
+            if(null != simplePanel) {
+                propertySheet.setVisible(false);
+                layoutProvidedPanel.setVisible(true);
+                layoutProvidedPanel.removeAll();
+                layoutProvidedPanel.add(simplePanel);
+            } else {
+                layoutProvidedPanel.setVisible(false);
+                propertySheet.setVisible(true);
+                layoutProvidedPanel.removeAll();
+            }
+            
             ((PropertySheet) propertySheet).setNodes(new Node[]{layoutNode});
         }
     }
@@ -298,6 +322,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         layoutToolbar = new javax.swing.JToolBar();
         presetsButton = new javax.swing.JButton();
         resetButton = new javax.swing.JButton();
+        layoutProvidedPanel = new javax.swing.JPanel();
         propertySheet = new PropertySheet();
 
         setLayout(new java.awt.GridBagLayout());
@@ -365,6 +390,17 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
         gridBagConstraints.weightx = 1.0;
         add(layoutToolbar, gridBagConstraints);
 
+        layoutProvidedPanel.setOpaque(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(layoutProvidedPanel, gridBagConstraints);
+
         propertySheet.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -391,6 +427,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel infoLabel;
     private javax.swing.JComboBox layoutCombobox;
+    private javax.swing.JPanel layoutProvidedPanel;
     private javax.swing.JToolBar layoutToolbar;
     private javax.swing.JButton presetsButton;
     private javax.swing.JPanel propertySheet;
