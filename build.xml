@@ -3,11 +3,16 @@
 <!-- for some information on what you could do (e.g. targets to override). -->
 <!-- If you delete this file and reopen the project it will be recreated. -->
 <project name="0.8" basedir=".">
+
     <description>Builds the module suite 0.8.</description>
     <import file="nbproject/build-impl.xml"/>
 
     <condition property="isWindows">
         <os family="windows" />
+    </condition>
+
+    <condition property="isMac">
+        <os family="mac" />
     </condition>
 
     <target name="build-launchers" depends="suite.build-launchers">
@@ -27,7 +32,7 @@
     </target>
 
     <!-- Override to change Mac application icon. -->
-    <target name="build-mac" depends="suite.build-mac" description="Build Mac OS X Application">
+    <target name="build-mac" depends="suite.build-mac" if="isMac" description="Build Mac OS X Application">
         <property name="nbdist-contents.dir" value="${dist.dir}/${app.name}.app/Contents"/>
         <property name="nbdist-resources.dir" value="${nbdist-contents.dir}/Resources"/>
 
@@ -49,7 +54,7 @@
     </target>
 
     <target name="javadoc">
-        <javadoc destdir="dist/apiindex" windowtitle="Gephi API Index" encoding="UTF-8" charset="UTF-8" stylesheetfile="stylesheet.css"  packagenames="org.gephi.**.api,org.gephi.**.spi.*,org.gephi.data.*,org.gephi.utils.progress" overview="overview.html"  classpath="build/public-package-jars/org-openide-util-lookup.jar">
+        <javadoc destdir="dist/apiindex" windowtitle="Gephi API Index" encoding="UTF-8" charset="UTF-8" stylesheetfile="stylesheet.css"  packagenames="org.gephi.**.api,org.gephi.**.spi.*,org.gephi.data.*,org.gephi.utils.progress,org.gephi.preview.types" overview="overview.html"  classpath="build/public-package-jars/org-openide-util-lookup.jar">
             <sourcepath>
                 <pathelement path="AttributesAPI/src"/>
                 <pathelement path="ClusteringAPI/src"/>
@@ -79,19 +84,20 @@
         <property name="l10n.url" value="http://netbeans.org/project_downloads/nblocalization/7.0/"/>
         <property name="l10n.file" value="nb70_platform_l10n.zip"/>
         <property name="l10n.dir" value="l10n"/>
-        <get src="${l10n.url}${l10n.file}" dest="${dist.dir}" verbose="true" skipexisting="true" ignoreerrors="true"/>      
+        <get src="${l10n.url}${l10n.file}" dest="${dist.dir}" verbose="true" skipexisting="true" ignoreerrors="true"/>   
+        <available file="${dist.dir}/${l10n.file}" property="l10n.exists"/>
     </target>
 
-    <target name="unzip-l10n" depends="download-l10n-jars" description="Unzip Netbeans Platform Localization JARs">
+    <target name="unzip-l10n" depends="download-l10n-jars" description="Unzip Netbeans Platform Localization JARs" if="l10n.exists">
         <unzip src="${dist.dir}/${l10n.file}" dest="${dist.dir}/${l10n.dir}/${app.name}"/>
     </target>
     
-    <target name="merge-l10n-zip" depends="unzip-l10n" description="Merge Localization JARs on ZIP distribution" >
+    <target name="merge-l10n-zip" depends="unzip-l10n" description="Merge Localization JARs on ZIP distribution" if="l10n.exists">
         <zip destfile="${dist.dir}/${app.name}.zip" basedir="${dist.dir}/${l10n.dir}" update="true"/>
         <antcall target="clean-l10n"/>
     </target>
 
-    <target name="merge-l10n-mac" depends="unzip-l10n" description="Merge Localization JARs on MAC distribution" >
+    <target name="merge-l10n-mac" depends="unzip-l10n" description="Merge Localization JARs on MAC distribution" if="l10n.exists">
         <copy todir="${dist.dir}/${app.name}.app/Contents/Resources">
             <fileset dir="${dist.dir}/${l10n.dir}"/>
         </copy>
