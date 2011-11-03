@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright 2010 Oracle and/or its affiliates. All rights reserved.
+
+Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common
+Development and Distribution License("CDDL") (collectively, the
+"License"). You may not use this file except in compliance with the
+License. You can obtain a copy of the License at
+http://www.netbeans.org/cddl-gplv2.html
+or nbbuild/licenses/CDDL-GPL-2-CP. See the License for the
+specific language governing permissions and limitations under the
+License.  When distributing the software, include this License Header
+Notice in each file and include the License file at
+nbbuild/licenses/CDDL-GPL-2-CP.  Oracle designates this
+particular file as subject to the "Classpath" exception as provided
+by Oracle in the GPL Version 2 section of the License file that
+accompanied this code. If applicable, add the following below the
+License Header, with the fields enclosed by brackets [] replaced by
+your own identifying information:
+"Portions Copyrighted [year] [name of copyright owner]"
+
+Contributor(s):
+
+The Original Software is NetBeans. The Initial Developer of the Original
+Software is Sun Microsystems, Inc. Portions Copyright 2010 Sun
+Microsystems, Inc. All Rights Reserved.
+
+If you wish your version of this file to be governed by only the CDDL
+or only the GPL Version 2, indicate your decision by adding
+"[Contributor] elects to include this software in this distribution
+under the [CDDL or GPL Version 2] license." If you do not indicate a
+single choice of license, a recipient has the option to distribute
+your version of this file under either the CDDL, the GPL Version 2 or
+to extend the choice of license to its licensees as provided above.
+However, if you add GPL Version 2 code and therefore, elected the GPL
+Version 2 license, then the option applies only if the new code is
+made subject to such option by the copyright holder.
+-->
+<project name="suite-osgi" basedir=".">
+
+    <target name="init">
+        <property name="osgi.dest.dir" location="${suite.build.dir}/osgi"/>
+        <property name="osgi.cache.dir" location="${suite.build.dir}/osgi-cache"/>
+        <property name="disabled.modules" value=""/>
+        <property name="enabled.clusters" value=""/>
+        <property name="disabled.clusters" value=""/>
+    </target>
+
+    <target name="build" depends="init">
+        <mkdir dir="${osgi.dest.dir}"/>
+        <pathconvert property="osgi.platform.update.tracking">
+            <pathfileset>
+                <path refid="cluster.path.id"/>
+                <filename name="update_tracking/*.xml"/>
+            </pathfileset>
+        </pathconvert>
+        <makeosgi destdir="${osgi.dest.dir}">
+            <pathfileset>
+                <path refid="cluster.path.id"/>
+                <and>
+                    <or>
+                        <filename name="modules/*.jar"/>
+                        <filename name="lib/*.jar"/>
+                        <filename name="core/*.jar"/>
+                        <filename name="modules/locale/*.jar"/>
+                        <filename name="lib/locale/*.jar"/>
+                        <filename name="core/locale/*.jar"/>
+                        <filename name="*.jar"/> <!-- #186371: imported bundles -->
+                    </or>
+                    <custom classpath="${harness.dir}/tasks.jar" classname="org.netbeans.nbbuild.ModuleSelector">
+                        <param name="excludeModules" value="${disabled.modules}"/>
+                        <param name="includeClusters" value="${enabled.clusters}"/>
+                        <param name="excludeClusters" value="${disabled.clusters}"/>
+                        <param name="updateTrackingFiles" value="${osgi.platform.update.tracking}"/>
+                    </custom>
+                </and>
+            </pathfileset>
+            <fileset dir="${cluster}">
+                <include name="modules/*.jar"/>
+                <include name="lib/*.jar"/>
+                <include name="core/*.jar"/>
+                <include name="modules/locale/*.jar"/>
+                <include name="lib/locale/*.jar"/>
+                <include name="core/locale/*.jar"/>
+            </fileset>
+        </makeosgi>
+    </target>
+
+    <target name="obr" depends="init">
+        <taskdef name="bindex" classname="org.osgi.impl.bundle.bindex.ant.BindexTask">
+            <classpath>
+                <fileset dir="${harness.dir}/antlib" includes="bindex*.jar"/>
+            </classpath>
+        </taskdef>
+        <bindex repositoryfile="${osgi.dest.dir}/repository.xml" quiet="true" root="${osgi.dest.dir}">
+            <fileset dir="${osgi.dest.dir}" includes="*.jar"/>
+        </bindex>
+    </target>
+
+    <target name="run" depends="init">
+        <mkdir dir="${osgi.cache.dir}"/>
+        <property name="felix-sys-prop.felix.auto.deploy.action" value="uninstall,install,update,start"/> <!-- config.properties omits update,uninstall -->
+        <property name="felix-sys-prop.felix.log.level" value="3"/> <!-- config.properties defaults to 4 but it is too noisy -->
+        <property name="felix-sys-prop.org.osgi.service.http.port" value="8080"/> <!-- from config.properties -->
+        <property name="felix-sys-prop.obr.repository.url" value="http://felix.apache.org/obr/releases.xml"/> <!-- from config.properties -->
+        <condition property="felix-sys-prop.branding.token" value="${branding.token}">
+            <isset property="branding.token"/>
+        </condition>
+        <property name="osgi.run.cp.extra" value=""/>
+        <property name="osgi.run.args" value="-ea"/>
+        <property name="osgi.run.args.extra" value=""/>
+        <java fork="true" classname="org.apache.felix.main.Main">
+            <classpath>
+                <pathfileset>
+                    <path refid="cluster.path.id"/>
+                    <or>
+                        <filename name="modules/ext/osgi*.jar"/>
+                        <filename name="modules/ext/felix*.jar"/>
+                    </or>
+                </pathfileset>
+                <pathelement path="${osgi.run.cp.extra}"/>
+            </classpath>
+            <jvmarg line="${osgi.run.args}"/>
+            <jvmarg line="${osgi.run.args.extra}"/>
+            <arg value="-b"/>
+            <arg file="${osgi.dest.dir}"/>
+            <arg file="${osgi.cache.dir}"/>
+            <syspropertyset>
+                <propertyref prefix="felix-sys-prop."/>
+                <mapper type="glob" from="felix-sys-prop.*" to="*"/>
+            </syspropertyset>
+        </java>
+    </target>
+
+    <target name="debug">
+        <fail unless="netbeans.home">This target only works when run from inside the NetBeans IDE.</fail>
+        <nbjpdastart name="NetBeans" addressproperty="debug.port" transport="dt_socket">
+            <classpath>
+                <pathfileset>
+                    <path refid="cluster.path.id"/>
+                    <filename name="**/*.jar"/>
+                </pathfileset>
+                <fileset dir="${cluster}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+        </nbjpdastart>
+        <property name="debug.pause" value="y"/>
+        <property name="debug.args" value="-Xdebug -Xrunjdwp:transport=dt_socket,suspend=${debug.pause},server=n,address=${debug.port}"/>
+        <antcall target="run">
+            <param name="osgi.run.args.extra" value="${debug.args}"/>
+            <reference refid="cluster.path.id"/>
+        </antcall>
+    </target>
+
+    <target name="profile">
+        <fail unless="netbeans.home">This target only works when run from inside the NetBeans IDE.</fail>
+        <nbprofiledirect jvmargsprefix="" jvmargsproperty="profiler.jvmargs">
+            <classpath>
+                <pathfileset>
+                    <path refid="cluster.path.id"/>
+                    <filename name="**/*.jar"/>
+                </pathfileset>
+                <fileset dir="${cluster}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <rootspath>
+                <fileset dir="${cluster}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </rootspath>
+        </nbprofiledirect>
+        <antcall target="run">
+            <param name="osgi.run.args.extra" value='"${profiler.jvmargs}"'/>
+            <param name="felix-sys-prop.org.osgi.framework.bootdelegation" value="org.netbeans.lib.profiler.*"/>
+            <reference refid="cluster.path.id"/>
+        </antcall>
+    </target>
+
+</project>

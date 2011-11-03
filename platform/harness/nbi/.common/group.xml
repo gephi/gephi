@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+  Copyright 1997-2010 Oracle and/or its affiliates. All rights reserved.
+
+  Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+  Other names may be trademarks of their respective owners.
+
+  The contents of this file are subject to the terms of either the GNU General Public
+  License Version 2 only ("GPL") or the Common Development and Distribution
+  License("CDDL") (collectively, the "License"). You may not use this file except in
+  compliance with the License. You can obtain a copy of the License at
+  http://www.netbeans.org/cddl-gplv2.html or nbbuild/licenses/CDDL-GPL-2-CP. See the
+  License for the specific language governing permissions and limitations under the
+  License.  When distributing the software, include this License Header Notice in
+  each file and include the License file at nbbuild/licenses/CDDL-GPL-2-CP.  Oracle
+  designates this particular file as subject to the "Classpath" exception as provided
+  by Oracle in the GPL Version 2 section of the License file that accompanied this code.
+  If applicable, add the following below the License Header, with the fields enclosed
+  by brackets [] replaced by your own identifying information:
+  "Portions Copyrighted [year] [name of copyright owner]"
+  
+  Contributor(s):
+  
+  The Original Software is NetBeans. The Initial Developer of the Original Software
+  is Sun Microsystems, Inc. Portions Copyright 1997-2007 Sun Microsystems, Inc. All
+  Rights Reserved.
+  
+  If you wish your version of this file to be governed by only the CDDL or only the
+  GPL Version 2, indicate your decision by adding "[Contributor] elects to include
+  this software in this distribution under the [CDDL or GPL Version 2] license." If
+  you do not indicate a single choice of license, a recipient has the option to
+  distribute your version of this file under either the CDDL, the GPL Version 2 or
+  to extend the choice of license to its licensees as provided above. However, if you
+  add GPL Version 2 code and therefore, elected the GPL Version 2 license, then the
+  option applies only if the new code is made subject to such option by the copyright
+  holder.
+-->
+
+<!--
+  This is the base build script for an nbi group package.
+  
+  It is not intended to be used directly, but to be imported into derivative
+  implementation scripts, which will provide properties' values that are 
+  specific the concrete group implementation. The derivative scripts may also
+  provide some additional functionality that is required by their respective
+  group implementations.
+  
+  This script exposes five primary targets: 'init', 'clean', 'checkout', 
+  'build' and 'release'; as well as two aggregate targets: 'build-all', 
+  which tranlates into 'init', 'clean', 'checkout', 'build', and 
+  'release-all' - 'init', 'clean', 'checkout', 'build', 'release'. For the 
+  detailed description of the functionality of these targets, consult the 
+  corresponding documentation.
+-->
+<project name="group" default="usage" basedir=".">
+    <!-- a default value for the ${common.dir} property, which allows the user 
+         to see the usage information is he calls this script directly and not
+         via a derivative (which is the proper way to do this) -->
+    <property name="common.dir" value="${basedir}"/>
+    
+    <!-- import the common properties -->
+    <property file="${common.dir}/common.properties"/>
+    
+    <!-- import properties specific to the group package's build script -->
+    <property file="${common.dir}/group.properties"/>
+    
+    <!-- import the common target library -->
+    <import file="common.xml" optional="false"/>
+    
+    <!-- ============================================================================
+      Initialization
+    ============================================================================= -->
+    
+    <!--
+      Initializes the group package's build script.
+      
+      This target overrides the '-init' target in common.xml, providing the 
+      custom functionality that is required for the group package's build 
+      script initialization.
+      
+      In addition to the standard initialization routine, this target defines
+      several custom ant tasks, which are specific to the group package's build 
+      script.
+      
+      This target is not intended to be called directly.
+    -->
+    <target name="-init" depends=".init">
+        <!-- define custom ant tasks -->
+        <taskdef 
+            name="sizeof" 
+            classname="org.netbeans.installer.infra.build.ant.SizeOf" 
+            classpath="${custom.tasks.cls}"/>
+        <taskdef 
+            name="md5" 
+            classname="org.netbeans.installer.infra.build.ant.Md5" 
+            classpath="${custom.tasks.cls}"/>
+        <taskdef 
+            name="load-locales" 
+            classname="org.netbeans.installer.infra.build.ant.LoadLocales" 
+            classpath="${custom.tasks.cls}"/>
+        <taskdef 
+            name="group-descriptor" 
+            classname="org.netbeans.installer.infra.build.ant.GroupDescriptor" 
+            classpath="${custom.tasks.cls}"/>
+        
+        <if property="release.to.server" value="true">
+            <taskdef
+                name="release-package-server"
+                classname="org.netbeans.installer.infra.build.ant.ReleasePackage"
+                classpath="${custom.tasks.cls}"/>
+        </if>
+        
+        <if property="release.to.server" value="false">
+            <taskdef 
+                name="release-package-filesystem"
+                classname="org.netbeans.installer.infra.build.ant.registries.AddPackage"
+                classpath="${custom.tasks.cls}"/>
+        </if>
+    </target>
+    
+    <!-- ============================================================================
+      Clean-up
+    ============================================================================= -->
+    
+    <!--
+      Cleans the current working directory and the distributives directory.
+      
+      This target overrides the '-clean' target in common.xml, providing the 
+      custom functionality that is required for correctly cleaning the group 
+      package.
+      
+      In addition to the standard behavior the group package distributive file 
+      is removed from the distributives directory.
+      
+      This target is not intended to be called directly.
+    -->
+    <target name="-clean" depends=".clean">
+        <!-- remove the group's distributive file from the distributives 
+             directory -->
+        <delete file="${dist.dir}/${group.dist.file.name}"/>
+    </target>
+    
+    <!-- ============================================================================
+      Check-out
+    ============================================================================= -->
+    
+    <!--
+      The functionality of the checkout procedure for the group package is 
+      indentical to the standard one, thus there is not need to override the 
+      '-checkout' target, whosew default implementation is present in 
+      common.xml.
+    -->
+    
+    <!-- ============================================================================
+      Build
+    ============================================================================= -->
+    
+    <!--
+      Builds the group package.
+      
+      This target overrides the '-build' target in common.xml, providing the 
+      custom functionality that is required for correctly building the group 
+      package.
+      
+      The build process for the grup package consists of four steps.
+      1) The group's icon is copied from its location to the group's package 
+         directory structure and some metadata is calculated
+      
+      2) The group's localizing bundle is loaded and the group package 
+         descriptor is generated
+      
+      3) The manifest for the group package is generated
+      
+      4) The package directory structure is jarred, digitally signed and moved 
+         to the distributives directory
+      
+      This target is not intended to be called directly.
+    -->
+    <target name="-build" depends=".build">
+        <!-- copy the group's icon to the soon-to-be package directory 
+             structure and calculate some metadata for it -->
+        <copy file="${group.icon}" 
+              tofile="${package.dir}/${group.icon.path}"/>
+        <sizeof file="${package.dir}/${group.icon.path}" 
+                property="group.icon.size"/>
+        <md5 file="${package.dir}/${group.icon.path}" 
+             property="group.icon.md5"/>
+        <set 
+            property="group.icon.correct.uri" 
+            value="${group.icon.uri}"/>
+        
+        <!-- load the group's localizing bundle and store the locales list to 
+             ${group.locales.list} -->
+        <load-locales basename="${group.bundle}" list="group.locales.list"/>
+        
+        <!-- generate the group package descriptor -->
+        <group-descriptor file="${package.dir}/${package.descriptor.path}"/>
+        
+        <!-- create the package jar file and sign it -->
+        <jar basedir="${package.dir}"
+             destfile="${work.dir}/${group.dist.file.name}" 
+             compress="true">
+            <manifest>
+                <attribute 
+                    name="Product-Descriptor" 
+                    value="${package.descriptor.path}"/>
+            </manifest>
+        </jar>
+        
+        <!-- copy the distributive to the distributives directory -->
+        <move file="${work.dir}/${group.dist.file.name}" 
+              todir="${dist.dir}"/>
+        <if property="jarsigner.enabled" value="true">
+            <signjar jar="${dist.dir}/${group.dist.file.name}" 
+                     keystore="${jarsigner.keystore}"
+                     storepass="${jarsigner.storepass}"
+                     alias="${jarsigner.alias}"
+                     maxmemory="${jarsigner.xmx}"/>
+	</if>
+    </target>
+    
+    <!-- ============================================================================
+      Release
+    ============================================================================= -->
+    
+    <!--
+      Releases the group package to the registries server.
+      
+      This target overrides the '-release' target in common.xml, providing the 
+      custom functionality that is required for correctly releasing the group 
+      package.
+      
+      It is assumed that the group package has already been built, but a 
+      dependency on the 'build' target is not defined, as it may be desirable 
+      to build once and then release several times to different registries 
+      servers.
+      
+      This target is not intended to be called directly.
+    -->
+    <target name="-release">
+        <if property="release.to.server" value="true">
+            <echo message="Release URL is ${release.url}"/>
+            <echo message="Archive is ${dist.dir}/${group.dist.file.name}"/>
+            
+            <release-package-server
+                url="${release.url}"
+                registry="${release.registry}"
+                uid="${release.parent.uid}"
+                version="${release.parent.version}"
+                archive="${dist.dir}/${group.dist.file.name}"/>
+        </if>
+        <if property="release.to.server" value="false">
+            <echo message="Registry root is ${release.registry.dir}"/>
+            <echo message="Archive is ${dist.dir}/${group.dist.file.name}"/>
+            
+            <release-package-filesystem
+                root="${release.registry.dir}"
+                uid="${release.parent.uid}"
+                version="${release.parent.version}"
+                archive="${dist.dir}/${group.dist.file.name}"/>
+        </if>
+    </target>
+    
+    <!-- ============================================================================
+      Default
+    ============================================================================= -->
+    
+    <!--
+      The default target. 
+      
+      Does nothing except printing the usage information.
+    -->
+    <target name="usage">
+        <echo>
+            This is the base build script for nbi group package and is not 
+            intended to be called directly. In order to create a derivative 
+            implementation script, see 
+            ${basedir}/.templates/group-template.xml
+        </echo>
+    </target>
+</project>

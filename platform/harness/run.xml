@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright 1997-2010 Oracle and/or its affiliates. All rights reserved.
+
+Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common
+Development and Distribution License("CDDL") (collectively, the
+"License"). You may not use this file except in compliance with the
+License. You can obtain a copy of the License at
+http://www.netbeans.org/cddl-gplv2.html
+or nbbuild/licenses/CDDL-GPL-2-CP. See the License for the
+specific language governing permissions and limitations under the
+License.  When distributing the software, include this License Header
+Notice in each file and include the License file at
+nbbuild/licenses/CDDL-GPL-2-CP.  Oracle designates this
+particular file as subject to the "Classpath" exception as provided
+by Oracle in the GPL Version 2 section of the License file that
+accompanied this code. If applicable, add the following below the
+License Header, with the fields enclosed by brackets [] replaced by
+your own identifying information:
+"Portions Copyrighted [year] [name of copyright owner]"
+
+Contributor(s):
+
+The Original Software is NetBeans. The Initial Developer of the Original
+Software is Sun Microsystems, Inc. Portions Copyright 1997-2006 Sun
+Microsystems, Inc. All Rights Reserved.
+
+If you wish your version of this file to be governed by only the CDDL
+or only the GPL Version 2, indicate your decision by adding
+"[Contributor] elects to include this software in this distribution
+under the [CDDL or GPL Version 2] license." If you do not indicate a
+single choice of license, a recipient has the option to distribute
+your version of this file under either the CDDL, the GPL Version 2 or
+to extend the choice of license to its licensees as provided above.
+However, if you add GPL Version 2 code and therefore, elected the GPL
+Version 2 license, then the option applies only if the new code is
+made subject to such option by the copyright holder.
+-->
+<project name="run" basedir=".">
+
+    <target name="-init">
+        <property name="run.jdkhome" location="${nbjdk.home}"/>
+        <condition property="test.user.dir" value="${suite.build.dir}/testuserdir" else="${build.dir}/testuserdir">
+            <isset property="suite.build.dir"/>
+        </condition>
+        <property name="suite.dir" location="${basedir}"/>
+        <property name="run.args.common" value='--userdir "${test.user.dir}" -J-Dnetbeans.logger.console=true -J-ea'/>
+        <!-- In case run from a suite module, to get app.name and/or branding.token: -->
+        <property file="${suite.dir}/nbproject/private/platform-private.properties"/>
+        <property file="${suite.dir}/nbproject/platform.properties"/>
+        <property file="${suite.dir}/nbproject/private/private.properties"/>
+        <property file="${suite.dir}/nbproject/project.properties"/>
+        <!-- CP with id="cluster.path.id" is expected to be passed as parameter to run.xml -->
+        <pathconvert property="install">
+            <path refid="cluster.path.id"/>
+            <regexpmapper from="(.*[/\\])platform[0-9]*$$" to="\1"/>
+        </pathconvert>
+        
+        <!-- clear modulename_hidden files from external clusters so they do not influence the availability of
+              modules selected by the current cluster -->
+        <!-- We'll clear only clusters under 'build' folder to avoid deleting
+             files in binary platform/clusters (e.g. user hacks), while
+             un-hiding modules hidden by depended-upon suites. Cf. issue #172727 -->
+        <pathconvert property="cluster.path.projects" refid="cluster.path.id">
+            <regexpmapper handledirsep="true" from="^.*/build/[^/]+$$" to="\0"/>
+        </pathconvert>
+        <delete>
+            <pathfileset include="config/Modules/*_hidden">
+                <path path="${cluster.path.projects}"/>
+            </pathfileset>
+        </delete>
+        
+        <!-- use nb.exe if exists (old platform), netbeans.exe otherwise -->
+        <condition property="run.app.exe" value="bin\nb.exe" else="bin\netbeans.exe">
+            <available file="${install}\bin\nb.exe"/>
+        </condition>
+        <property name="run.app.sh" value="bin/netbeans"/>
+        <property name="run.exe.candidate" location="${install}\${run.app.exe}"/>
+        <property name="run.sh.candidate" location="${install}/${run.app.sh}"/>
+         <!-- #63976: if disabling things, better to treat as a platform-based app -->
+        <condition property="app.name" value="test">
+            <or>
+                <and>
+                    <isset property="disabled.modules"/>
+                    <length string="${disabled.modules}" when="greater" length="0"/>
+                </and>
+                <and>
+                    <isset property="enabled.clusters"/>
+                    <length string="${enabled.clusters}" when="greater" length="0"/>
+                </and>
+                <and>
+                    <isset property="disabled.clusters"/>
+                    <length string="${disabled.clusters}" when="greater" length="0"/>
+                </and>
+                <!-- #66793: also treat as a platform-based app if using platform and have no branding -->
+                <not>
+                    <available file="${run.exe.candidate}"/>
+                </not>
+                <not>
+                    <available file="${run.sh.candidate}"/>
+                </not>
+            </or>
+        </condition>
+    </target>
+
+    <target name="-prepare-as-app" depends="-init" unless="app.name">
+        <property name="run.exe" location="${run.exe.candidate}"/>
+        <property name="run.sh" location="${run.sh.candidate}"/>
+        <mkdir dir="${test.user.dir}/etc"/>
+        <pathconvert property="run.extra.clusters">
+            <path>
+                <pathelement location="${cluster}"/>
+                <path refid="cluster.path.id"/>
+            </path>
+            <!-- Exclude all clusters located in NB install dir;
+                 not exactly what netbeans.clusters specify, but good enough -->
+            <filtermapper>
+                <linecontains negate="true">
+                    <contains value="${install}"/>
+                </linecontains>
+            </filtermapper>
+        </pathconvert>
+        <echo file="${test.user.dir}/etc/netbeans.conf">netbeans_extraclusters="${run.extra.clusters}"</echo>
+        <property name="run.args.prepared" value=''/>
+    </target>
+
+    <target name="-prepare-as-platform" depends="-init" if="app.name">
+        <property name="disabled.modules" value=""/>
+        <fail message="Platform cluster is not present in cluster.path: '${cluster.path.final}'">
+            <condition>
+                <not>
+                    <matches string="${cluster.path.final}" pattern="[\\/]platform[0-9]*([;:]|$)"/>
+                </not>
+            </condition>
+        </fail>
+        <pathconvert property="run.platform.clusters">
+            <path>
+                <pathelement location="${cluster}"/>
+                <!-- Does not exclude clusters in which all modules are excluded, shouldn't be a problem -->
+                <path refid="cluster.path.id"/>
+            </path>
+        </pathconvert>
+        <pathconvert property="run.exe">
+            <path>
+                <fileset dir="${install}" includes="platform*/lib/nbexec.exe"/>
+            </path>
+        </pathconvert>
+        <pathconvert property="run.sh">
+            <path>
+                <fileset dir="${install}" includes="platform*/lib/nbexec"/>
+            </path>
+        </pathconvert>
+        <property name="branding.token" value="-"/> <!-- fallback value if not set -->
+        <property name="run.args.prepared" value='--branding ${branding.token} --clusters "${run.platform.clusters}"'/>
+    </target>
+
+    <target name="run" depends="-prepare-as-app,-prepare-as-platform">
+        <touch file="${cluster}/.lastModified"/> <!-- #138427 -->
+        <property name="run.args" value=""/>
+        <property name="run.args.ide" value=""/>
+        <property name="run.args.extra" value=""/>
+        <condition property="run.args.mac" value="-J-Xdock:name=${app.name}" else="">
+            <os family="mac"/>
+        </condition>
+        <exec osfamily="windows" executable="${run.exe}" failonerror="no" resultproperty="result.prop">
+            <arg value="--jdkhome"/>
+            <arg file="${run.jdkhome}"/>
+            <arg line="${run.args.common}"/>
+            <arg line="${run.args.prepared}"/>
+            <arg line="${run.args}"/>
+            <arg line="${run.args.extra}"/>
+            <arg line="${run.args.ide}"/>
+        </exec>
+        <exec osfamily="unix" dir="." executable="sh"
+        failonerror="no" resultproperty="result.prop">
+            <arg value="${run.sh}"/>
+            <arg value="--jdkhome"/>
+            <arg file="${run.jdkhome}"/>
+            <arg line="${run.args.common}"/>
+            <arg line="${run.args.prepared}"/>
+            <arg line="${run.args}"/>
+            <arg line="${run.args.extra}"/>
+            <arg line="${run.args.mac}"/>
+            <arg line="${run.args.ide}"/>
+        </exec>
+        <fail>
+The application is already running within the test user directory.
+You must shut it down before trying to run it again.
+            <condition>
+                <and>
+                    <isset property="result.prop" />
+                    <or>
+                        <!-- unknown option exit code as returned from IDE by org.netbeans.api.sendopts.CommandLine -->
+                        <equals arg1="${result.prop}" arg2="50346" />
+                        <!-- unknown option exit code as returned from platform app by org.netbeans.CLIHandler -->
+                        <equals arg1="${result.prop}" arg2="2" />
+                    </or>
+                </and>
+            </condition>
+        </fail>
+    </target>
+
+
+    <target name="debug">
+        <fail unless="netbeans.home">This target only works when run from inside the NetBeans IDE.</fail>
+        <nbjpdastart name="NetBeans" addressproperty="debug.port" transport="dt_socket">
+            <classpath>
+                <pathfileset include="**/*.jar">
+                    <path refid="cluster.path.id"/>
+                </pathfileset>
+                <fileset dir="${cluster}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+        </nbjpdastart>
+        <property name="debug.pause" value="y"/>
+        <property name="debug.args" value="-J-Xdebug -J-Xrunjdwp:transport=dt_socket,suspend=${debug.pause},server=n,address=${debug.port}"/>
+        <antcall target="run">
+            <param name="run.args" value="${debug.args}"/>
+            <reference refid="cluster.path.id"/>
+        </antcall>
+    </target>
+    
+    <target name="profile" description="Profile a project in the IDE.">
+        <fail unless="netbeans.home">This target only works when run from inside the NetBeans IDE.</fail>
+        <nbprofiledirect 
+            jvmargsprefix="-J" 
+            jvmargsproperty="profiler.jvmargs" 
+            mainclass="org.netbeans.Main"
+        >
+            <classpath>
+                <pathfileset include="**/*.jar">
+                    <path refid="cluster.path.id"/>
+                </pathfileset>
+                <fileset dir="${cluster}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <rootspath>
+                <fileset dir="${cluster}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </rootspath>
+        </nbprofiledirect>
+        
+        <antcall target="run">
+            <param name="run.args" value='"${profiler.jvmargs}"'/>
+            <reference refid="cluster.path.id"/>
+        </antcall>
+    </target>
+    
+</project>

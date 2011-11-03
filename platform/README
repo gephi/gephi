@@ -1,0 +1,5 @@
+This folder contains the Netbeans Platform files. It is used when no Gephi is built without Netbeans (typically running 'ant' on the project folder).
+
+Version: netbeans-7.0.1-201107282000
+
+See http://netbeans.org/downloads/zip.html

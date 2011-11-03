@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="org.netbeans.core.multiview/1">
+    <module_version install_time="1311882795320" last="true" origin="installer" specification_version="1.22.1">
+        <file crc="3216778929" name="config/Modules/org-netbeans-core-multiview.xml"/>
+        <file crc="3500813360" name="modules/org-netbeans-core-multiview.jar"/>
+    </module_version>
+</module>

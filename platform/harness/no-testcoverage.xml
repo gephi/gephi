@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="no-testcoverage">
+<!--
+    Fallback testcoverage implementation.
+    Just fails with appropriate message.
+-->
+    <target name="coverage-report">
+        <fail>
+No test coverage implementation found in ${harness.dir}.
+        </fail>
+    </target>
+</project>

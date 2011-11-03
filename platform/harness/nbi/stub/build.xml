@@ -1,0 +1,202 @@
+<project name="build installers" default="build" basedir=".">
+    <property file="${basedir}/build.properties"/>
+    <property file="${basedir}/custom.properties"/>
+    
+    <target name="build" depends="init,-build,-generate-bundles,post-build"/>
+    
+    <target name="init" depends="-clean,-checkout,-init,-init-properties,-post-init-clean"/>
+
+    <target name="-clean-cvs" unless="no.checkout">
+        <delete dir="${nbi.all.dir}"/>
+    </target>
+    
+    <target name="-clean" depends="-clean-cvs" unless="no.clean">
+        <delete dir="${output.dir}"/>
+        <delete dir="${nbi.ext.dir}/products/helloworld/build"/>
+        <delete dir="${nbi.ext.dir}/products/helloworld/dist"/>
+        <delete dir="${nbi.ext.dir}/engine/build"/>
+        <delete dir="${nbi.ext.dir}/engine/dist"/>
+
+        <!--<delete dir="${basedir}/cache"/>-->
+    </target>
+
+    <target name="post-build">
+        <delete dir="${output.dir}/registry-temp"/>
+    </target>
+    
+    <target name="-checkout">
+        
+        <copy todir="${nbi.all.dir}/.common">
+            <fileset dir="${basedir}/.common"/>
+        </copy>
+
+        <copy todir="${nbi.ext.dir}">
+            <fileset dir="${basedir}/ext">
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="-init">
+        <taskdef 
+            name="if" 
+            classpath="${custom.tasks.cls}" 
+            classname="org.netbeans.installer.infra.build.ant.If"/>
+        <taskdef 
+            name="for-each" 
+            classpath="${custom.tasks.cls}" 
+            classname="org.netbeans.installer.infra.build.ant.ForEach"/>
+        <taskdef 
+            name="set" 
+            classpath="${custom.tasks.cls}" 
+            classname="org.netbeans.installer.infra.build.ant.SetProperty"/>
+
+        <taskdef 
+            name="create-bundle" 
+            classpath="${custom.tasks.cls}" 
+            classname="org.netbeans.installer.infra.build.ant.registries.CreateBundle"/>
+        
+        <delete file="${temp.file}"/>
+    </target>
+    
+    <target name="-init-properties">
+        <echo file="${nbi.all.dir}/environment.tmp" encoding="utf-8">
+checkout.sources=false
+sources.dir=${nbi.all.dir}
+cvs.module=ext
+
+release.to.server=false
+release.registry.dir=${output.dir}/registry-temp
+
+dont.build.custom.tasks=true
+custom.tasks.cls=${custom.tasks.cls}
+
+build.engine=false
+
+engine.dist.file.name=nbi-engine.jar
+engine.dist.file=${nbi.core.dir}/infra/build/engine/dist/nbi-engine.jar
+
+packaged.data.dir=${basedir}/cache/packaged
+downloads.cache.dir=${basedir}/cache/raw
+
+jarsigner.enabled=${jarsigner.enabled}
+        </echo>
+        <replace file="${nbi.all.dir}/environment.tmp" token="\" value="/" encoding="utf-8"/>
+        <native2ascii src="${nbi.all.dir}" dest="${nbi.all.dir}" encoding="utf-8" includes="environment.tmp" ext=".properties"/>
+    </target>
+    
+    <target name="-post-init-clean">
+        <delete dir="${basedir}/cache/raw"/>
+    </target>
+    
+    <target name="-build">
+        <delete dir="${output.dir}"/>
+        
+        <mkdir dir="${output.dir}"/>
+        <mkdir dir="${bundles.release.dir}"/>
+        <mkdir dir="${output.dir}/components"/>
+        
+        <property name="engine.dist.file.name" value="nbi-engine.jar"/>
+
+        <echo message="BUILDING HELLOWORLD EXT ENGINE =================================="/>
+        <ant dir="${nbi.ext.dir}/infra/build/engine" target="release-all">
+            <property 
+                name="basedir" 
+                value="${nbi.ext.dir}/infra/build/engine"/>
+            <property 
+                name="environment.properties" 
+                value="${environment.properties}"/>
+            
+            <property 
+                name="core.engine.dist.file" 
+                value="${nbi.engine.jar}"/>
+        </ant>
+
+
+	<echo message="BUILDING HELLOWORLD PRODUCT =================================="/>
+        <ant dir="${nbi.ext.dir}/infra/build/products/helloworld" target="release-all">
+            <property 
+                name="basedir" 
+                value="${nbi.ext.dir}/infra/build/products/helloworld"/>
+            <property 
+                name="environment.properties" 
+                value="${environment.properties}"/>
+            <property
+                name="dist.dir"
+                value="${output.dir}/components"/>
+
+            <property
+                name="release.parent.uid"
+                value=""/>
+            <property
+                name="release.parent.version"
+                value=""/>
+            <property
+                name="release.parent.platforms"
+                value=""/>
+
+            <property 
+                name="engine.dist.file" 
+                value="${output.dir}/registry-temp/engine.jar"/>
+
+
+        </ant>
+    </target>
+
+    <target name="-generate-bundles">
+        <for-each property="platform" list="${target.platforms}" separator=" ">
+
+            <condition property="bundle.extention.${platform}" value="exe">
+                 <contains string="${platform}" substring="windows"/>
+            </condition>
+            <condition property="bundle.extention.${platform}" value="sh">
+                 <or>
+                     <contains string="${platform}" substring="linux"/>
+                     <contains string="${platform}" substring="solaris"/>
+                 </or>
+            </condition>
+            <condition property="bundle.extention.${platform}" value="zip">
+                 <contains string="${platform}" substring="macosx"/>
+            </condition>
+
+            <set property="bundle.extention" source="bundle.extention.${platform}"/>
+
+            <create-bundle root="${output.dir}/registry-temp" 
+                       platform="${platform}" 
+                       target="${bundles.release.dir}/${bundle.files.prefix}-${platform}.${bundle.extention}">
+                <component uid="${main.product.uid}" version="1.0.0.0.0"/>
+            </create-bundle>
+            <if property="bundle.extention" value="zip">
+                <antcall target="zip-to-tgz">
+                    <param name="input.file"  value="${bundles.release.dir}/${bundle.files.prefix}-${platform}.zip"/>
+                    <param name="output.file" value="${bundles.release.dir}/${bundle.files.prefix}-${platform}.tgz"/>
+                </antcall>
+	        <delete file="${bundles.release.dir}/${bundle.files.prefix}-${platform}.zip"/>
+            </if>
+        </for-each>
+        <echo>Installer(s) for [${target.platforms}] are available at ${bundles.release.dir}</echo>
+    </target>
+
+    <target name="zip-to-tgz">
+	<set property="tar.tmpdir"
+             value="${bundles.release.dir}/tempdir"/>
+
+	<mkdir dir="${tar.tmpdir}"/>
+
+	<unzip 
+		src="${input.file}"
+		dest="${tar.tmpdir}"/>
+
+        <tar tarfile="${output.file}" 
+             compression="gzip">
+            <tarfileset dir="${tar.tmpdir}" mode="644">
+                <include name="**/*.*"/>
+		<exclude name="**/executable"/>
+            </tarfileset>
+	    <tarfileset dir="${tar.tmpdir}" mode="755">
+		<include name="**/executable"/>
+            </tarfileset>
+        </tar>
+	<delete dir="${tar.tmpdir}"/>
+    </target>
+
+</project>

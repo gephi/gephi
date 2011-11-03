@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="org.netbeans.modules.queries/1">
+    <module_version install_time="1311882477760" last="true" origin="installer" specification_version="1.23.1">
+        <file crc="28992633" name="config/ModuleAutoDeps/org-netbeans-modules-queries.xml"/>
+        <file crc="4168841736" name="config/Modules/org-netbeans-modules-queries.xml"/>
+        <file crc="3524616518" name="modules/org-netbeans-modules-queries.jar"/>
+    </module_version>
+</module>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="org.netbeans.core/2">
+    <module_version install_time="1311882842393" last="true" origin="installer" specification_version="3.25.1">
+        <file crc="1234898518" name="config/ModuleAutoDeps/org-netbeans-core.xml"/>
+        <file crc="2943625018" name="config/Modules/org-netbeans-core.xml"/>
+        <file crc="2601114686" name="modules/ext/nsProxyAutoConfig.js"/>
+        <file crc="3222045000" name="modules/org-netbeans-core.jar"/>
+    </module_version>
+</module>

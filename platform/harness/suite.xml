@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright 1997-2010 Oracle and/or its affiliates. All rights reserved.
+
+Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common
+Development and Distribution License("CDDL") (collectively, the
+"License"). You may not use this file except in compliance with the
+License. You can obtain a copy of the License at
+http://www.netbeans.org/cddl-gplv2.html
+or nbbuild/licenses/CDDL-GPL-2-CP. See the License for the
+specific language governing permissions and limitations under the
+License.  When distributing the software, include this License Header
+Notice in each file and include the License file at
+nbbuild/licenses/CDDL-GPL-2-CP.  Oracle designates this
+particular file as subject to the "Classpath" exception as provided
+by Oracle in the GPL Version 2 section of the License file that
+accompanied this code. If applicable, add the following below the
+License Header, with the fields enclosed by brackets [] replaced by
+your own identifying information:
+"Portions Copyrighted [year] [name of copyright owner]"
+
+Contributor(s):
+
+The Original Software is NetBeans. The Initial Developer of the Original
+Software is Sun Microsystems, Inc. Portions Copyright 1997-2006 Sun
+Microsystems, Inc. All Rights Reserved.
+
+If you wish your version of this file to be governed by only the CDDL
+or only the GPL Version 2, indicate your decision by adding
+"[Contributor] elects to include this software in this distribution
+under the [CDDL or GPL Version 2] license." If you do not indicate a
+single choice of license, a recipient has the option to distribute
+your version of this file under either the CDDL, the GPL Version 2 or
+to extend the choice of license to its licensees as provided above.
+However, if you add GPL Version 2 code and therefore, elected the GPL
+Version 2 license, then the option applies only if the new code is
+made subject to such option by the copyright holder.
+-->
+<project name="suite" basedir=".">
+
+    <import file="jdk.xml"/>
+    <condition property="testcoverage.import"
+        value="testcoverage-suite.xml" else="no-testcoverage.xml">
+        <available file="testcoverage-suite.xml" filepath="${harness.dir}"/>
+    </condition>
+    <import file="${testcoverage.import}"/>
+
+    <target name="-taskdefs" unless="harness.taskdefs.done">
+        <dirname property="harness.dir" file="${suite.file}"/>
+        <echo level="verbose">Using build harness in ${harness.dir}</echo>
+        <taskdef classpath="${harness.dir}/tasks.jar" resource="org/netbeans/nbbuild/taskdefs.properties"/>
+        <typedef name="pathfileset" classname="org.netbeans.nbbuild.PathFileSet"
+                 classpath="${harness.dir}/tasks.jar"/>
+        <typedef name="islocked" classname="org.netbeans.nbbuild.IsLocked" 
+                 classpath="${harness.dir}/tasks.jar"/>
+        <property name="harness.taskdefs.done" value="true"/>
+
+        <fail message="When using cluster.path property, remove netbeans.dest.dir, enabled.clusters and disabled.clusters properties from platform config, they would be ignored.">
+            <condition>
+                <and>
+                    <isset property="cluster.path.evaluated"/>
+                    <or>
+                        <isset property="netbeans.dest.dir"/>
+                        <isset property="enabled.clusters"/>
+                        <isset property="disabled.clusters"/>
+                    </or>
+                </and>
+            </condition>
+        </fail>
+    </target>
+    
+    <target name="-init-build-dir">
+        <property name="suite.build.dir" location="build"/>
+    </target>
+
+    <target name="-convert-old-project" unless="cluster.path.evaluated" depends="-init-build-dir">
+        <!-- netbeans.dest.dir -> cluster.path.id translation for pre-7.0 modules -->
+        <fail unless="netbeans.dest.dir" message="Either cluster.path/cluster.path.evaluated properties or netbeans.dest.dir must be set."/>
+
+        <pathconvert property="old.project.update.tracking">
+            <fileset dir="${netbeans.dest.dir}" includes="**/update_tracking/*.xml"/>
+        </pathconvert>
+
+        <property name="enabled.clusters" value=""/>
+        <selector id="old.project.included.files">
+            <custom classpath="${harness.dir}/tasks.jar" classname="org.netbeans.nbbuild.ModuleSelector">
+                <param name="excludeModules" value="${disabled.modules}"/>
+                <!-- XXX inc/exc clusters -->
+                <param name="includeClusters" value="${enabled.clusters}"/>
+                <param name="excludeClusters" value="${disabled.clusters}"/>
+                <param name="updateTrackingFiles" value="${old.project.update.tracking}"/>
+            </custom>
+        </selector>
+
+        <pathconvert property="old.project.clusters.duplicates" pathsep="&#10;">
+            <fileset dir="${netbeans.dest.dir}">
+                <selector refid="old.project.included.files"/>
+            </fileset>
+            <chainedmapper>
+                <mapper type="regexp" from="(^.+)[/\\]config[/\\]Modules[/\\]" to="\1"/> <!-- #71849 -->
+                <filtermapper>
+                    <linecontainsregexp negate="true">
+                        <regexp pattern="update[/\\]backup[/\\]netbeans[/\\]?$"/>
+                    </linecontainsregexp>
+                </filtermapper>
+            </chainedmapper>
+        </pathconvert>
+        <tempfile property="old.project.clusters.duplicates.file" destdir="${suite.build.dir}" deleteonexit="true" prefix="duplicates"/>
+        <mkdir dir="${suite.build.dir}"/>
+        <echo file="${old.project.clusters.duplicates.file}" message="${old.project.clusters.duplicates}"/>
+
+        <pathconvert property="cluster.path.evaluated">
+            <union> <!-- union removes duplicates -->
+                <files includesfile="${old.project.clusters.duplicates.file}"/>
+            </union>
+        </pathconvert>
+    </target>
+
+    <target name="-init" depends="-taskdefs,-init-build-dir,-convert-old-project">
+        <convertclusterpath from="${cluster.path.evaluated}" to="cluster.path.final" id="cluster.path.id"/>
+        <property file="nbproject/private/private.properties"/>
+        <property file="nbproject/project.properties"/>
+        <sortsuitemodules unsortedmodules="${modules}" sortedmodulesproperty="modules.sorted"/>
+        <property name="cluster" location="${suite.build.dir}/cluster"/>
+        <echo level="verbose">Suite in ${basedir} with clusters ${cluster.path.final}, build cluster ${cluster}, and sorted modules ${modules.sorted}</echo>
+        <!-- synchronize with SuiteProject -->
+        <property name="disabled.modules" value=""/>
+        <property name="enabled.clusters" value=""/>
+        <property name="disabled.clusters" value=""/>
+        <property name="app.version" value="0.1"/>
+        <property name="branding.dir" location="branding"/>
+        <property name="dist.dir" location="dist"/>
+        <property name="test.xml.results.dir" value="${suite.build.dir}/test/xmldata" />
+        <property name="test.report.base.dir" value="${suite.build.dir}/test/report" />
+        <property name="test.report.html.dir" value="${test.report.base.dir}/html" />
+        <condition property="run.branding"> <!-- #84689 -->
+            <and>
+                <available file="${branding.dir}" type="dir"/>
+                <isset property="branding.token"/>
+            </and>
+        </condition>
+    </target>
+
+    <target name="-release.dir">
+        <property name="release.dir" location="release"/>
+        <condition property="has.release.dir">
+            <available file="${release.dir}"/>
+        </condition>
+    </target>
+    <target name="-release.files" depends="-release.dir" if="has.release.dir">
+        <pathconvert pathsep="," property="release.files">
+            <path>
+                <fileset dir="${release.dir}"/>
+            </path>
+            <filtermapper>
+                <replacestring from="${release.dir}${file.separator}" to=""/>
+                <replacestring from=" " to="?"/>
+            </filtermapper>
+        </pathconvert>
+    </target>
+
+    <target name="files-init" depends="-release.files">
+        <property name="release.files" value=""/>
+    </target>
+    
+    <target name="release" depends="files-init" if="has.release.dir">
+        <mkdir dir="${cluster}"/>
+        <copy todir="${cluster}">
+            <fileset dir="${release.dir}">
+                <patternset includes="${release.files}"/>
+            </fileset>
+        </copy>
+    </target>
+
+
+    <target name="build" depends="-init,branding,release,-hide-excluded-modules" description="Build all modules in the suite.">
+        <subant target="netbeans" buildpath="${modules.sorted}" inheritrefs="false" inheritall="false">
+            <property name="cluster.path.evaluated" value="${cluster.path.evaluated}"/> <!-- Just for speed of pre-7.0 projects -->
+        </subant>
+    </target>
+
+    <target name="-hide-excluded-modules" depends="-init">
+        <mkdir dir="${cluster}/config/Modules"/>
+        <pathconvert pathsep="," property="disabled.modules.paths.list">
+            <pathfileset>
+                <path refid="cluster.path.id"/>
+                <custom classpath="${harness.dir}/tasks.jar" classname="org.netbeans.nbbuild.ModuleSelector">
+                    <param name="excludeModules" value="${disabled.modules}"/>
+                    <param name="excluded" value="true"/>
+                </custom>
+            </pathfileset>
+        </pathconvert>
+        <createmodulexml xmldir="${cluster}/config/Modules" hidden="${disabled.modules.paths.list}"/>
+    </target>
+
+    <target name="nbms" depends="-init,branding,release,-hide-excluded-modules" description="Build NBMs and an Auto Update site descriptor for all modules in the suite.">
+        <property name="build.updates.dir" location="${suite.build.dir}/updates"/>
+        <!-- reads from suite/project.properties first -->
+        <condition property="help.target.cluster" value="${nbm.target.cluster}" >
+            <isset property="nbm.target.cluster"/>
+        </condition>
+        <!-- reads app.name if exists -->
+        <pathfileset id="updater.jar">
+            <path refid="cluster.path.id"/>
+            <filename name="modules/ext/updater.jar"/>
+        </pathfileset>
+        <condition property="help.target.cluster" value="${app.name}" >
+            <and>
+                <isset property="app.name"/>
+                <!-- #74866: only works for 6.0+ platforms. -->
+                <available resource="org/netbeans/updater/resources/autoupdate-info-2_4.dtd">
+                    <classpath>
+                        <resources refid="updater.jar"/>
+                    </classpath>
+                </available>
+            </and>
+        </condition>
+        <!-- sets property 'nbm.target.cluster.name' to 'nbm.target.cluster' if helper property set -->
+        <condition property="nbm.target.cluster.name" value="nbm.target.cluster" >
+            <isset property="help.target.cluster"/>
+        </condition>
+        <property name="nbm.target.cluster.name" value="" />
+        <mkdir dir="${build.updates.dir}"/>
+        <subant target="nbm" buildpath="${modules.sorted}" inheritrefs="false" inheritall="false">
+            <property name="nbm.target.dir" location="${build.updates.dir}"/>
+            <property name="${nbm.target.cluster.name}" value="${help.target.cluster}" />
+            <property name="cluster.path.evaluated" value="${cluster.path.evaluated}"/> <!-- Just for speed of pre-7.0 projects -->
+        </subant>
+
+        <condition property="use.license.url.in.catalog" value="true" else="false">
+            <available resource="org/netbeans/updater/resources/autoupdate-catalog-2_6.dtd">
+                <classpath>
+                    <resources refid="updater.jar"/>
+                </classpath>
+            </available>
+        </condition>
+
+        <property name="catalog.base.url" value="."/>
+        <makeupdatedesc desc="${build.updates.dir}/updates.xml" distbase="${catalog.base.url}" automaticgrouping="true" uselicenseurl="${use.license.url.in.catalog}">
+            <fileset dir="${build.updates.dir}">
+                <include name="*.nbm"/>
+                <include name="*.jar"/> <!-- #181025: bare OSGi bundles -->
+            </fileset>
+            <updaterjar>
+                <resources refid="updater.jar"/>
+            </updaterjar>
+        </makeupdatedesc>
+    </target>
+    
+    <target name="build-launchers" depends="-init">
+        <fail unless="app.name">Must have set at least an application name ('app.name')</fail>
+        
+        <pathconvert property="zip.platform.update.tracking">
+            <pathfileset>
+                <path refid="cluster.path.id"/>
+                <filename name="**/update_tracking/*.xml"/>
+            </pathfileset>
+        </pathconvert>
+
+        <selector id="zip.platform.included.files">
+            <custom classpath="${harness.dir}/tasks.jar" classname="org.netbeans.nbbuild.ModuleSelector">
+                <param name="excludeModules" value="${disabled.modules}"/>
+                <!-- XXX inc/exc clusters -->
+                <param name="includeClusters" value="${enabled.clusters}"/>
+                <param name="excludeClusters" value="${disabled.clusters}"/>
+                <param name="updateTrackingFiles" value="${zip.platform.update.tracking}"/>
+            </custom>
+        </selector>
+
+        <pathconvert property="zip.platform.clusters.duplicates" pathsep="&#10;">
+            <pathfileset>
+                <path refid="cluster.path.id"/>
+                <selector refid="zip.platform.included.files"/>
+            </pathfileset>
+            <chainedmapper>
+                <mapper type="regexp" from="(^.+)[/\\](config[/\\]Modules|(?&lt;=[/\\]platform\d{0,2}[/\\])(lib|core))[/\\]" to="\1"/> <!-- #71849, #185047, #188601 -->
+                <filtermapper>
+                    <linecontainsregexp negate="true">
+                        <regexp pattern="update[/\\]backup[/\\]netbeans[/\\]?$"/>
+                    </linecontainsregexp>
+                </filtermapper>
+            </chainedmapper>
+        </pathconvert>
+        <tempfile property="zip.platform.clusters.duplicates.file" destdir="${suite.build.dir}" deleteonexit="true" prefix="duplicates"/>
+        <echo file="${zip.platform.clusters.duplicates.file}" message="${zip.platform.clusters.duplicates}"/>
+
+        <union id="zip.platform.clusters"> <!-- union removes duplicates -->
+            <files includesfile="${zip.platform.clusters.duplicates.file}"/>
+        </union>
+        <pathconvert property="zip.platform.clusters.bare" pathsep="&#10;"> <!-- #71128: \n OK on Win but \r\n bad on Unix -->
+            <resources refid="zip.platform.clusters"/>
+            <chainedmapper>
+                <filtermapper>
+                    <linecontainsregexp negate="true">
+                        <regexp pattern="platform[0-9]*[/\\]?$"/>
+                    </linecontainsregexp>
+                </filtermapper>
+                <mapper type="regexp" from="[/\\]([^/\\]+)([/\\]build[/\\]cluster)?[/\\]?$" to="\1"/> <!-- #71849, #179410 -->
+            </chainedmapper>
+        </pathconvert>
+
+        <property name="build.launcher.dir" location="${suite.build.dir}/launcher"/>
+        
+        <mkdir dir="${build.launcher.dir}/etc"/>
+        <!-- clean old launchers (platform could be changed) -->
+        <delete dir="${build.launcher.dir}/bin" failonerror="false"/>
+        <mkdir dir="${build.launcher.dir}/bin"/>
+
+        <!-- make sure correct launchers are present - for pre7 platform use old app.exe launchers -->
+        <pathconvert property="nbexec.dll.found" setonempty="false">
+            <pathfileset include="lib/nbexec.dll">
+                <path refid="cluster.path.id"/>
+            </pathfileset>
+        </pathconvert>
+        <condition property="app.exe.prefix" value="" else="pre7_">
+            <isset property="nbexec.dll.found"/>
+        </condition>
+        <copy file="${harness.dir}/launchers/${app.exe.prefix}app.exe" tofile="${build.launcher.dir}/bin/${app.name}.exe" overwrite="true"/>
+        <copy file="${harness.dir}/launchers/${app.exe.prefix}app_w.exe" tofile="${build.launcher.dir}/bin/${app.name}_w.exe" failonerror="false" overwrite="true"/>
+
+        <copy file="${harness.dir}/launchers/app.sh" tofile="${build.launcher.dir}/bin/${app.name}"/>
+        <property name="app.conf" location="${harness.dir}/etc/app.conf"/>
+        <copy file="${app.conf}" tofile="${build.launcher.dir}/etc/${app.name}.conf">
+            <filterchain>
+                <replacestring from="$${branding.token}" to="${branding.token}"/>
+            </filterchain>
+        </copy>
+        <echo message="${app.name}" file="${build.launcher.dir}/etc/${app.name}.clusters"/>
+        <echo message="&#10;" file="${build.launcher.dir}/etc/${app.name}.clusters" append="true"/>
+        <echo message="${zip.platform.clusters.bare}" file="${build.launcher.dir}/etc/${app.name}.clusters" append="true"/>
+        <echo message="&#10;" file="${build.launcher.dir}/etc/${app.name}.clusters" append="true"/>
+        
+    </target>
+    
+    <target name="build-zip" depends="build,build-launchers" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform.">
+        <mkdir dir="${dist.dir}"/>
+        <!-- pathfileset does not support 'prefix' and 'filemode' parameters,
+             we have to copy them to temp location -->
+        <tempfile property="temp.dir.nbexec" destdir="${suite.build.dir}" deleteonexit="true" prefix="nbexec"/>
+        <tempfile property="temp.dir.rest" destdir="${suite.build.dir}" deleteonexit="delete" prefix="rest"/>
+        <subant genericantfile="${harness.dir}/suite.xml" target="copy-cluster" inheritrefs="true">
+            <property name="dest.dir" value="${temp.dir.rest}"/>
+            <property name="nbexec.dir" value="${temp.dir.nbexec}"/>
+            <property name="build.dir" value="${suite.build.dir}"/>
+            <resources refid="zip.platform.clusters"/>
+        </subant>
+        <zip destfile="${dist.dir}/${app.name}.zip">
+            <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
+            <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
+            <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
+            <zipfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
+
+            <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
+            <zipfileset dir="${cluster}" prefix="${app.name}/${app.name}">
+                <exclude name="config/Modules/*.xml_hidden"/>
+            </zipfileset>
+            
+        </zip>
+    </target>
+
+    <target name="copy-cluster" description="Copies cluster specified by basedir to dir ${dest.dir}">
+        <pathconvert property="cluster.name">
+            <path path="${basedir}"/>
+            <mapper type="regexp" from="[/\\]([^/\\]+)([/\\]build[/\\]cluster)?[/\\]?$" to="\1"/>
+        </pathconvert>
+        <copy todir="${dest.dir}/${cluster.name}">
+            <fileset dir="${basedir}">
+                <and>
+                    <not>
+                        <filename name="**/lib/nbexec*"/>
+                    </not>
+                    <selector refid="zip.platform.included.files"/>
+                </and>
+            </fileset>
+        </copy>
+        <touch file="${dest.dir}/${cluster.name}/.lastModified"/>
+        <condition property="copy.nbexec" value="true">
+            <matches pattern="^platform[0-9]*$" string="${cluster.name}"/>
+        </condition>
+        <antcall target="copy-nbexec"/>
+    </target>
+
+    <target name="copy-nbexec" if="copy.nbexec" description="Copies nbexec from given cluster to specified location">
+        <copy todir="${nbexec.dir}/${cluster.name}">
+            <fileset dir="${basedir}">
+                <filename name="**/lib/nbexec*"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="create-platform" depends="build-zip" description="Creates an unzipped platform from the suite, launchers, and selected modules from the platform.">
+        <mkdir dir="${dist.dir}/${app.name}"/>
+        <unzip src="${dist.dir}/${app.name}.zip" dest="${dist.dir}/${app.name}">
+            <globmapper from="${app.name}/*" to="*"/>
+        </unzip>
+        <echo level="warning">
+Note: As of NetBeans 6.7, you can use the property 'cluster.path' instead of the 'create-platform' target.
+See: http://wiki.netbeans.org/DevFaqHowToReuseModules
+        </echo>
+    </target>
+    
+    <target name="build-mac" depends="build,build-launchers" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform.">
+        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${dist.dir}/${app.name}.app"/>
+        <mkdir dir="${dist.dir}/${app.name}.app/Contents"/>
+        <mkdir dir="${dist.dir}/${app.name}.app/Contents/MacOS"/>
+        <mkdir dir="${dist.dir}/${app.name}.app/Contents/Resources"/>
+        <property name="app.icon.icns" value="${harness.dir}/etc/applicationIcon.icns"/>
+        <copy file="${app.icon.icns}" tofile="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}.icns"/>
+
+        <copy todir="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}/bin">
+            <fileset dir="${build.launcher.dir}/bin/" />
+        </copy>
+        <copy todir="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}/etc">
+            <fileset dir="${build.launcher.dir}/etc/" />
+        </copy>
+        <subant genericantfile="${harness.dir}/suite.xml" target="copy-cluster" inheritrefs="true">
+            <property name="dest.dir" value="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}"/>
+            <property name="nbexec.dir" value="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}"/>
+            <property name="build.dir" value="${suite.build.dir}"/>
+            <resources refid="zip.platform.clusters"/>
+        </subant>
+
+        <copy todir="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}/${app.name}">
+            
+            <fileset dir="${cluster}"/>
+        </copy>
+        
+        <copy verbose="true" failonerror="false"
+              file="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}/${app.name}/etc/${app.name}.icns" 
+              tofile="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}.icns"/>
+        
+        <delete file="${dist.dir}/${app.name}.app/Contents/MacOS/${app.name}"/>
+        <symlink link="${dist.dir}/${app.name}.app/Contents/MacOS/${app.name}" resource="../Resources/${app.name}/bin/${app.name}"/>
+        <chmod file="${dist.dir}/${app.name}.app/Contents/Resources/${app.name}/bin/${app.name}" perm="755"/>
+        <chmod dir="${dist.dir}" includes="${app.name}.app/Contents/Resources/${app.name}/platform*/lib/nbexec" perm="755"/>
+        
+        <copy file="${harness.dir}/etc/Info.plist" tofile="${dist.dir}/${app.name}.app/Contents/Info.plist">
+            <filterchain>
+                <replacestring from="$${app.name}" to="${app.name}"/>
+                <replacestring from="$${app.version}" to="${app.version}"/>
+                <replacestring from="$${app.title}" to="${app.title}"/>
+                <replacestring from="$${app.icon}" to="master.png"/>
+                <replacestring from="$${branding.token}" to="${branding.token}"/>
+            </filterchain>
+        </copy>
+        <!-- zipping in ant doesn't preserve symlinks that seem to be required.
+        zip destfile="${dist.dir}/${app.name}-MacOS.zip" basedir="${dist.dir}" includes="${app.name}.app/**" duplicate="preserve"/-->
+        <echo>
+You MacOS Application bundle was created at ${dist.dir}/${app.name}.app. For final packaging, use hdiutil or other tools to create a .dmg image.
+Alternatively use "zip -yr ${app.name}.app" to create a simple zipped distribution.
+        </echo>
+    </target>
+
+    <target name="-testuserdir-delete-init" depends="-init">
+        <property name="test.user.dir" location="${suite.build.dir}/testuserdir"/>
+        <property name="test.user.dir.lock" location="${test.user.dir}/lock"/>
+        <condition property="app.running">
+            <islocked file="${test.user.dir.lock}"/>
+        </condition> 
+    </target>
+    <target name="-testuserdir-delete-ok" depends="-testuserdir-delete-init" unless="app.running">
+        <delete dir="${test.user.dir}"/>
+    </target>
+    <target name="-testuserdir-delete-fail" depends="-testuserdir-delete-init" if="app.running">
+        <!-- #66799: best to warn about this condition... -->
+        <fail>Will not delete ${test.user.dir} because ${test.user.dir.lock} still exists; kill any running process and delete lock file if necessary</fail>
+    </target>
+    <target name="testuserdir-delete" depends="-testuserdir-delete-ok,-testuserdir-delete-fail" description="Delete testing user directory (if the application is not running); clears any saved settings etc.">
+        <ant antfile="${harness.dir}/jnlp.xml" target="clean"/>
+    </target>
+    
+    <target name="clean" depends="-init,testuserdir-delete" description="Clean everything.">
+        <delete failonerror="false" includeemptydirs="true">
+            <fileset dir="${suite.build.dir}">
+                <exclude name="testuserdir/"/>
+            </fileset>
+        </delete>
+        <subant target="clean" buildpath="${modules.sorted}" inheritrefs="false" inheritall="false">
+            <property name="cluster.path.evaluated" value="${cluster.path.evaluated}"/> <!-- Just for speed of pre-7.0 projects -->
+        </subant>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <target name="branding" depends="-init" if="run.branding">
+        <mkdir dir="${cluster}"/>
+        <branding cluster="${cluster}" overrides="${branding.dir}" token="${branding.token}"/>
+    </target>
+
+    <target name="run" depends="build,-jdk-init" description="Runs this suite in place.">
+        <ant antfile="${harness.dir}/run.xml" target="run">
+            <reference refid="cluster.path.id"/>
+        </ant>
+    </target>
+        
+    <target name="debug" depends="build,-jdk-init,-jdk-presetdef-nbjpdastart" description="Runs this suite in place in the debugger.">
+        <ant antfile="${harness.dir}/run.xml" target="debug">
+            <reference refid="cluster.path.id"/>
+        </ant>
+    </target>
+
+    <target name="profile" depends="build,-jdk-init,-jdk-presetdef-nbprofiledirect" description="Runs this suite in place in the profiler.">
+        <ant antfile="${harness.dir}/run.xml" target="profile">
+            <reference refid="cluster.path.id"/>
+        </ant>
+    </target>
+    
+    <target name="build-jnlp" depends="build,-jdk-init" description="Packages this suite as a JNLP application.">
+        <ant antfile="${harness.dir}/jnlp.xml" target="build">
+            <reference refid="cluster.path.id"/>
+            <property name="jnlp.generate.versions" value="${jnlp.generate.versions}"/>
+        </ant>
+    </target>
+    
+    <target name="run-jnlp" depends="build,-jdk-init" description="Runs this suite as a JNLP application.">
+        <ant antfile="${harness.dir}/jnlp.xml" target="run">
+            <reference refid="cluster.path.id"/>
+            <property name="jnlp.generate.versions" value="false"/>  <!-- versioning is not enabled w/o app server-->
+        </ant>
+    </target>
+    
+    <target name="debug-jnlp" depends="build,-jdk-init,-jdk-presetdef-nbjpdastart" description="Runs this suite as a JNLP application in the debugger.">
+        <ant antfile="${harness.dir}/jnlp.xml" target="debug">
+            <reference refid="cluster.path.id"/>
+            <property name="jnlp.generate.versions" value="false"/>  <!-- versioning is not enabled w/o app server-->
+        </ant>
+    </target>
+
+    <target name="build-osgi" depends="build,-jdk-init" description="Converts this suite into OSGi-compatible bundles.">
+        <echo>OSGi support is EXPERIMENTAL for now; see: http://wiki.netbeans.org/NetBeansInOSGi</echo>
+        <ant antfile="${harness.dir}/osgi.xml" target="build">
+            <reference refid="cluster.path.id"/>
+        </ant>
+    </target>
+
+    <target name="build-osgi-obr" depends="build-osgi" description="Creates an OSGi bundle repository from this suite.">
+        <ant antfile="${harness.dir}/osgi.xml" target="obr">
+            <reference refid="cluster.path.id"/>
+        </ant>
+    </target>
+
+    <target name="run-osgi" depends="build-osgi" description="Runs this suite in an OSGi container.">
+        <ant antfile="${harness.dir}/osgi.xml" target="run">
+            <reference refid="cluster.path.id"/>
+        </ant>
+    </target>
+
+    <target name="debug-osgi" depends="build-osgi" description="Debugs this suite in an OSGi container.">
+        <ant antfile="${harness.dir}/osgi.xml" target="debug">
+            <reference refid="cluster.path.id"/>
+        </ant>
+    </target>
+
+    <target name="profile-osgi" depends="build-osgi" description="Profiles this suite in an OSGi container.">
+        <ant antfile="${harness.dir}/osgi.xml" target="profile">
+            <reference refid="cluster.path.id"/>
+        </ant>
+    </target>
+
+    <target name="test" depends="build" description="Runs tests for all modules in the suite.">
+        <sortsuitemodules unsortedmodules="${modules}" sortedmodulesproperty="modules.test.sorted" sorttests="true"/>
+        <property name="continue.after.failing.tests" value="true"/> <!-- fallback -->
+        <subant target="test" buildpath="${modules.test.sorted}" inheritrefs="false" inheritall="false">
+            <property name="cluster.path.evaluated" value="${cluster.path.evaluated}"/> <!-- Just for speed of pre-7.0 projects -->
+            <property name="continue.after.failing.tests" value="${continue.after.failing.tests}"/>
+        </subant>
+    </target>
+
+    <target name="test-generate-html" depends="test" description="Generates test report for entire suite">
+        <delete dir="${test.xml.results.dir}" />
+        <mkdir dir="${test.xml.results.dir}" />
+
+        <delete dir="${test.report.base.dir}" />
+        <mkdir dir="${test.report.base.dir}" />
+
+        <subant target="-copy-testxmlresults" buildpath="${modules.test.sorted}" inheritrefs="false" inheritall="false">
+            <property name="test.xml.results.dir" value="${test.xml.results.dir}"/>
+        </subant>
+
+        <junitreport todir="${test.report.base.dir}">
+            <fileset dir="${test.xml.results.dir}" />
+            <report todir="${test.report.html.dir}" format="frames"/>
+        </junitreport>
+    </target>
+
+    <target name="test-view-html" depends="test-generate-html" description="Generates and displays test report for entire suite">
+        <nbbrowse file="${test.report.html.dir}/index.html"/>
+    </target>
+
+    <target name="update" depends="-init" description="Updates modules in the suite from an update center.">
+        <sortsuitemodules unsortedmodules="${modules}" sortedmodulesproperty="modules.test.sorted"/>
+        <subant target="update" buildpath="${modules.test.sorted}" inheritrefs="false" inheritall="false">
+            <property name="cluster.path.evaluated" value="${cluster.path.evaluated}"/> <!-- Just for speed of pre-7.0 projects -->
+            <property name="autoupdate.catalog.url" value="${autoupdate.catalog.url}"/>
+        </subant>
+    </target>
+
+    <target name="display-coverage-report" depends="coverage-report"
+        description="Generates and displays test coverage report for entire suite">
+        <fail unless="testcoverage.report.dir">
+Property testcoverage.report.dir not set. Test coverage script may be missing in ${harness.dir}.
+        </fail>
+        <nbbrowse file="${testcoverage.report.dir}/index.html"/>
+    </target>
+
+    <target 
+        name="clusterize" depends="-taskdefs"
+        description="Scans a directory for list of NetBeans module JARs or OSGi bundles and generates necessary config files to make that look like NetBeans cluster"
+    >
+        <fail unless="cluster" message="You have to specify -Dcluster=... as a path to the root of your JAR tree"/>
+        <condition property="include.autoload" value="${includes}">
+            <!-- for backward compatibility with tutorials -->
+            <isset property="includes"/>
+        </condition>
+        <fail message="You have to specify one of -Dinclude.autoload=... -Dinclude.eager=... -Dinclude.enabled=...">
+            <condition>
+                <not>
+                    <or>
+                        <isset property="include.autoload"/>
+                        <isset property="include.eager"/>
+                        <isset property="include.enabled"/>
+                    </or>
+                </not>
+            </condition>
+        </fail>
+        <property name="config.dir" location="${cluster}/config/Modules"/>
+        <mkdir dir="${config.dir}"/>
+        <createmodulexml xmldir="${config.dir}" updatetrackingroot="${cluster}" failonmissingmanifest="false">
+            <autoload dir="${cluster}" includes="${include.autoload}"/>
+            <eager dir="${cluster}" includes="${include.eager}"/>
+            <enabled dir="${cluster}" includes="${include.enabled}"/>
+        </createmodulexml>
+    </target>
+</project>

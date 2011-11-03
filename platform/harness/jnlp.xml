@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright 1997-2010 Oracle and/or its affiliates. All rights reserved.
+
+Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common
+Development and Distribution License("CDDL") (collectively, the
+"License"). You may not use this file except in compliance with the
+License. You can obtain a copy of the License at
+http://www.netbeans.org/cddl-gplv2.html
+or nbbuild/licenses/CDDL-GPL-2-CP. See the License for the
+specific language governing permissions and limitations under the
+License.  When distributing the software, include this License Header
+Notice in each file and include the License file at
+nbbuild/licenses/CDDL-GPL-2-CP.  Oracle designates this
+particular file as subject to the "Classpath" exception as provided
+by Oracle in the GPL Version 2 section of the License file that
+accompanied this code. If applicable, add the following below the
+License Header, with the fields enclosed by brackets [] replaced by
+your own identifying information:
+"Portions Copyrighted [year] [name of copyright owner]"
+
+Contributor(s):
+
+The Original Software is NetBeans. The Initial Developer of the Original
+Software is Sun Microsystems, Inc. Portions Copyright 1997-2006 Sun
+Microsystems, Inc. All Rights Reserved.
+
+If you wish your version of this file to be governed by only the CDDL
+or only the GPL Version 2, indicate your decision by adding
+"[Contributor] elects to include this software in this distribution
+under the [CDDL or GPL Version 2] license." If you do not indicate a
+single choice of license, a recipient has the option to distribute
+your version of this file under either the CDDL, the GPL Version 2 or
+to extend the choice of license to its licensees as provided above.
+However, if you add GPL Version 2 code and therefore, elected the GPL
+Version 2 license, then the option applies only if the new code is
+made subject to such option by the copyright holder.
+-->
+<project name="suite-jnlp" basedir=".">
+
+    <!-- if jnlp.codebase is provided make both the app and the platform relative to it -->
+    <condition property="jnlp.codebase.app" value="${jnlp.codebase}app/" >
+        <isset property="jnlp.codebase" />
+    </condition>
+    <!-- if not specified, assign all codebases to value suitable for jnlp-servlet.jar -->
+    <property name="jnlp.codebase" value="$$$$codebase" />
+    <property name="jnlp.codebase.app" value="$$$$codebase" />
+
+    <target name="-check-for-master.jnlp">
+        <available file="master.jnlp" property="master.jnlp.exists"/>
+    </target>
+    <target name="jnlp-init-generate-master" depends="-check-for-master.jnlp" unless="master.jnlp.exists">
+        <echo file="master.jnlp"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc//DTD JNLP Descriptor 6.0//EN" "http://java.sun.com/dtd/JNLP-6.0.dtd">
+<jnlp spec="1.0+" codebase="${jnlp.codebase}" href="master.jnlp">
+  <information>
+      <title>$${app.title}</title>
+      <vendor>$${app.title} vendor</vendor>
+      <description>$${app.name} application</description>
+      <icon href="$${app.icon}"/>
+  </information>
+  <security><all-permissions/></security>
+  <resources>
+    <!-- The following property is needed when running with unsigned jars: -->
+    <property name="netbeans.jnlp.fixPolicy" value="$${netbeans.jnlp.fixPolicy}"/>
+    <extension name='branding' href='branding.jnlp' />
+<!-- The following line will be replaced with an automatically generated list of resources: -->
+<!--$${jnlp.resources}-->
+  </resources>
+  <resources os="Mac OS X">
+      <property name="netbeans.user" value="$${user.home}/Library/Application Support/$${app.name}"/>
+  </resources>
+  <application-desc>
+    <argument>--branding</argument>
+    <argument>$${branding.token}</argument>
+  </application-desc>
+</jnlp>  
+]]></echo>
+        <echo file="branding.jnlp"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc//DTD JNLP Descriptor 6.0//EN" "http://java.sun.com/dtd/JNLP-6.0.dtd">
+<jnlp spec="1.0+" codebase="${jnlp.codebase}">
+  <information>
+      <title>$${app.title}</title>
+      <vendor>$${app.title} vendor</vendor>
+      <description>$${app.name} application</description>
+      <icon href="$${app.icon}"/>
+  </information>
+  $${jnlp.permissions}
+  <resources>
+    $${jnlp.branding.jars}
+  </resources>
+  <component-desc/>
+</jnlp>  
+]]></echo>
+    </target>
+    
+    <target name="jnlp-init" depends="jnlp-init-generate-master">
+        <fail unless="app.name">Must have set at least an application name ('app.name')</fail>
+        
+        <property name="jnlp.dest.dir" location="${suite.build.dir}/jnlp"/>
+        <property name="jnlp.master.dir" location="${suite.build.dir}/tmp/master-jnlp"/>
+        <mkdir dir="${jnlp.master.dir}"/>
+        
+        <property name="dist.dir" location="dist"/>
+        <property name="disabled.modules" value=""/>
+        <property name="enabled.clusters" value=""/>
+        <property name="disabled.clusters" value=""/>
+        
+        <pathfileset id="jnlp.included.modules" >
+            <path refid="cluster.path.id"/>
+            <and>
+                <or>
+                    <filename name="modules/**/*.jar"/>
+                    <filename name="lib/**/*.jar"/>
+                    <filename name="core/**/*.jar"/>
+                </or>
+                <not>
+                    <filename name="**/update/**/*.jar"/>
+                </not>
+                <custom classpath="${harness.dir}/tasks.jar" classname="org.netbeans.nbbuild.ModuleSelector">
+                    <param name="excludeModules" value="${disabled.modules}"/>
+                    <param name="includeClusters" value="${enabled.clusters}"/>
+                    <param name="excludeClusters" value="${disabled.clusters}"/>
+                </custom>
+            </and>
+        </pathfileset>
+        <property name="jnlp.sign.jars" value="true"/>
+        <property name="jnlp.signjar.keystore" location="${suite.build.dir}/default.keystore"/>
+        <property name="jnlp.signjar.alias" value="jnlp"/>
+        <property name="jnlp.signjar.password" value="netbeans"/>
+        <available property="jnlp.signjar.keystore.exists" file="${jnlp.signjar.keystore}"/>
+    </target>
+
+    <target name="jnlp-generate-keystore" depends="jnlp-init" unless="jnlp.signjar.keystore.exists">
+        <property name="jnlp.signjar.vendor" value="CN=${user.name}"/>
+        
+        <mkdir dir="${jnlp.signjar.keystore}/../"/>
+        <echo message="Going to create default keystore in ${jnlp.signjar.keystore}"/>
+        <genkey validity="365"
+            alias="${jnlp.signjar.alias}"
+            keystore="${jnlp.signjar.keystore}"
+            storepass="${jnlp.signjar.password}"
+            dname="${jnlp.signjar.vendor}"
+        />
+    </target>
+
+    <target name="jnlp-generate-platform" depends="jnlp-generate-platform-repository,jnlp-generate-platform-master"/>
+    
+    <target name="jnlp-generate-platform-repository" depends="jnlp-generate-keystore,jnlp-init,set-all-permissions,set-empty-permissions" unless="jnlp.platform.codebase">
+        <condition property="jnlp.platform.codebase.own" value="${jnlp.codebase}netbeans/" >
+            <not>
+                <equals arg1="${jnlp.codebase}" arg2="$$$$codebase" />
+            </not>
+        </condition>
+        <property name="jnlp.platform.codebase.own" value="$$$$codebase"/>
+        <property name="jnlp.platform.codebase" value="netbeans/"/>
+        
+        <mkdir dir="${jnlp.dest.dir}/netbeans"/>
+        
+        <makejnlp 
+            alias="${jnlp.signjar.alias}" 
+            keystore="${jnlp.signjar.keystore}" 
+            storepass="${jnlp.signjar.password}"
+            dir="${jnlp.dest.dir}/netbeans/"
+            codebase="${jnlp.platform.codebase.own}"
+            verify="true"
+            verifyexcludes="lib/nbexec.cmd,lib/nbexec,lib/nbexec.exe,lib/nbexec.dll,core/ide.ks,LICENSE.txt,DISTRIBUTION.txt,THIRDPARTYLICENSEREADME.txt,docs/swing-layout-1.0-doc.zip,docs/swing-layout-1.0.1-doc.zip,docs/html40.zip,core/org-netbeans-modules-utilities-cli.jar,docs/org/netbeans/modules/usersguide/ide.css,docs/swing-layout-1.0.2-doc.zip,docs/swing-layout-1.0.2-src.zip,docs/swing-layout-1.0.3-doc.zip,docs/swing-layout-1.0.3-src.zip,docs/swing-layout-1.0.4-doc.zip,docs/swing-layout-1.0.4-src.zip,modules/ext/felix-main-2.0.2.jar,modules/ext/toplink/README,modules/ext/toplink/3RD-PARTY-LICENSE.txt,modules/ext/toplink/LICENSE.txt,modules/lib/amd64/Linux/libjnidispatch.so,modules/lib/x86/jnidispatch.dll,modules/lib/libjnidispatch.jnilib,modules/lib/amd64/jnidispatch.dll,modules/lib/i386/Linux/libjnidispatch.so,modules/ext/nsProxyAutoConfig.js"
+            permissions="${jnlp.permissions}"
+            signjars="${jnlp.sign.jars}"
+            processjarversions="${jnlp.generate.versions}"
+        >
+            <resources refid="jnlp.included.modules"/>
+        </makejnlp>
+    </target>
+
+    <target name="set-all-permissions" depends="check-signjars" if="unsign-the-jars">
+        <property name="jnlp.permissions" value="&lt;security/&gt;"/>
+    </target>
+    <target name="set-empty-permissions" depends="check-signjars" unless="unsign-the-jars">
+        <property name="jnlp.permissions" value="&lt;security&gt;&lt;all-permissions/&gt;&lt;/security&gt;"/>
+    </target>
+    
+    <target name="check-signjars">
+        <condition property="unsign-the-jars">
+            <isfalse value="${jnlp.sign.jars}"/>
+        </condition>
+    </target>
+    
+    <target name="jnlp-generate-platform-master" depends="jnlp-generate-platform-repository">
+        <makemasterjnlp 
+            dir="${jnlp.master.dir}"
+            codebase="${jnlp.platform.codebase}"
+        >
+            <resources refid="jnlp.included.modules"/>
+        </makemasterjnlp>
+    </target>
+    
+    <target name="build" 
+            depends="build-jnlp-nowar"
+            description="Build JNLP files and signed JARs for all modules in the suite."
+    >
+        <property name="jnlp.servlet.jar" location="${nbjdk.home}/sample/jnlp/servlet/jnlp-servlet.jar"/>
+        <fail message="Point -Djnlp.servlet.jar to your jnlp-servlet.jar, usually in $$JDKHOME/sample/jnlp/servlet/jnlp-servlet.jar">
+            <condition>
+                <not>
+                    <available file="${jnlp.servlet.jar}"/>
+                </not>
+            </condition>
+        </fail>
+        
+        <echo file="${suite.build.dir}/tmp/web.xml"><![CDATA[
+<web-app>
+ <servlet>
+    <servlet-name>JnlpDownloadServlet</servlet-name>
+    <servlet-class>jnlp.sample.servlet.JnlpDownloadServlet</servlet-class>
+ </servlet>
+ <servlet-mapping>
+    <servlet-name>JnlpDownloadServlet</servlet-name>
+    <url-pattern>*.jnlp</url-pattern>
+ </servlet-mapping>
+</web-app>         
+]]></echo>
+        <mkdir dir="${dist.dir}"/>
+        <war basedir="${jnlp.dest.dir}" destfile="${dist.dir}/${app.name}.war" webxml="${suite.build.dir}/tmp/web.xml">
+            <zipfileset dir="${jnlp.servlet.jar}/.." file="${jnlp.servlet.jar}" prefix="WEB-INF/lib"/>
+        </war>
+    </target>
+
+    <target name="build-jnlp-local" depends="build-jnlp-nowar">
+        <property name="build.jnlp.local.dir" location="${dist.dir}/jnlp/local"/>
+        <mkdir dir="${build.jnlp.local.dir}"/>
+        <mkdir dir="${build.jnlp.local.dir}/netbeans/"/>
+        <mkdir dir="${build.jnlp.local.dir}/app/"/>
+        
+        <makeurl property="build.jnlp.local.url" file="${build.jnlp.local.dir}"/>
+        <copy todir="${build.jnlp.local.dir}">
+            <fileset dir="${suite.build.dir}/jnlp">
+                <include name="*.jnlp"/>
+            </fileset>
+            <filterchain>
+                <replacestring from="$$$$codebase" to="${build.jnlp.local.url}"/>
+            </filterchain>
+        </copy>
+        <mkdir dir="${suite.build.dir}/jnlp/netbeans"/> <!-- else fileset will croak -->
+        <copy todir="${build.jnlp.local.dir}/netbeans/">
+            <fileset dir="${suite.build.dir}/jnlp/netbeans">
+                <include name="**/*.jnlp"/>
+            </fileset>
+            <filterchain>
+                <replacestring from="$$$$codebase" to="${build.jnlp.local.url}netbeans/"/>
+            </filterchain>
+        </copy>
+        <copy todir="${build.jnlp.local.dir}/app/">
+            <fileset dir="${suite.build.dir}/jnlp/app">
+                <include name="**/*.jnlp"/>
+            </fileset>
+            <filterchain>
+                <replacestring from="$$$$codebase" to="${build.jnlp.local.url}app/"/>
+            </filterchain>
+        </copy>
+        <copy todir="${build.jnlp.local.dir}">
+            <fileset dir="${suite.build.dir}/jnlp">
+                <exclude name="**/*.jnlp"/>
+            </fileset>
+        </copy>
+        <verifyjnlp>
+            <fileset file="${build.jnlp.local.dir}/master.jnlp"/>
+        </verifyjnlp>
+    </target>
+    
+    <target name="build-jnlp-nowar" depends="jnlp-init,jnlp-generate-keystore,jnlp-generate-platform">
+        <mkdir dir="${jnlp.dest.dir}/app"/>
+        <subant target="jnlp" buildpath="${modules.sorted}" inheritrefs="false" inheritall="false">
+            <property name="jnlp.dest.dir" value="${jnlp.dest.dir}/app"/>
+            <property name="jnlp.master.dir" value="${jnlp.master.dir}"/>
+            <property name="jnlp.master.codebase" value="app/"/>
+            <property name="jnlp.codebase" value="${jnlp.codebase.app}"/>
+            <property name="jnlp.signjar.alias" value="${jnlp.signjar.alias}"/>
+            <property name="jnlp.signjar.keystore" location="${jnlp.signjar.keystore}"/>
+            <property name="jnlp.signjar.password" value="${jnlp.signjar.password}"/>
+            <property name="jnlp.sign.jars" value="${jnlp.sign.jars}"/>
+            <property name="jnlp.permissions" value="${jnlp.permissions}"/>
+        </subant>
+
+        <antcall target="copy-branding"/>
+        
+        <signjar 
+            alias="${jnlp.signjar.alias}" 
+            keystore="${jnlp.signjar.keystore}" 
+            storepass="${jnlp.signjar.password}" 
+            jar="${harness.dir}/jnlp/jnlp-launcher.jar"
+            signedjar="${jnlp.dest.dir}/startup.jar" 
+        />
+        
+        <pathconvert pathsep="${line.separator}" property="jnlp.branding.jars">
+            <path>
+                <fileset dir="${jnlp.dest.dir}/branding">
+                    <include name="*_${branding.token}.jar"/>
+                </fileset>
+            </path>
+            <mapper type="regexp" from="^.*[/\\]([^/\\]+\.jar)" to='    &lt;jar href="branding/\1"/&gt;'/>
+        </pathconvert>
+        
+        <echo file="${jnlp.master.dir}/resources.xml"><![CDATA[
+    <java version="1.6+"/>
+    <jar href="startup.jar"/>
+    <property name="netbeans.user" value="$${user.home}/.nbapp-${app.name}"/>
+]]></echo>
+        <concat append="true" destfile="${jnlp.master.dir}/resources.xml">
+            <fileset dir="${jnlp.master.dir}">
+                <include name="*.ref"/>
+            </fileset>
+        </concat>
+        
+        <loadfile property="jnlp.resources" srcfile="${jnlp.master.dir}/resources.xml"/>
+
+        <condition property="netbeans.jnlp.fixPolicy">
+            <isfalse value="${jnlp.sign.jars}"/>
+        </condition>
+        <!-- Anyone knows a better way to negate a property value? -->
+        <condition property="netbeans.jnlp.fixPolicy" value="false">
+            <istrue value="${jnlp.sign.jars}"/>
+        </condition>
+        
+        <condition property="app.icon.safe" value="${app.icon}" else=".png">
+            <isset property="app.icon" />
+        </condition>
+        <pathconvert property="app.icon.ext">
+            <path path="${app.icon.safe}"/>
+            <mapper type="regexp" from="^(.*)\.(.*)$$" to="\2"/>
+        </pathconvert>
+        
+        <copy file="${app.icon}" tofile="${jnlp.dest.dir}/master.${app.icon.ext}" failonerror="false"/>
+        <copy file="master.jnlp" tofile="${jnlp.dest.dir}/master.jnlp">
+            <filterchain>
+                <replacestring from="&lt;!--$${jnlp.resources}--&gt;" to="${jnlp.resources}"/>
+                <replacestring from="$${jnlp.resources}" to="${jnlp.resources}"/>
+                <replacestring from="$${app.name}" to="${app.name}"/>
+                <replacestring from="$${app.title}" to="${app.title}"/>
+                <replacestring from="$${app.icon}" to="master.${app.icon.ext}"/>
+                <replacestring from="$${branding.token}" to="${branding.token}"/>
+                <replacestring from="$${netbeans.jnlp.fixPolicy}" to="${netbeans.jnlp.fixPolicy}"/>
+            </filterchain>
+        </copy>
+        <echo>Your JNLP file is generated at ${jnlp.dest.dir}/master.jnlp</echo>
+        <!-- The following line will not fail if the branding.jnlp
+             is not present, e.g. when the main file was generated using
+             harness from 5.x days. -->
+        <copy file="branding.jnlp" tofile="${jnlp.dest.dir}/branding.jnlp" failonerror="false">
+            <filterchain>
+                <replacestring from="$${jnlp.branding.jars}" to="${jnlp.branding.jars}"/>
+                <replacestring from="$${app.name}" to="${app.name}"/>
+                <replacestring from="$${app.title}" to="${app.title}"/>
+                <replacestring from="$${app.icon}" to="master.${app.icon.ext}"/>
+                <replacestring from="$${jnlp.permissions}" to="${jnlp.permissions}"/>
+            </filterchain>
+        </copy>
+
+        <taskdef name="verifyjnlp" classname="org.netbeans.nbbuild.VerifyJNLP" classpath="${harness.dir}/tasks.jar"/>
+        <verifyjnlp>
+            <fileset file="${jnlp.dest.dir}/master.jnlp"/>
+        </verifyjnlp>
+    </target>
+    
+    <target name="sign-branding-jars" unless="unsign-the-jars" depends="copy-branding-jars">
+        <signjar
+            alias="${jnlp.signjar.alias}" 
+            keystore="${jnlp.signjar.keystore}" 
+            storepass="${jnlp.signjar.password}" 
+        >
+            <fileset dir="${jnlp.dest.dir}/branding">
+                <include name="*_${branding.token}.jar"/>
+            </fileset>
+        </signjar>
+    </target>
+
+    <target name="copy-branding" depends="copy-branding-jars, sign-branding-jars"/>
+
+    <target name="copy-branding-jars">
+        <mkdir dir="${jnlp.dest.dir}/branding"/>
+        <copy todir="${jnlp.dest.dir}/branding" flatten="true">
+            <fileset dir="${cluster}">
+                <include name="**/locale/*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="run" depends="build-jnlp-local" description="Executes this suite as JNLP application">
+        <condition property="run.javaws" value="${nbjdk.home}/jre/bin/javaws">
+            <available file="${nbjdk.home}/jre/bin/javaws"/>
+        </condition>
+        <condition property="run.javaws" value="${nbjdk.home}/bin/javaws">
+            <available file="${nbjdk.home}/bin/javaws"/>
+        </condition>
+        <condition property="run.javaws" value="${nbjdk.home}\jre\bin\javaws.exe">
+            <available file="${nbjdk.home}\jre\bin\javaws.exe"/>
+        </condition>
+        <condition property="run.javaws" value="${nbjdk.home}\bin\javaws.exe">
+            <available file="${nbjdk.home}\bin\javaws.exe"/>
+        </condition>
+        <property name="run.javaws" value="javaws"/>
+        <property name="run.args" value=""/>
+        <exec executable="${run.javaws}">
+            <arg value="-wait"/>
+            <arg file="${build.jnlp.local.dir}/master.jnlp"/>
+            <env key="JAVAWS_VM_ARGS" value="${run.args}"/>
+        </exec>
+    </target>
+    
+    <target name="debug" depends="build-jnlp-local" description="Executes this suite as JNLP application under debugger">
+        <fail unless="netbeans.home">This target only works when run from inside the NetBeans IDE.</fail>
+        <nbjpdastart name="NetBeans" addressproperty="debug.port" transport="dt_socket">
+            <classpath>
+                <pathfileset>
+                    <path refid="cluster.path.id"/>
+                    <filename name="**/*.jar"/>
+                </pathfileset>
+                <fileset dir="${cluster}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+        </nbjpdastart>
+        <property name="debug.pause" value="y"/>
+        <property name="debug.args" value="-Xdebug -Xrunjdwp:transport=dt_socket,suspend=${debug.pause},server=n,address=${debug.port}"/>
+        <antcall target="run">
+            <param name="run.args" value="${debug.args}"/>
+            <reference refid="cluster.path.id"/>
+        </antcall>
+    </target>
+
+    <target name="-check-for-jnlp-userdir">
+        <property name="jnlp.userdir" location="${user.home}/.nbapp-${app.name}"/>
+        <condition property="have.jnlp.userdir">
+            <and>
+                <isset property="app.name"/>
+                <available file="${jnlp.userdir}" type="dir"/>
+            </and>
+        </condition>
+    </target>
+    <target name="-clean-jnlp-userdir" depends="-check-for-jnlp-userdir" if="have.jnlp.userdir">
+        <property name="jnlp.userdir.bak" location="${jnlp.userdir}.bak"/>
+        <delete dir="${jnlp.userdir.bak}" failonerror="false"/>
+        <move file="${jnlp.userdir}" tofile="${jnlp.userdir.bak}" failonerror="false"/>
+    </target>
+    <target name="clean" depends="-clean-jnlp-userdir" description="Make sure default JNLP user directory is removed so run-jnlp will not get old test settings."/> <!-- #64249 -->
+    
+</project>

@@ -1,0 +1,1 @@
+Configuration-Logic-Class: org.mycompany.ConfigurationLogic

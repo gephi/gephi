@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright 1997-2010 Oracle and/or its affiliates. All rights reserved.
+
+Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common
+Development and Distribution License("CDDL") (collectively, the
+"License"). You may not use this file except in compliance with the
+License. You can obtain a copy of the License at
+http://www.netbeans.org/cddl-gplv2.html
+or nbbuild/licenses/CDDL-GPL-2-CP. See the License for the
+specific language governing permissions and limitations under the
+License.  When distributing the software, include this License Header
+Notice in each file and include the License file at
+nbbuild/licenses/CDDL-GPL-2-CP.  Oracle designates this
+particular file as subject to the "Classpath" exception as provided
+by Oracle in the GPL Version 2 section of the License file that
+accompanied this code. If applicable, add the following below the
+License Header, with the fields enclosed by brackets [] replaced by
+your own identifying information:
+"Portions Copyrighted [year] [name of copyright owner]"
+
+Contributor(s):
+
+The Original Software is NetBeans. The Initial Developer of the Original
+Software is Sun Microsystems, Inc. Portions Copyright 1997-2007 Sun
+Microsystems, Inc. All Rights Reserved.
+
+If you wish your version of this file to be governed by only the CDDL
+or only the GPL Version 2, indicate your decision by adding
+"[Contributor] elects to include this software in this distribution
+under the [CDDL or GPL Version 2] license." If you do not indicate a
+single choice of license, a recipient has the option to distribute
+your version of this file under either the CDDL, the GPL Version 2 or
+to extend the choice of license to its licensees as provided above.
+However, if you add GPL Version 2 code and therefore, elected the GPL
+Version 2 license, then the option applies only if the new code is
+made subject to such option by the copyright holder.
+-->
+<project name="harness" basedir="." default="netbeans">
+
+    <import file="common.xml"/>
+    <import file="jdk.xml"/>
+    
+    <target name="taskdefs" unless="harness.taskdefs.done">
+        <dirname property="harness.dir" file="${harness.file}"/>
+        <taskdef classpath="${harness.dir}/tasks.jar" resource="org/netbeans/nbbuild/taskdefs.properties"/>
+        <typedef name="pathfileset" classname="org.netbeans.nbbuild.PathFileSet"
+                 classpath="${harness.dir}/tasks.jar"/>
+        <typedef name="islocked" classname="org.netbeans.nbbuild.IsLocked" 
+                 classpath="${harness.dir}/tasks.jar"/>
+        <property name="harness.taskdefs.done" value="true"/>
+        <fail message="When using cluster.path property, remove netbeans.dest.dir, enabled.clusters and disabled.clusters properties from platform config, they would be ignored.">
+            <condition>
+                <and>
+                    <isset property="cluster.path.evaluated"/>
+                    <or>
+                        <isset property="netbeans.dest.dir"/>
+                        <isset property="enabled.clusters"/>
+                        <isset property="disabled.clusters"/>
+                    </or>
+                    <not>
+                        <isset property="suite.dir"/>
+                    </not>
+                </and>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="-convert-old-project" depends="-build-dir-init" unless="cluster.path.evaluated">
+        <fail unless="netbeans.dest.dir" message="Either cluster.path/cluster.path.evaluated properties or netbeans.dest.dir must be set."/>
+
+        <pathconvert property="old.project.update.tracking">
+            <fileset dir="${netbeans.dest.dir}" includes="**/update_tracking/*.xml"/>
+        </pathconvert>
+
+        <!-- standalone modules don't specify enabled/disabled clusters -->
+        <property name="enabled.clusters" value=""/>
+        <property name="disabled.clusters" value=""/>
+        <property name="disabled.modules" value=""/>
+
+        <selector id="old.project.included.files">
+            <custom classpath="${harness.dir}/tasks.jar" classname="org.netbeans.nbbuild.ModuleSelector">
+                <param name="excludeModules" value="${disabled.modules}"/>
+                <!-- XXX inc/exc clusters -->
+                <param name="includeClusters" value="${enabled.clusters}"/>
+                <param name="excludeClusters" value="${disabled.clusters}"/>
+                <param name="updateTrackingFiles" value="${old.project.update.tracking}"/>
+            </custom>
+        </selector>
+
+        <pathconvert property="old.project.clusters.duplicates" pathsep="&#10;">
+            <fileset dir="${netbeans.dest.dir}">
+                <selector refid="old.project.included.files"/>
+            </fileset>
+            <chainedmapper>
+                <mapper type="regexp" from="(^.+)[/\\]config[/\\]Modules[/\\]" to="\1"/> <!-- #71849 -->
+                <filtermapper>
+                    <linecontainsregexp negate="true">
+                        <regexp pattern="update[/\\]backup[/\\]netbeans[/\\]?$"/>
+                    </linecontainsregexp>
+                </filtermapper>
+            </chainedmapper>
+        </pathconvert>
+        <tempfile property="old.project.clusters.duplicates.file" destdir="${build.dir}" deleteonexit="true" prefix="duplicates"/>
+        <mkdir dir="${build.dir}"/>
+        <echo file="${old.project.clusters.duplicates.file}" message="${old.project.clusters.duplicates}"/>
+
+        <pathconvert property="cluster.path.evaluated">
+            <union id="old.project.clusters"> <!-- union removes duplicates -->
+                <files includesfile="${old.project.clusters.duplicates.file}"/>
+            </union>
+        </pathconvert>
+    </target>
+
+    <target name="common-init" depends="taskdefs,-build-dir-init,-convert-old-project">
+        <property name="netbeans.javadoc.dir" location="${build.dir}/javadoc"/>
+        <condition property="cluster.path.basedir" value="${suite.dir}" else="${basedir}">
+            <isset property="suite.dir"/>
+        </condition>
+        <convertclusterpath from="${cluster.path.evaluated}" to="cluster.path.final" id="cluster.path.id" basedir="${cluster.path.basedir}"/>
+    </target>
+
+    <target name="basic-init" depends="projectized-common.basic-init">
+        <condition property="suite.build.dir" value="${suite.dir}/build">
+            <isset property="suite.dir"/>
+        </condition>
+        <!-- Must be done even without build-init, or clean will not work. -->
+        <condition property="cluster" value="${suite.build.dir}/cluster"> <!-- #59872 -->
+            <isset property="suite.build.dir"/>
+        </condition>
+        <property name="cluster" location="${build.dir}/cluster"/>
+
+        <condition property="test.dist.dir" value="${suite.build.dir}/testdist">
+            <isset property="suite.build.dir"/>
+        </condition>
+        <property name="test.dist.dir" location="${build.dir}/testdist"/>
+        <property name="build.classes.dir" location="${build.dir}/classes"/>
+
+    </target>
+
+    <target name="init" depends="basic-init,files-init,build-init,-javac-init"/>
+
+    <target name="nbm-license-init" unless="license.file">
+        <mkdir dir="${build.dir}"/>
+        <property name="license.file" location="${build.dir}/no-license.txt"/>
+        <echo file="${license.file}">[NO LICENSE SPECIFIED]</echo>
+    </target>
+
+    <target name="build-init" depends="basic-init,nbm-license-init">
+        <condition property="public.package.jar.dir" value="${suite.build.dir}/public-package-jars">
+            <isset property="suite.build.dir"/>
+        </condition>
+        <property name="public.package.jar.dir" location="${build.dir}/public-package-jars"/>
+        <mkdir dir="${public.package.jar.dir}"/>
+        <!-- Similar to projectized.xml but does not try to set NBM homepage/distribution, nor is javahelp.excludes predefined. -->
+        <parseprojectxml
+            project="."
+            publicpackagesproperty="public.packages"
+            friendsproperty="friends"
+            javadocpackagesproperty="module.javadoc.packages"
+            moduledependenciesproperty="module.dependencies"
+            moduleclasspathproperty="module.classpath"
+            publicpackagejardir="${public.package.jar.dir}"
+            moduleprocessorclasspathproperty="module.processor.classpath"
+            modulerunclasspathproperty="module.run.classpath"
+            classpathextensionsproperty="class.path.extensions"
+        >
+            <testtype name="unit"
+                      runtimecp="test.unit.runtime.cp"
+                      compilecp="test.unit.compile.cp"
+                      compiledep="test.unit.testdep"/>
+            <testtype name="qa-functional"
+                      runtimecp="test.qa-functional.runtime.cp"
+                      compilecp="test.qa-functional.compile.cp"
+                      compiledep="test.qa-functional.testdep"/>
+        </parseprojectxml>
+        <condition property="is.regular">
+            <not>
+                <or>
+                    <isset property="is.autoload"/>
+                    <isset property="is.eager"/>
+                    <equals arg1="${module.jar.dir}" arg2="core"/>
+                    <equals arg1="${module.jar.dir}" arg2="lib"/>
+                </or>
+            </not>
+        </condition>
+        <property name="build.compiler.debug" value="true"/>
+        <property name="build.compiler.debuglevel" value="source,lines,vars"/>
+        <property name="build.compiler.deprecation" value="true"/>
+        <property name="build.sysclasspath" value="ignore"/>
+        <property name="build.compiler.optimize" value="off"/>
+        <property name="build.package.compress" value="false"/>
+        <property name="build.package.index" value="false"/>
+        <property name="manifest.mf" location="manifest.mf"/>
+        <property name="src.dir" location="src"/>
+        <property name="nbm" value="${code.name.base.dashes}.nbm"/>
+        <property name="nbm.module.author" value=""/>
+        <property name="nbm.release.date" value=""/>
+        <property name="nbm.needs.restart" value="false"/>
+        <property name="nbm.is.global" value=""/>
+        <!-- Override if you want to use these: -->
+        <property name="nbm.distribution" value=""/>
+        <property name="nbm.homepage" value=""/>
+        <property name="build.javahelp.dir" location="${build.dir}/javahelp"/>
+        <property name="javahelp.base" value="${code.name.base.slashes}/docs"/>
+        <property name="javahelp.search" value="JavaHelpSearch"/>
+    </target>
+
+    <target name="test-lib-init" depends="init">
+        <!-- NbModuleSuite must be made to ignore disabled.modules during a test; see discussion in #136621: -->
+        <delete failonerror="false">
+            <fileset dir="${suite.build.dir}">
+                <include name="cluster/config/Modules/*.xml_hidden"/>
+            </fileset>
+        </delete>
+        <path id="test.unit.lib.cp">
+            <pathelement path="${test.unit.lib.cp}"/> <!-- for manual override -->
+            <!-- As a fallback for old platforms which do not include the right modules: -->
+            <pathfileset include="modules/ext/junit-*.jar">
+                <path refid="cluster.path.id"/>
+            </pathfileset>
+            <fileset dir="${netbeans.home}/..">
+                <include name="*/modules/ext/junit-*.jar"/>
+            </fileset>
+        </path>
+    </target>
+
+    <target name="javahelp" depends="init" if="has.javahelp">
+        <!-- Similar to projectized.xml but does not fiddle with usersguide/.../ide.css, and finds jhall.jar differently: -->
+        <property name="jhall.jar" location="${harness.dir}/antlib/jsearch-2.0_05.jar"/>
+        <available property="jhall.jar.exists" file="${jhall.jar}"/>
+        <fail unless="jhall.jar.exists">You must set 'jhall.jar' (e.g. in private.properties) to the location of jsearch.jar from a JavaHelp distribution</fail>
+        <mkdir dir="${build.javahelp.dir}/${javahelp.base}/${javahelp.search}"/>
+        <copy todir="${build.javahelp.dir}">
+            <fileset dir="javahelp"/>
+        </copy>
+        <jhindexer basedir="${build.javahelp.dir}/${javahelp.base}"
+                   db="${build.javahelp.dir}/${javahelp.base}/${javahelp.search}">
+            <classpath>
+                <pathelement location="${jhall.jar}"/>
+                <pathelement location="${harness.dir}/tasks.jar"/>
+            </classpath>
+            <include name="**/*.html"/>
+            <include name="**/*.htm"/>  <!-- Fix for Issue #160276 -->
+            <exclude name="${javahelp.search}/"/>
+            <exclude name="${javahelp.excludes}"/>
+        </jhindexer>
+        <mkdir dir="${cluster}/${javahelp.jar.dir}"/>
+        <jar jarfile="${cluster}/${javahelp.jar}" compress="true">
+            <fileset dir="${build.javahelp.dir}"/>
+        </jar>
+    </target>
+
+    <target name="javadoc" depends="build-init,-javadoc-init">
+        <mkdir dir="${netbeans.javadoc.dir}/${code.name.base.dashes}"/>
+        <javadoc destdir="${netbeans.javadoc.dir}/${code.name.base.dashes}" packagenames="${module.javadoc.packages}" source="${javac.source}" windowtitle="${javadoc.title}" encoding="UTF-8">
+            <classpath refid="processor.cp"/> <!-- #157320 -->
+            <sourcepath location="${src.dir}"/>
+            <doctitle>${javadoc.title}</doctitle>
+            <header>${javadoc.header}</header>
+        </javadoc>
+    </target>
+
+    <target name="javadoc-nb" depends="init,javadoc" if="netbeans.home">
+        <nbbrowse file="${netbeans.javadoc.dir}/${code.name.base.dashes}/index.html"/>
+    </target>
+
+    <target name="-hide-excluded-modules" if="suite.dir"> <!-- #194563 -->
+        <ant dir="${suite.dir}" inheritall="false" target="-hide-excluded-modules"/>
+    </target>
+
+    <target name="run" depends="netbeans,-hide-excluded-modules">
+        <ant antfile="${harness.dir}/run.xml" target="run">
+            <reference refid="cluster.path.id"/>
+        </ant>
+    </target>
+
+    <target name="profile" depends="netbeans,-hide-excluded-modules,-jdk-presetdef-nbprofiledirect">
+        <ant antfile="${harness.dir}/run.xml" target="profile">
+            <reference refid="cluster.path.id"/>
+        </ant>
+    </target>
+
+    <target name="debug" depends="netbeans,-hide-excluded-modules,-jdk-presetdef-nbjpdastart">
+        <ant antfile="${harness.dir}/run.xml" target="debug">
+            <reference refid="cluster.path.id"/>
+        </ant>
+    </target>
+
+    <target name="reload" depends="netbeans">
+        <ant antfile="${harness.dir}/run.xml" target="run">
+            <property name="run.args" value='--reload "${cluster}/${module.jar}"'/>
+            <property name="run.args.extra" value=""/>
+            <reference refid="cluster.path.id"/>
+        </ant>
+    </target>
+
+    <target name="reload-in-ide" depends="netbeans">
+        <fail unless="netbeans.home">This target only works when run from inside the NetBeans IDE.</fail>
+        <nbinstaller module="${cluster}/${module.jar}" action="reinstall"/>
+    </target>
+
+    <target name="-copy-testxmlresults">
+        <copy todir="${test.xml.results.dir}" flatten="true" failonerror="false">
+            <fileset dir="${build.dir}/test" includes="*/results/TEST-*.xml"/>
+        </copy>
+    </target>
+
+</project>

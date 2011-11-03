@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright 1997-2010 Oracle and/or its affiliates. All rights reserved.
+
+Oracle and Java are registered trademarks of Oracle and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+
+The contents of this file are subject to the terms of either the GNU
+General Public License Version 2 only ("GPL") or the Common
+Development and Distribution License("CDDL") (collectively, the
+"License"). You may not use this file except in compliance with the
+License. You can obtain a copy of the License at
+http://www.netbeans.org/cddl-gplv2.html
+or nbbuild/licenses/CDDL-GPL-2-CP. See the License for the
+specific language governing permissions and limitations under the
+License.  When distributing the software, include this License Header
+Notice in each file and include the License file at
+nbbuild/licenses/CDDL-GPL-2-CP.  Oracle designates this
+particular file as subject to the "Classpath" exception as provided
+by Oracle in the GPL Version 2 section of the License file that
+accompanied this code. If applicable, add the following below the
+License Header, with the fields enclosed by brackets [] replaced by
+your own identifying information:
+"Portions Copyrighted [year] [name of copyright owner]"
+
+Contributor(s):
+
+The Original Software is NetBeans. The Initial Developer of the Original
+Software is Sun Microsystems, Inc. Portions Copyright 1997-2006 Sun
+Microsystems, Inc. All Rights Reserved.
+
+If you wish your version of this file to be governed by only the CDDL
+or only the GPL Version 2, indicate your decision by adding
+"[Contributor] elects to include this software in this distribution
+under the [CDDL or GPL Version 2] license." If you do not indicate a
+single choice of license, a recipient has the option to distribute
+your version of this file under either the CDDL, the GPL Version 2 or
+to extend the choice of license to its licensees as provided above.
+However, if you add GPL Version 2 code and therefore, elected the GPL
+Version 2 license, then the option applies only if the new code is
+made subject to such option by the copyright holder.
+-->
+<project name="jdk" basedir=".">
+
+    <description>
+        Permits selection of a JDK to use when building and running NetBeans.
+        For details on usage, see apisupport/harness/release/README (in sources)
+        or harness/README (in binaries). Cf. issue #63541.
+    </description>
+
+    <target name="-jdk-pre-preinit">
+        <condition property="nbjdk.active-or-nbjdk.home">
+            <or>
+                <and>
+                    <isset property="nbjdk.active"/>
+                    <not>
+                        <equals arg1="${nbjdk.active}" arg2="default"/>
+                    </not>
+                </and>
+                <and>
+                    <isset property="nbjdk.home"/>
+                    <not>
+                        <isset property="nbjdk.home.defaulted"/>
+                    </not>
+                </and>
+            </or>
+        </condition>
+    </target>
+
+    <target name="-jdk-preinit" depends="-jdk-pre-preinit" if="nbjdk.active-or-nbjdk.home" xmlns:common="http://nbbuild.netbeans.org/jdk.xml">
+        <macrodef name="property" uri="http://nbbuild.netbeans.org/jdk.xml">
+            <attribute name="name"/>
+            <attribute name="value"/>
+            <sequential>
+                <property name="@{name}" value="${@{value}}"/>
+            </sequential>
+        </macrodef>
+        <common:property name="nbjdk.home" value="platforms.${nbjdk.active}.home"/>
+        <common:property name="nbjdk.javac.tmp" value="platforms.${nbjdk.active}.javac"/>
+        <condition property=".exe" value=".exe">
+            <os family="windows"/> <!-- #72467 -->
+        </condition>
+        <property name=".exe" value=""/>
+        <condition property="nbjdk.javac" value="${nbjdk.home}/bin/javac${.exe}">
+            <equals arg1="${nbjdk.javac.tmp}" arg2="$${platforms.${nbjdk.active}.javac}"/>
+        </condition>
+        <property name="nbjdk.javac" value="${nbjdk.javac.tmp}"/>
+        <common:property name="nbjdk.java.tmp" value="platforms.${nbjdk.active}.java"/>
+        <condition property="nbjdk.java" value="${nbjdk.home}/bin/java${.exe}">
+            <equals arg1="${nbjdk.java.tmp}" arg2="$${platforms.${nbjdk.active}.java}"/>
+        </condition>
+        <property name="nbjdk.java" value="${nbjdk.java.tmp}"/>
+        <common:property name="nbjdk.javadoc.tmp" value="platforms.${nbjdk.active}.javadoc"/>
+        <condition property="nbjdk.javadoc" value="${nbjdk.home}/bin/javadoc${.exe}">
+            <equals arg1="${nbjdk.javadoc.tmp}" arg2="$${platforms.${nbjdk.active}.javadoc}"/>
+        </condition>
+        <property name="nbjdk.javadoc" value="${nbjdk.javadoc.tmp}"/>
+        <common:property name="nbjdk.bootclasspath.tmp" value="platforms.${nbjdk.active}.bootclasspath"/>
+        <condition property="nbjdk.bootclasspath" value="${nbjdk.home}/../Classes/classes.jar:${nbjdk.home}/../Classes/jsse.jar:${nbjdk.home}/../Classes/jce.jar:${nbjdk.home}/../Classes/ui.jar:${nbjdk.home}/../Classes/laf.jar:${nbjdk.home}/../Classes/sunrsasign.jar:${nbjdk.home}/../Classes/charsets.jar">
+            <and>
+                <equals arg1="${nbjdk.bootclasspath.tmp}" arg2="$${platforms.${nbjdk.active}.bootclasspath}"/>
+                <os family="mac"/>
+            </and>
+        </condition>
+        <pathconvert property="nbjdk.bootclasspath.standard">
+            <path>
+                <fileset dir="${nbjdk.home}/jre/lib" erroronmissingdir="false" includes="*.jar"/>
+            </path>
+        </pathconvert>
+        <condition property="nbjdk.bootclasspath" value="${nbjdk.bootclasspath.standard}">
+            <equals arg1="${nbjdk.bootclasspath.tmp}" arg2="$${platforms.${nbjdk.active}.bootclasspath}"/>
+        </condition>
+        <property name="nbjdk.bootclasspath" value="${nbjdk.bootclasspath.tmp}"/>
+        <condition property="nbjdk.valid">
+            <and>
+                <available file="${nbjdk.home}" type="dir"/>
+                <available file="${nbjdk.javac}" type="file"/>
+                <available file="${nbjdk.java}" type="file"/>
+                <available file="${nbjdk.javadoc}" type="file"/>
+                <available classname="java.lang.Object" classpath="${nbjdk.bootclasspath}" ignoresystemclasses="true"/>
+            </and>
+        </condition>
+        <available property="have-jdk-1.4" classname="java.lang.CharSequence" classpath="${nbjdk.bootclasspath}" ignoresystemclasses="true"/>
+        <available property="have-jdk-1.5" classname="java.lang.StringBuilder" classpath="${nbjdk.bootclasspath}" ignoresystemclasses="true"/>
+        <available property="have-jdk-1.6" classname="java.util.ServiceLoader" classpath="${nbjdk.bootclasspath}" ignoresystemclasses="true"/>
+        <available property="have-jdk-1.7" classname="java.lang.ReflectiveOperationException" classpath="${nbjdk.bootclasspath}" ignoresystemclasses="true"/>
+        <echo level="verbose">nbjdk.active=${nbjdk.active} nbjdk.home=${nbjdk.home} nbjdk.java=${nbjdk.java} nbjdk.javac=${nbjdk.javac} nbjdk.javadoc=${nbjdk.javadoc} nbjdk.bootclasspath=${nbjdk.bootclasspath} nbjdk.valid=${nbjdk.valid} have-jdk-1.4=${have-jdk-1.4} have-jdk-1.5=${have-jdk-1.5} have-jdk-1.6=${have-jdk-1.6} have-jdk-1.7=${have-jdk-1.7}</echo>
+    </target>
+
+    <target name="-jdk-warn" depends="-jdk-preinit" if="nbjdk.active-or-nbjdk.home" unless="nbjdk.valid">
+        <property name="jdkhome.presumed" location="${java.home}/.."/>
+        <echo level="warning">Warning: nbjdk.active=${nbjdk.active} or nbjdk.home=${nbjdk.home} is an invalid Java platform; ignoring and using ${jdkhome.presumed}</echo>
+    </target>
+    
+    <target name="-jdk-presetdef-basic" depends="-jdk-preinit" if="nbjdk.valid" unless="jdk.presetdef.basic.done">
+        <!-- Have to eval these props now, not when used, because of usages of <ant ... inheritall="false"> -->
+        <!-- (cf. http://issues.apache.org/bugzilla/show_bug.cgi?id=38040) -->
+        <macrodef name="javac-presetdef">
+            <attribute name="javacval"/>
+            <sequential>
+                <presetdef name="javac">
+                    <javac fork="yes" executable="@{javacval}"/>
+                </presetdef>
+            </sequential>
+        </macrodef>
+        <javac-presetdef javacval="${nbjdk.javac}"/>
+        <macrodef name="java-presetdef">
+            <attribute name="javaval"/>
+            <sequential>
+                <presetdef name="java">
+                    <java fork="yes" jvm="@{javaval}"/>
+                </presetdef>
+            </sequential>
+        </macrodef>
+        <java-presetdef javaval="${nbjdk.java}"/>
+        <macrodef name="javadoc-presetdef">
+            <attribute name="javadocval"/>
+            <sequential>
+                <presetdef name="javadoc">
+                    <javadoc executable="@{javadocval}"/>
+                </presetdef>
+            </sequential>
+        </macrodef>
+        <javadoc-presetdef javadocval="${nbjdk.javadoc}"/>
+        <macrodef name="junit-presetdef">
+            <attribute name="javaval"/>
+            <sequential>
+                <presetdef name="junit">
+                    <junit fork="yes" jvm="@{javaval}"/>
+                </presetdef>
+            </sequential>
+        </macrodef>
+        <junit-presetdef javaval="${nbjdk.java}"/>
+        <property name="jdk.presetdef.basic.done" value="true"/>
+    </target>
+    
+    <target name="-jdk-presetdef-nbjpdastart" depends="-jdk-preinit" if="nbjdk.valid" unless="jdk.presetdef.nbjpdastart.done">
+        <macrodef name="nbjpdastart-presetdef">
+            <attribute name="bootcpval"/>
+            <sequential>
+                <presetdef name="nbjpdastart">
+                    <nbjpdastart>
+                        <bootclasspath>
+                            <path path="@{bootcpval}"/>
+                        </bootclasspath>
+                    </nbjpdastart>
+                </presetdef>
+            </sequential>
+        </macrodef>
+        <nbjpdastart-presetdef bootcpval="${nbjdk.bootclasspath}"/>
+        <property name="jdk.presetdef.nbjpdastart.done" value="true"/>
+    </target>
+    
+    <target name="-jdk-presetdef-nbprofiledirect" depends="-jdk-preinit" if="nbjdk.valid" unless="jdk.presetdef.nbprofiledirect.done">
+        <!-- XXX disable for now, but could be considered:
+        <macrodef name="nbprofiledirect-presetdef">
+            <attribute name="javaval"/>
+            <sequential>
+                <presetdef name="nbprofiledirect">
+                    <nbprofiledirect jvmproperty="@{javaval}"/>
+                </presetdef>
+            </sequential>
+        </macrodef>
+        <nbprofiledirect-presetdef javaval="${nbjdk.java}"/>
+        -->
+        <property name="jdk.presetdef.nbprofiledirect.done" value="true"/>
+    </target>
+    
+    <target name="-jdk-default" unless="nbjdk.active-or-nbjdk.home">
+        <!-- Define fallback values of some things. -->
+        <property name="java.home.parent" location="${java.home}/.."/>
+        <condition property="nbjdk.home" value="${java.home.parent}">
+            <available file="${java.home.parent}/lib/tools.jar" type="file"/>
+        </condition>
+        <condition property="nbjdk.home" value="${java.home}">
+            <available file="${java.home}/lib/tools.jar" type="file"/>
+        </condition>
+
+        <!-- Mac OS X -->
+        <condition property="nbjdk.home" value="${java.home}">
+            <available file="${java.home}/../Classes/classes.jar" type="file"/>
+        </condition>
+
+        <!-- Fallback? -->
+        <property name="nbjdk.home" location="${java.home.parent}"/>
+        <available property="have-jdk-1.4" classname="java.lang.CharSequence"/>
+        <available property="have-jdk-1.5" classname="java.lang.StringBuilder"/>
+        <available property="have-jdk-1.6" classname="java.util.ServiceLoader"/>
+        <available property="have-jdk-1.7" classname="java.lang.ReflectiveOperationException"/>
+        <property name="nbjdk.home.defaulted" value="true"/>
+    </target>
+
+    <target name="-jdk-init" depends="-jdk-preinit,-jdk-warn,-jdk-presetdef-basic,-jdk-default">
+        <!-- Will be bogus on Mac OS X, but doesn't matter - Classes/classes.jar should have this anyway -->
+        <property name="tools.jar" location="${nbjdk.home}/lib/tools.jar"/>
+        <!--<echo level="info">Using JDK: ${nbjdk.home}</echo>-->
+    </target>
+    
+</project>

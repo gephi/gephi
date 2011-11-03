@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="org.netbeans.api.annotations.common/1">
+    <module_version install_time="1311881695485" last="true" origin="installer" specification_version="1.9.1">
+        <file crc="1285559856" name="config/Modules/org-netbeans-api-annotations-common.xml"/>
+        <file crc="3284175026" name="modules/org-netbeans-api-annotations-common.jar"/>
+    </module_version>
+</module>

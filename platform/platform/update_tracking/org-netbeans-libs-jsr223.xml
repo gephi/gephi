@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="org.netbeans.libs.jsr223/1">
+    <module_version install_time="1311881769054" last="true" origin="installer" specification_version="1.19.1">
+        <file crc="1051087422" name="config/Modules/org-netbeans-libs-jsr223.xml"/>
+        <file crc="3037896115" name="modules/org-netbeans-libs-jsr223.jar"/>
+    </module_version>
+</module>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="org.netbeans.core.io.ui/1">
+    <module_version install_time="1311882781048" last="true" origin="installer" specification_version="1.12.1">
+        <file crc="937424920" name="config/Modules/org-netbeans-core-io-ui.xml"/>
+        <file crc="3656842555" name="modules/org-netbeans-core-io-ui.jar"/>
+    </module_version>
+</module>
