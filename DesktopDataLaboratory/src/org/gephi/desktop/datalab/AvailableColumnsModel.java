@@ -42,6 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.datalab;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import org.gephi.data.attributes.api.AttributeColumn;
 
 /**
@@ -86,7 +88,7 @@ public class AvailableColumnsModel {
     /**
      * Clear all available columns
      */
-    public void removeAllColumns(){
+    public void removeAllColumns() {
         availableColumns.clear();
     }
 
@@ -98,7 +100,17 @@ public class AvailableColumnsModel {
         return availableColumns.size() < MAX_AVAILABLE_COLUMNS;
     }
 
+    /**
+     * Return available columns, sorted by index
+     * @return 
+     */
     public AttributeColumn[] getAvailableColumns() {
+        Collections.sort(availableColumns, new Comparator<AttributeColumn>() {
+
+            public int compare(AttributeColumn o1, AttributeColumn o2) {
+                return o1.getIndex() - o2.getIndex();
+            }
+        });
         return availableColumns.toArray(new AttributeColumn[0]);
     }
 

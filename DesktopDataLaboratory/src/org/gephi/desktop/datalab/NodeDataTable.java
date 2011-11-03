@@ -274,14 +274,6 @@ public class NodeDataTable {
         selectedNodes = null;
         refreshingTable = false;
     }
-    
-    /**
-     * Temporal trick to avoid visual problems of netbeans Outline such as bad highlighting of rows.
-     */
-    private void avoidOutlineVisualIssues(){
-        outlineTable.requestFocusInWindow();
-        outlineTable.repaint();
-    }
 
     public void setNodesSelection(Node[] nodes) {
         this.selectedNodes = nodes;//Keep this selection request to be able to apply nodes selection if the table is first refreshed later.
@@ -295,7 +287,6 @@ public class NodeDataTable {
                 }
             }
         }
-        avoidOutlineVisualIssues();
     }
 
     public void scrollToFirstNodeSelected() {
@@ -304,7 +295,6 @@ public class NodeDataTable {
             Rectangle rect = outlineTable.getCellRect(row, 0, true);
             outlineTable.scrollRectToVisible(rect);
         }
-        avoidOutlineVisualIssues();
     }
 
     public boolean hasData() {
@@ -605,7 +595,6 @@ public class NodeDataTable {
 
                     public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
                         popup.removePopupMenuListener(this);
-                        avoidOutlineVisualIssues();
                     }
 
                     public void popupMenuCanceled(PopupMenuEvent e) {
