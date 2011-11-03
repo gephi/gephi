@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module codename="org.netbeans.libs.junit4">
+    <module_version install_time="1320354818646" last="true" origin="Ant" specification_version="1.13">
+        <file crc="3256237618" name="config/Modules/org-netbeans-libs-junit4.xml"/>
+        <file crc="2295971441" name="modules/ext/junit-4.8.2.jar"/>
+        <file crc="3402524562" name="modules/org-netbeans-libs-junit4.jar"/>
+    </module_version>
+</module>

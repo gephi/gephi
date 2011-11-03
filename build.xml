@@ -3,20 +3,13 @@
 <!-- for some information on what you could do (e.g. targets to override). -->
 <!-- If you delete this file and reopen the project it will be recreated. -->
 <project name="0.8" basedir="." default="build-all">
-	
-    <condition property="nbplatform.default.netbeans.dest.dir" value="${basedir}/platform">
-        <not>
-            <available file="${basedir}/nbproject/private/platform-private.properties"/>
-        </not>
-    </condition>
-    <condition property="nbplatform.default.harness.dir" value="${nbplatform.default.netbeans.dest.dir}/harness">
-        <not>
-            <available file="${basedir}/nbproject/private/platform-private.properties"/>
-        </not>
-    </condition>
-	
+
+	<!-- Overrides Netbeans' platform folder allowing to build without Netbeans -->
+    <property name="nbplatform.active.dir" value="${basedir}/platform" />
+
     <description>Builds the module suite 0.8.</description>
     <import file="nbproject/build-impl.xml"/>
+
     <echo message="Using harness folder ${harness.dir}"/>
 	
     <condition property="isWindows">
@@ -30,6 +23,17 @@
 	<!-- Build both windows and mac on a mac and only windows on a windows -->
     <target name="build-all" depends="clean, build-zip, build-mac">
         <echo message="Build completed. The files are available in the 'dist' folder."/>
+    </target>
+
+	<!-- Download the latest stable relese of the platform, including the JUnit plugin -->
+    <target name="download-platform">
+        <property name="platform.netbeans.version" value="7.0.1"/>
+        <taskdef name="autoupdate" classname="org.netbeans.nbbuild.AutoUpdate" classpath="${nbplatform.active.dir}/harness/tasks.jar"/>
+        <autoupdate installdir="${nbplatform.active.dir}" updatecenter="http://updates.netbeans.org/netbeans/updates/${platform.netbeans.version}/uc/final/certified/catalog.xml.gz" force="false">
+            <modules includes=".*junit.*" clusters="platform[0-9]*"/>
+            <modules includes=".*" clusters="harness[0-9]*"/>
+            <modules includes=".*" clusters="platform[0-9]*"/>
+        </autoupdate>
     </target>
 
     <target name="build-launchers" depends="suite.build-launchers">
