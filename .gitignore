@@ -8,4 +8,5 @@ nbproject/private/profiler/
 .DS_Store
 toolkit
 keystore.ks
-
+dist/**
+build/**
