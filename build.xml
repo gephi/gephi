@@ -4,9 +4,6 @@
 <!-- If you delete this file and reopen the project it will be recreated. -->
 <project name="0.8" basedir="." default="build-all">
 
-	<!-- Overrides Netbeans' platform folder allowing to build without Netbeans -->
-    <property name="nbplatform.active.dir" value="${basedir}/platform" />
-
     <description>Builds the module suite 0.8.</description>
     <import file="nbproject/build-impl.xml"/>
 
