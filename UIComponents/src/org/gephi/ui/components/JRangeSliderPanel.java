@@ -168,13 +168,15 @@ public class JRangeSliderPanel extends javax.swing.JPanel {
     public void setRange(Range range) {
         if (!range.min.equals(range.max)) {
             this.range = range;
+            rangeSlider.setEnabled(true);
             range.refreshSlider();
             refreshBoundTexts();
         } else {
-            lowerBound = "N/A";
-            upperBound = "N/A";
+            lowerBound = range.lowerBound.toString();
+            upperBound = range.upperBound.toString();
             lowerBoundTextField.setText(lowerBound);
             upperBoundTextField.setText(upperBound);
+            rangeSlider.setEnabled(false);
         }
 
     }
