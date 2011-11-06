@@ -52,6 +52,7 @@ public final class Range {
     private Number upperNumber;
     private Number min;
     private Number max;
+    private boolean autoUpdateBounds;
 
     public Range(Double lowerBound, Double upperBound) {
         lowerNumber = lowerBound;
@@ -205,9 +206,6 @@ public final class Range {
     public void setMinMax(Number min, Number max) {
         if (rangeType != min.getClass() || rangeType != max.getClass()) {
             throw new IllegalArgumentException("value must be " + rangeType.getName());
-        }
-        if(min.equals(max) || lowerNumber.equals(upperNumber)) {
-            return;
         }
         if (rangeType == Double.class) {
             Double minD = (Double) min;

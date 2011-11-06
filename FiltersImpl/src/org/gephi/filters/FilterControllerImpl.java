@@ -142,8 +142,16 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
         if (filter instanceof Operator) {
             return new OperatorQueryImpl((Operator) filter);
         }
-        //Init filter
-        if (filter instanceof NodeFilter || filter instanceof EdgeFilter) {
+        return new FilterQueryImpl(filter);
+    }
+
+    public void add(Query query) {
+        AbstractQueryImpl absQuery = ((AbstractQueryImpl) query);
+        absQuery = absQuery.getRoot();
+        if (!model.hasQuery(absQuery)) {
+            model.addFirst(absQuery);
+
+            //Init filters with default graph
             Graph graph = null;
             if (model != null && model.getGraphModel() != null) {
                 graph = model.getGraphModel().getGraph();
@@ -151,19 +159,18 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
                 GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
                 graph = graphModel.getGraph();
             }
-            if (filter instanceof NodeFilter) {
-                ((NodeFilter) filter).init(graph);
-            } else {
-                ((EdgeFilter) filter).init(graph);
-            }
-        }
-        return new FilterQueryImpl(filter);
-    }
 
-    public void add(Query query) {
-        query = ((AbstractQueryImpl) query).getRoot();
-        if (!model.hasQuery(query)) {
-            model.addFirst(query);
+            for (Query q : query.getDescendantsAndSelf()) {
+                Filter filter = q.getFilter();
+                if (filter instanceof NodeFilter || filter instanceof EdgeFilter) {
+
+                    if (filter instanceof NodeFilter) {
+                        ((NodeFilter) filter).init(graph);
+                    } else {
+                        ((EdgeFilter) filter).init(graph);
+                    }
+                }
+            }
         }
     }
 
