@@ -262,13 +262,11 @@ public class FiltersPanel extends javax.swing.JPanel implements ExplorerManager.
             if (uiModel.getSelectedQuery() != null && filterModel.getCurrentQuery() == null) {
                 //Remove case
                 if(!Arrays.asList(filterModel.getQueries()).contains(uiModel.getSelectedRoot())) {
-                    System.out.println("Remove");
                     uiModel.setSelectedQuery(null);
                 }
             } else if (filterModel.getCurrentQuery() != null
                     && filterModel.getCurrentQuery() != uiModel.getSelectedQuery()
                     && filterModel.getCurrentQuery() != uiModel.getSelectedRoot()) {
-                System.out.println("Add select");
                 uiModel.setSelectedQuery(filterModel.getCurrentQuery());
             }
         }
