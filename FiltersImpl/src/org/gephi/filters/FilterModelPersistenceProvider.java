@@ -52,9 +52,14 @@ import javax.xml.stream.events.XMLEvent;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.spi.CategoryBuilder;
+import org.gephi.filters.spi.EdgeFilter;
 import org.gephi.filters.spi.Filter;
 import org.gephi.filters.spi.FilterBuilder;
 import org.gephi.filters.spi.FilterProperty;
+import org.gephi.filters.spi.NodeFilter;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.spi.WorkspacePersistenceProvider;
 import org.openide.util.Lookup;
@@ -195,6 +200,29 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
             } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
                 if ("filtermodel".equalsIgnoreCase(reader.getLocalName())) {
                     end = true;
+                }
+            }
+        }
+
+        //Init filters
+        Graph graph = null;
+        if (model != null && model.getGraphModel() != null) {
+            graph = model.getGraphModel().getGraph();
+        } else {
+            GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+            graph = graphModel.getGraph();
+        }
+
+        for (Query rootQuery : model.getQueries()) {
+            for (Query q : rootQuery.getDescendantsAndSelf()) {
+                Filter filter = q.getFilter();
+                if (filter instanceof NodeFilter || filter instanceof EdgeFilter) {
+
+                    if (filter instanceof NodeFilter) {
+                        ((NodeFilter) filter).init(graph);
+                    } else {
+                        ((EdgeFilter) filter).init(graph);
+                    }
                 }
             }
         }
