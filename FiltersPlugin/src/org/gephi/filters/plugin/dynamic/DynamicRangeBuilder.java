@@ -255,8 +255,8 @@ public class DynamicRangeBuilder implements CategoryBuilder {
                 filterProperties = new FilterProperty[0];
                 try {
                     filterProperties = new FilterProperty[]{
-                                FilterProperty.createProperty(this, Range.class, "range"),
-                                FilterProperty.createProperty(this, Boolean.class, "keepNull")};
+                        FilterProperty.createProperty(this, Range.class, "range"),
+                        FilterProperty.createProperty(this, Boolean.class, "keepNull")};
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -294,7 +294,10 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         }
 
         public Range getRange() {
-            return new Range(visibleInterval.getLow(), visibleInterval.getHigh(), min, max);
+            if (visibleInterval != null) {
+                return new Range(visibleInterval.getLow(), visibleInterval.getHigh(), min, max);
+            }
+            return null;
         }
 
         public void setRange(Range range) {
