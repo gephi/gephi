@@ -51,11 +51,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
@@ -260,6 +257,13 @@ public class RankingChooser extends javax.swing.JPanel implements PropertyChange
                 }
                 splineEditor.setVisible(true);
                 interpolator = splineEditor.getCurrentInterpolator();
+                RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
+                rankingController.setInterpolator(new org.gephi.ranking.api.Interpolator() {
+
+                    public float interpolate(float x) {
+                        return interpolator.interpolate(x);
+                    }
+                });
             }
         });
         autoApplyButton.setVisible(false);
