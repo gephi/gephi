@@ -77,6 +77,7 @@ public class RankingAutoTransformer implements Runnable, AttributeListener {
     private int lastView = -1;
     private int lastVersion = -1;
     private boolean valueChanged = false;
+    private Interpolator lastInterpolator;
 
     public RankingAutoTransformer(RankingModelImpl model) {
         this.model = model;
@@ -89,6 +90,7 @@ public class RankingAutoTransformer implements Runnable, AttributeListener {
         if (executor == null) {
             //Attribute listening
             attributeModel.addAttributeListener(this);
+            lastInterpolator = model.getInterpolator();
 
             executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
 
@@ -119,17 +121,19 @@ public class RankingAutoTransformer implements Runnable, AttributeListener {
         int nodeVersion = graph.getNodeVersion();
         int edgeVersion = graph.getEdgeVersion();
         int viewId = graphModel.getVisibleView().getViewId();
+        Interpolator interpolator = model.getInterpolator();
 
         //Test if something changed        
-        if (viewId == lastView && (nodeVersion + edgeVersion) == lastVersion && !valueChanged) {
+        if (viewId == lastView && (nodeVersion + edgeVersion) == lastVersion && !valueChanged && lastInterpolator.equals(interpolator)) {
             return;
         }
         lastView = viewId;
         lastVersion = edgeVersion + nodeVersion;
         valueChanged = false;
-
+        lastInterpolator = interpolator;
+        
         for (RankingModelImpl.AutoRanking autoRanking : model.getAutoRankings()) {
-            Interpolator interpolator = model.getInterpolator();
+            
             Ranking ranking = autoRanking.getRanking();
             Transformer transformer = autoRanking.getTransformer();
 
