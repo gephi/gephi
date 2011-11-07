@@ -99,17 +99,26 @@ public class TextModel {
 
     //Event
     public void addChangeListener(ChangeListener changeListener) {
-        listeners.add(changeListener);
+        List<ChangeListener> list = listeners;
+        if (list != null) {
+            listeners.add(changeListener);
+        }
     }
 
     public void removeChangeListener(ChangeListener changeListener) {
-        listeners.remove(changeListener);
+        List<ChangeListener> list = listeners;
+        if (list != null) {
+            listeners.remove(changeListener);
+        }
     }
 
     private void fireChangeEvent() {
         ChangeEvent evt = new ChangeEvent(this);
-        for (ChangeListener l : listeners) {
-            l.stateChanged(evt);
+        List<ChangeListener> list = listeners;
+        if (list != null) {
+            for (ChangeListener l : list) {
+                l.stateChanged(evt);
+            }
         }
     }
 
