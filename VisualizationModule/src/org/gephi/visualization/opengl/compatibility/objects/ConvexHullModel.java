@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.visualization.opengl.compatibility.objects;
 
 import javax.media.opengl.GL;
@@ -63,7 +63,7 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
 
     @Override
     public int[] octreePosition(float centerX, float centerY, float centerZ, float size) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new int[0];
     }
 
     @Override
@@ -171,6 +171,9 @@ public class ConvexHullModel extends ModelImpl<ConvexHull> {
         }
         if (!allNull) {
             octants = newOctants;
+        }
+        if (octants == null) {
+            return new Octant[0];
         }
         return octants;
     }
