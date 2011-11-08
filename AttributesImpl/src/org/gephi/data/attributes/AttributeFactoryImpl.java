@@ -43,10 +43,12 @@ package org.gephi.data.attributes;
 
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.NodeData;
 
 /**
@@ -82,6 +84,10 @@ public class AttributeFactoryImpl implements AttributeValueFactory, AttributeRow
 
     public AttributeRowImpl newEdgeRow(EdgeData edgeData) {
         return new AttributeRowImpl(model.getEdgeTable(), edgeData);
+    }
+
+    public AttributeRow newGraphRow(Graph graph) {
+        return new AttributeRowImpl(model.getGraphTable(), graph);
     }
 
     public AttributeRowImpl newRowForTable(String tableName, Object object) {

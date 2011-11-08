@@ -60,8 +60,8 @@ public interface AttributeModel {
      * Returns the <b>node</b> table. Contains all the columns associated to
      * node elements.
      * <p>
-     * An <code>AttributeModel</code> has always <b>node</b> and <b>edge</b>
-     * tables by default.
+     * An <code>AttributeModel</code> has always <b>node</b>, <b>edge</b> and
+     * <b>graph</b> tables by default.
      *
      * @return      the node table, contains node columns
      */
@@ -71,12 +71,23 @@ public interface AttributeModel {
      * Returns the <b>edge</b> table. Contains all the columns associated to
      * edge elements.
      * <p>
-     * An <code>AttributeModel</code> has always <b>node</b> and <b>edge</b>
-     * tables by default.
+     * An <code>AttributeModel</code> has always <b>node</b>, <b>edge</b> and
+     * <b>graph</b> tables by default.
      *
      * @return      the edge table, contains edge columns
      */
     public AttributeTable getEdgeTable();
+    
+    /**
+     * Returns the <b>graph</b> table. Contains all the columns associated to
+     * the graph.
+     * <p>
+     * An <code>AttributeModel</code> has always <b>node</b>, <b>edge</b> and
+     * <b>graph</b> tables by default.
+     *
+     * @return      the edge table, contains edge columns
+     */
+    public AttributeTable getGraphTable();
 
     /**
      * Returns the <code>AttributeTable</code> which has the given <code>name</code>

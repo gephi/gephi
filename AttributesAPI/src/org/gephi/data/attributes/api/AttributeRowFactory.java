@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.data.attributes.api;
 
 import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.NodeData;
 
 /**
@@ -67,6 +68,14 @@ public interface AttributeRowFactory {
      * @see     AttributeModel#getEdgeTable()
      */
     public AttributeRow newEdgeRow(EdgeData edgeData);
+    
+    /**
+     * Returns a new row for the <b>graph</b> table.
+     *
+     * @return  a newly created row for the graph table
+     * @see     AttributeModel#getGraphTable()
+     */
+    public AttributeRow newGraphRow(Graph graph);
 
     /**
      * Returns a new row for the given <code>tableName</code>, or <code>null</code>

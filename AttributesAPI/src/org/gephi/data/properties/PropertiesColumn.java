@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.data.properties;
 
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -57,18 +57,20 @@ import org.gephi.data.attributes.api.AttributeType;
  */
 public enum PropertiesColumn {
 
-    NODE_ID                (0, "id",            AttributeType.STRING, AttributeOrigin.PROPERTY, null),
-    NODE_LABEL             (1, "label",         AttributeType.STRING, AttributeOrigin.PROPERTY, null),
-    EDGE_ID                (0, "id",            AttributeType.STRING, AttributeOrigin.PROPERTY, null),
-    EDGE_LABEL             (1, "label",         AttributeType.STRING, AttributeOrigin.PROPERTY, null),
-    EDGE_WEIGHT            (2, "weight",        AttributeType.FLOAT, AttributeOrigin.PROPERTY, 1f),
-    NEO4J_RELATIONSHIP_TYPE(3, "neo4j_rt",      AttributeType.STRING, AttributeOrigin.DELEGATE, null){
+    NODE_ID(0, "id", AttributeType.STRING, AttributeOrigin.PROPERTY, null),
+    NODE_LABEL(1, "label", AttributeType.STRING, AttributeOrigin.PROPERTY, null),
+    EDGE_ID(0, "id", AttributeType.STRING, AttributeOrigin.PROPERTY, null),
+    EDGE_LABEL(1, "label", AttributeType.STRING, AttributeOrigin.PROPERTY, null),
+    EDGE_WEIGHT(2, "weight", AttributeType.FLOAT, AttributeOrigin.PROPERTY, 1f),
+    GRAPH_NAME(0, "name", AttributeType.STRING, AttributeOrigin.PROPERTY, null),
+    GRAPH_DESCRIPTION(0, "description", AttributeType.STRING, AttributeOrigin.PROPERTY, null),
+    NEO4J_RELATIONSHIP_TYPE(3, "neo4j_rt", AttributeType.STRING, AttributeOrigin.DELEGATE, null) {
+
         @Override
         public String getTitle() {
             return "Neo4j Relationship Type";
         }
     };
-    
     private final int index;
     private final String id;
     private final AttributeType type;
@@ -114,4 +116,3 @@ public enum PropertiesColumn {
         return origin;
     }
 }
-

@@ -73,7 +73,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * (add, remove, ...).
  * @author Mathieu Bastian
  */
-public interface Graph {
+public interface Graph extends Attributable {
 
     /**
      * Add <code>edge</code> to the graph. Graph does not accept parallel edges.

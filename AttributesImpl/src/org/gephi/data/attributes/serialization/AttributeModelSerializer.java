@@ -92,11 +92,13 @@ public class AttributeModelSerializer {
                             table = model.getNodeTable();
                         } else if (Boolean.parseBoolean(reader.getAttributeValue(null, "edgetable"))) {
                             table = model.getEdgeTable();
+                        } else if (Boolean.parseBoolean(reader.getAttributeValue(null, "graphtable"))) {
+                            table = model.getGraphTable();
                         } else {
                             table = new AttributeTableImpl(model, "");
                         }
                         readTable(reader, table);
-                        if (table != model.getNodeTable() && table != model.getEdgeTable()) {
+                        if (table != model.getNodeTable() && table != model.getEdgeTable() && table != model.getGraphTable()) {
                             model.addTable(table);
                         }
                     }
@@ -117,6 +119,7 @@ public class AttributeModelSerializer {
         writer.writeAttribute("version", String.valueOf(table.getVersion()));
         writer.writeAttribute("nodetable", String.valueOf(table == model.getNodeTable()));
         writer.writeAttribute("edgetable", String.valueOf(table == model.getEdgeTable()));
+        writer.writeAttribute("graphtable", String.valueOf(table == model.getGraphTable()));
 
         for (AttributeColumnImpl columnImpl : table.getColumns()) {
             writeColumn(writer, columnImpl);

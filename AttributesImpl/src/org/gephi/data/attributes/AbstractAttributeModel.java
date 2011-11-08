@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.data.attributes;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,11 +62,12 @@ import org.openide.util.NbBundle;
 public abstract class AbstractAttributeModel implements AttributeModel {
 
     //Classes
-    private ConcurrentMap<String, AttributeTableImpl> tableMap;
-    private AttributeTableImpl nodeTable;
-    private AttributeTableImpl edgeTable;
+    private final ConcurrentMap<String, AttributeTableImpl> tableMap;
+    private final AttributeTableImpl nodeTable;
+    private final AttributeTableImpl edgeTable;
+    private final AttributeTableImpl graphTable;
     //Factory
-    private AttributeFactoryImpl factory;
+    private final AttributeFactoryImpl factory;
     //Events
     protected AttributeEventManager eventManager;
 
@@ -75,8 +76,10 @@ public abstract class AbstractAttributeModel implements AttributeModel {
         tableMap = new ConcurrentHashMap<String, AttributeTableImpl>();
         nodeTable = new AttributeTableImpl(this, NbBundle.getMessage(AttributeTableImpl.class, "NodeAttributeTable.name"));
         edgeTable = new AttributeTableImpl(this, NbBundle.getMessage(AttributeTableImpl.class, "EdgeAttributeTable.name"));
+        graphTable = new AttributeTableImpl(this, NbBundle.getMessage(AttributeTableImpl.class, "GraphAttributeTable.name"));
         tableMap.put(nodeTable.name, nodeTable);
         tableMap.put(edgeTable.name, edgeTable);
+        tableMap.put(graphTable.name, graphTable);
         factory = new AttributeFactoryImpl(this);
     }
 
@@ -84,16 +87,24 @@ public abstract class AbstractAttributeModel implements AttributeModel {
         // !!! the position of PropertiesColumn enum constants in following arrays must be the same
         // !!! as index in each constant
         PropertiesColumn[] columnsForNodeTable = {PropertiesColumn.NODE_ID,
-                                                  PropertiesColumn.NODE_LABEL};
+            PropertiesColumn.NODE_LABEL};
         PropertiesColumn[] columnsForEdgeTable = {PropertiesColumn.EDGE_ID,
-                                                  PropertiesColumn.EDGE_LABEL,
-                                                  PropertiesColumn.EDGE_WEIGHT};
+            PropertiesColumn.EDGE_LABEL,
+            PropertiesColumn.EDGE_WEIGHT};
+        PropertiesColumn[] columnsForGraphTable = {PropertiesColumn.GRAPH_NAME,
+            PropertiesColumn.GRAPH_DESCRIPTION};
 
-        for (PropertiesColumn columnForNodeTable : columnsForNodeTable)
+        for (PropertiesColumn columnForNodeTable : columnsForNodeTable) {
             nodeTable.addPropertiesColumn(columnForNodeTable);
+        }
 
-        for (PropertiesColumn columnForEdgeTable : columnsForEdgeTable)
+        for (PropertiesColumn columnForEdgeTable : columnsForEdgeTable) {
             edgeTable.addPropertiesColumn(columnForEdgeTable);
+        }
+        
+        for (PropertiesColumn columnForGraphTable : columnsForGraphTable) {
+            graphTable.addPropertiesColumn(columnForGraphTable);
+        }
     }
 
     public abstract Object getManagedValue(Object obj, AttributeType attributeType);
@@ -103,6 +114,10 @@ public abstract class AbstractAttributeModel implements AttributeModel {
 
     public AttributeTableImpl getNodeTable() {
         return nodeTable;
+    }
+
+    public AttributeTableImpl getGraphTable() {
+        return graphTable;
     }
 
     public AttributeTableImpl getEdgeTable() {

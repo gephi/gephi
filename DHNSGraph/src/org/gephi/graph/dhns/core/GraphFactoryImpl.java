@@ -45,6 +45,7 @@ import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeRowFactory;
 import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.EdgeData;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphFactory;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeData;
@@ -89,6 +90,13 @@ public class GraphFactoryImpl implements GraphFactory {
             return null;
         }
         return attributesFactory.newEdgeRow(edgeData);
+    }
+    
+    public AttributeRow newGraphAttributes(Graph graph) {
+        if (attributesFactory == null) {
+            return null;
+        }
+        return attributesFactory.newGraphRow(graph);
     }
 
     public TextData newTextData() {

@@ -41,6 +41,8 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.graph.dhns.graph;
 
+import org.gephi.data.attributes.api.AttributeRow;
+import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.ImmutableTreeNode;
@@ -64,7 +66,8 @@ import org.gephi.graph.dhns.utils.TreeNodeWrapper;
  */
 public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements HierarchicalGraph {
 
-    protected Predicate<AbstractNode> enabledNodePredicate;
+    protected final Predicate<AbstractNode> enabledNodePredicate;
+    protected final AttributeRow attributeRow;
 
     public HierarchicalGraphImpl(Dhns dhns, GraphViewImpl view) {
         super(dhns, view);
@@ -74,6 +77,7 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
                 return element.isEnabled();
             }
         };
+        this.attributeRow = dhns.factory().newGraphAttributes(this);
     }
 
     public abstract HierarchicalGraphImpl copy(Dhns dhns, GraphViewImpl view);
@@ -432,5 +436,9 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
 
     public void flatten() {
         view.getStructureModifier().flatten();
+    }
+
+    public Attributes getAttributes() {
+        return attributeRow;
     }
 }

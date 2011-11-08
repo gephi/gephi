@@ -41,10 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.graph.dhns.graph;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.SwingUtilities;
+import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
@@ -66,7 +63,7 @@ public abstract class AbstractGraphImpl {
     protected final Dhns dhns;
     protected final GraphViewImpl view;
     protected final TreeStructure structure;
-
+    
     public AbstractGraphImpl(Dhns dhns, GraphViewImpl view) {
         this.dhns = dhns;
         this.view = view;

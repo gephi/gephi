@@ -42,7 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.graph.api;
 
 /**
- * Attributable is an interface for graph elements (i.e. nodes and egdes) and
+ * Attributable is an interface for graph elements (i.e. nodes and edges) and
  * represent the ability to carry attribute values.
  * 
  * @author Mathieu Bastian
