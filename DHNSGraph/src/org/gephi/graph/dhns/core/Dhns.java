@@ -105,7 +105,6 @@ public class Dhns implements GraphModel {
         graphVersion = new GraphVersion();
         eventManager = new EventManager(this);
         settingsManager = new SettingsManager(this);
-        graphStructure = new GraphStructure(this);
         duplicateManager = new DuplicateManager(this);
 
         eventManager.start();
@@ -119,6 +118,8 @@ public class Dhns implements GraphModel {
             }
         }
         factory = new GraphFactoryImpl(controller.getIDGen(), attributeRowFactory);
+
+        graphStructure = new GraphStructure(this);
 
         init();
     }
@@ -209,9 +210,9 @@ public class Dhns implements GraphModel {
         }
         return false;
     }
-    
+
     public void conditionalWriteUnlock(boolean locked) {
-        if(locked) {
+        if (locked) {
             readWriteLock.writeLock().unlock();
         }
     }
