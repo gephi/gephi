@@ -94,7 +94,7 @@ public class AttributeContollerImpl implements AttributeController {
         }
     }
 
-    public AttributeModel getModel() {
+    public synchronized AttributeModel getModel() {
         Workspace workspace = projectController.getCurrentWorkspace();
         if (workspace != null) {
             AttributeModel model = workspace.getLookup().lookup(AttributeModel.class);
@@ -108,7 +108,7 @@ public class AttributeContollerImpl implements AttributeController {
         return null;
     }
 
-    public AttributeModel getModel(Workspace workspace) {
+    public synchronized AttributeModel getModel(Workspace workspace) {
         AttributeModel model = workspace.getLookup().lookup(AttributeModel.class);
         if (model != null) {
             return model;
