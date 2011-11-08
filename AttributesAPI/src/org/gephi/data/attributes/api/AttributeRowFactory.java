@@ -43,6 +43,7 @@ package org.gephi.data.attributes.api;
 
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.NodeData;
 
 /**
@@ -75,7 +76,7 @@ public interface AttributeRowFactory {
      * @return  a newly created row for the graph table
      * @see     AttributeModel#getGraphTable()
      */
-    public AttributeRow newGraphRow(Graph graph);
+    public AttributeRow newGraphRow(GraphView graphView);
 
     /**
      * Returns a new row for the given <code>tableName</code>, or <code>null</code>

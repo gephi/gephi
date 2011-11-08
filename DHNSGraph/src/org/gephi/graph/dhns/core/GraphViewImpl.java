@@ -38,10 +38,11 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.graph.dhns.core;
 
 import java.util.WeakHashMap;
+import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.dhns.graph.AbstractGraphImpl;
 
@@ -55,6 +56,7 @@ public class GraphViewImpl implements GraphView {
     private final int viewId;
     private final TreeStructure structure;
     private final StructureModifier structureModifier;
+    private final AttributeRow attributeRow;
     private int nodesEnabled;
     private int edgesCountTotal;
     private int mutualEdgesTotal;
@@ -70,6 +72,7 @@ public class GraphViewImpl implements GraphView {
         this.viewId = viewId;
         this.structure = new TreeStructure(this);
         this.structureModifier = new StructureModifier(dhns, this);
+        this.attributeRow = dhns.factory().newGraphAttributes(this);
     }
 
     public void addGraphReference(AbstractGraphImpl graph) {
@@ -220,5 +223,9 @@ public class GraphViewImpl implements GraphView {
 
     public Dhns getGraphModel() {
         return dhns;
+    }
+    
+    public AttributeRow getAttributes() {
+        return attributeRow;
     }
 }

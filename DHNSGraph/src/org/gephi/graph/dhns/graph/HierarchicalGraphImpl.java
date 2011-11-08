@@ -67,8 +67,7 @@ import org.gephi.graph.dhns.utils.TreeNodeWrapper;
 public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements HierarchicalGraph {
 
     protected final Predicate<AbstractNode> enabledNodePredicate;
-    protected final AttributeRow attributeRow;
-
+    
     public HierarchicalGraphImpl(Dhns dhns, GraphViewImpl view) {
         super(dhns, view);
         enabledNodePredicate = new Predicate<AbstractNode>() {
@@ -77,7 +76,6 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
                 return element.isEnabled();
             }
         };
-        this.attributeRow = dhns.factory().newGraphAttributes(this);
     }
 
     public abstract HierarchicalGraphImpl copy(Dhns dhns, GraphViewImpl view);
@@ -439,6 +437,6 @@ public abstract class HierarchicalGraphImpl extends AbstractGraphImpl implements
     }
 
     public Attributes getAttributes() {
-        return attributeRow;
+        return view.getAttributes();
     }
 }
