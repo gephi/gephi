@@ -61,15 +61,15 @@
                               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                               <Component id="jCheckBoxMessageInclude1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jTextFieldMessageInclude1" pref="101" max="32767" attributes="0"/>
+                              <Component id="jTextFieldMessageInclude1" pref="163" max="32767" attributes="0"/>
                           </Group>
                           <Component id="jRadioButtonHasNoAtta" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jRadioButtonHasNoBcc" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jRadioButtonHasNoCc" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Component id="jPanel3" alignment="0" max="32767" attributes="1"/>
                   <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="jPanel3" alignment="1" max="32767" attributes="1"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -83,7 +83,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel1" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel3" min="-2" pref="61" max="-2" attributes="0"/>
+              <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jCheckBoxSubjectInclude" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -136,12 +136,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jCheckBoxEmailAddrFilter" alignment="0" max="32767" attributes="1"/>
+              <Component id="jCheckBoxEmailAddrFilter" alignment="0" pref="657" max="32767" attributes="1"/>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="importCSVButton" min="-2" max="-2" attributes="0"/>
               </Group>
-              <Component id="jScrollPane1" alignment="0" pref="555" max="32767" attributes="1"/>
+              <Component id="jScrollPane1" alignment="0" pref="657" max="32767" attributes="1"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -149,7 +149,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="jCheckBoxEmailAddrFilter" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="51" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="56" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="importCSVButton" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -225,7 +225,7 @@
                   <Component id="jCheckBoxDayBefore" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                   <Component id="jPanelDayBefore" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="1"/>
+                  <EmptySpace pref="81" max="32767" attributes="1"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -238,7 +238,7 @@
                       <Component id="jPanelDayAfter" alignment="1" pref="19" max="32767" attributes="1"/>
                       <Component id="jCheckBoxDayBefore" alignment="0" pref="19" max="32767" attributes="1"/>
                   </Group>
-                  <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
