@@ -107,7 +107,7 @@ public class DHNSSerializer {
 
         for (GraphViewImpl view : dhns.getGraphStructure().getViews()) {
             if (view != dhns.getGraphStructure().getMainView()) {
-                writeGraphView(writer, view);
+//                writeGraphView(writer, view);
             }
         }
 
@@ -142,7 +142,7 @@ public class DHNSSerializer {
                 } else if (ELEMENT_EDGES.equalsIgnoreCase(name)) {
                     readEdges(reader, dhns.getGraphStructure(), dhns.factory());
                 } else if (ELEMENT_VIEW.equalsIgnoreCase(name)) {
-                    readGraphView(reader, dhns.getGraphStructure());
+//                    readGraphView(reader, dhns.getGraphStructure());
                 }
             } else if (eventType.equals(XMLStreamReader.END_ELEMENT)) {
                 if (ELEMENT_DHNS.equalsIgnoreCase(reader.getLocalName())) {
