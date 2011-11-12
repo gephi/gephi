@@ -1,5 +1,7 @@
 # Gephi - The Open Graph Viz Platorm
 
+## Performance, Usability and Modularity
+
 [Gephi](http://gephi.org) is an open-source platform for visualizing and manipulating large graphs. It runs on Windows, Mac OS X and Linux. Localization is available in French, Spanish, Japanese and Brazilian Portuguese.
 
 - **Fast** Powered by a built-in OpenGL engine, Gephi is pushing the envelope on very large networks. Visualize networks up to a million elements. All actions (e.g. layout, filter, drag) run in real-time.
@@ -22,14 +24,16 @@ If you run into any trouble or have questions consult our [forum](http://forum.g
 
 Gephi is developed in Java and use OpenGL for its visualization engine. Built on the top of Netbeans Platform, it follows a loosely-coupled, modular architecture philosophy. That permits to build large applications and make it grow in a sustainable way. Gephi is spitted into modules, which depend on each other through well-written APIs. Plugins are allowed to reuse existing APIs, create new services and even replace a default implementation by a new one.
 
-- [**Javadoc**](http://gephi.org/docs)
+Consult the [**Javadoc**](http://gephi.org/docs) for an overview of the APIs.
 
 ### Checkout and Build the sources
 
 - Fork the repository and clone
+
     git clone git@github.com:username/gephi.git
 
 - Run ant or [open the project in Netbeans](http://wiki.gephi.org/index.php/Build_Gephi)
+
     ant
 
 ### Create Plug-ins
@@ -51,6 +55,7 @@ The project packagea essential modules (Graph, Layout, Filters, IO…) in a stan
 - [Download](http://gephi.org/toolkit/)
 
 - Build from the Gephi sources
+
     ant toolkit
 
 - [Javadoc](http://gephi.org/docs/toolkit/)
