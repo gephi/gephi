@@ -1,6 +1,4 @@
-# Gephi - The Open Graph Viz Platorm
-
-## Performance, Usability and Modularity
+## Gephi - The Open Graph Viz Platorm
 
 [Gephi](http://gephi.org) is an open-source platform for visualizing and manipulating large graphs. It runs on Windows, Mac OS X and Linux. Localization is available in French, Spanish, Japanese and Brazilian Portuguese.
 
@@ -30,11 +28,11 @@ Consult the [**Javadoc**](http://gephi.org/docs) for an overview of the APIs.
 
 - Fork the repository and clone
 
-    git clone git@github.com:username/gephi.git
+	git clone git@github.com:username/gephi.git
 
 - Run ant or [open the project in Netbeans](http://wiki.gephi.org/index.php/Build_Gephi)
 
-    ant
+	ant
 
 ### Create Plug-ins
 
@@ -56,7 +54,7 @@ The project packagea essential modules (Graph, Layout, Filters, IO…) in a stan
 
 - Build from the Gephi sources
 
-    ant toolkit
+	ant toolkit
 
 - [Javadoc](http://gephi.org/docs/toolkit/)
 
