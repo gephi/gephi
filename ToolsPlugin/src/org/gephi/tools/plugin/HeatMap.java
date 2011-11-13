@@ -44,6 +44,8 @@ package org.gephi.tools.plugin;
 import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -153,7 +155,7 @@ public class HeatMap implements Tool {
                     n.getNodeData().setColor(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f);
                     heatMapPanel.setStatus(NbBundle.getMessage(HeatMap.class, "HeatMap.status.maxdistance") + new DecimalFormat("#.##").format(algorithm.getMaxDistance()));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Logger.getLogger("").log(Level.SEVERE, "", e);
                 }
             }
         };
