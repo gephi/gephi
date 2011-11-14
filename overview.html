@@ -13,6 +13,11 @@
         <hr/>
         <h2>API Changes</h2>
         <ul>
+			<li>(November 07 2011) Add a <code>getGraphTable()</code> in the <code>AttributeModel</code>. The <code>GraphView</code> elements
+				can also have attributes using the same system as nodes and egdes. The data can be accessed through the <code>Graph.getAttributes()</code>
+				method.
+			<li>(October 18 2011) Changes in the <code>DesktopPerspective</code> SPI. Modules willing to declare a panel part of a perspective
+				should implement the <code>PerspectiveMember</code> interface. The interface now asks for the TopComponent's ID.
             <li>(September 01 2011) Complete rewrite of the Preview API with a new SPI which allows to extend the Preview with new renderers, item
                 builders or render targets. The API also now offers better customization through a central property system and is optimized for
                 external applications as well. The API is also now considered as stable.</li>
