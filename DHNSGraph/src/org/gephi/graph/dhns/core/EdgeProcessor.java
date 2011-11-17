@@ -158,7 +158,7 @@ public class EdgeProcessor {
             while (edgeIterator.hasNext()) {
                 AbstractEdge edge = edgeIterator.next();
                 AbstractNode source = edge.getSource(viewId);
-                if (!edge.isSelfLoop() && node.getEdgesOutTree().hasNeighbour(source)) {
+                if (!edge.isSelfLoop() && node.getMetaEdgesOutTree().hasNeighbour(source)) {
                     node.decMutualMetaEdgeDegree();
                     source.decMutualMetaEdgeDegree();
                     view.decMutualMetaEdgesTotal(1);
@@ -192,7 +192,7 @@ public class EdgeProcessor {
                 int targetPre = target.getPre();
                 if (targetPre >= rangeStart && targetPre <= rangeLimit) {
                     //The meta edge has to be removed because it's in the range
-                    if (!metaEdge.isSelfLoop() && target.getEdgesInTree().hasNeighbour(enabledNode)) {
+                    if (!metaEdge.isSelfLoop() && target.getMetaEdgesOutTree().hasNeighbour(enabledNode)) {
                         enabledNode.decMutualMetaEdgeDegree();
                         target.decMutualMetaEdgeDegree();
                         view.decMutualMetaEdgesTotal(1);
@@ -343,7 +343,7 @@ public class EdgeProcessor {
         MetaEdgeImpl newEdge = dhns.factory().newMetaEdge(source, target);
         source.getMetaEdgesOutTree().add(newEdge);
         target.getMetaEdgesInTree().add(newEdge);
-        if (!newEdge.isSelfLoop() && target.getEdgesInTree().hasNeighbour(source)) {
+        if (!newEdge.isSelfLoop() && target.getMetaEdgesOutTree().hasNeighbour(source)) {
             source.incMutualMetaEdgeDegree();
             target.incMutualMetaEdgeDegree();
             view.incMutualMetaEdgesTotal(1);
@@ -447,6 +447,10 @@ public class EdgeProcessor {
                 edgeIterator.remove();
                 source.getMetaEdgesOutTree().remove((MetaEdgeImpl) edge);
                 view.decMetaEdgesCount(1);
+                
+                if(node.getMetaEdgesOutTree().hasNeighbour(source)) {
+                    source.decMutualMetaEdgeDegree();
+                }
 
                 if (!node.getEdgesInTree().hasNeighbour(source)) {
                     AbstractEdge realEdge = dhns.factory().newEdge(source, node, edge.getWeight(), edge.isDirected());
@@ -543,11 +547,11 @@ public class EdgeProcessor {
         for (edgeIterator.setNode(disabledNode.getEdgesOutTree()); edgeIterator.hasNext();) {
             AbstractEdge edge = edgeIterator.next();
             AbstractNode target = edge.getTarget(view.getViewId());
-            if (target.isEnabled() || (parent != null && target.parent == parent)) {
+            if (target.isEnabled() || (parent != null && target.parent == parent) || edge.isSelfLoop()) {
                 target.decEnabledInDegree();
                 disabledNode.decEnabledOutDegree();
                 view.decEdgesCountEnabled(1);
-                if (target.getEdgesOutTree().hasNeighbour(disabledNode) && (parent == null || (parent != null && target.parent == parent && target.getId() < disabledNode.getId()))) {
+                if (target.getEdgesOutTree().hasNeighbour(disabledNode) && (parent == null || (parent != null && target.parent == parent && target.getId() < disabledNode.getId())) && !edge.isSelfLoop()) {
                     target.decEnabledMutualDegree();
                     disabledNode.decEnabledMutualDegree();
                     view.decMutualEdgesEnabled(1);

@@ -175,7 +175,7 @@ public class HierarchicalDirectedGraphImpl extends HierarchicalGraphImpl impleme
     //ClusteredGraph
     public EdgeIterable getEdgesTree() {
         readLock();
-        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, true, Tautology.instance), false, Tautology.instance, Tautology.instance));
+        return dhns.newEdgeIterable(new EdgeIterator(structure, new TreeIterator(structure, false, Tautology.instance), false, Tautology.instance, Tautology.instance));
     }
 
     //Directed
