@@ -44,12 +44,23 @@ package org.gephi.io.database.drivers;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class MySQLDriver implements SQLDriver {
+public class TeradataDriver implements SQLDriver {
+
+    public TeradataDriver() {
+        try {
+            // load the teradata using the current class loader
+            Class.forName("com.teradata.jdbc.TeraDriver");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SQLiteDriver.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public Connection getConnection(String connectionUrl, String username, String passwd) throws SQLException {
         return DriverManager.getConnection(connectionUrl, username, passwd);
@@ -57,18 +68,18 @@ public class MySQLDriver implements SQLDriver {
 
     @Override
     public String getPrefix() {
-        return "mysql";
+        return "teradata";
     }
 
     @Override
     public String toString() {
-        return "MySQL";
+        return "Teradata";
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof MySQLDriver) {
-            return ((MySQLDriver) obj).getPrefix().equals(getPrefix());
+        if (obj instanceof TeradataDriver) {
+            return ((TeradataDriver) obj).getPrefix().equals(getPrefix());
         } else {
             return false;
         }
