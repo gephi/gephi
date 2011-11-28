@@ -185,8 +185,9 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
                 sketch.registerPre(processingListener);
                 sketchPanel.add(sketch, BorderLayout.CENTER);
             }
-        } else if (previewUIModel == null && target != null) {
+        } else if (previewUIModel == null) {
             sketchPanel.remove(sketch);
+            target=null;
         }
     }
 
