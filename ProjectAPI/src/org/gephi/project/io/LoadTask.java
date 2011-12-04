@@ -100,7 +100,7 @@ public class LoadTask implements LongTask, Runnable {
                     System.out.println("Error:" + errorType + ", message : " + message);
                 }
             });
-            InputStreamReader isReader = new InputStreamReader(fileObject.getInputStream());
+            InputStreamReader isReader = new InputStreamReader(fileObject.getInputStream(), "UTF-8");
             Xml10FilterReader filterReader = new Xml10FilterReader(isReader);
             XMLStreamReader reader = inputFactory.createXMLStreamReader(filterReader);
 
