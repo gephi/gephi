@@ -41,18 +41,14 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.preview.propertyeditors;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.beans.PropertyEditorSupport;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.gephi.preview.types.DependantColor;
+import org.gephi.preview.types.propertyeditors.BasicDependantColorPropertyEditor;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class DependantColorPropertyEditor extends PropertyEditorSupport {
+public class DependantColorPropertyEditor extends BasicDependantColorPropertyEditor {
 
     @Override
     public Component getCustomEditor() {
@@ -62,48 +58,7 @@ public class DependantColorPropertyEditor extends PropertyEditorSupport {
     }
 
     @Override
-    public String getAsText() {
-        DependantColor c = (DependantColor) getValue();
-        if (c.getMode().equals(DependantColor.Mode.CUSTOM)) {
-            Color color = c.getCustomColor() == null ? Color.BLACK : c.getCustomColor();
-            return String.format(
-                    "%s [%d,%d,%d]",
-                    c.getMode().name().toLowerCase(),
-                    color.getRed(),
-                    color.getGreen(),
-                    color.getBlue());
-        } else {
-            return c.getMode().name().toLowerCase();
-        }
-    }
-
-    @Override
-    public void setAsText(String s) {
-
-        if (matchColorMode(s, DependantColor.Mode.CUSTOM.name().toLowerCase())) {
-            Pattern p = Pattern.compile("\\w+\\s*\\[\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\]");
-            Matcher m = p.matcher(s);
-            if (m.lookingAt()) {
-                int r = Integer.valueOf(m.group(1));
-                int g = Integer.valueOf(m.group(2));
-                int b = Integer.valueOf(m.group(3));
-
-                setValue(new DependantColor(new Color(r, g, b)));
-            }
-        } else if (matchColorMode(s, DependantColor.Mode.PARENT.name().toLowerCase())) {
-            setValue(new DependantColor());
-        }
-    }
-
-    @Override
     public boolean supportsCustomEditor() {
         return true;
-    }
-
-    private boolean matchColorMode(String s, String identifier) {
-        String regexp = String.format("\\s*%s\\s*", identifier);
-        Pattern p = Pattern.compile(regexp);
-        Matcher m = p.matcher(s);
-        return m.lookingAt();
     }
 }

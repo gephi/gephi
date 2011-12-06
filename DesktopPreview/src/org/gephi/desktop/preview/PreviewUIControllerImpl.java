@@ -154,6 +154,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
         previewController = Lookup.getDefault().lookup(PreviewController.class);
 
         //Register editors
+        //Overriding default Preview API basic editors that don't support CustomEditor
         PropertyEditorManager.registerEditor(EdgeColor.class, EdgeColorPropertyEditor.class);
         PropertyEditorManager.registerEditor(DependantOriginalColor.class, DependantOriginalColorPropertyEditor.class);
         PropertyEditorManager.registerEditor(DependantColor.class, DependantColorPropertyEditor.class);

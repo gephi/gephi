@@ -59,6 +59,12 @@ import org.gephi.preview.api.PreviewProperties;
 import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.presets.DefaultPreset;
 import org.gephi.preview.spi.Renderer;
+import org.gephi.preview.types.DependantColor;
+import org.gephi.preview.types.DependantOriginalColor;
+import org.gephi.preview.types.EdgeColor;
+import org.gephi.preview.types.propertyeditors.BasicDependantColorPropertyEditor;
+import org.gephi.preview.types.propertyeditors.BasicDependantOriginalColorPropertyEditor;
+import org.gephi.preview.types.propertyeditors.BasicEdgeColorPropertyEditor;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
@@ -82,6 +88,23 @@ public class PreviewModelImpl implements PreviewModel {
         typeMap = new HashMap<String, List<Item>>();
         sourceMap = new HashMap<Object, Object>();
         this.workspace = workspace;
+        
+        initBasicPropertyEditors();
+    }
+    
+    /**
+     * Makes sure that, at least, basic property editors are available for serializing and deserializing
+     */
+    private void initBasicPropertyEditors(){
+        if (PropertyEditorManager.findEditor(DependantColor.class) == null) {
+            PropertyEditorManager.registerEditor(DependantColor.class, BasicDependantColorPropertyEditor.class);
+        }
+        if (PropertyEditorManager.findEditor(DependantOriginalColor.class) == null) {
+            PropertyEditorManager.registerEditor(DependantOriginalColor.class, BasicDependantOriginalColorPropertyEditor.class);
+        }
+        if (PropertyEditorManager.findEditor(EdgeColor.class) == null) {
+            PropertyEditorManager.registerEditor(EdgeColor.class, BasicEdgeColorPropertyEditor.class);
+        }
     }
     
     private synchronized void initProperties() {
