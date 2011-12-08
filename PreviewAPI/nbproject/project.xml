@@ -152,8 +152,8 @@
                 <package>org.gephi.preview.api</package>
                 <package>org.gephi.preview.presets</package>
                 <package>org.gephi.preview.spi</package>
-                <package>org.gephi.preview.targets</package>
                 <package>org.gephi.preview.types</package>
+                <package>org.gephi.preview.types.propertyeditors</package>
             </public-packages>
         </data>
     </configuration>
