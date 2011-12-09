@@ -96,6 +96,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
     private GraphModel graphModel = null;
 
     public PreviewUIControllerImpl() {
+        previewController = Lookup.getDefault().lookup(PreviewController.class);
         listeners = new ArrayList<PropertyChangeListener>();
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         graphController = Lookup.getDefault().lookup(GraphController.class);
@@ -117,6 +118,10 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
                 if (model == null) {
                     model = new PreviewUIModelImpl();
                     workspace.add(model);
+                }
+                Float visibilityRatio = previewController.getModel().getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
+                if (visibilityRatio != null) {
+                    ((PreviewUIModelImpl) model).setVisibilityRatio(visibilityRatio);
                 }
                 fireEvent(SELECT, model);
             }
@@ -147,11 +152,13 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
                 model = new PreviewUIModelImpl();
                 pc.getCurrentWorkspace().add(model);
             }
+            Float visibilityRatio = previewController.getModel().getProperties().getFloatValue(PreviewProperty.VISIBILITY_RATIO);
+            if (visibilityRatio != null) {
+                ((PreviewUIModelImpl) model).setVisibilityRatio(visibilityRatio);
+            }
             graphModel = graphController.getModel();
             graphModel.addGraphListener(this);
         }
-
-        previewController = Lookup.getDefault().lookup(PreviewController.class);
 
         //Register editors
         //Overriding default Preview API basic editors that don't support CustomEditor

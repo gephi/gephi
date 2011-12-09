@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Container for {@link PreviewProperty} attached to a {@link PreviewModel}.
@@ -255,6 +256,14 @@ public class PreviewProperties {
         }
         return defaultValue;
     }
+    
+    /**
+     * Return all simple values.
+     * @return all simple values
+     */
+    public Set<Entry<String, Object>> getSimpleValues(){
+        return simpleValues.entrySet();
+    }    
 
     /**
      * Returns all properties.

@@ -176,6 +176,10 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
         // inits the preview applet
         if (previewUIModel != null && target == null) {
             PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+            Color background = previewController.getModel().getProperties().getColorValue(PreviewProperty.BACKGROUND_COLOR);
+            if (background != null) {
+                setBackgroundColor(background);
+            }
 
             target = (ProcessingTarget) previewController.getRenderTarget(RenderTarget.PROCESSING_TARGET);
             if (target != null) {
@@ -187,7 +191,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
             }
         } else if (previewUIModel == null) {
             sketchPanel.remove(sketch);
-            target=null;
+            target = null;
         }
     }
 

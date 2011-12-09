@@ -48,8 +48,10 @@ import java.beans.PropertyEditorManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -66,6 +68,7 @@ import org.gephi.preview.types.propertyeditors.BasicDependantColorPropertyEditor
 import org.gephi.preview.types.propertyeditors.BasicDependantOriginalColorPropertyEditor;
 import org.gephi.preview.types.propertyeditors.BasicEdgeColorPropertyEditor;
 import org.gephi.project.api.Workspace;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -73,7 +76,7 @@ import org.openide.util.Lookup;
  * @author Mathieu Bastian
  */
 public class PreviewModelImpl implements PreviewModel {
-    
+
     private final Workspace workspace;
     //Items
     private final Map<String, List<Item>> typeMap;
@@ -83,19 +86,19 @@ public class PreviewModelImpl implements PreviewModel {
     //Dimensions
     private Dimension dimensions;
     private Point topLeftPosition;
-    
+
     public PreviewModelImpl(Workspace workspace) {
         typeMap = new HashMap<String, List<Item>>();
         sourceMap = new HashMap<Object, Object>();
         this.workspace = workspace;
-        
+
         initBasicPropertyEditors();
     }
-    
+
     /**
      * Makes sure that, at least, basic property editors are available for serializing and deserializing
      */
-    private void initBasicPropertyEditors(){
+    private void initBasicPropertyEditors() {
         if (PropertyEditorManager.findEditor(DependantColor.class) == null) {
             PropertyEditorManager.registerEditor(DependantColor.class, BasicDependantColorPropertyEditor.class);
         }
@@ -106,7 +109,7 @@ public class PreviewModelImpl implements PreviewModel {
             PropertyEditorManager.registerEditor(EdgeColor.class, BasicEdgeColorPropertyEditor.class);
         }
     }
-    
+
     private synchronized void initProperties() {
         if (properties == null) {
             properties = new PreviewProperties();
@@ -126,13 +129,13 @@ public class PreviewModelImpl implements PreviewModel {
             properties.putValue(PreviewProperty.VISIBILITY_RATIO, 1f);
         }
     }
-    
+
     @Override
     public PreviewProperties getProperties() {
         initProperties();
         return properties;
     }
-    
+
     @Override
     public Item[] getItems(String type) {
         List<Item> list = typeMap.get(type);
@@ -141,7 +144,7 @@ public class PreviewModelImpl implements PreviewModel {
         }
         return new Item[0];
     }
-    
+
     @Override
     public Item getItem(String type, Object source) {
         Item[] items = getItems(source);
@@ -152,7 +155,7 @@ public class PreviewModelImpl implements PreviewModel {
         }
         return null;
     }
-    
+
     @Override
     public Item[] getItems(Object source) {
         Object value = sourceMap.get(source);
@@ -163,11 +166,11 @@ public class PreviewModelImpl implements PreviewModel {
         }
         return new Item[0];
     }
-    
+
     public String[] getItemTypes() {
         return typeMap.keySet().toArray(new String[0]);
     }
-    
+
     public void loadItems(String type, Item[] items) {
         //Add to type map
         List<Item> typeList = typeMap.get(type);
@@ -213,37 +216,37 @@ public class PreviewModelImpl implements PreviewModel {
             }
         }
     }
-    
+
     private Item mergeItems(Item item, Item toBeMerged) {
         for (String key : toBeMerged.getKeys()) {
             item.setData(key, toBeMerged.getData(key));
         }
         return item;
     }
-    
+
     public void clear() {
         typeMap.clear();
         sourceMap.clear();
     }
-    
+
     public Workspace getWorkspace() {
         return workspace;
     }
-    
+
     @Override
     public Dimension getDimensions() {
         return dimensions;
     }
-    
+
     @Override
     public Point getTopLeftPosition() {
         return topLeftPosition;
     }
-    
+
     public void setDimensions(Dimension dimensions) {
         this.dimensions = dimensions;
     }
-    
+
     public void setTopLeftPosition(Point topLeftPosition) {
         this.topLeftPosition = topLeftPosition;
     }
@@ -251,7 +254,8 @@ public class PreviewModelImpl implements PreviewModel {
     //PERSISTENCE
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
         writer.writeStartElement("previewmodel");
-        
+
+        //Write PreviewProperties:
         for (PreviewProperty property : properties.getProperties()) {
             String propertyName = property.getName();
             Object propertyValue = property.getValue();
@@ -266,40 +270,84 @@ public class PreviewModelImpl implements PreviewModel {
                 }
             }
         }
-        
+
+        //Write preview simple values:
+        Iterator<Entry<String, Object>> simpleValuesIterator = properties.getSimpleValues().iterator();
+        while (simpleValuesIterator.hasNext()) {
+            Entry<String, Object> simpleValueEntry;
+            simpleValueEntry = simpleValuesIterator.next();
+
+            Object value = simpleValueEntry.getValue();
+            if (value != null) {
+                Class clazz = value.getClass();
+                PropertyEditor editor = PropertyEditorManager.findEditor(clazz);
+                if (editor != null) {
+                    writer.writeStartElement("previewsimplevalue");
+                    writer.writeAttribute("name", simpleValueEntry.getKey());
+                    writer.writeAttribute("class", clazz.getName());
+                    editor.setValue(value);
+                    writer.writeCharacters(editor.getAsText());
+                    writer.writeEndElement();
+                }
+            }
+        }
+
         writer.writeEndElement();
     }
-    
+
     public void readXML(XMLStreamReader reader) throws XMLStreamException {
         PreviewProperties props = getProperties();
-        
+
         String propName = null;
-        
+        boolean isSimpleValue = false;
+        String simpleValueClass = null;
+
         boolean end = false;
         while (reader.hasNext() && !end) {
             int type = reader.next();
-            
+
             switch (type) {
                 case XMLStreamReader.START_ELEMENT:
                     String name = reader.getLocalName();
                     if ("previewproperty".equalsIgnoreCase(name)) {
                         propName = reader.getAttributeValue(null, "name");
+                        isSimpleValue = false;
+                    } else if ("previewsimplevalue".equalsIgnoreCase(name)) {
+                        propName = reader.getAttributeValue(null, "name");
+                        simpleValueClass = reader.getAttributeValue(null, "class");
+                        isSimpleValue = true;
                     }
                     break;
                 case XMLStreamReader.CHARACTERS:
                     if (!reader.isWhiteSpace()) {
                         if (propName != null) {
-                            PreviewProperty p = props.getProperty(propName);
-                            if (p != null) {
-                                PropertyEditor editor = PropertyEditorManager.findEditor(p.getType());
-                                if (editor != null) {
-                                    editor.setAsText(reader.getText());
-                                    if (editor.getValue() != null) {
-                                        try {
-                                            p.setValue(editor.getValue());
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
+                            if (!isSimpleValue) {//Read PreviewProperty:
+                                PreviewProperty p = props.getProperty(propName);
+                                if (p != null) {
+                                    PropertyEditor editor = PropertyEditorManager.findEditor(p.getType());
+                                    if (editor != null) {
+                                        editor.setAsText(reader.getText());
+                                        if (editor.getValue() != null) {
+                                            try {
+                                                p.setValue(editor.getValue());
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
                                         }
+                                    }
+                                }
+                            } else {//Read preview simple value:
+                                if (simpleValueClass != null) {
+                                    try {
+                                        PropertyEditor editor = PropertyEditorManager.findEditor(Class.forName(simpleValueClass));
+                                        if (editor != null) {
+                                            editor.setAsText(reader.getText());
+                                            if (editor.getValue() != null) {
+                                                props.putValue(propName, editor.getValue());
+                                            }
+                                        }
+                                    } catch (ClassNotFoundException e) {
+                                        e.printStackTrace();
                                     }
                                 }
                             }

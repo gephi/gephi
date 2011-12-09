@@ -42,11 +42,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.preview;
 
 import org.gephi.desktop.preview.api.PreviewUIModel;
-import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewPreset;
-import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.presets.DefaultPreset;
-import org.openide.util.Lookup;
 
 /**
  *
