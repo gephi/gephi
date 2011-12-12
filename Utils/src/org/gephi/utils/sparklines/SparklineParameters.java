@@ -51,19 +51,27 @@ import java.awt.Color;
  * <li>Color for the background of the graphic. White by default if null</li>
  * <li>Highlight colors for min and max values, null (no highlight) by default</li>
  * <li>Highlight colors for a value closest to the given x pixel position(<code>higlightedValueXPosition</code>), magenta by default if null and <code>higlightedValueXPosition</code> is not null</li>
- * <li>Highlighted value text color, used if <code>higlightedValueXPosition</code> is provided</li>
+ * <li>Highlighted value text color, used if <code>higlightedValueXPosition</code> is provided. By default (x,y) values are shown, use <code>highlightTextMode</code> to control this.</li>
  * <li>Highlighted value text box color, used if <code>higlightedValueXPosition</code> and <code>highlightTextColor</code> are provided</li>
  * </ul>
  * Several constructors are provided for various use cases.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class SparklineParameters {
+    
+    enum HighlightTextMode {
+        X_VALUES,
+        Y_VALUES,
+        X_AND_Y_VALUES;
+    }
 
     public static final Color DEFAULT_LINE_COLOR = Color.BLUE;
     public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
     public static final Color DEFAULT_HIGHLIGHT_VALUE_COLOR = Color.MAGENTA;
     public static final Color DEFAULT_TEXT_COLOR = Color.BLACK;
     public static final Color DEFAULT_TEXT_BOX_COLOR = new Color(1, 1, 1, .75f);//Semi transparent white
+    public static final HighlightTextMode DEFAULT_HIGHLIGHT_TEXT_MODE = HighlightTextMode.X_AND_Y_VALUES;
+
     
     private int width, height;
     private Color lineColor;
@@ -73,6 +81,7 @@ public class SparklineParameters {
     private Color highligtValueColor;
     private Color highlightTextColor;
     private Color highlightTextBoxColor;
+    private HighlightTextMode highlightTextMode;
 
     /**
      * Create a simple sparkline parameters with only lines
@@ -114,12 +123,12 @@ public class SparklineParameters {
      * @param higlightMaxColor Max value highlight color or null
      */
     public SparklineParameters(int width, int height, Color lineColor, Color backgroundColor, Color higlightMinColor, Color higlightMaxColor) {
-        this(width, height, lineColor, backgroundColor, higlightMinColor, higlightMaxColor, null, null, null, null);
+        this(width, height, lineColor, backgroundColor, higlightMinColor, higlightMaxColor, null, null, null, null, null);
     }
-    
+
     /**
      * Create a sparkline parameters specifying colors for line, background, and max/min highlight colors (no highlight if null)
-     * and a x pixel position to highlight closest value with default highlight, text and text box colors.
+     * and a x pixel position to highlight closest value with default highlight text and text box colors and default <code>HighlightTextMode</code>.
      * @param width Width in pixels
      * @param height Height in pixels
      * @param lineColor Lines color
@@ -129,12 +138,12 @@ public class SparklineParameters {
      * @param higlightedValueXPosition X position in pixels to find closest value in the sparkline
      */
     public SparklineParameters(int width, int height, Color lineColor, Color backgroundColor, Color higlightMinColor, Color higlightMaxColor, Integer higlightedValueXPosition) {
-        this(width, height, lineColor, backgroundColor, higlightMinColor, higlightMaxColor, higlightedValueXPosition, null, DEFAULT_TEXT_COLOR, DEFAULT_TEXT_BOX_COLOR);
+        this(width, height, lineColor, backgroundColor, higlightMinColor, higlightMaxColor, higlightedValueXPosition, null, DEFAULT_TEXT_COLOR, DEFAULT_TEXT_BOX_COLOR, DEFAULT_HIGHLIGHT_TEXT_MODE);
     }
 
     /**
      * Create a sparkline parameters specifying colors for line, background, and max/min highlight colors (no highlight if null)
-     * and a x pixel position to highlight closest value with specific highlight, text and text box colors.
+     * and a x pixel position to highlight closest value with specific highlight text and text box colors and <code>HighlightTextMode</code>.
      * @param width Width in pixels
      * @param height Height in pixels
      * @param lineColor Lines color
@@ -145,8 +154,9 @@ public class SparklineParameters {
      * @param highligtValueColor Highlighted value color (Magenta if null)
      * @param highlightTextColor Highlighted value text color or null
      * @param highlightTextBoxColor Highlighted value text box color or null
+     * @param highlightTextMode What to show on the highlight text (x and/or y values)
      */
-    public SparklineParameters(int width, int height, Color lineColor, Color backgroundColor, Color higlightMinColor, Color higlightMaxColor, Integer higlightedValueXPosition, Color highligtValueColor, Color highlightTextColor, Color highlightTextBoxColor) {
+    public SparklineParameters(int width, int height, Color lineColor, Color backgroundColor, Color higlightMinColor, Color higlightMaxColor, Integer higlightedValueXPosition, Color highligtValueColor, Color highlightTextColor, Color highlightTextBoxColor, HighlightTextMode highlightTextMode) {
         this.width = width;
         this.height = height;
         this.lineColor = lineColor;
@@ -157,6 +167,7 @@ public class SparklineParameters {
         this.highligtValueColor = highligtValueColor;
         this.highlightTextColor = highlightTextColor;
         this.highlightTextBoxColor = highlightTextBoxColor;
+        this.highlightTextMode = highlightTextMode;
     }
 
     public Color getBackgroundColor() {
@@ -221,6 +232,14 @@ public class SparklineParameters {
 
     public void setHiglightedValueXPosition(Integer higlightedValueXPosition) {
         this.higlightedValueXPosition = higlightedValueXPosition;
+    }
+
+    public HighlightTextMode getHighlightTextMode() {
+        return highlightTextMode;
+    }
+
+    public void setHighlightTextMode(HighlightTextMode highlightTextMode) {
+        this.highlightTextMode = highlightTextMode;
     }
 
     public Color getLineColor() {

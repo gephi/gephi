@@ -150,8 +150,8 @@ public class SparklineGraph {
             g.draw(new Line2D.Double(0, height / 2f, width - 1, height / 2f));
         } else {
             if (higlightMaxColor != null || higlightMinColor != null || highlightValueColor != null) {
-                height -= HIGHLIGHT_RADIUS;//Highlight circle radius pixels less for not drawing outside bounds
-                width -= HIGHLIGHT_RADIUS;//Highlight circle radius pixels less for not drawing outside bounds
+                height -= HIGHLIGHT_RADIUS;//Highlight circle radius pixels less in order not to draw outside bounds
+                width -= HIGHLIGHT_RADIUS;//Highlight circle radius pixels less in order not to draw outside bounds
                 g.translate(HIGHLIGHT_RADIUS / 2, HIGHLIGHT_RADIUS / 2);
             }
 
@@ -210,19 +210,19 @@ public class SparklineGraph {
                     if ((higlightedValueXPosition - x0) < (x1 - x0) / 2f) {//Higlight left point
                         highlightsList.add(new HighlightParameters(x0, y0, highlightValueColor));
                         if (parameters.getHighlightTextColor() != null) {
-                            highlightedValueText = "(" + (xValues != null ? xValues[i] : i) + "," + yValues[i] + ")";
+                            highlightedValueText = buildHighlightText(parameters.getHighlightTextMode(), xValues != null ? xValues[i] : i, yValues[i]);
                         }
                     } else {//Higlight right point
                         highlightsList.add(new HighlightParameters(x1, y1, highlightValueColor));
                         if (parameters.getHighlightTextColor() != null) {
-                            highlightedValueText = "(" + (xValues != null ? xValues[i + 1] : i + 1) + "," + yValues[i + 1] + ")";
+                            highlightedValueText = buildHighlightText(parameters.getHighlightTextMode(), xValues != null ? xValues[i + 1] : i + 1, yValues[i + 1]);
                         }
                     }
                     higlightedValueXPosition = null;
                 }
             }
 
-            //Draw list of highlights at the end to always draw them on top of lines:
+            //Draw list of highlights at the end in order to always draw them on top of lines:
             for (HighlightParameters p : highlightsList) {
                 drawHighlight(g, p.x, p.y, p.color);
             }
@@ -269,6 +269,29 @@ public class SparklineGraph {
         }
 
         return max;
+    }
+
+    private static String buildHighlightText(SparklineParameters.HighlightTextMode highlightTextMode, Number x, Number y) {
+        StringBuilder sb = new StringBuilder();
+        if (highlightTextMode == null) {
+            highlightTextMode = SparklineParameters.DEFAULT_HIGHLIGHT_TEXT_MODE;
+        }
+        sb.append('(');
+        switch (highlightTextMode) {
+            case X_VALUES:
+                sb.append(x);
+                break;
+            case Y_VALUES:
+                sb.append(y);
+                break;
+            default:
+                sb.append(x);
+                sb.append(',');
+                sb.append(y);
+                break;
+        }
+        sb.append(')');
+        return sb.toString();
     }
 
     private static class HighlightParameters {
