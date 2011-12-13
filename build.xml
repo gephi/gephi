@@ -97,6 +97,10 @@
             <header>Gephi 0.8 beta Javadoc</header>
         </javadoc>
     </target>
+    
+    <target name="javadoc-zip" description="Javadoc zip" depends="javadoc">
+        <zip destfile="dist/apiindex/gephi-javadoc.zip" basedir="dist/" update="true"/>
+    </target>
 
     <target name="download-l10n-jars" description="Download Netbeans Platform Localization JARs on the website">
         <property name="l10n.url" value="http://netbeans.org/project_downloads/nblocalization/7.0/"/>
