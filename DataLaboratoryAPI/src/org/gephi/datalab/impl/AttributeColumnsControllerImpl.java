@@ -671,7 +671,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     if (edge == null) {
                         //Not from source to target but undirected and reverse?
                         edge = graph.getEdge(target, source);
-                        if(edge.isDirected()){
+                        if(edge != null && edge.isDirected()){
                             edge=null;
                         }
                     }
