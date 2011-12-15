@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.ui.propertyeditor;
 
 import java.beans.PropertyEditorSupport;
@@ -48,6 +48,7 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.api.AttributeUtils;
 import org.openide.util.Lookup;
 
 /**
@@ -63,7 +64,7 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
 
     public enum AttributeTypeClass {
 
-        ALL, NUMBER, STRING
+        ALL, NUMBER, STRING, DYNAMIC_NUMBER, ALL_NUMBER
     };
     private AttributeColumn[] columns;
     private AttributeColumn selectedColumn;
@@ -87,6 +88,10 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
                 for (AttributeColumn column : model.getNodeTable().getColumns()) {
                     if (attributeTypeClass.equals(AttributeTypeClass.NUMBER) && isNumberColumn(column)) {
                         cols.add(column);
+                    } else if (attributeTypeClass.equals(AttributeTypeClass.DYNAMIC_NUMBER) && isDynamicNumberColumn(column)) {
+                        cols.add(column);
+                    } else if (attributeTypeClass.equals(AttributeTypeClass.ALL_NUMBER) && (isDynamicNumberColumn(column) || isNumberColumn(column))) {
+                        cols.add(column);
                     } else if (attributeTypeClass.equals(AttributeTypeClass.ALL)) {
                         cols.add(column);
                     } else if (attributeTypeClass.equals(attributeTypeClass.STRING) && isStringColumn(column)) {
@@ -97,6 +102,10 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
             if (editorClass.equals(EditorClass.EDGE) || editorClass.equals(EditorClass.NODEEDGE)) {
                 for (AttributeColumn column : model.getEdgeTable().getColumns()) {
                     if (attributeTypeClass.equals(AttributeTypeClass.NUMBER) && isNumberColumn(column)) {
+                        cols.add(column);
+                    } else if (attributeTypeClass.equals(AttributeTypeClass.DYNAMIC_NUMBER) && isDynamicNumberColumn(column)) {
+                        cols.add(column);
+                    } else if (attributeTypeClass.equals(AttributeTypeClass.ALL_NUMBER) && (isDynamicNumberColumn(column) || isNumberColumn(column))) {
                         cols.add(column);
                     } else if (attributeTypeClass.equals(AttributeTypeClass.ALL)) {
                         cols.add(column);
@@ -148,15 +157,12 @@ abstract class AbstractAttributeColumnPropertyEditor extends PropertyEditorSuppo
         }
     }
 
+    public boolean isDynamicNumberColumn(AttributeColumn column) {
+        return AttributeUtils.getDefault().isDynamicNumberColumn(column);
+    }
+
     public boolean isNumberColumn(AttributeColumn column) {
-        AttributeType type = column.getType();
-        if (type == AttributeType.DOUBLE
-                || type == AttributeType.FLOAT
-                || type == AttributeType.INT
-                || type == AttributeType.LONG) {
-            return true;
-        }
-        return false;
+        return AttributeUtils.getDefault().isNumberColumn(column);
     }
 
     public boolean isStringColumn(AttributeColumn column) {
