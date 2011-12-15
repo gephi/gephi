@@ -38,28 +38,42 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.perspective.spi;
 
 import javax.swing.Icon;
 
 /**
- * Define a group of components that are showed in the banner. <b>Overview</b>, <b>Data
+ * Define a group of components which are showed in the banner. <b>Overview</b>, <b>Data
  * Laboratory</b> and <b>Preview</b> are perspectives.
- * <h3>How to add a new Perspective</h3>
- * <ol><li>Create a new module and add <b>Desktop Perspective</b> as dependency.</li>
+ * <h3>Create a new Perspective</h3>
+ * <ol><li>Create a new module and set <code>Perspective API</code>, 
+ * and <code>Lookup API</code> as dependencies.</li>
  * <li>Create a new implementation of perspective and fill methods.</li>
  * <li>Add <code>@ServiceProvider</code> annotation to your class to be found by
  * the system, like <b>@ServiceProvider(service = Perspective.class, position = 500)</b>.</li>
  * <li>Set the position to define the order of appearance, Overview is 100, Preview is 300.</li>
  * </ol>
+ * @see PerspectiveMember
  * @author Mathieu Bastian
  */
 public interface Perspective {
 
+    /**
+     * Return the name to display in the user interface.
+     * @return the perspective display name
+     */
     public String getDisplayName();
 
+    /**
+     * Return a unique identifier for this perspective.
+     * @return the name of the perspective
+     */
     public String getName();
 
+    /**
+     * Return the icon of the perspective.
+     * @return the perspective's icon, or <code>null</code>
+     */
     public Icon getIcon();
 }

@@ -52,7 +52,7 @@ import org.openide.windows.TopComponentGroup;
 import org.openide.windows.WindowManager;
 
 /**
- *
+ * 
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = PerspectiveController.class)

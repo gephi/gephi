@@ -42,16 +42,45 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.perspective.api;
 
 import org.gephi.perspective.spi.Perspective;
+import org.gephi.perspective.spi.PerspectiveMember;
 
 /**
- *
+ * Controller to manage the perspective system. A perspective is a set of panels
+ * in the user interface. 'Overview', 'Data Laboratory' and 'Preview' are the
+ * default perspectives.
+ * <p>
+ * The default perspective implementations can be found in the 'Desktop Perspective'
+ * module.
+ * <p>
+ * The property <b>org.gephi.perspective.default</b> can be added at startup to change the default starting perspective:
+ * <ul><li>org.gephi.perspective.default=OverviewGroup</li>
+ * <li>org.gephi.perspective.default=LaboratoryGroup</li>
+ * <li>org.gephi.perspective.default=PreviewGroup</li></ul>
+ * 
+ * @see Perspective
+ * @see PerspectiveMember
  * @author Mathieu Bastian
  */
 public interface PerspectiveController {
 
+    /**
+     * Returns the selected perspective or <code>null</code> if no perspective
+     * is selected. By default the 'Overview' perspective is selected.
+     * @return the currently selected perspective or <code>null</code>
+     */
     public Perspective getSelectedPerspective();
 
+    /**
+     * Returns all perspectives installed. This is equivalent to
+     * <code>Lookup.getDefault().lookupAll(Perspective.class)</code>.
+     * @return all installed perspectives
+     */
     public Perspective[] getPerspectives();
 
+    /**
+     * Switch the current perspective to the given perspective. Only one perspective
+     * can be selected at a time.
+     * @param perspective the perspective to select
+     */
     public void selectPerspective(Perspective perspective);
 }

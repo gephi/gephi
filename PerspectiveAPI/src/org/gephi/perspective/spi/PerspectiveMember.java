@@ -42,41 +42,40 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.perspective.spi;
 
 /**
- * Interface to put on <code>TopComponent</code> to say in which perspective it
- * belongs. It has an <b>open</b> and <b>close</b> method to simply say if the
- * component should open or close when asked.
- * <h3>How to set to a TopComponent</h3>
- * <ol><li>Implement this interface to the class that extends <code>TopComponent</code>.</li>
- * <li>Fill <b>open</b> and <b>close</b> methods like explain below.</li>
- * <li>Add the <code>@ServiceProvider</code> annotation to be registered in the system:</li></ol>
- * <pre>
- * <code>@ServiceProvider(service=PerspectiveMember.class)
- * public class MyTopComponent extends TopComponent implements PerpectiveMember {
- * ...
- * </pre>
- * <h3>How to code open and close methods</h3>
- * The code below attach the component to the {@link LaboratoryPerspective}, works also
- * for {@link OverviewPerspective} and {@link PreviewPerspective}:
- * <pre>
- * public boolean open(Perspective perspective) {
- *    returns perspective instanceof LaboratoryPerspective;
- * }
- * public boolean close(Perspective perspective) {
- *    returns true;
- * }
- * </pre>
+ * Interface to attach a <code>TopComponent</code> to the perspective it belongs.
+ * <p>
+ * This commands whether a panel should be visible or closed on a particular perspective.
+ * <h3>HowTo attach a TopComponent to a perspective</h3>
+ * <ol><li>Create a new class which implements the <code>PerspectiveMember</code> interface</li>
+ * <li>Implement the <code>isMemberOf()</code> method. Simply test if the given
+ * perspective is the one you want to attach the component. For default perspectives, first
+ * add a dependency to the <code>DesktopPerspective</code> module and then for instance with preview:
+ * <pre>public boolean isMemberOf(Perspective perspective) {
+ * return perspective instanceof PreviewPerspective;
+ * }</pre></li>
+ * <li>Return the unique <code>TopComponent</code> identifier for the <code>getTopComponentId()</code>
+ * method. The identifier is defined in the <code>TopComponent</code> annotations.</li>
+ * <li>Add <code>@ServiceProvider</code> annotation to your class to be found by
+ * the system, like <b>@ServiceProvider(service = PerspectiveMember.class)</b>.</li>
+ * </ol>
+ * @see Perspective
  * @author Mathieu Bastian
  */
 public interface PerspectiveMember {
 
     /**
-     * Returns <code>true</code> if this component opens when
-     * <code>perspective</code> opens.
-     * @param perspective   the perspective that is to be opened
-     * @return              <code>true</code> if this component opens,
+     * Returns <code>true</code> if the component belongs to this perspective.
+     * @param perspective the perspective to test if the component is member of
+     * @return <code>true</code> if this component is member of <code>perspective</code>,
      * <code>false</code> otherwise
      */
     public boolean isMemberOf(Perspective perspective);
 
+    /**
+     * Return the <code>TopComponent</code>'s unique identifier. This id is
+     * assigned by NetBeans when creating a new component and can be found
+     * at the top of the class, in the annotations.
+     * @return the <code>TopComponent</code> identifier.
+     */
     public String getTopComponentId();
 }

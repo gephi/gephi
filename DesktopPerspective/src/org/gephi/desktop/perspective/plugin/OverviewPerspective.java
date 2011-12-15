@@ -49,7 +49,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * Overview perspective
+ * 
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Perspective.class, position=100)
