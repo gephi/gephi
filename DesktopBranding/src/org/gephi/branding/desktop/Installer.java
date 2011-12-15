@@ -85,12 +85,12 @@ public class Installer extends ModuleInstall {
         UIManager.put("Slider.paintValue", Boolean.FALSE);
 
         //Handler
-        if (NbPreferences.forModule(Installer.class).getBoolean("CrashReporter.enabled", true)) {
+        if (System.getProperty("org.gephi.crashReporter.enabled", "true").equals("true")) {
             Logger.getLogger("").addHandler(new ReporterHandler());
         }
 
         //Memory Starvation Manager
-        if (NbPreferences.forModule(Installer.class).getBoolean("MemoryStarvationManager.enabled", true)) {
+        if (System.getProperty("org.gephiMemoryStarvationManager.enabled", "true").equals("true")) {
             MemoryStarvationManager memoryStarvationManager = new MemoryStarvationManager();
             memoryStarvationManager.startup();
         }
