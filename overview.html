@@ -13,11 +13,13 @@
         <hr/>
         <h2>API Changes</h2>
         <ul>
-			<li>(November 07 2011) Add a <code>getGraphTable()</code> in the <code>AttributeModel</code>. The <code>GraphView</code> elements
-				can also have attributes using the same system as nodes and egdes. The data can be accessed through the <code>Graph.getAttributes()</code>
-				method.
-			<li>(October 18 2011) Changes in the <code>DesktopPerspective</code> SPI. Modules willing to declare a panel part of a perspective
-				should implement the <code>PerspectiveMember</code> interface. The interface now asks for the TopComponent's ID.
+            <li>(December 14 2011) Add a new <code>PerspectiveAPI</code> module and move API/SPI interfaces from the <code>DesktopPerspective</code>
+                module. Add a <code>PerspectiveController</code> to find and manage perspectives.</li>
+            <li>(November 07 2011) Add a <code>getGraphTable()</code> in the <code>AttributeModel</code>. The <code>GraphView</code> elements
+                can also have attributes using the same system as nodes and egdes. The data can be accessed through the <code>Graph.getAttributes()</code>
+                method.
+            <li>(October 18 2011) Changes in the <code>DesktopPerspective</code> SPI. Modules willing to declare a panel part of a perspective
+                should implement the <code>PerspectiveMember</code> interface. The interface now asks for the TopComponent's ID.
             <li>(September 01 2011) Complete rewrite of the Preview API with a new SPI which allows to extend the Preview with new renderers, item
                 builders or render targets. The API also now offers better customization through a central property system and is optimized for
                 external applications as well. The API is also now considered as stable.</li>
@@ -204,6 +206,7 @@
             <li><b>Layout API</b> - Layout API/SPI provides real-time layout algorithms execution.</li>
             <li><b>LongTask API</b> - LongTask API provides utility features for long and asynchronous task execution.</li>
             <li><span class="unstable"><b>Partition API</b></span>  - API for manipulating partition within data.</li>
+            <li><b>Perspective API</b> - API/SPI for perspective management. Only related to the user interface.</li>
             <li><b>Preview API</b> - API for building the graph preview structure.</li>
             <li><b>Project API</b> - Project API/SPI for project and worskpaces manipulation.</li>
             <li><b>Ranking API</b>  - API/SPI for ranking data values and transform values in visual signs like color or size.</li>
