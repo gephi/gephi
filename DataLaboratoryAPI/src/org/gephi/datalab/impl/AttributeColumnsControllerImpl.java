@@ -668,6 +668,13 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 } else {
                     //Do not ignore repeated edge, instead increase edge weight
                     edge = graph.getEdge(source, target);
+                    if (edge == null) {
+                        //Not from source to target but undirected and reverse?
+                        edge = graph.getEdge(target, source);
+                        if(edge != null && edge.isDirected()){
+                            edge=null;
+                        }
+                    }
                     if (edge != null) {
                         //Increase edge weight with specified weight (if specified), else increase by 1:
                         String weight = reader.get(edges.getColumn(PropertiesColumn.EDGE_WEIGHT.getIndex()).getTitle());
