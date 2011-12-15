@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.perspective.api
+OpenIDE-Module-Localizing-Bundle: org/gephi/perspective/api/Bundle.properties
+OpenIDE-Module-Specification-Version: 0.8
+

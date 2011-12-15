@@ -39,12 +39,14 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.desktop.perspective;
+package org.gephi.perspective;
 
-import org.gephi.desktop.perspective.spi.Perspective;
-import org.gephi.desktop.perspective.spi.PerspectiveMember;
+import org.gephi.perspective.api.PerspectiveController;
+import org.gephi.perspective.spi.Perspective;
+import org.gephi.perspective.spi.PerspectiveMember;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 import org.openide.windows.TopComponentGroup;
 import org.openide.windows.WindowManager;
@@ -53,39 +55,56 @@ import org.openide.windows.WindowManager;
  *
  * @author Mathieu Bastian
  */
-public class PerspectiveController {
-
-    private static final String SELECTED_PERSPECTIVE_PREFERENCE = "BannerComponent_selectedPerspective";
+@ServiceProvider(service = PerspectiveController.class)
+public class PerspectiveControllerImpl implements PerspectiveController {
+    
+    private static final String SELECTED_PERSPECTIVE_PREFERENCE = "PerspectiveControllerImpl_selectedPerspective";
     //Data
     private String selectedPerspective;
     private final Perspective[] perspectives;
     private final PerspectiveMember[] members;
-
-    public PerspectiveController() {
+    
+    public PerspectiveControllerImpl() {
         //Load perspectives
         perspectives = Lookup.getDefault().lookupAll(Perspective.class).toArray(new Perspective[0]);
         members = Lookup.getDefault().lookupAll(PerspectiveMember.class).toArray(new PerspectiveMember[0]);
 
-        //Set to previously selected perspective
-        selectedPerspective = NbPreferences.forModule(BannerComponent.class).get(SELECTED_PERSPECTIVE_PREFERENCE, perspectives[0].getName());
-        Perspective selectedPerspectiveInstance = getSelectedPerspective();
-
-        //Open members
-        for (PerspectiveMember perspectiveMember : members) {
-            if (perspectiveMember.isMemberOf(selectedPerspectiveInstance)) {
-                String pId = perspectiveMember.getTopComponentId();
-                TopComponent c = WindowManager.getDefault().findTopComponent(pId);
-                if (c != null && !c.isOpened()) {
-                    c.open();
+        //Find if there is a default
+        String firstPerspective = perspectives.length > 0 ? perspectives[0].getName() : null;
+        String defaultPerspectiveName = System.getProperty("org.gephi.perspective.default");
+        if (defaultPerspectiveName != null) {
+            for (Perspective p : perspectives) {
+                if (p.getName().equals(defaultPerspectiveName)) {
+                    selectedPerspective = p.getName();
+                    break;
                 }
             }
         }
-    }
+        if (selectedPerspective == null) {
+            selectedPerspective = NbPreferences.root().get(SELECTED_PERSPECTIVE_PREFERENCE, firstPerspective);
+        }
 
+        //Store selected in prefs
+        NbPreferences.root().put(SELECTED_PERSPECTIVE_PREFERENCE, selectedPerspective);
+        
+        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+            
+            @Override
+            public void run() {
+                //Set to previously selected perspective
+                Perspective selectedPerspectiveInstance = getSelectedPerspective();
+                
+                openAndCloseMembers(selectedPerspectiveInstance);
+            }
+        });
+    }
+    
+    @Override
     public Perspective[] getPerspectives() {
         return perspectives;
     }
-
+    
+    @Override
     public Perspective getSelectedPerspective() {
         for (Perspective p : perspectives) {
             if (p.getName().equals(selectedPerspective)) {
@@ -94,34 +113,36 @@ public class PerspectiveController {
         }
         return null;
     }
-
-    public int getSelectedPerspectiveIndex() {
-        int i = 0;
-        for (Perspective p : perspectives) {
-            if (p.getName().equals(selectedPerspective)) {
-                return i;
-            }
-            i++;
-        }
-        return -1;
-    }
-
-    public void select(Perspective perspective) {
+    
+    @Override
+    public void selectPerspective(Perspective perspective) {
         if (perspective.getName().equals(selectedPerspective)) {
             return;
         }
-
+        
+        openAndCloseMembers(perspective);
+        
+        selectedPerspective = perspective.getName();
+        NbPreferences.root().put(SELECTED_PERSPECTIVE_PREFERENCE, selectedPerspective);
+    }
+    
+    private void openAndCloseMembers(Perspective perspective) {
         //Close other perspective based on group name
         for (Perspective g : perspectives) {
             if (g != perspective) {
                 TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(g.getName());
-                tpg.close();
+                if (tpg != null) {
+                    tpg.close();
+                }
             }
         }
 
         //Open perspective
         TopComponentGroup tpg = WindowManager.getDefault().findTopComponentGroup(perspective.getName());
-        tpg.open();
+        if (tpg != null) {
+            tpg.open();
+        }
+
 
         //Close members
         for (TopComponent c : WindowManager.getDefault().getRegistry().getOpened()) {
@@ -144,8 +165,5 @@ public class PerspectiveController {
                 }
             }
         }
-
-        selectedPerspective = perspective.getName();
-        NbPreferences.forModule(BannerComponent.class).put(SELECTED_PERSPECTIVE_PREFERENCE, selectedPerspective);
     }
 }

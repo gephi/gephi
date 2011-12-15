@@ -38,28 +38,45 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
-package org.gephi.desktop.perspective.spi;
-
-import javax.swing.Icon;
+ */
+package org.gephi.perspective.spi;
 
 /**
- * Define a group of components that are showed in the banner. <b>Overview</b>, <b>Data
- * Laboratory</b> and <b>Preview</b> are perspectives.
- * <h3>How to add a new Perspective</h3>
- * <ol><li>Create a new module and add <b>Desktop Perspective</b> as dependency.</li>
- * <li>Create a new implementation of perspective and fill methods.</li>
- * <li>Add <code>@ServiceProvider</code> annotation to your class to be found by
- * the system, like <b>@ServiceProvider(service = Perspective.class, position = 500)</b>.</li>
- * <li>Set the position to define the order of appearance, Overview is 100, Preview is 300.</li>
- * </ol>
+ * Interface to put on <code>TopComponent</code> to say in which perspective it
+ * belongs. It has an <b>open</b> and <b>close</b> method to simply say if the
+ * component should open or close when asked.
+ * <h3>How to set to a TopComponent</h3>
+ * <ol><li>Implement this interface to the class that extends <code>TopComponent</code>.</li>
+ * <li>Fill <b>open</b> and <b>close</b> methods like explain below.</li>
+ * <li>Add the <code>@ServiceProvider</code> annotation to be registered in the system:</li></ol>
+ * <pre>
+ * <code>@ServiceProvider(service=PerspectiveMember.class)
+ * public class MyTopComponent extends TopComponent implements PerpectiveMember {
+ * ...
+ * </pre>
+ * <h3>How to code open and close methods</h3>
+ * The code below attach the component to the {@link LaboratoryPerspective}, works also
+ * for {@link OverviewPerspective} and {@link PreviewPerspective}:
+ * <pre>
+ * public boolean open(Perspective perspective) {
+ *    returns perspective instanceof LaboratoryPerspective;
+ * }
+ * public boolean close(Perspective perspective) {
+ *    returns true;
+ * }
+ * </pre>
  * @author Mathieu Bastian
  */
-public interface Perspective {
+public interface PerspectiveMember {
 
-    public String getDisplayName();
+    /**
+     * Returns <code>true</code> if this component opens when
+     * <code>perspective</code> opens.
+     * @param perspective   the perspective that is to be opened
+     * @return              <code>true</code> if this component opens,
+     * <code>false</code> otherwise
+     */
+    public boolean isMemberOf(Perspective perspective);
 
-    public String getName();
-
-    public Icon getIcon();
+    public String getTopComponentId();
 }

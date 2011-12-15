@@ -47,9 +47,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
-import org.gephi.desktop.perspective.spi.Perspective;
+import org.gephi.perspective.api.PerspectiveController;
+import org.gephi.perspective.spi.Perspective;
 import org.gephi.ui.utils.UIUtils;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -57,7 +59,6 @@ import org.openide.util.ImageUtilities;
  */
 public class BannerComponent extends javax.swing.JPanel {
 
-    
     private transient JToggleButton[] buttons;
     private transient PerspectiveController perspectiveController;
 
@@ -65,7 +66,7 @@ public class BannerComponent extends javax.swing.JPanel {
         initComponents();
 
         //Init perspective controller
-        perspectiveController = new PerspectiveController();
+        perspectiveController = Lookup.getDefault().lookup(PerspectiveController.class);
 
         addGroupTabs();
 
@@ -102,7 +103,7 @@ public class BannerComponent extends javax.swing.JPanel {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    perspectiveController.select(perspective);
+                    perspectiveController.selectPerspective(perspective);
                 }
             });
             perspectivesButtonGroup.add(toggleButton);
@@ -111,7 +112,18 @@ public class BannerComponent extends javax.swing.JPanel {
         }
 
         //Set currently selected button
-        perspectivesButtonGroup.setSelected(buttons[perspectiveController.getSelectedPerspectiveIndex()].getModel(), true);
+        perspectivesButtonGroup.setSelected(buttons[getSelectedPerspectiveIndex()].getModel(), true);
+    }
+
+    public int getSelectedPerspectiveIndex() {
+        int i = 0;
+        for (Perspective p : perspectiveController.getPerspectives()) {
+            if (p.equals(perspectiveController.getSelectedPerspective())) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
     }
 
     //Not working
@@ -126,7 +138,6 @@ public class BannerComponent extends javax.swing.JPanel {
     }
     }
     }*/
-
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is

@@ -42,7 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.perspective.plugin;
 
 import javax.swing.Icon;
-import org.gephi.desktop.perspective.spi.Perspective;
+import org.gephi.perspective.spi.Perspective;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
