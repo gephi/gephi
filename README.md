@@ -10,6 +10,8 @@
 
 [Download Gephi](http://gephi.org/users/download/) for Windows, Mac OS X and Linux and consult the [release notes](https://wiki.gephi.org/index.php/Gephi_Releases). Example datasets can be found on our [wiki](https://wiki.gephi.org/index.php?title=Datasets).
 
+![Gephi](http://gephi.org/wp-content/themes/gephi/images/screenshots/select-tool-mini.png)
+
 ## Install and use Gephi
 
 Download and [Install](http://gephi.org/users/install) Gephi on your computer. 
