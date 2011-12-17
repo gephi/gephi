@@ -518,8 +518,9 @@ public class GraphElementsControllerImpl implements GraphElementsController {
     }
 
     private Node buildNode(String label, String id) {
-        Node newNode = buildNode(label);
-        getGraph().setId(newNode, id);
+        Node newNode = Lookup.getDefault().lookup(GraphController.class).getModel().factory().newNode(id);
+        newNode.getNodeData().setSize(DEFAULT_NODE_SIZE);
+        newNode.getNodeData().setLabel(label);
         return newNode;
     }
 
