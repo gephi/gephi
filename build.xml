@@ -86,6 +86,7 @@
                 <pathelement path="LayoutAPI/src"/>
                 <pathelement path="LongTaskAPI/src"/>
                 <pathelement path="PartitionAPI/src"/>
+                <pathelement path="PerspectiveAPI/src"/>
                 <pathelement path="PreviewAPI/src"/>
                 <pathelement path="ProjectAPI/src"/>
                 <pathelement path="RankingAPI/src"/>
@@ -231,6 +232,7 @@
                 <include name="postgresql*.jar"/>
                 <include name="sqljdbc*.jar"/>
                 <include name="sqlite*.jar"/>
+                <include name="teradata*.jar"/>
                 <include name="google-collect*.jar"/>
                 <include name="stax-utils.jar"/>
                 <include name="trove*.jar"/>
@@ -262,6 +264,7 @@
                 <provider classname="org.postgresql.Driver"/>
                 <provider classname="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
                 <provider classname="org.sqlite.JDBC"/>
+                <provider classname="com.teradata.jdbc.TeraDriver"/>
             </service>
             
             <service type="org.gephi.project.spi.WorkspacePersistenceProvider">
@@ -293,7 +296,9 @@
 
         <zip destfile="${toolkit.jar}">
             <zipfileset src="${toolkit.dir}/temp_final.jar"
-            excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+            excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA,
+            org/netbeans/modules/masterfs/watcher/Watcher*,
+            META-INF/services/org.netbeans.modules.masterfs.watcher.Watcher"/>
         </zip>
 
         <delete file="${toolkit.dir}/temp_final.jar"/>
