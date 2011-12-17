@@ -80,7 +80,7 @@ public class EdgeLabelBuilder implements ItemBuilder {
                 useTextData = true;
             }
         }
-        
+
         //Build text
         DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
         DynamicModel model = dynamicController != null ? dynamicController.getModel(graph.getGraphModel().getWorkspace()) : null;
@@ -88,12 +88,12 @@ public class EdgeLabelBuilder implements ItemBuilder {
         Estimator estimator = model != null ? model.getEstimator() : null;
         Estimator numberEstimator = model != null ? model.getNumberEstimator() : null;
         VisualizationController vizController = Lookup.getDefault().lookup(VisualizationController.class);
-        AttributeColumn[] nodeColumns = vizController != null ? vizController.getNodeTextColumns() : null;
+        AttributeColumn[] edgeColumns = vizController != null ? vizController.getEdgeTextColumns() : null;
 
         List<Item> items = new ArrayList<Item>();
         for (Edge e : hgraph.getEdgesAndMetaEdges()) {
             EdgeLabelItem labelItem = new EdgeLabelItem(e);
-            String label = getLabel(e, nodeColumns, timeInterval, estimator, numberEstimator);
+            String label = getLabel(e, edgeColumns, timeInterval, estimator, numberEstimator);
             labelItem.setData(EdgeLabelItem.LABEL, label);
             TextData textData = e.getEdgeData().getTextData();
             if (textData != null && useTextData) {
@@ -116,7 +116,7 @@ public class EdgeLabelBuilder implements ItemBuilder {
         }
         return items.toArray(new Item[0]);
     }
-    
+
     private String getLabel(Edge n, AttributeColumn[] cols, TimeInterval interval, Estimator estimator, Estimator numberEstimator) {
         EdgeData edgeData = n.getEdgeData();
         String str = "";
@@ -144,8 +144,11 @@ public class EdgeLabelBuilder implements ItemBuilder {
                 str += val != null ? val : "";
             }
         }
-        if(str.isEmpty()) {
+        if (str.isEmpty()) {
             str = edgeData.getLabel();
+        }
+        if (str == null) {
+            str = "";
         }
         return str;
     }

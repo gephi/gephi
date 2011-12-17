@@ -143,8 +143,11 @@ public class NodeLabelBuilder implements ItemBuilder {
                 str += val != null ? val : "";
             }
         }
-        if(str.isEmpty()) {
+        if (str.isEmpty()) {
             str = nodeData.getLabel();
+        }
+        if (str == null) {
+            str = "";
         }
         return str;
     }

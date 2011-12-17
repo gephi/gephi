@@ -121,13 +121,13 @@ public class EdgeLabelRenderer implements Renderer {
         for (Item item : previewModel.getItems(Item.EDGE_LABEL)) {
             Edge edge = (Edge) item.getSource();
             Item edgeItem = previewModel.getItem(Item.EDGE, edge);
-            
-            EdgeColor edgeColor = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);  
+
+            EdgeColor edgeColor = (EdgeColor) properties.getValue(PreviewProperty.EDGE_COLOR);
             NodeItem sourceItem = (NodeItem) edgeItem.getData(EdgeRenderer.SOURCE);
             NodeItem targetItem = (NodeItem) edgeItem.getData(EdgeRenderer.TARGET);
             Color color = edgeColor.getColor((Color) item.getData(EdgeItem.COLOR),
-                (Color) sourceItem.getData(NodeItem.COLOR),
-                (Color) targetItem.getData(NodeItem.COLOR));
+                    (Color) sourceItem.getData(NodeItem.COLOR),
+                    (Color) targetItem.getData(NodeItem.COLOR));
             item.setData(EDGE_COLOR, color);
             if (edge.isSelfLoop()) {
                 //Middle
