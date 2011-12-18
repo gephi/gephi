@@ -62,7 +62,14 @@ public class TeradataDriver implements SQLDriver {
         }
     }
 
+    @Override
     public Connection getConnection(String connectionUrl, String username, String passwd) throws SQLException {
+        if (!connectionUrl.contains("database=")) {
+            String dbname = connectionUrl.substring(connectionUrl.lastIndexOf('/') + 1);
+            String url = connectionUrl.substring(0, connectionUrl.lastIndexOf('/'));
+            connectionUrl = url + "database=" + dbname + ",charset=UTF8";
+        }
+
         return DriverManager.getConnection(connectionUrl, username, passwd);
     }
 
