@@ -99,7 +99,7 @@ public class ArrowRenderer implements Renderer {
             float radius = properties.getFloatValue(PreviewProperty.EDGE_RADIUS);
 
             size *= weight;
-            radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH));
+            radius = -(radius + (Float) targetItem.getData(NodeItem.SIZE) / 2f + Math.max(0, properties.getFloatValue(PreviewProperty.NODE_BORDER_WIDTH)));
 
             //Avoid arrow from passing the node's center:
             if (radius > 0) {

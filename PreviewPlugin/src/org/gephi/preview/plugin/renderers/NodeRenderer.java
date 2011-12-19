@@ -166,7 +166,11 @@ public class NodeRenderer implements Renderer {
             cb.setGState(gState);
         }
         cb.circle(x, -y, size);
-        cb.fillStroke();
+        if (borderSize > 0) {
+            cb.fillStroke();
+        } else {
+            cb.fill();
+        }
         if (alpha < 1f) {
             cb.restoreState();
         }
