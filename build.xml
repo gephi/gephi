@@ -138,6 +138,29 @@
         </delete>
     </target>
 
+	<target name="release-toolkit"  depends="toolkit, toolkit-javadoc" description="Release Toolkit">
+		<property name="toolkit.dir" value="toolkit"/>
+ 		<property name="demos.url" value="https://github.com/gephi/gephi-toolkit-demos/zipball/master"/>
+        <property name="demos.file" value="toolkit-demos"/>
+        <get src="${demos.url}" dest="${toolkit.dir}" verbose="true" skipexisting="true" ignoreerrors="true"/>
+		<delete dir="${toolkit.dir}/${demos.file}"/>
+		<unzip src="${toolkit.dir}/master" dest="${toolkit.dir}/${demos.file}"/>
+		<path id="demos_folder_name">
+			<dirset dir="${toolkit.dir}/${demos.file}/">
+		    	<include name="gephi-*"/>
+			</dirset>
+		</path>
+		<property name="demos-folder-name" refid="demos_folder_name" />
+		<move file="${demos-folder-name}" tofile="${toolkit.dir}/${demos.file}" />
+		<delete dir="${demos-folder-name}"/>
+		<copy tofile="${toolkit.dir}/${demos.file}/lib/gephi-toolkit.jar" file="${toolkit.dir}/gephi-toolkit.jar" />
+		<copy tofile="${toolkit.dir}/${demos.file}/lib/toolkit-javadoc.zip" file="${toolkit.dir}/toolkit-javadoc.zip" />
+		<delete file="${toolkit.dir}/master"/>
+		<zip destfile="${toolkit.dir}/gephi-toolkit.zip" basedir="${toolkit.dir}"
+		       includes="gephi-toolkit.jar,toolkit-demos/**,toolkit-javadoc.zip"
+		  />
+    </target>
+
     <target name="toolkit" depends="clean-toolkit,build,build-launchers" description="Build Gephi Toolkit JAR">
 
         <property name="build.dir" value="${basedir}/build/cluster/modules"/>
