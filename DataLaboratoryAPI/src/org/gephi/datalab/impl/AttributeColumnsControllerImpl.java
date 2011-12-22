@@ -50,6 +50,7 @@ import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -671,8 +672,8 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     if (edge == null) {
                         //Not from source to target but undirected and reverse?
                         edge = graph.getEdge(target, source);
-                        if(edge != null && edge.isDirected()){
-                            edge=null;
+                        if (edge != null && edge.isDirected()) {
+                            edge = null;
                         }
                     }
                     if (edge != null) {
@@ -717,13 +718,50 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             mergeStrategy = mergeStrategies[i];
             if (mergeStrategy != null) {
                 mergeStrategy.setup(rows, selectedRow, columns[i]);
-                mergeStrategy.execute();
-                value = mergeStrategy.getReducedValue();
+                if (mergeStrategy.canExecute()) {
+                    mergeStrategy.execute();
+                    value = mergeStrategy.getReducedValue();
+                } else {
+                    value = selectedRow.getValue(columns[i].getIndex());
+                }
             } else {
                 value = selectedRow.getValue(columns[i].getIndex());
             }
             setAttributeValue(value, resultRow, columns[i]);
         }
+    }
+
+    public List<List<Node>> detectNodeDuplicatesByColumn(AttributeColumn column, boolean caseSensitive) {
+        final HashMap<String, List<Node>> valuesMap = new HashMap<String, List<Node>>();
+        final int columnIndex = column.getIndex();
+
+        Graph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph();
+        Object value;
+        String strValue;
+        for (Node node : graph.getNodes().toArray()) {
+            value = node.getNodeData().getAttributes().getValue(columnIndex);
+            if (value != null) {
+                strValue = value.toString();
+                if (!caseSensitive) {
+                    strValue = strValue.toLowerCase();
+                }
+                if (valuesMap.containsKey(strValue)) {
+                    valuesMap.get(strValue).add(node);
+                } else {
+                    ArrayList<Node> newGroup = new ArrayList<Node>();
+                    newGroup.add(node);
+                    valuesMap.put(strValue, newGroup);
+                }
+            }
+        }
+
+        final List<List<Node>> groupsList = new ArrayList<List<Node>>();
+        for (List<Node> group : valuesMap.values()) {
+            if (group.size() > 1) {
+                groupsList.add(group);
+            }
+        }
+        return groupsList;
     }
 
     /************Private methods : ************/

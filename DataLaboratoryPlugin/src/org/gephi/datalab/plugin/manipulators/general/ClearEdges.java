@@ -45,7 +45,7 @@ import javax.swing.Icon;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.plugin.manipulators.general.ui.ClearEdgesUI;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.general.GeneralActionsManipulator;
+import org.gephi.datalab.spi.general.PluginGeneralActionsManipulator;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.MixedGraph;
 import org.openide.util.ImageUtilities;
@@ -55,27 +55,28 @@ import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * GeneralActionsManipulator that clears directed and/or undirected edges of the graph.
+ * PluginGeneralActionsManipulator that clears directed and/or undirected edges of the graph.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-@ServiceProvider(service = GeneralActionsManipulator.class)
-public class ClearEdges implements GeneralActionsManipulator {
+@ServiceProvider(service = PluginGeneralActionsManipulator.class)
+public class ClearEdges implements PluginGeneralActionsManipulator {
+
     public static final String DELETE_DIRECTED_SAVED_PREFERENCES = "ClearEdges_deleteDirected";
     public static final String DELETE_UNDIRECTED_SAVED_PREFERENCES = "ClearEdges_deleteUndirected";
-    private boolean deleteDirected,deleteUndirected;
+    private boolean deleteDirected, deleteUndirected;
 
     public ClearEdges() {
-        deleteDirected=NbPreferences.forModule(ClearEdges.class).getBoolean(DELETE_DIRECTED_SAVED_PREFERENCES, true);
-        deleteUndirected=NbPreferences.forModule(ClearEdges.class).getBoolean(DELETE_UNDIRECTED_SAVED_PREFERENCES, true);
+        deleteDirected = NbPreferences.forModule(ClearEdges.class).getBoolean(DELETE_DIRECTED_SAVED_PREFERENCES, true);
+        deleteUndirected = NbPreferences.forModule(ClearEdges.class).getBoolean(DELETE_UNDIRECTED_SAVED_PREFERENCES, true);
     }
 
     public void execute() {
-        GraphElementsController gec=Lookup.getDefault().lookup(GraphElementsController.class);
-        MixedGraph graph=Lookup.getDefault().lookup(GraphController.class).getModel().getMixedGraph();
-        if(deleteDirected){
+        GraphElementsController gec = Lookup.getDefault().lookup(GraphElementsController.class);
+        MixedGraph graph = Lookup.getDefault().lookup(GraphController.class).getModel().getMixedGraph();
+        if (deleteDirected) {
             gec.deleteEdges(graph.getDirectedEdges().toArray());
         }
-        if(deleteUndirected){
+        if (deleteUndirected) {
             gec.deleteEdges(graph.getUndirectedEdges().toArray());
         }
     }
@@ -89,7 +90,7 @@ public class ClearEdges implements GeneralActionsManipulator {
     }
 
     public boolean canExecute() {
-        return Lookup.getDefault().lookup(GraphElementsController.class).getEdgesCount()>0;
+        return Lookup.getDefault().lookup(GraphElementsController.class).getEdgesCount() > 0;
     }
 
     public ManipulatorUI getUI() {

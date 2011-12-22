@@ -64,10 +64,13 @@ public class JoinWithSeparator implements AttributeRowsMergeStrategy {
     private AttributeColumn column;
     private String separator, result;
 
+    public JoinWithSeparator() {
+        separator = NbPreferences.forModule(JoinWithSeparator.class).get(SEPARATOR_SAVED_PREFERENCES, DEFAULT_SEPARATOR);
+    }
+
     public void setup(Attributes[] rows, Attributes selectedRow, AttributeColumn column) {
         this.rows = rows;
         this.column = column;
-        separator = NbPreferences.forModule(JoinWithSeparator.class).get(SEPARATOR_SAVED_PREFERENCES, DEFAULT_SEPARATOR);
     }
 
     public Object getReducedValue() {

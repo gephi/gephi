@@ -58,7 +58,7 @@ public interface AttributeRowsMergeStrategy extends Manipulator{
      * Prepare column and rows for this merge strategy.
      * At least <b>1</b> row will be set up to merge always.
      * @param rows Rows to merge
-     * @param selectedRow Main row fo the row group to merge
+     * @param selectedRow Main row of the row group to merge
      * @param column Column to merge
      */
     void setup(Attributes[] rows, Attributes selectedRow, AttributeColumn column);
