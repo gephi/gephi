@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.gephi.ui.upgrader
+OpenIDE-Module-Install: org/gephi/ui/upgrader/Installer.class
+OpenIDE-Module-Localizing-Bundle: org/gephi/ui/upgrader/Bundle.properties
+OpenIDE-Module-Specification-Version: 0.8
+AutoUpdate-Essential-Module: true
