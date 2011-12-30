@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2010 Gephi
+Copyright 2008-2011 Gephi
 Authors : Eduardo Ramos <eduramiba@gmail.com>
 Website : http://www.gephi.org
 
@@ -39,7 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.datalab.plugin.manipulators.nodes.ui;
+package org.gephi.datalab.plugin.manipulators.general.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -55,8 +55,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.DataLaboratoryHelper;
-import org.gephi.datalab.plugin.manipulators.nodes.MergeNodes;
+import org.gephi.datalab.plugin.manipulators.general.MergeNodeDuplicates;
 import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
@@ -65,38 +66,51 @@ import org.gephi.graph.api.Attributes;
 import org.gephi.graph.api.Node;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
-public final class MergeNodesUI extends JPanel implements ManipulatorUI {
+/**
+ * UI for MergeNodeDuplicates PluginGeneralActionsManipulator
+ * @author Eduardo Ramos<eduramiba@gmail.com>
+ */
+public final class MergeNodeDuplicatesUI extends JPanel implements ManipulatorUI {
 
     private static final ImageIcon CONFIG_BUTTONS_ICON = ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/gear.png", true);
     private static final ImageIcon INFO_LABELS_ICON = ImageUtilities.loadImageIcon("org/gephi/datalab/plugin/manipulators/resources/information.png", true);
-    private MergeNodes manipulator;
+    private MergeNodeDuplicates manipulator;
+    private DialogControls dialogControls;
+    private AttributeColumn[] columns;
+    private List<List<Node>> duplicateGroups;
     private JCheckBox deleteMergedNodesCheckBox;
-    private JComboBox nodesComboBox;
-    private Node[] nodes;
+    private JCheckBox caseSensitiveCheckBox;
+    private JComboBox baseColumnComboBox;
     private Attributes[] rows;
     private StrategyComboBox[] strategiesComboBoxes;
     private StrategyConfigurationButton[] strategiesConfigurationButtons;
 
-    /** Creates new form MergeNodesUI */
-    public MergeNodesUI() {
+    /** Creates new form MergeNodeDuplicatesUI */
+    public MergeNodeDuplicatesUI() {
         initComponents();
     }
 
     public void setup(Manipulator m, DialogControls dialogControls) {
-        manipulator = (MergeNodes) m;
+        manipulator = (MergeNodeDuplicates) m;
+        this.dialogControls = dialogControls;
+        columns = manipulator.getColumns();
         loadSettings();
     }
 
     public void unSetup() {
         manipulator.setDeleteMergedNodes(deleteMergedNodesCheckBox.isSelected());
-        manipulator.setSelectedNode(nodes[nodesComboBox.getSelectedIndex()]);
-        AttributeRowsMergeStrategy[] chosenStrategies = new AttributeRowsMergeStrategy[strategiesComboBoxes.length];
-        for (int i = 0; i < strategiesComboBoxes.length; i++) {
-            chosenStrategies[i] = strategiesComboBoxes[i].getSelectedItem() != null ? ((StrategyWrapper) strategiesComboBoxes[i].getSelectedItem()).getStrategy() : null;
+        manipulator.setCaseSensitive(caseSensitiveCheckBox.isSelected());
+        if (duplicateGroups != null && duplicateGroups.size() > 0) {
+            AttributeRowsMergeStrategy[] chosenStrategies = new AttributeRowsMergeStrategy[strategiesComboBoxes.length];
+            for (int i = 0; i < strategiesComboBoxes.length; i++) {
+                chosenStrategies[i] = strategiesComboBoxes[i].getSelectedItem() != null ? ((StrategyWrapper) strategiesComboBoxes[i].getSelectedItem()).getStrategy() : null;
+            }
+            manipulator.setMergeStrategies(chosenStrategies);
+            manipulator.setDuplicateGroups(duplicateGroups);
         }
-        manipulator.setMergeStrategies(chosenStrategies);
     }
 
     public String getDisplayName() {
@@ -111,54 +125,76 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
         return true;
     }
 
+    private void calculateDuplicates() {
+        if (baseColumnComboBox.getSelectedIndex() != -1) {
+            duplicateGroups = Lookup.getDefault().lookup(AttributeColumnsController.class).detectNodeDuplicatesByColumn(columns[baseColumnComboBox.getSelectedIndex()], caseSensitiveCheckBox.isSelected());
+        }
+    }
+
     public void loadSettings() {
         JPanel settingsPanel = new JPanel();
         settingsPanel.setLayout(new MigLayout("fillx"));
         loadDescription(settingsPanel);
+        loadBaseColumn(settingsPanel);
         loadDeleteMergedNodesCheckBox(settingsPanel);
-        loadSelectedRow(settingsPanel);
-        loadColumnsStrategies(settingsPanel);
         scroll.setViewportView(settingsPanel);
+
+        refreshDuplicatesAndStrategies();
     }
 
-    private void loadColumnsStrategies(JPanel settingsPanel) {
-        AttributeColumn[] columns = manipulator.getColumns();
-        //Prepare node rows:
-        rows = new Attributes[nodes.length];
-        for (int i = 0; i < nodes.length; i++) {
-            rows[i] = nodes[i].getAttributes();
-        }
+    private void refreshDuplicatesAndStrategies() {
+        calculateDuplicates();
+        loadColumnsStrategies();
+    }
 
-        strategiesConfigurationButtons = new StrategyConfigurationButton[columns.length];
-        strategiesComboBoxes = new StrategyComboBox[columns.length];
-        for (int i = 0; i < columns.length; i++) {
-            //Strategy information label:
-            StrategyInfoLabel infoLabel = new StrategyInfoLabel(i);
-
-            //Strategy configuration button:
-            strategiesConfigurationButtons[i] = new StrategyConfigurationButton(i);
-
-            //Strategy selection:
-            StrategyComboBox strategyComboBox = new StrategyComboBox(strategiesConfigurationButtons[i],infoLabel);
-            strategiesComboBoxes[i] = strategyComboBox;
-            for (AttributeRowsMergeStrategy strategy : getColumnAvailableStrategies(columns[i])) {
-                strategyComboBox.addItem(new StrategyWrapper(strategy));
+    private void loadColumnsStrategies() {
+        JPanel strategiesPanel = new JPanel();
+        strategiesPanel.setLayout(new MigLayout("fillx"));
+        if (duplicateGroups != null && duplicateGroups.size() > 0) {
+            strategiesPanel.add(new JLabel(NbBundle.getMessage(MergeNodeDuplicatesUI.class, "MergeNodeDuplicatesUI.duplicateGroupsNumber",duplicateGroups.size())),"wrap 15px");
+            
+            List<Node> nodes = duplicateGroups.get(0);//Use first group of duplicated nodes to set strategies for all of them
+            //Prepare node rows:
+            rows = new Attributes[nodes.size()];
+            for (int i = 0; i < nodes.size(); i++) {
+                rows[i] = nodes.get(0).getAttributes();
             }
-            strategyComboBox.refresh();
 
-            settingsPanel.add(new JLabel(columns[i].getTitle() + ": "), "wrap");
+            strategiesConfigurationButtons = new StrategyConfigurationButton[columns.length];
+            strategiesComboBoxes = new StrategyComboBox[columns.length];
+            for (int i = 0; i < columns.length; i++) {
+                //Strategy information label:
+                StrategyInfoLabel infoLabel = new StrategyInfoLabel(i);
 
-            settingsPanel.add(infoLabel, "split 3");
-            settingsPanel.add(strategiesConfigurationButtons[i]);
-            settingsPanel.add(strategyComboBox, "growx, wrap 15px");
+                //Strategy configuration button:
+                strategiesConfigurationButtons[i] = new StrategyConfigurationButton(i);
 
+                //Strategy selection:
+                StrategyComboBox strategyComboBox = new StrategyComboBox(strategiesConfigurationButtons[i], infoLabel);
+                strategiesComboBoxes[i] = strategyComboBox;
+                for (AttributeRowsMergeStrategy strategy : getColumnAvailableStrategies(columns[i])) {
+                    strategyComboBox.addItem(new StrategyWrapper(strategy));
+                }
+                strategyComboBox.refresh();
+
+                strategiesPanel.add(new JLabel(columns[i].getTitle() + ": "), "wrap");
+
+                strategiesPanel.add(infoLabel, "split 3");
+                strategiesPanel.add(strategiesConfigurationButtons[i]);
+                strategiesPanel.add(strategyComboBox, "growx, wrap 15px");
+            }
+            dialogControls.setOkButtonEnabled(true);
+        } else {
+            strategiesPanel.add(new JLabel(getMessage("MergeNodeDuplicatesUI.noDuplicatesText")));
+            dialogControls.setOkButtonEnabled(false);
         }
+        scrollStrategies.setViewportView(strategiesPanel);
     }
 
     private List<AttributeRowsMergeStrategy> getColumnAvailableStrategies(AttributeColumn column) {
         ArrayList<AttributeRowsMergeStrategy> availableStrategies = new ArrayList<AttributeRowsMergeStrategy>();
         for (AttributeRowsMergeStrategy strategy : DataLaboratoryHelper.getDefault().getAttributeRowsMergeStrategies()) {
-            strategy.setup(rows, manipulator.getSelectedNode().getAttributes(), column);
+            strategy.setup(rows, rows[0], column);
             if (strategy.canExecute()) {
                 availableStrategies.add(strategy);
             }
@@ -168,36 +204,38 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
 
     private void loadDescription(JPanel settingsPanel) {
         JLabel descriptionLabel = new JLabel();
-        descriptionLabel.setText(getMessage("MergeNodesUI.description"));
+        descriptionLabel.setText(getMessage("MergeNodeDuplicatesUI.description"));
         settingsPanel.add(descriptionLabel, "wrap 25px");
     }
 
-    private void loadDeleteMergedNodesCheckBox(JPanel settingsPanel) {
-        deleteMergedNodesCheckBox = new JCheckBox(getMessage("MergeNodesUI.deleteMergedNodesText"), manipulator.isDeleteMergedNodes());
-        settingsPanel.add(deleteMergedNodesCheckBox, "wrap 25px");
+    private void loadBaseColumn(JPanel settingsPanel) {
+        baseColumnComboBox = new JComboBox();
+        for (AttributeColumn column : columns) {
+            baseColumnComboBox.addItem(column.getTitle());
+        }
+        settingsPanel.add(new JLabel(getMessage("MergeNodeDuplicatesUI.baseColumnText")), "split 2");
+        settingsPanel.add(baseColumnComboBox, "growx, wrap");
+        caseSensitiveCheckBox = new JCheckBox(getMessage("MergeNodeDuplicatesUI.caseSensitiveText"), manipulator.isCaseSensitive());
+        settingsPanel.add(caseSensitiveCheckBox, "wrap");
+
+        //Reload duplicates on parameteres of detection change:
+        ActionListener listener = new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                refreshDuplicatesAndStrategies();
+            }
+        };
+        baseColumnComboBox.addActionListener(listener);
+        caseSensitiveCheckBox.addActionListener(listener);
     }
 
-    private void loadSelectedRow(JPanel settingsPanel) {
-        JLabel selectedRowLabel = new JLabel();
-        selectedRowLabel.setText(getMessage("MergeNodesUI.selectedRowText"));
-        settingsPanel.add(selectedRowLabel, "wrap");
-        nodesComboBox = new JComboBox();
-
-        //Prepare selected node combo box with nodes data:
-        nodes = manipulator.getNodes();
-        Node selectedNode = manipulator.getSelectedNode();
-
-        for (int i = 0; i < nodes.length; i++) {
-            nodesComboBox.addItem(nodes[i].getId() + " - " + nodes[i].getNodeData().getLabel());
-            if (nodes[i] == selectedNode) {
-                nodesComboBox.setSelectedIndex(i);
-            }
-        }
-        settingsPanel.add(nodesComboBox, "growx, wrap 25px");
+    private void loadDeleteMergedNodesCheckBox(JPanel settingsPanel) {
+        deleteMergedNodesCheckBox = new JCheckBox(getMessage("MergeNodeDuplicatesUI.deleteMergedNodesText"), manipulator.isDeleteMergedNodes());
+        settingsPanel.add(deleteMergedNodesCheckBox, "wrap");
     }
 
     private String getMessage(String resName) {
-        return NbBundle.getMessage(MergeNodesUI.class, resName);
+        return NbBundle.getMessage(MergeNodeDuplicatesUI.class, resName);
     }
 
     private AttributeRowsMergeStrategy getStrategy(int strategyIndex) {
@@ -217,7 +255,7 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
         public StrategyConfigurationButton(int strategyIndex) {
             this.strategyIndex = strategyIndex;
             setIcon(CONFIG_BUTTONS_ICON);
-            setToolTipText(getMessage("MergeNodesUI.configurationText"));
+            setToolTipText(getMessage("MergeNodeDuplicatesUI.configurationText"));
             addActionListener(this);
         }
 
@@ -232,6 +270,7 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
     }
 
     class StrategyComboBox extends JComboBox implements ActionListener {
+
         private StrategyConfigurationButton button;
         private StrategyInfoLabel infoLabel;
 
@@ -240,7 +279,7 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
             this.infoLabel = infoLabel;
             this.addActionListener(this);
         }
-        
+
         public void refresh() {
             button.refreshEnabledState();
             infoLabel.refreshEnabledState();
@@ -332,20 +371,26 @@ public final class MergeNodesUI extends JPanel implements ManipulatorUI {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        scrollStrategies = new javax.swing.JScrollPane();
         scroll = new javax.swing.JScrollPane();
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
+            .addComponent(scrollStrategies, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+            .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scrollStrategies, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane scroll;
+    private javax.swing.JScrollPane scrollStrategies;
     // End of variables declaration//GEN-END:variables
 }

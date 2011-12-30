@@ -1063,7 +1063,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
                         lastManipulatorType = m.getType();
                         pluginsPanel.addButtonToLastGroup(preparePluginGeneralActionsButton(m));
                     }
-                    JCommandPopupMenu popup = new JCommandPopupMenu(pluginsPanel, 8, 8);
+                    JCommandPopupMenu popup = new JCommandPopupMenu(pluginsPanel,4,20);
                     return popup;
                 }
             });
@@ -1083,7 +1083,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         button.setDisplayState(CommandButtonDisplayState.BIG);
         button.setCommandButtonKind(JCommandButton.CommandButtonKind.ACTION_ONLY);
         if (m.getDescription() != null && !m.getDescription().isEmpty()) {
-            button.setToolTipText(m.getDescription());
+            button.setPopupRichTooltip(new RichTooltip(NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.RichToolTip.title.text"), m.getDescription()));
         }
         if (m.canExecute()) {
             button.addActionListener(new ActionListener() {

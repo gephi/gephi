@@ -205,8 +205,8 @@ public interface GraphElementsController {
     /**
      * Merges 2 or more nodes into a new one node that has all the edges of the merged nodes.
      * An AttributeRowsMergeStrategy must be provided for each column of the nodes.
-     * @param nodes Nodes to merge
-     * @param selectedNode Main selected node of the nodes to merge
+     * @param nodes Nodes to merge (at least 1)
+     * @param selectedNode Main selected node of the nodes to merge (or null to use first node)
      * @param mergeStrategies Strategies to merge rows of each column of the nodes
      * @param deleteMergedNodes Indicates if merged nodes should be deleted
      * @return New resulting node

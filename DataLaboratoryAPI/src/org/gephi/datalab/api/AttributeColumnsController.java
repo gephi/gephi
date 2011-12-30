@@ -44,6 +44,7 @@ package org.gephi.datalab.api;
 import java.io.File;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -421,4 +422,14 @@ public interface AttributeColumnsController {
      * @param resultRow Already existing row to put the values on
      */
     void mergeRowsValues(AttributeTable table, AttributeRowsMergeStrategy[] mergeStrategies, Attributes[] rows, Attributes selectedRow, Attributes resultRow);
+    
+    /**
+     * <p>Finds and returns nodes duplicates based on the values of a given column of nodes table</p>
+     * <p>A node is a duplicate of other if they have the same value (String representation of the values is used) in the given column.</p>
+     * <p>This is useful to be used to automatically merge duplicated nodes</p>
+     * @param column Column to use values to detect duplicates
+     * @param caseSensitive Case insensitivity when comparing the column values
+     * @return List of node duplicates groups (at least 2 nodes in each group)
+     */
+    List<List<Node>> detectNodeDuplicatesByColumn(AttributeColumn column, boolean caseSensitive);
 }

@@ -45,7 +45,7 @@ import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import org.gephi.datalab.api.GraphElementsController;
 import org.gephi.datalab.spi.ManipulatorUI;
-import org.gephi.datalab.spi.general.GeneralActionsManipulator;
+import org.gephi.datalab.spi.general.PluginGeneralActionsManipulator;
 import org.gephi.graph.api.GraphController;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -53,11 +53,11 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * GeneralActionsManipulator that clears the entire graph, asking for confirmation.
+ * PluginGeneralActionsManipulator that clears the entire graph, asking for confirmation.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
-@ServiceProvider(service=GeneralActionsManipulator.class)
-public class ClearGraph implements GeneralActionsManipulator {
+@ServiceProvider(service=PluginGeneralActionsManipulator.class)
+public class ClearGraph implements PluginGeneralActionsManipulator {
 
     public void execute() {
         if (JOptionPane.showConfirmDialog(null, NbBundle.getMessage(ClearGraph.class, "ClearGraph.dialog.text"), NbBundle.getMessage(ClearGraph.class, "ClearGraph.name"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
