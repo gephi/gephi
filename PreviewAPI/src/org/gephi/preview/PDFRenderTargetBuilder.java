@@ -55,6 +55,7 @@ import org.gephi.preview.spi.RenderTargetBuilder;
 import org.gephi.utils.progress.Progress;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
+import org.openide.util.Utilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -64,12 +65,12 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = RenderTargetBuilder.class)
 public class PDFRenderTargetBuilder implements RenderTargetBuilder {
-
+    
     @Override
     public String getName() {
         return RenderTarget.PDF_TARGET;
     }
-
+    
     @Override
     public RenderTarget buildRenderTarget(PreviewModel previewModel) {
         double width = previewModel.getDimensions().getWidth();
@@ -90,9 +91,9 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
                 pageSize, marginLeft, marginRight, marginTop, marginBottom, landscape);
         return renderTarget;
     }
-
+    
     public static class PDFRenderTargetImpl extends AbstractRenderTarget implements PDFTarget {
-
+        
         private final PdfContentByte cb;
         private static boolean fontRegistered = false;
         //Parameters
@@ -102,7 +103,7 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
         private final float marginRight;
         private final boolean landscape;
         private final Rectangle pageSize;
-
+        
         public PDFRenderTargetImpl(PdfContentByte cb, double width, double height, double topLeftX, double topLeftY,
                 Rectangle size, float marginLeft, float marginRight, float marginTop, float marginBottom, boolean landscape) {
             this.cb = cb;
@@ -112,7 +113,7 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
             this.marginRight = marginRight;
             this.pageSize = size;
             this.landscape = landscape;
-
+            
             double centerX = topLeftX + width / 2;
             double centerY = topLeftY + height / 2;
 
@@ -127,15 +128,15 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
             cb.transform(AffineTransform.getTranslateInstance(-centerX * scale, centerY * scale));
             cb.transform(AffineTransform.getScaleInstance(scale, scale));
             cb.transform(AffineTransform.getTranslateInstance(translateX, translateY));
-
+            
             FontFactory.register("/org/gephi/preview/fonts/LiberationSans.ttf", "ArialMT");
         }
-
+        
         @Override
         public PdfContentByte getContentByte() {
             return this.cb;
         }
-
+        
         @Override
         public BaseFont getBaseFont(java.awt.Font font) {
             try {
@@ -158,28 +159,28 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
                             && !font.getFontName().equals(FontFactory.COURIER_BOLD)
                             && !font.getFontName().equals(FontFactory.COURIER_BOLD)
                             && !font.getFontName().equals(FontFactory.COURIER_BOLD)) {
-
+                        
                         com.itextpdf.text.Font itextFont = FontFactory.getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
                         baseFont = itextFont.getBaseFont();
                         if (baseFont == null && !PDFRenderTargetImpl.fontRegistered) {
-
+                            
                             if (progressTicket != null) {
                                 String displayName = progressTicket.getDisplayName();
                                 Progress.setDisplayName(progressTicket, NbBundle.getMessage(PDFRenderTargetImpl.class, "PDFRenderTargetImpl.font.registration"));
-                                FontFactory.registerDirectories();
+                                registerFonts();
                                 Progress.setDisplayName(progressTicket, displayName);
                             }
-
+                            
                             itextFont = FontFactory.getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
                             baseFont = itextFont.getBaseFont();
-
+                            
                             PDFRenderTargetImpl.fontRegistered = true;
                         }
                     } else {
                         com.itextpdf.text.Font itextFont = FontFactory.getFont(font.getFontName(), BaseFont.IDENTITY_H, font.getSize(), font.getStyle());
                         baseFont = itextFont.getBaseFont();
                     }
-
+                    
                     if (baseFont != null) {
                         return baseFont;
                     }
@@ -191,32 +192,45 @@ public class PDFRenderTargetBuilder implements RenderTargetBuilder {
             }
             return null;
         }
+        
+        private void registerFonts() {
+            FontFactory.registerDirectories();
+            if (Utilities.isMac()) {
+                //Add user fonts folder
+                String userFonts = "/" + System.getProperty("user.home") + "/Library/Fonts";
+                FontFactory.registerDirectory(userFonts);
 
+                //Adobe font folder
+                String adobeFonts = "/Library/Application Support/Adobe/Fonts";
+                FontFactory.registerDirectory(adobeFonts);
+            }
+        }
+        
         @Override
         public float getMarginBottom() {
             return marginBottom;
         }
-
+        
         @Override
         public float getMarginLeft() {
             return marginLeft;
         }
-
+        
         @Override
         public float getMarginRight() {
             return marginRight;
         }
-
+        
         @Override
         public float getMarginTop() {
             return marginTop;
         }
-
+        
         @Override
         public boolean isLandscape() {
             return landscape;
         }
-
+        
         @Override
         public Rectangle getPageSize() {
             return pageSize;
