@@ -341,18 +341,17 @@ public class PreviewModelImpl implements PreviewModel {
                                 }
                             } else {//Read preview simple value:
                                 if (simpleValueClass != null) {
-                                    if (propName.equals("width")
-                                            || propName.equals("height")) {
-                                        continue;
-                                    }
-
-                                    try {
-                                        Object value = readValueFromText(reader.getText(), Class.forName(simpleValueClass));
-                                        if (value != null) {
-                                            props.putValue(propName, value);
+                                    if (!propName.equals("width")
+                                            && !propName.equals("height")) {
+                                        try {
+                                            Object value = readValueFromText(reader.getText(), Class.forName(simpleValueClass));
+                                            if (value != null) {
+                                                props.putValue(propName, value);
+                                            }
+                                        } catch (ClassNotFoundException e) {
+                                            e.printStackTrace();
                                         }
-                                    } catch (ClassNotFoundException e) {
-                                        e.printStackTrace();
+
                                     }
                                 }
                             }
