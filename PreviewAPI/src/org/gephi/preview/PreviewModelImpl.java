@@ -277,6 +277,11 @@ public class PreviewModelImpl implements PreviewModel {
             Entry<String, Object> simpleValueEntry;
             simpleValueEntry = simpleValuesIterator.next();
 
+            if (simpleValueEntry.getKey().equals("width")
+                    || simpleValueEntry.getKey().equals("height")) {
+                continue;
+            }
+
             Object value = simpleValueEntry.getValue();
             if (value != null) {
                 Class clazz = value.getClass();
@@ -336,6 +341,11 @@ public class PreviewModelImpl implements PreviewModel {
                                 }
                             } else {//Read preview simple value:
                                 if (simpleValueClass != null) {
+                                    if (propName.equals("width")
+                                            || propName.equals("height")) {
+                                        continue;
+                                    }
+
                                     try {
                                         Object value = readValueFromText(reader.getText(), Class.forName(simpleValueClass));
                                         if (value != null) {
