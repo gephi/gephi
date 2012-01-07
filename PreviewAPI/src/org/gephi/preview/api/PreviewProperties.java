@@ -131,6 +131,14 @@ public class PreviewProperties {
             simpleValues.put(name, value);
         }
     }
+    
+    /**
+     * Removes a simple value if existing
+     * @param name Simple value name
+     */
+    public void removeSimpleValue(String name){
+        simpleValues.remove(name);
+    }
 
     /**
      * Returns the property value as an int.
