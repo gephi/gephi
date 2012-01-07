@@ -93,6 +93,10 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
         if (target instanceof LongTask) {
             ((LongTask) target).setProgressTicket(progress);
         }
+        //Fix bug caused by keeping width and height in the workspace preview properties.
+        //When a .gephi file is loaded later with these properties PGraphics will be created instead of a PApplet
+        props.removeSimpleValue("width");
+        props.removeSimpleValue("height");
         
         try {
             target.refresh();
