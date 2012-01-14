@@ -193,3 +193,30 @@ msgstr "Regular expression replacement"
 
 msgid "SearchReplaceUI.columnsToSearchLabel.text"
 msgstr "Columns to search/replace:"
+
+msgid "MergeNodeDuplicatesUI.description"
+msgstr ""
+"<html>Node duplicates are automatically detected and merged based on a "
+"column.<br />For each group of node duplicates, one new node with the same "
+"color, size and position of the first node in the group is created.<br /"
+">Edges are assigned to the new node.<br />Each column uses the given "
+"strategy to reduce the rows values to one value.<br />Hierarchy is ignored.</"
+"html>"
+
+msgid "MergeNodeDuplicatesUI.noDuplicatesText"
+msgstr "<html><b>No duplicates found!</b></html>"
+
+msgid "MergeNodeDuplicatesUI.duplicateGroupsNumber"
+msgstr "<html><b>{0} duplicates found!</b></html>"
+
+msgid "MergeNodeDuplicatesUI.deleteMergedNodesText"
+msgstr "Delete merged nodes"
+
+msgid "MergeNodeDuplicatesUI.configurationText"
+msgstr "Configure"
+
+msgid "MergeNodeDuplicatesUI.caseSensitiveText"
+msgstr "Case sensitive"
+
+msgid "MergeNodeDuplicatesUI.baseColumnText"
+msgstr "Base column to detect duplicates:"

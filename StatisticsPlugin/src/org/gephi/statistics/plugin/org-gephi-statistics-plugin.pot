@@ -20,3 +20,15 @@ msgstr "Standard statistics and metrics algorithms"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Standard statistics and metrics algorithms"
+
+msgid "Degree.nodecolumn.InDegree"
+msgstr "In-Degree"
+
+msgid "Degree.nodecolumn.OutDegree"
+msgstr "Out-Degree"
+
+msgid "Degree.nodecolumn.Degree"
+msgstr "Degree"
+
+msgid "Degree.graphcolumn.AverageDegree"
+msgstr "Average Degree"

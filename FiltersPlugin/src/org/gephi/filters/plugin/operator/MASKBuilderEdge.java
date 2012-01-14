@@ -69,7 +69,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class MASKBuilderEdge implements FilterBuilder {
 
     public Category getCategory() {
-        return new Category("Operator");
+        return new Category(NbBundle.getMessage(MASKBuilderEdge.class, "Operator.category"));
     }
 
     public String getName() {

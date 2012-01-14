@@ -35,6 +35,12 @@ msgstr ""
 msgid "ClearEdges.name"
 msgstr "Clear edges"
 
+msgid "MergeNodeDuplicates.name"
+msgstr "Detect and merge node duplicates"
+
+msgid "MergeNodeDuplicates.description"
+msgstr "Automatically detects and merges node duplicates based on a column"
+
 msgid "SearchReplace.name"
 msgstr "Search/Replace"
 

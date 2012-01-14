@@ -21,5 +21,8 @@ msgstr "Nodes"
 msgid "EdgeAttributeTable.name"
 msgstr "Edges"
 
+msgid "GraphAttributeTable.name"
+msgstr "Graph"
+
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Attributes API default implementation."

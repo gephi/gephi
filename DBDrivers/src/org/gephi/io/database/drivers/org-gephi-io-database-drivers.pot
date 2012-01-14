@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "OpenIDE-Module-Long-Description"
-msgstr "Database Drivers (MySQL, SQLServer)"
+msgstr "Database Drivers (MySQL, PostgreSQL, SQLite, Teradata, SQLServer)"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Database Drivers"

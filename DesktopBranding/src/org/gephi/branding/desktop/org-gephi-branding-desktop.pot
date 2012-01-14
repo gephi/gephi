@@ -43,6 +43,9 @@ msgstr ""
 msgid "Menu/Workspace"
 msgstr "Workspace"
 
+msgid "Menu/Plugins"
+msgstr "Plugins"
+
 msgid "Actions/Edit/org-gephi-branding-desktop-actions-CleanWorkspace.instance"
 msgstr "Clean workspace"
 

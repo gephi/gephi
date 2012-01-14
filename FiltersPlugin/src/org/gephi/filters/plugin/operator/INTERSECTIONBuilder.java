@@ -68,7 +68,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class INTERSECTIONBuilder implements FilterBuilder {
 
     public Category getCategory() {
-        return new Category("Operator");
+        return new Category(NbBundle.getMessage(INTERSECTIONBuilder.class, "Operator.category"));
     }
 
     public String getName() {

@@ -846,3 +846,13 @@ file_filter = DesktopPreview\src\org\gephi\desktop\preview\propertyeditors\<lang
 source_file = DesktopPreview\src\org\gephi\desktop\preview\propertyeditors\org-gephi-desktop-preview-propertyeditors.pot
 source_lang = en
 
+[gephi.org-gephi-ui-upgrader]
+file_filter = SettingsUpgrader\src\org\gephi\ui\upgrader\<lang>.po
+source_file = SettingsUpgrader\src\org\gephi\ui\upgrader\org-gephi-ui-upgrader.pot
+source_lang = en
+
+[gephi.org-gephi-perspective-api]
+file_filter = PerspectiveAPI\src\org\gephi\perspective\api\<lang>.po
+source_file = PerspectiveAPI\src\org\gephi\perspective\api\org-gephi-perspective-api.pot
+source_lang = en
+

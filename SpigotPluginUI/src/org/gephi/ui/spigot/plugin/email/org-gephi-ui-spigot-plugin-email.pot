@@ -33,6 +33,9 @@ msgstr "Email Address"
 msgid "EmailVisualPanel2.jTableFilter.column2.text"
 msgstr "Type"
 
+msgid "EmailVisualPanel1.name"
+msgstr "Select Datasource"
+
 msgid "EmailVisualPanel1.jButton3.text"
 msgstr "Advanced"
 
@@ -57,6 +60,9 @@ msgstr "*"
 msgid "EmailVisualPanel1.jLabel5.text"
 msgstr "File Type:"
 
+msgid "EmailVisualPanel1.fileType.default"
+msgstr "--Select file type"
+
 msgid "EmailVisualPanel1.jLabel4.text"
 msgstr "Note:Mandatory options are marked by '*'"
 
@@ -79,7 +85,7 @@ msgid "EmailVisualPanel1.jLabel2.text"
 msgstr "*"
 
 msgid "EmailVisualPanel1.jRadioButtonFromLocalFile.text"
-msgstr "Receive emails from local file"
+msgstr "Load emails from local file"
 
 msgid "EmailVisualPanel1.jLabel7.text"
 msgstr "*"
@@ -136,6 +142,9 @@ msgstr "Day on or before"
 
 msgid "EmailVisualPanel2.jCheckBoxMessageInclude1.text"
 msgstr "Message includes text:"
+
+msgid "EmailImportAdvancedOptPanel.name"
+msgstr "Advanced Options"
 
 msgid "EmailImportAdvancedOptPanel.jLabelPort.text"
 msgstr "Port:"

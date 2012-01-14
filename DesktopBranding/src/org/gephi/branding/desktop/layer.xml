@@ -110,6 +110,7 @@
             </file>
         </folder>
         <folder name="Plugins">
+            <attr name="displayName" bundlevalue="org.gephi.branding.desktop.Bundle#Menu/Plugins"/>
             <attr name="position" intvalue="1250"/>
         </folder>
         <file name="GoTo_hidden"/>

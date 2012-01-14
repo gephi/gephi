@@ -68,7 +68,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class UNIONBuilder implements FilterBuilder {
 
     public Category getCategory() {
-        return new Category("Operator");
+        return new Category(NbBundle.getMessage(UNIONBuilder.class, "Operator.category"));
     }
 
     public String getName() {

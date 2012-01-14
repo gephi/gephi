@@ -16,10 +16,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "OpenIDE-Module-Long-Description"
-msgstr "SPI for perspectives and TopComponent management"
+msgstr "Implementations of default perspectives and banner panel"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "SPI for perspectives and TopComponent management"
+msgstr "Implementations of default perspectives and banner panel"
 
 msgid "BannerComponent.logoButton.toolTipText"
 msgstr "Go on Gephi website www.gephi.org"

@@ -65,7 +65,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class NOTBuilderNode implements FilterBuilder {
 
     public Category getCategory() {
-        return new Category("Operator");
+        return new Category(NbBundle.getMessage(NOTBuilderNode.class, "Operator.category"));
     }
 
     public String getName() {

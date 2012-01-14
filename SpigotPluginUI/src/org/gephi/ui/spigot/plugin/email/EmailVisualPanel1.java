@@ -56,6 +56,7 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
 public final class EmailVisualPanel1 extends JPanel implements ChangeListener {
@@ -77,7 +78,7 @@ public final class EmailVisualPanel1 extends JPanel implements ChangeListener {
 
     @Override
     public String getName() {
-        return "Select Datasource";
+        return NbBundle.getMessage(EmailVisualPanel1.class, "EmailVisualPanel1.name");
     }
 
     /** This method is called from within the constructor to
@@ -196,16 +197,13 @@ public final class EmailVisualPanel1 extends JPanel implements ChangeListener {
         jPanelReceiveFromServerLayout.setHorizontalGroup(
             jPanelReceiveFromServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelReceiveFromServerLayout.createSequentialGroup()
+                .addGap(2, 2, 2)
                 .addGroup(jPanelReceiveFromServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelReceiveFromServerLayout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addGroup(jPanelReceiveFromServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabelPsw, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabelServerType, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabelServerAddr, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelReceiveFromServerLayout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addComponent(jLabelEmailAddr, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanelReceiveFromServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabelPsw, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabelServerType, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabelServerAddr, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabelEmailAddr, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelReceiveFromServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanelReceiveFromServerLayout.createSequentialGroup()
@@ -213,7 +211,7 @@ public final class EmailVisualPanel1 extends JPanel implements ChangeListener {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1))
                     .addGroup(jPanelReceiveFromServerLayout.createSequentialGroup()
-                        .addComponent(jComboBoxServerType, 0, 248, Short.MAX_VALUE)
+                        .addComponent(jComboBoxServerType, 0, 227, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -251,7 +249,7 @@ public final class EmailVisualPanel1 extends JPanel implements ChangeListener {
                     .addComponent(jLabelServerAddr)
                     .addComponent(jTextFieldServerAddr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         buttonGroup1.add(jRadioButtonFromLocalFile);
@@ -275,7 +273,7 @@ public final class EmailVisualPanel1 extends JPanel implements ChangeListener {
         Lookup.getDefault().lookupAll(EmailFilesFilter.class).toArray(new EmailFilesFilter[0]);
         String[] fileFilterString = new String[filters.length+1];
         int index = 0;
-        fileFilterString[0] = "--Select file type";
+        fileFilterString[0] = NbBundle.getMessage(EmailVisualPanel1.class, "EmailVisualPanel1.fileType.default");
         for(EmailFilesFilter f: filters){
             index ++;
             fileFilterString[index] = f.getDisplayName();
@@ -320,7 +318,7 @@ public final class EmailVisualPanel1 extends JPanel implements ChangeListener {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanelReceiveFromServer, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
+                    .addComponent(jPanelReceiveFromServer, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
                     .addComponent(jCheckBoxDisplayNameSameLabel, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jCheckBoxUseBccLine, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jCheckBoxUseCcLine, javax.swing.GroupLayout.Alignment.LEADING)
@@ -358,7 +356,7 @@ public final class EmailVisualPanel1 extends JPanel implements ChangeListener {
                 .addComponent(jCheckBoxUseBccLine)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxDisplayNameSameLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -366,7 +364,7 @@ public final class EmailVisualPanel1 extends JPanel implements ChangeListener {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         EmailImportAdvancedOptPanel panel = new EmailImportAdvancedOptPanel(jComboBoxServerType.getSelectedItem().toString(), this);
         //TODO internalize
-        DialogDescriptor dd = new DialogDescriptor(panel, "Advanced Options");
+        DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(EmailVisualPanel1.class, "EmailImportAdvancedOptPanel.name"));
         if (!DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
             panel = null;
             return;
@@ -397,7 +395,7 @@ public final class EmailVisualPanel1 extends JPanel implements ChangeListener {
             setDisable(jPanelReceiveFromServer);
             jComboBoxFileFilters.setEnabled(false);
         }
-        if (jComboBoxFileFilters.getSelectedItem().toString().equals("select file type")) {
+        if (jComboBoxFileFilters.getSelectedItem().toString().equals(NbBundle.getMessage(EmailVisualPanel1.class, "EmailImportAdvancedOptPanel.name"))) {
             jButtonFromLocalFile.setEnabled(false);
         } else {
             jButtonFromLocalFile.setEnabled(true);
@@ -414,7 +412,7 @@ public final class EmailVisualPanel1 extends JPanel implements ChangeListener {
 
     private void jComboBoxFileFiltersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxFileFiltersActionPerformed
         wizardPanel.fireChangeEvent();
-        if (!jComboBoxFileFilters.getSelectedItem().equals("select file type")) {
+        if (!jComboBoxFileFilters.getSelectedItem().equals(NbBundle.getMessage(EmailVisualPanel1.class, "EmailVisualPanel1.fileType.default"))) {
             jButtonFromLocalFile.setEnabled(true);
         } else {
             jButtonFromLocalFile.setEnabled(false);
