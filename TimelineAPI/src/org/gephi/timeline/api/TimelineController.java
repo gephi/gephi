@@ -41,6 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.timeline.api;
 
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.project.api.Workspace;
 
 /**
@@ -58,9 +59,21 @@ public interface TimelineController {
      */
     public TimelineModel getModel();
 
-    public void setMin(double min);
+    public void setCustomBounds(double min, double max);
 
-    public void setMax(double max);
+    public void setEnabled(boolean enabled);
+
+    public void setInterval(double from, double to);
+
+    public void startPlay();
+
+    public void stopPlay();
+
+    public void setPlaySpeed(int delay);
+    
+    public AttributeColumn[] getDynamicGraphColumns();
+    
+    public void selectColumn(AttributeColumn column);
 
     /**
      *

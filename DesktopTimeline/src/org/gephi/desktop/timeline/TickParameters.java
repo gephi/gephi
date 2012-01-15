@@ -1,6 +1,6 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Copyright 2008-2011 Gephi
+Authors : Mathieu Bastian
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -38,27 +38,85 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
 package org.gephi.desktop.timeline;
 
-import org.gephi.timeline.api.TimelineController;
-import org.openide.modules.ModuleInstall;
-import org.openide.util.Lookup;
-import org.openide.windows.WindowManager;
+import java.awt.Color;
+import java.awt.Font;
 
 /**
- * Manages a module's lifecycle. Remember that an installer is optional and
- * often not needed at all.
+ *
+ * @author mbastian
  */
-public class Installer extends ModuleInstall {
+public class TickParameters {
+    
+    public enum TickType {DATE, DOUBLE, START_END };
 
-    @Override
-    public void restored() {
-         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+    private final TickType type;
+    private int width, height;
+    private int fontSize = 12;
+    private double fontFactor = 7.;
+    private Font font = new Font("Helvetica", Font.PLAIN, fontSize);
+    private Color[] realColors = new Color[]{new Color(0x1E1E1E), new Color(0x5A5A5A), new Color(0xB4B4B4)};
+    private Color[] dateColors = new Color[]{new Color(0x999999), new Color(0xCCCCCC)};
 
-            public void run() {
-                TimelineController timelineController = Lookup.getDefault().lookup(TimelineController.class);
-            }
-        });
+    public TickParameters(TickType type) {
+        this.type = type;
+    }
+
+    public TickType getType() {
+        return type;
+    }
+    
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public Font getFont() {
+        return font;
+    }
+
+    public Color getDateColor(int level) {
+        return dateColors[level];
+    }
+
+    public void setDateColor(int level, Color color) {
+        dateColors[level] = color;
+    }
+
+    public Color getRealColor(int level) {
+        return realColors[level];
+    }
+
+    public void setLevelColor(int level, Color color) {
+        realColors[level] = color;
+    }
+
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
+    }
+
+    public double getFontFactor() {
+        return fontFactor;
+    }
+
+    public void setFontFactor(double fontFactor) {
+        this.fontFactor = fontFactor;
     }
 }

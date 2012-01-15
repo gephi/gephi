@@ -1,6 +1,6 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+Copyright 2008-2011 Gephi
+Authors : Mathieu Bastian
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -38,16 +38,54 @@ made subject to such option by the copyright holder.
 Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
-*/
+ */
+package org.gephi.desktop.timeline;
 
-package org.gephi.timeline.api;
-
-import javax.swing.event.ChangeEvent;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import org.gephi.timeline.api.TimelineChart;
+import org.gephi.timeline.api.TimelineModel;
+import org.gephi.utils.sparklines.SparklineGraph;
+import org.gephi.utils.sparklines.SparklineParameters;
 
 /**
  *
- * @author jbilcke
+ * @author mbastian
  */
-public interface TimelineAnimatorListener  {
-    public void timelineAnimatorChanged(ChangeEvent event);
+public class Sparkline {
+
+    private double min;
+    private double max;
+    private SparklineParameters parameters;
+    private TimelineChart chart;
+    private BufferedImage image;
+
+    public BufferedImage getImage(TimelineModel model, int width, int height) {
+        double newMin = model.getCustomMin();
+        double newMax = model.getCustomMax();
+        TimelineChart newChart = model.getChart();
+        if (chart == null || newMax != max || newMin != min || parameters.getWidth() != width || parameters.getHeight() != height
+                || newChart != chart) {
+            min = newMin;
+            max = newMax;
+            chart = newChart;
+            parameters = new SparklineParameters(width, height);
+            parameters.setWidth(width);
+            parameters.setHeight(height);
+            parameters.setTransparentBackground(true);
+            if (chart != null) {
+                image = draw();
+            } else {
+                return null;
+            }
+        }
+        return image;
+    }
+
+    private BufferedImage draw() {
+        BufferedImage img = SparklineGraph.draw(chart.getX(), chart.getY(), chart.getMinY(), chart.getMaxY(), parameters);
+        return img;
+    }
 }

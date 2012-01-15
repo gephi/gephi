@@ -1,6 +1,6 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Julian Bilcke <julian.bilcke@gephi.org>
+Copyright 2008-2011 Gephi
+Authors : Julian Bilcke
 Website : http://www.gephi.org
 
 This file is part of Gephi.
@@ -59,34 +59,13 @@ import java.util.Map;
  *
  * @author jbilcke
  */
-public class MinimalDrawerSettings {
+public class DrawerSettings {
 
     public class Background {
 
         public Color top;
         public Color bottom;
         public Paint paint;
-    }
-
-    public class TimeTip {
-
-        public Font font;
-        public FontMetrics fontMetrics;
-        public int fontSize;
-        public Color fontColor;
-        public Color backgroundColor;
-    }
-
-    public class Graduations {
-
-        public Font font;
-        public FontMetrics fontMetrics;
-        public int fontSize;
-        public Color fontColor;
-        public int topMargin;
-        public int leftMargin;
-        public int textTopPosition;
-        public int textBottomMargin;
     }
 
     public class SelectionBox {
@@ -106,8 +85,6 @@ public class MinimalDrawerSettings {
     }
     public Background background = new Background();
     public SelectionBox selection = new SelectionBox();
-    public TimeTip tip = new TimeTip();
-    public Graduations graduations = new Graduations();
     public Stroke defaultStroke;
     public Color defaultStrokeColor;
     public Color shadowColor;
@@ -119,6 +96,7 @@ public class MinimalDrawerSettings {
     private int lastHeight = 0;
     public int tmMarginTop;
     public int tmMarginBottom;
+    public int topChartMargin;
 
     void update(int width, int height) {
         if (lastWidth == width && lastHeight == height) {
@@ -133,28 +111,28 @@ public class MinimalDrawerSettings {
         selection.activatedPaint = new GradientPaint(0, 0, selection.activatedTopColor, 0, height, selection.activatedBottomColor, true);
     }
 
-    public MinimalDrawerSettings() {
+    public DrawerSettings() {
         /* DEFINE THEME HERE */
         //background.top = new Color(101, 101, 101, 255);
         //background.bottom = new Color(47, 45, 43, 255);
         //background.top = new Color(131, 131, 131, 255);
         //background.bottom = new Color(77, 75, 73, 255);
-        background.top = new Color(151, 151, 151, 255);
-        background.bottom = new Color(97, 95, 93, 255);
+        background.top = new Color(151, 151, 151, 0);
+        background.bottom = new Color(97, 95, 93, 0);
         background.paint = new GradientPaint(0, 0, background.top, 0, 20, background.bottom, true);
 
         //selection.top = new Color(89, 161, 235, 153);
         //selection.bottom = new Color(37, 104, 161, 153);
-        selection.top = new Color(108, 151, 194, 255);
-        selection.bottom = new Color(57, 97, 131, 255);
+        selection.top = new Color(108, 151, 194, 50);
+        selection.bottom = new Color(57, 97, 131, 50);
         selection.paint = new GradientPaint(0, 0, selection.top, 0, 20, selection.bottom, true);
-        selection.visibleHookWidth = 12; // the "visible hook" (mouse hook, to move the selection box)
-        selection.invisibleHookMargin = 3; // let the "invisible hook" be a bit larger on the left..
+        selection.visibleHookWidth = 6; // the "visible hook" (mouse hook, to move the selection box)
+        selection.invisibleHookMargin = 1; // let the "invisible hook" be a bit larger on the left..
         selection.minimalWidth = 16;
-        selection.mouseOverTopColor = new Color(102, 195, 145, 255);
-        selection.activatedTopColor = new Color(188, 118, 114, 255);
-        selection.mouseOverBottomColor = new Color(60, 143, 96, 255);
-        selection.activatedBottomColor = new Color(151, 79, 79, 255);
+        selection.mouseOverTopColor = new Color(102, 195, 145, 50);
+        selection.activatedTopColor = new Color(188, 118, 114, 50);
+        selection.mouseOverBottomColor = new Color(60, 143, 96, 50);
+        selection.activatedBottomColor = new Color(151, 79, 79, 50);
         selection.mouseOverPaint = new GradientPaint(0, 0, selection.mouseOverTopColor, 0, 20, selection.mouseOverBottomColor, true);
         selection.activatedPaint = new GradientPaint(0, 0, selection.activatedTopColor, 0, 20, selection.activatedBottomColor, true);
 
@@ -164,30 +142,13 @@ public class MinimalDrawerSettings {
         defaultStroke = new BasicStroke(1.0f);
         defaultStrokeColor = Color.black;
 
-        graduations.fontSize = 12;
-        graduations.font = new Font("DejaVu Sans Mono", 0, graduations.fontSize);
-        graduations.fontColor = new Color(235, 235, 235, 255);
-        graduations.fontMetrics = new FontMetrics(graduations.font) {
-        };
-        graduations.topMargin = 2;
-        graduations.leftMargin = 2;
-        graduations.textTopPosition = graduations.topMargin + graduations.fontSize;
-        graduations.textBottomMargin = 3;
+        hookLength = 8;
 
-
-        tip.fontSize = 12;
-        tip.font = new Font("DejaVu Sans Mono", 0, graduations.fontSize);
-        tip.fontColor = new Color(25, 25, 25, 160);
-        tip.fontMetrics = new FontMetrics(graduations.font) {
-        };
-        tip.backgroundColor = new Color(255, 255, 255, 160);
-
-        hookLength = 16;
-
-        tmMarginTop = 2;
+        tmMarginTop = 4;
         tmMarginBottom = 4;
 
-
+        topChartMargin = 10;
+        
         //System.out.println("Generating filters for " + this);
         // filters
         Map<Key, Object> map = new HashMap<Key, Object>();

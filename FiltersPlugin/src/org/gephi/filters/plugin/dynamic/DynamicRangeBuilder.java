@@ -238,11 +238,8 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             } else {
                 range.setMinMax(min, max);
             }
-            if (!Double.isInfinite(min) && timelineController != null) {
-                timelineController.setMin(min);
-            }
-            if (!Double.isInfinite(max) && timelineController != null) {
-                timelineController.setMax(max);
+            if (!Double.isInfinite(min) && !Double.isInfinite(max) && timelineController != null) {
+                timelineController.setCustomBounds(min, max);
             }
         }
 

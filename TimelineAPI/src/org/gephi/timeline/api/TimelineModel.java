@@ -41,6 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.timeline.api;
 
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.dynamic.api.DynamicModel;
 
 /**
@@ -48,36 +49,35 @@ import org.gephi.dynamic.api.DynamicModel;
  * @author Julian Bilcke <julian.bilcke@gmail.com>
  */
 public interface TimelineModel {
+    
+        public enum PlayMode {
 
-    public void setup(DynamicModel dynamicModel);
-
-    public void unsetup();
-
-    public void disable();
-
-    public double getTotalSize();
-
-    public double getMinValue();
-
-    public double getMaxValue();
-
-    public double getFromFloat();
-
-    public double getToFloat();
-
-    public void setCustomMin(double min);
-
-    public void setCustomMax(double max);
-
-    public void setRangeFromFloat(double from, double to);
-
-    public double getValueFromFloat(double position);
+        ONE_BOUND, TWO_BOUNDS
+    };
 
     public boolean isEnabled();
-
-    public void setEnabled(boolean enabled);
-
-    public void setUnit(Class cl);
-
-    public Class getUnit();
+    
+    public double getMin();
+    
+    public double getMax();
+    
+    public double getCustomMin();
+    
+    public double getCustomMax();
+    
+    public boolean hasCustomBounds();
+    
+    public double getIntervalStart();
+    
+    public double getIntervalEnd();
+    
+    public DynamicModel.TimeFormat getTimeFormat();
+    
+    public int getPlayDelay();
+    
+    public boolean isPlaying();
+    
+    public PlayMode getPlayMode();
+    
+    public TimelineChart getChart();
 }
