@@ -41,9 +41,6 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.timeline;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineModel;

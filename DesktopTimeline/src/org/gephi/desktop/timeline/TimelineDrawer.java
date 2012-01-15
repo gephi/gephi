@@ -59,7 +59,7 @@ import org.openide.util.Lookup;
 
 /**
  *
- * @author jbilcke, Daniel Bernardes
+ * @author Julian Bilcke, Daniel Bernardes
  */
 public class TimelineDrawer extends JPanel implements MouseListener, MouseMotionListener {
 

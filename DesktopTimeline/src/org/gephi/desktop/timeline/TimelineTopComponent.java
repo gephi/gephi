@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.timeline;
 
 import java.awt.CardLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
@@ -183,7 +184,9 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
                 JPopupMenu menu = new JPopupMenu();
 
                 //Custom bounds
-                JMenuItem item = new JMenuItem(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setCustomBounds"));
+                Image customBoundsIcon = ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/custom_bounds.png", false);
+                JMenuItem item = new JMenuItem(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setCustomBounds"),
+                        ImageUtilities.image2Icon(customBoundsIcon));
                 item.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {

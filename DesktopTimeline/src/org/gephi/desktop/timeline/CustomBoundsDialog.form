@@ -115,7 +115,7 @@
           <ResourceString bundle="org/gephi/desktop/timeline/Bundle.properties" key="CustomBoundsDialog.titleHeader.description" replaceFormat="NbBundle.getMessage (TimelineTopComponent.class, &quot;{key}&quot;)"/>
         </Property>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/org/gephi/desktop/timeline/resources/calendar-month.png"/>
+          <Image iconType="3" name="/org/gephi/desktop/timeline/resources/custom_bounds.png"/>
         </Property>
         <Property name="title" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/gephi/desktop/timeline/Bundle.properties" key="CustomBoundsDialog.titleHeader.title" replaceFormat="NbBundle.getMessage (TimelineTopComponent.class, &quot;{key}&quot;)"/>

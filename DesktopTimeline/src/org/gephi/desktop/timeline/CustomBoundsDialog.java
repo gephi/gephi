@@ -278,7 +278,6 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         titleHeader = new org.jdesktop.swingx.JXHeader();
         labelBounds = new javax.swing.JLabel();
@@ -294,7 +293,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
         endTextField = new javax.swing.JTextField();
 
         titleHeader.setDescription(NbBundle.getMessage (TimelineTopComponent.class, "CustomBoundsDialog.titleHeader.description")); // NOI18N
-        titleHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/calendar-month.png"))); // NOI18N
+        titleHeader.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/custom_bounds.png"))); // NOI18N
         titleHeader.setTitle(NbBundle.getMessage (TimelineTopComponent.class, "CustomBoundsDialog.titleHeader.title")); // NOI18N
 
         labelBounds.setFont(labelBounds.getFont().deriveFont(labelBounds.getFont().getStyle() | java.awt.Font.BOLD));

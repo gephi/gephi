@@ -46,12 +46,14 @@ import java.awt.Font;
 
 /**
  *
- * @author mbastian
+ * @author Mathieu Bastian
  */
 public class TickParameters {
-    
-    public enum TickType {DATE, DOUBLE, START_END };
 
+    public enum TickType {
+
+        DATE, DOUBLE, START_END
+    };
     private final TickType type;
     private int width, height;
     private int fontSize = 12;
@@ -67,7 +69,7 @@ public class TickParameters {
     public TickType getType() {
         return type;
     }
-    
+
     public int getWidth() {
         return width;
     }

@@ -52,7 +52,7 @@ import org.joda.time.Interval;
 
 /**
  *
- * @author mbastian
+ * @author Mathieu Bastian
  */
 public class TickGraph {
 

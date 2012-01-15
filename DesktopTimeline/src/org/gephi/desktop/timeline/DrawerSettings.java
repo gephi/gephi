@@ -43,8 +43,6 @@ package org.gephi.desktop.timeline;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Paint;
 import java.awt.RenderingHints;
@@ -57,7 +55,7 @@ import java.util.Map;
 
 /**
  *
- * @author jbilcke
+ * @author Julian Bilcke
  */
 public class DrawerSettings {
 
