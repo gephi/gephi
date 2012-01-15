@@ -48,6 +48,7 @@ import java.awt.Paint;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -109,6 +110,7 @@ public class SparklineGraph {
         final BufferedImage image = new BufferedImage(parameters.getWidth(), parameters.getHeight(), BufferedImage.TYPE_INT_ARGB);
         final Color backgroundColor = parameters.getBackgroundColor() != null ? parameters.getBackgroundColor() : SparklineParameters.DEFAULT_BACKGROUND_COLOR;
         final Color lineColor = parameters.getLineColor() != null ? parameters.getLineColor() : SparklineParameters.DEFAULT_LINE_COLOR;
+        final Color areaColor = parameters.getAreaColor() != null ? parameters.getAreaColor() : SparklineParameters.DEFAULT_AREA_COLOR;
         Color higlightMinColor = parameters.getHiglightMinColor();
         Color higlightMaxColor = parameters.getHiglightMaxColor();
         int width = parameters.getWidth();
@@ -138,7 +140,7 @@ public class SparklineGraph {
         final Graphics2D g = image.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         //Background:
-        if (backgroundColor != null) {
+        if (backgroundColor != null && !parameters.isTransparentBackground()) {
             g.setBackground(backgroundColor);
             g.clearRect(0, 0, width, height);
         }
@@ -154,6 +156,10 @@ public class SparklineGraph {
                 width -= HIGHLIGHT_RADIUS;//Highlight circle radius pixels less in order not to draw outside bounds
                 g.translate(HIGHLIGHT_RADIUS / 2, HIGHLIGHT_RADIUS / 2);
             }
+
+            //Poly
+            Path2D.Float path = new Path2D.Float();
+            path.moveTo(0, height);
 
             //Calculate x tick width and x min value:
             float xMin;
@@ -182,6 +188,14 @@ public class SparklineGraph {
                 y0 = bottom - (yValues[i].floatValue() - yMin) * yTickWidth;
                 y1 = bottom - (yValues[i + 1].floatValue() - yMin) * yTickWidth;
                 g.draw(new Line2D.Double(x0, y0, x1, y1));
+
+                //Add to path
+                if (parameters.isDrawArea()) {
+                    if (i == 0) {
+                        path.lineTo(x0, y0);
+                    }
+                    path.lineTo(x1, y1);
+                }
 
                 //Save min/max values highlihgting if enabled:
                 if (yValues[i + 1].floatValue() == yMin && higlightMinColor != null) {
@@ -221,6 +235,18 @@ public class SparklineGraph {
                     higlightedValueXPosition = null;
                 }
             }
+
+
+            //Draw area
+            if (parameters.isDrawArea()) {
+                //End Path
+                path.lineTo(width, height);
+                path.lineTo(0, height);
+
+                g.setColor(areaColor);
+                g.fill(path);
+            }
+
 
             //Draw list of highlights at the end in order to always draw them on top of lines:
             for (HighlightParameters p : highlightsList) {

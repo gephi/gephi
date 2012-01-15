@@ -66,6 +66,7 @@ public class SparklineParameters {
     }
 
     public static final Color DEFAULT_LINE_COLOR = Color.BLUE;
+    public static final Color DEFAULT_AREA_COLOR = new Color(DEFAULT_LINE_COLOR.getRed(), DEFAULT_LINE_COLOR.getRed(), DEFAULT_LINE_COLOR.getBlue(), 50);
     public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
     public static final Color DEFAULT_HIGHLIGHT_VALUE_COLOR = Color.MAGENTA;
     public static final Color DEFAULT_TEXT_COLOR = Color.BLACK;
@@ -75,7 +76,10 @@ public class SparklineParameters {
     
     private int width, height;
     private Color lineColor;
+    private Color areaColor;
     private Color backgroundColor;
+    private boolean transparentBackground;
+    private boolean drawArea;
     private Color higlightMinColor, higlightMaxColor;
     private Integer higlightedValueXPosition;
     private Color highligtValueColor;
@@ -256,5 +260,29 @@ public class SparklineParameters {
 
     public void setWidth(int width) {
         this.width = width;
+    }
+
+    public boolean isTransparentBackground() {
+        return transparentBackground;
+    }
+
+    public void setTransparentBackground(boolean transparentBackground) {
+        this.transparentBackground = transparentBackground;
+    }
+
+    public void setAreaColor(Color areaColor) {
+        this.areaColor = areaColor;
+    }
+
+    public Color getAreaColor() {
+        return areaColor;
+    }
+
+    public void setDrawArea(boolean drawArea) {
+        this.drawArea = drawArea;
+    }
+
+    public boolean isDrawArea() {
+        return drawArea;
     }
 }
