@@ -45,10 +45,13 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
+import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.type.DynamicInteger;
 import org.gephi.data.attributes.type.Interval;
-import org.gephi.dynamic.api.DynamicController;
-import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.HierarchicalGraph;
@@ -59,7 +62,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -67,26 +70,38 @@ import org.openide.util.Lookup;
  */
 public class DynamicNbNodes implements DynamicStatistics {
 
+    public static final String NB_NODES = "dynamic nodecount";
     //Data
     private GraphModel graphModel;
-    private DynamicModel dynamicModel;
     private double window;
     private double tick;
     private Interval bounds;
-    //Result
-    //private List<Interval<Integer>> counts;
-    private Map<Double, Integer> countTs;
+    //Average
+    private AttributeColumn nbNodesCol;
+    private DynamicInteger counts;
 
-    public void execute(GraphModel graphModel, AttributeModel model) {
+    public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         this.graphModel = graphModel;
-        //this.counts = new ArrayList<Interval<Integer>>();
-        this.countTs = new HashMap<Double, Integer>();
-        this.dynamicModel = Lookup.getDefault().lookup(DynamicController.class).getModel(graphModel.getWorkspace());
+
+        //Column
+        AttributeTable graphTable = attributeModel.getGraphTable();
+        nbNodesCol = graphTable.getColumn(NB_NODES);
+        if (nbNodesCol == null) {
+            nbNodesCol = graphTable.addColumn(NB_NODES, NbBundle.getMessage(DynamicNbNodes.class, "DynamicNbNodes.graphcolumn.NbNodes"), AttributeType.DYNAMIC_INT, AttributeOrigin.COMPUTED, new DynamicInteger());
+        }
+        counts = new DynamicInteger();
+        graphModel.getGraphVisible().getAttributes().setValue(nbNodesCol.getIndex(), counts);
     }
 
     public String getReport() {
+        //Transform to Map
+        Map<Double, Integer> map = new HashMap<Double, Integer>();
+        for (Interval<Integer> interval : counts.getIntervals()) {
+            map.put(interval.getLow(), interval.getValue());
+        }
+
         //Time series
-        XYSeries dSeries = ChartUtils.createXYSeries(countTs, "Nb Nodes Time Series");
+        XYSeries dSeries = ChartUtils.createXYSeries(map, "Nb Nodes Time Series");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(dSeries);
@@ -127,11 +142,12 @@ public class DynamicNbNodes implements DynamicStatistics {
         HierarchicalGraph graph = graphModel.getHierarchicalGraph(window);
 
         int count = graph.getNodeCount();
-        //counts.add(new Interval<Integer>(interval, count));
-        countTs.put(interval.getHigh(), count);
+
+        counts = new DynamicInteger(counts, new Interval<Integer>(interval.getLow(), interval.getHigh(), false, true, count));
     }
 
     public void end() {
+        graphModel.getGraphVisible().getAttributes().setValue(nbNodesCol.getIndex(), counts);
     }
 
     public void setBounds(Interval bounds) {

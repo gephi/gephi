@@ -70,6 +70,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -77,10 +78,10 @@ import org.openide.util.Lookup;
  */
 public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask {
 
+    public static final String DYNAMIC_AVG_CLUSTERING_COEFFICIENT = "dynamic_avg_clustering";
     public static final String DYNAMIC_CLUSTERING_COEFFICIENT = "dynamic_clustering";
     //Data
     private GraphModel graphModel;
-    private DynamicModel dynamicModel;
     private double window;
     private double tick;
     private Interval bounds;
@@ -90,9 +91,9 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
     private ClusteringCoefficient clusteringCoefficientStat;
     //Cols
     private AttributeColumn dynamicCoefficientColumn;
-    //Result
-    //private List<Interval<Double>> averages;
-    private Map<Double, Double> coefficientTs;
+    //Average
+    private AttributeColumn dynamicAverageCoefficientColumn;
+    private DynamicDouble averages;
 
     public DynamicClusteringCoefficient() {
         GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
@@ -103,26 +104,34 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
 
     public void execute(GraphModel graphModel, AttributeModel attributeModel) {
         this.graphModel = graphModel;
-        //this.averages = new ArrayList<Interval<Double>>();
-        this.coefficientTs = new HashMap<Double, Double>();
         this.isDirected = graphModel.isDirected();
-        this.dynamicModel = Lookup.getDefault().lookup(DynamicController.class).getModel(graphModel.getWorkspace());
-        this.clusteringCoefficientStat = new ClusteringCoefficient();
-        clusteringCoefficientStat.setDirected(isDirected);
 
         //Attributes cols
         if (!averageOnly) {
             AttributeTable nodeTable = attributeModel.getNodeTable();
             dynamicCoefficientColumn = nodeTable.getColumn(DYNAMIC_CLUSTERING_COEFFICIENT);
             if (dynamicCoefficientColumn == null) {
-                dynamicCoefficientColumn = nodeTable.addColumn(DYNAMIC_CLUSTERING_COEFFICIENT, "Dynamic Clustering Coefficient", AttributeType.DYNAMIC_DOUBLE, AttributeOrigin.COMPUTED, new DynamicDouble());
+                dynamicCoefficientColumn = nodeTable.addColumn(DYNAMIC_CLUSTERING_COEFFICIENT, NbBundle.getMessage(DynamicClusteringCoefficient.class, "DynamicClusteringCoefficient.nodecolumn.ClusteringCoefficient"), AttributeType.DYNAMIC_DOUBLE, AttributeOrigin.COMPUTED, new DynamicDouble());
             }
+        }
+
+        //Column
+        AttributeTable graphTable = attributeModel.getGraphTable();
+        dynamicAverageCoefficientColumn = graphTable.getColumn(DYNAMIC_AVG_CLUSTERING_COEFFICIENT);
+        if (dynamicAverageCoefficientColumn == null) {
+            dynamicAverageCoefficientColumn = graphTable.addColumn(DYNAMIC_AVG_CLUSTERING_COEFFICIENT, NbBundle.getMessage(DynamicClusteringCoefficient.class, "DynamicClusteringCoefficient.graphcolumn.AvgClusteringCoefficient"), AttributeType.DYNAMIC_DOUBLE, AttributeOrigin.COMPUTED, new DynamicDouble());
         }
     }
 
     public String getReport() {
+        //Transform to Map
+        Map<Double, Double> map = new HashMap<Double, Double>();
+        for (Interval<Double> interval : averages.getIntervals()) {
+            map.put(interval.getLow(), interval.getValue());
+        }
+
         //Time series
-        XYSeries dSeries = ChartUtils.createXYSeries(coefficientTs, "Clustering Coefficient Time Series");
+        XYSeries dSeries = ChartUtils.createXYSeries(map, "Clustering Coefficient Time Series");
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(dSeries);
@@ -169,6 +178,8 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
 
         graph.readLock();
 
+        clusteringCoefficientStat = new ClusteringCoefficient();
+        clusteringCoefficientStat.setDirected(isDirected);
         clusteringCoefficientStat.triangles(graph);
 
         //Columns
@@ -195,11 +206,14 @@ public class DynamicClusteringCoefficient implements DynamicStatistics, LongTask
 
         //Average
         double avg = clusteringCoefficientStat.getAverageClusteringCoefficient();
-        coefficientTs.put(interval.getHigh(), avg);
+
+        averages = new DynamicDouble(averages, new Interval<Double>(interval.getLow(), interval.getHigh(), false, true, avg));
     }
 
     public void end() {
         clusteringCoefficientStat = null;
+
+        graphModel.getGraphVisible().getAttributes().setValue(dynamicAverageCoefficientColumn.getIndex(), averages);
     }
 
     public void setBounds(Interval bounds) {
