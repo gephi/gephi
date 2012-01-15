@@ -83,6 +83,7 @@ import org.openide.util.Exceptions;
  * @author Cezary Bartosiak
  */
 public final class DynamicUtilities {
+
     private static DatatypeFactory dateFactory;
 
     static {
@@ -91,7 +92,7 @@ public final class DynamicUtilities {
         } catch (DatatypeConfigurationException ex) {
         }
     }
-    
+
     /**
      * Used for import (parses XML date strings).
      *
@@ -120,6 +121,38 @@ public final class DynamicUtilities {
     }
 
     /**
+     * Used for import (parses XML date strings).
+     *
+     * @param str a string to parse from
+     *
+     * @return date as a double.
+     *
+     * @throws IllegalArgumentException if {@code str} is not a valid {@code XMLGregorianCalendar}.
+     * @throws NullPointerException     if {@code str} is null.
+     */
+    public static double getDoubleFromDate(Date date) {
+        return date.getTime();
+    }
+
+    /**
+     * Used for get a date from the low-level double
+     *
+     * @param d a double to convert from
+     *
+     * @return an date instance
+     *
+     * @throws IllegalArgumentException if {@code d} is infinite.
+     */
+    public static Date getDateFromDouble(double d) {
+        if (d == Double.NEGATIVE_INFINITY || d == Double.POSITIVE_INFINITY) {
+            throw new IllegalArgumentException("date can' be infinite");
+        }
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTimeInMillis((long) d);
+        return dateFactory.newXMLGregorianCalendar(gc).toGregorianCalendar().getTime();
+    }
+
+    /**
      * Used for export (writes XML date strings).
      *
      * @param d a double to convert from
@@ -138,7 +171,7 @@ public final class DynamicUtilities {
         gc.setTimeInMillis((long) d);
         return dateFactory.newXMLGregorianCalendar(gc).toXMLFormat().substring(0, 23);
     }
-    
+
     /**
      * Returns a new {@code DynamicType} instance that contains a given
      * {@code Interval} in.
