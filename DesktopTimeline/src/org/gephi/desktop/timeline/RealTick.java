@@ -108,6 +108,9 @@ public class RealTick {
         return (index * tick - (min - minTick)) / (max - min);
     }
 
+    /**
+     * Return 2 if multiple of 10, 1 if multiple of 5, 0 otherwise 
+     */
     public int getTickRank(int index) {
         double t = minTick + (index * tick);
         t = round(t, exponent >= 0 ? 1 : Math.abs(exponent));

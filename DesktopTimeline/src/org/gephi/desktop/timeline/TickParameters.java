@@ -57,9 +57,9 @@ public class TickParameters {
     private final TickType type;
     private int width, height;
     private int fontSize = 12;
-    private double fontFactor = 7.;
+    private double fontFactor = 6.;
     private Font font = new Font("Helvetica", Font.PLAIN, fontSize);
-    private Color[] realColors = new Color[]{new Color(0x1E1E1E), new Color(0x5A5A5A), new Color(0xB4B4B4)};
+    private Color[] realColors = new Color[]{new Color(0xB4B4B4), new Color(0x5A5A5A), new Color(0x1E1E1E)};
     private Color[] dateColors = new Color[]{new Color(0x999999), new Color(0xCCCCCC)};
 
     public TickParameters(TickType type) {
