@@ -179,6 +179,7 @@ public class TimelineModelImpl implements TimelineModel {
         this.playDelay = playDelay;
     }
 
+    @Override
     public double getPlayStep() {
         return playStep;
     }

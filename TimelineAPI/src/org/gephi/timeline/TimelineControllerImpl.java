@@ -66,6 +66,7 @@ import org.gephi.project.api.WorkspaceListener;
 import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
+import org.gephi.timeline.api.TimelineModel.PlayMode;
 import org.gephi.timeline.api.TimelineModelEvent;
 import org.gephi.timeline.api.TimelineModelListener;
 import org.openide.util.Lookup;
@@ -177,6 +178,11 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
             double min = timeInterval.getLow();
             double max = timeInterval.getHigh();
             setInterval(min, max);
+        } else if (event.getEventType().equals(DynamicModelEvent.EventType.TIME_FORMAT)) {
+            DynamicModel.TimeFormat timeFormat = (DynamicModel.TimeFormat)event.getData();
+            if(model != null && !model.getTimeFormat().equals(timeFormat)) {
+                model.setTimeFormat(timeFormat);
+            }
         }
     }
 
@@ -364,27 +370,41 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
 
                 @Override
                 public void run() {
-                    double min = model.getMin();
-                    double max = model.getMax();
+                    double min = model.getCustomMin();
+                    double max = model.getCustomMax();
                     double duration = max - min;
-                    double step = duration * model.getPlayStep();
+                    double step = (duration * model.getPlayStep()) * 0.95;
                     double from = model.getIntervalStart();
                     double to = model.getIntervalEnd();
                     boolean bothBounds = model.getPlayMode().equals(TimelineModel.PlayMode.TWO_BOUNDS);
-                    if (step > 0) {
-                        to += step;
-                        if (bothBounds) {
+                    boolean someAction = false;
+                    if (bothBounds) {
+                        if (step > 0 && to < max) {
                             from += step;
+                            to += step;
+                            someAction = true;
+                        } else if (step < 0 && from > min) {
+                            from += step;
+                            to += step;
+                            someAction = true;
                         }
                     } else {
-                        from += step;
-                        if (bothBounds) {
+                        if (step > 0 && to < max) {
                             to += step;
+                            someAction = true;
+                        } else if (step < 0 && from > min) {
+                            from += step;
+                            someAction = true;
                         }
                     }
-                    from = Math.max(from, min);
-                    to = Math.min(to, max);
-                    setInterval(from, to);
+
+                    if (someAction) {
+                        from = Math.max(from, min);
+                        to = Math.min(to, max);
+                        setInterval(from, to);
+                    } else {
+                        stopPlay();
+                    }
                 }
             }, model.getPlayDelay(), model.getPlayDelay(), TimeUnit.MILLISECONDS);
             fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.PLAY_START, model, null));
@@ -406,6 +426,20 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
     public void setPlaySpeed(int delay) {
         if (model != null) {
             model.setPlayDelay(delay);
+        }
+    }
+
+    @Override
+    public void setPlayStep(double step) {
+        if (model != null) {
+            model.setPlayStep(step);
+        }
+    }
+
+    @Override
+    public void setPlayMode(PlayMode playMode) {
+        if (model != null) {
+            model.setPlayMode(playMode);
         }
     }
 }

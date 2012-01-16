@@ -75,6 +75,8 @@ public interface TimelineModel {
     public DynamicModel.TimeFormat getTimeFormat();
 
     public int getPlayDelay();
+    
+    public double getPlayStep();
 
     public boolean isPlaying();
 

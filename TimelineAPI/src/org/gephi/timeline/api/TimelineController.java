@@ -71,6 +71,10 @@ public interface TimelineController {
 
     public void setPlaySpeed(int delay);
     
+    public void setPlayStep(double step);
+    
+    public void setPlayMode(TimelineModel.PlayMode playMode);
+    
     public AttributeColumn[] getDynamicGraphColumns();
     
     public void selectColumn(AttributeColumn column);
