@@ -42,9 +42,11 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.timeline;
 
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -96,6 +98,8 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
             containerPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
             enablePanel.setBackground(UIManager.getColor("NbExplorerView.background"));
             disabledTimeline.setBackground(UIManager.getColor("NbExplorerView.background"));
+            controlPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+            innerPanel.setBackground(UIManager.getColor("NbTabControl.editorTabBackground"));
         }
         this.drawer = (TimelineDrawer) timelinePanel;
 
@@ -290,6 +294,7 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         disabledTimeline = new javax.swing.JPanel();
         disabledTimelineLabel = new javax.swing.JLabel();
         innerPanel = new javax.swing.JPanel();
+        controlPanel = new javax.swing.JPanel();
         playButton = new javax.swing.JToggleButton();
         innerToolbar = new javax.swing.JToolBar(JToolBar.VERTICAL);
         disableButon = new javax.swing.JButton();
@@ -336,8 +341,9 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
         containerPanel.add(disabledTimeline, "disabled");
 
-        innerPanel.setOpaque(false);
         innerPanel.setLayout(new java.awt.GridBagLayout());
+
+        controlPanel.setLayout(new java.awt.GridBagLayout());
 
         playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/playback_play.png"))); // NOI18N
         playButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.playButton.toolTipText")); // NOI18N
@@ -346,13 +352,13 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         playButton.setFocusable(false);
         playButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         playButton.setRequestFocusEnabled(false);
-        playButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/playback_pause3.png"))); // NOI18N
+        playButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/playback_play.png"))); // NOI18N
         playButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        innerPanel.add(playButton, gridBagConstraints);
+        controlPanel.add(playButton, gridBagConstraints);
 
         innerToolbar.setBorder(null);
         innerToolbar.setFloatable(false);
@@ -385,15 +391,21 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weighty = 1.0;
-        innerPanel.add(innerToolbar, gridBagConstraints);
+        controlPanel.add(innerToolbar, gridBagConstraints);
 
-        timelinePanel.setOpaque(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        innerPanel.add(controlPanel, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(1, 0, 1, 0);
         innerPanel.add(timelinePanel, gridBagConstraints);
 
         containerPanel.add(innerPanel, "bottom");
@@ -418,6 +430,7 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
     private javax.swing.JButton closeButton;
     private javax.swing.JButton columnsButton;
     private javax.swing.JPanel containerPanel;
+    private javax.swing.JPanel controlPanel;
     private javax.swing.JButton disableButon;
     private javax.swing.JPanel disabledTimeline;
     private javax.swing.JLabel disabledTimelineLabel;

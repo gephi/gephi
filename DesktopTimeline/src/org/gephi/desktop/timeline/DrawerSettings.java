@@ -142,8 +142,8 @@ public class DrawerSettings {
 
         hookLength = 8;
 
-        tmMarginTop = 4;
-        tmMarginBottom = 4;
+        tmMarginTop = 0;
+        tmMarginBottom = 0;
 
         topChartMargin = 10;
         
@@ -164,11 +164,11 @@ public class DrawerSettings {
 
         renderingHints = new RenderingHints(map);
 
-        float ninth = 1.0f / 9.0f;
-        float[] blurKernel = {ninth, ninth, ninth, ninth, ninth, ninth, ninth,
-            ninth, ninth};
-        convolutionKernel = new Kernel(3, 3, blurKernel);
-        blurOperator = new ConvolveOp(convolutionKernel, ConvolveOp.EDGE_NO_OP,
-                renderingHints);
+//        float ninth = 1.0f / 9.0f;
+//        float[] blurKernel = {ninth, ninth, ninth, ninth, ninth, ninth, ninth,
+//            ninth, ninth};
+//        convolutionKernel = new Kernel(3, 3, blurKernel);
+//        blurOperator = new ConvolveOp(convolutionKernel, ConvolveOp.EDGE_NO_OP,
+//                renderingHints);
     }
 }
