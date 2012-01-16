@@ -594,7 +594,11 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
         if (width != 0) {
             double from = getReal(sf, max - min, min, width);
             double to = getReal(st, max - min, min, width);
-            controller.setInterval(from, to);
+            from = Math.max(from, model.getCustomMin());
+            to = Math.min(to, model.getCustomMax());
+            if (from < to) {
+                controller.setInterval(from, to);
+            }
         }
     }
 }
