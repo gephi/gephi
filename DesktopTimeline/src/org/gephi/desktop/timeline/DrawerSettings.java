@@ -145,7 +145,7 @@ public class DrawerSettings {
         tmMarginTop = 0;
         tmMarginBottom = 0;
 
-        topChartMargin = 10;
+        topChartMargin = 16;
         
         //System.out.println("Generating filters for " + this);
         // filters

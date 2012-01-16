@@ -189,9 +189,9 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
                 //Custom bounds
                 Image customBoundsIcon = ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/custom_bounds.png", false);
-                JMenuItem item = new JMenuItem(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setCustomBounds"),
+                JMenuItem customBoundsItem = new JMenuItem(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setCustomBounds"),
                         ImageUtilities.image2Icon(customBoundsIcon));
-                item.addActionListener(new ActionListener() {
+                customBoundsItem.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent e) {
                         CustomBoundsDialog d = new CustomBoundsDialog();
@@ -211,8 +211,41 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
                         }
                     }
                 });
-                menu.add(item);
+                menu.add(customBoundsItem);
+
+                //Animation
+                Image animationIcon = ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/animation_settings.png", false);
+                JMenuItem animationItem = new JMenuItem(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setPlaySettings"),
+                        ImageUtilities.image2Icon(animationIcon));
+                animationItem.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        PlaySettingsDialog d = new PlaySettingsDialog();
+                        d.setup(model);
+                        String title = NbBundle.getMessage(CustomBoundsDialog.class, "PlaySettingsDialog.title");
+                        final DialogDescriptor descriptor = new DialogDescriptor(d, title);
+                        Object result = DialogDisplayer.getDefault().notify(descriptor);
+                        if (result == NotifyDescriptor.OK_OPTION) {
+                            d.unsetup();
+                        }
+                    }
+                });
+                menu.add(animationItem);
+
                 menu.show(settingsButon, 0, -menu.getPreferredSize().height);
+            }
+        });
+
+        playButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (model != null) {
+                    if (model.isPlaying() && !playButton.isSelected()) {
+                        controller.stopPlay();
+                    } else if (!model.isPlaying() && playButton.isSelected()) {
+                        controller.startPlay();
+                    }
+                }
             }
         });
     }
@@ -243,13 +276,17 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
             setup(event.getSource());
         } else if (event.getEventType().equals(TimelineModelEvent.EventType.ENABLED)) {
             enableTimeline(event.getSource());
-        } else if(event.getEventType().equals(TimelineModelEvent.EventType.VALID_BOUNDS)) {
+        } else if (event.getEventType().equals(TimelineModelEvent.EventType.VALID_BOUNDS)) {
             enableTimeline(event.getSource());
+        } else if (event.getEventType().equals(TimelineModelEvent.EventType.PLAY_START)) {
+            setPlaying(true);
+        } else if (event.getEventType().equals(TimelineModelEvent.EventType.PLAY_STOP)) {
+            setPlaying(false);
         }
         drawer.consumeEvent(event);
     }
 
-    public void enableTimeline(TimelineModel model) {
+    private void enableTimeline(TimelineModel model) {
         CardLayout cardLayout = (CardLayout) containerPanel.getLayout();
         if (model == null) {
             cardLayout.show(containerPanel, "top");
@@ -262,6 +299,15 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
             cardLayout.show(containerPanel, "top");
             enableTimelineButton.setEnabled(true);
         }
+    }
+
+    private void setPlaying(final boolean playing) {
+        SwingUtilities.invokeLater(new Runnable() {
+
+            public void run() {
+                playButton.setSelected(playing);
+            }
+        });
     }
 
     private void setTimeLineVisible(final boolean visible) {
@@ -345,14 +391,13 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
         controlPanel.setLayout(new java.awt.GridBagLayout());
 
-        playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/playback_play.png"))); // NOI18N
+        playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/disabled.png"))); // NOI18N
         playButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.playButton.toolTipText")); // NOI18N
         playButton.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/disabled.png"))); // NOI18N
-        playButton.setEnabled(false);
         playButton.setFocusable(false);
         playButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         playButton.setRequestFocusEnabled(false);
-        playButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/playback_play.png"))); // NOI18N
+        playButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/enabled.png"))); // NOI18N
         playButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
