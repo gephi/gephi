@@ -52,6 +52,7 @@ import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.UIManager;
 
 /**
  *
@@ -115,7 +116,8 @@ public class DrawerSettings {
         //background.bottom = new Color(47, 45, 43, 255);
         //background.top = new Color(131, 131, 131, 255);
         //background.bottom = new Color(77, 75, 73, 255);
-        background.top = new Color(151, 151, 151, 0);
+//        background.top = new Color(151, 151, 151, 0);
+        background.top = UIManager.getColor("NbExplorerView.background");
         background.bottom = new Color(97, 95, 93, 0);
         background.paint = new GradientPaint(0, 0, background.top, 0, 20, background.bottom, true);
 

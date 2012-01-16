@@ -82,6 +82,7 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
     private final List<TimelineModelListener> listeners;
     private TimelineModelImpl model;
     private DynamicModel dynamicModel;
+    private final DynamicController dynamicController;
     private AttributeModel attributeModel;
     private ScheduledExecutorService playExecutor;
 
@@ -90,7 +91,7 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
 
         //Workspace events
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        final DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+        dynamicController = Lookup.getDefault().lookup(DynamicController.class);
 
         pc.addWorkspaceListener(new WorkspaceListener() {
 
@@ -133,6 +134,7 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
                 model = new TimelineModelImpl();
                 pc.getCurrentWorkspace().add(model);
             }
+            attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel(pc.getCurrentWorkspace());
             setup(dynamicController.getModel(pc.getCurrentWorkspace()));
         }
     }
@@ -156,12 +158,10 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
         setMinMax(min, max);
         fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, model, null));
 
-        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
         dynamicController.addModelListener(this);
     }
 
     private void unsetup() {
-        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
         dynamicController.removeModelListener(this);
         this.dynamicModel = null;
     }
@@ -179,8 +179,8 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
             double max = timeInterval.getHigh();
             setInterval(min, max);
         } else if (event.getEventType().equals(DynamicModelEvent.EventType.TIME_FORMAT)) {
-            DynamicModel.TimeFormat timeFormat = (DynamicModel.TimeFormat)event.getData();
-            if(model != null && !model.getTimeFormat().equals(timeFormat)) {
+            DynamicModel.TimeFormat timeFormat = (DynamicModel.TimeFormat) event.getData();
+            if (model != null && !model.getTimeFormat().equals(timeFormat)) {
                 model.setTimeFormat(timeFormat);
             }
         }
@@ -279,6 +279,7 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
                 double[] val = new double[]{from, to};
                 model.setIntervalMin(from);
                 model.setIntervalMax(to);
+                dynamicController.setVisibleInterval(from, to);
                 fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.INTERVAL, model, val));
             }
         }

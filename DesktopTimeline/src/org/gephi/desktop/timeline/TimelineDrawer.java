@@ -41,6 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.timeline;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -203,7 +204,8 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
         int innerHeight = height - settings.tmMarginBottom - 2;
         int innerY = settings.tmMarginTop + 1;
         g2d.setBackground(settings.background.top);
-        g2d.setPaint(settings.background.paint);
+//        g2d.setPaint(settings.background.paint);
+        g2d.setColor(settings.background.top);
         g2d.fillRect(0, innerY, innerWidth, innerHeight);
 
         if (!this.isEnabled()) {
