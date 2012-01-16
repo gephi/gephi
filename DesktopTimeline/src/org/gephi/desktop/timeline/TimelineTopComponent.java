@@ -84,7 +84,7 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
     private static TimelineTopComponent instance;
     /** path to the icon used by the component and its open action */
-    static final String ICON_PATH = "org/gephi/desktop/timeline/resources/ui-status-bar.png";
+    static final String ICON_PATH = "org/gephi/desktop/timeline/resources/icon.png";
     private static final String PREFERRED_ID = "TimelineTopComponent";
     private transient TimelineDrawer drawer;
     private transient TimelineModel model;
@@ -94,9 +94,8 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         initComponents();
         if (UIUtils.isAquaLookAndFeel()) {
             containerPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
-        }
-        if (UIUtils.isAquaLookAndFeel()) {
             enablePanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+            disabledTimeline.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
         this.drawer = (TimelineDrawer) timelinePanel;
 
@@ -115,6 +114,7 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
             public void actionPerformed(ActionEvent e) {
                 controller.setEnabled(false);
+                setTimeLineVisible(false);
             }
         });
 
@@ -155,9 +155,9 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
                     });
                     menu.add(item);
                 }
-                
+
                 //No columns message
-                if(menu.getSubElements().length ==0) {
+                if (menu.getSubElements().length == 0) {
                     menu.add("<html><i>" + NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.charts.empty") + "</i></html>");
                 }
 
@@ -220,8 +220,7 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
                 public void run() {
                     drawer.setModel(TimelineTopComponent.this.model);
-                    enableTimeline(TimelineTopComponent.this.model.isEnabled());
-                    enableTimelineButton.setEnabled(true);
+                    enableTimeline(TimelineTopComponent.this.model);
                 }
             });
         } else {
@@ -229,8 +228,7 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
                 public void run() {
                     drawer.setModel(TimelineTopComponent.this.model);
-                    enableTimeline(false);
-                    enableTimelineButton.setEnabled(false);
+                    enableTimeline(null);
                 }
             });
         }
@@ -240,17 +238,25 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         if (event.getEventType().equals(TimelineModelEvent.EventType.MODEL)) {
             setup(event.getSource());
         } else if (event.getEventType().equals(TimelineModelEvent.EventType.ENABLED)) {
-            enableTimeline(model.isEnabled());
+            enableTimeline(event.getSource());
+        } else if(event.getEventType().equals(TimelineModelEvent.EventType.VALID_BOUNDS)) {
+            enableTimeline(event.getSource());
         }
         drawer.consumeEvent(event);
     }
 
-    public void enableTimeline(boolean enabled) {
+    public void enableTimeline(TimelineModel model) {
         CardLayout cardLayout = (CardLayout) containerPanel.getLayout();
-        if (enabled) {
+        if (model == null) {
+            cardLayout.show(containerPanel, "top");
+            enableTimelineButton.setEnabled(false);
+        } else if (!model.hasValidBounds()) {
+            cardLayout.show(containerPanel, "disabled");
+        } else if (model.isEnabled()) {
             cardLayout.show(containerPanel, "bottom");
         } else {
             cardLayout.show(containerPanel, "top");
+            enableTimelineButton.setEnabled(true);
         }
     }
 
@@ -281,14 +287,16 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         enablePanel = new javax.swing.JPanel();
         toolbarEnable = new javax.swing.JToolBar();
         enableTimelineButton = new javax.swing.JButton();
+        disabledTimeline = new javax.swing.JPanel();
+        disabledTimelineLabel = new javax.swing.JLabel();
         innerPanel = new javax.swing.JPanel();
-        closeButton = new CloseButton();
         playButton = new javax.swing.JToggleButton();
         innerToolbar = new javax.swing.JToolBar(JToolBar.VERTICAL);
         disableButon = new javax.swing.JButton();
         columnsButton = new javax.swing.JButton();
         settingsButon = new javax.swing.JButton();
         timelinePanel = new org.gephi.desktop.timeline.TimelineDrawer();
+        closeButton = new CloseButton();
 
         setMaximumSize(new java.awt.Dimension(32767, 58));
         setMinimumSize(new java.awt.Dimension(414, 58));
@@ -303,11 +311,11 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         toolbarEnable.setRollover(true);
         toolbarEnable.setOpaque(false);
 
-        enableTimelineButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/ui-status-bar.png"))); // NOI18N
+        enableTimelineButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/activate.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(enableTimelineButton, NbBundle.getMessage (TimelineTopComponent.class, "TimelineTopComponent.enableTimelineButton.text")); // NOI18N
         enableTimelineButton.setFocusable(false);
         enableTimelineButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        enableTimelineButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        enableTimelineButton.setMargin(new java.awt.Insets(4, 6, 4, 6));
         toolbarEnable.add(enableTimelineButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -319,16 +327,17 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
         containerPanel.add(enablePanel, "top");
 
+        disabledTimeline.setLayout(new java.awt.GridBagLayout());
+
+        disabledTimelineLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/activate.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(disabledTimelineLabel, NbBundle.getMessage (TimelineTopComponent.class, "TimelineTopComponent.disabledTimelineLabel.text")); // NOI18N
+        disabledTimelineLabel.setEnabled(false);
+        disabledTimeline.add(disabledTimelineLabel, new java.awt.GridBagConstraints());
+
+        containerPanel.add(disabledTimeline, "disabled");
+
         innerPanel.setOpaque(false);
         innerPanel.setLayout(new java.awt.GridBagLayout());
-
-        closeButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.closeButton.toolTipText")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
-        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
-        innerPanel.add(closeButton, gridBagConstraints);
 
         playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/playback_play.png"))); // NOI18N
         playButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.playButton.toolTipText")); // NOI18N
@@ -377,6 +386,8 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weighty = 1.0;
         innerPanel.add(innerToolbar, gridBagConstraints);
+
+        timelinePanel.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
@@ -394,12 +405,22 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         add(containerPanel, gridBagConstraints);
+
+        closeButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.closeButton.toolTipText")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+        add(closeButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
     private javax.swing.JButton columnsButton;
     private javax.swing.JPanel containerPanel;
     private javax.swing.JButton disableButon;
+    private javax.swing.JPanel disabledTimeline;
+    private javax.swing.JLabel disabledTimelineLabel;
     private javax.swing.JPanel enablePanel;
     private javax.swing.JButton enableTimelineButton;
     private javax.swing.JPanel innerPanel;

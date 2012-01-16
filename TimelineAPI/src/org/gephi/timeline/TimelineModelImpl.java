@@ -42,14 +42,13 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.timeline;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineModel;
 
 /**
  *
- * @author mbastian
+ * @author Mathieu Bastian
  */
 public class TimelineModelImpl implements TimelineModel {
 
@@ -155,6 +154,11 @@ public class TimelineModelImpl implements TimelineModel {
 
     public void setTo(double to) {
         this.to = to;
+    }
+
+    @Override
+    public boolean hasValidBounds() {
+        return !Double.isInfinite(min) && !Double.isInfinite(max);
     }
 
     @Override

@@ -6,7 +6,7 @@
             <file name="org-gephi-desktop-timeline-TimelineAction.instance">
                 <attr name="component" methodvalue="org.gephi.desktop.timeline.TimelineTopComponent.findInstance"/>
                 <attr name="displayName" bundlevalue="org.gephi.desktop.timeline.Bundle#CTL_TimelineAction"/>
-                <attr name="iconBase" stringvalue="org/gephi/desktop/timeline/resources/ui-status-bar.png"/>
+                <attr name="iconBase" stringvalue="org/gephi/desktop/timeline/resources/icon.png"/>
                 <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
             </file>
         </folder>

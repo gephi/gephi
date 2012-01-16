@@ -72,6 +72,7 @@ public class Sparkline {
             parameters.setWidth(width);
             parameters.setHeight(height);
             parameters.setTransparentBackground(true);
+            parameters.setDrawArea(true);
             if (chart != null) {
                 image = draw();
             } else {

@@ -229,7 +229,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
         //SPARKLINE
         if (model.getChart() != null) {
             BufferedImage spImage = sparkline.getImage(model, innerWidth, innerHeight - settings.topChartMargin);
-            g2d.drawImage(spImage, 0, innerY - settings.topChartMargin, null);
+            g2d.drawImage(spImage, 0, innerY + settings.topChartMargin, null);
         }
 
         // VISIBLE HOOK (THE LITTLE GREEN RECTANGLE ON EACH SIDE) WIDTH
