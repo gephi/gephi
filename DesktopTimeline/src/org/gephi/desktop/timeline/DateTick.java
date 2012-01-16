@@ -41,6 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.timeline;
 
+import org.gephi.dynamic.DynamicUtilities;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.DurationFieldType;
@@ -81,7 +82,7 @@ public class DateTick {
     public String getTickValue(int type, DateTime dateTime) {
         return tickPeriods[type].getTickValue(dateTime);
     }
-    
+
     public DurationFieldType getDurationType(int type) {
         return tickPeriods[type].getDurationType();
     }
@@ -95,8 +96,8 @@ public class DateTick {
 
     public static DateTick create(double min, double max, int width) {
 
-        DateTime minDate = new DateTime("2009-11-17T20:00:00");
-        DateTime maxDate = new DateTime("2009-11-18T23:00:00");
+        DateTime minDate = new DateTime((long) min);
+        DateTime maxDate = new DateTime((long) max);
 
         Period period = new Period(minDate, maxDate, PeriodType.yearMonthDayTime());;
         int years = period.getYears();
