@@ -68,7 +68,7 @@ public final class DynamicModelEvent {
      */
     public enum EventType {
 
-        VISIBLE_INTERVAL, MIN_CHANGED, MAX_CHANGED, IS_DYNAMIC_GRAPH
+        VISIBLE_INTERVAL, MIN_CHANGED, MAX_CHANGED, IS_DYNAMIC_GRAPH, TIME_FORMAT
     };
     private final EventType type;
     private final DynamicModel source;

@@ -374,6 +374,8 @@ public final class DynamicModelImpl implements DynamicModel {
 
     public void setTimeFormat(TimeFormat timeFormat) {
         this.timeFormat = timeFormat;
+
+        controller.fireModelEvent(new DynamicModelEvent(DynamicModelEvent.EventType.TIME_FORMAT, this, timeFormat));
     }
 
     @Override
