@@ -54,6 +54,8 @@ public interface TimelineChart {
     public Number[] getX();
 
     public Number[] getY();
+    
+    public Number getY(Number x);
 
     public Number getMinY();
 

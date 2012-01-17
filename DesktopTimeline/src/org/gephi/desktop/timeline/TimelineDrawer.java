@@ -45,6 +45,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -56,6 +57,7 @@ import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.api.TimelineModelEvent;
+import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.util.Lookup;
 
 /**
@@ -89,6 +91,8 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
     private TickGraph tickGraph = new TickGraph();
     //Sparkline
     private Sparkline sparkline = new Sparkline();
+    //Tooltip
+    private TimelineTooltip tooltip = new TimelineTooltip();
 
     public enum TimelineState {
 
@@ -337,28 +341,6 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
     public void mouseClicked(MouseEvent e) {
         latestMousePositionX = e.getX();
         currentMousePositionX = latestMousePositionX;
-        //throw new UnsupportedOperationException("Not supported yet.");
-        /*
-        int w = getWidth();
-        // small feature: when the zone is too small, and if we double-click,
-        // we want to expand the timeline
-        if (e.getClickCount() == 2) {
-        if (w != 0) {
-        if (sf > 0.1 && st < 0.9) {
-        newfrom = 0;
-        newto = w;
-        repaint();
-        }
-        }
-        
-        } else if (e.getClickCount() == 2) {
-        if (w != 0) {
-        newto = st * (1.0 / w);
-        repaint(); // so it will repaint all panels
-        }
-        
-        }
-         */
     }
 
     public void mousePressed(MouseEvent e) {
@@ -370,6 +352,8 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
         currentMousePositionX = latestMousePositionX;
         int r = settings.selection.visibleHookWidth + settings.selection.invisibleHookMargin;
 
+        tooltip.stop();
+        
         int width = getWidth();
         double min = model.getCustomMin();
         double max = model.getCustomMax();
@@ -422,6 +406,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
             currentMousePositionX = latestMousePositionX;
         }
         mouseInside = false;
+        tooltip.stop();
         repaint();
     }
 
@@ -452,6 +437,12 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
 
         int sf = Math.max(0, getPixelPosition(intervalStart, max - min, min, width));
         int st = Math.min(width, getPixelPosition(intervalEnd, max - min, min, width));
+
+
+        //Tooltip
+        double pos = getReal(currentMousePositionX, max - min, min, width);
+        tooltip.setModel(model);
+        tooltip.start(pos, evt.getLocationOnScreen(), this);
 
         // SELECTED ZONE BEGIN POSITION, IN PIXELS
         // int sf = (int) (model.getFromFloat() * (double) w);
@@ -487,11 +478,11 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
             setCursor(newCursor);
         }
         // only repaint if highlight has changed (save a lot of fps)
-        //if (highlightedComponent != old) {
-        //    repaint();
-        //}
-        // now we always repaint, because of the tooltip
-        repaint();
+        if (highlightedComponent != old) {
+            repaint();
+        }
+//         now we always repaint, because of the tooltip
+//        repaint();
 
     }
 
@@ -515,6 +506,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
         currentMousePositionX = Math.min(width, currentMousePositionX);
         int x = currentMousePositionX;
 
+        tooltip.stop();
 
         int r = settings.selection.visibleHookWidth;
 
