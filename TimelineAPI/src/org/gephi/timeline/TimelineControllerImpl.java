@@ -269,7 +269,7 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
     @Override
     public void setInterval(double from, double to) {
         if (model != null) {
-            if (model.getIntervalStart() != from || model.getIntervalEnd() != to) {
+            if (dynamicModel.getVisibleInterval().getLow() != from || dynamicModel.getVisibleInterval().getHigh() != to) {
                 if (from >= to) {
                     throw new IllegalArgumentException("from should be less than to");
                 }
