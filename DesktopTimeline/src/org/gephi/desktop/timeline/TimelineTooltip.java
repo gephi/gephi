@@ -46,6 +46,8 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.JComponent;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.timeline.api.TimelineChart;
@@ -71,12 +73,13 @@ public class TimelineTooltip {
     private String y;
     private Timer timer;
     private RichTooltip tooltip;
+    private Lock lock = new ReentrantLock();
 
     public void setModel(TimelineModel model) {
         this.model = model;
     }
 
-    public synchronized void start(final double currentPosition, final Point mousePosition, final JComponent component) {
+    public void start(final double currentPosition, final Point mousePosition, final JComponent component) {
         stop();
         if (model == null) {
             return;
@@ -86,19 +89,32 @@ public class TimelineTooltip {
 
             @Override
             public void run() {
-                buildData(currentPosition);
-                tooltip = buildTooltip();
-                tooltip.showTooltip(component, mousePosition);
+                lock.lock();
+                try {
+                    if (tooltip != null) {
+                        tooltip.hideTooltip();
+                    }
+                    buildData(currentPosition);
+                    tooltip = buildTooltip();
+                    tooltip.showTooltip(component, mousePosition);
+                } finally {
+                    lock.unlock();
+                }
             }
         }, TimelineTooltip.DELAY);
     }
 
-    public synchronized  void stop() {
+    public void stop() {
         if (timer != null) {
             timer.cancel();
         }
-        if(tooltip != null) {
-            tooltip.hideTooltip();
+        lock.lock();
+        try {
+            if (tooltip != null) {
+                tooltip.hideTooltip();
+            }
+        } finally {
+            lock.unlock();
         }
         timer = null;
         tooltip = null;

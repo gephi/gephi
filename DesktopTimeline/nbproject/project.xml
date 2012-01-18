@@ -31,14 +31,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.gephi.project.api</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>0.7</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.gephi.timeline</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -109,14 +101,6 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>7.20.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.openide.modules</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>7.17.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

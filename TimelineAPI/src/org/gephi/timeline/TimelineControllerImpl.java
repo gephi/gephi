@@ -325,7 +325,9 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
                                     ys[i] = y;
                                     i++;
                                 }
-                                chart = new TimelineChartImpl(column, xs, ys);
+                                if(xs.length > 0) {
+                                    chart = new TimelineChartImpl(column, xs, ys);
+                                }
                             }
                         }
                         model.setChart(chart);

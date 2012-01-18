@@ -83,7 +83,7 @@ public class TimelineChartImpl implements TimelineChart {
         int minIndex = -1;
         double minX = Double.POSITIVE_INFINITY;
         for (int i = 0; i < xs.length; i++) {
-            double diff = xs[i].doubleValue() - x.doubleValue();
+            double diff = Math.abs(xs[i].doubleValue() - x.doubleValue());
             if (diff < minX) {
                 minX = diff;
                 minIndex = i;
