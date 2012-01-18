@@ -177,7 +177,9 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
             TimeInterval timeInterval = (TimeInterval) event.getData();
             double min = timeInterval.getLow();
             double max = timeInterval.getHigh();
-            setInterval(min, max);
+            if(!model.isPlaying()) {
+                setInterval(min, max);
+            }        
         } else if (event.getEventType().equals(DynamicModelEvent.EventType.TIME_FORMAT)) {
             DynamicModel.TimeFormat timeFormat = (DynamicModel.TimeFormat) event.getData();
             if (model != null && !model.getTimeFormat().equals(timeFormat)) {
