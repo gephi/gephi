@@ -47,6 +47,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import javax.swing.JTextField;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
@@ -105,7 +106,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
             startTextField.setText(DATETIME_FORMAT.format(from));
             endTextField.setText(DATETIME_FORMAT.format(to));
         } else {
-            NumberFormat f = NumberFormat.getInstance();
+            NumberFormat f = NumberFormat.getInstance(Locale.ENGLISH);
             f.setGroupingUsed(false);
             minTextField.setText(f.format(model.getMin()));
             maxTextField.setText(f.format(model.getMax()));
@@ -140,7 +141,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
             startTextField.setText(DATETIME_FORMAT.format(from));
             endTextField.setText(DATETIME_FORMAT.format(to));
         } else {
-            NumberFormat f = NumberFormat.getInstance();
+            NumberFormat f = NumberFormat.getInstance(Locale.ENGLISH);
             f.setGroupingUsed(false);
             minTextField.setText(f.format(model.getCustomMin()));
             maxTextField.setText(f.format(model.getCustomMax()));
@@ -183,8 +184,8 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
             double end = Double.parseDouble(endTextField.getText());
             start = Math.max(min, start);
             end = Math.min(max, end);
-            controller.setInterval(start, end);
             controller.setCustomBounds(min, max);
+            controller.setInterval(start, end);
         }
     }
 
