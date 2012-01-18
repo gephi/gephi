@@ -67,7 +67,7 @@ public class PlaySettingsDialog extends javax.swing.JPanel {
         this.controller = Lookup.getDefault().lookup(TimelineController.class);
 
         int delay = model.getPlayDelay();
-        SpinnerNumberModel delayModel = new SpinnerNumberModel(delay, 10, Integer.MAX_VALUE, 100);
+        SpinnerNumberModel delayModel = new SpinnerNumberModel(delay, 10, Integer.MAX_VALUE, 50);
         delaySpinner.setModel(delayModel);
 
         double step = model.getPlayStep() * 100;
