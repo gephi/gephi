@@ -72,7 +72,7 @@
     </target>
 
     <target name="javadoc">
-        <javadoc destdir="dist/apiindex" windowtitle="Gephi API Index" encoding="UTF-8" charset="UTF-8" stylesheetfile="stylesheet.css"  packagenames="org.gephi.**.api,org.gephi.**.spi.*,org.gephi.data.*,org.gephi.utils.progress,org.gephi.preview.types,org.gephi.timeline.*" overview="overview.html"  classpath="build/public-package-jars/org-openide-util-lookup.jar">
+        <javadoc destdir="dist/apiindex" windowtitle="Gephi API Index" encoding="UTF-8" charset="UTF-8" stylesheetfile="stylesheet.css"  packagenames="org.gephi.**.api,org.gephi.**.spi.*,org.gephi.data.*,org.gephi.utils.progress,org.gephi.preview.types" overview="overview.html"  classpath="build/public-package-jars/org-openide-util-lookup.jar">
             <sourcepath>
                 <pathelement path="AttributesAPI/src"/>
                 <pathelement path="ClusteringAPI/src"/>
