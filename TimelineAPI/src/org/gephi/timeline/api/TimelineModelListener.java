@@ -42,8 +42,10 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.timeline.api;
 
 /**
- *
- * @author Julian Bilcke <julian.bilcke@gmail.com>
+ * Timeline model listener.
+ * 
+ * @author Julian Bilcke
+ * @see TimelineModelEvent
  */
 public interface TimelineModelListener {
 

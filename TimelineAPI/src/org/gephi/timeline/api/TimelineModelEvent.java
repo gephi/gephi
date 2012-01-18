@@ -42,8 +42,10 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.timeline.api;
 
 /**
- *
+ * Timeline model event.
+ * 
  * @author Mathieu Bastian
+ * @see TimelineModelListener
  */
 public final class TimelineModelEvent {
 

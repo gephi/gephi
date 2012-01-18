@@ -46,7 +46,7 @@ import org.gephi.project.api.Workspace;
 
 /**
  *
- * @author Julian Bilcke <julian.bilcke@gmail.com>
+ * @author Julian Bilcke, Mathieu Bastian
  */
 public interface TimelineController {
 
@@ -59,35 +59,86 @@ public interface TimelineController {
      */
     public TimelineModel getModel();
 
+    /**
+     * Sets the timeline custom bounds. Custom bounds still need to be included in the
+     * min and max bound of the time scale. The timeline will resize accordingly.
+     * @param min the lower bound
+     * @param max the upper bound
+     * @throws IllegalArgumentException if <code>min<code> is superior or equal than
+     * <code>max</code> or out of bounds
+     */
     public void setCustomBounds(double min, double max);
 
+    /**
+     * Sets the timeline enable status.
+     * @param enabled the enabled value to set
+     */
     public void setEnabled(boolean enabled);
 
+    /**
+     * Sets the current timeline interval. This is propagated to the <code>DynamicModel</code>
+     * and defines the interval the graph is filtered with.
+     * @param from the lower bound
+     * @param to the upper bound
+     * @throws IllegalArgumentException if <code>min<code> is superior or equal than
+     * <code>max</code> or out of bounds
+     */
     public void setInterval(double from, double to);
 
+    /**
+     * Starts the timeline animation using the current delay, step size and play mode.
+     */
     public void startPlay();
 
+    /**
+     * Stops the timeline animation.
+     */
     public void stopPlay();
 
+    /**
+     * Sets the play delay in milliseconds. Defines the time between each interval
+     * shift.
+     * @param delay the delay in milliseconds
+     */
     public void setPlaySpeed(int delay);
     
+    /**
+     * Sets the play step. Defines how much the interval is moved at each step
+     * during animation. Defined in percentage of the total interval.
+     * @param step the step, between 0 and 1
+     */
     public void setPlayStep(double step);
     
+    /**
+     * Sets the play mode. This defines how the interval is moved.
+     * @param playMode the play mode
+     */
     public void setPlayMode(TimelineModel.PlayMode playMode);
     
+    /**
+     * Returns all the possible dynamic attribute columns. This is essentially all
+     * number-based dynamic columns defined in the graph table.
+     * @return all dynamic number columns in the graph table
+     */
     public AttributeColumn[] getDynamicGraphColumns();
     
+    /**
+     * Select a column to make a {@link TimelineChart} of it. The column must be member
+     * of the graph table.
+     * @param column the column to select
+     * @throws IllegalArgumentException if <code>column</code> is not a graph column
+     */
     public void selectColumn(AttributeColumn column);
 
     /**
-     *
-     * @param listener
+     * Add <code>listener</code> to the list of event listerners.
+     * @param listener the listener to add
      */
     public void addListener(TimelineModelListener listener);
 
     /**
-     *
-     * @param listener
+     * Remove <code>listerner</code> from the list of event listeners.
+     * @param listener the listener to remove
      */
     public void removeListener(TimelineModelListener listener);
 }

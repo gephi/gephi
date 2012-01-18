@@ -49,7 +49,7 @@ import org.gephi.utils.sparklines.SparklineParameters;
 
 /**
  *
- * @author mbastian
+ * @author Mathieu Bastian
  */
 public class Sparkline {
 

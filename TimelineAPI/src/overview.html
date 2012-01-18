@@ -4,13 +4,14 @@
         <title>Timeline API</title>
     </head>
     <body>
-        Timeline API provides access to the timeline component.
+        Timeline API provides access to the timeline data, control settings and
+        animation.
         <p>
-            The Timeline API allow the developer to control the Timeline.
-            You can access the timeline cursors, by setting or getting
-            the <b>From</b> and <b>To</b> values, eg: <em>setFrom(0.30)</em>.
-            You can either pass relative values (eg. <em>0.5</em>, which means
-            "half of the current length") or absolute values (eg. and unixtime).
+            The Timeline API allows to set custom bounds and visible interval. The
+            timeline is the UI component which controls the network exploration
+            over time. It is connected to the <code>DynamicAPI</code> which
+            controls the time scale and intervals. The API also allows to
+            control the animation (i.e play feature).
         </p>
     </body>
 </html>
