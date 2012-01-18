@@ -159,8 +159,8 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                 double end = DynamicUtilities.getDoubleFromDate(DATE_FORMAT.parse(endTextField.getText()));
                 start = Math.max(min, start);
                 end = Math.min(max, end);
-                controller.setInterval(start, end);
                 controller.setCustomBounds(min, max);
+                controller.setInterval(start, end);
             } catch (ParseException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -172,8 +172,8 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
                 double end = DynamicUtilities.getDoubleFromDate(DATETIME_FORMAT.parse(endTextField.getText()));
                 start = Math.max(min, start);
                 end = Math.min(max, end);
-                controller.setInterval(start, end);
                 controller.setCustomBounds(min, max);
+                controller.setInterval(start, end);
             } catch (ParseException ex) {
                 Exceptions.printStackTrace(ex);
             }
