@@ -41,12 +41,9 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.filters.plugin.dynamic;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Icon;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
@@ -66,7 +63,6 @@ import org.gephi.filters.spi.FilterProperty;
 import org.gephi.filters.spi.NodeFilter;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
 import org.gephi.timeline.api.TimelineController;
 import org.openide.util.Lookup;
@@ -155,8 +151,6 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         private TimelineController timelineController;
         private TimeInterval visibleInterval;
         private FilterProperty[] filterProperties;
-        private Double min;
-        private Double max;
         private Range range;
         private boolean keepNull = true;
 
@@ -166,19 +160,11 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             this.dynamicController = dynamicController;
             this.dynamicModel = dynamicController.getModel();
             this.timelineController = timelineController;
-//            min = dynamicModel.getMin();
-//            max = dynamicModel.getMax();
-//            if (timelineController != null) {
-//                timelineController.setMin(min);
-//                timelineController.setMax(max);
-//            }
         }
 
         public boolean init(Graph graph) {
             dynamicController.addModelListener(this);
             visibleInterval = dynamicModel.getVisibleInterval();
-            //Refresh minmax
-            refreshValues((HierarchicalGraph) graph);
             return true;
         }
 
@@ -209,40 +195,6 @@ public class DynamicRangeBuilder implements CategoryBuilder {
         public void finish() {
         }
 
-        public void refreshValues(HierarchicalGraph graph) {
-            min = Double.POSITIVE_INFINITY;
-            max = Double.NEGATIVE_INFINITY;
-
-            if (nodeColumn != null) {
-                for (Node n : graph.getNodes()) {
-                    Object obj = n.getNodeData().getAttributes().getValue(nodeColumn.getIndex());
-                    if (obj != null) {
-                        TimeInterval timeInterval = (TimeInterval) obj;
-                        min = Math.min(min, Double.isInfinite(timeInterval.getLow()) ? min : timeInterval.getLow());
-                        max = Math.max(max, Double.isInfinite(timeInterval.getHigh()) ? max : timeInterval.getHigh());
-                    }
-                }
-            }
-            if (edgeColumn != null) {
-                for (Edge e : graph.getEdgesAndMetaEdges()) {
-                    Object obj = e.getEdgeData().getAttributes().getValue(edgeColumn.getIndex());
-                    if (obj != null) {
-                        TimeInterval timeInterval = (TimeInterval) obj;
-                        min = Math.min(min, Double.isInfinite(timeInterval.getLow()) ? min : timeInterval.getLow());
-                        max = Math.max(max, Double.isInfinite(timeInterval.getHigh()) ? max : timeInterval.getHigh());
-                    }
-                }
-            }
-            if (range == null) {
-                range = new Range(visibleInterval.getLow(), visibleInterval.getHigh(), min, max);
-            } else {
-                range.setMinMax(min, max);
-            }
-            if (!Double.isInfinite(min) && !Double.isInfinite(max) && timelineController != null) {
-                timelineController.setCustomBounds(min, max);
-            }
-        }
-
         public String getName() {
             return NbBundle.getMessage(DynamicRangeBuilder.class, "DynamicRangeBuilder.name");
         }
@@ -265,21 +217,13 @@ public class DynamicRangeBuilder implements CategoryBuilder {
             switch (event.getEventType()) {
                 case VISIBLE_INTERVAL:
                     TimeInterval interval = (TimeInterval) event.getData();
-                    getProperties()[0].setValue(new Range(interval.getLow(), interval.getHigh(), min, max));
+                    getProperties()[0].setValue(new Range(interval.getLow(), interval.getHigh()));
                     break;
             }
         }
 
         public FilterProperty getRangeProperty() {
             return getProperties()[0];
-        }
-
-        public Double getMinimum() {
-            return min;
-        }
-
-        public Double getMaximum() {
-            return max;
         }
 
         public boolean isKeepNull() {
@@ -292,7 +236,7 @@ public class DynamicRangeBuilder implements CategoryBuilder {
 
         public Range getRange() {
             if (visibleInterval != null) {
-                return new Range(visibleInterval.getLow(), visibleInterval.getHigh(), min, max);
+                return new Range(visibleInterval.getLow(), visibleInterval.getHigh());
             }
             return null;
         }

@@ -248,6 +248,19 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
                 if (min < model.getMin() || max > model.getMax()) {
                     throw new IllegalArgumentException("Min and max should be in the bounds");
                 }
+
+                //Interval
+                if (model.getIntervalStart() < min || model.getIntervalEnd() > max) {
+                    if (model.getIntervalStart() < min) {
+                        model.setIntervalMin(min);
+                    }
+                    if (model.getIntervalEnd() > max) {
+                        model.setIntervalMax(max);
+                    }
+                    dynamicController.setVisibleInterval(min, max);
+                }
+
+                //Custom bounds
                 double[] val = new double[]{min, max};
                 model.setCustomMin(min);
                 model.setCustomMax(max);
@@ -325,7 +338,7 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
                                     ys[i] = y;
                                     i++;
                                 }
-                                if(xs.length > 0) {
+                                if (xs.length > 0) {
                                     chart = new TimelineChartImpl(column, xs, ys);
                                 }
                             }

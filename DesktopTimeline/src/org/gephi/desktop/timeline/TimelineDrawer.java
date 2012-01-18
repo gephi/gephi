@@ -165,6 +165,7 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
     }
 
     public void setCustomBounds(double min, double max) {
+        repaint();
     }
 
     public void setInterval(double from, double to) {
