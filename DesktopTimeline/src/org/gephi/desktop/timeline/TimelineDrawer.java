@@ -208,10 +208,10 @@ public class TimelineDrawer extends JPanel implements MouseListener, MouseMotion
         int innerWidth = width - 1;
         int innerHeight = height - settings.tmMarginBottom - 2;
         int innerY = settings.tmMarginTop + 1;
-        g2d.setBackground(settings.background.top);
+//        g2d.setBackground(settings.background.top);
 //        g2d.setPaint(settings.background.paint);
-        g2d.setColor(settings.background.top);
-        g2d.fillRect(0, innerY, innerWidth, innerHeight);
+//        g2d.setColor(settings.background.top);
+//        g2d.fillRect(0, innerY, innerWidth, innerHeight);
 
         if (!this.isEnabled()) {
             return;
