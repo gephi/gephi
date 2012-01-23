@@ -61,10 +61,29 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = StatisticsControllerUI.class)
 public class StatisticsControllerUIImpl implements StatisticsControllerUI {
 
+    private final DynamicModelListener dynamicModelListener;
     private StatisticsModelUIImpl model;
-    private DynamicModelListener dynamicModelListener;
+
+    public StatisticsControllerUIImpl() {
+        dynamicModelListener = new DynamicModelListener() {
+
+            public void dynamicModelChanged(DynamicModelEvent event) {
+                if (event.getEventType().equals(DynamicModelEvent.EventType.IS_DYNAMIC_GRAPH)) {
+                    boolean isDynamic = (Boolean) event.getData();
+                    for (StatisticsUI ui : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
+                        if (ui.getCategory().equals(StatisticsUI.CATEGORY_DYNAMIC)) {
+                            setStatisticsUIVisible(ui, isDynamic);
+                        }
+                    }
+                }
+            }
+        };
+    }
 
     public void setup(StatisticsModelUIImpl model) {
+        if(this.model == model) {
+            return;
+        }
         this.model = model;
         unsetup();
 
@@ -79,19 +98,7 @@ public class StatisticsControllerUIImpl implements StatisticsControllerUI {
                 }
             }
             //Add listener
-            dynamicModelListener = new DynamicModelListener() {
 
-                public void dynamicModelChanged(DynamicModelEvent event) {
-                    if (event.getEventType().equals(DynamicModelEvent.EventType.IS_DYNAMIC_GRAPH)) {
-                        boolean isDynamic = (Boolean) event.getData();
-                        for (StatisticsUI ui : Lookup.getDefault().lookupAll(StatisticsUI.class)) {
-                            if (ui.getCategory().equals(StatisticsUI.CATEGORY_DYNAMIC)) {
-                                setStatisticsUIVisible(ui, isDynamic);
-                            }
-                        }
-                    }
-                }
-            };
             dynamicController.addModelListener(dynamicModelListener);
         }
     }
