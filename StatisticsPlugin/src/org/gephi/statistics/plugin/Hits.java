@@ -326,8 +326,8 @@ public class Hits implements Statistics, LongTask {
                 false);
         chart2.removeLegend();
         ChartUtils.decorateChart(chart2);
-        ChartUtils.scaleChart(chart, dAuthsSeries, true);
-        String imageFile2 = ChartUtils.renderChart(chart, "authorities.png");
+        ChartUtils.scaleChart(chart2, dAuthsSeries, true);
+        String imageFile2 = ChartUtils.renderChart(chart2, "authorities.png");
 
 
         String report = "<HTML> <BODY> <h1> HITS Metric Report </h1>"
