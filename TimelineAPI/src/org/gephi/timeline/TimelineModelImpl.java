@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.timeline;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineModel;
@@ -53,13 +54,9 @@ import org.gephi.timeline.api.TimelineModel;
 public class TimelineModelImpl implements TimelineModel {
 
     private boolean enabled;
-    private double min;
-    private double max;
+    private DynamicModel dynamicModel;
     private double customMin;
     private double customMax;
-    private double from;
-    private double to;
-    private TimeFormat timeFormat;
     //Animation
     private int playDelay;
     private AtomicBoolean playing;
@@ -68,7 +65,10 @@ public class TimelineModelImpl implements TimelineModel {
     //Chart
     private TimelineChart chart;
 
-    public TimelineModelImpl() {
+    public TimelineModelImpl(DynamicModel dynamicModel) {
+        this.dynamicModel = dynamicModel;
+        this.customMin = dynamicModel.getMin();
+        this.customMax = dynamicModel.getMax();
         playDelay = 100;
         playStep = 0.01;
         playing = new AtomicBoolean(false);
@@ -82,12 +82,12 @@ public class TimelineModelImpl implements TimelineModel {
 
     @Override
     public double getMin() {
-        return min;
+        return dynamicModel.getMin();
     }
 
     @Override
     public double getMax() {
-        return max;
+        return dynamicModel.getMax();
     }
 
     @Override
@@ -102,22 +102,26 @@ public class TimelineModelImpl implements TimelineModel {
 
     @Override
     public boolean hasCustomBounds() {
-        return customMax != max || customMin != min;
+        return customMax != dynamicModel.getMax() || customMin != dynamicModel.getMin();
     }
 
     @Override
     public double getIntervalStart() {
-        return from;
+        return dynamicModel.getVisibleInterval().getLow();
     }
 
     @Override
     public double getIntervalEnd() {
-        return to;
+        return dynamicModel.getVisibleInterval().getHigh();
     }
 
     @Override
     public TimeFormat getTimeFormat() {
-        return timeFormat;
+        return dynamicModel.getTimeFormat();
+    }
+
+    public DynamicModel getDynamicModel() {
+        return dynamicModel;
     }
 
     public void setCustomMax(double customMax) {
@@ -132,33 +136,9 @@ public class TimelineModelImpl implements TimelineModel {
         this.enabled = enabled;
     }
 
-    public void setIntervalMin(double from) {
-        this.from = from;
-    }
-
-    public void setIntervalMax(double to) {
-        this.to = to;
-    }
-
-    public void setMax(double max) {
-        this.max = max;
-    }
-
-    public void setMin(double min) {
-        this.min = min;
-    }
-
-    public void setTimeFormat(TimeFormat timeFormat) {
-        this.timeFormat = timeFormat;
-    }
-
-    public void setTo(double to) {
-        this.to = to;
-    }
-
     @Override
     public boolean hasValidBounds() {
-        return !Double.isInfinite(min) && !Double.isInfinite(max);
+        return !Double.isInfinite(dynamicModel.getMin()) && !Double.isInfinite(dynamicModel.getMax());
     }
 
     @Override
