@@ -47,6 +47,8 @@ import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.dynamic.api.DynamicModelEvent;
+import org.gephi.dynamic.api.DynamicModelListener;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeIterable;
 import org.gephi.graph.api.Graph;
@@ -76,7 +78,7 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class DHNSDataBridge implements DataBridge, VizArchitecture {
+public class DHNSDataBridge implements DataBridge, VizArchitecture, DynamicModelListener {
 
     //Architecture
     protected AbstractEngine engine;
@@ -85,6 +87,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
     private VizConfig vizConfig;
     protected ModeManager modeManager;
     protected GraphLimits limits;
+    protected DynamicController dynamicController;
     protected DynamicModel dynamicModel;
     protected boolean undirected = false;
     //Version
@@ -102,6 +105,7 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         this.vizConfig = VizController.getInstance().getVizConfig();
         this.modeManager = VizController.getInstance().getModeManager();
         this.limits = VizController.getInstance().getLimits();
+        this.dynamicController = Lookup.getDefault().lookup(DynamicController.class);
     }
 
     public void updateWorld() {
@@ -133,8 +137,8 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
         }
 
         if (dynamicModel == null) {
-            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
             dynamicModel = dynamicController.getModel();
+            dynamicController.addModelListener(this);
         }
 
         graphView = graph.getView().getViewId();
@@ -382,6 +386,9 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 
     public void resetGraph() {
         graph = null;
+        if(dynamicModel != null) {
+            dynamicController.removeModelListener(this);
+        }
         dynamicModel = null;
     }
 
@@ -395,6 +402,12 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
             if (objClass.isEnabled()) {
                 engine.resetObjectClass(objClass);
             }
+        }
+    }
+
+    public void dynamicModelChanged(DynamicModelEvent event) {
+        if(event.getEventType().equals(DynamicModelEvent.EventType.VISIBLE_INTERVAL)) {
+            edgeVersion = -1;
         }
     }
 }
