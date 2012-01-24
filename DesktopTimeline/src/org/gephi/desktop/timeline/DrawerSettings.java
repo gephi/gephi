@@ -104,7 +104,7 @@ public class DrawerSettings {
         lastWidth = width;
         lastHeight = height;
 
-        background.paint = new GradientPaint(0, 0, background.top, 0, height, background.bottom, true);
+//        background.paint = new GradientPaint(0, 0, background.top, 0, height, background.bottom, true);
         selection.paint = new GradientPaint(0, 0, selection.top, 0, height, selection.bottom, true);
         selection.mouseOverPaint = new GradientPaint(0, 0, selection.mouseOverTopColor, 0, height, selection.mouseOverBottomColor, true);
         selection.activatedPaint = new GradientPaint(0, 0, selection.activatedTopColor, 0, height, selection.activatedBottomColor, true);
@@ -119,7 +119,7 @@ public class DrawerSettings {
 //        background.top = new Color(151, 151, 151, 0);
         background.top = UIManager.getColor("NbExplorerView.background");
         background.bottom = new Color(97, 95, 93, 0);
-        background.paint = new GradientPaint(0, 0, background.top, 0, 20, background.bottom, true);
+//        background.paint = new GradientPaint(0, 0, background.top, 0, 20, background.bottom, true);
 
         //selection.top = new Color(89, 161, 235, 153);
         //selection.bottom = new Color(37, 104, 161, 153);
