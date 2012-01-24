@@ -117,7 +117,7 @@ public class LayoutPanel extends javax.swing.JPanel implements PropertyChangeLis
             public void mouseEntered(MouseEvent e) {
                 if (infoLabel.isEnabled() && model != null && model.getSelectedLayout() != null) {
                     richTooltip = buildTooltip(model.getSelectedBuilder());
-                    richTooltip.showTooltip(infoLabel);
+                    richTooltip.showTooltip(infoLabel,e.getLocationOnScreen());
                 }
 
             }

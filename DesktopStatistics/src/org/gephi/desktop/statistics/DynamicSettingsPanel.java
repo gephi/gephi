@@ -93,7 +93,7 @@ public class DynamicSettingsPanel extends javax.swing.JPanel {
             public void mouseEntered(MouseEvent e) {
                 if (windowInfoLabel.isEnabled()) {
                     richTooltip = buildTooltip();
-                    richTooltip.showTooltip(windowInfoLabel);
+                    richTooltip.showTooltip(windowInfoLabel, e.getLocationOnScreen());
                 }
 
             }

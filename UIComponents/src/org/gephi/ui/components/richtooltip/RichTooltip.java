@@ -287,8 +287,8 @@ public class RichTooltip {
 
 
         // display directly below or above it
-        location.x = screenLocation.x;
-        location.y = screenLocation.y + component.getHeight();
+        location.x = screenLocation.x + 10;
+        location.y = screenLocation.y - 10;
         if ((location.y + size.height) > (sBounds.y + sBounds.height)) {
             location.y = screenLocation.y - size.height;
         }
