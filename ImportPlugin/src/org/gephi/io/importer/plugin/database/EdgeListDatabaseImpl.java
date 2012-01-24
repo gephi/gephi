@@ -64,6 +64,7 @@ public class EdgeListDatabaseImpl extends AbstractDatabase {
         properties.addNodePropertyAssociation(NodeProperties.X, "x");
         properties.addNodePropertyAssociation(NodeProperties.Y, "y");
         properties.addNodePropertyAssociation(NodeProperties.SIZE, "size");
+        properties.addNodePropertyAssociation(NodeProperties.COLOR, "color");
         properties.addNodePropertyAssociation(NodeProperties.START, "start");
         properties.addNodePropertyAssociation(NodeProperties.END, "end");
         properties.addNodePropertyAssociation(NodeProperties.START, "start_open");
@@ -75,6 +76,7 @@ public class EdgeListDatabaseImpl extends AbstractDatabase {
         properties.addEdgePropertyAssociation(EdgeProperties.TARGET, "target");
         properties.addEdgePropertyAssociation(EdgeProperties.LABEL, "label");
         properties.addEdgePropertyAssociation(EdgeProperties.WEIGHT, "weight");
+        properties.addNodePropertyAssociation(NodeProperties.COLOR, "color");
         properties.addEdgePropertyAssociation(EdgeProperties.START, "start");
         properties.addEdgePropertyAssociation(EdgeProperties.END, "end");
         properties.addEdgePropertyAssociation(EdgeProperties.START, "start_open");
