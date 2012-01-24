@@ -160,6 +160,8 @@ public class TimelineTooltip {
         if (model.getChart() != null) {
             TimelineChart chart = model.getChart();
             Number yNumber = chart.getY(currentPosition);
+            Number minYNumber = chart.getMinY();
+            Number maxYNumber = chart.getMaxY();
             y = yNumber.toString();
         } else {
             y = null;
@@ -184,6 +186,8 @@ public class TimelineTooltip {
         //Chart
         if (getY() != null) {
             richTooltip.addFooterSection(model.getChart().getColumn().getTitle());
+            richTooltip.addFooterSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.chart") + ": " + getY());
+            richTooltip.addFooterSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.chart") + ": " + getY());
             richTooltip.addFooterSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.chart") + ": " + getY());
 
             //Img
