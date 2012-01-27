@@ -182,16 +182,19 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
             double previousBoundsMax = model.getCustomMax();
 
             //Custom bounds
-            if (model.getCustomMin() == model.getMin()) {
+            if (model.getCustomMin() == model.getPreviousMin()) {
                 model.setCustomMin(min);
             } else if (model.getCustomMin() < min) {
                 model.setCustomMin(min);
             }
-            if (model.getCustomMax() == model.getMax()) {
+            if (model.getCustomMax() == model.getPreviousMax()) {
                 model.setCustomMax(max);
             } else if (model.getCustomMax() > max) {
                 model.setCustomMax(max);
             }
+            
+            model.setPreviousMin(min);
+            model.setPreviousMax(max);
 
             fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MIN_MAX, model, new double[]{min, max}));
 

@@ -64,11 +64,16 @@ public class TimelineModelImpl implements TimelineModel {
     private PlayMode playMode;
     //Chart
     private TimelineChart chart;
+    //MinMax
+    private double previousMin;
+    private double previousMax;
 
     public TimelineModelImpl(DynamicModel dynamicModel) {
         this.dynamicModel = dynamicModel;
         this.customMin = dynamicModel.getMin();
         this.customMax = dynamicModel.getMax();
+        this.previousMin = customMin;
+        this.previousMax = customMax;
         playDelay = 100;
         playStep = 0.01;
         playing = new AtomicBoolean(false);
@@ -88,6 +93,22 @@ public class TimelineModelImpl implements TimelineModel {
     @Override
     public double getMax() {
         return dynamicModel.getMax();
+    }
+
+    public double getPreviousMin() {
+        return previousMin;
+    }
+
+    public double getPreviousMax() {
+        return previousMax;
+    }
+
+    public void setPreviousMax(double previousMax) {
+        this.previousMax = previousMax;
+    }
+
+    public void setPreviousMin(double previousMin) {
+        this.previousMin = previousMin;
     }
 
     @Override
