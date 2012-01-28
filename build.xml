@@ -313,6 +313,8 @@
             <service type="org.openide.util.Lookup" provider="" />
             <service type="org.openide.filesystems.Repository" provider="" />
             <service type="org.openide.util.NbPreferences$Provider" provider="" />
+            <service type="org.netbeans.modules.masterfs.watcher.Watcher" provider="" />
+            <service type="org.netbeans.modules.masterfs.providers.AnnotationProvider" provider="" />
             
             <manifest>
             </manifest>
