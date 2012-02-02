@@ -71,6 +71,9 @@
           <ResourceString bundle="org/gephi/ui/exporter/plugin/Bundle.properties" key="UIExporterGML.exportLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="UIExporterVNAPanel_exportLabel"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JCheckBox" name="exportCoordsCheckBox">
       <Properties>
@@ -78,6 +81,9 @@
           <ResourceString bundle="org/gephi/ui/exporter/plugin/Bundle.properties" key="UIExporterGML.positionLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="UIExporterVNAPanel_exportCoordsCheckBox"/>
+      </AuxValues>
     </Component>
     <Component class="javax.swing.JCheckBox" name="exportColorsCheckBox">
       <Properties>
@@ -108,7 +114,9 @@
       </Properties>
       <AccessibilityProperties>
         <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="&#xa;" noResource="true"/>
-        <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value=""/>
+        <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/gephi/ui/exporter/plugin/Bundle.properties" key="" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
       </AccessibilityProperties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportAttributesCheckBoxActionPerformed"/>
