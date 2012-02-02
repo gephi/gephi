@@ -1,60 +1,62 @@
 /*
-Copyright 2008-2011 Gephi
-Authors : Taras Klaskovsky <megaterik@gmail.com>
-Website : http://www.gephi.org
+ Copyright 2008-2011 Gephi
+ Authors : Taras Klaskovsky <megaterik@gmail.com>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.exporter.plugin;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.TimeInterval;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicModel;
-import org.gephi.graph.api.*;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.project.api.Workspace;
 import org.gephi.utils.longtask.spi.LongTask;
 import org.gephi.utils.progress.ProgressTicket;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -98,7 +100,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     public boolean execute() {
         attributeModel = workspace.getLookup().lookup(AttributeModel.class);
         GraphModel graphModel = workspace.getLookup().lookup(GraphModel.class);
-        Graph graph = null;
+        Graph graph;
         if (exportVisible) {
             graph = graphModel.getGraphVisible();
         } else {
@@ -127,7 +129,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         if (normalize) {
             calculateMinMaxForNormalization(graph);
         }
-        if (exportAttributes) {
+        if (exportAttributes && atLeastOneNonStandartAttribute()) {
             exportNodeData(graph);
         }
         exportNodeProperties(graph);
@@ -145,28 +147,35 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         if (val == null) {
             return valueForEmptyAttributes;
         }
-        String res = val.toString().replace('\n', ' ').replace('\"', ' ');
-        System.err.println(visibleInterval.getLow() + " " + visibleInterval.getHigh());
-        System.err.println(s.getClass().toString() + " " + (s instanceof DynamicType) + " " + res);
-        System.err.println(s.toString() + " compare " + val.toString() + "_");
+        String res = val.toString().replaceAll("\\r\\n|\\r|\\n", " ").replace('\"', ' ');
         if (res.contains(" ")) {
             return "\"" + res + "\"";
         } else {
             return res;
         }
     }
+    //sorted arrays
+    static final private String[] standartNodeAttributes = {"Id", "Label", "Time Interval"};
+    static final private String[] standartEdgeAttributes = {"Id", "Label", "Time Interval", "Weight"};
 
+    private boolean atLeastOneNonStandartAttribute() {
+        for (int i = 0; i < attributeModel.getNodeTable().getColumns().length; i++) {
+            if (Arrays.binarySearch(standartNodeAttributes, attributeModel.getNodeTable().getColumn(i).getTitle()) < 0) {
+                return true;
+            }
+        }
+        return false;
+    }
     /*
      * prints node data in format "id (attributes)*
      */
+
     private void exportNodeData(Graph graph) throws IOException {
         //header
         stringBuilder.append("*Node data\n");
         stringBuilder.append("ID");
         for (int i = 0; i < attributeModel.getNodeTable().getColumns().length; i++) {
-            if (!attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("id")
-                    && !attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("label")
-                    && !attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("Time interval")) //ignore standart
+            if (Arrays.binarySearch(standartNodeAttributes, attributeModel.getNodeTable().getColumn(i).getTitle()) < 0) //ignore standart
             {
                 stringBuilder.append(" ").append(attributeModel.getNodeTable().getColumn(i).getTitle().replace(' ', '_').toString());
                 //replace spaces because importer can't read attributes titles in quotes
@@ -177,12 +186,13 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         //body
         for (Node node : graph.getNodes()) {
             progressTicket.progress();
+            if (cancel) {
+                break;
+            }
             stringBuilder.append(printParameter(node.getNodeData().getId()));
 
             for (int i = 0; i < attributeModel.getNodeTable().getColumns().length; i++) {
-                if (!attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("id")
-                        && !attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("label")
-                        && !attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("Time interval")) //ignore standart
+                if (Arrays.binarySearch(standartNodeAttributes, attributeModel.getNodeTable().getColumn(i).getTitle()) < 0) //ignore standart
                 {
                     if (node.getNodeData().getAttributes().getValue(i) != null) {
                         stringBuilder.append(" ").append(printParameter(node.getNodeData().getAttributes().getValue(i)));
@@ -207,6 +217,9 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         maxSize = Double.NEGATIVE_INFINITY;
 
         for (Node node : graph.getNodes()) {
+            if (cancel) {
+                break;
+            }
             minX = Math.min(minX, node.getNodeData().x());
             maxX = Math.max(maxX, node.getNodeData().x());
 
@@ -242,6 +255,9 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         //body
         for (Node node : graph.getNodes()) {
             progressTicket.progress();
+            if (cancel) {
+                break;
+            }
             stringBuilder.append(node.getNodeData().getId());
             if (exportCoords) {
                 if (!normalize) {
@@ -271,9 +287,31 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         }
     }
 
+    void printEdgeData(Edge edge, Node source, Node target) {
+        stringBuilder.append(printParameter(source.getNodeData().getId()));//from
+        stringBuilder.append(" ").append(printParameter(target.getNodeData().getId()));//to
+        if (exportEdgeWeight) {
+            stringBuilder.append(" ").append(edge.getWeight());//strength
+        }
+
+        if (exportAttributes) {
+            for (int i = 0; i < attributeModel.getEdgeTable().getColumns().length; i++) {
+                if (Arrays.binarySearch(standartEdgeAttributes, attributeModel.getEdgeTable().getColumn(i).getTitle()) < 0) //ignore standart
+                {
+                    if (edge.getEdgeData().getAttributes().getValue(i) != null) {
+                        stringBuilder.append(" ").append(printParameter(edge.getEdgeData().getAttributes().getValue(i)));
+                    } else {
+                        stringBuilder.append(" " + valueForEmptyAttributes);
+                    }
+                }
+            }
+        }
+        stringBuilder.append("\n");
+    }
     /*
      * prints edge data as "from to (strength)? (attributes)*"
      */
+
     private void exportEdgeData(Graph graph) throws IOException {
         stringBuilder.append("*Tie data\n");
         stringBuilder.append("from to");
@@ -282,10 +320,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         }
         if (exportAttributes) {
             for (int i = 0; i < attributeModel.getEdgeTable().getColumns().length; i++) {
-                if (!attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("Weight")
-                        && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("id")
-                        && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("label")
-                        && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("Time interval")) //ignore standart
+                if (Arrays.binarySearch(standartEdgeAttributes, attributeModel.getEdgeTable().getColumn(i).getTitle()) < 0) //ignore standart
                 {
                     stringBuilder.append(" ").append(printParameter(attributeModel.getEdgeTable().getColumn(i).getTitle()).replace(' ', '_'));
                     //replace spaces because importer can't read attributes titles in quotes
@@ -295,29 +330,13 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         stringBuilder.append("\n");
 
         for (Edge edge : graph.getEdges()) {
+            if (cancel) {
+                break;
+            }
             progressTicket.progress();
-            stringBuilder.append(printParameter(edge.getSource().getNodeData().getId()));//from
-            stringBuilder.append(" ").append(printParameter(edge.getTarget().getNodeData().getId()));//to
-            if (exportEdgeWeight) {
-                stringBuilder.append(" ").append(edge.getWeight());//strength
-            }
-
-            if (exportAttributes) {
-                for (int i = 0; i < attributeModel.getEdgeTable().getColumns().length; i++) {
-                    if (!attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("Weight")
-                            && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("Label")
-                            && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("id")
-                            && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("Time interval")) //ignore standart
-                    {
-                        if (edge.getEdgeData().getAttributes().getValue(i) != null) {
-                            stringBuilder.append(" ").append(printParameter(edge.getEdgeData().getAttributes().getValue(i)));
-                        } else {
-                            stringBuilder.append(" " + valueForEmptyAttributes);
-                        }
-                    }
-                }
-            }
-            stringBuilder.append("\n");
+            printEdgeData(edge, edge.getSource(), edge.getTarget());//all edges in vna are directed, so make clone
+            if (!edge.isDirected() && !edge.isSelfLoop())
+                printEdgeData(edge, edge.getTarget(), edge.getSource());
         }
     }
 
