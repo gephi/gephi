@@ -7,7 +7,10 @@ package org.gephi.io.exporter.plugin;
 import java.io.IOException;
 import java.io.Writer;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.dynamic.DynamicUtilities;
+import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.*;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
@@ -28,6 +31,8 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     private ProgressTicket progressTicket;
     private TimeInterval visibleInterval;
     private AttributeModel attributeModel;
+    private DynamicModel dynamicModel;
+    //settings
     private boolean exportEdgeWeight = true;
     private boolean exportCoords = true;
     private boolean exportSize = true;
@@ -36,6 +41,8 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     private boolean exportAttributes = true;
     private boolean normalize = false;
     private Writer writer;
+    private StringBuilder stringBuilder;
+    //normalization
     private double minX;
     private double maxX;
     private double minY;
@@ -60,10 +67,17 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         } else {
             graph = graphModel.getGraph();
         }
+        dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
+        visibleInterval = dynamicModel != null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
         graph.readLock();
+
+
+        //nodes are counted twice, because they are printed in exportNodeData and exportNodeProperties
+        progressTicket.start(graph.getNodeCount() * 2 + graph.getEdgeCount());
+
+        stringBuilder = new StringBuilder();
         try {
             exportData(graph);
-            writer.flush();
         } catch (Exception e) {
             graph.readUnlockAll();
             throw new RuntimeException(e);
@@ -81,41 +95,69 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         }
         exportNodeProperties(graph);
         exportEdgeData(graph);
+        writer.write(stringBuilder.toString());
+        writer.flush();
+        progressTicket.finish();
     }
 
+    /*
+     * For non-standart and string attributes
+     */
+    private String printParameter(Object s) {
+        Object val = DynamicUtilities.getDynamicValue(s, visibleInterval.getLow(), visibleInterval.getHigh());
+        if (val == null) {
+            return valueForEmptyAttributes;
+        }
+        String res = val.toString().replace('\n', ' ').replace('\"', ' ');
+        System.err.println(visibleInterval.getLow() + " " + visibleInterval.getHigh());
+        System.err.println(s.getClass().toString() + " " + (s instanceof DynamicType) + " " + res);
+        System.err.println(s.toString() + " compare " + val.toString() + "_");
+        if (res.contains(" ")) {
+            return "\"" + res + "\"";
+        } else {
+            return res;
+        }
+    }
+
+    /*
+     * prints node data in format "id (attributes)*
+     */
     private void exportNodeData(Graph graph) throws IOException {
         //header
-        writer.write("*Node data\n");
-        writer.write("ID");
+        stringBuilder.append("*Node data\n");
+        stringBuilder.append("ID");
         for (int i = 0; i < attributeModel.getNodeTable().getColumns().length; i++) {
             if (!attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("id")
-                    && !attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("label")) //ignore standart
+                    && !attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("label")
+                    && !attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("Time interval")) //ignore standart
             {
-                writer.write(" " + attributeModel.getNodeTable().getColumn(i).getTitle().replace(' ','_'));
+                stringBuilder.append(" ").append(attributeModel.getNodeTable().getColumn(i).getTitle().replace(' ', '_').toString());
+                //replace spaces because importer can't read attributes titles in quotes
             }
         }
-        writer.write("\n");
+        stringBuilder.append("\n");
 
         //body
-        for (NodeIterator nodeIterator = graph.getNodes().iterator(); nodeIterator.hasNext();) {
-            Node node = nodeIterator.next();
-            writer.write(node.getNodeData().getId());
+        for (Node node : graph.getNodes()) {
+            progressTicket.progress();
+            stringBuilder.append(printParameter(node.getNodeData().getId()));
 
             for (int i = 0; i < attributeModel.getNodeTable().getColumns().length; i++) {
                 if (!attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("id")
-                        && !attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("label")) //ignore standart
+                        && !attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("label")
+                        && !attributeModel.getNodeTable().getColumns()[i].getTitle().equalsIgnoreCase("Time interval")) //ignore standart
                 {
                     if (node.getNodeData().getAttributes().getValue(i) != null) {
-                        writer.write(" " + node.getNodeData().getAttributes().getValue(i));
+                        stringBuilder.append(" ").append(printParameter(node.getNodeData().getAttributes().getValue(i)));
                     } else {
-                        writer.write(" " + valueForEmptyAttributes);
+                        stringBuilder.append(" ").append(valueForEmptyAttributes);
                     }
                 }
             }
-            writer.write("\n");
+            stringBuilder.append("\n");
         }
     }
-    static final String valueForEmptyAttributes = "zero";
+    static final String valueForEmptyAttributes = "\"\"";
 
     private void calculateMinMaxForNormalization(Graph graph) {
         minX = Double.POSITIVE_INFINITY;
@@ -127,8 +169,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         minSize = Double.POSITIVE_INFINITY;
         maxSize = Double.NEGATIVE_INFINITY;
 
-        for (NodeIterator nodeIterator = graph.getNodes().iterator(); nodeIterator.hasNext();) {
-            Node node = nodeIterator.next();
+        for (Node node : graph.getNodes()) {
             minX = Math.min(minX, node.getNodeData().x());
             maxX = Math.max(maxX, node.getNodeData().x());
 
@@ -140,98 +181,106 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         }
     }
 
+    /*
+     * prints node properties as "id (x)? (y)? (size)? (color)? (shortlabel)?"
+     */
     private void exportNodeProperties(Graph graph) throws IOException {
         //header
-        writer.write("*Node properties\n");
-        writer.write("ID");
+        stringBuilder.append("*Node properties\n");
+        stringBuilder.append("ID");
         if (exportCoords) {
-            writer.write(" X Y");
+            stringBuilder.append(" x y");
         }
         if (exportSize) {
-            writer.write(" SIZE");
+            stringBuilder.append(" size");
         }
         if (exportColor) {
-            writer.write(" COLOR");
+            stringBuilder.append(" color");
         }
         if (exportShortLabel) {
-            writer.write(" SHORTLABEL");
+            stringBuilder.append(" shortlabel");
         }
-        writer.write("\n");
+        stringBuilder.append("\n");
 
         //body
-        for (NodeIterator nodeIterator = graph.getNodes().iterator(); nodeIterator.hasNext();) {
-            Node node = nodeIterator.next();
-            writer.write(node.getNodeData().getId());
+        for (Node node : graph.getNodes()) {
+            progressTicket.progress();
+            stringBuilder.append(node.getNodeData().getId());
             if (exportCoords) {
                 if (!normalize) {
-                    writer.write(" " + node.getNodeData().x() + " " + node.getNodeData().y());
+                    stringBuilder.append(" ").append(node.getNodeData().x()).append(" ").append(node.getNodeData().y());
                 } else {
-                    writer.write(" " + (node.getNodeData().x() - minX) / (maxX - minX) + " "
-                            + (node.getNodeData().y() - minY) / (maxY - minY));
+                    stringBuilder.append(" ").append((node.getNodeData().x() - minX) / (maxX - minX)).append(" ").append((node.getNodeData().y() - minY) / (maxY - minY));
                 }
             }
             if (exportSize) {
                 if (!normalize) {
-                    writer.write(" " + node.getNodeData().getRadius());
+                    stringBuilder.append(" ").append(node.getNodeData().getRadius());
                 } else {
-                    writer.write(" " + (node.getNodeData().getRadius() - minSize) / (maxSize - minSize));
+                    stringBuilder.append(" ").append((node.getNodeData().getRadius() - minSize) / (maxSize - minSize));
                 }
             }
             if (exportColor) {
-                writer.write(" " + ((int) (node.getNodeData().r() * 255)));//[0..1] to [0..255]
+                stringBuilder.append(" ").append((int) (node.getNodeData().r() * 255f));//[0..1] to [0..255]
             }
             if (exportShortLabel) {
-                if (node.getNodeData().getLabel() != null)
-                    writer.write(" " + node.getNodeData().getLabel());
-                else
-                    writer.write(" " + node.getNodeData().getId());
+                if (node.getNodeData().getLabel() != null) {
+                    stringBuilder.append(" ").append(printParameter(node.getNodeData().getLabel()));
+                } else {
+                    stringBuilder.append(" ").append(printParameter(node.getNodeData().getId()));
+                }
             }
-            writer.write("\n");
+            stringBuilder.append("\n");
         }
     }
 
+    /*
+     * prints edge data as "from to (strength)? (attributes)*"
+     */
     private void exportEdgeData(Graph graph) throws IOException {
-        writer.write("*Tie data\n");
-        writer.write("FROM TO");
+        stringBuilder.append("*Tie data\n");
+        stringBuilder.append("from to");
         if (exportEdgeWeight) {
-            writer.write(" STRENGTH");
+            stringBuilder.append(" strength");
         }
         if (exportAttributes) {
             for (int i = 0; i < attributeModel.getEdgeTable().getColumns().length; i++) {
                 if (!attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("Weight")
                         && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("id")
-                        && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("label")) //ignore standart
+                        && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("label")
+                        && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("Time interval")) //ignore standart
                 {
-                    writer.write(" " + attributeModel.getEdgeTable().getColumn(i).getTitle());
+                    stringBuilder.append(" ").append(printParameter(attributeModel.getEdgeTable().getColumn(i).getTitle()).replace(' ', '_'));
+                    //replace spaces because importer can't read attributes titles in quotes
                 }
             }
         }
-        writer.write("\n");
+        stringBuilder.append("\n");
 
-        for (EdgeIterator edgeIterator = graph.getEdges().iterator(); edgeIterator.hasNext();) {
-            Edge edge = edgeIterator.next();
-
-            writer.write(edge.getSource().getNodeData().getId());//from
-            writer.write(" " + edge.getTarget().getNodeData().getId());//to
+        for (Edge edge : graph.getEdges()) {
+            progressTicket.progress();
+            stringBuilder.append(printParameter(edge.getSource().getNodeData().getId()));//from
+            stringBuilder.append(" ").append(printParameter(edge.getTarget().getNodeData().getId()));//to
             if (exportEdgeWeight) {
-                writer.write(" " + edge.getWeight());//strength
+                stringBuilder.append(" ").append(edge.getWeight());//strength
             }
 
             if (exportAttributes) {
                 for (int i = 0; i < attributeModel.getEdgeTable().getColumns().length; i++) {
                     if (!attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("Weight")
                             && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("Label")
-                            && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("id")) //ignore standart
+                            && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("id")
+                            && !attributeModel.getEdgeTable().getColumns()[i].getTitle().equalsIgnoreCase("Time interval")) //ignore standart
                     {
                         if (edge.getEdgeData().getAttributes().getValue(i) != null) {
-                            writer.write(" " + edge.getEdgeData().getAttributes().getValue(i));
+                            stringBuilder.append(" ").append(printParameter(edge.getEdgeData().getAttributes().getValue(i)));
                         } else {
-                            writer.write(" " + valueForEmptyAttributes);
+                            stringBuilder.append(" " + valueForEmptyAttributes);
                         }
                     }
                 }
             }
-            writer.write("\n");
+            stringBuilder.append("\n");
         }
     }
 
