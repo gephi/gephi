@@ -652,8 +652,20 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
             public void writeData(StringBuilder builder, Edge edge) {
             }
         };
+        
+        EdgeColumnsGDF timeLineColumn = new EdgeColumnsGDF("time_interval") {
 
-        defaultEdgeColumnsGDFs = new EdgeColumnsGDF[7];
+            @Override
+            public boolean isEnable() {
+                return false;
+            }
+
+            @Override
+            public void writeData(StringBuilder builder, Edge edge) {
+            }
+        };
+
+        defaultEdgeColumnsGDFs = new EdgeColumnsGDF[8];
         defaultEdgeColumnsGDFs[0] = edgeIdColumn;
         defaultEdgeColumnsGDFs[1] = labelColumn;
         defaultEdgeColumnsGDFs[2] = weightColumn;
@@ -661,6 +673,7 @@ public class ExporterGDF implements GraphExporter, CharacterExporter, LongTask {
         defaultEdgeColumnsGDFs[4] = colorColumn;
         defaultEdgeColumnsGDFs[5] = visibleColumn;
         defaultEdgeColumnsGDFs[6] = labelVisibleColumn;
+        defaultEdgeColumnsGDFs[7] = timeLineColumn;
     }
 
     private void calculateMinMax(Graph graph) {
