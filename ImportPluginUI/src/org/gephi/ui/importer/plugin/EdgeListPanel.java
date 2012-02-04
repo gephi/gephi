@@ -605,7 +605,7 @@ public class EdgeListPanel extends javax.swing.JPanel {
             if (isSqlite(panel)) {
                 return Validators.FILE_MUST_BE_FILE.validate(problems, compName, model);
             } else {
-                return Validators.HOST_NAME_OR_IP_ADDRESS.validate(problems, compName, model);
+                return Validators.REQUIRE_NON_EMPTY_STRING.validate(problems, compName, model);
             }
         }
     }
