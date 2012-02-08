@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Eduardo Ramos <eduramiba@gmail.com>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Eduardo Ramos <eduramiba@gmail.com>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.plugin.manipulators.general.ui;
 
@@ -65,13 +65,12 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
 
     private static final String ASSIGN_NEW_NODES_IDS_SAVED_PREFERENCES = "ImportCSVUIVisualPanel2_assign_new_nodes_ids";
     private static final String CREATE_NEW_NODES_SAVED_PREFERENCES = "ImportCSVUIVisualPanel2_create_new_nodes";
-
     private final ImportCSVUIWizardPanel2 wizard2;
     private Character separator;
     private File file;
     private ImportCSVUIWizardAction.Mode mode;
-    private JCheckBox[] columnsCheckBoxes;
-    private JComboBox[] columnsComboBoxes;
+    private ArrayList<JCheckBox> columnsCheckBoxes=new ArrayList<JCheckBox>();
+    private ArrayList<JComboBox> columnsComboBoxes=new ArrayList<JComboBox>();
     private AttributeTable table;
     private Charset charset;
     //Nodes table settings:
@@ -79,17 +78,19 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
     //Edges table settings:
     private JCheckBox createNewNodes;
 
-    /** Creates new form ImportCSVUIVisualPanel2 */
+    /**
+     * Creates new form ImportCSVUIVisualPanel2
+     */
     public ImportCSVUIVisualPanel2(ImportCSVUIWizardPanel2 wizard2) {
         initComponents();
         this.wizard2 = wizard2;
     }
 
-    public void unSetup(){
-        if(assignNewNodeIds!=null){
+    public void unSetup() {
+        if (assignNewNodeIds != null) {
             NbPreferences.forModule(ImportCSVUIVisualPanel1.class).putBoolean(ASSIGN_NEW_NODES_IDS_SAVED_PREFERENCES, assignNewNodeIds.isSelected());
         }
-        if(createNewNodes!=null){
+        if (createNewNodes != null) {
             NbPreferences.forModule(ImportCSVUIVisualPanel1.class).putBoolean(CREATE_NEW_NODES_SAVED_PREFERENCES, createNewNodes.isSelected());
         }
     }
@@ -141,32 +142,36 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
             final String[] columns = reader.getHeaders();
             reader.close();
 
-            boolean sourceFound = false, targetFound = false, typeFound=false;//Only first source and target columns found will be used as source and target nodes ids.
-            columnsCheckBoxes = new JCheckBox[columns.length];
-            columnsComboBoxes = new JComboBox[columns.length];
+            boolean sourceFound = false, targetFound = false, typeFound = false;//Only first source and target columns found will be used as source and target nodes ids.
             for (int i = 0; i < columns.length; i++) {
-                columnsCheckBoxes[i] = new JCheckBox(columns[i], true);
-                settingsPanel.add(columnsCheckBoxes[i], "wrap");
-                columnsComboBoxes[i] = new JComboBox();
-                fillComboBoxWithColumnTypes(columns[i], columnsComboBoxes[i]);
-                settingsPanel.add(columnsComboBoxes[i], "wrap 15px");
+                if (columns[i].isEmpty()) {
+                    continue;//Remove empty column headers:
+                }
+                
+                JCheckBox columnCheckBox= new JCheckBox(columns[i], true);
+                columnsCheckBoxes.add(columnCheckBox);
+                settingsPanel.add(columnCheckBox, "wrap");
+                JComboBox columnComboBox = new JComboBox();
+                columnsComboBoxes.add(columnComboBox);
+                fillComboBoxWithColumnTypes(columns[i], columnComboBox);
+                settingsPanel.add(columnComboBox, "wrap 15px");
 
                 if (mode == ImportCSVUIWizardAction.Mode.EDGES_TABLE && columns[i].equalsIgnoreCase("source") && !sourceFound) {
                     sourceFound = true;
                     //Do not allow to not select source column:
-                    columnsCheckBoxes[i].setEnabled(false);
-                    columnsComboBoxes[i].setEnabled(false);
+                    columnCheckBox.setEnabled(false);
+                    columnComboBox.setEnabled(false);
                 }
                 if (mode == ImportCSVUIWizardAction.Mode.EDGES_TABLE && columns[i].equalsIgnoreCase("target") && !targetFound) {
                     targetFound = true;
                     //Do not allow to not select target column:
-                    columnsCheckBoxes[i].setEnabled(false);
-                    columnsComboBoxes[i].setEnabled(false);
+                    columnCheckBox.setEnabled(false);
+                    columnComboBox.setEnabled(false);
                 }
                 if (mode == ImportCSVUIWizardAction.Mode.EDGES_TABLE && columns[i].equalsIgnoreCase("type") && !typeFound) {
                     typeFound = true;
                     //Do not allow to change type column type:
-                    columnsComboBoxes[i].setEnabled(false);
+                    columnComboBox.setEnabled(false);
                 }
             }
         } catch (IOException ex) {
@@ -190,7 +195,7 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
 
     private void loadNodesTableSettings(JPanel settingsPanel) {
         //Create assignNewNodeIds checkbox and set its selection with saved preferences or true by default:
-        assignNewNodeIds = new JCheckBox(getMessage("ImportCSVUIVisualPanel2.nodes.assign-ids-checkbox"), 
+        assignNewNodeIds = new JCheckBox(getMessage("ImportCSVUIVisualPanel2.nodes.assign-ids-checkbox"),
                 NbPreferences.forModule(ImportCSVUIVisualPanel1.class).getBoolean(ASSIGN_NEW_NODES_IDS_SAVED_PREFERENCES, true));
         settingsPanel.add(assignNewNodeIds, "wrap");
     }
@@ -218,9 +223,9 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
 
     public AttributeType[] getColumnsToImportTypes() {
         ArrayList<AttributeType> types = new ArrayList<AttributeType>();
-        for (int i = 0; i < columnsCheckBoxes.length; i++) {
-            if (columnsCheckBoxes[i].isSelected()) {
-                types.add((AttributeType) columnsComboBoxes[i].getSelectedItem());
+        for (int i = 0; i < columnsCheckBoxes.size(); i++) {
+            if (columnsCheckBoxes.get(i).isSelected()) {
+                types.add((AttributeType) columnsComboBoxes.get(i).getSelectedItem());
             }
         }
         return types.toArray(new AttributeType[0]);
@@ -275,10 +280,8 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
         return NbBundle.getMessage(ImportCSVUIVisualPanel2.class, resName);
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
