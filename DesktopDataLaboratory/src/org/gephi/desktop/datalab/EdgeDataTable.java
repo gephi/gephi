@@ -243,6 +243,7 @@ public class EdgeDataTable {
         table.setDefaultRenderer(TimeInterval.class, timeIntervalsRenderer = new TimeIntervalsRenderer(min, max, timeIntervalGraphics));
 
         //Use default string editor for them:
+        table.setDefaultEditor(String.class, new DefaultCellEditor(new JTextField()));
         table.setDefaultEditor(NumberList.class, new DefaultCellEditor(new JTextField()));
         table.setDefaultEditor(DynamicBigDecimal.class, new DefaultCellEditor(new JTextField()));
         table.setDefaultEditor(DynamicBigInteger.class, new DefaultCellEditor(new JTextField()));

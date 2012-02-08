@@ -189,6 +189,9 @@ public class AttributeTableImpl implements AttributeTable {
         }
         columnsSet.put(targetImpl, targetImpl);
 
+        model.fireAttributeEvent(
+                new ColumnEvent(AttributeEvent.EventType.REPLACE_COLUMN, (AttributeColumnImpl) source));
+        
         //Version
         version++;
         return targetImpl;

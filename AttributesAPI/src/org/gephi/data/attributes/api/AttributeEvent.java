@@ -75,7 +75,7 @@ public interface AttributeEvent {
      */
     public enum EventType {
 
-        ADD_COLUMN, REMOVE_COLUMN, SET_VALUE
+        ADD_COLUMN, REMOVE_COLUMN, REPLACE_COLUMN, SET_VALUE
     };
 
     public EventType getEventType();
