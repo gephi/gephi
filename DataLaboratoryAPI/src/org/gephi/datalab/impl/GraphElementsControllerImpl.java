@@ -319,18 +319,25 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         AttributeColumnsController ac = Lookup.getDefault().lookup(AttributeColumnsController.class);
         ac.mergeRowsValues(nodesTable, mergeStrategies, rows, selectedNode.getAttributes(), newNode.getAttributes());
 
+        Set<Node> nodesSet=new HashSet<Node>();
+        nodesSet.addAll(Arrays.asList(nodes));
+        
         //Assign edges to the new node:
         Edge newEdge;
         for (Node node : nodes) {
             for (Edge edge : getNodeEdges(node)) {
                 if (edge.getSource() == node) {
-                    if (edge.getTarget() == node) {
+                    if (nodesSet.contains(edge.getTarget())) {
                         newEdge = createEdge(newNode, newNode, edge.isDirected());//Self loop because of edge between merged nodes
                     } else {
                         newEdge = createEdge(newNode, edge.getTarget(), edge.isDirected());
                     }
                 } else {
-                    newEdge = createEdge(edge.getSource(), newNode, edge.isDirected());
+                    if (nodesSet.contains(edge.getSource())) {
+                        newEdge = createEdge(newNode, newNode, edge.isDirected());//Self loop because of edge between merged nodes
+                    } else {
+                        newEdge = createEdge(edge.getSource(), newNode, edge.isDirected());
+                    }
                 }
 
                 if (newEdge != null) {//Edge may not be created if repeated
