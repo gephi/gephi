@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Eduardo Ramos <eduramiba@gmail.com>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Eduardo Ramos <eduramiba@gmail.com>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.impl;
 
@@ -82,8 +82,8 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Implementation of the AttributeColumnsController interface
- * declared in the Data Laboratory API.
+ * Implementation of the AttributeColumnsController interface declared in the Data Laboratory API.
+ *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  * @see AttributeColumnsController
  */
@@ -489,6 +489,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             AttributeTable nodesTable = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
             String idColumn = null;
             ArrayList<AttributeColumn> columnsList = new ArrayList<AttributeColumn>();
+            HashMap<AttributeColumn, String> columnHeaders = new HashMap<AttributeColumn, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
             for (int i = 0; i < columnNames.length; i++) {
                 //Separate first id column found from the list to use as id. If more are found later, the will not be in the list and be ignored.
                 if (columnNames[i].equalsIgnoreCase("id")) {
@@ -496,9 +497,15 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                         idColumn = columnNames[i];
                     }
                 } else if (nodesTable.hasColumn(columnNames[i])) {
-                    columnsList.add(nodesTable.getColumn(columnNames[i]));
+                    AttributeColumn column = nodesTable.getColumn(columnNames[i]);
+                    columnsList.add(column);
+                    columnHeaders.put(column, columnNames[i]);
                 } else {
-                    columnsList.add(addAttributeColumn(nodesTable, columnNames[i], columnTypes[i]));
+                    AttributeColumn column = addAttributeColumn(nodesTable, columnNames[i], columnTypes[i]);
+                    if (column != null) {
+                        columnsList.add(column);
+                        columnHeaders.put(column, columnNames[i]);
+                    }
                 }
             }
 
@@ -535,7 +542,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                 //Assign attributes to the current node:
                 nodeAttributes = node.getNodeData().getAttributes();
                 for (AttributeColumn column : columnsList) {
-                    setAttributeValue(reader.get(column.getTitle()), nodeAttributes, column);
+                    setAttributeValue(reader.get(columnHeaders.get(column)), nodeAttributes, column);
                 }
             }
         } catch (FileNotFoundException ex) {
@@ -559,12 +566,13 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         CsvReader reader = null;
         try {
             //Prepare attribute columns for the column names, creating the not already existing columns:
-            AttributeTable edges = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
+            AttributeTable edgesTable = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
             String idColumn = null;
             String sourceColumn = null;
             String targetColumn = null;
             String typeColumn = null;
             ArrayList<AttributeColumn> columnsList = new ArrayList<AttributeColumn>();
+            HashMap<AttributeColumn, String> columnHeaders = new HashMap<AttributeColumn, String>();//Necessary because of column name case insensitivity, to map columns to its corresponding csv header.
             for (int i = 0; i < columnNames.length; i++) {
                 //Separate first id column found from the list to use as id. If more are found later, the will not be in the list and be ignored.
                 if (columnNames[i].equalsIgnoreCase("id")) {
@@ -577,10 +585,16 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     targetColumn = columnNames[i];
                 } else if (columnNames[i].equalsIgnoreCase("type") && typeColumn == null) {//Separate first type column found from the list to use as edge type (directed/undirected)
                     typeColumn = columnNames[i];
-                } else if (edges.hasColumn(columnNames[i])) {
-                    columnsList.add(edges.getColumn(columnNames[i]));
+                } else if (edgesTable.hasColumn(columnNames[i])) {
+                    AttributeColumn column = edgesTable.getColumn(columnNames[i]);
+                    columnsList.add(column);
+                    columnHeaders.put(column, columnNames[i]);
                 } else {
-                    columnsList.add(addAttributeColumn(edges, columnNames[i], columnTypes[i]));
+                    AttributeColumn column = addAttributeColumn(edgesTable, columnNames[i], columnTypes[i]);
+                    if (column != null) {
+                        columnsList.add(column);
+                        columnHeaders.put(column, columnNames[i]);
+                    }
                 }
             }
 
@@ -664,7 +678,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     //Assign attributes to the current edge:
                     edgeAttributes = edge.getEdgeData().getAttributes();
                     for (AttributeColumn column : columnsList) {
-                        setAttributeValue(reader.get(column.getTitle()), edgeAttributes, column);
+                        setAttributeValue(reader.get(columnHeaders.get(column)), edgeAttributes, column);
                     }
                 } else {
                     //Do not ignore repeated edge, instead increase edge weight
@@ -678,7 +692,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
                     }
                     if (edge != null) {
                         //Increase edge weight with specified weight (if specified), else increase by 1:
-                        String weight = reader.get(edges.getColumn(PropertiesColumn.EDGE_WEIGHT.getIndex()).getTitle());
+                        String weight = reader.get(columnHeaders.get(edgesTable.getColumn(PropertiesColumn.EDGE_WEIGHT.getIndex())));
                         if (weight != null) {
                             try {
                                 Float weightFloat = Float.parseFloat(weight);
@@ -764,9 +778,12 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         return groupsList;
     }
 
-    /************Private methods : ************/
+    /**
+     * **********Private methods : ***********
+     */
     /**
      * Used for iterating through all nodes of the graph
+     *
      * @return Array with all graph nodes
      */
     private Node[] getNodesArray() {
@@ -775,6 +792,7 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
 
     /**
      * Used for iterating through all edges of the graph
+     *
      * @return Array with all graph edges
      */
     private Edge[] getEdgesArray() {
@@ -782,7 +800,9 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
     }
 
     /**
-     * Only checks that a column is not <code>COMPUTED</code> or <code>DELEGATE</code>
+     * Only checks that a column is not
+     * <code>COMPUTED</code> or
+     * <code>DELEGATE</code>
      */
     private boolean canChangeGenericColumnData(AttributeColumn column) {
         return column.getOrigin() != AttributeOrigin.COMPUTED && column.getOrigin() != AttributeOrigin.DELEGATE;

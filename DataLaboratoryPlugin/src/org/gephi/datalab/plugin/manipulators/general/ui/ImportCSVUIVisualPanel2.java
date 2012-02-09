@@ -133,6 +133,8 @@ public final class ImportCSVUIVisualPanel2 extends JPanel {
 
     private void loadColumns(JPanel settingsPanel) {
         try {
+            columnsCheckBoxes.clear();
+            columnsComboBoxes.clear();
             JLabel columnsLabel = new JLabel(getMessage("ImportCSVUIVisualPanel2.columnsLabel.text"));
             settingsPanel.add(columnsLabel, "wrap");
 
