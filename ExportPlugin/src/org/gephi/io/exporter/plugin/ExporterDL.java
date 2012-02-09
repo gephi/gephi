@@ -129,9 +129,6 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
             }
             useLabels &= (nodeIterable.iterator().next().getNodeData().getLabel() != null);
         }
-        if (useLabels && !uniqueLabels(graph, useListFormat)) {
-            useLabels = false;
-        }
         System.err.println("use labels " + useLabels);
 
         //find borders of the interval for edge.getWeight(low, high). If it's a static graph, then (-inf, inf)
@@ -176,6 +173,27 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
     }
 
     private void saveAsEdgeList1(boolean useLabels, Graph graph) throws IOException {
+
+        HashMap<Integer, String> idToLabel = new HashMap<Integer, String>();//systemId to changed label
+        HashSet<String> labelUsed = new HashSet<String>();
+        //edgelist format forbids equal nodes
+        if (useLabels) {
+            for (Node node : graph.getNodes()) {
+                if (labelUsed.contains(node.getNodeData().getLabel())) {
+                    for (int i = 0;; i++) {
+                        if (!labelUsed.contains(node.getNodeData().getLabel() + "_" + i)) {
+                            idToLabel.put(node.getId(), node.getNodeData().getLabel() + "_" + i);
+                            labelUsed.add(node.getNodeData().getLabel() + "_" + i);
+                            break;
+                        }
+                    }
+                } else {
+                    idToLabel.put(node.getId(), node.getNodeData().getLabel());
+                    labelUsed.add(node.getNodeData().getLabel());
+                }
+            }
+        }
+
         writer.write("dl\n");
         writer.write("format = edgelist1\n");
         writer.write("n = " + graph.getNodeCount() + "\n");
@@ -188,8 +206,8 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
             }
             Edge edge = edgeIterator.iterator().next();
             if (useLabels) {
-                writer.write(formatLabel(edge.getSource().getNodeData().getLabel(), false) + " "
-                        + formatLabel(edge.getTarget().getNodeData().getLabel(), false) + " " + edge.getWeight(getLow, getHigh) + "\n");
+                writer.write(formatLabel(idToLabel.get(edge.getSource().getId()), false) + " "
+                        + formatLabel(idToLabel.get(edge.getTarget().getId()), false) + " " + edge.getWeight(getLow, getHigh) + "\n");
             } else {
                 writer.write(formatLabel(edge.getSource().getNodeData().getId(), false) + " "
                         + formatLabel(edge.getTarget().getNodeData().getId(), false) + " " + edge.getWeight(getLow, getHigh) + "\n");
@@ -197,8 +215,8 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
 
             if (!edge.isDirected()) {
                 if (useLabels) {
-                    writer.write(formatLabel(edge.getTarget().getNodeData().getLabel(), false) + " "
-                            + formatLabel(edge.getSource().getNodeData().getLabel(), false) + " " + edge.getWeight(getLow, getHigh) + "\n");
+                    writer.write(formatLabel(idToLabel.get(edge.getTarget().getId()), false) + " "
+                            + formatLabel(idToLabel.get(edge.getSource().getId()), false) + " " + edge.getWeight(getLow, getHigh) + "\n");
                 } else {
                     writer.write(formatLabel(edge.getTarget().getNodeData().getId(), false) + " "
                             + formatLabel(edge.getSource().getNodeData().getId(), false) + " " + edge.getWeight(getLow, getHigh) + "\n");
@@ -287,20 +305,5 @@ public class ExporterDL implements GraphExporter, CharacterExporter, LongTask {
     @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
-    }
-
-    private boolean uniqueLabels(Graph graph, boolean useListFormat) {
-        HashSet<String> labels = new HashSet<String>();
-        for (Node node : graph.getNodes()) {
-            String s = node.getNodeData().getLabel();
-            if (s == null) {
-                return false;
-            }
-            if (labels.contains(formatLabel(s, !useListFormat))) {
-                return false;
-            }
-            labels.add(formatLabel(s, !useListFormat));//if we don't use list format, we have to format strictly
-        }
-        return true;
     }
 }
