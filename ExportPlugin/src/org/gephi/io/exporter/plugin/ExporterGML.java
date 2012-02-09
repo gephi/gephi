@@ -87,6 +87,9 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
     double minY, maxY;
     double minZ, maxZ;
     double minSize, maxSize;
+    
+    private double getLow;//borders for dynamic edge weight
+    private double getHigh;
 
     public boolean isNormalize() {
         return normalize;
@@ -117,6 +120,14 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         DynamicModel dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
         visibleInterval = dynamicModel != null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
 
+        getLow = Double.NEGATIVE_INFINITY;//whole interval, if graph is not dynamic
+        getHigh = Double.POSITIVE_INFINITY;
+        if (visibleInterval != null)
+        {
+            getLow = visibleInterval.getLow();
+            getHigh = visibleInterval.getHigh();
+        }
+        
         graph.readLock();
 
         if (normalize) {
@@ -195,7 +206,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
             printTag("label \"" + edge.getEdgeData().getLabel() + "\"");
         }
         if (exportEdgeSize) {
-            printTag("value " + edge.getWeight());
+            printTag("value " + edge.getWeight(getLow, getHigh));
         }
         if (graphMixed) { //if graph not mixed, then all edges have the same direction, described earlier
             if (edge.isDirected()) {
