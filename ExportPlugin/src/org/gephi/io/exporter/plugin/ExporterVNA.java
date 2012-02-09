@@ -88,6 +88,8 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
     private double maxY;
     private double minSize;
     private double maxSize;
+    private double getLow;//borders for dynamic edge weight
+    private double getHigh;
 
     public void setExportVisible(boolean exportVisible) {
         this.exportVisible = exportVisible;
@@ -108,6 +110,14 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         }
         dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
         visibleInterval = dynamicModel != null && exportVisible ? dynamicModel.getVisibleInterval() : new TimeInterval();
+
+        getLow = Double.NEGATIVE_INFINITY;//whole interval, if graph is not dynamic
+        getHigh = Double.POSITIVE_INFINITY;
+        if (visibleInterval != null) {
+            getLow = visibleInterval.getLow();
+            getHigh = visibleInterval.getHigh();
+        }
+
         graph.readLock();
 
 
@@ -291,7 +301,7 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
         stringBuilder.append(printParameter(source.getNodeData().getId()));//from
         stringBuilder.append(" ").append(printParameter(target.getNodeData().getId()));//to
         if (exportEdgeWeight) {
-            stringBuilder.append(" ").append(edge.getWeight());//strength
+            stringBuilder.append(" ").append(edge.getWeight(getLow, getHigh));//strength
         }
 
         if (exportAttributes) {
@@ -335,8 +345,9 @@ public class ExporterVNA implements GraphExporter, CharacterExporter, LongTask {
             }
             progressTicket.progress();
             printEdgeData(edge, edge.getSource(), edge.getTarget());//all edges in vna are directed, so make clone
-            if (!edge.isDirected() && !edge.isSelfLoop())
+            if (!edge.isDirected() && !edge.isSelfLoop()) {
                 printEdgeData(edge, edge.getTarget(), edge.getSource());
+            }
         }
     }
 
