@@ -101,19 +101,19 @@ public class SparklineComponent extends JComponent {
 
         @Override
         public void mouseEntered(MouseEvent e) {
-            sparklineParameters.setHiglightedValueXPosition(e.getX());
+            sparklineParameters.setHighlightedValueXPosition(e.getX());
             repaint();
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-            sparklineParameters.setHiglightedValueXPosition(null);
+            sparklineParameters.setHighlightedValueXPosition(null);
             repaint();
         }
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            sparklineParameters.setHiglightedValueXPosition(e.getX());
+            sparklineParameters.setHighlightedValueXPosition(e.getX());
             repaint();
         }
     }
