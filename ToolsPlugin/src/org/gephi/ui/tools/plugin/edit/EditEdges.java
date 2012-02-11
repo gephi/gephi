@@ -42,18 +42,16 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.ui.tools.plugin.edit;
 
 import java.awt.Color;
-import java.util.EnumSet;
-import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
-import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.EdgeData;
+import org.gephi.ui.tools.plugin.edit.EditWindowUtils.*;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.PropertySupport;
@@ -131,22 +129,22 @@ public class EditEdges extends AbstractNode {
             for (AttributeValue value : row.getValues()) {
 
                 if (multipleEdges) {
-                    wrap = new MultipleEdgesAttributeValueWrapper(edges, value.getColumn());
+                    wrap = new MultipleRowsAttributeValueWrapper(edges, value.getColumn(),currentTimeFormat);
                 } else {
-                    wrap = new SingleEdgeAttributeValueWrapper(row, value.getColumn());
+                    wrap = new SingleRowAttributeValueWrapper(edges[0], value.getColumn(),currentTimeFormat);
                 }
                 AttributeType type = value.getColumn().getType();
                 Property p;
                 if (ac.canChangeColumnData(value.getColumn())) {
                     //Editable column, provide "set" method:
-                    if (!NotSupportedTypes.contains(type)) {//The AttributeType can be edited by default:
+                    if (!EditWindowUtils.NotSupportedTypes.contains(type)) {//The AttributeType can be edited by default:
                         p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), "setValue" + type.getType().getSimpleName());
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", "setValueAsString");
                     }
                 } else {
                     //Not editable column, do not provide "set" method:
-                    if (!NotSupportedTypes.contains(type)) {//The AttributeType can be edited by default:
+                    if (!EditWindowUtils.NotSupportedTypes.contains(type)) {//The AttributeType can be edited by default:
                         p = new PropertySupport.Reflection(wrap, type.getType(), "getValue" + type.getType().getSimpleName(), null);
                     } else {//Use the AttributeType as String:
                         p = new PropertySupport.Reflection(wrap, String.class, "getValueAsString", null);
@@ -234,8 +232,8 @@ public class EditEdges extends AbstractNode {
             }
         }
     }
-
-    public class MultipleEdgesPropertiesWrapper {
+    
+    class MultipleEdgesPropertiesWrapper {
 
         Edge[] edges;
 
@@ -261,297 +259,6 @@ public class EditEdges extends AbstractNode {
                     data.setAlpha(c.getAlpha() / 255f);
                 }
             }
-        }
-    }
-    
-    /**
-     * These AttributeTypes are not supported by default by netbeans property editor.
-     * We will use attributes of these types as Strings and parse them.
-     */
-    private static EnumSet<AttributeType> NotSupportedTypes = EnumSet.of(
-            AttributeType.BIGINTEGER,
-            AttributeType.BIGDECIMAL,
-            AttributeType.LIST_BIGDECIMAL,
-            AttributeType.LIST_BIGINTEGER,
-            AttributeType.LIST_BOOLEAN,
-            AttributeType.LIST_BYTE,
-            AttributeType.LIST_CHARACTER,
-            AttributeType.LIST_DOUBLE,
-            AttributeType.LIST_FLOAT,
-            AttributeType.LIST_INTEGER,
-            AttributeType.LIST_LONG,
-            AttributeType.LIST_SHORT,
-            AttributeType.LIST_STRING,
-            AttributeType.TIME_INTERVAL,
-            AttributeType.DYNAMIC_BIGDECIMAL,
-            AttributeType.DYNAMIC_BIGINTEGER,
-            AttributeType.DYNAMIC_BOOLEAN,
-            AttributeType.DYNAMIC_BYTE,
-            AttributeType.DYNAMIC_CHAR,
-            AttributeType.DYNAMIC_DOUBLE,
-            AttributeType.DYNAMIC_FLOAT,
-            AttributeType.DYNAMIC_INT,
-            AttributeType.DYNAMIC_LONG,
-            AttributeType.DYNAMIC_SHORT,
-            AttributeType.DYNAMIC_STRING);
-
-    public interface AttributeValueWrapper {
-
-        public Byte getValueByte();
-
-        public void setValueByte(Byte object);
-
-        public Short getValueShort();
-
-        public void setValueShort(Short object);
-
-        public Character getValueCharacter();
-
-        public void setValueCharacter(Character object);
-
-        public String getValueString();
-
-        public void setValueString(String object);
-
-        public Double getValueDouble();
-
-        public void setValueDouble(Double object);
-
-        public Float getValueFloat();
-
-        public void setValueFloat(Float object);
-
-        public Integer getValueInteger();
-
-        public void setValueInteger(Integer object);
-
-        public Boolean getValueBoolean();
-
-        public void setValueBoolean(Boolean object);
-
-        public Long getValueLong();
-
-        public void setValueLong(Long object);
-
-        /****** Other types are not supported by property editors by default so they are used and parsed as Strings ******/
-        public String getValueAsString();
-
-        public void setValueAsString(String value);
-    }
-
-    public class SingleEdgeAttributeValueWrapper implements AttributeValueWrapper {
-
-        private AttributeRow row;
-        private AttributeColumn column;
-
-        public SingleEdgeAttributeValueWrapper(AttributeRow row, AttributeColumn column) {
-            this.row = row;
-            this.column = column;
-        }
-
-        private String convertToStringIfNotNull() {
-            Object value = row.getValue(column.getIndex());
-            if (value != null) {
-                if (value instanceof DynamicType) {
-                    return ((DynamicType) value).toString(currentTimeFormat==TimeFormat.DOUBLE);
-                } else {
-                    return value.toString();
-                }
-            } else {
-                return null;
-            }
-        }
-
-        public Byte getValueByte() {
-            return (Byte) row.getValue(column.getIndex());
-        }
-
-        public void setValueByte(Byte object) {
-            row.setValue(column.getIndex(), object);
-        }
-
-        public Short getValueShort() {
-            return (Short) row.getValue(column.getIndex());
-        }
-
-        public void setValueShort(Short object) {
-            row.setValue(column.getIndex(), object);
-        }
-
-        public Character getValueCharacter() {
-            return (Character) row.getValue(column.getIndex());
-        }
-
-        public void setValueCharacter(Character object) {
-            row.setValue(column.getIndex(), object);
-        }
-
-        public String getValueString() {
-            return (String) row.getValue(column.getIndex());
-        }
-
-        public void setValueString(String object) {
-            row.setValue(column.getIndex(), object);
-        }
-
-        public Double getValueDouble() {
-            return (Double) row.getValue(column.getIndex());
-        }
-
-        public void setValueDouble(Double object) {
-            row.setValue(column.getIndex(), object);
-        }
-
-        public Float getValueFloat() {
-            return (Float) row.getValue(column.getIndex());
-        }
-
-        public void setValueFloat(Float object) {
-            row.setValue(column.getIndex(), object);
-        }
-
-        public Integer getValueInteger() {
-            return (Integer) row.getValue(column.getIndex());
-        }
-
-        public void setValueInteger(Integer object) {
-            row.setValue(column.getIndex(), object);
-        }
-
-        public Boolean getValueBoolean() {
-            return (Boolean) row.getValue(column.getIndex());
-        }
-
-        public void setValueBoolean(Boolean object) {
-            row.setValue(column.getIndex(), object);
-        }
-
-        public Long getValueLong() {
-            return (Long) row.getValue(column.getIndex());
-        }
-
-        public void setValueLong(Long object) {
-            row.setValue(column.getIndex(), object);
-        }
-
-        public String getValueAsString() {
-            return convertToStringIfNotNull();
-        }
-
-        public void setValueAsString(String value) {
-            row.setValue(column.getIndex(), column.getType().parse(value));
-        }
-    }
-
-    public class MultipleEdgesAttributeValueWrapper implements AttributeValueWrapper {
-
-        private Edge[] edges;
-        private AttributeColumn column;
-        private Object value;
-
-        public MultipleEdgesAttributeValueWrapper(Edge[] edges, AttributeColumn column) {
-            this.edges = edges;
-            this.column = column;
-            this.value = null;
-        }
-
-        private String convertToStringIfNotNull() {
-            if (value != null) {
-                if (value instanceof DynamicType) {
-                    return ((DynamicType) value).toString(currentTimeFormat==TimeFormat.DOUBLE);
-                } else {
-                    return value.toString();
-                }
-            } else {
-                return null;
-            }
-        }
-
-        private void setValueToAllEdges(Object object) {
-            this.value = object;
-            for (Edge edge : edges) {
-                edge.getEdgeData().getAttributes().setValue(column.getIndex(), value);
-            }
-        }
-
-        public Byte getValueByte() {
-            return (Byte) value;
-        }
-
-        public void setValueByte(Byte object) {
-            setValueToAllEdges(object);
-        }
-
-        public Short getValueShort() {
-            return (Short) value;
-        }
-
-        public void setValueShort(Short object) {
-            setValueToAllEdges(object);
-        }
-
-        public Character getValueCharacter() {
-            return (Character) value;
-        }
-
-        public void setValueCharacter(Character object) {
-            setValueToAllEdges(object);
-        }
-
-        public String getValueString() {
-            return (String) value;
-        }
-
-        public void setValueString(String object) {
-            setValueToAllEdges(object);
-        }
-
-        public Double getValueDouble() {
-            return (Double) value;
-        }
-
-        public void setValueDouble(Double object) {
-            setValueToAllEdges(object);
-        }
-
-        public Float getValueFloat() {
-            return (Float) value;
-        }
-
-        public void setValueFloat(Float object) {
-            setValueToAllEdges(object);
-        }
-
-        public Integer getValueInteger() {
-            return (Integer) value;
-        }
-
-        public void setValueInteger(Integer object) {
-            setValueToAllEdges(object);
-        }
-
-        public Boolean getValueBoolean() {
-            return (Boolean) value;
-        }
-
-        public void setValueBoolean(Boolean object) {
-            setValueToAllEdges(object);
-        }
-
-        public Long getValueLong() {
-            return (Long) value;
-        }
-
-        public void setValueLong(Long object) {
-            setValueToAllEdges(object);
-        }
-
-        public String getValueAsString() {
-            return convertToStringIfNotNull();
-        }
-
-        public void setValueAsString(String value) {
-            setValueToAllEdges(column.getType().parse(value));
         }
     }
 }
