@@ -1,80 +1,58 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Martin Škurla, Cezary Bartosiak
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Martin Škurla, Cezary Bartosiak
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.data.attributes.api;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
-import org.gephi.data.attributes.type.DynamicByte;
-import org.gephi.data.attributes.type.DynamicShort;
-import org.gephi.data.attributes.type.DynamicInteger;
-import org.gephi.data.attributes.type.DynamicLong;
-import org.gephi.data.attributes.type.DynamicFloat;
-import org.gephi.data.attributes.type.DynamicDouble;
-import org.gephi.data.attributes.type.DynamicBoolean;
-import org.gephi.data.attributes.type.DynamicCharacter;
-import org.gephi.data.attributes.type.DynamicString;
-import org.gephi.data.attributes.type.DynamicBigInteger;
-import org.gephi.data.attributes.type.DynamicBigDecimal;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.data.attributes.type.ByteList;
-import org.gephi.data.attributes.type.ShortList;
-import org.gephi.data.attributes.type.IntegerList;
-import org.gephi.data.attributes.type.LongList;
-import org.gephi.data.attributes.type.FloatList;
-import org.gephi.data.attributes.type.DoubleList;
-import org.gephi.data.attributes.type.BooleanList;
-import org.gephi.data.attributes.type.CharacterList;
-import org.gephi.data.attributes.type.StringList;
-import org.gephi.data.attributes.type.BigIntegerList;
-import org.gephi.data.attributes.type.BigDecimalList;
-import org.gephi.data.attributes.type.DynamicType;
-import org.gephi.data.attributes.type.Interval;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import org.gephi.data.attributes.type.*;
+import org.openide.util.Exceptions;
 
 /**
  * The different type an {@link AttributeColumn} can have.
@@ -140,25 +118,32 @@ public enum AttributeType {
     }
 
     /**
-     * Returns the <code>Class</code> the type is associated with.
+     * Returns the
+     * <code>Class</code> the type is associated with.
      *
-     * @return      the <code>class</code> the type is associated with
+     * @return the
+     * <code>class</code> the type is associated with
      */
     public Class getType() {
         return type;
     }
 
     /**
-     * Try to parse the given <code>str</code> snippet in an object of the type
-     * associated to this <code>AttributeType</code>. For instance if the type
-     * is <b>Boolean</b>, and <code>str</code> equals <code>true</code>, this
-     * method will succeed to return a <code>Boolean</code> instance. May
-     * throw <code>NumberFormatException</code>.
+     * Try to parse the given
+     * <code>str</code> snippet in an object of the type associated to this
+     * <code>AttributeType</code>. For instance if the type is <b>Boolean</b>, and
+     * <code>str</code> equals
+     * <code>true</code>, this method will succeed to return a
+     * <code>Boolean</code> instance. May throw
+     * <code>NumberFormatException</code>.
      *
-     * <code>DYNAMIC</code> types and <code>TIME_INTERVAL</code> cannot be parsed with this method (see <code>isDynamicType</code> method) and a UnsupportedOperationException will be thrown if it is tried.
-     * 
-     * @param str   the string that is to be parsed
-     * @return      an instance of the type of this  <code>AttributeType</code>.
+     * <code>DYNAMIC</code> types and
+     * <code>TIME_INTERVAL</code> cannot be parsed with this method (see
+     * <code>isDynamicType</code> method) and a UnsupportedOperationException will be thrown if it is tried.
+     *
+     * @param str the string that is to be parsed
+     * @return an instance of the type of this or null if not able to parse given string as the type
+     * <code>AttributeType</code>.
      */
     public Object parse(String str) {
         switch (this) {
@@ -244,17 +229,25 @@ public enum AttributeType {
             String[] parts = interval.split(", *", 3);
             double low, high;
             try {
-                //Try first to parse as a date:
-                low =parseDateToDouble(parts[0]);
-            } catch (ParseException ex) {
+                //Try first to parse as a single double:
                 low = Double.parseDouble(parts[0]);
+            } catch (Exception ex) {
+                try {
+                    low = getDoubleFromXMLDateString(parts[0]);
+                } catch (ParseException ex1) {
+                    return null;//Can't parse as number or date
+                }
             }
             try {
-                //Try first to parse as a date:
-                high =parseDateToDouble(parts[1]);                
-            } catch (ParseException ex) {
+                //Try first to parse as a single double:
                 high = Double.parseDouble(parts[1]);
-            }            
+            } catch (Exception ex) {
+                try {
+                    high = getDoubleFromXMLDateString(parts[1]);
+                } catch (ParseException ex1) {
+                    return null;//Can't parse as number or date
+                }
+            }
             Object value = null;
             switch (this) {
                 case DYNAMIC_BYTE:
@@ -446,17 +439,18 @@ public enum AttributeType {
     }
 
     /**
-     * Build an <code>AttributeType</code> from the given <code>obj</code> type.
-     * If the given <code>obj</code> class match with an
-     * <code>AttributeType</code> type, returns this type. Returns <code>null</code>
-     * otherwise.
-     * <p>
-     * For instance if
-     * <b>obj instanceof Float</b> equals <b>true</b>, returns
+     * Build an
+     * <code>AttributeType</code> from the given
+     * <code>obj</code> type. If the given
+     * <code>obj</code> class match with an
+     * <code>AttributeType</code> type, returns this type. Returns
+     * <code>null</code> otherwise. <p> For instance if <b>obj instanceof Float</b> equals <b>true</b>, returns
      * <code>AttributeType.FLOAT</code>.
      *
-     * @param obj   the object that is to be parsed
-     * @return      the compatible <code>AttributeType</code>, or <code>null</code> if no type is found or the input object is null
+     * @param obj the object that is to be parsed
+     * @return the compatible
+     * <code>AttributeType</code>, or
+     * <code>null</code> if no type is found or the input object is null
      */
     public static AttributeType parse(Object obj) {
         if (obj == null) {
@@ -474,17 +468,18 @@ public enum AttributeType {
     }
 
     /**
-     * Build an dynamic <code>AttributeType</code> from the given <code>obj</code> type.
-     * If the given <code>obj</code> class match with an
-     * <code>AttributeType</code> type, returns this type. Returns <code>null</code>
-     * otherwise.
-     * <p>
-     * For instance if
-     * <b>obj instanceof Float</b> equals <b>true</b>, returns
+     * Build an dynamic
+     * <code>AttributeType</code> from the given
+     * <code>obj</code> type. If the given
+     * <code>obj</code> class match with an
+     * <code>AttributeType</code> type, returns this type. Returns
+     * <code>null</code> otherwise. <p> For instance if <b>obj instanceof Float</b> equals <b>true</b>, returns
      * <code>AttributeType.DYNAMIC_FLOAT</code>.
      *
-     * @param obj   the object that is to be parsed
-     * @return      the compatible <code>AttributeType</code>, or <code>null</code>
+     * @param obj the object that is to be parsed
+     * @return the compatible
+     * <code>AttributeType</code>, or
+     * <code>null</code>
      */
     public static AttributeType parseDynamic(Object obj) {
         if (obj == null) {
@@ -533,8 +528,7 @@ public enum AttributeType {
     /**
      * Indicates if this type is a {@code DynamicType}.
      *
-     * @return {@code true} if this is a {@code DynamicType}, {@code false}
-     * otherwise 
+     * @return {@code true} if this is a {@code DynamicType}, {@code false} otherwise
      */
     public boolean isDynamicType() {
         switch (this) {
@@ -574,9 +568,8 @@ public enum AttributeType {
     }
 
     /**
-     * Removes the decimal digits and point of the numbers of string when necessary.
-     * Used for trying to parse decimal numbers as not decimal.
-     * For example BigDecimal to BigInteger.
+     * Removes the decimal digits and point of the numbers of string when necessary. Used for trying to parse decimal numbers as not decimal. For example BigDecimal to BigInteger.
+     *
      * @param s String to remove decimal digits
      * @return String without dot and decimal digits.
      */
@@ -584,12 +577,26 @@ public enum AttributeType {
         return removeDecimalDigitsFromStringPattern.matcher(s).replaceAll("");
     }
     private static final Pattern removeDecimalDigitsFromStringPattern = Pattern.compile("\\.[0-9]*");
+    //For trying date parsing:
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static DatatypeFactory dateFactory;
 
-    private static double parseDateToDouble(String date) throws ParseException {
-        Date d = dateFormat.parse(date);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(d);
-        return cal.getTimeInMillis();
+    static {
+        try {
+            dateFactory = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException ex) {
+        }
     }
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    //Throws exception when a date can't be parsed
+    public static double getDoubleFromXMLDateString(String str) throws ParseException {
+        try {
+            return dateFactory.newXMLGregorianCalendar(str.length() > 23 ? str.substring(0, 23) : str).
+                    toGregorianCalendar().getTimeInMillis();
+        } catch (IllegalArgumentException ex) {
+            //Try simple format
+            Date date = dateFormat.parse(str);
+            return date.getTime();
+        }
+    }
 }
