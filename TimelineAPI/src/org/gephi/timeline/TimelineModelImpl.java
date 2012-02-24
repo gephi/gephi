@@ -128,12 +128,20 @@ public class TimelineModelImpl implements TimelineModel {
 
     @Override
     public double getIntervalStart() {
-        return dynamicModel.getVisibleInterval().getLow();
+        double vi = dynamicModel.getVisibleInterval().getLow();
+        if(Double.isInfinite(vi)) {
+            return getCustomMin();
+        }
+        return vi;
     }
 
     @Override
     public double getIntervalEnd() {
-        return dynamicModel.getVisibleInterval().getHigh();
+        double vi = dynamicModel.getVisibleInterval().getHigh();
+        if(Double.isInfinite(vi)) {
+            return getCustomMax();
+        }
+        return vi;
     }
 
     @Override
