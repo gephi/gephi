@@ -75,14 +75,9 @@ public class UIExporterDLPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        buttonGroup2 = new javax.swing.ButtonGroup();
         matrixRadioButton = new javax.swing.JRadioButton();
         listRadioButton = new javax.swing.JRadioButton();
         symmetricCheckBox = new javax.swing.JCheckBox();
-
-        jLabel1.setText("jLabel1");
 
         matrixRadioButton.setText("Matrix");
         matrixRadioButton.addActionListener(new java.awt.event.ActionListener() {
@@ -137,11 +132,8 @@ public class UIExporterDLPanel extends javax.swing.JPanel {
       matrixRadioButton.setSelected(!listRadioButton.isSelected());
       symmetricCheckBox.setEnabled(matrixRadioButton.isSelected());
     }//GEN-LAST:event_listRadioButtonActionPerformed
-//FIXME: delete invisible variables
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JRadioButton listRadioButton;
     private javax.swing.JRadioButton matrixRadioButton;
     private javax.swing.JCheckBox symmetricCheckBox;
