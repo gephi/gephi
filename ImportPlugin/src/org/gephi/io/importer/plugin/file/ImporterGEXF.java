@@ -191,8 +191,10 @@ public class ImporterGEXF implements FileImporter, LongTask {
 
         if (!version.isEmpty() && version.equals("1.0")) {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version10"), Issue.Level.INFO));
-        } else {
+        } else if (!version.isEmpty() && version.equals("1.1")) {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version11"), Issue.Level.INFO));
+        } else {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version12"), Issue.Level.INFO));
         }
     }
 
