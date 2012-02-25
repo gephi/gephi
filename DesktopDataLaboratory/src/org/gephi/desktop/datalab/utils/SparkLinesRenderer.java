@@ -91,9 +91,15 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
             throw new IllegalArgumentException("Only number lists and dynamic numbers are supported for sparklines rendering");
         }
 
-        //If there is less than 2 elements, show as a String.
-        if (yValues.length < 2) {
+        //If there is less than 1 element, show as a String.
+        if (yValues.length < 1) {
             return super.getTableCellRendererComponent(table, stringRepresentation, isSelected, hasFocus, row, column);
+        }
+
+        if (yValues.length == 1) {
+            //SparklineGraph needs at least 2 values, duplicate the only one we have to get a sparkline with a single line showing that the value does not change over time
+            xValues = null;
+            yValues = new Number[]{yValues[0], yValues[0]};
         }
 
         JLabel label = new JLabel();
@@ -105,7 +111,6 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
         }
 
         //Note: Can't use interactive SparklineComponent because TableCellEditors don't receive mouse events.
-
         final SparklineParameters sparklineParameters = new SparklineParameters(table.getColumnModel().getColumn(column).getWidth() - 1, table.getRowHeight(row) - 1, Color.BLUE, background, Color.RED, Color.GREEN, null);
         final BufferedImage i = SparklineGraph.draw(xValues, yValues, sparklineParameters);
         label.setIcon(new ImageIcon(i));
