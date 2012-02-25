@@ -45,7 +45,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -92,8 +91,8 @@ public class SparkLinesRenderer extends DefaultTableCellRenderer {
             throw new IllegalArgumentException("Only number lists and dynamic numbers are supported for sparklines rendering");
         }
 
-        //If there is less than 3 elements, show as a String.
-        if (yValues.length < 3) {
+        //If there is less than 2 elements, show as a String.
+        if (yValues.length < 2) {
             return super.getTableCellRendererComponent(table, stringRepresentation, isSelected, hasFocus, row, column);
         }
 
