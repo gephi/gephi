@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module codename="org.netbeans.modules.nbjunit/1">
-    <module_version install_time="1311882732945" last="true" origin="installer" specification_version="1.68.1">
-        <file crc="3013490805" name="config/Modules/org-netbeans-modules-nbjunit.xml"/>
-        <file crc="1520359899" name="modules/org-netbeans-modules-nbjunit.jar"/>
-    </module_version>
-</module>

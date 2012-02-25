@@ -72,6 +72,7 @@ made subject to such option by the copyright holder.
                         <filename name="lib/locale/*.jar"/>
                         <filename name="core/locale/*.jar"/>
                         <filename name="*.jar"/> <!-- #186371: imported bundles -->
+                        <filename name="modules/ext/org.eclipse.osgi_*.jar"/>
                     </or>
                     <custom classpath="${harness.dir}/tasks.jar" classname="org.netbeans.nbbuild.ModuleSelector">
                         <param name="excludeModules" value="${disabled.modules}"/>

@@ -247,27 +247,32 @@ made subject to such option by the copyright holder.
     <!-- Can insert extra stuff in here: -->
     <target name="netbeans-extra"/>
 
-    <target name="module-xml-regular" if="is.regular">
+    <target name="-init-startlevel">
+        <property name="module.startlevel" value=""/>
+        <property name="check.module.startlevel" value="true"/>
+    </target>
+
+    <target name="module-xml-regular" if="is.regular" depends="-init-startlevel">
         <mkdir dir="${cluster}/config/Modules"/>
-        <createmodulexml xmldir="${cluster}/config/Modules">
+        <createmodulexml xmldir="${cluster}/config/Modules" startlevel="${module.startlevel}" strictcheck="${check.module.startlevel}">
             <enabled dir="${cluster}">
                 <include name="${module.jar}"/>
             </enabled>
         </createmodulexml>
     </target>
 
-    <target name="module-xml-autoload" if="is.autoload">
+    <target name="module-xml-autoload" if="is.autoload" depends="-init-startlevel">
         <mkdir dir="${cluster}/config/Modules"/>
-        <createmodulexml xmldir="${cluster}/config/Modules">
+        <createmodulexml xmldir="${cluster}/config/Modules" startlevel="${module.startlevel}" strictcheck="${check.module.startlevel}">
             <autoload dir="${cluster}">
                 <include name="${module.jar}"/>
             </autoload>
         </createmodulexml>
     </target>
 
-    <target name="module-xml-eager" if="is.eager">
+    <target name="module-xml-eager" if="is.eager" depends="-init-startlevel">
         <mkdir dir="${cluster}/config/Modules"/>
-        <createmodulexml xmldir="${cluster}/config/Modules">
+        <createmodulexml xmldir="${cluster}/config/Modules" startlevel="${module.startlevel}" strictcheck="${check.module.startlevel}">
             <eager dir="${cluster}">
                 <include name="${module.jar}"/>
             </eager>
@@ -318,7 +323,7 @@ made subject to such option by the copyright holder.
         </pathconvert>
 
         <xmlvalidate warn="no"> <!--  failonerror="false" -->
-            <fileset file="${src.dir}/${layer.file}"/>
+            <fileset file="${src.dir}/${layer.file}" erroronmissingdir="false"/>
             <xmlcatalog classpath="${dtd.cp}">
                 <dtd publicId="-//NetBeans//DTD Filesystem 1.0//EN"
                 location="org/openide/filesystems/filesystem.dtd"/>
@@ -330,9 +335,9 @@ made subject to such option by the copyright holder.
         </xmlvalidate>
     </target>
 
-    <target name="netbeans" depends="init,jar,netbeans-extra,module-xml-regular,module-xml-autoload,
-            module-xml-eager,javahelp,module-auto-deps,release,chmod-executables,verify-class-linkage,
-            -validate-layers,-verify-apichanges">
+    <target name="netbeans" depends="init,jar,netbeans-extra,javahelp,module-auto-deps,release,module-xml-regular,
+            module-xml-autoload,module-xml-eager,chmod-executables,verify-class-linkage,
+            -validate-layers,-verify-apichanges">            
         <property name="module.files.toString" refid="module.files"/>
         <echo level="verbose">Basic matching module files: ${module.files.toString}</echo>
         <genlist outputfiledir="${cluster}" module="${module.jar}">
@@ -398,7 +403,9 @@ made subject to such option by the copyright holder.
 
 
     <target name="-nbm-prompt-for-storepass" if="keystore" unless="storepass">
-        <input addproperty="storepass" message="Enter password for ${keystore}:"/>
+        <input addproperty="storepass" message="Enter password for ${keystore}:">
+            <handler type="secure"/>
+        </input>
     </target>
 
     <target name="-init-executables">
@@ -488,6 +495,10 @@ made subject to such option by the copyright holder.
                     <propertyset>
                         <propertyref name="build.test.@{test.type}.work.dir"/>
                         <mapper type="glob" from="build.test.@{test.type}.work.dir" to="nbjunit.workdir"/>
+                    </propertyset>
+                    <propertyset>
+                        <propertyref name="test.timeout"/>
+                        <mapper type="glob" from="test.timeout" to="nbjunit.hard.timeout"/>
                     </propertyset>
                 </propertyset>
                 <condition property="exists.test.@{test.type}.src.dir">
@@ -651,7 +662,7 @@ made subject to such option by the copyright holder.
         <test test.type="qa-functional"/>
     </target>
 
-    <target name="test-generate-html">
+    <target name="test-generate-html" depends="-build-dir-init">
         <subant target="-test-browse-html" genericantfile="${ant.file}" inheritall="true">
             <dirset dir="${build.dir}/test" includes="*/results"/>
         </subant>

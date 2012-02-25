@@ -22,17 +22,6 @@
         <echo message="Build completed. The files are available in the 'dist' folder."/>
     </target>
 
-	<!-- Download the latest stable relese of the platform, including the JUnit plugin -->
-    <target name="download-platform">
-        <property name="platform.netbeans.version" value="7.0.1"/>
-        <taskdef name="autoupdate" classname="org.netbeans.nbbuild.AutoUpdate" classpath="${nbplatform.active.dir}/harness/tasks.jar"/>
-        <autoupdate installdir="${nbplatform.active.dir}" updatecenter="http://updates.netbeans.org/netbeans/updates/${platform.netbeans.version}/uc/final/certified/catalog.xml.gz" force="false">
-            <modules includes=".*junit.*" clusters="platform[0-9]*"/>
-            <modules includes=".*" clusters="harness[0-9]*"/>
-            <modules includes=".*" clusters="platform[0-9]*"/>
-        </autoupdate>
-    </target>
-
     <target name="build-launchers" depends="suite.build-launchers">
         <!-- Replace the icon for the Windows launcher exe. -->
         <antcall target="replaceWindowsLauncherIcon"/>

@@ -179,12 +179,14 @@ if [ ! -x "${jdkhome}/bin/java" ] ; then
     exit 2
 fi
 
-# if heap dump on OOME is supported enable it
-if "${jdkhome}/bin/java" -XX:+HeapDumpOnOutOfMemoryError > /dev/null 2>&1 ; then
+# if the Java option for heap dump on OOME is supported enable it
+if "${jdkhome}/bin/java" -XX:+HeapDumpOnOutOfMemoryError -cp "${progdir}/boot.jar" org.netbeans.NbExecJavaStartTry > /dev/null 2>&1 ; then
    jargs="$jargs -XX:+HeapDumpOnOutOfMemoryError"
    if echo $jargs | grep -v -- "-XX:HeapDumpPath=" > /dev/null ; then
       jargs="$jargs -XX:HeapDumpPath=\"${userdir}/var/log/heapdump.hprof\""
    fi
+   # rename old heap dump to .old
+   mv "${userdir}/var/log/heapdump.hprof" "${userdir}/var/log/heapdump.hprof.old" > /dev/null 2>&1
 fi
 
 jargs_without_clusters="$jargs"

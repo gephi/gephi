@@ -30,5 +30,8 @@
             <modules includes="${module.includes}.*" clusters="${download.clusters}"/>
             <modules includes="org[.]netbeans[.]modules[.]apisupport[.]harness" clusters="harness"/>
         </autoupdate>
+        <autoupdate installdir="${nbplatform.active.dir}" updatecenter="${autoupdate.catalog.url.junit}">
+            <modules includes=".*junit.*" clusters="${download.clusters}"/>
+        </autoupdate>
     </target>
 </project>
