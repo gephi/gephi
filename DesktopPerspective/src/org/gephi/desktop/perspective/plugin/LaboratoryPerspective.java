@@ -67,6 +67,6 @@ public class LaboratoryPerspective implements Perspective {
 
     @Override
     public String getName() {
-        return "LaboratoryGroup";
+        return "datalab";
     }
 }

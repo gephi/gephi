@@ -68,6 +68,6 @@ public class OverviewPerspective implements Perspective {
 
     @Override
     public String getName() {
-        return "OverviewGroup";
+        return "overview";
     }
 }

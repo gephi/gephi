@@ -67,6 +67,6 @@ public class PreviewPerspective implements Perspective {
 
     @Override
     public String getName() {
-        return "PreviewGroup";
+        return "preview";
     }
 }

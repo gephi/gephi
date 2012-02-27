@@ -42,7 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.perspective.api;
 
 import org.gephi.perspective.spi.Perspective;
-import org.gephi.perspective.spi.PerspectiveMember;
 
 /**
  * Controller to manage the perspective system. A perspective is a set of panels
