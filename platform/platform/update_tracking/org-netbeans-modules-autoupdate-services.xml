@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module codename="org.netbeans.modules.autoupdate.services">
-    <module_version install_time="1330201472310" last="true" origin="Ant" specification_version="1.28.2">
+    <module_version install_time="1330304179838" last="true" origin="Ant" specification_version="1.28.2">
         <file crc="2968040703" name="modules/ext/locale/updater_ja.jar"/>
         <file crc="928420146" name="modules/ext/locale/updater_pt_BR.jar"/>
         <file crc="2691840427" name="modules/ext/locale/updater_ru.jar"/>

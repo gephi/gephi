@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module codename="org.netbeans.modules.options.api">
-    <module_version install_time="1330201457260" last="true" origin="Ant" specification_version="1.24.1">
+    <module_version install_time="1330304159986" last="true" origin="Ant" specification_version="1.24.1">
         <file crc="436746821" name="modules/locale/org-netbeans-modules-options-api_ja.jar"/>
         <file crc="2435170738" name="modules/locale/org-netbeans-modules-options-api_pt_BR.jar"/>
         <file crc="3022876154" name="modules/locale/org-netbeans-modules-options-api_ru.jar"/>

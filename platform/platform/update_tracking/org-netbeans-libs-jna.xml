@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module codename="org.netbeans.libs.jna">
-    <module_version install_time="1330201466445" last="true" origin="Ant" specification_version="1.16.1">
+    <module_version install_time="1330304172603" last="true" origin="Ant" specification_version="1.16.1">
         <file crc="3339991150" name="modules/locale/org-netbeans-libs-jna_ja.jar"/>
         <file crc="2917087181" name="modules/locale/org-netbeans-libs-jna_pt_BR.jar"/>
         <file crc="1657701976" name="modules/locale/org-netbeans-libs-jna_ru.jar"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module codename="org.netbeans.core.io.ui">
-    <module_version install_time="1330201484274" last="true" origin="Ant" specification_version="1.14.1">
+    <module_version install_time="1330304189083" last="true" origin="Ant" specification_version="1.14.1">
         <file crc="1748392147" name="modules/locale/org-netbeans-core-io-ui_ja.jar"/>
         <file crc="262119103" name="modules/locale/org-netbeans-core-io-ui_pt_BR.jar"/>
         <file crc="3080106688" name="modules/locale/org-netbeans-core-io-ui_ru.jar"/>

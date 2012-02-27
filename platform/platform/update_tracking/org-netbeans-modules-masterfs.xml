@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module codename="org.netbeans.modules.masterfs">
-    <module_version install_time="1330201468722" last="true" origin="Ant" specification_version="2.34.2">
+    <module_version install_time="1330304175177" last="true" origin="Ant" specification_version="2.34.2">
         <file crc="2346847530" name="modules/locale/org-netbeans-modules-masterfs_ja.jar"/>
         <file crc="3552514274" name="modules/locale/org-netbeans-modules-masterfs_pt_BR.jar"/>
         <file crc="276881564" name="modules/locale/org-netbeans-modules-masterfs_ru.jar"/>
