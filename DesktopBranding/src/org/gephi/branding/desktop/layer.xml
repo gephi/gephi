@@ -193,4 +193,15 @@
         </file>
     </folder>
     <file name="Toolbars_hidden"/>
+    <folder name="Windows2">
+        <folder name="Modes">
+            <file name="bottomSlidingSide.wsmode" url="bottomSlidingSideWsmode.xml"/>
+            <file name="contextmode.wsmode" url="contextmodeWsmode.xml"/>
+            <file name="editor.wsmode" url="editorWsmode.xml"/>
+            <file name="filtersmode.wsmode" url="filtersmodeWsmode.xml"/>
+            <file name="layoutmode.wsmode" url="layoutmodeWsmode.xml"/>
+            <file name="leftSlidingSide.wsmode" url="leftSlidingSideWsmode.xml"/>
+            <file name="rankingmode.wsmode" url="rankingmodeWsmode.xml"/>
+        </folder>
+    </folder>
 </filesystem>

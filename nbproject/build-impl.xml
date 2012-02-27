@@ -3,7 +3,7 @@
 *** GENERATED FROM project.xml - DO NOT EDIT  ***
 ***         EDIT ../build.xml INSTEAD         ***
 -->
-<project name="0.7-impl" basedir=".." xmlns:sproject="http://www.netbeans.org/ns/nb-module-suite-project/1">
+<project name="0.8-impl" basedir=".." xmlns:sproject="http://www.netbeans.org/ns/nb-module-suite-project/1">
     <fail message="Please build using Ant 1.7.1 or higher.">
         <condition>
             <not>

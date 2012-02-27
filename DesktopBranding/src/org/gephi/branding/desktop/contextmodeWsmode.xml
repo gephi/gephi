@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mode version="2.4">
+    <name unique="contextmode"/>
+  <kind type="view"/>
+  <state type="joined"/>
+  <constraints>
+    <path orientation="horizontal" number="60" weight="0.7"/>
+    <path orientation="vertical" number="40" weight="0.7"/>
+    <path orientation="horizontal" number="80" weight="0.252324037184595"/>
+    <path orientation="vertical" number="81" weight="0.10926694329183956"/>
+  </constraints>
+  <bounds x="0" y="0" width="0" height="0"/>
+  <frame state="0"/>
+    
+    <empty-behavior permanent="false"/>
+</mode>
