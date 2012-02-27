@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Jérémy Subtil <jeremy.subtil@gephi.org>, Mathieu Bastian
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Jérémy Subtil <jeremy.subtil@gephi.org>, Mathieu Bastian
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.preview;
 
@@ -48,9 +48,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.Serializable;
 import java.text.NumberFormat;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -65,38 +63,45 @@ import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.api.PreviewPreset;
 import org.gephi.preview.spi.PreviewUI;
 import org.gephi.ui.utils.UIUtils;
+import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
 import org.openide.awt.StatusDisplayer;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.Node;
-import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
- * 
+ *
  * @author Jérémy Subtil, Mathieu Bastian
  */
+@ConvertAsProperties(dtd = "-//org.gephi.desktop.preview//PreviewSettings//EN",
+autostore = false)
+@TopComponent.Description(preferredID = "PreviewSettingsTopComponent",
+iconBase = "org/gephi/desktop/preview/resources/settings.png",
+persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+@TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"preview"})
+@ActionID(category = "Window", id = "org.gephi.desktop.preview.PreviewSettingsTopComponent")
+@ActionReference(path = "Menu/Window", position = 1000)
+@TopComponent.OpenActionRegistration(displayName = "#CTL_PreviewSettingsTopComponent",
+preferredID = "PreviewSettingsTopComponent")
 public final class PreviewSettingsTopComponent extends TopComponent implements PropertyChangeListener {
-    
-    private static PreviewSettingsTopComponent instance;
-    static final String ICON_PATH = "org/gephi/desktop/preview/resources/settings.png";
-    private static final String PREFERRED_ID = "PreviewSettingsTopComponent";
+
     private final String NO_SELECTION = "---";
     //Component
     private transient PropertySheet propertySheet;
     private transient JTabbedPane tabbedPane;
     //State
     private int defaultPresetLimit;
-    
+
     private PreviewSettingsTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(PreviewSettingsTopComponent.class, "CTL_PreviewSettingsTopComponent"));
-//        setToolTipText(NbBundle.getMessage(PreviewSettingsTopComponent.class, "HINT_PreviewSettingsTopComponent"));
-        setIcon(ImageUtilities.loadImage(ICON_PATH));
+
         if (UIUtils.isAquaLookAndFeel()) {
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
@@ -118,9 +123,9 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
 
         //Ratio
         ratioSlider.addChangeListener(new ChangeListener() {
-            
+
             NumberFormat formatter = NumberFormat.getPercentInstance();
-            
+
             public void stateChanged(ChangeEvent e) {
                 float val = ratioSlider.getValue() / 100f;
                 if (val == 0f) {
@@ -135,7 +140,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
 
         //Presets
         presetComboBox.addItemListener(new ItemListener() {
-            
+
             public void itemStateChanged(ItemEvent e) {
                 PreviewUIController pc = Lookup.getDefault().lookup(PreviewUIController.class);
                 PreviewUIModel previewModel = pc.getModel();
@@ -150,24 +155,24 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
 
         //Export
         svgExportButton.addActionListener(new ActionListener() {
-            
+
             public void actionPerformed(ActionEvent e) {
                 VectorialFileExporterUI ui = Lookup.getDefault().lookup(VectorialFileExporterUI.class);
                 ui.action();
             }
         });
         setup(null);
-        
+
         PreviewUIController controller = Lookup.getDefault().lookup(PreviewUIController.class);
         controller.addPropertyChangeListener(this);
-        
+
         PreviewUIModel m = controller.getModel();
         if (m != null) {
             setup(m);
             enableRefreshButton();
         }
     }
-    
+
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(PreviewUIController.SELECT)) {
             PreviewUIModel model = (PreviewUIModel) evt.getNewValue();
@@ -187,7 +192,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
             }
         }
     }
-    
+
     public void setup(PreviewUIModel previewModel) {
         propertySheet.setNodes(new Node[]{new PreviewNode(propertySheet)});
         PreviewUIController previewUIController = Lookup.getDefault().lookup(PreviewUIController.class);
@@ -250,7 +255,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
             }
         }
     }
-    
+
     public void unsetup() {
     }
 
@@ -262,13 +267,13 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
      */
     public float getVisibilityRatio() {
         float value = (Integer) ratioSlider.getValue();
-        
+
         if (value < 0) {
             value = 0;
         } else if (value > 100) {
             value = 100;
         }
-        
+
         return value / 100;
     }
 
@@ -299,7 +304,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         labelExport.setEnabled(false);
         svgExportButton.setEnabled(false);
     }
-    
+
     private boolean isDefaultPreset(PreviewPreset preset) {
         int i = 0;
         for (i = 0; i < presetComboBox.getItemCount(); i++) {
@@ -310,10 +315,10 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         return i < defaultPresetLimit;
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -492,7 +497,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         Lookup.getDefault().lookup(PreviewUIController.class).refreshPreview();
 }//GEN-LAST:event_refreshButtonActionPerformed
-    
+
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         PreviewUIController previewController = Lookup.getDefault().lookup(PreviewUIController.class);
         PreviewPreset preset = previewController.getModel().getCurrentPreset();
@@ -514,7 +519,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
             saved = true;
             StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.savePreset.status", preset.getName()));
         }
-        
+
         if (saved) {
             //refresh combo
             DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
@@ -552,69 +557,15 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
     private javax.swing.JButton svgExportButton;
     // End of variables declaration//GEN-END:variables
 
-    /**
-     * Gets default instance. Do not use directly: reserved for *.settings files only,
-     * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
-     * To obtain the singleton instance, use {@link #findInstance}.
-     */
-    public static synchronized PreviewSettingsTopComponent getDefault() {
-        if (instance == null) {
-            instance = new PreviewSettingsTopComponent();
-        }
-        return instance;
+    void writeProperties(java.util.Properties p) {
+        // better to version settings since initial version as advocated at
+        // http://wiki.apidesign.org/wiki/PropertyFiles
+        p.setProperty("version", "1.0");
+        // TODO store your settings
     }
 
-    /**
-     * Obtain the PreviewSettingsTopComponent instance. Never call {@link #getDefault} directly!
-     */
-    public static synchronized PreviewSettingsTopComponent findInstance() {
-        TopComponent win = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
-        if (win == null) {
-            Logger.getLogger(PreviewSettingsTopComponent.class.getName()).warning(
-                    "Cannot find " + PREFERRED_ID + " component. It will not be located properly in the window system.");
-            return getDefault();
-        }
-        if (win instanceof PreviewSettingsTopComponent) {
-            return (PreviewSettingsTopComponent) win;
-        }
-        Logger.getLogger(PreviewSettingsTopComponent.class.getName()).warning(
-                "There seem to be multiple components with the '" + PREFERRED_ID
-                + "' ID. That is a potential source of errors and unexpected behavior.");
-        return getDefault();
-    }
-    
-    @Override
-    public int getPersistenceType() {
-        return TopComponent.PERSISTENCE_ALWAYS;
-    }
-    
-    @Override
-    public void componentOpened() {
-        // TODO add custom code on component opening
-    }
-    
-    @Override
-    public void componentClosed() {
-        // TODO add custom code on component closing
-    }
-
-    /** replaces this in object stream */
-    @Override
-    public Object writeReplace() {
-        return new ResolvableHelper();
-    }
-    
-    @Override
-    protected String preferredID() {
-        return PREFERRED_ID;
-    }
-    
-    final static class ResolvableHelper implements Serializable {
-        
-        private static final long serialVersionUID = 1L;
-        
-        public Object readResolve() {
-            return PreviewSettingsTopComponent.getDefault();
-        }
+    void readProperties(java.util.Properties p) {
+        String version = p.getProperty("version");
+        // TODO read your settings according to their version
     }
 }

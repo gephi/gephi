@@ -46,6 +46,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.api.EditWindowController;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.WindowManager;
 
 /**
  * Implementation of EditWindowController interface of Tools API.
@@ -53,12 +54,16 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = EditWindowController.class)
 public class EditWindowControllerImpl implements EditWindowController {
+    
+    public EditToolTopComponent findInstance() {
+        return (EditToolTopComponent)WindowManager.getDefault().findTopComponent("EditToolTopComponent");
+    }
 
     public void openEditWindow() {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
+                EditToolTopComponent topComponent = findInstance();
                 topComponent.open();
                 topComponent.requestActive();
             }
@@ -70,7 +75,7 @@ public class EditWindowControllerImpl implements EditWindowController {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
+                EditToolTopComponent topComponent = findInstance();
                 topComponent.disableEdit();
                 topComponent.close();
             }
@@ -78,7 +83,7 @@ public class EditWindowControllerImpl implements EditWindowController {
     }
 
     public boolean isOpen(){
-        EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
+        EditToolTopComponent topComponent = findInstance();
         return topComponent.isOpened();
     }
 
@@ -86,7 +91,7 @@ public class EditWindowControllerImpl implements EditWindowController {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
+                EditToolTopComponent topComponent = findInstance();
                 topComponent.editNode(node);
             }
         });
@@ -96,7 +101,7 @@ public class EditWindowControllerImpl implements EditWindowController {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
+                EditToolTopComponent topComponent = findInstance();
                 topComponent.editNodes(nodes);
             }
         });
@@ -106,7 +111,7 @@ public class EditWindowControllerImpl implements EditWindowController {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
+                EditToolTopComponent topComponent = findInstance();
                 topComponent.editEdge(edge);
             }
         });
@@ -116,7 +121,7 @@ public class EditWindowControllerImpl implements EditWindowController {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
+                EditToolTopComponent topComponent = findInstance();
                 topComponent.editEdges(edges);
             }
         });
@@ -126,7 +131,7 @@ public class EditWindowControllerImpl implements EditWindowController {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                EditToolTopComponent topComponent = EditToolTopComponent.findInstance();
+                EditToolTopComponent topComponent = findInstance();
                 topComponent.disableEdit();
             }
         });

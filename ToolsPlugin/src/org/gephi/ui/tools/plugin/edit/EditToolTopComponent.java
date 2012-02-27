@@ -41,34 +41,30 @@ Portions Copyrighted 2011 Gephi Consortium.
 */
 package org.gephi.ui.tools.plugin.edit;
 
-import java.util.logging.Logger;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
-import org.openide.util.NbBundle;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
-//import org.openide.util.ImageUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
+import org.openide.windows.TopComponent;
 
 @ConvertAsProperties(dtd = "-//org.gephi.ui.tools.plugin.edit//EditTool//EN",
 autostore = false)
+@TopComponent.Description(preferredID = "EditToolTopComponent",
+persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+@TopComponent.Registration(mode = "rankingmode", openAtStartup = false, roles = {"overview"})
+@TopComponent.OpenActionRegistration(displayName = "#CTL_EditToolTopComponent",
+preferredID = "EditToolTopComponent")
 public final class EditToolTopComponent extends TopComponent {
-
-    private static EditToolTopComponent instance;
-    /** path to the icon used by the component and its open action */
-//    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
-    private static final String PREFERRED_ID = "EditToolTopComponent";
 
     public EditToolTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(EditToolTopComponent.class, "CTL_EditToolTopComponent"));
-        setToolTipText(NbBundle.getMessage(EditToolTopComponent.class, "HINT_EditToolTopComponent"));
-//        setIcon(ImageUtilities.loadImage(ICON_PATH, true));
+
         putClientProperty(TopComponent.PROP_MAXIMIZATION_DISABLED, Boolean.TRUE);
 
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
@@ -139,41 +135,6 @@ public final class EditToolTopComponent extends TopComponent {
     private javax.swing.JPanel propertySheet;
     // End of variables declaration//GEN-END:variables
 
-    /**
-     * Gets default instance. Do not use directly: reserved for *.settings files only,
-     * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
-     * To obtain the singleton instance, use {@link #findInstance}.
-     */
-    public static synchronized EditToolTopComponent getDefault() {
-        if (instance == null) {
-            instance = new EditToolTopComponent();
-        }
-        return instance;
-    }
-
-    /**
-     * Obtain the EditToolTopComponent instance. Never call {@link #getDefault} directly!
-     */
-    public static synchronized EditToolTopComponent findInstance() {
-        TopComponent win = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
-        if (win == null) {
-            Logger.getLogger(EditToolTopComponent.class.getName()).warning(
-                    "Cannot find " + PREFERRED_ID + " component. It will not be located properly in the window system.");
-            return getDefault();
-        }
-        if (win instanceof EditToolTopComponent) {
-            return (EditToolTopComponent) win;
-        }
-        Logger.getLogger(EditToolTopComponent.class.getName()).warning(
-                "There seem to be multiple components with the '" + PREFERRED_ID
-                + "' ID. That is a potential source of errors and unexpected behavior.");
-        return getDefault();
-    }
-
-    @Override
-    public int getPersistenceType() {
-        return TopComponent.PERSISTENCE_ALWAYS;
-    }
 
     @Override
     public void componentOpened() {
@@ -192,21 +153,8 @@ public final class EditToolTopComponent extends TopComponent {
         // TODO store your settings
     }
 
-    Object readProperties(java.util.Properties p) {
-        if (instance == null) {
-            instance = this;
-        }
-        instance.readPropertiesImpl(p);
-        return instance;
-    }
-
-    private void readPropertiesImpl(java.util.Properties p) {
+    void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
-    }
-
-    @Override
-    protected String preferredID() {
-        return PREFERRED_ID;
     }
 }

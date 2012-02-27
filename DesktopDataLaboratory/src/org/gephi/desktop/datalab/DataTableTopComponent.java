@@ -50,12 +50,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -107,16 +105,18 @@ import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.utils.TableCSVExporter;
+import org.netbeans.api.settings.ConvertAsProperties;
 import org.netbeans.swing.etable.ETableColumnModel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 import org.pushingpixels.flamingo.api.common.CommandButtonDisplayState;
 import org.pushingpixels.flamingo.api.common.JCommandButton;
 import org.pushingpixels.flamingo.api.common.JCommandButtonPanel;
@@ -132,15 +132,22 @@ import org.pushingpixels.flamingo.api.common.popup.PopupPanelCallback;
  *
  * @author Mathieu Bastian
  */
-final class DataTableTopComponent extends TopComponent implements AWTEventListener, DataTablesEventListener, AttributeListener, GraphListener {
+@ConvertAsProperties(dtd = "-//org.gephi.desktop.context//Context//EN",
+autostore = false)
+@TopComponent.Description(preferredID = "DataTableTopComponent",
+iconBase = "org/gephi/desktop/datalab/resources/small.png",
+persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+@TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"datalab"})
+@ActionID(category = "Window", id = "org.gephi.desktop.datalab.DataTableTopComponent")
+@ActionReference(path = "Menu/Window", position = 300)
+@TopComponent.OpenActionRegistration(displayName = "#CTL_DataTableTopComponent",
+preferredID = "DataTableTopComponent")
+public class DataTableTopComponent extends TopComponent implements AWTEventListener, DataTablesEventListener, AttributeListener, GraphListener {
 
     private enum ClassDisplayed {
 
         NONE, NODE, EDGE
     };
-    private static DataTableTopComponent instance;
-    static final String ICON_PATH = "org/gephi/desktop/datalab/resources/small.png";
-    private static final String PREFERRED_ID = "DataTableTopComponent";
     //Settings
     private static final String DATA_LABORATORY_DYNAMIC_FILTERING = "DataLaboratory_Dynamic_Filtering";
     private static final String DATA_LABORATORY_ONLY_VISIBLE = "DataLaboratory_visibleOnly";
@@ -190,7 +197,6 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
 
         columnManipulatorsPanel.setLayout(new WrapLayout(WrapLayout.CENTER, 25, 20));
         setName(NbBundle.getMessage(DataTableTopComponent.class, "CTL_DataTableTopComponent"));
-        setIcon(ImageUtilities.loadImage(ICON_PATH));
 
         //toolbar
         Border b = (Border) UIManager.get("Nb.Editor.Toolbar.border"); //NOI18N
@@ -384,7 +390,7 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                AttributeTable table=event.getSource();
+                AttributeTable table = event.getSource();
                 AvailableColumnsModel tableAvailableColumnsModel = getTableAvailableColumnsModel(table);
                 if (tableAvailableColumnsModel != null) {
                     switch (event.getEventType()) {
@@ -428,9 +434,11 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     /**
-     * This method ensures that the refreshing of all Data laboratory or table only happens once in a short time period.
+     * This method ensures that the refreshing of all Data laboratory or table
+     * only happens once in a short time period.
      *
-     * @param refreshTableOnly True to refresh only table values, false to refresh all UI including manipulators
+     * @param refreshTableOnly True to refresh only table values, false to
+     * refresh all UI including manipulators
      */
     private void refreshOnce(boolean refreshTableOnly) {
         if (refreshOnceHelperThread == null || !refreshOnceHelperThread.isAlive() || (refreshOnceHelperThread.refreshTableOnly && !refreshTableOnly)) {
@@ -871,7 +879,8 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     /**
-     * Creates a JCommandButton for the specified columns of a table and AttributeColumnsManipulator
+     * Creates a JCommandButton for the specified columns of a table and
+     * AttributeColumnsManipulator
      *
      * @param table table
      * @param columns Columns
@@ -1118,7 +1127,9 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     /**
-     * This thread is used for processing graphChanged and attributesChanged events. It takes care to only refresh the UI once (the last one) when a lot of events come in a short period of time.
+     * This thread is used for processing graphChanged and attributesChanged
+     * events. It takes care to only refresh the UI once (the last one) when a
+     * lot of events come in a short period of time.
      */
     class RefreshOnceHelperThread extends Thread {
 
@@ -1157,7 +1168,8 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     /**
-     * To react to Ctrl+F keys combination calling Search/Replace general action (and nodes/edges context menu mappings)
+     * To react to Ctrl+F keys combination calling Search/Replace general action
+     * (and nodes/edges context menu mappings)
      *
      * @param event
      */
@@ -1203,7 +1215,9 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     }
 
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -1427,41 +1441,6 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
     private javax.swing.JScrollPane tableScrollPane;
     // End of variables declaration//GEN-END:variables
 
-    /**
-     * Gets default instance. Do not use directly: reserved for *.settings files only, i.e. deserialization routines; otherwise you could get a non-deserialized instance. To obtain the singleton
-     * instance, use {@link #findInstance}.
-     */
-    public static synchronized DataTableTopComponent getDefault() {
-        if (instance == null) {
-            instance = new DataTableTopComponent();
-        }
-        return instance;
-    }
-
-    /**
-     * Obtain the DataTableTopComponent instance. Never call {@link #getDefault} directly!
-     */
-    public static synchronized DataTableTopComponent findInstance() {
-        TopComponent win = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
-        if (win == null) {
-            Logger.getLogger(DataTableTopComponent.class.getName()).warning(
-                    "Cannot find " + PREFERRED_ID + " component. It will not be located properly in the window system.");
-            return getDefault();
-        }
-        if (win instanceof DataTableTopComponent) {
-            return (DataTableTopComponent) win;
-        }
-        Logger.getLogger(DataTableTopComponent.class.getName()).warning(
-                "There seem to be multiple components with the '" + PREFERRED_ID
-                + "' ID. That is a potential source of errors and unexpected behavior.");
-        return getDefault();
-    }
-
-    @Override
-    public int getPersistenceType() {
-        return TopComponent.PERSISTENCE_ALWAYS;
-    }
-
     @Override
     public void componentOpened() {
         refreshAllOnce();
@@ -1483,36 +1462,29 @@ final class DataTableTopComponent extends TopComponent implements AWTEventListen
         java.awt.Toolkit.getDefaultToolkit().removeAWTEventListener(this);
     }
 
-    /**
-     * replaces this in object stream
-     */
-    @Override
-    public Object writeReplace() {
-        return new ResolvableHelper();
+    void writeProperties(java.util.Properties p) {
+        // better to version settings since initial version as advocated at
+        // http://wiki.apidesign.org/wiki/PropertyFiles
+        p.setProperty("version", "1.0");
+        // TODO store your settings
     }
 
-    @Override
-    protected String preferredID() {
-        return PREFERRED_ID;
-    }
-
-    final static class ResolvableHelper implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        public Object readResolve() {
-            return DataTableTopComponent.getDefault();
-        }
+    void readProperties(java.util.Properties p) {
+        String version = p.getProperty("version");
+        // TODO read your settings according to their version
     }
 
     /**
-     * <p>Exports a JTable to a CSV file showing first a dialog to select the file to write.</p>
+     * <p>Exports a JTable to a CSV file showing first a dialog to select the
+     * file to write.</p>
      *
      * @param parent Parent window
      * @param table Table to export
-     * @param separator Separator to use for separating values of a row in the CSV file. If null ',' will be used.
+     * @param separator Separator to use for separating values of a row in the
+     * CSV file. If null ',' will be used.
      * @param charset Charset encoding for the file
-     * @param columnsToExport Indicates the indexes of the columns to export. All columns will be exported if null
+     * @param columnsToExport Indicates the indexes of the columns to export.
+     * All columns will be exported if null
      */
     public static void exportTableAsCSV(JComponent parent, JTable table, Character separator, Charset charset, Integer[] columnsToExport, String fileName) {
         String lastPath = NbPreferences.forModule(TableCSVExporter.class).get(LAST_PATH, null);

@@ -44,6 +44,7 @@ package org.gephi.desktop.datalab;
 import org.gephi.datalab.api.datatables.DataTablesEventListener;
 import org.gephi.datalab.api.datatables.DataTablesEventListenerBuilder;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.WindowManager;
 
 /**
  * Provides default instance of DataTableTopComponent as DataTablesEventListener
@@ -53,6 +54,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class DefaultDataTablesEventListenerBuilder implements DataTablesEventListenerBuilder{
 
     public DataTablesEventListener getDataTablesEventListener() {
-        return DataTableTopComponent.findInstance();
+        return (DataTableTopComponent)WindowManager.getDefault().findTopComponent("DataTableTopComponent");
     }
 }

@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.visualization.component;
 
@@ -47,10 +47,8 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -58,38 +56,45 @@ import javax.swing.UIManager;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.project.api.ProjectController;
+import org.gephi.project.api.Workspace;
+import org.gephi.project.api.WorkspaceListener;
 import org.gephi.tools.api.ToolController;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.PropertiesBarAddon;
-import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.swing.GraphDrawableImpl;
-import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceListener;
 import org.gephi.visualization.bridge.DHNSEventBridge;
+import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.spi.GraphContextMenuItem;
+import org.gephi.visualization.swing.GraphDrawableImpl;
+import org.netbeans.api.settings.ConvertAsProperties;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
-final class GraphTopComponent extends TopComponent implements AWTEventListener {
-
-    private static GraphTopComponent instance;
-    /** path to the icon used by the component and its open action */
-//    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
-    private static final String PREFERRED_ID = "GraphTopComponent";
+@ConvertAsProperties(dtd = "-//org.gephi.visualization.component//Graph//EN",
+autostore = false)
+@TopComponent.Description(preferredID = "GraphTopComponent",
+persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+@TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"overview"})
+@ActionID(category = "Window", id = "org.gephi.visualization.component.GraphTopComponent")
+@ActionReference(path = "Menu/Window", position = 500)
+@TopComponent.OpenActionRegistration(displayName = "#CTL_GraphTopComponent",
+preferredID = "GraphTopComponent")
+public class GraphTopComponent extends TopComponent implements AWTEventListener {
+    
     private AbstractEngine engine;
     private VizBarController vizBarController;
     private final DHNSEventBridge eventBridge;
     private Map<Integer, ContextMenuItemManipulator> keyActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();
 
-    private GraphTopComponent() {
+    public GraphTopComponent() {
         initComponents();
 
         setName(NbBundle.getMessage(GraphTopComponent.class, "CTL_GraphTopComponent"));
 //        setToolTipText(NbBundle.getMessage(GraphTopComponent.class, "HINT_GraphTopComponent"));
-//        setIcon(Utilities.loadImage(ICON_PATH, true));
 
         engine = VizController.getInstance().getEngine();
         eventBridge = (DHNSEventBridge) VizController.getInstance().getEventBridge();
@@ -232,7 +237,8 @@ final class GraphTopComponent extends TopComponent implements AWTEventListener {
     }
 
     /**
-     * For attending Ctrl+Key events in graph window to launch context menu actions
+     * For attending Ctrl+Key events in graph window to launch context menu
+     * actions
      */
     public void eventDispatched(AWTEvent event) {
         KeyEvent evt = (KeyEvent) event;
@@ -249,10 +255,10 @@ final class GraphTopComponent extends TopComponent implements AWTEventListener {
         }
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -272,42 +278,6 @@ final class GraphTopComponent extends TopComponent implements AWTEventListener {
     private org.gephi.visualization.component.CollapsePanel collapsePanel;
     private javax.swing.JLabel waitingLabel;
     // End of variables declaration//GEN-END:variables
-
-    /**
-     * Gets default instance. Do not use directly: reserved for *.settings files only,
-     * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
-     * To obtain the singleton instance, use {@link #findInstance}.
-     */
-    public static synchronized GraphTopComponent getDefault() {
-        if (instance == null) {
-            instance = new GraphTopComponent();
-        }
-        return instance;
-    }
-
-    /**
-     * Obtain the GraphTopComponent instance. Never call {@link #getDefault} directly!
-     */
-    public static synchronized GraphTopComponent findInstance() {
-        TopComponent win = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
-        if (win == null) {
-            Logger.getLogger(GraphTopComponent.class.getName()).warning(
-                    "Cannot find " + PREFERRED_ID + " component. It will not be located properly in the window system.");
-            return getDefault();
-        }
-        if (win instanceof GraphTopComponent) {
-            return (GraphTopComponent) win;
-        }
-        Logger.getLogger(GraphTopComponent.class.getName()).warning(
-                "There seem to be multiple components with the '" + PREFERRED_ID
-                + "' ID. That is a potential source of errors and unexpected behavior.");
-        return getDefault();
-    }
-
-    @Override
-    public int getPersistenceType() {
-        return TopComponent.PERSISTENCE_ALWAYS;
-    }
 
     @Override
     protected void componentShowing() {
@@ -340,24 +310,16 @@ final class GraphTopComponent extends TopComponent implements AWTEventListener {
         engine.stopDisplay();
     }
 
-    /** replaces this in object stream */
-    @Override
-    public Object writeReplace() {
-        return new ResolvableHelper();
+    void writeProperties(java.util.Properties p) {
+        // better to version settings since initial version as advocated at
+        // http://wiki.apidesign.org/wiki/PropertyFiles
+        p.setProperty("version", "1.0");
+        // TODO store your settings
     }
 
-    @Override
-    protected String preferredID() {
-        return PREFERRED_ID;
-    }
-
-    final static class ResolvableHelper implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        public Object readResolve() {
-            return GraphTopComponent.getDefault();
-        }
+    void readProperties(java.util.Properties p) {
+        String version = p.getProperty("version");
+        // TODO read your settings according to their version
     }
 
     private static class AddonsBar extends JPanel {
