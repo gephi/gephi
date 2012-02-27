@@ -56,11 +56,13 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import org.gephi.visualization.apiimpl.PropertiesBarAddon;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Mathieu Bastian
  */
+@ServiceProvider(service=PropertiesBarAddon.class)
 public class HierarchyPropertyBarAddon implements PropertiesBarAddon {
 
     public JComponent getComponent() {
