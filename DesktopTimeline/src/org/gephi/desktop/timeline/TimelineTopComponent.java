@@ -82,7 +82,7 @@ import org.openide.windows.TopComponent;
 //@ActionReference(path = "Menu/Window", position = 1200)
 //@TopComponent.OpenActionRegistration(displayName = "#CTL_TimelineTopComponent",
 //preferredID = "TimelineTopComponent")
-public final class TimelineTopComponent extends TopComponent implements TimelineModelListener {
+public final class TimelineTopComponent extends JPanel implements TimelineModelListener {
 
     private transient TimelineDrawer drawer;
     private transient TimelineModel model;
@@ -306,17 +306,14 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
         });
     }
 
-    private void setTimeLineVisible(final boolean visible) {
+    public void setTimeLineVisible(final boolean visible) {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                if (visible && !TimelineTopComponent.this.isOpened()) {
-                    TimelineTopComponent.this.open();
-                    TimelineTopComponent.this.requestActive();
-                } else if (!visible && TimelineTopComponent.this.isOpened()) {
-                    TimelineTopComponent.this.close();
+                if (visible != TimelineTopComponent.this.isVisible()) {
+                    TimelineTopComponent.this.setVisible(visible);
                 }
-            }
+            } 
         });
     }
 
@@ -347,7 +344,7 @@ public final class TimelineTopComponent extends TopComponent implements Timeline
 
         setMaximumSize(new java.awt.Dimension(32767, 58));
         setMinimumSize(new java.awt.Dimension(414, 58));
-        setPreferredSize(new java.awt.Dimension(424, 50));
+        setPreferredSize(new java.awt.Dimension(424, 68));
         setLayout(new java.awt.GridBagLayout());
 
         containerPanel.setLayout(new java.awt.CardLayout());

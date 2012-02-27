@@ -45,7 +45,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import org.gephi.desktop.perspective.spi.BottomComponent;
 import org.gephi.filters.plugin.dynamic.DynamicRangeBuilder.DynamicRangeFilter;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -66,18 +68,17 @@ public class DynamicRangePanel extends javax.swing.JPanel {
     }
 
     public void setup(final DynamicRangeFilter filter) {
-        final TopComponent topComponent = WindowManager.getDefault().findTopComponent("TimelineTopComponent");
-        timelineButton.setText(topComponent.isOpened() ? CLOSE : OPEN);
+        final BottomComponent bottomComponent = Lookup.getDefault().lookup(BottomComponent.class);
+        timelineButton.setText(bottomComponent.isVisible() ? CLOSE : OPEN);
         timelineButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
 
-                if (!topComponent.isOpened()) {
-                    topComponent.open();
-                    topComponent.requestActive();
+                if (!bottomComponent.isVisible()) {
+                    bottomComponent.setVisible(true);
                     timelineButton.setText(CLOSE);
                 } else {
-                    topComponent.close();
+                    bottomComponent.setVisible(false);
                     timelineButton.setText(OPEN);
                 }
             }
