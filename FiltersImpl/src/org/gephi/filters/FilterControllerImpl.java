@@ -53,11 +53,7 @@ import org.gephi.filters.api.PropertyExecutor;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.api.Range;
 import org.gephi.filters.FilterThread.PropertyModifier;
-import org.gephi.filters.spi.EdgeFilter;
-import org.gephi.filters.spi.Filter;
-import org.gephi.filters.spi.FilterProperty;
-import org.gephi.filters.spi.NodeFilter;
-import org.gephi.filters.spi.Operator;
+import org.gephi.filters.spi.*;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -162,12 +158,14 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
 
             for (Query q : query.getDescendantsAndSelf()) {
                 Filter filter = q.getFilter();
-                if (filter instanceof NodeFilter || filter instanceof EdgeFilter) {
+                if (filter instanceof NodeFilter || filter instanceof EdgeFilter || filter instanceof AttributableFilter) {
 
                     if (filter instanceof NodeFilter) {
                         ((NodeFilter) filter).init(graph);
-                    } else {
+                    } else if(filter instanceof EdgeFilter) {
                         ((EdgeFilter) filter).init(graph);
+                    } else {
+                        ((AttributableFilter)filter).init(graph);
                     }
                 }
             }
