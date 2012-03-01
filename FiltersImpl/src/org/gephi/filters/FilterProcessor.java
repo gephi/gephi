@@ -42,14 +42,11 @@
 package org.gephi.filters;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import org.gephi.filters.api.Range;
 import org.gephi.filters.spi.*;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.GraphView;
-import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.graph.api.Node;
+import org.gephi.graph.api.*;
 
 /**
  *
@@ -128,7 +125,7 @@ public class FilterProcessor {
 
     private void processAttributableFilter(AttributableFilter attributableFilter, Graph graph) {
         if (((AttributableFilter) attributableFilter).getType().equals(AttributableFilter.Type.NODE)) {
-            if (attributableFilter.init(graph)) {
+            if (init(attributableFilter, graph)) {
                 List<Node> nodesToRemove = new ArrayList<Node>();
                 for (Node n : graph.getNodes()) {
                     if (!attributableFilter.evaluate(graph, n)) {
@@ -143,7 +140,7 @@ public class FilterProcessor {
             }
         } else {
             HierarchicalGraph hgraph = (HierarchicalGraph) graph;
-            if (attributableFilter.init(hgraph)) {
+            if (init(attributableFilter, graph)) {
                 List<Edge> edgesToRemove = new ArrayList<Edge>();
                 for (Edge e : hgraph.getEdges()) {
                     if (!attributableFilter.evaluate(hgraph, e)) {
@@ -171,7 +168,7 @@ public class FilterProcessor {
     }
 
     private void processNodeFilter(NodeFilter nodeFilter, Graph graph) {
-        if (nodeFilter.init(graph)) {
+        if (init(nodeFilter, graph)) {
             List<Node> nodesToRemove = new ArrayList<Node>();
             for (Node n : graph.getNodes()) {
                 if (!nodeFilter.evaluate(graph, n)) {
@@ -188,7 +185,7 @@ public class FilterProcessor {
 
     private void processEdgeFilter(EdgeFilter edgeFilter, Graph graph) {
         HierarchicalGraph hgraph = (HierarchicalGraph) graph;
-        if (edgeFilter.init(hgraph)) {
+        if (init(edgeFilter, graph)) {
             List<Edge> edgesToRemove = new ArrayList<Edge>();
             for (Edge e : hgraph.getEdges()) {
                 if (!edgeFilter.evaluate(hgraph, e)) {
@@ -245,5 +242,115 @@ public class FilterProcessor {
             }
         }
         return tree.toArray(new AbstractQueryImpl[0]);
+    }
+
+    public boolean init(Filter filter, Graph graph) {
+        boolean res = true;
+
+        //Init res
+        if (filter instanceof NodeFilter) {
+            res = ((NodeFilter) filter).init(graph);
+        } else if (filter instanceof EdgeFilter) {
+            res = ((EdgeFilter) filter).init(graph);
+        } else if (filter instanceof NodeFilter) {
+            res = ((AttributableFilter) filter).init(graph);
+        }
+
+        //Range
+        if (filter instanceof RangeFilter) {
+            RangeFilter rangeFilter = (RangeFilter) filter;
+            Number[] values = rangeFilter.getValues(graph);
+            NumberComparator comparator = new NumberComparator();
+            Number min = null;
+            Number max = null;
+            if (values != null) {
+                for (Number n : values) {
+                    min = min == null ? n : comparator.min(min, n);
+                    max = max == null ? n : comparator.max(max, n);
+                }
+            }
+
+            Range previousRange = (Range) rangeFilter.getRangeProperty().getValue();
+            Range newRange;
+            if (min == null || max == null) {
+                newRange = null;
+                rangeFilter.getRangeProperty().setValue(newRange);
+            } else {
+                if (previousRange == null) {
+                    newRange = new Range(min, max, min, max, values);
+                    rangeFilter.getRangeProperty().setValue(newRange);
+                } else {
+                    //Collect some info
+                    boolean stickyLeft = previousRange.getMinimum().equals(previousRange.getLowerBound());
+                    boolean stickyRight = previousRange.getMaximum().equals(previousRange.getUpperBound());
+                    Number lowerBound = previousRange.getLowerBound();
+                    Number upperBound = previousRange.getUpperBound();
+
+                    //The inteval grows on the right
+                    if (stickyRight && comparator.superior(max, upperBound)) {
+                        upperBound = max;
+                    }
+
+                    //The interval grows on the left
+                    if (stickyLeft && comparator.inferior(min, lowerBound)) {
+                        lowerBound = min;
+                    }
+
+                    //The interval shrinks on the right
+                    if (comparator.superior(upperBound, max)) {
+                        upperBound = max;
+                    }
+
+                    //The interval shrinks on the left
+                    if (comparator.inferior(lowerBound, min)) {
+                        lowerBound = min;
+                    }
+
+                    newRange = new Range(lowerBound, upperBound, min, max, values);
+                    if (!newRange.equals(previousRange)) {
+                        rangeFilter.getRangeProperty().setValue(newRange);
+                    }
+                }
+            }
+        }
+
+        return res;
+    }
+
+    private static class NumberComparator implements Comparator<Number> {
+
+        public boolean superior(Number a, Number b) {
+            return compare(a, b) > 0;
+        }
+
+        public boolean inferior(Number a, Number b) {
+            return compare(a, b) < 0;
+        }
+
+        public Number min(Number a, Number b) {
+            int c = compare(a, b);
+            return c < 0 ? a : b;
+        }
+
+        public Number max(Number a, Number b) {
+            int c = compare(a, b);
+            return c > 0 ? a : b;
+        }
+
+        public int compare(Number number1, Number number2) {
+            if (((Object) number2).getClass().equals(((Object) number1).getClass())) {
+                if (number1 instanceof Comparable) {
+                    return ((Comparable) number1).compareTo(number2);
+                }
+            }
+            // for all different Number types, let's check there double values
+            if (number1.doubleValue() < number2.doubleValue()) {
+                return -1;
+            }
+            if (number1.doubleValue() > number2.doubleValue()) {
+                return 1;
+            }
+            return 0;
+        }
     }
 }

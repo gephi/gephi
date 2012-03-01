@@ -42,7 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.filters.plugin.graph;
 
 import javax.swing.JPanel;
-import org.gephi.filters.plugin.RangeFilter;
+import org.gephi.filters.spi.RangeFilter;
 
 /**
  *

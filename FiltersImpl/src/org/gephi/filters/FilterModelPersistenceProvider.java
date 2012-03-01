@@ -212,14 +212,8 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
             for (Query q : rootQuery.getDescendantsAndSelf()) {
                 Filter filter = q.getFilter();
                 if (filter instanceof NodeFilter || filter instanceof EdgeFilter || filter instanceof AttributableFilter) {
-
-                    if (filter instanceof NodeFilter) {
-                        ((NodeFilter) filter).init(graph);
-                    } else if (filter instanceof EdgeFilter) {
-                        ((EdgeFilter) filter).init(graph);
-                    } else {
-                        ((AttributableFilter) filter).init(graph);
-                    }
+                    FilterProcessor filterProcessor = new FilterProcessor();
+                    filterProcessor.init(filter, graph);
                 }
             }
         }

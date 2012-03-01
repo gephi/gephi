@@ -54,7 +54,6 @@ import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.AbstractAttributeFilter;
 import org.gephi.filters.plugin.AbstractAttributeFilterBuilder;
 import org.gephi.filters.plugin.DynamicAttributesHelper;
-import org.gephi.filters.plugin.RangeFilter;
 import org.gephi.filters.plugin.graph.RangeUI;
 import org.gephi.filters.spi.*;
 import org.gephi.graph.api.*;
@@ -119,8 +118,6 @@ public class AttributeRangeBuilder implements CategoryBuilder {
 
         private Range range;
         private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
-        //States
-        private Comparable[] values = new Comparable[0];
 
         public AttributeRangeFilter(AttributeColumn column) {
             super(column.getTitle() + " " + NbBundle.getMessage(AttributeRangeBuilder.class, "AttributeRangeBuilder.name"),
@@ -142,7 +139,6 @@ public class AttributeRangeBuilder implements CategoryBuilder {
                 }
             }
             dynamicHelper = new DynamicAttributesHelper(this, hg);
-            refreshValues(hg);
             return true;
         }
 
@@ -158,48 +154,27 @@ public class AttributeRangeBuilder implements CategoryBuilder {
 
         public void finish() {
         }
-
-        public void refreshValues(HierarchicalGraph graph) {
-            List<Object> vals = new ArrayList<Object>();
+        
+        public Number[] getValues(Graph graph) {
+            List<Number> vals = new ArrayList<Number>();
             if (AttributeUtils.getDefault().isNodeColumn(column)) {
                 for (Node n : graph.getNodes()) {
                     Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
                     val = dynamicHelper.getDynamicValue(val);
                     if (val != null) {
-                        vals.add(val);
+                        vals.add((Number)val);
                     }
                 }
             } else {
-                for (Edge e : graph.getEdgesAndMetaEdges()) {
+                for (Edge e : ((HierarchicalGraph)graph).getEdgesAndMetaEdges()) {
                     Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
                     val = dynamicHelper.getDynamicValue(val);
                     if (val != null) {
-                        vals.add(val);
+                        vals.add((Number)val);
                     }
                 }
             }
-
-            if (vals.isEmpty()) {
-                vals.add(0);
-            }
-
-            values = ComparableArrayConverter.convert(vals);
-
-            Number min = (Number) AttributeUtils.getDefault().getMin(column, values /*
-                     * valuesArray
-                     */);
-            Number max = (Number) AttributeUtils.getDefault().getMax(column, values /*
-                     * valuesArray
-                     */);
-            if (range == null) {
-                range = new Range(min, max, min, max);
-            } else {
-                range.setMinMax(min, max);
-            }
-        }
-
-        public Object[] getValues() {
-            return values;
+            return vals.toArray(new Number[0]);
         }
 
         public FilterProperty getRangeProperty() {

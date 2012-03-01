@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.ui.filters.plugin.graph;
 
@@ -47,7 +47,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import javax.swing.SwingUtilities;
 import org.gephi.filters.api.Range;
-import org.gephi.filters.plugin.RangeFilter;
+import org.gephi.filters.spi.RangeFilter;
 import org.gephi.ui.components.JRangeSliderPanel;
 import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.gephi.ui.filters.plugin.JQuickHistogram;
@@ -72,91 +72,84 @@ public class RangePanel extends javax.swing.JPanel {
 
     public void setup(final RangeFilter rangeFilter) {
         this.filter = rangeFilter;
-        new Thread(new Runnable() {
+        final Range range = (Range) rangeFilter.getRangeProperty().getValue();
+        if (range == null) {
+            //Do nothing
+        } else {
+            new Thread(new Runnable() {
 
-            public void run() {
-                final JRangeSliderPanel rangeSlider = (JRangeSliderPanel) rangeSliderPanel;
-                values = rangeFilter.getValues();
-                final Range range = (Range) rangeFilter.getRangeProperty().getValue();
+                public void run() {
+                    final JRangeSliderPanel rangeSlider = (JRangeSliderPanel) rangeSliderPanel;
+                    values = range.getValues();
 
-                rangeSlider.addPropertyChangeListener(new PropertyChangeListener() {
+                    rangeSlider.addPropertyChangeListener(new PropertyChangeListener() {
 
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        try {
-                            if (evt.getPropertyName().equals(JRangeSliderPanel.LOWER_BOUND)) {
-                                Range oldRange = (Range) filter.getRangeProperty().getValue();
-                                final Range newRange = new Range((Number) rangeSlider.getRange().getLowerBound(), (Number) rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(), oldRange.getMaximum());
-                                if (!oldRange.equals(newRange)) {
-                                    filter.getRangeProperty().setValue(newRange);
-                                    new Thread(new Runnable() {
+                        public void propertyChange(PropertyChangeEvent evt) {
+                            try {
+                                if (evt.getPropertyName().equals(JRangeSliderPanel.LOWER_BOUND)) {
+                                    Range oldRange = (Range) filter.getRangeProperty().getValue();
+                                    final Range newRange = new Range((Number) rangeSlider.getRange().getLowerBound(), (Number) rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(), oldRange.getMaximum(), oldRange.getValues());
+                                    if (!oldRange.equals(newRange)) {
+                                        filter.getRangeProperty().setValue(newRange);
+                                        new Thread(new Runnable() {
 
-                                        public void run() {
-                                            setupHistogram(filter, newRange);
-                                        }
-                                    }).start();
+                                            public void run() {
+                                                setupHistogram(filter, newRange);
+                                            }
+                                        }).start();
+                                    }
+                                } else if (evt.getPropertyName().equals(JRangeSliderPanel.UPPER_BOUND)) {
+                                    final Range oldRange = (Range) filter.getRangeProperty().getValue();
+                                    final Range newRange = new Range((Number) rangeSlider.getRange().getLowerBound(), (Number) rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(), oldRange.getMaximum(), oldRange.getValues());
+                                    if (!oldRange.equals(newRange)) {
+                                        filter.getRangeProperty().setValue(newRange);
+                                        new Thread(new Runnable() {
+
+                                            public void run() {
+                                                setupHistogram(filter, newRange);
+                                            }
+                                        }).start();
+                                    }
                                 }
-                            } else if (evt.getPropertyName().equals(JRangeSliderPanel.UPPER_BOUND)) {
-                                final Range oldRange = (Range) filter.getRangeProperty().getValue();
-                                final Range newRange = new Range((Number) rangeSlider.getRange().getLowerBound(), (Number) rangeSlider.getRange().getUpperBound(), oldRange.getMinimum(), oldRange.getMaximum());
-                                if (!oldRange.equals(newRange)) {
-                                    filter.getRangeProperty().setValue(newRange);
-                                    new Thread(new Runnable() {
-
-                                        public void run() {
-                                            setupHistogram(filter, newRange);
-                                        }
-                                    }).start();
-                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
-                    }
-                });
+                    });
 
-                SwingUtilities.invokeLater(new Runnable() {
+                    SwingUtilities.invokeLater(new Runnable() {
 
-                    public void run() {
-                        rangeSlider.setRange(new JRangeSliderPanel.Range(
-                                rangeSlider, range.getMinimum(), range.getMaximum(), range.getLowerBound(), range.getUpperBound()));
-                    }
-                });
-                setupHistogram(rangeFilter, range);
-            }
-        }).start();
+                        public void run() {
+                            rangeSlider.setRange(new JRangeSliderPanel.Range(
+                                    rangeSlider, range.getMinimum(), range.getMaximum(), range.getLowerBound(), range.getUpperBound()));
+                        }
+                    });
+                    setupHistogram(rangeFilter, range);
+                }
+            }).start();
+        }
+
 
         //Tooltip
-        /*histogram.getPanel().addMouseListener(new MouseAdapter() {
-
-        RichTooltip richTooltip;
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        new Thread(new Runnable() {
-
-        public void run() {
-        richTooltip = buildTooltip();
-
-        SwingUtilities.invokeLater(new Runnable() {
-
-        public void run() {
-        if (richTooltip != null) {
-        richTooltip.showTooltip(histogram.getPanel());
-        }
-        }
-        });
-        }
-        }).start();
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-        if (richTooltip != null) {
-        richTooltip.hideTooltip();
-        richTooltip = null;
-        }
-        }
-        });*/
+        /*
+         * histogram.getPanel().addMouseListener(new MouseAdapter() {
+         *
+         * RichTooltip richTooltip;
+         *
+         * @Override public void mouseEntered(MouseEvent e) { new Thread(new
+         * Runnable() {
+         *
+         * public void run() { richTooltip = buildTooltip();
+         *
+         * SwingUtilities.invokeLater(new Runnable() {
+         *
+         * public void run() { if (richTooltip != null) {
+         * richTooltip.showTooltip(histogram.getPanel()); } } }); } }).start();
+         * }
+         *
+         * @Override public void mouseExited(MouseEvent e) { if (richTooltip !=
+         * null) { richTooltip.hideTooltip(); richTooltip = null; } } });
+         */
     }
 
     private void setupHistogram(final RangeFilter rangeFilter, final Range range) {
@@ -208,10 +201,10 @@ public class RangePanel extends javax.swing.JPanel {
         return richTooltip;
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
