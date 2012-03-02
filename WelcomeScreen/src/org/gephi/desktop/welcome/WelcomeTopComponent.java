@@ -50,15 +50,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JPanel;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
 import org.gephi.desktop.project.api.ProjectControllerUI;
 import org.jdesktop.swingx.JXHyperlink;
-import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.awt.ActionID;
-import org.openide.awt.ActionReference;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.*;
@@ -67,23 +65,22 @@ import org.openide.windows.TopComponent;
 /**
  * Top component which displays something.
  */
-@ConvertAsProperties(dtd = "-//org.gephi.desktop.welcome//Welcome//EN",
-autostore = false)
-@TopComponent.Description(preferredID = "WelcomeTopComponent",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "welcomemode", openAtStartup = false, roles={"overview", "datalab", "preview"})
-@ActionID(category = "Window", id = "org.gephi.desktop.welcome.WelcomeTopComponent")
-@ActionReference(path = "Menu/Window", position = 1300)
-@TopComponent.OpenActionRegistration(displayName = "#CTL_WelcomeTopComponent",
-preferredID = "WelcomeTopComponent")
-public final class WelcomeTopComponent extends TopComponent {
+public final class WelcomeTopComponent extends JPanel {
 
+    private static WelcomeTopComponent instance;
     public static final String STARTUP_PREF = "WelcomeScreen_Open_Startup";
     private static final String GEPHI_EXTENSION = "gephi";
     private static final Object LINK_PATH = new Object();
     private Action openAction;
 
-    public WelcomeTopComponent() {
+    public static synchronized WelcomeTopComponent getInstance() {
+        if (instance == null) {
+            instance = new WelcomeTopComponent();
+        }
+        return instance;
+    }
+
+    private WelcomeTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(WelcomeTopComponent.class, "CTL_WelcomeTopComponent"));
 
@@ -118,7 +115,8 @@ public final class WelcomeTopComponent extends TopComponent {
                         importController.importFile(fileObject);
                     }
                 }
-                WelcomeTopComponent.this.close();
+//                WelcomeTopComponent.this.close();
+                setVisible(false);
             }
         };
         newProjectLink.addActionListener(new ActionListener() {
@@ -126,7 +124,8 @@ public final class WelcomeTopComponent extends TopComponent {
             public void actionPerformed(ActionEvent e) {
                 ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
                 pc.newProject();
-                WelcomeTopComponent.this.close();
+//                WelcomeTopComponent.this.close();
+                setVisible(false);
             }
         });
         openFileLink.addActionListener(new ActionListener() {
@@ -134,7 +133,8 @@ public final class WelcomeTopComponent extends TopComponent {
             public void actionPerformed(ActionEvent e) {
                 ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
                 pc.openFile();
-                WelcomeTopComponent.this.close();
+//                WelcomeTopComponent.this.close();
+                setVisible(false);
             }
         });
     }
@@ -188,7 +188,8 @@ public final class WelcomeTopComponent extends TopComponent {
                         }
                         ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
                         importController.importStream(stream, importer);
-                        WelcomeTopComponent.this.close();
+//                        WelcomeTopComponent.this.close();
+                        setVisible(false);
                     }
                 });
                 fileLink.setText(fileName);
@@ -212,11 +213,6 @@ public final class WelcomeTopComponent extends TopComponent {
         });
     }
 
-    @Override
-    public Action[] getActions() {
-        return new Action[0];
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -238,6 +234,7 @@ public final class WelcomeTopComponent extends TopComponent {
         openOnStartupCheckbox = new javax.swing.JCheckBox();
 
         setOpaque(true);
+        setPreferredSize(new java.awt.Dimension(679, 379));
         setLayout(new java.awt.BorderLayout());
 
         header.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/welcome/resources/logo_transparent_small.png"))); // NOI18N
@@ -277,14 +274,16 @@ public final class WelcomeTopComponent extends TopComponent {
                     .addComponent(labelRecent))
                 .addGap(18, 18, 18)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelNew)
-                    .addComponent(labelSamples)
-                    .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                    .addComponent(samplesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(openFileLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(newProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(labelNew)
+                            .addComponent(labelSamples)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(openFileLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(newProjectLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(62, 62, 62)))
                 .addContainerGap())
         );
@@ -316,7 +315,6 @@ public final class WelcomeTopComponent extends TopComponent {
         southPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
         org.openide.awt.Mnemonics.setLocalizedText(openOnStartupCheckbox, org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.openOnStartupCheckbox.text")); // NOI18N
-        openOnStartupCheckbox.setOpaque(false);
         southPanel.add(openOnStartupCheckbox);
 
         add(southPanel, java.awt.BorderLayout.SOUTH);
@@ -334,16 +332,4 @@ public final class WelcomeTopComponent extends TopComponent {
     private javax.swing.JPanel samplesPanel;
     private javax.swing.JPanel southPanel;
     // End of variables declaration//GEN-END:variables
-
-    void writeProperties(java.util.Properties p) {
-        // better to version settings since initial version as advocated at
-        // http://wiki.apidesign.org/wiki/PropertyFiles
-        p.setProperty("version", "1.0");
-        // TODO store your settings
-    }
-
-    void readProperties(java.util.Properties p) {
-        String version = p.getProperty("version");
-        // TODO read your settings according to their version
-    }
 }

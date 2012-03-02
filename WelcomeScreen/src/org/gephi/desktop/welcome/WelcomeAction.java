@@ -41,31 +41,19 @@
  */
 package org.gephi.desktop.welcome;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JDialog;
-import org.openide.modules.ModuleInstall;
-import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
 
-/**
- * Manages a module's lifecycle. Remember that an installer is optional and
- * often not needed at all.
- */
-public class Installer extends ModuleInstall {
+public final class WelcomeAction implements ActionListener {
 
-    @Override
-    public void restored() {
-        if (NbPreferences.forModule(WelcomeTopComponent.class).getBoolean(WelcomeTopComponent.STARTUP_PREF, Boolean.TRUE)) {
-            WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
-
-                public void run() {
-                    WelcomeTopComponent component = WelcomeTopComponent.getInstance();
-                    JDialog dialog = new JDialog(WindowManager.getDefault().getMainWindow(),
-                            component.getName(), false);
-                    dialog.getContentPane().add(component);
-                    dialog.setBounds(212, 237, 679, 378);
-                    dialog.setVisible(true);
-                }
-            });
-        }
+    public void actionPerformed(ActionEvent e) {
+        WelcomeTopComponent component = WelcomeTopComponent.getInstance();
+        JDialog dialog = new JDialog(WindowManager.getDefault().getMainWindow(),
+                component.getName(), false);
+        dialog.getContentPane().add(component);
+        dialog.setBounds(212, 237, 679, 378);
+        dialog.setVisible(true);
     }
 }
