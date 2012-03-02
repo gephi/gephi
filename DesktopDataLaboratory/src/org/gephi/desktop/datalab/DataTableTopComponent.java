@@ -54,27 +54,12 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeEvent.EventType;
-import org.gephi.data.attributes.api.AttributeListener;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.data.attributes.api.*;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.api.datatables.DataTablesEventListener;
@@ -84,24 +69,13 @@ import org.gephi.datalab.spi.edges.EdgesManipulator;
 import org.gephi.datalab.spi.general.GeneralActionsManipulator;
 import org.gephi.datalab.spi.general.PluginGeneralActionsManipulator;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphEvent;
-import org.gephi.graph.api.GraphListener;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.graph.api.Node;
-import org.gephi.project.api.ProjectController;
-import org.gephi.ui.utils.BusyUtils;
-import org.gephi.project.api.Workspace;
-import org.gephi.project.api.WorkspaceListener;
-import org.gephi.ui.components.WrapLayout;
 import org.gephi.desktop.datalab.general.actions.AddColumnUI;
 import org.gephi.desktop.datalab.general.actions.CSVExportUI;
 import org.gephi.desktop.datalab.general.actions.MergeColumnsUI;
-import org.gephi.project.api.ProjectInformation;
-import org.gephi.project.api.WorkspaceInformation;
-import org.gephi.project.api.WorkspaceProvider;
+import org.gephi.graph.api.*;
+import org.gephi.project.api.*;
+import org.gephi.ui.components.WrapLayout;
+import org.gephi.ui.utils.BusyUtils;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.utils.TableCSVExporter;
@@ -111,18 +85,9 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.util.Exceptions;
-import org.openide.util.ImageUtilities;
-import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
-import org.openide.util.NbPreferences;
+import org.openide.util.*;
 import org.openide.windows.TopComponent;
-import org.pushingpixels.flamingo.api.common.CommandButtonDisplayState;
-import org.pushingpixels.flamingo.api.common.JCommandButton;
-import org.pushingpixels.flamingo.api.common.JCommandButtonPanel;
-import org.pushingpixels.flamingo.api.common.JCommandButtonStrip;
-import org.pushingpixels.flamingo.api.common.JCommandMenuButton;
-import org.pushingpixels.flamingo.api.common.RichTooltip;
+import org.pushingpixels.flamingo.api.common.*;
 import org.pushingpixels.flamingo.api.common.icon.ImageWrapperResizableIcon;
 import org.pushingpixels.flamingo.api.common.popup.JCommandPopupMenu;
 import org.pushingpixels.flamingo.api.common.popup.JPopupPanel;
@@ -132,7 +97,7 @@ import org.pushingpixels.flamingo.api.common.popup.PopupPanelCallback;
  *
  * @author Mathieu Bastian
  */
-@ConvertAsProperties(dtd = "-//org.gephi.desktop.context//Context//EN",
+@ConvertAsProperties(dtd = "-//org.gephi.desktop.datalab//DataTable//EN",
 autostore = false)
 @TopComponent.Description(preferredID = "DataTableTopComponent",
 iconBase = "org/gephi/desktop/datalab/resources/small.png",
