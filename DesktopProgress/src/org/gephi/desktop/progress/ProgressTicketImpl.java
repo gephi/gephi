@@ -59,6 +59,7 @@ public final class ProgressTicketImpl implements ProgressTicket {
     private int progressTotal;
     private int currentUnit = 0;
     private boolean started = false;
+    private boolean finished = false;
 
     public ProgressTicketImpl(String displayName, Cancellable cancellable) {
         handle = ProgressHandleFactory.createHandle(displayName, cancellable);
@@ -69,9 +70,10 @@ public final class ProgressTicketImpl implements ProgressTicket {
      * Finish the task.
      */
     public void finish() {
-        if (handle != null && started) {
+        if (handle != null && started && !finished) {
             try {
                 handle.finish();
+                finished = true;
             } catch (Exception e) {
                 System.err.println("Progress Handle failed to finish");
             }
@@ -83,9 +85,10 @@ public final class ProgressTicketImpl implements ProgressTicket {
      * @param finishMessage 
      */
     public void finish(String finishMessage) {
-        if (handle != null && started) {
+        if (handle != null && started && !finished) {
             try {
                 handle.finish();
+                finished = true;
             } catch (Exception e) {
                 System.err.println("Progress Handle failed to finish");
             }
