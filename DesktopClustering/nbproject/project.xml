@@ -108,7 +108,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>7.12.1.1</specification-version>
+                        <specification-version>7.25.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
