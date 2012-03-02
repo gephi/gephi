@@ -41,6 +41,7 @@
  */
 package org.gephi.desktop.welcome;
 
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -50,6 +51,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import org.gephi.desktop.importer.api.ImportControllerUI;
 import org.gephi.desktop.mrufiles.api.MostRecentFiles;
@@ -93,6 +95,14 @@ public final class WelcomeTopComponent extends JPanel {
         loadPrefs();
     }
 
+    private void closeDialog() {
+        Container container = this;
+        for (; !(container instanceof JDialog);) {
+            container = container.getParent();
+        }
+        container.setVisible(false);
+    }
+
     private void initAction() {
         openAction = new AbstractAction("", ImageUtilities.loadImageIcon("org/gephi/desktop/welcome/resources/gephifile20.png", false)) {
 
@@ -115,8 +125,7 @@ public final class WelcomeTopComponent extends JPanel {
                         importController.importFile(fileObject);
                     }
                 }
-//                WelcomeTopComponent.this.close();
-                setVisible(false);
+                closeDialog();
             }
         };
         newProjectLink.addActionListener(new ActionListener() {
@@ -124,8 +133,7 @@ public final class WelcomeTopComponent extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
                 pc.newProject();
-//                WelcomeTopComponent.this.close();
-                setVisible(false);
+                closeDialog();
             }
         });
         openFileLink.addActionListener(new ActionListener() {
@@ -133,8 +141,7 @@ public final class WelcomeTopComponent extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 ProjectControllerUI pc = Lookup.getDefault().lookup(ProjectControllerUI.class);
                 pc.openFile();
-//                WelcomeTopComponent.this.close();
-                setVisible(false);
+                closeDialog();
             }
         });
     }
@@ -188,8 +195,7 @@ public final class WelcomeTopComponent extends JPanel {
                         }
                         ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
                         importController.importStream(stream, importer);
-//                        WelcomeTopComponent.this.close();
-                        setVisible(false);
+                        closeDialog();
                     }
                 });
                 fileLink.setText(fileName);
