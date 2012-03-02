@@ -63,6 +63,12 @@ public final class Range {
         }
     }
 
+    public Range(Number lowerBound, Number upperBound, boolean leftInclusive, boolean rightInclusive) {
+        this(lowerBound, upperBound);
+        this.leftInclusive = leftInclusive;
+        this.rightInclusive = rightInclusive;
+    }
+
     public Range(Number lowerBound, Number upperBound, Number min, Number max) {
         this(lowerBound, upperBound);
         if (!min.getClass().equals(lowerBound.getClass()) || !min.getClass().equals(max.getClass())) {
@@ -71,7 +77,7 @@ public final class Range {
         this.min = min;
         this.max = max;
     }
-    
+
     public Range(Number lowerBound, Number upperBound, Number min, Number max, Number[] values) {
         this(lowerBound, upperBound, min, max);
         this.values = values;
@@ -145,7 +151,7 @@ public final class Range {
     public Number getMaximum() {
         return max;
     }
-    
+
     public Class getRangeType() {
         return lowerNumber.getClass();
     }
@@ -198,16 +204,24 @@ public final class Range {
         if (this.max != other.max && (this.max == null || !this.max.equals(other.max))) {
             return false;
         }
+        if (this.leftInclusive != other.leftInclusive) {
+            return false;
+        }
+        if (this.rightInclusive != other.rightInclusive) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 19 * hash + (this.lowerNumber != null ? this.lowerNumber.hashCode() : 0);
-        hash = 19 * hash + (this.upperNumber != null ? this.upperNumber.hashCode() : 0);
-        hash = 19 * hash + (this.min != null ? this.min.hashCode() : 0);
-        hash = 19 * hash + (this.max != null ? this.max.hashCode() : 0);
+        hash = 13 * hash + (this.lowerNumber != null ? this.lowerNumber.hashCode() : 0);
+        hash = 13 * hash + (this.upperNumber != null ? this.upperNumber.hashCode() : 0);
+        hash = 13 * hash + (this.min != null ? this.min.hashCode() : 0);
+        hash = 13 * hash + (this.max != null ? this.max.hashCode() : 0);
+        hash = 13 * hash + (this.leftInclusive ? 1 : 0);
+        hash = 13 * hash + (this.rightInclusive ? 1 : 0);
         return hash;
     }
 
