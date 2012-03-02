@@ -54,6 +54,9 @@ public class Installer extends ModuleInstall {
 
     @Override
     public void restored() {
+        //Initialize the perspective controller
+        Lookup.getDefault().lookup(PerspectiveController.class);
+
         // Init Banner
         initBanner();
     }
@@ -77,9 +80,6 @@ public class Installer extends ModuleInstall {
                 //of the main frame on layer 0:
                 toolbar.putClientProperty(JLayeredPane.LAYER_PROPERTY, 0);
                 frame.getRootPane().getLayeredPane().add(toolbar, 0);
-
-                //Initialize the perspective controller
-                Lookup.getDefault().lookup(PerspectiveController.class);
             }
         });
 
@@ -104,6 +104,9 @@ public class Installer extends ModuleInstall {
                     frame.getContentPane().remove(statusLinePanel);
                     JPanel southPanel = new JPanel(new BorderLayout());
                     southPanel.add(statusLinePanel, BorderLayout.SOUTH);
+                    if (bottomComponent != null) {
+                        bottomComponent.setVisible(false);
+                    }
                     southPanel.add(bottomComponent, BorderLayout.CENTER);
                     frame.getContentPane().add(southPanel, BorderLayout.SOUTH);
                 }
