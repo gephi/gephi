@@ -382,9 +382,15 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
             AbstractQueryImpl rootQuery = ((AbstractQueryImpl) query).getRoot();
             FilterThread filterThread = null;
             if ((filterThread = model.getFilterThread()) != null && model.getCurrentQuery() == rootQuery) {
-                //The query is currently being filtered by the thread, or finished to do it
-                filterThread.addModifier(new PropertyModifier(query, property, value, callback));
-                filterThread.setRootQuery(rootQuery);
+                if (Thread.currentThread().equals(filterThread)) {
+                    //Called inside of the thread, in init for instance. Update normally.
+                    callback.setValue(value);
+                    model.updateParameters(query);
+                } else {
+                    //The query is currently being filtered by the thread, or finished to do it
+                    filterThread.addModifier(new PropertyModifier(query, property, value, callback));
+                    filterThread.setRootQuery(rootQuery);
+                }
             } else {
                 //Update normally
                 callback.setValue(value);

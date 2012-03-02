@@ -80,13 +80,17 @@ public class FilterProcessor {
             } else if (q instanceof OperatorQueryImpl && ((OperatorQueryImpl) q).isSimple()) {
                 OperatorQueryImpl operatorQuery = (OperatorQueryImpl) q;
                 Operator op = (Operator) operatorQuery.getFilter();
-                Filter[] filters = new Filter[operatorQuery.getChildrenCount()];
-                for (int k = 0; k < filters.length; k++) {
-                    filters[k] = operatorQuery.getChildAt(k).getFilter();
-                }
                 GraphView newView = graphModel.newView();
                 views.add(newView);
-                q.setResult(op.filter(graphModel.getGraph(newView), filters));
+                Graph newGraph = graphModel.getGraph(newView);
+                List<Filter> filters = new ArrayList<Filter>();
+                for (int k = 0; k < operatorQuery.getChildrenCount(); k++) {
+                    Filter filter = operatorQuery.getChildAt(k).getFilter();
+                    if (init(filter, newGraph)) {
+                        filters.add(filter);
+                    }
+                }
+                q.setResult(op.filter(newGraph, filters.toArray(new Filter[0])));
             } else {
                 FilterQueryImpl filterQuery = (FilterQueryImpl) q;
                 Filter filter = filterQuery.getFilter();
