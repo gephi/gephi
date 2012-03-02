@@ -210,12 +210,12 @@ public final class Range {
         if (rangeType == Double.class) {
             Double minD = (Double) min;
             Double maxD = (Double) max;
-            if (minD > (Double) lowerNumber || maxD < (Double) lowerNumber || lowerNumber.equals(upperNumber)) {
+            if (minD > (Double) lowerNumber || maxD < (Double) lowerNumber) {
                 lowerNumber = minD;
             } else if (lowerNumber.equals(this.min)) {
                 lowerNumber = minD;
             }
-            if (minD > (Double) upperNumber || maxD < (Double) upperNumber || lowerNumber.equals(upperNumber)) {
+            if (minD > (Double) upperNumber || maxD < (Double) upperNumber) {
                 upperNumber = maxD;
             } else if (upperNumber.equals(this.max)) {
                 upperNumber = maxD;
@@ -223,12 +223,12 @@ public final class Range {
         } else if (rangeType == Float.class) {
             Float minF = (Float) min;
             Float maxF = (Float) max;
-            if (minF > (Float) lowerNumber || maxF < (Float) lowerNumber || lowerNumber.equals(upperNumber)) {
+            if (minF > (Float) lowerNumber || maxF < (Float) lowerNumber) {
                 lowerNumber = minF;
             } else if (lowerNumber.equals(this.min)) {
                 lowerNumber = minF;
             }
-            if (minF > (Float) upperNumber || maxF < (Float) upperNumber || lowerNumber.equals(upperNumber)) {
+            if (minF > (Float) upperNumber || maxF < (Float) upperNumber) {
                 upperNumber = maxF;
             } else if (upperNumber.equals(this.max)) {
                 upperNumber = maxF;
@@ -236,12 +236,12 @@ public final class Range {
         } else if (rangeType == Integer.class) {
             Integer minI = (Integer) min;
             Integer maxI = (Integer) max;
-            if (minI > (Integer) lowerNumber || maxI < (Integer) lowerNumber || lowerNumber.equals(upperNumber)) {
+            if (minI > (Integer) lowerNumber || maxI < (Integer) lowerNumber) {
                 lowerNumber = minI;
             } else if (lowerNumber.equals(this.min)) {
                 lowerNumber = minI;
             }
-            if (minI > (Integer) upperNumber || maxI < (Integer) upperNumber || lowerNumber.equals(upperNumber)) {
+            if (minI > (Integer) upperNumber || maxI < (Integer) upperNumber) {
                 upperNumber = maxI;
             } else if (upperNumber.equals(this.max)) {
                 upperNumber = maxI;
@@ -249,12 +249,12 @@ public final class Range {
         } else if (rangeType == Long.class) {
             Long minL = (Long) min;
             Long maxL = (Long) max;
-            if (minL > (Long) lowerNumber || maxL < (Long) lowerNumber || lowerNumber.equals(upperNumber)) {
+            if (minL > (Long) lowerNumber || maxL < (Long) lowerNumber) {
                 lowerNumber = minL;
             } else if (lowerNumber.equals(this.min)) {
                 lowerNumber = minL;
             }
-            if (minL > (Long) upperNumber || maxL < (Long) upperNumber || lowerNumber.equals(upperNumber)) {
+            if (minL > (Long) upperNumber || maxL < (Long) upperNumber) {
                 upperNumber = maxL;
             } else if (upperNumber.equals(this.max)) {
                 upperNumber = maxL;
@@ -262,12 +262,12 @@ public final class Range {
         } else if (rangeType == Short.class) {
             Short minS = (Short) min;
             Short maxS = (Short) max;
-            if (minS > (Short) lowerNumber || maxS < (Short) lowerNumber || lowerNumber.equals(upperNumber)) {
+            if (minS > (Short) lowerNumber || maxS < (Short) lowerNumber) {
                 lowerNumber = minS;
             } else if (lowerNumber.equals(this.min)) {
                 lowerNumber = minS;
             }
-            if (minS > (Short) upperNumber || maxS < (Short) upperNumber || lowerNumber.equals(upperNumber)) {
+            if (minS > (Short) upperNumber || maxS < (Short) upperNumber) {
                 upperNumber = maxS;
             } else if (upperNumber.equals(this.max)) {
                 upperNumber = maxS;
@@ -275,12 +275,12 @@ public final class Range {
         } else if (rangeType == Byte.class) {
             Byte minB = (Byte) min;
             Byte maxB = (Byte) max;
-            if (minB > (Byte) lowerNumber || maxB < (Byte) lowerNumber || lowerNumber.equals(upperNumber)) {
+            if (minB > (Byte) lowerNumber || maxB < (Byte) lowerNumber) {
                 lowerNumber = minB;
             } else if (lowerNumber.equals(this.min)) {
                 lowerNumber = minB;
             }
-            if (minB > (Byte) upperNumber || maxB < (Byte) upperNumber || lowerNumber.equals(upperNumber)) {
+            if (minB > (Byte) upperNumber || maxB < (Byte) upperNumber) {
                 upperNumber = maxB;
             } else if (upperNumber.equals(this.max)) {
                 upperNumber = maxB;
