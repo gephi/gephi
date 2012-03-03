@@ -43,6 +43,7 @@ package org.gephi.preview;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.util.ArrayList;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.*;
@@ -67,7 +68,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class PreviewControllerImpl implements PreviewController {
 
     private PreviewModelImpl model;
-    private Renderer[] enabledRenderers;
     //Other controllers
     private final GraphController graphController;
     private final AttributeController attributeController;
@@ -212,12 +212,14 @@ public class PreviewControllerImpl implements PreviewController {
 
     @Override
     public void render(RenderTarget target) {
-        render(target, enabledRenderers, getModel());
+        PreviewModelImpl m = getModel();
+        render(target, m.getManagedEnabledRenderers(), m);
     }
 
     @Override
     public void render(RenderTarget target, Workspace workspace) {
-        render(target, enabledRenderers, getModel(workspace));
+        PreviewModelImpl m = getModel(workspace);
+        render(target, m.getManagedEnabledRenderers(), m);
     }
 
     @Override
@@ -314,15 +316,5 @@ public class PreviewControllerImpl implements PreviewController {
             }
         }
         return null;
-    }
-
-    @Override
-    public Renderer[] getEnabledRenderers() {
-        return enabledRenderers;
-    }
-
-    @Override
-    public void setEnabledRenderers(Renderer[] enabledRenderers) {
-        this.enabledRenderers = enabledRenderers;
     }
 }

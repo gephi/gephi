@@ -44,11 +44,19 @@ package org.gephi.desktop.preview;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import net.miginfocom.swing.MigLayout;
+import org.gephi.desktop.preview.api.PreviewUIController;
+import org.gephi.preview.api.ManagedRenderer;
 import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.spi.Renderer;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -58,7 +66,7 @@ import org.openide.util.Lookup;
  *
  * @author Eduardo Ramos<eduramiba@gmail.com>
  */
-public class RendererManager extends javax.swing.JPanel {
+public class RendererManager extends javax.swing.JPanel implements PropertyChangeListener {
 
     private ArrayList<RendererCheckBox> renderersList = new ArrayList<RendererCheckBox>();
     private PreviewController previewController;
@@ -69,54 +77,93 @@ public class RendererManager extends javax.swing.JPanel {
     public RendererManager() {
         initComponents();
         previewController = Lookup.getDefault().lookup(PreviewController.class);
+        Lookup.getDefault().lookup(PreviewUIController.class).addPropertyChangeListener(this);
         panel.setLayout(new MigLayout("", "[pref!]"));
-        resetRenderersList();
+        setup();
+    }
+
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(PreviewUIController.SELECT) || evt.getPropertyName().equals(PreviewUIController.UNSELECT)) {
+            setup();
+        }
+    }
+
+    private void setup() {
+        PreviewModel model = previewController.getModel();
+        setControlsEnabled(model != null);
         refresh();
     }
 
-    private void resetRenderersList() {
+    private void restoreRenderersList() {
+        PreviewModel model = previewController.getModel();
+        Set<Renderer> enabledRenderers = null;
+        if (model != null && model.getManagedRenderers() != null) {
+            enabledRenderers = new HashSet<Renderer>();
+            enabledRenderers.addAll(Arrays.asList(model.getManagedEnabledRenderers()));
+        }
         renderersList.clear();
         for (Renderer r : Lookup.getDefault().lookupAll(Renderer.class)) {
-            renderersList.add(new RendererCheckBox(r));
+            renderersList.add(new RendererCheckBox(r, enabledRenderers == null || enabledRenderers.contains(r)));
         }
+        updateModelManagedRenderers();
     }
 
     private void refresh() {
         panel.removeAll();
+        loadModelManagedRenderers();
         for (int i = 0; i < renderersList.size(); i++) {
             panel.add(new MoveRendererWrapperButton(i, true));
             panel.add(new MoveRendererWrapperButton(i, false));
             panel.add(renderersList.get(i), "wrap");
         }
         panel.updateUI();
-
-        updateEnabledRenderers();
     }
 
-    private void updateEnabledRenderers() {
-        ArrayList<Renderer> enabledRenderers = new ArrayList<Renderer>();
-        for (RendererCheckBox rendererCheckBox : renderersList) {
-            if (rendererCheckBox.isSelected()) {
-                enabledRenderers.add(rendererCheckBox.renderer);
+    private void loadModelManagedRenderers() {
+        renderersList.clear();
+        PreviewModel model = previewController.getModel();
+        if (model != null) {
+            if (model.getManagedRenderers() != null) {
+                for (ManagedRenderer mr : model.getManagedRenderers()) {
+                    renderersList.add(new RendererCheckBox(mr.getRenderer(), mr.isEnabled()));
+                }
+            } else {
+                restoreRenderersList();
             }
         }
-        previewController.setEnabledRenderers(enabledRenderers.toArray(new Renderer[0]));
+    }
+
+    private void updateModelManagedRenderers() {
+        PreviewModel model = previewController.getModel();
+        if (model != null) {
+            ArrayList<ManagedRenderer> managedRenderers = new ArrayList<ManagedRenderer>();
+            for (RendererCheckBox rendererCheckBox : renderersList) {
+                managedRenderers.add(new ManagedRenderer(rendererCheckBox.renderer, rendererCheckBox.isSelected()));
+            }
+            model.setManagedRenderers(managedRenderers.toArray(new ManagedRenderer[0]));
+        }
     }
 
     private void setAllSelected(boolean selected) {
         for (RendererCheckBox rendererWrapper : renderersList) {
             rendererWrapper.setSelected(selected);
         }
-        updateEnabledRenderers();
+        updateModelManagedRenderers();
+    }
+
+    private void setControlsEnabled(boolean enabled) {
+        selectAllButton.setEnabled(enabled);
+        unselectAllButon.setEnabled(enabled);
+        restoreOrderButton.setEnabled(enabled);
     }
 
     class RendererCheckBox extends JCheckBox implements ActionListener {
 
         private Renderer renderer;
 
-        public RendererCheckBox(Renderer renderer) {
+        public RendererCheckBox(Renderer renderer, boolean selected) {
             this.renderer = renderer;
-            setSelected(true);
+            setSelected(selected);
             prepareName();
             addActionListener(this);
         }
@@ -134,7 +181,7 @@ public class RendererManager extends javax.swing.JPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            updateEnabledRenderers();
+            updateModelManagedRenderers();
         }
     }
 
@@ -164,6 +211,7 @@ public class RendererManager extends javax.swing.JPanel {
 
             renderersList.set(newIndex, item);
             renderersList.set(index, oldItem);
+            updateModelManagedRenderers();
             refresh();
         }
     }
@@ -258,7 +306,7 @@ public class RendererManager extends javax.swing.JPanel {
     }//GEN-LAST:event_unselectAllButonActionPerformed
 
     private void restoreOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restoreOrderButtonActionPerformed
-        resetRenderersList();
+        restoreRenderersList();
         refresh();
     }//GEN-LAST:event_restoreOrderButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

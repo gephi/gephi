@@ -48,10 +48,7 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import javax.swing.SwingUtilities;
-import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.PreviewProperties;
-import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.api.*;
 import org.gephi.preview.spi.Renderer;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.AbstractNode;
@@ -83,9 +80,13 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
 
         Set<Renderer> enabledRenderers = null;
-        if (controller.getEnabledRenderers() != null) {
+        if (controller.getModel()!=null && controller.getModel().getManagedRenderers() != null) {
             enabledRenderers = new HashSet<Renderer>();
-            enabledRenderers.addAll(Arrays.asList(controller.getEnabledRenderers()));
+            for (ManagedRenderer mr : controller.getModel().getManagedRenderers()) {
+                if (mr.isEnabled()) {
+                    enabledRenderers.add(mr.getRenderer());
+                }
+            }
         }
 
         PreviewModel model = controller.getModel();

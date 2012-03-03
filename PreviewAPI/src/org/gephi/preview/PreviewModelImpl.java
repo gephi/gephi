@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2011 Gephi
-Authors : Mathieu Bastian
-Website : http://www.gephi.org
+ Copyright 2008-2011 Gephi
+ Authors : Mathieu Bastian
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.preview;
 
@@ -46,20 +46,12 @@ import java.awt.Font;
 import java.awt.Point;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.*;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import org.gephi.preview.api.Item;
-import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.PreviewProperties;
-import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.api.*;
 import org.gephi.preview.presets.DefaultPreset;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.DependantColor;
@@ -69,7 +61,6 @@ import org.gephi.preview.types.propertyeditors.BasicDependantColorPropertyEditor
 import org.gephi.preview.types.propertyeditors.BasicDependantOriginalColorPropertyEditor;
 import org.gephi.preview.types.propertyeditors.BasicEdgeColorPropertyEditor;
 import org.gephi.project.api.Workspace;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -82,6 +73,8 @@ public class PreviewModelImpl implements PreviewModel {
     //Items
     private final Map<String, List<Item>> typeMap;
     private final Map<Object, Object> sourceMap;
+    //Renderers
+    private ManagedRenderer[] managedRenderers;
     //Properties
     private PreviewProperties properties;
     //Dimensions
@@ -252,6 +245,63 @@ public class PreviewModelImpl implements PreviewModel {
         this.topLeftPosition = topLeftPosition;
     }
 
+    @Override
+    public ManagedRenderer[] getManagedRenderers() {
+        return managedRenderers;
+    }
+
+    /**
+     * Makes sure that managedRenderers contains every renderer existing implementations. If some renderers are not in the list, they are added in default implementation order at the end of the list
+     * and enabled.
+     */
+    private void completeManagedRenderersListIfNecessary() {
+        if (managedRenderers != null) {
+            Set<Renderer> existing = new HashSet<Renderer>();
+            for (ManagedRenderer mr : managedRenderers) {
+                existing.add(mr.getRenderer());
+            }
+
+            List<ManagedRenderer> completeManagedRenderersList = new ArrayList<ManagedRenderer>();
+            completeManagedRenderersList.addAll(Arrays.asList(managedRenderers));
+
+            for (Renderer renderer : Lookup.getDefault().lookupAll(Renderer.class)) {
+                if (!existing.contains(renderer)) {
+                    completeManagedRenderersList.add(new ManagedRenderer(renderer, true));
+                }
+            }
+
+            managedRenderers = completeManagedRenderersList.toArray(new ManagedRenderer[0]);
+        }
+    }
+
+    @Override
+    public void setManagedRenderers(ManagedRenderer[] managedRenderers) {
+        //Validate no null ManagedRenderers
+        for (int i = 0; i < managedRenderers.length; i++) {
+            if (managedRenderers[i] == null) {
+                throw new IllegalArgumentException("managedRenderers should not contains null values");
+            }
+        }
+
+        this.managedRenderers = managedRenderers;
+        completeManagedRenderersListIfNecessary();
+    }
+
+    @Override
+    public Renderer[] getManagedEnabledRenderers() {
+        if (managedRenderers != null) {
+            ArrayList<Renderer> renderers = new ArrayList<Renderer>();
+            for (ManagedRenderer mr : managedRenderers) {
+                if (mr.isEnabled()) {
+                    renderers.add(mr.getRenderer());
+                }
+            }
+            return renderers.toArray(new Renderer[0]);
+        } else {
+            return null;
+        }
+    }
+
     //PERSISTENCE
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
         writer.writeStartElement("previewmodel");
@@ -296,6 +346,17 @@ public class PreviewModelImpl implements PreviewModel {
             }
         }
 
+        //Write model managed renderers:
+        if (managedRenderers != null) {
+            for (ManagedRenderer managedRenderer : managedRenderers) {
+                writer.writeStartElement("managedrenderer");
+                writer.writeAttribute("class", managedRenderer.getRenderer().getClass().getName());
+                writer.writeAttribute("enabled", String.valueOf(managedRenderer.isEnabled()));
+                writer.writeEndElement();
+            }
+        }
+
+
         writer.writeEndElement();
     }
 
@@ -305,6 +366,12 @@ public class PreviewModelImpl implements PreviewModel {
         String propName = null;
         boolean isSimpleValue = false;
         String simpleValueClass = null;
+
+        List<ManagedRenderer> managedRenderersList = new ArrayList<ManagedRenderer>();
+        Map<String, Renderer> availableRenderers = new HashMap<String, Renderer>();
+        for (Renderer renderer : Lookup.getDefault().lookupAll(Renderer.class)) {
+            availableRenderers.put(renderer.getClass().getName(), renderer);
+        }
 
         boolean end = false;
         while (reader.hasNext() && !end) {
@@ -320,6 +387,11 @@ public class PreviewModelImpl implements PreviewModel {
                         propName = reader.getAttributeValue(null, "name");
                         simpleValueClass = reader.getAttributeValue(null, "class");
                         isSimpleValue = true;
+                    } else if ("managedrenderer".equalsIgnoreCase(name)) {
+                        String rendererClass = reader.getAttributeValue(null, "class");
+                        if (availableRenderers.containsKey(rendererClass)) {
+                            managedRenderersList.add(new ManagedRenderer(availableRenderers.get(rendererClass), Boolean.parseBoolean(reader.getAttributeValue(null, "enabled"))));
+                        }
                     }
                     break;
                 case XMLStreamReader.CHARACTERS:
@@ -365,6 +437,10 @@ public class PreviewModelImpl implements PreviewModel {
                     name = null;
                     break;
             }
+        }
+
+        if (!managedRenderersList.isEmpty()) {
+            setManagedRenderers(managedRenderersList.toArray(new ManagedRenderer[0]));
         }
     }
 
