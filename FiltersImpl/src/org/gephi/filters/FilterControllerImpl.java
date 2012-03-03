@@ -183,6 +183,22 @@ public class FilterControllerImpl implements FilterController, PropertyExecutor 
     }
 
     public void setSubQuery(Query query, Query subQuery) {
+        //Init subquery when new filter
+        if (subQuery.getParent() == null && subQuery != model.getCurrentQuery()) {
+            Graph graph = null;
+            if (model != null && model.getGraphModel() != null) {
+                graph = model.getGraphModel().getGraph();
+            } else {
+                GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
+                graph = graphModel.getGraph();
+            }
+            Filter filter = subQuery.getFilter();
+            if (filter instanceof NodeFilter || filter instanceof EdgeFilter || filter instanceof AttributableFilter) {
+                FilterProcessor filterProcessor = new FilterProcessor();
+                filterProcessor.init(filter, graph);
+            }
+        }
+        
         model.setSubQuery(query, subQuery);
     }
 
