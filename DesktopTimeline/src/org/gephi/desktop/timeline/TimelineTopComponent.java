@@ -284,13 +284,16 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         if (model == null) {
             cardLayout.show(containerPanel, "top");
             enableTimelineButton.setEnabled(false);
+            setTimeLineVisible(false);
         } else if (!model.hasValidBounds()) {
             cardLayout.show(containerPanel, "disabled");
         } else if (model.isEnabled()) {
             cardLayout.show(containerPanel, "bottom");
+            setTimeLineVisible(true);
         } else {
             cardLayout.show(containerPanel, "top");
             enableTimelineButton.setEnabled(true);
+            setTimeLineVisible(true);
         }
     }
 
