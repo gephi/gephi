@@ -43,7 +43,6 @@ package org.gephi.preview;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.util.ArrayList;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.*;

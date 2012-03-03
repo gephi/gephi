@@ -44,6 +44,8 @@ package org.gephi.desktop.preview;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -58,11 +60,13 @@ import org.gephi.preview.api.ManagedRenderer;
 import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.spi.Renderer;
+import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
- * UI for managing preview renderers availability and execution order.
+ * UI for managing preview renderers enabled state and execution order.
  *
  * @author Eduardo Ramos<eduramiba@gmail.com>
  */
@@ -76,10 +80,31 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
      */
     public RendererManager() {
         initComponents();
+        buildTooltip();
+
         previewController = Lookup.getDefault().lookup(PreviewController.class);
         Lookup.getDefault().lookup(PreviewUIController.class).addPropertyChangeListener(this);
         panel.setLayout(new MigLayout("", "[pref!]"));
         setup();
+    }
+
+    private void buildTooltip() {
+        final RichTooltip richTooltip = new RichTooltip();
+        richTooltip.setTitle(NbBundle.getMessage(RendererManager.class, "PreviewSettingsTopComponent.rendererManagerTab"));
+        richTooltip.addDescriptionSection(NbBundle.getMessage(RendererManager.class, "RendererManager.description1"));
+        richTooltip.addDescriptionSection(NbBundle.getMessage(RendererManager.class, "RendererManager.description2"));
+        infoLabel.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                richTooltip.showTooltip(RendererManager.this, e.getLocationOnScreen());
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                richTooltip.hideTooltip();
+            }
+        });
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
@@ -94,6 +119,9 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         refresh();
     }
 
+    /**
+     * Restores the original order of the renderers list, preserving their enabled state.
+     */
     private void restoreRenderersList() {
         PreviewModel model = previewController.getModel();
         Set<Renderer> enabledRenderers = null;
@@ -112,13 +140,16 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         panel.removeAll();
         loadModelManagedRenderers();
         for (int i = 0; i < renderersList.size(); i++) {
-            panel.add(new MoveRendererWrapperButton(i, true));
-            panel.add(new MoveRendererWrapperButton(i, false));
+            panel.add(new MoveRendererButton(i, true));
+            panel.add(new MoveRendererButton(i, false));
             panel.add(renderersList.get(i), "wrap");
         }
         panel.updateUI();
     }
 
+    /**
+     * Obtain renderers enabled state and order from the preview model.
+     */
     private void loadModelManagedRenderers() {
         renderersList.clear();
         PreviewModel model = previewController.getModel();
@@ -133,6 +164,9 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         }
     }
 
+    /**
+     * Sets current renderers enabled state and order to the preview model.
+     */
     private void updateModelManagedRenderers() {
         PreviewModel model = previewController.getModel();
         if (model != null) {
@@ -185,12 +219,12 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         }
     }
 
-    class MoveRendererWrapperButton extends JButton implements ActionListener {
+    class MoveRendererButton extends JButton implements ActionListener {
 
-        private int index;
-        private boolean up;
+        private int index;//Original index in renderers list
+        private boolean up;//Move up or move down
 
-        public MoveRendererWrapperButton(int index, boolean up) {
+        public MoveRendererButton(int index, boolean up) {
             super(ImageUtilities.loadImageIcon("org/gephi/desktop/preview/resources/" + (up ? "up" : "down") + ".png", false));
             setMargin(new Insets(1, 1, 1, 1));//Small margin for icon-only buttons
             this.index = index;
@@ -209,6 +243,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             RendererCheckBox oldItem = renderersList.get(newIndex);
             RendererCheckBox item = renderersList.get(index);
 
+            //Move and update UI
             renderersList.set(newIndex, item);
             renderersList.set(index, oldItem);
             updateModelManagedRenderers();
@@ -228,6 +263,9 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         jSeparator1 = new javax.swing.JToolBar.Separator();
         selectAllButton = new javax.swing.JButton();
         unselectAllButon = new javax.swing.JButton();
+        glue = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        infoLabel = new javax.swing.JLabel();
+        fill = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
         scroll = new javax.swing.JScrollPane();
         panel = new javax.swing.JPanel();
 
@@ -246,9 +284,9 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         toolBar.add(restoreOrderButton);
         toolBar.add(jSeparator1);
 
+        selectAllButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/preview/resources/ui-check-box.png"))); // NOI18N
         selectAllButton.setText(org.openide.util.NbBundle.getMessage(RendererManager.class, "RendererManager.selectAllButton.text")); // NOI18N
         selectAllButton.setFocusable(false);
-        selectAllButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         selectAllButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         selectAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -257,9 +295,9 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         });
         toolBar.add(selectAllButton);
 
+        unselectAllButon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/preview/resources/ui-check-box-uncheck.png"))); // NOI18N
         unselectAllButon.setText(org.openide.util.NbBundle.getMessage(RendererManager.class, "RendererManager.unselectAllButon.text")); // NOI18N
         unselectAllButon.setFocusable(false);
-        unselectAllButon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         unselectAllButon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         unselectAllButon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -267,6 +305,12 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             }
         });
         toolBar.add(unselectAllButon);
+        toolBar.add(glue);
+
+        infoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/preview/resources/info.png"))); // NOI18N
+        infoLabel.setText(org.openide.util.NbBundle.getMessage(RendererManager.class, "RendererManager.infoLabel.text")); // NOI18N
+        toolBar.add(infoLabel);
+        toolBar.add(fill);
 
         javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
         panel.setLayout(panelLayout);
@@ -310,6 +354,9 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         refresh();
     }//GEN-LAST:event_restoreOrderButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler fill;
+    private javax.swing.Box.Filler glue;
+    private javax.swing.JLabel infoLabel;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JPanel panel;
     private javax.swing.JButton restoreOrderButton;
