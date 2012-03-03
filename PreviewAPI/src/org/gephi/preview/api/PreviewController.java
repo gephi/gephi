@@ -92,8 +92,8 @@ public interface PreviewController {
     /**
      * Renders the current preview model to <code>target</code>.
      * <p>
-     * This tasks look for all <code>Renderer</code> implementations and render
-     * all items in the preview model.
+     * If <code>enabledRenderers</code> is null, this task looks for all <code>Renderer</code> implementations in their default order.
+     * Then all items in the preview model are rendered.
      * @param target the target to render items to
      */
     public void render(RenderTarget target);
@@ -101,12 +101,31 @@ public interface PreviewController {
     /**
      * Renders the preview model in <code>workspace</code> to <code>target</code>.
      * <p>
-     * This tasks look for all <code>Renderer</code> implementations and render
-     * all items in the preview model.
+     * If <code>enabledRenderers</code> is null, this task looks for all <code>Renderer</code> implementations in their default order.
+     * Then all items in the preview model are rendered.
      * @param target the target to render items to
      * @param workspace the workspace to get the preview model from
      */
     public void render(RenderTarget target, Workspace workspace);
+    
+    /**
+     * Renders the current preview model to <code>target</code>.
+     * <p>
+     * This task overrides <code>enabledRenderers</code> and uses the given <code>Renderer</code> array, <b>respecting the array order</b>.
+     * Then all items in the preview model are rendered.
+     * @param target the target to render items to
+     */
+    public void render(RenderTarget target, Renderer[] renderers);
+    
+    /**
+     * Renders the preview model in <code>workspace</code> to <code>target</code>.
+     * <p>
+     * This task overrides <code>enabledRenderers</code> and uses the given <code>Renderer</code> array, <b>respecting the array order</b>.
+     * Then all items in the preview model are rendered.
+     * @param target the target to render items to
+     * @param workspace the workspace to get the preview model from
+     */
+    public void render(RenderTarget target, Renderer[] renderers, Workspace workspace);
 
     /**
      * Creates a new render target of the given type. 
@@ -137,4 +156,19 @@ public interface PreviewController {
      * unknown
      */
     public RenderTarget getRenderTarget(String name, Workspace workspace);
+    
+    /**
+     * <p>Returns the renderers that are enabled currently, and therefore executed when rendering (respecting the array order), or null.</p>
+     * <p>If <code>enabledRenderers</code> is set to null, all renderers will be executed when rendering, in default implementation order.</p>
+     * @return Enabled renderers or null
+     */
+    public Renderer[] getEnabledRenderers();
+
+    /**
+     * <p>Sets an user-defined array of renderers that should be executed when rendering.</p>
+     * <p><b>Only</b> the renderers in this array will be executed, and <b>respecting the array order</b></p>
+     * <p>If <code>enabledRenderers</code> is set to null, all renderers will be executed when rendering, in default implementation order.</p>
+     * @param enabledRenderers Specific renderers that should be executed in future renderings
+     */
+    public void setEnabledRenderers(Renderer[] enabledRenderers);
 }

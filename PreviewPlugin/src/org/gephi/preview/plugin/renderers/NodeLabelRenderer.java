@@ -82,7 +82,7 @@ import processing.core.PGraphicsJava2D;
  * @author Yudi Xue, Mathieu Bastian
  */
 @ServiceProvider(service = Renderer.class, position = 400)
-public class NodeLabelRenderer implements Renderer {
+public class NodeLabelRenderer implements Renderer , Renderer.NamedRenderer {
     //Custom properties
 
     public static final String NODE_COLOR = "node.label.nodeColor";
@@ -406,5 +406,9 @@ public class NodeLabelRenderer implements Renderer {
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
         return item instanceof NodeLabelItem && properties.getBooleanValue(PreviewProperty.SHOW_NODE_LABELS)
                 && !properties.getBooleanValue(PreviewProperty.MOVING);
+    }
+
+    public String getName() {
+        return NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.name");
     }
 }
