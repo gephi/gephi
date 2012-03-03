@@ -98,7 +98,7 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
     //State
     private int defaultPresetLimit;
 
-    private PreviewSettingsTopComponent() {
+    public PreviewSettingsTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(PreviewSettingsTopComponent.class, "CTL_PreviewSettingsTopComponent"));
 

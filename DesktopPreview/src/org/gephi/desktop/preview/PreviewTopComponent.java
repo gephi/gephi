@@ -91,7 +91,7 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
     private transient ProcessingTarget target;
     private transient PApplet sketch;
 
-    private PreviewTopComponent() {
+    public PreviewTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(PreviewTopComponent.class, "CTL_PreviewTopComponent"));
 
