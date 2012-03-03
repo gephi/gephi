@@ -146,7 +146,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     //Executor
     private RefreshOnceHelperThread refreshOnceHelperThread;
 
-    private DataTableTopComponent() {
+    public DataTableTopComponent() {
 
         //Get saved preferences if existing:
         dynamicFiltering = NbPreferences.forModule(DataTableTopComponent.class).getBoolean(DATA_LABORATORY_DYNAMIC_FILTERING, true);
