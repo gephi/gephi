@@ -42,7 +42,6 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.ranking.plugin;
 
 import org.gephi.graph.api.DirectedGraph;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
@@ -75,9 +74,8 @@ public class InDegreeRankingBuilder implements RankingBuilder {
     public Ranking[] buildRanking(RankingModel model) {
         Workspace workspace = model.getWorkspace();
         GraphModel graphModel = graphController.getModel(workspace);
-        Graph graph = graphModel.getGraphVisible();
-        if (graph instanceof DirectedGraph) {
-            return new Ranking[]{new InDegreeRanking(Ranking.NODE_ELEMENT, (DirectedGraph) graph)};
+        if (graphModel.isDirected()) {
+            return new Ranking[]{new InDegreeRanking(Ranking.NODE_ELEMENT, graphModel, model)};
         }
 
         return null;
@@ -99,9 +97,9 @@ public class InDegreeRankingBuilder implements RankingBuilder {
 
         private final DirectedGraph graph;
 
-        public InDegreeRanking(String elementType, DirectedGraph graph) {
-            super(elementType, Ranking.INDEGREE_RANKING);
-            this.graph = graph;
+        public InDegreeRanking(String elementType, GraphModel graphModel, RankingModel rankingModel) {
+            super(elementType, Ranking.INDEGREE_RANKING, rankingModel);
+            this.graph = rankingModel.useLocalScale() ? graphModel.getDirectedGraphVisible() : graphModel.getDirectedGraph();;
         }
 
         @Override
@@ -143,8 +141,7 @@ public class InDegreeRankingBuilder implements RankingBuilder {
         @Override
         protected InDegreeRanking clone() {
             GraphModel graphModel = graph.getGraphModel();
-            DirectedGraph currentGraph = graphModel.getDirectedGraphVisible();
-            return new InDegreeRanking(elementType, currentGraph);
+            return new InDegreeRanking(elementType, graphModel, rankingModel);
         }
     }
 }

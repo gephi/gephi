@@ -47,6 +47,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
 import org.gephi.ranking.api.Ranking;
+import org.gephi.ranking.api.RankingModel;
 
 /**
  * Abstract ranking implementation, providing min/max storage.
@@ -61,13 +62,15 @@ import org.gephi.ranking.api.Ranking;
  */
 public abstract class AbstractRanking<Element> implements Ranking<Element> {
 
+    protected final RankingModel rankingModel;
     private final String name;
     protected final String elementType;
     protected Number minimum;
     protected Number maximum;
 
-    public AbstractRanking(String elementType, String name) {
+    public AbstractRanking(String elementType, String name, RankingModel rankingModel) {
         this.elementType = elementType;
+        this.rankingModel = rankingModel;
         this.name = name;
     }
 

@@ -48,6 +48,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphEvent;
+import org.gephi.graph.api.GraphListener;
 import org.gephi.ranking.api.Ranking;
 import org.gephi.ranking.api.RankingController;
 import org.gephi.ranking.api.RankingEvent;
@@ -61,7 +64,7 @@ import org.openide.util.Lookup;
  *
  * @author Mathieu Bastian
  */
-public class RankingUIModel implements RankingListener {
+public class RankingUIModel implements RankingListener, GraphListener {
     //Const
 
     public static final String CURRENT_TRANSFORMER = "currentTransformer";
@@ -73,6 +76,8 @@ public class RankingUIModel implements RankingListener {
     public static final String APPLY_TRANSFORMER = "applyTransformer";
     public static final String START_AUTO_TRANSFORMER = "startAutoTransformer";
     public static final String STOP_AUTO_TRANSFORMER = "stopAutoTransformer";
+    public static final String LOCAL_SCALE = "localScale";
+    public static final String LOCAL_SCALE_ENABLED = "localScaleEnabled";
     //Current model
     protected final Map<String, LinkedHashMap<String, Transformer>> transformers;
     protected String currentElementType;
@@ -80,6 +85,7 @@ public class RankingUIModel implements RankingListener {
     protected final Map<String, Transformer> currentTransformer;
     protected boolean barChartVisible;
     protected boolean listVisible;
+    protected boolean localScaleEnabled;
     //Architecture
     private final List<PropertyChangeListener> listeners;
     private RankingUIController controller;
@@ -94,6 +100,7 @@ public class RankingUIModel implements RankingListener {
         controller = rankingUIController;
         currentElementType = Ranking.NODE_ELEMENT;
         listVisible = false;
+        localScaleEnabled = !Lookup.getDefault().lookup(GraphController.class).getModel(rankingModel.getWorkspace()).getVisibleView().isMainView();
         
         initTransformers();
 
@@ -110,6 +117,20 @@ public class RankingUIModel implements RankingListener {
             firePropertyChangeEvent(RANKINGS, null, null);
         } else if (event.is(RankingEvent.EventType.APPLY_TRANSFORMER)) {
             firePropertyChangeEvent(APPLY_TRANSFORMER, null, null);
+        }
+    }
+
+    public void graphChanged(GraphEvent event) {
+        if(event.getEventType().equals(GraphEvent.EventType.VISIBLE_VIEW)) {
+            boolean filteredView = !event.getSource().isMainView();
+            if(filteredView != localScaleEnabled) {
+                boolean oldValue = localScaleEnabled;
+                localScaleEnabled = filteredView;
+                if(!filteredView) {
+                    setLocalScale(false);
+                }
+                firePropertyChangeEvent(LOCAL_SCALE_ENABLED, oldValue, filteredView);
+            }
         }
     }
     
@@ -153,6 +174,15 @@ public class RankingUIModel implements RankingListener {
         firePropertyChangeEvent(BARCHART_VISIBLE, oldValue, barChartVisible);
     }
     
+    public void setLocalScale(boolean localScale) {
+        if (model.useLocalScale() == localScale) {
+            return;
+        }
+        boolean oldValue = model.useLocalScale();
+        Lookup.getDefault().lookup(RankingController.class).setUseLocalScale(localScale);
+        firePropertyChangeEvent(LOCAL_SCALE, oldValue, localScale);
+    }
+    
     public void setCurrentElementType(String elementType) {
         if (this.currentElementType.equals(elementType)) {
             return;
@@ -180,6 +210,14 @@ public class RankingUIModel implements RankingListener {
     
     public boolean isBarChartVisible() {
         return barChartVisible;
+    }
+    
+    public boolean isLocalScale() {
+        return model.useLocalScale();
+    }
+
+    public boolean isLocalScaleEnabled() {
+        return localScaleEnabled;
     }
     
     public boolean isListVisible() {

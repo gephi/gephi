@@ -62,7 +62,7 @@ autostore = false)
 @TopComponent.Description(preferredID = "RankingTopComponent",
 iconBase = "org/gephi/desktop/ranking/resources/small.png",
 persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "rankingmode", openAtStartup = true, roles={"overview"})
+@TopComponent.Registration(mode = "rankingmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.ranking.RankingTopComponent")
 @ActionReference(path = "Menu/Window", position = 1100)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_RankingAction",
@@ -71,16 +71,17 @@ public class RankingTopComponent extends TopComponent implements Lookup.Provider
 
     //UI
     private transient JToggleButton listButton;
+    private transient JToggleButton localScaleButton;
     //Model
     private transient RankingUIController controller;
     private transient RankingUIModel model;
     private transient ChangeListener modelChangeListener;
-
+    
     public RankingTopComponent() {
         setName(NbBundle.getMessage(RankingTopComponent.class, "CTL_RankingTopComponent"));
-
+        
         modelChangeListener = new ChangeListener() {
-
+            
             public void stateChanged(ChangeEvent ce) {
                 refreshModel(ce == null ? null : (RankingUIModel) ce.getSource());
             }
@@ -88,16 +89,16 @@ public class RankingTopComponent extends TopComponent implements Lookup.Provider
         controller = Lookup.getDefault().lookup(RankingUIController.class);
         controller.setModelChangeListener(modelChangeListener);
         model = controller.getModel();
-
+        
         initComponents();
         initSouth();
         if (UIUtils.isAquaLookAndFeel()) {
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
-
+        
         refreshModel(model);
     }
-
+    
     public void refreshModel(RankingUIModel model) {
         if (this.model != null) {
             this.model.removePropertyChangeListener(this);
@@ -125,9 +126,11 @@ public class RankingTopComponent extends TopComponent implements Lookup.Provider
 
             //barChartButton.setSelected(model.isBarChartVisible());
             listButton.setSelected(model.isListVisible());
+            localScaleButton.setSelected(model.isLocalScale());
         } else {
             listResultPanel.setVisible(false);
             listButton.setSelected(false);
+            localScaleButton.setSelected(false);
         }
 
 
@@ -137,7 +140,7 @@ public class RankingTopComponent extends TopComponent implements Lookup.Provider
         //Toolbar
         ((RankingToolbar) rankingToolbar).refreshModel(model);
     }
-
+    
     public void propertyChange(PropertyChangeEvent pce) {
         if (pce.getPropertyName().equals(RankingUIModel.LIST_VISIBLE)) {
             listButton.setSelected((Boolean) pce.getNewValue());
@@ -148,13 +151,17 @@ public class RankingTopComponent extends TopComponent implements Lookup.Provider
             }
         } else if (pce.getPropertyName().equals(RankingUIModel.BARCHART_VISIBLE)) {
             //barChartButton.setSelected((Boolean)pce.getNewValue());
+        } else if (pce.getPropertyName().equals(RankingUIModel.LOCAL_SCALE)) {
+            localScaleButton.setSelected((Boolean) pce.getNewValue());
+        } else if (pce.getPropertyName().equals(RankingUIModel.LOCAL_SCALE_ENABLED)) {
+            localScaleButton.setEnabled((Boolean) pce.getNewValue());
         }
     }
-
+    
     private void initSouth() {
         listButton = new JToggleButton();
         listButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/ranking/resources/list.png"))); // NOI18N
-        NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.listButton.text");
+        listButton.setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.listButton.text"));
         listButton.setEnabled(false);
         listButton.setFocusable(false);
         southToolbar.add(listButton);
@@ -166,14 +173,31 @@ public class RankingTopComponent extends TopComponent implements Lookup.Provider
          * barChartButton.setEnabled(false); barChartButton.setFocusable(false);
          * southToolbar.add(barChartButton);
          */
+        
+        localScaleButton = new JToggleButton();
+        localScaleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/ranking/resources/funnel.png"))); // NOI18N
+        localScaleButton.setToolTipText(NbBundle.getMessage(RankingTopComponent.class, "RankingTopComponent.localScaleButton.text"));
+        localScaleButton.setEnabled(false);
+        localScaleButton.setFocusable(false);
+        southToolbar.add(localScaleButton);
+        
+        //Local scale enabled
+        localScaleButton.setEnabled(model != null ? model.isLocalScaleEnabled() : false);
 
         //BarChartPanel & ListPanel
         listResultPanel.setVisible(false);
-
+        
         listButton.addActionListener(new ActionListener() {
-
+            
             public void actionPerformed(ActionEvent e) {
                 model.setListVisible(listButton.isSelected());
+            }
+        });
+        
+        localScaleButton.addActionListener(new ActionListener() {
+            
+            public void actionPerformed(ActionEvent e) {
+                model.setLocalScale(localScaleButton.isSelected());
             }
         });
 
@@ -184,17 +208,18 @@ public class RankingTopComponent extends TopComponent implements Lookup.Provider
          * model.setBarChartVisible(barChartButton.isSelected()); } });
          */
     }
-
+    
     private void refreshEnable() {
         boolean modelEnabled = isModelEnabled();
 
         //barChartButton.setEnabled(modelEnabled);
         listButton.setEnabled(modelEnabled);
+        localScaleButton.setEnabled(modelEnabled && model.isLocalScaleEnabled());
         rankingChooser.setEnabled(modelEnabled);
         rankingToolbar.setEnabled(modelEnabled);
         listResultPanel.setEnabled(modelEnabled);
     }
-
+    
     private boolean isModelEnabled() {
         return model != null;
     }
@@ -280,7 +305,7 @@ public class RankingTopComponent extends TopComponent implements Lookup.Provider
         p.setProperty("version", "1.0");
         // TODO store your settings
     }
-
+    
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version

@@ -131,6 +131,15 @@ public interface RankingModel {
      * @return the workspace of this model
      */
     public Workspace getWorkspace();
+    
+    /**
+     * Returns <code>true</code> if rankings are using the currently visible
+     * graph as a scale. If <code>false</code> the complete graph is used to determine
+     * minimum and maximum values, the ranking scale.
+     * @return <code>true</code> if using a local scale, <code>false</code> if
+     * global scale
+     */ 
+    public boolean useLocalScale();
 
     /**
      * If <code>transformer</code> is an auto transformer, returns the ranking

@@ -75,7 +75,7 @@ public class DegreeRankingBuilder implements RankingBuilder {
         Workspace workspace = model.getWorkspace();
         GraphModel graphModel = graphController.getModel(workspace);
 
-        return new Ranking[]{new DegreeRanking(Ranking.NODE_ELEMENT, graphModel.getGraphVisible())};
+        return new Ranking[]{new DegreeRanking(Ranking.NODE_ELEMENT, graphModel, model)};
     }
 
     @Override
@@ -94,9 +94,9 @@ public class DegreeRankingBuilder implements RankingBuilder {
 
         private final Graph graph;
 
-        public DegreeRanking(String elementType, Graph graph) {
-            super(elementType, Ranking.DEGREE_RANKING);
-            this.graph = graph;
+        public DegreeRanking(String elementType, GraphModel graphModel, RankingModel rankingModel) {
+            super(elementType, Ranking.DEGREE_RANKING, rankingModel);
+            this.graph = rankingModel.useLocalScale() ? graphModel.getGraphVisible() : graphModel.getGraph();;
         }
 
         @Override
@@ -138,8 +138,7 @@ public class DegreeRankingBuilder implements RankingBuilder {
         @Override
         protected DegreeRanking clone() {
             GraphModel graphModel = graph.getGraphModel();
-            Graph currentGraph = graphModel.getGraphVisible();
-            return new DegreeRanking(elementType, currentGraph);
+            return new DegreeRanking(elementType, graphModel, rankingModel);
         }
     }
 }

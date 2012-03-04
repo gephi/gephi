@@ -43,9 +43,6 @@ package org.gephi.ranking;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import org.gephi.ranking.api.Interpolator;
-import org.gephi.ranking.api.RankingModel;
-import org.gephi.ranking.api.Ranking;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -55,9 +52,7 @@ import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.project.api.Workspace;
-import org.gephi.ranking.api.RankingEvent;
-import org.gephi.ranking.api.RankingListener;
-import org.gephi.ranking.api.Transformer;
+import org.gephi.ranking.api.*;
 import org.gephi.ranking.spi.RankingBuilder;
 import org.gephi.ranking.spi.TransformerBuilder;
 import org.openide.util.Lookup;
@@ -74,6 +69,7 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
     private final List<AutoRanking> autoRankings;
     private final RankingAutoTransformer autoTransformer;
     private Interpolator interpolator;
+    private boolean localScale = false;
 
     public RankingModelImpl(Workspace workspace) {
         this.workspace = workspace;
@@ -215,6 +211,15 @@ public class RankingModelImpl implements RankingModel, AttributeListener {
 
     public List<AutoRanking> getAutoRankings() {
         return autoRankings;
+    }
+
+    @Override
+    public boolean useLocalScale() {
+        return localScale;
+    }
+
+    public void setLocalScale(boolean localScale) {
+        this.localScale = localScale;
     }
 
     public void addRankingListener(RankingListener listener) {

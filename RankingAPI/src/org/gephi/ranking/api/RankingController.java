@@ -81,6 +81,15 @@ public interface RankingController {
      * @param interpolator the interpolator to use for transformation. 
      */
     public void setInterpolator(Interpolator interpolator);
+    
+    /**
+     * Sets whether rankings use a local or a global scale. When calculating the
+     * minimum and maximum value (i.e. the scale) rankings can use the complete graph
+     * or only the currently visible graph. When using the visible graph it is called
+     * the <b>local</b> scale.
+     * @param useLocalScale <code>true</code> for local, <code>false</code> for global
+     */
+    public void setUseLocalScale(boolean useLocalScale);
 
     /**
      * Apply the transformation of <code>transformer</code> on <code>ranking</code>.
