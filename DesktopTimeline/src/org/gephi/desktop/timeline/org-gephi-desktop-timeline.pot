@@ -21,8 +21,127 @@ msgstr "Timeline"
 msgid "CTL_TimelineTopComponent"
 msgstr "Timeline"
 
+msgid "CTL_TimelineWindowAction"
+msgstr "Timeline"
+
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Timeline UI"
 
 msgid "TimelineTopComponent.closeButton.toolTipText"
 msgstr "Close the Timeline"
+
+msgid "TimelineTopComponent.enableTimelineButton.text"
+msgstr "Enable Timeline"
+
+msgid "TimelineTopComponent.playButton.toolTipText"
+msgstr "Play"
+
+msgid "CustomBoundsDialog.labelStartDate.text"
+msgstr "Start:"
+
+msgid "CustomBoundsDialog.labelIntervalDate.text"
+msgstr "Interval"
+
+msgid "CustomBoundsDialog.labelMinDate.text"
+msgstr "Minimum:"
+
+msgid "CustomBoundsDialog.labelMaxDate.text"
+msgstr "Maximum:"
+
+msgid "CustomBoundsDialog.resetDefaultsDate.text"
+msgstr "Reset defaults"
+
+msgid "CustomBoundsDialog.labelEndDate.text"
+msgstr "End:"
+
+msgid "CustomBoundsDialog.labelBounds.text"
+msgstr "Bounds"
+
+msgid "CustomBoundsDialog.titleHeader.title"
+msgstr "Custom time bounds & interval"
+
+msgid "CustomBoundsDialog.titleHeader.description"
+msgstr ""
+"Customize the timeline bounds or interval. The bounds are the minimum and "
+"maximum values. The interval is the currently selected time window."
+
+msgid "CustomBoundsDialog.title"
+msgstr "Custom time bounds & interval"
+
+msgid "CustomBoundsDialog.FormatValidator.date"
+msgstr "Date must be formatted {0}"
+
+msgid "CustomBoundsDialog.FormatValidator.double"
+msgstr "Not a valid double number"
+
+msgid "CustomBoundsDialog.TimeValidator"
+msgstr "Lower bound can't be after upper bound"
+
+msgid "CustomBoundsDialog.TimeValidator.min"
+msgstr "Value needs to be at least the minimum"
+
+msgid "CustomBoundsDialog.TimeValidator.max"
+msgstr "Value can't be more than the maximum"
+
+msgid "TimelineTopComponent.charts.disable"
+msgstr "Disable"
+
+msgid "TimelineTopComponent.settings.setCustomBounds"
+msgstr "Set custom bounds..."
+
+msgid "TimelineTopComponent.charts.empty"
+msgstr "No charts..."
+
+msgid "TimelineTopComponent.disabledTimelineLabel.text"
+msgstr "Timeline disabled. The graph is not dynamic."
+
+msgid "PlaySettingsDialog.headerTitle.title"
+msgstr "Animation settings"
+
+msgid "PlaySettingsDialog.headerTitle.description"
+msgstr "Set up animation speed and step"
+
+msgid "PlaySettingsDialog.labelDelay.text"
+msgstr "Delay:"
+
+msgid "PlaySettingsDialog.labelStepSize.text"
+msgstr "Step size:"
+
+msgid "PlaySettingsDialog.labelPerc.text"
+msgstr "%"
+
+msgid "PlaySettingsDialog.labelMs.text"
+msgstr "ms"
+
+msgid "PlaySettingsDialog.labelMode.text"
+msgstr "Mode"
+
+msgid "PlaySettingsDialog.oneBoundRadio.text"
+msgstr "One bound"
+
+msgid "PlaySettingsDialog.twoBoundsRadio.text"
+msgstr "Two bounds"
+
+msgid "PlaySettingsDialog.labelSpeed.text"
+msgstr "Speed"
+
+msgid "PlaySettingsDialog.backwardCheckbox.text"
+msgstr "Backward"
+
+msgid "PlaySettingsDialog.title"
+msgstr "Animation settings"
+
+msgid "TimelineTopComponent.settings.setPlaySettings"
+msgstr "Set play settings..."
+
+msgid "TimelineTooltip.min"
+msgstr "Start"
+
+msgid "TimelineTooltip.max"
+msgstr "End"
+
+msgid "TimelineTooltip.position"
+msgstr "Current position is"
+
+msgid "TimelineTooltip.chart"
+msgstr "Current value is "

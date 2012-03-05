@@ -33,6 +33,11 @@ msgstr "Result list"
 msgid "RankingTopComponent.barchartButton.text"
 msgstr "Value chart"
 
+msgid "RankingTopComponent.localScaleButton.text"
+msgstr ""
+"Use local scale. The bounds are calculated only on the visible graph instead "
+"of the complete graph."
+
 msgid "RankingChooser.rankingComboBox.toolTipText"
 msgstr "Choose rank"
 

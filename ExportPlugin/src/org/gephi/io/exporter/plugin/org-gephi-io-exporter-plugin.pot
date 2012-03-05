@@ -38,3 +38,6 @@ msgstr "NET Files (Pajek)"
 
 msgid "fileType_DL_Name"
 msgstr "DL files (UCINET)"
+
+msgid "fileType_VNA_Name"
+msgstr "VNA files(Netdraw)"

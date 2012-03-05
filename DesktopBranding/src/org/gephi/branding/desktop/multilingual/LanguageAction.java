@@ -46,11 +46,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import javax.swing.AbstractAction;
-import javax.swing.Icon;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
@@ -67,6 +63,7 @@ public final class LanguageAction extends CallableSystemAction {
     public enum Language {
 
         EN_US("en", "English"),
+        CS_CS("cs", "Čeština"),
         ES_ES("es", "Español"),
         FR_FR("fr", "Français"),
         PT_BR("pt", "BR", "Português do Brasil"),

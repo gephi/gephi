@@ -856,3 +856,8 @@ file_filter = PerspectiveAPI\src\org\gephi\perspective\api\<lang>.po
 source_file = PerspectiveAPI\src\org\gephi\perspective\api\org-gephi-perspective-api.pot
 source_lang = en
 
+[gephi.org-gephi-statistics-plugin-dynamic]
+file_filter = StatisticsPlugin\src\org\gephi\statistics\plugin\dynamic\<lang>.po
+source_file = StatisticsPlugin\src\org\gephi\statistics\plugin\dynamic\org-gephi-statistics-plugin-dynamic.pot
+source_lang = en
+

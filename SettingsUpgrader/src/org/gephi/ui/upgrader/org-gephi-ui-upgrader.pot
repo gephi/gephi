@@ -16,13 +16,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "OpenIDE-Module-Long-Description"
-msgstr "Filters implementations, define new filters"
+msgstr "Import settings from previous Gephi installation"
 
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Filters implementations"
+msgstr "Import settings from previous Gephi installation"
 
-msgid "AbstractAttributeFilterBuilder.Node"
-msgstr "Node"
+msgid "Upgrader.title"
+msgstr "Import settings"
 
-msgid "AbstractAttributeFilterBuilder.Edge"
-msgstr "Edge"
+msgid "Upgrader.message"
+msgstr ""
+"Settings created by a previous version of Gephi ({0}) were found on your "
+"system. Do you want to import them?"
+
+msgid "Upgrader.restart.title"
+msgstr "Restart"
+
+msgid "Upgrader.restart.message"
+msgstr "Settings were successfully imported. Do you want to restart Gephi now?"

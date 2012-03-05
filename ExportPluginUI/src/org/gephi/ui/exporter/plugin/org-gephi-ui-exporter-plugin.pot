@@ -39,6 +39,9 @@ msgstr "Pajek"
 msgid "UIExporterDL.name"
 msgstr "DL"
 
+msgid "UIExporterVNA.name"
+msgstr "VNA"
+
 msgid "UIExporterGDFPanel.jRadioButton1.text"
 msgstr "Simple quotes"
 

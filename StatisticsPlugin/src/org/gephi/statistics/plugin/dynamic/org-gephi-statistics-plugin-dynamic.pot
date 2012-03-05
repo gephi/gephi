@@ -15,14 +15,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "OpenIDE-Module-Long-Description"
-msgstr "Filters implementations, define new filters"
+msgid "DynamicNbNodes.graphcolumn.NbNodes"
+msgstr "Node Count"
 
-msgid "OpenIDE-Module-Short-Description"
-msgstr "Filters implementations"
+msgid "DynamicNbNodes.graphcolumn.NbEdges"
+msgstr "Edge Count"
 
-msgid "AbstractAttributeFilterBuilder.Node"
-msgstr "Node"
+msgid "DynamicDegree.graphcolumn.AvgDegree"
+msgstr "Average Degree"
 
-msgid "AbstractAttributeFilterBuilder.Edge"
-msgstr "Edge"
+msgid "DynamicDegree.nodecolumn.InDegree"
+msgstr "Dynamic In-Degree"
+
+msgid "DynamicDegree.nodecolumn.OutDegree"
+msgstr "Dynamic Out-Degree"
+
+msgid "DynamicDegree.nodecolumn.Degree"
+msgstr "Dynamic Degree"
+
+msgid "DynamicClusteringCoefficient.nodecolumn.ClusteringCoefficient"
+msgstr "Dynamic Clustering Coefficient"
+
+msgid "DynamicClusteringCoefficient.graphcolumn.AvgClusteringCoefficient"
+msgstr "Average Clustering Coefficient"

@@ -15,23 +15,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "CTL_BobAction"
+msgstr "Bob"
+
+msgid "CTL_BobTopComponent"
+msgstr "Bob Window"
+
 msgid "CTL_ClusteringAction"
 msgstr "Clustering"
 
 msgid "CTL_ClusteringTopComponent"
 msgstr "Clustering"
 
-msgid "ClusteringTopComponent.settingsButton.text"
-msgstr "Settings"
-
-msgid "ClusteringTopComponent.descriptionLabel.text"
-msgstr "description"
-
-msgid "ClusteringTopComponent.resetLink.text"
-msgstr "Reset"
-
-msgid "ClusteringTopComponent.runButton.text"
-msgstr "Run"
+msgid "HINT_BobTopComponent"
+msgstr "This is a Bob window"
 
 msgid "ClusteringTopComponent.runButton.stop"
 msgstr "Cancel"
@@ -71,3 +68,15 @@ msgstr "Ungroup"
 
 msgid "OpenIDE-Module-Short-Description"
 msgstr "Integrate and display clustering algorithms UI"
+
+msgid "ClusteringTopComponent.resetLink.text"
+msgstr "Reset"
+
+msgid "ClusteringTopComponent.runButton.text"
+msgstr "Run"
+
+msgid "ClusteringTopComponent.descriptionLabel.text"
+msgstr "description"
+
+msgid "ClusteringTopComponent.settingsButton.text"
+msgstr "Settings"

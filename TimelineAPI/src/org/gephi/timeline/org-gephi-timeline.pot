@@ -15,5 +15,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "OpenIDE-Module-Long-Description"
+msgstr ""
+"The Timeline API provides access to the timeline data, control settings and "
+"animation."
+
 msgid "OpenIDE-Module-Short-Description"
-msgstr "Timeline API"
+msgstr "Timeline control API"
