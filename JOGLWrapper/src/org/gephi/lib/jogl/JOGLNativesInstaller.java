@@ -1,44 +1,44 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.lib.jogl;
 
 import java.io.File;
@@ -53,8 +53,9 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
- * Manages the JOGL natives loading. Thanks to Michael Bien, Lilian Chamontin and Kenneth Russell.
- * 
+ * Manages the JOGL natives loading. Thanks to Michael Bien, Lilian Chamontin
+ * and Kenneth Russell.
+ *
  * @author Mathieu Bastan
  */
 public class JOGLNativesInstaller extends ModuleInstall {
@@ -67,7 +68,7 @@ public class JOGLNativesInstaller extends ModuleInstall {
             String nativeArch = nativeLibInfo.getSubDirectoryPath();
             File joglDistFolder = InstalledFileLocator.getDefault().locate("modules/lib/" + nativeArch, "org.gephi.lib.jogl", false);
             if (joglDistFolder != null) {
-               loadNatives(joglDistFolder);
+                loadNatives(joglDistFolder);
             } else {
                 fatalError(String.format(NbBundle.getMessage(JOGLNativesInstaller.class, "JOGLNativesInstaller_error1"), new Object[]{nativeArch}));
             }
@@ -150,6 +151,30 @@ public class JOGLNativesInstaller extends ModuleInstall {
                                 fatalError(String.format(NbBundle.getMessage(JOGLNativesInstaller.class, "JOGLNativesInstaller_error3"), new Object[]{}));
                             }
                         }
+                    } else {
+                        //Make sure jawt is loaded on Mac Os X, Issue #542
+                        //In Lion the symbolic link to the /Librarires might be missing is some JDK
+                        //JAWT is a dependency of jogl_awt so it needs to be accessible
+                        //We force to load the library at the default location
+                        File defaultJdk = new File("/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK");
+                        if (!defaultJdk.exists()) {
+                            //Use the current JDK path and remove the /Home
+                            String javaHome = System.getProperty("java.home");
+                            javaHome = javaHome.substring(0, javaHome.lastIndexOf("Home"));
+                            defaultJdk = new File(javaHome);
+                        }
+                        File libraryPath = new File(defaultJdk, "Libraries");
+                        File jawtPath = new File(libraryPath, "libjawt.dylib");
+                        if (libraryPath.exists() && jawtPath.exists()) {
+                            //Load library file
+                            loadLibrary(jawtPath);
+                        } else {
+                            System.out.println("Issue #452: Can't locate the default Libraries folder to load the"
+                                    + "JAWT library. This library is needed as a dependency of jogl_awt and is"
+                                    + "normally installed in the JDK. To fix that please make sure to have the"
+                                    + "'/System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK' path"
+                                    + "points to the current Java installation.");
+                        }
                     }
                     // Load AWT-specific native code
                     loadLibrary(nativeLibDir, "jogl_awt");
@@ -164,12 +189,16 @@ public class JOGLNativesInstaller extends ModuleInstall {
 
     private void loadLibrary(File installDir, String libName) {
         String nativeLibName = nativeLibInfo.getNativeLibName(libName);
+        loadLibrary(new File(installDir, nativeLibName));
+    }
+
+    private void loadLibrary(File file) {
         try {
-            System.load(new File(installDir, nativeLibName).getPath());
+            System.load(file.getPath());
         } catch (UnsatisfiedLinkError ex) {
             // should be safe to continue as long as the native is loaded by any loader
             if (ex.getMessage().indexOf("already loaded") == -1) {
-                fatalError(String.format(NbBundle.getMessage(JOGLNativesInstaller.class, "JOGLNativesInstaller_error4"), new Object[]{nativeLibName}));
+                fatalError(String.format(NbBundle.getMessage(JOGLNativesInstaller.class, "JOGLNativesInstaller_error4"), new Object[]{file.getName()}));
             }
         }
     }
@@ -201,8 +230,8 @@ public class JOGLNativesInstaller extends ModuleInstall {
 
         public boolean matchesOSAndArch(String osName, String osArch) {
             if (osName.toLowerCase().startsWith(this.osName)) {
-                if ((this.osArch == null) ||
-                        (osArch.toLowerCase().equals(this.osArch))) {
+                if ((this.osArch == null)
+                        || (osArch.toLowerCase().equals(this.osArch))) {
                     return true;
                 }
             }
