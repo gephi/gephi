@@ -1,51 +1,53 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.branding.desktop;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.awt.Desktop;
+import java.io.*;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import org.gephi.branding.desktop.reporter.ReporterHandler;
@@ -61,10 +63,12 @@ import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
 
 /**
- * Manages a module's lifecycle. Remember that an installer is optional and
- * often not needed at all.
+ * Manages a module's lifecycle. Remember that an installer is optional and often not needed at all.
  */
 public class Installer extends ModuleInstall {
+
+    private static final String LATEST_GEPHI_VERSION_URL = "https://gephi.org/updates/latest";
+    private static final String GEPHI_VERSION = "0.8.1";
 
     @Override
     public void restored() {
@@ -91,6 +95,9 @@ public class Installer extends ModuleInstall {
             MemoryStarvationManager memoryStarvationManager = new MemoryStarvationManager();
             memoryStarvationManager.startup();
         }
+
+        //Check for new major release:
+        checkForNewMajorRelease();
     }
 
     private void initGephi() {
@@ -155,6 +162,29 @@ public class Installer extends ModuleInstall {
                 //Restart
                 LifecycleManager.getDefault().markForRestart();
                 LifecycleManager.getDefault().exit();
+            }
+        }
+    }
+
+    private void checkForNewMajorRelease() {
+        boolean doCheck = NbPreferences.forModule(Installer.class).getBoolean("check_latest_version", true);
+        if (doCheck) {
+            try {
+                URL url = new URL(LATEST_GEPHI_VERSION_URL);
+                URLConnection conn = url.openConnection();
+                String latest = new BufferedReader(new InputStreamReader(conn.getInputStream())).readLine();
+                if (!latest.equals(GEPHI_VERSION)) {
+                    //Show update dialog
+                    JCheckBox checkbox = new JCheckBox(NbBundle.getMessage(Installer.class, "MajorReleaseCheck.dontShowAgain"), false);
+                    String message = NbBundle.getMessage(Installer.class, "MajorReleaseCheck.message", latest, GEPHI_VERSION);
+                    int option = JOptionPane.showConfirmDialog(null, new Object[]{message, checkbox}, NbBundle.getMessage(Installer.class, "MajorReleaseCheck.newVersion"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    NbPreferences.forModule(Installer.class).putBoolean("check_latest_version", !checkbox.isSelected());
+                    if(option==JOptionPane.OK_OPTION){
+                        Desktop.getDesktop().browse(new URI("http://gephi.org/users/download/"));
+                    }
+                }
+            } catch (Exception ex) {
+                System.out.println("Error while checking latest Gephi version");
             }
         }
     }
