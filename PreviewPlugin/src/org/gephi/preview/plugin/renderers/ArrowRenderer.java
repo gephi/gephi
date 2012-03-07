@@ -69,7 +69,7 @@ import processing.core.PVector;
  * @author Yudi Xue, Mathieu Bastian
  */
 @ServiceProvider(service = Renderer.class, position = 200)
-public class ArrowRenderer implements Renderer {
+public class ArrowRenderer implements Renderer, Renderer.NamedRenderer {
 
     //Const
     protected final float BASE_RATIO = 0.5f;
@@ -190,5 +190,9 @@ public class ArrowRenderer implements Renderer {
         return item instanceof EdgeItem && properties.getBooleanValue(PreviewProperty.SHOW_EDGES) && properties.getBooleanValue(PreviewProperty.DIRECTED)
                 && (Boolean) item.getData(EdgeItem.DIRECTED) && !(Boolean) item.getData(EdgeItem.SELF_LOOP)
                 && !properties.getBooleanValue(PreviewProperty.MOVING);
+    }
+
+    public String getName() {
+        return NbBundle.getMessage(ArrowRenderer.class, "ArrowRenderer.name");
     }
 }

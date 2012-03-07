@@ -92,8 +92,8 @@ public interface PreviewController {
     /**
      * Renders the current preview model to <code>target</code>.
      * <p>
-     * This tasks look for all <code>Renderer</code> implementations and render
-     * all items in the preview model.
+     * If preview model <code>managedRenderers</code> is null, this task looks for all <code>Renderer</code> implementations in their default order.
+     * Then all items in the preview model are rendered.
      * @param target the target to render items to
      */
     public void render(RenderTarget target);
@@ -101,12 +101,31 @@ public interface PreviewController {
     /**
      * Renders the preview model in <code>workspace</code> to <code>target</code>.
      * <p>
-     * This tasks look for all <code>Renderer</code> implementations and render
-     * all items in the preview model.
+     * If preview model <code>managedRenderers</code> is null, this task looks for all <code>Renderer</code> implementations in their default order.
+     * Then all items in the preview model are rendered.
      * @param target the target to render items to
      * @param workspace the workspace to get the preview model from
      */
     public void render(RenderTarget target, Workspace workspace);
+    
+    /**
+     * Renders the current preview model to <code>target</code>.
+     * <p>
+     * This task overrides the preview model <code>managedRenderers</code> and uses the given <code>Renderer</code> array, <b>respecting the array order</b>.
+     * Then all items in the preview model are rendered.
+     * @param target the target to render items to
+     */
+    public void render(RenderTarget target, Renderer[] renderers);
+    
+    /**
+     * Renders the preview model in <code>workspace</code> to <code>target</code>.
+     * <p>
+     * This task overrides the preview model <code>managedRenderers</code> and uses the given <code>Renderer</code> array, <b>respecting the array order</b>.
+     * Then all items in the preview model are rendered.
+     * @param target the target to render items to
+     * @param workspace the workspace to get the preview model from
+     */
+    public void render(RenderTarget target, Renderer[] renderers, Workspace workspace);
 
     /**
      * Creates a new render target of the given type. 

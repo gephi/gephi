@@ -83,7 +83,7 @@ import processing.core.PVector;
  * @author Yudi Xue, Mathieu Bastian
  */
 @ServiceProvider(service = Renderer.class, position = 500)
-public class EdgeLabelRenderer implements Renderer {
+public class EdgeLabelRenderer implements Renderer , Renderer.NamedRenderer {
     //Custom properties
 
     public static final String EDGE_COLOR = "edge.label.edgeColor";
@@ -372,5 +372,9 @@ public class EdgeLabelRenderer implements Renderer {
     protected PVector linearInterpolation(float x1, float y1, float x2, float y2, float c) {
         PVector r = new PVector(x1 + (x2 - x1) * c, y1 + (y2 - y1) * c);
         return r;
+    }
+
+    public String getName() {
+        return NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.name");
     }
 }

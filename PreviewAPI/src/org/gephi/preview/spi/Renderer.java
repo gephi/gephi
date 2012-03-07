@@ -89,6 +89,14 @@ import org.gephi.preview.api.SVGTarget;
  * @author Yudi Xue, Mathieu Bastian
  */
 public interface Renderer {
+    
+    /**
+     * <b>Optionally</b> implement this interface in a
+     * <code>Renderer</code> to give a user friendly name to the renderer. This name will appear in the renderers manager UI.
+     */
+    interface NamedRenderer {
+        String getName();
+    }
 
     /**
      * This method is called before rendering for all renderers and initializes

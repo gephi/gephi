@@ -1,58 +1,55 @@
 /*
-Copyright 2008-2011 Gephi
-Authors : Jérémy Subtil <jeremy.subtil@gephi.org>,
-Yudi Xue <yudi.xue@usask.ca>,
-Mathieu Bastian
-Website : http://www.gephi.org
+ Copyright 2008-2011 Gephi
+ Authors : Jérémy Subtil <jeremy.subtil@gephi.org>,
+ Yudi Xue <yudi.xue@usask.ca>,
+ Mathieu Bastian
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.preview;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import javax.swing.SwingUtilities;
-import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.PreviewProperties;
-import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.api.*;
+import org.gephi.preview.spi.Renderer;
 import org.openide.explorer.propertysheet.PropertySheet;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -70,7 +67,7 @@ import org.openide.util.NbBundle;
 public class PreviewNode extends AbstractNode implements PropertyChangeListener {
 
     private PropertySheet propertySheet;
-    
+
     public PreviewNode(PropertySheet propertySheet) {
         super(Children.LEAF);
         this.propertySheet = propertySheet;
@@ -81,32 +78,51 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
     protected Sheet createSheet() {
         Sheet sheet = Sheet.createDefault();
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
+
+        Set<Renderer> enabledRenderers = null;
+        if (controller.getModel()!=null && controller.getModel().getManagedRenderers() != null) {
+            enabledRenderers = new HashSet<Renderer>();
+            for (ManagedRenderer mr : controller.getModel().getManagedRenderers()) {
+                if (mr.isEnabled()) {
+                    enabledRenderers.add(mr.getRenderer());
+                }
+            }
+        }
+
         PreviewModel model = controller.getModel();
         if (model != null) {
             PreviewProperties properties = model.getProperties();
 
             Map<String, Sheet.Set> sheetSets = new HashMap<String, Sheet.Set>();
             for (PreviewProperty property : properties.getProperties()) {
-                String category = property.getCategory();
-                Sheet.Set sheetSet = sheetSets.get(category);
-                if (sheetSet == null) {
-                    sheetSet = Sheet.createPropertiesSet();
-                    sheetSet.setDisplayName(category);
-                    sheetSet.setName(category);
-                }
-                Node.Property nodeProperty = null;
-                PreviewProperty[] parents = properties.getParentProperties(property);
-                PreviewProperty[] children = properties.getChildProperties(property);
-                if (parents.length > 0) {
-                    nodeProperty = new ChildPreviewPropertyWrapper(property, parents);
-                } else if (children.length > 0) {
-                    nodeProperty = new ParentPreviewPropertyWrapper(property, children);
-                } else {
-                    nodeProperty = new PreviewPropertyWrapper(property);
+                Object source = property.getSource();
+                boolean propertyEnabled = true;
+                if (source instanceof Renderer) {
+                    propertyEnabled = enabledRenderers == null || enabledRenderers.contains((Renderer) source);
                 }
 
-                sheetSet.put(nodeProperty);
-                sheetSets.put(category, sheetSet);
+                if (propertyEnabled) {
+                    String category = property.getCategory();
+                    Sheet.Set sheetSet = sheetSets.get(category);
+                    if (sheetSet == null) {
+                        sheetSet = Sheet.createPropertiesSet();
+                        sheetSet.setDisplayName(category);
+                        sheetSet.setName(category);
+                    }
+                    Node.Property nodeProperty = null;
+                    PreviewProperty[] parents = properties.getParentProperties(property);
+                    PreviewProperty[] children = properties.getChildProperties(property);
+                    if (parents.length > 0) {
+                        nodeProperty = new ChildPreviewPropertyWrapper(property, parents);
+                    } else if (children.length > 0) {
+                        nodeProperty = new ParentPreviewPropertyWrapper(property, children);
+                    } else {
+                        nodeProperty = new PreviewPropertyWrapper(property);
+                    }
+
+                    sheetSet.put(nodeProperty);
+                    sheetSets.put(category, sheetSet);
+                }
             }
 
             //Ordered
@@ -215,9 +231,7 @@ public class PreviewNode extends AbstractNode implements PropertyChangeListener 
     }
 
     /**
-     * default method for PropertyChangeListener, it is necessary to fire
-     * property change to update propertyEditor, which will refresh at runtime
-     * if a property value has been passively updated.
+     * default method for PropertyChangeListener, it is necessary to fire property change to update propertyEditor, which will refresh at runtime if a property value has been passively updated.
      *
      * @param pce a PropertyChangeEvent from a PreviewProperty object.
      */

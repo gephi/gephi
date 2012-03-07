@@ -108,6 +108,28 @@ public interface PreviewModel {
      * @return the item or <code>null</code> if not found
      */
     public Item getItem(String type, Object source);
+    
+    /**
+     * <p>Returns currently managed renderers, or null.</p>
+     * <p>If <code>managedRenderers</code> is set to null, all renderers will be executed when rendering, in default implementation order.</p>
+     * @return Enabled renderers or null
+     */
+    public ManagedRenderer[] getManagedRenderers();
+
+    /**
+     * <p>Sets an user-defined array of managed renderers to use when rendering.</p>
+     * <p><b>Only</b> the renderers marked as enabled will be executed when rendering, and <b>respecting the array order</b></p>
+     * <p>If the input array does not contain a managed renderer for some renderer existing implementation, a new enabled managed renderer will be added to the end of the input array</p>
+     * <p>If <code>managedRenderers</code> is set to null, all renderers will be executed when rendering, in default implementation order.</p>
+     * @param managedRenderers Managed renderers for future renderings
+     */
+    public void setManagedRenderers(ManagedRenderer[] managedRenderers);
+    
+    /**
+     * Returns <code>managedRenderers</code> Renderers that are enabled, or null if <code>managedRenderers</code> is null.
+     * @return Enabled renderers or null
+     */
+    public Renderer[] getManagedEnabledRenderers();
 
     /**
      * Returns the width and height of the graph in the graph coordinates.
