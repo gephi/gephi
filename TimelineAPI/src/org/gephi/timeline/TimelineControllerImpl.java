@@ -283,7 +283,7 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
         if (model != null) {
             if (!(model.getChart() == null && column == null)
                     || (model.getChart() != null && !model.getChart().getColumn().equals(column))) {
-                if (!attributeModel.getGraphTable().hasColumn(column.getId())) {
+                if(column != null && !attributeModel.getGraphTable().hasColumn(column.getId())) {
                     throw new IllegalArgumentException("Not a graph column");
                 }
                 Thread thread = new Thread(new Runnable() {
