@@ -97,7 +97,12 @@ public class Installer extends ModuleInstall {
         }
 
         //Check for new major release:
-        checkForNewMajorRelease();
+        WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+
+            public void run() {
+                checkForNewMajorRelease();
+            }
+        });
     }
 
     private void initGephi() {
