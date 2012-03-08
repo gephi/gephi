@@ -74,7 +74,7 @@ public class NodePencil implements Tool {
 
     public NodePencil() {
         //Default settings
-        color = Color.BLACK;
+        color = new Color(153, 153, 153);//Default gray of nodes
         size = 10f;
     }
 
