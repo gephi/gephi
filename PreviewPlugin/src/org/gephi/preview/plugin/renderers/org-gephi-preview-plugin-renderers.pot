@@ -15,6 +15,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "NodeRenderer.name"
+msgstr "Default nodes"
+
 msgid "NodeRenderer.property.borderWidth.displayName"
 msgstr "Border Width"
 
@@ -23,6 +26,9 @@ msgstr "Border Color"
 
 msgid "NodeRenderer.property.opacity.displayName"
 msgstr "opacity"
+
+msgid "EdgeRenderer.name"
+msgstr "Default edges"
 
 msgid "EdgeRenderer.property.display.displayName"
 msgstr "Show Edges"
@@ -44,6 +50,9 @@ msgstr "Opacity"
 
 msgid "EdgeRenderer.property.radius.displayName"
 msgstr "Radius"
+
+msgid "NodeLabelRenderer.name"
+msgstr "Default node labels"
 
 msgid "NodeLabelRenderer.property.display.displayName"
 msgstr "Show Labels"
@@ -81,6 +90,9 @@ msgstr "Box color"
 msgid "NodeLabelRenderer.property.box.opacity.displayName"
 msgstr "Box opacity"
 
+msgid "EdgeLabelRenderer.name"
+msgstr "Default edge labels"
+
 msgid "EdgeLabelRenderer.property.display.displayName"
 msgstr "Show Labels"
 
@@ -104,6 +116,9 @@ msgstr "Outline color"
 
 msgid "EdgeLabelRenderer.property.outlineOpacity.displayName"
 msgstr "Outline opacity"
+
+msgid "ArrowRenderer.name"
+msgstr "Default edge arrows"
 
 msgid "ArrowRenderer.property.size.displayName"
 msgstr "Size"

@@ -83,6 +83,9 @@ msgstr "Minimum"
 msgid "PreviewSettingsTopComponent.propertySheetTab"
 msgstr "Settings"
 
+msgid "PreviewSettingsTopComponent.rendererManagerTab"
+msgstr "Manage renderers"
+
 msgid "PreviewTopComponent.backgroundButton.text"
 msgstr "Background"
 
@@ -103,3 +106,22 @@ msgstr "More zoom"
 
 msgid "PreviewTopComponent.minusButton.toolTipText"
 msgstr "Less zoom"
+
+msgid "RendererManager.selectAllButton.text"
+msgstr "Select All"
+
+msgid "RendererManager.unselectAllButon.text"
+msgstr "Unselect All"
+
+msgid "RendererManager.restoreOrderButton.text"
+msgstr "Restore renderers order"
+
+msgid "RendererManager.description1"
+msgstr ""
+"Allows you to enable/disable preview renderers and configure their order of "
+"execution."
+
+msgid "RendererManager.description2"
+msgstr ""
+"Normally you should not need to do this unless your list of plugin renderers "
+"is very long."
