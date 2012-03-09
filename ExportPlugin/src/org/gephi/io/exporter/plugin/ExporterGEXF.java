@@ -494,9 +494,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
             xmlWriter.writeStartElement(VIZ, NODE_POSITION, VIZ_NAMESPACE);
             xmlWriter.writeAttribute("x", "" + x);
             xmlWriter.writeAttribute("y", "" + y);
-            if (z != 0) {
-                xmlWriter.writeAttribute("z", "" + z);
-            }
+            xmlWriter.writeAttribute("z", "" + z);
             xmlWriter.writeEndElement();
         }
     }
