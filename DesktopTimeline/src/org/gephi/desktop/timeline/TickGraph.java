@@ -170,7 +170,7 @@ public class TickGraph {
                     if (bigFont != null) {
                         String label = dateTick.getTickValue(TOP_TICK, interval.getStart());
                         int xLabel = x + 4;
-                        g.setColor(parameters.getDateColor(1));
+                        g.setColor(parameters.getDateColor(TOP_TICK));
                         int y = (int) (fontSize * 4);
 
                         g.drawString(label, xLabel, y);
@@ -179,7 +179,7 @@ public class TickGraph {
 
                     if (bigFont != null) {
                         String label = dateTick.getTickValue(TOP_TICK, interval.getStart());
-                        g.setColor(parameters.getDateColor(1));
+                        g.setColor(parameters.getDateColor(TOP_TICK));
                         int y = (int) (fontSize * 4);
 
                         g.drawString(label, 4, y);

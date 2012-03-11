@@ -15,7 +15,7 @@
         <folder name="Window">
             <file name="org-gephi-desktop-timeline-TimelineWindowAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-timeline-TimelineWindowAction.instance"/>
-                <attr name="position" intvalue="1200"/>
+                <attr name="position" intvalue="1250"/>
             </file>
         </folder>
     </folder>

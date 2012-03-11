@@ -342,8 +342,8 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         timelinePanel = new org.gephi.desktop.timeline.TimelineDrawer();
         closeButton = new CloseButton();
 
-        setMaximumSize(new java.awt.Dimension(32767, 58));
-        setMinimumSize(new java.awt.Dimension(414, 58));
+        setMaximumSize(new java.awt.Dimension(32767, 68));
+        setMinimumSize(new java.awt.Dimension(414, 68));
         setPreferredSize(new java.awt.Dimension(424, 68));
         setLayout(new java.awt.GridBagLayout());
 
@@ -357,6 +357,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
         enableTimelineButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/activate.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(enableTimelineButton, NbBundle.getMessage (TimelineTopComponent.class, "TimelineTopComponent.enableTimelineButton.text")); // NOI18N
+        enableTimelineButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.enableTimelineButton.toolTipText")); // NOI18N
         enableTimelineButton.setFocusable(false);
         enableTimelineButton.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         enableTimelineButton.setMargin(new java.awt.Insets(4, 6, 4, 6));
@@ -404,6 +405,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         innerToolbar.setOpaque(false);
 
         disableButon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/cross.png"))); // NOI18N
+        disableButon.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.disableButon.toolTipText")); // NOI18N
         disableButon.setFocusable(false);
         disableButon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         disableButon.setIconTextGap(0);
