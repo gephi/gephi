@@ -245,6 +245,10 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
                 model.setEnabled(enabled);
                 fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.ENABLED, model, enabled));
             }
+            if(!enabled) {
+                //Disable filtering
+                dynamicController.setVisibleInterval(new TimeInterval());
+            }
         }
     }
 
