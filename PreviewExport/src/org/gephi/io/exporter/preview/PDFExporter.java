@@ -139,6 +139,7 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
         Progress.finish(progress);
 
         props.putValue(PDFTarget.PDF_CONTENT_BYTE, null);
+        props.putValue(PDFTarget.PAGESIZE, null);
 
         return !cancel;
     }
