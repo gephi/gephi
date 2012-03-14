@@ -95,4 +95,16 @@ public interface TimelineChart {
      * @return the max Y value
      */
     public Number getMaxY();
+    
+    /**
+     * Returns the min X value .This is the minimum interval in the chart.
+     * @return the min X value
+     */
+    public Number getMinX();
+
+    /**
+     * Returns the max X value. This is the maximum interval in the chart.
+     * @return the max X value
+     */
+    public Number getMaxX();
 }

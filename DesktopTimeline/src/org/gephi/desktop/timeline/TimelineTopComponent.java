@@ -141,7 +141,11 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
                 //Add columns
                 AttributeColumn selectedColumn = model.getChart() != null ? model.getChart().getColumn() : null;
-                for (final AttributeColumn col : controller.getDynamicGraphColumns()) {
+
+                //Dynamic columns
+                AttributeColumn[] columns = controller.getDynamicGraphColumns();
+
+                for (final AttributeColumn col : columns) {
                     boolean selected = col == selectedColumn;
                     JRadioButtonMenuItem item = new JRadioButtonMenuItem(col.getTitle(), selected);
                     item.addActionListener(new ActionListener() {
@@ -154,7 +158,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 }
 
                 //No columns message
-                if (menu.getSubElements().length == 0) {
+                if (columns.length == 0) {
                     menu.add("<html><i>" + NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.charts.empty") + "</i></html>");
                 }
 
@@ -162,14 +166,21 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 menu.add(new JSeparator());
 
                 //Disable
-                JMenuItem disableItem = new JMenuItem(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.charts.disable"));
-                disableItem.addActionListener(new ActionListener() {
+                if (columns.length > 0) {
+                    JMenuItem disableItem = new JMenuItem(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.charts.disable"));
+                    disableItem.addActionListener(new ActionListener() {
 
-                    public void actionPerformed(ActionEvent e) {
-                        controller.selectColumn(null);
+                        public void actionPerformed(ActionEvent e) {
+                            controller.selectColumn(null);
+                        }
+                    });
+
+                    menu.add(disableItem);
+                    if(selectedColumn == null) {
+                        disableItem.setEnabled(false);
                     }
-                });
-                menu.add(disableItem);
+                }
+
                 menu.show(columnsButton, 0, -menu.getPreferredSize().height);
             }
         });
@@ -313,7 +324,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 if (visible != TimelineTopComponent.this.isVisible()) {
                     TimelineTopComponent.this.setVisible(visible);
                 }
-            } 
+            }
         });
     }
 
