@@ -264,7 +264,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 String intervalHigh = formatTime(visibleInterval.getHigh());
                 xmlWriter.writeAttribute(GRAPH_END, intervalHigh);
             }
-            String timeFormat = dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE) ? "date" : "double";
+            String timeFormat = dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE) ? "date" : 
+                    dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATETIME) ? "datetime" : "double";
             xmlWriter.writeAttribute(GRAPH_TIMEFORMAT, timeFormat);
         }
         xmlWriter.writeAttribute(GRAPH_MODE, exportDynamic ? "dynamic" : "static");
