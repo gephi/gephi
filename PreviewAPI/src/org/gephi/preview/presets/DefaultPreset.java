@@ -74,7 +74,7 @@ public class DefaultPreset extends PreviewPreset {
         properties.put(PreviewProperty.EDGE_LABEL_MAX_CHAR, 30);
         properties.put(PreviewProperty.EDGE_LABEL_OUTLINE_COLOR, new DependantColor(Color.WHITE));
         properties.put(PreviewProperty.EDGE_LABEL_OUTLINE_OPACITY, 80f);
-        properties.put(PreviewProperty.EDGE_LABEL_OUTLINE_SIZE, 0);
+        properties.put(PreviewProperty.EDGE_LABEL_OUTLINE_SIZE, 0f);
         properties.put(PreviewProperty.EDGE_LABEL_SHORTEN, false);
 
         properties.put(PreviewProperty.NODE_BORDER_COLOR, new DependantColor(Color.BLACK));
@@ -88,7 +88,7 @@ public class DefaultPreset extends PreviewPreset {
         properties.put(PreviewProperty.NODE_LABEL_MAX_CHAR, 30);
         properties.put(PreviewProperty.NODE_LABEL_OUTLINE_COLOR, new DependantColor(Color.WHITE));
         properties.put(PreviewProperty.NODE_LABEL_OUTLINE_OPACITY, 80f);
-        properties.put(PreviewProperty.NODE_LABEL_OUTLINE_SIZE, 0);
+        properties.put(PreviewProperty.NODE_LABEL_OUTLINE_SIZE, 0f);
         properties.put(PreviewProperty.NODE_LABEL_PROPORTIONAL_SIZE, true);
         properties.put(PreviewProperty.NODE_LABEL_SHORTEN, false);
         properties.put(PreviewProperty.NODE_LABEL_SHOW_BOX, false);
