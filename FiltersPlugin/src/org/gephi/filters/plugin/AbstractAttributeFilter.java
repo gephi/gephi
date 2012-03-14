@@ -18,10 +18,10 @@ public abstract class AbstractAttributeFilter extends AbstractFilter implements 
     protected AbstractAttributeFilter.Type type;
 
     public AbstractAttributeFilter(String name, AttributeColumn column) {
-        super(name);
+        super(name + " (" + column.getTitle() + ")");
         this.column = column;
         this.type = AttributeUtils.getDefault().isNodeColumn(column) ? Type.NODE : Type.EDGE;
-        
+
         //Add column property
         addProperty(AttributeColumn.class, "column");
     }
