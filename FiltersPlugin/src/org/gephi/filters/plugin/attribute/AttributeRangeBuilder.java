@@ -120,7 +120,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
 
         public AttributeRangeFilter(AttributeColumn column) {
-            super(column.getTitle() + " " + NbBundle.getMessage(AttributeRangeBuilder.class, "AttributeRangeBuilder.name"),
+            super(NbBundle.getMessage(AttributeRangeBuilder.class, "AttributeRangeBuilder.name"),
                     column);
 
             //Add property
@@ -154,7 +154,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
 
         public void finish() {
         }
-        
+
         public Number[] getValues(Graph graph) {
             List<Number> vals = new ArrayList<Number>();
             if (AttributeUtils.getDefault().isNodeColumn(column)) {
@@ -162,15 +162,15 @@ public class AttributeRangeBuilder implements CategoryBuilder {
                     Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
                     val = dynamicHelper.getDynamicValue(val);
                     if (val != null) {
-                        vals.add((Number)val);
+                        vals.add((Number) val);
                     }
                 }
             } else {
-                for (Edge e : ((HierarchicalGraph)graph).getEdgesAndMetaEdges()) {
+                for (Edge e : ((HierarchicalGraph) graph).getEdgesAndMetaEdges()) {
                     Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
                     val = dynamicHelper.getDynamicValue(val);
                     if (val != null) {
-                        vals.add((Number)val);
+                        vals.add((Number) val);
                     }
                 }
             }
@@ -186,12 +186,7 @@ public class AttributeRangeBuilder implements CategoryBuilder {
         }
 
         public void setRange(Range range) {
-            if (range.getMinimum() == null && range.getMaximum() == null && this.range != null) {
-                //Opening project
-                this.range = new Range(range.getLowerBound(), range.getUpperBound(), this.range.getMinimum(), this.range.getMaximum());
-            } else {
-                this.range = range;
-            }
+            this.range = range;
         }
     }
 }

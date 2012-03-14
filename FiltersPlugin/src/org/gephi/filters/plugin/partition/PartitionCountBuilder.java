@@ -129,6 +129,9 @@ public class PartitionCountBuilder implements CategoryBuilder {
             super(NbBundle.getMessage(PartitionCountBuilder.class, "PartitionCountBuilder.name"),
                     partition.getColumn());
             this.partition = partition;
+            
+            //Add property
+            addProperty(Range.class, "range");
         }
 
         public boolean init(Graph graph) {

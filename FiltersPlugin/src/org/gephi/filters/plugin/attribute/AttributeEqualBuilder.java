@@ -52,10 +52,7 @@ import org.gephi.filters.api.Range;
 import org.gephi.filters.plugin.AbstractAttributeFilter;
 import org.gephi.filters.plugin.AbstractAttributeFilterBuilder;
 import org.gephi.filters.plugin.DynamicAttributesHelper;
-import org.gephi.filters.spi.Category;
-import org.gephi.filters.spi.CategoryBuilder;
-import org.gephi.filters.spi.Filter;
-import org.gephi.filters.spi.FilterBuilder;
+import org.gephi.filters.spi.*;
 import org.gephi.graph.api.*;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -200,22 +197,18 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         }
     }
 
-    public static class EqualNumberFilter extends AbstractAttributeFilter {
+    public static class EqualNumberFilter extends AbstractAttributeFilter implements RangeFilter {
 
         private Number match;
-        private Number min;
-        private Number max;
-        //State
-        private Comparable[] values;
+        private Range range;
         private DynamicAttributesHelper dynamicHelper = new DynamicAttributesHelper(this, null);
 
         public EqualNumberFilter(AttributeColumn column) {
             super(NbBundle.getMessage(AttributeEqualBuilder.class, "AttributeEqualBuilder.name"), column);
 
-            this.dynamicHelper = new DynamicAttributesHelper(this, null);
-
             //App property
-            addProperty(Number.class, "match");;
+            addProperty(Number.class, "match");
+            addProperty(Range.class, "range");
         }
 
         public boolean init(Graph graph) {
@@ -230,7 +223,6 @@ public class AttributeEqualBuilder implements CategoryBuilder {
                 }
             }
             dynamicHelper = new DynamicAttributesHelper(this, hg);
-            refreshValues(hg);
             return true;
         }
 
@@ -246,39 +238,43 @@ public class AttributeEqualBuilder implements CategoryBuilder {
         public void finish() {
         }
 
-        public void refreshValues(HierarchicalGraph graph) {
-            List<Object> vals = new ArrayList<Object>();
+        public Number[] getValues(Graph graph) {
+            List<Number> vals = new ArrayList<Number>();
             if (AttributeUtils.getDefault().isNodeColumn(column)) {
                 for (Node n : graph.getNodes()) {
                     Object val = n.getNodeData().getAttributes().getValue(column.getIndex());
                     val = dynamicHelper.getDynamicValue(val);
                     if (val != null) {
-                        vals.add(val);
+                        vals.add((Number) val);
                     }
                 }
             } else {
-                for (Edge e : graph.getEdgesAndMetaEdges()) {
+                for (Edge e : ((HierarchicalGraph) graph).getEdgesAndMetaEdges()) {
                     Object val = e.getEdgeData().getAttributes().getValue(column.getIndex());
                     val = dynamicHelper.getDynamicValue(val);
                     if (val != null) {
-                        vals.add(val);
+                        vals.add((Number) val);
                     }
                 }
             }
+            return vals.toArray(new Number[0]);
+        }
 
-            if (vals.isEmpty()) {
-                vals.add(0);
+        public FilterProperty getRangeProperty() {
+            return getProperties()[2];
+        }
+
+        public Range getRange() {
+            return range;
+        }
+
+        public void setRange(Range range) {
+            this.range = range;
+            if(match == null) {
+                match = range.getMinimum();
+            } else {
+                match = Range.trimToBounds(range.getMinimum(), range.getMaximum(), match);
             }
-
-            values = ComparableArrayConverter.convert(vals);
-
-            min = (Number) AttributeUtils.getDefault().getMin(column, values /*
-                     * valuesArray
-                     */);
-            max = (Number) AttributeUtils.getDefault().getMax(column, values /*
-                     * valuesArray
-                     */);
-            match = Range.trimToBounds(min, max, match);
         }
 
         public Number getMatch() {
@@ -287,14 +283,6 @@ public class AttributeEqualBuilder implements CategoryBuilder {
 
         public void setMatch(Number match) {
             this.match = match;
-        }
-
-        public Object getMinimun() {
-            return min;
-        }
-
-        public Object getMaximum() {
-            return max;
         }
     }
 

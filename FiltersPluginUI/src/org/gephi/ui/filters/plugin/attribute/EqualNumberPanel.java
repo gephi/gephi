@@ -79,8 +79,8 @@ public class EqualNumberPanel extends javax.swing.JPanel implements ChangeListen
                 setToolTipText(filter.getName() + " '" + filter.getColumn().getTitle() + "'");
                 Number match = filter.getMatch();
                 Number stepSize = null;
-                final Comparable min = (Comparable) filter.getMinimun();
-                final Comparable max = (Comparable) filter.getMaximum();
+                final Comparable min = (Comparable) filter.getRange().getMinimum();
+                final Comparable max = (Comparable) filter.getRange().getMaximum();
                 switch (filter.getColumn().getType()) {
                     case DOUBLE:
                         match = (match != null ? match : new Double((Double) min));

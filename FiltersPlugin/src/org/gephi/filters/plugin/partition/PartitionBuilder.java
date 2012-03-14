@@ -185,7 +185,7 @@ public class PartitionBuilder implements CategoryBuilder {
         }
 
         public String getName() {
-            return NbBundle.getMessage(PartitionBuilder.class, "PartitionBuilder.name") + "( " + partition.getColumn().getTitle() + ")";
+            return NbBundle.getMessage(PartitionBuilder.class, "PartitionBuilder.name") + " (" + partition.getColumn().getTitle() + ")";
         }
 
         public boolean init(Graph graph) {
