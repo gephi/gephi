@@ -283,6 +283,10 @@ public class FilterProcessor {
                 if (previousRange == null) {
                     newRange = new Range(min, max, min, max, values);
                     rangeFilter.getRangeProperty().setValue(newRange);
+                } else if(previousRange != null && (previousRange.getMinimum() == null || previousRange.getMaximum() == null)) {
+                    //Opening projects
+                    newRange = new Range(previousRange.getLowerBound(), previousRange.getUpperBound(), min, max, values);
+                    rangeFilter.getRangeProperty().setValue(newRange);
                 } else {
                     //Collect some info
                     boolean stickyLeft = previousRange.getMinimum().equals(previousRange.getLowerBound());
