@@ -296,6 +296,7 @@
             <service type="org.gephi.project.spi.WorkspaceDuplicateProvider">
                 <provider classname="org.gephi.data.attributes.AttributeModelDuplicateProvider"/>
                 <provider classname="org.gephi.graph.dhns.DhnsDuplicateProvider"/>
+                <provider classname="org.gephi.dynamic.DynamicModelDuplicateProvider"/>
             </service>
                 
             <!-- These are services from core.startup modules. We disable them because they deal with the startup only -->
