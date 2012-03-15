@@ -196,11 +196,14 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
             model.setPreviousMin(min);
             model.setPreviousMax(max);
 
-            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MIN_MAX, model, new double[]{min, max}));
+            if (model.hasValidBounds()) {
+                fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MIN_MAX, model, new double[]{min, max}));
 
-            if (model.getCustomMax() != max || model.getCustomMin() != min) {
-                fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, model, new double[]{min, max}));
+                if (model.getCustomMax() != max || model.getCustomMin() != min) {
+                    fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.CUSTOM_BOUNDS, model, new double[]{min, max}));
+                }
             }
+
             if ((Double.isInfinite(previousBoundsMax) || Double.isInfinite(previousBoundsMin)) && model.hasValidBounds()) {
                 fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.VALID_BOUNDS, model, true));
             } else if (!Double.isInfinite(previousBoundsMax) && !Double.isInfinite(previousBoundsMin) && !model.hasValidBounds()) {
@@ -300,13 +303,16 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
                             DynamicType type = (DynamicType) graph.getAttributes().getValue(column.getIndex());
                             if (type != null) {
                                 List<Interval> intervals = type.getIntervals(model.getCustomMin(), model.getCustomMax());
-                                Number[] xs = new Number[intervals.size()];
-                                Number[] ys = new Number[intervals.size()];
+                                Number[] xs = new Number[intervals.size() * 2];
+                                Number[] ys = new Number[intervals.size() * 2];
                                 int i = 0;
                                 for (Interval interval : intervals) {
                                     Number x = (Double) interval.getLow();
                                     Number y = (Number) interval.getValue();
                                     xs[i] = x;
+                                    ys[i] = y;
+                                    i++;
+                                    xs[i] = (Double) interval.getHigh();
                                     ys[i] = y;
                                     i++;
                                 }
