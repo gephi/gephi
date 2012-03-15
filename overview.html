@@ -13,6 +13,17 @@
         <hr/>
         <h2>API Changes</h2>
         <ul>
+            <li>(March 04 2012) Add a local scale flag in Ranking API. The value can be set from the<code>RankingController</code>.</li>
+            <li>(March 01 2012) Add <code>RangeFilter</code> interface in Filters API to help create range filters. The filter system now automatically
+                manage the range values and bounds. The <code>Range</code> object now also supports exclusive intervals.</li>
+            <li>(February 29 2012) Add a new <code>AttributableFilter</code> filter type. This is useful for filters manipulating <code>Attributable</code>
+                objects regardless whether they belong to a node or edge. Also note new useful abstract plugin implementations have been added to
+                the <code>FiltersPlugin</code> module. Use <code>AbstractFilter</code> for any filter and <code>AbstractAttributeFilter</code> for 
+                filters based on attributes. Filter builders are also provided.</li>
+            <li>(February 26 2012) Update to Netbeans Platform 7.1 and it's new perspective system. The <code>PerspectiveMember</code> SPI has to go
+                away and will break compatibility. Top components now directly declare the perspective they belong to in the 
+                <code>@TopComponent.Registration</code> annotation, for instance <code>roles = {"overview"}</code> for the Overview perspective.</li>
+            <li>(February 08 2012) Add a <code>REPLACE_COLUMN</code> event type in <code>AttributeEvent</code>.
             <li>(January 18 2012) New Timeline API exposed as a stable API. Th API controls the Timeline UI component and the animation framework.</li>
             <li>(January 15 2012) Add a new <code>TIME_FORMAT</code> event in <code>DynamicModelEvent</code>. The event is triggered when the time format
                 is initialized.</li>
