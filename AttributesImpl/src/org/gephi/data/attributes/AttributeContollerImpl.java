@@ -57,11 +57,11 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = AttributeController.class)
-public class AttributeContollerImpl implements AttributeController {
+public class AttributeControllerImpl implements AttributeController {
 
     private ProjectController projectController;
 
-    public AttributeContollerImpl() {
+    public AttributeControllerImpl() {
         projectController = Lookup.getDefault().lookup(ProjectController.class);
         projectController.addWorkspaceListener(new WorkspaceListener() {
 
