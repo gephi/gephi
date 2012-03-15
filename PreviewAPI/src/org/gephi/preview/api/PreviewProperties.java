@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -80,7 +81,7 @@ public class PreviewProperties {
     private final Map<String, PreviewProperty> properties;
 
     public PreviewProperties() {
-        properties = new HashMap<String, PreviewProperty>();
+        properties = new LinkedHashMap<String, PreviewProperty>();//Use LinkedHashMap to retrieve properties in insertion order
         simpleValues = new HashMap<String, Object>();
     }
 
@@ -279,6 +280,7 @@ public class PreviewProperties {
      */
     public PreviewProperty[] getProperties() {
         PreviewProperty[] props = properties.values().toArray(new PreviewProperty[0]);
+        //Reorder to put parents on top:
         Arrays.sort(props, new Comparator<PreviewProperty>() {
 
             @Override
@@ -290,7 +292,7 @@ public class PreviewProperties {
                 } else if (!hasParent1 && hasParent2) {
                     return -1;
                 } else {
-                    return o1.displayName.compareTo(o2.displayName);
+                    return 0;//Stable sort will not change original insertion order if no parents.
                 }
             }
         });
