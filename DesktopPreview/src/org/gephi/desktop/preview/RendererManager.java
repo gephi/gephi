@@ -41,6 +41,7 @@
  */
 package org.gephi.desktop.preview;
 
+import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,6 +55,8 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JToolBar;
+import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 import org.gephi.desktop.preview.api.PreviewUIController;
 import org.gephi.preview.api.ManagedRenderer;
@@ -61,6 +64,7 @@ import org.gephi.preview.api.PreviewController;
 import org.gephi.preview.api.PreviewModel;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.ui.components.richtooltip.RichTooltip;
+import org.gephi.ui.utils.UIUtils;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -71,7 +75,7 @@ import org.openide.util.NbBundle;
  * @author Eduardo Ramos<eduramiba@gmail.com>
  */
 public class RendererManager extends javax.swing.JPanel implements PropertyChangeListener {
-
+    
     private ArrayList<RendererCheckBox> renderersList = new ArrayList<RendererCheckBox>();
     private PreviewController previewController;
 
@@ -81,38 +85,45 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
     public RendererManager() {
         initComponents();
         buildTooltip();
-
+        
+        if (UIUtils.isAquaLookAndFeel()) {
+            panel.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
+        if (UIUtils.isAquaLookAndFeel()) {
+            toolBar.setBackground(UIManager.getColor("NbExplorerView.background"));
+        }
+        
         previewController = Lookup.getDefault().lookup(PreviewController.class);
         Lookup.getDefault().lookup(PreviewUIController.class).addPropertyChangeListener(this);
-        panel.setLayout(new MigLayout("", "[pref!]"));
+        panel.setLayout(new MigLayout("insets 3", "[pref!]"));
         setup();
     }
-
+    
     private void buildTooltip() {
         final RichTooltip richTooltip = new RichTooltip();
         richTooltip.setTitle(NbBundle.getMessage(RendererManager.class, "PreviewSettingsTopComponent.rendererManagerTab"));
         richTooltip.addDescriptionSection(NbBundle.getMessage(RendererManager.class, "RendererManager.description1"));
         richTooltip.addDescriptionSection(NbBundle.getMessage(RendererManager.class, "RendererManager.description2"));
         infoLabel.addMouseListener(new MouseAdapter() {
-
+            
             @Override
             public void mouseEntered(MouseEvent e) {
                 richTooltip.showTooltip(RendererManager.this, e.getLocationOnScreen());
             }
-
+            
             @Override
             public void mouseExited(MouseEvent e) {
                 richTooltip.hideTooltip();
             }
         });
     }
-
+    
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(PreviewUIController.SELECT) || evt.getPropertyName().equals(PreviewUIController.UNSELECT)) {
             setup();
         }
     }
-
+    
     private void setup() {
         PreviewModel model = previewController.getModel();
         setControlsEnabled(model != null);
@@ -120,7 +131,8 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
     }
 
     /**
-     * Restores the original order of the renderers list, preserving their enabled state.
+     * Restores the original order of the renderers list, preserving their
+     * enabled state.
      */
     private void restoreRenderersList() {
         PreviewModel model = previewController.getModel();
@@ -135,14 +147,20 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         }
         updateModelManagedRenderers();
     }
-
+    
     private void refresh() {
         panel.removeAll();
         loadModelManagedRenderers();
         for (int i = 0; i < renderersList.size(); i++) {
-            panel.add(new MoveRendererButton(i, true));
-            panel.add(new MoveRendererButton(i, false));
-            panel.add(renderersList.get(i), "wrap");
+            JToolBar bar = new JToolBar();
+            bar.setFloatable(false);
+            if (UIUtils.isAquaLookAndFeel()) {
+                bar.setBackground(UIManager.getColor("NbExplorerView.background"));
+            }
+            bar.add(new MoveRendererButton(i, true));
+            bar.add(new MoveRendererButton(i, false));
+            bar.add(renderersList.get(i));
+            panel.add(bar, "wrap");
         }
         panel.updateUI();
     }
@@ -177,50 +195,51 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             model.setManagedRenderers(managedRenderers.toArray(new ManagedRenderer[0]));
         }
     }
-
+    
     private void setAllSelected(boolean selected) {
         for (RendererCheckBox rendererWrapper : renderersList) {
             rendererWrapper.setSelected(selected);
         }
         updateModelManagedRenderers();
     }
-
+    
     private void setControlsEnabled(boolean enabled) {
         selectAllButton.setEnabled(enabled);
         unselectAllButon.setEnabled(enabled);
         restoreOrderButton.setEnabled(enabled);
     }
-
+    
     class RendererCheckBox extends JCheckBox implements ActionListener {
-
+        
         private Renderer renderer;
-
+        
         public RendererCheckBox(Renderer renderer, boolean selected) {
             this.renderer = renderer;
             setSelected(selected);
             prepareName();
             addActionListener(this);
         }
-
+        
         private void prepareName() {
             if (renderer instanceof Renderer.NamedRenderer) {
-                setText("<html><font color=blue>" + ((Renderer.NamedRenderer) renderer).getName() + "</font> - " + renderer.getClass().getName() + "</html>");
+                setText(((Renderer.NamedRenderer) renderer).getName());
+                setToolTipText(renderer.getClass().getName());
             } else {
                 setText(renderer.getClass().getName());
             }
         }
-
+        
         public Renderer getRenderer() {
             return renderer;
         }
-
+        
         public void actionPerformed(ActionEvent e) {
             updateModelManagedRenderers();
         }
     }
-
+    
     class MoveRendererButton extends JButton implements ActionListener {
-
+        
         private int index;//Original index in renderers list
         private boolean up;//Move up or move down
 
@@ -229,7 +248,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             setMargin(new Insets(1, 1, 1, 1));//Small margin for icon-only buttons
             this.index = index;
             this.up = up;
-
+            
             if (up) {
                 setEnabled(index > 0);
             } else {
@@ -237,7 +256,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             }
             addActionListener(this);
         }
-
+        
         public void actionPerformed(ActionEvent e) {
             int newIndex = up ? index - 1 : index + 1;
             RendererCheckBox oldItem = renderersList.get(newIndex);
@@ -252,11 +271,14 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
     }
 
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         toolBar = new javax.swing.JToolBar();
         restoreOrderButton = new javax.swing.JButton();
@@ -268,6 +290,8 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         fill = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
         scroll = new javax.swing.JScrollPane();
         panel = new javax.swing.JPanel();
+
+        setLayout(new java.awt.GridBagLayout());
 
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
@@ -312,6 +336,15 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         toolBar.add(infoLabel);
         toolBar.add(fill);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        add(toolBar, gridBagConstraints);
+
+        scroll.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
         javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
         panel.setLayout(panelLayout);
         panelLayout.setHorizontalGroup(
@@ -320,35 +353,28 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
         );
         panelLayout.setVerticalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 267, Short.MAX_VALUE)
+            .addGap(0, 274, Short.MAX_VALUE)
         );
 
         scroll.setViewportView(panel);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(scroll)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scroll))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(scroll, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void selectAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAllButtonActionPerformed
         setAllSelected(true);
     }//GEN-LAST:event_selectAllButtonActionPerformed
-
+    
     private void unselectAllButonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unselectAllButonActionPerformed
         setAllSelected(false);
     }//GEN-LAST:event_unselectAllButonActionPerformed
-
+    
     private void restoreOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restoreOrderButtonActionPerformed
         restoreRenderersList();
         refresh();
