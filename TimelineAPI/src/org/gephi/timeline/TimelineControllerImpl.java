@@ -175,8 +175,11 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
 
     private boolean setMinMax(double min, double max) {
         if (model != null) {
-            if (min >= max) {
+            if (min > max) {
                 throw new IllegalArgumentException("min should be less than max");
+            } else if(min == max) {
+                //Avoid setting values at this point
+                return false;
             }
             double previousBoundsMin = model.getCustomMin();
             double previousBoundsMax = model.getCustomMax();
