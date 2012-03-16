@@ -145,3 +145,9 @@ msgstr "Current position is"
 
 msgid "TimelineTooltip.chart"
 msgstr "Current value is "
+
+msgid "TimelineTopComponent.enableTimelineButton.toolTipText"
+msgstr "Enable timeline for time-based filtering"
+
+msgid "TimelineTopComponent.disableButon.toolTipText"
+msgstr "Disable the timeline"

@@ -4,15 +4,15 @@
 # 
 # Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
-#   <sebastien.heymann@gmail.com>, 2011.
+#   <sebastien.heymann@gmail.com>, 2011, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
-"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-10-02 07:08+0000\n"
+"PO-Revision-Date: 2012-03-08 15:19+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
-"Language-Team: French (http://www.transifex.net/projects/p/gephi/team/fr/)\n"
+"Language-Team: French (http://www.transifex.net/projects/p/gephi/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -56,39 +56,28 @@ msgid "importerGDF_error_dataformat1"
 msgstr "Le fichier doit commencer par la ligne \"nodedef> name\"."
 
 msgid "importerGDF_error_dataformat2"
-msgstr ""
-"Mauvais formatage de colonne. Chaque colonne doit contenir au moins un nom. "
-"Ces noms ne doivent contenir aucune virgule."
+msgstr "Mauvais formatage de colonne. Chaque colonne doit contenir au moins un nom. Ces noms ne doivent contenir aucune virgule."
 
 msgid "importerGDF_error_dataformat3"
-msgstr ""
-"Échec de l'import de la colonne ''{0}'' pour le noeud ''{1}'' . Erreur à la "
-"valeur ''{2}''."
+msgstr "Échec de l'import de la colonne ''{0}'' pour le noeud ''{1}'' . Erreur à la valeur ''{2}''."
 
 msgid "importerGDF_error_dataformat4"
-msgstr ""
-"Échec de l'affectation de l'attribut ''{1}'' de type ''{0}'' pour le noeud "
-"{2}."
+msgstr "Échec de l'affectation de l'attribut ''{1}'' de type ''{0}'' pour le noeud {2}."
 
 msgid "importerGDF_error_dataformat5"
 msgstr "Type de données ''{0}'' non reconnu, 'string' est utilisé à la place."
 
 msgid "importerGDF_error_dataformat6"
-msgstr ""
-"Type de colonne introuvable pour ''{0}'', 'string' est utilisé à la place."
+msgstr "Type de colonne introuvable pour ''{0}'', 'string' est utilisé à la place."
 
 msgid "importerGDF_error_dataformat7"
-msgstr ""
-"La ligne ''{0}'' a plus de colonnes que défini dans l'en-tête. Veuillez "
-"vérifier le nombre de virgules."
+msgstr "La ligne ''{0}'' a plus de colonnes que défini dans l'en-tête. Veuillez vérifier le nombre de virgules."
 
 msgid "importerGDF_error_dataformat8"
-msgstr ""
-"La colonne de noeuds ''{0}'' ne peut être ajoutée car elle existe déjà."
+msgstr "La colonne de noeuds ''{0}'' ne peut être ajoutée car elle existe déjà."
 
 msgid "importerGDF_error_dataformat9"
-msgstr ""
-"La colonne de liens ''{0}'' ne peut être ajoutée car elle existe déjà."
+msgstr "La colonne de liens ''{0}'' ne peut être ajoutée car elle existe déjà."
 
 msgid "importerTPL_error_dataformat1"
 msgstr "Mauvais formatage du lien à la ligne {0}."
@@ -106,49 +95,34 @@ msgid "importerNET_error_dataformat4"
 msgstr "Numéro de sommet ''{0}'' hors de la plage [1,{1}]."
 
 msgid "importerNET_error_dataformat5"
-msgstr ""
-"Problème lors de la conversion des coordonnées du sommet à la ligne {0}. Ils"
-" doivent être des nombres à virgule flottante."
+msgstr "Problème lors de la conversion des coordonnées du sommet à la ligne {0}. Ils doivent être des nombres à virgule flottante."
 
 msgid "importerNET_error_dataformat6"
-msgstr ""
-"Problème de conversion de taille de noeud à la ligne {0}. Elle doit être un "
-"nombre flottant."
+msgstr "Problème de conversion de taille de noeud à la ligne {0}. Elle doit être un nombre flottant."
 
 msgid "importerNET_error_dataformat7"
-msgstr ""
-"Erreur de parsing du poids du lien à la ligne {0}. Il doit être un nombre "
-"flottant."
+msgstr "Erreur de parsing du poids du lien à la ligne {0}. Il doit être un nombre flottant."
 
 msgid "importerGraphML_error_syntax1"
 msgstr "Erreur de syntaxe, le fichier doit commencer par la balise <graphml>."
 
 msgid "importerGraphML_error_syntax2"
-msgstr ""
-"Erreur de syntaxe, le noeud ''{0}'' doit être encapsulé dans une balise "
-"<graph>."
+msgstr "Erreur de syntaxe, le noeud ''{0}'' doit être encapsulé dans une balise <graph>."
 
 msgid "importerGraphML_error_attributeclass"
-msgstr ""
-"Classe d'attribut non trouvé ou inconnu pour l'attribut ''{0}''. L'attribut "
-"est ignoré."
+msgstr "Classe d'attribut non trouvé ou inconnu pour l'attribut ''{0}''. L'attribut est ignoré."
 
 msgid "importerGraphML_error_attributefor"
-msgstr ""
-"Attribut ''for'' manquant ou inconnu pour l'attribut ''{0}''. L'attribut est"
-" ignoré."
+msgstr "Attribut ''for'' manquant ou inconnu pour l'attribut ''{0}''. L'attribut est ignoré."
 
 msgid "importerGraphML_error_attributetype1"
-msgstr ""
-"Type manquant pour l'attribut ''{0}''. 'string' est utilisé par défaut."
+msgstr "Type manquant pour l'attribut ''{0}''. 'string' est utilisé par défaut."
 
 msgid "importerGraphML_error_attributetype2"
 msgstr "Type non reconnu pour l'attribut ''{0}''. L'attribut est ignoré."
 
 msgid "importerGraphML_error_attributedefault"
-msgstr ""
-"Valeur par défaut de l'attribut ''{0}'' non convertible vers le type "
-"''{1}''."
+msgstr "Valeur par défaut de l'attribut ''{0}'' non convertible vers le type ''{1}''."
 
 msgid "importerGraphML_error_attributecolumn_exist"
 msgstr "L'attribut d'id ''{0}' existant déjà, il est ignoré."
@@ -175,21 +149,16 @@ msgid "importerGraphML_error_datakey"
 msgstr "Clé de donnée manquante pour l'élément id={0}."
 
 msgid "importerGraphML_error_datavalue"
-msgstr ""
-"Erreur de typage pour la valeur {0} de l'élément id={1}. La valeur ne peut "
-"être affectée à l'attribut ''{2}''."
+msgstr "Erreur de typage pour la valeur {0} de l'élément id={1}. La valeur ne peut être affectée à l'attribut ''{2}''."
 
 msgid "importerGraphML_error_nodeid"
 msgstr "Identifiant de noeud manquant. Le noeud est ignoré."
 
 msgid "importerGraphML_error_defaultedgetype"
-msgstr ""
-"Type de lien par défaut ''{0}'' non reconnu. Mis à ''mixed'' par défaut."
+msgstr "Type de lien par défaut ''{0}'' non reconnu. Mis à ''mixed'' par défaut."
 
 msgid "importerGraphML_error_edgetype"
-msgstr ""
-"Le type ''{0}'' du lien ''{1}'' n'est pas reconnu. Il est mis à la valeur "
-"par défaut."
+msgstr "Le type ''{0}'' du lien ''{1}'' n'est pas reconnu. Il est mis à la valeur par défaut."
 
 msgid "importerGML_error_listtoken"
 msgstr "Type de chaîne inattendu ligne {0}."
@@ -210,29 +179,22 @@ msgid "importerTPL_error_badparsing"
 msgstr "Parsing TLP invalide."
 
 msgid "importerGEXF_error_attributeclass"
-msgstr ""
-"Attribut ''class'' manquant ou inconnu pour l'attribut ''{0}''. L'attribut "
-"est ignoré."
+msgstr "Attribut ''class'' manquant ou inconnu pour l'attribut ''{0}''. L'attribut est ignoré."
 
 msgid "importerGEXF_error_attributeempty"
 msgstr "Erreur de parcours des attributs, id manquant."
 
 msgid "importerGEXF_error_attributedefault"
-msgstr ""
-"Valeur par défaut de l'attribut ''{0}'' non convertible vers le type "
-"''{1}''."
+msgstr "Valeur par défaut de l'attribut ''{0}'' non convertible vers le type ''{1}''."
 
 msgid "importerGEXF_error_attributeoptions"
-msgstr ""
-"Valeurs d'option de l'attribut ''{0}'' non convertibles vers le type "
-"''{1}''."
+msgstr "Valeurs d'option de l'attribut ''{0}'' non convertibles vers le type ''{1}''."
 
 msgid "importerGEXF_error_attributecolumn_exist"
 msgstr "Attribut d'id ''{0}'' déjà existant, il est ignoré."
 
 msgid "importerGEXF_error_attributetype1"
-msgstr ""
-"Type de l'attribut ''{0}'' introuvable. 'string' est utilisé par défaut."
+msgstr "Type de l'attribut ''{0}'' introuvable. 'string' est utilisé par défaut."
 
 msgid "importerGEXF_error_attributetype2"
 msgstr "Type de l'attribut ''{0}'' non reconnu. L'attribut est ignoré."
@@ -244,28 +206,19 @@ msgid "importerGEXF_error_datakey1"
 msgstr "Clé de donnée (attribut ''id'') manquant pour l'élément id={0}."
 
 msgid "importerGEXF_error_dataoptionsvalue"
-msgstr ""
-"La valeur de donnée ''{0}'' n'est pas une option pour l'élément id={1}. La "
-"valeur ne peut être affectée à l'attribut ''{2}''."
+msgstr "La valeur de donnée ''{0}'' n'est pas une option pour l'élément id={1}. La valeur ne peut être affectée à l'attribut ''{2}''."
 
 msgid "importerGEXF_error_datavalue"
-msgstr ""
-"Mauvais type de donnée pour la valeur ''{0}'' de l'élément id={1}. La valeur"
-" ne peut être affectée à l'attribut ''{2}''."
+msgstr "Mauvais type de donnée pour la valeur ''{0}'' de l'élément id={1}. La valeur ne peut être affectée à l'attribut ''{2}''."
 
 msgid "importerGEXF_error_defaultedgetype"
-msgstr ""
-"Type de liens par défaut ''{0}'' inconnu. Type ''undirected'' utilisé par "
-"défaut."
+msgstr "Type de liens par défaut ''{0}'' inconnu. Type ''undirected'' utilisé par défaut."
 
 msgid "importerGEXF_error_edgedouble"
-msgstr ""
-"Type de liens ''double'' actuellement non supporté. Type ''mixed'' utilisé "
-"par défaut."
+msgstr "Type de liens ''double'' actuellement non supporté. Type ''mixed'' utilisé par défaut."
 
 msgid "importerGEXF_error_edgetype"
-msgstr ""
-"Type ''{0}'' du lien ''{1}'' inconnu. Valeur par défaut utilisée à la place."
+msgstr "Type ''{0}'' du lien ''{1}'' inconnu. Valeur par défaut utilisée à la place."
 
 msgid "importerGEXF_error_edgeid"
 msgstr "Identifiant de lien manquant. Un id a été généré."
@@ -277,8 +230,7 @@ msgid "importerGEXF_error_edgetarget"
 msgstr "Destination du lien manquant. Le lien est ignoré."
 
 msgid "importerGEXF_error_edgeweight"
-msgstr ""
-"Le poids du lien ''{0}'' n'est pas de type float. Le poids est ignoré."
+msgstr "Le poids du lien ''{0}'' n'est pas de type float. Le poids est ignoré."
 
 msgid "importerGEXF_error_nodeid"
 msgstr "Identifiant du noeud ''{0}'' manquant. Le noeud est ignoré."
@@ -302,44 +254,28 @@ msgid "importerGEXF_error_parsingmode"
 msgstr "Mode de parsing ''{0}'' inconnu. Mode ''static'' utilisé pa défaut."
 
 msgid "importerGEXF_error_node_timeinterval_parseerror"
-msgstr ""
-"Intervalle de temps du noeud ''{0}'' non analysé. Utilisez le format Date ou"
-" Double."
+msgstr "Intervalle de temps du noeud ''{0}'' non analysé. Utilisez le format Date ou Double."
 
 msgid "importerGEXF_error_edge_timeinterval_parseerror"
-msgstr ""
-"Intervalle de temps du lien ''{0}'' non analysé. Utilisez le format Date ou "
-"Double."
+msgstr "Intervalle de temps du lien ''{0}'' non analysé. Utilisez le format Date ou Double."
 
 msgid "importerGEXF_error_nodeattribute_timeinterval_parseerror"
-msgstr ""
-"Intervalle de temps de l'attribut du noeud ''{0}'' non analysé. Utilisez le "
-"format Date ou Double."
+msgstr "Intervalle de temps de l'attribut du noeud ''{0}'' non analysé. Utilisez le format Date ou Double."
 
 msgid "importerGEXF_error_edgeattribute_timeinterval_parseerror"
-msgstr ""
-"Intervalle de temps de l'attribut du lien ''{0}'' non analysé. Utilisez le "
-"format Date ou Double."
+msgstr "Intervalle de temps de l'attribut du lien ''{0}'' non analysé. Utilisez le format Date ou Double."
 
 msgid "importerGEXF_error_nodecolorvalue"
-msgstr ""
-"Canal de couleur erroné ''{2}''=''{0}'' sur le noeud ''{1}''. Devrait être 0"
-" < ''{2}'' < 255."
+msgstr "Canal de couleur erroné ''{2}''=''{0}'' sur le noeud ''{1}''. Devrait être 0 < ''{2}'' < 255."
 
 msgid "importerGEXF_error_edgecolorvalue"
-msgstr ""
-"Canal de couleur erroné ''{2}''=''{0}'' sur le lien ''{1}''. Devrait être 0 "
-"< ''{2}'' < 255."
+msgstr "Canal de couleur erroné ''{2}''=''{0}'' sur le lien ''{1}''. Devrait être 0 < ''{2}'' < 255."
 
 msgid "importerGEXF_error_nodeopacityvalue"
-msgstr ""
-"Transparence erronée a=''{0}'' sur le noeud ''{1}''. Devraît être 0.0 < a < "
-"1.0."
+msgstr "Transparence erronée a=''{0}'' sur le noeud ''{1}''. Devraît être 0.0 < a < 1.0."
 
 msgid "importerGEXF_error_edgeopacityvalue"
-msgstr ""
-"Transparence erronée a=''{0}'' sur le lien ''{1}''. Devraît être 0.0 < a < "
-"1.0."
+msgstr "Transparence erronée a=''{0}'' sur le lien ''{1}''. Devraît être 0.0 < a < 1.0."
 
 msgid "importerGEXF_log_edgeeproperty"
 msgstr "Propriété de lien trouvée : {0}"
@@ -365,6 +301,9 @@ msgstr "GEXF version 1.0 (désapprouvé)"
 msgid "importerGEXF_log_version11"
 msgstr "GEXF version 1.1"
 
+msgid "importerGEXF_log_version12"
+msgstr "GEXF version 1.2"
+
 msgid "importerGEXF_log_dynamic_weight"
 msgstr "Colonne de poids dynamique trouvé."
 
@@ -378,9 +317,7 @@ msgid "importerDL_error_formatmissing"
 msgstr "Repère DL 'format' manquante, 'fullmatrix' est utilisé par défaut."
 
 msgid "importerDL_error_badformat"
-msgstr ""
-"Format ''{0}'' non supporté, proposez 'format=edgelist1' ou "
-"'format=fullmatrix' uniquement."
+msgstr "Format ''{0}'' non supporté, proposez 'format=edgelist1' ou 'format=fullmatrix' uniquement."
 
 msgid "importerDL_error_nmissing"
 msgstr "L'en-tête du ficher DL doit contenir la repère 'n = <numNodes>'"
@@ -401,25 +338,19 @@ msgid "importerDL_error_matrixrowscount2"
 msgstr "Nombre de lignes de matrice ({0}) plus petit que le repère n ({1})"
 
 msgid "importerDL_error_matriciescount"
-msgstr ""
-"Nombre d'ensembles de matrices  ({0}) plus grand que le repère nm ({1})"
+msgstr "Nombre d'ensembles de matrices  ({0}) plus grand que le repère nm ({1})"
 
 msgid "importerDL_error_matrixentriescount"
-msgstr ""
-"Nombre d'entrées sur la ligne {0} de la matrice {1} plus grand que le nombre"
-" autorisé (ligne {2} du fichier DL)"
+msgstr "Nombre d'entrées sur la ligne {0} de la matrice {1} plus grand que le nombre autorisé (ligne {2} du fichier DL)"
 
 msgid "importerDL_error_weightparseerror"
-msgstr ""
-"Impossible d'analyser le poids ''{0}'' sur la matrice {1} à la ligne {2}"
+msgstr "Impossible d'analyser le poids ''{0}'' sur la matrice {1} à la ligne {2}"
 
 msgid "importerDL_error_edgelistssetscount"
-msgstr ""
-"Nombre d'ensembles de listes de liens ({0}) différent du repère nm ({1})"
+msgstr "Nombre d'ensembles de listes de liens ({0}) différent du repère nm ({1})"
 
 msgid "importerDL_error_edgelistrowparse"
-msgstr ""
-"Impossible d'analyser depuis l'id ''{0}'' de la liste de liens ligne {1}"
+msgstr "Impossible d'analyser depuis l'id ''{0}'' de la liste de liens ligne {1}"
 
 msgid "importerDL_error_edgeparseweight"
 msgstr "Impossible d'analyser le poids ''{0}'' de la liste de liens ligne {1}"
@@ -437,14 +368,10 @@ msgid "importerDOT_error_edgeparsing"
 msgstr "Impossible d'analyser le lien à la ligne {0}"
 
 msgid "importerDOT_error_posunreachable"
-msgstr ""
-"Impossible d'analyser la position du noeud à la ligne {0}. Doit être "
-"pos=\"x, y\""
+msgstr "Impossible d'analyser la position du noeud à la ligne {0}. Doit être pos=\"x, y\""
 
 msgid "importerDOT_error_weightunreachable"
 msgstr "Impossible de lire le poids d'un lien à la ligne {0}"
 
 msgid "importerDOT_log_nodeattribute"
 msgstr "Attribut de noeud trouvé '{0}'' ({1})"
-
-

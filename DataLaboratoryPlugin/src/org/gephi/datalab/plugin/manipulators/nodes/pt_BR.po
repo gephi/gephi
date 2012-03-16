@@ -7,11 +7,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
-"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
 "PO-Revision-Date: 2011-08-08 23:45+0000\n"
-"Last-Translator: celiofariajr <celiofariajr@gmail.com>\n"
-"Language-Team: Portuguese (Brazilian) (http://www.transifex.net/projects/p/gephi/team/pt_BR/)\n"
+"Last-Translator: Célio Faria Jr. <celiofariajr@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.net/projects/p/gephi/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,9 +28,7 @@ msgid "OpenInEditNodeWindow.description"
 msgstr "Alterar tamanho, cor, posição e atributos."
 
 msgid "OpenInEditNodeWindow.description.multiple"
-msgstr ""
-"Alterar tamanho, cor, posição e atributos. Os campos serão inicializados em "
-"branco."
+msgstr "Alterar tamanho, cor, posição e atributos. Os campos serão inicializados em branco."
 
 msgid "SelectOnGraph.name"
 msgstr "Selecionar na Visão Geral"
@@ -126,21 +124,16 @@ msgid "MergeNodes.name"
 msgstr "Mesclar nós..."
 
 msgid "MergeNodes.description"
-msgstr ""
-"Todos os nós serão mesclados em um novo nó, combinando as arestas e valores "
-"usando diferentes estratégias"
+msgstr "Todos os nós serão mesclados em um novo nó, combinando as arestas e valores usando diferentes estratégias"
 
 msgid "LinkNodes.name"
 msgstr "Conectar aos nós..."
 
 msgid "LinkNodes.description"
-msgstr ""
-"Criar arestas (dirigidas ou não) entre um nó e todos os nós selecionados"
+msgstr "Criar arestas (dirigidas ou não) entre um nó e todos os nós selecionados"
 
 msgid "CopyNodes.name.single"
 msgstr "Duplicar"
 
 msgid "CopyNodes.name.multiple"
 msgstr "Duplicar todos"
-
-

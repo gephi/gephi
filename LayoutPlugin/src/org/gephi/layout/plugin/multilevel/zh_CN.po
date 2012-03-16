@@ -1,0 +1,66 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2012-01-08 00:10+0000\n"
+"Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.net/projects/p/gephi/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "name"
+msgstr "多水平"
+
+msgid "description"
+msgstr "多层次布局"
+
+msgid "YifanHuMultiLevel.name"
+msgstr "YifanHu的多水平"
+
+msgid "YifanHuMultiLevel.description"
+msgstr "YifanHu的多水平算法适用于非常大的图形。它粗化图形，并因此减少计算量。"
+
+msgid "YifanHuMultiLevel.minimumLevelSize.name"
+msgstr "最低级别的大小"
+
+msgid "YifanHuMultiLevel.minimumLevelSize.desc"
+msgstr "节点的最小值，每一级必须有（更大的值意味着更少的水平）"
+
+msgid "YifanHuMultiLevel.minimumCoarseningRate.name"
+msgstr "最小粗化率"
+
+msgid "YifanHuMultiLevel.minimumCoarseningRate.desc"
+msgstr "两个水平间最小的相对大小（数值越小意味着较少的水平）"
+
+msgid "YifanHuMultiLevel.stepRatio.name"
+msgstr "步骤比例"
+
+msgid "YifanHuMultiLevel.stepRatio.desc"
+msgstr "该比率用于更新各次迭代的步长。"
+
+msgid "YifanHuMultiLevel.optimalDistance.name"
+msgstr "最佳距离"
+
+msgid "YifanHuMultiLevel.optimalDistance.desc"
+msgstr "弹簧自然长度。更大的值意味着节点将相距较远。"
+
+msgid "YifanHuMultiLevel.quadtreeMaxLevel.name"
+msgstr "四叉树的最高等级"
+
+msgid "YifanHuMultiLevel.quadtreeMaxLevel.desc"
+msgstr "在四叉树表示要使用的最大水平。值越大意味着更准确。"
+
+msgid "YifanHuMultiLevel.theta.name"
+msgstr "Theta"
+
+msgid "YifanHuMultiLevel.theta.desc"
+msgstr "Barnes-Hut 开放标准的Theta参数。值越小，意味着更准确。"

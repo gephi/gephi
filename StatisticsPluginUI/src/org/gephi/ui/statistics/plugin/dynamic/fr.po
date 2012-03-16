@@ -7,11 +7,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
-"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
 "PO-Revision-Date: 2011-09-22 12:10+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
-"Language-Team: French (http://www.transifex.net/projects/p/gephi/team/fr/)\n"
+"Language-Team: French (http://www.transifex.net/projects/p/gephi/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,10 +31,7 @@ msgid "DynamicClusteringCoefficientUI.name"
 msgstr "Coefficient de clustering"
 
 msgid "DynamicDegreePanel.header.description"
-msgstr ""
-"Le degré de chaque noeud et la moyenne du réseau au cours du temps. Le degré"
-" est le nombre de liens que possède un noeud. C'est un indicateur de "
-"centralité."
+msgstr "Le degré de chaque noeud et la moyenne du réseau au cours du temps. Le degré est le nombre de liens que possède un noeud. C'est un indicateur de centralité."
 
 msgid "DynamicDegreePanel.header.title"
 msgstr "Degré dynamique"
@@ -49,10 +46,7 @@ msgid "DynamicDegreePanel.averageOnlyCheckbox.text"
 msgstr "Calculer la moyenne uniquement"
 
 msgid "DynamicClusteringCoefficientPanel.header.description"
-msgstr ""
-"Coefficient de clustering de chaque noeud et la moyenne du réseau au cours "
-"du temps. Il montre à quel point le voisinage d'un noeud est complet. C'est "
-"le ratio des liens entre ses voisins sur tous les liens possibles."
+msgstr "Coefficient de clustering de chaque noeud et la moyenne du réseau au cours du temps. Il montre à quel point le voisinage d'un noeud est complet. C'est le ratio des liens entre ses voisins sur tous les liens possibles."
 
 msgid "DynamicClusteringCoefficientPanel.header.title"
 msgstr "Coefficient de clustering dynamique"
@@ -77,5 +71,3 @@ msgstr "Nombre de liens dans le réseau au cours du temps."
 
 msgid "DynamicNbEdgesPanel.header.title"
 msgstr "Compte les liens dynamiqument"
-
-

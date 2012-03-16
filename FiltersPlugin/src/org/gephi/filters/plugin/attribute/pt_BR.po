@@ -7,11 +7,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
-"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
 "PO-Revision-Date: 2011-08-08 17:25+0000\n"
-"Last-Translator: celiofariajr <celiofariajr@gmail.com>\n"
-"Language-Team: Portuguese (Brazilian) (http://www.transifex.net/projects/p/gephi/team/pt_BR/)\n"
+"Last-Translator: Célio Faria Jr. <celiofariajr@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.net/projects/p/gephi/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,23 +22,16 @@ msgid "AttributeRangeBuilder.name"
 msgstr "Intervalo"
 
 msgid "AttributeRangeBuilder.description"
-msgstr ""
-"Manter os nós/arestas com valores numéricos dentro de um intervalo "
-"(inclusive)"
+msgstr "Manter os nós/arestas com valores numéricos dentro de um intervalo (inclusive)"
 
 msgid "AttributeEqualBuilder.name"
 msgstr "Igual"
 
 msgid "AttributeEqualBuilder.description"
-msgstr ""
-"Manter os nós/arestas com determinados valores de uma coluna (Texto, "
-"Numérico, Booleano)"
+msgstr "Manter os nós/arestas com determinados valores de uma coluna (Texto, Numérico, Booleano)"
 
 msgid "AttributeNonNullBuilder.name"
 msgstr "Não nulo"
 
 msgid "AttributeNonNullBuilder.description"
-msgstr ""
-"Manter os nós/arestas com valores não nulos para uma determinada coluna"
-
-
+msgstr "Manter os nós/arestas com valores não nulos para uma determinada coluna"
