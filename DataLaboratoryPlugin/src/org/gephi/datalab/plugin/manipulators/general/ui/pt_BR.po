@@ -4,14 +4,15 @@
 # 
 # Translators:
 # Célio CJr <celiofariajr@gmail.com>, 2011.
+# Célio Faria Jr. <celiofariajr@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
-"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-09 11:46+0000\n"
-"Last-Translator: celiofariajr <celiofariajr@gmail.com>\n"
-"Language-Team: Portuguese (Brazilian) (http://www.transifex.net/projects/p/gephi/team/pt_BR/)\n"
+"PO-Revision-Date: 2012-01-17 13:07+0000\n"
+"Last-Translator: Célio Faria Jr. <celiofariajr@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.net/projects/p/gephi/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -157,14 +158,10 @@ msgid "ImportCSVUIVisualPanel1.validation.error"
 msgstr "Erro"
 
 msgid "ImportCSVUIVisualPanel1.validation.file-permissions-error"
-msgstr ""
-"Um erro ocorreu ao ler o arquivo. Verifique se o arquivo não está em uso e "
-"você tem permissões."
+msgstr "Um erro ocorreu ao ler o arquivo. Verifique se o arquivo não está em uso e você tem permissões."
 
 msgid "ImportCSVUIVisualPanel1.validation.edges.no-source-target-columns"
-msgstr ""
-"A tabela de arestas precisa conter colunas chamadas 'Source' e 'Target' "
-"(contendo os ids dos nós origem e destino)."
+msgstr "A tabela de arestas precisa conter colunas chamadas 'Source' e 'Target' (contendo os ids dos nós origem e destino)."
 
 msgid "ImportCSVUIVisualPanel2.name"
 msgstr "Configurações de importação"
@@ -173,26 +170,13 @@ msgid "ImportCSVUIVisualPanel2.columnsLabel.text"
 msgstr "Colunas importadas:"
 
 msgid "ImportCSVUIVisualPanel2.nodes.description"
-msgstr ""
-"<html>Novas colunas serão criadas com o tipo especificado.<br />Se o id de "
-"um nó não for especificado, um id gerado será atribuído a ele.<br /> A menos"
-" que a opção 'Forçar nós a serem criados como novos' esteja habilitada, os "
-"dados dos nós já existentes serão atualizados com os dados do arquivo "
-"CSV.</html>"
+msgstr "<html>Novas colunas serão criadas com o tipo especificado.<br />Se o id de um nó não for especificado, um id gerado será atribuído a ele.<br /> A menos que a opção 'Forçar nós a serem criados como novos' esteja habilitada, os dados dos nós já existentes serão atualizados com os dados do arquivo CSV.</html>"
 
 msgid "ImportCSVUIVisualPanel2.nodes.assign-ids-checkbox"
 msgstr "Forçar nós a serem criados como novos"
 
 msgid "ImportCSVUIVisualPanel2.edges.description"
-msgstr ""
-"<html>Novas colunas serão criadas com o tipo especificado.<br />Se o id de "
-"uma aresta não for especificado, um id gerado será atribuído a ela.<br />A "
-"tabela de arestas precisa conter colunas chamadas 'Source' e 'Target' com os"
-" ids dos nós origem e destino. Se qualquer dos id não forem fornecidos em "
-"uma determinada linha, ela será ignorada.<br />Se não existir uma coluna "
-"'Type' no arquivo, todas as arestas serão dirigidas.<br />Se uma aresta já "
-"existir, seus atributos serão ignorados, mas seu peso será alterado (caso o "
-"peso não seja especificado, será utilizado peso=1)</html>"
+msgstr "<html>Novas colunas serão criadas com o tipo especificado.<br />Se o id de uma aresta não for especificado, um id gerado será atribuído a ela.<br />A tabela de arestas precisa conter colunas chamadas 'Source' e 'Target' com os ids dos nós origem e destino. Se qualquer dos id não forem fornecidos em uma determinada linha, ela será ignorada.<br />Se não existir uma coluna 'Type' no arquivo, todas as arestas serão dirigidas.<br />Se uma aresta já existir, seus atributos serão ignorados, mas seu peso será alterado (caso o peso não seja especificado, será utilizado peso=1)</html>"
 
 msgid "ImportCSVUIVisualPanel2.edges.create-new-nodes-checkbox"
 msgstr "Criar nós inexistentes"
@@ -203,4 +187,23 @@ msgstr "Substituir usando expressão regular"
 msgid "SearchReplaceUI.columnsToSearchLabel.text"
 msgstr "Colunas para buscar/substituir:"
 
+msgid "MergeNodeDuplicatesUI.description"
+msgstr "<html>Nós duplicados são automaticamente detectados e mesclados baseados no valor de uma coluna.<br />Para cada grupos de nós duplicados, será criado um novo nó com a mesma cor, tamanho e posição do primeiro nó do grupo.<br />As arestas serão atribuídas ao novo nó.<br />Cada coluna usará a estratégia escolhida para reduzir os valores das linhas a um valor apenas.<br />A hierarquia será ignorada.</html>"
 
+msgid "MergeNodeDuplicatesUI.noDuplicatesText"
+msgstr "<html><b>Nenhuma duplicação encontrada!</b></html>"
+
+msgid "MergeNodeDuplicatesUI.duplicateGroupsNumber"
+msgstr "<html><b>{0} duplicações encontradas!</b></html>"
+
+msgid "MergeNodeDuplicatesUI.deleteMergedNodesText"
+msgstr "Remover nós duplicados"
+
+msgid "MergeNodeDuplicatesUI.configurationText"
+msgstr "Configurar"
+
+msgid "MergeNodeDuplicatesUI.caseSensitiveText"
+msgstr "Diferenciar maiúsculas e minúsculas"
+
+msgid "MergeNodeDuplicatesUI.baseColumnText"
+msgstr "Coluna-base para a detecção de duplicatas"

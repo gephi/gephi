@@ -7,11 +7,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
-"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
 "PO-Revision-Date: 2011-08-04 23:03+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
-"Language-Team: French (http://www.transifex.net/projects/p/gephi/team/fr/)\n"
+"Language-Team: French (http://www.transifex.net/projects/p/gephi/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -49,8 +49,7 @@ msgid "ImportContainerException_Bad_Edge_Type"
 msgstr "Type de noeud et valeur par défaut incohérents"
 
 msgid "ImportContainerException_Parallel_Edge"
-msgstr ""
-"Liens parallèles non supportés actuellement, le lien id=''{0}'' est ignoré"
+msgstr "Liens parallèles non supportés actuellement, le lien id=''{0}'' est ignoré"
 
 msgid "ImportContainerException_Set_EdgeDefault"
 msgstr "Liens de type {0} par défaut"
@@ -59,21 +58,13 @@ msgid "ImportContainerException_Weight_Zero_Ignored"
 msgstr "Poids du lien 0 ou négatif, le lien id=''{0}'' est ignoré"
 
 msgid "ImportContainerException_TimeInterval_ParseError"
-msgstr ""
-"L'intervalle temporel ''{0}'' n'a pas pu être identifié.Utilisez un format "
-"Date ou Double."
+msgstr "L'intervalle temporel ''{0}'' n'a pas pu être identifié.Utilisez un format Date ou Double."
 
 msgid "ImportContainerException_TimeIntervalVerify_Node_OutOfBound"
-msgstr ""
-"Le noeud id=''{0}'' possède des valeurs dynamiques hors de ses bornes. La "
-"valeur est modifiée pour être contenue."
+msgstr "Le noeud id=''{0}'' possède des valeurs dynamiques hors de ses bornes. La valeur est modifiée pour être contenue."
 
 msgid "ImportContainerException_TimeIntervalVerify_Edge_OutOfBound"
-msgstr ""
-"Le lien id=''{0}'' possède des valeurs dynamiques hors de ses bornes. La "
-"valeur est modifiée pour être contenue."
+msgstr "Le lien id=''{0}'' possède des valeurs dynamiques hors de ses bornes. La valeur est modifiée pour être contenue."
 
 msgid "ImportContainerException_TimeInterval_Empty"
 msgstr "Les paramètres start et end de l'intervalle temporel sont vides."
-
-

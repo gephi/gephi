@@ -1,0 +1,76 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# Zbyněk Schwarz <zbynek.schwarz@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2012-01-16 21:45+0000\n"
+"Last-Translator: Zbyněk Schwarz <zbynek.schwarz@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.net/projects/p/gephi/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
+
+msgid "Actions/Edit/org-gephi-project-explorer-NewProject.instance"
+msgstr "Nový projekt"
+
+msgid "Actions/Window/org-gephi-project-explorer-ProjectAction.instance"
+msgstr "Projekt"
+
+msgid "CTL_ProjectAction"
+msgstr "Projekt"
+
+msgid "CTL_ProjectTopComponent"
+msgstr "Okno projektu"
+
+msgid "HINT_ProjectTopComponent"
+msgstr "Toto je okno projektu"
+
+msgid "ProjectsNode_title"
+msgstr "Projekty"
+
+msgid "ProjectsNode_addProject"
+msgstr "Přidat projekt"
+
+msgid "ProjectNode_openProject"
+msgstr "Otevřít projekt"
+
+msgid "ProjectNode_closeProject"
+msgstr "Zavřít projekt"
+
+msgid "ProjectNode_removeProject"
+msgstr "Odstranit projekt"
+
+msgid "ProjectNode_addWorkspace"
+msgstr "Přidat pracovní prostor"
+
+msgid "ProjectNode_renameProject_dialogTitle"
+msgstr "Přejmenovat projekt"
+
+msgid "ProjectNode_renameProject"
+msgstr "Přejmenovat projekt"
+
+msgid "ProjectNode_projectProperties"
+msgstr "Vlastnosti..."
+
+msgid "ProjectNode_projectProperties_dialogTitle"
+msgstr "Vlastnosti projektu"
+
+msgid "WorkspaceNode_closeWorkspace"
+msgstr "Zavřít pracovní prostor"
+
+msgid "WorkspaceNode_renameWorkspace"
+msgstr "Přejmenovat projekt"
+
+msgid "WorkspaceNode_renameWorkspace_dialogTitle"
+msgstr "Přejmenovat projekt"
+
+msgid "WorkspaceNode_openWorkspace"
+msgstr "Otevřít"

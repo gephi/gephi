@@ -4,14 +4,15 @@
 # 
 # Translators:
 # Célio CJr <celiofariajr@gmail.com>, 2011.
+# Célio Faria Jr. <celiofariajr@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
-"Report-Msgid-Bugs-To: https://bugs.launchpad.net/gephi\n"
+"Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-07 23:40+0000\n"
-"Last-Translator: celiofariajr <celiofariajr@gmail.com>\n"
-"Language-Team: Portuguese (Brazilian) (http://www.transifex.net/projects/p/gephi/team/pt_BR/)\n"
+"PO-Revision-Date: 2012-01-17 12:34+0000\n"
+"Last-Translator: Célio Faria Jr. <celiofariajr@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.net/projects/p/gephi/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,16 +26,16 @@ msgid "EmailWizardSupport1.SubType"
 msgstr "Rede de endereços de e-mail"
 
 msgid "EmailWizardSupport1.Description"
-msgstr ""
-"A importação de e-mails pode ajudar usuários a analisar os contatos e-mail entre pessoas. \n"
-"Cada endereço de e-mail pode ser visto como um nó,e uma aresta é construída quando existe um \n"
-"e-mail entre uma direção e outra. É basicamente uma rede ego."
+msgstr "A importação de e-mails pode ajudar usuários a analisar os contatos e-mail entre pessoas. \nCada endereço de e-mail pode ser visto como um nó,e uma aresta é construída quando existe um \ne-mail entre uma direção e outra. É basicamente uma rede ego."
 
 msgid "EmailVisualPanel2.jTableFilter.column1.text"
 msgstr "Endereço de e-mail"
 
 msgid "EmailVisualPanel2.jTableFilter.column2.text"
 msgstr "Tipo"
+
+msgid "EmailVisualPanel1.name"
+msgstr "Selecione uma fonte de dados"
 
 msgid "EmailVisualPanel1.jButton3.text"
 msgstr "Avançado"
@@ -59,6 +60,9 @@ msgstr "*"
 
 msgid "EmailVisualPanel1.jLabel5.text"
 msgstr "Tipo de arquivo:"
+
+msgid "EmailVisualPanel1.fileType.default"
+msgstr "--Selecione o tipo de arquivo"
 
 msgid "EmailVisualPanel1.jLabel4.text"
 msgstr "Nota: opções obrigatórias são marcadas com '*'"
@@ -138,6 +142,9 @@ msgstr "Este dia ou o anterior"
 msgid "EmailVisualPanel2.jCheckBoxMessageInclude1.text"
 msgstr "A mensagem contém o texto:"
 
+msgid "EmailImportAdvancedOptPanel.name"
+msgstr "Opções avançadas"
+
 msgid "EmailImportAdvancedOptPanel.jLabelPort.text"
 msgstr "Porta:"
 
@@ -155,5 +162,3 @@ msgstr "Carregar endereços de e-mail de CSV"
 
 msgid "EmailVisualPanel2.jLabel1.text"
 msgstr "Filtros"
-
-
