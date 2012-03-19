@@ -69,6 +69,7 @@ import org.openide.util.Lookup;
  */
 public class PreviewModelImpl implements PreviewModel {
 
+    private final PreviewController previewController;
     private final Workspace workspace;
     //Items
     private final Map<String, List<Item>> typeMap;
@@ -82,11 +83,21 @@ public class PreviewModelImpl implements PreviewModel {
     private Point topLeftPosition;
 
     public PreviewModelImpl(Workspace workspace) {
+        this(workspace, null);
+    }
+    
+    public PreviewModelImpl(Workspace workspace, PreviewController previewController) {
+        if (previewController != null) {
+            this.previewController = previewController;
+        } else {
+            this.previewController = Lookup.getDefault().lookup(PreviewController.class);
+        }
         typeMap = new HashMap<String, List<Item>>();
         sourceMap = new HashMap<Object, Object>();
         this.workspace = workspace;
 
         initBasicPropertyEditors();
+        initManagedRenderers();
     }
 
     /**
@@ -104,12 +115,33 @@ public class PreviewModelImpl implements PreviewModel {
         }
     }
 
+    /**
+     * Makes sure that, if more than one plugin extends a default renderer, only the one with the lowest position is enabled initially.
+     */
+    private void initManagedRenderers() {
+        Renderer[] registeredRenderers = previewController.getRegisteredRenderers();
+
+        Set<String> replacedRenderers = new HashSet<String>();
+
+        managedRenderers = new ManagedRenderer[registeredRenderers.length];
+        for (int i = 0; i < registeredRenderers.length; i++) {
+            Renderer r = registeredRenderers[i];
+            Class superClass = r.getClass().getSuperclass();
+            if (superClass != null && superClass.getName().startsWith("org.gephi.preview.plugin.renderers.")) {
+                managedRenderers[i] = new ManagedRenderer(r, !replacedRenderers.contains(superClass.getName()));
+                replacedRenderers.add(superClass.getName());
+            } else {
+                managedRenderers[i] = new ManagedRenderer(r, true);
+            }
+        }
+    }
+
     private synchronized void initProperties() {
         if (properties == null) {
             properties = new PreviewProperties();
 
             //Properties from renderers
-            for (Renderer renderer : Lookup.getDefault().lookupAll(Renderer.class)) {
+            for (Renderer renderer : previewController.getRegisteredRenderers()) {
                 PreviewProperty[] props = renderer.getProperties();
                 for (PreviewProperty p : props) {
                     properties.addProperty(p);
@@ -264,7 +296,7 @@ public class PreviewModelImpl implements PreviewModel {
             List<ManagedRenderer> completeManagedRenderersList = new ArrayList<ManagedRenderer>();
             completeManagedRenderersList.addAll(Arrays.asList(managedRenderers));
 
-            for (Renderer renderer : Lookup.getDefault().lookupAll(Renderer.class)) {
+            for (Renderer renderer : previewController.getRegisteredRenderers()) {
                 if (!existing.contains(renderer)) {
                     completeManagedRenderersList.add(new ManagedRenderer(renderer, true));
                 }
@@ -371,6 +403,10 @@ public class PreviewModelImpl implements PreviewModel {
         Map<String, Renderer> availableRenderers = new HashMap<String, Renderer>();
         for (Renderer renderer : Lookup.getDefault().lookupAll(Renderer.class)) {
             availableRenderers.put(renderer.getClass().getName(), renderer);
+            Class superClass = renderer.getClass().getSuperclass();
+            if (superClass != null && superClass.getName().startsWith("org.gephi.preview.plugin.renderers.")) {
+                availableRenderers.put(superClass.getName(), renderer);//For plugins replacing a default renderer
+            }
         }
 
         boolean end = false;

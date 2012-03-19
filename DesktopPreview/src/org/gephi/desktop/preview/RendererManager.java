@@ -75,7 +75,7 @@ import org.openide.util.NbBundle;
  * @author Eduardo Ramos<eduramiba@gmail.com>
  */
 public class RendererManager extends javax.swing.JPanel implements PropertyChangeListener {
-    
+
     private ArrayList<RendererCheckBox> renderersList = new ArrayList<RendererCheckBox>();
     private PreviewController previewController;
 
@@ -85,45 +85,45 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
     public RendererManager() {
         initComponents();
         buildTooltip();
-        
+
         if (UIUtils.isAquaLookAndFeel()) {
             panel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
         if (UIUtils.isAquaLookAndFeel()) {
             toolBar.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
-        
+
         previewController = Lookup.getDefault().lookup(PreviewController.class);
         Lookup.getDefault().lookup(PreviewUIController.class).addPropertyChangeListener(this);
         panel.setLayout(new MigLayout("insets 3", "[pref!]"));
         setup();
     }
-    
+
     private void buildTooltip() {
         final RichTooltip richTooltip = new RichTooltip();
         richTooltip.setTitle(NbBundle.getMessage(RendererManager.class, "PreviewSettingsTopComponent.rendererManagerTab"));
         richTooltip.addDescriptionSection(NbBundle.getMessage(RendererManager.class, "RendererManager.description1"));
         richTooltip.addDescriptionSection(NbBundle.getMessage(RendererManager.class, "RendererManager.description2"));
         infoLabel.addMouseListener(new MouseAdapter() {
-            
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 richTooltip.showTooltip(RendererManager.this, e.getLocationOnScreen());
             }
-            
+
             @Override
             public void mouseExited(MouseEvent e) {
                 richTooltip.hideTooltip();
             }
         });
     }
-    
+
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals(PreviewUIController.SELECT) || evt.getPropertyName().equals(PreviewUIController.UNSELECT)) {
             setup();
         }
     }
-    
+
     private void setup() {
         PreviewModel model = previewController.getModel();
         setControlsEnabled(model != null);
@@ -131,8 +131,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
     }
 
     /**
-     * Restores the original order of the renderers list, preserving their
-     * enabled state.
+     * Restores the original order of the renderers list, preserving their enabled state.
      */
     private void restoreRenderersList() {
         PreviewModel model = previewController.getModel();
@@ -142,12 +141,12 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             enabledRenderers.addAll(Arrays.asList(model.getManagedEnabledRenderers()));
         }
         renderersList.clear();
-        for (Renderer r : Lookup.getDefault().lookupAll(Renderer.class)) {
+        for (Renderer r : previewController.getRegisteredRenderers()) {
             renderersList.add(new RendererCheckBox(r, enabledRenderers == null || enabledRenderers.contains(r)));
         }
         updateModelManagedRenderers();
     }
-    
+
     private void refresh() {
         panel.removeAll();
         loadModelManagedRenderers();
@@ -195,51 +194,47 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             model.setManagedRenderers(managedRenderers.toArray(new ManagedRenderer[0]));
         }
     }
-    
+
     private void setAllSelected(boolean selected) {
         for (RendererCheckBox rendererWrapper : renderersList) {
             rendererWrapper.setSelected(selected);
         }
         updateModelManagedRenderers();
     }
-    
+
     private void setControlsEnabled(boolean enabled) {
         selectAllButton.setEnabled(enabled);
         unselectAllButon.setEnabled(enabled);
         restoreOrderButton.setEnabled(enabled);
     }
-    
+
     class RendererCheckBox extends JCheckBox implements ActionListener {
-        
+
         private Renderer renderer;
-        
+
         public RendererCheckBox(Renderer renderer, boolean selected) {
             this.renderer = renderer;
             setSelected(selected);
             prepareName();
             addActionListener(this);
         }
-        
+
         private void prepareName() {
-            if (renderer instanceof Renderer.NamedRenderer) {
-                setText(((Renderer.NamedRenderer) renderer).getName());
-                setToolTipText(renderer.getClass().getName());
-            } else {
-                setText(renderer.getClass().getName());
-            }
+            setText(renderer.getDisplayName());
+            setToolTipText(renderer.getClass().getName());
         }
-        
+
         public Renderer getRenderer() {
             return renderer;
         }
-        
+
         public void actionPerformed(ActionEvent e) {
             updateModelManagedRenderers();
         }
     }
-    
+
     class MoveRendererButton extends JButton implements ActionListener {
-        
+
         private int index;//Original index in renderers list
         private boolean up;//Move up or move down
 
@@ -248,7 +243,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             setMargin(new Insets(1, 1, 1, 1));//Small margin for icon-only buttons
             this.index = index;
             this.up = up;
-            
+
             if (up) {
                 setEnabled(index > 0);
             } else {
@@ -256,7 +251,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             }
             addActionListener(this);
         }
-        
+
         public void actionPerformed(ActionEvent e) {
             int newIndex = up ? index - 1 : index + 1;
             RendererCheckBox oldItem = renderersList.get(newIndex);
@@ -271,9 +266,7 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
     }
 
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -370,11 +363,11 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
     private void selectAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAllButtonActionPerformed
         setAllSelected(true);
     }//GEN-LAST:event_selectAllButtonActionPerformed
-    
+
     private void unselectAllButonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unselectAllButonActionPerformed
         setAllSelected(false);
     }//GEN-LAST:event_unselectAllButonActionPerformed
-    
+
     private void restoreOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restoreOrderButtonActionPerformed
         restoreRenderersList();
         refresh();

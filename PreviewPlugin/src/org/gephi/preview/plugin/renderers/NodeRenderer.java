@@ -66,7 +66,7 @@ import processing.core.PGraphics;
  * @author Yudi Xue, Mathieu Bastian
  */
 @ServiceProvider(service = Renderer.class, position = 300)
-public class NodeRenderer implements Renderer , Renderer.NamedRenderer {
+public class NodeRenderer implements Renderer {
 
     //Default values
     protected float defaultBorderWidth = 1f;
@@ -199,7 +199,7 @@ public class NodeRenderer implements Renderer , Renderer.NamedRenderer {
         return false;
     }
 
-    public String getName() {
+    public String getDisplayName() {
         return NbBundle.getMessage(NodeRenderer.class, "NodeRenderer.name");
     }
 }

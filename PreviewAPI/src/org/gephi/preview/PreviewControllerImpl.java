@@ -43,6 +43,7 @@ package org.gephi.preview;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.util.*;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.*;
@@ -70,6 +71,8 @@ public class PreviewControllerImpl implements PreviewController {
     //Other controllers
     private final GraphController graphController;
     private final AttributeController attributeController;
+    //Registered renderers
+    private Renderer[] registeredRenderers = null;
 
     public PreviewControllerImpl() {
         graphController = Lookup.getDefault().lookup(GraphController.class);
@@ -110,7 +113,7 @@ public class PreviewControllerImpl implements PreviewController {
         if (pc.getCurrentWorkspace() != null) {
             model = pc.getCurrentWorkspace().getLookup().lookup(PreviewModelImpl.class);
             if (model == null) {
-                model = new PreviewModelImpl(pc.getCurrentWorkspace());
+                model = new PreviewModelImpl(pc.getCurrentWorkspace(), this);
                 pc.getCurrentWorkspace().add(model);
             }
         }
@@ -168,7 +171,7 @@ public class PreviewControllerImpl implements PreviewController {
 
 
         //Pre process renderers
-        for (Renderer r : Lookup.getDefault().lookupAll(Renderer.class).toArray(new Renderer[0])) {
+        for (Renderer r : model.getManagedEnabledRenderers() != null ? model.getManagedEnabledRenderers() : getRegisteredRenderers()) {
             r.preProcess(model);
         }
     }
@@ -234,7 +237,7 @@ public class PreviewControllerImpl implements PreviewController {
     private synchronized void render(RenderTarget target, Renderer[] renderers, PreviewModelImpl previewModel) {
         if (previewModel != null) {
             if (renderers == null) {
-                renderers = Lookup.getDefault().lookupAll(Renderer.class).toArray(new Renderer[0]);
+                renderers = getRegisteredRenderers();
             }
             PreviewProperties properties = previewModel.getProperties();
 
@@ -315,5 +318,26 @@ public class PreviewControllerImpl implements PreviewController {
             }
         }
         return null;
+    }
+
+    @Override
+    public Renderer[] getRegisteredRenderers() {
+        if (registeredRenderers == null) {
+            LinkedHashMap<String, Renderer> renderers = new LinkedHashMap<String, Renderer>();
+            for (Renderer r : Lookup.getDefault().lookupAll(Renderer.class)) {
+                renderers.put(r.getClass().getName(), r);
+            }
+
+            for (Renderer r : renderers.values().toArray(new Renderer[0])) {
+                Class superClass = r.getClass().getSuperclass();
+                if (superClass != null && superClass.getName().startsWith("org.gephi.preview.plugin.renderers.")) {
+                    //Replace default renderer with plugin by removing it
+                    renderers.remove(superClass.getName());
+                }
+            }
+
+            registeredRenderers = renderers.values().toArray(new Renderer[0]);
+        }
+        return registeredRenderers;
     }
 }

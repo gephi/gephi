@@ -83,7 +83,7 @@ import processing.core.PVector;
  * @author Yudi Xue, Mathieu Bastian
  */
 @ServiceProvider(service = Renderer.class, position = 500)
-public class EdgeLabelRenderer implements Renderer , Renderer.NamedRenderer {
+public class EdgeLabelRenderer implements Renderer {
     //Custom properties
 
     public static final String EDGE_COLOR = "edge.label.edgeColor";
@@ -374,7 +374,7 @@ public class EdgeLabelRenderer implements Renderer , Renderer.NamedRenderer {
         return r;
     }
 
-    public String getName() {
+    public String getDisplayName() {
         return NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.name");
     }
 }

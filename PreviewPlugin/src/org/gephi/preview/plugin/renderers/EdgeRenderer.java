@@ -70,7 +70,7 @@ import processing.core.PVector;
  * @author Yudi Xue, Mathieu Bastian
  */
 @ServiceProvider(service = Renderer.class, position = 100)
-public class EdgeRenderer implements Renderer, Renderer.NamedRenderer {
+public class EdgeRenderer implements Renderer {
 
     //Custom properties
     public static final String EDGE_MIN_WEIGHT = "edge.min-weight";
@@ -425,7 +425,7 @@ public class EdgeRenderer implements Renderer, Renderer.NamedRenderer {
         return false;
     }
 
-    public String getName() {
+    public String getDisplayName() {
         return NbBundle.getMessage(EdgeRenderer.class, "EdgeRenderer.name");
     }
 }

@@ -69,7 +69,7 @@ import processing.core.PVector;
  * @author Yudi Xue, Mathieu Bastian
  */
 @ServiceProvider(service = Renderer.class, position = 200)
-public class ArrowRenderer implements Renderer, Renderer.NamedRenderer {
+public class ArrowRenderer implements Renderer {
 
     //Const
     protected final float BASE_RATIO = 0.5f;
@@ -192,7 +192,7 @@ public class ArrowRenderer implements Renderer, Renderer.NamedRenderer {
                 && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 
-    public String getName() {
+    public String getDisplayName() {
         return NbBundle.getMessage(ArrowRenderer.class, "ArrowRenderer.name");
     }
 }

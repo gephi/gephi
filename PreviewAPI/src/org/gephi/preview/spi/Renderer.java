@@ -56,7 +56,7 @@ import org.gephi.preview.api.SVGTarget;
  * <p>
  * Renderers are the most essential parts of the Preview as they contain the code
  * that actually draws the item on the canvas. Each item (e.g. node, edge) should
- * have it's renderer.
+ * have its renderer.
  * <p>
  * Rendering is a three-steps process:
  * <ol><li>First the <code>preProcess()</code> method is called on all renderers
@@ -77,26 +77,42 @@ import org.gephi.preview.api.SVGTarget;
  * and properties to determine item aspects and the render target to obtain the
  * canvas.</li></ol>
  * <p>
- * Renderers also provides a list of {@link PreviewProperty} which the user can
+ * Renderers also provide a list of {@link PreviewProperty} which the user can
  * edit. All properties are put in the central {@link PreviewProperties} so though
  * each renderer defines it's properties it can read/write any property through
  * <code>PreviewProperties</code>.
  * <p>
+ * If your plugin renderer extends one of the default renderers,
+ * your plugin renderer will automatically replace the extended renderer.
+ * This means the default renderer will not even be available in the renderers manager.
+ * <p>
+ * Also, if more than one plugin extends the same default renderer, the one with lowest position
+ * will be enabled by the default, but others will still be available for activation in the renderers manager.
+ * <p>
+ * The list of default renderers is the following (contained in Preview Plugin module);
+ * <ol>
+ * <li>org.gephi.preview.plugin.renderers.ArrowRenderer</li>
+ * <li>org.gephi.preview.plugin.renderers.EdgeLabelRenderer</li>
+ * <li>org.gephi.preview.plugin.renderers.EdgeRenderer</li>
+ * <li>org.gephi.preview.plugin.renderers.NodeLabelRenderer</li>
+ * <li>org.gephi.preview.plugin.renderers.NodeRenderer</li>
+ * </ol>
+ * <p>
  * Renderers are singleton services and implementations need to add the
  * following annotation to be recognized by the system:
  * <p>
- * <code>@ServiceProvider(service=Renderer.class)</code>
+ * <code>@ServiceProvider(service=Renderer.class, position=XXX)</code>
+ * <b>Position parameter optional but recommended</b> in order to control the default order in which the available renderers are executed.
  * @author Yudi Xue, Mathieu Bastian
  */
 public interface Renderer {
     
     /**
-     * <b>Optionally</b> implement this interface in a
-     * <code>Renderer</code> to give a user friendly name to the renderer. This name will appear in the renderers manager UI.
+     * Provides an user friendly name for the renderer.
+     * This name will appear in the renderers manager UI.
+     * @return User friendly renderer name, not null
      */
-    interface NamedRenderer {
-        String getName();
-    }
+    public String getDisplayName();
 
     /**
      * This method is called before rendering for all renderers and initializes

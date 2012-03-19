@@ -156,4 +156,11 @@ public interface PreviewController {
      * unknown
      */
     public RenderTarget getRenderTarget(String name, Workspace workspace);
+    
+    /**
+     * Uses <code>Lookup</code> to retrieve registered renderer providers but replaces default renderers with plugins that extend them.
+     * @see Renderer
+     * @return Registered renderers replacing default renderers with their extension plugins in case they exist
+     */
+    public Renderer[] getRegisteredRenderers();
 }
