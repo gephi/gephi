@@ -68,7 +68,7 @@ import org.openide.windows.WindowManager;
 public class Installer extends ModuleInstall {
 
     private static final String LATEST_GEPHI_VERSION_URL = "https://gephi.org/updates/latest";
-    private static final String GEPHI_VERSION = "0.8.1";
+    private static final String GEPHI_VERSION = "0.8.1-beta";
 
     @Override
     public void restored() {
