@@ -187,8 +187,6 @@ public class TimelineTooltip {
         if (getY() != null) {
             richTooltip.addFooterSection(model.getChart().getColumn().getTitle());
             richTooltip.addFooterSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.chart") + ": " + getY());
-            richTooltip.addFooterSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.chart") + ": " + getY());
-            richTooltip.addFooterSection(NbBundle.getMessage(TimelineTooltip.class, "TimelineTooltip.chart") + ": " + getY());
 
             //Img
             richTooltip.setFooterImage(ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/chart.png"));
