@@ -43,7 +43,7 @@ package org.gephi.preview;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.util.*;
+import java.util.LinkedHashMap;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.*;
@@ -73,6 +73,7 @@ public class PreviewControllerImpl implements PreviewController {
     private final AttributeController attributeController;
     //Registered renderers
     private Renderer[] registeredRenderers = null;
+    private Boolean anyPluginRendererRegistered = null;
 
     public PreviewControllerImpl() {
         graphController = Lookup.getDefault().lookup(GraphController.class);
@@ -339,5 +340,19 @@ public class PreviewControllerImpl implements PreviewController {
             registeredRenderers = renderers.values().toArray(new Renderer[0]);
         }
         return registeredRenderers;
+    }
+
+    @Override
+    public boolean isAnyPluginRendererRegistered() {
+        if (anyPluginRendererRegistered == null) {
+            anyPluginRendererRegistered = false;
+            for (Renderer renderer : getRegisteredRenderers()) {
+                if (!renderer.getClass().getName().startsWith("org.gephi.preview.plugin.renderers.")) {
+                    anyPluginRendererRegistered = true;
+                    break;
+                }
+            }
+        }
+        return anyPluginRendererRegistered;
     }
 }

@@ -41,7 +41,6 @@
  */
 package org.gephi.desktop.preview;
 
-import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -150,7 +149,8 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
     private void refresh() {
         panel.removeAll();
         loadModelManagedRenderers();
-        for (int i = 0; i < renderersList.size(); i++) {
+        //Show renderers in inverse execution order to make it intuitive for users (last executed renderers remain on top of the image)
+        for (int i = renderersList.size()-1; i >=0; i--) {
             JToolBar bar = new JToolBar();
             bar.setFloatable(false);
             if (UIUtils.isAquaLookAndFeel()) {
@@ -245,15 +245,15 @@ public class RendererManager extends javax.swing.JPanel implements PropertyChang
             this.up = up;
 
             if (up) {
-                setEnabled(index > 0);
-            } else {
                 setEnabled(index < renderersList.size() - 1);
+            } else {
+                setEnabled(index > 0);
             }
             addActionListener(this);
         }
 
         public void actionPerformed(ActionEvent e) {
-            int newIndex = up ? index - 1 : index + 1;
+            int newIndex = up ? index + 1 : index - 1;
             RendererCheckBox oldItem = renderersList.get(newIndex);
             RendererCheckBox item = renderersList.get(index);
 

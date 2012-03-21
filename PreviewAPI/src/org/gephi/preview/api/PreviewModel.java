@@ -119,7 +119,7 @@ public interface PreviewModel {
     /**
      * <p>Sets an user-defined array of managed renderers to use when rendering.</p>
      * <p><b>Only</b> the renderers marked as enabled will be executed when rendering, and <b>respecting the array order</b></p>
-     * <p>If the input array does not contain a managed renderer for some renderer existing implementation, a new enabled managed renderer will be added to the end of the input array</p>
+     * <p>If the input array does not contain a managed renderer for some renderer existing implementation, a new not enabled managed renderer will be added to the end of the input array</p>
      * <p>If <code>managedRenderers</code> is set to null, all renderers will be executed when rendering, in default implementation order.</p>
      * @param managedRenderers Managed renderers for future renderings
      */

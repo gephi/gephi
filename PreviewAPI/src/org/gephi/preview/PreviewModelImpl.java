@@ -284,7 +284,7 @@ public class PreviewModelImpl implements PreviewModel {
 
     /**
      * Makes sure that managedRenderers contains every renderer existing implementations. If some renderers are not in the list, they are added in default implementation order at the end of the list
-     * and enabled.
+     * and not enabled.
      */
     private void completeManagedRenderersListIfNecessary() {
         if (managedRenderers != null) {
@@ -298,7 +298,7 @@ public class PreviewModelImpl implements PreviewModel {
 
             for (Renderer renderer : previewController.getRegisteredRenderers()) {
                 if (!existing.contains(renderer)) {
-                    completeManagedRenderersList.add(new ManagedRenderer(renderer, true));
+                    completeManagedRenderersList.add(new ManagedRenderer(renderer, false));
                 }
             }
 

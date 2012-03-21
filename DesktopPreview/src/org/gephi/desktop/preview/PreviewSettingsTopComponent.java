@@ -107,28 +107,38 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
             mainPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
 
+        PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+
         // property sheet
         propertySheet = new PropertySheet();
         propertySheet.setNodes(new Node[]{new PreviewNode(propertySheet)});
         propertySheet.setDescriptionAreaVisible(false);
 
-        // renderer manager
-        rendererManager = new RendererManager();
+        // renderer manager - show only if at least 1 plugin renderer exists
+        if (previewController.isAnyPluginRendererRegistered()) {
+            rendererManager = new RendererManager();
+        }
 
-        //Tabs for property sheet, manager and preview UI
-        tabbedPane = new JTabbedPane();
-        tabbedPane.addTab(NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.propertySheetTab"), propertySheet);
-        tabbedPane.addTab(NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.rendererManagerTab"), rendererManager);
-        propertiesPanel.add(tabbedPane, BorderLayout.CENTER);
-
-        tabbedPane.addChangeListener(new ChangeListener() {
-
-            public void stateChanged(ChangeEvent e) {
-                if (tabbedPane.getSelectedComponent() == propertySheet) {
-                    propertySheet.setNodes(new Node[]{new PreviewNode(propertySheet)});
-                }
+        if (rendererManager != null || Lookup.getDefault().lookupAll(PreviewUI.class).size() > 0) {
+            //Tabs for property sheet, manager and preview UI
+            tabbedPane = new JTabbedPane();
+            tabbedPane.addTab(NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.propertySheetTab"), propertySheet);
+            if (rendererManager != null) {
+                tabbedPane.addTab(NbBundle.getMessage(PreviewSettingsTopComponent.class, "PreviewSettingsTopComponent.rendererManagerTab"), rendererManager);
             }
-        });
+            propertiesPanel.add(tabbedPane, BorderLayout.CENTER);
+
+            tabbedPane.addChangeListener(new ChangeListener() {
+
+                public void stateChanged(ChangeEvent e) {
+                    if (tabbedPane.getSelectedComponent() == propertySheet) {
+                        propertySheet.setNodes(new Node[]{new PreviewNode(propertySheet)});
+                    }
+                }
+            });
+        } else {
+            propertiesPanel.add(propertySheet, BorderLayout.CENTER);
+        }
 
         //Ratio
         ratioSlider.addChangeListener(new ChangeListener() {
@@ -237,27 +247,29 @@ public final class PreviewSettingsTopComponent extends TopComponent implements P
         }
 
         //Refresh tabs
-        int tabCount = tabbedPane.getTabCount();
-        for (int i = 2; i < tabCount; i++) {
-            tabbedPane.removeTabAt(i);
-        }
-        for (PreviewUI pui : Lookup.getDefault().lookupAll(PreviewUI.class)) {
-            pui.unsetup();
-        }
-        if (previewModel != null) {
-            PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-            PreviewModel pModel = previewController.getModel();
-            //Add new tabs
+        if (tabbedPane != null) {
+            int tabCount = tabbedPane.getTabCount();
+            for (int i = (rendererManager == null ? 1 : 2); i < tabCount; i++) {
+                tabbedPane.removeTabAt(i);
+            }
             for (PreviewUI pui : Lookup.getDefault().lookupAll(PreviewUI.class)) {
-                pui.setup(pModel);
-                JPanel pluginPanel = pui.getPanel();
-                if (UIUtils.isAquaLookAndFeel()) {
-                    pluginPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
-                }
-                if (pui.getIcon() != null) {
-                    tabbedPane.addTab(pui.getPanelTitle(), pui.getIcon(), pluginPanel);
-                } else {
-                    tabbedPane.addTab(pui.getPanelTitle(), pluginPanel);
+                pui.unsetup();
+            }
+            if (previewModel != null) {
+                PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+                PreviewModel pModel = previewController.getModel();
+                //Add new tabs
+                for (PreviewUI pui : Lookup.getDefault().lookupAll(PreviewUI.class)) {
+                    pui.setup(pModel);
+                    JPanel pluginPanel = pui.getPanel();
+                    if (UIUtils.isAquaLookAndFeel()) {
+                        pluginPanel.setBackground(UIManager.getColor("NbExplorerView.background"));
+                    }
+                    if (pui.getIcon() != null) {
+                        tabbedPane.addTab(pui.getPanelTitle(), pui.getIcon(), pluginPanel);
+                    } else {
+                        tabbedPane.addTab(pui.getPanelTitle(), pluginPanel);
+                    }
                 }
             }
         }

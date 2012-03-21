@@ -163,4 +163,10 @@ public interface PreviewController {
      * @return Registered renderers replacing default renderers with their extension plugins in case they exist
      */
     public Renderer[] getRegisteredRenderers();
+    
+    /**
+     * Returns true if any renderer plugin is registered.
+     * @return True if any plugin renderer is found in the system
+     */
+    public boolean isAnyPluginRendererRegistered();
 }
