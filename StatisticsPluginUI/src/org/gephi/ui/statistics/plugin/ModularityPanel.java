@@ -59,6 +59,13 @@ public class ModularityPanel extends javax.swing.JPanel {
         randomizeCheckbox.setSelected(randomize);
     }
 
+    public boolean useWeight() {
+        return useWeightCheckbox.isSelected();
+    }
+
+    public void setUseWeight(boolean useWeight) {
+        useWeightCheckbox.setSelected(useWeight);
+    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -71,6 +78,7 @@ public class ModularityPanel extends javax.swing.JPanel {
         randomizeCheckbox = new javax.swing.JCheckBox();
         desriptionLabel = new org.jdesktop.swingx.JXLabel();
         header = new org.jdesktop.swingx.JXHeader();
+        useWeightCheckbox = new javax.swing.JCheckBox();
 
         randomizeCheckbox.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.randomizeCheckbox.text")); // NOI18N
         randomizeCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -82,6 +90,8 @@ public class ModularityPanel extends javax.swing.JPanel {
         header.setDescription(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.header.description")); // NOI18N
         header.setTitle(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.header.title")); // NOI18N
 
+        useWeightCheckbox.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.useWeightCheckbox.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -90,8 +100,12 @@ public class ModularityPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(randomizeCheckbox)
-                    .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE))
+                    .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(useWeightCheckbox)
+                            .addComponent(randomizeCheckbox))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -100,7 +114,9 @@ public class ModularityPanel extends javax.swing.JPanel {
                 .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(randomizeCheckbox)
-                .addGap(46, 46, 46)
+                .addGap(15, 15, 15)
+                .addComponent(useWeightCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -109,5 +125,6 @@ public class ModularityPanel extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXLabel desriptionLabel;
     private org.jdesktop.swingx.JXHeader header;
     private javax.swing.JCheckBox randomizeCheckbox;
+    private javax.swing.JCheckBox useWeightCheckbox;
     // End of variables declaration//GEN-END:variables
 }

@@ -66,12 +66,14 @@ public class ModularityUI implements StatisticsUI {
         if (panel != null) {
             settings.load(mod);
             panel.setRandomize(mod.getRandom());
+            panel.setUseWeight(mod.getUseWeight());
         }
     }
 
     public void unsetup() {
         if (panel != null) {
             mod.setRandom(panel.isRandomize());
+            mod.setUseWeight(panel.useWeight());
             settings.save(mod);
         }
         mod = null;
@@ -102,13 +104,16 @@ public class ModularityUI implements StatisticsUI {
     private static class StatSettings {
 
         private boolean randomize = true;
+        private boolean useWeight = true;
 
         private void save(Modularity stat) {
             this.randomize = stat.getRandom();
+            this.useWeight = stat.getUseWeight();
         }
 
         private void load(Modularity stat) {
             stat.setRandom(randomize);
+            stat.setUseWeight(useWeight);
         }
     }
 }
