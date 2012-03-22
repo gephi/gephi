@@ -71,7 +71,8 @@ public class Modularity implements Statistics, LongTask {
     private double modularity;
     private boolean isRandomized = false;
     private boolean useWeight = true;
-
+    private double resolution = 1.;
+    
     public void setRandom(boolean isRandomized) {
         this.isRandomized = isRandomized;
     }
@@ -86,6 +87,14 @@ public class Modularity implements Statistics, LongTask {
 
     public boolean getUseWeight() {
         return useWeight;
+    }
+    
+    public void setResolution(double resolution) {
+        this.resolution = resolution;
+    }
+
+    public double getResolution() {
+        return resolution;
     }
 
     public boolean cancel() {
@@ -459,7 +468,6 @@ public class Modularity implements Statistics, LongTask {
         for (Node node : hgraph.getNodes()) {
             int index = structure.map.get(node);
             if(useWeight) {
-                System.out.println(nodeDegrees[index] + " " + hgraph.getTotalDegree(node));
                 degreeCount[comStructure[index]] += nodeDegrees[index];
             } else {                
                 degreeCount[comStructure[index]] += hgraph.getTotalDegree(node);
@@ -498,10 +506,8 @@ public class Modularity implements Statistics, LongTask {
                 }
             }
         }
-        System.out.println(degrees.length);
         for (int i = 0; i < degrees.length; i++) {
             internal[i] /= 2.0;
-            System.out.println(internal[i] + " " + degrees[i] );
             res += (internal[i] / totalWeight) - Math.pow(degrees[i] / (2 * totalWeight), 2);
         }
         return res;
@@ -549,19 +555,21 @@ public class Modularity implements Statistics, LongTask {
                 + "<h2> Parameters: </h2>"
                 + "Randomize:  " + (isRandomized ? "On" : "Off") + "<br>"
                 + "Use edge weights:  " + (useWeight ? "On" : "Off") + "<br>"                 
+                + "Resolution:  " + (resolution) + "<br>"                 
                 + "<br> <h2> Results: </h2>"
                 + "Modularity: " + f.format(modularity) + "<br>"
                 + "Number of Communities: " + structure.communities.size()
                 + "<br /><br />"+imageFile
                 + "<br /><br />" + "<h2> Algorithm: </h2>"
                 + "Vincent D Blondel, Jean-Loup Guillaume, Renaud Lambiotte, Etienne Lefebvre, <i>Fast unfolding of communities in large networks</i>, in Journal of Statistical Mechanics: Theory and Experiment 2008 (10), P1000<br />"
+                + "<br /><br />" + "<h2> Resolution: </h2>"
+                + "R. Lambiotte, J.-C. Delvenne, M. Barahona <i>Laplacian Dynamics and Multiscale Modular Structure in Networks 2009<br />"
                 + "</BODY> </HTML>";
 
         return report;
     }
 
     private double q(int node, Community community) {
-
         Float edgesToFloat = structure.nodeConnections[node].get(community);
         double edgesTo = 0;
         if (edgesToFloat != null) {
@@ -569,9 +577,9 @@ public class Modularity implements Statistics, LongTask {
         }
         double weightSum = community.weightSum;
         double nodeWeight = structure.weights[node];
-        double qValue = edgesTo - (nodeWeight * weightSum) / (2.0 * structure.graphWeightSum);
+        double qValue = resolution * edgesTo - (nodeWeight * weightSum) / (2.0 * structure.graphWeightSum);
         if ((structure.nodeCommunities[node] == community) && (structure.nodeCommunities[node].size() > 1)) {
-            qValue = edgesTo - (nodeWeight * (weightSum - nodeWeight)) / (2.0 * structure.graphWeightSum);
+            qValue = resolution * edgesTo - (nodeWeight * (weightSum - nodeWeight)) / (2.0 * structure.graphWeightSum);
         }
         if ((structure.nodeCommunities[node] == community) && (structure.nodeCommunities[node].size() == 1)) {
             qValue = 0.;

@@ -66,6 +66,20 @@ public class ModularityPanel extends javax.swing.JPanel {
     public void setUseWeight(boolean useWeight) {
         useWeightCheckbox.setSelected(useWeight);
     }
+    
+    public double resolution() {
+        try {
+            return Double.valueOf(ResolutionTextField.getText());
+        } catch (Exception e) {
+            
+        }
+        
+        return 1.0;
+    }
+
+    public void setResolution(double resolution) {
+        ResolutionTextField.setText(String.valueOf(resolution));
+    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -79,6 +93,8 @@ public class ModularityPanel extends javax.swing.JPanel {
         desriptionLabel = new org.jdesktop.swingx.JXLabel();
         header = new org.jdesktop.swingx.JXHeader();
         useWeightCheckbox = new javax.swing.JCheckBox();
+        ResolutionTextField = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
 
         randomizeCheckbox.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.randomizeCheckbox.text")); // NOI18N
         randomizeCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -92,6 +108,11 @@ public class ModularityPanel extends javax.swing.JPanel {
 
         useWeightCheckbox.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.useWeightCheckbox.text")); // NOI18N
 
+        ResolutionTextField.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.ResolutionTextField.text")); // NOI18N
+        ResolutionTextField.setToolTipText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.ResolutionTextField.toolTipText")); // NOI18N
+
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.jLabel1.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -100,30 +121,42 @@ public class ModularityPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(57, 57, 57)
+                        .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(useWeightCheckbox)
-                            .addComponent(randomizeCheckbox))
+                            .addComponent(randomizeCheckbox)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ResolutionTextField)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(randomizeCheckbox)
                 .addGap(15, 15, 15)
                 .addComponent(useWeightCheckbox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ResolutionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField ResolutionTextField;
     private org.jdesktop.swingx.JXLabel desriptionLabel;
     private org.jdesktop.swingx.JXHeader header;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JCheckBox randomizeCheckbox;
     private javax.swing.JCheckBox useWeightCheckbox;
     // End of variables declaration//GEN-END:variables
