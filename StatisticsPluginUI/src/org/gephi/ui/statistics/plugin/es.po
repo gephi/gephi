@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the Gephi package.
 # 
 # Translators:
-# Eduardo Ramos <eduramiba@gmail.com>, 2011.
+# Eduardo Ramos <eduramiba@gmail.com>, 2011, 2012.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-09-22 22:13+0000\n"
+"PO-Revision-Date: 2012-03-23 15:26+0000\n"
 "Last-Translator: Eduardo Ramos <eduramiba@gmail.com>\n"
 "Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/gephi/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -140,7 +140,7 @@ msgid "ModularityPanel.header.title"
 msgstr "Modularidad"
 
 msgid "ModularityPanel.header.description"
-msgstr "Algoritmo de detección de comunidades. Un valor resultado de 0.4 o mayor es considerado generalmente significativo. Hacer el algoritmo aleatorio puede producir una mejor descomposición dando un mayor resultado de modularidad, sin embargo hacerlo aleatorio incrementará el tiempo de cómputo."
+msgstr "Algoritmo de detección de comunidades."
 
 msgid "ConnectedComponentPanel.header.description"
 msgstr "Determina el número de componentes conexas en la red"
@@ -219,3 +219,24 @@ msgstr "Grado medio con pesos"
 
 msgid "PageRankPanel.edgeWeightCheckbox.text"
 msgstr "Utilizar peso de aristas"
+
+msgid "ModularityPanel.useWeightCheckbox.text"
+msgstr "Utilizar pesos"
+
+msgid "ModularityPanel.jLabel1.text"
+msgstr "Resolución:"
+
+msgid "ModularityPanel.resolutionTextField.toolTipText"
+msgstr "Introduce una resolución (1.0 es modularidad estándar, menor que 1.0 produce comunidades más pequeñas, mayor más grandes)"
+
+msgid "ModularityPanel.resolutionTextField.text"
+msgstr "1.0"
+
+msgid "ModularityPanel.labelEdgeWeight.text"
+msgstr "Utilizar peso de aristas"
+
+msgid "ModularityPanel.labelResolution.text"
+msgstr "Menor para obtener más comunidades (más pequeñas) y mayor que 1.0 para obtener menos comunidades (más grandes)."
+
+msgid "ModularityPanel.labelRandomize.text"
+msgstr "Produce una mejor descomposición pero auménta el tiempo de cómputo"

@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the Gephi package.
 # 
 # Translators:
+# Eduardo Ramos <eduramiba@gmail.com>, 2012.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #   <sebastien.heymann@gmail.com>, 2011.
 msgid ""
@@ -10,8 +11,8 @@ msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-09-21 21:13+0000\n"
-"Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
+"PO-Revision-Date: 2012-03-23 15:30+0000\n"
+"Last-Translator: Eduardo Ramos <eduramiba@gmail.com>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/gephi/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -140,7 +141,7 @@ msgid "ModularityPanel.header.title"
 msgstr "Modularité"
 
 msgid "ModularityPanel.header.description"
-msgstr "Algorithme de détection de communauté. Un résultat égal ou supérieur à 0.4 est généralement considéré comme signifiant. Rendre l'algorithme aléatoire produit une meilleure décomposition, donnant un score de modularité plus élevé. Cela augmente cependant la durée de calcul."
+msgstr "Algorithme de détection de communauté."
 
 msgid "ConnectedComponentPanel.header.description"
 msgstr "Détermine le nombre de composantes connexes dans le réseau."
@@ -219,3 +220,24 @@ msgstr "Degré pondéré"
 
 msgid "PageRankPanel.edgeWeightCheckbox.text"
 msgstr "Utiliser le poids des liens"
+
+msgid "ModularityPanel.useWeightCheckbox.text"
+msgstr ""
+
+msgid "ModularityPanel.jLabel1.text"
+msgstr ""
+
+msgid "ModularityPanel.resolutionTextField.toolTipText"
+msgstr ""
+
+msgid "ModularityPanel.resolutionTextField.text"
+msgstr ""
+
+msgid "ModularityPanel.labelEdgeWeight.text"
+msgstr ""
+
+msgid "ModularityPanel.labelResolution.text"
+msgstr ""
+
+msgid "ModularityPanel.labelRandomize.text"
+msgstr ""

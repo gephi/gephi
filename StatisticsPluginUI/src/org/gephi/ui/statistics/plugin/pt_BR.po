@@ -5,13 +5,14 @@
 # Translators:
 # Célio CJr <celiofariajr@gmail.com>, 2011.
 # Célio Faria Jr. <celiofariajr@gmail.com>, 2011.
+# Eduardo Ramos <eduramiba@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-09-22 15:32+0000\n"
-"Last-Translator: Célio Faria Jr. <celiofariajr@gmail.com>\n"
+"PO-Revision-Date: 2012-03-23 15:31+0000\n"
+"Last-Translator: Eduardo Ramos <eduramiba@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.net/projects/p/gephi/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -140,7 +141,7 @@ msgid "ModularityPanel.header.title"
 msgstr "Modularidade"
 
 msgid "ModularityPanel.header.description"
-msgstr "Algoritmo de detecção de comunidades. Fazer o algoritmo aleatório pode produzir uma melhor decomposição, resultando em uma maior modularidade. Isto irá, no entanto, aumentar o tempo de computação."
+msgstr "Algoritmo de detecção de comunidades."
 
 msgid "ConnectedComponentPanel.header.description"
 msgstr "Determina o número de componentes conectados na rede."
@@ -219,3 +220,24 @@ msgstr "Grau ponderado médio"
 
 msgid "PageRankPanel.edgeWeightCheckbox.text"
 msgstr "Usar peso da aresta"
+
+msgid "ModularityPanel.useWeightCheckbox.text"
+msgstr ""
+
+msgid "ModularityPanel.jLabel1.text"
+msgstr ""
+
+msgid "ModularityPanel.resolutionTextField.toolTipText"
+msgstr ""
+
+msgid "ModularityPanel.resolutionTextField.text"
+msgstr ""
+
+msgid "ModularityPanel.labelEdgeWeight.text"
+msgstr ""
+
+msgid "ModularityPanel.labelResolution.text"
+msgstr ""
+
+msgid "ModularityPanel.labelRandomize.text"
+msgstr ""

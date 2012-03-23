@@ -160,10 +160,7 @@ msgid "ModularityPanel.header.title"
 msgstr "Modularity"
 
 msgid "ModularityPanel.header.description"
-msgstr ""
-"Community detection algorithm. Randomizing the algorithm can produce a "
-"better decomposition resulting in a higher modularity score, however "
-"randomizing will increase computation time."
+msgstr "Community detection algorithm."
 
 msgid "ConnectedComponentPanel.header.description"
 msgstr "Determines the number of connected components in the network."
@@ -243,3 +240,28 @@ msgstr "Avg. Weighted Degree"
 
 msgid "PageRankPanel.edgeWeightCheckbox.text"
 msgstr "Use edge weight"
+
+msgid "ModularityPanel.useWeightCheckbox.text"
+msgstr "Use weights"
+
+msgid "ModularityPanel.jLabel1.text"
+msgstr "Resolution:"
+
+msgid "ModularityPanel.resolutionTextField.toolTipText"
+msgstr ""
+"Enter a resolution parameter (1.0 is standard modularity, less than 1.0 "
+"leads to smaller communities, more to bigger)"
+
+msgid "ModularityPanel.resolutionTextField.text"
+msgstr "1.0"
+
+msgid "ModularityPanel.labelEdgeWeight.text"
+msgstr "Use edge weight"
+
+msgid "ModularityPanel.labelResolution.text"
+msgstr ""
+"Lower to get more communities (smaller ones) and higher than 1.0 to get less "
+"communities (bigger ones)."
+
+msgid "ModularityPanel.labelRandomize.text"
+msgstr "Produce a better decomposition but increases computation time"
