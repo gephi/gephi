@@ -69,7 +69,7 @@ public class ModularityPanel extends javax.swing.JPanel {
     
     public double resolution() {
         try {
-            return Double.valueOf(ResolutionTextField.getText());
+            return Double.valueOf(resolutionTextField.getText());
         } catch (Exception e) {
             
         }
@@ -78,7 +78,7 @@ public class ModularityPanel extends javax.swing.JPanel {
     }
 
     public void setResolution(double resolution) {
-        ResolutionTextField.setText(String.valueOf(resolution));
+        resolutionTextField.setText(String.valueOf(resolution));
     }
     /** This method is called from within the constructor to
      * initialize the form.
@@ -93,8 +93,11 @@ public class ModularityPanel extends javax.swing.JPanel {
         desriptionLabel = new org.jdesktop.swingx.JXLabel();
         header = new org.jdesktop.swingx.JXHeader();
         useWeightCheckbox = new javax.swing.JCheckBox();
-        ResolutionTextField = new javax.swing.JTextField();
+        resolutionTextField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        labelEdgeWeight = new javax.swing.JLabel();
+        labelRandomize = new javax.swing.JLabel();
+        labelResolution = new org.jdesktop.swingx.JXLabel();
 
         randomizeCheckbox.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.randomizeCheckbox.text")); // NOI18N
         randomizeCheckbox.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -108,56 +111,87 @@ public class ModularityPanel extends javax.swing.JPanel {
 
         useWeightCheckbox.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.useWeightCheckbox.text")); // NOI18N
 
-        ResolutionTextField.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.ResolutionTextField.text")); // NOI18N
-        ResolutionTextField.setToolTipText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.ResolutionTextField.toolTipText")); // NOI18N
+        resolutionTextField.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.resolutionTextField.text")); // NOI18N
+        resolutionTextField.setToolTipText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.resolutionTextField.toolTipText")); // NOI18N
 
         jLabel1.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.jLabel1.text")); // NOI18N
+
+        labelEdgeWeight.setFont(labelEdgeWeight.getFont().deriveFont(labelEdgeWeight.getFont().getSize()-1f));
+        labelEdgeWeight.setForeground(new java.awt.Color(102, 102, 102));
+        labelEdgeWeight.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.labelEdgeWeight.text")); // NOI18N
+
+        labelRandomize.setFont(labelRandomize.getFont().deriveFont(labelRandomize.getFont().getSize()-1f));
+        labelRandomize.setForeground(new java.awt.Color(102, 102, 102));
+        labelRandomize.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.labelRandomize.text")); // NOI18N
+
+        labelResolution.setForeground(new java.awt.Color(102, 102, 102));
+        labelResolution.setLineWrap(true);
+        labelResolution.setText(org.openide.util.NbBundle.getMessage(ModularityPanel.class, "ModularityPanel.labelResolution.text")); // NOI18N
+        labelResolution.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        labelResolution.setFont(labelResolution.getFont().deriveFont(labelResolution.getFont().getSize()-1f));
+        labelResolution.setPreferredSize(new java.awt.Dimension(500, 12));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(header, javax.swing.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE)
+            .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
-                        .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE))
+                        .addGap(63, 63, 63)
+                        .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(381, 381, 381))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(useWeightCheckbox)
-                            .addComponent(randomizeCheckbox)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ResolutionTextField)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(randomizeCheckbox)
+                                .addGap(25, 25, 25)
+                                .addComponent(labelRandomize, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(useWeightCheckbox)
+                                    .addComponent(resolutionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(labelResolution, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+                                    .addComponent(labelEdgeWeight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(randomizeCheckbox)
-                .addGap(15, 15, 15)
-                .addComponent(useWeightCheckbox)
-                .addGap(20, 20, 20)
+                .addComponent(header, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ResolutionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                    .addComponent(randomizeCheckbox)
+                    .addComponent(labelRandomize))
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(useWeightCheckbox)
+                    .addComponent(labelEdgeWeight))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(resolutionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(labelResolution, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(26, 26, 26)
+                .addComponent(desriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField ResolutionTextField;
     private org.jdesktop.swingx.JXLabel desriptionLabel;
     private org.jdesktop.swingx.JXHeader header;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel labelEdgeWeight;
+    private javax.swing.JLabel labelRandomize;
+    private org.jdesktop.swingx.JXLabel labelResolution;
     private javax.swing.JCheckBox randomizeCheckbox;
+    private javax.swing.JTextField resolutionTextField;
     private javax.swing.JCheckBox useWeightCheckbox;
     // End of variables declaration//GEN-END:variables
 }
