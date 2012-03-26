@@ -83,6 +83,12 @@ public final class Range {
         this.values = values;
     }
 
+    public Range(Number lowerBound, Number upperBound, Number min, Number max, boolean leftInclusive, boolean rightInclusive, Number[] values) {
+        this(lowerBound, upperBound, min, max, values);
+        this.leftInclusive = leftInclusive;
+        this.rightInclusive = rightInclusive;
+    }
+
     public boolean isInRange(Number value) {
         return ((Comparable) lowerNumber).compareTo(value) <= (leftInclusive ? 0 : -1)
                 && ((Comparable) upperNumber).compareTo(value) >= (rightInclusive ? 0 : 1);
@@ -158,6 +164,14 @@ public final class Range {
 
     public Number[] getValues() {
         return values;
+    }
+
+    public boolean isLeftInclusive() {
+        return leftInclusive;
+    }
+
+    public boolean isRightInclusive() {
+        return rightInclusive;
     }
 
     public static Number trimToBounds(Number min, Number max, Number value) {

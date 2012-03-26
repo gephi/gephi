@@ -285,7 +285,7 @@ public class FilterProcessor {
                     rangeFilter.getRangeProperty().setValue(newRange);
                 } else if(previousRange != null && (previousRange.getMinimum() == null || previousRange.getMaximum() == null)) {
                     //Opening projects
-                    newRange = new Range(previousRange.getLowerBound(), previousRange.getUpperBound(), min, max, values);
+                    newRange = new Range(previousRange.getLowerBound(), previousRange.getUpperBound(), min, max, previousRange.isLeftInclusive(), previousRange.isRightInclusive(), values);
                     rangeFilter.getRangeProperty().setValue(newRange);
                 } else {
                     //Collect some info
@@ -314,7 +314,7 @@ public class FilterProcessor {
                         lowerBound = min;
                     }
 
-                    newRange = new Range(lowerBound, upperBound, min, max, values);
+                    newRange = new Range(lowerBound, upperBound, min, max, previousRange.isLeftInclusive(), previousRange.isRightInclusive(), values);
                     if (!newRange.equals(previousRange)) {
                         rangeFilter.getRangeProperty().setValue(newRange);
                     }
