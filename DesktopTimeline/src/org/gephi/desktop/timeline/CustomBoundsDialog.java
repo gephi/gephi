@@ -108,6 +108,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
         } else {
             NumberFormat f = NumberFormat.getInstance(Locale.ENGLISH);
             f.setGroupingUsed(false);
+            f.setMaximumFractionDigits(20);
             minTextField.setText(f.format(model.getMin()));
             maxTextField.setText(f.format(model.getMax()));
             startTextField.setText(f.format(model.getMin()));
@@ -143,6 +144,7 @@ public class CustomBoundsDialog extends javax.swing.JPanel {
         } else {
             NumberFormat f = NumberFormat.getInstance(Locale.ENGLISH);
             f.setGroupingUsed(false);
+            f.setMaximumFractionDigits(20);
             minTextField.setText(f.format(model.getCustomMin()));
             maxTextField.setText(f.format(model.getCustomMax()));
             startTextField.setText(f.format(model.getIntervalStart()));
