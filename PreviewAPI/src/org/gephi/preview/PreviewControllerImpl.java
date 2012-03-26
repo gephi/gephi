@@ -150,15 +150,23 @@ public class PreviewControllerImpl implements PreviewController {
             }
         }
 
+        Renderer[] renderers = model.getManagedEnabledRenderers();
+        if (renderers == null) {
+            renderers = getRegisteredRenderers();
+        }
+
         //Build items
         for (ItemBuilder b : Lookup.getDefault().lookupAll(ItemBuilder.class)) {
-            try {
-                Item[] items = b.getItems(graph, attributeModel);
-                if (items != null) {
-                    previewModel.loadItems(b.getType(), items);
+            //Only build items of this builder if some renderer needs it:
+            if (isItemBuilderNeeded(b, previewModel.getProperties(), renderers)) {
+                try {
+                    Item[] items = b.getItems(graph, attributeModel);
+                    if (items != null) {
+                        previewModel.loadItems(b.getType(), items);
+                    }
+                } catch (Exception e) {
+                    Exceptions.printStackTrace(e);
                 }
-            } catch (Exception e) {
-                Exceptions.printStackTrace(e);
             }
         }
 
@@ -172,9 +180,19 @@ public class PreviewControllerImpl implements PreviewController {
 
 
         //Pre process renderers
-        for (Renderer r : model.getManagedEnabledRenderers() != null ? model.getManagedEnabledRenderers() : getRegisteredRenderers()) {
+        for (Renderer r : renderers) {
             r.preProcess(model);
         }
+    }
+
+    private boolean isItemBuilderNeeded(ItemBuilder itemBuilder, PreviewProperties properties, Renderer[] renderers) {
+        for (Renderer r : renderers) {
+            if (r.needsItemBuilder(itemBuilder, properties)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void updateDimensions(PreviewModelImpl model, Item[] nodeItems) {

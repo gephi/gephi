@@ -47,16 +47,12 @@ import java.awt.Color;
 import java.util.Locale;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
-import org.gephi.preview.api.Item;
-import org.gephi.preview.api.PDFTarget;
-import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.PreviewProperties;
-import org.gephi.preview.api.PreviewProperty;
-import org.gephi.preview.api.ProcessingTarget;
-import org.gephi.preview.api.RenderTarget;
-import org.gephi.preview.api.SVGTarget;
+import org.gephi.preview.api.*;
+import org.gephi.preview.plugin.builders.EdgeBuilder;
+import org.gephi.preview.plugin.builders.NodeBuilder;
 import org.gephi.preview.plugin.items.EdgeItem;
 import org.gephi.preview.plugin.items.NodeItem;
+import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.EdgeColor;
 import org.openide.util.NbBundle;
@@ -417,12 +413,20 @@ public class EdgeRenderer implements Renderer {
                     PreviewProperty.CATEGORY_EDGES, PreviewProperty.SHOW_EDGES).setValue(defaultRadius),};
     }
 
+    private boolean showEdges(PreviewProperties properties) {
+        return properties.getBooleanValue(PreviewProperty.SHOW_EDGES)
+                && !properties.getBooleanValue(PreviewProperty.MOVING);
+    }
+
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
-        if (item instanceof EdgeItem && properties.getBooleanValue(PreviewProperty.SHOW_EDGES)
-                && !properties.getBooleanValue(PreviewProperty.MOVING)) {
-            return true;
+        if (item instanceof EdgeItem) {
+            return showEdges(properties);
         }
         return false;
+    }
+
+    public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
+        return (itemBuilder instanceof EdgeBuilder || itemBuilder instanceof NodeBuilder) && showEdges(properties);//Needs some properties of nodes
     }
 
     public String getDisplayName() {

@@ -41,14 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.preview.spi;
 
-import org.gephi.preview.api.RenderTarget;
-import org.gephi.preview.api.Item;
-import org.gephi.preview.api.PDFTarget;
-import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.PreviewProperties;
-import org.gephi.preview.api.PreviewProperty;
-import org.gephi.preview.api.ProcessingTarget;
-import org.gephi.preview.api.SVGTarget;
+import org.gephi.preview.api.*;
 
 /**
  * Renderer describes how a particular {@link Item} object is rendered on a particular
@@ -141,7 +134,7 @@ public interface Renderer {
      * @param properties the central properties
      */
     public void render(Item item, RenderTarget target, PreviewProperties properties);
-
+    
     /**
      * Returns all associated properties for this renderer. Properties can be built
      * using static <code>PreviewProperty.createProperty()</code> methods. 
@@ -168,4 +161,29 @@ public interface Renderer {
      * renderer, <code>false</code> otherwise
      */
     public boolean isRendererForitem(Item item, PreviewProperties properties);
+    
+    /**
+     * Based on the <code>itemBuilder</code> class and the <code>properties</code>,
+     * determine whether this renderer needs the given <code>itemBuilder</code> to be
+     * executed before rendering.
+     * <p>
+     * This is used for <b>avoiding building unnecessary items</b> while refreshing preview.
+     * <p>
+     * You can simply return true if the builder builds items that this renderer renders,
+     * but you can also check the current properties to see if your renderer is going to produce any graphic.
+     * <p>
+     * 
+     * Additional states in <code>properties</code> helps to make a decision,
+     * including:
+     * <ul>
+     * <li><b>PreviewProperty.DIRECTED:</b> If the graph is directed</li>
+     * <li><b>PreviewProperty.MOVING:</b> Specific to the Processing target, this
+     * is <code>true</code> if the user is currently moving the canvas. Renderers
+     * other than the node renderer usually render nothing while the user is moving
+     * to speeds things up.</li></ul>
+     * @param itemBuilder builder that your renderer may need
+     * @param properties Current properties
+     * @return <code>true</code> if you are going to use built items for rendering, <code>false</code> otherwise
+     */
+    public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties);
 }

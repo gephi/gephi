@@ -44,28 +44,18 @@ package org.gephi.preview.plugin.renderers;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfGState;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import org.gephi.graph.api.Edge;
-import org.gephi.preview.api.Item;
-import org.gephi.preview.api.PDFTarget;
-import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.PreviewProperties;
-import org.gephi.preview.api.PreviewProperty;
-import org.gephi.preview.api.ProcessingTarget;
-import org.gephi.preview.api.RenderTarget;
-import org.gephi.preview.api.SVGTarget;
-
+import org.gephi.preview.api.*;
+import org.gephi.preview.plugin.builders.EdgeBuilder;
+import org.gephi.preview.plugin.builders.EdgeLabelBuilder;
+import org.gephi.preview.plugin.builders.NodeBuilder;
 import org.gephi.preview.plugin.items.EdgeItem;
 import org.gephi.preview.plugin.items.EdgeLabelItem;
-
 import org.gephi.preview.plugin.items.NodeItem;
+import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
@@ -354,12 +344,20 @@ public class EdgeLabelRenderer implements Renderer {
                     NbBundle.getMessage(EdgeLabelRenderer.class, "EdgeLabelRenderer.property.outlineOpacity.description"),
                     PreviewProperty.CATEGORY_EDGE_LABELS, PreviewProperty.SHOW_EDGE_LABELS).setValue(defaultOutlineOpacity),};
     }
-
-    public boolean isRendererForitem(Item item, PreviewProperties properties) {
-        return item instanceof EdgeLabelItem && properties.getBooleanValue(PreviewProperty.SHOW_EDGE_LABELS)
+    
+    private boolean showEdgeLabels(PreviewProperties properties){
+        return properties.getBooleanValue(PreviewProperty.SHOW_EDGE_LABELS)
                 && !properties.getBooleanValue(PreviewProperty.MOVING);
     }
 
+    public boolean isRendererForitem(Item item, PreviewProperties properties) {
+        return item instanceof EdgeLabelItem && showEdgeLabels(properties);
+    }
+
+    public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
+        return (itemBuilder instanceof EdgeLabelBuilder || itemBuilder instanceof NodeBuilder || itemBuilder instanceof EdgeBuilder) && showEdgeLabels(properties);//Needs some properties of nodes and edges
+    }
+    
     protected PVector bezierPoint(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float c) {
         PVector ab = linearInterpolation(x1, y1, x2, y2, c);
         PVector bc = linearInterpolation(x2, y2, x3, y3, c);

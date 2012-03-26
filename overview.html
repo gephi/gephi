@@ -13,8 +13,11 @@
         <hr/>
         <h2>API Changes</h2>
         <ul>
+            <li>(March 26 2012) Add a <code>needsItemBuilder</code> method to <code>Renderer</code> in Preview API.
+                This helps to avoid building unnecessary items while refreshing preview.
+            </li>
             <li>(March 19 2012) Preview API changes:<br/>
-                Added a <code>getDisplayName</code> to <code>Renderer</code> and support for extending default preview renderers.<br/>
+                Added a <code>getDisplayName</code> method to <code>Renderer</code> and support for extending default preview renderers.<br/>
                 Added a renderer manager to preview controlled with new methods in <code>PreviewModel</code> and <code>PreviewController</code>.:<br/>
             </li>
             <li>(March 04 2012) Add a local scale flag in Ranking API. The value can be set from the<code>RankingController</code>.</li>

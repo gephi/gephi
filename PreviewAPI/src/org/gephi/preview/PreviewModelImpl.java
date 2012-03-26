@@ -85,7 +85,7 @@ public class PreviewModelImpl implements PreviewModel {
     public PreviewModelImpl(Workspace workspace) {
         this(workspace, null);
     }
-    
+
     public PreviewModelImpl(Workspace workspace, PreviewController previewController) {
         if (previewController != null) {
             this.previewController = previewController;
@@ -141,7 +141,7 @@ public class PreviewModelImpl implements PreviewModel {
             properties = new PreviewProperties();
 
             //Properties from renderers
-            for (Renderer renderer : previewController.getRegisteredRenderers()) {
+            for (Renderer renderer : getManagedEnabledRenderers()) {
                 PreviewProperty[] props = renderer.getProperties();
                 for (PreviewProperty p : props) {
                     properties.addProperty(p);
@@ -306,6 +306,33 @@ public class PreviewModelImpl implements PreviewModel {
         }
     }
 
+    /**
+     * Removes unnecessary properties from not enabled renderers
+     */
+    private void reloadProperties() {
+        PreviewProperties oldProperties = getProperties();
+
+        properties = new PreviewProperties();
+
+        //Properties from renderers
+        for (Renderer renderer : getManagedEnabledRenderers()) {
+            PreviewProperty[] props = renderer.getProperties();
+            for (PreviewProperty p : props) {
+                properties.addProperty(p);
+            }
+        }
+
+        for (PreviewProperty property : oldProperties.getProperties()) {
+            if (properties.hasProperty(property.getName())) {
+                properties.putValue(property.getName(), property.getValue());
+            }
+        }
+        
+        for(Entry<String, Object> property: oldProperties.getSimpleValues()){
+            properties.putValue(property.getKey(), property.getValue());
+        }
+    }
+
     @Override
     public void setManagedRenderers(ManagedRenderer[] managedRenderers) {
         //Validate no null ManagedRenderers
@@ -317,6 +344,7 @@ public class PreviewModelImpl implements PreviewModel {
 
         this.managedRenderers = managedRenderers;
         completeManagedRenderersListIfNecessary();
+        reloadProperties();
     }
 
     @Override

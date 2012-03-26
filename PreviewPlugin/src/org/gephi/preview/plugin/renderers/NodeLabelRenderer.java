@@ -44,27 +44,18 @@ package org.gephi.preview.plugin.renderers;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfGState;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.util.HashMap;
 import java.util.Map;
 import org.gephi.graph.api.Node;
-import org.gephi.preview.api.Item;
-import org.gephi.preview.api.PDFTarget;
-import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.PreviewProperties;
-import org.gephi.preview.api.PreviewProperty;
-import org.gephi.preview.api.ProcessingTarget;
-import org.gephi.preview.api.RenderTarget;
-import org.gephi.preview.api.SVGTarget;
+import org.gephi.preview.api.*;
+import org.gephi.preview.plugin.builders.NodeBuilder;
+import org.gephi.preview.plugin.builders.NodeLabelBuilder;
 import org.gephi.preview.plugin.items.NodeItem;
 import org.gephi.preview.plugin.items.NodeLabelItem;
+import org.gephi.preview.spi.ItemBuilder;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
@@ -402,10 +393,18 @@ public class NodeLabelRenderer implements Renderer {
                     NbBundle.getMessage(NodeLabelRenderer.class, "NodeLabelRenderer.property.box.opacity.description"),
                     PreviewProperty.CATEGORY_NODE_LABELS, PreviewProperty.NODE_LABEL_SHOW_BOX, PreviewProperty.SHOW_NODE_LABELS).setValue(defaultBoxOpacity),};
     }
+    
+    private boolean showNodeLabels(PreviewProperties properties){
+        return properties.getBooleanValue(PreviewProperty.SHOW_NODE_LABELS)
+                && !properties.getBooleanValue(PreviewProperty.MOVING);
+    }
 
     public boolean isRendererForitem(Item item, PreviewProperties properties) {
-        return item instanceof NodeLabelItem && properties.getBooleanValue(PreviewProperty.SHOW_NODE_LABELS)
-                && !properties.getBooleanValue(PreviewProperty.MOVING);
+        return item instanceof NodeLabelItem && showNodeLabels(properties);
+    }
+    
+    public boolean needsItemBuilder(ItemBuilder itemBuilder, PreviewProperties properties) {
+        return (itemBuilder instanceof NodeLabelBuilder || itemBuilder instanceof NodeBuilder) && showNodeLabels(properties);//Needs some properties of nodes
     }
 
     public String getDisplayName() {
