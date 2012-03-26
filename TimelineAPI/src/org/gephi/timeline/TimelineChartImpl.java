@@ -81,19 +81,19 @@ public class TimelineChartImpl implements TimelineChart {
     }
 
     @Override
-    public Number getY(Number x) {
-        Number[] xs = this.x;
-        double pos = x.doubleValue();
-        int minIndex = -1;
-        double minX = Double.POSITIVE_INFINITY;
-        for (int i = 0; i < xs.length; i++) {
-            double diff = Math.abs(xs[i].doubleValue() - x.doubleValue());
-            if (diff < minX) {
-                minX = diff;
-                minIndex = i;
+    public Number getY(Number posX) {
+        double pos = posX.doubleValue();
+        Double value = null;
+        if (pos <= maxX.doubleValue()) {
+            for (int i = 0; i < x.length; i++) {
+                if (pos < x[i].doubleValue()) {
+                    return value;
+                }
+                value = y[i].doubleValue();
             }
         }
-        return y[minIndex];
+
+        return value;
     }
 
     @Override

@@ -41,11 +41,9 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.timeline;
 
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -57,7 +55,6 @@ import org.gephi.timeline.api.TimelineChart;
 import org.gephi.timeline.api.TimelineController;
 import org.gephi.timeline.api.TimelineModel;
 import org.gephi.timeline.api.TimelineModelEvent;
-import org.gephi.ui.components.richtooltip.RichTooltip;
 import org.openide.util.Lookup;
 
 /**
