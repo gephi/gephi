@@ -496,7 +496,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 }
             }
             for (AttributeColumn col : attributeModel.getEdgeTable().getColumns()) {
-                dynamicGraph = col.getType().isDynamicType();
+                dynamicGraph = dynamicGraph || col.getType().isDynamicType();
                 if (dynamicGraph) {
                     break;
                 }
