@@ -301,7 +301,7 @@ public class AttributeRankingBuilder implements RankingBuilder {
         @Override
         public Number getMaximumValue() {
             if (maximum == null) {
-                AbstractRanking.refreshMinMax(this, graph);
+                DynamicAttributeRanking.refreshMinMax(this, graph);
             }
             return maximum;
         }
@@ -309,7 +309,7 @@ public class AttributeRankingBuilder implements RankingBuilder {
         @Override
         public Number getMinimumValue() {
             if (minimum == null) {
-                AbstractRanking.refreshMinMax(this, graph);
+                DynamicAttributeRanking.refreshMinMax(this, graph);
             }
             return minimum;
         }
