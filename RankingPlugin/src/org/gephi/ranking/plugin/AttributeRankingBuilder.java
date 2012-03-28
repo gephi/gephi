@@ -158,7 +158,7 @@ public class AttributeRankingBuilder implements RankingBuilder {
         }
     }
 
-    private static class AttributeRanking extends AbstractRanking<Attributable> {
+    public static class AttributeRanking extends AbstractRanking<Attributable> {
 
         private final AttributeColumn column;
         private final Graph graph;
@@ -231,18 +231,20 @@ public class AttributeRankingBuilder implements RankingBuilder {
         }
     }
 
-    private static class DynamicAttributeRanking extends AbstractRanking<Attributable> {
+    public static class DynamicAttributeRanking extends AbstractRanking<Attributable> {
 
         private final AttributeColumn column;
         private final Graph graph;
         private final TimeInterval timeInterval;
         private final Estimator estimator;
+        private final boolean localScale;
 
         public DynamicAttributeRanking(String elementType, AttributeColumn column, GraphModel graphModel, RankingModel rankingModel, TimeInterval timeInterval, Estimator estimator) {
             super(elementType, column.getId(), rankingModel);
             this.column = column;
             this.timeInterval = timeInterval;
             this.estimator = estimator;
+            this.localScale = rankingModel.useLocalScale();
             this.graph = rankingModel.useLocalScale() ? graphModel.getGraphVisible() : graphModel.getGraph();;
         }
 
@@ -326,22 +328,21 @@ public class AttributeRankingBuilder implements RankingBuilder {
                     currentEstimator = dynamicModel.getNumberEstimator();
                 }
             }
-            GraphModel graphModel = graph.getGraphModel();
-            Graph currentGraph = graphModel.getGraph();
             DynamicAttributeRanking newRanking = new DynamicAttributeRanking(elementType, column,
                     graph.getGraphModel(), rankingModel, visibleInterval, currentEstimator);
             return newRanking;
         }
 
         public static void refreshMinMax(DynamicAttributeRanking ranking, Graph graph) {
+            boolean localScale = ranking.localScale;
             if (ranking.getElementType().equals(Ranking.NODE_ELEMENT)) {
                 List<Comparable> objects = new ArrayList<Comparable>();
                 for (Node node : graph.getNodes().toArray()) {
-                    Comparable value = (Comparable) ranking.getValue(node, null, Estimator.MIN);
+                    Comparable value = (Comparable) ranking.getValue(node, localScale ? ranking.timeInterval : null, Estimator.MIN);
                     if (value != null) {
                         objects.add(value);
                     }
-                    value = (Comparable) ranking.getValue(node, null, Estimator.MAX);
+                    value = (Comparable) ranking.getValue(node, localScale ? ranking.timeInterval : null, Estimator.MAX);
                     if (value != null) {
                         objects.add(value);
                     }
@@ -351,11 +352,11 @@ public class AttributeRankingBuilder implements RankingBuilder {
             } else if (ranking.getElementType().equals(Ranking.EDGE_ELEMENT)) {
                 List<Comparable> objects = new ArrayList<Comparable>();
                 for (Edge edge : graph.getEdges().toArray()) {
-                    Comparable value = (Comparable) ranking.getValue(edge, null, Estimator.MIN);
+                    Comparable value = (Comparable) ranking.getValue(edge, localScale ? ranking.timeInterval : null, Estimator.MIN);
                     if (value != null) {
                         objects.add(value);
                     }
-                    value = (Comparable) ranking.getValue(edge, null, Estimator.MAX);
+                    value = (Comparable) ranking.getValue(edge, localScale ? ranking.timeInterval : null, Estimator.MAX);
                     if (value != null) {
                         objects.add(value);
                     }
