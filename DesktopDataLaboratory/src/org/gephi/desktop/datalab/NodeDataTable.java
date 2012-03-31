@@ -55,8 +55,6 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.event.TreeModelListener;
@@ -67,41 +65,26 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
-import org.gephi.data.attributes.type.DynamicBigDecimal;
-import org.gephi.data.attributes.type.DynamicBigInteger;
-import org.gephi.data.attributes.type.DynamicByte;
-import org.gephi.data.attributes.type.DynamicDouble;
-import org.gephi.data.attributes.type.DynamicFloat;
-import org.gephi.data.attributes.type.DynamicInteger;
-import org.gephi.data.attributes.type.DynamicLong;
-import org.gephi.data.attributes.type.DynamicShort;
-import org.gephi.data.attributes.type.DynamicType;
-import org.gephi.data.attributes.type.NumberList;
-import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.data.attributes.type.*;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.DataLaboratoryHelper;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
-import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.graph.api.ImmutableTreeNode;
-import org.gephi.graph.api.Node;
-import org.netbeans.swing.etable.QuickFilter;
-import org.netbeans.swing.outline.DefaultOutlineModel;
-import org.netbeans.swing.outline.Outline;
-import org.netbeans.swing.outline.OutlineModel;
-import org.netbeans.swing.outline.RenderDataProvider;
-import org.netbeans.swing.outline.RowModel;
-import org.openide.awt.MouseUtils;
-import org.openide.util.Lookup;
 import org.gephi.datalab.spi.nodes.NodesManipulator;
-import org.gephi.graph.api.Attributes;
-import org.gephi.tools.api.EditWindowController;
 import org.gephi.desktop.datalab.utils.PopupMenuUtils;
 import org.gephi.desktop.datalab.utils.SparkLinesRenderer;
 import org.gephi.desktop.datalab.utils.TimeIntervalCellEditor;
 import org.gephi.desktop.datalab.utils.TimeIntervalsRenderer;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
+import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.ImmutableTreeNode;
+import org.gephi.graph.api.Node;
 import org.netbeans.swing.etable.ETableColumnModel;
+import org.netbeans.swing.etable.QuickFilter;
+import org.netbeans.swing.outline.*;
+import org.openide.awt.MouseUtils;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -151,21 +134,22 @@ public class NodeDataTable {
         outlineTable.addMouseListener(new PopupAdapter());
         prepareRenderers();
         //Add listener of table selection to refresh edit window when the selection changes (and if the table is not being refreshed):
-        outlineTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
-            public void valueChanged(ListSelectionEvent e) {
-                if (!refreshingTable) {
-                    EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
-                    if (edc.isOpen()) {
-                        if (outlineTable.getSelectedRow() != -1) {
-                            edc.editNodes(getNodesFromSelectedRows());
-                        } else {
-                            edc.disableEdit();
-                        }
-                    }
-                }
-            }
-        });
+        //Temporally disabled because the call to findInstance in EditWindowController seems to randomly and rarely create exceptions
+//        outlineTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+//
+//            public void valueChanged(ListSelectionEvent e) {
+//                if (!refreshingTable) {
+//                    EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
+//                    if (edc.isOpen()) {
+//                        if (outlineTable.getSelectedRow() != -1) {
+//                            edc.editNodes(getNodesFromSelectedRows());
+//                        } else {
+//                            edc.disableEdit();
+//                        }
+//                    }
+//                }
+//            }
+//        });
         outlineTable.addKeyListener(new KeyAdapter() {
 
             @Override

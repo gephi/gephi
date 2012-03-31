@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Mathieu Jacomy, Julian Bilcke, Eduardo Ramos
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>, Mathieu Jacomy, Julian Bilcke, Eduardo Ramos
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.datalab;
 
@@ -51,13 +51,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
-import javax.swing.RowFilter;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
@@ -65,30 +59,10 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeUtils;
-import org.gephi.data.attributes.type.DynamicBigDecimal;
-import org.gephi.data.attributes.type.DynamicBigInteger;
-import org.gephi.data.attributes.type.DynamicByte;
-import org.gephi.data.attributes.type.DynamicDouble;
-import org.gephi.data.attributes.type.DynamicFloat;
-import org.gephi.data.attributes.type.DynamicInteger;
-import org.gephi.data.attributes.type.DynamicLong;
-import org.gephi.data.attributes.type.DynamicShort;
-import org.gephi.data.attributes.type.DynamicType;
-import org.gephi.data.attributes.type.NumberList;
-import org.gephi.data.attributes.type.TimeInterval;
+import org.gephi.data.attributes.type.*;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.spi.edges.EdgesManipulator;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.tools.api.EditWindowController;
-import org.jdesktop.swingx.JXTable;
-import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.table.TableColumnExt;
-import org.jdesktop.swingx.table.TableColumnModelExt;
-import org.openide.awt.MouseUtils;
-import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 import org.gephi.desktop.datalab.utils.PopupMenuUtils;
 import org.gephi.desktop.datalab.utils.SparkLinesRenderer;
 import org.gephi.desktop.datalab.utils.TimeIntervalCellEditor;
@@ -96,6 +70,15 @@ import org.gephi.desktop.datalab.utils.TimeIntervalsRenderer;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.HierarchicalGraph;
+import org.jdesktop.swingx.JXTable;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.table.TableColumnExt;
+import org.jdesktop.swingx.table.TableColumnModelExt;
+import org.openide.awt.MouseUtils;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -184,21 +167,22 @@ public class EdgeDataTable {
             }
         };
         //Add listener of table selection to refresh edit window when the selection changes (and if the table is not being refreshed):
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
-            public void valueChanged(ListSelectionEvent e) {
-                if (!refreshingTable) {
-                    EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
-                    if (edc.isOpen()) {
-                        if (table.getSelectedRow() != -1) {
-                            edc.editEdges(getEdgesFromSelectedRows());
-                        } else {
-                            edc.disableEdit();
-                        }
-                    }
-                }
-            }
-        });
+        //Temporaly disabled because the call to findInstance in EditWindowController seems to randomly and rarely create exceptions
+//        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+//
+//            public void valueChanged(ListSelectionEvent e) {
+//                if (!refreshingTable) {
+//                    EditWindowController edc = Lookup.getDefault().lookup(EditWindowController.class);
+//                    if (edc.isOpen()) {
+//                        if (table.getSelectedRow() != -1) {
+//                            edc.editEdges(getEdgesFromSelectedRows());
+//                        } else {
+//                            edc.disableEdit();
+//                        }
+//                    }
+//                }
+//            }
+//        });
         table.addMouseListener(new PopupAdapter());
         table.addKeyListener(new KeyAdapter() {
 
@@ -254,7 +238,7 @@ public class EdgeDataTable {
         table.setDefaultEditor(DynamicLong.class, new DefaultCellEditor(new JTextField()));
         table.setDefaultEditor(DynamicShort.class, new DefaultCellEditor(new JTextField()));
         table.setDefaultEditor(TimeInterval.class, new DefaultCellEditor(new JTextField()));
-        table.setDefaultEditor(TimeInterval.class, timeIntervalCellEditor=new TimeIntervalCellEditor(new JTextField()));
+        table.setDefaultEditor(TimeInterval.class, timeIntervalCellEditor = new TimeIntervalCellEditor(new JTextField()));
     }
 
     public JXTable getTable() {
