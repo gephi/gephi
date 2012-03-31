@@ -4,12 +4,13 @@
 # 
 # Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#   <sebastien.heymann@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-04 23:08+0000\n"
+"PO-Revision-Date: 2012-03-31 12:40+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
 "Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/gephi/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -91,13 +92,13 @@ msgid "DesktopImportControllerUI.status.importSuccess.default"
 msgstr "Datos"
 
 msgid "DesktopImportControllerUI.error_no_matching_file_importer"
-msgstr "Imposible encontrar un importador compatible.\\nEl formato de archivo no está soportado. Comprueba la extensión del archivo."
+msgstr "Imposible encontrar un importador compatible.\nEl formato de archivo no está soportado. Comprueba la extensión del archivo."
 
 msgid "DesktopImportControllerUI.error_no_matching_stream_importer"
-msgstr "Imposible encontrar un importador compatible.\\nEl flujo no está soportado."
+msgstr "Imposible encontrar un importador compatible.\nEl flujo no está soportado."
 
 msgid "DesktopImportControllerUI.error_no_matching_db_importer"
-msgstr "Imposible encontrar un importador compatible.\\nLa base de datos no está soportada."
+msgstr "Imposible encontrar un importador compatible.\nLa base de datos no está soportada."
 
 msgid "DesktopImportControllerUI.file.ui.dialog.title"
 msgstr "{0} preferencias"

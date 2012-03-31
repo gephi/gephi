@@ -4,12 +4,13 @@
 # 
 # Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#   <sebastien.heymann@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-04 22:59+0000\n"
+"PO-Revision-Date: 2012-03-31 13:02+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
 "Language-Team: French (http://www.transifex.net/projects/p/gephi/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -19,10 +20,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
 msgid "gephiFormatException_import"
-msgstr "Echec de l'import du projet.\\n\\nException: %s : %s\\nFichier: %s\\nLigne : %d"
+msgstr "Echec de l'import du projet.\n\nException: %s : %s\nFichier: %s\nLigne : %d"
 
 msgid "gephiFormatException_export"
-msgstr "Echec de l'export du projet.\\n\\nException: %s : %s\\nFichier: %s\\nLigne : %d"
+msgstr "Echec de l'export du projet.\n\nException: %s : %s\nFichier: %s\nLigne : %d"
 
 msgid "LBL_Gephi_loader_name"
 msgstr "Fichiers Gephi"

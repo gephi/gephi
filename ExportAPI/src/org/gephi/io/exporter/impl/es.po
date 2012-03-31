@@ -4,12 +4,13 @@
 # 
 # Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#   <sebastien.heymann@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2011-08-04 23:06+0000\n"
+"PO-Revision-Date: 2012-03-31 12:42+0000\n"
 "Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
 "Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/gephi/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -19,4 +20,4 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 msgid "ExportControllerImpl.error.nomatchingexporter"
-msgstr "Imposible encontrar un exportador compatible.\\nEl formato de archivo no está soportado."
+msgstr "Imposible encontrar un exportador compatible.\nEl formato de archivo no está soportado."
