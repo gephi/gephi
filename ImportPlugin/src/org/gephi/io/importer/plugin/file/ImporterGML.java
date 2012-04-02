@@ -45,7 +45,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
-import java.io.StreamTokenizer;
 import java.util.ArrayList;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -89,18 +88,8 @@ public class ImporterGML implements FileImporter, LongTask {
     private void importData(LineNumberReader reader) throws Exception {
         Progress.start(progressTicket);
 
-        ArrayList list;
-        StreamTokenizer tokenizer = new StreamTokenizer(reader);
-        tokenizer.ordinaryChar('[');
-        tokenizer.ordinaryChar(']');
-        tokenizer.wordChars('_', '_');
-        
-       
-        String allowed = "$%&!()*+,-^./:;<=>?@\\_`{|}~";
-        for (int i = 0; i < allowed.length(); i++)
-            tokenizer.wordChars(allowed.charAt(i), allowed.charAt(i));
-        
-        list = parseList(tokenizer);
+        ArrayList<Object> list;
+        list = parseList(reader);
 
         boolean ret = false;
         for (int i = 0; i < list.size(); i++) {
@@ -115,35 +104,52 @@ public class ImporterGML implements FileImporter, LongTask {
         Progress.finish(progressTicket);
     }
 
-    private ArrayList parseList(StreamTokenizer tokenizer) throws IOException {
-        ArrayList list = new ArrayList();
-        loop:
-        while (true) {
-            int t = tokenizer.nextToken();
-            if (t == ']' || t == StreamTokenizer.TT_EOF) {
-                return list;
-            } else if (t != StreamTokenizer.TT_WORD) {
-                break;
-            }
-            String key = tokenizer.sval;
-            list.add(key);
-            t = tokenizer.nextToken();
-            switch (t) {
-                case '[':
-                    list.add(parseList(tokenizer));
-                    break;
-                case StreamTokenizer.TT_NUMBER:
-                    list.add(new Double(tokenizer.nval));
-                    break;
-                case StreamTokenizer.TT_WORD:
-                case '"':
-                    list.add(tokenizer.sval);
-                    break;
-                default:
-                    break loop;
-            }
+    private ArrayList<Object> parseList(LineNumberReader reader) throws IOException {
+        
+        ArrayList<Object> list = new ArrayList<Object>();
+        char t;
+        boolean readString = false;
+        String stringBuffer = new String();
+        
+        while ( reader.ready() ) {
+            t = (char) reader.read();
+            if ( readString ) {
+                if ( t == '"' ) {
+                    list.add(stringBuffer);
+                    stringBuffer = new String();
+                    readString = false;
+                } else {
+                    stringBuffer += t;
+                }
+            } else {
+                switch(t) {
+                    case '[':
+                        list.add(parseList(reader));
+                        break;
+                    case ']':
+                        return list;
+                    case '"':
+                        readString = true;
+                        break;
+                    case ' ':
+                    case '\t':
+                    case '\n':
+                        if ( !stringBuffer.isEmpty() ) {
+                            try {
+                                Double doubleValue = Double.valueOf(stringBuffer);
+                                list.add(doubleValue);
+                            } catch(NumberFormatException e) {
+                                list.add(stringBuffer);
+                            }
+                            stringBuffer = new String();
+                        }
+                        break;
+                    default:
+                        stringBuffer += t;
+                        break;
+                }
+            }      
         }
-        report.logIssue(new Issue(NbBundle.getMessage(ImporterGML.class, "importerGML_error_listtoken", tokenizer.lineno()), Issue.Level.SEVERE));
         return list;
     }
 
