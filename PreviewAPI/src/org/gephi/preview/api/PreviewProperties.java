@@ -43,6 +43,8 @@ package org.gephi.preview.api;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -386,6 +388,53 @@ public class PreviewProperties {
                 prop.setValue(entry.getValue());
             } else {
                 simpleValues.put(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+    
+    /**
+     * Converts any value to a serialized String.
+     * Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     * @param value Value to serialize as String
+     * @return Result String or null if the value can't be serialized with a <code>PropertyEditor</code>
+     */
+    public static String getValueAsText(Object value) {
+        if (value.getClass().equals(Font.class)) {
+            Font f = (Font) value;
+            return String.format("%s-%d-%d", f.getName(), f.getStyle(), f.getSize()); //bug 551877
+        } else {
+            PropertyEditor editor = PropertyEditorManager.findEditor(value.getClass());
+            if (editor != null) {
+                editor.setValue(value);
+                return editor.getAsText();
+            } else {
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Deserializes a serialized String of the given class.
+     * Uses <code>PropertyEditor</code> for serialization except for values of <code>Font</code> class.
+     * @param valueStr String to deserialize
+     * @param valueClass Class of the serialized value
+     * @return Deserialized value or null if it can't be deserialized with a <code>PropertyEditor</code>
+     */
+    public static Object readValueFromText(String valueStr, Class valueClass) {
+        if (valueClass.equals(Font.class)) {
+            try {
+                String parts[] = valueStr.split("-");
+                return new Font(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));//bug 551877
+            } catch (Exception e) {
+                return null;
+            }
+        } else {
+            PropertyEditor editor = PropertyEditorManager.findEditor(valueClass);
+            if (editor != null) {
+                editor.setAsText(valueStr);
+                return editor.getValue();
+            } else {
+                return null;
             }
         }
     }

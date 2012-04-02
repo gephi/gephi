@@ -49,6 +49,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.swing.SwingUtilities;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.desktop.preview.api.PreviewUIController;
@@ -257,6 +258,9 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
             Map<String, Object> map = new HashMap<String, Object>();
             for (PreviewProperty p : previewModel.getProperties().getProperties()) {
                 map.put(p.getName(), p.getValue());
+            }
+            for(Entry<String,Object> p:previewModel.getProperties().getSimpleValues()){
+                map.put(p.getKey(), p.getValue());
             }
             PreviewPreset preset = new PreviewPreset(name, map);
             presetUtils.savePreset(preset);

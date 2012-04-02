@@ -41,8 +41,6 @@
  */
 package org.gephi.preview.api;
 
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorManager;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -112,70 +110,5 @@ public class PreviewPreset implements Comparable<PreviewPreset> {
         hash = 13 * hash + (this.properties != null ? this.properties.hashCode() : 0);
         hash = 13 * hash + (this.name != null ? this.name.hashCode() : 0);
         return hash;
-    }
-
-    /**
-     * Serialize preset property values to strings and return a map of
-     * (key,value) for all properties.
-     *
-     * @param preset the preset to serialize
-     * @return a map of all properties with values serialized as strings
-     */
-    public static Map<String, String> serialize(PreviewPreset preset) {
-        Map<String, String> result = new HashMap<String, String>();
-        for (Entry<String, Object> entry : preset.properties.entrySet()) {
-            String propertyName = entry.getKey();
-            try {
-                Object propertyValue = entry.getValue();
-                if (propertyValue != null) {
-                    PropertyEditor editor = PropertyEditorManager.findEditor(propertyValue.getClass());
-                    if (editor != null) {
-                        editor.setValue(propertyValue);
-                        result.put(propertyName, editor.getAsText());
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-        return result;
-    }
-
-    /**
-     * Create a PreviewPreset from a list of (key,value) pairs as strings.
-     * Typically property values are not string but serialized as strings and
-     * this method is used to deserialize them
-     *
-     * @param presetName the name of the preset
-     * @param propertiesString the property keys and values as stirngs
-     * @return the deserialized preset with the given preset name
-     */
-    public static PreviewPreset deserialize(String presetName, Map<String, String> propertiesString) {
-        DefaultPreset defaultPreset = new DefaultPreset();
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.putAll(defaultPreset.getProperties());
-
-        for (Entry<String, String> entry : propertiesString.entrySet()) {
-            String propertyName = entry.getKey();
-            String propertyValueString = entry.getValue();
-            if (propertyValueString != null && !propertyValueString.isEmpty()) {
-                Object defaultPropertyValue = properties.get(propertyName);
-                if (defaultPropertyValue != null) {
-                    PropertyEditor editor = PropertyEditorManager.findEditor(defaultPropertyValue.getClass());
-                    if (editor != null) {
-                        try {
-                            editor.setAsText(propertyValueString);
-                            if (editor.getValue() != null) {
-                                properties.put(propertyName, editor.getValue());
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }
-        return defaultPreset;
     }
 }

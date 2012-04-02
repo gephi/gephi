@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.desktop.preview;
 
@@ -57,6 +57,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.gephi.preview.api.PreviewPreset;
+import org.gephi.preview.api.PreviewProperties;
+import org.gephi.preview.presets.DefaultPreset;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.w3c.dom.Document;
@@ -151,23 +153,35 @@ public class PresetUtils {
     private void writeXML(Document doc, PreviewPreset preset) {
         Element presetE = doc.createElement("previewpreset");
         presetE.setAttribute("name", preset.getName());
-        presetE.setAttribute("version", "0.7");
+        presetE.setAttribute("version", "0.8.1");
 
-        for (Entry<String, String> entry : PreviewPreset.serialize(preset).entrySet()) {
+        for (Entry<String, Object> entry : preset.getProperties().entrySet()) {
             String propertyName = entry.getKey();
-            String propertyValue = entry.getValue();
-
-            Element propertyE = doc.createElement("previewproperty");
-            propertyE.setAttribute("name", propertyName);
-            propertyE.setTextContent(propertyValue);
-            presetE.appendChild(propertyE);
+            try {
+                Object propertyValue = entry.getValue();
+                if (propertyValue != null) {
+                    String serialized = PreviewProperties.getValueAsText(propertyValue);
+                    if (serialized != null) {
+                        Element propertyE = doc.createElement("previewproperty");
+                        propertyE.setAttribute("name", propertyName);
+                        propertyE.setAttribute("class", propertyValue.getClass().getName());
+                        propertyE.setTextContent(serialized);
+                        presetE.appendChild(propertyE);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         doc.appendChild(presetE);
     }
 
     private PreviewPreset readXML(Document document) {
+        DefaultPreset defaultPreset = new DefaultPreset();//For retrieving property class if it is not in the xml (old serialization)
+
         Element presetE = document.getDocumentElement();
-        Map<String, String> propertiesMap = new HashMap<String, String>();
+        Map<String, Object> propertiesMap = new HashMap<String, Object>();
+        String presetName = presetE.getAttribute("name");
 
         NodeList propertyList = presetE.getElementsByTagName("previewproperty");
         for (int i = 0; i < propertyList.getLength(); i++) {
@@ -175,14 +189,30 @@ public class PresetUtils {
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 Element propertyE = (Element) n;
                 String name = propertyE.getAttribute("name");
-                String value = propertyE.getTextContent();
-                if (!value.isEmpty()) {
-                    propertiesMap.put(name, value);
+                String valueClassName = propertyE.hasAttribute(name) ? propertyE.getAttribute("class") : null;
+                String stringValue = propertyE.getTextContent();
+                Class valueClass = null;
+                if (valueClassName != null) {
+                    try {
+                        valueClass = Class.forName(valueClassName);
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Object defaultValue = defaultPreset.getProperties().get(name);
+                    if (defaultValue != null) {
+                        valueClass = defaultValue.getClass();
+                    }
+                }
+                if (valueClass != null) {
+                    Object value = PreviewProperties.readValueFromText(stringValue, valueClass);
+                    if (value != null) {
+                        propertiesMap.put(name, value);
+                    }
                 }
             }
         }
-        String name = presetE.getAttribute("name");
-        return PreviewPreset.deserialize(name, propertiesMap);
+        return new PreviewPreset(presetName, propertiesMap);
     }
 
     private void addPreset(PreviewPreset preset) {

@@ -42,9 +42,7 @@
 package org.gephi.preview;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Point;
-import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.util.Map.Entry;
 import java.util.*;
@@ -371,7 +369,7 @@ public class PreviewModelImpl implements PreviewModel {
             String propertyName = property.getName();
             Object propertyValue = property.getValue();
             if (propertyValue != null) {
-                String text = getValueAsText(propertyValue);
+                String text = PreviewProperties.getValueAsText(propertyValue);
                 if (text != null) {
                     writer.writeStartElement("previewproperty");
                     writer.writeAttribute("name", propertyName);
@@ -395,7 +393,7 @@ public class PreviewModelImpl implements PreviewModel {
             Object value = simpleValueEntry.getValue();
             if (value != null) {
                 Class clazz = value.getClass();
-                String text = getValueAsText(value);
+                String text = PreviewProperties.getValueAsText(value);
                 if (text != null) {
                     writer.writeStartElement("previewsimplevalue");
                     writer.writeAttribute("name", simpleValueEntry.getKey());
@@ -464,9 +462,7 @@ public class PreviewModelImpl implements PreviewModel {
                             if (!isSimpleValue) {//Read PreviewProperty:
                                 PreviewProperty p = props.getProperty(propName);
                                 if (p != null) {
-                                    Object value = readValueFromText(reader.getText(), p.getType());
-                                    PropertyEditor editor = PropertyEditorManager.findEditor(p.getType());
-                                    editor.setAsText(reader.getText());
+                                    Object value = PreviewProperties.readValueFromText(reader.getText(), p.getType());
                                     if (value != null) {
                                         try {
                                             p.setValue(value);
@@ -480,7 +476,7 @@ public class PreviewModelImpl implements PreviewModel {
                                     if (!propName.equals("width")
                                             && !propName.equals("height")) {
                                         try {
-                                            Object value = readValueFromText(reader.getText(), Class.forName(simpleValueClass));
+                                            Object value = PreviewProperties.readValueFromText(reader.getText(), Class.forName(simpleValueClass));
                                             if (value != null) {
                                                 props.putValue(propName, value);
                                             }
@@ -505,40 +501,6 @@ public class PreviewModelImpl implements PreviewModel {
 
         if (!managedRenderersList.isEmpty()) {
             setManagedRenderers(managedRenderersList.toArray(new ManagedRenderer[0]));
-        }
-    }
-
-    private String getValueAsText(Object value) {
-        if (value.getClass().equals(Font.class)) {
-            Font f = (Font) value;
-            return String.format("%s-%d-%d", f.getName(), f.getStyle(), f.getSize()); //bug 551877
-        } else {
-            PropertyEditor editor = PropertyEditorManager.findEditor(value.getClass());
-            if (editor != null) {
-                editor.setValue(value);
-                return editor.getAsText();
-            } else {
-                return null;
-            }
-        }
-    }
-
-    private Object readValueFromText(String valueStr, Class valueClass) {
-        if (valueClass.equals(Font.class)) {
-            try {
-                String parts[] = valueStr.split("-");
-                return new Font(parts[0], Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));//bug 551877
-            } catch (Exception e) {
-                return null;
-            }
-        } else {
-            PropertyEditor editor = PropertyEditorManager.findEditor(valueClass);
-            if (editor != null) {
-                editor.setAsText(valueStr);
-                return editor.getValue();
-            } else {
-                return null;
-            }
         }
     }
 }
