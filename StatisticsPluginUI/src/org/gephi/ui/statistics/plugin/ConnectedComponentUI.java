@@ -99,4 +99,8 @@ public class ConnectedComponentUI implements StatisticsUI {
     public int getPosition() {
         return 900;
     }
+
+    public String getShortDescription() {
+        return NbBundle.getMessage(getClass(), "ConnectedComponentUI.shortDescription");
+    }
 }

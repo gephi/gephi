@@ -98,6 +98,10 @@ public class DynamicNbEdgesUI implements StatisticsUI {
         return 200;
     }
 
+    public String getShortDescription() {
+        return NbBundle.getMessage(getClass(), "DynamicNbEdgesUI.shortDescription");
+    }
+
     private static class StatSettings {
 
         private double window = 0.0;
