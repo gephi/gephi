@@ -191,7 +191,7 @@ public class ImporterGML implements FileImporter, LongTask {
         NodeDraft node = container.factory().newNodeDraft();
         String id = null;
         for (int i = 0; i < list.size(); i += 2) {
-            String key = (String) list.get(i);
+            String key = list.get(i).toString();
             Object value = list.get(i + 1);
             if ("id".equals(key)) {
                 id = value.toString();
@@ -212,7 +212,7 @@ public class ImporterGML implements FileImporter, LongTask {
     private boolean addNodeAttributes(NodeDraft node, String prefix, ArrayList list) {
         boolean ret = true;
         for (int i = 0; i < list.size(); i += 2) {
-            String key = (String) list.get(i);
+            String key = list.get(i).toString();
             Object value = list.get(i + 1);
             if ("id".equals(key) || "label".equals(key)) {
                 continue; // already parsed
@@ -261,7 +261,7 @@ public class ImporterGML implements FileImporter, LongTask {
     private boolean parseEdge(ArrayList list) {
         EdgeDraft edgeDraft = container.factory().newEdgeDraft();
         for (int i = 0; i < list.size(); i += 2) {
-            String key = (String) list.get(i);
+            String key = list.get(i).toString();
             Object value = list.get(i + 1);
             if ("source".equals(key)) {
                 NodeDraft source = container.getNode(value.toString());
@@ -285,7 +285,7 @@ public class ImporterGML implements FileImporter, LongTask {
     private boolean addEdgeAttributes(EdgeDraft edge, String prefix, ArrayList list) {
         boolean ret = true;
         for (int i = 0; i < list.size(); i += 2) {
-            String key = (String) list.get(i);
+            String key = list.get(i).toString();
             Object value = list.get(i + 1);
             if ("source".equals(key) || "target".equals(key) || "value".equals(key) || "weight".equals(key) || "label".equals(key)) {
                 continue; // already parsed
