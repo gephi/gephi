@@ -106,6 +106,11 @@ public class ExportControllerImpl implements ExportController {
         if (fileExporter instanceof ByteExporter) {
             OutputStream stream = new BufferedOutputStream(new FileOutputStream(file));
             ((ByteExporter) fileExporter).setOutputStream(stream);
+            for (FileExporterBuilder im : fileExporterBuilders) {
+                if (im.getName().equalsIgnoreCase("PDF")) {
+                    ((ByteExporter) fileExporter).setFile(file);
+                }
+            }
             try {
                 fileExporter.execute();
             } catch (Exception ex) {

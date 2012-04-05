@@ -51,6 +51,9 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Color;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import org.gephi.io.exporter.spi.ByteExporter;
 import org.gephi.io.exporter.spi.VectorExporter;
@@ -79,6 +82,7 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
     private OutputStream stream;
     private boolean cancel = false;
     private PDFTarget target;
+    private File file;
     //Parameters
     private float marginTop = 18f;
     private float marginBottom = 18f;
@@ -86,10 +90,11 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
     private float marginRight = 18f;
     private boolean landscape = false;
     private Rectangle pageSize = PageSize.A4;
+    private boolean viewPDF = true;
 
     public boolean execute() {
         Progress.start(progress);
-
+        
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
         controller.getModel(workspace).getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, 1.0);
         controller.refreshPreview(workspace);
@@ -135,7 +140,16 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
 
         cb.restoreState();
         document.close();
-
+            
+        if(viewPDF) {
+            try {
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open(file);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        
         Progress.finish(progress);
 
         props.putValue(PDFTarget.PDF_CONTENT_BYTE, null);
@@ -146,6 +160,10 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
 
     public boolean isLandscape() {
         return landscape;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 
     public float getMarginBottom() {
@@ -194,6 +212,10 @@ public class PDFExporter implements ByteExporter, VectorExporter, LongTask {
 
     public void setWorkspace(Workspace workspace) {
         this.workspace = workspace;
+    }
+
+    public void setViewPDF(boolean viewPDF) {
+        this.viewPDF = viewPDF;
     }
 
     public void setLandscape(boolean landscape) {

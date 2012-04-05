@@ -41,6 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 */
 package org.gephi.io.exporter.spi;
 
+import java.io.File;
 import java.io.OutputStream;
 
 /**
@@ -55,4 +56,10 @@ public interface ByteExporter extends Exporter {
      * @param stream      the stream the exporter is to write
      */
     public void setOutputStream(OutputStream stream);
+
+    /**
+     * Set the file where to export.
+     * @param file      the file the exporter is to write
+     */
+    public void setFile(File file);
 }
