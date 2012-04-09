@@ -72,6 +72,8 @@ public class Modularity implements Statistics, LongTask {
     private boolean isRandomized = false;
     private boolean useWeight = true;
     private double resolution = 1.;
+    private double epsilon = 0.0001;
+
     
     public void setRandom(boolean isRandomized) {
         this.isRandomized = isRandomized;
@@ -132,7 +134,6 @@ public class Modularity implements Statistics, LongTask {
         int N;
         HashMap<Integer, Community> invMap;
 
-        
         CommunityStructure(HierarchicalUndirectedGraph hgraph) {
             this.graph = hgraph;
             N = hgraph.getNodeCount();
@@ -239,6 +240,7 @@ public class Modularity implements Statistics, LongTask {
         }
 
         private void removeNodeFrom(int node, Community from) {
+                       
             Community community = nodeCommunities[node];
             for (ModEdge e : topology[node]) {
                 int neighbor = e.target;
@@ -246,7 +248,7 @@ public class Modularity implements Statistics, LongTask {
                 ////////
                 //Remove Node Connection to this community
                 Float edgesTo = nodeConnections[neighbor].get(community);
-                if (edgesTo - e.weight == 0.) {
+                if (edgesTo - e.weight <= epsilon) {
                     nodeConnections[neighbor].remove(community);
                 } else {
                     nodeConnections[neighbor].put(community, edgesTo - e.weight);
@@ -256,7 +258,7 @@ public class Modularity implements Statistics, LongTask {
                 //Remove Adjacency Community's connetion to this community
                 Modularity.Community adjCom = nodeCommunities[neighbor];
                 Float oEdgesto = adjCom.connections.get(community);
-                if (oEdgesto - e.weight == 0.) {
+                if (oEdgesto - e.weight <= epsilon) {
                     adjCom.connections.remove(community);
                 } else {
                     adjCom.connections.put(community, oEdgesto - e.weight);
@@ -268,7 +270,7 @@ public class Modularity implements Statistics, LongTask {
 
                 if (adjCom != community) {
                     Float comEdgesto = community.connections.get(adjCom);
-                    if (comEdgesto - e.weight == 0.) {
+                    if (comEdgesto - e.weight <= epsilon) {
                         community.connections.remove(adjCom);
                     } else {
                         community.connections.put(adjCom, comEdgesto - e.weight);
@@ -276,7 +278,7 @@ public class Modularity implements Statistics, LongTask {
                 }
 
                 Float nodeEgesTo = nodeConnections[node].get(adjCom);
-                if (nodeEgesTo - e.weight == 0) {
+                if (nodeEgesTo - e.weight <= epsilon) {
                     nodeConnections[node].remove(adjCom);
                 } else {
                     nodeConnections[node].put(adjCom, nodeEgesTo - e.weight);
@@ -322,6 +324,7 @@ public class Modularity implements Statistics, LongTask {
                     else
                         weightSum += weight;
                     Modularity.ModEdge e = new Modularity.ModEdge(index, target, weight);
+                    System.out.println(e.source + " " + e.target + " " + e.weight);
                     newTopology[index].add(e);
                 }
                 weights[index] = weightSum;
