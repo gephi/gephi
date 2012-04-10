@@ -41,12 +41,17 @@
  */
 package org.gephi.perspective;
 
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Point;
 import org.gephi.perspective.api.PerspectiveController;
 import org.gephi.perspective.spi.Perspective;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.WindowManager;
+import org.openide.windows.WindowSystemEvent;
+import org.openide.windows.WindowSystemListener;
 
 /**
  *
@@ -85,6 +90,47 @@ public class PerspectiveControllerImpl implements PerspectiveController {
         Perspective selectedPerspectiveInstance = getSelectedPerspective();
 
         openAndCloseMembers(selectedPerspectiveInstance);
+
+        WindowManager.getDefault().addWindowSystemListener(new WindowSystemListener() {
+
+            private Dimension lastDimension = null;
+            private Integer lastState = null;
+            private Point lastLocation = null;
+
+            @Override
+            public void beforeLoad(WindowSystemEvent event) {
+            }
+
+            @Override
+            public void afterLoad(WindowSystemEvent event) {
+                Frame mainWindow = WindowManager.getDefault().getMainWindow();
+                if (mainWindow != null) {
+                    if (lastDimension != null) {
+                        mainWindow.setSize(lastDimension);
+                    }
+                    if(lastLocation!=null){
+                        mainWindow.setLocation(lastLocation);
+                    }
+                    if (lastState != null) {
+                        mainWindow.setState(lastState);
+                    }
+                }
+            }
+
+            @Override
+            public void beforeSave(WindowSystemEvent event) {
+                Frame mainWindow = WindowManager.getDefault().getMainWindow();
+                if (mainWindow != null) {
+                    lastDimension = mainWindow.getSize();
+                    lastLocation = mainWindow.getLocation();
+                    lastState = mainWindow.getExtendedState();
+                }
+            }
+
+            @Override
+            public void afterSave(WindowSystemEvent event) {
+            }
+        });
     }
 
     @Override
