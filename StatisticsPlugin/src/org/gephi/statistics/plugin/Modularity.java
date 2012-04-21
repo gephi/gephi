@@ -374,7 +374,6 @@ public class Modularity implements Statistics, LongTask {
                     else
                         weightSum += weight;
                     Modularity.ModEdge e = new Modularity.ModEdge(index, target, weight);
-                    System.out.println(e.source + " " + e.target + " " + e.weight);
                     newTopology[index].add(e);
                 }
                 weights[index] = weightSum;
