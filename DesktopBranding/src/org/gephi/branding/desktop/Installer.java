@@ -100,7 +100,13 @@ public class Installer extends ModuleInstall {
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
 
             public void run() {
-                checkForNewMajorRelease();
+                new Thread(){
+
+                    @Override
+                    public void run() {
+                        checkForNewMajorRelease();
+                    }
+                }.start();
             }
         });
     }
