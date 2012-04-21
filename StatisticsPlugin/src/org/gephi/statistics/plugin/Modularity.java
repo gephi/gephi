@@ -35,7 +35,7 @@ However, if you add GPL Version 3 code and therefore, elected the GPL
 Version 3 license, then the option applies only if the new code is
 made subject to such option by the copyright holder.
 
-Contributor(s):
+Contributor(s): Thomas Aynaud <taynaud@gmail.com>
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
@@ -69,6 +69,7 @@ public class Modularity implements Statistics, LongTask {
     private boolean isCanceled;
     private CommunityStructure structure;
     private double modularity;
+    private double modularityResolution;
     private boolean isRandomized = false;
     private boolean useWeight = true;
     private double resolution = 1.;
@@ -121,7 +122,8 @@ public class Modularity implements Statistics, LongTask {
 
     class CommunityStructure {
 
-        HashMap<Modularity.Community, Float>[] nodeConnections;
+        HashMap<Modularity.Community, Float>[] nodeConnectionsWeight;
+        HashMap<Modularity.Community, Integer>[] nodeConnectionsCount;
         HashMap<Node, Integer> map;
         Community[] nodeCommunities;
         HierarchicalUndirectedGraph graph;
@@ -132,12 +134,12 @@ public class Modularity implements Statistics, LongTask {
         int N;
         HashMap<Integer, Community> invMap;
 
-        
         CommunityStructure(HierarchicalUndirectedGraph hgraph) {
             this.graph = hgraph;
             N = hgraph.getNodeCount();
             invMap = new HashMap<Integer, Community>();
-            nodeConnections = new HashMap[N];
+            nodeConnectionsWeight = new HashMap[N];
+            nodeConnectionsCount = new HashMap[N];
             nodeCommunities = new Community[N];
             map = new HashMap<Node, Integer>();
             topology = new LinkedList[N];
@@ -147,7 +149,8 @@ public class Modularity implements Statistics, LongTask {
             for (Node node : hgraph.getNodes()) {
                 map.put(node, index);
                 nodeCommunities[index] = new Community(this);
-                nodeConnections[index] = new HashMap<Community, Float>();
+                nodeConnectionsWeight[index] = new HashMap<Community, Float>();
+                nodeConnectionsCount[index] = new HashMap<Community, Integer>();
                 weights[index] = 0;
                 nodeCommunities[index].seed(index);
                 Community hidden = new Community(structure);
@@ -178,11 +181,15 @@ public class Modularity implements Statistics, LongTask {
                     Modularity.ModEdge me = new ModEdge(node_index, neighbor_index, weight);
                     topology[node_index].add(me);
                     Community adjCom = nodeCommunities[neighbor_index];
-                    nodeConnections[node_index].put(adjCom, weight);
-                    nodeCommunities[node_index].connections.put(adjCom, weight);
-                    nodeConnections[neighbor_index].put(nodeCommunities[node_index], weight);
-                    nodeCommunities[neighbor_index].connections.put(nodeCommunities[node_index], weight);
-                    graphWeightSum += weight;//WARNING : may be an issue with self_loop
+                    nodeConnectionsWeight[node_index].put(adjCom, weight);
+                    nodeConnectionsCount[node_index].put(adjCom, 1);
+                    nodeCommunities[node_index].connectionsWeight.put(adjCom, weight);
+                    nodeCommunities[node_index].connectionsCount.put(adjCom, 1);
+                    nodeConnectionsWeight[neighbor_index].put(nodeCommunities[node_index], weight);
+                    nodeConnectionsCount[neighbor_index].put(nodeCommunities[node_index], 1);
+                    nodeCommunities[neighbor_index].connectionsWeight.put(nodeCommunities[node_index], weight);
+                    nodeCommunities[neighbor_index].connectionsCount.put(nodeCommunities[node_index], 1);
+                    graphWeightSum += weight;
                 }
 
                 if (isCanceled) {
@@ -201,11 +208,17 @@ public class Modularity implements Statistics, LongTask {
 
                 ////////
                 //Remove Node Connection to this community
-                Float neighEdgesTo = nodeConnections[neighbor].get(to);
+                Float neighEdgesTo = nodeConnectionsWeight[neighbor].get(to);
                 if (neighEdgesTo == null) {
-                    nodeConnections[neighbor].put(to, e.weight);
+                    nodeConnectionsWeight[neighbor].put(to, e.weight);
                 } else {
-                    nodeConnections[neighbor].put(to, neighEdgesTo + e.weight);
+                    nodeConnectionsWeight[neighbor].put(to, neighEdgesTo + e.weight);
+                }
+                Integer neighCountEdgesTo = nodeConnectionsCount[neighbor].get(to);
+                if (neighCountEdgesTo == null) {
+                    nodeConnectionsCount[neighbor].put(to, 1);
+                } else {
+                    nodeConnectionsCount[neighbor].put(to, neighCountEdgesTo + 1);
                 }
 
 
@@ -213,73 +226,111 @@ public class Modularity implements Statistics, LongTask {
 
                 ///////////////////
                 Modularity.Community adjCom = nodeCommunities[neighbor];
-                Float oEdgesto = adjCom.connections.get(to);
-                if (oEdgesto == null) {
-                    adjCom.connections.put(to, e.weight);
+                Float wEdgesto = adjCom.connectionsWeight.get(to);
+                if (wEdgesto == null) {
+                    adjCom.connectionsWeight.put(to, e.weight);
                 } else {
-                    adjCom.connections.put(to, oEdgesto + e.weight);
+                    adjCom.connectionsWeight.put(to, wEdgesto + e.weight);
+                }
+                
+                Integer cEdgesto = adjCom.connectionsCount.get(to);
+                if (cEdgesto == null) {
+                    adjCom.connectionsCount.put(to, 1);
+                } else {
+                    adjCom.connectionsCount.put(to, cEdgesto + 1);
                 }
 
-                Float nodeEdgesTo = nodeConnections[node].get(adjCom);
+                Float nodeEdgesTo = nodeConnectionsWeight[node].get(adjCom);
                 if (nodeEdgesTo == null) {
-                    nodeConnections[node].put(adjCom, e.weight);
+                    nodeConnectionsWeight[node].put(adjCom, e.weight);
                 } else {
-                    nodeConnections[node].put(adjCom, nodeEdgesTo + e.weight);
+                    nodeConnectionsWeight[node].put(adjCom, nodeEdgesTo + e.weight);
+                }
+                
+                Integer nodeCountEdgesTo = nodeConnectionsCount[node].get(adjCom);
+                if (nodeCountEdgesTo == null) {
+                    nodeConnectionsCount[node].put(adjCom, 1);
+                } else {
+                    nodeConnectionsCount[node].put(adjCom, nodeCountEdgesTo + 1);
                 }
 
                 if (to != adjCom) {
-                    Float comEdgesto = to.connections.get(adjCom);
+                    Float comEdgesto = to.connectionsWeight.get(adjCom);
                     if (comEdgesto == null) {
-                        to.connections.put(adjCom, e.weight);
+                        to.connectionsWeight.put(adjCom, e.weight);
                     } else {
-                        to.connections.put(adjCom, comEdgesto + e.weight);
+                        to.connectionsWeight.put(adjCom, comEdgesto + e.weight);
                     }
+                    
+                    Integer comCountEdgesto = to.connectionsCount.get(adjCom);
+                    if (comCountEdgesto == null) {
+                        to.connectionsCount.put(adjCom, 1);
+                    } else {
+                        to.connectionsCount.put(adjCom, comCountEdgesto + 1);
+                    }
+                    
+                    
                 }
             }
         }
 
         private void removeNodeFrom(int node, Community from) {
+                       
             Community community = nodeCommunities[node];
             for (ModEdge e : topology[node]) {
                 int neighbor = e.target;
 
                 ////////
                 //Remove Node Connection to this community
-                Float edgesTo = nodeConnections[neighbor].get(community);
-                if (edgesTo - e.weight == 0.) {
-                    nodeConnections[neighbor].remove(community);
+                Float edgesTo = nodeConnectionsWeight[neighbor].get(community);
+                Integer countEdgesTo = nodeConnectionsCount[neighbor].get(community);
+                if (countEdgesTo - 1 == 0) {
+                    nodeConnectionsWeight[neighbor].remove(community);
+                    nodeConnectionsCount[neighbor].remove(community);
                 } else {
-                    nodeConnections[neighbor].put(community, edgesTo - e.weight);
+                    nodeConnectionsWeight[neighbor].put(community, edgesTo - e.weight);
+                    nodeConnectionsCount[neighbor].put(community, countEdgesTo - 1);
                 }
 
                 ///////////////////
                 //Remove Adjacency Community's connetion to this community
                 Modularity.Community adjCom = nodeCommunities[neighbor];
-                Float oEdgesto = adjCom.connections.get(community);
-                if (oEdgesto - e.weight == 0.) {
-                    adjCom.connections.remove(community);
+                Float oEdgesto = adjCom.connectionsWeight.get(community);
+                Integer oCountEdgesto = adjCom.connectionsCount.get(community);
+                if (oCountEdgesto - 1 == 0) {
+                    adjCom.connectionsWeight.remove(community);
+                    adjCom.connectionsCount.remove(community);
                 } else {
-                    adjCom.connections.put(community, oEdgesto - e.weight);
+                    adjCom.connectionsWeight.put(community, oEdgesto - e.weight);
+                    adjCom.connectionsCount.put(community, oCountEdgesto - 1);
                 }
+                
 
+                
                 if (node == neighbor) {
                     continue;
                 }
 
                 if (adjCom != community) {
-                    Float comEdgesto = community.connections.get(adjCom);
-                    if (comEdgesto - e.weight == 0.) {
-                        community.connections.remove(adjCom);
+                    Float comEdgesto = community.connectionsWeight.get(adjCom);
+                    Integer comCountEdgesto = community.connectionsCount.get(adjCom);
+                    if (comCountEdgesto - 1 == 0) {
+                        community.connectionsWeight.remove(adjCom);
+                        community.connectionsCount.remove(adjCom);
                     } else {
-                        community.connections.put(adjCom, comEdgesto - e.weight);
+                        community.connectionsWeight.put(adjCom, comEdgesto - e.weight);
+                        community.connectionsCount.put(adjCom, comCountEdgesto - 1);
                     }
                 }
 
-                Float nodeEgesTo = nodeConnections[node].get(adjCom);
-                if (nodeEgesTo - e.weight == 0) {
-                    nodeConnections[node].remove(adjCom);
+                Float nodeEgesTo = nodeConnectionsWeight[node].get(adjCom);
+                Integer nodeCountEgesTo = nodeConnectionsCount[node].get(adjCom);
+                if (nodeCountEgesTo - 1 == 0) {
+                    nodeConnectionsWeight[node].remove(adjCom);
+                    nodeConnectionsCount[node].remove(adjCom);
                 } else {
-                    nodeConnections[node].put(adjCom, nodeEgesTo - e.weight);
+                    nodeConnectionsWeight[node].put(adjCom, nodeEgesTo - e.weight);
+                    nodeConnectionsCount[node].put(adjCom, nodeCountEgesTo - 1);
                 }
 
 
@@ -298,14 +349,16 @@ public class Modularity implements Statistics, LongTask {
             LinkedList<ModEdge>[] newTopology = new LinkedList[M];
             int index = 0;
             nodeCommunities = new Community[M];
-            nodeConnections = new HashMap[M];
+            nodeConnectionsWeight = new HashMap[M];
+            nodeConnectionsCount = new HashMap[M];
             HashMap<Integer, Community> newInvMap = new HashMap<Integer, Community>();
             for (int i = 0; i < communities.size(); i++) {//Community com : mCommunities) {
                 Community com = communities.get(i);
-                nodeConnections[index] = new HashMap<Community, Float>();
+                nodeConnectionsWeight[index] = new HashMap<Community, Float>();
+                nodeConnectionsCount[index] = new HashMap<Community, Integer>();
                 newTopology[index] = new LinkedList<ModEdge>();
                 nodeCommunities[index] = new Community(com);
-                Set<Community> iter = com.connections.keySet();
+                Set<Community> iter = com.connectionsWeight.keySet();
                 double weightSum = 0;
 
                 Community hidden = new Community(structure);
@@ -316,12 +369,12 @@ public class Modularity implements Statistics, LongTask {
                 newInvMap.put(index, hidden);
                 for(Modularity.Community adjCom : iter) {
                     int target = communities.indexOf(adjCom);
-                    float weight = com.connections.get(adjCom);
+                    float weight = com.connectionsWeight.get(adjCom);
                     if(target == index)
                         weightSum += 2.*weight;
                     else
                         weightSum += weight;
-                    Modularity.ModEdge e = new Modularity.ModEdge(index, target, weight);
+                    ModEdge e = new ModEdge(index, target, weight);
                     newTopology[index].add(e);
                 }
                 weights[index] = weightSum;
@@ -335,8 +388,10 @@ public class Modularity implements Statistics, LongTask {
                 Community com = nodeCommunities[i];
                 communities.add(com);
                 for (ModEdge e : newTopology[i]) {
-                    nodeConnections[i].put(nodeCommunities[e.target], e.weight);
-                    com.connections.put(nodeCommunities[e.target], e.weight);
+                    nodeConnectionsWeight[i].put(nodeCommunities[e.target], e.weight);
+                    nodeConnectionsCount[i].put(nodeCommunities[e.target], 1);
+                    com.connectionsWeight.put(nodeCommunities[e.target], e.weight);
+                    com.connectionsCount.put(nodeCommunities[e.target], 1);
                 }
 
             }
@@ -351,7 +406,8 @@ public class Modularity implements Statistics, LongTask {
         double weightSum;
         CommunityStructure structure;
         LinkedList<Integer> nodes;
-        HashMap<Modularity.Community, Float> connections;
+        HashMap<Modularity.Community, Float> connectionsWeight;
+        HashMap<Modularity.Community, Integer> connectionsCount;
 
         public int size() {
             return nodes.size();
@@ -359,14 +415,16 @@ public class Modularity implements Statistics, LongTask {
 
         public Community(Modularity.Community com) {
             structure = com.structure;
-            connections = new HashMap<Modularity.Community, Float>();
+            connectionsWeight = new HashMap<Modularity.Community, Float>();
+            connectionsCount = new HashMap<Modularity.Community, Integer>();
             nodes = new LinkedList<Integer>();
             //mHidden = pCom.mHidden;
         }
 
         public Community(CommunityStructure structure) {
             this.structure = structure;
-            connections = new HashMap<Modularity.Community, Float>();
+            connectionsWeight = new HashMap<Modularity.Community, Float>();
+            connectionsCount = new HashMap<Modularity.Community, Integer>();
             nodes = new LinkedList<Integer>();
         }
 
@@ -424,7 +482,7 @@ public class Modularity implements Statistics, LongTask {
                     double best = 0.;
                     Community bestCommunity = null;
                     Community nodecom = structure.nodeCommunities[i];
-                    Set<Community> iter = structure.nodeConnections[i].keySet();
+                    Set<Community> iter = structure.nodeConnectionsWeight[i].keySet();
                     for(Community com : iter) {
                         double qValue = q(i, com);
                         if (qValue > best) {
@@ -475,11 +533,13 @@ public class Modularity implements Statistics, LongTask {
             
         }
         
-        modularity = finalQ(comStructure, degreeCount, hgraph, attributeModel, totalWeight);
+        modularity = finalQ(comStructure, degreeCount, hgraph, attributeModel, totalWeight, 1.);
+        modularityResolution = finalQ(comStructure, degreeCount, hgraph, attributeModel, totalWeight, resolution);
+        
         hgraph.readUnlock();
     }
 
-    private double finalQ(int[] struct, double[] degrees, HierarchicalUndirectedGraph hgraph, AttributeModel attributeModel, double totalWeight) {
+    private double finalQ(int[] struct, double[] degrees, HierarchicalUndirectedGraph hgraph, AttributeModel attributeModel, double totalWeight, double usedResolution) {
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn modCol = nodeTable.getColumn(MODULARITY_CLASS);
         if (modCol == null) {
@@ -508,7 +568,7 @@ public class Modularity implements Statistics, LongTask {
         }
         for (int i = 0; i < degrees.length; i++) {
             internal[i] /= 2.0;
-            res += (internal[i] / totalWeight) - Math.pow(degrees[i] / (2 * totalWeight), 2);
+            res += usedResolution * (internal[i] / totalWeight) - Math.pow(degrees[i] / (2 * totalWeight), 2);//HERE
         }
         return res;
     }
@@ -558,6 +618,7 @@ public class Modularity implements Statistics, LongTask {
                 + "Resolution:  " + (resolution) + "<br>"                 
                 + "<br> <h2> Results: </h2>"
                 + "Modularity: " + f.format(modularity) + "<br>"
+                + "Modularity with resolution: " + f.format(modularityResolution) + "<br>"
                 + "Number of Communities: " + structure.communities.size()
                 + "<br /><br />"+imageFile
                 + "<br /><br />" + "<h2> Algorithm: </h2>"
@@ -570,7 +631,7 @@ public class Modularity implements Statistics, LongTask {
     }
 
     private double q(int node, Community community) {
-        Float edgesToFloat = structure.nodeConnections[node].get(community);
+        Float edgesToFloat = structure.nodeConnectionsWeight[node].get(community);
         double edgesTo = 0;
         if (edgesToFloat != null) {
             edgesTo = edgesToFloat.doubleValue();
