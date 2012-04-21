@@ -69,6 +69,7 @@ public class Modularity implements Statistics, LongTask {
     private boolean isCanceled;
     private CommunityStructure structure;
     private double modularity;
+    private double modularityResolution;
     private boolean isRandomized = false;
     private boolean useWeight = true;
     private double resolution = 1.;
@@ -373,7 +374,7 @@ public class Modularity implements Statistics, LongTask {
                         weightSum += 2.*weight;
                     else
                         weightSum += weight;
-                    Modularity.ModEdge e = new Modularity.ModEdge(index, target, weight);
+                    ModEdge e = new ModEdge(index, target, weight);
                     newTopology[index].add(e);
                 }
                 weights[index] = weightSum;
@@ -532,11 +533,13 @@ public class Modularity implements Statistics, LongTask {
             
         }
         
-        modularity = finalQ(comStructure, degreeCount, hgraph, attributeModel, totalWeight);
+        modularity = finalQ(comStructure, degreeCount, hgraph, attributeModel, totalWeight, 1.);
+        modularityResolution = finalQ(comStructure, degreeCount, hgraph, attributeModel, totalWeight, resolution);
+        
         hgraph.readUnlock();
     }
 
-    private double finalQ(int[] struct, double[] degrees, HierarchicalUndirectedGraph hgraph, AttributeModel attributeModel, double totalWeight) {
+    private double finalQ(int[] struct, double[] degrees, HierarchicalUndirectedGraph hgraph, AttributeModel attributeModel, double totalWeight, double usedResolution) {
         AttributeTable nodeTable = attributeModel.getNodeTable();
         AttributeColumn modCol = nodeTable.getColumn(MODULARITY_CLASS);
         if (modCol == null) {
@@ -565,7 +568,7 @@ public class Modularity implements Statistics, LongTask {
         }
         for (int i = 0; i < degrees.length; i++) {
             internal[i] /= 2.0;
-            res += (internal[i] / totalWeight) - Math.pow(degrees[i] / (2 * totalWeight), 2);
+            res += usedResolution * (internal[i] / totalWeight) - Math.pow(degrees[i] / (2 * totalWeight), 2);//HERE
         }
         return res;
     }
@@ -615,6 +618,7 @@ public class Modularity implements Statistics, LongTask {
                 + "Resolution:  " + (resolution) + "<br>"                 
                 + "<br> <h2> Results: </h2>"
                 + "Modularity: " + f.format(modularity) + "<br>"
+                + "Modularity with resolution: " + f.format(modularityResolution) + "<br>"
                 + "Number of Communities: " + structure.communities.size()
                 + "<br /><br />"+imageFile
                 + "<br /><br />" + "<h2> Algorithm: </h2>"
