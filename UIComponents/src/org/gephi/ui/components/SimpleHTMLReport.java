@@ -299,8 +299,8 @@ public class SimpleHTMLReport extends javax.swing.JDialog implements Printable {
 
         final String path = NbPreferences.forModule(SimpleHTMLReport.class).get(LAST_PATH, null);
         JFileChooser fileChooser = new JFileChooser(path);
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int result = fileChooser.showOpenDialog(WindowManager.getDefault().getMainWindow());
+      //fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int result = fileChooser.showSaveDialog(WindowManager.getDefault().getMainWindow());
         if (result == JFileChooser.APPROVE_OPTION) {
             final File destinationFolder = fileChooser.getSelectedFile();
             NbPreferences.forModule(SimpleHTMLReport.class).put(LAST_PATH, destinationFolder.getAbsolutePath());
