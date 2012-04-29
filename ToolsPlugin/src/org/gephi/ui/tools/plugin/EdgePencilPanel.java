@@ -1,52 +1,50 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
-
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.ui.tools.plugin;
 
 import java.awt.Color;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphController;
+import javax.swing.DefaultComboBoxModel;
 import org.gephi.ui.components.JColorButton;
-import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -54,10 +52,16 @@ import org.openide.util.Lookup;
  */
 public class EdgePencilPanel extends javax.swing.JPanel {
 
-    /** Creates new form EdgePencilPanel */
+    /**
+     * Creates new form EdgePencilPanel
+     */
     public EdgePencilPanel() {
         isDirected = true;
         initComponents();
+        typeComboBox.setModel(new DefaultComboBoxModel(new String[]{
+                    NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.type.directed"),
+                    NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.type.undirected")
+        }));
     }
 
     public void setStatus(String status) {
@@ -65,37 +69,35 @@ public class EdgePencilPanel extends javax.swing.JPanel {
     }
 
     public void setColor(Color color) {
-        ((JColorButton)colorButton).setColor(color);
+        ((JColorButton) colorButton).setColor(color);
     }
 
     public Color getColor() {
-        return ((JColorButton)colorButton).getColor();
+        return ((JColorButton) colorButton).getColor();
     }
 
     public float getWeight() {
-        return (Float)weightSpinner.getModel().getValue();
+        return (Float) weightSpinner.getModel().getValue();
     }
 
     public void setWeight(float weight) {
         weightSpinner.getModel().setValue(new Float(weight));
     }
-    
-    public void setType( boolean directed ) {
-        if ( directed ) {
+
+    public void setType(boolean directed) {
+        if (directed) {
             typeComboBox.setSelectedIndex(0);
         } else {
             typeComboBox.setSelectedIndex(1);
         }
     }
-    
-    public void enableTypeCombo( boolean enabled ) {
-            typeComboBox.setEnabled(enabled);
+
+    public void enableTypeCombo(boolean enabled) {
+        typeComboBox.setEnabled(enabled);
     }
-    
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+
+    /**
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -124,7 +126,6 @@ public class EdgePencilPanel extends javax.swing.JPanel {
         labelColor.setFont(labelColor.getFont().deriveFont((float)10));
         labelColor.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.labelColor.text")); // NOI18N
 
-        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Directed", "Undirected" }));
         typeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 typeComboBoxActionPerformed(evt);
@@ -140,7 +141,7 @@ public class EdgePencilPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
                 .addComponent(labelType)
                 .addGap(6, 6, 6)
                 .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -167,16 +168,13 @@ public class EdgePencilPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void typeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeComboBoxActionPerformed
-        // TODO add your handling code here:
-        if ( typeComboBox.getSelectedIndex() == 0 ) {
+        if (typeComboBox.getSelectedIndex() == 0) {
             isDirected = true;
         } else {
             isDirected = false;
         }
     }//GEN-LAST:event_typeComboBoxActionPerformed
-
     public boolean isDirected;
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton colorButton;
     private javax.swing.JLabel labelColor;
@@ -186,5 +184,4 @@ public class EdgePencilPanel extends javax.swing.JPanel {
     private javax.swing.JComboBox typeComboBox;
     private javax.swing.JSpinner weightSpinner;
     // End of variables declaration//GEN-END:variables
-
 }
