@@ -111,7 +111,7 @@ public class EdgeDataTable {
         table = new JXTable();
         prepareRenderers();
         table.setHighlighters(HighlighterFactory.createAlternateStriping());
-        table.setColumnControlVisible(true);
+        table.setColumnControlVisible(false);
         table.setSortable(true);
         table.setRowFilter(rowFilter);
 

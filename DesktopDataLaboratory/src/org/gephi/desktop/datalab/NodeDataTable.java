@@ -113,6 +113,7 @@ public class NodeDataTable {
         attributeColumnsController = Lookup.getDefault().lookup(AttributeColumnsController.class);
 
         outlineTable = new Outline();
+        outlineTable.setColumnHidingAllowed(false);
 
         quickFilter = new QuickFilter() {
 
