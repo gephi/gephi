@@ -46,10 +46,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gephi.datalab.api.GraphElementsController;
-import org.gephi.graph.api.DirectedGraph;
-import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.project.api.ProjectController;
@@ -126,6 +123,8 @@ public class EdgePencil implements Tool {
     public void unselect() {
         listeners = null;
         sourceNode = null;
+        color = edgePencilPanel.getColor();
+        weight = edgePencilPanel.getWeight();
     }
 
     public ToolEventListener[] getListeners() {

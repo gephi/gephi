@@ -56,7 +56,7 @@ public interface ToolController {
     /**
      * Selects <code>tool</code> as the active tool and therefore unselect the
      * current tool, if exists.
-     * @param tool  the tool that is to be selected
+     * @param tool  the tool that is to be selected or null to only unselect the current tool
      */
     public void select(Tool tool);
 
@@ -71,6 +71,4 @@ public interface ToolController {
      * @return      the properties bar component
      */
     public JComponent getPropertiesBar();
-
-
 }

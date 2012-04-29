@@ -139,7 +139,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     private AddonsBar addonsBar;
 
     private void initToolPanels() {
-        ToolController tc = Lookup.getDefault().lookup(ToolController.class);
+        final ToolController tc = Lookup.getDefault().lookup(ToolController.class);
         if (tc != null) {
             if (VizController.getInstance().getVizConfig().isToolbar()) {
                 JPanel westPanel = new JPanel(new BorderLayout(0, 0));
@@ -200,6 +200,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
             public void disable() {
                 toolbar.setEnabled(false);
+                tc.select(null);//Unselect any selected tool
                 propertiesBar.setEnabled(false);
                 actionsToolbar.setEnabled(false);
                 selectionToolbar.setEnabled(false);
