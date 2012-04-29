@@ -86,7 +86,7 @@ public class ProcessingGraphics extends PGraphicsJava2D {
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
             rectMode(PGraphics.CENTER);
             if (background != null) {
-                background(background.getRed(), background.getGreen(), background.getBlue());
+                background(background.getRed(), background.getGreen(), background.getBlue(), background.getAlpha());
             }
             
             // user zoom

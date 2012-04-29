@@ -41,6 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.exporter.preview;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 import javax.imageio.ImageIO;
@@ -80,15 +81,16 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
         
         PreviewController controller = Lookup.getDefault().lookup(PreviewController.class);
         controller.getModel(workspace).getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, 1.0);
-        controller.refreshPreview(workspace);
         
         PreviewProperties props = controller.getModel(workspace).getProperties();
         props.putValue("width", width);
         props.putValue("height", height);
+        Color oldColor = props.getColorValue(PreviewProperty.BACKGROUND_COLOR);
         if (transparentBackground) {
-            props.putValue(PreviewProperty.BACKGROUND_COLOR, null);
+            props.putValue(PreviewProperty.BACKGROUND_COLOR, new Color(255, 255, 255, 0));//White transparent
         }
         props.putValue(PreviewProperty.MARGIN, new Float((float) margin));
+        controller.refreshPreview(workspace);
         target = (ProcessingTarget) controller.getRenderTarget(RenderTarget.PROCESSING_TARGET, workspace);
         if (target instanceof LongTask) {
             ((LongTask) target).setProgressTicket(progress);
@@ -109,6 +111,7 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
             ImageIO.write(img, "png", stream);
             stream.close();
             
+            props.putValue(PreviewProperty.BACKGROUND_COLOR, oldColor);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
