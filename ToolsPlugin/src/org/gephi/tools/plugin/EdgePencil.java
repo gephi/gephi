@@ -46,6 +46,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.gephi.graph.api.DirectedGraph;
+import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -98,15 +99,23 @@ public class EdgePencil implements Tool {
 
             public void clickNodes(Node[] nodes) {
                 Node n = nodes[0];
+                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+                Graph graph = gc.getModel().getGraph();
+                if ( graph instanceof MixedGraph ) {
+                    edgePencilPanel.enableTypeCombo(true);
+                    edgePencilPanel.setType(true);
+                } else {
+                    edgePencilPanel.enableTypeCombo(false);
+                    edgePencilPanel.setType(graph instanceof DirectedGraph);
+                }
+                    
                 if (sourceNode == null) {
                     sourceNode = n;
                     edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status2"));
                 } else {
                     color = edgePencilPanel.getColor();
                     weight = edgePencilPanel.getWeight();
-                    GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                    Graph graph = gc.getModel().getGraph();
-                    boolean directed = graph instanceof DirectedGraph;
+                    boolean directed = edgePencilPanel.isDirected;
                     Edge edge = gc.getModel().factory().newEdge(sourceNode, n, weight, directed);
                     edge.getEdgeData().setR(color.getRed() / 255f);
                     edge.getEdgeData().setG(color.getGreen() / 255f);
@@ -138,6 +147,14 @@ public class EdgePencil implements Tool {
                 edgePencilPanel.setColor(color);
                 edgePencilPanel.setWeight(weight);
                 edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
+                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+                Graph graph = gc.getModel().getGraph();
+                if ( graph instanceof MixedGraph ) {
+                    edgePencilPanel.enableTypeCombo(true);
+                } else {
+                    edgePencilPanel.enableTypeCombo(false);
+                    edgePencilPanel.setType(graph instanceof DirectedGraph);
+                }
                 return edgePencilPanel;
             }
 
