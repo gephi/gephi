@@ -44,6 +44,7 @@ package org.gephi.ui.tools.plugin;
 
 import java.awt.Color;
 import org.gephi.ui.components.JColorButton;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -51,13 +52,33 @@ import org.gephi.ui.components.JColorButton;
  */
 public class EdgePencilPanel extends javax.swing.JPanel {
 
+    private String strDirected;
+    private String strUndirected;
+
     /** Creates new form EdgePencilPanel */
     public EdgePencilPanel() {
         initComponents();
+        
+        strDirected = NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.typeComboBox.directed");
+        strUndirected = NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.typeComboBox.undirected");
+        typeComboBox.addItem(strDirected);
+        typeComboBox.addItem(strUndirected);
     }
 
     public void setStatus(String status) {
         statusLabel.setText(status);
+    }
+
+    public void setIsTypeDirected(boolean directed) {
+        if (directed) {
+            typeComboBox.setSelectedItem(strDirected);
+        } else {
+            typeComboBox.setSelectedItem(strUndirected);
+        }
+    }
+
+    public boolean isTypeDirected() {
+        return (typeComboBox.getSelectedItem() == strDirected);
     }
 
     public void setColor(Color color) {
@@ -90,6 +111,8 @@ public class EdgePencilPanel extends javax.swing.JPanel {
         labelWeight = new javax.swing.JLabel();
         colorButton = new JColorButton(Color.BLACK);
         labelColor = new javax.swing.JLabel();
+        typeComboBox = new javax.swing.JComboBox();
+        labelType = new javax.swing.JLabel();
 
         statusLabel.setFont(statusLabel.getFont().deriveFont((float)10));
         statusLabel.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.statusLabel.text")); // NOI18N
@@ -106,6 +129,11 @@ public class EdgePencilPanel extends javax.swing.JPanel {
         labelColor.setFont(labelColor.getFont().deriveFont((float)10));
         labelColor.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.labelColor.text")); // NOI18N
 
+        typeComboBox.setFont(typeComboBox.getFont().deriveFont((float)10));
+
+        labelType.setFont(labelType.getFont().deriveFont((float)10));
+        labelType.setText(org.openide.util.NbBundle.getMessage(EdgePencilPanel.class, "EdgePencilPanel.labelType.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -113,7 +141,11 @@ public class EdgePencilPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 185, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
+                .addComponent(labelType)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labelColor)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -124,12 +156,16 @@ public class EdgePencilPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(weightSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(labelWeight, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(labelColor, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(weightSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelWeight, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelColor, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelType))
+                .addGap(16, 16, 16))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -137,8 +173,10 @@ public class EdgePencilPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton colorButton;
     private javax.swing.JLabel labelColor;
+    private javax.swing.JLabel labelType;
     private javax.swing.JLabel labelWeight;
     private javax.swing.JLabel statusLabel;
+    private javax.swing.JComboBox typeComboBox;
     private javax.swing.JSpinner weightSpinner;
     // End of variables declaration//GEN-END:variables
 

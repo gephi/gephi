@@ -45,9 +45,7 @@ import java.awt.Color;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.Node;
 import org.gephi.tools.spi.MouseClickEventListener;
@@ -74,6 +72,7 @@ public class EdgePencil implements Tool {
     //Settings
     private Color color;
     private float weight;
+    private boolean directed;
     //State
     private Node sourceNode;
 
@@ -81,6 +80,7 @@ public class EdgePencil implements Tool {
         //Default settings
         color = Color.BLACK;
         weight = 1f;
+        directed = true;
     }
 
     public void select() {
@@ -104,16 +104,25 @@ public class EdgePencil implements Tool {
                 } else {
                     color = edgePencilPanel.getColor();
                     weight = edgePencilPanel.getWeight();
+                    directed = edgePencilPanel.isTypeDirected();
+
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
-                    Graph graph = gc.getModel().getGraph();
-                    boolean directed = graph instanceof DirectedGraph;
                     Edge edge = gc.getModel().factory().newEdge(sourceNode, n, weight, directed);
                     edge.getEdgeData().setR(color.getRed() / 255f);
                     edge.getEdgeData().setG(color.getGreen() / 255f);
                     edge.getEdgeData().setB(color.getBlue() / 255f);
-                    graph.addEdge(edge);
-                    sourceNode = null;
-                    edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
+
+                    boolean addedEdge;
+                    if (directed) {
+                        addedEdge = gc.getModel().getDirectedGraph().addEdge(edge);
+                    } else {
+                        addedEdge = gc.getModel().getUndirectedGraph().addEdge(edge);
+                    }
+
+                    if (addedEdge) {
+                        sourceNode = null;
+                        edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
+                    }
                 }
             }
         };
@@ -137,6 +146,9 @@ public class EdgePencil implements Tool {
                 edgePencilPanel = new EdgePencilPanel();
                 edgePencilPanel.setColor(color);
                 edgePencilPanel.setWeight(weight);
+                GraphController gc = Lookup.getDefault().lookup(GraphController.class);
+                directed = gc.getModel().isDirected();
+                edgePencilPanel.setIsTypeDirected(directed);
                 edgePencilPanel.setStatus(NbBundle.getMessage(EdgePencil.class, "EdgePencil.status1"));
                 return edgePencilPanel;
             }
