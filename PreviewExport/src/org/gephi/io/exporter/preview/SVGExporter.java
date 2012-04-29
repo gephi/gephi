@@ -41,6 +41,7 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.exporter.preview;
 
+import java.io.File;
 import java.io.Writer;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
@@ -115,6 +116,10 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
         Progress.finish(progress);
 
         return !cancel;
+    }
+
+    public void setFile(File file) {
+        //this.file = file;
     }
 
     public boolean cancel() {

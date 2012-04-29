@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.io.exporter.preview;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.OutputStream;
 import javax.imageio.ImageIO;
 import org.gephi.io.exporter.spi.ByteExporter;
@@ -165,6 +166,10 @@ public class PNGExporter implements VectorExporter, ByteExporter, LongTask {
         this.stream = stream;
     }
     
+    public void setFile(File file) {
+        //this.file = file;
+    }
+
     public boolean cancel() {
         cancel = true;
         if (target instanceof LongTask) {

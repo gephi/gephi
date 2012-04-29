@@ -232,7 +232,8 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
             pdfExporter.setPageSize(((PageSizeItem) pageSizeCombo.getSelectedItem()).getPageSize());
         }
 
-        pdfExporter.setLandscape(landscapeRadio.isSelected());
+        pdfExporter.setLandscape(landscapeRadio.isSelected());      
+        pdfExporter.setViewPDF(viewPDFCheck.isSelected());
 
         double top = pdfExporter.getMarginTop();
         double bottom = pdfExporter.getMarginBottom();
@@ -448,6 +449,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
         rightMargintextField = new javax.swing.JTextField();
         labelUnit = new javax.swing.JLabel();
         unitLink = new org.jdesktop.swingx.JXHyperlink();
+        viewPDFCheck = new javax.swing.JCheckBox();
 
         labelPageSize.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.labelPageSize.text")); // NOI18N
 
@@ -499,6 +501,10 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
         unitLink.setToolTipText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.unitLink.toolTipText")); // NOI18N
         unitLink.setFocusPainted(false);
 
+        viewPDFCheck.setSelected(true);
+        viewPDFCheck.setText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.viewPDFCheck.text")); // NOI18N
+        viewPDFCheck.setToolTipText(org.openide.util.NbBundle.getMessage(UIExporterPDFPanel.class, "UIExporterPDFPanel.viewPDFCheck.toolTipText")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -506,10 +512,6 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelUnit)
-                        .addGap(62, 62, 62)
-                        .addComponent(unitLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(labelPageSize)
@@ -520,7 +522,6 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(landscapeRadio, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(portraitRadio, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(labelHeight)
@@ -529,11 +530,14 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(heightTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(widthTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addGap(10, 10, 10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(widthUnitLabel)
                                     .addComponent(heightUnitLabel)))
-                            .addComponent(pageSizeCombo, 0, 224, Short.MAX_VALUE)
+                            .addComponent(pageSizeCombo, 0, 231, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(portraitRadio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(123, 123, 123))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -551,7 +555,15 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
                                 .addGap(21, 21, 21)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(leftMarginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(rightMargintextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(rightMargintextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(labelUnit)
+                                .addGap(62, 62, 62)
+                                .addComponent(unitLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(viewPDFCheck))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -594,6 +606,8 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
                     .addComponent(labelBottom)
                     .addComponent(labelRight)
                     .addComponent(rightMargintextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(viewPDFCheck)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -718,6 +732,7 @@ public class UIExporterPDFPanel extends javax.swing.JPanel implements Validation
     private javax.swing.JTextField rightMargintextField;
     private javax.swing.JTextField topMarginTextField;
     private org.jdesktop.swingx.JXHyperlink unitLink;
+    private javax.swing.JCheckBox viewPDFCheck;
     private javax.swing.JTextField widthTextField;
     private javax.swing.JLabel widthUnitLabel;
     // End of variables declaration//GEN-END:variables
