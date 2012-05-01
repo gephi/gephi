@@ -170,8 +170,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
     }
 
     /**
-     * Shows the refresh notification when the structure of the workspace graph
-     * has changed.
+     * Shows the refresh notification when the structure of the workspace graph has changed.
      *
      * @param event
      * @see GraphListener#graphChanged(org.gephi.graph.api.GraphEvent)
@@ -188,23 +187,25 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
      * Refreshes the preview applet.
      */
     public void refreshPreview() {
-        Thread refreshThread = new Thread(new Runnable() {
+        if (model != null) {
+            Thread refreshThread = new Thread(new Runnable() {
 
-            public void run() {
-                model.setRefreshing(true);
-                fireEvent(REFRESHING, true);
+                public void run() {
+                    model.setRefreshing(true);
+                    fireEvent(REFRESHING, true);
 
-                previewController.getModel().getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, model.getVisibilityRatio());
-                previewController.refreshPreview();
+                    previewController.getModel().getProperties().putValue(PreviewProperty.VISIBILITY_RATIO, model.getVisibilityRatio());
+                    previewController.refreshPreview();
 
-                fireEvent(REFRESHED, model);
+                    fireEvent(REFRESHED, model);
 
-                model.setRefreshing(false);
-                fireEvent(REFRESHING, false);
-                fireEvent(GRAPH_CHANGED, false);
-            }
-        }, "Refresh Preview");
-        refreshThread.start();
+                    model.setRefreshing(false);
+                    fireEvent(REFRESHING, false);
+                    fireEvent(GRAPH_CHANGED, false);
+                }
+            }, "Refresh Preview");
+            refreshThread.start();
+        }
     }
 
     /**
@@ -259,7 +260,7 @@ public class PreviewUIControllerImpl implements PreviewUIController, GraphListen
             for (PreviewProperty p : previewModel.getProperties().getProperties()) {
                 map.put(p.getName(), p.getValue());
             }
-            for(Entry<String,Object> p:previewModel.getProperties().getSimpleValues()){
+            for (Entry<String, Object> p : previewModel.getProperties().getSimpleValues()) {
                 map.put(p.getKey(), p.getValue());
             }
             PreviewPreset preset = new PreviewPreset(name, map);
