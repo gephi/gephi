@@ -185,7 +185,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
             }
         });
 
-        settingsButon.addActionListener(new ActionListener() {
+        settingsButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 //Create popup
@@ -236,7 +236,27 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 });
                 menu.add(animationItem);
 
-                menu.show(settingsButon, 0, -menu.getPreferredSize().height);
+                //Date format
+                Image dateFormatIcon = ImageUtilities.loadImage("org/gephi/desktop/timeline/resources/time_format_small.png", false);
+                JMenuItem dateFormatItem = new JMenuItem(NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.settings.setTimeFormat"),
+                        ImageUtilities.image2Icon(dateFormatIcon));
+                dateFormatItem.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        TimeFormatDialog d = new TimeFormatDialog();
+                        d.setup(model);
+                        String title = NbBundle.getMessage(TimeFormatDialog.class, "TimeFormatDialog.title");
+                        final DialogDescriptor descriptor = new DialogDescriptor(d, title);
+                        Object result = DialogDisplayer.getDefault().notify(descriptor);
+                        if (result == NotifyDescriptor.OK_OPTION) {
+                            d.unsetup();
+                        }
+                    }
+                });
+                menu.add(dateFormatItem);
+
+                
+                menu.show(settingsButton, 0, -menu.getPreferredSize().height);
             }
         });
 
@@ -349,7 +369,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         innerToolbar = new javax.swing.JToolBar(JToolBar.VERTICAL);
         disableButon = new javax.swing.JButton();
         columnsButton = new javax.swing.JButton();
-        settingsButon = new javax.swing.JButton();
+        settingsButton = new javax.swing.JButton();
         timelinePanel = new org.gephi.desktop.timeline.TimelineDrawer();
         closeButton = new CloseButton();
 
@@ -429,12 +449,12 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         columnsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         innerToolbar.add(columnsButton);
 
-        settingsButon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/settings.png"))); // NOI18N
-        settingsButon.setFocusable(false);
-        settingsButon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        settingsButon.setIconTextGap(0);
-        settingsButon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        innerToolbar.add(settingsButon);
+        settingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/settings.png"))); // NOI18N
+        settingsButton.setFocusable(false);
+        settingsButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        settingsButton.setIconTextGap(0);
+        settingsButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        innerToolbar.add(settingsButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -490,7 +510,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
     private javax.swing.JPanel innerPanel;
     private javax.swing.JToolBar innerToolbar;
     private javax.swing.JToggleButton playButton;
-    private javax.swing.JButton settingsButon;
+    private javax.swing.JButton settingsButton;
     private transient javax.swing.JPanel timelinePanel;
     private javax.swing.JToolBar toolbarEnable;
     // End of variables declaration//GEN-END:variables

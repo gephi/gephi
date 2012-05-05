@@ -170,6 +170,7 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
             double max = timeInterval.getHigh();
             fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.INTERVAL, model, new double[]{min, max}));
         } else if (event.getEventType().equals(DynamicModelEvent.EventType.TIME_FORMAT)) {
+            fireTimelineModelEvent(new TimelineModelEvent(TimelineModelEvent.EventType.MODEL, model, null)); //refresh display
         }
     }
 

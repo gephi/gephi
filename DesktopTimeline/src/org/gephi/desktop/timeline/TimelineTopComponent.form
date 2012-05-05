@@ -195,7 +195,7 @@
                         <Property name="verticalTextPosition" type="int" value="3"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JButton" name="settingsButon">
+                    <Component class="javax.swing.JButton" name="settingsButton">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/org/gephi/desktop/timeline/resources/settings.png"/>
