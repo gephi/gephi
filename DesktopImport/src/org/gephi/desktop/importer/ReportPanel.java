@@ -42,6 +42,7 @@ Portions Copyrighted 2011 Gephi Consortium.
 package org.gephi.desktop.importer;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
@@ -163,12 +164,30 @@ public class ReportPanel extends javax.swing.JPanel {
     public void setData(Report report, Container container) {
         this.container = container;
         initProcessorsUI();
-        report.pruneReport(ISSUES_LIMIT);
-        fillIssues(report);
-        fillReport(report);
+        if(report.getIssues().isEmpty()) {
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    public void run() {
+                        removeTabbedPane();
+                    }
+                });
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (InvocationTargetException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        } else {
+            report.pruneReport(ISSUES_LIMIT);
+            fillIssues(report);
+            fillReport(report);
+        }
         fillStats(container);
         autoscaleCheckbox.setSelected(container.isAutoScale());
         createMissingNodesCheckbox.setSelected(container.getUnloader().allowAutoNode());
+    }
+    
+    private void removeTabbedPane() {
+        tabbedPane.setVisible(false);
     }
 
     private void fillIssues(Report report) {
