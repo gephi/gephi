@@ -143,8 +143,8 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         graph.readUnlock();
         return !cancel;
     }
-
-    void printOpen(String s) throws IOException {
+    
+    private void printOpen(String s) throws IOException {
         for (int i = 0; i < currentSpaces; i++) {
             writer.write(' ');
         }
@@ -157,7 +157,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
         currentSpaces += spaces;
     }
 
-    void printClose() throws IOException {
+    private void printClose() throws IOException {
         currentSpaces -= spaces;
 
         for (int i = 0; i < currentSpaces; i++) {
@@ -167,14 +167,14 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
 
     }
 
-    void printTag(String s) throws IOException {
+    private void printTag(String s) throws IOException {
         for (int i = 0; i < currentSpaces; i++) {
             writer.write(' ');
         }
         writer.write(s + "\n");
     }
 
-    void exportData(Graph graph) throws IOException {
+    private void exportData(Graph graph) throws IOException {
         printOpen("graph");
         printTag("Creator Gephi");
         if (graph.getGraphModel().isDirected()) {
@@ -199,9 +199,9 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
 
     private void printEdge(Edge edge, boolean graphMixed) throws IOException {
         printOpen("edge");
-        printTag("id \"" + edge.getEdgeData().getId() + "\"");
-        printTag("source \"" + edge.getSource().getNodeData().getId() + "\"");
-        printTag("target \"" + edge.getTarget().getNodeData().getId() + "\"");
+        printTag("id " + edge.getId());
+        printTag("source " + edge.getSource().getId());
+        printTag("target " + edge.getTarget().getId());
         if (exportLabel && edge.getEdgeData().getLabel() != null) {
             printTag("label \"" + edge.getEdgeData().getLabel() + "\"");
         }
@@ -235,7 +235,7 @@ public class ExporterGML implements GraphExporter, CharacterExporter, LongTask {
 
     private void printNode(Node node) throws IOException {
         printOpen("node");
-        printTag("id \"" + node.getNodeData().getId() + "\"");
+        printTag("id " + node.getId());
         if (exportLabel && node.getNodeData().getLabel() != null) {
             printTag("label \"" + node.getNodeData().getLabel() + "\"");
         }
