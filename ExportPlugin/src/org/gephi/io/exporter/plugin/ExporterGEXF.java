@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.exporter.plugin;
 
@@ -50,13 +50,7 @@ import java.util.List;
 import javanet.staxutils.IndentingXMLStreamWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeRow;
-import org.gephi.data.attributes.api.AttributeTable;
-import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.api.*;
 import org.gephi.data.attributes.type.DynamicType;
 import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.TimeInterval;
@@ -65,16 +59,7 @@ import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicController;
 import org.gephi.dynamic.api.DynamicModel;
-import org.gephi.graph.api.DirectedGraph;
-import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.EdgeIterable;
-import org.gephi.graph.api.Graph;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalGraph;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
-import org.gephi.graph.api.NodeIterable;
-import org.gephi.graph.api.UndirectedGraph;
+import org.gephi.graph.api.*;
 import org.gephi.io.exporter.api.FileType;
 import org.gephi.io.exporter.spi.CharacterExporter;
 import org.gephi.io.exporter.spi.GraphExporter;
@@ -87,7 +72,7 @@ import org.openide.util.NbBundle;
 
 /**
  *
- * @author Mathieu Bastian
+ * @author Mathieu Bastian, Sébastien Heymann
  */
 public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask {
 
@@ -174,7 +159,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     public boolean execute() {
         attributeModel = workspace.getLookup().lookup(AttributeModel.class);
         graphModel = workspace.getLookup().lookup(GraphModel.class);
-        HierarchicalGraph graph = null;
+        dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
+        HierarchicalGraph graph;
         if (exportVisible) {
             graph = graphModel.getHierarchicalGraphVisible();
         } else {
@@ -182,6 +168,9 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         }
         Progress.start(progress);
         graph.readLock();
+        
+        //Is it a dynamic graph?
+        exportDynamic = exportDynamic && dynamicModel.isDynamicGraph();
 
         //Options
         if (normalize) {
@@ -253,7 +242,9 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
 
     private void writeGraph(XMLStreamWriter xmlWriter, HierarchicalGraph graph) throws Exception {
         xmlWriter.writeStartElement(GRAPH);
-        xmlWriter.writeAttribute(GRAPH_DEFAULT_EDGETYPE, graph instanceof DirectedGraph ? "directed" : graph instanceof UndirectedGraph ? "undirected" : "mixed");
+        if (!(graph instanceof MixedGraph)) {
+            xmlWriter.writeAttribute(GRAPH_DEFAULT_EDGETYPE, graph instanceof DirectedGraph ? "directed" : "undirected");
+        }
 
         if (exportDynamic) {
             if (!Double.isInfinite(visibleInterval.getLow())) {
@@ -264,8 +255,8 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 String intervalHigh = formatTime(visibleInterval.getHigh());
                 xmlWriter.writeAttribute(GRAPH_END, intervalHigh);
             }
-            String timeFormat = dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE) ? "date" : 
-                    dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATETIME) ? "datetime" : "double";
+            String timeFormat = dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATE) ? "date"
+                    : dynamicModel.getTimeFormat().equals(DynamicModel.TimeFormat.DATETIME) ? "datetime" : "double";
             xmlWriter.writeAttribute(GRAPH_TIMEFORMAT, timeFormat);
         }
         xmlWriter.writeAttribute(GRAPH_MODE, exportDynamic ? "dynamic" : "static");
@@ -283,7 +274,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         xmlWriter.writeAttribute(META_LASTMODIFIEDDATE, getDateTime());
 
         xmlWriter.writeStartElement(META_CREATOR);
-        xmlWriter.writeCharacters("Gephi 0.8");
+        xmlWriter.writeCharacters("Gephi 0.8.1");
         xmlWriter.writeEndElement();
 
         xmlWriter.writeStartElement(META_DESCRIPTION);
@@ -321,7 +312,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     }
 
     private void writeAttributes(XMLStreamWriter xmlWriter, AttributeColumn[] cols, String mode, String attClass) throws Exception {
-        if(exportAttributes && cols.length != 0) {
+        if (exportAttributes && cols.length != 0) {
             xmlWriter.writeStartElement(ATTRIBUTES);
             xmlWriter.writeAttribute(ATTRIBUTES_CLASS, attClass);
             xmlWriter.writeAttribute(ATTRIBUTES_MODE, mode);
@@ -371,7 +362,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         }
         xmlWriter.writeStartElement(NODES);
 
-        AttributeColumn dynamicCol = dynamicCol = attributeModel.getNodeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
+        AttributeColumn dynamicCol = attributeModel.getNodeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
 
         NodeIterable nodeIterable = exportHierarchy ? graph.getNodesTree() : graph.getNodes();
         for (Node node : nodeIterable) {
@@ -429,7 +420,9 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         for (AttributeValue val : row.getValues()) {
             AttributeColumn col = val.getColumn();
             if (!col.getOrigin().equals(AttributeOrigin.PROPERTY)
-                    || (exportDynamic && col.getOrigin().equals(AttributeOrigin.PROPERTY) && col.getIndex() == PropertiesColumn.EDGE_WEIGHT.getIndex())) {
+                    || (exportDynamic && col.getType().isDynamicType()
+                    && col.getOrigin().equals(AttributeOrigin.PROPERTY)
+                    && col.getIndex() == PropertiesColumn.EDGE_WEIGHT.getIndex())) {
                 AttributeType type = col.getType();
                 if (type.isDynamicType()) {
                     DynamicType dynamicValue = (DynamicType) val.getValue();
@@ -559,7 +552,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
         }
         xmlWriter.writeStartElement(EDGES);
 
-        AttributeColumn dynamicCol = dynamicCol = attributeModel.getEdgeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
+        AttributeColumn dynamicCol = attributeModel.getEdgeTable().getColumn(DynamicModel.TIMEINTERVAL_COLUMN);
 
         EdgeIterable edgeIterable = exportHierarchy ? graph.getEdgesTree() : graph.getEdgesAndMetaEdges();
         for (Edge edge : edgeIterable) {
@@ -582,9 +575,12 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
                 xmlWriter.writeAttribute(EDGE_LABEL, label);
             }
 
-            float weight = edge.getWeight();
-            if (weight != 1f) {
-                xmlWriter.writeAttribute(EDGE_WEIGHT, "" + weight);
+            AttributeColumn weightCol = attributeModel.getEdgeTable().getColumn(EDGE_WEIGHT);
+            if(weightCol != null && !weightCol.getType().isDynamicType()) {
+                float weight = edge.getWeight();
+                if (weight != 1f) {
+                    xmlWriter.writeAttribute(EDGE_WEIGHT, "" + weight);
+                }
             }
 
             if (exportDynamic && dynamicCol != null && visibleInterval != null) {
