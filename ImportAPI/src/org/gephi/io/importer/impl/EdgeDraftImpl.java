@@ -206,6 +206,8 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
                 if (container.getTimeFormat().equals(TimeFormat.DATE) ||
                         container.getTimeFormat().equals(TimeFormat.DATETIME)) {
                     start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
+                } else if(container.getTimeFormat().equals(TimeFormat.TIMESTAMP)) {
+                    start = Double.parseDouble(dateFrom + "000");
                 } else {
                     start = Double.parseDouble(dateFrom);
                 }
@@ -218,6 +220,8 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
                 if (container.getTimeFormat().equals(TimeFormat.DATE) ||
                         container.getTimeFormat().equals(TimeFormat.DATETIME)) {
                     end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
+                } else if(container.getTimeFormat().equals(TimeFormat.TIMESTAMP)) {
+                    start = Double.parseDouble(dateTo + "000");
                 } else {
                     end = Double.parseDouble(dateTo);
                 }
@@ -261,6 +265,8 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
                 if (container.getTimeFormat().equals(TimeFormat.DATE) ||
                         container.getTimeFormat().equals(TimeFormat.DATETIME)) {
                     start = DynamicUtilities.getDoubleFromXMLDateString(dateFrom);
+                } else if(container.getTimeFormat().equals(TimeFormat.TIMESTAMP)) {
+                    start = Double.parseDouble(dateFrom + "000");
                 } else {
                     start = Double.parseDouble(dateFrom);
                 }
@@ -274,6 +280,8 @@ public class EdgeDraftImpl implements EdgeDraft, EdgeDraftGetter {
                 if (container.getTimeFormat().equals(TimeFormat.DATE) ||
                         container.getTimeFormat().equals(TimeFormat.DATETIME)) {
                     end = DynamicUtilities.getDoubleFromXMLDateString(dateTo);
+                } else if(container.getTimeFormat().equals(TimeFormat.TIMESTAMP)) {
+                    start = Double.parseDouble(dateTo + "000");
                 } else {
                     end = Double.parseDouble(dateTo);
                 }

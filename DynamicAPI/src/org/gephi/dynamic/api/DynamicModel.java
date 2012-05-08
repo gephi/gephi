@@ -82,11 +82,11 @@ public interface DynamicModel {
 
     /**
      * The way the time is represented, either a simple real value (DOUBLE),
-     * a date or a datetime.
+     * a unix timestamp, a date or a datetime.
      */
     public enum TimeFormat {
 
-        DATE, DATETIME, DOUBLE
+        DATE, DATETIME, DOUBLE, TIMESTAMP
     };
 
     /**

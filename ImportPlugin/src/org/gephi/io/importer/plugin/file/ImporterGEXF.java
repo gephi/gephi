@@ -182,8 +182,12 @@ public class ImporterGEXF implements FileImporter, LongTask {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version10"), Issue.Level.INFO));
         } else if (!version.isEmpty() && version.equals("1.1")) {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version11"), Issue.Level.INFO));
-        } else {
+        } else if (!version.isEmpty() && version.equals("1.2")) {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version12"), Issue.Level.INFO));
+        } else if (!version.isEmpty() && version.equals("1.3")) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version13"), Issue.Level.INFO));
+        } else {
+            report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_version_undef"), Issue.Level.WARNING));
         }
     }
 
@@ -230,6 +234,8 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 container.setTimeFormat(TimeFormat.DATE);
             } else if ("datetime".equalsIgnoreCase(timeFormat)) {
                 container.setTimeFormat(TimeFormat.DATETIME);
+            } else if ("timestamp".equalsIgnoreCase(timeFormat)) {
+                container.setTimeFormat(TimeFormat.TIMESTAMP);
             }
         } else if (mode.equalsIgnoreCase("dynamic")) {
             container.setTimeFormat(TimeFormat.DOUBLE);
