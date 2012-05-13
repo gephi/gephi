@@ -222,7 +222,7 @@ public class ImporterDOT implements FileImporter, LongTask {
                         } else {
                             try {
                                 String[] colors = streamTokenizer.sval.split(" ");
-                                nodeDraft.setColor(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2]));
+                                nodeDraft.setColor(Color.getHSBColor(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2])));
                             } catch (Exception e) {
                             }
                         }
@@ -369,7 +369,7 @@ public class ImporterDOT implements FileImporter, LongTask {
                         } else {
                             try {
                                 String[] colors = streamTokenizer.sval.split(" ");
-                                edge.setColor(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2]));
+                                edge.setColor(Color.getHSBColor(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2])));
                             } catch (Exception e) {
                             }
                         }
