@@ -201,6 +201,7 @@ public class ImporterDOT implements FileImporter, LongTask {
                   String[] colors = sval.split(" ");
                   return Color.getHSBColor(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2]));
             } catch (Exception e) {
+                  report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_color_labelunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
             }
         }
         return null;
