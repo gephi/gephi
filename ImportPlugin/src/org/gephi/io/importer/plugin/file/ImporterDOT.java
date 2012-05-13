@@ -194,6 +194,8 @@ public class ImporterDOT implements FileImporter, LongTask {
     protected Color parseColor(String sval) throws Exception {
         if (colorTable.containsKey(sval)) {
             return colorTable.get(sval);
+        } else if (sval.charAt(0) == '#') {
+            return new Color(Integer.parseInt(sval.substring(1, 9), 16));
         } else {
             try {
                   String[] colors = sval.split(" ");
