@@ -75,6 +75,12 @@ public class ImporterDOT implements FileImporter, LongTask {
     private Map<String, Color> colorTable = new HashMap<String, Color>();
     private String graphName = "";
 
+    private static class ParseException extends RuntimeException {
+        public ParseException() {
+            super("Parse error while parsing DOT file");
+        }
+    }
+
     public boolean execute(ContainerLoader container) {
         this.container = container;
         this.report = new Report();
@@ -191,26 +197,23 @@ public class ImporterDOT implements FileImporter, LongTask {
         return container.getNode(id);
     }
 
-    protected Color parseColor(String sval) throws Exception {
-        if (colorTable.containsKey(sval)) {
-            return colorTable.get(sval);
-        } else if (sval.charAt(0) == '#') {
-            return new Color(Integer.parseInt(sval.substring(1, 9), 16));
+    protected Color parseColor(StreamTokenizer streamTokenizer) throws Exception {
+        if (streamTokenizer.ttype == '#') {
+            streamTokenizer.nextToken();
+            return new Color(Integer.parseInt(streamTokenizer.sval, 16));
+        } else if (streamTokenizer.ttype != StreamTokenizer.TT_WORD && streamTokenizer.ttype != '"') {
+            throw new ParseException();
+        } else if (colorTable.containsKey(streamTokenizer.sval)) {
+            return colorTable.get(streamTokenizer.sval);
         } else {
-            try {
-                  String[] colors = sval.split(" ");
-                  if (colors.length() != 3)
-                       colors = sval.split(",");
+            String[] colors = streamTokenizer.sval.split(" ");
+            if (colors.length != 3)
+                 colors = streamTokenizer.sval.split(",");
+            if (colors.length != 3)
+                 throw new ParseException();
 
-                  if (colors.length() != 3)
-                       report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_color_labelunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
-
-                  return Color.getHSBColor(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2]));
-            } catch (Exception e) {
-                  report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_color_labelunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
-            }
+            return Color.getHSBColor(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2]));
         }
-        return null;
     }
 
     protected void nodeAttributes(StreamTokenizer streamTokenizer, final NodeDraft nodeDraft) throws Exception {
@@ -238,9 +241,9 @@ public class ImporterDOT implements FileImporter, LongTask {
                 streamTokenizer.nextToken();
                 if (streamTokenizer.ttype == '=') {
                     streamTokenizer.nextToken();
-                    if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
-                        nodeDraft.setColor(parseColor(streamTokenizer.sval));
-                    } else {
+                    try {
+                        nodeDraft.setColor(parseColor(streamTokenizer));
+                    } catch (ParseException e) {
                         report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_colorunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
                         streamTokenizer.pushBack();
                     }
@@ -376,11 +379,10 @@ public class ImporterDOT implements FileImporter, LongTask {
             } else if (streamTokenizer.sval.equalsIgnoreCase("color")) {
                 streamTokenizer.nextToken();
                 if (streamTokenizer.ttype == '=') {
-                    streamTokenizer.nextToken();
-                    if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
-                        edge.setColor(parseColor(streamTokenizer.sval));
-                    } else {
-                        report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_color_labelunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+                    try {
+                        edge.setColor(parseColor(streamTokenizer));
+                    } catch (ParseException e) {
+                        report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_error_colorunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
                         streamTokenizer.pushBack();
                     }
                 } else {
