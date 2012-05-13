@@ -200,7 +200,7 @@ public class ImporterDOT implements FileImporter, LongTask {
     protected Color parseColor(StreamTokenizer streamTokenizer) throws Exception {
         if (streamTokenizer.ttype == '#') {
             streamTokenizer.nextToken();
-            return new Color(Integer.parseInt(streamTokenizer.sval, 16));
+            return new Color(Integer.parseInt(streamTokenizer.sval, 16), true);
         } else if (streamTokenizer.ttype != StreamTokenizer.TT_WORD && streamTokenizer.ttype != '"') {
             throw new ParseException();
         } else if (colorTable.containsKey(streamTokenizer.sval)) {
