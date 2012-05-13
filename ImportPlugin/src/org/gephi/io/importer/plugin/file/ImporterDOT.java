@@ -199,6 +199,12 @@ public class ImporterDOT implements FileImporter, LongTask {
         } else {
             try {
                   String[] colors = sval.split(" ");
+                  if (colors.length() != 3)
+                       colors = sval.split(",");
+
+                  if (colors.length() != 3)
+                       report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_color_labelunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
+
                   return Color.getHSBColor(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2]));
             } catch (Exception e) {
                   report.logIssue(new Issue(NbBundle.getMessage(ImporterDOT.class, "importerDOT_color_labelunreachable", streamTokenizer.lineno()), Issue.Level.WARNING));
