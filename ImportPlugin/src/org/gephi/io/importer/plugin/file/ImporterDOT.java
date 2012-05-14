@@ -379,6 +379,7 @@ public class ImporterDOT implements FileImporter, LongTask {
             } else if (streamTokenizer.sval.equalsIgnoreCase("color")) {
                 streamTokenizer.nextToken();
                 if (streamTokenizer.ttype == '=') {
+                    streamTokenizer.nextToken();
                     try {
                         edge.setColor(parseColor(streamTokenizer));
                     } catch (ParseException e) {
