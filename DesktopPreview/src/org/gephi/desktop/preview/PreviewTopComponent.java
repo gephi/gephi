@@ -144,14 +144,6 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
             this.model = m;
             initTarget(model);
         }
-
-        sketchPanel.addComponentListener(new ComponentAdapter() {
-
-            @Override
-            public void componentResized(ComponentEvent e) {
-                Lookup.getDefault().lookup(PreviewUIController.class).refreshPreview();
-            }
-        });
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
@@ -265,11 +257,6 @@ public final class PreviewTopComponent extends TopComponent implements PropertyC
                 bannerPanel.setVisible(false);
             }
         });
-    }
-
-    @Override
-    protected void componentActivated() {
-        Lookup.getDefault().lookup(PreviewUIController.class).refreshPreview();
     }
 
     /**
