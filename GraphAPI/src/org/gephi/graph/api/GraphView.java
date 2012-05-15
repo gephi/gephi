@@ -70,7 +70,7 @@ package org.gephi.graph.api;
  * <ul><li>Create a new view, which duplicates the <b>main</b> view, with all
  * nodes and edges in it.</li>
  * <li>Remove nodes and edges in the view.</li>
- * <li>Set the view as the curently visible view.</li></ul>
+ * <li>Set the view as the currently visible view.</li></ul>
  * To set a view as the currently visible view, see
  * {@link GraphModel#setVisibleView(org.gephi.graph.api.GraphView)}.
  *
