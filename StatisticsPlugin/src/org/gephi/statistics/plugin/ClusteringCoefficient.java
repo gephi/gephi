@@ -458,8 +458,10 @@ public class ClusteringCoefficient implements Statistics, LongTask {
         //Results and average
         avgClusteringCoeff = 0;
         totalTriangles = 0;
+        int numNodesDegreeGreaterThanOne = 0;
         for (int v = 0; v < N; v++) {
             if (network[v].length() > 1) {
+                numNodesDegreeGreaterThanOne++;
                 double cc = triangles[v];
                 totalTriangles += triangles[v];
                 cc /= (network[v].length() * (network[v].length() - 1));
@@ -477,7 +479,7 @@ public class ClusteringCoefficient implements Statistics, LongTask {
             }
         }
         totalTriangles /= 3;
-        avgClusteringCoeff /= N;
+        avgClusteringCoeff /= numNodesDegreeGreaterThanOne;
 
         hgraph.readUnlock();
     }
@@ -523,8 +525,6 @@ public class ClusteringCoefficient implements Statistics, LongTask {
     }
     }
     nodeCC /= 2.0;
-    
-    
     
     if (neighborhood > 1) {
     float cc = nodeCC / (.5f * neighborhood * (neighborhood - 1));
