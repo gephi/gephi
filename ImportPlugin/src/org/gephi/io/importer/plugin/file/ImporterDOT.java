@@ -201,6 +201,8 @@ public class ImporterDOT implements FileImporter, LongTask {
         if (streamTokenizer.ttype == '#') {
             streamTokenizer.nextToken();
             return new Color(Integer.parseInt(streamTokenizer.sval, 16), true);
+        } else if (streamTokenizer.ttype == '"' && streamTokenizer.sval.startsWith("#")) {
+            return new Color(Integer.parseInt(streamTokenizer.sval.substring(1), 16), true);
         } else if (streamTokenizer.ttype != StreamTokenizer.TT_WORD && streamTokenizer.ttype != '"') {
             throw new ParseException();
         } else if (colorTable.containsKey(streamTokenizer.sval)) {
