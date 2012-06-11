@@ -293,7 +293,7 @@ public class Modularity implements Statistics, LongTask {
                 }
 
                 ///////////////////
-                //Remove Adjacency Community's connetion to this community
+                //Remove Adjacency Community's connection to this community
                 Modularity.Community adjCom = nodeCommunities[neighbor];
                 Float oEdgesto = adjCom.connectionsWeight.get(community);
                 Integer oCountEdgesto = adjCom.connectionsCount.get(community);
