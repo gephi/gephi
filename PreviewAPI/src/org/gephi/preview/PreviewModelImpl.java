@@ -364,6 +364,7 @@ public class PreviewModelImpl implements PreviewModel {
     public void writeXML(XMLStreamWriter writer) throws XMLStreamException {
         writer.writeStartElement("previewmodel");
 
+        initProperties();
         //Write PreviewProperties:
         for (PreviewProperty property : properties.getProperties()) {
             String propertyName = property.getName();
