@@ -81,8 +81,8 @@ public class GephiWriter implements Cancellable {
     public void writeAll(Project project, XMLStreamWriter writer) throws Exception {
         writer.writeStartDocument("UTF-8", "1.0");
         writer.writeStartElement("gephiFile");
-        writer.writeAttribute("version", "0.7");
-        writer.writeComment("File saved from Gephi 0.8");
+        writer.writeAttribute("version", "0.8.1");
+        writer.writeComment("File saved from Gephi 0.8.1");
 
         writeCore(writer);
         writeProject(writer, project);
