@@ -94,7 +94,9 @@ public class DijkstraShortestPathAlgorithm extends AbstractShortestPathAlgorithm
                 Double dist = distances.get(k);
                 if (minDistanceNode == null) {
                     minDistanceNode = k;
-                } else if (dist.compareTo(minDistance) < 0) {
+                }
+                
+                if (dist.compareTo(minDistance) < 0) {
                     minDistance = dist;
                     minDistanceNode = k;
                 }
