@@ -107,6 +107,7 @@ public class SVGExporter implements CharacterExporter, VectorExporter, LongTask 
                 t.transcode(input, output);
             } finally {
                 writer.close();
+                props.removeSimpleValue(PreviewProperty.MARGIN);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
