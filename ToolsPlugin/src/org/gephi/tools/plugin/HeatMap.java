@@ -139,8 +139,8 @@ public class HeatMap implements Tool {
                         maxDistance++;   //+1 to have the maxdistance nodes a ratio<1
                     }
                     if (maxDistance > 0) {
-                        for (Entry<Node, Double> entry : algorithm.getDistances().entrySet()) {
-                            NodeData node = entry.getKey().getNodeData();
+                        for (Entry<NodeData, Double> entry : algorithm.getDistances().entrySet()) {
+                            NodeData node = entry.getKey();
                             if (!Double.isInfinite(entry.getValue())) {
                                 float ratio = (float) (entry.getValue() / maxDistance);
                                 Color c = linearGradient.getValue(ratio);

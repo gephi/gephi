@@ -116,7 +116,7 @@ public class ShortestPath implements Tool {
                     GraphController gc = Lookup.getDefault().lookup(GraphController.class);
 
                     AbstractShortestPathAlgorithm algorithm;
-                    if (gc.getModel().getGraphVisible() instanceof DirectedGraph) {
+                if (gc.getModel().getGraphVisible() instanceof DirectedGraph) {
                         algorithm = new BellmanFordShortestPathAlgorithm((DirectedGraph) gc.getModel().getGraphVisible(), sourceNode);
                     } else {
                         algorithm = new DijkstraShortestPathAlgorithm(gc.getModel().getGraphVisible(), sourceNode);
@@ -124,12 +124,12 @@ public class ShortestPath implements Tool {
                     algorithm.compute();
 
                     double distance;
-                    if ((distance = algorithm.getDistances().get(targetNode)) != Double.POSITIVE_INFINITY) {
+                    if ((distance = algorithm.getDistances().get(targetNode.getNodeData())) != Double.POSITIVE_INFINITY) {
                         targetNode.getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
                         VizController.getInstance().selectNode(targetNode);
                         Edge predecessorEdge = algorithm.getPredecessorIncoming(targetNode);
                         Node predecessor = algorithm.getPredecessor(targetNode);
-                        while (predecessorEdge != null && predecessor != sourceNode) {
+                        while (predecessorEdge != null && predecessor.getNodeData() != sourceNode.getNodeData()) {
                             predecessorEdge.getEdgeData().setColor(colorArray[0], colorArray[1], colorArray[2]);
                             VizController.getInstance().selectEdge(predecessorEdge);
                             predecessor.getNodeData().setColor(colorArray[0], colorArray[1], colorArray[2]);

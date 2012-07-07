@@ -48,6 +48,7 @@ import org.gephi.dynamic.api.DynamicController;
 import org.gephi.graph.api.DirectedGraph;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeData;
 import org.openide.util.Lookup;
 
 /**
@@ -57,13 +58,13 @@ import org.openide.util.Lookup;
 public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgorithm {
 
     protected final DirectedGraph graph;
-    protected final HashMap<Node, Edge> predecessors;
+    protected final HashMap<NodeData, Edge> predecessors;
     protected TimeInterval timeInterval;
 
     public BellmanFordShortestPathAlgorithm(DirectedGraph graph, Node sourceNode) {
         super(sourceNode);
         this.graph = graph;
-        predecessors = new HashMap<Node, Edge>();
+        predecessors = new HashMap<NodeData, Edge>();
         DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
         if (dynamicController != null) {
             timeInterval = DynamicUtilities.getVisibleInterval(dynamicController.getModel(graph.getGraphModel().getWorkspace()));
@@ -77,10 +78,10 @@ public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgori
         //Initialize
         int nodeCount = 0;
         for (Node node : graph.getNodes()) {
-            distances.put(node, Double.POSITIVE_INFINITY);
+            distances.put(node.getNodeData(), Double.POSITIVE_INFINITY);
             nodeCount++;
         }
-        distances.put(sourceNode, 0d);
+        distances.put(sourceNode.getNodeData(), 0d);
 
 
         //Relax edges repeatedly
@@ -91,7 +92,7 @@ public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgori
                 Node target = edge.getTarget();
                 if (relax(edge)) {
                     relaxed = true;
-                    predecessors.put(target, edge);
+                    predecessors.put(target.getNodeData(), edge);
                 }
             }
             if (!relaxed) {
@@ -102,7 +103,7 @@ public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgori
         //Check for negative-weight cycles
         for (Edge edge : graph.getEdges()) {
 
-            if (distances.get(edge.getSource()) + edgeWeight(edge) < distances.get(edge.getTarget())) {
+            if (distances.get(edge.getSource().getNodeData()) + edgeWeight(edge) < distances.get(edge.getTarget().getNodeData())) {
                 graph.readUnlock();
                 throw new RuntimeException("The Graph contains a negative-weighted cycle");
             }
@@ -120,9 +121,9 @@ public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgori
     }
 
     public Node getPredecessor(Node node) {
-        Edge edge = predecessors.get(node);
+        Edge edge = predecessors.get(node.getNodeData());
         if (edge != null) {
-            if (edge.getSource() != node) {
+            if (edge.getSource().getNodeData() != node.getNodeData()) {
                 return edge.getSource();
             } else {
                 return edge.getTarget();
@@ -132,6 +133,6 @@ public class BellmanFordShortestPathAlgorithm extends AbstractShortestPathAlgori
     }
 
     public Edge getPredecessorIncoming(Node node) {
-        return predecessors.get(node);
+        return predecessors.get(node.getNodeData());
     }
 }
