@@ -5,39 +5,39 @@
  * 
  * This file is part of Gephi.
  *
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.dynamic;
 
@@ -46,6 +46,7 @@ import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -77,8 +78,8 @@ import org.gephi.graph.api.Node;
 import org.openide.util.Exceptions;
 
 /**
- * Contains only static, and toolkit functions, like type conversion
- * for the needs of dynamic stuff.
+ * Contains only static, and toolkit functions, like type conversion for the
+ * needs of dynamic stuff.
  *
  * @author Cezary Bartosiak
  */
@@ -100,10 +101,39 @@ public final class DynamicUtilities {
      *
      * @return date as a double.
      *
-     * @throws IllegalArgumentException if {@code str} is not a valid {@code XMLGregorianCalendar}.
-     * @throws NullPointerException     if {@code str} is null.
+     * @throws IllegalArgumentException if {@code str} is not a valid
+     * {@code XMLGregorianCalendar}.
+     * @throws NullPointerException if {@code str} is null.
      */
     public static double getDoubleFromXMLDateString(String str) {
+        try {
+            return dateFactory.newXMLGregorianCalendar(str.length() > 10 ? str.substring(0, 10) : str).
+                    toGregorianCalendar().getTimeInMillis();
+        } catch (IllegalArgumentException ex) {
+            //Try simple format
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date date = dateFormat.parse(str.length() > 10 ? str.substring(0, 10) : str);
+                return date.getTime();
+            } catch (ParseException ex1) {
+                Exceptions.printStackTrace(ex1);
+                return 0.0;
+            }
+        }
+    }
+
+    /**
+     * Used for import (parses XML date strings).
+     *
+     * @param str a string to parse from
+     *
+     * @return date as a double.
+     *
+     * @throws IllegalArgumentException if {@code str} is not a valid
+     * {@code XMLGregorianCalendar}.
+     * @throws NullPointerException if {@code str} is null.
+     */
+    public static double getDoubleFromXMLDateTimeString(String str) {
         try {
             return dateFactory.newXMLGregorianCalendar(str.length() > 23 ? str.substring(0, 23) : str).
                     toGregorianCalendar().getTimeInMillis();
@@ -127,8 +157,9 @@ public final class DynamicUtilities {
      *
      * @return date as a double.
      *
-     * @throws IllegalArgumentException if {@code str} is not a valid {@code XMLGregorianCalendar}.
-     * @throws NullPointerException     if {@code str} is null.
+     * @throws IllegalArgumentException if {@code str} is not a valid
+     * {@code XMLGregorianCalendar}.
+     * @throws NullPointerException if {@code str} is null.
      */
     public static double getDoubleFromDate(Date date) {
         return date.getTime();
@@ -179,7 +210,7 @@ public final class DynamicUtilities {
      * @param in interval to add (could be null)
      *
      * @return a new {@code DynamicType} instance that contains a given
-     *         {@code Interval} in.
+     * {@code Interval} in.
      */
     public static DynamicType createDynamicObject(AttributeType type, Interval in) {
         return createDynamicObject(type, null, in);
@@ -192,7 +223,7 @@ public final class DynamicUtilities {
      * @param in intervals to add (could be null)
      *
      * @return a new {@code DynamicType} instance with intervals given by
-     *         {@code List<Interval>} in.
+     * {@code List<Interval>} in.
      */
     public static DynamicType createDynamicObject(AttributeType type, List<Interval> in) {
         return createDynamicObject(type, null, in);
@@ -202,7 +233,7 @@ public final class DynamicUtilities {
      * Returns a deep copy of {@code source}.
      *
      * @param source an object to copy from (could be null, then completely new
-     *               instance is created)
+     * instance is created)
      *
      * @return a deep copy of {@code source}.
      */
@@ -215,11 +246,11 @@ public final class DynamicUtilities {
      * {@code Interval} in.
      *
      * @param source an object to copy from (could be null, then completely new
-     *               instance is created)
-     * @param in     interval to add (could be null)
+     * instance is created)
+     * @param in interval to add (could be null)
      *
      * @return a deep copy of {@code source} that contains a given
-     *         {@code Interval} in.
+     * {@code Interval} in.
      */
     public static DynamicType createDynamicObject(AttributeType type, DynamicType source, Interval in) {
         return createDynamicObject(type, source, in, null);
@@ -227,17 +258,17 @@ public final class DynamicUtilities {
 
     /**
      * Returns a deep copy of {@code source} that contains a given
-     * {@code Interval} in. Before add it removes from the newly created
-     * object all intervals that overlap with a given {@code Interval} out.
+     * {@code Interval} in. Before add it removes from the newly created object
+     * all intervals that overlap with a given {@code Interval} out.
      *
      * @param source an object to copy from (could be null, then completely new
-     *               instance is created)
-     * @param in     interval to add (could be null)
-     * @param out    interval to remove (could be null)
+     * instance is created)
+     * @param in interval to add (could be null)
+     * @param out interval to remove (could be null)
      *
      * @return a deep copy of {@code source} that contains a given
-     *         {@code Interval} in. Before add it removes from the newly created
-     *         object all intervals that overlap with a given {@code Interval} out.
+     * {@code Interval} in. Before add it removes from the newly created object
+     * all intervals that overlap with a given {@code Interval} out.
      */
     public static DynamicType createDynamicObject(AttributeType type, DynamicType source, Interval in, Interval out) {
         ArrayList<Interval> lin = null;
@@ -256,38 +287,37 @@ public final class DynamicUtilities {
     }
 
     /**
-     * Returns a deep copy of {@code source} with additional intervals
-     * given by {@code List<Interval>} in.
+     * Returns a deep copy of {@code source} with additional intervals given by
+     * {@code List<Interval>} in.
      *
      * @param source an object to copy from (could be null, then completely new
-     *               instance is created)
-     * @param in     intervals to add (could be null)
+     * instance is created)
+     * @param in intervals to add (could be null)
      *
-     * @return a deep copy of {@code source} with additional intervals
-     *         given by {@code List<Interval>} in.
+     * @return a deep copy of {@code source} with additional intervals given by
+     * {@code List<Interval>} in.
      */
     public static DynamicType createDynamicObject(AttributeType type, DynamicType source, List<Interval> in) {
         return createDynamicObject(type, source, in, null);
     }
 
     /**
-     * Returns a deep copy of {@code source} with additional intervals
-     * given by {@code List<Interval>} in. Before add it removes from the
-     * newly created object all intervals that overlap with intervals given by
-     * {@code List<Interval>} out.
-     * <p>
-     * It can return {@code null} if type is not dynamic.
+     * Returns a deep copy of {@code source} with additional intervals given by
+     * {@code List<Interval>} in. Before add it removes from the newly created
+     * object all intervals that overlap with intervals given by
+     * {@code List<Interval>} out. <p> It can return {@code null} if type is not
+     * dynamic.
      *
      * @param source an object to copy from (could be null, then completely new
-     *               instance is created)
-     * @param in     intervals to add (could be null)
-     * @param out    intervals to remove (could be null)
+     * instance is created)
+     * @param in intervals to add (could be null)
+     * @param out intervals to remove (could be null)
      *
-     * @return a deep copy of {@code source} with additional intervals
-     *         given by {@code List<Interval>} in. Before add it removes from the
-     *         newly created object all intervals that overlap with intervals given by
-     *         {@code List<Interval>} out. It can return {@code null} if type
-     *         is not dynamic.
+     * @return a deep copy of {@code source} with additional intervals given by
+     * {@code List<Interval>} in. Before add it removes from the newly created
+     * object all intervals that overlap with intervals given by
+     * {@code List<Interval>} out. It can return {@code null} if type is not
+     * dynamic.
      */
     public static DynamicType createDynamicObject(AttributeType type, DynamicType source, List<Interval> in,
             List<Interval> out) {
@@ -530,9 +560,9 @@ public final class DynamicUtilities {
     }
 
     /**
-     * It checks intervals of the {@code source} and make it fit to the given interval,
-     * possibly removing intervals out of the window and
-     * changing low or high of intervals to fit.
+     * It checks intervals of the {@code source} and make it fit to the given
+     * interval, possibly removing intervals out of the window and changing low
+     * or high of intervals to fit.
      *
      * @param source a {@code DynamicType} to be performed
      * @param interval a given interval
@@ -572,17 +602,17 @@ public final class DynamicUtilities {
     }
 
     /**
-     * It checks intervals of the {@code source} and make it fit to the given interval
-     * [{@code low}, {@code high}], possibly removing intervals out of the window and
-     * changing low or high of intervals to fit.
+     * It checks intervals of the {@code source} and make it fit to the given
+     * interval [{@code low}, {@code high}], possibly removing intervals out of
+     * the window and changing low or high of intervals to fit.
      *
      * @param source a {@code DynamicType} to be performed
-     * @param low    the left endpoint
-     * @param high   the right endpoint
+     * @param low the left endpoint
+     * @param high the right endpoint
      *
      * @return a fitted {@code DynamicType} instance.
      *
-     * @throws NullPointerException     if {@code source} is null.
+     * @throws NullPointerException if {@code source} is null.
      * @throws IllegalArgumentException if {@code low} > {@code high}.
      */
     public static DynamicType fitToInterval(DynamicType source, double low, double high) {
@@ -590,8 +620,9 @@ public final class DynamicUtilities {
     }
 
     /**
-     * Returns the visible time interval of <code>dynamicModel</code> if it is not
-     * [-inf, +inf]. Returns <code>null</null> in other cases.
+     * Returns the visible time interval of
+     * <code>dynamicModel</code> if it is not [-inf, +inf]. Returns
+     * <code>null</null> in other cases.
      *
      * @param dynamicModel the dynamic model
      *
@@ -621,7 +652,6 @@ public final class DynamicUtilities {
 
     public static DynamicType removeOverlapping(DynamicType dynamicType) {
         Comparator<Interval> comparator = new Comparator<Interval>() {
-
             @Override
             public int compare(Interval o1, Interval o2) {
                 if (o1.getLow() < o2.getLow()) {

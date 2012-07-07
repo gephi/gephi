@@ -415,34 +415,34 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     public void setTimeIntervalMax(String timeIntervalMax) {
-        if (timeFormat.equals(TimeFormat.DATE) || timeFormat.equals(TimeFormat.DATETIME)) {
-            try {
+        try {
+            if (timeFormat.equals(TimeFormat.DATE)) {
                 this.timeIntervalMax = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMax);
-            } catch (Exception ex) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMax), Level.SEVERE));
-            }
-        } else {
-            try {
+            } else if (timeFormat.equals(TimeFormat.DATETIME)) {
+                this.timeIntervalMax = DynamicUtilities.getDoubleFromXMLDateTimeString(timeIntervalMax);
+            } else if (timeFormat.equals(TimeFormat.TIMESTAMP)) {
+                this.timeIntervalMax = Double.parseDouble(timeIntervalMax + "000");
+            } else {
                 this.timeIntervalMax = Double.parseDouble(timeIntervalMax);
-            } catch (Exception ex) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMax), Level.SEVERE));
             }
+        } catch (Exception ex) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMax), Level.SEVERE));
         }
     }
 
     public void setTimeIntervalMin(String timeIntervalMin) {
-        if (timeFormat.equals(TimeFormat.DATE) || timeFormat.equals(TimeFormat.DATETIME)) {
-            try {
+        try {
+            if (timeFormat.equals(TimeFormat.DATE)) {
                 this.timeIntervalMin = DynamicUtilities.getDoubleFromXMLDateString(timeIntervalMin);
-            } catch (Exception ex) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMin), Level.SEVERE));
-            }
-        } else {
-            try {
+            } else if (timeFormat.equals(TimeFormat.DATETIME)) {
+                this.timeIntervalMin = DynamicUtilities.getDoubleFromXMLDateTimeString(timeIntervalMin);
+            } else if (timeFormat.equals(TimeFormat.TIMESTAMP)) {
+                this.timeIntervalMin = Double.parseDouble(timeIntervalMin + "000");
+            } else {
                 this.timeIntervalMin = Double.parseDouble(timeIntervalMin);
-            } catch (Exception ex) {
-                report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMin), Level.SEVERE));
             }
+        } catch (Exception ex) {
+            report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_TimeInterval_ParseError", timeIntervalMin), Level.SEVERE));
         }
     }
 
@@ -688,7 +688,6 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
         LinkedHashMap<String, NodeDraftImpl> sortedNodeMap = new LinkedHashMap<String, NodeDraftImpl>();
         ArrayList<NodeDraftImpl> sortedMapValues = new ArrayList<NodeDraftImpl>(nodeMap.values());
         Collections.sort(sortedMapValues, new Comparator<NodeDraftImpl>() {
-
             public int compare(NodeDraftImpl o1, NodeDraftImpl o2) {
                 return new Integer(o2.getHeight()).compareTo(o1.getHeight());
             }
