@@ -99,4 +99,8 @@ public class ClusteringCoefficientUI implements StatisticsUI {
     public int getPosition() {
         return 300;
     }
+
+    public String getShortDescription() {
+        return NbBundle.getMessage(getClass(), "ClusteringCoefficientUI.shortDescription");
+    }
 }

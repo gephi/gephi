@@ -97,4 +97,8 @@ public class PathLengthUI implements StatisticsUI {
     public int getPosition() {
         return 200;
     }
+
+    public String getShortDescription() {
+        return NbBundle.getMessage(getClass(), "PathLengthUI.shortDescription");
+    }
 }

@@ -103,6 +103,10 @@ public class DynamicDegreeUI implements StatisticsUI {
         return 300;
     }
 
+    public String getShortDescription() {
+        return NbBundle.getMessage(getClass(), "DynamicDegreeUI.shortDescription");
+    }
+
     private static class StatSettings {
 
         private boolean averageOnly = false;

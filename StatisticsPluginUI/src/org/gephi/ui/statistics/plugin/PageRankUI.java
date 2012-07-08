@@ -103,6 +103,10 @@ public class PageRankUI implements StatisticsUI {
         return 800;
     }
 
+    public String getShortDescription() {
+        return NbBundle.getMessage(getClass(), "PageRankUI.shortDescription");
+    }
+
     private static class StatSettings {
 
         private double epsilon = 0.001;

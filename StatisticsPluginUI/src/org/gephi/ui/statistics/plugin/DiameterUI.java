@@ -97,4 +97,8 @@ public class DiameterUI implements StatisticsUI {
     public int getPosition() {
         return 100;
     }
+
+    public String getShortDescription() {
+        return NbBundle.getMessage(getClass(), "DiameterUI.shortDescription");
+    }
 }

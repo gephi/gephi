@@ -104,6 +104,12 @@ public interface StatisticsUI {
     public String getDisplayName();
 
     /**
+     * Returns this statistics short description
+     * @return              this statistics' short description.
+     */
+    public String getShortDescription();
+
+    /**
      * Returns the category of this metric. Default category can be used, see
      * <ul>
      * <li>{@link StatisticsUI#CATEGORY_NETWORK_OVERVIEW}</li>

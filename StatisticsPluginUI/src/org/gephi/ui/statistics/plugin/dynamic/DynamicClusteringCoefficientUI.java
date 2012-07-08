@@ -102,6 +102,10 @@ public class DynamicClusteringCoefficientUI implements StatisticsUI {
         return 400;
     }
 
+    public String getShortDescription() {
+        return NbBundle.getMessage(getClass(), "DynamicClusteringCoefficientUI.shortDescription");
+    }
+
     private static class StatSettings {
 
         private boolean averageOnly = false;
