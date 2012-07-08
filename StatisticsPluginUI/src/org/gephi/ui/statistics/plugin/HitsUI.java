@@ -103,6 +103,10 @@ public class HitsUI implements StatisticsUI {
         return 500;
     }
 
+    public String getShortDescription() {
+        return NbBundle.getMessage(getClass(), "HitsUI.shortDescription");
+    }
+
     private static class StatSettings {
 
         private double epsilon = 0.0001;

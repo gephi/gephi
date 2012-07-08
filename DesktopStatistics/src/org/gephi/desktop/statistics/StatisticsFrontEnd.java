@@ -118,6 +118,7 @@ public class StatisticsFrontEnd extends javax.swing.JPanel {
     private void initUI(StatisticsUI ui) {
         this.statisticsUI = ui;
         displayLabel.setText(ui.getDisplayName());
+        displayLabel.setToolTipText(ui.getShortDescription());
         busyLabel.setVisible(false);
         runButton.setEnabled(false);
         runButton.setText(RUN);

@@ -126,7 +126,7 @@ public class VizBarController {
     private static class GlobalGroupBar implements VizToolbarGroup {
 
         public String getName() {
-            return "Global";
+            return NbBundle.getMessage(VizBarController.class, "VizToolbar.Global.groupBarTitle");
         }
 
         public JComponent[] getToolbarComponents() {
@@ -204,7 +204,7 @@ public class VizBarController {
         JComponent[] components = new JComponent[2];
 
         public String getName() {
-            return "Nodes";
+            return NbBundle.getMessage(VizBarController.class, "VizToolbar.Nodes.groupBarTitle");
         }
 
         public void setModelValues(VizModel vizModel) {
@@ -285,7 +285,7 @@ public class VizBarController {
         JComponent[] components = new JComponent[4];
 
         public String getName() {
-            return "Edges";
+            return NbBundle.getMessage(VizBarController.class, "VizToolbar.Edges.groupBarTitle");
         }
 
         public void setModelValues(VizModel vizModel) {
@@ -420,7 +420,7 @@ public class VizBarController {
         JComponent[] components = new JComponent[6];
 
         public String getName() {
-            return "Labels";
+            return NbBundle.getMessage(VizBarController.class, "VizToolbar.Labels.groupBarTitle");
         }
 
         public void setModelValues(VizModel vizModel) {

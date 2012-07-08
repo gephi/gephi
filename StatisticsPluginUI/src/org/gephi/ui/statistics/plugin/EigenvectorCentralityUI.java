@@ -103,6 +103,10 @@ public class EigenvectorCentralityUI implements StatisticsUI {
         return 1000;
     }
 
+    public String getShortDescription() {
+        return NbBundle.getMessage(getClass(), "EigenvectorCentralityUI.shortDescription");
+    }
+
     private static class StatSettings {
 
         private int mNumRuns = 100;
