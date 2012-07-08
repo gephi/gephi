@@ -103,6 +103,10 @@ public class ModularityUI implements StatisticsUI {
         return 600;
     }
 
+    public String getShortDescription() {
+        return NbBundle.getMessage(getClass(), "ModularityUI.shortDescription");
+    }
+
     private static class StatSettings {
 
         private boolean randomize = true;

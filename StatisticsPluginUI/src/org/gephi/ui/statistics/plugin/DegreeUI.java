@@ -90,4 +90,8 @@ public class DegreeUI implements StatisticsUI {
     public int getPosition() {
         return 1;
     }
+
+    public String getShortDescription() {
+        return NbBundle.getMessage(getClass(), "InOutDegreeUI.shortDescription");
+    }
 }
