@@ -122,7 +122,7 @@ public class OutDegreeRangeBuilder implements FilterBuilder {
             HierarchicalDirectedGraph hgraph = (HierarchicalDirectedGraph) graph;
             List<Integer> values = new ArrayList<Integer>(((HierarchicalGraph) graph).getNodeCount());
             for (Node n : hgraph.getNodes()) {
-                int degree = hgraph.getMutualDegree(n);
+                int degree = hgraph.getTotalOutDegree(n);
                 values.add(degree);
             }
             return values.toArray(new Number[0]);
