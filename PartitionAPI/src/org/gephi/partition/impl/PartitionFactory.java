@@ -261,6 +261,8 @@ public class PartitionFactory {
 
         public void setParts(PartImpl<Node>[] parts) {
             this.parts = parts;
+            nodeMap.clear();
+            valueMap.clear();
             List<Color> colors = getSequenceColors(parts.length);
             int i = 0;
             for (PartImpl<Node> p : parts) {
