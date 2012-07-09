@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-gephi-desktop-welcome-WelcomeAction.instance">
+                <attr name="delegate" newvalue="org.gephi.desktop.welcome.WelcomeAction"/>
+                <attr name="displayName" bundlevalue="org.gephi.desktop.welcome.Bundle#CTL_WelcomeAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="noIconInMenu" boolvalue="false"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="org-gephi-desktop-welcome-WelcomeAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-gephi-desktop-welcome-WelcomeAction.instance"/>
+                <attr name="position" intvalue="1150"/>
+            </file>
+        </folder>
+    </folder>
+</filesystem>

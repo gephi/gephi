@@ -1,0 +1,76 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.8\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-05 14:52+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "name"
+msgstr "Multilevel"
+
+msgid "description"
+msgstr "Multilevel Layout"
+
+msgid "YifanHuMultiLevel.name"
+msgstr "YifanHu's Multilevel"
+
+msgid "YifanHuMultiLevel.description"
+msgstr ""
+"YifanHu's Multilevel Algorithm is suitable for very large graphs. It coersen "
+"the graphs and therefore reduce computation."
+
+msgid "YifanHuMultiLevel.minimumLevelSize.name"
+msgstr "Minimum level size"
+
+msgid "YifanHuMultiLevel.minimumLevelSize.desc"
+msgstr ""
+"The minimum amount of nodes every level must have (bigger values mean less "
+"levels)"
+
+msgid "YifanHuMultiLevel.minimumCoarseningRate.name"
+msgstr "Minimum coarsening rate"
+
+msgid "YifanHuMultiLevel.minimumCoarseningRate.desc"
+msgstr ""
+"The minimum relative size between two levels (smaller values mean less "
+"levels)"
+
+msgid "YifanHuMultiLevel.stepRatio.name"
+msgstr "Step ratio"
+
+msgid "YifanHuMultiLevel.stepRatio.desc"
+msgstr "The ratio used to update the step size across iterations."
+
+msgid "YifanHuMultiLevel.optimalDistance.name"
+msgstr "Optimal Distance"
+
+msgid "YifanHuMultiLevel.optimalDistance.desc"
+msgstr ""
+"The natural length of the springs. Bigger values mean nodes will be farther "
+"apart."
+
+msgid "YifanHuMultiLevel.quadtreeMaxLevel.name"
+msgstr "Quadtree Max Level"
+
+msgid "YifanHuMultiLevel.quadtreeMaxLevel.desc"
+msgstr ""
+"The maximun level to be used in the quadtree representation. Greater values "
+"mean more accuracy."
+
+msgid "YifanHuMultiLevel.theta.name"
+msgstr "Theta"
+
+msgid "YifanHuMultiLevel.theta.desc"
+msgstr ""
+"The theta parameter for Barnes-Hut opening criteria. Smaller values mean "
+"more accuracy."

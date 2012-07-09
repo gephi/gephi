@@ -1,0 +1,20 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body bgcolor="white">
+        API which controls the Timeline, the UI component which allows network
+        exploration over time.
+        <p>
+            The Timeline API allows to set custom bounds and visible interval. The
+            timeline is the UI component which controls the network exploration
+            over time. It is connected to the <code>DynamicAPI</code> which
+            controls the time scale and intervals. The API also allows to
+            control the animation (i.e play feature).
+        </p>
+        <p>
+            The <code>TimelineController</code> is managing models (one per workspace)
+            and is the access door to the system. This controller is a service, and can be
+            retrieved by using the following command:
+        </p>
+        <p><code>TimelineController tc = Lookup.getDefault().lookup(TimelineController.class);</code></p>
+    </body>
+</html>

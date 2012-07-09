@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body bgcolor="white">
+        API responsible for dynamic states, including the current visible interval.
+        <p>
+            Gephi uses <b>Dynamic API</b> to store states relative to dynamic graph
+            exploration. The most notable data is the current visible interval,
+            what the timeline component is configuring. This interval is centralized
+            here and used in the rest of the application.
+        </p>
+        <p>
+            The <code>DynamicController</code> is managing models (one per workspace)
+            and is the access door to the system. This controller is a service, and can be
+            retrieved by using the following command:
+        </p>
+        <p><code>DynamicController dc = Lookup.getDefault().lookup(DynamicController.class);</code></p>
+        <p>
+            Use also the <code>DynamicModel</code> to get <code>DynamicGraph</code>
+            instances. They are independent wrappers that can be used analyse
+            dynamic graphs.
+        </p>
+    </body>
+</html>

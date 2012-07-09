@@ -1,0 +1,67 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# 
+# Translators:
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi\n"
+"Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-04 23:01+0000\n"
+"Last-Translator: gephi <sebastien.heymann@gmail.com>\n"
+"Language-Team: French (http://www.transifex.net/projects/p/gephi/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+
+msgid "name"
+msgstr "Multi-niveaux"
+
+msgid "description"
+msgstr "Spatialisation multi-niveaux"
+
+msgid "YifanHuMultiLevel.name"
+msgstr "Multi-niveaux d'Yifan Hu"
+
+msgid "YifanHuMultiLevel.description"
+msgstr "Convient aux très grands graphes. Il rend le graphe plus grossier et ainsi réduit les calculs."
+
+msgid "YifanHuMultiLevel.minimumLevelSize.name"
+msgstr "Taille minimum du niveau"
+
+msgid "YifanHuMultiLevel.minimumLevelSize.desc"
+msgstr "Quantité minimale de noeuds qu'un niveau doit avoir. Une grande valeur donne moins de niveaux."
+
+msgid "YifanHuMultiLevel.minimumCoarseningRate.name"
+msgstr "Taux minimum de coarsening"
+
+msgid "YifanHuMultiLevel.minimumCoarseningRate.desc"
+msgstr "Taille minimale relative entre deux niveaux. Une petite valeur donne moins de niveaux."
+
+msgid "YifanHuMultiLevel.stepRatio.name"
+msgstr "Ratio du pas"
+
+msgid "YifanHuMultiLevel.stepRatio.desc"
+msgstr "Le ratio utilisé pour mettre à jour la taille du pas entre itérations."
+
+msgid "YifanHuMultiLevel.optimalDistance.name"
+msgstr "Distance optimale"
+
+msgid "YifanHuMultiLevel.optimalDistance.desc"
+msgstr "Longueur naturelle des ressorts. Une plus grande valeur signifie que les noeuds se repousseront plus loin."
+
+msgid "YifanHuMultiLevel.quadtreeMaxLevel.name"
+msgstr "Niveau max du quadtree"
+
+msgid "YifanHuMultiLevel.quadtreeMaxLevel.desc"
+msgstr "Niveau maximal utilisé dans la représentation quadtree. Une grande valeur augmente la précision."
+
+msgid "YifanHuMultiLevel.theta.name"
+msgstr "Theta"
+
+msgid "YifanHuMultiLevel.theta.desc"
+msgstr "Paramètre theta de l'algorithme Barnes-Hut. Une petite valeur augmente la précision."

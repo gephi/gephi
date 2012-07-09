@@ -1,0 +1,44 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.8\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-05 14:52+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "name"
+msgstr "Fruchterman Reingold"
+
+msgid "description"
+msgstr "Fruchterman Reingold is a classical layout algorithm, since 1984."
+
+msgid "fruchtermanReingold.area.name"
+msgstr "Area"
+
+msgid "fruchtermanReingold.area.desc"
+msgstr "The graph size area, for example 1000 for 100 nodes."
+
+msgid "fruchtermanReingold.gravity.name"
+msgstr "Gravity"
+
+msgid "fruchtermanReingold.gravity.desc"
+msgstr ""
+"This force attracts all nodes to the center to avoid dispersion of "
+"disconnected components."
+
+msgid "fruchtermanReingold.speed.name"
+msgstr "Speed"
+
+msgid "fruchtermanReingold.speed.desc"
+msgstr ""
+"Value > 0 default 1 ; increase convergence speed at the price of a precision "
+"loss."

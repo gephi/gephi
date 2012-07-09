@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE settings PUBLIC "-//NetBeans//DTD Session settings 1.0//EN" "http://www.netbeans.org/dtds/sessionsettings-1_0.dtd">
+<settings version="1.0">
+    <module name="org.gephi.tools.plugin" spec="0.7"/>
+    <instanceof class="org.openide.windows.TopComponent"/>
+    <instanceof class="org.gephi.ui.tools.plugin.edit.EditToolTopComponent"/>
+    <instance class="org.gephi.ui.tools.plugin.edit.EditToolTopComponent" method="getDefault"/>
+</settings>

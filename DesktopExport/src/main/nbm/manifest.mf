@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+AutoUpdate-Essential-Module: true
+OpenIDE-Module-Layer: org/gephi/desktop/io/export/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/io/export/Bundle.properties

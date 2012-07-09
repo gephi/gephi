@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mode version="2.4">
+    <name unique="filtersmode"/>
+  <kind type="view"/>
+  <state type="joined"/>
+  <constraints>
+    <path orientation="horizontal" number="60" weight="0.7"/>
+    <path orientation="vertical" number="40" weight="0.7"/>
+    <path orientation="horizontal" number="80" weight="0.252324037184595"/>
+    <path orientation="vertical" number="82" weight="0.8865836791147994"/>
+  </constraints>
+  <bounds x="1260" y="536" width="252" height="306"/>
+  <frame state="0"/>
+    
+    <empty-behavior permanent="true"/>
+</mode>

@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body>
+        Project API/SPI for <b>project</b> and <b>worskpaces</b> manipulation.
+        <p>
+            The API defines <code>Project</code> and <code>Workspace</code>
+            interface. Most of modules will use these interfaces to watch
+            the application lifecycle. The API therefore define the
+            <code>WorkspaceListener</code> interface, which is essential for tracking
+            workspace events. The <code>ProjectController</code> service manage
+            the system.
+        </p>
+        <p>
+            The SPI notably defines how modules can interact more with the
+            worspace lifecyle. See <code>WorkspacePersistenceProvider</code> for
+            project saving/loading.
+        </p>
+    </body>
+</html>

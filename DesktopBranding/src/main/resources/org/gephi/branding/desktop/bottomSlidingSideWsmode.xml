@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mode version="2.4">
+    <module name="org.netbeans.core.ui/1" spec="1.2"/>
+    <name unique="bottomSlidingSide"/>
+  <kind type="sliding"/>
+  <slidingSide side="bottom"/>
+  <state type="joined"/>
+  <bounds x="0" y="0" width="0" height="0"/>
+  <frame state="0"/>
+    <empty-behavior permanent="true"/>
+</mode>

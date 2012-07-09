@@ -1,0 +1,94 @@
+# Translation file for Gephi.
+# Copyright (C) 2011 Gephi contributors.
+# This file is distributed under the same license as the Gephi package.
+# Gephi Team <gephi.team@lists.launchpad.net>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gephi 0.8\n"
+"Report-Msgid-Bugs-To: gephi.team@lists.launchpad.net\n"
+"POT-Creation-Date: 2011-08-05 14:52+0200\n"
+"PO-Revision-Date: 2011-08-05 14:52+0200\n"
+"Last-Translator: Mathieu Bastian <gephi.team@lists.launchpad.net>\n"
+"Language-Team: English <https://launchpad.net/~gephi.team>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "YifanHu.name"
+msgstr "Yifan Hu"
+
+msgid "YifanHu.description"
+msgstr ""
+"Original Yifan Hu's attraction-repulsion model. Reduce the computational "
+"cost by restricting force calculation to the neighborhood. The algorithm "
+"stops itself, as it has an adaptative cooling sheme."
+
+msgid "YifanHuProportional.name"
+msgstr "Yifan Hu Proportional"
+
+msgid "YifanHuProportional.description"
+msgstr ""
+"Modified version of Yifan Hu that uses proportional displacement scheme."
+
+msgid "YifanHu.optimalDistance.name"
+msgstr "Optimal Distance"
+
+msgid "YifanHu.optimalDistance.desc"
+msgstr ""
+"The natural length of the springs. Bigger values mean nodes will be farther "
+"apart."
+
+msgid "YifanHu.relativeStrength.name"
+msgstr "Relative Strength"
+
+msgid "YifanHu.relativeStrength.desc"
+msgstr ""
+"The relative strength between electrical force (repulsion) and spring force "
+"(attraction)."
+
+msgid "YifanHu.initialStepSize.name"
+msgstr "Initial Step size"
+
+msgid "YifanHu.initialStepSize.desc"
+msgstr ""
+"The initial step size used in the integration phase. Set this value to a "
+"meaningful size compared to the optimal distance (10% is a good starting "
+"point)."
+
+msgid "YifanHu.stepRatio.name"
+msgstr "Step ratio"
+
+msgid "YifanHu.stepRatio.desc"
+msgstr "The ratio used to update the step size across iterations."
+
+msgid "YifanHu.adaptativeCooling.name"
+msgstr "Adaptive Cooling"
+
+msgid "YifanHu.adaptativeCooling.desc"
+msgstr ""
+"Controls the use of adaptive cooling. It is used help the layout algoritm to "
+"avoid energy local minima."
+
+msgid "YifanHu.convergenceThreshold.name"
+msgstr "Convergence Threshold"
+
+msgid "YifanHu.convergenceThreshold.desc"
+msgstr ""
+"Relative energy convergence threshold. Smaller values mean more accuracy."
+
+msgid "YifanHu.quadTreeMaxLevel.name"
+msgstr "Quadtree Max Level"
+
+msgid "YifanHu.quadTreeMaxLevel.desc"
+msgstr ""
+"The maximun level to be used in the quadtree representation. Greater values "
+"mean more accuracy."
+
+msgid "YifanHu.theta.name"
+msgstr "Theta"
+
+msgid "YifanHu.theta.desc"
+msgstr ""
+"The theta parameter for Barnes-Hut opening criteria. Smaller values mean "
+"more accuracy."

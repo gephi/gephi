@@ -1,0 +1,20 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+    <body bgcolor="white">
+        API for Preview rendering.
+        <p>
+            This API hosts preview properties, items and renderers to control
+            preview displays. Preview is using the current Graph to build a set
+            of visual items. <b>Items</b> have a generic data container and are built 
+            within <b>Item Builders</b> implementations. <b>Renderers</b> are stateless 
+            singletons which renders items to a render target and have a list of
+            fixed properties. <b>RenderTarget</b> is the graphic container:
+            Processing, PDF or SVG.
+        </p>
+        <p>
+            The Preview is highly customizable and allows any plug-in to implement or
+            override existing renderers or item builders. Consult the SPI package
+            for more details.
+        </p>
+    </body>
+</html>
