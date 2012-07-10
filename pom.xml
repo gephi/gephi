@@ -8,6 +8,99 @@
     <packaging>pom</packaging>
 
     <name>gephi-parent</name>
+    
+    <properties>        
+        <netbeans.version>RELEASE72-BETA</netbeans.version>
+        <brandingToken>gephi</brandingToken>
+        <all.clusters>${project.build.directory}/${brandingToken}</all.clusters>
+        <bundle.namespace>${project.groupId}.${project.artifactId}</bundle.namespace>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <gephi.descriptionStamp>.description</gephi.descriptionStamp>
+        <gephi.maven.requiredVersion>3.0.3</gephi.maven.requiredVersion>
+
+        <gephi.javac.source>1.6</gephi.javac.source>
+        <gephi.javac.target>1.6</gephi.javac.target>
+        <gephi.javac.xlint>-Xlint:all</gephi.javac.xlint>
+        <gephi.javac.debug>true</gephi.javac.debug>
+        <gephi.javac.optimize>true</gephi.javac.optimize>
+        <gephi.javac.showDeprecation>true</gephi.javac.showDeprecation>
+        <gephi.javac.showWarnings>true</gephi.javac.showWarnings>
+        <gephi.javac.fork>true</gephi.javac.fork>
+        
+        <gephi.junit.version>4.7</gephi.junit.version>
+        <gephi.test.maxMemory>768M</gephi.test.maxMemory>
+        <gephi.test.reportsDirectory>${project.build.directory}/surefire-reports/plain</gephi.test.reportsDirectory>
+        <gephi.test.failureIgnore>${testFailureIgnore}</gephi.test.failureIgnore>
+        
+        <gephi.netbeans.useOSGiDependencies>false</gephi.netbeans.useOSGiDependencies>
+        
+        <gephi.jarbundler.version>2.2.0</gephi.jarbundler.version>
+        
+        <gephi.scm>git</gephi.scm>
+        
+        <!--==== Plugin Versions ==================================================================================-->
+
+        <gephi.maven-antrun-plugin.version>1.6</gephi.maven-antrun-plugin.version>
+
+        <gephi.maven-assembly-plugin.version>2.2.1</gephi.maven-assembly-plugin.version>
+
+        <gephi.maven-bundle-plugin.version>2.0.1</gephi.maven-bundle-plugin.version>
+
+        <gephi.maven-checkstyle-plugin.version>2.6</gephi.maven-checkstyle-plugin.version>
+
+        <gephi.maven-clean-plugin.version>2.4.1</gephi.maven-clean-plugin.version>
+
+        <gephi.maven-compiler-plugin.version>2.3.2</gephi.maven-compiler-plugin.version>
+
+        <gephi.maven-dependency-plugin.version>2.4</gephi.maven-dependency-plugin.version>
+
+        <gephi.maven-deploy-plugin.version>2.6</gephi.maven-deploy-plugin.version>
+
+        <gephi.maven-doap-plugin.version>1.1</gephi.maven-doap-plugin.version>
+
+        <gephi.maven-enforcer-plugin.version>1.0.1</gephi.maven-enforcer-plugin.version>
+
+        <gephi.maven-gpg-plugin.version>1.3</gephi.maven-gpg-plugin.version>
+
+        <gephi.maven-graph-plugin.version>1.15</gephi.maven-graph-plugin.version>
+
+        <gephi.maven-install-plugin.version>2.3.1</gephi.maven-install-plugin.version>
+
+        <gephi.maven-jar-plugin.version>2.3.2</gephi.maven-jar-plugin.version>
+
+        <gephi.maven-jarsigner-plugin.version>1.2</gephi.maven-jarsigner-plugin.version>
+
+        <gephi.maven-javadoc-plugin.version>2.8</gephi.maven-javadoc-plugin.version> 
+
+        <gephi.maven-jetty-plugin.version>6.1.24</gephi.maven-jetty-plugin.version> <!-- FIXME: 7.0.0.pre5 breaks current projects -->
+
+        <gephi.maven-license-plugin.version>1.9.0</gephi.maven-license-plugin.version>
+
+        <gephi.maven-pmd-plugin.version>2.5</gephi.maven-pmd-plugin.version>
+
+        <gephi.maven-release-plugin.version>2.2.1</gephi.maven-release-plugin.version>
+
+        <gephi.maven-replacer-plugin.version>1.3.9</gephi.maven-replacer-plugin.version>
+
+        <gephi.maven-resources-plugin.version>2.5</gephi.maven-resources-plugin.version>
+
+        <gephi.maven-site-plugin.version>2.2</gephi.maven-site-plugin.version> <!-- 3.0-beta-3 miserably fails with -->
+
+        <gephi.maven-source-plugin.version>2.1.2</gephi.maven-source-plugin.version>
+
+        <gephi.maven-surefire-plugin.version>2.10</gephi.maven-surefire-plugin.version>
+
+        <gephi.build-helper-maven-plugin.version>1.7</gephi.build-helper-maven-plugin.version>
+
+        <gephi.nbm-maven-plugin.version>3.7</gephi.nbm-maven-plugin.version>                   
+
+    </properties>
+    
+    <prerequisites>
+        <maven>${gephi.maven.requiredVersion}</maven>
+    </prerequisites>
+ 
 
     <repositories>
         <!--
@@ -25,38 +118,143 @@
             <name>Gephi 3rd Party</name>
             <url>http://nexus.gephi.org/content/repositories/thirdparty/</url>
         </repository>
+        <repository>
+            <url>http://download.java.net/maven/2/</url>
+            <id>beans-binding</id>
+            <layout>default</layout>
+            <name>Repository for library Library[beans-binding]</name>
+        </repository>
     </repositories>
 
     <build>
+        
+        <!-- For changeSet to be properly evaluated by assembly:assembly, use also the validate goal -->
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
-                    <version>3.7</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <brandingToken>${brandingToken}</brandingToken>
-                        <cluster>${brandingToken}</cluster>
-                    </configuration>
+                    <version>${gephi.nbm-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <!-- NetBeans 6.9+ requires JDK 6 -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.3.2</version>
-                    <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                    </configuration>
+                    <version>${gephi.maven-compiler-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.3.1</version>
+                    <version>${gephi.maven-jar-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${gephi.maven-antrun-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${gephi.maven-deploy-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${gephi.maven-release-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${gephi.maven-gpg-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${gephi.build-helper-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${gephi.maven-surefire-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jarsigner-plugin</artifactId>
+                    <version>${gephi.maven-jarsigner-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${gephi.maven-source-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
+        
+        <!--======================================================================================-->
+        
+        <plugins>
+
+            <!-- Compiler -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <debug>${gephi.javac.debug}</debug>
+                    <optimize>${gephi.javac.optimize}</optimize>
+                    <source>${gephi.javac.source}</source>
+                    <target>${gephi.javac.target}</target>
+                    <showDeprecation>${gephi.javac.showDeprecation}</showDeprecation>
+                    <showWarnings>${gephi.javac.showWarnings}</showWarnings>
+                    <fork>${gephi.javac.fork}</fork>
+                    <compilerArgument>
+                        ${gephi.javac.xlint}
+                    </compilerArgument>
+                </configuration>
+            </plugin>
+            
+            <!-- Assembler to produce final artifacts. -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <tarLongFileMode>gnu</tarLongFileMode>
+                    <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                    <descriptors>
+                        <descriptor>src/assemble/bin.xml</descriptor>
+                        <descriptor>src/assemble/project.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+ 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <useDefaultManifestFile>true</useDefaultManifestFile> <!-- required since nbm-plugin 3.0-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                            <!--<goal>test-jar</goal>-->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <descriptor>src/main/nbm/module.xml</descriptor>
+                    <brandingToken>${brandingToken}</brandingToken>
+                    <cluster>${brandingToken}</cluster>
+                    <useOSGiDependencies>${gephi.netbeans.useOSGiDependencies}</useOSGiDependencies>
+                </configuration>
+            </plugin>
+        </plugins>
+        
     </build>
 
     <modules>
@@ -150,9 +348,4 @@
         <module>WorkspaceUI</module>
         <module>Gleem</module>
     </modules>
-
-    <properties>
-        <netbeans.version>RELEASE72-BETA</netbeans.version>
-        <brandingToken>gephi</brandingToken>
-    </properties>
 </project>

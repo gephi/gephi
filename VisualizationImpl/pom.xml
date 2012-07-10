@@ -14,32 +14,7 @@
 
     <name>VisualizationImpl</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <repositories>
-        <!--
-        Repository hosting NetBeans modules, especially APIs.
-        Versions are based on IDE releases, e.g.: RELEASE691
-        To create your own repository, use: nbm:populate-repository
-        -->
-        <repository>
-            <id>netbeans</id>
-            <name>NetBeans</name>
-            <url>http://bits.netbeans.org/maven2/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <dependencies>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-api-annotations-common</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>attributes-api</artifactId>
@@ -79,11 +54,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization-api</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.swinglabs</groupId>
-            <artifactId>swingx</artifactId>
-            <version>1.6.1</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -148,24 +118,14 @@
             <version>1.0</version>
         </dependency>
         <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swingx</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>utils-collection</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev</groupId>
-            <artifactId>colorchooser</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.connectina.swing</groupId>
-            <artifactId>fontchooser</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.miglayout</groupId>
-            <artifactId>miglayout</artifactId>
-            <version>3.7.1</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -176,12 +136,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-project</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <artifactId>simple-validation</artifactId>
-            <groupId>org.netbeans</groupId>
-            <type>jar</type>
-            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>

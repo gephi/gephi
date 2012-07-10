@@ -12,12 +12,32 @@
     <packaging>nbm-application</packaging>
 
     <name>gephi-app</name>
+    <url>https://github.com/gephi/gephi-maven</url>
+    <description>Gephi - The Open Graph Viz Platform</description>
+    <organization>
+        <url>http://gephi.org</url>
+    </organization>
+    <inceptionYear>2007</inceptionYear>
+    
+    <licenses>
+        <license>
+            <name>CDDL 1.0</name>
+            <url>http://www.opensource.org/licenses/CDDL-1.0</url>
+            <comments>CDDL License 1.0</comments>
+        </license>
+        <license>
+            <name>GPL v3</name>
+            <url>http://www.opensource.org/licenses/GPL-3.0</url>
+            <comments>GPL v3 License</comments>
+        </license>
+    </licenses>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.run.params.ide/>
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
         <all.clusters>${project.build.directory}/${brandingToken}</all.clusters>
+        <bundle.namespace>${project.groupId}.${project.artifactId}</bundle.namespace>
     </properties>
 
     <dependencies>
@@ -497,7 +517,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.10</version>
                 <configuration>
                     <systemPropertyVariables>
                         <all.clusters>${all.clusters}</all.clusters>
