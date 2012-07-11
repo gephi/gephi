@@ -1,36 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-      <groupId>org.gephi</groupId>
-      <artifactId>gephi-parent</artifactId>
-      <version>0.8.1</version>
-      <relativePath>../..</relativePath>
-  </parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.gephi</groupId>
+        <artifactId>gephi-parent</artifactId>
+        <version>0.8.1</version>
+        <relativePath>../..</relativePath>
+    </parent>
 
-  <artifactId>gephi-branding</artifactId>
-  <packaging>nbm</packaging>
+    <artifactId>gephi-branding</artifactId>
+    <packaging>nbm</packaging>
 
-  <name>gephi-branding</name>
+    <name>gephi-branding</name>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.netbeans.api</groupId>
-      <artifactId>org-netbeans-api-annotations-common</artifactId>
-      <version>${netbeans.version}</version>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-annotations-common</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans</groupId>
+            <artifactId>platform-localization</artifactId>
+            <type>zip</type>
+            <version>${gephi.platform.localization}</version>
+        </dependency>
+    </dependencies>
 
-  <build>
-      <plugins>
+    <build>
+        <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
+                <configuration>
+                    <nbmResources> 
+                        <nbmResource>
+                            <directory>${project.build.directory}/localization</directory>
+                            <targetPath>.</targetPath>
+                        </nbmResource>
+                    </nbmResources>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -40,6 +54,26 @@
                     <useDefaultManifestFile>true</useDefaultManifestFile>
                 </configuration>
             </plugin>
-      </plugins>
-  </build>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeGroupIds>org.netbeans</includeGroupIds>
+                            <includeArtifactIds>platform-localization</includeArtifactIds>
+                            <outputDirectory>
+                                ${project.build.directory}/localization
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
