@@ -511,7 +511,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
-                    <etcConfFile>src/main/resources/gephi.conf</etcConfFile>
+                    <etcConfFile>${basedir}/target/${brandingToken}.conf</etcConfFile>
                 </configuration>
             </plugin>
             <!-- Permits NbModuleSuite to be run in integration-test phase: -->
@@ -525,6 +525,30 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+            <plugin> 
+                <artifactId>maven-resources-plugin</artifactId> 
+                <executions> 
+                    <execution> 
+                        <id>generate-app-conf-file</id> 
+                        <phase>generate-resources</phase> 
+                        <goals> 
+                            <goal>copy-resources</goal> 
+                        </goals> 
+                        <configuration> 
+                            <outputDirectory>${basedir}/target/</outputDirectory> 
+                            <resources> 
+                                <resource> 
+                                    <directory>src/main/resources</directory> 
+                                    <includes> 
+                                        <include>${brandingToken}.conf</include>
+                                    </includes> 
+                                    <filtering>true</filtering> 
+                                </resource> 
+                            </resources> 
+                        </configuration> 
+                    </execution> 
+                </executions> 
+            </plugin> 
         </plugins>
     </build>
 
