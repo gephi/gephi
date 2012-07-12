@@ -36,6 +36,8 @@
         
         <gephi.netbeans.useOSGiDependencies>false</gephi.netbeans.useOSGiDependencies>
         
+        <gephi.appbundle.name>Gephi</gephi.appbundle.name>
+        <gephi.appbundle.signature>????</gephi.appbundle.signature>
         <gephi.jarbundler.version>2.2.0</gephi.jarbundler.version>
         
         <gephi.scm>git</gephi.scm>
@@ -266,6 +268,7 @@
             </plugin>
         </plugins>
     </build>
+                
 
     <modules>
         <module>modules/branding</module>
