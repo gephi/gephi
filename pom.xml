@@ -264,6 +264,11 @@
                     <brandingToken>${brandingToken}</brandingToken>
                     <cluster>${brandingToken}</cluster>
                     <useOSGiDependencies>${gephi.netbeans.useOSGiDependencies}</useOSGiDependencies>
+                    
+                    <templateFile>src/main/app-resources/template.xml</templateFile>
+                    <installDirName>${brandingToken}</installDirName>
+                    <installerOsSolaris>false</installerOsSolaris>
+                    <installerOsMacosx>false</installerOsMacosx>
                 </configuration>
             </plugin>
         </plugins>

@@ -507,7 +507,6 @@
 
     <build>
         <plugins>
-            
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
@@ -536,6 +535,12 @@
                             <execution>
                                 <id>default-standalone-zip</id>
                                 <phase>package</phase>       
+                            </execution>
+                            <execution>
+                                <id>extra</id>
+                                <goals>
+                                    <goal>build-installers</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
@@ -641,27 +646,6 @@
                                               destfile="${project.build.directory}/{project.artifactId}-${project.version}.dmg.gz"/>
                                     </target>
                                 </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>deployment</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>nbm-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>extra</id>
-                                <goals>
-                                    <goal>autoupdate</goal>
-                                    <goal>webstart-app</goal>
-                                    <goal>build-installers</goal>
-                                </goals>
                             </execution>
                         </executions>
                     </plugin>
