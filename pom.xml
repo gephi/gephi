@@ -265,6 +265,10 @@
                     <cluster>${brandingToken}</cluster>
                     <useOSGiDependencies>${gephi.netbeans.useOSGiDependencies}</useOSGiDependencies>
                     
+                    <keystore>../../src/keystore/keystore.ks</keystore>
+                    <keystorealias>gephi</keystorealias>
+                    <keystorepassword>${keystore.password}</keystorepassword>
+                    
                     <templateFile>src/main/app-resources/template.xml</templateFile>
                     <installDirName>${brandingToken}</installDirName>
                     <installerOsSolaris>false</installerOsSolaris>
