@@ -578,7 +578,7 @@
                                     <artifactId>${project.artifactId}</artifactId>
                                     <groupId>${project.groupId}</groupId>
                                     <version>${project.version}</version>
-                                    <file>${project.build.directory}/${project.artifactId}-${project.version}.pom</file>
+                                    <file>pom.xml</file>
                                 </configuration>
                             </execution>
                         </executions>
