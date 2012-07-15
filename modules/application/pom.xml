@@ -517,6 +517,16 @@
                     </execution>
                 </executions>
             </plugin> 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-install</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -525,6 +535,55 @@
             <id>deployment</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-install-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>install-zip</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>install-file</goal>
+                                </goals>
+                                <configuration>
+                                    <packaging>zip</packaging>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <groupId>${project.groupId}</groupId>
+                                    <version>${project.version}</version>
+                                    <file>${project.build.directory}/${project.artifactId}-${project.version}.zip</file>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>install-dmg</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>install-file</goal>
+                                </goals>
+                                <configuration>
+                                    <packaging>dmg</packaging>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <groupId>${project.groupId}</groupId>
+                                    <version>${project.version}</version>
+                                    <file>${project.build.directory}/${project.artifactId}-${project.version}.dmg</file>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>install-pom</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>install-file</goal>
+                                </goals>
+                                <configuration>
+                                    <packaging>pom</packaging>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <groupId>${project.groupId}</groupId>
+                                    <version>${project.version}</version>
+                                    <file>${project.build.directory}/${project.artifactId}-${project.version}.pom</file>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+            
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>nbm-maven-plugin</artifactId>
@@ -645,28 +704,6 @@
                                         <!-- <gzip src="${project.build.directory}/{project.artifactId}-${project.version}.dmg"
                                         destfile="${project.build.directory}/{project.artifactId}-${project.version}.dmg.gz"/>-->
                                     </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-app-bundle</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>attach-artifact</goal>
-                                </goals>
-                                <configuration>
-                                    <artifacts>
-                                        <artifact>
-                                            <file>${project.build.directory}/${project.name}-${project.version}.dmg</file>
-                                            <type>dmg</type>
-                                            <classifier>executable</classifier>
-                                        </artifact>
-                                    </artifacts>
                                 </configuration>
                             </execution>
                         </executions>

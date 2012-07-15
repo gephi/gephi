@@ -217,6 +217,11 @@
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>${gephi.maven-dependency-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${gephi.maven-install-plugin.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         
