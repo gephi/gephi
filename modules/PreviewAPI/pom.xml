@@ -4,8 +4,8 @@
     <parent>
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
-        <version>0.8.1</version>
-		<relativePath>../..</relativePath>
+        <version>0.8.2-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
