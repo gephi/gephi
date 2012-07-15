@@ -10,7 +10,7 @@
 
     <groupId>org.gephi</groupId>
     <artifactId>gleem</artifactId>
-    <version>1.0</version>
+    <version>0.8.2-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>Gleem</name>
