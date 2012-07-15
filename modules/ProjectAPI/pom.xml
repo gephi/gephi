@@ -10,7 +10,7 @@
 
     <groupId>org.gephi</groupId>
     <artifactId>project-api</artifactId>
-    <version>0.8.2</version>
+    <version>0.8.2-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>ProjectAPI</name>

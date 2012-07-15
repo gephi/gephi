@@ -132,14 +132,14 @@
     <distributionManagement>
         <!-- Publish versioned releases here -->
         <repository>
-            <id>gephi-release</id>
+            <id>gephi-nexus</id>
             <name>Gephi Release Repository</name>
             <url>http://nexus.gephi.org/nexus/content/repositories/releases</url>
         </repository>
  
         <!-- Publish snapshots here -->
         <snapshotRepository>
-            <id>gephi-snapshot</id>
+            <id>gephi-nexus</id>
             <name>Gephi Snapshot Repository</name>
             <url>http://nexus.gephi.org/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
