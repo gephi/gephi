@@ -10,15 +10,16 @@
     <name>gephi-parent</name>
     
     <properties>        
-        <netbeans.version>RELEASE72-BETA</netbeans.version>
+
         <brandingToken>gephi</brandingToken>
         <all.clusters>${project.build.directory}/${brandingToken}</all.clusters>
         <bundle.namespace>${project.groupId}.${project.artifactId}</bundle.namespace>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
-        <gephi.descriptionStamp>.description</gephi.descriptionStamp>
+        <netbeans.version>RELEASE72-BETA</netbeans.version>
         <gephi.maven.requiredVersion>3.0.3</gephi.maven.requiredVersion>
-        <gephi.platform.localization>7.1</gephi.platform.localization>
+        <gephi.platform.localization.version>7.1</gephi.platform.localization.version>
+        <gephi.javadoc.platform.version>7.1.2</gephi.javadoc.platform.version>
 
         <gephi.javac.source>1.6</gephi.javac.source>
         <gephi.javac.target>1.6</gephi.javac.target>
@@ -235,6 +236,11 @@
                     <artifactId>wagon-maven-plugin</artifactId>
                     <version>${gephi.wagon-maven-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${gephi.maven-javadoc-plugin.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         
@@ -316,6 +322,51 @@
                     <installerOsSolaris>false</installerOsSolaris>
                     <installerOsMacosx>false</installerOsMacosx>
                 </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <show>private</show>
+                    <nohelp>true</nohelp>
+                    <detectLinks>true</detectLinks>
+                    <detectOfflineLinks>true</detectOfflineLinks>      
+                </configuration>
+                <executions>
+                    <execution> 
+                        <id>attach-javadocs</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals> 
+                    </execution>
+                    <execution>
+                        <id>aggregate-javadoc</id>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <show>public</show>
+                            <stylesheetfile>src/main/javadoc/stylesheet.css</stylesheetfile>
+                            <doctitle>Gephi ${project.version} API Index</doctitle>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals> 
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -661,14 +661,14 @@
                                 </goals>
                                 <configuration>
                                     <artifacts>
-                                        <!--                                        <artifact>
+                                        <artifact>
                                             <file>${project.build.directory}/${project.artifactId}-${project.version}.dmg</file>
                                             <type>dmg</type>
                                         </artifact>
                                         <artifact>
                                             <file>${project.build.directory}/${project.artifactId}-${project.version}.zip</file>
                                             <type>zip</type>
-                                        </artifact>-->
+                                        </artifact>
                                     </artifacts>
                                 </configuration>
                             </execution>

@@ -28,7 +28,7 @@
             <groupId>org.netbeans</groupId>
             <artifactId>platform-localization</artifactId>
             <type>zip</type>
-            <version>${gephi.platform.localization}</version>
+            <version>${gephi.platform.localization.version}</version>
         </dependency>
     </dependencies>
 

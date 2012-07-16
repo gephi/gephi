@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+    <head>
+        <title>Gephi API Overview</title>
+    </head>
+    <body>
+        <p>
+            This documents provides Gephi APIs documentation and gives details about
+            current status of each API. Each API is categorized by it's stability:
+            stable, <span class="unstable">under development</span>, <span class="deprecated">deprecated</span> or
+            <span class="friend">friend</span>.
+        </p>
+        <hr/>
+        <h2>API Changes</h2>
+        <ul>
+			<li>(April 10 2012) Add a <code>getShortDescription()</code> method to the <code>StatisticsUI</code> API. It enables to get a short description of statistics (used to display tooltips).
+			</li>
+            <li>(March 26 2012) Add a <code>needsItemBuilder</code> method to <code>Renderer</code> in Preview API.
+                This helps to avoid building unnecessary items while refreshing preview.
+            </li>
+            <li>(March 19 2012) Preview API changes:<br/>
+                Added a <code>getDisplayName</code> method to <code>Renderer</code> and support for extending default preview renderers.<br/>
+                Added a renderer manager to preview controlled with new methods in <code>PreviewModel</code> and <code>PreviewController</code>.:<br/>
+            </li>
+            <li>(March 04 2012) Add a local scale flag in Ranking API. The value can be set from the<code>RankingController</code>.</li>
+            <li>(March 01 2012) Add <code>RangeFilter</code> interface in Filters API to help create range filters. The filter system now automatically
+                manage the range values and bounds. The <code>Range</code> object now also supports exclusive intervals.</li>
+            <li>(February 29 2012) Add a new <code>AttributableFilter</code> filter type. This is useful for filters manipulating <code>Attributable</code>
+                objects regardless whether they belong to a node or edge. Also note new useful abstract plugin implementations have been added to
+                the <code>FiltersPlugin</code> module. Use <code>AbstractFilter</code> for any filter and <code>AbstractAttributeFilter</code> for 
+                filters based on attributes. Filter builders are also provided.</li>
+            <li>(February 26 2012) Update to Netbeans Platform 7.1 and it's new perspective system. The <code>PerspectiveMember</code> SPI has to go
+                away and will break compatibility. Top components now directly declare the perspective they belong to in the 
+                <code>@TopComponent.Registration</code> annotation, for instance <code>roles = {"overview"}</code> for the Overview perspective.</li>
+            <li>(February 08 2012) Add a <code>REPLACE_COLUMN</code> event type in <code>AttributeEvent</code>.
+            <li>(January 18 2012) New Timeline API exposed as a stable API. Th API controls the Timeline UI component and the animation framework.</li>
+            <li>(January 15 2012) Add a new <code>TIME_FORMAT</code> event in <code>DynamicModelEvent</code>. The event is triggered when the time format
+                is initialized.</li>
+            <li>(December 14 2011) Add a new <code>PerspectiveAPI</code> module and move API/SPI interfaces from the <code>DesktopPerspective</code>
+                module. Add a <code>PerspectiveController</code> to find and manage perspectives.</li>
+            <li>(November 07 2011) Add a <code>getGraphTable()</code> in the <code>AttributeModel</code>. The <code>GraphView</code> elements
+                can also have attributes using the same system as nodes and egdes. The data can be accessed through the <code>Graph.getAttributes()</code>
+                method.
+            <li>(October 18 2011) Changes in the <code>DesktopPerspective</code> SPI. Modules willing to declare a panel part of a perspective
+                should implement the <code>PerspectiveMember</code> interface. The interface now asks for the TopComponent's ID.
+            <li>(September 01 2011) Complete rewrite of the Preview API with a new SPI which allows to extend the Preview with new renderers, item
+                builders or render targets. The API also now offers better customization through a central property system and is optimized for
+                external applications as well. The API is also now considered as stable.</li>
+            <li>(August 28 2011) New <code>DynamicStatistics</code> SPI in the <code>StatisticsAPI</code> module. The interface extends <code>Statistics</code>
+                and implement the calculation of metrics over time.
+            <li>(August 24 2011) Important changes in graph events breaking API compatibility. The <code>ADD_NODES</code> and <code>ADD_EDGES</code> are merged
+                into a <code>ADD_NODES_AND_EDGES</code> event. Similarly <code>REMOVE_NODES</code> and <code>REMOVE_EDGES</code> are merged into a
+                <code>REMOVE_NODES_AND_EDGES</code> event. <code>GraphEventData</code> remains the same and still contains both added/removed nodes and
+                edges. Users may simply test if arrays returned by <code>addedNodes()</code>, <code>addedEdges()</code>, <code>removedNodes()</code> and
+                <code>removedEdges()</code> are <code>null</code> before using them.
+            <li>(August 22 2011) Add new <code>executeLayout(numIterations)</code> method in <code>LayoutController</code>.
+            <li>(August 20 2011) The <code>StatisticsController</code> now supports synchronous algorithm execution through the <code>execute(Statistics)</code>
+                method.</li>
+            <li>(August 13 2011) Add new <code>startAutoTransform()</code> and <code>stopAutoTransform()</code> in Ranking API to control auto transformations.
+                The model also allows to retrieve the ranking used in the auto transformation. An additional <code>refreshRanking()</code> method has been added
+                in the <code>RankingBuilder</code> SPI for a smoother auto transformation support.</li>
+            <li>(July 26 2011) Added a new <code>AttributeRowsMergeStrategy</code> interface to Data Laboratory API. This is a type of manipulator that defines
+                and strategy for merging values of a row (node or edge) for an specific column. It should be used by other manipulators such as 
+                <code>NodesManipulator MergeNodes</code></li>
+            <li>(July 19 2011) Complete refactoring of the Ranking API to improve modularity and reach a stable version of the API. The API now also has
+                an SPI for ranking builders and transformers. Instead of <code>getNodeRanking()</code> and <code>getEdgeRanking</code> in the model, we
+                introduce the concept of <b>element type</b> and generalize methods to it. Use <code>Ranking.NODE_ELEMENT</code> to obtain a node
+                ranking and <code>Ranking.EDGE_ELEMENT</code> for an edge ranking. Same idea for transformers, which are now defined by a unique name.
+                Default transformers' name can be found in the <code>Transformer</code> interface. A <code>RankingEvent</code> has also been created.
+                API users have to update to their client code to be compatible.</li>
+            <li>(July 18 2011) Add a new interface nodes and edges share: <code>Attributable</code>. That allows to manipulate objects with attributes
+                regardless if the object is a node or an edge. <code>Node</code>, <code>Edge</code>, <code>NodeData</code> and <code>EdgeData</code> now
+                now implements this interface, and a <code>getAttributes()</code> method has been added to <code>Node</code> and <code>Edge</code> to
+                make development easier.</li>
+            <li>(April 6 2011) Add <code>setCurrentQuery()</code> method on <code>FilterController</code>.</li>
+            <li>(February 21 2011) Important change how modules save/load data into project files. The <code>WorkspacePersistenceProvider</code> interface
+                from ProjectAPI now uses StAX instead of DOM. The <code>writeXML()</code> method now uses <code>XMLStreamWriter</code> and <code>readXML()</code>
+                <code>XMLStreamReader</code>. Backward compatibility can't be assured, modules have to use switch to StAX.
+            </li>
+            <li>
+                (February 11 2011) Added support of shortcut keys, availability of items and sub-items creation to Data Laboratory context menu actions
+                (<code>NodesManipulator</code> and <code>EdgesManipulator</code>). Also now Visualization API has an SPI for adding context menu actions
+                (<code>GraphContextMenuItem</code>) to nodes like DataLaboratory does with <code>NodesManipulator</code>. Note that they share the interface
+                <code>ContextMenuItemManipulator</code> from Data Laboratory API, so they are compatible, being able to reuse actions on nodes for Overview and Data Laboratory.
+            </li>
+            <li>(December 19 2010) Add <code>removeMetaEdge(Edge)</code> to manually remove meta edges. Add <code>getTotalEdgeCount()</code> method
+                to globally count the number of edges, regardless if the edge is proper or meta.
+            </li>
+            <li>(October 12 2010) Add methods in Graph API to better combine edges and meta edges features. Add <code>getEdgesAndMetaEdges(Node)</code> and
+                <code>getTotalDegree(Node)</code> methods, as well as their in and out variants for <code>HierarchicalDirectedGraph</code>.
+            </li>
+            <li>(September 06 2010) Add a <code>flatten()</code> method to <code>HierarchicalGraph</code> to flatten the hierarchical graph and transform
+                meta edges into regular edges.
+            </li>
+            <li>(September 05 2010) Add <code>destroy(Filter filter)</code> in <code>FilterBuilder</code> to receive notification when a filter
+                query is removed and clean-up.
+            </li>
+            <li>(September 01 2010) Add <code>MetaEdgeBuilder</code> in Graph SPI to allow custom builders. Add <code>GraphSettings.setMetaEdgeBuilder()</code>
+                in the graph model settings.
+            </li>
+            <li>(August 26 2010) Modify <code>StatisticsModel</code> to store reports directly instead of <code>Statistics</code> instance. As a
+                consequence, the model has now a <code>getReport()</code> and a <code>getResult()</code> method that UI can use. The currently
+                running statistics can now be get with a new <code>getRunning()</code> method.
+            </li>
+            <li>(August 19 2010) Simplify and improve attribute events management. Event listeners now subscribe directly from the
+                <code>AttributeModel</code> instead of <code>AttributeTable</code> and will receive events for all tables. Refactoring of the
+                <code>AttributeEvent</code> class with <code>AttributeTable</code> as source and a new <code>AttributeEventData</code> object as data.
+                A new <code>SET_VALUE</code> has been implemented for getting events when attribute values are set.
+            </li>
+            <li>(August 18 2010) Changes in <code>AttributeRowFactory</code>, the <code>newNodeRow()</code> method now takes the owner object
+                <code>NodeData</code> as a parameter. Similarly for <code>newEdgeRow()</code> and <code>newRowForTable()</code>.
+            </li>
+            <li>(August 17 2010) Add <code>getEdge(Node, Node)</code> in GraphAPI for consistency reasons.
+            </li>
+            <li>(August 15 2010) Changes in Processor SPI. The <code>Processor</code> has now setters instead of a <code>process()</code> method
+                with parameters. How processors are created remains the same. Creation of a <code>ProcessorUI</code> interface for processors settings
+                configuration. A <code>ProcessorUI</code> implementation provides a panel, which is shown when the import report is closing. The
+                <code>ProcessorUI</code> also allows to disable a processor with some conditions.
+            </li>
+            <li>(August 13 2010) Add <code>getColor()</code> method in <code>NodeDraft</code> and <code>EdgeDraft</code>.
+            </li>
+            <li>(July 19 2010) Define the "Overview, "Data Laboratory" and "Preview" as perspectives. Create a new SPI for perspecives and
+                perspective members. Members are simply the <code>TopComponent</code> that belong to a perspective. Plugins can implement
+                <code>PerspectiveMember</code> to define the open and close behaviour.
+            </li>
+            <li>(July 16 2010) Add list/array types in Attributes API. All native types has now a related list type, except dynamic types. The list
+                types inherits from <code>AbstractList</code>.
+            </li>
+            <li>(July 15 2010) Changes in the way Import API deals with time intervals and dynamic data. Support for dynamic attributes has been
+                added with a new <code>addAttributeValue()</code> method in <code>NodeDraft</code> and <code>EdgeDraft</code>. For improving data
+                cleanup possibilities, <code>NodeDraftGetter</code> and <code>EdgeDraftgetter</code> now returns an <code>AttributeRow</code>
+                instead of a list of attribute values only. Finally to profit from latest improvements, draft elements returns directly a
+                <code>TimeInterval</code> type instead of the list of slices. Methods with 'Slice' have been renamed to 'Interval' for
+                consistency reasons.
+            </li>
+            <li>(July 14 2010) Add dynamic types into Attributes API. Dynamic types store values with a time interval and query can
+                be customized with estimators. All dynamic types inherit from <code>DynamicType</code>
+            </li>
+            <li>(June 18 2010) Graph API event management improvements. The <code>GraphEvent</code> has now precise events, including
+                <code>ADD_NODES</code>, <code>REMOVE_NODES</code>, <code>ADD_EDGES</code>, <code>REMOVE_EDGES</code> and
+                <code>VISIBLE_VIEW</code>. A new <code>GraphEventData</code> interface has been created to retrieve elements related to
+                the events.
+            </li>
+            <li>(June 14 2010) Export API refactoring, inspired from ImportAPI. Create an <code>ExporterBuilder</code> interface for
+                exporter creation and different exporters: <code>GraphExporter</code>, <code>VectorExporter</code>, <code>ByteExporter</code>
+                and <code>CharacterExporter</code> that covers common cases. The way exporters write data has been rationalized by using either
+                <code>java.io.Writer</code> (text) or <code>java.io.OutputStream</code> (byte). The <code>ExportController</code> has been improved
+                to support all use-cases, including file, writer and stream export.
+            </li>
+            <li>(June 11 2010) Add Spigot support to the ImportAPI and SPI. Like <code>DatabaseImporter</code>, the
+                <code>SpigotImporter</code> interface is a new type of Importers. Modifications have also be made to the
+                <code>ImportController</code> to support spigot import.
+            </li>
+            <li>(June 08 2010) Refactoring and improvements in the Import API and SPI. The refactoring aim is to solve the singleton
+                issue with importers and let users implement builders interface that create importers instance. Therefore an
+                <code>ImporterBuilder</code> interface has been created and should be registered with the <code>@ServiceProvider</code>
+                annotation. The various importers types have been simplified and leave more choice to the implementations about how the
+                input is managed. XML and Text file importers has been merged in a <code>FileImporter</code> interface, working with the
+                <code>java.io.Reader</code>. Utility static methods, for instance <em>get Document from Reader</em> can now be found in a new
+                <code>ImportUtils</code> class. The <code>ImportController</code> has been simplified for File import and now accepts
+                <code>java.io.Reader</code> also. The main improvement on these modules in the support of UI components for importers.
+                The aim is to let importers define an <code>ImporterUI</code> implementation to manage settings of these importers.
+            </li>
+            <li>(June 04 2010) Improvements in the GraphAPI identifiers management. The system is now storing String
+                identifiers coming from users. New getters and setters methods have been created in <code>Graph</code>:
+                <ul>
+                    <li><code>Graph.setId(Node, String)</code></li>
+                    <li><code>Graph.setId(Edge, String)</code></li>
+                    <li><code>Graph.getNode(String)</code></li>
+                    <li><code>Graph.getEdge(String)</code></li>
+                </ul>
+                The <code>NodeData.setId()</code> and <code>EdgeData.setId()</code> methods have been removed, compatibility can't be kept.
+                Factory has also be changed to allow to create elements with String ID directly, as it's not possible anymore to
+                do it from <code>NodeData</code>.
+            </li>
+            <li>(June 02 2010) Changes in AttributesAPI with event management. The lookup system in <code>AttributeTable</code>
+                has been replaced by a more traditional event management system, with new <code>AttributeEvent</code> and
+                <code>AttributeListener</code> interfaces. The dispatch implementation is also now on a separate thread.
+            </li>
+            <li>(May 08 2010) Changes in Import modules to separate core and user interfaces. The <code>ImportController</code> is now
+                doing import task only and a new <code>ImportControllerUI</code> is displaying the user interface (Report Panel). The
+                <code>ImportControllerUI</code> interface is located in the DesktopProject module and should be user to properly
+                import file from Plugins. The <code>ImportController</code> methods could be used from the toolkit.
+            </li>
+            <li>(April 30 2010) Change FilterController.filter() to FilterController.filterVisible()  and FilterController.select()
+                to FilterController.selectVisible(). The controller is managing this process in a separate thread, with progress,
+                and takes care of properties change. A more simple direct way to filter is required for headless access.
+                The FilterController.filter()  has been created and return the GraphView builded by the filter process.
+            </li>
+            <li>(April 24 2010) Expose basic visualization features in a newly created Visualization API. No proper visualization
+                API exists but its creation is necessary to avoid implementation module dependencies.
+            </li>
+            <li>(April 17 2010) In PreviewAPI, the background color has been put in the PreviewModel. The PreviewController has
+                been updated as well.
+            </li>
+            <li>(March 28 2010) Add a <code>doImport()</code> method in <code>ImportController</code> that accepts
+                <code>InputStream</code>. In ImportAPI also, add <code>getWeight()</code> in EdgeDraft to let importers
+                increment weight. New <code> AttributeUtils</code>  methods. Progress in GraphAPI and ImportAPI documentation.
+            </li>
+            <li>(Feb 17 2010) Change in ImportAPI to support bounded time intervals. Add methods that manage <code>TimeIntervalMin</code>
+                and <code>TimeIntervalMax</code>. Changes in GraphAPI about elements counting. Henceforth only enabled elements are counted,
+                in node	and edge counting, but also in degree methods. This counting is more logical, as it match with the 
+                number of elements returned by <code>getNodes()</code> and <code>getEdges()</code>.
+            </li>
+            <li>(Feb 7 2010) Initial import, for 0.7alpha milestone. Half of
+                APIs are fully documented and the rest needs to be soon. Expose
+                only Core APIs, that plugins could need by now. Friend
+                packages exists, in particular between Plugin and PluginUI
+                modules but they are not shown here. Netbeans APIs documentation
+                dependencies are missing, thus see
+                <a href="http://bits.netbeans.org/dev/javadoc/index.html">Netbeans API Index</a>.
+                Due to early development status, most of APIs are still marked as
+                under development. Moreover APIs marked as stable are also suspected to
+                change, but with much less impact than ones marked as under development.
+            </li>
+        </ul>
+        <hr>
+        <h2>API List</h2>
+        <ul>
+            <li><b>Attributes API</b> - Provides access to attributes values through an efficient column/row system.</li>
+            <li><span class="unstable"><b>Clustering API</b></span> - API/SPI for clustering algorithms (experimental).</li>
+            <li><b>DataLaboratory API</b> - API/SPI for data laboratory features (columns manipulation, edit, ...).</li>
+            <li><b>Export API</b>  - Export API/SPI provides the infrastructure for exporting data to any support and define new exporters.</li>
+            <li><b>Filters API</b>  - API/SPI for filters, define and control current filtering.</li>
+            <li><b>Generator API</b> -  Generator API/SPI provides the way to create and execute graph generators.</li>
+            <li><b>Graph API</b> - API for accessing the graph.</li>
+            <li><span class="unstable"><b>Dynamic API</b></span>  - Provide features for dynamic graphs.</li>
+            <li><b>Import API</b> - Import API/SPI provides the import workflow to import data form any support.</li>
+            <li><b>Layout API</b> - Layout API/SPI provides real-time layout algorithms execution.</li>
+            <li><b>LongTask API</b> - LongTask API provides utility features for long and asynchronous task execution.</li>
+            <li><span class="unstable"><b>Partition API</b></span>  - API for manipulating partition within data.</li>
+            <li><b>Perspective API</b> - API/SPI for perspective management. Only related to the user interface.</li>
+            <li><b>Preview API</b> - API for building the graph preview structure.</li>
+            <li><b>Project API</b> - Project API/SPI for project and worskpaces manipulation.</li>
+            <li><b>Ranking API</b>  - API/SPI for ranking data values and transform values in visual signs like color or size.</li>
+            <li><b>Statistics API</b> - Statistics and Metrics API/SPI provides (a)synchronous algorithms execution.</li>
+            <li><b>Timeline API</b> - API which provides access to the timeline component data, time interval, settings and animation.</li>
+            <li><b>Tools API</b> - Tool API/SPI defines interactive actions users can make with the visualization.</li>
+            <li><span class="unstable"><b>Visualization API</b></span> - API/SPI for interacting with visualization and providing context menu actions.</li>
+        </ul>
+    </body>
+</html>
