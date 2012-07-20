@@ -592,7 +592,7 @@
                                 
                                         <chmod file="${project.build.directory}/${gephi.appbundle.name}.app/Contents/Resources/${brandingToken}/bin/${brandingToken}" perm="ugo+rx"/>
                                 
-                                        <symlink link="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/Gephi" resource="../Resources/${brandingToken}/bin/${brandingToken}"/>
+                                        <symlink link="${project.build.directory}/${gephi.appbundle.name}.app/Contents/MacOS/Gephi" resource="../Resources/${brandingToken}/bin/${brandingToken}" failonerror="false" />
 
                                         <exec dir="${project.build.directory}" os="Mac OS X" executable="hdiutil">
                                             <arg value="create"/> 
