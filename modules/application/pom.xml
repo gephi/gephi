@@ -220,7 +220,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>gleem</artifactId>
-            <version>1.0</version>
+            <version>0.8.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -465,7 +465,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>directory-chooser</artifactId>
-            <version>1.1</version>
+            <version>0.8.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
