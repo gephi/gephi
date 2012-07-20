@@ -2,6 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
+    <!-- Parent POM -->
     <parent>
         <groupId>org.gephi</groupId>
         <artifactId>gephi-parent</artifactId>
@@ -11,19 +13,10 @@
 
     <artifactId>gephi-branding</artifactId>
     <packaging>nbm</packaging>
-
     <name>gephi-branding</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
+    <!-- Dependency on the localization ZIP on the 3rd party repository -->
     <dependencies>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-api-annotations-common</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.netbeans</groupId>
             <artifactId>platform-localization</artifactId>
@@ -34,6 +27,8 @@
 
     <build>
         <plugins>
+            
+            <!-- Add localization as NBM resource -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
@@ -46,14 +41,8 @@
                     </nbmResources>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <!-- to have the jar plugin pickup the nbm generated manifest -->
-                    <useDefaultManifestFile>true</useDefaultManifestFile>
-                </configuration>
-            </plugin>
+            
+            <!-- Unpack the localization dependency -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>

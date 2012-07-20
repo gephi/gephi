@@ -1,6 +1,6 @@
 
 <assembly>
-    <id>project</id>
+    <id>sources</id>
     <formats>
         <format>tar.gz</format>
     </formats>

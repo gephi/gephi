@@ -2,6 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
+    <!-- Parent POM -->
     <parent>
         <groupId>org.gephi</groupId>
         <artifactId>gephi-parent</artifactId>
@@ -11,36 +13,9 @@
 
     <artifactId>gephi</artifactId>
     <packaging>nbm-application</packaging>
-
     <name>gephi-app</name>
-    <url>https://github.com/gephi/gephi-maven</url>
-    <description>Gephi - The Open Graph Viz Platform</description>
-    <organization>
-        <url>http://gephi.org</url>
-    </organization>
-    <inceptionYear>2007</inceptionYear>
-    
-    <licenses>
-        <license>
-            <name>CDDL 1.0</name>
-            <url>http://www.opensource.org/licenses/CDDL-1.0</url>
-            <comments>CDDL License 1.0</comments>
-        </license>
-        <license>
-            <name>GPL v3</name>
-            <url>http://www.opensource.org/licenses/GPL-3.0</url>
-            <comments>GPL v3 License</comments>
-        </license>
-    </licenses>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <netbeans.run.params.ide/>
-        <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
-        <all.clusters>${project.build.directory}/${brandingToken}</all.clusters>
-        <bundle.namespace>${project.groupId}.${project.artifactId}</bundle.namespace>
-    </properties>
-
+    <!-- Dependencies -->
     <dependencies>
         <dependency>
             <groupId>org.netbeans.cluster</groupId>
@@ -53,7 +28,6 @@
             <artifactId>gephi-branding</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- NbModuleSuite functional in RELEASE70 or later: -->
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-nbjunit</artifactId>
@@ -507,6 +481,7 @@
 
     <build>
         <plugins>
+            <!-- Disable the ZIP goal in the non-deployment or release mode -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
@@ -521,14 +496,18 @@
     </build>
 
     <profiles>
+        <!-- The deployment profile is built for daily releases. It builts everything except the installers -->
         <profile>
             <id>deployment</id>
             <build>
                 <plugins>
+                    
+                    <!-- NBM Plugin settings. Enable the zip and autoupdate generation -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>nbm-maven-plugin</artifactId>
                         <configuration>
+                            <!-- Set up the gephi.conf for the final artifact -->
                             <etcConfFile>${basedir}/target/${brandingToken}.conf</etcConfFile>
                         </configuration>
                         <executions>
@@ -544,6 +523,7 @@
                             </execution>
                         </executions>
                     </plugin>
+                    
                     <!-- Permits NbModuleSuite to be run in integration-test phase: -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -555,7 +535,8 @@
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
-                    <!-- Copy ressources gephi.conf and Info.plist with filtering-->
+                    
+                    <!-- Copy ressources gephi.conf and Info.plist with filtering (replacing 'project.version' by the actual version -->
                     <plugin> 
                         <artifactId>maven-resources-plugin</artifactId> 
                         <executions> 
@@ -581,6 +562,7 @@
                             </execution> 
                         </executions> 
                     </plugin>
+                    
                     <!-- Create the Mac OS X application bundle and dmg file -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -649,6 +631,8 @@
                             </execution>
                         </executions>
                     </plugin>
+                    
+                    <!-- Attach the final DMG and ZIP files for deployment -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>build-helper-maven-plugin</artifactId>
@@ -674,6 +658,8 @@
                             </execution>
                         </executions>
                     </plugin>
+                    
+                    <!-- Upload the autoupdate site automatically -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>wagon-maven-plugin</artifactId>
@@ -696,6 +682,8 @@
                 </plugins>
             </build>
         </profile>
+        
+        <!-- Profile activated for release in addition of deployement. Create the installers. -->
         <profile>
             <id>release</id>
             <build>
