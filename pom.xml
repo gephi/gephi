@@ -74,6 +74,7 @@
         <brandingToken>gephi</brandingToken>
         <all.clusters>${project.build.directory}/${brandingToken}</all.clusters>
         <gephi.netbeans.useOSGiDependencies>false</gephi.netbeans.useOSGiDependencies>
+        <gephi.app.title>Gephi 0.8.1 beta</gephi.app.title>
         
         <!-- Mac OS X bundle settings -->
         <gephi.appbundle.name>Gephi</gephi.appbundle.name>
