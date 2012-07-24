@@ -42,6 +42,33 @@
                 </configuration>
             </plugin>
             
+            <!-- Copy ressources gephi.conf and Info.plist with filtering (replacing 'project.version' by the actual version -->
+            <plugin> 
+                <artifactId>maven-resources-plugin</artifactId> 
+                <executions> 
+                    <execution> 
+                        <id>generate-bundles</id> 
+                        <phase>generate-resources</phase> 
+                        <goals> 
+                            <goal>copy-resources</goal> 
+                        </goals> 
+                        <configuration> 
+                            <outputDirectory>src/main/nbm-branding</outputDirectory> 
+                            <resources> 
+                                <resource> 
+                                    <directory>src/main/resources</directory> 
+                                    <includes> 
+                                        <include>core/core.jar/org/netbeans/core/startup/Bundle.properties</include>
+                                        <include>modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties</include>
+                                    </includes> 
+                                    <filtering>true</filtering> 
+                                </resource> 
+                            </resources> 
+                        </configuration> 
+                    </execution> 
+                </executions> 
+            </plugin>
+            
             <!-- Unpack the localization dependency -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
