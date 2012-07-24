@@ -24,6 +24,11 @@
             <version>${gephi.platform.localization.version}</version>
         </dependency>
     </dependencies>
+    
+    <properties>  
+        <gephi.branding.update.center.official.url>${gephi.update.center.testing.url}</gephi.branding.update.center.official.url>
+        <gephi.branding.update.center.thirdparty.url>${gephi.update.center.thirdparty.url}</gephi.branding.update.center.thirdparty.url>
+    </properties>
 
     <build>
         <plugins>
@@ -42,10 +47,11 @@
                 </configuration>
             </plugin>
             
-            <!-- Copy and replace %{gephi.app.version} variable in two Bundle.properties file that contains the application title -->
+            <!-- Copy and filtering tasks -->
             <plugin> 
                 <artifactId>maven-resources-plugin</artifactId> 
                 <executions> 
+                    <!-- Copy and replace %{gephi.app.version} variable in two Bundle.properties file that contains the application title -->
                     <execution> 
                         <id>generate-bundles</id> 
                         <phase>generate-resources</phase> 
@@ -60,6 +66,26 @@
                                     <includes> 
                                         <include>core/core.jar/org/netbeans/core/startup/Bundle.properties</include>
                                         <include>modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties</include>
+                                    </includes> 
+                                    <filtering>true</filtering> 
+                                </resource> 
+                            </resources> 
+                        </configuration> 
+                    </execution> 
+                    
+                    <execution> 
+                        <id>generate-autoudate-urls</id> 
+                        <phase>generate-resources</phase> 
+                        <goals> 
+                            <goal>copy-resources</goal> 
+                        </goals> 
+                        <configuration>
+                            <outputDirectory>${basedir}/target/classes</outputDirectory> 
+                            <resources> 
+                                <resource> 
+                                    <directory>src/main/resources</directory> 
+                                    <includes> 
+                                        <include>org/gephi/branding/Bundle.properties</include>
                                     </includes> 
                                     <filtering>true</filtering> 
                                 </resource> 
@@ -92,4 +118,14 @@
             </plugin>
         </plugins>
     </build>
+    
+    <profiles>
+        <!-- The deployment profile is built for daily releases. It builts everything except the installers -->
+        <profile>
+            <id>release</id>
+            <properties>
+                <gephi.branding.update.center.official.url>${gephi.update.center.official.url}</gephi.branding.update.center.official.url>
+            </properties>
+        </profile>
+    </profiles>
 </project>

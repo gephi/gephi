@@ -76,6 +76,11 @@
         <gephi.netbeans.useOSGiDependencies>false</gephi.netbeans.useOSGiDependencies>
         <gephi.app.title>Gephi 0.8.1 beta</gephi.app.title>
         
+        <!-- Update centers URLs -->
+        <gephi.update.center.official.url>http://gephi.org/updates/official/0.8.1-beta/catalog.xml</gephi.update.center.official.url>
+        <gephi.update.center.thirdparty.url>http://gephi.org/updates/thirdparty/0.8.1-beta/catalog.xml</gephi.update.center.thirdparty.url>
+        <gephi.update.center.testing.url>http://nexus.gephi.org/nexus/content/repositories/snapshots/external/updates.xml</gephi.update.center.testing.url>
+        
         <!-- Mac OS X bundle settings -->
         <gephi.appbundle.name>Gephi</gephi.appbundle.name>
         <gephi.appbundle.signature>????</gephi.appbundle.signature>
