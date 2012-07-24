@@ -42,7 +42,7 @@
                 </configuration>
             </plugin>
             
-            <!-- Copy ressources gephi.conf and Info.plist with filtering (replacing 'project.version' by the actual version -->
+            <!-- Copy and replace %{gephi.app.version} variable in two Bundle.properties file that contains the application title -->
             <plugin> 
                 <artifactId>maven-resources-plugin</artifactId> 
                 <executions> 
