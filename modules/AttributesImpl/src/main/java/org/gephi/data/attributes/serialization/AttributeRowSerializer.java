@@ -151,7 +151,7 @@ public class AttributeRowSerializer {
 
     public void readRow(XMLStreamReader reader, AbstractAttributeModel model, AttributeTableImpl table, AttributeRowImpl row) throws XMLStreamException {
         row.setRowVersion(Integer.parseInt(reader.getAttributeValue(null, "version")));
-        AttributeColumnImpl col = null;
+        Integer index = null;
         String value = "";
 
         boolean end = false;
@@ -162,11 +162,11 @@ public class AttributeRowSerializer {
                 case XMLStreamReader.START_ELEMENT:
                     String name = reader.getLocalName();
                     if (ELEMENT_VALUE.equalsIgnoreCase(name)) {
-                        col = (AttributeColumnImpl) table.getColumn(Integer.parseInt(reader.getAttributeValue(null, "index")));
+                        index = Integer.parseInt(reader.getAttributeValue(null, "index"));
                     }
                     break;
                 case XMLStreamReader.CHARACTERS:
-                    if (!reader.isWhiteSpace() && col != null) {
+                    if (!reader.isWhiteSpace() && index != null) {
                         value += reader.getText();
                     }
                     break;
@@ -174,14 +174,14 @@ public class AttributeRowSerializer {
                     if (ELEMENT_NODE_ROW.equalsIgnoreCase(reader.getLocalName()) || ELEMENT_EDGE_ROW.equalsIgnoreCase(reader.getLocalName())) {
                         end = true;
                     }
-                    if (!value.isEmpty() && col != null) {
-                        AttributeType type = col.getType();
+                    if (!value.isEmpty() && index != null) {
+                        AttributeType type = table.getColumn(index).getType();
                         Object v = type.parse(value);
                         v = model.getManagedValue(v, type);
-                        row.setValue(col, v);
+                        row.setValue(index, v);
                     }
                     value = "";
-                    col = null;
+                    index = null;
                     break;
             }
         }

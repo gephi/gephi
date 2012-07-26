@@ -185,7 +185,12 @@ public class FilterModelPersistenceProvider implements WorkspacePersistenceProvi
                         if (parent != null) {
                             int parentId = Integer.parseInt(parent);
                             Query parentQuery = idMap.get(parentId);
-                            model.setSubQuery(parentQuery, query);
+                            
+                            //A plugin filter may be missing, or the parent filter could not be deserialized.
+                            //For example a partition filter, which depends on partitions, and partitions are not serialized
+                            if (parentQuery != null) {
+                                model.setSubQuery(parentQuery, query);
+                            }
                         } else {
                             //Top query
                             model.addFirst(query);
