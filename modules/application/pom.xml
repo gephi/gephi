@@ -617,7 +617,7 @@
                                             <arg value="-no-iso-translate"/>
                                             <arg value="-r"/>
                                             <arg value="-o"/>
-                                            <arg value="${project.name}-${project.version}.dmg"/>
+                                            <arg value="${project.artifactId}-${project.version}.dmg"/>
                                             <arg value="-root"/>
                                             <arg value="${gephi.appbundle.name}.app"/>
                                             <arg value="${gephi.appbundle.name}.app"/>
