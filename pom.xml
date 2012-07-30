@@ -101,6 +101,10 @@
         <!-- SCM -->
         <gephi.scm>git</gephi.scm>
         
+        <!-- Installers settings -->
+        <gephi.menu.app.name>Gephi ${project.version}</gephi.menu.app.name>
+        
+        
         <!--==== Plugin Versions ==================================================================================-->
 
         <gephi.maven-antrun-plugin.version>1.6</gephi.maven-antrun-plugin.version>

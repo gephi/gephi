@@ -557,7 +557,8 @@
                                             </includes> 
                                             <filtering>true</filtering> 
                                         </resource> 
-                                    </resources> 
+                                    </resources>
+                                    <escapeString>\</escapeString>
                                 </configuration> 
                             </execution> 
                         </executions> 
@@ -682,22 +683,42 @@
             </build>
         </profile>
         
-        <!-- Profile activated for release in addition of deployement. Create the installers. -->
+        <!-- Profile activated for windows release in addition of deployement. Create the installer. -->
         <profile>
-            <id>release</id>
+            <id>release-windows</id>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>nbm-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>extra</id>
-                                <goals>
-                                    <goal>build-installers</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+                    <plugin> 
+                        <artifactId>maven-resources-plugin</artifactId> 
+                        <executions> 
+                            <execution> 
+                                <id>generate-iss-file</id> 
+                                <phase>generate-resources</phase> 
+                                <goals> 
+                                    <goal>copy-resources</goal> 
+                                </goals> 
+                                <configuration> 
+                                    <outputDirectory>${basedir}/target/windows</outputDirectory> 
+                                    <resources> 
+                                        <resource> 
+                                            <directory>src/main/app-resources</directory> 
+                                            <includes> 
+                                                <include>${brandingToken}.iss</include>
+                                            </includes> 
+                                            <filtering>true</filtering> 
+                                        </resource>
+                                        <resource> 
+                                            <directory>src/main/app-resources</directory> 
+                                            <includes> 
+                                                <include>${brandingToken}.ico</include>
+                                                <include>${brandingToken}file128.png</include>
+                                            </includes> 
+                                            <filtering>false</filtering> 
+                                        </resource> 
+                                    </resources> 
+                                </configuration> 
+                            </execution> 
+                        </executions> 
                     </plugin>
                 </plugins>
             </build>
