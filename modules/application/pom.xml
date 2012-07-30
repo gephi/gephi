@@ -611,7 +611,6 @@
                                             <arg value="-f"/>
                                             <arg value="-D"/>
                                             <arg value="-l"/>
-                                            <arg value="-L"/>
                                             <arg value="-allow-multidot"/>
                                             <arg value="-max-iso9660-filenames"/>
                                             <arg value="-relaxed-filenames"/>
