@@ -676,6 +676,7 @@
                             <includes>*</includes>
                             <url>${gephi.snapshot.repository.url}</url>
                             <toDir>external</toDir>
+                            <serverId>${gephi.snapshot.repository.id}</serverId>
                         </configuration>
                     </plugin>
                 </plugins>

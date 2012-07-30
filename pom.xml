@@ -197,7 +197,7 @@
  
         <!-- Publish snapshots here -->
         <snapshotRepository>
-            <id>${gephi.release.repository.id}</id>
+            <id>${gephi.snapshot.repository.id}</id>
             <name>Gephi Snapshot Repository</name>
             <url>${gephi.snapshot.repository.url}</url>
         </snapshotRepository>
