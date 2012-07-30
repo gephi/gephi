@@ -598,7 +598,7 @@
                                             <arg value="create"/> 
                                             <arg value="-noanyowners"/> 
                                             <arg value="-imagekey"/> 
-                                            <arg value="zlib-level=1"/> 
+                                            <arg value="zlib-level=9"/> 
                                             <arg value="-srcfolder"/> 
                                             <arg value="${gephi.appbundle.name}.app"/> 
                                             <arg value="${project.artifactId}-${project.version}.dmg"/>

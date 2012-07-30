@@ -16,7 +16,10 @@
     <target name="-init-maven-props" if="do.load.maven.props" depends="-init-props">
         <xmlproperty file="${suite.location}/pom.xml" prefix="pom.props"/>
         <property name="suite.props.app.name"  value="${pom.props.project.properties.brandingToken}"/>
-        <property name="suite.props.app.title" value="${pom.props.project.artifactId}"/>
+        
+        <property name="suite.props.app.version"  value="${pom.props.project.properties.version}"/>
+        <property name="suite.props.app.title" value="${pom.props.project.properties.brandingToken}"/>   
+        <property name="suite.props.app.installdir" value="${suite.props.app.name}-${suite.props.app.version}"/>
     </target>
     
     <target name="init" depends="-clean,-init-ant-props,-init-maven-props">
@@ -63,8 +66,8 @@
         </condition>
 
         <exec executable="${mvn.executable}" dir="${suite.location}">
-           <arg value="install"/>
-           <env key="JAVA_HOME" value="${java.home}"/>
+            <arg value="install"/>
+            <env key="JAVA_HOME" value="${java.home}"/>
         </exec>
     </target>
 
@@ -72,33 +75,35 @@
 
     <target name="prepare-sources">
         <copy todir="${installer.build.dir}">
-           <fileset dir="${nbi.stub.location}"/>
+            <fileset dir="${nbi.stub.location}"/>
         </copy>
         <copy todir="${installer.build.dir}/.common">
-           <fileset dir="${nbi.stub.common.location}"/>
+            <fileset dir="${nbi.stub.common.location}"/>
         </copy>
 
         <property name="product-uid"  value="${suite.nbi.product.uid}"/>
 
         <condition property="icon.path" value="${nbi.icon.file}" else="${installer.build.dir}/ext/components/products/helloworld/data/icon48.png">
-             <and>
-                 <isset property="nbi.icon.file"/>
-                 <available file="${nbi.icon.file}"/>
-             </and>
+            <and>
+                <isset property="nbi.icon.file"/>
+                <available file="${nbi.icon.file}"/>
+            </and>
         </condition>
-
+        <echo message="Icon path=${icon.path}" />
+        
+        
         <basename property="icon.file.name" file="${icon.path}"/>
         <condition property="icon.extension" value=".gif">
-             <or>
-                 <matches string="${icon.file.name}" pattern="^.*\.gif$"/>
-                 <matches string="${icon.file.name}" pattern="^.*\.gif$"/>
-             </or>
+            <or>
+                <matches string="${icon.file.name}" pattern="^.*\.gif$"/>
+                <matches string="${icon.file.name}" pattern="^.*\.gif$"/>
+            </or>
         </condition>
         <condition property="icon.extension" value=".png">
-             <or>
-                 <matches string="${icon.file.name}" pattern="^.*\.png$"/>
-                 <matches string="${icon.file.name}" pattern="^.*\.PNG$"/>
-             </or>
+            <or>
+                <matches string="${icon.file.name}" pattern="^.*\.png$"/>
+                <matches string="${icon.file.name}" pattern="^.*\.PNG$"/>
+            </or>
         </condition>
 
         <property name="icon.name" value="${suite.props.app.name}${icon.extension}"/>
@@ -142,29 +147,29 @@
         <native2ascii encoding="utf-8" src="${installer.build.dir}" dest="${dir.dir}" includes="build.properties ext/**/*.properties"/>
 
         <copy todir="${installer.build.dir}" overwrite="true" includeEmptyDirs="true">
-             <fileset dir="${dir.dir}"/>
+            <fileset dir="${dir.dir}"/>
         </copy> 
         <condition property="license.defined">
-             <and>
-                 <isset property="nbi.license.file"/>
-                 <available file="${nbi.license.file}"/>
-             </and>
+            <and>
+                <isset property="nbi.license.file"/>
+                <available file="${nbi.license.file}"/>
+            </and>
         </condition> 
         <antcall target="-prepare-license"/>
 
         <condition property="icon.defined">
-             <and>
-                 <isset property="nbi.icon.file"/>
-                 <available file="${nbi.icon.file}"/>
-             </and>
+            <and>
+                <isset property="nbi.icon.file"/>
+                <available file="${nbi.icon.file}"/>
+            </and>
         </condition> 
         <antcall target="-prepare-icon"/>
 
         <condition property="dock.icon.defined">
-             <and>
-                 <isset property="nbi.dock.icon.file"/>
-                 <available file="${nbi.dock.icon.file}"/>
-             </and>
+            <and>
+                <isset property="nbi.dock.icon.file"/>
+                <available file="${nbi.dock.icon.file}"/>
+            </and>
         </condition> 
         <antcall target="-prepare-dock-icon"/>
 

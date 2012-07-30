@@ -3,3 +3,4 @@ AutoUpdate-Essential-Module: true
 OpenIDE-Module-Install: org/gephi/branding/desktop/Installer.class
 OpenIDE-Module-Layer: org/gephi/branding/desktop/layer.xml
 OpenIDE-Module-Localizing-Bundle: org/gephi/branding/desktop/Bundle.properties
+OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}
