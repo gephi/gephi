@@ -608,7 +608,6 @@
                                             <arg value="-V"/> 
                                             <arg value="${gephi.appbundle.name}"/>
                                             <arg value="-U"/>
-                                            <arg value="-f"/>
                                             <arg value="-D"/>
                                             <arg value="-l"/>
                                             <arg value="-allow-multidot"/>
