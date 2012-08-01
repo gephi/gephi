@@ -788,6 +788,7 @@
                                 <configuration>
                                     <packaging>exe</packaging>
                                     <generatePom>false</generatePom>
+                                    <repositoryId>${gephi.release.repository.id}</repositoryId>
                                     <url>${gephi.release.repository.url}</url>
                                     <artifactId>${project.artifactId}</artifactId>
                                     <groupId>${project.groupId}</groupId>
@@ -819,6 +820,7 @@
                                 <configuration>
                                     <packaging>dmg</packaging>
                                     <generatePom>false</generatePom>
+                                    <repositoryId>${gephi.release.repository.id}</repositoryId>
                                     <url>${gephi.release.repository.url}</url>
                                     <artifactId>${project.artifactId}</artifactId>
                                     <groupId>${project.groupId}</groupId>
