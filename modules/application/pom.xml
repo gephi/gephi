@@ -728,7 +728,7 @@
                                     <goal>copy-resources</goal> 
                                 </goals> 
                                 <configuration> 
-                                    <outputDirectory>${basedir}/target/windows</outputDirectory> 
+                                    <outputDirectory>${basedir}/target</outputDirectory> 
                                     <resources> 
                                         <resource> 
                                             <directory>src/main/app-resources</directory> 
@@ -764,10 +764,10 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <delete file="${project.artifactId}-${project.version}.exe" failonerror="false"/>
+                                        <delete file="${project.artifactId}-${project.version}.setup.exe" failonerror="false"/>
                                         
                                         <exec dir="${project.build.directory}" executable="${gephi.innosetup.path}/Compil32.exe">
-                                            <arg line="/cc '${project.build.directory}/windows/${brandingToken}.iss'" /> 
+                                            <arg line="/cc '${brandingToken}.iss'" /> 
                                         </exec> 
                                     </target>
                                 </configuration>
@@ -793,7 +793,7 @@
                                     <artifactId>${project.artifactId}</artifactId>
                                     <groupId>${project.groupId}</groupId>
                                     <version>${project.version}</version>
-                                    <file>${project.build.directory}/${project.artifactId}-${project.version}.exe</file>
+                                    <file>${project.build.directory}/${project.artifactId}-${project.version}.setup.exe</file>
                                 </configuration>
                             </execution>
                         </executions>
