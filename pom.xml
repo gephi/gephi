@@ -121,7 +121,7 @@
 
         <gephi.maven-dependency-plugin.version>2.4</gephi.maven-dependency-plugin.version>
 
-        <gephi.maven-deploy-plugin.version>2.6</gephi.maven-deploy-plugin.version>
+        <gephi.maven-deploy-plugin.version>2.7</gephi.maven-deploy-plugin.version>
 
         <gephi.maven-doap-plugin.version>1.1</gephi.maven-doap-plugin.version>
 
@@ -342,7 +342,7 @@
                         <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
-                            <goal>test-jar</goal>
+                            <!--<goal>test-jar</goal>-->
                         </goals>
                     </execution>
                 </executions>
@@ -410,56 +410,96 @@
                     <installerOsMacosx>false</installerOsMacosx>
                 </configuration>
             </plugin>
-            
-            <!-- Javadoc settings -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <show>private</show>
-                    <nohelp>true</nohelp>
-                    <detectLinks>true</detectLinks>
-                    <detectOfflineLinks>true</detectOfflineLinks>      
-                </configuration>
-                <executions>
-                    <execution> 
-                        <id>attach-javadocs</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals> 
-                    </execution>
-                    <execution>
-                        <id>aggregate-javadoc</id>
-                        <goals>
-                            <goal>aggregate</goal>
-                        </goals>
-                        <phase>site</phase>
-                        <configuration>
-                            <show>public</show>
-                            <stylesheetfile>src/main/javadoc/stylesheet.css</stylesheetfile>
-                            <doctitle>Gephi ${project.version} API Index</doctitle>
-                            <subpackages>org.gephi.clustering.api:org.gephi.clustering.spi:org.gephi.data.attributes.api:org.gephi.data.attributes.spi:org.gephi.data.attributes.type:org.gephi.data.properties:org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.dynamic.api:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.partition.api:org.gephi.partition.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.ranking.api:org.gephi.ranking.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress</subpackages>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            
-            <!-- Sources plugin -->
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals> 
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
+    
+    <!-- Profiles -->
+    <profiles>
+        
+        <!-- Profile for nighly builds and releases -->
+        <profile>
+            <id>deployment</id>
+            <build>
+                <plugins>
+                    <!-- Javadoc settings -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <show>private</show>
+                            <nohelp>true</nohelp>
+                            <detectLinks>true</detectLinks>
+                            <detectOfflineLinks>true</detectOfflineLinks>      
+                        </configuration>
+                        <executions>
+                            <execution> 
+                                <id>attach-javadocs</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals> 
+                            </execution>
+                            <execution>
+                                <id>aggregate-javadoc</id>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                                <phase>site</phase>
+                                <configuration>
+                                    <show>public</show>
+                                    <stylesheetfile>src/main/javadoc/stylesheet.css</stylesheetfile>
+                                    <doctitle>Gephi ${project.version} API Index</doctitle>
+                                    <subpackages>org.gephi.clustering.api:org.gephi.clustering.spi:org.gephi.data.attributes.api:org.gephi.data.attributes.spi:org.gephi.data.attributes.type:org.gephi.data.properties:org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.dynamic.api:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.partition.api:org.gephi.partition.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.ranking.api:org.gephi.ranking.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress</subpackages>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+            
+                    <!-- Sources plugin -->
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals> 
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profile activated for windows/macos release only. Should be called alone so it only creates the windows installer/compressed dmg -->
+        <profile>
+            <id>release-extra</id>
+            <build>
+                <plugins>
+                    <!-- Skip the standard deploy phase -->
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                    
+                    <!-- Skip the standard install phase -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-install-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-install</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
                 
     <!-- List of modules -->
     <modules>
