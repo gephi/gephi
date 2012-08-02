@@ -315,20 +315,6 @@
                     </compilerArgument>
                 </configuration>
             </plugin>
-            
-            <!-- Assembler to produce final sources and javadoc artifacts -->
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <tarLongFileMode>gnu</tarLongFileMode>
-                    <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-                    <finalName>${project.name}-${project.version}</finalName>
-                    <descriptors>
-                        <descriptor>src/assemble/javadoc.xml</descriptor>
-                        <descriptor>src/assemble/sources.xml</descriptor>
-                    </descriptors>
-                </configuration>
-            </plugin>
  
             <!-- JAR Packaging -->
             <plugin>
@@ -444,7 +430,7 @@
                                 <goals>
                                     <goal>aggregate</goal>
                                 </goals>
-                                <phase>site</phase>
+                                <phase>install</phase>
                                 <configuration>
                                     <show>public</show>
                                     <stylesheetfile>src/main/javadoc/stylesheet.css</stylesheetfile>
@@ -467,6 +453,29 @@
                                 </goals> 
                             </execution>
                         </executions>
+                    </plugin>
+                    
+                    <!-- Assembler to produce final sources and javadoc artifacts -->
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>assembly-javadoc-sources</id>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <phase>install</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <tarLongFileMode>gnu</tarLongFileMode>
+                            <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                            <finalName>${project.name}-${project.version}</finalName>
+                            <descriptors>
+                                <descriptor>src/assemble/javadoc.xml</descriptor>
+                                <descriptor>src/assemble/sources.xml</descriptor>
+                            </descriptors>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
