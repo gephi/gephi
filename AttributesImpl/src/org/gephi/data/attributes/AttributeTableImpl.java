@@ -45,10 +45,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeOrigin;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.event.ColumnEvent;
 import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
@@ -126,10 +126,8 @@ public class AttributeTableImpl implements AttributeTable {
         }
         AttributeColumnImpl column = new AttributeColumnImpl(this, columns.size(), id, title, type, origin, defaultValue, attributeValueDelegateProvider);
         columns.add(column);
-        columnsMap.put(id, column);
         columnsMap.put(id.toLowerCase(), column);
         if (title != null && !title.equals(id)) {
-            columnsMap.put(title, column);
             columnsMap.put(title.toLowerCase(), column);
         }
         columnsSet.put(column, column);
@@ -157,9 +155,9 @@ public class AttributeTableImpl implements AttributeTable {
         }
         //Remove from collections
         columns.remove((AttributeColumnImpl) column);
-        columnsMap.remove(column.getId());
+        columnsMap.remove(column.getId().toLowerCase());
         if (column.getTitle() != null && !column.getTitle().equals(column.getId())) {
-            columnsMap.remove(column.getTitle());
+            columnsMap.remove(column.getTitle().toLowerCase());
         }
         columnsSet.remove(column);
 
@@ -176,20 +174,18 @@ public class AttributeTableImpl implements AttributeTable {
             return null;
         }
         //Remove from collections
-        columnsMap.remove(source.getId());
+        columnsMap.remove(source.getId().toLowerCase());
         if (source.getTitle() != null && !source.getTitle().equals(source.getId())) {
-            columnsMap.remove(source.getTitle());
+            columnsMap.remove(source.getTitle().toLowerCase());
         }
         columnsSet.remove(source);
 
         //Add
         targetImpl.index = index;
         columns.set(index, targetImpl);
-        columnsMap.put(targetImpl.id, targetImpl);
         columnsMap.put(targetImpl.id.toLowerCase(), targetImpl);
         if (targetImpl.title != null && !targetImpl.title.equals(targetImpl.id)) {
             columnsMap.put(targetImpl.title.toLowerCase(), targetImpl);
-            columnsMap.put(targetImpl.title, targetImpl);
         }
         columnsSet.put(targetImpl, targetImpl);
 
@@ -225,18 +221,11 @@ public class AttributeTableImpl implements AttributeTable {
     }
 
     public synchronized AttributeColumnImpl getColumn(String id) {
-        AttributeColumnImpl col = columnsMap.get(id);
-        if (col == null) {
-            return columnsMap.get(id.toLowerCase());
-        }
-        return col;
+        return columnsMap.get(id.toLowerCase());
     }
 
     public synchronized AttributeColumnImpl getColumn(String title, AttributeType type) {
         AttributeColumnImpl c = columnsMap.get(title.toLowerCase());
-        if (c == null) {
-            columnsMap.get(title);
-        }
         if (c != null && c.getType().equals(type)) {
             return c;
         }
