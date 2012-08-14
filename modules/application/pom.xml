@@ -606,7 +606,7 @@
                             <fromDir>${gephi.updates.site}</fromDir>
                             <includes>*</includes>
                             <url>${gephi.snapshot.repository.url}</url>
-                            <toDir>external</toDir>
+                            <toDir>external/updates</toDir>
                             <serverId>${gephi.snapshot.repository.id}</serverId>
                         </configuration>
                     </plugin>
