@@ -80,8 +80,8 @@
         <gephi.app.title>Gephi 0.8.1 beta</gephi.app.title>
         
         <!-- Update centers URLs -->
-        <gephi.update.center.official.url>http://gephi.org/updates/official/0.8.1-beta/catalog.xml</gephi.update.center.official.url>
-        <gephi.update.center.thirdparty.url>http://gephi.org/updates/thirdparty/0.8.1-beta/catalog.xml</gephi.update.center.thirdparty.url>
+        <gephi.update.center.official.url>http://gephi.org/updates/official/${project.version}/catalog.xml</gephi.update.center.official.url>
+        <gephi.update.center.thirdparty.url>http://gephi.org/updates/thirdparty/$(project.version}/catalog.xml</gephi.update.center.thirdparty.url>
         <gephi.update.center.testing.url>http://nexus.gephi.org/nexus/content/repositories/snapshots/external/updates.xml</gephi.update.center.testing.url>
         
         <!-- Mac OS X bundle settings -->
@@ -475,6 +475,28 @@
                                 <descriptor>src/assemble/javadoc.xml</descriptor>
                                 <descriptor>src/assemble/sources.xml</descriptor>
                             </descriptors>
+                        </configuration>
+                    </plugin>
+                    
+                    <!-- Upload the javadoc automatically -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>wagon-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>upload-jar-to-folder</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>upload</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <fromDir>${project.build.directory}/site/apidocs</fromDir>
+                            <includes>*</includes>
+                            <url>${gephi.snapshot.repository.url}</url>
+                            <toDir>external/apidocs</toDir>
+                            <serverId>${gephi.snapshot.repository.id}</serverId>
                         </configuration>
                     </plugin>
                 </plugins>
