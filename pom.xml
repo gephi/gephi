@@ -159,7 +159,9 @@
 
         <gephi.build-helper-maven-plugin.version>1.7</gephi.build-helper-maven-plugin.version>
 
-        <gephi.nbm-maven-plugin.version>3.7</gephi.nbm-maven-plugin.version>    
+        <gephi.nbm-maven-plugin.version>3.7</gephi.nbm-maven-plugin.version>
+        
+        <gephi.maven-reactor-plugin.version>1.0</gephi.maven-reactor-plugin.version>
         
         <gephi.wagon-maven-plugin.version>1.0-beta-3</gephi.wagon-maven-plugin.version>           
 
@@ -291,6 +293,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${gephi.maven-javadoc-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-reactor-plugin</artifactId>
+                    <version>${gephi.maven-reactor-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
