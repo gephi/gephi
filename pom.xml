@@ -500,7 +500,6 @@
                         </executions>
                         <configuration>
                             <fromDir>${project.build.directory}/site/apidocs</fromDir>
-                            <includes>*</includes>
                             <url>${gephi.snapshot.repository.url}</url>
                             <toDir>external/apidocs</toDir>
                             <serverId>${gephi.snapshot.repository.id}</serverId>
