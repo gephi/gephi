@@ -1,10 +1,10 @@
-# Gephi - The Open Graph Viz Platorm
+# Gephi - The Open Graph Viz Platform
 
 [Gephi](http://gephi.org) is an open-source platform for visualizing and manipulating large graphs. It runs on Windows, Mac OS X and Linux. Localization is available in French, Spanish, Japanese and Brazilian Portuguese.
 
-- **Fast** Powered by a built-in OpenGL engine, Gephi is pushing the envelope on very large networks. Visualize networks up to a million elements. All actions (e.g. layout, filter, drag) run in real-time.
+- **Fast** Powered by a built-in OpenGL engine, Gephi is able to push the envelope with very large networks. Visualize networks up to a million elements. All actions (e.g. layout, filter, drag) run in real-time.
 
-- **Simple** Easy to install and [get started](http://gephi.org/users/quick-start/). An UI without scripts which and centered around the visualization. Like Photoshop™ for graphs.
+- **Simple** Easy to install and [get started](http://gephi.org/users/quick-start/). A UI that is centered around the visualization. Like Photoshop™ for graphs.
 
 - **Modular** Extend Gephi with [plug-ins](http://gephi.org/plugins/). The architecture is built on top of Netbeans Platform and can be extended or reused easily through well-writen APIs.
 
@@ -16,13 +16,13 @@
 
 Download and [Install](http://gephi.org/users/install) Gephi on your computer. 
 
-Get started with the [Quick Start](http://gephi.org/users/quick-start/) and follow the [Tutorials](http://gephi.org/users/). Load a sample [dataset]((https://wiki.gephi.org/index.php?title=Datasets)) and start to plat with the data.
+Get started with the [Quick Start](http://gephi.org/users/quick-start/) and follow the [Tutorials](http://gephi.org/users/). Load a sample [dataset]((https://wiki.gephi.org/index.php?title=Datasets)) and start to play with the data.
 
 If you run into any trouble or have questions consult our [forum](http://forum.gephi.org).
 
 ## Developer Introduction
 
-Gephi is developed in Java and use OpenGL for its visualization engine. Built on the top of Netbeans Platform, it follows a loosely-coupled, modular architecture philosophy. That permits to build large applications and make it grow in a sustainable way. Gephi is spitted into modules, which depend on each other through well-written APIs. Plugins are allowed to reuse existing APIs, create new services and even replace a default implementation by a new one.
+Gephi is developed in Java and uses OpenGL for its visualization engine. Built on the top of Netbeans Platform, it follows a loosely-coupled, modular architecture philosophy. That allows it to be used build large applications and to grow in a sustainable way. Gephi is split into modules, which depend on other modules through well-written APIs. Plugins can reuse existing APIs, create new services and even replace a default implementation with a new one.
 
 Consult the [**Javadoc**](http://gephi.org/docs) for an overview of the APIs.
 
@@ -38,19 +38,19 @@ Consult the [**Javadoc**](http://gephi.org/docs) for an overview of the APIs.
 
 ### Create Plug-ins
 
-Gephi is extensible and lets can create plug-ins to add new or modify existing features. You can create a new layout algorithm, a metric, support a new file format or database, create a filter, a tool or modify the visualization.
+Gephi is extensible and lets users create plug-ins to add new features, or to modify existing features. For example, you can create a new layout algorithm, add a metric, create a filter or a tool, support a new file format or database, or modify the visualization.
 
 - [**Plugins Portal**](http://wiki.gephi.org/index.php/Plugins_portal)
 
 - [Plugins Quick Start (5 minutes)](http://wiki.gephi.org/index.php/Plugin_Quick_Start_(5_minutes))
 
-- Browse the [plug-ins](http://gephi.org/plugins) created by the community
+- Browse the [plugins](http://gephi.org/plugins) created by the community
 
 ## Gephi Toolkit
 
 Gephi is not only a desktop software, it's also a Java library named [Gephi Toolkit](http://gephi.org/toolkit/).
 
-The project packagea essential modules (Graph, Layout, Filters, IO…) in a standard Java library, which any Java project can use for getting things done. The toolkit is just a single JAR that anyone could reuse in new Java applications and achieve tasks that can be done in Gephi automatically, from a command-line program for instance.
+The project packages essential modules (Graph, Layout, Filters, IO…) in a standard Java library, which any Java project can use for getting things done. The toolkit is just a single JAR that anyone could reuse in new Java applications and achieve tasks that can be done in Gephi automatically, from a command-line program for instance.
 
 - [Download](http://gephi.org/toolkit/)
 
