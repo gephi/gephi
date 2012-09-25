@@ -58,7 +58,6 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.gephi.data.attributes.api.AttributeEvent.EventType;
 import org.gephi.data.attributes.api.*;
 import org.gephi.datalab.api.DataLaboratoryHelper;
 import org.gephi.datalab.api.datatables.DataTablesController;
@@ -107,7 +106,7 @@ persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @ActionReference(path = "Menu/Window", position = 300)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_DataTableTopComponent",
 preferredID = "DataTableTopComponent")
-public class DataTableTopComponent extends TopComponent implements AWTEventListener, DataTablesEventListener, AttributeListener, GraphListener {
+public class DataTableTopComponent extends TopComponent implements AWTEventListener, DataTablesEventListener, GraphListener {
 
     private enum ClassDisplayed {
 
@@ -170,7 +169,6 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             controlToolbar.setBackground(UIManager.getColor("NbExplorerView.background"));
         }
 
-        initEvents();
 
         //Init tables
         nodeTable = new NodeDataTable();
@@ -182,23 +180,22 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         edgeTable.setTimeIntervalGraphics(timeIntervalGraphics);
         edgeTable.setShowEdgesNodesLabels(showEdgesNodesLabels);
 
-
         //Init
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         Workspace workspace = pc.getCurrentWorkspace();
         if (workspace == null) {
             clearAll();
         } else {
-            AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
-
             dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
             if (dataTablesModel == null) {
-                workspace.add(dataTablesModel = new DataTablesModel(attributeModel.getNodeTable(), attributeModel.getEdgeTable()));
+                workspace.add(dataTablesModel = new DataTablesModel(workspace));
             }
             nodeAvailableColumnsModel = dataTablesModel.getNodeAvailableColumnsModel();
             edgeAvailableColumnsModel = dataTablesModel.getEdgeAvailableColumnsModel();
             refreshAllOnce();
         }
+
+        initEvents();
         bannerPanel.setVisible(false);
     }
 
@@ -212,23 +209,20 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             public void initialize(Workspace workspace) {
                 //Prepare DataTablesEvent listener
                 Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(DataTableTopComponent.this);
+                if (workspace.getLookup().lookup(DataTablesModel.class) == null) {
+                    workspace.add(new DataTablesModel(workspace));
+                }
             }
 
             public void select(Workspace workspace) {
                 //Prepare DataTablesEvent listener
                 Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(DataTableTopComponent.this);
-                AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
 
                 dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
-                if (dataTablesModel == null) {
-                    workspace.add(dataTablesModel = new DataTablesModel(attributeModel.getNodeTable(), attributeModel.getEdgeTable()));
-                }
                 nodeAvailableColumnsModel = dataTablesModel.getNodeAvailableColumnsModel();
                 edgeAvailableColumnsModel = dataTablesModel.getEdgeAvailableColumnsModel();
                 hideTable();
                 enableTableControls();
-
-                attributeModel.addAttributeListener(DataTableTopComponent.this);
 
                 graphModel = gc.getModel();
                 graphModel.addGraphListener(DataTableTopComponent.this);
@@ -238,9 +232,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
             public void unselect(Workspace workspace) {
                 graphModel.removeGraphListener(DataTableTopComponent.this);
-
-                AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
-                attributeModel.removeAttributeListener(DataTableTopComponent.this);
+                
                 graphModel = null;
                 dataTablesModel = null;
                 nodeAvailableColumnsModel = null;
@@ -260,12 +252,8 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         if (pc.getCurrentWorkspace() != null) {
             //Prepare DataTablesEvent listener
             Lookup.getDefault().lookup(DataTablesController.class).setDataTablesEventListener(DataTableTopComponent.this);
-            dataTablesModel = pc.getCurrentWorkspace().getLookup().lookup(DataTablesModel.class);
             graphModel = gc.getModel();
             graphModel.addGraphListener(DataTableTopComponent.this);
-
-            AttributeModel attributeModel = pc.getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
-            attributeModel.addAttributeListener(DataTableTopComponent.this);
         }
 
         //Filter
@@ -351,42 +339,6 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         }
     }
 
-    public void attributesChanged(final AttributeEvent event) {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            public void run() {
-                AttributeTable table = event.getSource();
-                AvailableColumnsModel tableAvailableColumnsModel = getTableAvailableColumnsModel(table);
-                if (tableAvailableColumnsModel != null) {
-                    switch (event.getEventType()) {
-                        case ADD_COLUMN:
-                            for (AttributeColumn c : event.getData().getAddedColumns()) {
-                                if (!tableAvailableColumnsModel.addAvailableColumn(c)) {//Add as available by default. Will only be added if the max number of available columns is not surpassed
-                                    availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/light-bulb--plus.png", true));
-                                    break;
-                                }
-                            }
-                            break;
-                        case REMOVE_COLUMN:
-                            for (AttributeColumn c : event.getData().getAddedColumns()) {
-                                tableAvailableColumnsModel.removeAvailableColumn(c);
-                            }
-                            break;
-                        case REPLACE_COLUMN:
-                            for (AttributeColumn c : event.getData().getRemovedColumns()) {
-                                tableAvailableColumnsModel.removeAvailableColumn(c);
-                                tableAvailableColumnsModel.addAvailableColumn(table.getColumn(c.getId()));
-                            }
-                            break;
-                    }
-                }
-                if (isOpened()) {
-                    refreshOnce(event.is(EventType.SET_VALUE));
-                }
-            }
-        });
-    }
-
     public void graphChanged(GraphEvent event) {
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -442,18 +394,32 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
             previousEdgeColumnsFilterIndex = index;
         }
     }
+    
+    private void refreshAvailableColumnsButton(AvailableColumnsModel availableColumnsModel, AttributeTable table){
+        if(table.countColumns() > availableColumnsModel.getAvailableColumnsCount()){
+            availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/light-bulb--plus.png", true));
+        }else{
+            availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/light-bulb.png", true));
+        }
+    }
 
     private void initNodesView() {
         Runnable initNodesRunnable = new Runnable() {
 
             public void run() {
                 try {
+                    if(dataTablesModel == null){
+                        return;
+                    }
+                    
                     String busyMsg = NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.busyMessage");
                     BusyUtils.BusyLabel busylabel = BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, nodeTable.getOutlineTable());
                     busylabel.setBusy(true);
 
                     //Attributes columns
                     final AttributeColumn[] cols = nodeAvailableColumnsModel.getAvailableColumns();
+                    
+                    refreshAvailableColumnsButton(nodeAvailableColumnsModel, Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable());
 
                     //Nodes from DHNS
                     HierarchicalGraph graph;
@@ -488,12 +454,18 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
             public void run() {
                 try {
+                    if(dataTablesModel == null){
+                        return;
+                    }
+                    
                     String busyMsg = NbBundle.getMessage(DataTableTopComponent.class, "DataTableTopComponent.tableScrollPane.busyMessage");
                     BusyUtils.BusyLabel busylabel = BusyUtils.createCenteredBusyLabel(tableScrollPane, busyMsg, edgeTable.getTable());
                     busylabel.setBusy(true);
 
                     //Attributes columns
                     final AttributeColumn[] cols = edgeAvailableColumnsModel.getAvailableColumns();
+                    
+                    refreshAvailableColumnsButton(edgeAvailableColumnsModel, Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable());
 
                     //Edges from DHNS
                     HierarchicalGraph graph;
@@ -642,7 +614,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                refreshOnce(true);
+                refreshAllOnce();
             }
         });
     }
@@ -728,7 +700,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         JTable table;
         String fileName = prepareTableExportFileName();
 
-        if (classDisplayed == classDisplayed.NODE) {
+        if (classDisplayed == ClassDisplayed.NODE) {
             table = nodeTable.getOutlineTable();
             fileName += " [Nodes]";
         } else {
@@ -811,7 +783,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * Creates the buttons that call the AttributeColumnManipulators.
      */
     private void prepareColumnManipulatorsButtons() {
-        AttributeModel attributeModel = Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace().getLookup().lookup(AttributeModel.class);
+        AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         AttributeTable table;
         AttributeColumn[] columns;
         if (classDisplayed == ClassDisplayed.NODE) {
@@ -1383,7 +1355,6 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         dd.setOptions(new Object[]{DialogDescriptor.OK_OPTION});
         DialogDisplayer.getDefault().notify(dd);
         refreshAllOnce();
-        availableColumnsButton.setIcon(ImageUtilities.loadImageIcon("org/gephi/desktop/datalab/resources/light-bulb.png", true));
     }//GEN-LAST:event_availableColumnsButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane attributeColumnsScrollPane;
