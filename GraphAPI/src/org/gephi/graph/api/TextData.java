@@ -50,31 +50,95 @@ import java.awt.Color;
  */
 public interface TextData {
 
+    /**
+     * Returns text width
+     * @return Text width
+     */
     public float getWidth();
 
+    /**
+     * Returns text height
+     * @return Text heigh
+     */
     public float getHeight();
 
+    /**
+     * Returns the text <code>String</code>
+     * @return Text <code>String</code>
+     */
     public String getText();
 
+    /**
+     * Returns text size
+     * @return Text size
+     */
     public float getSize();
 
+     /**
+     * Get red component of the text color.
+     * Value ranges from 0.0 to 1.0
+     * @return Red color component
+     */
     public float getR();
 
+    /**
+     * Get green component of the text color.
+     * Value ranges from 0.0 to 1.0
+     * @return Green color component
+     */
     public float getG();
 
+    /**
+     * Get blue component of the text color.
+     * Value ranges from 0.0 to 1.0
+     * @return Blue color component
+     */
     public float getB();
 
+    /**
+     * Returns alpha color value (transparency) of the text.
+     * Value ranges from 0.0 to 1.0
+     * @return Alpha (transparency)
+     */
     public float getAlpha();
 
+    /**
+     * Returns visibility of the text
+     * @return True if visible, false otherwise
+     */
     public boolean isVisible();
 
+    /**
+     * Sets the text <code>String</code>
+     * @param text Text <code>String</code>
+     */
     public void setText(String text);
 
+    /**
+     * Sets all color components for the text.
+     * All values should be between 0.0 and 1.0
+     * @param r Red color component
+     * @param g Green color component
+     * @param b Blue color component
+     * @param alpha Alpha (transparency)
+     */
     public void setColor(float r, float g, float b, float alpha);
 
+    /**
+     * Sets text color
+     * @param color Text color
+     */
     public void setColor(Color color);
 
+    /**
+     * Sets text size
+     * @param size Text size
+     */
     public void setSize(float size);
 
+    /**
+     * Sets visible state of the text
+     * @param visible Text visibility
+     */
     public void setVisible(boolean visible);
 }

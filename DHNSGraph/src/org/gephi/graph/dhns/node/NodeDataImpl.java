@@ -157,6 +157,10 @@ public class NodeDataImpl implements NodeData, GroupData {
         }
     }
 
+    /**
+     * Returns size of the node
+     * @return Size of the node
+     */
     public float getRadius() {
         return size;
     }
