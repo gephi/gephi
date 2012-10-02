@@ -20,6 +20,16 @@ Get started with the [Quick Start](http://gephi.org/users/quick-start/) and foll
 
 If you run into any trouble or have questions consult our [forum](http://forum.gephi.org).
 
+## Latest releases
+
+- Latest stable release on [gephi.org](http://gephi.org/download).
+
+### Nighly builds (0.8.2-SNAPSHOT)
+
+- [gephi-0.8.2-SNAPSHOT.zip](http://nexus.gephi.org/nexus/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.8.2-SNAPSHOT&p=dmg) (Windows & Linux)
+
+- [gephi-0.8.2-SNAPSHOT.dmg](http://nexus.gephi.org/nexus/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.8.2-SNAPSHOT&p=dmg) (Mac OS X)
+
 ## Developer Introduction
 
 Gephi is developed in Java and use OpenGL for its visualization engine. Built on the top of Netbeans Platform, it follows a loosely-coupled, modular architecture philosophy. That permits to build large applications and make it grow in a sustainable way. Gephi is split into modules, which depend on each other through well-written APIs. Plugins are allowed to reuse existing APIs, create new services and even replace a default implementation by a new one.
@@ -29,6 +39,7 @@ Consult the [**Javadoc**](http://gephi.org/docs) for an overview of the APIs.
 ### Requirements
 
 - Java JDK 6 or 7 with preferably [Oracle Java JDK](http://java.com/en/).
+
 - [Apache Maven](http://maven.apache.org/) version 3.0.3 or later
 
 ### Checkout and Build the sources
@@ -41,7 +52,7 @@ Consult the [**Javadoc**](http://gephi.org/docs) for an overview of the APIs.
 
         mvn clean install
 
-- Once built, one can test to run Gephi
+- Once built, one can test running Gephi
 
 		cd modules/application
 		mvn nbm:cluster-app nbm:run-platform
@@ -56,7 +67,7 @@ Gephi is extensible and lets can create plug-ins to add new or modify existing f
 
 - Browse the [plug-ins](http://gephi.org/plugins) created by the community
 
-- We've create a [**Plugins Bootcamp**](https://github.com/gephi/gephi-plugins-bootcamp) to learn by examples.
+- We've created a [**Plugins Bootcamp**](https://github.com/gephi/gephi-plugins-bootcamp) to learn by examples.
 
 ## Gephi Toolkit
 
