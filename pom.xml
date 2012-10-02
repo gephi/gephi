@@ -51,7 +51,7 @@
         <!-- Netbeans Platfrom version -->
         <netbeans.version>RELEASE72</netbeans.version>
         
-        <!-- Localization ZIP version -->
+        <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
         <gephi.platform.localization.version>7.2</gephi.platform.localization.version>
         
         <!-- Modules specification version, overrides project version -->
