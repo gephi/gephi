@@ -22,9 +22,11 @@ If you run into any trouble or have questions consult our [forum](http://forum.g
 
 ## Latest releases
 
+### Stable
+
 - Latest stable release on [gephi.org](http://gephi.org/download).
 
-### Nighly builds (0.8.2-SNAPSHOT)
+### Nightly builds (0.8.2-SNAPSHOT)
 
 - [gephi-0.8.2-SNAPSHOT.zip](http://nexus.gephi.org/nexus/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.8.2-SNAPSHOT&p=dmg) (Windows & Linux)
 
