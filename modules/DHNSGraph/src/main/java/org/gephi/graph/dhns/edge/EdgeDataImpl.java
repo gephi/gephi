@@ -123,26 +123,47 @@ public class EdgeDataImpl implements EdgeData {
         return (getSource().z() + 2 * getTarget().z()) / 3f;
     }
 
+    /**
+     * Unimplemented for edges. <code>UnsupportedOperationException</code> will be thrown.
+     */
     public void setX(float x) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Unimplemented for edges. <code>UnsupportedOperationException</code> will be thrown.
+     */
     public void setY(float y) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Unimplemented for edges. <code>UnsupportedOperationException</code> will be thrown.
+     */
     public void setZ(float z) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Always returns 0 for an edge element
+     * @return 0 (not implemented for edges).
+     */
     public float getRadius() {
         return 0;
     }
 
+    /**
+     * Returns weight of the edge.
+     * @return Edge weight
+     */
     public float getSize() {
         return edge.getWeight();
     }
 
+    /**
+     * Set weight of the edge
+     * @param size Weight for the edge
+     */
     public void setSize(float size) {
         edge.setWeight(size);
     }
@@ -159,6 +180,12 @@ public class EdgeDataImpl implements EdgeData {
         return b;
     }
 
+    /**
+     * <p>Get red component of the edge color.
+     * Ranges from 0.0 to 1.0</p>
+     * <p><b>May return -1 for indicating that the edge has no specific color</b></p>
+     * @return Red color component or -1 for indicating no specific color.
+     */
     public void setR(float r) {
         this.r = r;
     }

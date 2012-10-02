@@ -66,10 +66,9 @@ public class DataLaboratoryPersistenceProvider implements WorkspacePersistencePr
     private static final String EDGE_COLUMN = "edgecolumn";
 
     public void writeXML(XMLStreamWriter writer, Workspace workspace) {
-        AttributeModel attributeModel = workspace.getLookup().lookup(AttributeModel.class);
         DataTablesModel dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
         if (dataTablesModel == null) {
-            workspace.add(dataTablesModel = new DataTablesModel(attributeModel.getNodeTable(), attributeModel.getEdgeTable()));
+            workspace.add(dataTablesModel = new DataTablesModel(workspace));
         }
         try {
             writeDataTablesModel(writer, dataTablesModel);
@@ -114,7 +113,7 @@ public class DataLaboratoryPersistenceProvider implements WorkspacePersistencePr
         AttributeTable edgesTable = attributeModel.getEdgeTable();
         DataTablesModel dataTablesModel = workspace.getLookup().lookup(DataTablesModel.class);
         if (dataTablesModel == null) {
-            workspace.add(dataTablesModel = new DataTablesModel());
+            workspace.add(dataTablesModel = new DataTablesModel(workspace));
         }
         AvailableColumnsModel nodeColumns = dataTablesModel.getNodeAvailableColumnsModel();
         nodeColumns.removeAllColumns();
