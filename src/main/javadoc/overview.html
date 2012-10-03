@@ -4,6 +4,11 @@
         <title>Gephi API Overview</title>
     </head>
     <body>
+		<style type="text/css">
+		.unstable { background: none repeat scroll 0% 0% rgb(221, 204, 128); }
+		.friend { background: none repeat scroll 0% 0% rgb(224, 192, 192); }
+		.deprecated { background: none repeat scroll 0% 0% rgb(150, 150, 150); text-decoration: line-through;}
+		</style>
         <p>
             This documents provides Gephi APIs documentation and gives details about
             current status of each API. Each API is categorized by it's stability:
@@ -11,6 +16,7 @@
             <span class="friend">friend</span>.
         </p>
         <hr/>
+		<p>
         <h2>API Changes</h2>
         <ul>
 			<li>(April 10 2012) Add a <code>getShortDescription()</code> method to the <code>StatisticsUI</code> API. It enables to get a short description of statistics (used to display tooltips).
@@ -214,7 +220,9 @@
                 change, but with much less impact than ones marked as under development.
             </li>
         </ul>
+		</p>
         <hr>
+		<p>
         <h2>API List</h2>
         <ul>
             <li><b>Attributes API</b> - Provides access to attributes values through an efficient column/row system.</li>
@@ -238,5 +246,6 @@
             <li><b>Tools API</b> - Tool API/SPI defines interactive actions users can make with the visualization.</li>
             <li><span class="unstable"><b>Visualization API</b></span> - API/SPI for interacting with visualization and providing context menu actions.</li>
         </ul>
+		</p>
     </body>
 </html>
