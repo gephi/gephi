@@ -107,55 +107,41 @@
         
         <!--==== Plugin Versions ==================================================================================-->
 
-        <gephi.maven-antrun-plugin.version>1.6</gephi.maven-antrun-plugin.version>
+        <gephi.maven-antrun-plugin.version>1.7</gephi.maven-antrun-plugin.version>
 
-        <gephi.maven-assembly-plugin.version>2.2.1</gephi.maven-assembly-plugin.version>
+        <gephi.maven-assembly-plugin.version>2.3</gephi.maven-assembly-plugin.version>
 
-        <gephi.maven-bundle-plugin.version>2.0.1</gephi.maven-bundle-plugin.version>
+        <gephi.maven-clean-plugin.version>2.5</gephi.maven-clean-plugin.version>
 
-        <gephi.maven-checkstyle-plugin.version>2.6</gephi.maven-checkstyle-plugin.version>
+        <gephi.maven-compiler-plugin.version>2.5.1</gephi.maven-compiler-plugin.version>
 
-        <gephi.maven-clean-plugin.version>2.4.1</gephi.maven-clean-plugin.version>
-
-        <gephi.maven-compiler-plugin.version>2.3.2</gephi.maven-compiler-plugin.version>
-
-        <gephi.maven-dependency-plugin.version>2.4</gephi.maven-dependency-plugin.version>
+        <gephi.maven-dependency-plugin.version>2.5.1</gephi.maven-dependency-plugin.version>
 
         <gephi.maven-deploy-plugin.version>2.7</gephi.maven-deploy-plugin.version>
 
-        <gephi.maven-doap-plugin.version>1.1</gephi.maven-doap-plugin.version>
-
         <gephi.maven-enforcer-plugin.version>1.0.1</gephi.maven-enforcer-plugin.version>
 
-        <gephi.maven-gpg-plugin.version>1.3</gephi.maven-gpg-plugin.version>
+        <gephi.maven-gpg-plugin.version>1.4</gephi.maven-gpg-plugin.version>
 
-        <gephi.maven-graph-plugin.version>1.15</gephi.maven-graph-plugin.version>
+        <gephi.maven-install-plugin.version>2.4</gephi.maven-install-plugin.version>
 
-        <gephi.maven-install-plugin.version>2.3.1</gephi.maven-install-plugin.version>
-
-        <gephi.maven-jar-plugin.version>2.3.2</gephi.maven-jar-plugin.version>
+        <gephi.maven-jar-plugin.version>2.4</gephi.maven-jar-plugin.version>
 
         <gephi.maven-jarsigner-plugin.version>1.2</gephi.maven-jarsigner-plugin.version>
 
         <gephi.maven-javadoc-plugin.version>2.9</gephi.maven-javadoc-plugin.version> 
 
-        <gephi.maven-jetty-plugin.version>6.1.24</gephi.maven-jetty-plugin.version> <!-- FIXME: 7.0.0.pre5 breaks current projects -->
-
         <gephi.maven-license-plugin.version>1.9.0</gephi.maven-license-plugin.version>
 
-        <gephi.maven-pmd-plugin.version>2.5</gephi.maven-pmd-plugin.version>
+        <gephi.maven-release-plugin.version>2.3.2</gephi.maven-release-plugin.version>
 
-        <gephi.maven-release-plugin.version>2.2.1</gephi.maven-release-plugin.version>
+        <gephi.maven-resources-plugin.version>2.6</gephi.maven-resources-plugin.version>
 
-        <gephi.maven-replacer-plugin.version>1.3.9</gephi.maven-replacer-plugin.version>
+        <gephi.maven-site-plugin.version>3.1</gephi.maven-site-plugin.version>
 
-        <gephi.maven-resources-plugin.version>2.5</gephi.maven-resources-plugin.version>
+        <gephi.maven-source-plugin.version>2.2</gephi.maven-source-plugin.version>
 
-        <gephi.maven-site-plugin.version>2.2</gephi.maven-site-plugin.version> <!-- 3.0-beta-3 miserably fails with -->
-
-        <gephi.maven-source-plugin.version>2.1.2</gephi.maven-source-plugin.version>
-
-        <gephi.maven-surefire-plugin.version>2.10</gephi.maven-surefire-plugin.version>
+        <gephi.maven-surefire-plugin.version>2.12.4</gephi.maven-surefire-plugin.version>
 
         <gephi.build-helper-maven-plugin.version>1.7</gephi.build-helper-maven-plugin.version>
 
@@ -163,7 +149,7 @@
         
         <gephi.maven-reactor-plugin.version>1.0</gephi.maven-reactor-plugin.version>
         
-        <gephi.wagon-maven-plugin.version>1.0-beta-3</gephi.wagon-maven-plugin.version>           
+        <gephi.wagon-maven-plugin.version>1.0-beta-4</gephi.wagon-maven-plugin.version>           
 
     </properties>
     
