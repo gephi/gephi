@@ -34,7 +34,7 @@ If you run into any trouble or have questions consult our [forum](http://forum.g
 
 - [gephi-0.8.2-SNAPSHOT-sources.tar.gz](http://nexus.gephi.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.gephi&a=gephi-parent&v=0.8.2-SNAPSHOT&c=sources&p=tar.gz) (Sources)
 
-- [gephi-0.8.2-SNAPSHOT-javadoc.jar](http://nexus.gephi.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.gephi&a=gephi-parent&v=0.8.2-SNAPSHOT&c=javadoc&p=jar) (Sources)
+- [gephi-0.8.2-SNAPSHOT-javadoc.jar](http://nexus.gephi.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.gephi&a=gephi-parent&v=0.8.2-SNAPSHOT&c=javadoc&p=jar) (Javadoc)
 
 ## Developer Introduction
 
