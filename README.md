@@ -32,6 +32,10 @@ If you run into any trouble or have questions consult our [forum](http://forum.g
 
 - [gephi-0.8.2-SNAPSHOT.dmg](http://nexus.gephi.org/nexus/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.8.2-SNAPSHOT&p=dmg) (Mac OS X)
 
+- [gephi-0.8.2-SNAPSHOT-sources.tar.gz](http://nexus.gephi.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.gephi&a=gephi-parent&v=0.8.2-SNAPSHOT&c=sources&p=tar.gz) (Sources)
+
+- [gephi-0.8.2-SNAPSHOT-javadoc.jar](http://nexus.gephi.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.gephi&a=gephi-parent&v=0.8.2-SNAPSHOT&c=javadoc&p=jar) (Sources)
+
 ## Developer Introduction
 
 Gephi is developed in Java and use OpenGL for its visualization engine. Built on the top of Netbeans Platform, it follows a loosely-coupled, modular architecture philosophy. That permits to build large applications and make it grow in a sustainable way. Gephi is split into modules, which depend on each other through well-written APIs. Plugins are allowed to reuse existing APIs, create new services and even replace a default implementation by a new one.
