@@ -35,13 +35,11 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.swinglabs</groupId>

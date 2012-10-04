@@ -45,43 +45,38 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-dialogs</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <artifactId>org-openide-util</artifactId>
             <groupId>org.netbeans.api</groupId>
-            <type>nbm</type>
+            
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <artifactId>org-openide-util-lookup</artifactId>
             <groupId>org.netbeans.api</groupId>
-            <type>nbm</type>
+            
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
     </dependencies>
 

@@ -34,13 +34,13 @@
         <dependency>
             <artifactId>org-openide-util</artifactId>
             <groupId>org.netbeans.api</groupId>
-            <type>nbm</type>
+            
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <artifactId>org-openide-util-lookup</artifactId>
             <groupId>org.netbeans.api</groupId>
-            <type>nbm</type>
+            
             <version>${netbeans.version}</version>
         </dependency>
     </dependencies>
