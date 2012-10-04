@@ -20,85 +20,83 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-progress</artifactId>
             <version>${project.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>desktop-project</artifactId>
             <version>${project.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>project-api</artifactId>
             <version>${project.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>import-api</artifactId>
             <version>${project.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-dialogs</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-modules</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>visualization-impl</artifactId>
             <version>${project.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-sendopts</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-progress</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
             <version>${netbeans.version}</version>
-            <type>nbm</type>
+        </dependency>
+        <dependency>
+            <artifactId>xml-apis</artifactId>
+            <groupId>xml-apis</groupId>
+            <type>jar</type>
+            <version>1.3.04</version>
+        </dependency>
+        <dependency>
+            <artifactId>xml-apis-ext</artifactId>
+            <groupId>xml-apis</groupId>
+            <type>jar</type>
+            <version>1.3.04</version>
         </dependency>
     </dependencies>
 
