@@ -146,8 +146,26 @@ msgstr "Current position is"
 msgid "TimelineTooltip.chart"
 msgstr "Current value is "
 
+msgid "TimelineTopComponent.settings.setTimeFormat"
+msgstr "Set time format..."
+
+msgid "TimeFormatDialog.title"
+msgstr "Time format"
+
 msgid "TimelineTopComponent.enableTimelineButton.toolTipText"
 msgstr "Enable timeline for time-based filtering"
 
 msgid "TimelineTopComponent.disableButon.toolTipText"
 msgstr "Disable the timeline"
+
+msgid "TimeFormatDialog.headerTitle.title"
+msgstr "Time format settings"
+
+msgid "TimeFormatDialog.headerTitle.description"
+msgstr "Set up the time format"
+
+msgid "TimeFormatDialog.numericRadio.text"
+msgstr "Numeric"
+
+msgid "TimeFormatDialog.dateRadio.text"
+msgstr "Date"

@@ -170,9 +170,6 @@ msgid "importerGraphML_error_edgetype"
 msgstr ""
 "Type ''{0}'' of the edge ''{1}'' is not recognized. Set to default value."
 
-msgid "importerGML_error_listtoken"
-msgstr "Unexpected token type at line {0}"
-
 msgid "importerGML_error_nodeidmissing"
 msgstr "Node id is missing"
 
@@ -336,6 +333,12 @@ msgstr "GEXF version 1.1 (deprecated)"
 
 msgid "importerGEXF_log_version12"
 msgstr "GEXF version 1.2"
+
+msgid "importerGEXF_log_version13"
+msgstr "GEXF version 1.3"
+
+msgid "importerGEXF_log_version_undef"
+msgstr "Undefined GEXF version. Parser 1.3 is used."
 
 msgid "importerGEXF_log_dynamic_weight"
 msgstr "Dynamic weight column found"

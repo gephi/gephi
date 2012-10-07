@@ -27,6 +27,19 @@ msgstr "# Edges"
 msgid "DynamicClusteringCoefficientUI.name"
 msgstr "Clustering Coefficient"
 
+msgid "DynamicDegreeUI.shortDescription"
+msgstr "Degree of each node and the average of the network over time."
+
+msgid "DynamicNbNodesUI.shortDescription"
+msgstr "Number of nodes in the network over time."
+
+msgid "DynamicNbEdgesUI.shortDescription"
+msgstr "Number of edges in the network over time."
+
+msgid "DynamicClusteringCoefficientUI.shortDescription"
+msgstr ""
+"Clustering coefficient of each node and the average of the network over time."
+
 msgid "DynamicDegreePanel.header.description"
 msgstr ""
 "Degree of each node and the average of the network over time. It is the "

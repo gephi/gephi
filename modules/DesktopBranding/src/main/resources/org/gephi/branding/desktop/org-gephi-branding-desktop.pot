@@ -36,14 +36,6 @@ msgstr ""
 msgid "MajorReleaseCheck.dontShowAgain"
 msgstr "Do not show this message again"
 
-msgid ""
-"Services/AutoupdateType/org_gephi_branding_desktop_update_center.instance"
-msgstr "Gephi Update Center"
-
-msgid ""
-"Services/AutoupdateType/org_gephi_branding_desktop_update_center_1.instance"
-msgstr "Gephi Thirdparties Plugins"
-
 msgid "CloseConfirmation.message"
 msgstr "Save changes before closing?"
 

@@ -60,6 +60,9 @@ msgstr "HTML Report"
 msgid "SimpleHTMLReport.status.saveSuccess"
 msgstr "Report saved to {0} directory"
 
+msgid "SimpleHTMLReport.status.saveError"
+msgstr "Could not save report. {0} already exists and is not a directory"
+
 msgid "JFreeChartDialog.zoomOutButton.text"
 msgstr "Zoom out"
 

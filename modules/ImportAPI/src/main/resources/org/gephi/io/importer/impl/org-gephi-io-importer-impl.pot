@@ -58,15 +58,5 @@ msgid "ImportContainerException_TimeInterval_ParseError"
 msgstr ""
 "The Time Interval ''{0}'' could not be parsed. Use Date or Double formatting"
 
-msgid "ImportContainerException_TimeIntervalVerify_Node_OutOfBound"
-msgstr ""
-"The node id=''{0}'' have dynamic values out of the bounds, the values have "
-"been forced to fit"
-
-msgid "ImportContainerException_TimeIntervalVerify_Edge_OutOfBound"
-msgstr ""
-"The edge id=''{0}'' have dynamic values out of the bounds, the values have "
-"been forced to fit"
-
 msgid "ImportContainerException_TimeInterval_Empty"
 msgstr "The Time Interval start and end parameters are both empty"

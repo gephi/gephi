@@ -74,3 +74,12 @@ msgstr "Size:"
 
 msgid "SizerPanel.sizeLabel.text"
 msgstr "NaN"
+
+msgid "EdgePencilPanel.labelType.text"
+msgstr "Type:"
+
+msgid "EdgePencilPanel.type.directed"
+msgstr "Directed"
+
+msgid "EdgePencilPanel.type.undirected"
+msgstr "Undirected"

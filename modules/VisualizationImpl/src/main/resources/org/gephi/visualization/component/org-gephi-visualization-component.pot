@@ -35,11 +35,17 @@ msgstr ""
 "Background color (left click to switch black-white, right click to choose "
 "color)"
 
+msgid "VizToolbar.Global.groupBarTitle"
+msgstr "Global"
+
 msgid "VizToolbar.Global.screenshot"
 msgstr "Take screenshot"
 
 msgid "VizToolbar.Global.screenshot.configure"
 msgstr "Configure..."
+
+msgid "VizToolbar.Nodes.groupBarTitle"
+msgstr "Nodes"
 
 msgid "VizToolbar.Nodes.showLabels"
 msgstr "Show Node Labels"
@@ -59,6 +65,9 @@ msgstr "Show Edge Labels"
 msgid "VizToolbar.Edges.edgeScale"
 msgstr "Edge weight scale"
 
+msgid "VizToolbar.Edges.groupBarTitle"
+msgstr "Edges"
+
 msgid "VizToolbar.Labels.font"
 msgstr "Font"
 
@@ -76,6 +85,9 @@ msgstr "Attributes"
 
 msgid "VizToolbar.Labels.fontScale"
 msgstr "Font size scale"
+
+msgid "VizToolbar.Labels.groupBarTitle"
+msgstr "Labels"
 
 msgid "NodeSettingsPanel.adjustTextCheckbox.text"
 msgstr "Adjust to text"

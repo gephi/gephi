@@ -205,37 +205,80 @@ msgstr "Normalize Centralities in [0,1]"
 msgid "ConnectedComponentUI.name"
 msgstr "Connected Components"
 
+msgid "ConnectedComponentUI.shortDescription"
+msgstr "Determines the number of connected components in the network."
+
 msgid "ClusteringCoefficientUI.name"
 msgstr "Avg. Clustering Coefficient"
+
+msgid "ClusteringCoefficientUI.shortDescription"
+msgstr "Averages how nodes are embedded in their neighborhood."
 
 msgid "DegreeDistributionUI.name"
 msgstr "Degree Power Law"
 
+msgid "DegreeDistributionUI.shortDescription"
+msgstr ""
+"Measures the distribution of degrees amongst all of the nodes within the "
+"network."
+
 msgid "EigenvectorCentralityUI.name"
 msgstr "Eigenvector Centrality"
+
+msgid "EigenvectorCentralityUI.shortDescription"
+msgstr ""
+"A measure of node importance in a network based on a node's connections."
 
 msgid "GraphDensityUI.name"
 msgstr "Graph Density"
 
+msgid "GraphDensityUI.shortDescription"
+msgstr "Measures how close the network is to complete."
+
 msgid "DiameterUI.name"
+msgstr "Network Diameter"
+
+msgid "DiameterUI.shortDescription"
 msgstr "Network Diameter"
 
 msgid "HitsUI.name"
 msgstr "HITS"
 
+msgid "HitsUI.shortDescription"
+msgstr ""
+"Computes two values for each node: How valuable information stored at that "
+"node is & the quality of the nodes links."
+
 msgid "InOutDegreeUI.name"
+msgstr "Average Degree"
+
+msgid "InOutDegreeUI.shortDescription"
 msgstr "Average Degree"
 
 msgid "ModularityUI.name"
 msgstr "Modularity"
 
+msgid "ModularityUI.shortDescription"
+msgstr "Community detection algorithm."
+
 msgid "PageRankUI.name"
 msgstr "PageRank"
+
+msgid "PageRankUI.shortDescription"
+msgstr ""
+"Ranks nodes \"pages\" according to how often a user following links will non-"
+"randomly reach the node \"page\"."
 
 msgid "PathLengthUI.name"
 msgstr "Avg. Path Length"
 
+msgid "PathLengthUI.shortDescription"
+msgstr "Avg. Path Length"
+
 msgid "WeightedDegreeUI.name"
+msgstr "Avg. Weighted Degree"
+
+msgid "WeightedDegreeUI.shortDescription"
 msgstr "Avg. Weighted Degree"
 
 msgid "PageRankPanel.edgeWeightCheckbox.text"
