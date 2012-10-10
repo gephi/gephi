@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #  Copyright 2008-2012 Gephi
 #  Website : http://www.gephi.org
 #
@@ -39,62 +37,41 @@
 # 
 # Portions Copyrighted 2011 Gephi Consortium.
 
-ROOT=`pwd`
+import os, os.path, sys
 
-function RecurseDirs
-{
-oldIFS=$IFS
-IFS=$'\n'
-for f in "$@"
-do
-PWD=`pwd`
-ignoreFolders=`echo "$PWD" | grep -e "modules/branding" -e "src/java" -e "modules/.*/target"` #Don't convert Bundle.properties under branding module and ignore other folders like java or smaven folders
-if [[ $f == 'Bundle.properties' &&  "x$ignoreFolders" == "x" ]]; then	
+#Use this script when pulling translations of a new language or new files of existing languages.
+#After it, just use tx pull
 
-	path=`echo "$PWD" | sed 's,.*\/src\/main\/resources\/\(.*\)$,\1,' | sed 's,/,-,g'`
+#Simple script to ensure that .po files exist for a given language in every folder that a .pot file exists.
+#Creates empty .po files when not existing. This is necessary to get new language translations that are
+#in transifex but not in the repository (tx pull --all is not suitable because it pulls even not translated at all resources).
 
-	#rm *.pot
+if (len(sys.argv) < 2):
+    print "Usage:"
+    print ">>python ./add_language.py {lang}"
+    sys.exit(1)
 
-	if [[ $path == org-* ]]; then
-		# Duplicates Bundle.properties and remove specific lines
-		ftmp=Bundle.properties.tmp
-		cp $f $ftmp
-		sed -i 's/\r$//' $ftmp
-		sed -i '/OpenIDE-Module-Display-Category/ d' $ftmp
-		sed -i '/OpenIDE-Module-Name/ d' $ftmp
-		sed -i '/^org_gephi_branding_desktop_update_center/ d' $ftmp
-		sed -i '/=\s*$/ d' $ftmp
-		
-		echo $path
-		fname=${path}.pot
-		# generate POT file from Bundle.properties
-		msgcat $ftmp --properties-input --output-file=$fname
+#Creates po files of the given language when necessary
+def recurseDirs(dir,langPO):
+	containsPOT=False
+	containsLangPO=False
+	for name in os.listdir(dir):
+		fullpath = os.path.join(dir,name)
+		if os.path.isfile(fullpath):
+			dir, filename = os.path.split(fullpath)
+			resource, extension = os.path.splitext(filename)
+			if extension == ".pot":
+				containsPOT=True
+			if filename == langPO:
+				containsLangPO=True
+		elif os.path.isdir(fullpath) and dir.find("target") == -1: #Only search pot files in code, not build:
+			recurseDirs(fullpath,langPO)
+	
+	if containsPOT and not containsLangPO:
+		newFilePath=os.path.join(dir,langPO)
+		print "Adding ",newFilePath
+		file = open(newFilePath,"w") #Create empty lang.po file if not existing and pot exists
+		file.write("")
+		file.close()
 
-		if [[ -s $fname ]]; then
-			#sed -i -l 2 '/msgid "TopTabComponent.logoLabel.text"\nmsgstr ""/ d' $fname
-			
-			#add header
-			cp $fname tmp.txt
-			cat ${ROOT}/pot-header.txt tmp.txt > $fname
-			rm tmp.txt
-
-			#check file
-			msgfmt -c $fname
-			rm messages.mo
-		fi
-		
-		rm $ftmp
-	fi
-
-fi
-if [[ -d "${f}" ]]; then
-	cd "${f}"
-	RecurseDirs $(ls -1 ".")
-	cd ..
-fi
-done
-IFS=$oldIFS
-}
-
-RecurseDirs "./modules"
-
+recurseDirs("../modules", sys.argv[1] + ".po")
