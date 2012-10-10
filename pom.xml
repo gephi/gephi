@@ -386,6 +386,8 @@
                     
                     <!-- NBM settings -->
                     <requiresRestart>true</requiresRestart>
+                    <licenseName>CDDL 1.0 and GNU GPL v3</licenseName>
+                    <licenseFile>../../COPYING.txt</licenseFile>
                     
                     <!-- Installer settings -->
                     <templateFile>src/main/app-resources/template.xml</templateFile>
