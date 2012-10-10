@@ -1,10 +1,10 @@
 # Gephi - The Open Graph Viz Platorm
 
-[Gephi](http://gephi.org) is an open-source platform for visualizing and manipulating large graphs. It runs on Windows, Mac OS X and Linux. Localization is available in French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese and Czech.
+[Gephi](http://gephi.org) is an award-winning open-source platform for visualizing and manipulating large graphs. It runs on Windows, Mac OS X and Linux. Localization is available in French, Spanish, Japanese, Russian, Brazilian Portuguese, Chinese and Czech.
 
 - **Fast** Powered by a built-in OpenGL engine, Gephi is pushing the envelope on very large networks. Visualize networks up to a million elements. All actions (e.g. layout, filter, drag) run in real-time.
 
-- **Simple** Easy to install and [get started](http://gephi.org/users/quick-start/). An UI without scripts which and centered around the visualization. Like Photoshop™ for graphs.
+- **Simple** Easy to install and [get started](http://gephi.org/users/quick-start/). An UI without scripts centered around the visualization. Like Photoshop™ for graphs.
 
 - **Modular** Extend Gephi with [plug-ins](http://gephi.org/plugins/). The architecture is built on top of Netbeans Platform and can be extended or reused easily through well-written APIs.
 
@@ -16,7 +16,7 @@
 
 Download and [Install](http://gephi.org/users/install) Gephi on your computer. 
 
-Get started with the [Quick Start](http://gephi.org/users/quick-start/) and follow the [Tutorials](http://gephi.org/users/). Load a sample [dataset]((https://wiki.gephi.org/index.php?title=Datasets)) and start to plat with the data.
+Get started with the [Quick Start](http://gephi.org/users/quick-start/) and follow the [Tutorials](http://gephi.org/users/). Load a sample [dataset](https://wiki.gephi.org/index.php?title=Datasets) and start to play with the data.
 
 If you run into any trouble or have questions consult our [forum](http://forum.gephi.org).
 
