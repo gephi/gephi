@@ -10,10 +10,11 @@
     <name>gephi</name>
     
     <!-- Project Metadata -->
-    <url>https://github.com/gephi/gephi-maven</url>
+    <url>http://gephi.org</url>
     <description>Gephi - The Open Graph Viz Platform</description>
     <organization>
-        <url>http://gephi.org</url>
+        <name>Gephi Consortium</name>
+        <url>http://consortium.gephi.org</url>
     </organization>
     <inceptionYear>2007</inceptionYear>
     
@@ -382,6 +383,9 @@
                     <keystore>src/keystore/keystore.ks</keystore>
                     <keystorealias>gephi</keystorealias>
                     <keystorepassword>${keystore.password}</keystorepassword>
+                    
+                    <!-- NBM settings -->
+                    <requiresRestart>true</requiresRestart>
                     
                     <!-- Installer settings -->
                     <templateFile>src/main/app-resources/template.xml</templateFile>
