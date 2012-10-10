@@ -19,12 +19,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>import-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>utils-longtask</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

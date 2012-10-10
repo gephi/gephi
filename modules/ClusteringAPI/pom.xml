@@ -19,7 +19,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>graph-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

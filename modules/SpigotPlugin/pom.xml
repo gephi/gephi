@@ -19,12 +19,10 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>import-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>utils-longtask</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.mail</groupId>
@@ -35,13 +33,11 @@
             <artifactId>org-openide-util</artifactId>
             <groupId>org.netbeans.api</groupId>
             
-            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <artifactId>org-openide-util-lookup</artifactId>
             <groupId>org.netbeans.api</groupId>
             
-            <version>${netbeans.version}</version>
         </dependency>
     </dependencies>
 
