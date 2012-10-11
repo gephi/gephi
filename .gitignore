@@ -91,3 +91,5 @@ keystore.ks
 /modules/VisualizationImpl/target/
 /modules/WelcomeScreen/target/
 /modules/WorkspaceUI/target/
+/modules/JFreeChartWrapper/target/
+/modules/CommonsWrapper/target/

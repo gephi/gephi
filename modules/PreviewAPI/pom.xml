@@ -47,7 +47,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-bridge</artifactId>
+            <artifactId>batik-transcoder</artifactId>
             <version>1.7</version>
             <exclusions>
                 <exclusion>
@@ -75,6 +75,13 @@
                         <publicPackage>org.gephi.preview.spi</publicPackage>
                         <publicPackage>org.gephi.preview.types</publicPackage>
                         <publicPackage>org.gephi.preview.types.propertyeditors</publicPackage>
+                        <publicPackage>com.itextpdf.text.*</publicPackage>
+                        <publicPackage>processing.*</publicPackage>
+                        <publicPackage>org.apache.batik.*</publicPackage>
+                        <publicPackage>org.apache.xpath.*</publicPackage>
+                        <publicPackage>org.apache.xalan.*</publicPackage>
+                        <publicPackage>org.apache.xml.*</publicPackage>
+                        <publicPackage>org.w3c.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

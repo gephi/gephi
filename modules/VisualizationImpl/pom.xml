@@ -5,7 +5,7 @@
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
         <version>0.8.2-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
+        <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
@@ -93,11 +93,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>gleem</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.swinglabs</groupId>
-            <artifactId>swingx</artifactId>
-            <version>1.6.1</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

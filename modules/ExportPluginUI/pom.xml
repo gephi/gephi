@@ -5,7 +5,7 @@
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
         <version>0.8.2-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
+        <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
@@ -29,17 +29,16 @@
             <artifactId>export-plugin</artifactId>
         </dependency>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-components</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jdesktop</groupId>
-            <artifactId>beansbinding</artifactId>
-            <version>1.2.1</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

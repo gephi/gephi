@@ -5,7 +5,7 @@
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
         <version>0.8.2-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
+        <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
@@ -45,9 +45,8 @@
             <artifactId>utils-longtask</artifactId>
         </dependency>
         <dependency>
-            <groupId>jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.0.13</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jfreechart-wrapper</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>

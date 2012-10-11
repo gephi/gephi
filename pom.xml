@@ -727,6 +727,16 @@
                 <artifactId>clustering-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jfreechart-wrapper</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>commons-wrapper</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -1158,5 +1168,7 @@
         <module>modules/WelcomeScreen</module>
         <module>modules/WorkspaceUI</module>
         <module>modules/Gleem</module>
+        <module>modules/JFreeChartWrapper</module>
+        <module>modules/CommonsWrapper</module>
     </modules>
 </project>

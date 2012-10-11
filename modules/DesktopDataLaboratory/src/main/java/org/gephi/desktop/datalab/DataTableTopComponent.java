@@ -74,7 +74,7 @@ import org.gephi.desktop.datalab.general.actions.MergeColumnsUI;
 import org.gephi.graph.api.*;
 import org.gephi.project.api.*;
 import org.gephi.ui.components.WrapLayout;
-import org.gephi.ui.utils.BusyUtils;
+import org.gephi.ui.components.BusyUtils;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.utils.TableCSVExporter;

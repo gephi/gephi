@@ -39,7 +39,7 @@ Contributor(s):
 
 Portions Copyrighted 2011 Gephi Consortium.
 */
-package org.gephi.ui.utils;
+package org.gephi.ui.components;
 
 import java.awt.Dimension;
 import javax.swing.JComponent;

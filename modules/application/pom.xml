@@ -379,6 +379,14 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>clustering-plugin</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jfreechart-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>commons-wrapper</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
