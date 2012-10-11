@@ -14,16 +14,6 @@
     <artifactId>gephi-branding</artifactId>
     <packaging>nbm</packaging>
     <name>gephi-branding</name>
-
-    <!-- Dependency on the localization ZIP on the 3rd party repository -->
-    <dependencies>
-        <dependency>
-            <groupId>org.netbeans</groupId>
-            <artifactId>platform-localization</artifactId>
-            <type>zip</type>
-            <version>${gephi.platform.localization.version}</version>
-        </dependency>
-    </dependencies>
     
     <properties>  
         <gephi.branding.update.center.official.url>${gephi.update.center.testing.url}</gephi.branding.update.center.official.url>
@@ -120,7 +110,21 @@
     </build>
     
     <profiles>
-        <!-- The deployment profile is built for daily releases. It builts everything except the installers -->
+        <profile>
+            <!-- The deployment profile is built for daily releases. It builts everything except the installers -->
+            <id>deployment</id>
+            <!-- Dependency on the localization ZIP on the 3rd party repository -->
+            <dependencies>
+                <dependency>
+                    <groupId>org.netbeans</groupId>
+                    <artifactId>platform-localization</artifactId>
+                    <type>zip</type>
+                    <version>${gephi.platform.localization.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        
+        <!-- Release profile -->
         <profile>
             <id>release</id>
             <properties>
