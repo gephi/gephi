@@ -62,7 +62,7 @@ project = "gephi"
 
 #To update .po translations from Transifex website you have to execute tx pull
 
-directories = ["."]
+directories = [".."]
 while len(directories) > 0:
     directory = directories.pop()
     for name in os.listdir(directory):

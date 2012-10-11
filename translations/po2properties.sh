@@ -72,5 +72,5 @@ done
 IFS=$oldIFS
 }
 
-RecurseDirs .
+RecurseDirs "../modules"
 
