@@ -36,6 +36,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.apache.commons.codec.*</publicPackage>
+                        <publicPackage>org.apache.commons.compress.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

@@ -82,6 +82,7 @@
                         <publicPackage>org.apache.xalan.*</publicPackage>
                         <publicPackage>org.apache.xml.*</publicPackage>
                         <publicPackage>org.w3c.*</publicPackage>
+                        <publicPackage>javax.xml.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
