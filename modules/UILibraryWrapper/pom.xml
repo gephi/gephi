@@ -20,8 +20,26 @@
             <groupId>org.pushingpixels</groupId>
             <artifactId>flamingo</artifactId>
             <version>5.0-gephi</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.xmlgraphics</groupId>
+                    <artifactId>batik-transcoder</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.xmlgraphics</groupId>
+                    <artifactId>batik-bridge</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis-ext</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-                <dependency>
+        <dependency>
             <groupId>org.swinglabs</groupId>
             <artifactId>swingx</artifactId>
             <version>1.6.1</version>
