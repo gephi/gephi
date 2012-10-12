@@ -28,6 +28,9 @@
     
     <key>CFBundleIconFile</key>
     <string>gephi.icns</string>
+    
+    <key>NSHighResolutionCapable</key> 
+    <true/>
 	
 	<key>CFBundleDocumentTypes</key>
     <array>
