@@ -381,11 +381,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jfreechart-wrapper</artifactId>
+            <artifactId>core-library-wrapper</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>commons-wrapper</artifactId>
+            <artifactId>ui-library-wrapper</artifactId>
         </dependency>
     </dependencies>
 

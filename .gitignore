@@ -93,3 +93,5 @@ keystore.ks
 /modules/WorkspaceUI/target/
 /modules/JFreeChartWrapper/target/
 /modules/CommonsWrapper/target/
+/modules/CoreLibraryWrapper/target/
+/modules/UILibraryWrapper/target/

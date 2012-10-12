@@ -54,6 +54,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>ui-library-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>utils</artifactId>
         </dependency>
         <dependency>

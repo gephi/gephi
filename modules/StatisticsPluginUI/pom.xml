@@ -45,9 +45,8 @@
             <artifactId>org-openide-util-lookup</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.swinglabs</groupId>
-            <artifactId>swingx</artifactId>
-            <version>1.6.1</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-library-wrapper</artifactId>
         </dependency>
     </dependencies>
 

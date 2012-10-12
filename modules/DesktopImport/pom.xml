@@ -70,7 +70,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>commons-wrapper</artifactId>
+            <artifactId>core-library-wrapper</artifactId>
         </dependency>
     </dependencies>
 

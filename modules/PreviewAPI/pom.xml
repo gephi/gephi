@@ -33,33 +33,16 @@
             <artifactId>utils-longtask</artifactId>
         </dependency>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>core-library-wrapper</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itextpdf</artifactId>
-            <version>5.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-transcoder</artifactId>
-            <version>1.7</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.xmlgraphics</groupId>
-                    <artifactId>batik-js</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.processing</groupId>
-            <artifactId>core</artifactId>
-            <version>1.5.1</version>
         </dependency>
     </dependencies>
 
@@ -75,14 +58,6 @@
                         <publicPackage>org.gephi.preview.spi</publicPackage>
                         <publicPackage>org.gephi.preview.types</publicPackage>
                         <publicPackage>org.gephi.preview.types.propertyeditors</publicPackage>
-                        <publicPackage>com.itextpdf.text.*</publicPackage>
-                        <publicPackage>processing.*</publicPackage>
-                        <publicPackage>org.apache.batik.*</publicPackage>
-                        <publicPackage>org.apache.xpath.*</publicPackage>
-                        <publicPackage>org.apache.xalan.*</publicPackage>
-                        <publicPackage>org.apache.xml.*</publicPackage>
-                        <publicPackage>org.w3c.*</publicPackage>
-                        <publicPackage>javax.xml.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

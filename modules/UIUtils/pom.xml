@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jfreechart-wrapper</artifactId>
+            <artifactId>core-library-wrapper</artifactId>
         </dependency>
     </dependencies>
 

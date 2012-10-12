@@ -50,8 +50,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>commons-wrapper</artifactId>
-            <version>${project.version}</version>
+            <artifactId>core-library-wrapper</artifactId>
         </dependency>
     </dependencies>
 

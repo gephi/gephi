@@ -30,6 +30,10 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>core-library-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>utils-ui</artifactId>
         </dependency>
         <dependency>
@@ -67,12 +71,6 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-settings</artifactId>
-        </dependency>
-        <dependency>
-            <artifactId>xml-apis</artifactId>
-            <groupId>xml-apis</groupId>
-            <type>jar</type>
-            <version>1.3.04</version>
         </dependency>
     </dependencies>
 

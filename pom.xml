@@ -729,12 +729,12 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>jfreechart-wrapper</artifactId>
+                <artifactId>core-library-wrapper</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>commons-wrapper</artifactId>
+                <artifactId>ui-library-wrapper</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
@@ -1168,7 +1168,7 @@
         <module>modules/WelcomeScreen</module>
         <module>modules/WorkspaceUI</module>
         <module>modules/Gleem</module>
-        <module>modules/JFreeChartWrapper</module>
-        <module>modules/CommonsWrapper</module>
+        <module>modules/CoreLibraryWrapper</module>
+        <module>modules/UILibraryWrapper</module>
     </modules>
 </project>

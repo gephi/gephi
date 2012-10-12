@@ -40,6 +40,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>ui-components</artifactId>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-library-wrapper</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

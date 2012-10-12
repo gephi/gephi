@@ -30,11 +30,15 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>ui-library-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>utils-ui</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jfreechart-wrapper</artifactId>
+            <artifactId>core-library-wrapper</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>

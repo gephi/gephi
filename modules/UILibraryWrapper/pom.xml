@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>gephi-parent</artifactId>
+        <groupId>org.gephi</groupId>
+        <version>0.8.2-SNAPSHOT</version>
+        <relativePath>../..</relativePath>
+    </parent>
+
+    <groupId>org.gephi</groupId>
+    <artifactId>ui-library-wrapper</artifactId>
+    <version>0.8.2-SNAPSHOT</version>
+    <packaging>nbm</packaging>
+
+    <name>UILibraryWrapper</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.pushingpixels</groupId>
+            <artifactId>flamingo</artifactId>
+            <version>5.0-gephi</version>
+        </dependency>
+                <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swingx</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdesktop</groupId>
+            <artifactId>beansbinding</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.connectina.swing</groupId>
+            <artifactId>fontchooser</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev</groupId>
+            <artifactId>colorchooser</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout</artifactId>
+            <version>3.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev</groupId>
+            <artifactId>timingframework</artifactId>
+            <version>1.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>com.bric.awt</publicPackage>
+                        <publicPackage>com.bric.swing</publicPackage>
+                        <publicPackage>com.connectina.swing.fontchooser</publicPackage>
+                        <publicPackage>net.java.dev.colorchooser</publicPackage>
+                        <publicPackage>net.miginfocom.layout</publicPackage>
+                        <publicPackage>net.miginfocom.swing</publicPackage>
+                        <publicPackage>org.pushingpixels.flamingo.*</publicPackage>
+                        <publicPackage>org.jdesktop.swingx.*</publicPackage>
+                        <publicPackage>org.jdesktop.beansbinding.*</publicPackage>
+                        <publicPackage>org.jdesktop.animation.*</publicPackage> 
+                    </publicPackages>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

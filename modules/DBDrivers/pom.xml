@@ -41,6 +41,18 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>com.teradata</groupId>
+            <artifactId>teradata-jdbc</artifactId>
+            <version>14.00.00.21</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.teradata</groupId>
+            <artifactId>teradata-config</artifactId>
+            <version>14.00.00.21</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
         </dependency>

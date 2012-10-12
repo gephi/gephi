@@ -18,30 +18,15 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>commons-wrapper</artifactId>
+            <artifactId>core-library-wrapper</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.pushingpixels</groupId>
-            <artifactId>flamingo</artifactId>
-            <version>5.0-gephi</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>ui-library-wrapper</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>utils-ui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jfreechart-wrapper</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.swinglabs</groupId>
-            <artifactId>swingx</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jdesktop</groupId>
-            <artifactId>beansbinding</artifactId>
-            <version>1.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -59,21 +44,6 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.connectina.swing</groupId>
-            <artifactId>fontchooser</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev</groupId>
-            <artifactId>colorchooser</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.miglayout</groupId>
-            <artifactId>miglayout</artifactId>
-            <version>3.7.1</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -83,18 +53,9 @@
                 <artifactId>nbm-maven-plugin</artifactId>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>com.bric.awt</publicPackage>
-                        <publicPackage>com.bric.swing</publicPackage>
-                        <publicPackage>com.connectina.swing.fontchooser</publicPackage>
-                        <publicPackage>net.java.dev.colorchooser</publicPackage>
-                        <publicPackage>net.miginfocom.layout</publicPackage>
-                        <publicPackage>net.miginfocom.swing</publicPackage>
                         <publicPackage>org.gephi.ui.components</publicPackage>
                         <publicPackage>org.gephi.ui.components.gradientslider</publicPackage>
                         <publicPackage>org.gephi.ui.components.richtooltip</publicPackage>
-                        <publicPackage>org.pushingpixels.flamingo.*</publicPackage>
-                        <publicPackage>org.jdesktop.swingx.*</publicPackage>
-                        <publicPackage>org.jdesktop.beansbinding.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

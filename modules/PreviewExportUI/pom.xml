@@ -30,7 +30,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>ui-components</artifactId>
+            <artifactId>ui-library-wrapper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>core-library-wrapper</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
