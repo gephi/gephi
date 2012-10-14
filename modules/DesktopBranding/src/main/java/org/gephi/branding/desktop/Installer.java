@@ -63,12 +63,12 @@ import org.openide.util.NbPreferences;
 import org.openide.windows.WindowManager;
 
 /**
- * Manages a module's lifecycle. Remember that an installer is optional and often not needed at all.
+ * Manages a module's lifecycle. Remember that an installer is optional and
+ * often not needed at all.
  */
 public class Installer extends ModuleInstall {
 
     private static final String LATEST_GEPHI_VERSION_URL = "https://gephi.org/updates/latest";
-    private static final String GEPHI_VERSION = "0.8.1-beta";
 
     @Override
     public void restored() {
@@ -98,10 +98,8 @@ public class Installer extends ModuleInstall {
 
         //Check for new major release:
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
-
             public void run() {
-                new Thread(){
-
+                new Thread() {
                     @Override
                     public void run() {
                         checkForNewMajorRelease();
@@ -114,7 +112,6 @@ public class Installer extends ModuleInstall {
     private void initGephi() {
         final ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
-
             public void run() {
                 pc.startup();
                 DragNDropFrameAdapter.register();
@@ -181,16 +178,18 @@ public class Installer extends ModuleInstall {
         boolean doCheck = NbPreferences.forModule(Installer.class).getBoolean("check_latest_version", true);
         if (doCheck) {
             try {
+                String gephiVersion = System.getProperty("netbeans.productversion");
                 URL url = new URL(LATEST_GEPHI_VERSION_URL);
                 URLConnection conn = url.openConnection();
                 String latest = new BufferedReader(new InputStreamReader(conn.getInputStream())).readLine();
-                if (!latest.equals(GEPHI_VERSION)) {
+                latest = latest.replaceAll("[a-zA-Z .-]", "");
+                if (!gephiVersion.contains("SNAPSHOT") && !latest.equals(gephiVersion.replaceAll("[0-9]{12}", "").replaceAll("[a-zA-Z .-]", ""))) {
                     //Show update dialog
                     JCheckBox checkbox = new JCheckBox(NbBundle.getMessage(Installer.class, "MajorReleaseCheck.dontShowAgain"), false);
-                    String message = NbBundle.getMessage(Installer.class, "MajorReleaseCheck.message", latest, GEPHI_VERSION);
+                    String message = NbBundle.getMessage(Installer.class, "MajorReleaseCheck.message", latest, gephiVersion);
                     int option = JOptionPane.showConfirmDialog(null, new Object[]{message, checkbox}, NbBundle.getMessage(Installer.class, "MajorReleaseCheck.newVersion"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
                     NbPreferences.forModule(Installer.class).putBoolean("check_latest_version", !checkbox.isSelected());
-                    if(option==JOptionPane.OK_OPTION){
+                    if (option == JOptionPane.OK_OPTION) {
                         Desktop.getDesktop().browse(new URI("http://gephi.org/users/download/"));
                     }
                 }
