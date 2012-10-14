@@ -77,7 +77,7 @@
         <brandingToken>gephi</brandingToken>
         <all.clusters>${project.build.directory}/${brandingToken}</all.clusters>
         <gephi.netbeans.useOSGiDependencies>false</gephi.netbeans.useOSGiDependencies>
-        <gephi.app.title>Gephi 0.8.1 beta</gephi.app.title>
+        <gephi.app.title>Gephi ${project.version}</gephi.app.title>
         
         <!-- Update centers URLs -->
         <gephi.update.center.official.url>http://gephi.org/updates/official/${project.version}/catalog.xml</gephi.update.center.official.url>
