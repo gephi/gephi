@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>run</actionName>
+            <goals>
+                <goal>nbm:cluster-app</goal>
+                <goal>nbm:run-platform</goal>
+                
+            </goals>
+        </action>
+    </actions>
