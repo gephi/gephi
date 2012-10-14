@@ -82,7 +82,7 @@
         <!-- Update centers URLs -->
         <gephi.update.center.official.url>http://gephi.org/updates/official/${project.version}/catalog.xml</gephi.update.center.official.url>
         <gephi.update.center.thirdparty.url>http://gephi.org/updates/thirdparty/${project.version}/catalog.xml</gephi.update.center.thirdparty.url>
-        <gephi.update.center.testing.url>http://nexus.gephi.org/nexus/content/repositories/snapshots/external/updates/${project.version}/updates.xml</gephi.update.center.testing.url>
+        <gephi.update.center.testing.url>http://nexus.gephi.org/nexus/content/repositories/snapshots/external/updates/updates.xml</gephi.update.center.testing.url>
         
         <!-- Mac OS X bundle settings -->
         <gephi.appbundle.name>Gephi</gephi.appbundle.name>
@@ -1023,7 +1023,14 @@
                             </descriptors>
                         </configuration>
                     </plugin>
-                    
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>upload-apidocs</id>
+            <build>
+                <plugins>
                     <!-- Upload the javadoc automatically -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -1040,7 +1047,7 @@
                         <configuration>
                             <fromDir>${project.build.directory}/site/apidocs</fromDir>
                             <url>${gephi.snapshot.repository.url}</url>
-                            <toDir>external/apidocs/${project.version}</toDir>
+                            <toDir>external/apidocs</toDir>
                             <serverId>${gephi.snapshot.repository.id}</serverId>
                         </configuration>
                     </plugin>

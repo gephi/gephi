@@ -498,7 +498,14 @@
                             </execution>
                         </executions>
                     </plugin>
-                    
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>upload-updates</id>
+            <build>
+                <plugins>
                     <!-- Upload the autoupdate site automatically -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -516,7 +523,7 @@
                             <fromDir>${gephi.updates.site}</fromDir>
                             <includes>*</includes>
                             <url>${gephi.snapshot.repository.url}</url>
-                            <toDir>external/updates/${project.version}</toDir>
+                            <toDir>external/updates</toDir>
                             <serverId>${gephi.snapshot.repository.id}</serverId>
                         </configuration>
                     </plugin>
