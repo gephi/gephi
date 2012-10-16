@@ -92,7 +92,7 @@
                 <executions>
                     <execution>
                         <id>unpack</id>
-                        <phase>package</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
