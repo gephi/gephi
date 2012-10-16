@@ -13,7 +13,7 @@
 
     <artifactId>gephi-branding</artifactId>
     <packaging>nbm</packaging>
-    <name>gephi-branding</name>
+    <name>Branding</name>
     
     <properties>  
         <gephi.branding.update.center.official.url>${gephi.update.center.testing.url}</gephi.branding.update.center.official.url>
