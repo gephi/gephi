@@ -30,7 +30,7 @@ If you run into any trouble or have questions consult our [forum](http://forum.g
 
 Current version is 0.8.2-SNAPSHOT
 
-- [gephi-0.8.2-SNAPSHOT.zip](http://nexus.gephi.org/nexus/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.8.2-SNAPSHOT&p=dmg) (Windows & Linux)
+- [gephi-0.8.2-SNAPSHOT.zip](http://nexus.gephi.org/nexus/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.8.2-SNAPSHOT&p=zip) (Windows & Linux)
 
 - [gephi-0.8.2-SNAPSHOT.dmg](http://nexus.gephi.org/nexus/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.8.2-SNAPSHOT&p=dmg) (Mac OS X)
 
