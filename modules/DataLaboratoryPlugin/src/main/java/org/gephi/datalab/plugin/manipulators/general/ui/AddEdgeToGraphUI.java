@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Eduardo Ramos <eduramiba@gmail.com>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Eduardo Ramos <eduramiba@gmail.com>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.datalab.plugin.manipulators.general.ui;
 
@@ -48,6 +48,7 @@ import org.gephi.datalab.spi.DialogControls;
 import org.gephi.datalab.spi.Manipulator;
 import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.Node;
@@ -55,21 +56,26 @@ import org.openide.util.Lookup;
 
 /**
  * UI for AddEdgeToGraph GeneralActionsManipulator
+ *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorUI {
 
     private AddEdgeToGraph manipulator;
     private Node[] nodes, targetNodes;
-    private MixedGraph graph;
+    private Graph graph;
+    private DialogControls dialogControls;
 
-    /** Creates new form AddEdgeToGraphUI */
+    /**
+     * Creates new form AddEdgeToGraphUI
+     */
     public AddEdgeToGraphUI() {
         initComponents();
     }
 
     public void setup(Manipulator m, DialogControls dialogControls) {
         this.manipulator = (AddEdgeToGraph) m;
+        this.dialogControls = dialogControls;
         if (manipulator.isDirected()) {
             directedRadioButton.setSelected(true);
         } else {
@@ -103,38 +109,33 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         return true;
     }
 
+    private boolean canCreateEdge(Graph graph, Node source, Node target, boolean createUndirected) {
+        Edge existingEdge = graph.getEdge(source, target);
+
+        if (existingEdge == null) {
+            return true;
+        }
+
+        if (existingEdge.getSource() == source) {//Exact edge found
+            return false;
+        } else {//Inverse edge found
+            return !createUndirected && existingEdge.isDirected();
+        }
+    }
+
     private void refreshAvailableTargetNodes() {
         if (nodes != null) {
             ArrayList<Node> availableTargetNodes = new ArrayList<Node>();
             Node sourceNode = nodes[sourceNodesComboBox.getSelectedIndex()];
             boolean createUndirected = undirectedRadioButton.isSelected();
-            boolean canCreateEdge;
             for (Node n : nodes) {
-                canCreateEdge = true;
-                if (n != sourceNode) {//They are not the same node
-                    for (Edge e : graph.getEdges(sourceNode).toArray()) {
-                        if (createUndirected) {
-                            if (e.getSource() == n || e.getTarget() == n) {//There is no edge with the source and target node:
-                                canCreateEdge = false;
-                            }
-                        } else {
-                            //There is no directed edge with that source and target, and there is no undirected edge with the 2 nodes:
-                            if (e.isDirected()) {
-                                if (e.getTarget() == n) {
-                                    canCreateEdge = false;
-                                }
-                            } else if (e.getSource() == n || e.getTarget() == n) {
-                                canCreateEdge = false;
-                            }
-                        }
-                    }
-                    if (canCreateEdge) {
-                        availableTargetNodes.add(n);
-                    }
+                if (canCreateEdge(graph, sourceNode, n, createUndirected)) {
+                    availableTargetNodes.add(n);
                 }
             }
 
             targetNodes = availableTargetNodes.toArray(new Node[0]);
+            dialogControls.setOkButtonEnabled(!availableTargetNodes.isEmpty());
             targetNodesComboBox.removeAllItems();
             for (Node n : targetNodes) {
                 targetNodesComboBox.addItem(n.getId() + " - " + n.getNodeData().getLabel());
@@ -142,10 +143,8 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         }
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -202,20 +201,20 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
                             .addComponent(sourceNodeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(sourceNodesComboBox, 0, 204, Short.MAX_VALUE)
+                            .addComponent(sourceNodesComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(undirectedRadioButton)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(targetNodeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(targetNodesComboBox, 0, 204, Short.MAX_VALUE)))
+                        .addComponent(targetNodesComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(directedRadioButton)
                     .addComponent(undirectedRadioButton))
@@ -227,7 +226,7 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(targetNodesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(targetNodeLabel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 

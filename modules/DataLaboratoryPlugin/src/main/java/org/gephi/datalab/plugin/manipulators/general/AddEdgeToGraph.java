@@ -80,7 +80,7 @@ public class AddEdgeToGraph implements GeneralActionsManipulator {
     }
 
     public boolean canExecute() {
-        return Lookup.getDefault().lookup(GraphElementsController.class).getNodesCount()>1;//At least 2 nodes to link them
+        return Lookup.getDefault().lookup(GraphElementsController.class).getNodesCount() > 0;//At least 1 nodes
     }
 
     public ManipulatorUI getUI() {
