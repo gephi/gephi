@@ -43,16 +43,10 @@ package org.gephi.data.attributes.api;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import org.gephi.data.attributes.type.*;
-import org.openide.util.Exceptions;
 
 /**
  * The different type an {@link AttributeColumn} can have.
@@ -121,8 +115,7 @@ public enum AttributeType {
      * Returns the
      * <code>Class</code> the type is associated with.
      *
-     * @return the
-     * <code>class</code> the type is associated with
+     * @return the <code>class</code> the type is associated with
      */
     public Class getType() {
         return type;
@@ -142,157 +135,82 @@ public enum AttributeType {
      * <code>isDynamicType</code> method) and a UnsupportedOperationException will be thrown if it is tried.
      *
      * @param str the string that is to be parsed
-     * @return an instance of the type of this or null if not able to parse given string as the type
-     * <code>AttributeType</code>.
+     * @return an instance of the type of this or null if not able to parse given string as the type <code>AttributeType</code>.
      */
     public Object parse(String str) {
-        switch (this) {
-            case BYTE:
-                return new Byte(removeDecimalDigitsFromString(str));
-            case SHORT:
-                return new Short(removeDecimalDigitsFromString(str));
-            case INT:
-                return new Integer(removeDecimalDigitsFromString(str));
-            case LONG:
-                return new Long(removeDecimalDigitsFromString(str));
-            case FLOAT:
-                return new Float(str);
-            case DOUBLE:
-                return new Double(str);
-            case BOOLEAN:
-                return new Boolean(str);
-            case CHAR:
-                return new Character(str.charAt(0));
-            case BIGINTEGER:
-                return new BigInteger(removeDecimalDigitsFromString(str));
-            case BIGDECIMAL:
-                return new BigDecimal(str);
-            case DYNAMIC_BYTE:
-            case DYNAMIC_SHORT:
-            case DYNAMIC_INT:
-            case DYNAMIC_LONG:
-            case DYNAMIC_FLOAT:
-            case DYNAMIC_DOUBLE:
-            case DYNAMIC_BOOLEAN:
-            case DYNAMIC_CHAR:
-            case DYNAMIC_STRING:
-            case DYNAMIC_BIGINTEGER:
-            case DYNAMIC_BIGDECIMAL:
-            case TIME_INTERVAL:
-                return parseDynamic(str);
-            case LIST_BYTE:
-                return new ByteList(removeDecimalDigitsFromString(str));
-            case LIST_SHORT:
-                return new ShortList(removeDecimalDigitsFromString(str));
-            case LIST_INTEGER:
-                return new IntegerList(removeDecimalDigitsFromString(str));
-            case LIST_LONG:
-                return new LongList(removeDecimalDigitsFromString(str));
-            case LIST_FLOAT:
-                return new FloatList(str);
-            case LIST_DOUBLE:
-                return new DoubleList(str);
-            case LIST_BOOLEAN:
-                return new BooleanList(str);
-            case LIST_CHARACTER:
-                return new CharacterList(str);
-            case LIST_STRING:
-                return new StringList(str);
-            case LIST_BIGINTEGER:
-                return new BigIntegerList(removeDecimalDigitsFromString(str));
-            case LIST_BIGDECIMAL:
-                return new BigDecimalList(str);
+        try {
+            switch (this) {
+                case BYTE:
+                    return new Byte(removeDecimalDigitsFromString(str));
+                case SHORT:
+                    return new Short(removeDecimalDigitsFromString(str));
+                case INT:
+                    return new Integer(removeDecimalDigitsFromString(str));
+                case LONG:
+                    return new Long(removeDecimalDigitsFromString(str));
+                case FLOAT:
+                    return new Float(str);
+                case DOUBLE:
+                    return new Double(str);
+                case BOOLEAN:
+                    return Boolean.valueOf(str);
+                case CHAR:
+                    return new Character(str.charAt(0));
+                case BIGINTEGER:
+                    return new BigInteger(removeDecimalDigitsFromString(str));
+                case BIGDECIMAL:
+                    return new BigDecimal(str);
+                case DYNAMIC_BYTE:
+                case DYNAMIC_SHORT:
+                case DYNAMIC_INT:
+                case DYNAMIC_LONG:
+                case DYNAMIC_FLOAT:
+                case DYNAMIC_DOUBLE:
+                case DYNAMIC_BOOLEAN:
+                case DYNAMIC_CHAR:
+                case DYNAMIC_STRING:
+                case DYNAMIC_BIGINTEGER:
+                case DYNAMIC_BIGDECIMAL:
+                case TIME_INTERVAL:
+                    return parseDynamic(str);
+                case LIST_BYTE:
+                    return new ByteList(removeDecimalDigitsFromString(str));
+                case LIST_SHORT:
+                    return new ShortList(removeDecimalDigitsFromString(str));
+                case LIST_INTEGER:
+                    return new IntegerList(removeDecimalDigitsFromString(str));
+                case LIST_LONG:
+                    return new LongList(removeDecimalDigitsFromString(str));
+                case LIST_FLOAT:
+                    return new FloatList(str);
+                case LIST_DOUBLE:
+                    return new DoubleList(str);
+                case LIST_BOOLEAN:
+                    return new BooleanList(str);
+                case LIST_CHARACTER:
+                    return new CharacterList(str);
+                case LIST_STRING:
+                    return new StringList(str);
+                case LIST_BIGINTEGER:
+                    return new BigIntegerList(removeDecimalDigitsFromString(str));
+                case LIST_BIGDECIMAL:
+                    return new BigDecimalList(str);
+            }
+            return str;
+        } catch (Exception e) {
+            return null;//Any parse exception due to incorrect syntax
         }
-        return str;
     }
 
     private Object parseDynamic(String str) {
-        if (str.equals("<empty>")) {
-            return createDynamicObject(null);
+        List<Interval> intervals;
+        try {
+            intervals = DynamicParser.parseIntervals(this, str);
+        } catch (Exception ex) {
+            return null;//Unable to parse
         }
 
-        if (str.startsWith("<")) {
-            str = str.substring(1);
-        }
-        if (str.endsWith(">")) {
-            str = str.substring(0, str.length() - 1);
-        }
-        String[] intervals = str.split("; *");
-
-        List<Interval> in = new ArrayList<Interval>();
-
-        for (String interval : intervals) {
-            boolean lopen = interval.startsWith("(");
-            boolean ropen = interval.endsWith(")");
-
-            interval = interval.substring(1, interval.length() - 1);
-            String[] parts = interval.split(", *", 3);
-            double low, high;
-            try {
-                //Try first to parse as a single double:
-                low = Double.parseDouble(parts[0]);
-            } catch (Exception ex) {
-                try {
-                    low = getDoubleFromXMLDateString(parts[0]);
-                } catch (ParseException ex1) {
-                    return null;//Can't parse as number or date
-                }
-            }
-            try {
-                //Try first to parse as a single double:
-                high = Double.parseDouble(parts[1]);
-            } catch (Exception ex) {
-                try {
-                    high = getDoubleFromXMLDateString(parts[1]);
-                } catch (ParseException ex1) {
-                    return null;//Can't parse as number or date
-                }
-            }
-            Object value = null;
-            switch (this) {
-                case DYNAMIC_BYTE:
-                    value = new Byte(removeDecimalDigitsFromString(parts[2]));
-                    break;
-                case DYNAMIC_SHORT:
-                    value = new Short(removeDecimalDigitsFromString(parts[2]));
-                    break;
-                case DYNAMIC_INT:
-                    value = new Integer(removeDecimalDigitsFromString(parts[2]));
-                    break;
-                case DYNAMIC_LONG:
-                    value = new Long(removeDecimalDigitsFromString(parts[2]));
-                    break;
-                case DYNAMIC_FLOAT:
-                    value = new Float(parts[2]);
-                    break;
-                case DYNAMIC_DOUBLE:
-                    value = new Double(parts[2]);
-                    break;
-                case DYNAMIC_BOOLEAN:
-                    value = new Boolean(parts[2]);
-                    break;
-                case DYNAMIC_CHAR:
-                    value = new Character(parts[2].charAt(0));
-                    break;
-                case DYNAMIC_STRING:
-                    value = parts[2];
-                    break;
-                case DYNAMIC_BIGINTEGER:
-                    value = new BigInteger(removeDecimalDigitsFromString(parts[2]));
-                    break;
-                case DYNAMIC_BIGDECIMAL:
-                    value = new BigDecimal(parts[2]);
-                    break;
-                case TIME_INTERVAL:
-                default:
-                    value = null;
-                    break;
-            }
-
-            in.add(new Interval(low, high, lopen, ropen, value));
-        }
-
-        return createDynamicObject(in);
+        return createDynamicObject(intervals);
     }
 
     private DynamicType createDynamicObject(List<Interval> in) {
@@ -448,9 +366,7 @@ public enum AttributeType {
      * <code>AttributeType.FLOAT</code>.
      *
      * @param obj the object that is to be parsed
-     * @return the compatible
-     * <code>AttributeType</code>, or
-     * <code>null</code> if no type is found or the input object is null
+     * @return the compatible <code>AttributeType</code>, or <code>null</code> if no type is found or the input object is null
      */
     public static AttributeType parse(Object obj) {
         if (obj == null) {
@@ -477,9 +393,7 @@ public enum AttributeType {
      * <code>AttributeType.DYNAMIC_FLOAT</code>.
      *
      * @param obj the object that is to be parsed
-     * @return the compatible
-     * <code>AttributeType</code>, or
-     * <code>null</code>
+     * @return the compatible <code>AttributeType</code>, or <code>null</code>
      */
     public static AttributeType parseDynamic(Object obj) {
         if (obj == null) {
@@ -573,30 +487,8 @@ public enum AttributeType {
      * @param s String to remove decimal digits
      * @return String without dot and decimal digits.
      */
-    private String removeDecimalDigitsFromString(String s) {
+    public static String removeDecimalDigitsFromString(String s) {
         return removeDecimalDigitsFromStringPattern.matcher(s).replaceAll("");
     }
     private static final Pattern removeDecimalDigitsFromStringPattern = Pattern.compile("\\.[0-9]*");
-    //For trying date parsing:
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static DatatypeFactory dateFactory;
-
-    static {
-        try {
-            dateFactory = DatatypeFactory.newInstance();
-        } catch (DatatypeConfigurationException ex) {
-        }
-    }
-
-    //Throws exception when a date can't be parsed
-    public static double getDoubleFromXMLDateString(String str) throws ParseException {
-        try {
-            return dateFactory.newXMLGregorianCalendar(str.length() > 23 ? str.substring(0, 23) : str).
-                    toGregorianCalendar().getTimeInMillis();
-        } catch (IllegalArgumentException ex) {
-            //Try simple format
-            Date date = dateFormat.parse(str);
-            return date.getTime();
-        }
-    }
 }
