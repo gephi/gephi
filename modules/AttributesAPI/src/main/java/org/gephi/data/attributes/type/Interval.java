@@ -291,7 +291,7 @@ public final class Interval<T> implements Comparable<Interval> {
         if (value != null) {
             sb.append(", ");
             String stringValue = value.toString();
-            if (containsSpecialCharacters(stringValue)) {
+            if (containsSpecialCharacters(stringValue) || stringValue.trim().isEmpty()) {
                 sb.append('"');
                 sb.append(stringValue.replace("\\", "\\\\").replace("\"", "\\\""));
                 sb.append('"');

@@ -101,7 +101,6 @@ public final class DynamicParser {
         }
 
         List<Interval> intervals = new ArrayList<Interval>();
-        boolean lopen = true;
 
         StringReader reader = new StringReader(input + ' ');//Add 1 space so reader.skip function always works when necessary (end of string not reached).
 
@@ -111,9 +110,8 @@ public final class DynamicParser {
             c = (char) r;
             switch (c) {
                 case LCLOSE:
-                    lopen = false;
                 case LOPEN:
-                    intervals.add(parseInterval(type, reader, lopen));
+                    intervals.add(parseInterval(type, reader, c == LOPEN));
                     break;
                 default:
                     //Ignore other chars outside of intervals
