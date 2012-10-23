@@ -443,6 +443,17 @@
         zip and the autoupdate site. It can be used with deploy-dmg to include the dmg as well. -->
         <profile>
             <id>deployment</id>
+            
+            <!-- Localization dependency -->
+            <dependencies>
+                <dependency>
+                    <groupId>org.netbeans</groupId>
+                    <artifactId>platform-localization</artifactId>
+                    <type>zip</type>
+                    <version>${gephi.platform.localization.version}</version>
+                </dependency>
+            </dependencies>
+            
             <build>
                 <plugins>
                     
@@ -494,6 +505,28 @@
                                             <type>zip</type>
                                         </artifact>
                                     </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Unpack the localization dependency -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>unpack-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <includeGroupIds>org.netbeans</includeGroupIds>
+                                    <includeArtifactIds>platform-localization</includeArtifactIds>
+                                    <outputDirectory>
+                                        ${project.build.directory}/${brandingToken}
+                                    </outputDirectory>
                                 </configuration>
                             </execution>
                         </executions>

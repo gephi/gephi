@@ -22,21 +22,6 @@
 
     <build>
         <plugins>
-            
-            <!-- Add localization as NBM resource -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>nbm-maven-plugin</artifactId>
-                <configuration>
-                    <nbmResources> 
-                        <nbmResource>
-                            <directory>${project.build.directory}/localization</directory>
-                            <targetPath>.</targetPath>
-                        </nbmResource>
-                    </nbmResources>
-                </configuration>
-            </plugin>
-            
             <!-- Copy and filtering tasks -->
             <plugin> 
                 <artifactId>maven-resources-plugin</artifactId> 
@@ -84,46 +69,10 @@
                     </execution> 
                 </executions> 
             </plugin>
-            
-            <!-- Unpack the localization dependency -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeGroupIds>org.netbeans</includeGroupIds>
-                            <includeArtifactIds>platform-localization</includeArtifactIds>
-                            <outputDirectory>
-                                ${project.build.directory}/localization
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     
     <profiles>
-        <profile>
-            <!-- The deployment profile is built for daily releases. It builts everything except the installers -->
-            <id>deployment</id>
-            <!-- Dependency on the localization ZIP on the 3rd party repository -->
-            <dependencies>
-                <dependency>
-                    <groupId>org.netbeans</groupId>
-                    <artifactId>platform-localization</artifactId>
-                    <type>zip</type>
-                    <version>${gephi.platform.localization.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-        
         <!-- Release profile -->
         <profile>
             <id>release</id>
