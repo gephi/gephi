@@ -17,7 +17,7 @@
     
     <properties>  
         <gephi.branding.update.center.official.url>${gephi.update.center.testing.url}</gephi.branding.update.center.official.url>
-        <gephi.branding.update.center.thirdparty.url>${gephi.update.center.thirdparty.url}</gephi.branding.update.center.thirdparty.url>
+        <gephi.branding.update.center.thirdparty.url>${gephi.update.center.testing.url}</gephi.branding.update.center.thirdparty.url>
     </properties>
 
     <build>
@@ -78,6 +78,7 @@
             <id>release</id>
             <properties>
                 <gephi.branding.update.center.official.url>${gephi.update.center.official.url}</gephi.branding.update.center.official.url>
+                <gephi.branding.update.center.thirdparty.url>${gephi.update.center.thirdparty.url}</gephi.branding.update.center.thirdparty.url>
             </properties>
         </profile>
     </profiles>
