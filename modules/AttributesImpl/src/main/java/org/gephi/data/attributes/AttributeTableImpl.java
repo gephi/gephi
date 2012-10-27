@@ -45,6 +45,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeOrigin;
@@ -110,8 +112,16 @@ public class AttributeTableImpl implements AttributeTable {
     }
 
     private synchronized AttributeColumnImpl addColumn(String id, String title, AttributeType type, AttributeOrigin origin, Object defaultValue, AttributeValueDelegateProvider attributeValueDelegateProvider) {
-        if (title == null || title.isEmpty() || hasColumn(title)) {
-            throw new IllegalArgumentException("The title can't be null, empty or already existing in the table");
+        if (id == null || id.isEmpty() || hasColumn(id)) {
+            throw new IllegalArgumentException("The column id can't be null, empty or already existing in the table");
+        }
+        
+        if(title == null || title.isEmpty() || hasColumn(title)){
+            //The id is correct, but the title may be invalid or repeated even when the id is valid
+            //Use id as title as a compromise so the column can still be added:
+            
+            Logger.getLogger(AttributeTableImpl.class.getName()).log(Level.WARNING, "Invalid or repeated column title ({0}), used column id as its title instead", title);
+            title = id;
         }
 
         if (defaultValue != null) {
@@ -237,7 +247,7 @@ public class AttributeTableImpl implements AttributeTable {
     }
 
     public synchronized boolean hasColumn(String title) {
-        return columnsMap.containsKey(title) || columnsMap.containsKey(title.toLowerCase());
+        return columnsMap.containsKey(title.toLowerCase());
     }
 
     public synchronized int getVersion() {
