@@ -49,7 +49,6 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.project.api.Workspace;
-import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 
 /**

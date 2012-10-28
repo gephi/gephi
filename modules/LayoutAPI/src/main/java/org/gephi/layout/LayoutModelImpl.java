@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.layout;
 
@@ -54,14 +54,17 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
+import org.gephi.graph.api.GraphController;
+import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
-import org.gephi.layout.api.LayoutModel;
 import org.gephi.layout.spi.LayoutProperty;
-import org.gephi.utils.longtask.spi.LongTask;
+import org.gephi.utils.Serialization;
 import org.gephi.utils.longtask.api.LongTaskErrorHandler;
 import org.gephi.utils.longtask.api.LongTaskExecutor;
 import org.gephi.utils.longtask.api.LongTaskListener;
+import org.gephi.utils.longtask.spi.LongTask;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -84,13 +87,11 @@ public class LayoutModelImpl implements LayoutModel {
 
         executor = new LongTaskExecutor(true, "layout", 5);
         executor.setLongTaskListener(new LongTaskListener() {
-
             public void taskFinished(LongTask task) {
                 setRunning(false);
             }
         });
         executor.setDefaultErrorHandler(new LongTaskErrorHandler() {
-
             public void fatalError(Throwable t) {
                 Logger.getLogger("").log(Level.SEVERE, "", t.getCause() != null ? t.getCause() : t);
             }
@@ -119,10 +120,19 @@ public class LayoutModelImpl implements LayoutModel {
         if (oldValue != null) {
             saveProperties(oldValue);
         }
+
+        injectGraph();
         if (selectedLayout != null) {
             loadProperties(selectedLayout);
         }
         firePropertyChangeEvent(SELECTED_LAYOUT, oldValue, selectedLayout);
+    }
+
+    public void injectGraph() {
+        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
+        if (selectedLayout != null && graphController.getModel() != null) {
+            selectedLayout.setGraphModel(graphController.getModel());
+        }
     }
 
     public boolean isRunning() {
@@ -183,7 +193,7 @@ public class LayoutModelImpl implements LayoutModel {
         }
         for (LayoutProperty property : layout.getProperties()) {
             for (LayoutPropertyKey l : layoutValues) {
-                if (property.getCanonicalName().equalsIgnoreCase(l.name) 
+                if (property.getCanonicalName().equalsIgnoreCase(l.name)
                         || property.getProperty().getName().equalsIgnoreCase(l.name)) {//Also compare with property name to maintain compatibility with old saved properties
                     try {
                         property.getProperty().setValue(savedProperties.get(l));
@@ -239,6 +249,9 @@ public class LayoutModelImpl implements LayoutModel {
 
         if (selectedLayout != null) {
             saveProperties(selectedLayout);
+            writer.writeStartElement("selectedlayoutbuilder");
+            writer.writeAttribute("class", selectedLayout.getBuilder().getClass().getName());
+            writer.writeEndElement();
         }
 
         //Properties
@@ -249,7 +262,7 @@ public class LayoutModelImpl implements LayoutModel {
                 writer.writeAttribute("layout", entry.getKey().layoutClassName);
                 writer.writeAttribute("property", entry.getKey().name);
                 writer.writeAttribute("class", entry.getValue().getClass().getName());
-                writer.writeCharacters(entry.getValue().toString());
+                writer.writeCharacters(Serialization.getValueAsText(entry.getValue()));
                 writer.writeEndElement();
             }
         }
@@ -262,18 +275,22 @@ public class LayoutModelImpl implements LayoutModel {
     public void readXML(XMLStreamReader reader) throws XMLStreamException {
         boolean end = false;
         LayoutPropertyKey key = null;
-        String classStr = null;
+        String valueClassStr = null;
+        String selectedLayoutBuilderClass = null;
+
         while (reader.hasNext() && !end) {
             Integer eventType = reader.next();
             if (eventType.equals(XMLEvent.START_ELEMENT)) {
                 String name = reader.getLocalName();
                 if ("property".equalsIgnoreCase(name)) {
                     key = new LayoutPropertyKey(reader.getAttributeValue(null, "property"), reader.getAttributeValue(null, "layout"));
-                    classStr = reader.getAttributeValue(null, "class");
+                    valueClassStr = reader.getAttributeValue(null, "class");
+                } else if ("selectedlayoutbuilder".equalsIgnoreCase(name)) {
+                    selectedLayoutBuilderClass = reader.getAttributeValue(null, "class");
                 }
             } else if (eventType.equals(XMLEvent.CHARACTERS)) {
                 if (key != null && !reader.isWhiteSpace()) {
-                    Object value = parse(classStr, reader.getText());
+                    Object value = parse(valueClassStr, reader.getText());
                     if (value != null) {
                         savedProperties.put(key, value);
                     }
@@ -285,27 +302,19 @@ public class LayoutModelImpl implements LayoutModel {
                 }
             }
         }
+
+        //Try to retrieve selected layout and make it the currently selected layout (after reading saved properties)
+        if (selectedLayoutBuilderClass != null) {
+            for (LayoutBuilder builder : Lookup.getDefault().lookupAll(LayoutBuilder.class)) {
+                if (builder.getClass().getName().equals(selectedLayoutBuilderClass)) {
+                    setSelectedLayout(builder.buildLayout());
+                    break;
+                }
+            }
+        }
     }
 
     private Object parse(String classStr, String str) {
-        try {
-            Class c = Class.forName(classStr);
-            if (c.equals(Boolean.class)) {
-                return new Boolean(str);
-            } else if (c.equals(Integer.class)) {
-                return new Integer(str);
-            } else if (c.equals(Float.class)) {
-                return new Float(str);
-            } else if (c.equals(Double.class)) {
-                return new Double(str);
-            } else if (c.equals(Long.class)) {
-                return new Long(str);
-            } else if (c.equals(String.class)) {
-                return str;
-            }
-        } catch (ClassNotFoundException ex) {
-            return null;
-        }
-        return null;
+        return Serialization.readValueFromText(str, classStr);
     }
 }

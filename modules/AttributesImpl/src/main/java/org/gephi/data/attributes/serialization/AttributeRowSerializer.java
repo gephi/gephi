@@ -82,15 +82,13 @@ public class AttributeRowSerializer {
             }
         }
 
-        for (Node node : hierarchicalGraph.getNodesTree()) {
-            for (Edge edge : hierarchicalGraph.getEdges(node)) {
-                if (edge.getEdgeData().getAttributes() != null && edge.getEdgeData().getAttributes() instanceof AttributeRowImpl) {
-                    AttributeRowImpl row = (AttributeRowImpl) edge.getEdgeData().getAttributes();
-                    writer.writeStartElement(ELEMENT_EDGE_ROW);
-                    writer.writeAttribute("for", String.valueOf(edge.getId()));
-                    if (writeRow(writer, row)) {
-                        writer.writeEndElement();
-                    }
+        for (Edge edge : hierarchicalGraph.getEdges()) {
+            if (edge.getEdgeData().getAttributes() != null && edge.getEdgeData().getAttributes() instanceof AttributeRowImpl) {
+                AttributeRowImpl row = (AttributeRowImpl) edge.getEdgeData().getAttributes();
+                writer.writeStartElement(ELEMENT_EDGE_ROW);
+                writer.writeAttribute("for", String.valueOf(edge.getId()));
+                if (writeRow(writer, row)) {
+                    writer.writeEndElement();
                 }
             }
         }
