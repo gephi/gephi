@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>org.gephi</groupId>
-    <artifactId>import-api</artifactId>
+    <artifactId>io-importer-api</artifactId>
     <version>0.8.2-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>attributes-api</artifactId>
+            <artifactId>data-attributes-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

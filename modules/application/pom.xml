@@ -41,7 +41,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>export-api</artifactId>
+            <artifactId>io-exporter-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -49,7 +49,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>attributes-api</artifactId>
+            <artifactId>data-attributes-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -57,7 +57,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>preview-export</artifactId>
+            <artifactId>io-exporter-preview</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -93,11 +93,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>import-api</artifactId>
+            <artifactId>io-importer-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>processor-plugin</artifactId>
+            <artifactId>io-processor-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -117,7 +117,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>utils-ui</artifactId>
+            <artifactId>ui-utils</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -157,7 +157,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>timeline-api</artifactId>
+            <artifactId>timeline</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -185,7 +185,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>visualization-impl</artifactId>
+            <artifactId>visualization</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -217,11 +217,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>generator-api</artifactId>
+            <artifactId>io-generator-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>generator-plugin</artifactId>
+            <artifactId>io-generator-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -229,7 +229,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>export-plugin</artifactId>
+            <artifactId>io-exporter-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -249,7 +249,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>attribute-property-editor</artifactId>
+            <artifactId>ui-propertyeditor</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -277,11 +277,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>attributes-impl</artifactId>
+            <artifactId>attributes</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>import-plugin</artifactId>
+            <artifactId>io-importer-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -305,7 +305,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>desktop-export</artifactId>
+            <artifactId>desktop-io-export</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

@@ -22,11 +22,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>export-api</artifactId>
+            <artifactId>io-exporter-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>export-plugin</artifactId>
+            <artifactId>io-exporter-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

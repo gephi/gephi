@@ -18,11 +18,11 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>generator-api</artifactId>
+            <artifactId>io-generator-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>generator-plugin</artifactId>
+            <artifactId>io-generator-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
