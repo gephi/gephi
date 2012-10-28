@@ -1,6 +1,6 @@
 /*
- Copyright 2008-2010 Gephi
- Authors : Martin Škurla <bujacik@gmail.com>, Mathieu Bastian <mathieu.bastian@gephi.org>
+ Copyright 2008-2012 Gephi
+ Authors : Martin Škurla <bujacik@gmail.com>, Mathieu Bastian <mathieu.bastian@gephi.org>, Eduardo Ramos<eduramiba@gmail.com>
  Website : http://www.gephi.org
 
  This file is part of Gephi.
