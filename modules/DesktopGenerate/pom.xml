@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>validation-api</artifactId>
+            <artifactId>lib.validation</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
