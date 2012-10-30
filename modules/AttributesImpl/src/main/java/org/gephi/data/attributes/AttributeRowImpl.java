@@ -216,10 +216,10 @@ public class AttributeRowImpl implements AttributeRow {
             AttributeColumnImpl[] columns = attributeTable.getColumns();
             AttributeValueImpl[] newValues = new AttributeValueImpl[columns.length];
             
-            int j = 0;
             for (int i = 0; i < columns.length; i++) {
                 AttributeColumnImpl tableCol = columns[i];
                 newValues[i] = tableCol.defaultValue;
+                int j = 0;
                 while (j < values.length) {
                     AttributeValueImpl val = values[j++];
                     if (val.getColumn() == tableCol) {
