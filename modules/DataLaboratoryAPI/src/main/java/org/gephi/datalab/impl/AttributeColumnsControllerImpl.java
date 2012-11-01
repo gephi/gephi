@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,8 +65,10 @@ import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.type.BooleanList;
 import org.gephi.data.attributes.type.DynamicType;
+import org.gephi.data.attributes.type.Interval;
 import org.gephi.data.attributes.type.NumberList;
 import org.gephi.data.attributes.type.StringList;
+import org.gephi.data.attributes.type.TypeConvertor;
 import org.gephi.data.properties.PropertiesColumn;
 import org.gephi.datalab.api.AttributeColumnsController;
 import org.gephi.datalab.api.GraphElementsController;
@@ -125,6 +128,58 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
         if (canDeleteColumn(column)) {
             table.removeColumn(column);
         }
+    }
+
+    @Override
+    public AttributeColumn convertAttributeColumnToDynamic(AttributeTable table, AttributeColumn column, double low, double high, boolean lopen, boolean ropen) {
+        return convertColumnToDynamic(table, column, low, high, lopen, ropen, null);
+    }
+
+    @Override
+    public AttributeColumn convertAttributeColumnToNewDynamicColumn(AttributeTable table, AttributeColumn column, double low, double high, boolean lopen, boolean ropen, String newColumnTitle) {
+        return convertColumnToDynamic(table, column, low, high, lopen, ropen, newColumnTitle);
+    }
+
+    private AttributeColumn convertColumnToDynamic(AttributeTable table, AttributeColumn column, double low, double high, boolean lopen, boolean ropen, String newColumnTitle) {
+        AttributeType oldType = column.getType();
+        AttributeType newType = TypeConvertor.getDynamicType(oldType);
+
+        if (newColumnTitle != null) {
+            if (newColumnTitle.equals(column.getTitle())) {
+                throw new IllegalArgumentException("Column titles can't be equal");
+            }
+        }
+
+        int oldColumnIndex = column.getIndex();
+
+        Attributes rows[] = getTableAttributeRows(table);
+
+        Object[] oldValues = new Object[rows.length];
+        for (int i = 0; i < rows.length; i++) {
+            oldValues[i] = rows[i].getValue(oldColumnIndex);
+        }
+
+        AttributeColumn newColumn;
+        if (newColumnTitle == null) {
+            newColumn = table.replaceColumn(column, column.getId(), column.getTitle(), newType, column.getOrigin(), null);
+        } else {
+            newColumn = table.addColumn(newColumnTitle, newColumnTitle, newType, column.getOrigin(), null);
+        }
+        int newColumnIndex = newColumn.getIndex();
+        
+        Object value;
+        for (int i = 0; i < rows.length; i++) {
+            if (oldValues[i] != null) {
+                Interval interval = new Interval(low, high, lopen, ropen, oldValues[i]);
+                value = newType.createDynamicObject(Arrays.asList(new Interval[]{interval}));
+            } else {
+                value = null;
+            }
+            
+            rows[i].setValue(newColumnIndex, value);
+        }
+
+        return newColumn;
     }
 
     public AttributeColumn duplicateColumn(AttributeTable table, AttributeColumn column, String title, AttributeType type) {
@@ -416,6 +471,21 @@ public class AttributeColumnsControllerImpl implements AttributeColumnsControlle
             return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.EDGE_ID.getIndex() && column.getIndex() != PropertiesColumn.EDGE_WEIGHT.getIndex();
         } else {
             return canChangeGenericColumnData(column);
+        }
+    }
+
+    public boolean canConvertColumnToDynamic(AttributeColumn column) {
+        if(column.getType().isDynamicType()){
+            return false;
+        }
+        
+        AttributeUtils au = Lookup.getDefault().lookup(AttributeUtils.class);
+        if (au.isNodeColumn(column)) {
+            return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.NODE_ID.getIndex() && column.getIndex() != PropertiesColumn.NODE_LABEL.getIndex();
+        } else if (au.isEdgeColumn(column)) {
+            return canChangeGenericColumnData(column) && column.getIndex() != PropertiesColumn.EDGE_ID.getIndex() && column.getIndex() != PropertiesColumn.EDGE_LABEL.getIndex();
+        } else {
+            return true;
         }
     }
 

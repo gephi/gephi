@@ -47,19 +47,25 @@ import org.netbeans.validation.api.Validator;
 import org.openide.util.NbBundle;
 
 /**
- * Utils class to validate a string that contains a title for a column of a <code>AttributeTable</code>.
+ * Utils class to validate a string that contains a valid title for a column of a <code>AttributeTable</code>.
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class ColumnTitleValidator implements Validator<String> {
 
     private AttributeTable table;
+    private boolean allowNoTitle;
 
     public ColumnTitleValidator(AttributeTable table) {
-        this.table = table;
+        this(table, false);
     }
 
+    public ColumnTitleValidator(AttributeTable table, boolean allowNoTitle) {
+        this.table = table;
+        this.allowNoTitle = allowNoTitle;
+    }
+    
     public boolean validate(Problems prblms, String string, String t) {
-        if (t == null || t.isEmpty()) {
+        if (!allowNoTitle && (t == null || t.isEmpty())) {
             prblms.add(NbBundle.getMessage(ColumnTitleValidator.class, "ColumnTitleValidator.title.empty"));
             return false;
         } else if (table.hasColumn(t)) {
@@ -68,5 +74,21 @@ public class ColumnTitleValidator implements Validator<String> {
         } else {
             return true;
         }
+    }
+
+    public boolean isAllowNoTitle() {
+        return allowNoTitle;
+    }
+
+    public void setAllowNoTitle(boolean allowNoTitle) {
+        this.allowNoTitle = allowNoTitle;
+    }
+
+    public AttributeTable getTable() {
+        return table;
+    }
+
+    public void setTable(AttributeTable table) {
+        this.table = table;
     }
 }

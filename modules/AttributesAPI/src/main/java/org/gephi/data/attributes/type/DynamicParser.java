@@ -311,7 +311,7 @@ public final class DynamicParser {
         }
     }
 
-    private static double parseTime(String time) throws ParseException {
+    public static double parseTime(String time) throws ParseException {
         double value;
         try {
             //Try first to parse as a single double:

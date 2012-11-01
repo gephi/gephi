@@ -213,9 +213,9 @@ public enum AttributeType {
         return createDynamicObject(intervals);
     }
 
-    private DynamicType createDynamicObject(List<Interval> in) {
+    public DynamicType createDynamicObject(List<Interval> in) {
         if (!this.isDynamicType()) {
-            return null;
+            throw new IllegalArgumentException("The attribute type is not dynamic");
         }
 
         switch (this) {

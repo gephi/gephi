@@ -127,4 +127,10 @@ public interface AttributeColumn {
      * @return attribute value delegate provider
      */
     public AttributeValueDelegateProvider getProvider();
+    
+    /**
+     * Returns the table that contains this column
+     * @return Table for the column
+     */
+    public AttributeTable getTable();
 }
