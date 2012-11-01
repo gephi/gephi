@@ -70,11 +70,16 @@ public class AttributeRowImpl implements AttributeRow {
     public void reset() {
         rowVersion = attributeTable.getVersion();
         int attSize = attributeTable.countColumns();
-        AttributeValueImpl[] newValues = new AttributeValueImpl[attSize];
-        for (int i = 0; i < attSize; i++) {
-            newValues[i] = attributeTable.getColumn(i).defaultValue;
+
+        if (values == null) {
+            values = new AttributeValueImpl[attSize];
+        } else {
+            updateColumns();
         }
-        this.values = newValues;
+
+        for (int i = 0; i < attSize; i++) {
+            setValue(i, attributeTable.getColumn(i).defaultValue, false);
+        }
     }
 
     public void setValues(AttributeRow attributeRow) {
@@ -133,17 +138,19 @@ public class AttributeRowImpl implements AttributeRow {
             value = attributeTable.getFactory().newValue(column, value.getValue());
         }
 
-        setValue(column.getIndex(), (AttributeValueImpl) value);
+        setValue(column.getIndex(), (AttributeValueImpl) value, true);
     }
 
-    private void setValue(int index, AttributeValueImpl value) {
-        updateColumns();
+    private void setValue(int index, AttributeValueImpl value, boolean doUpdateColumns) {
+        if (doUpdateColumns) {
+            updateColumns();
+        }
 
         AttributeValueImpl oldValue = this.values[index];
 
         this.values[index] = value;
 
-        if (!((oldValue == null && value == null) || (oldValue != null && oldValue.equals(value)))
+        if (!(oldValue != null && oldValue.equals(value))
                 && index > 0 && !value.getColumn().getOrigin().equals(AttributeOrigin.COMPUTED)) {    //0 is the index of node id and edge id cols, not useful to send these events
             if (oldValue != null) {
                 attributeTable.model.fireAttributeEvent(new ValueEvent(EventType.UNSET_VALUE, attributeTable, object, oldValue));
@@ -211,27 +218,32 @@ public class AttributeRowImpl implements AttributeRow {
     }
 
     private void updateColumns() {
-
         int tableVersion = attributeTable.getVersion();
         if (rowVersion < tableVersion) {
 
             //Need to update
             AttributeColumnImpl[] columns = attributeTable.getColumns();
-            AttributeValueImpl[] newValues = new AttributeValueImpl[columns.length];
+            AttributeValueImpl[] oldValues = values;
+
+            values = new AttributeValueImpl[columns.length];
 
             for (int i = 0; i < columns.length; i++) {
                 AttributeColumnImpl tableCol = columns[i];
-                newValues[i] = tableCol.defaultValue;
+                boolean found = false;
                 int j = 0;
-                while (j < values.length) {
-                    AttributeValueImpl val = values[j++];
+                while (j < oldValues.length) {
+                    AttributeValueImpl val = oldValues[j++];
                     if (val.getColumn() == tableCol) {
-                        newValues[i] = val;
+                        values[i] = val;
+                        found = true;
                         break;
                     }
                 }
+
+                if (!found) {
+                    setValue(i, tableCol.defaultValue, false);
+                }
             }
-            values = newValues;
 
             //Upd version
             rowVersion = tableVersion;

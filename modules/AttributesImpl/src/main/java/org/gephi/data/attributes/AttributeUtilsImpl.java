@@ -249,6 +249,19 @@ public class AttributeUtilsImpl extends AttributeUtils {
         }
         return false;
     }
+    
+     @Override
+    public boolean isGraphColumn(AttributeColumn column) {
+        if (column == null) {
+            throw new NullPointerException();
+        }
+        AttributeColumnImpl columnImpl = (AttributeColumnImpl) column;
+        AttributeTableImpl table = columnImpl.getTable();
+        if (table == table.getModel().getGraphTable()) {
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public AttributeColumn[] getNumberColumns(AttributeTable table) {

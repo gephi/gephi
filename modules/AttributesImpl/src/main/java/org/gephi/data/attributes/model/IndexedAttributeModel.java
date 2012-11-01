@@ -44,6 +44,7 @@ package org.gephi.data.attributes.model;
 import org.gephi.data.attributes.AbstractAttributeModel;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.event.AttributeEventManager;
+import org.gephi.project.api.Workspace;
 
 /**
  *
@@ -54,7 +55,8 @@ public class IndexedAttributeModel extends AbstractAttributeModel {
 
     protected DataIndex dataIndex;
 
-    public IndexedAttributeModel() {
+    public IndexedAttributeModel(Workspace workspace) {
+        super(workspace);
         dataIndex = new DataIndex();
         eventManager = new AttributeEventManager(this);
         createPropertiesColumn();

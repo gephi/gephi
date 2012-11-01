@@ -65,6 +65,8 @@ public abstract class AttributeUtils {
     public abstract boolean isNodeColumn(AttributeColumn column);
 
     public abstract boolean isEdgeColumn(AttributeColumn column);
+    
+    public abstract boolean isGraphColumn(AttributeColumn column);
 
     public abstract boolean isColumnOfType(AttributeColumn column, AttributeType type);
 

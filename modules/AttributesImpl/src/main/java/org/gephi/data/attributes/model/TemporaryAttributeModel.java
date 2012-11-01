@@ -45,6 +45,7 @@ import org.gephi.data.attributes.AbstractAttributeModel;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.event.AbstractEvent;
+import org.gephi.project.api.Workspace;
 
 /**
  * Specific manager for temporary storing of attributes. This is typically used when new attributes are
@@ -56,7 +57,8 @@ import org.gephi.data.attributes.event.AbstractEvent;
  */
 public class TemporaryAttributeModel extends AbstractAttributeModel {
 
-    public TemporaryAttributeModel() {
+    public TemporaryAttributeModel(Workspace workspace) {
+        super(workspace);
         createPropertiesColumn();
     }
 

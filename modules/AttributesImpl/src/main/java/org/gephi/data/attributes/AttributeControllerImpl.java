@@ -46,9 +46,9 @@ import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.model.IndexedAttributeModel;
 import org.gephi.data.attributes.model.TemporaryAttributeModel;
 import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.WorkspaceProvider;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
+import org.gephi.project.api.WorkspaceProvider;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -68,7 +68,7 @@ public class AttributeControllerImpl implements AttributeController {
             public void initialize(Workspace workspace) {
                 AttributeModel m = workspace.getLookup().lookup(AttributeModel.class);
                 if (m == null) {
-                    workspace.add(new IndexedAttributeModel());
+                    workspace.add(new IndexedAttributeModel(workspace));
                 }
             }
 
@@ -88,7 +88,7 @@ public class AttributeControllerImpl implements AttributeController {
             for (Workspace workspace : projectController.getCurrentProject().getLookup().lookup(WorkspaceProvider.class).getWorkspaces()) {
                 AttributeModel m = workspace.getLookup().lookup(AttributeModel.class);
                 if (m == null) {
-                    workspace.add(new IndexedAttributeModel());
+                    workspace.add(new IndexedAttributeModel(workspace));
                 }
             }
         }
@@ -101,7 +101,7 @@ public class AttributeControllerImpl implements AttributeController {
             if (model != null) {
                 return model;
             }
-            model = new IndexedAttributeModel();
+            model = new IndexedAttributeModel(workspace);
             workspace.add(model);
             return model;
         }
@@ -113,13 +113,13 @@ public class AttributeControllerImpl implements AttributeController {
         if (model != null) {
             return model;
         }
-        model = new IndexedAttributeModel();
+        model = new IndexedAttributeModel(workspace);
         workspace.add(model);
         return model;
     }
 
     public AttributeModel newModel() {
-        TemporaryAttributeModel model = new TemporaryAttributeModel();
+        TemporaryAttributeModel model = new TemporaryAttributeModel(null);
         return model;
     }
 }

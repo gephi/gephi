@@ -52,10 +52,17 @@ import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.event.ColumnEvent;
 import org.gephi.data.attributes.spi.AttributeValueDelegateProvider;
 import org.gephi.data.attributes.type.TypeConvertor;
 import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.graph.api.Attributes;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -115,11 +122,11 @@ public class AttributeTableImpl implements AttributeTable {
         if (id == null || id.isEmpty() || hasColumn(id)) {
             throw new IllegalArgumentException("The column id can't be null, empty or already existing in the table");
         }
-        
-        if(title == null || title.isEmpty() || hasColumn(title)){
+
+        if (title == null || title.isEmpty() || hasColumn(title)) {
             //The id is correct, but the title may be invalid or repeated even when the id is valid
             //Use id as title as a compromise so the column can still be added:
-            
+
             Logger.getLogger(AttributeTableImpl.class.getName()).log(Level.WARNING, "Invalid or repeated column title ({0}), used column id as its title instead", title);
             title = id;
         }
@@ -151,11 +158,57 @@ public class AttributeTableImpl implements AttributeTable {
         return column;
     }
 
+    /**
+     * Sends unset events for all attribute rows of a column that is going to be removed. (This is basically necessary to correctly update Dynamic index of Dynamic API.)
+     *
+     * Events are only sent for node, edge and graph table columns.
+     *
+     * @param column Column that is being removed
+     */
+    private boolean sendUnsetValueEventsForRemovedColumn(AttributeColumn column) {
+        if (this.model.getWorkspace() == null) {
+            return false;
+        }
+
+        GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel(this.model.getWorkspace());
+        Attributes[] rows;
+
+        if (AttributeUtils.getDefault().isNodeColumn(column)) {
+            Node[] nodes = graphModel.getGraph().getNodes().toArray();
+            rows = new Attributes[nodes.length];
+
+            for (int i = 0; i < nodes.length; i++) {
+                rows[i] = nodes[i].getAttributes();
+            }
+        } else if (AttributeUtils.getDefault().isEdgeColumn(column)) {
+            Edge[] edges = graphModel.getGraph().getEdges().toArray();
+            rows = new Attributes[edges.length];
+
+            for (int i = 0; i < edges.length; i++) {
+                rows[i] = edges[i].getAttributes();
+            }
+        } else if (AttributeUtils.getDefault().isGraphColumn(column)) {
+            rows = new Attributes[]{graphModel.getGraph().getAttributes()};
+        } else {
+            return false;
+        }
+        
+        int columnIndex = column.getIndex();
+
+        for (Attributes row : rows) {
+            row.setValue(columnIndex, null);
+        }
+
+        return true;
+    }
+
     public synchronized void removeColumn(AttributeColumn column) {
         int index = columns.indexOf(column);
         if (index == -1) {
             return;
         }
+        
+        sendUnsetValueEventsForRemovedColumn(column);
 
         //update indexes of the next columns of the one to delete:
         AttributeColumnImpl c;
@@ -183,6 +236,9 @@ public class AttributeTableImpl implements AttributeTable {
         if (index == -1) {
             return null;
         }
+        
+        sendUnsetValueEventsForRemovedColumn(source);
+        
         //Remove from collections
         columnsMap.remove(source.getId().toLowerCase());
         if (source.getTitle() != null && !source.getTitle().equals(source.getId())) {

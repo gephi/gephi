@@ -41,6 +41,8 @@ Portions Copyrighted 2011 Gephi Consortium.
 */
 package org.gephi.data.attributes.api;
 
+import org.gephi.project.api.Workspace;
+
 /**
  * Represents the data model, like a standard database would do. As a database,
  * contains a list of tables, where columns are defined. By default, a model
@@ -147,4 +149,10 @@ public interface AttributeModel {
      * @param model the model that is to be merged in this model
      */
     public void mergeModel(AttributeModel model);
+    
+    /**
+     * Returns the workspace this Attribute model belongs to.
+     * @return the workspace that owns this Attribute model or null if it is independent from a Workspace
+     */
+    public Workspace getWorkspace();
 }

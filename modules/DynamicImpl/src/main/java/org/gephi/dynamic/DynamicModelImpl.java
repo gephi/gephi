@@ -270,48 +270,54 @@ public final class DynamicModelImpl implements DynamicModel {
         graphModel.addGraphListener(graphListener);
     }
 
+    private void indexNodeColumnsValues(AttributeColumn[] dynamicCols) {
+        Graph graph = graphModel.getGraph();
+        for (Node n : graph.getNodes()) {
+            Attributes attributeRow = n.getNodeData().getAttributes();
+            for (int i = 0; i < dynamicCols.length; i++) {
+                DynamicType<?> ti = (DynamicType) attributeRow.getValue(dynamicCols[i].getIndex());
+                if (ti != null) {
+                    for (Interval interval : ti.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
+                        timeIntervalIndex.add(interval);
+                    }
+                }
+            }
+        }
+    }
+
+    private void indexEdgeColumnsValues(AttributeColumn[] dynamicCols) {
+        Graph graph = graphModel.getGraph();
+        for (Edge e : graph.getEdges()) {
+            Attributes attributeRow = e.getEdgeData().getAttributes();
+            for (int i = 0; i < dynamicCols.length; i++) {
+                DynamicType<?> ti = (DynamicType) attributeRow.getValue(dynamicCols[i].getIndex());
+                if (ti != null) {
+                    for (Interval interval : ti.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
+                        timeIntervalIndex.add(interval);
+                    }
+                }
+            }
+        }
+    }
+
     private void refresh() {
         timeIntervalIndex.clear();
+        nodeDynamicColumns.clear();
+        edgeDynamicColumns.clear();
+
         for (AttributeColumn col : attributeModel.getNodeTable().getColumns()) {
             if (col.getType().isDynamicType()) {
                 nodeDynamicColumns.add(col);
             }
         }
-        AttributeColumn[] dynamicCols = nodeDynamicColumns.toArray(new AttributeColumn[0]);
-        if (dynamicCols.length > 0) {
-            Graph graph = graphModel.getGraph();
-            for (Node n : graph.getNodes()) {
-                Attributes attributeRow = n.getNodeData().getAttributes();
-                for (int i = 0; i < dynamicCols.length; i++) {
-                    DynamicType<?> ti = (DynamicType) attributeRow.getValue(dynamicCols[i].getIndex());
-                    if (ti != null) {
-                        for (Interval interval : ti.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
-                            timeIntervalIndex.add(interval);
-                        }
-                    }
-                }
-            }
-        }
+        indexNodeColumnsValues(nodeDynamicColumns.toArray(new AttributeColumn[0]));
+
         for (AttributeColumn col : attributeModel.getNodeTable().getColumns()) {
             if (col.getType().isDynamicType()) {
                 edgeDynamicColumns.add(col);
             }
         }
-        dynamicCols = edgeDynamicColumns.toArray(new AttributeColumn[0]);
-        if (dynamicCols.length > 0) {
-            Graph graph = graphModel.getGraph();
-            for (Edge e : graph.getEdges()) {
-                Attributes attributeRow = e.getEdgeData().getAttributes();
-                for (int i = 0; i < dynamicCols.length; i++) {
-                    DynamicType<?> ti = (DynamicType) attributeRow.getValue(dynamicCols[i].getIndex());
-                    if (ti != null) {
-                        for (Interval interval : ti.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
-                            timeIntervalIndex.add(interval);
-                        }
-                    }
-                }
-            }
-        }
+        indexEdgeColumnsValues(edgeDynamicColumns.toArray(new AttributeColumn[0]));
     }
 
     @Override
