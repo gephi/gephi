@@ -132,8 +132,8 @@ public class ConvertColumnToDynamicUI extends javax.swing.JPanel implements Attr
         boolean ropen = intervalEndOpenCheckbox.isSelected();
         boolean replaceColumn = replaceColumnCheckbox.isSelected();
         
-        NbPreferences.forModule(ConvertColumnToDynamicUI.class).put(INTERVAL_START_OPEN_PREFERENCE, intervalStart);
-        NbPreferences.forModule(ConvertColumnToDynamicUI.class).put(INTERVAL_START_OPEN_PREFERENCE, intervalEnd);
+        NbPreferences.forModule(ConvertColumnToDynamicUI.class).put(INTERVAL_START_PREFERENCE, intervalStart);
+        NbPreferences.forModule(ConvertColumnToDynamicUI.class).put(INTERVAL_END_PREFERENCE, intervalEnd);
         NbPreferences.forModule(ConvertColumnToDynamicUI.class).putBoolean(INTERVAL_START_OPEN_PREFERENCE, lopen);
         NbPreferences.forModule(ConvertColumnToDynamicUI.class).putBoolean(INTERVAL_END_OPEN_PREFERENCE, ropen);
         NbPreferences.forModule(ConvertColumnToDynamicUI.class).putBoolean(REPLACE_COLUMN_PREFERENCE, replaceColumn);
