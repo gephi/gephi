@@ -6,39 +6,39 @@
  * 
  * This file is part of Gephi.
  *
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.dynamic;
 
@@ -50,6 +50,7 @@ import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeEvent;
 import org.gephi.data.attributes.api.AttributeListener;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeUtils;
 import org.gephi.data.attributes.api.AttributeValue;
 import org.gephi.data.attributes.api.Estimator;
@@ -101,7 +102,7 @@ public final class DynamicModelImpl implements DynamicModel {
     /**
      * The default constructor.
      *
-     * @param workspace  workspace related to this model
+     * @param workspace workspace related to this model
      *
      * @throws NullPointerException if {@code workspace} is null.
      */
@@ -112,12 +113,11 @@ public final class DynamicModelImpl implements DynamicModel {
     /**
      * Constructs a new {@code DynamicModel} for the {@code workspace}.
      *
-     * @param workspace  workspace related to this model
-     * @param low        the left endpoint of the visible time interval
-     * @param high       the right endpoint of the visible time interval
+     * @param workspace workspace related to this model
+     * @param low the left endpoint of the visible time interval
+     * @param high the right endpoint of the visible time interval
      *
-     * @throws NullPointerException if {@code workspace} is null or the graph model
-     *                              and/or its underlying graph are nulls.
+     * @throws NullPointerException if {@code workspace} is null or the graph model and/or its underlying graph are nulls.
      */
     public DynamicModelImpl(DynamicControllerImpl controller, Workspace workspace, double low, double high) {
         if (workspace == null) {
@@ -153,7 +153,6 @@ public final class DynamicModelImpl implements DynamicModel {
 
         //Listen columns
         AttributeListener attributeListener = new AttributeListener() {
-
             @Override
             public void attributesChanged(AttributeEvent event) {
                 switch (event.getEventType()) {
@@ -179,7 +178,27 @@ public final class DynamicModelImpl implements DynamicModel {
                             }
                         }
                         break;
+                    case REPLACE_COLUMN:
+                        AttributeColumn[] replacedColumns = event.getData().getRemovedColumns();
+                        for (int i = 0; i < replacedColumns.length; i++) {
+                            AttributeColumn removedCol = replacedColumns[i];
+                            if (removedCol.getType().isDynamicType() && attUtils.isNodeColumn(removedCol)) {
+                                nodeDynamicColumns.remove(removedCol);
+                            } else if (removedCol.getType().isDynamicType() && attUtils.isEdgeColumn(removedCol)) {
+                                edgeDynamicColumns.remove(removedCol);
+                            }
+
+                            AttributeTable table = event.getSource();
+                            AttributeColumn addedCol = table.getColumn(removedCol.getIndex());
+                            if (addedCol.getType().isDynamicType() && attUtils.isNodeColumn(addedCol)) {
+                                nodeDynamicColumns.add(addedCol);
+                            } else if (addedCol.getType().isDynamicType() && attUtils.isEdgeColumn(addedCol)) {
+                                edgeDynamicColumns.add(addedCol);
+                            }
+                        }
+                        break;
                     case SET_VALUE:
+                    case UNSET_VALUE:
                         AttributeValue[] values = event.getData().getTouchedValues();
                         for (int i = 0; i < values.length; i++) {
                             AttributeValue val = values[i];
@@ -187,8 +206,14 @@ public final class DynamicModelImpl implements DynamicModel {
                                 AttributeColumn col = values[i].getColumn();
                                 if (col.getType().isDynamicType()) {
                                     DynamicType<?> dynamicType = (DynamicType) val.getValue();
-                                    for (Interval interval : dynamicType.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
-                                        timeIntervalIndex.add(interval);
+                                    if (dynamicType != null) {
+                                        for (Interval interval : dynamicType.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
+                                            if (event.getEventType() == AttributeEvent.EventType.UNSET_VALUE) {
+                                                timeIntervalIndex.remove(interval);
+                                            } else {
+                                                timeIntervalIndex.add(interval);
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -202,7 +227,6 @@ public final class DynamicModelImpl implements DynamicModel {
         attributeModel.addAttributeListener(attributeListener);
 
         GraphListener graphListener = new GraphListener() {
-
             @Override
             public void graphChanged(GraphEvent event) {
                 if (event.getSource().isMainView()) {
@@ -223,7 +247,7 @@ public final class DynamicModelImpl implements DynamicModel {
                                 }
                             }
                             if (!nodeDynamicColumns.isEmpty() && event.getData().removedNodes() != null) {
-                                AttributeColumn[] dynamicCols = edgeDynamicColumns.toArray(new AttributeColumn[0]);
+                                AttributeColumn[] dynamicCols = nodeDynamicColumns.toArray(new AttributeColumn[0]);
                                 for (Node n : event.getData().removedNodes()) {
                                     Attributes attributeRow = n.getNodeData().getAttributes();
                                     for (int i = 0; i < dynamicCols.length; i++) {
@@ -246,48 +270,54 @@ public final class DynamicModelImpl implements DynamicModel {
         graphModel.addGraphListener(graphListener);
     }
 
+    private void indexNodeColumnsValues(AttributeColumn[] dynamicCols) {
+        Graph graph = graphModel.getGraph();
+        for (Node n : graph.getNodes()) {
+            Attributes attributeRow = n.getNodeData().getAttributes();
+            for (int i = 0; i < dynamicCols.length; i++) {
+                DynamicType<?> ti = (DynamicType) attributeRow.getValue(dynamicCols[i].getIndex());
+                if (ti != null) {
+                    for (Interval interval : ti.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
+                        timeIntervalIndex.add(interval);
+                    }
+                }
+            }
+        }
+    }
+
+    private void indexEdgeColumnsValues(AttributeColumn[] dynamicCols) {
+        Graph graph = graphModel.getGraph();
+        for (Edge e : graph.getEdges()) {
+            Attributes attributeRow = e.getEdgeData().getAttributes();
+            for (int i = 0; i < dynamicCols.length; i++) {
+                DynamicType<?> ti = (DynamicType) attributeRow.getValue(dynamicCols[i].getIndex());
+                if (ti != null) {
+                    for (Interval interval : ti.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
+                        timeIntervalIndex.add(interval);
+                    }
+                }
+            }
+        }
+    }
+
     private void refresh() {
         timeIntervalIndex.clear();
+        nodeDynamicColumns.clear();
+        edgeDynamicColumns.clear();
+
         for (AttributeColumn col : attributeModel.getNodeTable().getColumns()) {
             if (col.getType().isDynamicType()) {
                 nodeDynamicColumns.add(col);
             }
         }
-        AttributeColumn[] dynamicCols = nodeDynamicColumns.toArray(new AttributeColumn[0]);
-        if (dynamicCols.length > 0) {
-            Graph graph = graphModel.getGraph();
-            for (Node n : graph.getNodes()) {
-                Attributes attributeRow = n.getNodeData().getAttributes();
-                for (int i = 0; i < dynamicCols.length; i++) {
-                    DynamicType<?> ti = (DynamicType) attributeRow.getValue(dynamicCols[i].getIndex());
-                    if (ti != null) {
-                        for (Interval interval : ti.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
-                            timeIntervalIndex.add(interval);
-                        }
-                    }
-                }
-            }
-        }
+        indexNodeColumnsValues(nodeDynamicColumns.toArray(new AttributeColumn[0]));
+
         for (AttributeColumn col : attributeModel.getNodeTable().getColumns()) {
             if (col.getType().isDynamicType()) {
                 edgeDynamicColumns.add(col);
             }
         }
-        dynamicCols = nodeDynamicColumns.toArray(new AttributeColumn[0]);
-        if (dynamicCols.length > 0) {
-            Graph graph = graphModel.getGraph();
-            for (Edge e : graph.getEdges()) {
-                Attributes attributeRow = e.getEdgeData().getAttributes();
-                for (int i = 0; i < dynamicCols.length; i++) {
-                    DynamicType<?> ti = (DynamicType) attributeRow.getValue(dynamicCols[i].getIndex());
-                    if (ti != null) {
-                        for (Interval interval : ti.getIntervals(Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)) {
-                            timeIntervalIndex.add(interval);
-                        }
-                    }
-                }
-            }
-        }
+        indexEdgeColumnsValues(edgeDynamicColumns.toArray(new AttributeColumn[0]));
     }
 
     @Override

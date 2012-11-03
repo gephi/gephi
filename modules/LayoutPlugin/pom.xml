@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>attributes-api</artifactId>
+            <artifactId>data-attributes-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -50,7 +50,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>attribute-property-editor</artifactId>
+            <artifactId>ui-propertyeditor</artifactId>
         </dependency>
     </dependencies>
 

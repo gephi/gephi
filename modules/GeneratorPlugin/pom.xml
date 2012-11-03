@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>org.gephi</groupId>
-    <artifactId>generator-plugin</artifactId>
+    <artifactId>io-generator-plugin</artifactId>
     <version>0.8.2-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
@@ -18,15 +18,15 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>attributes-api</artifactId>
+            <artifactId>data-attributes-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>generator-api</artifactId>
+            <artifactId>io-generator-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>import-api</artifactId>
+            <artifactId>io-importer-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

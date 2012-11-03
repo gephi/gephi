@@ -114,7 +114,6 @@ public class LayoutControllerImpl implements LayoutController {
 
     public void setLayout(Layout layout) {
         model.setSelectedLayout(layout);
-        injectGraph();
     }
 
     public void executeLayout() {
@@ -130,13 +129,6 @@ public class LayoutControllerImpl implements LayoutController {
             layoutRun = new LayoutRun(model.getSelectedLayout(), numIterations);
             model.getExecutor().execute(layoutRun, layoutRun);
             model.setRunning(true);
-        }
-    }
-
-    public void injectGraph() {
-        GraphController graphController = Lookup.getDefault().lookup(GraphController.class);
-        if (model.getSelectedLayout() != null && graphController.getModel() != null) {
-            model.getSelectedLayout().setGraphModel(graphController.getModel());
         }
     }
 

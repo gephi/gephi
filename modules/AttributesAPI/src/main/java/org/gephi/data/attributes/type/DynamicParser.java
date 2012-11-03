@@ -1,6 +1,6 @@
 /*
- Copyright 2008-2010 Gephi
- Authors : Martin Škurla <bujacik@gmail.com>, Mathieu Bastian <mathieu.bastian@gephi.org>
+ Copyright 2008-2012 Gephi
+ Authors : Martin Škurla <bujacik@gmail.com>, Mathieu Bastian <mathieu.bastian@gephi.org>, Eduardo Ramos<eduramiba@gmail.com>
  Website : http://www.gephi.org
 
  This file is part of Gephi.
@@ -252,10 +252,10 @@ public final class DynamicParser {
                     value = new Long(AttributeType.removeDecimalDigitsFromString(values.get(2)));
                     break;
                 case DYNAMIC_FLOAT:
-                    value = new Float(values.get(2));
+                    value = new Float(infinityIgnoreCase(values.get(2)));
                     break;
                 case DYNAMIC_DOUBLE:
-                    value = new Double(values.get(2));
+                    value = new Double(infinityIgnoreCase(values.get(2)));
                     break;
                 case DYNAMIC_BOOLEAN:
                     value = Boolean.valueOf(values.get(2));
@@ -311,16 +311,35 @@ public final class DynamicParser {
         }
     }
 
-    private static double parseTime(String time) throws ParseException {
+    public static double parseTime(String time) throws ParseException {
         double value;
         try {
             //Try first to parse as a single double:
-            value = Double.parseDouble(time);
+            value = Double.parseDouble(infinityIgnoreCase(time));
+            if(Double.isNaN(value)){
+                throw new IllegalArgumentException("NaN is not allowed as an interval bound");
+            }
         } catch (Exception ex) {
             //Try to parse as date instead
             value = getDoubleFromXMLDateString(time);
         }
 
+        return value;
+    }
+    
+    /**
+     * Method for allowing inputs such as "infinity" when parsing decimal numbers
+     * @param value Input String
+     * @return Input String with fixed "Infinity" syntax if necessary.
+     */
+    private static String infinityIgnoreCase(String value){
+        if(value.equalsIgnoreCase("Infinity")){
+            return "Infinity";
+        }
+        if(value.equalsIgnoreCase("-Infinity")){
+            return "-Infinity";
+        }
+        
         return value;
     }
 }

@@ -18,15 +18,15 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>generator-api</artifactId>
+            <artifactId>io-generator-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>generator-plugin</artifactId>
+            <artifactId>io-generator-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>validation-api</artifactId>
+            <artifactId>lib.validation</artifactId>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>

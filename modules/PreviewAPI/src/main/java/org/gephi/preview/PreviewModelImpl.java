@@ -44,8 +44,8 @@ package org.gephi.preview;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.beans.PropertyEditorManager;
-import java.util.Map.Entry;
 import java.util.*;
+import java.util.Map.Entry;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -59,6 +59,7 @@ import org.gephi.preview.types.propertyeditors.BasicDependantColorPropertyEditor
 import org.gephi.preview.types.propertyeditors.BasicDependantOriginalColorPropertyEditor;
 import org.gephi.preview.types.propertyeditors.BasicEdgeColorPropertyEditor;
 import org.gephi.project.api.Workspace;
+import org.gephi.utils.Serialization;
 import org.openide.util.Lookup;
 
 /**
@@ -325,8 +326,8 @@ public class PreviewModelImpl implements PreviewModel {
                 properties.putValue(property.getName(), property.getValue());
             }
         }
-        
-        for(Entry<String, Object> property: oldProperties.getSimpleValues()){
+
+        for (Entry<String, Object> property : oldProperties.getSimpleValues()) {
             properties.putValue(property.getKey(), property.getValue());
         }
     }
@@ -370,7 +371,7 @@ public class PreviewModelImpl implements PreviewModel {
             String propertyName = property.getName();
             Object propertyValue = property.getValue();
             if (propertyValue != null) {
-                String text = PreviewProperties.getValueAsText(propertyValue);
+                String text = Serialization.getValueAsText(propertyValue);
                 if (text != null) {
                     writer.writeStartElement("previewproperty");
                     writer.writeAttribute("name", propertyName);
@@ -394,7 +395,7 @@ public class PreviewModelImpl implements PreviewModel {
             Object value = simpleValueEntry.getValue();
             if (value != null) {
                 Class clazz = value.getClass();
-                String text = PreviewProperties.getValueAsText(value);
+                String text = Serialization.getValueAsText(value);
                 if (text != null) {
                     writer.writeStartElement("previewsimplevalue");
                     writer.writeAttribute("name", simpleValueEntry.getKey());
@@ -463,28 +464,19 @@ public class PreviewModelImpl implements PreviewModel {
                             if (!isSimpleValue) {//Read PreviewProperty:
                                 PreviewProperty p = props.getProperty(propName);
                                 if (p != null) {
-                                    Object value = PreviewProperties.readValueFromText(reader.getText(), p.getType());
+                                    Object value = Serialization.readValueFromText(reader.getText(), p.getType());
                                     if (value != null) {
-                                        try {
-                                            p.setValue(value);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
+                                        p.setValue(value);
                                     }
                                 }
                             } else {//Read preview simple value:
                                 if (simpleValueClass != null) {
                                     if (!propName.equals("width")
                                             && !propName.equals("height")) {
-                                        try {
-                                            Object value = PreviewProperties.readValueFromText(reader.getText(), Class.forName(simpleValueClass));
-                                            if (value != null) {
-                                                props.putValue(propName, value);
-                                            }
-                                        } catch (ClassNotFoundException e) {
-                                            e.printStackTrace();
+                                        Object value = Serialization.readValueFromText(reader.getText(), simpleValueClass);
+                                        if (value != null) {
+                                            props.putValue(propName, value);
                                         }
-
                                     }
                                 }
                             }
@@ -495,7 +487,7 @@ public class PreviewModelImpl implements PreviewModel {
                     if ("previewmodel".equalsIgnoreCase(reader.getLocalName())) {
                         end = true;
                     }
-                    name = null;
+                    propName = null;
                     break;
             }
         }

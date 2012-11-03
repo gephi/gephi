@@ -120,6 +120,34 @@ public interface AttributeColumnsController {
      * @param column Column to delete
      */
     void deleteAttributeColumn(AttributeTable table, AttributeColumn column);
+    
+    /**
+     * <p>Converts and replaces a table column with a dynamic column preserving original column values.</p>
+     * <p>This should be used only in columns where the <code>canConvertColumnToDynamic</code> returns true</p>
+     * <p>The new values have a default interval that uses the low, high, lopen and ropen parameters.</p>
+     * @param table Table of the column
+     * @param column Column to convert and replace
+     * @param low Low bound for default interval
+     * @param high High bound for default interval
+     * @param lopen Open low bound for default interval
+     * @param ropen Open high bound for default interval
+     * @return The new column
+     */
+    AttributeColumn convertAttributeColumnToDynamic(AttributeTable table, AttributeColumn column, double low, double high, boolean lopen, boolean ropen);
+    
+    /**
+     * <p>Converts a table column into a new dynamic column preserving original column values. The original column is kept intact</p>
+     * <p>The new values have a default interval that uses the low, high, lopen and ropen parameters.</p>
+     * @param table Table of the column
+     * @param column Column to convert to dynamic
+     * @param low Low bound for default interval
+     * @param high High bound for default interval
+     * @param lopen Open low bound for default interval
+     * @param ropen Open high bound for default interval
+     * @param newColumnTitle Title for the new dynamic column
+     * @return The new column
+     */
+    AttributeColumn convertAttributeColumnToNewDynamicColumn(AttributeTable table, AttributeColumn column, double low, double high, boolean lopen, boolean ropen, String newColumnTitle);
 
     /**
      * <p>Fills the data values of a given column of a table with a value as a String,
@@ -304,8 +332,7 @@ public interface AttributeColumnsController {
     /**
      * <p>Indicates if the Data Laboratory API behaviour allows to change a value of the given column of a table.</p>
      * <p>The behaviour is: Only values of columns with <code>AttributeOrigin</code> of type <code>DATA</code> or a node/edge label and weight column can be changed. (but weight can't be null. see <code>canClearColumnData</code> method).</p>
-     * <p>Also, columns with a <code>DYNAMIC</code> or <code>TIME_INTERVAL</code> <code>AttributeType</code> are not allowed to be changed since they are only used for dynamic attributes purposes.</p>
-     * @param column Column to theck its values can be changed
+     * @param column Column to check if values can be changed
      * @return True if the column values can be changed, false otherwise
      */
     boolean canChangeColumnData(AttributeColumn column);
@@ -313,11 +340,18 @@ public interface AttributeColumnsController {
     /**
      * <p>Indicates if the Data Laboratory API behaviour allows to set as null a value of the given column of a table.</p>
      * <p>The behaviour is: Only values of columns with <code>AttributeOrigin</code> of type <code>DATA</code> or a node/edge label column can be set to null. Edge weight can't be null</p>
-     * <p>Also, columns with a <code>DYNAMIC</code> or <code>TIME_INTERVAL</code> AttributeType are not allowed to be cleared since they are only used for dynamic attributes purposes.</p>
-     * @param column Column to theck its values can be changed
+     * @param column Column to check if values can be changed
      * @return True if the column values can be changed, false otherwise
      */
     boolean canClearColumnData(AttributeColumn column);
+    
+    /**
+     * <p>Indicates if the Data Laboratory API behaviour allows to convert an existing column into its dynamic equivalent.</p>
+     * <p>The behaviour is: Only values of columns with <code>AttributeOrigin</code> of type <code>DATA</code> and <b>edge weight</b> can be converted.</p>
+     * @param column Column to check if can be converted
+     * @return True if the column can be converted to dynamic, false otherwise
+     */
+    boolean canConvertColumnToDynamic(AttributeColumn column);
 
     /**
      * <p>Calculates all statistics at once from a number/number list column using <code>MathUtils</code> class.</p>

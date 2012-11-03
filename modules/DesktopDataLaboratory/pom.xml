@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>attributes-api</artifactId>
+            <artifactId>data-attributes-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -34,11 +34,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>validation-api</artifactId>
+            <artifactId>lib.validation</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>utils-ui</artifactId>
+            <artifactId>ui-utils</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

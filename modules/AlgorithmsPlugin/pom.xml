@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>attributes-api</artifactId>
+            <artifactId>data-attributes-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

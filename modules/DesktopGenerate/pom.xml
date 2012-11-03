@@ -22,15 +22,15 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>generator-api</artifactId>
+            <artifactId>io-generator-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>import-api</artifactId>
+            <artifactId>io-importer-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>processor-plugin</artifactId>
+            <artifactId>io-processor-plugin</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>validation-api</artifactId>
+            <artifactId>lib.validation</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

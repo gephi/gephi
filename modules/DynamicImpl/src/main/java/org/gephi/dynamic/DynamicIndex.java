@@ -153,6 +153,9 @@ public class DynamicIndex {
     public synchronized void clear() {
         lowMap.clear();
         highMap.clear();
+        fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MIN_CHANGED, model, getMin()));
+        fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.MAX_CHANGED, model, getMax()));
+        fireEvent(new DynamicModelEvent(DynamicModelEvent.EventType.IS_DYNAMIC_GRAPH, model, Boolean.FALSE));
     }
 
     public synchronized double getMin() {

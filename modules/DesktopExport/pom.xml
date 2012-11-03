@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>org.gephi</groupId>
-    <artifactId>desktop-export</artifactId>
+    <artifactId>desktop-io-export</artifactId>
     <version>0.8.2-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>export-api</artifactId>
+            <artifactId>io-exporter-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -26,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>utils-ui</artifactId>
+            <artifactId>ui-utils</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

@@ -52,6 +52,7 @@ import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.data.attributes.event.AbstractEvent;
 import org.gephi.data.attributes.event.AttributeEventManager;
 import org.gephi.data.properties.PropertiesColumn;
+import org.gephi.project.api.Workspace;
 import org.openide.util.NbBundle;
 
 /**
@@ -61,6 +62,7 @@ import org.openide.util.NbBundle;
  */
 public abstract class AbstractAttributeModel implements AttributeModel {
 
+    private final Workspace workspace;
     //Classes
     private final ConcurrentMap<String, AttributeTableImpl> tableMap;
     private final AttributeTableImpl nodeTable;
@@ -72,7 +74,8 @@ public abstract class AbstractAttributeModel implements AttributeModel {
     protected AttributeEventManager eventManager;
 
     //Data API
-    public AbstractAttributeModel() {
+    public AbstractAttributeModel(Workspace workspace) {
+        this.workspace = workspace;
         tableMap = new ConcurrentHashMap<String, AttributeTableImpl>();
         nodeTable = new AttributeTableImpl(this, NbBundle.getMessage(AttributeTableImpl.class, "NodeAttributeTable.name"));
         edgeTable = new AttributeTableImpl(this, NbBundle.getMessage(AttributeTableImpl.class, "EdgeAttributeTable.name"));
@@ -184,5 +187,9 @@ public abstract class AbstractAttributeModel implements AttributeModel {
                 }
             }
         }
+    }
+    
+    public Workspace getWorkspace(){
+        return this.workspace;
     }
 }

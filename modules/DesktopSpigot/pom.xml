@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>import-api</artifactId>
+            <artifactId>io-importer-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

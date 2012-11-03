@@ -45,8 +45,9 @@ import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeOrigin;
 import org.gephi.data.attributes.api.AttributeRow;
 import org.gephi.data.attributes.api.AttributeRowFactory;
-import org.gephi.data.attributes.api.AttributeValueFactory;
+import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.data.attributes.api.AttributeValue;
+import org.gephi.data.attributes.api.AttributeValueFactory;
 import org.gephi.graph.api.EdgeData;
 import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.NodeData;
@@ -68,9 +69,15 @@ public class AttributeFactoryImpl implements AttributeValueFactory, AttributeRow
             return new AttributeValueImpl((AttributeColumnImpl) column, null);
         }
 
-        if (value.getClass() != column.getType().getType() && value.getClass() == String.class) {
-            value = column.getType().parse((String) value);
+        AttributeType targetType = column.getType();
+        if (!value.getClass().equals(targetType.getType())) {
+            try {
+                value = targetType.parse(value.toString());//Try to convert to target type
+            } catch (Exception ex) {
+                return new AttributeValueImpl((AttributeColumnImpl) column, null);//Could not parse
+            }
         }
+        
         Object managedValue = value;
         if (!column.getOrigin().equals(AttributeOrigin.PROPERTY)) {
             managedValue = model.getManagedValue(value, column.getType());
