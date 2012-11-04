@@ -146,9 +146,9 @@ public class AttributeEqualBuilder implements CategoryBuilder {
             Object val = attributable.getAttributes().getValue(column.getIndex());
             val = dynamicHelper.getDynamicValue(val);
             if (val != null && useRegex) {
-                return regex.matcher((String) val).matches();
+                return regex.matcher(val.toString()).matches();
             } else if (val != null) {
-                return pattern.equals((String) val);
+                return pattern.equals(val.toString());
             }
             return false;
         }
