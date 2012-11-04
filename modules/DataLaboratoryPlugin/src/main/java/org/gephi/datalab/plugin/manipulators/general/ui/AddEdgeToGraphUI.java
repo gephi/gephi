@@ -50,7 +50,6 @@ import org.gephi.datalab.spi.ManipulatorUI;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.MixedGraph;
 import org.gephi.graph.api.Node;
 import org.openide.util.Lookup;
 
@@ -81,11 +80,23 @@ public class AddEdgeToGraphUI extends javax.swing.JPanel implements ManipulatorU
         } else {
             undirectedRadioButton.setSelected(true);
         }
+        
         graph = Lookup.getDefault().lookup(GraphController.class).getModel().getMixedGraph();
         nodes = graph.getNodes().toArray();
+        
         for (Node n : nodes) {
             sourceNodesComboBox.addItem(n.getId() + " - " + n.getNodeData().getLabel());
         }
+        
+        Node selectedSource = manipulator.getSource();
+        if(selectedSource != null){
+            for (int i = 0; i < nodes.length; i++) {
+                if(nodes[i] == selectedSource){
+                    sourceNodesComboBox.setSelectedIndex(i);
+                }
+            }
+        }
+        
         refreshAvailableTargetNodes();
     }
 
