@@ -77,7 +77,7 @@ public class Delete extends BasicItem {
     }
 
     public int getType() {
-        return 200;
+        return 400;
     }
 
     public int getPosition() {

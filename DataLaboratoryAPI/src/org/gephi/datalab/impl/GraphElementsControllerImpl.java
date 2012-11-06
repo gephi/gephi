@@ -196,7 +196,7 @@ public class GraphElementsControllerImpl implements GraphElementsController {
             deleteEdgeWithNodes(edge, deleteSource, deleteTarget);
         }
     }
-
+    
     public boolean groupNodes(Node[] nodes) {
         if (canGroupNodes(nodes)) {
             HierarchicalGraph graph = getHierarchicalGraph();
@@ -289,7 +289,88 @@ public class GraphElementsControllerImpl implements GraphElementsController {
         canUngroup = getNodeChildrenCount(hg, node) > 0;//The node has children
         return canUngroup;
     }
+    
+    public boolean hideLeaves(Node[] nodes) {
+        if (canHideNodes(nodes)) {
+            HierarchicalGraph graph = getHierarchicalGraph();
 
+            try {
+                Set<Node> parentNodes = new HashSet<Node>(Arrays.asList(nodes));
+
+                for (Node node : nodes) {
+                    Set<Node> hideNodes = new HashSet<Node>();
+                    Node[] neighboringNodes = getNodeNeighbours(node);
+
+                    for (Node neighboringNode : neighboringNodes) {
+                        if (getNodeNeighbours(neighboringNode).length <= 1 && !parentNodes.contains(neighboringNode)) {
+                            hideNodes.add(neighboringNode);
+                        }
+                    }
+
+                    if (hideNodes.size() > 0) {
+                        hideNodes.add(node);
+
+                        Node group = graph.groupNodes(hideNodes.toArray(new Node[0]));
+
+                        String label = node.getNodeData().getLabel();
+                        
+                        group.getNodeData().setLabel(label == null ? "+" : label + " +");
+                        group.getNodeData().setSize(node.getNodeData().getSize());
+                        group.getNodeData().setColor(node.getNodeData().r(), node.getNodeData().g(), node.getNodeData().b());
+                        group.getNodeData().setX(node.getNodeData().x());
+                        group.getNodeData().setY(node.getNodeData().y());
+                    }
+                }
+            } catch (Exception e) {
+                graph.readUnlockAll();
+                NotifyDescriptor.Message nd = new NotifyDescriptor.Message(e.getMessage());
+                DialogDisplayer.getDefault().notifyLater(nd);
+                return false;
+            }
+            
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean canHideNodes(Node[] nodes) {
+        Set<Node> parentNodes = new HashSet<Node>(Arrays.asList(nodes));
+        
+        for (Node node : nodes) {
+            Node[] neighboringNodes = getNodeNeighbours(node);
+
+            for (Node neighboringNode : neighboringNodes) {
+                if (getNodeNeighbours(neighboringNode).length <= 1 && !parentNodes.contains(neighboringNode)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    public boolean showNode(Node node) {
+        if (canShowNode(node)) {
+            HierarchicalGraph graph = getHierarchicalGraph();
+            graph.ungroupNodes(node);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void showNodes(Node[] nodes) {
+        for (Node node : nodes) {
+            showNode(node);
+        }
+    }
+
+    public boolean canShowNode(Node node) {
+        HierarchicalGraph graph = getHierarchicalGraph();
+        return getNodeChildrenCount(graph, node) > 0;
+    }
+    
     public Node mergeNodes(Node[] nodes, Node selectedNode, AttributeRowsMergeStrategy[] mergeStrategies, boolean deleteMergedNodes) {
         AttributeTable nodesTable = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
         if (selectedNode == null) {

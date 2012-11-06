@@ -76,7 +76,7 @@ public class Free extends BasicItem {
     }
 
     public int getType() {
-        return 300;
+        return 500;
     }
 
     public int getPosition() {
