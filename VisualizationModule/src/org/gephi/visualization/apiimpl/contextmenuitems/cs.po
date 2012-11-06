@@ -30,6 +30,15 @@ msgstr "Roztáhnout"
 msgid "GraphContextMenu_Contract"
 msgstr "Smrštit"
 
+msgid "GraphContextMenu_SelectConnectedNodes"
+msgstr "Označit sousední uzly"
+
+msgid "GraphContextMenu_HideConnectedLeaves"
+msgstr "Skrýt sousední listy"
+
+msgid "GraphContextMenu_ShowConnectedLeaves"
+msgstr "Zobrazit sousední listy"
+
 msgid "GraphContextMenu_Settle"
 msgstr "Usadit"
 

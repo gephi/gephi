@@ -91,7 +91,7 @@ public abstract class CopyOrMoveToWorkspace extends BasicItem implements NodesMa
     }
 
     public int getType() {
-        return 200;
+        return 400;
     }
 
     public Icon getIcon() {

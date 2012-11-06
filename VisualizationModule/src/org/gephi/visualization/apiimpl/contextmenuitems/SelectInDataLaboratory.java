@@ -88,7 +88,7 @@ public class SelectInDataLaboratory extends BasicItem {
     }
 
     public int getType() {
-        return 400;
+        return 600;
     }
 
     public int getPosition() {
