@@ -193,6 +193,8 @@
                 <package>org.gephi.visualization.apiimpl</package>
                 <package>org.gephi.visualization.events</package>
                 <package>org.gephi.visualization.opengl.text</package>
+                <package>org.gephi.visualization.spi</package>
+                <package>org.gephi.visualization.apiimpl.contextmenuitems</package>
             </public-packages>
         </data>
     </configuration>
