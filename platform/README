@@ -1,5 +1,0 @@
-This folder contains the Netbeans Platform files. It is used when no Gephi is built without Netbeans (typically running 'ant' on the project folder).
-
-Version: netbeans-7.1.1
-
-The platform and harness are downloaded automatically from Netbeans' repository if the /platform folder is missing.

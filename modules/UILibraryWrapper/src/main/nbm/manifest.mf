@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+AutoUpdate-Essential-Module: true
+OpenIDE-Module-Localizing-Bundle: org/gephi/lib/ui/Bundle.properties
+OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}

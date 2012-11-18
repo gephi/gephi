@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module: org.gephi.graph.api
-OpenIDE-Module-Localizing-Bundle: org/gephi/graph/api/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.8.0.3
-AutoUpdate-Essential-Module: true

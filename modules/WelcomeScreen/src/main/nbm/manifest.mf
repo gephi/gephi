@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Install: org/gephi/desktop/welcome/Installer.class
+OpenIDE-Module-Layer: org/gephi/desktop/welcome/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/welcome/Bundle.properties
+OpenIDE-Module-Specification-Version: ${gephi.modules.specification.version}

@@ -1,0 +1,1181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.gephi</groupId>
+    <artifactId>gephi-parent</artifactId>
+    <version>0.8.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>gephi</name>
+    
+    <!-- Project Metadata -->
+    <url>http://gephi.org</url>
+    <description>Gephi - The Open Graph Viz Platform</description>
+    <organization>
+        <name>Gephi Consortium</name>
+        <url>http://consortium.gephi.org</url>
+    </organization>
+    <inceptionYear>2007</inceptionYear>
+    
+    <!-- Licenses -->
+    <licenses>
+        <license>
+            <name>CDDL 1.0</name>
+            <url>http://www.opensource.org/licenses/CDDL-1.0</url>
+            <comments>CDDL License 1.0</comments>
+        </license>
+        <license>
+            <name>GPL v3</name>
+            <url>http://www.opensource.org/licenses/GPL-3.0</url>
+            <comments>GPL v3 License</comments>
+        </license>
+    </licenses>
+    
+    <!-- Mailing lists -->
+    <mailingLists>
+        <mailingList>
+            <name>gephi-dev</name>
+            <post>gephi-dev@lists.gephi.org</post>
+            <archive>http://gephi.org/pipermail/gephi-dev/</archive>
+        </mailingList>
+    </mailingLists>
+    
+    <!-- Properties -->
+    <properties>        
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <gephi.maven.requiredVersion>3.0.3</gephi.maven.requiredVersion>
+        <netbeans.run.params.ide/>
+        <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
+        
+        <!-- Netbeans Platfrom version -->
+        <netbeans.version>RELEASE721</netbeans.version>
+        
+        <!-- Localization ZIP version, from 'http://netbeans.org/project_downloads/nblocalization' -->
+        <gephi.platform.localization.version>7.2</gephi.platform.localization.version>
+        
+        <!-- Modules specification version, overrides project version -->
+        <gephi.modules.specification.version>0.8.2</gephi.modules.specification.version>
+
+        <!-- Java compilation settings -->
+        <gephi.javac.source>1.6</gephi.javac.source>
+        <gephi.javac.target>1.6</gephi.javac.target>
+        <gephi.javac.xlint>-Xlint:all</gephi.javac.xlint>
+        <gephi.javac.debug>true</gephi.javac.debug>
+        <gephi.javac.optimize>true</gephi.javac.optimize>
+        <gephi.javac.showDeprecation>true</gephi.javac.showDeprecation>
+        <gephi.javac.showWarnings>true</gephi.javac.showWarnings>
+        <gephi.javac.fork>true</gephi.javac.fork>
+        
+        <!-- Testing settings -->
+        <gephi.junit.version>4.7</gephi.junit.version>
+        <gephi.test.maxMemory>768M</gephi.test.maxMemory>
+        <gephi.test.reportsDirectory>${project.build.directory}/surefire-reports/plain</gephi.test.reportsDirectory>
+        <gephi.test.failureIgnore>${testFailureIgnore}</gephi.test.failureIgnore>
+        
+        <!-- NBM Plugin settings -->
+        <brandingToken>gephi</brandingToken>
+        <all.clusters>${project.build.directory}/${brandingToken}</all.clusters>
+        <gephi.netbeans.useOSGiDependencies>false</gephi.netbeans.useOSGiDependencies>
+        <gephi.app.title>Gephi ${project.version}</gephi.app.title>
+        
+        <!-- Update centers URLs -->
+        <gephi.update.center.official.url>http://gephi.org/updates/official/${project.version}/catalog.xml</gephi.update.center.official.url>
+        <gephi.update.center.thirdparty.url>http://gephi.org/updates/thirdparty/${project.version}/catalog.xml</gephi.update.center.thirdparty.url>
+        <gephi.update.center.testing.url>http://nexus.gephi.org/nexus/content/repositories/snapshots/external/updates/updates.xml</gephi.update.center.testing.url>
+        
+        <!-- Mac OS X bundle settings -->
+        <gephi.appbundle.name>Gephi</gephi.appbundle.name>
+        <gephi.appbundle.signature>????</gephi.appbundle.signature>
+        <gephi.jarbundler.version>2.2.0</gephi.jarbundler.version>
+        
+        <!-- Repository URLs -->
+        <gephi.release.repository.id>gephi-nexus</gephi.release.repository.id>
+        <gephi.snapshot.repository.id>gephi-nexus</gephi.snapshot.repository.id>
+        <gephi.release.repository.url>http://nexus.gephi.org/nexus/content/repositories/releases</gephi.release.repository.url>
+        <gephi.snapshot.repository.url>http://nexus.gephi.org/nexus/content/repositories/snapshots</gephi.snapshot.repository.url>
+        
+        <!-- Location of the NBM autoupdate folder -->
+        <gephi.updates.site>${project.build.directory}/netbeans_site</gephi.updates.site>
+        
+        <!-- SCM -->
+        <gephi.scm>git</gephi.scm>
+        
+        <!-- Installers settings -->
+        <gephi.menu.app.name>Gephi ${project.version}</gephi.menu.app.name>
+        <gephi.innosetup.path>C:/Program Files (x86)/Inno Setup 5</gephi.innosetup.path>
+        
+        <!--==== Plugin Versions ==================================================================================-->
+
+        <gephi.maven-antrun-plugin.version>1.7</gephi.maven-antrun-plugin.version>
+
+        <gephi.maven-assembly-plugin.version>2.3</gephi.maven-assembly-plugin.version>
+
+        <gephi.maven-clean-plugin.version>2.5</gephi.maven-clean-plugin.version>
+
+        <gephi.maven-compiler-plugin.version>2.5.1</gephi.maven-compiler-plugin.version>
+
+        <gephi.maven-dependency-plugin.version>2.5.1</gephi.maven-dependency-plugin.version>
+
+        <gephi.maven-deploy-plugin.version>2.7</gephi.maven-deploy-plugin.version>
+
+        <gephi.maven-enforcer-plugin.version>1.0.1</gephi.maven-enforcer-plugin.version>
+
+        <gephi.maven-gpg-plugin.version>1.4</gephi.maven-gpg-plugin.version>
+
+        <gephi.maven-install-plugin.version>2.4</gephi.maven-install-plugin.version>
+
+        <gephi.maven-jar-plugin.version>2.4</gephi.maven-jar-plugin.version>
+
+        <gephi.maven-jarsigner-plugin.version>1.2</gephi.maven-jarsigner-plugin.version>
+
+        <gephi.maven-javadoc-plugin.version>2.9</gephi.maven-javadoc-plugin.version> 
+
+        <gephi.maven-license-plugin.version>1.9.0</gephi.maven-license-plugin.version>
+
+        <gephi.maven-release-plugin.version>2.3.2</gephi.maven-release-plugin.version>
+
+        <gephi.maven-resources-plugin.version>2.6</gephi.maven-resources-plugin.version>
+
+        <gephi.maven-site-plugin.version>3.1</gephi.maven-site-plugin.version>
+
+        <gephi.maven-source-plugin.version>2.2</gephi.maven-source-plugin.version>
+
+        <gephi.maven-surefire-plugin.version>2.12.4</gephi.maven-surefire-plugin.version>
+
+        <gephi.build-helper-maven-plugin.version>1.7</gephi.build-helper-maven-plugin.version>
+
+        <gephi.nbm-maven-plugin.version>3.7</gephi.nbm-maven-plugin.version>
+        
+        <gephi.maven-reactor-plugin.version>1.0</gephi.maven-reactor-plugin.version>
+        
+        <gephi.wagon-maven-plugin.version>1.0-beta-4</gephi.wagon-maven-plugin.version>           
+
+    </properties>
+    
+    <!-- Maven required version -->
+    <prerequisites>
+        <maven>${gephi.maven.requiredVersion}</maven>
+    </prerequisites>
+ 
+    <!-- Repositories -->
+    <repositories>
+        <repository>
+            <id>netbeans</id>
+            <name>NetBeans</name>
+            <url>http://bits.netbeans.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>gephi</id>
+            <name>Gephi 3rd Party</name>
+            <url>http://nexus.gephi.org/nexus/content/repositories/thirdparty/</url>
+        </repository>
+        <repository>
+            <url>http://download.java.net/maven/2/</url>
+            <id>beans-binding</id>
+            <layout>default</layout>
+            <name>Repository for library Library[beans-binding]</name>
+        </repository>
+    </repositories>
+
+    <!-- Locations of the artifacts published -->
+    <distributionManagement>
+        <!-- Publish versioned releases here -->
+        <repository>
+            <id>${gephi.release.repository.id}</id>
+            <name>Gephi Release Repository</name>
+            <url>${gephi.release.repository.url}</url>
+        </repository>
+ 
+        <!-- Publish snapshots here -->
+        <snapshotRepository>
+            <id>${gephi.snapshot.repository.id}</id>
+            <name>Gephi Snapshot Repository</name>
+            <url>${gephi.snapshot.repository.url}</url>
+        </snapshotRepository>
+    </distributionManagement>
+    
+    <!-- List all dependencies with versions so it can be used in child POMs 
+    without explicit versions -->
+    <dependencyManagement>
+        <!-- Dependencies -->
+        <dependencies>
+            <dependency>
+                <groupId>org.netbeans.cluster</groupId>
+                <artifactId>platform</artifactId>
+                <version>${netbeans.version}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-dialogs</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-filesystems</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-util</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-util-lookup</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-windows</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-modules</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-modules-sendopts</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-api-progress</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-nodes</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-awt</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-modules-settings</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-modules-options-api</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-swing-outline</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-explorer</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-api-annotations-common</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-modules-nbjunit</artifactId>
+                <version>${netbeans.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>gephi-branding</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>utils-longtask</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>project-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>io-exporter-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>graph-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>data-attributes-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>preview-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>io-exporter-preview</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>lib.validation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>preview-export-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>dynamic-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>datalab-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>visualization-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>preview-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>db-drivers</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>io-importer-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>io-processor-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>processor-plugin-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>project-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>ranking-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>ranking-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>ui-utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>ui-components</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>ranking-plugin-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>settings-upgrader</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>spigot-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>spigot-plugin-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>spline-editor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>statistics-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>statistics-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>statistics-plugin-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>timeline</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>tools-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>algorithms-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>utils-collection</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>gleem</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>mostrecentfiles-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-project</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>visualization</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>tools-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>welcome-screen</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>workspace-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-context</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-progress</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-branding</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>layout-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>io-generator-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>io-generator-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>generator-plugin-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>io-exporter-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-ranking</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-statistics</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>filters-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>clustering-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>ui-propertyeditor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>layout-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-spigot</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-generate</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>partition-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-partition</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>graph-dhns</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>attributes</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>io-importer-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-datalab</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>filters-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>filters-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>export-plugin-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-recent-files</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-io-export</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>perspective-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-clustering</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>import-plugin-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-hierarchy</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-perspective</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>filters-plugin-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>datalab-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-layout</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>dynamic-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-import</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-preview</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>partition-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>partition-plugin-ui</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-tools</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-timeline</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>directory-chooser</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>desktop-filters</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>clustering-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>core-library-wrapper</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>ui-library-wrapper</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        
+        <!-- Plugins installed with versions -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>nbm-maven-plugin</artifactId>
+                    <version>${gephi.nbm-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${gephi.maven-compiler-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${gephi.maven-jar-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${gephi.maven-antrun-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${gephi.maven-deploy-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${gephi.maven-release-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${gephi.maven-gpg-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${gephi.build-helper-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${gephi.maven-surefire-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jarsigner-plugin</artifactId>
+                    <version>${gephi.maven-jarsigner-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${gephi.maven-source-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId> 
+                    <version>${gephi.maven-resources-plugin.version}</version> 
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${gephi.maven-dependency-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${gephi.maven-install-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>wagon-maven-plugin</artifactId>
+                    <version>${gephi.wagon-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${gephi.maven-javadoc-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-reactor-plugin</artifactId>
+                    <version>${gephi.maven-reactor-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${gephi.maven-assembly-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        
+        <!-- Plugins configuration ===============================================================-->
+        
+        <plugins>
+
+            <!-- Compiler -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <debug>${gephi.javac.debug}</debug>
+                    <optimize>${gephi.javac.optimize}</optimize>
+                    <source>${gephi.javac.source}</source>
+                    <target>${gephi.javac.target}</target>
+                    <showDeprecation>${gephi.javac.showDeprecation}</showDeprecation>
+                    <showWarnings>${gephi.javac.showWarnings}</showWarnings>
+                    <fork>${gephi.javac.fork}</fork>
+                    <compilerArgument>
+                        ${gephi.javac.xlint}
+                    </compilerArgument>
+                </configuration>
+            </plugin>
+ 
+            <!-- JAR Packaging -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <useDefaultManifestFile>true</useDefaultManifestFile> <!-- required since nbm-plugin 3.0-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                            <!--<goal>test-jar</goal>-->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Skip unit tests in non-deployment or release mode -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            
+            <!-- Copy and apply filtering on manifest.mf file -->
+            <plugin> 
+                <artifactId>maven-resources-plugin</artifactId> 
+                <executions> 
+                    <execution> 
+                        <id>generate-modules-xml</id> 
+                        <phase>generate-resources</phase> 
+                        <goals> 
+                            <goal>copy-resources</goal> 
+                        </goals> 
+                        <configuration> 
+                            <outputDirectory>${basedir}/target/</outputDirectory> 
+                            <resources> 
+                                <resource> 
+                                    <directory>src/main/nbm</directory> 
+                                    <includes> 
+                                        <include>manifest.mf</include>
+                                    </includes> 
+                                    <filtering>true</filtering> 
+                                </resource> 
+                            </resources> 
+                        </configuration> 
+                    </execution> 
+                </executions> 
+            </plugin>
+            
+            <!-- NBM options -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <descriptor>src/main/nbm/module.xml</descriptor>
+                    <sourceManifestFile>${project.build.directory}/manifest.mf</sourceManifestFile>
+                    <brandingToken>${brandingToken}</brandingToken>
+                    <cluster>${brandingToken}</cluster>
+                    <useOSGiDependencies>${gephi.netbeans.useOSGiDependencies}</useOSGiDependencies>
+                    
+                    <!-- Keystore location. Run Maven with '-Dkeystorepassword=' to specify the passphrase -->
+                    <keystore>src/keystore/keystore.ks</keystore>
+                    <keystorealias>gephi</keystorealias>
+                    <keystorepassword>${keystore.password}</keystorepassword>
+                    
+                    <!-- NBM settings -->
+                    <requiresRestart>true</requiresRestart>
+                    <licenseName>CDDL 1.0 and GNU GPL v3</licenseName>
+                    <licenseFile>../../COPYING.txt</licenseFile>
+                    
+                    <!-- Installer settings -->
+                    <templateFile>src/main/app-resources/template.xml</templateFile>
+                    <userSettings>
+                        <nbi.icon.file>${basedir}/src/main/app-resources/gephi48.png</nbi.icon.file>
+                    </userSettings>
+                    <installDirName>${brandingToken}</installDirName>
+                    <installerOsSolaris>false</installerOsSolaris>
+                    <installerOsMacosx>false</installerOsMacosx>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <!-- Profiles -->
+    <profiles>
+        
+        <!-- Profile for nighly builds and releases -->
+        <profile>
+            <id>deployment</id>
+            <build>
+                <plugins>
+                    <!-- Javadoc settings -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <show>private</show>
+                            <nohelp>true</nohelp>
+                            <detectLinks>true</detectLinks>
+                            <detectOfflineLinks>true</detectOfflineLinks>      
+                        </configuration>
+                        <executions>
+                            <execution> 
+                                <id>attach-javadocs</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals> 
+                            </execution>
+                            <execution>
+                                <id>aggregate-javadoc</id>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                                <phase>install</phase>
+                                <configuration>
+                                    <show>public</show>
+                                    <doctitle>Gephi ${project.version} API Index</doctitle>
+                                    <subpackages>org.gephi.clustering.api:org.gephi.clustering.spi:org.gephi.data.attributes.api:org.gephi.data.attributes.spi:org.gephi.data.attributes.type:org.gephi.data.properties:org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.dynamic.api:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.partition.api:org.gephi.partition.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.ranking.api:org.gephi.ranking.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress</subpackages>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+            
+                    <!-- Sources plugin -->
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals> 
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    <!-- Assembler to produce final sources and javadoc artifacts -->
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>assembly-javadoc-sources</id>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <phase>install</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <tarLongFileMode>gnu</tarLongFileMode>
+                            <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                            <finalName>${project.name}-${project.version}</finalName>
+                            <descriptors>
+                                <descriptor>src/assemble/javadoc.xml</descriptor>
+                                <descriptor>src/assemble/sources.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>upload-apidocs</id>
+            <build>
+                <plugins>
+                    <!-- Upload the javadoc automatically -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>wagon-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>upload-jar-to-folder</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>upload</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <fromDir>${project.build.directory}/site/apidocs</fromDir>
+                            <url>${gephi.snapshot.repository.url}</url>
+                            <toDir>external/apidocs</toDir>
+                            <serverId>${gephi.snapshot.repository.id}</serverId>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profile activated for windows/macos release only. Should be called alone so it only creates the windows installer/compressed dmg -->
+        <profile>
+            <id>release-extra</id>
+            <build>
+                <plugins>
+                    <!-- Skip the standard deploy phase -->
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                    
+                    <!-- Skip the standard install phase -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-install-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-install</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+                
+    <!-- List of modules -->
+    <modules>
+        <module>modules/branding</module>
+        <module>modules/application</module>
+        <module>modules/LongTaskAPI</module>
+        <module>modules/AlgorithmsPlugin</module>
+        <module>modules/AttributeColumnPropertyEditor</module>
+        <module>modules/AttributesAPI</module>
+        <module>modules/AttributesImpl</module>
+        <module>modules/ClusteringAPI</module>
+        <module>modules/ClusteringPlugin</module>
+        <module>modules/CollectionUtils</module>
+        <module>modules/DataLaboratoryAPI</module>
+        <module>modules/DataLaboratoryPlugin</module>
+        <module>modules/DBDrivers</module>
+        <module>modules/DesktopBranding</module>
+        <module>modules/DesktopClustering</module>
+        <module>modules/DesktopContext</module>
+        <module>modules/DesktopDataLaboratory</module>
+        <module>modules/DesktopExport</module>
+        <module>modules/DesktopFilters</module>
+        <module>modules/DesktopGenerate</module>
+        <module>modules/DesktopHierarchy</module>
+        <module>modules/DesktopImport</module>
+        <module>modules/DesktopLayout</module>
+        <module>modules/DesktopPartition</module>
+        <module>modules/DesktopPerspective</module>
+        <module>modules/DesktopPreview</module>
+        <module>modules/DesktopProgress</module>
+        <module>modules/DesktopProject</module>
+        <module>modules/DesktopRanking</module>
+        <module>modules/DesktopRecentFiles</module>
+        <module>modules/DesktopSpigot</module>
+        <module>modules/DesktopStatistics</module>
+        <module>modules/DesktopTimeline</module>
+        <module>modules/DesktopTools</module>
+        <module>modules/DHNSGraph</module>
+        <module>modules/DirectoryChooser</module>
+        <module>modules/DynamicAPI</module>
+        <module>modules/DynamicImpl</module>
+        <module>modules/ExportAPI</module>
+        <module>modules/ExportPlugin</module>
+        <module>modules/ExportPluginUI</module>
+        <module>modules/FiltersAPI</module>
+        <module>modules/FiltersImpl</module>
+        <module>modules/FiltersPlugin</module>
+        <module>modules/FiltersPluginUI</module>
+        <module>modules/GeneratorAPI</module>
+        <module>modules/GeneratorPlugin</module>
+        <module>modules/GeneratorPluginUI</module>
+        <module>modules/GraphAPI</module>
+        <module>modules/ImportAPI</module>
+        <module>modules/ImportPlugin</module>
+        <module>modules/ImportPluginUI</module>
+        <module>modules/LayoutAPI</module>
+        <module>modules/LayoutPlugin</module>
+        <module>modules/MostRecentFilesAPI</module>
+        <module>modules/PartitionAPI</module>
+        <module>modules/PartitionPlugin</module>
+        <module>modules/PartitionPluginUI</module>
+        <module>modules/PerspectiveAPI</module>
+        <module>modules/PreviewAPI</module>
+        <module>modules/PreviewExport</module>
+        <module>modules/PreviewExportUI</module>
+        <module>modules/PreviewPlugin</module>
+        <module>modules/ProcessorPlugin</module>
+        <module>modules/ProcessorPluginUI</module>
+        <module>modules/ProjectAPI</module>
+        <module>modules/ProjectUI</module>
+        <module>modules/RankingAPI</module>
+        <module>modules/RankingPlugin</module>
+        <module>modules/RankingPluginUI</module>
+        <module>modules/SettingsUpgrader</module>
+        <module>modules/SpigotPlugin</module>
+        <module>modules/SpigotPluginUI</module>
+        <module>modules/SplineEditor</module>
+        <module>modules/StatisticsAPI</module>
+        <module>modules/StatisticsPlugin</module>
+        <module>modules/StatisticsPluginUI</module>
+        <module>modules/TimelineAPI</module>
+        <module>modules/ToolsAPI</module>
+        <module>modules/ToolsPlugin</module>
+        <module>modules/UIComponents</module>
+        <module>modules/UIUtils</module>
+        <module>modules/Utils</module>
+        <module>modules/ValidationAPI</module>
+        <module>modules/VisualizationAPI</module>
+        <module>modules/VisualizationImpl</module>
+        <module>modules/WelcomeScreen</module>
+        <module>modules/WorkspaceUI</module>
+        <module>modules/Gleem</module>
+        <module>modules/CoreLibraryWrapper</module>
+        <module>modules/UILibraryWrapper</module>
+    </modules>
+</project>
