@@ -168,7 +168,6 @@ public class EditEdges extends AbstractNode {
     private Sheet.Set prepareEdgesProperties() {
         try {
             if (multipleEdges) {
-                MultipleEdgesPropertiesWrapper EdgesWrapper = new MultipleEdgesPropertiesWrapper(edges);
                 Sheet.Set set = new Sheet.Set();
                 set.setName("properties");
                 set.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.properties.text.multiple"));
@@ -176,7 +175,8 @@ public class EditEdges extends AbstractNode {
                 Property p;
 
                 //Color:
-                p = new PropertySupport.Reflection(EdgesWrapper, Color.class, "getEdgesColor", "setEdgesColor");
+                MultipleEdgesPropertiesWrapper edgesWrapper = new MultipleEdgesPropertiesWrapper(edges);
+                p = new PropertySupport.Reflection(edgesWrapper, Color.class, "getEdgesColor", "setEdgesColor");
                 p.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.color.text"));
                 p.setName("color");
                 set.put(p);
@@ -191,8 +191,8 @@ public class EditEdges extends AbstractNode {
                 Property p;
 
                 //Color:
-                SingleEdgePropertiesWrapper EdgeWrapper = new SingleEdgePropertiesWrapper(edge);
-                p = new PropertySupport.Reflection(EdgeWrapper, Color.class, "getEdgeColor", "setEdgeColor");
+                SingleEdgePropertiesWrapper edgeWrapper = new SingleEdgePropertiesWrapper(edge);
+                p = new PropertySupport.Reflection(edgeWrapper, Color.class, "getEdgeColor", "setEdgeColor");
                 p.setDisplayName(NbBundle.getMessage(EditEdges.class, "EditEdges.color.text"));
                 p.setName("color");
                 set.put(p);
@@ -233,7 +233,7 @@ public class EditEdges extends AbstractNode {
         }
     }
     
-    class MultipleEdgesPropertiesWrapper {
+    public class MultipleEdgesPropertiesWrapper {
 
         Edge[] edges;
 
@@ -241,15 +241,15 @@ public class EditEdges extends AbstractNode {
             this.edges = Edges;
         }
         //Methods and fields for multiple edges editing:
-        private Color EdgesColor = null;
+        private Color edgesColor = null;
 
         public Color getEdgesColor() {
-            return EdgesColor;
+            return edgesColor;
         }
 
         public void setEdgesColor(Color c) {
             if (c != null) {
-                EdgesColor = c;
+                edgesColor = c;
                 EdgeData data;
                 for (Edge edge : edges) {
                     data = edge.getEdgeData();

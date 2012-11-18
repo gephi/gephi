@@ -48,9 +48,21 @@ package org.gephi.graph.api;
  */
 public interface Spatial {
 
+    /**
+     * Get x coordinate for the element.
+     * @return X coordinate
+     */
     public float x();
 
+     /**
+     * Get y coordinate for the element.
+     * @return Y coordinate
+     */
     public float y();
 
+     /**
+     * Get z coordinate for the element.
+     * @return Z coordinate
+     */
     public float z();
 }

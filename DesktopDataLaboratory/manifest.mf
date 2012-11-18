@@ -2,4 +2,4 @@ Manifest-Version: 1.0
 AutoUpdate-Essential-Module: true
 OpenIDE-Module: org.gephi.desktop.datalab
 OpenIDE-Module-Localizing-Bundle: org/gephi/desktop/datalab/Bundle.properties
-OpenIDE-Module-Specification-Version: 0.8.1.2
+OpenIDE-Module-Specification-Version: 0.8.1.3
