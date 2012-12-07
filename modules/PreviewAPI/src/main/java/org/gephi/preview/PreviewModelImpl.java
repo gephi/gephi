@@ -51,6 +51,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.gephi.preview.api.*;
 import org.gephi.preview.presets.DefaultPreset;
+import org.gephi.preview.spi.MouseResponsiveRenderer;
+import org.gephi.preview.spi.PreviewMouseListener;
 import org.gephi.preview.spi.Renderer;
 import org.gephi.preview.types.DependantColor;
 import org.gephi.preview.types.DependantOriginalColor;
@@ -75,6 +77,8 @@ public class PreviewModelImpl implements PreviewModel {
     private final Map<Object, Object> sourceMap;
     //Renderers
     private ManagedRenderer[] managedRenderers;
+    //Mouse listeners (of enabled renderers)
+    private PreviewMouseListener[] enabledMouseListeners;
     //Properties
     private PreviewProperties properties;
     //Dimensions
@@ -97,6 +101,7 @@ public class PreviewModelImpl implements PreviewModel {
 
         initBasicPropertyEditors();
         initManagedRenderers();
+        prepareManagedListeners();
     }
 
     /**
@@ -133,6 +138,23 @@ public class PreviewModelImpl implements PreviewModel {
                 managedRenderers[i] = new ManagedRenderer(r, true);
             }
         }
+    }
+
+    private void prepareManagedListeners() {
+        ArrayList<PreviewMouseListener> listeners = new ArrayList<PreviewMouseListener>();
+
+        for (PreviewMouseListener listener : Lookup.getDefault().lookupAll(PreviewMouseListener.class)) {
+            for (Renderer renderer : getManagedEnabledRenderers()) {
+                if (renderer instanceof MouseResponsiveRenderer) {
+                    if (((MouseResponsiveRenderer) renderer).needsPreviewMouseListener(listener) && !listeners.contains(listener)) {
+                        listeners.add(listener);
+                    }
+                }
+            }
+        }
+
+        Collections.reverse(listeners);//First listeners to receive events will be the ones coming from last called renderers.
+        enabledMouseListeners = listeners.toArray(new PreviewMouseListener[0]);
     }
 
     private synchronized void initProperties() {
@@ -309,26 +331,27 @@ public class PreviewModelImpl implements PreviewModel {
      * Removes unnecessary properties from not enabled renderers
      */
     private void reloadProperties() {
-        PreviewProperties oldProperties = getProperties();
-
-        properties = new PreviewProperties();
+        PreviewProperties newProperties = new PreviewProperties();//Ensure that the properties object doesn't change
 
         //Properties from renderers
         for (Renderer renderer : getManagedEnabledRenderers()) {
             PreviewProperty[] props = renderer.getProperties();
             for (PreviewProperty p : props) {
-                properties.addProperty(p);
+                newProperties.addProperty(p);
+                if (properties.hasProperty(p.getName())) {
+                    newProperties.putValue(p.getName(), properties.getValue(p.getName()));//Keep old values
+                }
             }
         }
 
-        for (PreviewProperty property : oldProperties.getProperties()) {
-            if (properties.hasProperty(property.getName())) {
-                properties.putValue(property.getName(), property.getValue());
-            }
+        //Remove old properties (this keeps simple values)
+        for (PreviewProperty p : properties.getProperties()) {
+            properties.removeProperty(p);
         }
 
-        for (Entry<String, Object> property : oldProperties.getSimpleValues()) {
-            properties.putValue(property.getKey(), property.getValue());
+        //Set new properties
+        for (PreviewProperty property : newProperties.getProperties()) {
+            properties.addProperty(property);
         }
     }
 
@@ -343,6 +366,7 @@ public class PreviewModelImpl implements PreviewModel {
 
         this.managedRenderers = managedRenderers;
         completeManagedRenderersListIfNecessary();
+        prepareManagedListeners();
         reloadProperties();
     }
 
@@ -495,5 +519,10 @@ public class PreviewModelImpl implements PreviewModel {
         if (!managedRenderersList.isEmpty()) {
             setManagedRenderers(managedRenderersList.toArray(new ManagedRenderer[0]));
         }
+    }
+
+    @Override
+    public PreviewMouseListener[] getEnabledMouseListeners() {
+        return enabledMouseListeners;
     }
 }

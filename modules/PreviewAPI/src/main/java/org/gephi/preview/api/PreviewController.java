@@ -169,4 +169,19 @@ public interface PreviewController {
      * @return True if any plugin renderer is found in the system
      */
     public boolean isAnyPluginRendererRegistered();
+    
+    /**
+     * Sends a <code>PreviewMouseEvent</code> to the current workspace, if any.
+     * @param event PreviewMouseEvent
+     * @return True if the event was consumed, false otherwise
+     */
+    public boolean sendMouseEvent(PreviewMouseEvent event);
+    
+    /**
+     * Sends a <code>PreviewMouseEvent</code> to the given workspace.
+     * @param event PreviewMouseEvent
+     * @param workspace
+     * @return True if the event was consumed, false otherwise
+     */
+    public boolean sendMouseEvent(PreviewMouseEvent event, Workspace workspace);
 }

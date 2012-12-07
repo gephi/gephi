@@ -45,15 +45,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.PreviewProperty;
-import org.gephi.preview.api.RenderTarget;
+import org.gephi.preview.api.*;
 import org.openide.util.Lookup;
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -143,24 +139,90 @@ public class ProcessingApplet extends PApplet implements MouseWheelListener {
             super.resizeRenderer(i, i1);
         }
     }
+    
+    private PVector screenPositionToModelPosition(PVector screenPos) {
+        PVector center = new PVector(width / 2f, height / 2f);
+        PVector scaledCenter = PVector.mult(center, scaling);
+        PVector scaledTrans = PVector.sub(center, scaledCenter);
 
-    @Override
-    public void mousePressed() {
-        ref.set(mouseX, mouseY, 0);
+        PVector modelPos = new PVector(screenPos.x, screenPos.y);
+        modelPos.sub(scaledTrans);
+        modelPos.div(scaling);
+        modelPos.sub(trans);
+        return modelPos;
+    }
+    
+    private PVector getMouseModelPosition(){
+        return screenPositionToModelPosition(new PVector(mouseX, mouseY));
+    }
+    
+    private PreviewMouseEvent buildPreviewMouseEvent(PreviewMouseEvent.Type type){
+        PVector pos = getMouseModelPosition();
+        PreviewMouseEvent.Button button;
+        
+        switch(mouseButton){
+            case CENTER:
+                button = PreviewMouseEvent.Button.MIDDLE;
+                break;
+            case RIGHT:
+                button = PreviewMouseEvent.Button.RIGHT;
+                break;
+            case LEFT:
+            default:
+                button = PreviewMouseEvent.Button.LEFT;
+        }
+        
+        return new PreviewMouseEvent((int)pos.x, (int)pos.y, type, button, keyEvent);
     }
 
     @Override
+    public void mouseClicked() {
+        if (previewController.sendMouseEvent(buildPreviewMouseEvent(PreviewMouseEvent.Type.CLICKED))) {
+            previewController.refreshPreview();
+            redraw();
+        }
+    }
+
+    @Override
+    public void mousePressed() {
+        previewController.sendMouseEvent(buildPreviewMouseEvent(PreviewMouseEvent.Type.PRESSED));
+        
+        previewController.refreshPreview();
+        handleMousePress();
+        redraw();
+    }
+    
+    @Override
     public void mouseDragged() {
-        setMoving(true);
-        trans.set(mouseX, mouseY, 0);
-        trans.sub(ref);
-        trans.div(scaling); // ensure const. moving speed whatever the zoom is
-        trans.add(lastMove);
+        if (!previewController.sendMouseEvent(buildPreviewMouseEvent(PreviewMouseEvent.Type.DRAGGED))) {
+            handleMouseDrag();
+        }
         redraw();
     }
 
     @Override
     public void mouseReleased() {
+        if (!previewController.sendMouseEvent(buildPreviewMouseEvent(PreviewMouseEvent.Type.RELEASED))) {
+            handleMouseRelease();
+        }
+        
+        previewController.refreshPreview();
+        redraw();
+    }
+    
+    private void handleMousePress(){
+        ref.set(mouseX, mouseY, 0);
+    }
+    
+    private void handleMouseDrag(){
+        setMoving(true);
+        trans.set(mouseX, mouseY, 0);
+        trans.sub(ref);
+        trans.div(scaling); // ensure const. moving speed whatever the zoom is
+        trans.add(lastMove);
+    }
+    
+    private void handleMouseRelease() {
         lastMove.set(trans);
         setMoving(false);
         redraw();

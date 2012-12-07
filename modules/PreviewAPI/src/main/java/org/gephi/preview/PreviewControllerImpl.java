@@ -43,14 +43,13 @@ package org.gephi.preview;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.*;
 import org.gephi.preview.api.*;
-import org.gephi.preview.spi.ItemBuilder;
-import org.gephi.preview.spi.RenderTargetBuilder;
-import org.gephi.preview.spi.Renderer;
+import org.gephi.preview.spi.*;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -150,7 +149,21 @@ public class PreviewControllerImpl implements PreviewController {
             }
         }
 
-        Renderer[] renderers = model.getManagedEnabledRenderers();
+        Renderer[] renderers;
+        if (!mousePressed) {
+            renderers = model.getManagedEnabledRenderers();
+        } else {
+            ArrayList<Renderer> renderersList = new ArrayList<Renderer>();
+            for(Renderer renderer: model.getManagedEnabledRenderers()){
+                //Only mouse responsive renderers will be called while mouse is pressed
+                if(renderer instanceof MouseResponsiveRenderer){
+                    renderersList.add(renderer);
+                }
+            }
+
+            renderers = renderersList.toArray(new Renderer[0]);
+        }
+
         if (renderers == null) {
             renderers = getRegisteredRenderers();
         }
@@ -250,14 +263,11 @@ public class PreviewControllerImpl implements PreviewController {
 
     @Override
     public void render(RenderTarget target, Renderer[] renderers, Workspace workspace) {
-        render(target, renderers, getModel(workspace));
+        render(target, renderers != null ? renderers : getModel(workspace).getManagedEnabledRenderers(), getModel(workspace));
     }
 
     private synchronized void render(RenderTarget target, Renderer[] renderers, PreviewModelImpl previewModel) {
         if (previewModel != null) {
-            if (renderers == null) {
-                renderers = getRegisteredRenderers();
-            }
             PreviewProperties properties = previewModel.getProperties();
 
             //Progress
@@ -265,10 +275,12 @@ public class PreviewControllerImpl implements PreviewController {
             if (target instanceof AbstractRenderTarget) {
                 int tasks = 0;
                 for (Renderer r : renderers) {
-                    for (String type : previewModel.getItemTypes()) {
-                        for (Item item : previewModel.getItems(type)) {
-                            if (r.isRendererForitem(item, properties)) {
-                                tasks++;
+                    if (!mousePressed || r instanceof MouseResponsiveRenderer) {
+                        for (String type : previewModel.getItemTypes()) {
+                            for (Item item : previewModel.getItems(type)) {
+                                if (r.isRendererForitem(item, properties)) {
+                                    tasks++;
+                                }
                             }
                         }
                     }
@@ -280,14 +292,16 @@ public class PreviewControllerImpl implements PreviewController {
 
             //Render items
             for (Renderer r : renderers) {
-                for (String type : previewModel.getItemTypes()) {
-                    for (Item item : previewModel.getItems(type)) {
-                        if (r.isRendererForitem(item, properties)) {
-                            r.render(item, target, properties);
-                            Progress.progress(progressTicket);
-                            if (target instanceof AbstractRenderTarget) {
-                                if (((AbstractRenderTarget) target).isCancelled()) {
-                                    return;
+                if (!mousePressed || r instanceof MouseResponsiveRenderer) {
+                    for (String type : previewModel.getItemTypes()) {
+                        for (Item item : previewModel.getItems(type)) {
+                            if (r.isRendererForitem(item, properties)) {
+                                r.render(item, target, properties);
+                                Progress.progress(progressTicket);
+                                if (target instanceof AbstractRenderTarget) {
+                                    if (((AbstractRenderTarget) target).isCancelled()) {
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -372,5 +386,47 @@ public class PreviewControllerImpl implements PreviewController {
             }
         }
         return anyPluginRendererRegistered;
+    }
+    private boolean mousePressed = false;
+    
+    @Override
+    public boolean sendMouseEvent(PreviewMouseEvent event){
+        return sendMouseEvent(event, Lookup.getDefault().lookup(ProjectController.class).getCurrentWorkspace());
+    }
+
+    @Override
+    public boolean sendMouseEvent(PreviewMouseEvent event, Workspace workspace) {
+        if(workspace == null){
+            return false;
+        }
+        
+        PreviewModel previewModel = getModel(workspace);
+        
+        //Avoid drag events arriving to listeners if they did not consume previous press event.
+        if ((event.type != PreviewMouseEvent.Type.DRAGGED && event.type != PreviewMouseEvent.Type.RELEASED) || mousePressed) {
+            for (PreviewMouseListener listener : previewModel.getEnabledMouseListeners()) {
+                switch (event.type) {
+                    case CLICKED:
+                        listener.mouseClicked(event, previewModel.getProperties(), workspace);
+                        break;
+                    case PRESSED:
+                        mousePressed = true;
+                        listener.mousePressed(event, previewModel.getProperties(), workspace);
+                        break;
+                    case DRAGGED:
+                        listener.mouseDragged(event, previewModel.getProperties(), workspace);
+                        break;
+                    case RELEASED:
+                        mousePressed = false;
+                        listener.mouseReleased(event, previewModel.getProperties(), workspace);
+                }
+                if (event.isConsumed()) {
+                    return true;
+                }
+            }
+        }
+
+        mousePressed = false;//Avoid drag events arriving to listeners if they did not consume previous press event.
+        return false;
     }
 }

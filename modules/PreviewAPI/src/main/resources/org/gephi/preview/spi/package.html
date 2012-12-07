@@ -36,16 +36,23 @@
         a new attribute to nodes create a new <code>ItemBuilder</code> for the
         type <code>Item.Node</code>. Simply return item objects with the data you
         want to add. The system will automatically merge your new data to node items.
-        <h3>Override a Renderer</h3>
-        Default renderers can be completely replaced by custom implementations. The
-        implementation needs to customize its <code>@ServiceProvider</code> annotation
-        with the renderer path it is overriding:
+        <h3>Extend or replace an existing renderer</h3>
+        <p>To extend or completely replace a default Renderer by your own implementation, 
+        create a new Renderer and set the annotation like below. In addition add Preview Plugin module as a dependency.
+        </p><p><code>
+        @ServiceProvider(service=Renderer.class, position=XXX)
+        public class MyRenderer extends NodeRenderer
+        </code>
+        </p><p>Being XXX the new position of the renderer
+        Then you can reuse parts of the base class or just override them.
+        </p><p>Default renderers are:
+        </p>
         <ul>
-            <li><pre>@ServiceProvider(service=Renderer.class, supersedes="org.gephi.preview.plugin.renderers.NodeRenderer")</pre></li>
-            <li><pre>@ServiceProvider(service=Renderer.class, supersedes="org.gephi.preview.plugin.renderers.EdgeRenderer")</pre></li>
-            <li><pre>@ServiceProvider(service=Renderer.class, supersedes="org.gephi.preview.plugin.renderers.NodeLabelRenderer")</pre></li>
-            <li><pre>@ServiceProvider(service=Renderer.class, supersedes="org.gephi.preview.plugin.renderers.EdgeLabelRenderer")</pre></li>
-            <li><pre>@ServiceProvider(service=Renderer.class, supersedes="org.gephi.preview.plugin.renderers.ArrowRenderer")</pre></li>
+            <li> org.gephi.preview.plugin.renderers.NodeRenderer</li>
+            <li> org.gephi.preview.plugin.renderers.EdgeRenderer</li>
+            <li> org.gephi.preview.plugin.renderers.NodeLabelRenderer</li>
+            <li> org.gephi.preview.plugin.renderers.EdgeLabelRenderer</li>
+            <li> org.gephi.preview.plugin.renderers.ArrowRenderer</li>
         </ul>
         <h3>Add a new PreviewUI settings panel</h3>
         Plug-ins can add UI components to the Preview Settings module. Additional components are placed in new tabs and have access to the
