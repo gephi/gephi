@@ -159,7 +159,7 @@ public class ExporterGEXF implements GraphExporter, CharacterExporter, LongTask 
     public boolean execute() {
         attributeModel = workspace.getLookup().lookup(AttributeModel.class);
         graphModel = workspace.getLookup().lookup(GraphModel.class);
-        dynamicModel = workspace.getLookup().lookup(DynamicModel.class);
+        dynamicModel = Lookup.getDefault().lookup(DynamicController.class).getModel(workspace);
         HierarchicalGraph graph;
         if (exportVisible) {
             graph = graphModel.getHierarchicalGraphVisible();
