@@ -57,6 +57,7 @@ import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.netbeans.validation.api.ui.ValidationPanel;
+import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
 /**
@@ -204,7 +205,7 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
             public boolean validate(Problems prblms, String string, String t) {
                 boolean valid = validateDateFormat(t);
                 if(!valid){
-                    prblms.add("Invalid date format");
+                    prblms.add(NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.invalid.dateformat"));
                 }
                 return valid;
             }
@@ -215,7 +216,7 @@ public class CreateTimeIntervalUI extends javax.swing.JPanel implements Manipula
             public boolean validate(Problems prblms, String string, String t) {
                 boolean valid = validateNumberOrEmpty(t);
                 if(!valid){
-                    prblms.add("Invalid number");
+                    prblms.add(NbBundle.getMessage(CreateTimeIntervalUI.class, "CreateTimeIntervalUI.invalid.number"));
                 }
                 return valid;
             }

@@ -1,71 +1,76 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Eduardo Ramos
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian, Mathieu Jacomy, Julian Bilcke, Eduardo Ramos
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.desktop.datalab.general.actions;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import javax.swing.JCheckBox;
-import javax.swing.JTable;
-import javax.swing.table.TableModel;
 import net.miginfocom.swing.MigLayout;
-import org.netbeans.swing.outline.Outline;
+import org.gephi.data.attributes.api.AttributeColumn;
+import org.gephi.data.attributes.api.AttributeTable;
+import org.gephi.datalab.api.datatables.AttributeTableCSVExporter;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
 /**
  * UI for selecting CSV export options of a JTable.
+ *
  * @author Eduardo Ramos <eduramiba@gmail.com>
  */
 public class CSVExportUI extends javax.swing.JPanel {
 
     private static final String CHARSET_SAVED_PREFERENCES = "CSVExportUI_Charset";
     private static final String SEPARATOR_SAVED_PREFERENCES = "CSVExportUI_Separator";
-    private JTable table;
-    private JCheckBox[] columnsCheckBoxes;
+    private final AttributeColumn[] columns;
+    private ColumnCheckboxWrapper[] columnsCheckBoxes;
+    private final boolean edgesTable;
 
-    /** Creates new form CSVExportUI */
-    public CSVExportUI(JTable table) {
+    /**
+     * Creates new form CSVExportUI
+     */
+    public CSVExportUI(AttributeTable table, boolean edgesTable) {
         initComponents();
-        this.table = table;
+        this.columns = table.getColumns();
+        this.edgesTable = edgesTable;
         separatorComboBox.addItem(new SeparatorWrapper((','), getMessage("CSVExportUI.comma")));
         separatorComboBox.addItem(new SeparatorWrapper((';'), getMessage("CSVExportUI.semicolon")));
         separatorComboBox.addItem(new SeparatorWrapper(('\t'), getMessage("CSVExportUI.tab")));
@@ -79,38 +84,40 @@ public class CSVExportUI extends javax.swing.JPanel {
         String savedCharset = NbPreferences.forModule(CSVExportUI.class).get(CHARSET_SAVED_PREFERENCES, null);
         if (savedCharset != null) {
             charsetComboBox.setSelectedItem(savedCharset);
-        }else{
+        } else {
             charsetComboBox.setSelectedItem(Charset.forName("UTF-8").name());//UTF-8 by default, not system default charset
         }
         refreshColumns();
     }
 
-    public void unSetup(){
+    public void unSetup() {
         NbPreferences.forModule(CSVExportUI.class).put(CHARSET_SAVED_PREFERENCES, charsetComboBox.getSelectedItem().toString());
         NbPreferences.forModule(CSVExportUI.class).putInt(SEPARATOR_SAVED_PREFERENCES, separatorComboBox.getSelectedIndex());
     }
 
     private void refreshColumns() {
-        boolean outlineTable = table instanceof Outline;
-        TableModel model = table.getModel();
-        columnsCheckBoxes = new JCheckBox[model.getColumnCount()];
         columnsPanel.removeAll();
         columnsPanel.setLayout(new MigLayout("", "[pref!]"));
-
-
-        int modelIndex;
-        //Show rest of columns:
-        for (int i = 0; i < table.getColumnCount(); i++) {
-            modelIndex=table.convertColumnIndexToModel(i);
-            if(modelIndex==0){
-                if(outlineTable){//If outline table, hide nodes tree column from exporting (first column)
-                    columnsCheckBoxes[i] = new JCheckBox(model.getColumnName(modelIndex), false);
-                    continue;
-                }
-            }
-            columnsCheckBoxes[i] = new JCheckBox(model.getColumnName(modelIndex), true);
-            columnsPanel.add(columnsCheckBoxes[i], "wrap");
+        
+        ArrayList<ColumnCheckboxWrapper> columnCheckboxesList = new ArrayList<ColumnCheckboxWrapper>();
+        
+        //In case of edges table, we need to include fake source, target and type columns:
+        if(edgesTable){
+            columnCheckboxesList.add(new ColumnCheckboxWrapper(AttributeTableCSVExporter.FAKE_COLUMN_EDGE_SOURCE, "Source", true));
+            columnCheckboxesList.add(new ColumnCheckboxWrapper(AttributeTableCSVExporter.FAKE_COLUMN_EDGE_TARGET, "Target", true));
+            columnCheckboxesList.add(new ColumnCheckboxWrapper(AttributeTableCSVExporter.FAKE_COLUMN_EDGE_TYPE, "Type", true));
         }
+        
+        //Show rest of columns:
+        for (AttributeColumn column : columns) {
+            columnCheckboxesList.add(new ColumnCheckboxWrapper(column.getIndex(), column.getTitle(), true));
+        }
+
+        columnsCheckBoxes = columnCheckboxesList.toArray(new ColumnCheckboxWrapper[0]);
+        for (ColumnCheckboxWrapper columnCheckboxWrapper : columnsCheckBoxes) {
+            columnsPanel.add(columnCheckboxWrapper, "wrap");
+        }
+        
         columnsPanel.revalidate();
         columnsPanel.repaint();
     }
@@ -132,7 +139,7 @@ public class CSVExportUI extends javax.swing.JPanel {
         ArrayList<Integer> columnsIndexes = new ArrayList<Integer>();
         for (int i = 0; i < columnsCheckBoxes.length; i++) {
             if (columnsCheckBoxes[i].isSelected()) {
-                columnsIndexes.add(table.convertColumnIndexToModel(i));
+                columnsIndexes.add(columnsCheckBoxes[i].index);
             }
         }
         return columnsIndexes.toArray(new Integer[0]);
@@ -169,11 +176,18 @@ public class CSVExportUI extends javax.swing.JPanel {
     private String getMessage(String resName) {
         return NbBundle.getMessage(CSVExportUI.class, resName);
     }
+    
+    class ColumnCheckboxWrapper extends JCheckBox{
+        int index;
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+        public ColumnCheckboxWrapper(int index, String text, boolean selected) {
+            super(text, selected);
+            this.index = index;
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

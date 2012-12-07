@@ -49,7 +49,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +59,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.gephi.data.attributes.api.*;
 import org.gephi.datalab.api.DataLaboratoryHelper;
+import org.gephi.datalab.api.datatables.AttributeTableCSVExporter;
 import org.gephi.datalab.api.datatables.DataTablesController;
 import org.gephi.datalab.api.datatables.DataTablesEventListener;
 import org.gephi.datalab.spi.ContextMenuItemManipulator;
@@ -73,11 +73,11 @@ import org.gephi.desktop.datalab.general.actions.CSVExportUI;
 import org.gephi.desktop.datalab.general.actions.MergeColumnsUI;
 import org.gephi.graph.api.*;
 import org.gephi.project.api.*;
-import org.gephi.ui.components.WrapLayout;
 import org.gephi.ui.components.BusyUtils;
+import org.gephi.ui.components.WrapLayout;
 import org.gephi.ui.utils.DialogFileFilter;
 import org.gephi.ui.utils.UIUtils;
-import org.gephi.utils.TableCSVExporter;
+import org.gephi.utils.JTableCSVExporter;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.netbeans.swing.etable.ETableColumnModel;
 import org.openide.DialogDescriptor;
@@ -697,21 +697,25 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     }
 
     public void exportCurrentTable(ExportMode exportMode) {
-        JTable table;
+        AttributeTable table;
+        Attributes[] rows;
         String fileName = prepareTableExportFileName();
+        boolean edgesTable;
 
         if (classDisplayed == ClassDisplayed.NODE) {
-            table = nodeTable.getOutlineTable();
+            table = Lookup.getDefault().lookup(AttributeController.class).getModel().getNodeTable();
+            edgesTable = false;
             fileName += " [Nodes]";
         } else {
-            table = edgeTable.getTable();
+            table = Lookup.getDefault().lookup(AttributeController.class).getModel().getEdgeTable();
+            edgesTable = true;
             fileName += " [Edges]";
         }
         fileName += ".csv";
 
         switch (exportMode) {
             case CSV:
-                showCSVExportUI(table, fileName);
+                showCSVExportUI(table, edgesTable, fileName);
                 break;
         }
     }
@@ -750,11 +754,11 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
         return fileName;
     }
 
-    private void showCSVExportUI(JTable table, String fileName) {
-        CSVExportUI csvUI = new CSVExportUI(table);
+    private void showCSVExportUI(AttributeTable table, boolean edgesTable, String fileName) {
+        CSVExportUI csvUI = new CSVExportUI(table, edgesTable);
         DialogDescriptor dd = new DialogDescriptor(csvUI, csvUI.getDisplayName());
         if (DialogDisplayer.getDefault().notify(dd).equals(DialogDescriptor.OK_OPTION)) {
-            DataTableTopComponent.exportTableAsCSV(this, table, csvUI.getSelectedSeparator(), csvUI.getSelectedCharset(), csvUI.getSelectedColumnsIndexes(), fileName);
+            DataTableTopComponent.exportTableAsCSV(this, table, edgesTable, csvUI.getSelectedSeparator(), csvUI.getSelectedCharset(), csvUI.getSelectedColumnsIndexes(), fileName);
         }
         csvUI.unSetup();
     }
@@ -1411,7 +1415,7 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
     }
 
     /**
-     * <p>Exports a JTable to a CSV file showing first a dialog to select the
+     * <p>Exports a AttributeTable to a CSV file showing first a dialog to select the
      * file to write.</p>
      *
      * @param parent Parent window
@@ -1422,11 +1426,16 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
      * @param columnsToExport Indicates the indexes of the columns to export.
      * All columns will be exported if null
      */
-    public static void exportTableAsCSV(JComponent parent, JTable table, Character separator, Charset charset, Integer[] columnsToExport, String fileName) {
-        String lastPath = NbPreferences.forModule(TableCSVExporter.class).get(LAST_PATH, null);
+    public static void exportTableAsCSV(JComponent parent, AttributeTable table, boolean edgesTable, Character separator, Charset charset, Integer[] columnsToExport, String fileName) {
+        //Validate that at least 1 column is selected:
+        if(columnsToExport.length < 1){
+            return;
+        }
+        
+        String lastPath = NbPreferences.forModule(JTableCSVExporter.class).get(LAST_PATH, null);
         final JFileChooser chooser = new JFileChooser(lastPath);
         chooser.setAcceptAllFileFilterUsed(false);
-        DialogFileFilter dialogFileFilter = new DialogFileFilter(NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.filechooser.csvDescription"));
+        DialogFileFilter dialogFileFilter = new DialogFileFilter(NbBundle.getMessage(DataTableTopComponent.class, "TableCSVExporter.filechooser.csvDescription"));
         dialogFileFilter.addExtension("csv");
         chooser.addChoosableFileFilter(dialogFileFilter);
         File selectedFile = new File(chooser.getCurrentDirectory(), fileName);
@@ -1443,12 +1452,19 @@ public class DataTableTopComponent extends TopComponent implements AWTEventListe
 
         //Save last path
         String defaultDirectory = file.getParentFile().getAbsolutePath();
-        NbPreferences.forModule(TableCSVExporter.class).put(LAST_PATH, defaultDirectory);
+        NbPreferences.forModule(JTableCSVExporter.class).put(LAST_PATH, defaultDirectory);
         try {
-            TableCSVExporter.writeCSVFile(table, file, separator, charset, columnsToExport);
-            JOptionPane.showMessageDialog(parent, NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.success"));
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(parent, NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.error"), NbBundle.getMessage(TableCSVExporter.class, "TableCSVExporter.dialog.error.title"), JOptionPane.ERROR_MESSAGE);
+            Attributable[] rows;
+            if(edgesTable){
+                rows = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph().getEdges().toArray();
+            }else{
+                rows = Lookup.getDefault().lookup(GraphController.class).getModel().getGraph().getNodes().toArray();
+            }
+            
+            AttributeTableCSVExporter.writeCSVFile(table, file, separator, charset, columnsToExport, rows);
+            JOptionPane.showMessageDialog(parent, NbBundle.getMessage(DataTableTopComponent.class, "TableCSVExporter.dialog.success"));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(parent, NbBundle.getMessage(DataTableTopComponent.class, "TableCSVExporter.dialog.error"), NbBundle.getMessage(DataTableTopComponent.class, "TableCSVExporter.dialog.error.title"), JOptionPane.ERROR_MESSAGE);
         }
     }
     private static final String LAST_PATH = "TableCSVExporter_Save_Last_Path";
