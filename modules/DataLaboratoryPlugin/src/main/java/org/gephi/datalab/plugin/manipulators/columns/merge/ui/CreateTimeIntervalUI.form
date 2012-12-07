@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
@@ -20,54 +20,56 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Component id="header" alignment="0" pref="664" max="32767" attributes="0"/>
+          <Group type="102" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="endColumnLabel" max="32767" attributes="1"/>
-                  <Component id="startColumnLabel" alignment="0" pref="101" max="32767" attributes="1"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="startColumnComboBox" pref="180" max="32767" attributes="0"/>
-                  <Component id="endColumnComboBox" alignment="0" pref="180" max="32767" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="parseDatesRadioButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="216" max="32767" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="parseNumbersRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="defaultStartNumberLabel" alignment="1" min="-2" pref="102" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="dateDefaultStartLabel" alignment="0" min="-2" pref="100" max="-2" attributes="1"/>
-                                  <Component id="dateDefaultEndLabel" min="-2" pref="100" max="-2" attributes="0"/>
-                                  <Component id="dateFormatLabel" min="-2" pref="94" max="-2" attributes="1"/>
+                                  <Component id="dateDefaultStartLabel" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="dateDefaultEndLabel" max="32767" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="dateFormatLabel" max="32767" attributes="1"/>
+                                      <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
-                          <Component id="defaultEndNumberLabel" alignment="1" min="-2" pref="102" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="defaultStartNumberLabel" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="defaultEndNumberLabel" alignment="1" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="defaultStartDatePicker" alignment="1" pref="170" max="32767" attributes="2"/>
-                          <Component id="defaultEndDatePicker" alignment="1" pref="170" max="32767" attributes="2"/>
-                          <Component id="dateFormatComboBox" alignment="1" pref="170" max="32767" attributes="2"/>
-                          <Component id="defaultStartNumberText" alignment="0" pref="170" max="32767" attributes="0"/>
-                          <Component id="defaultEndNumberText" alignment="0" pref="170" max="32767" attributes="0"/>
+                          <Component id="defaultStartDatePicker" alignment="1" max="32767" attributes="2"/>
+                          <Component id="defaultEndDatePicker" alignment="1" max="32767" attributes="2"/>
+                          <Component id="dateFormatComboBox" alignment="1" max="32767" attributes="2"/>
+                          <Component id="defaultStartNumberText" alignment="0" max="32767" attributes="0"/>
+                          <Component id="defaultEndNumberText" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="endColumnLabel" max="32767" attributes="1"/>
+                          <Component id="startColumnLabel" alignment="0" max="32767" attributes="1"/>
+                      </Group>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="startColumnComboBox" max="32767" attributes="0"/>
+                          <Component id="endColumnComboBox" alignment="0" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Component id="parseDatesRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="parseNumbersRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
-          <Component id="header" alignment="0" pref="305" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -226,6 +228,7 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="dateFormatComboBox">
       <Properties>
+        <Property name="editable" type="boolean" value="true"/>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="0"/>
         </Property>
