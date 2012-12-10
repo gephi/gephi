@@ -699,6 +699,7 @@
                                             <includes> 
                                                 <include>${brandingToken}.ico</include>
                                                 <include>${brandingToken}file128.png</include>
+                                                <include>COPYING.txt</include>
                                             </includes> 
                                             <filtering>false</filtering> 
                                         </resource> 
