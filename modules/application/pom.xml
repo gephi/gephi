@@ -715,6 +715,26 @@
                         <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
                             <execution>
+                                <id>replace-windows-icon</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Windows-only target that replaces the icon for the launcher exe with our own icon. -->
+                                    <target name="replaceWindowsLauncherIcon" description="Replace the icon for the Windows launcher exe">
+                                        <echo message="Replacing icon of Windows launcher executable."/>
+                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true">
+                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe gephi.ico 0"/>
+                                        </exec>
+                                        
+                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true">
+                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe gephifile.ico 1"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>create-windows-installer</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
