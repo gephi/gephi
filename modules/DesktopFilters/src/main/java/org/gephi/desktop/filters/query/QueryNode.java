@@ -184,15 +184,22 @@ public class QueryNode extends AbstractNode {
 
         public void actionPerformed(ActionEvent e) {
             FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-            if (query.getParent() == null) {
-                //filterController.add(query);
-                Query q = filterController.createQuery(query.getFilter());
-                filterController.add(q);
-            } else {
-                //filterController.add(query.getParent());
-                Query q = filterController.createQuery(query.getParent().getFilter());
-                filterController.add(q);
-            }
+            Query ancestor = query;
+            while(ancestor.getParent() != null)
+                ancestor = ancestor.getParent();
+            duplicateQuery(filterController, null, ancestor);
+
+        }
+
+        private void duplicateQuery(FilterController filterController, Query parent, Query child){
+            Query childQuery = filterController.createQuery(child.getFilter());
+            if(parent == null)
+                filterController.add(childQuery);
+            else
+                filterController.setSubQuery(parent, childQuery);
+            if(child.getChildrenSlotsCount() > 0)
+                for(Query grandChild : child.getChildren())
+                    duplicateQuery(filterController, childQuery, grandChild);
         }
     }
 }
