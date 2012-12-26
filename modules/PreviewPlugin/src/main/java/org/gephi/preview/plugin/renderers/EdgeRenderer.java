@@ -44,6 +44,7 @@ package org.gephi.preview.plugin.renderers;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfGState;
 import java.awt.Color;
+import java.text.DecimalFormat;
 import java.util.Locale;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -356,7 +357,8 @@ public class EdgeRenderer implements Renderer {
             edgeElem.setAttribute("d", String.format(Locale.ENGLISH, "M %f,%f L %f,%f",
                     x1, y1, x2, y2));
             edgeElem.setAttribute("stroke", svgTarget.toHexString(color));
-            edgeElem.setAttribute("stroke-width", Float.toString(thickness * svgTarget.getScaleRatio()));
+            DecimalFormat df = new DecimalFormat("#.########");
+            edgeElem.setAttribute("stroke-width", df.format(thickness * svgTarget.getScaleRatio()));
             edgeElem.setAttribute("stroke-opacity", (color.getAlpha() / 255f) + "");
             edgeElem.setAttribute("fill", "none");
             svgTarget.getTopElement(SVGTarget.TOP_EDGES).appendChild(edgeElem);
