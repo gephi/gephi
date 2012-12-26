@@ -44,7 +44,7 @@
     <!-- Properties -->
     <properties>        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gephi.maven.requiredVersion>3.0.3</gephi.maven.requiredVersion>
+        <gephi.maven.requiredVersion>3.0.4</gephi.maven.requiredVersion>
         <netbeans.run.params.ide/>
         <netbeans.run.params>${netbeans.run.params.ide}</netbeans.run.params>
         
@@ -88,6 +88,9 @@
         <gephi.appbundle.name>Gephi</gephi.appbundle.name>
         <gephi.appbundle.signature>????</gephi.appbundle.signature>
         <gephi.jarbundler.version>2.2.0</gephi.jarbundler.version>
+
+        <!-- Mac OS X signing identity - must match with a verified Apple developer certificate in the keychain -->
+        <gephi.codesign.identity>Developer ID Application</gephi.codesign.identity>
         
         <!-- Repository URLs -->
         <gephi.release.repository.id>gephi-nexus</gephi.release.repository.id>
