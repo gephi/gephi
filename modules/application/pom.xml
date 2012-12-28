@@ -486,6 +486,20 @@
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
+                    
+                    <!-- Avoid jar goal -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>none</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
 
                     <!-- Unpack the localization dependency -->
                     <plugin>
@@ -762,7 +776,7 @@
             <id>release-macos</id>
             <build>
                 <plugins>
-                    <!-- Deploy exe artifact -->
+                    <!-- Deploy dmg artifact -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
