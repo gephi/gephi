@@ -173,12 +173,6 @@
             <name>Gephi 3rd Party</name>
             <url>http://nexus.gephi.org/nexus/content/repositories/thirdparty/</url>
         </repository>
-        <repository>
-            <url>http://download.java.net/maven/2/</url>
-            <id>beans-binding</id>
-            <layout>default</layout>
-            <name>Repository for library Library[beans-binding]</name>
-        </repository>
     </repositories>
 
     <!-- Locations of the artifacts published -->
@@ -976,18 +970,6 @@
                                     <goal>jar</goal>
                                 </goals> 
                             </execution>
-                            <execution>
-                                <id>aggregate-javadoc</id>
-                                <goals>
-                                    <goal>aggregate</goal>
-                                </goals>
-                                <phase>install</phase>
-                                <configuration>
-                                    <show>public</show>
-                                    <doctitle>Gephi ${project.version} API Index</doctitle>
-                                    <subpackages>org.gephi.clustering.api:org.gephi.clustering.spi:org.gephi.data.attributes.api:org.gephi.data.attributes.spi:org.gephi.data.attributes.type:org.gephi.data.properties:org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.dynamic.api:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.partition.api:org.gephi.partition.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.ranking.api:org.gephi.ranking.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress</subpackages>
-                                </configuration>
-                            </execution>
                         </executions>
                     </plugin>
             
@@ -1002,57 +984,6 @@
                                 </goals> 
                             </execution>
                         </executions>
-                    </plugin>
-                    
-                    <!-- Assembler to produce final sources and javadoc artifacts -->
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>assembly-javadoc-sources</id>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                                <phase>install</phase>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <tarLongFileMode>gnu</tarLongFileMode>
-                            <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-                            <finalName>${project.name}-${project.version}</finalName>
-                            <descriptors>
-                                <descriptor>src/assemble/javadoc.xml</descriptor>
-                                <descriptor>src/assemble/sources.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        
-        <profile>
-            <id>upload-apidocs</id>
-            <build>
-                <plugins>
-                    <!-- Upload the javadoc automatically -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>wagon-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>upload-jar-to-folder</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>upload</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <fromDir>${project.build.directory}/site/apidocs</fromDir>
-                            <url>${gephi.snapshot.repository.url}</url>
-                            <toDir>external/apidocs</toDir>
-                            <serverId>${gephi.snapshot.repository.id}</serverId>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -1081,6 +1012,85 @@
                                 <phase>none</phase>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profile activated with release-extra to aggregate and upload sources and javadoc -->
+        <profile>
+            <id>javadoc-sources</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <show>private</show>
+                            <nohelp>true</nohelp>
+                            <detectLinks>true</detectLinks>
+                            <detectOfflineLinks>true</detectOfflineLinks>      
+                        </configuration>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <id>aggregate-javadoc</id>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                                <phase>install</phase>
+                                <configuration>
+                                    <show>public</show>
+                                    <doctitle>Gephi ${project.version} API Index</doctitle>
+                                    <subpackages>org.gephi.clustering.api:org.gephi.clustering.spi:org.gephi.data.attributes.api:org.gephi.data.attributes.spi:org.gephi.data.attributes.type:org.gephi.data.properties:org.gephi.datalab.api:org.gephi.datalab.spi:org.gephi.datalab.spi.columns:org.gephi.datalab.spi.columns.merge:org.gephi.datalab.spi.edges:org.gephi.datalab.spi.general:org.gephi.datalab.spi.nodes:org.gephi.datalab.spi.rows.merge:org.gephi.datalab.spi.values:org.gephi.dynamic.api:org.gephi.filters.api:org.gephi.filters.spi:org.gephi.graph.api:org.gephi.graph.spi:org.gephi.io.exporter.api:org.gephi.io.exporter.spi:org.gephi.io.generator.api:org.gephi.io.generator.spi:org.gephi.io.importer.api:org.gephi.io.importer.spi:org.gephi.io.processor.spi:org.gephi.layout.api:org.gephi.layout.spi:org.gephi.partition.api:org.gephi.partition.spi:org.gephi.perspective.api:org.gephi.perspective.spi:org.gephi.preview.api:org.gephi.preview.spi:org.gephi.preview.types:org.gephi.project.api:org.gephi.project.spi:org.gephi.ranking.api:org.gephi.ranking.spi:org.gephi.statistics.api:org.gephi.statistics.spi:org.gephi.timeline.api:org.gephi.tools.api:org.gephi.tools.spi:org.gephi.utils.longtask.api:org.gephi.utils.longtask.spi:org.gephi.utils.progress</subpackages>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    <!-- Upload the javadoc automatically -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>wagon-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>upload-jar-to-folder</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>upload</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <fromDir>${project.build.directory}/site/apidocs</fromDir>
+                            <url>${gephi.snapshot.repository.url}</url>
+                            <toDir>external/apidocs</toDir>
+                            <serverId>${gephi.snapshot.repository.id}</serverId>
+                        </configuration>
+                    </plugin>
+                    
+                    <!-- Assembler to produce final sources and javadoc artifacts -->
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>assembly-javadoc-sources</id>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <phase>install</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <tarLongFileMode>gnu</tarLongFileMode>
+                            <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                            <finalName>${project.name}-${project.version}</finalName>
+                            <descriptors>
+                                <descriptor>src/assemble/javadoc.xml</descriptor>
+                                <descriptor>src/assemble/sources.xml</descriptor>
+                            </descriptors>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
