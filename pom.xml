@@ -148,7 +148,7 @@
 
         <gephi.build-helper-maven-plugin.version>1.7</gephi.build-helper-maven-plugin.version>
 
-        <gephi.nbm-maven-plugin.version>3.7</gephi.nbm-maven-plugin.version>
+        <gephi.nbm-maven-plugin.version>3.9</gephi.nbm-maven-plugin.version>
         
         <gephi.maven-reactor-plugin.version>1.0</gephi.maven-reactor-plugin.version>
         
