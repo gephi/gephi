@@ -486,29 +486,6 @@
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
-                       
-                    <!-- Attach the final ZIP files for deployment -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-zip</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>attach-artifact</goal>
-                                </goals>
-                                <configuration>
-                                    <artifacts>
-                                        <artifact>
-                                            <file>${project.build.directory}/${project.artifactId}-${project.version}.zip</file>
-                                            <type>zip</type>
-                                        </artifact>
-                                    </artifacts>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
 
                     <!-- Unpack the localization dependency -->
                     <plugin>
