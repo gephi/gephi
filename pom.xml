@@ -1054,8 +1054,8 @@
                     
                     <!-- Assembler to produce final sources and javadoc artifacts -->
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <inherited>false</inherited>
                         <configuration>
                             <tarLongFileMode>gnu</tarLongFileMode>
                             <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
