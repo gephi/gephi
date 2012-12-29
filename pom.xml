@@ -97,6 +97,8 @@
         <gephi.snapshot.repository.id>gephi-nexus</gephi.snapshot.repository.id>
         <gephi.release.repository.url>http://nexus.gephi.org/nexus/content/repositories/releases</gephi.release.repository.url>
         <gephi.snapshot.repository.url>http://nexus.gephi.org/nexus/content/repositories/snapshots</gephi.snapshot.repository.url>
+        <gephi.default.repository.id>${gephi.snapshot.repository.id}</gephi.default.repository.id>
+        <gephi.default.repository.url>${gephi.snapshot.repository.url}</gephi.default.repository.url>
         
         <!-- Location of the NBM autoupdate folder -->
         <gephi.updates.site>${project.build.directory}/netbeans_site</gephi.updates.site>
@@ -989,6 +991,15 @@
             </build>
         </profile>
         
+        <!-- Properties for release -->
+        <profile>
+            <id>release</id>
+            <properties>
+                <gephi.default.repository.id>${gephi.release.repository.id}</gephi.default.repository.id>
+                <gephi.default.repository.url>${gephi.release.repository.url}</gephi.default.repository.url>
+            </properties>
+        </profile>
+        
         <!-- Profile activated for windows/macos release only. Should be called alone so it only creates the windows installer/compressed dmg -->
         <profile>
             <id>release-extra</id>
@@ -1045,9 +1056,9 @@
                         <artifactId>wagon-maven-plugin</artifactId>
                         <configuration>
                             <fromDir>${project.build.directory}/site/apidocs</fromDir>
-                            <url>${gephi.snapshot.repository.url}</url>
+                            <url>${gephi.default.repository.url}</url>
                             <toDir>external/apidocs</toDir>
-                            <serverId>${gephi.snapshot.repository.id}</serverId>
+                            <serverId>${gephi.default.repository.id}</serverId>
                         </configuration>
                     </plugin>
                     
@@ -1073,8 +1084,8 @@
                         <configuration>
                             <packaging>jar</packaging>
                             <generatePom>false</generatePom>
-                            <repositoryId>${gephi.snapshot.repository.id}</repositoryId>
-                            <url>${gephi.snapshot.repository.url}</url>
+                            <repositoryId>${gephi.default.repository.id}</repositoryId>
+                            <url>${gephi.default.repository.url}</url>
                             <artifactId>${project.artifactId}</artifactId>
                             <groupId>${project.groupId}</groupId>
                             <version>${project.version}</version>
@@ -1112,8 +1123,8 @@
                         <configuration>
                             <packaging>tar.gz</packaging>
                             <generatePom>false</generatePom>
-                            <repositoryId>${gephi.snapshot.repository.id}</repositoryId>
-                            <url>${gephi.snapshot.repository.url}</url>
+                            <repositoryId>${gephi.default.repository.id}</repositoryId>
+                            <url>${gephi.default.repository.url}</url>
                             <artifactId>${project.artifactId}</artifactId>
                             <groupId>${project.groupId}</groupId>
                             <version>${project.version}</version>
