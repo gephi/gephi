@@ -110,6 +110,12 @@
         <gephi.menu.app.name>Gephi ${project.version}</gephi.menu.app.name>
         <gephi.innosetup.path>C:/Program Files (x86)/Inno Setup 5</gephi.innosetup.path>
         
+        <!-- Javadoc export path -->
+        <gephi.javadoc.repository.path>external/apidocs</gephi.javadoc.repository.path>
+        
+        <!-- NBMs updates export path -->
+        <gephi.updates.repository.path>external/updates</gephi.updates.repository.path>
+        
         <!--==== Plugin Versions ==================================================================================-->
 
         <gephi.maven-antrun-plugin.version>1.7</gephi.maven-antrun-plugin.version>
@@ -997,6 +1003,8 @@
             <properties>
                 <gephi.default.repository.id>${gephi.release.repository.id}</gephi.default.repository.id>
                 <gephi.default.repository.url>${gephi.release.repository.url}</gephi.default.repository.url>
+                <gephi.javadoc.repository.path>external/apidocs/${project.version}</gephi.javadoc.repository.path>
+                <gephi.updates.repository.path>external/updates/${project.version}</gephi.updates.repository.path>
             </properties>
         </profile>
         
@@ -1057,7 +1065,7 @@
                         <configuration>
                             <fromDir>${project.build.directory}/site/apidocs</fromDir>
                             <url>${gephi.default.repository.url}</url>
-                            <toDir>external/apidocs</toDir>
+                            <toDir>${gephi.javadoc.repository.path}</toDir>
                             <serverId>${gephi.default.repository.id}</serverId>
                         </configuration>
                     </plugin>
