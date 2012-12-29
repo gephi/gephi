@@ -546,9 +546,9 @@
                         <configuration>
                             <fromDir>${gephi.updates.site}</fromDir>
                             <includes>*</includes>
-                            <url>${gephi.snapshot.repository.url}</url>
-                            <toDir>external/updates</toDir>
-                            <serverId>${gephi.snapshot.repository.id}</serverId>
+                            <url>${gephi.default.repository.url}</url>
+                            <toDir>${gephi.updates.repository.path}</toDir>
+                            <serverId>${gephi.default.repository.id}</serverId>
                         </configuration>
                     </plugin>
                 </plugins>
