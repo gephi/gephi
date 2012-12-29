@@ -1043,7 +1043,6 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>wagon-maven-plugin</artifactId>
-                        <inherited>false</inherited>
                         <configuration>
                             <fromDir>${project.build.directory}/site/apidocs</fromDir>
                             <url>${gephi.snapshot.repository.url}</url>
@@ -1095,7 +1094,6 @@
                     <!-- Assembler to produce final sources and javadoc artifacts -->
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <inherited>false</inherited>
                         <configuration>
                             <tarLongFileMode>gnu</tarLongFileMode>
                             <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
