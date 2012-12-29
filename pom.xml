@@ -120,13 +120,13 @@
 
         <gephi.maven-antrun-plugin.version>1.7</gephi.maven-antrun-plugin.version>
 
-        <gephi.maven-assembly-plugin.version>2.3</gephi.maven-assembly-plugin.version>
+        <gephi.maven-assembly-plugin.version>2.4</gephi.maven-assembly-plugin.version>
 
         <gephi.maven-clean-plugin.version>2.5</gephi.maven-clean-plugin.version>
 
-        <gephi.maven-compiler-plugin.version>2.5.1</gephi.maven-compiler-plugin.version>
+        <gephi.maven-compiler-plugin.version>3.0</gephi.maven-compiler-plugin.version>
 
-        <gephi.maven-dependency-plugin.version>2.5.1</gephi.maven-dependency-plugin.version>
+        <gephi.maven-dependency-plugin.version>2.6</gephi.maven-dependency-plugin.version>
 
         <gephi.maven-deploy-plugin.version>2.7</gephi.maven-deploy-plugin.version>
 
@@ -148,11 +148,11 @@
 
         <gephi.maven-resources-plugin.version>2.6</gephi.maven-resources-plugin.version>
 
-        <gephi.maven-site-plugin.version>3.1</gephi.maven-site-plugin.version>
+        <gephi.maven-site-plugin.version>3.2</gephi.maven-site-plugin.version>
 
-        <gephi.maven-source-plugin.version>2.2</gephi.maven-source-plugin.version>
+        <gephi.maven-source-plugin.version>2.2.1</gephi.maven-source-plugin.version>
 
-        <gephi.maven-surefire-plugin.version>2.12.4</gephi.maven-surefire-plugin.version>
+        <gephi.maven-surefire-plugin.version>2.13</gephi.maven-surefire-plugin.version>
 
         <gephi.build-helper-maven-plugin.version>1.7</gephi.build-helper-maven-plugin.version>
 
@@ -1081,6 +1081,7 @@
                             <descriptors>
                                 <descriptor>src/assemble/javadoc.xml</descriptor>
                             </descriptors>
+                            <attach>false</attach>
                         </configuration>
                     </plugin>
                     
@@ -1120,6 +1121,7 @@
                             <descriptors>
                                 <descriptor>src/assemble/sources.xml</descriptor>
                             </descriptors>
+                            <attach>false</attach>
                         </configuration>
                     </plugin>
                     
