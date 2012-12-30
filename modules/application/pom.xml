@@ -718,9 +718,14 @@
                                         <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true">
                                             <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe gephi.ico 0"/>
                                         </exec>
-                                        
                                         <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true">
                                             <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}.exe gephifile.ico 1"/>
+                                        </exec>
+                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true">
+                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephi.ico 0"/>
+                                        </exec>
+                                        <exec dir="src/main/app-resources" executable="ReplaceVistaIcon.exe" resolveexecutable="true">
+                                            <arg line="${project.build.directory}/${brandingToken}/bin/${brandingToken}64.exe gephifile.ico 1"/>
                                         </exec>
                                     </target>
                                 </configuration>
