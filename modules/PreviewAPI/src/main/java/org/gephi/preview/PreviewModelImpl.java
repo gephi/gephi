@@ -331,27 +331,31 @@ public class PreviewModelImpl implements PreviewModel {
      * Removes unnecessary properties from not enabled renderers
      */
     private void reloadProperties() {
-        PreviewProperties newProperties = new PreviewProperties();//Ensure that the properties object doesn't change
+        if(properties == null){
+            initProperties();
+        }else{
+            PreviewProperties newProperties = new PreviewProperties();//Ensure that the properties object doesn't change
 
-        //Properties from renderers
-        for (Renderer renderer : getManagedEnabledRenderers()) {
-            PreviewProperty[] props = renderer.getProperties();
-            for (PreviewProperty p : props) {
-                newProperties.addProperty(p);
-                if (properties.hasProperty(p.getName())) {
-                    newProperties.putValue(p.getName(), properties.getValue(p.getName()));//Keep old values
+            //Properties from renderers
+            for (Renderer renderer : getManagedEnabledRenderers()) {
+                PreviewProperty[] props = renderer.getProperties();
+                for (PreviewProperty p : props) {
+                    newProperties.addProperty(p);
+                    if (properties.hasProperty(p.getName())) {
+                        newProperties.putValue(p.getName(), properties.getValue(p.getName()));//Keep old values
+                    }
                 }
             }
-        }
 
-        //Remove old properties (this keeps simple values)
-        for (PreviewProperty p : properties.getProperties()) {
-            properties.removeProperty(p);
-        }
+            //Remove old properties (this keeps simple values)
+            for (PreviewProperty p : properties.getProperties()) {
+                properties.removeProperty(p);
+            }
 
-        //Set new properties
-        for (PreviewProperty property : newProperties.getProperties()) {
-            properties.addProperty(property);
+            //Set new properties
+            for (PreviewProperty property : newProperties.getProperties()) {
+                properties.addProperty(property);
+            }
         }
     }
 
