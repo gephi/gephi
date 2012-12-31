@@ -78,3 +78,10 @@ msgstr ""
 
 msgid "NegateBooleanColumn.name"
 msgstr "Negate boolean values"
+
+msgid "ConvertColumnToDynamic.name"
+msgstr "Convert column to dynamic"
+
+msgid "ConvertColumnToDynamic.description"
+msgstr ""
+"Convert an existing column to a dynamic column and optionally replace it"
