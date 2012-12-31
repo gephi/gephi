@@ -22,7 +22,7 @@ msgid "DynamicNbNodes.graphcolumn.NbEdges"
 msgstr "Edge Count"
 
 msgid "DynamicDegree.graphcolumn.AvgDegree"
-msgstr "Average Degree"
+msgstr "Dynamic Average Degree"
 
 msgid "DynamicDegree.nodecolumn.InDegree"
 msgstr "Dynamic In-Degree"

@@ -67,3 +67,9 @@ msgstr "Default start time:"
 
 msgid "CreateTimeIntervalUI.defaultEndNumberLabel.text"
 msgstr "Default end time:"
+
+msgid "CreateTimeIntervalUI.invalid.dateformat"
+msgstr "Invalid date format"
+
+msgid "CreateTimeIntervalUI.invalid.number"
+msgstr "Invalid number"
