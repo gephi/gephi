@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2012-02-27 16:00+0000\n"
-"Last-Translator: Zbyněk Schwarz <zbynek.schwarz@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.net/projects/p/gephi/language/cs/)\n"
+"PO-Revision-Date: 2012-12-31 01:16+0000\n"
+"Last-Translator: Eduardo Ramos <eduramiba@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/gephi/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 msgid "DeleteColumn.name"
 msgstr "Smazat sloupec"
@@ -77,3 +77,9 @@ msgstr "Vytvořit sloupec se seznamen řetězců, v němž hodnoty odpovídají 
 
 msgid "NegateBooleanColumn.name"
 msgstr "Negovat booleovské hodnoty"
+
+msgid "ConvertColumnToDynamic.name"
+msgstr ""
+
+msgid "ConvertColumnToDynamic.description"
+msgstr ""

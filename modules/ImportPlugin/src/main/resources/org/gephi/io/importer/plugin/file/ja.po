@@ -3,20 +3,20 @@
 # This file is distributed under the same license as the Gephi package.
 # 
 # Translators:
-# Siro Kida <kida.siro@gmail.com>, 2011, 2012.
+# Siro Kida <kida.siro@gmail.com>, 2011-2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2012-03-15 10:52+0000\n"
+"PO-Revision-Date: 2012-10-12 10:08+0000\n"
 "Last-Translator: Siro Kida <kida.siro@gmail.com>\n"
-"Language-Team: Japanese (http://www.transifex.net/projects/p/gephi/language/ja/)\n"
+"Language-Team: Japanese (http://www.transifex.com/projects/p/gephi/language/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ja\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgid "fileType_GDF_Name"
 msgstr "GDFファイル(GUESS)"
@@ -159,9 +159,6 @@ msgstr "デフォルトの辺タイプ''{0}''が認識されていません。�
 msgid "importerGraphML_error_edgetype"
 msgstr " 辺 ''{1}''のタイプ''{0}'' が認識されていません。デフォルトの値に設定します。"
 
-msgid "importerGML_error_listtoken"
-msgstr "行{0}で予期しないトークンタイプ"
-
 msgid "importerGML_error_nodeidmissing"
 msgstr "ノードIDが欠落しています"
 
@@ -302,6 +299,12 @@ msgstr "GEXF version 1.1"
 
 msgid "importerGEXF_log_version12"
 msgstr "GEXFバージョン1.2"
+
+msgid "importerGEXF_log_version13"
+msgstr "GEXF version 1.3"
+
+msgid "importerGEXF_log_version_undef"
+msgstr " GEXFバージョン不明. パーサー 1.3 使用."
 
 msgid "importerGEXF_log_dynamic_weight"
 msgstr "動的重みの列が見つかりました"

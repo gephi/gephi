@@ -3,21 +3,21 @@
 # This file is distributed under the same license as the Gephi package.
 # 
 # Translators:
-# Eduardo Ramos <eduramiba@gmail.com>, 2011, 2012.
+# Eduardo Ramos <eduramiba@gmail.com>, 2011-2012.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: Gephi\n"
 "Report-Msgid-Bugs-To: https://github.com/gephi/gephi/issues\n"
 "POT-Creation-Date: 2011-08-05 14:52+0200\n"
-"PO-Revision-Date: 2012-03-23 15:26+0000\n"
+"PO-Revision-Date: 2012-12-31 01:33+0000\n"
 "Last-Translator: Eduardo Ramos <eduramiba@gmail.com>\n"
-"Language-Team: Spanish (Castilian) (http://www.transifex.net/projects/p/gephi/language/es/)\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/gephi/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "GraphDistancePanel.directedRadioButton.text"
 msgstr "Dirigido"
@@ -184,38 +184,74 @@ msgstr "Normalizar centralidades en el rango [0,1]"
 msgid "ConnectedComponentUI.name"
 msgstr "Componentes conexos"
 
+msgid "ConnectedComponentUI.shortDescription"
+msgstr "Determina el número de componentes conexas en la red"
+
 msgid "ClusteringCoefficientUI.name"
 msgstr "Coeficiente medio de clustering"
+
+msgid "ClusteringCoefficientUI.shortDescription"
+msgstr "Calcula el promedio de cómo los nodos están incrustados en su vecindad."
 
 msgid "DegreeDistributionUI.name"
 msgstr "Ley de potencias de grado"
 
+msgid "DegreeDistributionUI.shortDescription"
+msgstr "Mide la distribución de los grados entre todos los nodos de la red."
+
 msgid "EigenvectorCentralityUI.name"
 msgstr "Centralidad de vector propio"
+
+msgid "EigenvectorCentralityUI.shortDescription"
+msgstr "Una medida de la importancia de un nodo en la red basada en sus conexiones."
 
 msgid "GraphDensityUI.name"
 msgstr "Densidad de grafo"
 
+msgid "GraphDensityUI.shortDescription"
+msgstr "Mide cómo de cerca está la red de ser completa."
+
 msgid "DiameterUI.name"
+msgstr "Diámetro de la red"
+
+msgid "DiameterUI.shortDescription"
 msgstr "Diámetro de la red"
 
 msgid "HitsUI.name"
 msgstr "HITS"
 
+msgid "HitsUI.shortDescription"
+msgstr "Computa dos valores separados para cada nodo: cómo de valiosa es la información del nodo y la calidad de los enlaces del nodo."
+
 msgid "InOutDegreeUI.name"
 msgstr "Grado medio"
+
+msgid "InOutDegreeUI.shortDescription"
+msgstr "Grado promedio"
 
 msgid "ModularityUI.name"
 msgstr "Modularidad"
 
+msgid "ModularityUI.shortDescription"
+msgstr "Algoritmo de detección de comunidades."
+
 msgid "PageRankUI.name"
 msgstr "PageRank"
+
+msgid "PageRankUI.shortDescription"
+msgstr "Clasifica las \"páginas\" de los nodos de acuerdo a la frecuencia con la que un usuario siguiendo enlaces llega a la \"página\" del nodo de forma no aleatoria."
 
 msgid "PathLengthUI.name"
 msgstr "Longitud media de camino"
 
+msgid "PathLengthUI.shortDescription"
+msgstr "Longitud media de camino"
+
 msgid "WeightedDegreeUI.name"
 msgstr "Grado medio con pesos"
+
+msgid "WeightedDegreeUI.shortDescription"
+msgstr "Grado promedio con pesos"
 
 msgid "PageRankPanel.edgeWeightCheckbox.text"
 msgstr "Utilizar peso de aristas"
