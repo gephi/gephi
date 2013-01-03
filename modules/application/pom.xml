@@ -557,7 +557,7 @@
         
         <!-- Profile used along with deployment to create the dmg archive -->
         <profile>
-            <id>deploy-dmg</id>
+            <id>create-dmg</id>
             <build>
                 <plugins>
                     
@@ -632,7 +632,15 @@
                             </execution>
                         </executions>
                     </plugin>
-                    
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profile used along with deployment to attach the dmg archive -->
+        <profile>
+            <id>deploy-dmg</id>
+            <build>
+                <plugins>
                     <!-- Attach the final DMG for deployment -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -652,6 +660,30 @@
                                         </artifact>
                                     </artifacts>
                                 </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>   
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profile activated for windows/macos release only. Should be called alone so it only creates the windows installer/compressed dmg -->
+        <profile>
+            <id>release-extra</id>
+            <build>
+                <plugins>
+                    <!-- Avoid updatesite.xml.gz attach -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>nbm-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-standalone-zip</id>
+                                <phase>none</phase>       
+                            </execution>
+                            <execution>
+                                <id>autoupdate</id>
+                                <phase>none</phase>
                             </execution>
                         </executions>
                     </plugin>
