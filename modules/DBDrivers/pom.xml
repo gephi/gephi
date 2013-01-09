@@ -5,7 +5,7 @@
         <artifactId>gephi-parent</artifactId>
         <groupId>org.gephi</groupId>
         <version>0.8.2</version>
-		<relativePath>../..</relativePath>
+        <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.gephi</groupId>
@@ -20,37 +20,31 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.7.2</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.18</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.1-901-1.jdbc4</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>sqljdbc4</artifactId>
             <version>3.0.1301.101</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.teradata</groupId>
             <artifactId>teradata-jdbc</artifactId>
             <version>14.00.00.21</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.teradata</groupId>
             <artifactId>teradata-config</artifactId>
             <version>14.00.00.21</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
