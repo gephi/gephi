@@ -28,15 +28,15 @@ If you run into any trouble or have questions consult our [forum](http://forum.g
 
 ### Nightly builds
 
-Current version is 0.8.2-SNAPSHOT
+Current version is 0.9-SNAPSHOT
 
-- [gephi-0.8.2-SNAPSHOT.zip](http://nexus.gephi.org/nexus/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.8.2-SNAPSHOT&p=zip) (Windows & Linux)
+- [gephi-0.9-SNAPSHOT.zip](http://nexus.gephi.org/nexus/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9-SNAPSHOT&p=zip) (Windows & Linux)
 
-- [gephi-0.8.2-SNAPSHOT.dmg](http://nexus.gephi.org/nexus/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.8.2-SNAPSHOT&p=dmg) (Mac OS X)
+- [gephi-0.9-SNAPSHOT.dmg](http://nexus.gephi.org/nexus/service/local/artifact/maven/content?r=snapshots&g=org.gephi&a=gephi&v=0.9-SNAPSHOT&p=dmg) (Mac OS X)
 
-- [gephi-0.8.2-SNAPSHOT-sources.tar.gz](http://nexus.gephi.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.gephi&a=gephi-parent&v=0.8.2-SNAPSHOT&c=sources&p=tar.gz) (Sources)
+- [gephi-0.9-SNAPSHOT-sources.tar.gz](http://nexus.gephi.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.gephi&a=gephi-parent&v=0.9-SNAPSHOT&c=sources&p=tar.gz) (Sources)
 
-- [gephi-0.8.2-SNAPSHOT-javadoc.jar](http://nexus.gephi.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.gephi&a=gephi-parent&v=0.8.2-SNAPSHOT&c=javadoc&p=jar) (Javadoc)
+- [gephi-0.9-SNAPSHOT-javadoc.jar](http://nexus.gephi.org/nexus/service/local/artifact/maven/redirect?r=snapshots&g=org.gephi&a=gephi-parent&v=0.9-SNAPSHOT&c=javadoc&p=jar) (Javadoc)
 
 ## Developer Introduction
 
@@ -48,7 +48,7 @@ Consult the [**Javadoc**](http://gephi.org/docs) for an overview of the APIs.
 
 - Java JDK 6 or 7 with preferably [Oracle Java JDK](http://java.com/en/).
 
-- [Apache Maven](http://maven.apache.org/) version 3.0.3 or later
+- [Apache Maven](http://maven.apache.org/) version 3.0.4 or later
 
 ### Checkout and Build the sources
 
