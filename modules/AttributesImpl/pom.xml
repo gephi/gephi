@@ -14,6 +14,10 @@
     <packaging>nbm</packaging>
 
     <name>AttributesImpl</name>
+    
+    <properties>
+        <gephi.modules.specification.version>0.8.2.1</gephi.modules.specification.version>
+    </properties>
 
     <dependencies>
         <dependency>
