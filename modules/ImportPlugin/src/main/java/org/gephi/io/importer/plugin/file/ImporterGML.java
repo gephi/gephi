@@ -306,10 +306,14 @@ public class ImporterGML implements FileImporter, LongTask {
                 AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
                 AttributeColumn column = edgeClass.getColumn(key);
                 if (column == null) {
-                    column = edgeClass.addColumn(key, AttributeType.STRING);
+                    column = edgeClass.addColumn(key, (value instanceof Double)?AttributeType.DOUBLE:AttributeType.STRING);
                     report.log("Edge attribute " + column.getTitle() + " (" + column.getType() + ")");
                 }
-                edge.addAttributeValue(column, value.toString());
+                if (value instanceof Double || value instanceof String) {
+                    edge.addAttributeValue(column, value);
+                } else {
+                    edge.addAttributeValue(column, value.toString());
+                }
             }
         }
         return ret;
