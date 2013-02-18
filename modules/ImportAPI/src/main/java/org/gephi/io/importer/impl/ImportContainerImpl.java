@@ -720,10 +720,32 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
                 customPosition = true;
             }
         }
+
         if (!customPosition) {
-            for (NodeDraftImpl node : nodeMap.values()) {
-                node.setX((float) ((0.01 + Math.random()) * 1000) - 500);
-                node.setY((float) ((0.01 + Math.random()) * 1000) - 500);
+            // keep the original behavior for small graphs
+            if (nodeMap.size() < 5000) {
+                for (NodeDraftImpl node : nodeMap.values()) {
+                    node.setX((float) ((0.01 + Math.random()) * 1000) - 500);
+                    node.setY((float) ((0.01 + Math.random()) * 1000) - 500);
+                }
+            // layout large graphs in non-overlapping gird
+            // because the overlaps kill gl rendering
+            } else {
+                double side = Math.sqrt(nodeMap.size());
+                double nodeDist = 20;
+                double x = 0, y = 0;
+                int yNodes = 0;
+                for (NodeDraftImpl node : nodeMap.values()) {
+                    node.setX((float)x);
+                    node.setY((float)y);
+                    y += nodeDist;
+                    yNodes++;
+                    if (yNodes > side) {
+                        y = 0;
+                        x += nodeDist;
+                        yNodes = 0;
+                    }
+                }
             }
         }
     }
