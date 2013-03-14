@@ -42,7 +42,7 @@ Current version is 0.9-SNAPSHOT
 
 Gephi is developed in Java and uses OpenGL for its visualization engine. Built on the top of Netbeans Platform, it follows a loosely-coupled, modular architecture philosophy. That allows it to be used build large applications and to grow in a sustainable way. Gephi is split into modules, which depend on other modules through well-written APIs. Plugins can reuse existing APIs, create new services and even replace a default implementation with a new one.
 
-Consult the [**Javadoc**](http://gephi.org/docs) for an overview of the APIs.
+Consult the [**Javadoc**](http://gephi.org/docs/api) for an overview of the APIs.
 
 ### Requirements
 
