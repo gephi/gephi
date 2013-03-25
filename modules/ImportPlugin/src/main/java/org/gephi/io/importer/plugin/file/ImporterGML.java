@@ -243,10 +243,15 @@ public class ImporterGML implements FileImporter, LongTask {
                 AttributeTable nodeClass = container.getAttributeModel().getNodeTable();
                 AttributeColumn column = nodeClass.getColumn(key);
                 if (column == null) {
-                    column = nodeClass.addColumn(key, AttributeType.STRING);
+                    column = nodeClass.addColumn(key, (value instanceof Double)?AttributeType.DOUBLE:AttributeType.STRING);
                     report.log("Node attribute " + column.getTitle() + " (" + column.getType() + ")");
                 }
-                node.addAttributeValue(column, value.toString());
+                if (value instanceof Double || value instanceof String) {
+                    node.addAttributeValue(column, value);
+                } else {
+                    // can this happen?
+                    node.addAttributeValue(column, value.toString());
+                }
             }
         }
         return ret;
@@ -301,10 +306,14 @@ public class ImporterGML implements FileImporter, LongTask {
                 AttributeTable edgeClass = container.getAttributeModel().getEdgeTable();
                 AttributeColumn column = edgeClass.getColumn(key);
                 if (column == null) {
-                    column = edgeClass.addColumn(key, AttributeType.STRING);
+                    column = edgeClass.addColumn(key, (value instanceof Double)?AttributeType.DOUBLE:AttributeType.STRING);
                     report.log("Edge attribute " + column.getTitle() + " (" + column.getType() + ")");
                 }
-                edge.addAttributeValue(column, value.toString());
+                if (value instanceof Double || value instanceof String) {
+                    edge.addAttributeValue(column, value);
+                } else {
+                    edge.addAttributeValue(column, value.toString());
+                }
             }
         }
         return ret;
