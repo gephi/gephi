@@ -170,7 +170,7 @@ public class Hits implements Statistics, LongTask {
             for (Node node : auth_list) {
 
                 int n_index = indicies.get(node);
-                temp_authority[n_index] = authority[n_index];
+                temp_authority[n_index] = 1.0f;
                 EdgeIterable edge_iter;
                 if (!useUndirected) {
                     edge_iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node);
@@ -178,9 +178,9 @@ public class Hits implements Statistics, LongTask {
                     edge_iter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(node);
                 }
                 for (Edge edge : edge_iter) {
-                    Node target = hgraph.getOpposite(node, edge);
-                    int target_index = indicies.get(target);
-                    temp_authority[n_index] += hubs[target_index];
+                    Node source = hgraph.getOpposite(node, edge);
+                    int source_index = indicies.get(source);
+                    temp_authority[n_index] += hubs[source_index];
                 }
 
                 auth_sum += temp_authority[n_index];
@@ -194,10 +194,10 @@ public class Hits implements Statistics, LongTask {
             for (Node node : hub_list) {
 
                 int n_index = indicies.get(node);
-                temp_hubs[n_index] = hubs[n_index];
+                temp_hubs[n_index] = 1.0f;
                 EdgeIterable edge_iter;
                 if (!useUndirected) {
-                    edge_iter = ((HierarchicalDirectedGraph) hgraph).getInEdgesAndMetaInEdges(node);
+                    edge_iter = ((HierarchicalDirectedGraph) hgraph).getOutEdgesAndMetaOutEdges(node);
                 } else {
                     edge_iter = ((HierarchicalUndirectedGraph) hgraph).getEdgesAndMetaEdges(node);
                 }
