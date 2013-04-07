@@ -41,39 +41,37 @@
  */
 package org.gephi.io.importer.api;
 
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
-import org.gephi.io.processor.spi.Processor;
-
 /**
- * Interface for unloading a container. Gets graph draft elements and
- * attributes. Get also basic params and properties which defined the content.
- * Unloaders are used by
- * <code>Processor</code> to load data from the container to the main data
- * structure.
- *
- * @author Mathieu Bastian
- * @see Processor
+ * Node and edge draft factory. Creates node and edge to push in the container.
  */
-public interface ContainerUnloader {
+public interface ElementDraftFactory {
 
-    public Iterable<NodeDraft> getNodes();
+    /**
+     * Returns an empty node draft instance.
+     *
+     * @return an instance of <code>NodeDraft</code>
+     */
+    public NodeDraft newNodeDraft();
 
-    public Iterable<EdgeDraft> getEdges();
+    /**
+     * Returns an empty node draft instance.
+     *
+     * @return an instance of <code>NodeDraft</code>
+     */
+    public NodeDraft newNodeDraft(String id);
 
-    public Iterable<ColumnDraft> getNodeColumns();
+    /**
+     * Returns an empty edge draft instance. Note that <b>source</b> and
+     * <b>target</b> have to be set.
+     *
+     * @return an instance of <code>EdgeDraft</code>
+     */
+    public EdgeDraft newEdgeDraft();
 
-    public Iterable<ColumnDraft> getEdgeColumns();
-
-//    public EdgeDraft getEdge(NodeDraft source, NodeDraft target);
-    public EdgeDiretionDefault getEdgeDefault();
-
-    public TimeFormat getTimeFormat();
-
-    public boolean allowSelfLoop();
-
-    public boolean allowAutoNode();
-
-    public boolean allowParallelEdges();
-
-    public String getSource();
+    /**
+     * Returns an empty node draft instance.
+     *
+     * @return an instance of <code>NodeDraft</code>
+     */
+    public EdgeDraft newEdgeDraft(String id);
 }

@@ -39,41 +39,46 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.io.importer.api;
+package org.gephi.io.importer.impl;
 
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
-import org.gephi.io.processor.spi.Processor;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.gephi.io.importer.api.ElementDraftFactory;
 
 /**
- * Interface for unloading a container. Gets graph draft elements and
- * attributes. Get also basic params and properties which defined the content.
- * Unloaders are used by
- * <code>Processor</code> to load data from the container to the main data
- * structure.
  *
- * @author Mathieu Bastian
- * @see Processor
+ * @author mbastian
  */
-public interface ContainerUnloader {
+public class ElementFactoryImpl implements ElementDraftFactory {
 
-    public Iterable<NodeDraft> getNodes();
+    protected final ImportContainerImpl container;
+    protected final AtomicInteger NODE_IDS = new AtomicInteger();
+    protected final AtomicInteger EDGE_IDS = new AtomicInteger();
 
-    public Iterable<EdgeDraft> getEdges();
+    public ElementFactoryImpl(ImportContainerImpl container) {
+        this.container = container;
+    }
 
-    public Iterable<ColumnDraft> getNodeColumns();
+    @Override
+    public NodeDraftImpl newNodeDraft() {
+        NodeDraftImpl node = new NodeDraftImpl(container, "n" + NODE_IDS.getAndIncrement());
+        return node;
+    }
 
-    public Iterable<ColumnDraft> getEdgeColumns();
+    @Override
+    public NodeDraftImpl newNodeDraft(String id) {
+        NodeDraftImpl node = new NodeDraftImpl(container, id);
+        return node;
+    }
 
-//    public EdgeDraft getEdge(NodeDraft source, NodeDraft target);
-    public EdgeDiretionDefault getEdgeDefault();
+    @Override
+    public EdgeDraftImpl newEdgeDraft() {
+        EdgeDraftImpl edge = new EdgeDraftImpl(container, "e" + EDGE_IDS.getAndIncrement());
+        return edge;
+    }
 
-    public TimeFormat getTimeFormat();
-
-    public boolean allowSelfLoop();
-
-    public boolean allowAutoNode();
-
-    public boolean allowParallelEdges();
-
-    public String getSource();
+    @Override
+    public EdgeDraftImpl newEdgeDraft(String id) {
+        EdgeDraftImpl edge = new EdgeDraftImpl(container, id);
+        return edge;
+    }
 }

@@ -41,39 +41,11 @@
  */
 package org.gephi.io.importer.api;
 
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
-import org.gephi.io.processor.spi.Processor;
-
 /**
- * Interface for unloading a container. Gets graph draft elements and
- * attributes. Get also basic params and properties which defined the content.
- * Unloaders are used by
- * <code>Processor</code> to load data from the container to the main data
- * structure.
  *
  * @author Mathieu Bastian
- * @see Processor
  */
-public interface ContainerUnloader {
+public enum EdgeDirection {
 
-    public Iterable<NodeDraft> getNodes();
-
-    public Iterable<EdgeDraft> getEdges();
-
-    public Iterable<ColumnDraft> getNodeColumns();
-
-    public Iterable<ColumnDraft> getEdgeColumns();
-
-//    public EdgeDraft getEdge(NodeDraft source, NodeDraft target);
-    public EdgeDiretionDefault getEdgeDefault();
-
-    public TimeFormat getTimeFormat();
-
-    public boolean allowSelfLoop();
-
-    public boolean allowAutoNode();
-
-    public boolean allowParallelEdges();
-
-    public String getSource();
+    DIRECTED, UNDIRECTED;
 }

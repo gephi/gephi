@@ -1,47 +1,49 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.importer.plugin.file;
 
 import java.io.Reader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
@@ -49,11 +51,11 @@ import javax.xml.stream.XMLReporter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.attribute.api.AttributeUtils;
+import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ContainerLoader;
-import org.gephi.io.importer.api.EdgeDefault;
+import org.gephi.io.importer.api.EdgeDirection;
+import org.gephi.io.importer.api.EdgeDiretionDefault;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
@@ -131,6 +133,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
         properties.addEdgePropertyAssociation(EdgeProperties.B, "b");
     }
 
+    @Override
     public boolean execute(ContainerLoader container) {
         this.container = container;
         this.report = new Report();
@@ -142,7 +145,6 @@ public class ImporterGraphML implements FileImporter, LongTask {
                 inputFactory.setProperty("javax.xml.stream.isValidating", Boolean.FALSE);
             }
             inputFactory.setXMLReporter(new XMLReporter() {
-
                 @Override
                 public void report(String message, String errorType, Object relatedInformation, Location location) throws XMLStreamException {
                     System.out.println("Error:" + errorType + ", message : " + message);
@@ -200,9 +202,9 @@ public class ImporterGraphML implements FileImporter, LongTask {
         //Edge Type
         if (!defaultEdgeType.isEmpty()) {
             if (defaultEdgeType.equalsIgnoreCase("undirected")) {
-                container.setEdgeDefault(EdgeDefault.UNDIRECTED);
+                container.setEdgeDefault(EdgeDiretionDefault.UNDIRECTED);
             } else if (defaultEdgeType.equalsIgnoreCase("directed")) {
-                container.setEdgeDefault(EdgeDefault.DIRECTED);
+                container.setEdgeDefault(EdgeDiretionDefault.DIRECTED);
             } else {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_defaultedgetype", defaultEdgeType), Issue.Level.SEVERE));
             }
@@ -229,14 +231,10 @@ public class ImporterGraphML implements FileImporter, LongTask {
         if (container.nodeExists(id)) {
             node = container.getNode(id);
         } else {
-            node = container.factory().newNodeDraft();
+            node = container.factory().newNodeDraft(id);
         }
-        node.setId(id);
 
-        //Parent
-        if (parent != null) {
-            node.setParent(parent);
-        }
+        //TODO - PARENT REL
 
         if (!container.nodeExists(id)) {
             container.addNode(node);
@@ -349,11 +347,11 @@ public class ImporterGraphML implements FileImporter, LongTask {
             }
 
             //Data attribute value
-            AttributeColumn column = container.getAttributeModel().getNodeTable().getColumn(fore);
+            ColumnDraft column = container.getNodeColumn(fore);
             if (column != null) {
                 try {
-                    Object val = column.getType().parse(value);
-                    node.addAttributeValue(column, val);
+                    Object val = AttributeUtils.parse(value, column.getTypeClass());
+                    node.setValue(column.getId(), val);
                 } catch (Exception e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
                 }
@@ -381,7 +379,13 @@ public class ImporterGraphML implements FileImporter, LongTask {
             }
         }
 
-        EdgeDraft edge = container.factory().newEdgeDraft();
+        //Edge Id
+        EdgeDraft edge;
+        if (!id.isEmpty()) {
+            edge = container.factory().newEdgeDraft(id);
+        } else {
+            edge = container.factory().newEdgeDraft();
+        }
 
         NodeDraft nodeSource = container.getNode(source);
         NodeDraft nodeTarget = container.getNode(target);
@@ -391,18 +395,15 @@ public class ImporterGraphML implements FileImporter, LongTask {
         //Type
         if (!directed.isEmpty()) {
             if (directed.equalsIgnoreCase("true")) {
-                edge.setType(EdgeDraft.EdgeType.DIRECTED);
+                edge.setType(EdgeDirection.DIRECTED);
             } else if (directed.equalsIgnoreCase("false")) {
-                edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
+                edge.setType(EdgeDirection.UNDIRECTED);
             } else {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_edgetype", directed, edge), Issue.Level.SEVERE));
             }
         }
 
-        //Id
-        if (!id.isEmpty()) {
-            edge.setId(id);
-        }
+
 
         boolean end = false;
         while (reader.hasNext() && !end) {
@@ -470,9 +471,6 @@ public class ImporterGraphML implements FileImporter, LongTask {
                         case LABEL:
                             edge.setLabel(value);
                             break;
-                        case ID:
-                            edge.setId(value);
-                            break;
                         case R:
                             if (edge.getColor() == null) {
                                 edge.setColor(Integer.parseInt(value), 0, 0);
@@ -502,11 +500,11 @@ public class ImporterGraphML implements FileImporter, LongTask {
             }
 
             //Data attribute value
-            AttributeColumn column = container.getAttributeModel().getEdgeTable().getColumn(fore);
+            ColumnDraft column = container.getEdgeColumn(fore);
             if (column != null) {
                 try {
-                    Object val = column.getType().parse(value);
-                    edge.addAttributeValue(column, val);
+                    Object val = AttributeUtils.parse(value, column.getTypeClass());
+                    edge.setValue(column.getId(), val);
                 } catch (Exception e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
                 }
@@ -601,51 +599,51 @@ public class ImporterGraphML implements FileImporter, LongTask {
             }
 
             //Type
-            AttributeType attributeType = AttributeType.STRING;
+            Class attributeType = String.class;
             if (type.equalsIgnoreCase("boolean") || type.equalsIgnoreCase("bool")) {
-                attributeType = AttributeType.BOOLEAN;
+                attributeType = boolean.class;
             } else if (type.equalsIgnoreCase("integer") || type.equalsIgnoreCase("int")) {
-                attributeType = AttributeType.INT;
+                attributeType = int.class;
             } else if (type.equalsIgnoreCase("long")) {
-                attributeType = AttributeType.LONG;
+                attributeType = Long.class;
             } else if (type.equalsIgnoreCase("float")) {
-                attributeType = AttributeType.FLOAT;
+                attributeType = Float.class;
             } else if (type.equalsIgnoreCase("double")) {
-                attributeType = AttributeType.DOUBLE;
+                attributeType = Double.class;
             } else if (type.equalsIgnoreCase("string")) {
-                attributeType = AttributeType.STRING;
+                attributeType = String.class;
             } else if (type.equalsIgnoreCase("bigdecimal")) {
-                attributeType = AttributeType.BIGDECIMAL;
+                attributeType = BigDecimal.class;
             } else if (type.equalsIgnoreCase("biginteger")) {
-                attributeType = AttributeType.BIGINTEGER;
+                attributeType = BigInteger.class;
             } else if (type.equalsIgnoreCase("byte")) {
-                attributeType = AttributeType.BYTE;
+                attributeType = Byte.class;
             } else if (type.equalsIgnoreCase("char")) {
-                attributeType = AttributeType.CHAR;
+                attributeType = Character.class;
             } else if (type.equalsIgnoreCase("short")) {
-                attributeType = AttributeType.SHORT;
+                attributeType = Short.class;
             } else if (type.equalsIgnoreCase("listboolean")) {
-                attributeType = AttributeType.LIST_BOOLEAN;
+                attributeType = boolean[].class;
             } else if (type.equalsIgnoreCase("listint")) {
-                attributeType = AttributeType.LIST_INTEGER;
+                attributeType = int[].class;
             } else if (type.equalsIgnoreCase("listlong")) {
-                attributeType = AttributeType.LIST_LONG;
+                attributeType = long[].class;
             } else if (type.equalsIgnoreCase("listfloat")) {
-                attributeType = AttributeType.LIST_FLOAT;
+                attributeType = float[].class;
             } else if (type.equalsIgnoreCase("listdouble")) {
-                attributeType = AttributeType.LIST_DOUBLE;
+                attributeType = double[].class;
             } else if (type.equalsIgnoreCase("liststring")) {
-                attributeType = AttributeType.LIST_STRING;
+                attributeType = String[].class;
             } else if (type.equalsIgnoreCase("listbigdecimal")) {
-                attributeType = AttributeType.LIST_BIGDECIMAL;
+                attributeType = BigDecimal[].class;
             } else if (type.equalsIgnoreCase("listbiginteger")) {
-                attributeType = AttributeType.LIST_BIGINTEGER;
+                attributeType = BigInteger[].class;
             } else if (type.equalsIgnoreCase("listbyte")) {
-                attributeType = AttributeType.LIST_BYTE;
+                attributeType = byte[].class;
             } else if (type.equalsIgnoreCase("listchar")) {
-                attributeType = AttributeType.LIST_CHARACTER;
+                attributeType = char[].class;
             } else if (type.equalsIgnoreCase("listshort")) {
-                attributeType = AttributeType.LIST_SHORT;
+                attributeType = short[].class;
             } else {
                 report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributetype2", type), Issue.Level.SEVERE));
                 return;
@@ -655,28 +653,32 @@ public class ImporterGraphML implements FileImporter, LongTask {
             Object defaultValue = null;
             if (!defaultStr.isEmpty()) {
                 try {
-                    defaultValue = attributeType.parse(defaultStr);
+                    defaultValue = AttributeUtils.parse(id, attributeType);
                     report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_default", defaultStr, title));
                 } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributedefault", title, attributeType.getTypeString()), Issue.Level.SEVERE));
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributedefault", title, attributeType.getCanonicalName()), Issue.Level.SEVERE));
                 }
             }
 
             //Add to model
             if ("node".equalsIgnoreCase(forStr) || "all".equalsIgnoreCase(forStr)) {
-                if (container.getAttributeModel().getNodeTable().hasColumn(id) || container.getAttributeModel().getNodeTable().hasColumn(title)) {
+                if (container.getNodeColumn(id) != null) {
                     report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributecolumn_exist", id));
                     return;
                 }
-                container.getAttributeModel().getNodeTable().addColumn(id, title, attributeType, AttributeOrigin.DATA, defaultValue);
-                report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_nodeattribute", title, attributeType.getTypeString()));
+                ColumnDraft column = container.addNodeColumn(id, attributeType);
+                column.setTitle(title);
+                column.setDefaultValue(defaultValue);
+                report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_nodeattribute", title, attributeType.getCanonicalName()));
             } else if ("edge".equalsIgnoreCase(forStr) || "all".equalsIgnoreCase(forStr)) {
-                if (container.getAttributeModel().getEdgeTable().hasColumn(id) || container.getAttributeModel().getEdgeTable().hasColumn(title)) {
+                if (container.getEdgeColumn(id) != null) {
                     report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributecolumn_exist", id));
                     return;
                 }
-                container.getAttributeModel().getEdgeTable().addColumn(id, title, attributeType, AttributeOrigin.DATA, defaultValue);
-                report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_edgeattribute", title, attributeType.getTypeString()));
+                ColumnDraft column = container.addEdgeColumn(id, attributeType);
+                column.setTitle(title);
+                column.setDefaultValue(defaultValue);
+                report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_edgeattribute", title, attributeType.getCanonicalName()));
             }
         } else {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributeempty", title), Issue.Level.SEVERE));
@@ -688,23 +690,28 @@ public class ImporterGraphML implements FileImporter, LongTask {
         return Float.parseFloat(str);
     }
 
+    @Override
     public void setReader(Reader reader) {
         this.reader = reader;
     }
 
+    @Override
     public ContainerLoader getContainer() {
         return container;
     }
 
+    @Override
     public Report getReport() {
         return report;
     }
 
+    @Override
     public boolean cancel() {
         cancel = true;
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progress = progressTicket;
     }

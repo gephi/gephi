@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.io.importer.plugin.file;
 
@@ -47,11 +47,8 @@ import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.util.HashMap;
 import java.util.Map;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeOrigin;
-import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.io.importer.api.ContainerLoader;
-import org.gephi.io.importer.api.EdgeDefault;
+import org.gephi.io.importer.api.EdgeDiretionDefault;
 import org.gephi.io.importer.api.EdgeDraft;
 import org.gephi.io.importer.api.ImportUtils;
 import org.gephi.io.importer.api.Issue;
@@ -76,11 +73,13 @@ public class ImporterDOT implements FileImporter, LongTask {
     private String graphName = "";
 
     private static class ParseException extends RuntimeException {
+
         public ParseException() {
             super("Parse error while parsing DOT file");
         }
     }
 
+    @Override
     public boolean execute(ContainerLoader container) {
         this.container = container;
         this.report = new Report();
@@ -130,7 +129,7 @@ public class ImporterDOT implements FileImporter, LongTask {
             if (streamTokenizer.ttype == StreamTokenizer.TT_WORD) {
                 if (streamTokenizer.sval.equalsIgnoreCase("digraph") || streamTokenizer.sval.equalsIgnoreCase("graph")) {
                     found = true;
-                    container.setEdgeDefault(streamTokenizer.sval.equalsIgnoreCase("digraph") ? EdgeDefault.DIRECTED : EdgeDefault.UNDIRECTED);
+                    container.setEdgeDefault(streamTokenizer.sval.equalsIgnoreCase("digraph") ? EdgeDiretionDefault.DIRECTED : EdgeDiretionDefault.UNDIRECTED);
                     streamTokenizer.nextToken();
                     if (streamTokenizer.ttype == StreamTokenizer.TT_WORD) {
                         graphName = streamTokenizer.sval;
@@ -189,8 +188,7 @@ public class ImporterDOT implements FileImporter, LongTask {
 
     protected NodeDraft getOrCreateNode(String id) {
         if (!container.nodeExists(id)) {
-            NodeDraft nodeDraft = container.factory().newNodeDraft();
-            nodeDraft.setId(id);
+            NodeDraft nodeDraft = container.factory().newNodeDraft(id);
             container.addNode(nodeDraft);
             return nodeDraft;
         }
@@ -209,10 +207,12 @@ public class ImporterDOT implements FileImporter, LongTask {
             return colorTable.get(streamTokenizer.sval);
         } else {
             String[] colors = streamTokenizer.sval.split(" ");
-            if (colors.length != 3)
-                 colors = streamTokenizer.sval.split(",");
-            if (colors.length != 3)
-                 throw new ParseException();
+            if (colors.length != 3) {
+                colors = streamTokenizer.sval.split(",");
+            }
+            if (colors.length != 3) {
+                throw new ParseException();
+            }
 
             return Color.getHSBColor(Float.parseFloat(colors[0]), Float.parseFloat(colors[1]), Float.parseFloat(colors[2]));
         }
@@ -294,16 +294,14 @@ public class ImporterDOT implements FileImporter, LongTask {
             } else {
                 // other attributes
                 String attributeName = streamTokenizer.sval;
-                AttributeColumn column = container.getAttributeModel().getNodeTable().getColumn(attributeName);
-                if (column == null) {
-                    column = container.getAttributeModel().getNodeTable().addColumn(attributeName, attributeName, AttributeType.STRING, AttributeOrigin.DATA, "");
-                    report.log(NbBundle.getMessage(ImporterDOT.class, "importerDOT_log_nodeattribute", attributeName, AttributeType.STRING.getTypeString()));
-                }
                 streamTokenizer.nextToken();
                 if (streamTokenizer.ttype == '=') {
                     streamTokenizer.nextToken();
                     if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '"') {
-                        nodeDraft.addAttributeValue(column, streamTokenizer.sval);
+                        String value = streamTokenizer.sval;
+                        if (value != null && !value.isEmpty()) {
+                            nodeDraft.setValue(attributeName, value);
+                        }
                     } else {
                         streamTokenizer.pushBack();
                     }
@@ -428,23 +426,28 @@ public class ImporterDOT implements FileImporter, LongTask {
         edgeAttributes(streamTokenizer, edge);
     }
 
+    @Override
     public void setReader(Reader reader) {
         this.reader = reader;
     }
 
+    @Override
     public ContainerLoader getContainer() {
         return container;
     }
 
+    @Override
     public Report getReport() {
         return report;
     }
 
+    @Override
     public boolean cancel() {
         cancel = true;
         return true;
     }
 
+    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
     }

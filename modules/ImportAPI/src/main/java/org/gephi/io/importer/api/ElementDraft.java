@@ -41,39 +41,53 @@
  */
 package org.gephi.io.importer.api;
 
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
-import org.gephi.io.processor.spi.Processor;
+import java.awt.Color;
 
 /**
- * Interface for unloading a container. Gets graph draft elements and
- * attributes. Get also basic params and properties which defined the content.
- * Unloaders are used by
- * <code>Processor</code> to load data from the container to the main data
- * structure.
  *
- * @author Mathieu Bastian
- * @see Processor
+ * @author mbastian
  */
-public interface ContainerUnloader {
+public interface ElementDraft {
 
-    public Iterable<NodeDraft> getNodes();
+    public String getId();
 
-    public Iterable<EdgeDraft> getEdges();
+    public Object getValue(String key);
 
-    public Iterable<ColumnDraft> getNodeColumns();
+    public String getLabel();
 
-    public Iterable<ColumnDraft> getEdgeColumns();
+    public Color getColor();
 
-//    public EdgeDraft getEdge(NodeDraft source, NodeDraft target);
-    public EdgeDiretionDefault getEdgeDefault();
+    public boolean isLabelVisible();
 
-    public TimeFormat getTimeFormat();
+    public float getLabelSize();
 
-    public boolean allowSelfLoop();
+    public Color getLabelColor();
 
-    public boolean allowAutoNode();
+    public void setValue(String key, Object value);
 
-    public boolean allowParallelEdges();
+    public void setLabel(String label);
 
-    public String getSource();
+    public void setColor(Color color);
+
+    public void setColor(String r, String g, String b);
+
+    public void setColor(float r, float g, float b);
+
+    public void setColor(int r, int g, int b);
+
+    public void setColor(String color);
+
+    public void setLabelVisible(boolean labelVisible);
+
+    public void setLabelSize(float size);
+
+    public void setLabelColor(Color color);
+
+    public void setLabelColor(String r, String g, String b);
+
+    public void setLabelColor(float r, float g, float b);
+
+    public void setLabelColor(int r, int g, int b);
+
+    public void setLabelColor(String color);
 }

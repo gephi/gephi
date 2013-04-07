@@ -62,7 +62,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerUnloader;
-import org.gephi.io.importer.api.EdgeDefault;
+import org.gephi.io.importer.api.EdgeDiretionDefault;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Report;
 import org.gephi.io.processor.spi.Processor;
@@ -120,13 +120,13 @@ public class ReportPanel extends javax.swing.JPanel {
                 int g = graphTypeCombo.getSelectedIndex();
                 switch (g) {
                     case 0:
-                        container.getLoader().setEdgeDefault(EdgeDefault.DIRECTED);
+                        container.getLoader().setEdgeDefault(EdgeDiretionDefault.DIRECTED);
                         break;
                     case 1:
-                        container.getLoader().setEdgeDefault(EdgeDefault.UNDIRECTED);
+                        container.getLoader().setEdgeDefault(EdgeDiretionDefault.UNDIRECTED);
                         break;
                     case 2:
-                        container.getLoader().setEdgeDefault(EdgeDefault.MIXED);
+                        container.getLoader().setEdgeDefault(EdgeDiretionDefault.MIXED);
                         break;
                 }
             }

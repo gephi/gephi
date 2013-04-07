@@ -39,41 +39,59 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.io.importer.api;
+package org.gephi.io.importer.impl;
 
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
-import org.gephi.io.processor.spi.Processor;
+import org.gephi.io.importer.api.ColumnDraft;
 
 /**
- * Interface for unloading a container. Gets graph draft elements and
- * attributes. Get also basic params and properties which defined the content.
- * Unloaders are used by
- * <code>Processor</code> to load data from the container to the main data
- * structure.
  *
- * @author Mathieu Bastian
- * @see Processor
+ * @author mbastian
  */
-public interface ContainerUnloader {
+public class ColumnDraftImpl implements ColumnDraft {
 
-    public Iterable<NodeDraft> getNodes();
+    protected final int index;
+    protected final String id;
+    protected final Class typeClass;
+    protected String title;
+    protected Object defaultValue;
 
-    public Iterable<EdgeDraft> getEdges();
+    public ColumnDraftImpl(String id, int index, Class typeClass) {
+        this.id = id;
+        this.index = index;
+        this.typeClass = typeClass;
+    }
 
-    public Iterable<ColumnDraft> getNodeColumns();
+    @Override
+    public String getId() {
+        return id;
+    }
 
-    public Iterable<ColumnDraft> getEdgeColumns();
+    @Override
+    public String getTitle() {
+        return title;
+    }
 
-//    public EdgeDraft getEdge(NodeDraft source, NodeDraft target);
-    public EdgeDiretionDefault getEdgeDefault();
+    @Override
+    public Class getTypeClass() {
+        return typeClass;
+    }
 
-    public TimeFormat getTimeFormat();
+    @Override
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
 
-    public boolean allowSelfLoop();
+    protected int getIndex() {
+        return index;
+    }
 
-    public boolean allowAutoNode();
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public boolean allowParallelEdges();
-
-    public String getSource();
+    @Override
+    public void setDefaultValue(Object value) {
+        this.defaultValue = value;
+    }
 }
