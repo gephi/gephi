@@ -1,56 +1,61 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Helder Suzuki <heldersuzuki@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Helder Suzuki <heldersuzuki@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.layout.plugin.force.quadtree;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.graph.api.HierarchicalGraph;
+import java.util.Set;
+import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.Spatial;
+import org.gephi.graph.api.NodeProperties;
+import org.gephi.graph.api.TextProperties;
+import org.gephi.graph.spi.LayoutData;
 
 /**
  * @author Helder Suzuki <heldersuzuki@gephi.org>
  */
-public class QuadTree implements Spatial {
+public class QuadTree implements Node {
 
     private float posX;
     private float posY;
@@ -64,23 +69,23 @@ public class QuadTree implements Spatial {
     private boolean isLeaf;
     public static final float eps = (float) 1e-6;
 
-    public static QuadTree buildTree(HierarchicalGraph graph, int maxLevel) {
+    public static QuadTree buildTree(Graph graph, int maxLevel) {
         float minX = Float.POSITIVE_INFINITY;
         float maxX = Float.NEGATIVE_INFINITY;
         float minY = Float.POSITIVE_INFINITY;
         float maxY = Float.NEGATIVE_INFINITY;
 
-        for (Node node : graph.getTopNodes()) {
-            minX = Math.min(minX, node.getNodeData().x());
-            maxX = Math.max(maxX, node.getNodeData().x());
-            minY = Math.min(minY, node.getNodeData().y());
-            maxY = Math.max(maxY, node.getNodeData().y());
+        for (Node node : graph.getNodes()) {
+            minX = Math.min(minX, node.x());
+            maxX = Math.max(maxX, node.x());
+            minY = Math.min(minY, node.y());
+            maxY = Math.max(maxY, node.y());
         }
 
         float size = Math.max(maxY - minY, maxX - minX);
         QuadTree tree = new QuadTree(minX, minY, size, maxLevel);
-        for (Node node : graph.getTopNodes()) {
-            tree.addNode(node.getNodeData());
+        for (Node node : graph.getNodes()) {
+            tree.addNode(node);
         }
 
         return tree;
@@ -96,6 +101,7 @@ public class QuadTree implements Spatial {
         add = new FirstAdd();
     }
 
+    @Override
     public float size() {
         return size;
     }
@@ -105,17 +111,17 @@ public class QuadTree implements Spatial {
 
         children = new ArrayList<QuadTree>();
         children.add(new QuadTree(posX + childSize, posY + childSize,
-                                  childSize, maxLevel - 1));
+                childSize, maxLevel - 1));
         children.add(new QuadTree(posX, posY + childSize,
-                                  childSize, maxLevel - 1));
+                childSize, maxLevel - 1));
         children.add(new QuadTree(posX, posY, childSize, maxLevel - 1));
         children.add(new QuadTree(posX + childSize, posY,
-                                  childSize, maxLevel - 1));
+                childSize, maxLevel - 1));
 
         isLeaf = false;
     }
 
-    private boolean addToChildren(Spatial node) {
+    private boolean addToChildren(NodeProperties node) {
         for (QuadTree q : children) {
             if (q.addNode(node)) {
                 return true;
@@ -124,7 +130,7 @@ public class QuadTree implements Spatial {
         return false;
     }
 
-    private void assimilateNode(Spatial node) {
+    private void assimilateNode(NodeProperties node) {
         centerMassX = (mass * centerMassX + node.x()) / (mass + 1);
         centerMassY = (mass * centerMassY + node.y()) / (mass + 1);
         mass++;
@@ -134,10 +140,12 @@ public class QuadTree implements Spatial {
         return children;
     }
 
+    @Override
     public float x() {
         return centerMassX;
     }
 
+    @Override
     public float y() {
         return centerMassY;
     }
@@ -146,13 +154,14 @@ public class QuadTree implements Spatial {
         return mass;
     }
 
+    @Override
     public float z() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public boolean addNode(Spatial node) {
-        if (posX <= node.x() && node.x() <= posX + size &&
-            posY <= node.y() && node.y() <= posY + size) {
+    public boolean addNode(NodeProperties node) {
+        if (posX <= node.x() && node.x() <= posX + size
+                && posY <= node.y() && node.y() <= posY + size) {
             return add.addNode(node);
         } else {
             return false;
@@ -166,9 +175,210 @@ public class QuadTree implements Spatial {
         return isLeaf;
     }
 
+    @Override
+    public float r() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public float g() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public float b() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getRGBA() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Color getColor() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public float alpha() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public float radius() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isFixed() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <T extends LayoutData> T getLayoutData() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public TextProperties getTextProperties() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setX(float x) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setY(float y) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setZ(float z) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setPosition(float x, float y) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setPosition(float x, float y, float z) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setR(float r) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setG(float g) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setB(float b) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setAlpha(float a) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setColor(Color color) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setSize(float size) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setFixed(boolean fixed) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setLayoutData(LayoutData layoutData) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object getId() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getLabel() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object getAttribute(String key) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object getAttribute(Column column) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object[] getAttributes() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Set<String> getAttributeKeys() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object removeAttribute(String key) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object removeAttribute(Column column) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setLabel(String label) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setAttribute(String key, Object value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setAttribute(Column column, Object value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setAttribute(String key, Object value, double timestamp) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setAttribute(Column column, Object value, double timestamp) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean addTimestamp(double timestamp) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean removeTimestamp(double timestamp) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public double[] getTimestamps() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void clearAttributes() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     class FirstAdd implements AddBehaviour {
 
-        public boolean addNode(Spatial node) {
+        @Override
+        public boolean addNode(NodeProperties node) {
             mass = 1;
             centerMassX = node.x();
             centerMassY = node.y();
@@ -185,7 +395,8 @@ public class QuadTree implements Spatial {
 
     class SecondAdd implements AddBehaviour {
 
-        public boolean addNode(Spatial node) {
+        @Override
+        public boolean addNode(NodeProperties node) {
             divideTree();
             add = new RootAdd();
             /* This QuadTree represents one node, add it to a child accordingly
@@ -197,7 +408,8 @@ public class QuadTree implements Spatial {
 
     class LeafAdd implements AddBehaviour {
 
-        public boolean addNode(Spatial node) {
+        @Override
+        public boolean addNode(NodeProperties node) {
             assimilateNode(node);
             return true;
         }
@@ -205,7 +417,8 @@ public class QuadTree implements Spatial {
 
     class RootAdd implements AddBehaviour {
 
-        public boolean addNode(Spatial node) {
+        @Override
+        public boolean addNode(NodeProperties node) {
             assimilateNode(node);
             return addToChildren(node);
         }
@@ -214,5 +427,5 @@ public class QuadTree implements Spatial {
 
 interface AddBehaviour {
 
-    public boolean addNode(Spatial node);
+    public boolean addNode(NodeProperties node);
 }

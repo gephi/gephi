@@ -1,54 +1,51 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Jacomy
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Jacomy
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.layout.plugin.forceAtlas;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.HierarchicalGraph;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
 
 import org.gephi.layout.plugin.AbstractLayout;
 import org.gephi.layout.plugin.ForceVectorUtils;
@@ -65,7 +62,7 @@ import org.openide.util.NbBundle;
 public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
     //Graph
-    protected HierarchicalGraph graph;
+    protected Graph graph;
     //Properties
     public double inertia;
     private double repulsionStrength;
@@ -79,13 +76,12 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
     private double cooling;
     private boolean outboundAttractionDistribution;
     private boolean adjustSizes;
-    //Dynamic Weight
-    private TimeInterval timeInterval;
 
     public ForceAtlasLayout(LayoutBuilder layoutBuilder) {
         super(layoutBuilder);
     }
 
+    @Override
     public void resetPropertiesValues() {
         inertia = 0.1;
         setRepulsionStrength(200d);
@@ -101,25 +97,25 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
         setCooling(1d);
     }
 
+    @Override
     public void initAlgo() {
-        this.graph = graphModel.getHierarchicalGraphVisible();
     }
 
+    @Override
     public void goAlgo() {
-        this.graph = graphModel.getHierarchicalGraphVisible();
-        this.timeInterval = DynamicUtilities.getVisibleInterval(dynamicModel);
+        this.graph = graphModel.getGraph(graphModel.getVisibleView());
         graph.readLock();
         Node[] nodes = graph.getNodes().toArray();
-        Edge[] edges = graph.getEdgesAndMetaEdges().toArray();
+        Edge[] edges = graph.getEdges().toArray();
 
         for (Node n : nodes) {
-            if (n.getNodeData().getLayoutData() == null || !(n.getNodeData().getLayoutData() instanceof ForceVectorNodeLayoutData)) {
-                n.getNodeData().setLayoutData(new ForceVectorNodeLayoutData());
+            if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceVectorNodeLayoutData)) {
+                n.setLayoutData(new ForceVectorNodeLayoutData());
             }
         }
 
         for (Node n : nodes) {
-            ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
+            ForceVectorNodeLayoutData layoutData = n.getLayoutData();
             layoutData.old_dx = layoutData.dx;
             layoutData.old_dy = layoutData.dy;
             layoutData.dx *= inertia;
@@ -130,7 +126,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
             for (Node n1 : nodes) {
                 for (Node n2 : nodes) {
                     if (n1 != n2) {
-                        ForceVectorUtils.fcBiRepulsor_noCollide(n1.getNodeData(), n2.getNodeData(), getRepulsionStrength() * (1 + graph.getDegree(n1)) * (1 + graph.getDegree(n2)));
+                        ForceVectorUtils.fcBiRepulsor_noCollide(n1, n2, getRepulsionStrength() * (1 + graph.getDegree(n1)) * (1 + graph.getDegree(n2)));
                     }
                 }
             }
@@ -138,7 +134,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
             for (Node n1 : nodes) {
                 for (Node n2 : nodes) {
                     if (n1 != n2) {
-                        ForceVectorUtils.fcBiRepulsor(n1.getNodeData(), n2.getNodeData(), getRepulsionStrength() * (1 + graph.getDegree(n1)) * (1 + graph.getDegree(n2)));
+                        ForceVectorUtils.fcBiRepulsor(n1, n2, getRepulsionStrength() * (1 + graph.getDegree(n1)) * (1 + graph.getDegree(n2)));
                     }
                 }
             }
@@ -149,17 +145,17 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                 for (Edge e : edges) {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
-                    double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
-                    bonus *= getWeight(e);
-                    ForceVectorUtils.fcBiAttractor_noCollide(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength() / (1 + graph.getDegree(nf)));
+                    double bonus = (nf.isFixed() || nt.isFixed()) ? (100) : (1);
+                    bonus *= e.getWeight();
+                    ForceVectorUtils.fcBiAttractor_noCollide(nf, nt, bonus * getAttractionStrength() / (1 + graph.getDegree(nf)));
                 }
             } else {
                 for (Edge e : edges) {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
-                    double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
-                    bonus *= getWeight(e);
-                    ForceVectorUtils.fcBiAttractor_noCollide(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength());
+                    double bonus = (nf.isFixed() || nt.isFixed()) ? (100) : (1);
+                    bonus *= e.getWeight();
+                    ForceVectorUtils.fcBiAttractor_noCollide(nf, nt, bonus * getAttractionStrength());
                 }
             }
         } else {
@@ -167,50 +163,49 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                 for (Edge e : edges) {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
-                    double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
-                    bonus *= getWeight(e);
-                    ForceVectorUtils.fcBiAttractor(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength() / (1 + graph.getDegree(nf)));
+                    double bonus = (nf.isFixed() || nt.isFixed()) ? (100) : (1);
+                    bonus *= e.getWeight();
+                    ForceVectorUtils.fcBiAttractor(nf, nt, bonus * getAttractionStrength() / (1 + graph.getDegree(nf)));
                 }
             } else {
                 for (Edge e : edges) {
                     Node nf = e.getSource();
                     Node nt = e.getTarget();
-                    double bonus = (nf.getNodeData().isFixed() || nt.getNodeData().isFixed()) ? (100) : (1);
-                    bonus *= getWeight(e);
-                    ForceVectorUtils.fcBiAttractor(nf.getNodeData(), nt.getNodeData(), bonus * getAttractionStrength());
+                    double bonus = (nf.isFixed() || nt.isFixed()) ? (100) : (1);
+                    bonus *= e.getWeight();
+                    ForceVectorUtils.fcBiAttractor(nf, nt, bonus * getAttractionStrength());
                 }
             }
         }
         // gravity
         for (Node n : nodes) {
 
-            float nx = n.getNodeData().x();
-            float ny = n.getNodeData().y();
+            float nx = n.x();
+            float ny = n.y();
             double d = 0.0001 + Math.sqrt(nx * nx + ny * ny);
             double gf = 0.0001 * getGravity() * d;
-            ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
+            ForceVectorNodeLayoutData layoutData = n.getLayoutData();
             layoutData.dx -= gf * nx / d;
             layoutData.dy -= gf * ny / d;
         }
         // speed
         if (isFreezeBalance()) {
             for (Node n : nodes) {
-                ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
+                ForceVectorNodeLayoutData layoutData = n.getLayoutData();
                 layoutData.dx *= getSpeed() * 10f;
                 layoutData.dy *= getSpeed() * 10f;
             }
         } else {
             for (Node n : nodes) {
-                ForceVectorNodeLayoutData layoutData = n.getNodeData().getLayoutData();
+                ForceVectorNodeLayoutData layoutData = n.getLayoutData();
                 layoutData.dx *= getSpeed();
                 layoutData.dy *= getSpeed();
             }
         }
         // apply forces
         for (Node n : nodes) {
-            NodeData nData = n.getNodeData();
-            ForceVectorNodeLayoutData nLayout = nData.getLayoutData();
-            if (!nData.isFixed()) {
+            ForceVectorNodeLayoutData nLayout = n.getLayoutData();
+            if (!n.isFixed()) {
                 double d = 0.0001 + Math.sqrt(nLayout.dx * nLayout.dx + nLayout.dy * nLayout.dy);
                 float ratio;
                 if (isFreezeBalance()) {
@@ -221,11 +216,11 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
                 }
                 nLayout.dx *= ratio / getCooling();
                 nLayout.dy *= ratio / getCooling();
-                float x = nData.x() + nLayout.dx;
-                float y = nData.y() + nLayout.dy;
+                float x = n.x() + nLayout.dx;
+                float y = n.y() + nLayout.dy;
 
-                nData.setX(x);
-                nData.setY(y);
+                n.setX(x);
+                n.setY(y);
             }
         }
         graph.readUnlock();
@@ -233,7 +228,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
 
     public void endAlgo() {
         for (Node n : graph.getNodes()) {
-            n.getNodeData().setLayoutData(null);
+            n.setLayoutData(null);
         }
     }
 
@@ -242,14 +237,7 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
         return true;
     }
 
-    private float getWeight(Edge edge) {
-        if(timeInterval!=null) {
-            return edge.getWeight(timeInterval.getLow(), timeInterval.getHigh());
-        } else {
-            return edge.getWeight();
-        }
-    }
-
+    @Override
     public LayoutProperty[] getProperties() {
         List<LayoutProperty> properties = new ArrayList<LayoutProperty>();
         final String FORCE_ATLAS = "Force Atlas";
@@ -481,7 +469,8 @@ public class ForceAtlasLayout extends AbstractLayout implements Layout {
     }
 
     /**
-     * @param outboundAttractionDistribution the outboundAttractionDistribution to set
+     * @param outboundAttractionDistribution the outboundAttractionDistribution
+     * to set
      */
     public void setOutboundAttractionDistribution(Boolean outboundAttractionDistribution) {
         this.outboundAttractionDistribution = outboundAttractionDistribution;

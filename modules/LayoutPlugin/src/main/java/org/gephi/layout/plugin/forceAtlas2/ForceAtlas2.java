@@ -1,43 +1,43 @@
 /*
-Copyright 2008-2011 Gephi
-Authors : Mathieu Jacomy <mathieu.jacomy@gmail.com>
-Website : http://www.gephi.org
+ Copyright 2008-2011 Gephi
+ Authors : Mathieu Jacomy <mathieu.jacomy@gmail.com>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
+ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.layout.plugin.forceAtlas2;
 
@@ -47,35 +47,28 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.dynamic.DynamicUtilities;
-import org.gephi.dynamic.api.DynamicController;
-import org.gephi.dynamic.api.DynamicModel;
 import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.HierarchicalGraph;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
 import org.gephi.layout.plugin.forceAtlas2.ForceFactory.AttractionForce;
 import org.gephi.layout.plugin.forceAtlas2.ForceFactory.RepulsionForce;
 import org.gephi.layout.spi.Layout;
 import org.gephi.layout.spi.LayoutBuilder;
 import org.gephi.layout.spi.LayoutProperty;
-import org.gephi.project.api.Workspace;
 import org.openide.util.Exceptions;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
  * ForceAtlas 2 Layout, manages each step of the computations.
+ *
  * @author Mathieu Jacomy
  */
 public class ForceAtlas2 implements Layout {
 
     private GraphModel graphModel;
-    private HierarchicalGraph graph;
+    private Graph graph;
     private final ForceAtlas2Builder layoutBuilder;
-    private DynamicModel dynamicModel;
     private double edgeWeightInfluence;
     private double jitterTolerance;
     private double scalingRatio;
@@ -91,8 +84,6 @@ public class ForceAtlas2 implements Layout {
     private int currentThreadCount;
     private Region rootRegion;
     double outboundAttCompensation = 1;
-    //Dynamic Weight
-    private TimeInterval timeInterval;
     private ExecutorService pool;
 
     public ForceAtlas2(ForceAtlas2Builder layoutBuilder) {
@@ -104,20 +95,18 @@ public class ForceAtlas2 implements Layout {
     public void initAlgo() {
         speed = 1.;
 
-        graph = graphModel.getHierarchicalGraphVisible();
-        this.timeInterval = DynamicUtilities.getVisibleInterval(dynamicModel);
+        graph = graphModel.getGraph(graphModel.getVisibleView());
 
         graph.readLock();
         Node[] nodes = graph.getNodes().toArray();
 
         // Initialise layout data
         for (Node n : nodes) {
-            if (n.getNodeData().getLayoutData() == null || !(n.getNodeData().getLayoutData() instanceof ForceAtlas2LayoutData)) {
+            if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceAtlas2LayoutData)) {
                 ForceAtlas2LayoutData nLayout = new ForceAtlas2LayoutData();
-                n.getNodeData().setLayoutData(nLayout);
+                n.setLayoutData(nLayout);
             }
-            NodeData nData = n.getNodeData();
-            ForceAtlas2LayoutData nLayout = nData.getLayoutData();
+            ForceAtlas2LayoutData nLayout = n.getLayoutData();
             nLayout.mass = 1 + graph.getDegree(n);
             nLayout.old_dx = 0;
             nLayout.old_dy = 0;
@@ -135,21 +124,19 @@ public class ForceAtlas2 implements Layout {
         if (graphModel == null) {
             return;
         }
-        graph = graphModel.getHierarchicalGraphVisible();
-        this.timeInterval = DynamicUtilities.getVisibleInterval(dynamicModel);
+        graph = graphModel.getGraph(graphModel.getVisibleView());
 
         graph.readLock();
         Node[] nodes = graph.getNodes().toArray();
-        Edge[] edges = graph.getEdgesAndMetaEdges().toArray();
+        Edge[] edges = graph.getEdges().toArray();
 
         // Initialise layout data
         for (Node n : nodes) {
-            if (n.getNodeData().getLayoutData() == null || !(n.getNodeData().getLayoutData() instanceof ForceAtlas2LayoutData)) {
+            if (n.getLayoutData() == null || !(n.getLayoutData() instanceof ForceAtlas2LayoutData)) {
                 ForceAtlas2LayoutData nLayout = new ForceAtlas2LayoutData();
-                n.getNodeData().setLayoutData(nLayout);
+                n.setLayoutData(nLayout);
             }
-            NodeData nData = n.getNodeData();
-            ForceAtlas2LayoutData nLayout = nData.getLayoutData();
+            ForceAtlas2LayoutData nLayout = n.getLayoutData();
             nLayout.mass = 1 + graph.getDegree(n);
             nLayout.old_dx = nLayout.dx;
             nLayout.old_dy = nLayout.dy;
@@ -167,8 +154,7 @@ public class ForceAtlas2 implements Layout {
         if (isOutboundAttractionDistribution()) {
             outboundAttCompensation = 0;
             for (Node n : nodes) {
-                NodeData nData = n.getNodeData();
-                ForceAtlas2LayoutData nLayout = nData.getLayoutData();
+                ForceAtlas2LayoutData nLayout = n.getLayoutData();
                 outboundAttCompensation += nLayout.mass;
             }
             outboundAttCompensation /= nodes.length;
@@ -205,11 +191,11 @@ public class ForceAtlas2 implements Layout {
             }
         } else if (getEdgeWeightInfluence() == 1) {
             for (Edge e : edges) {
-                Attraction.apply(e.getSource(), e.getTarget(), getWeight(e));
+                Attraction.apply(e.getSource(), e.getTarget(), e.getWeight());
             }
         } else {
             for (Edge e : edges) {
-                Attraction.apply(e.getSource(), e.getTarget(), Math.pow(getWeight(e), getEdgeWeightInfluence()));
+                Attraction.apply(e.getSource(), e.getTarget(), Math.pow(e.getWeight(), getEdgeWeightInfluence()));
             }
         }
 
@@ -217,9 +203,8 @@ public class ForceAtlas2 implements Layout {
         double totalSwinging = 0d;  // How much irregular movement
         double totalEffectiveTraction = 0d;  // Hom much useful movement
         for (Node n : nodes) {
-            NodeData nData = n.getNodeData();
-            ForceAtlas2LayoutData nLayout = nData.getLayoutData();
-            if (!nData.isFixed()) {
+            ForceAtlas2LayoutData nLayout = n.getLayoutData();
+            if (!n.isFixed()) {
                 double swinging = Math.sqrt(Math.pow(nLayout.old_dx - nLayout.dx, 2) + Math.pow(nLayout.old_dy - nLayout.dy, 2));
                 totalSwinging += nLayout.mass * swinging;   // If the node has a burst change of direction, then it's not converging.
                 totalEffectiveTraction += nLayout.mass * 0.5 * Math.sqrt(Math.pow(nLayout.old_dx + nLayout.dx, 2) + Math.pow(nLayout.old_dy + nLayout.dy, 2));
@@ -236,9 +221,8 @@ public class ForceAtlas2 implements Layout {
         if (isAdjustSizes()) {
             // If nodes overlap prevention is active, it's not possible to trust the swinging mesure.
             for (Node n : nodes) {
-                NodeData nData = n.getNodeData();
-                ForceAtlas2LayoutData nLayout = nData.getLayoutData();
-                if (!nData.isFixed()) {
+                ForceAtlas2LayoutData nLayout = n.getLayoutData();
+                if (!n.isFixed()) {
 
                     // Adaptive auto-speed: the speed of each node is lowered
                     // when the node swings.
@@ -248,18 +232,17 @@ public class ForceAtlas2 implements Layout {
                     double df = Math.sqrt(Math.pow(nLayout.dx, 2) + Math.pow(nLayout.dy, 2));
                     factor = Math.min(factor * df, 10.) / df;
 
-                    double x = nData.x() + nLayout.dx * factor;
-                    double y = nData.y() + nLayout.dy * factor;
+                    double x = n.x() + nLayout.dx * factor;
+                    double y = n.y() + nLayout.dy * factor;
 
-                    nData.setX((float) x);
-                    nData.setY((float) y);
+                    n.setX((float) x);
+                    n.setY((float) y);
                 }
             }
         } else {
             for (Node n : nodes) {
-                NodeData nData = n.getNodeData();
-                ForceAtlas2LayoutData nLayout = nData.getLayoutData();
-                if (!nData.isFixed()) {
+                ForceAtlas2LayoutData nLayout = n.getLayoutData();
+                if (!n.isFixed()) {
 
                     // Adaptive auto-speed: the speed of each node is lowered
                     // when the node swings.
@@ -267,11 +250,11 @@ public class ForceAtlas2 implements Layout {
                     //double factor = speed / (1f + Math.sqrt(speed * swinging));
                     double factor = speed / (1f + speed * Math.sqrt(swinging));
 
-                    double x = nData.x() + nLayout.dx * factor;
-                    double y = nData.y() + nLayout.dy * factor;
+                    double x = n.x() + nLayout.dx * factor;
+                    double y = n.y() + nLayout.dy * factor;
 
-                    nData.setX((float) x);
-                    nData.setY((float) y);
+                    n.setX((float) x);
+                    n.setY((float) y);
                 }
             }
         }
@@ -286,7 +269,7 @@ public class ForceAtlas2 implements Layout {
     @Override
     public void endAlgo() {
         for (Node n : graph.getNodes()) {
-            n.getNodeData().setLayoutData(null);
+            n.setLayoutData(null);
         }
         pool.shutdown();
         graph.readUnlockAll();
@@ -401,7 +384,7 @@ public class ForceAtlas2 implements Layout {
         int nodesCount = 0;
 
         if (graphModel != null) {
-            nodesCount = graphModel.getHierarchicalGraphVisible().getNodeCount();
+            nodesCount = graphModel.getGraph(graphModel.getVisibleView()).getNodeCount();
         }
 
         // Tuning
@@ -444,11 +427,6 @@ public class ForceAtlas2 implements Layout {
     @Override
     public void setGraphModel(GraphModel graphModel) {
         this.graphModel = graphModel;
-        Workspace workspace = graphModel.getWorkspace();
-        DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-        if (dynamicController != null && workspace != null) {
-            dynamicModel = dynamicController.getModel(workspace);
-        }
         // Trick: reset here to take the profile of the graph in account for default values
         resetPropertiesValues();
     }
@@ -543,13 +521,5 @@ public class ForceAtlas2 implements Layout {
 
     public void setBarnesHutOptimize(Boolean barnesHutOptimize) {
         this.barnesHutOptimize = barnesHutOptimize;
-    }
-
-    private float getWeight(Edge edge) {
-        if (timeInterval != null) {
-            return edge.getWeight(timeInterval.getLow(), timeInterval.getHigh());
-        } else {
-            return edge.getWeight();
-        }
     }
 }
