@@ -101,18 +101,13 @@ public abstract class ElementDraftImpl implements ElementDraft {
     }
 
     @Override
-    public void setValue(String key, Object value) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void setLabel(String label) {
         this.label = label;
     }
 
     @Override
     public void setColor(Color color) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.color = color;
     }
 
     @Override

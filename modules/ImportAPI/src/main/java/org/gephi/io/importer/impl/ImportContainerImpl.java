@@ -443,8 +443,18 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
+    public boolean hasNodeColumn(String key) {
+        return nodeColumns.containsKey(key);
+    }
+
+    @Override
     public ColumnDraft getEdgeColumn(String key) {
         return edgeColumns.get(key);
+    }
+
+    @Override
+    public boolean hasEdgeColumn(String key) {
+        return edgeColumns.containsKey(key);
     }
 
     @Override

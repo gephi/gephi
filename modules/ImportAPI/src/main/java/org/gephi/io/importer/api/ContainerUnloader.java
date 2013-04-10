@@ -60,6 +60,10 @@ public interface ContainerUnloader {
 
     public Iterable<EdgeDraft> getEdges();
 
+    public boolean hasNodeColumn(String key);
+
+    public boolean hasEdgeColumn(String key);
+
     public Iterable<ColumnDraft> getNodeColumns();
 
     public Iterable<ColumnDraft> getEdgeColumns();
