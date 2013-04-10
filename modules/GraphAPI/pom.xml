@@ -40,6 +40,7 @@
                     <publicPackages>
                         <publicPackage>org.gephi.graph.spi</publicPackage>
                         <publicPackage>org.gephi.graph.api</publicPackage>
+                        <publicPackage>org.gephi.attribute.api</publicPackage>
                         <publicPackage>org.gephi.attribute.spi</publicPackage>
                         <publicPackage>org.gephi.attribute.time</publicPackage>
                     </publicPackages>
