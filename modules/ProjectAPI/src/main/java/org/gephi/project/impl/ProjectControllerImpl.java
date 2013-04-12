@@ -41,8 +41,10 @@ Portions Copyrighted 2011 Gephi Consortium.
  */
 package org.gephi.project.impl;
 
+import java.beans.PropertyEditorManager;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.gephi.project.api.Project;
 import org.gephi.project.api.ProjectController;
@@ -81,6 +83,20 @@ public class ProjectControllerImpl implements ProjectController {
         //Listeners
         listeners = new ArrayList<WorkspaceListener>();
         listeners.addAll(Lookup.getDefault().lookupAll(WorkspaceListener.class));
+        
+        registerNetbeansPropertyEditors();
+    }
+    
+    /**
+     * If not already registered, includes NetBeans property editors in the search path.
+     * This is necessary when in the toolkit to properly save and read project files.
+     */
+    private void registerNetbeansPropertyEditors() {
+        List<String> list = new ArrayList<String>(Arrays.asList(PropertyEditorManager.getEditorSearchPath()));
+        if(!list.contains("org.netbeans.beaninfo.editors")){
+            list.add(0, "org.netbeans.beaninfo.editors");//Add first for more preference
+            PropertyEditorManager.setEditorSearchPath(list.toArray(new String[list.size()]));
+        }
     }
 
     public void startup() {
