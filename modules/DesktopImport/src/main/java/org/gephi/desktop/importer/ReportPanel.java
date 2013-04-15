@@ -240,8 +240,8 @@ public class ReportPanel extends javax.swing.JPanel {
                 ContainerUnloader unloader = container.getUnloader();
 
                 //Node & Edge count
-                int nodeCount = unloader.getNodes().size();
-                int edgeCount = unloader.getEdges().size();
+                int nodeCount = unloader.getNodeCount();
+                int edgeCount = unloader.getEdgeCount();
                 nodeCountLabel.setText("" + nodeCount);
                 edgeCountLabel.setText("" + edgeCount);
 
@@ -259,7 +259,6 @@ public class ReportPanel extends javax.swing.JPanel {
 
                 //Dynamic & Hierarchical graph
                 dynamicLabel.setText(container.isDynamicGraph() ? NbBundle.getMessage(getClass(), "ReportPanel.yes") : NbBundle.getMessage(getClass(), "ReportPanel.no"));
-                hierarchicalLabel.setText(container.isHierarchicalGraph() ? NbBundle.getMessage(getClass(), "ReportPanel.yes") : NbBundle.getMessage(getClass(), "ReportPanel.no"));
             }
         });
     }
@@ -341,8 +340,6 @@ public class ReportPanel extends javax.swing.JPanel {
         nodeCountLabel = new javax.swing.JLabel();
         edgeCountLabel = new javax.swing.JLabel();
         dynamicLabel = new javax.swing.JLabel();
-        hierarchicalLabel = new javax.swing.JLabel();
-        labelHierarchical = new javax.swing.JLabel();
         labelDynamic = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -389,7 +386,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
         jPanel1.add(labelEdgeCount, gridBagConstraints);
 
-        nodeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
+        nodeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         nodeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.nodeCountLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -399,7 +396,7 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 6, 0);
         jPanel1.add(nodeCountLabel, gridBagConstraints);
 
-        edgeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11));
+        edgeCountLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         edgeCountLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.edgeCountLabel.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -417,22 +414,6 @@ public class ReportPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 6, 0);
         jPanel1.add(dynamicLabel, gridBagConstraints);
-
-        hierarchicalLabel.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.hierarchicalLabel.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
-        jPanel1.add(hierarchicalLabel, gridBagConstraints);
-
-        labelHierarchical.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelHierarchical.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        jPanel1.add(labelHierarchical, gridBagConstraints);
 
         labelDynamic.setText(org.openide.util.NbBundle.getMessage(ReportPanel.class, "ReportPanel.labelDynamic.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -458,23 +439,23 @@ public class ReportPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)
+                    .addComponent(tabbedPane)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelSrc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sourceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE))
+                        .addComponent(sourceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(labelGraphType)
                                 .addGap(49, 49, 49)
                                 .addComponent(graphTypeCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 154, Short.MAX_VALUE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(createMissingNodesCheckbox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(autoscaleCheckbox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
+                                .addComponent(autoscaleCheckbox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(processorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
@@ -497,7 +478,7 @@ public class ReportPanel extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(createMissingNodesCheckbox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
+                        .addComponent(processorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
                         .addContainerGap())
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
@@ -508,14 +489,12 @@ public class ReportPanel extends javax.swing.JPanel {
     private javax.swing.JLabel dynamicLabel;
     private javax.swing.JLabel edgeCountLabel;
     private javax.swing.JComboBox graphTypeCombo;
-    private javax.swing.JLabel hierarchicalLabel;
     private org.netbeans.swing.outline.Outline issuesOutline;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel labelDynamic;
     private javax.swing.JLabel labelEdgeCount;
     private javax.swing.JLabel labelGraphType;
-    private javax.swing.JLabel labelHierarchical;
     private javax.swing.JLabel labelNodeCount;
     private javax.swing.JLabel labelSrc;
     private javax.swing.JLabel nodeCountLabel;
