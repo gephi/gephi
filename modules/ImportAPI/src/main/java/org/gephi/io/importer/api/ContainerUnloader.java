@@ -41,7 +41,6 @@
  */
 package org.gephi.io.importer.api;
 
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.processor.spi.Processor;
 
 /**
@@ -58,7 +57,11 @@ public interface ContainerUnloader {
 
     public Iterable<NodeDraft> getNodes();
 
+    public int getNodeCount();
+
     public Iterable<EdgeDraft> getEdges();
+
+    public int getEdgeCount();
 
     public boolean hasNodeColumn(String key);
 

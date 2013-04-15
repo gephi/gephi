@@ -65,6 +65,8 @@ public interface ElementDraft {
 
     public void setValue(String key, Object value);
 
+    public void setValueString(String key, String value);
+
     public void setLabel(String label);
 
     public void setColor(Color color);

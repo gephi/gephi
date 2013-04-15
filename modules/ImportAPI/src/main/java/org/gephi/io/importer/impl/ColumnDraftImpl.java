@@ -41,6 +41,7 @@
  */
 package org.gephi.io.importer.impl;
 
+import org.gephi.attribute.api.AttributeUtils;
 import org.gephi.io.importer.api.ColumnDraft;
 
 /**
@@ -93,5 +94,10 @@ public class ColumnDraftImpl implements ColumnDraft {
     @Override
     public void setDefaultValue(Object value) {
         this.defaultValue = value;
+    }
+
+    @Override
+    public void setDefaultValueString(String value) {
+        this.defaultValue = AttributeUtils.parse(value, typeClass);
     }
 }

@@ -58,4 +58,6 @@ public interface ColumnDraft {
     public void setTitle(String title);
 
     public void setDefaultValue(Object value);
+
+    public void setDefaultValueString(String value);
 }

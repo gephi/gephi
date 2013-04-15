@@ -41,8 +41,6 @@
  */
 package org.gephi.io.importer.api;
 
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.importer.spi.Importer;
 
 /**
@@ -135,8 +133,7 @@ public interface ContainerLoader {
      *
      * @param source the edge source node
      * @param target the edge target node
-     * @return the edge from <code>source</code> to <code>target</code> * * *
-     * or <code>null</code> if not found
+     * @return the edge from <code>source</code> to <code>target</code> * * *      * or <code>null</code> if not found
      */
 //    public EdgeDraft getEdge(NodeDraft source, NodeDraft target);
     /**

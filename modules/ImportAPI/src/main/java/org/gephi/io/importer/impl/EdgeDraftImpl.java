@@ -41,6 +41,7 @@
  */
 package org.gephi.io.importer.impl;
 
+import org.gephi.attribute.api.AttributeUtils;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.EdgeDirection;
 import org.gephi.io.importer.api.EdgeDraft;
@@ -259,5 +260,12 @@ public class EdgeDraftImpl extends ElementDraftImpl implements EdgeDraft {
     public void setValue(String key, Object value) {
         ColumnDraft column = container.addEdgeColumn(key, value.getClass());
         setAttributeValue(((ColumnDraftImpl) column).getIndex(), value);
+    }
+
+    @Override
+    public void setValueString(String key, String value) {
+        ColumnDraft column = container.addEdgeColumn(key, value.getClass());
+        Object val = AttributeUtils.parse(value, column.getTypeClass());
+        setAttributeValue(((ColumnDraftImpl) column).getIndex(), val);
     }
 }

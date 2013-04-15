@@ -42,6 +42,7 @@
 package org.gephi.io.importer.impl;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -53,7 +54,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ContainerLoader;
@@ -66,6 +66,7 @@ import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.Issue.Level;
 import org.gephi.io.importer.api.NodeDraft;
 import org.gephi.io.importer.api.Report;
+import org.gephi.io.importer.api.TimeFormat;
 import org.openide.util.NbBundle;
 
 /**
@@ -362,8 +363,18 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     }
 
     @Override
+    public int getNodeCount() {
+        return nodeMap.size();
+    }
+
+    @Override
     public Iterable<EdgeDraft> getEdges() {
         return new NullFilterIterable<EdgeDraft>(edgeList);
+    }
+
+    @Override
+    public int getEdgeCount() {
+        return edgeMap.size();
     }
 
     @Override
@@ -470,7 +481,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
     @Override
     public boolean verify() {
         //Edge weight zero or negative
-        for (EdgeDraftImpl edge : edgeMap.values().toArray(new EdgeDraftImpl[0])) {
+        for (EdgeDraftImpl edge : new NullFilterIterable<EdgeDraftImpl>(edgeList)) {
             String id = edge.getId();
             if (edge.getWeight() < 0f) {
                 report.logIssue(new Issue(NbBundle.getMessage(ImportContainerImpl.class, "ImportContainerException_Negative_Weight", id), Level.WARNING));
@@ -899,6 +910,7 @@ public class ImportContainerImpl implements Container, ContainerLoader, Containe
             Long2ObjectMap[] l = new Long2ObjectMap[type + 1];
             System.arraycopy(edgeTypeSets, 0, l, 0, edgeTypeSets.length);
             edgeTypeSets = l;
+            edgeTypeSets[type] = new Long2ObjectOpenHashMap<int[]>();
         }
     }
 
