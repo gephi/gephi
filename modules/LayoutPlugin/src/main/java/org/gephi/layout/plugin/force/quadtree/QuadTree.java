@@ -206,11 +206,6 @@ public class QuadTree implements Node {
     }
 
     @Override
-    public float radius() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public boolean isFixed() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
