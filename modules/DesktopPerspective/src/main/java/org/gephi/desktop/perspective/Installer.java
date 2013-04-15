@@ -66,7 +66,6 @@ public class Installer extends ModuleInstall {
         //WindowManager.getDefault().invokeWhenUIReady(new Runnable() {});
         //Therefore use this:
         SwingUtilities.invokeLater(new Runnable() {
-
             @Override
             public void run() {
                 //Get the main window of the NetBeans Platform:
@@ -84,7 +83,6 @@ public class Installer extends ModuleInstall {
         });
 
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
-
             @Override
             public void run() {
                 JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
@@ -106,8 +104,8 @@ public class Installer extends ModuleInstall {
                     southPanel.add(statusLinePanel, BorderLayout.SOUTH);
                     if (bottomComponent != null) {
                         bottomComponent.setVisible(false);
+                        southPanel.add(bottomComponent, BorderLayout.CENTER);
                     }
-                    southPanel.add(bottomComponent, BorderLayout.CENTER);
                     frame.getContentPane().add(southPanel, BorderLayout.SOUTH);
                 }
 //                System.err.println(frame.getContentPane().getClass());
