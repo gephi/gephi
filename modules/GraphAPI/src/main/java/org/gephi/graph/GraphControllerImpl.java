@@ -46,11 +46,13 @@ import org.gephi.graph.store.GraphModelImpl;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author mbastian
  */
+@ServiceProvider(service = GraphController.class)
 public class GraphControllerImpl implements GraphController {
 
     @Override
