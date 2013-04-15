@@ -41,7 +41,6 @@
  */
 package org.gephi.io.processor.plugin;
 
-import org.gephi.dynamic.api.DynamicController;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
@@ -102,10 +101,10 @@ public class AppendProcessor extends AbstractProcessor implements Processor {
         flushColumns();
 
         //Dynamic
-        if (container.getTimeFormat() != null) {
-            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-            dynamicController.setTimeFormat(container.getTimeFormat());
-        }
+//        if (container.getTimeFormat() != null) {
+//            DynamicController dynamicController = Lookup.getDefault().lookup(DynamicController.class);
+//            dynamicController.setTimeFormat(container.getTimeFormat());
+//        }
 
         int nodeCount = 0;
         //Create all nodes
