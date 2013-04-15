@@ -47,8 +47,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import javax.xml.stream.*;
 import javax.xml.stream.events.XMLEvent;
-import org.gephi.attribute.api.AttributeUtils;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.importer.api.*;
 import org.gephi.io.importer.spi.FileImporter;
 import org.gephi.utils.longtask.spi.LongTask;
@@ -883,7 +881,6 @@ public class ImporterGEXF implements FileImporter, LongTask {
             boolean dynamic = typeAtt.equalsIgnoreCase("dynamic");
 
             //Type
-            //Type
             Class attributeType = String.class;
             if (type.equalsIgnoreCase("boolean") || type.equalsIgnoreCase("bool")) {
                 attributeType = boolean.class;
@@ -934,36 +931,34 @@ public class ImporterGEXF implements FileImporter, LongTask {
                 return;
             }
 
-            //Default Object
-            Object defaultValue = null;
-            if (!defaultStr.isEmpty()) {
-                try {
-                    defaultValue = AttributeUtils.parse(defaultStr, attributeType);
-                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_default", defaultStr, title));
-                } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributedefault", title, attributeType.getCanonicalName()), Issue.Level.SEVERE));
-                }
-            }
-
             //Add to model
+            ColumnDraft column = null;
             if ("node".equalsIgnoreCase(classAtt) || classAtt.isEmpty()) {
                 if (container.getNodeColumn(id) != null) {
                     report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributecolumn_exist", id));
                     return;
                 }
-                ColumnDraft column = container.addNodeColumn(id, attributeType);
+                column = container.addNodeColumn(id, attributeType);
                 column.setTitle(title);
-                column.setDefaultValue(defaultValue);
                 report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_nodeattribute", title, attributeType.getCanonicalName()));
             } else if ("edge".equalsIgnoreCase(classAtt) || classAtt.isEmpty()) {
                 if (container.getEdgeColumn(id) != null) {
                     report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributecolumn_exist", id));
                     return;
                 }
-                ColumnDraft column = container.addEdgeColumn(id, attributeType);
+                column = container.addEdgeColumn(id, attributeType);
                 column.setTitle(title);
-                column.setDefaultValue(defaultValue);
                 report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_edgeattribute", title, attributeType.getCanonicalName()));
+            }
+
+            //Default Object
+            if (column != null && !defaultStr.isEmpty()) {
+                try {
+                    column.setDefaultValueString(defaultStr);
+                    report.log(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_log_default", defaultStr, title));
+                } catch (Exception e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributedefault", title, attributeType.getCanonicalName()), Issue.Level.SEVERE));
+                }
             }
         } else {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterGEXF.class, "importerGEXF_error_attributeempty", title), Issue.Level.SEVERE));

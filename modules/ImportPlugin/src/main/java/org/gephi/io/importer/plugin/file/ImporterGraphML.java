@@ -51,7 +51,6 @@ import javax.xml.stream.XMLReporter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
-import org.gephi.attribute.api.AttributeUtils;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDirection;
@@ -74,7 +73,6 @@ import org.openide.util.NbBundle;
  * @author Mathieu Bastian
  */
 public class ImporterGraphML implements FileImporter, LongTask {
-//GEXF
 
     private static final String GRAPHML = "graphml";
     private static final String GRAPH = "graph";
@@ -350,8 +348,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
             ColumnDraft column = container.getNodeColumn(fore);
             if (column != null) {
                 try {
-                    Object val = AttributeUtils.parse(value, column.getTypeClass());
-                    node.setValue(column.getId(), val);
+                    node.setValueString(column.getId(), value);
                 } catch (Exception e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue", fore, node, column.getTitle()), Issue.Level.SEVERE));
                 }
@@ -503,8 +500,7 @@ public class ImporterGraphML implements FileImporter, LongTask {
             ColumnDraft column = container.getEdgeColumn(fore);
             if (column != null) {
                 try {
-                    Object val = AttributeUtils.parse(value, column.getTypeClass());
-                    edge.setValue(column.getId(), val);
+                    edge.setValueString(column.getId(), value);
                 } catch (Exception e) {
                     report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_datavalue", fore, edge, column.getTitle()), Issue.Level.SEVERE));
                 }
@@ -649,36 +645,33 @@ public class ImporterGraphML implements FileImporter, LongTask {
                 return;
             }
 
-            //Default Object
-            Object defaultValue = null;
-            if (!defaultStr.isEmpty()) {
-                try {
-                    defaultValue = AttributeUtils.parse(id, attributeType);
-                    report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_default", defaultStr, title));
-                } catch (Exception e) {
-                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributedefault", title, attributeType.getCanonicalName()), Issue.Level.SEVERE));
-                }
-            }
-
             //Add to model
+            ColumnDraft column = null;
             if ("node".equalsIgnoreCase(forStr) || "all".equalsIgnoreCase(forStr)) {
                 if (container.getNodeColumn(id) != null) {
                     report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributecolumn_exist", id));
                     return;
                 }
-                ColumnDraft column = container.addNodeColumn(id, attributeType);
+                column = container.addNodeColumn(id, attributeType);
                 column.setTitle(title);
-                column.setDefaultValue(defaultValue);
                 report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_nodeattribute", title, attributeType.getCanonicalName()));
             } else if ("edge".equalsIgnoreCase(forStr) || "all".equalsIgnoreCase(forStr)) {
                 if (container.getEdgeColumn(id) != null) {
                     report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributecolumn_exist", id));
                     return;
                 }
-                ColumnDraft column = container.addEdgeColumn(id, attributeType);
+                column = container.addEdgeColumn(id, attributeType);
                 column.setTitle(title);
-                column.setDefaultValue(defaultValue);
                 report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_edgeattribute", title, attributeType.getCanonicalName()));
+            }
+
+            if (column != null && !defaultStr.isEmpty()) {
+                try {
+                    column.setDefaultValueString(defaultStr);
+                    report.log(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_log_default", defaultStr, title));
+                } catch (Exception e) {
+                    report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributedefault", title, attributeType.getCanonicalName()), Issue.Level.SEVERE));
+                }
             }
         } else {
             report.logIssue(new Issue(NbBundle.getMessage(ImporterGraphML.class, "importerGraphML_error_attributeempty", title), Issue.Level.SEVERE));

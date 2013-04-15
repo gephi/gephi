@@ -50,7 +50,6 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
-import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.database.drivers.SQLUtils;
 import org.gephi.io.importer.api.ColumnDraft;
 import org.gephi.io.importer.api.ContainerLoader;
@@ -64,6 +63,7 @@ import org.gephi.io.importer.api.PropertiesAssociations;
 import org.gephi.io.importer.api.PropertiesAssociations.EdgeProperties;
 import org.gephi.io.importer.api.PropertiesAssociations.NodeProperties;
 import org.gephi.io.importer.api.Report;
+import org.gephi.io.importer.api.TimeFormat;
 import org.gephi.io.importer.spi.DatabaseImporter;
 
 /**
