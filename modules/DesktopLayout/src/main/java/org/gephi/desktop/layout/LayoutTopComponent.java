@@ -56,15 +56,15 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
 @ConvertAsProperties(dtd = "-//org.gephi.desktop.layout//Layout//EN",
-autostore = false)
+        autostore = false)
 @TopComponent.Description(preferredID = "LayoutTopComponent",
-iconBase = "org/gephi/desktop/layout/resources/small.png",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        iconBase = "org/gephi/desktop/layout/resources/small.png",
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "layoutmode", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.desktop.layout.LayoutTopComponent")
 @ActionReference(path = "Menu/Window", position = 700)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_LayoutTopComponent",
-preferredID = "LayoutTopComponent")
+        preferredID = "LayoutTopComponent")
 public final class LayoutTopComponent extends TopComponent {
 
     private LayoutPanel layoutPanel;
@@ -83,7 +83,6 @@ public final class LayoutTopComponent extends TopComponent {
         add(layoutPanel, BorderLayout.CENTER);
 
         Lookup.getDefault().lookup(ProjectController.class).addWorkspaceListener(new WorkspaceListener() {
-
             public void initialize(Workspace workspace) {
             }
 
@@ -93,7 +92,9 @@ public final class LayoutTopComponent extends TopComponent {
             }
 
             public void unselect(Workspace workspace) {
-                model.removePropertyChangeListener(layoutPanel);
+                if (model != null) {
+                    model.removePropertyChangeListener(layoutPanel);
+                }
             }
 
             public void close(Workspace workspace) {
