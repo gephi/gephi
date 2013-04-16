@@ -43,8 +43,6 @@ package org.gephi.visualization.component;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
@@ -57,7 +55,6 @@ import org.gephi.project.api.WorkspaceListener;
 import org.gephi.tools.api.ToolController;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
-import org.gephi.visualization.apiimpl.PropertiesBarAddon;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -96,7 +93,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         initToolPanels();
         final GraphDrawableImpl drawable = VizController.getInstance().getDrawable();
 
-        //Request component activation and therefore initialize JOGL component
+        //Request component activation and therefore initialize JOGL2 component
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {
@@ -128,7 +125,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     private ActionsToolbar actionsToolbar;
     private JComponent toolbar;
     private JComponent propertiesBar;
-    private AddonsBar addonsBar;
 
     private void initToolPanels() {
         final ToolController tc = Lookup.getDefault().lookup(ToolController.class);
@@ -152,20 +148,10 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
             }
 
             if (VizController.getInstance().getVizConfig().isPropertiesbar()) {
-                JPanel northBar = new JPanel(new BorderLayout());
-                if (UIUtils.isAquaLookAndFeel()) {
-                    northBar.setBackground(UIManager.getColor("NbExplorerView.background"));
-                }
                 propertiesBar = tc.getPropertiesBar();
                 if (propertiesBar != null) {
-                    northBar.add(propertiesBar, BorderLayout.CENTER);
+                    add(propertiesBar, BorderLayout.NORTH);
                 }
-                addonsBar = new AddonsBar();
-                for (PropertiesBarAddon addon : Lookup.getDefault().lookupAll(PropertiesBarAddon.class)) {
-                    addonsBar.add(addon.getComponent());
-                }
-                northBar.add(addonsBar, BorderLayout.EAST);
-                add(northBar, BorderLayout.NORTH);
             }
         }
 
@@ -178,11 +164,18 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
             @Override
             public void select(Workspace workspace) {
-                toolbar.setEnabled(true);
-                propertiesBar.setEnabled(true);
-                actionsToolbar.setEnabled(true);
-                selectionToolbar.setEnabled(true);
-                addonsBar.setEnabled(true);
+                if (toolbar != null) {
+                    toolbar.setEnabled(true);
+                }
+                if (propertiesBar != null) {
+                    propertiesBar.setEnabled(true);
+                }
+                if (actionsToolbar != null) {
+                    actionsToolbar.setEnabled(true);
+                }
+                if (selectionToolbar != null) {
+                    selectionToolbar.setEnabled(true);
+                }
             }
 
             @Override
@@ -195,21 +188,37 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
             @Override
             public void disable() {
-                toolbar.setEnabled(false);
-                tc.select(null);//Unselect any selected tool
-                propertiesBar.setEnabled(false);
-                actionsToolbar.setEnabled(false);
-                selectionToolbar.setEnabled(false);
-                addonsBar.setEnabled(false);
+                if (toolbar != null) {
+                    toolbar.setEnabled(false);
+                }
+                if (tc != null) {
+                    tc.select(null);//Unselect any selected tool
+                }
+                if (propertiesBar != null) {
+                    propertiesBar.setEnabled(false);
+                }
+                if (actionsToolbar != null) {
+                    actionsToolbar.setEnabled(false);
+                }
+                if (selectionToolbar != null) {
+                    selectionToolbar.setEnabled(false);
+                }
             }
         });
 
         boolean hasWorkspace = projectController.getCurrentWorkspace() != null;
-        toolbar.setEnabled(hasWorkspace);
-        propertiesBar.setEnabled(hasWorkspace);
-        actionsToolbar.setEnabled(hasWorkspace);
-        selectionToolbar.setEnabled(hasWorkspace);
-        addonsBar.setEnabled(hasWorkspace);
+        if (toolbar != null) {
+            toolbar.setEnabled(hasWorkspace);
+        }
+        if (propertiesBar != null) {
+            propertiesBar.setEnabled(hasWorkspace);
+        }
+        if (actionsToolbar != null) {
+            actionsToolbar.setEnabled(hasWorkspace);
+        }
+        if (selectionToolbar != null) {
+            selectionToolbar.setEnabled(hasWorkspace);
+        }
     }
 
     private void initKeyEventContextMenuActionMappings() {
@@ -318,24 +327,5 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
-    }
-
-    private static class AddonsBar extends JPanel {
-
-        public AddonsBar() {
-            super(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        }
-
-        @Override
-        public void setEnabled(final boolean enabled) {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    for (Component c : getComponents()) {
-                        c.setEnabled(enabled);
-                    }
-                }
-            });
-        }
     }
 }

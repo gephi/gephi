@@ -39,7 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.visualization.opengl.text;
+package org.gephi.visualization.text;
 
 import javax.swing.ImageIcon;
 import org.gephi.visualization.model.node.NodeModel;

@@ -42,7 +42,7 @@
 package org.gephi.visualization.selection;
 
 import java.util.Arrays;
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.VizController;
@@ -168,7 +168,7 @@ public class Rectangle implements SelectionArea {
     }
 
     @Override
-    public void drawArea(GL gl, GLU glu) {
+    public void drawArea(GL2 gl, GLU glu) {
         if (!stop) {
             float x = startPosition[0];
             float y = startPosition[1];
@@ -176,17 +176,17 @@ public class Rectangle implements SelectionArea {
             float h = rectangle[1] - startPosition[1];
             //System.out.println("x:"+x+"  y:"+y+"   w:"+w+"   h:"+h);
 
-            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glMatrixMode(GL2.GL_PROJECTION);
             gl.glPushMatrix();
             gl.glLoadIdentity();
             glu.gluOrtho2D(0, drawable.getViewportWidth(), 0, drawable.getViewportHeight());
-            gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
             gl.glPushMatrix();
             gl.glLoadIdentity();
 
             gl.glColor4f(color[0], color[1], color[2], color[3]);
 
-            gl.glBegin(GL.GL_QUADS);
+            gl.glBegin(GL2.GL_QUADS);
             gl.glVertex3f(x + w, y, 0);
             gl.glVertex3f(x, y, 0);
             gl.glVertex3f(x, y + h, 0);
@@ -194,7 +194,7 @@ public class Rectangle implements SelectionArea {
             gl.glEnd();
 
             gl.glColor4f(color[0], color[1], color[2], 1f);
-            gl.glBegin(GL.GL_LINE_LOOP);
+            gl.glBegin(GL2.GL_LINE_LOOP);
             gl.glVertex3f(x + w, y, 0);
             gl.glVertex3f(x, y, 0);
             gl.glVertex3f(x, y + h, 0);
@@ -202,9 +202,9 @@ public class Rectangle implements SelectionArea {
             gl.glEnd();
 
             gl.glPopMatrix();
-            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glMatrixMode(GL2.GL_PROJECTION);
             gl.glPopMatrix();
-            gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
         } else {
             startPosition = null;
         }

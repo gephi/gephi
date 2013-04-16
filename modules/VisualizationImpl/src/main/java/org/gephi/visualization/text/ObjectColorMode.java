@@ -39,7 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.visualization.opengl.text;
+package org.gephi.visualization.text;
 
 import javax.swing.ImageIcon;
 import org.gephi.visualization.VizController;
@@ -47,31 +47,26 @@ import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.model.TextModel;
 import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.node.NodeModel;
-import org.gephi.visualization.opengl.text.TextManager.Renderer;
+import org.gephi.visualization.text.TextManager.Renderer;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class UniqueColorMode implements ColorMode {
+public class ObjectColorMode implements ColorMode {
 
     private VizConfig vizConfig;
-    private float[] color;
 
-    public UniqueColorMode() {
+    public ObjectColorMode() {
         this.vizConfig = VizController.getInstance().getVizConfig();
     }
 
     @Override
-    public void defaultNodeColor(Renderer renderer) {
-        color = VizController.getInstance().getVizModel().getTextModel().nodeColor;
-        renderer.setColor(color[0], color[1], color[2], color[3]);
+    public void defaultEdgeColor(Renderer renderer) {
     }
 
     @Override
-    public void defaultEdgeColor(Renderer renderer) {
-        color = VizController.getInstance().getVizModel().getTextModel().edgeColor;
-        renderer.setColor(color[0], color[1], color[2], color[3]);
+    public void defaultNodeColor(Renderer renderer) {
     }
 
     @Override
@@ -84,7 +79,7 @@ public class UniqueColorMode implements ColorMode {
         textColor(renderer, edgeModel, edgeModel.isSelected());
     }
 
-    public void textColor(Renderer renderer, TextModel text, boolean selected) {
+    protected void textColor(Renderer renderer, TextModel text, boolean selected) {
         if (text.hasCustomTextColor()) {
             if (vizConfig.isLightenNonSelected()) {
                 if (!selected) {
@@ -100,22 +95,24 @@ public class UniqueColorMode implements ColorMode {
             if (vizConfig.isLightenNonSelected()) {
                 if (!selected) {
                     float lightColorFactor = 1 - vizConfig.getLightenNonSelectedFactor();
-                    renderer.setColor(color[0], color[1], color[2], lightColorFactor);
+                    renderer.setColor(text.getElementProperties().r(), text.getElementProperties().g(), text.getElementProperties().b(), lightColorFactor);
                 } else {
-                    renderer.setColor(color[0], color[1], color[2], 1);
+                    renderer.setColor(text.getElementProperties().r(), text.getElementProperties().g(), text.getElementProperties().b(), 1);
                 }
+            } else {
+                renderer.setColor(text.getElementProperties().r(), text.getElementProperties().g(), text.getElementProperties().b(), text.getElementProperties().alpha());
             }
         }
     }
 
     @Override
     public String getName() {
-        return "Unique";
+        return "Object";
     }
 
     @Override
     public ImageIcon getIcon() {
-        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/UniqueColorMode.png"));
+        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/ObjectColorMode.png"));
     }
 
     @Override

@@ -55,7 +55,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.ui.utils.ColorUtils;
 import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.apiimpl.VizConfig;
-import org.gephi.visualization.opengl.text.TextModelImpl;
+import org.gephi.visualization.text.TextModelImpl;
 
 /**
  *

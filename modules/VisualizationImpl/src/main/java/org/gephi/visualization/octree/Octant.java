@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.gephi.visualization.octree;
 
-import com.sun.opengl.util.GLUT;
-import javax.media.opengl.GL;
+import com.jogamp.opengl.util.gl2.GLUT;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.model.node.NodeModel;
 
@@ -97,10 +93,10 @@ public class Octant {
         return size;
     }
 
-    protected void displayOctant(GL gl) {
+    protected void displayOctant(GL2 gl) {
 
         float quantum = size / 2;
-        gl.glBegin(GL.GL_QUAD_STRIP);
+        gl.glBegin(GL2.GL_QUAD_STRIP);
         gl.glVertex3f(posX + quantum, posY + quantum, posZ + quantum);
         gl.glVertex3f(posX + quantum, posY - quantum, posZ + quantum);
         gl.glVertex3f(posX + quantum, posY + quantum, posZ - quantum);
@@ -112,7 +108,7 @@ public class Octant {
         gl.glVertex3f(posX + quantum, posY + quantum, posZ + quantum);
         gl.glVertex3f(posX + quantum, posY - quantum, posZ + quantum);
         gl.glEnd();
-        gl.glBegin(GL.GL_QUADS);
+        gl.glBegin(GL2.GL_QUADS);
         gl.glVertex3f(posX - quantum, posY + quantum, posZ - quantum);
         gl.glVertex3f(posX - quantum, posY + quantum, posZ + quantum);
         gl.glVertex3f(posX + quantum, posY + quantum, posZ + quantum);
@@ -125,7 +121,7 @@ public class Octant {
         gl.glEnd();
     }
 
-    protected void displayOctantInfo(GL gl, GLU glu) {
+    protected void displayOctantInfo(GL2 gl, GLU glu) {
         GLUT glut = new GLUT();
 
         float quantum = size / 2;

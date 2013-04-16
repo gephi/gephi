@@ -41,7 +41,7 @@
  */
 package org.gephi.visualization.model.edge;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import org.gephi.visualization.api.initializer.Modeler;
@@ -83,17 +83,17 @@ public class ArrowModeler extends Modeler {
     }
 
     @Override
-    public void beforeDisplay(GL gl, GLU glu) {
-        gl.glBegin(GL.GL_TRIANGLES);
+    public void beforeDisplay(GL2 gl, GLU glu) {
+        gl.glBegin(GL2.GL_TRIANGLES);
     }
 
     @Override
-    public void afterDisplay(GL gl, GLU glu) {
+    public void afterDisplay(GL2 gl, GLU glu) {
         gl.glEnd();
     }
 
     @Override
-    public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
+    public int initDisplayLists(GL2 gl, GLU glu, GLUquadric quadric, int ptr) {
         return ptr;
     }
 }

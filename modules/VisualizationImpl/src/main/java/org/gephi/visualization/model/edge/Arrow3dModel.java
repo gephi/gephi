@@ -41,7 +41,7 @@
  */
 package org.gephi.visualization.model.edge;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -62,7 +62,7 @@ public class Arrow3dModel extends Arrow2dModel {
     }
 
     @Override
-    public void display(GL gl, GLU glu, VizModel vizModel) {
+    public void display(GL2 gl, GLU glu, VizModel vizModel) {
         float[] cameraLocation = VizController.getInstance().getDrawable().getCameraLocation();
         if (!edgeModel.isSelected() && vizModel.isHideNonSelectedEdges()) {
             return;

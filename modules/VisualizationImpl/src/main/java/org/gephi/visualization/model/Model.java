@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.gephi.visualization.model;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizModel;
 
@@ -14,5 +10,5 @@ import org.gephi.visualization.VizModel;
  */
 public interface Model {
 
-    public void display(GL gl, GLU glu, VizModel model);
+    public void display(GL2 gl, GLU glu, VizModel model);
 }

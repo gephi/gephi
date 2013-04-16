@@ -41,7 +41,7 @@
  */
 package org.gephi.visualization.model.node;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import org.gephi.graph.api.Node;
@@ -99,49 +99,49 @@ public class NodeDiskModeler extends NodeModeler {
     }
 
     @Override
-    public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
+    public int initDisplayLists(GL2 gl, GLU glu, GLUquadric quadric, int ptr) {
         // Diamond display list
         SHAPE_DIAMOND = ptr + 1;
-        gl.glNewList(SHAPE_DIAMOND, GL.GL_COMPILE);
+        gl.glNewList(SHAPE_DIAMOND, GL2.GL_COMPILE);
         glu.gluDisk(quadric, 0, 0.5, 4, 1);
         gl.glEndList();
         //End
 
         //Disk16
         SHAPE_DISK16 = SHAPE_DIAMOND + 1;
-        gl.glNewList(SHAPE_DISK16, GL.GL_COMPILE);
+        gl.glNewList(SHAPE_DISK16, GL2.GL_COMPILE);
         glu.gluDisk(quadric, 0, 0.5, 6, 1);
         gl.glEndList();
         //Fin
 
         //Disk32
         SHAPE_DISK32 = SHAPE_DISK16 + 1;
-        gl.glNewList(SHAPE_DISK32, GL.GL_COMPILE);
+        gl.glNewList(SHAPE_DISK32, GL2.GL_COMPILE);
         glu.gluDisk(quadric, 0, 0.5, 12, 2);
         gl.glEndList();
 
         //Disk64
         SHAPE_DISK64 = SHAPE_DISK32 + 1;
-        gl.glNewList(SHAPE_DISK64, GL.GL_COMPILE);
+        gl.glNewList(SHAPE_DISK64, GL2.GL_COMPILE);
         glu.gluDisk(quadric, 0, 0.5, 32, 4);
         gl.glEndList();
 
 
         //Border16
         BORDER16 = SHAPE_DISK64 + 1;
-        gl.glNewList(BORDER16, GL.GL_COMPILE);
+        gl.glNewList(BORDER16, GL2.GL_COMPILE);
         glu.gluDisk(quadric, 0.42, 0.50, 24, 2);
         gl.glEndList();
 
         //Border32
         BORDER32 = BORDER16 + 1;
-        gl.glNewList(BORDER32, GL.GL_COMPILE);
+        gl.glNewList(BORDER32, GL2.GL_COMPILE);
         glu.gluDisk(quadric, 0.42, 0.50, 48, 2);
         gl.glEndList();
 
         //Border32
         BORDER64 = BORDER32 + 1;
-        gl.glNewList(BORDER64, GL.GL_COMPILE);
+        gl.glNewList(BORDER64, GL2.GL_COMPILE);
         glu.gluDisk(quadric, 0.42, 0.50, 96, 4);
         gl.glEndList();
 
@@ -149,11 +149,11 @@ public class NodeDiskModeler extends NodeModeler {
     }
 
     @Override
-    public void beforeDisplay(GL gl, GLU glu) {
+    public void beforeDisplay(GL2 gl, GLU glu) {
     }
 
     @Override
-    public void afterDisplay(GL gl, GLU glu) {
+    public void afterDisplay(GL2 gl, GLU glu) {
     }
 
     @Override

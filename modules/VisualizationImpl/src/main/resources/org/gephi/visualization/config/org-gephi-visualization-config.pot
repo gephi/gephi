@@ -25,5 +25,5 @@ msgstr ""
 
 msgid "graphicalConfiguration_exception"
 msgstr ""
-"\"Your OpenGL version (%s) is too low to display the graph.\n"
+"\"Your OpenGL2 version (%s) is too low to display the graph.\n"
 "Update your graphical drivers or configuration.%s"

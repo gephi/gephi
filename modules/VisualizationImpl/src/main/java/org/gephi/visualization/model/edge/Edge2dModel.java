@@ -41,7 +41,7 @@
  */
 package org.gephi.visualization.model.edge;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -71,7 +71,7 @@ public class Edge2dModel extends EdgeModel {
     }
 
     @Override
-    public void display(GL gl, GLU glu, VizModel vizModel) {
+    public void display(GL2 gl, GLU glu, VizModel vizModel) {
         if (!selected && vizModel.isHideNonSelectedEdges()) {
             return;
         }

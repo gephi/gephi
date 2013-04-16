@@ -1,17 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.gephi.visualization.octree;
 
-import com.sun.opengl.util.BufferUtil;
+import com.jogamp.common.nio.Buffers;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Node;
 import org.gephi.lib.gleem.linalg.Vec3f;
@@ -265,18 +261,18 @@ public class Octree {
         limits.setMaxYviewport(viewportMaxY);
     }
 
-    public void updateVisibleOctant(GL gl) {
+    public void updateVisibleOctant(GL2 gl) {
         //Limits
         refreshLimits();
 
-        //Switch to OpenGL select mode
+        //Switch to OpenGL2 select mode
         int capacity = 1 * 4 * leaves.length;      //Each object take in maximium : 4 * name stack depth
-        IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
+        IntBuffer hitsBuffer = Buffers.newDirectIntBuffer(capacity);
         gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
-        gl.glRenderMode(GL.GL_SELECT);
+        gl.glRenderMode(GL2.GL_SELECT);
         gl.glInitNames();
         gl.glPushName(0);
-        gl.glDisable(GL.GL_CULL_FACE);      //Disable flags
+        gl.glDisable(GL2.GL_CULL_FACE);      //Disable flags
         //Draw the nodes cube in the select buffer
         for (Octant n : leaves) {
             gl.glLoadName(n.leafId);
@@ -284,10 +280,10 @@ public class Octree {
             n.visible = false;
         }
         visibleLeaves = 0;
-        int nbRecords = gl.glRenderMode(GL.GL_RENDER);
+        int nbRecords = gl.glRenderMode(GL2.GL_RENDER);
         if (vizController.getVizModel().isCulling()) {
-            gl.glEnable(GL.GL_CULL_FACE);
-            gl.glCullFace(GL.GL_BACK);
+            gl.glEnable(GL2.GL_CULL_FACE);
+            gl.glCullFace(GL2.GL_BACK);
         }
 
         //Get the hits and add the nodes' objects to the array
@@ -312,26 +308,26 @@ public class Octree {
         }
     }
 
-    public void updateSelectedOctant(GL gl, GLU glu, float[] mousePosition, float[] pickRectangle) {
+    public void updateSelectedOctant(GL2 gl, GLU glu, float[] mousePosition, float[] pickRectangle) {
         //Start Picking mode
         int capacity = 1 * 4 * visibleLeaves;      //Each object take in maximium : 4 * name stack depth
-        IntBuffer hitsBuffer = BufferUtil.newIntBuffer(capacity);
+        IntBuffer hitsBuffer = Buffers.newDirectIntBuffer(capacity);
 
         gl.glSelectBuffer(hitsBuffer.capacity(), hitsBuffer);
-        gl.glRenderMode(GL.GL_SELECT);
-        gl.glDisable(GL.GL_CULL_FACE);      //Disable flags
+        gl.glRenderMode(GL2.GL_SELECT);
+        gl.glDisable(GL2.GL_CULL_FACE);      //Disable flags
 
         gl.glInitNames();
         gl.glPushName(0);
 
-        gl.glMatrixMode(GL.GL_PROJECTION);
+        gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glPushMatrix();
         gl.glLoadIdentity();
 
         glu.gluPickMatrix(mousePosition[0], mousePosition[1], pickRectangle[0], pickRectangle[1], drawable.getViewport());
         gl.glMultMatrixd(drawable.getProjectionMatrix());
 
-        gl.glMatrixMode(GL.GL_MODELVIEW);
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
 
         //Draw the nodes' cube int the select buffer
         int hitName = 1;
@@ -345,16 +341,16 @@ public class Octree {
         }
 
         //Restoring the original projection matrix
-        gl.glMatrixMode(GL.GL_PROJECTION);
+        gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glPopMatrix();
-        gl.glMatrixMode(GL.GL_MODELVIEW);
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glFlush();
 
         //Returning to normal rendering mode
-        int nbRecords = gl.glRenderMode(GL.GL_RENDER);
+        int nbRecords = gl.glRenderMode(GL2.GL_RENDER);
         if (vizController.getVizModel().isCulling()) {
-            gl.glEnable(GL.GL_CULL_FACE);
-            gl.glCullFace(GL.GL_BACK);
+            gl.glEnable(GL2.GL_CULL_FACE);
+            gl.glCullFace(GL2.GL_BACK);
         }
 
         //Clean previous selection

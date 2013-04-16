@@ -39,12 +39,12 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.visualization.opengl.text;
+package org.gephi.visualization.text;
 
 import javax.swing.ImageIcon;
 import org.gephi.visualization.model.edge.EdgeModel;
 import org.gephi.visualization.model.node.NodeModel;
-import org.gephi.visualization.opengl.text.TextManager.Renderer;
+import org.gephi.visualization.text.TextManager.Renderer;
 
 /**
  *

@@ -31,7 +31,7 @@ msgid "AdvancedOption_Tooltip_Default"
 msgstr "Default Visualization Settings"
 
 msgid "AdvancedOption_Tooltip_OpenGL"
-msgstr "OpenGL Engine Settings"
+msgstr "OpenGL2 Engine Settings"
 
 msgid "OptionsCategory_Keywords_Visualization"
 msgstr "visualization, opengl"

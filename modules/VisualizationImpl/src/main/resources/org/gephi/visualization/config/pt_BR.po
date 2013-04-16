@@ -22,4 +22,4 @@ msgid "graphicalConfiguration_currentConfig"
 msgstr "\"\nHardware atual:\n%s\n%s\nVersão:%s;"
 
 msgid "graphicalConfiguration_exception"
-msgstr "\"Sua versão de OpenGL (%s) não é suficiente para exibir o grafo. Atualize seus drivers gráficos ou de configuração.%s"
+msgstr "\"Sua versão de OpenGL2 (%s) não é suficiente para exibir o grafo. Atualize seus drivers gráficos ou de configuração.%s"

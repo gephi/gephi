@@ -41,7 +41,7 @@
  */
 package org.gephi.visualization.model.node;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Node;
 import org.gephi.lib.gleem.linalg.Vecf;
@@ -61,7 +61,7 @@ public class NodeDiskModel extends NodeModel {
     }
 
     @Override
-    public void display(GL gl, GLU glu, VizModel vizModel) {
+    public void display(GL2 gl, GLU glu, VizModel vizModel) {
         boolean selec = selected;
         boolean neighbor = false;
         highlight = false;

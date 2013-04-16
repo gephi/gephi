@@ -23,4 +23,4 @@ msgid "graphicalConfiguration_currentConfig"
 msgstr "\"\nHardware actual:\n%s\n%s\nVersión:%s;"
 
 msgid "graphicalConfiguration_exception"
-msgstr "Tu versión de OpenGL (%s) es demasiado baja para mostrar el grafo.\nActualiza los controladores gráficos o su configuración.%s"
+msgstr "Tu versión de OpenGL2 (%s) es demasiado baja para mostrar el grafo.\nActualiza los controladores gráficos o su configuración.%s"

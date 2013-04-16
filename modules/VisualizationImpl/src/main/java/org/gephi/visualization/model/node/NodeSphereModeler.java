@@ -41,7 +41,7 @@
  */
 package org.gephi.visualization.model.node;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import org.gephi.graph.api.Node;
@@ -96,17 +96,17 @@ public class NodeSphereModeler extends NodeModeler {
     }
 
     @Override
-    public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
+    public int initDisplayLists(GL2 gl, GLU glu, GLUquadric quadric, int ptr) {
         // Diamond display list
         SHAPE_DIAMOND = ptr + 1;
-        gl.glNewList(SHAPE_DIAMOND, GL.GL_COMPILE);
+        gl.glNewList(SHAPE_DIAMOND, GL2.GL_COMPILE);
         glu.gluSphere(quadric, 0.5f, 4, 2);
         gl.glEndList();
         //End
 
         // Sphere16 display list
         SHAPE_SPHERE16 = SHAPE_DIAMOND + 1;
-        gl.glNewList(SHAPE_SPHERE16, GL.GL_COMPILE);
+        gl.glNewList(SHAPE_SPHERE16, GL2.GL_COMPILE);
         gl.glCallList(ptr);
         glu.gluSphere(quadric, 0.5f, 16, 8);
         gl.glEndList();
@@ -115,14 +115,14 @@ public class NodeSphereModeler extends NodeModeler {
 
         // Sphere32 display list
         SHAPE_SPHERE32 = SHAPE_SPHERE16 + 1;
-        gl.glNewList(SHAPE_SPHERE32, GL.GL_COMPILE);
+        gl.glNewList(SHAPE_SPHERE32, GL2.GL_COMPILE);
         gl.glCallList(ptr);
         glu.gluSphere(quadric, 0.5f, 32, 16);
         gl.glEndList();
 
         // Sphere32 display list
         SHAPE_SPHERE64 = SHAPE_SPHERE32 + 1;
-        gl.glNewList(SHAPE_SPHERE64, GL.GL_COMPILE);
+        gl.glNewList(SHAPE_SPHERE64, GL2.GL_COMPILE);
         gl.glCallList(ptr);
         glu.gluSphere(quadric, 0.5f, 64, 32);
         gl.glEndList();
@@ -131,11 +131,11 @@ public class NodeSphereModeler extends NodeModeler {
     }
 
     @Override
-    public void beforeDisplay(GL gl, GLU glu) {
+    public void beforeDisplay(GL2 gl, GLU glu) {
     }
 
     @Override
-    public void afterDisplay(GL gl, GLU glu) {
+    public void afterDisplay(GL2 gl, GLU glu) {
     }
 
     @Override

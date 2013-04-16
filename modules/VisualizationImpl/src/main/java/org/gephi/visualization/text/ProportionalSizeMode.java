@@ -39,45 +39,41 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.visualization.opengl.text;
+package org.gephi.visualization.text;
 
 import javax.swing.ImageIcon;
-import org.gephi.visualization.VizController;
-import org.gephi.visualization.apiimpl.GraphDrawable;
 import org.gephi.visualization.model.node.NodeModel;
 
 /**
  *
  * @author Mathieu Bastian
  */
-public class FixedSizeMode implements SizeMode {
+public class ProportionalSizeMode implements SizeMode {
 
-    //private static float FACTOR_3D = 800f;
-    private GraphDrawable drawable;
+    private static float FACTOR = 200f;
 
     @Override
     public void init() {
-        drawable = VizController.getInstance().getDrawable();
     }
 
     @Override
     public float getSizeFactor2d(float sizeFactor, NodeModel model) {
-        return sizeFactor * 1.9f + 0.1f;        //Between 0.1 and 2
+        return FACTOR * model.getNode().size() * sizeFactor / model.getCameraDistance();
     }
 
     @Override
     public float getSizeFactor3d(float sizeFactor, NodeModel model) {
-        return sizeFactor / drawable.getViewportWidth() * model.getCameraDistance();
+        return sizeFactor * model.getNode().size() / 10f;        //Between 0.1 and 2
     }
 
     @Override
     public String getName() {
-        return "Fixed";
+        return "Node size";
     }
 
     @Override
     public ImageIcon getIcon() {
-        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/FixedSizeMode.png"));
+        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/ProportionalSizeMode.png"));
     }
 
     @Override

@@ -41,9 +41,9 @@
  */
 package org.gephi.visualization.model.edge;
 
-import com.sun.opengl.util.BufferUtil;
+import com.jogamp.common.nio.Buffers;
 import java.nio.FloatBuffer;
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
@@ -60,7 +60,7 @@ public class SelfLoop2dModel extends EdgeModel {
 
     private static Vec3f upVector = new Vec3f(0f, 1f, 0f);
     private static Vec3f sideVector = new Vec3f(1f, 0f, 0f);
-    protected static FloatBuffer buffer = BufferUtil.newFloatBuffer(24);
+    protected static FloatBuffer buffer = Buffers.newDirectFloatBuffer(24);
     protected static int segments = 20;
     //
     protected final NodeModel nodeModel;
@@ -71,7 +71,7 @@ public class SelfLoop2dModel extends EdgeModel {
     }
 
     @Override
-    public void display(GL gl, GLU glu, VizModel vizModel) {
+    public void display(GL2 gl, GLU glu, VizModel vizModel) {
 
         gl.glEnd();
 
@@ -215,15 +215,15 @@ public class SelfLoop2dModel extends EdgeModel {
         }
 
         //Display
-        gl.glMap2f(GL.GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 2, buffer);       //Map evaluators
-        gl.glEnable(GL.GL_MAP2_VERTEX_3);
+        gl.glMap2f(GL2.GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 2, buffer);       //Map evaluators
+        gl.glEnable(GL2.GL_MAP2_VERTEX_3);
         gl.glMapGrid2f(segments, 0, 1, 1, 0, 1);     //Grid
-        gl.glEvalMesh2(GL.GL_FILL, 0, segments, 0, 1);      //Display
-        gl.glDisable(GL.GL_MAP2_VERTEX_3);
+        gl.glEvalMesh2(GL2.GL_FILL, 0, segments, 0, 1);      //Display
+        gl.glDisable(GL2.GL_MAP2_VERTEX_3);
 
         gl.glEnd();
 
-        gl.glBegin(GL.GL_TRIANGLES);
+        gl.glBegin(GL2.GL_TRIANGLES);
     }
 
     @Override

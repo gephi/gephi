@@ -41,7 +41,7 @@
  */
 package org.gephi.visualization.selection;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.VizController;
@@ -114,7 +114,7 @@ public class Cylinder implements SelectionArea {
     }
 
     @Override
-    public void drawArea(GL gl, GLU glu) {
+    public void drawArea(GL2 gl, GLU glu) {
         float diameter = selectionManager.getMouseSelectionDiameter();
         if (diameter == 1) {
             //Point
@@ -132,10 +132,10 @@ public class Cylinder implements SelectionArea {
             double angle;
 
             if (lighting) {
-                gl.glDisable(GL.GL_LIGHTING);
+                gl.glDisable(GL2.GL_LIGHTING);
             }
             gl.glColor4f(0f, 0f, 0f, 0.2f);
-            gl.glBegin(GL.GL_TRIANGLES);
+            gl.glBegin(GL2.GL_TRIANGLES);
             for (int i = 0; i <= 360; i++) {
                 angle = i / 57.29577957795135f;
                 vectorX = mousePosition[0] + (radius * (float) Math.sin(angle));
@@ -148,7 +148,7 @@ public class Cylinder implements SelectionArea {
             }
             gl.glEnd();
             if (lighting) {
-                gl.glEnable(GL.GL_LIGHTING);
+                gl.glEnable(GL2.GL_LIGHTING);
             }
         }
     }

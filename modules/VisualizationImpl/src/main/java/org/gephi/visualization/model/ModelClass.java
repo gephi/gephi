@@ -44,7 +44,7 @@ package org.gephi.visualization.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.api.initializer.Modeler;
@@ -87,11 +87,11 @@ public class ModelClass {
         }
     }
 
-    public void beforeDisplay(GL gl, GLU glu) {
+    public void beforeDisplay(GL2 gl, GLU glu) {
         currentModeler.beforeDisplay(gl, glu);
     }
 
-    public void afterDisplay(GL gl, GLU glu) {
+    public void afterDisplay(GL2 gl, GLU glu) {
         currentModeler.afterDisplay(gl, glu);
     }
 

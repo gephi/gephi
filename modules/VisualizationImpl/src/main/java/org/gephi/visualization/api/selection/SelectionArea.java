@@ -41,7 +41,7 @@
  */
 package org.gephi.visualization.api.selection;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.model.node.NodeModel;
@@ -58,7 +58,7 @@ public interface SelectionArea {
 
     public boolean mouseTest(Vecf distanceFromMouse, NodeModel nodeModel);
 
-    public void drawArea(GL gl, GLU glu);
+    public void drawArea(GL2 gl, GLU glu);
 
     public boolean isEnabled();
 

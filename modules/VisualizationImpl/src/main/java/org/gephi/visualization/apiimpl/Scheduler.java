@@ -41,7 +41,7 @@
  */
 package org.gephi.visualization.apiimpl;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 
 /**
@@ -60,7 +60,7 @@ public interface Scheduler {
 
     public void updateWorld();
 
-    public void display(GL gl, GLU glu);
+    public void display(GL2 gl, GLU glu);
 
     public void requireUpdateVisible();
 

@@ -41,7 +41,7 @@
  */
 package org.gephi.visualization.model.node;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import org.gephi.graph.api.Node;
@@ -83,17 +83,17 @@ public class NodeRectangleModeler extends NodeModeler {
     }
 
     @Override
-    public int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr) {
+    public int initDisplayLists(GL2 gl, GLU glu, GLUquadric quadric, int ptr) {
         return ptr;
     }
 
     @Override
-    public void beforeDisplay(GL gl, GLU glu) {
-        gl.glBegin(GL.GL_QUADS);
+    public void beforeDisplay(GL2 gl, GLU glu) {
+        gl.glBegin(GL2.GL_QUADS);
     }
 
     @Override
-    public void afterDisplay(GL gl, GLU glu) {
+    public void afterDisplay(GL2 gl, GLU glu) {
         gl.glEnd();
     }
 

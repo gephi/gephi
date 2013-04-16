@@ -508,7 +508,7 @@ final class OpenGLPanel extends javax.swing.JPanel {
         //OpenGLInfo
         GraphicalConfiguration gc = VizController.getInstance().getDrawable().getGraphicalConfiguration();
         if (gc != null) {
-            openInfoText.setText(gc.getVendor() + "\n" + gc.getRenderer() + "\nOpenGL " + gc.getVersionStr());
+            openInfoText.setText(gc.getVendor() + "\n" + gc.getRenderer() + "\nOpenGL2 " + gc.getVersionStr());
         }
     }
 

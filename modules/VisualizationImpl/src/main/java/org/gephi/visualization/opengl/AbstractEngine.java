@@ -43,7 +43,7 @@ package org.gephi.visualization.opengl;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.gephi.lib.gleem.linalg.Vecf;
 import org.gephi.visualization.VizArchitecture;
@@ -59,8 +59,8 @@ import org.gephi.visualization.model.ModelClass;
 import org.gephi.visualization.model.ModelClassLibrary;
 import org.gephi.visualization.model.node.NodeModel;
 import org.gephi.visualization.octree.Octree;
-import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.swing.GraphDrawableImpl;
+import org.gephi.visualization.text.TextManager;
 
 /**
  * Abstract graphic engine. Real graphic engines inherit from this class and can
@@ -129,17 +129,17 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
         });
     }
 
-    public abstract void beforeDisplay(GL gl, GLU glu);
+    public abstract void beforeDisplay(GL2 gl, GLU glu);
 
-    public abstract void display(GL gl, GLU glu);
+    public abstract void display(GL2 gl, GLU glu);
 
-    public abstract void afterDisplay(GL gl, GLU glu);
+    public abstract void afterDisplay(GL2 gl, GLU glu);
 
-    public abstract void initEngine(GL gl, GLU glu);
+    public abstract void initEngine(GL2 gl, GLU glu);
 
-    public abstract void initScreenshot(GL gl, GLU glu);
+    public abstract void initScreenshot(GL2 gl, GLU glu);
 
-    public abstract void cameraHasBeenMoved(GL gl, GLU glu);
+    public abstract void cameraHasBeenMoved(GL2 gl, GLU glu);
 
     public abstract void mouseMove();
 
@@ -235,6 +235,10 @@ public abstract class AbstractEngine implements Engine, VizArchitecture {
 
     public Octree getOctree() {
         return octree;
+    }
+
+    public ModelClass getNodeClass() {
+        return nodeClass;
     }
 
     protected class EngineLifeCycle {

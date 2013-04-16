@@ -54,7 +54,7 @@ import net.miginfocom.swing.MigLayout;
 import org.gephi.attribute.api.Column;
 import org.gephi.attribute.api.Origin;
 import org.gephi.graph.api.GraphController;
-import org.gephi.visualization.opengl.text.TextModelImpl;
+import org.gephi.visualization.text.TextModelImpl;
 import org.openide.util.Lookup;
 
 /**

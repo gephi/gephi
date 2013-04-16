@@ -45,7 +45,6 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.visualization.GraphLimits;
-import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.opengl.AbstractEngine;
 
@@ -53,7 +52,7 @@ import org.gephi.visualization.opengl.AbstractEngine;
  *
  * @author Mathieu Bastian
  */
-public class DHNSDataBridge implements DataBridge, VizArchitecture {
+public class DHNSDataBridge {
 
     //Architecture
     protected AbstractEngine engine;
@@ -374,29 +373,4 @@ public class DHNSDataBridge implements DataBridge, VizArchitecture {
 //            }
 //        }
 //    }
-
-    @Override
-    public void updateWorld() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void initArchitecture() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean requireUpdate() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void reset() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void resetGraph() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

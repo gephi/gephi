@@ -39,7 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package org.gephi.visualization.opengl.text;
+package org.gephi.visualization.text;
 
 import javax.swing.ImageIcon;
 import org.gephi.visualization.model.node.NodeModel;
@@ -48,9 +48,9 @@ import org.gephi.visualization.model.node.NodeModel;
  *
  * @author Mathieu Bastian
  */
-public class ProportionalSizeMode implements SizeMode {
+public class ScaledSizeMode implements SizeMode {
 
-    private static float FACTOR = 200f;
+    private static float FACTOR_2D = 2000f;
 
     @Override
     public void init() {
@@ -58,22 +58,22 @@ public class ProportionalSizeMode implements SizeMode {
 
     @Override
     public float getSizeFactor2d(float sizeFactor, NodeModel model) {
-        return FACTOR * model.getNode().size() * sizeFactor / model.getCameraDistance();
+        return FACTOR_2D * sizeFactor / model.getCameraDistance();
     }
 
     @Override
     public float getSizeFactor3d(float sizeFactor, NodeModel model) {
-        return sizeFactor * model.getNode().size() / 10f;        //Between 0.1 and 2
+        return sizeFactor * 1.9f + 0.1f;        //Between 0.1 and 2
     }
 
     @Override
     public String getName() {
-        return "Node size";
+        return "Scaled";
     }
 
     @Override
     public ImageIcon getIcon() {
-        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/ProportionalSizeMode.png"));
+        return new ImageIcon(getClass().getResource("/org/gephi/visualization/opengl/text/ScaledSizeMode.png"));
     }
 
     @Override

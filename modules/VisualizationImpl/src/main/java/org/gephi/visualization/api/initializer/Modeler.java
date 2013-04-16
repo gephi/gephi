@@ -41,7 +41,7 @@
  */
 package org.gephi.visualization.api.initializer;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import org.gephi.visualization.VizController;
@@ -66,13 +66,13 @@ public abstract class Modeler {
         this.config = VizController.getInstance().getVizConfig();
     }
 
-    public abstract int initDisplayLists(GL gl, GLU glu, GLUquadric quadric, int ptr);
+    public abstract int initDisplayLists(GL2 gl, GLU glu, GLUquadric quadric, int ptr);
 
     public abstract void chooseModel(Model obj);
 
-    public abstract void beforeDisplay(GL gl, GLU glu);
+    public abstract void beforeDisplay(GL2 gl, GLU glu);
 
-    public abstract void afterDisplay(GL gl, GLU glu);
+    public abstract void afterDisplay(GL2 gl, GLU glu);
 
     protected float cameraDistance(NodeModel object) {
         float[] cameraLocation = controller.getDrawable().getCameraLocation();

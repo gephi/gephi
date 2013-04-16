@@ -73,14 +73,14 @@
             <artifactId>org-openide-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sun.opengl</groupId>
-            <artifactId>jogl</artifactId>
-            <version>1.1.1-a</version>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt-main</artifactId>
+            <version>2.0-rc11</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.gluegen.runtime</groupId>
-            <artifactId>gluegen-rt</artifactId>
-            <version>1.1.1-a</version>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all-main</artifactId>
+            <version>2.0-rc11</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>

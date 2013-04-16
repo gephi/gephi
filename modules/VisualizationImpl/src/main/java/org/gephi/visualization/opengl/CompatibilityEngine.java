@@ -45,7 +45,7 @@ import java.awt.Color;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.Iterator;
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import org.gephi.visualization.VizController;
@@ -87,7 +87,7 @@ public class CompatibilityEngine extends AbstractEngine {
         octree.initArchitecture();
     }
 
-    public void updateSelection(GL gl, GLU glu) {
+    public void updateSelection(GL2 gl, GLU glu) {
         if (vizConfig.isSelectionEnable() && currentSelectionArea != null && currentSelectionArea.isEnabled()) {
             float[] mp = Arrays.copyOf(graphIO.getMousePosition(), 2);
             float[] cent = currentSelectionArea.getSelectionAreaCenter();
@@ -101,36 +101,37 @@ public class CompatibilityEngine extends AbstractEngine {
 
     @Override
     public boolean updateWorld() {
-        boolean res = false;
-        boolean newConfig = configChanged;
-        if (newConfig) {
-            dataBridge.reset();
-            if (!vizConfig.isCustomSelection()) {
-                //Reset model classes
-//                for (ModelClass objClass : getModelClasses()) {
-//                    if (objClass.isEnabled()) {
-//                        objClass.swapModelers();
-//                        resetObjectClass(objClass);
-//                    }
-//                }
-            }
-
-            initSelection();
-
-        }
-        if (dataBridge.requireUpdate() || newConfig) {
-            dataBridge.updateWorld();
-            res = true;
-        }
-        if (newConfig) {
-
-            configChanged = false;
-        }
-        return res;
+        return dataBridge.updateWorld();
+//        boolean res = false;
+//        boolean newConfig = configChanged;
+//        if (newConfig) {
+//            dataBridge.reset();
+//            if (!vizConfig.isCustomSelection()) {
+//                //Reset model classes
+////                for (ModelClass objClass : getModelClasses()) {
+////                    if (objClass.isEnabled()) {
+////                        objClass.swapModelers();
+////                        resetObjectClass(objClass);
+////                    }
+////                }
+//            }
+//
+//            initSelection();
+//
+//        }
+//        if (dataBridge.requireUpdate() || newConfig) {
+//            dataBridge.updateWorld();
+//            res = true;
+//        }
+//        if (newConfig) {
+//
+//            configChanged = false;
+//        }
+//        return res;
     }
 
     @Override
-    public void beforeDisplay(GL gl, GLU glu) {
+    public void beforeDisplay(GL2 gl, GLU glu) {
         //Lighten delta
         if (lightenAnimationDelta != 0) {
             float factor = vizConfig.getLightenNonSelectedFactor();
@@ -146,7 +147,7 @@ public class CompatibilityEngine extends AbstractEngine {
         if (backgroundChanged) {
             Color backgroundColor = vizController.getVizModel().getBackgroundColor();
             gl.glClearColor(backgroundColor.getRed() / 255f, backgroundColor.getGreen() / 255f, backgroundColor.getBlue() / 255f, 1f);
-            gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+            gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
             backgroundChanged = false;
         }
 
@@ -162,7 +163,7 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     @Override
-    public void display(GL gl, GLU glu) {
+    public void display(GL2 gl, GLU glu) {
 //        for (Iterator<ModelImpl> itr = octree.getObjectIterator(AbstractEngine.CLASS_NODE); itr.hasNext();) {       //TODO Move this
 //            ModelImpl obj = itr.next();
 //            modelClasses[AbstractEngine.CLASS_NODE].getCurrentModeler().chooseModel(obj);
@@ -278,30 +279,30 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     @Override
-    public void afterDisplay(GL gl, GLU glu) {
+    public void afterDisplay(GL2 gl, GLU glu) {
         if (vizConfig.isSelectionEnable() && currentSelectionArea != null) {
-            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glMatrixMode(GL2.GL_PROJECTION);
             gl.glPushMatrix();
             gl.glLoadIdentity();
             gl.glOrtho(0, graphDrawable.getViewportWidth(), 0, graphDrawable.getViewportHeight(), -1, 1);
-            gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
             gl.glPushMatrix();
             gl.glLoadIdentity();
             currentSelectionArea.drawArea(gl, glu);
-            gl.glMatrixMode(GL.GL_PROJECTION);
+            gl.glMatrixMode(GL2.GL_PROJECTION);
             gl.glPopMatrix();
-            gl.glMatrixMode(GL.GL_MODELVIEW);
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
             gl.glPopMatrix();
         }
         graphIO.trigger();
     }
 
     @Override
-    public void cameraHasBeenMoved(GL gl, GLU glu) {
+    public void cameraHasBeenMoved(GL2 gl, GLU glu) {
     }
 
     @Override
-    public void initEngine(final GL gl, final GLU glu) {
+    public void initEngine(final GL2 gl, final GLU glu) {
         initDisplayLists(gl, glu);
 //        scheduler.cameraMoved.set(true);
 //        scheduler.mouseMoved.set(true);
@@ -309,7 +310,7 @@ public class CompatibilityEngine extends AbstractEngine {
     }
 
     @Override
-    public void initScreenshot(GL gl, GLU glu) {
+    public void initScreenshot(GL2 gl, GLU glu) {
         initDisplayLists(gl, glu);
         textManager.getNodeRenderer().reinitRenderer();
         textManager.getEdgeRenderer().reinitRenderer();
@@ -633,7 +634,7 @@ public class CompatibilityEngine extends AbstractEngine {
 //        }
     }
 
-    private void initDisplayLists(GL gl, GLU glu) {
+    private void initDisplayLists(GL2 gl, GLU glu) {
         //Constants
         float blancCasse[] = {(float) 213 / 255, (float) 208 / 255, (float) 188 / 255, 1.0f};
         float noirCasse[] = {(float) 39 / 255, (float) 25 / 255, (float) 99 / 255, 1.0f};
@@ -652,11 +653,11 @@ public class CompatibilityEngine extends AbstractEngine {
 
         // Metal material display list
         int MATTER_METAL = ptr;
-        gl.glNewList(MATTER_METAL, GL.GL_COMPILE);
-        gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_AMBIENT, ambient_metal);
-        gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_DIFFUSE, diffuse_metal);
-        gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_SPECULAR, specular_metal);
-        gl.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_SHININESS, shininess_metal);
+        gl.glNewList(MATTER_METAL, GL2.GL_COMPILE);
+        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, ambient_metal);
+        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, diffuse_metal);
+        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, specular_metal);
+        gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, shininess_metal);
         gl.glEndList();
         //Fin
 
@@ -671,9 +672,9 @@ public class CompatibilityEngine extends AbstractEngine {
 
         // Sphere with a texture
         //SHAPE_BILLBOARD = SHAPE_SPHERE32 + 1;
-		/*gl.glNewList(SHAPE_BILLBOARD,GL.GL_COMPILE);
+		/*gl.glNewList(SHAPE_BILLBOARD,GL2.GL_COMPILE);
          textures[0].bind();
-         gl.glBegin(GL.GL_TRIANGLE_STRIP);
+         gl.glBegin(GL2.GL_TRIANGLE_STRIP);
          // Map the texture and create the vertices for the particle.
          gl.glTexCoord2d(1, 1);
          gl.glVertex3f(0.5f, 0.5f, 0);
@@ -685,7 +686,7 @@ public class CompatibilityEngine extends AbstractEngine {
          gl.glVertex3f(-0.5f,-0.5f, 0);
          gl.glEnd();
 
-         gl.glBindTexture(GL.GL_TEXTURE_2D,0);
+         gl.glBindTexture(GL2.GL_TEXTURE_2D,0);
          gl.glEndList();*/
         //Fin
 

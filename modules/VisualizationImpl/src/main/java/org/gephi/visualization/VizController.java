@@ -52,18 +52,17 @@ import org.gephi.visualization.apiimpl.GraphIO;
 import org.gephi.visualization.apiimpl.Scheduler;
 import org.gephi.visualization.apiimpl.VizConfig;
 import org.gephi.visualization.apiimpl.VizEventManager;
-import org.gephi.visualization.bridge.DHNSDataBridge;
 import org.gephi.visualization.bridge.DataBridge;
 import org.gephi.visualization.config.VizCommander;
 import org.gephi.visualization.events.StandardVizEventManager;
 import org.gephi.visualization.model.ModelClassLibrary;
 import org.gephi.visualization.opengl.AbstractEngine;
 import org.gephi.visualization.opengl.CompatibilityEngine;
-import org.gephi.visualization.opengl.text.TextManager;
 import org.gephi.visualization.scheduler.CompatibilityScheduler;
 import org.gephi.visualization.screenshot.ScreenshotMaker;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.gephi.visualization.swing.StandardGraphIO;
+import org.gephi.visualization.text.TextManager;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -113,7 +112,7 @@ public class VizController implements VisualizationController {
         scheduler = new CompatibilityScheduler();
         modelClassLibrary = new ModelClassLibrary();
         limits = new GraphLimits();
-        dataBridge = new DHNSDataBridge();
+        dataBridge = new DataBridge();
         textManager = new TextManager();
         screenshotMaker = new ScreenshotMaker();
         currentModel = new VizModel(true);
@@ -144,7 +143,6 @@ public class VizController implements VisualizationController {
             @Override
             public void select(Workspace workspace) {
                 engine.reinit();
-                dataBridge.resetGraph();
             }
 
             @Override

@@ -22,4 +22,4 @@ msgid "graphicalConfiguration_currentConfig"
 msgstr "\"\nSoučasný hardware:\n%s\n%s\nVerze:%s;"
 
 msgid "graphicalConfiguration_exception"
-msgstr "\"Vaše verze OpenGL (%s) je příliš nízká pro zobrazení grafu.\nAktualizujte Vaše grafické ovladače nebo nastavení.%s"
+msgstr "\"Vaše verze OpenGL2 (%s) je příliš nízká pro zobrazení grafu.\nAktualizujte Vaše grafické ovladače nebo nastavení.%s"
