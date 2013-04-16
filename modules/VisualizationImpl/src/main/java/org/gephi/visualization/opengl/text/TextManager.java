@@ -1,47 +1,46 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.visualization.opengl.text;
 
-import org.gephi.visualization.impl.TextDataImpl;
 import com.sun.opengl.util.j2d.TextRenderer;
 import java.awt.Font;
 import java.awt.geom.Rectangle2D;
@@ -49,24 +48,18 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.gephi.data.attributes.api.AttributeColumn;
-import org.gephi.data.attributes.api.AttributeController;
-import org.gephi.data.attributes.api.AttributeModel;
-import org.gephi.data.attributes.type.TimeInterval;
-import org.gephi.data.properties.PropertiesColumn;
-import org.gephi.dynamic.api.DynamicController;
-import org.gephi.dynamic.api.DynamicModel;
-import org.gephi.dynamic.api.DynamicModelEvent;
-import org.gephi.dynamic.api.DynamicModelListener;
-import org.gephi.graph.api.EdgeData;
-import org.gephi.graph.api.NodeData;
-import org.gephi.graph.api.Renderable;
+import org.gephi.attribute.api.Column;
+import org.gephi.graph.api.Edge;
+import org.gephi.graph.api.Element;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.TextProperties;
 import org.gephi.visualization.VizArchitecture;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.GraphDrawable;
-import org.gephi.visualization.apiimpl.ModelImpl;
 import org.gephi.visualization.apiimpl.VizConfig;
-import org.openide.util.Lookup;
+import org.gephi.visualization.model.TextModel;
+import org.gephi.visualization.model.edge.EdgeModel;
+import org.gephi.visualization.model.node.NodeModel;
 
 /**
  *
@@ -77,20 +70,16 @@ public class TextManager implements VizArchitecture {
     //Architecture
     private VizConfig vizConfig;
     private GraphDrawable drawable;
-    private DynamicController dynamicController;
     //Configuration
     private SizeMode[] sizeModes;
     private ColorMode[] colorModes;
     //Processing
-    private TextUtils textUtils;
     private Renderer nodeRenderer;
     private Renderer edgeRenderer;
-    private TextDataBuilderImpl builder;
     //Variables
-    private TextModel model;
+    private TextModelImpl model;
     private boolean nodeRefresh = true;
     private boolean edgeRefresh = true;
-    private TimeInterval currentTimeInterval;
     //Preferences
     private boolean renderer3d;
     private boolean mipmap;
@@ -98,9 +87,6 @@ public class TextManager implements VizArchitecture {
     private boolean antialised;
 
     public TextManager() {
-        textUtils = new TextUtils(this);
-        builder = new TextDataBuilderImpl();
-
         //SizeMode init
         sizeModes = new SizeMode[3];
         sizeModes[0] = new FixedSizeMode();
@@ -113,6 +99,7 @@ public class TextManager implements VizArchitecture {
         colorModes[1] = new ObjectColorMode();
     }
 
+    @Override
     public void initArchitecture() {
         model = VizController.getInstance().getVizModel().getTextModel();
         vizConfig = VizController.getInstance().getVizConfig();
@@ -126,7 +113,7 @@ public class TextManager implements VizArchitecture {
 
         //Model listening
         model.addChangeListener(new ChangeListener() {
-
+            @Override
             public void stateChanged(ChangeEvent e) {
                 if (!nodeRenderer.getFont().equals(model.getNodeFont())) {
                     nodeRenderer.setFont(model.getNodeFont());
@@ -141,29 +128,14 @@ public class TextManager implements VizArchitecture {
 
         //Model change
         VizController.getInstance().getVizModel().addPropertyChangeListener(new PropertyChangeListener() {
-
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("init")) {
                     TextManager.this.model = VizController.getInstance().getVizModel().getTextModel();
 
                     //Initialize columns if needed
                     if (model.getNodeTextColumns() == null || model.getNodeTextColumns().length == 0) {
-                        AttributeController attributeController = Lookup.getDefault().lookup(AttributeController.class);
-                        if (attributeController != null && attributeController.getModel() != null) {
-                            AttributeModel attributeModel = attributeController.getModel();
-                            AttributeColumn[] nodeCols = new AttributeColumn[]{attributeModel.getNodeTable().getColumn(PropertiesColumn.NODE_LABEL.getIndex())};
-                            AttributeColumn[] edgeCols = new AttributeColumn[]{attributeModel.getEdgeTable().getColumn(PropertiesColumn.EDGE_LABEL.getIndex())};
-                            model.setTextColumns(nodeCols, edgeCols);
-                        }
-                    }
-
-                    DynamicModel dynamicModel = dynamicController.getModel();
-                    if(dynamicModel!=null) {
-                        currentTimeInterval = dynamicModel.getVisibleInterval();
-                        builder.setDefaultEstimator(dynamicModel.getEstimator());
-                        builder.setNumberEstimator(dynamicModel.getNumberEstimator());
-                    } else {
-                        currentTimeInterval = null;
+                        model.setTextColumns(new Column[0], new Column[0]);
                     }
                 }
             }
@@ -174,17 +146,6 @@ public class TextManager implements VizArchitecture {
         mipmap = vizConfig.isLabelMipMap();
         fractionalMetrics = vizConfig.isLabelFractionalMetrics();
         renderer3d = false;
-
-        //Dynamic change
-        dynamicController = Lookup.getDefault().lookup(DynamicController.class);
-        dynamicController.addModelListener(new DynamicModelListener() {
-
-            public void dynamicModelChanged(DynamicModelEvent event) {
-                if(event.getEventType().equals(DynamicModelEvent.EventType.VISIBLE_INTERVAL)) {
-                    currentTimeInterval = (TimeInterval) event.getData();
-                }
-            }
-        });
     }
 
     private void initRenderer() {
@@ -211,11 +172,11 @@ public class TextManager implements VizArchitecture {
         return model.selectedOnly;
     }
 
-    public TextModel getModel() {
+    public TextModelImpl getModel() {
         return model;
     }
 
-    public void setModel(TextModel model) {
+    public void setModel(TextModelImpl model) {
         this.model = model;
     }
 
@@ -240,6 +201,21 @@ public class TextManager implements VizArchitecture {
         initRenderer();
     }
 
+    public void buildText(Element element, TextModel textModel, Column[] selectedColumns) {
+        if (selectedColumns != null) {
+            String str = "";
+            int i = 0;
+            for (Column c : selectedColumns) {
+                if (i++ > 0) {
+                    str += " - ";
+                }
+                Object val = element.getAttribute(c);
+                str += val != null ? val : "";
+            }
+            textModel.setText(str);
+        }
+    }
+
     //-------------------------------------------------------------------------------------------------
     public static interface Renderer {
 
@@ -253,9 +229,9 @@ public class TextManager implements VizArchitecture {
 
         public void endRendering();
 
-        public void drawTextNode(ModelImpl model);
+        public void drawTextNode(NodeModel model);
 
-        public void drawTextEdge(ModelImpl model);
+        public void drawTextEdge(EdgeModel model);
 
         public Font getFont();
 
@@ -270,80 +246,100 @@ public class TextManager implements VizArchitecture {
 
         private TextRenderer renderer;
 
+        @Override
         public void initRenderer(Font font) {
             renderer = new TextRenderer(font, antialised, fractionalMetrics, null, mipmap);
         }
 
+        @Override
         public void reinitRenderer() {
             renderer = new TextRenderer(renderer.getFont(), antialised, fractionalMetrics, null, mipmap);
         }
 
+        @Override
         public void disposeRenderer() {
             renderer.flush();
             renderer.dispose();
         }
 
+        @Override
         public Font getFont() {
             return renderer.getFont();
         }
 
+        @Override
         public void setFont(Font font) {
             initRenderer(font);
         }
 
+        @Override
         public void beginRendering() {
             renderer.begin3DRendering();
         }
 
+        @Override
         public void endRendering() {
             renderer.end3DRendering();
         }
 
-        public void drawTextNode(ModelImpl objectModel) {
-            Renderable renderable = objectModel.getObj();
-            TextDataImpl textData = (TextDataImpl) renderable.getTextData();
+        @Override
+        public void drawTextNode(NodeModel objectModel) {
+            Node node = objectModel.getNode();
+            TextProperties textData = (TextProperties) node.getTextProperties();
             if (textData != null) {
-                model.colorMode.textColor(this, textData, objectModel);
-                model.sizeMode.setSizeFactor3d(model.nodeSizeFactor, textData, objectModel);
+                model.colorMode.textNodeColor(this, objectModel);
+                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor3d(model.nodeSizeFactor, objectModel);
+                String txt = textData.getText();
                 if (nodeRefresh) {
-                    builder.buildNodeText((NodeData) renderable, textData, model, currentTimeInterval);
+                    buildText(node, objectModel, model.getNodeTextColumns());
+                    Rectangle2D r = renderer.getBounds(txt);
+                    objectModel.setTextBounds(r);
                 }
-                String txt = textData.getLine().getText();
-                Rectangle2D r = renderer.getBounds(txt);
-                textData.getLine().setBounds(r);
-                float posX = renderable.x() + (float) r.getWidth() / -2 * textData.getSizeFactor();
-                float posY = renderable.y() + (float) r.getHeight() / -2 * textData.getSizeFactor();
-                float posZ = renderable.getRadius();
 
-                renderer.draw3D(txt, posX, posY, posZ, textData.getSizeFactor());
+                float width = sizeFactor * objectModel.getTextWidth();
+                float height = sizeFactor * objectModel.getTextHeight();
+                float posX = node.x() + (float) width / -2 * sizeFactor;
+                float posY = node.y() + (float) height / -2 * sizeFactor;
+                float posZ = node.size() / 2f;
+
+                renderer.draw3D(txt, posX, posY, posZ, sizeFactor);
             }
         }
 
-        public void drawTextEdge(ModelImpl objectModel) {
-            Renderable renderable = objectModel.getObj();
-            TextDataImpl textData = (TextDataImpl) renderable.getTextData();
+        @Override
+        public void drawTextEdge(EdgeModel objectModel) {
+            Edge edge = objectModel.getEdge();
+            TextProperties textData = (TextProperties) edge.getTextProperties();
             if (textData != null) {
-                model.colorMode.textColor(this, textData, objectModel);
-                model.sizeMode.setSizeFactor3d(model.edgeSizeFactor, textData, objectModel);
+                model.colorMode.textEdgeColor(this, objectModel);
+//                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor3d(model.edgeSizeFactor, objectModel);
+                float sizeFactor = 1f;
+                String txt = textData.getText();
                 if (edgeRefresh) {
-                    builder.buildEdgeText((EdgeData) renderable, textData, model, currentTimeInterval);
+                    buildText(edge, objectModel, model.getEdgeTextColumns());
+                    Rectangle2D r = renderer.getBounds(txt);
+                    objectModel.setTextBounds(r);
                 }
+                float width = sizeFactor * objectModel.getTextWidth();
+                float height = sizeFactor * objectModel.getTextHeight();
+                float x = (objectModel.getSourceModel().getNode().x() + 2 * objectModel.getTargetModel().getNode().x()) / 3f;
+                float y = (objectModel.getSourceModel().getNode().y() + 2 * objectModel.getTargetModel().getNode().y()) / 3f;
+                float z = (objectModel.getSourceModel().getNode().z() + 2 * objectModel.getTargetModel().getNode().z()) / 3f;
 
-                String txt = textData.getLine().getText();
-                Rectangle2D r = renderer.getBounds(txt);
-                textData.getLine().setBounds(r);
-                float posX = renderable.x() + (float) r.getWidth() / -2 * textData.getSizeFactor();
-                float posY = renderable.y() + (float) r.getHeight() / -2 * textData.getSizeFactor();
-                float posZ = renderable.getRadius();
+                float posX = x + (float) width / -2 * sizeFactor;
+                float posY = y + (float) height / -2 * sizeFactor;
+                float posZ = 0;
 
-                renderer.draw3D(txt, posX, posY, posZ, textData.getSizeFactor());
+                renderer.draw3D(txt, posX, posY, posZ, sizeFactor);
             }
         }
 
+        @Override
         public void setColor(float r, float g, float b, float a) {
             renderer.setColor(r, g, b, a);
         }
 
+        @Override
         public TextRenderer getJOGLRenderer() {
             return renderer;
         }
@@ -354,85 +350,103 @@ public class TextManager implements VizArchitecture {
         private TextRenderer renderer;
         private static final float PIXEL_LIMIT = 3.5f;
 
+        @Override
         public void initRenderer(Font font) {
             renderer = new TextRenderer(font, antialised, fractionalMetrics, null, mipmap);
         }
 
+        @Override
         public void reinitRenderer() {
             renderer = new TextRenderer(renderer.getFont(), antialised, fractionalMetrics, null, mipmap);
         }
 
+        @Override
         public void disposeRenderer() {
             renderer.flush();
             renderer.dispose();
         }
 
+        @Override
         public Font getFont() {
             return renderer.getFont();
         }
 
+        @Override
         public void setFont(Font font) {
             initRenderer(font);
         }
 
+        @Override
         public void beginRendering() {
             renderer.beginRendering(drawable.getViewportWidth(), drawable.getViewportHeight());
         }
 
+        @Override
         public void endRendering() {
             renderer.endRendering();
         }
 
-        public void drawTextNode(ModelImpl objectModel) {
-            Renderable renderable = objectModel.getObj();
-            TextDataImpl textData = (TextDataImpl) renderable.getTextData();
+        @Override
+        public void drawTextNode(NodeModel objectModel) {
+            Node node = objectModel.getNode();
+            TextProperties textData = (TextProperties) node.getTextProperties();
             if (textData != null) {
-                model.colorMode.textColor(this, textData, objectModel);
-                model.sizeMode.setSizeFactor2d(model.nodeSizeFactor, textData, objectModel);
+                model.colorMode.textNodeColor(this, objectModel);
+                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor2d(model.nodeSizeFactor, objectModel);
+                String txt = textData.getText();
                 if (nodeRefresh) {
-                    builder.buildNodeText((NodeData) renderable, textData, model, currentTimeInterval);
+                    buildText(node, objectModel, model.getNodeTextColumns());
+                    Rectangle2D r = renderer.getBounds(txt);
+                    objectModel.setTextBounds(r);
                 }
-                if (textData.getSizeFactor() * renderer.getCharWidth('a') < PIXEL_LIMIT) {
+                if (sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
                     return;
                 }
-                String txt = textData.getLine().getText();
                 Rectangle2D r = renderer.getBounds(txt);
-                float posX = renderable.getModel().getViewportX() + (float) r.getWidth() / -2 * textData.getSizeFactor();
-                float posY = renderable.getModel().getViewportY() + (float) r.getHeight() / -2 * textData.getSizeFactor();
+                float posX = objectModel.getViewportX() + (float) r.getWidth() / -2 * sizeFactor;
+                float posY = objectModel.getViewportY() + (float) r.getHeight() / -2 * sizeFactor;
                 r.setRect(0, 0, r.getWidth() / Math.abs(drawable.getDraggingMarkerX()), r.getHeight() / Math.abs(drawable.getDraggingMarkerY()));
-                textData.getLine().setBounds(r);
+                objectModel.setTextBounds(r);
 
-                renderer.draw3D(txt, posX, posY, 0, textData.getSizeFactor());
+                renderer.draw3D(txt, posX, posY, 0, sizeFactor);
             }
         }
 
-        public void drawTextEdge(ModelImpl objectModel) {
-            Renderable renderable = objectModel.getObj();
-            TextDataImpl textData = (TextDataImpl) renderable.getTextData();
+        @Override
+        public void drawTextEdge(EdgeModel objectModel) {
+            Edge edge = objectModel.getEdge();
+            TextProperties textData = (TextProperties) edge.getTextProperties();
             if (textData != null) {
-                model.colorMode.textColor(this, textData, objectModel);
-                model.sizeMode.setSizeFactor2d(model.edgeSizeFactor, textData, objectModel);
+                model.colorMode.textEdgeColor(this, objectModel);
+//                float sizeFactor = textData.getSize() * model.sizeMode.getSizeFactor2d(model.nodeSizeFactor, objectModel);
+                float sizeFactor = 1f;
+                String txt = textData.getText();
                 if (edgeRefresh) {
-                    builder.buildEdgeText((EdgeData) renderable, textData, model, currentTimeInterval);
+                    buildText(edge, objectModel, model.getEdgeTextColumns());
+                    Rectangle2D r = renderer.getBounds(txt);
+                    objectModel.setTextBounds(r);
                 }
-                if (textData.getSizeFactor() * renderer.getCharWidth('a') < PIXEL_LIMIT) {
+                if (sizeFactor * renderer.getCharWidth('a') < PIXEL_LIMIT) {
                     return;
                 }
-                String txt = textData.getLine().getText();
                 Rectangle2D r = renderer.getBounds(txt);
-                float posX = renderable.getModel().getViewportX() + (float) r.getWidth() / -2 * textData.getSizeFactor();
-                float posY = renderable.getModel().getViewportY() + (float) r.getHeight() / -2 * textData.getSizeFactor();
+                float viewportX = (objectModel.getSourceModel().getViewportX() + 2 * objectModel.getTargetModel().getViewportX()) / 3f;
+                float viewportY = (objectModel.getSourceModel().getViewportY() + 2 * objectModel.getTargetModel().getViewportY()) / 3f;
+                float posX = viewportX + (float) r.getWidth() / -2 * sizeFactor;
+                float posY = viewportY + (float) r.getHeight() / -2 * sizeFactor;
                 r.setRect(0, 0, r.getWidth() / drawable.getDraggingMarkerX(), r.getHeight() / drawable.getDraggingMarkerY());
-                textData.getLine().setBounds(r);
+                objectModel.setTextBounds(r);
 
-                renderer.draw3D(txt, posX, posY, 0, textData.getSizeFactor());
+                renderer.draw3D(txt, posX, posY, 0, sizeFactor);
             }
         }
 
+        @Override
         public void setColor(float r, float g, float b, float a) {
             renderer.setColor(r, g, b, a);
         }
 
+        @Override
         public TextRenderer getJOGLRenderer() {
             return renderer;
         }

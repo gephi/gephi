@@ -64,6 +64,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
 
         autoSaveCheckBox.addChangeListener(new ChangeListener() {
 
+            @Override
             public void stateChanged(ChangeEvent e) {
                 selectDirectoryButton.setEnabled(autoSaveCheckBox.isSelected());
             }
@@ -98,6 +99,7 @@ public class ScreenshotSettingsPanel extends javax.swing.JPanel {
         //transparentBackgroundCheckBox.setSelected(screenshotMaker.isTransparentBackground());
         selectDirectoryButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser(screenshotMaker.getDefaultDirectory());
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

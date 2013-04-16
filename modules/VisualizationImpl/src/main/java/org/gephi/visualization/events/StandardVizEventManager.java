@@ -1,44 +1,44 @@
 /*
-Copyright 2008-2010 Gephi
-Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
-Website : http://www.gephi.org
+ Copyright 2008-2010 Gephi
+ Authors : Mathieu Bastian <mathieu.bastian@gephi.org>
+ Website : http://www.gephi.org
 
-This file is part of Gephi.
+ This file is part of Gephi.
 
-DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-Copyright 2011 Gephi Consortium. All rights reserved.
+ Copyright 2011 Gephi Consortium. All rights reserved.
 
-The contents of this file are subject to the terms of either the GNU
-General Public License Version 3 only ("GPL") or the Common
-Development and Distribution License("CDDL") (collectively, the
-"License"). You may not use this file except in compliance with the
-License. You can obtain a copy of the License at
-http://gephi.org/about/legal/license-notice/
-or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
-specific language governing permissions and limitations under the
-License.  When distributing the software, include this License Header
-Notice in each file and include the License files at
-/cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
-License Header, with the fields enclosed by brackets [] replaced by
-your own identifying information:
-"Portions Copyrighted [year] [name of copyright owner]"
+ The contents of this file are subject to the terms of either the GNU
+ General Public License Version 3 only ("GPL") or the Common
+ Development and Distribution License("CDDL") (collectively, the
+ "License"). You may not use this file except in compliance with the
+ License. You can obtain a copy of the License at
+ http://gephi.org/about/legal/license-notice/
+ or /cddl-1.0.txt and /gpl-3.0.txt. See the License for the
+ specific language governing permissions and limitations under the
+ License.  When distributing the software, include this License Header
+ Notice in each file and include the License files at
+ /cddl-1.0.txt and /gpl-3.0.txt. If applicable, add the following below the
+ License Header, with the fields enclosed by brackets [] replaced by
+ your own identifying information:
+ "Portions Copyrighted [year] [name of copyright owner]"
 
-If you wish your version of this file to be governed by only the CDDL
-or only the GPL Version 3, indicate your decision by adding
-"[Contributor] elects to include this software in this distribution
-under the [CDDL or GPL Version 3] license." If you do not indicate a
-single choice of license, a recipient has the option to distribute
-your version of this file under either the CDDL, the GPL Version 3 or
-to extend the choice of license to its licensees as provided above.
-However, if you add GPL Version 3 code and therefore, elected the GPL
-Version 3 license, then the option applies only if the new code is
-made subject to such option by the copyright holder.
+ If you wish your version of this file to be governed by only the CDDL
+ or only the GPL Version 3, indicate your decision by adding
+ "[Contributor] elects to include this software in this distribution
+ under the [CDDL or GPL Version 3] license." If you do not indicate a
+ single choice of license, a recipient has the option to distribute
+ your version of this file under either the CDDL, the GPL Version 3 or
+ to extend the choice of license to its licensees as provided above.
+ However, if you add GPL Version 3 code and therefore, elected the GPL
+ Version 3 license, then the option applies only if the new code is
+ made subject to such option by the copyright holder.
 
-Contributor(s):
+ Contributor(s):
 
-Portions Copyrighted 2011 Gephi Consortium.
-*/
+ Portions Copyrighted 2011 Gephi Consortium.
+ */
 package org.gephi.visualization.events;
 
 import java.lang.ref.WeakReference;
@@ -51,11 +51,8 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.NodeData;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.GraphIO;
-import org.gephi.visualization.apiimpl.ModelImpl;
 import org.gephi.visualization.apiimpl.VizEvent;
 import org.gephi.visualization.apiimpl.VizEventListener;
 import org.gephi.visualization.apiimpl.VizEventManager;
@@ -78,6 +75,7 @@ public class StandardVizEventManager implements VizEventManager {
         pool = new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>(10));
     }
 
+    @Override
     public void initArchitecture() {
         engine = VizController.getInstance().getEngine();
         graphIO = VizController.getInstance().getGraphIO();
@@ -100,7 +98,7 @@ public class StandardVizEventManager implements VizEventManager {
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_PRESS, false));
         handlersList.add(new VizEventTypeHandler(VizEvent.Type.NODE_LEFT_PRESSING, false));
         Collections.sort(handlersList, new Comparator() {
-
+            @Override
             public int compare(Object o1, Object o2) {
                 VizEvent.Type t1 = ((VizEventTypeHandler) o1).type;
                 VizEvent.Type t2 = ((VizEventTypeHandler) o2).type;
@@ -110,101 +108,112 @@ public class StandardVizEventManager implements VizEventManager {
         handlers = handlersList.toArray(new VizEventTypeHandler[0]);
     }
 
+    @Override
     public void mouseLeftClick() {
-        //Node Left click
-        VizEventTypeHandler nodeLeftHandler = handlers[VizEvent.Type.NODE_LEFT_CLICK.ordinal()];
-        if (nodeLeftHandler.hasListeners() && VizController.getInstance().getVizConfig().isSelectionEnable()) {
-            //Check if some node are selected
-            ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-            if (modelArray.length > 0) {
-                Node[] nodeArray = new Node[modelArray.length];
-                for (int i = 0; i < modelArray.length; i++) {
-                    nodeArray[i] = ((NodeData) modelArray[i].getObj()).getRootNode();
-                }
-                nodeLeftHandler.dispatch(nodeArray);
-            }
-        }
-
-        //Mouse left click
-        VizEventTypeHandler mouseLeftHandler = handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()];
-        if (mouseLeftHandler.hasListeners()) {
-            ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-            if (modelArray.length == 0 || !VizController.getInstance().getVizConfig().isSelectionEnable()) {
-                float[] mousePositionViewport = graphIO.getMousePosition();
-                float[] mousePosition3d = graphIO.getMousePosition3d();
-                float[] mousePos = new float[]{mousePositionViewport[0], mousePositionViewport[1], mousePosition3d[0], mousePosition3d[1]};
-                handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()].dispatch(mousePos);
-            }
-        }
+//        //Node Left click
+//        VizEventTypeHandler nodeLeftHandler = handlers[VizEvent.Type.NODE_LEFT_CLICK.ordinal()];
+//        if (nodeLeftHandler.hasListeners() && VizController.getInstance().getVizConfig().isSelectionEnable()) {
+//            //Check if some node are selected
+//            Model[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+//            if (modelArray.length > 0) {
+//                Node[] nodeArray = new Node[modelArray.length];
+//                for (int i = 0; i < modelArray.length; i++) {
+//                    nodeArray[i] = ((NodeModel) modelArray[i]).getNode();
+//                }
+//                nodeLeftHandler.dispatch(nodeArray);
+//            }
+//        }
+//
+//        //Mouse left click
+//        VizEventTypeHandler mouseLeftHandler = handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()];
+//        if (mouseLeftHandler.hasListeners()) {
+//            Model[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+//            if (modelArray.length == 0 || !VizController.getInstance().getVizConfig().isSelectionEnable()) {
+//                float[] mousePositionViewport = graphIO.getMousePosition();
+//                float[] mousePosition3d = graphIO.getMousePosition3d();
+//                float[] mousePos = new float[]{mousePositionViewport[0], mousePositionViewport[1], mousePosition3d[0], mousePosition3d[1]};
+//                handlers[VizEvent.Type.MOUSE_LEFT_CLICK.ordinal()].dispatch(mousePos);
+//            }
+//        }
     }
 
+    @Override
     public void mouseLeftPress() {
-        handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
-        pressingTick = PRESSING_FREQUENCY;
-        VizEventTypeHandler pressHandler = handlers[VizEvent.Type.NODE_LEFT_PRESS.ordinal()];
-        if (pressHandler.hasListeners()) {
-            //Check if some node are selected
-            ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-            if (modelArray.length > 0) {
-                Node[] nodeArray = new Node[modelArray.length];
-                for (int i = 0; i < modelArray.length; i++) {
-                    nodeArray[i] = ((NodeData) modelArray[i].getObj()).getRootNode();
-                }
-                pressHandler.dispatch(nodeArray);
-            }
-        }
+//        handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
+//        pressingTick = PRESSING_FREQUENCY;
+//        VizEventTypeHandler pressHandler = handlers[VizEvent.Type.NODE_LEFT_PRESS.ordinal()];
+//        if (pressHandler.hasListeners()) {
+//            //Check if some node are selected
+//            Model[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+//            if (modelArray.length > 0) {
+//                Node[] nodeArray = new Node[modelArray.length];
+//                for (int i = 0; i < modelArray.length; i++) {
+//                    nodeArray[i] = ((NodeModel) modelArray[i]).getNode();
+//                }
+//                pressHandler.dispatch(nodeArray);
+//            }
+//        }
     }
 
+    @Override
     public void mouseMiddleClick() {
         handlers[VizEvent.Type.MOUSE_MIDDLE_CLICK.ordinal()].dispatch();
     }
 
+    @Override
     public void mouseMiddlePress() {
         handlers[VizEvent.Type.MOUSE_LEFT_PRESS.ordinal()].dispatch();
     }
 
+    @Override
     public void mouseMove() {
         handlers[VizEvent.Type.MOUSE_MOVE.ordinal()].dispatch();
     }
 
+    @Override
     public void mouseRightClick() {
         handlers[VizEvent.Type.MOUSE_RIGHT_CLICK.ordinal()].dispatch();
     }
 
+    @Override
     public void mouseRightPress() {
         handlers[VizEvent.Type.MOUSE_RIGHT_PRESS.ordinal()].dispatch();
     }
     private static final int PRESSING_FREQUENCY = 5;
     private int pressingTick = 0;
 
+    @Override
     public void mouseLeftPressing() {
-        if (pressingTick++ >= PRESSING_FREQUENCY) {
-            pressingTick = 0;
-            VizEventTypeHandler nodeHandler = handlers[VizEvent.Type.NODE_LEFT_PRESSING.ordinal()];
-            if (nodeHandler.hasListeners()) {
-                //Check if some node are selected
-                ModelImpl[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
-                if (modelArray.length > 0) {
-                    Node[] nodeArray = new Node[modelArray.length];
-                    for (int i = 0; i < modelArray.length; i++) {
-                        nodeArray[i] = ((NodeData) modelArray[i].getObj()).getRootNode();
-                    }
-                    nodeHandler.dispatch(nodeArray);
-                }
-            }
-        }
+//        if (pressingTick++ >= PRESSING_FREQUENCY) {
+//            pressingTick = 0;
+//            VizEventTypeHandler nodeHandler = handlers[VizEvent.Type.NODE_LEFT_PRESSING.ordinal()];
+//            if (nodeHandler.hasListeners()) {
+//                //Check if some node are selected
+//                Model[] modelArray = engine.getSelectedObjects(AbstractEngine.CLASS_NODE);
+//                if (modelArray.length > 0) {
+//                    Node[] nodeArray = new Node[modelArray.length];
+//                    for (int i = 0; i < modelArray.length; i++) {
+//                        nodeArray[i] = ((NodeModel) modelArray[i]).getNode();
+//                    }
+//                    nodeHandler.dispatch(nodeArray);
+//                }
+//            }
+//        }
     }
 
+    @Override
     public void startDrag() {
         handlers[VizEvent.Type.START_DRAG.ordinal()].dispatch();
     }
 
+    @Override
     public void stopDrag() {
         handlers[VizEvent.Type.STOP_DRAG.ordinal()].dispatch();
     }
     private static final int DRAGGING_FREQUENCY = 5;
     private int draggingTick = 0;
 
+    @Override
     public void drag() {
         if (draggingTick++ >= DRAGGING_FREQUENCY) {
             draggingTick = 0;
@@ -218,29 +227,35 @@ public class StandardVizEventManager implements VizEventManager {
         }
     }
 
+    @Override
     public void mouseReleased() {
         handlers[VizEvent.Type.MOUSE_RELEASED.ordinal()].dispatch();
     }
 
     //Listeners
+    @Override
     public boolean hasListeners(VizEvent.Type type) {
         return handlers[type.ordinal()].hasListeners();
     }
 
+    @Override
     public void addListener(VizEventListener listener) {
         handlers[listener.getType().ordinal()].addListener(listener);
     }
 
+    @Override
     public void removeListener(VizEventListener listener) {
         handlers[listener.getType().ordinal()].removeListener(listener);
     }
 
+    @Override
     public void addListener(VizEventListener[] listeners) {
         for (int i = 0; i < listeners.length; i++) {
             handlers[listeners[i].getType().ordinal()].addListener(listeners[i]);
         }
     }
 
+    @Override
     public void removeListener(VizEventListener[] listeners) {
         for (int i = 0; i < listeners.length; i++) {
             handlers[listeners[i].getType().ordinal()].removeListener(listeners[i]);
@@ -263,7 +278,7 @@ public class StandardVizEventManager implements VizEventManager {
             this.type = type;
             this.listeners = new ArrayList<WeakReference<VizEventListener>>();
             runnable = new Runnable() {
-
+                @Override
                 public void run() {
                     fireVizEvent(null);
                     running = false;
@@ -302,7 +317,7 @@ public class StandardVizEventManager implements VizEventManager {
             if (listeners.size() > 0) {
                 running = true;
                 pool.submit(new Runnable() {
-
+                    @Override
                     public void run() {
                         fireVizEvent(data);
                         running = false;

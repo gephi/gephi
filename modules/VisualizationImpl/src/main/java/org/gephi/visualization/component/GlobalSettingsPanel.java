@@ -68,6 +68,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
         VizModel vizModel = VizController.getInstance().getVizModel();
         vizModel.addPropertyChangeListener(new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("init")) {
                     refreshSharedConfig();
@@ -85,6 +86,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
         refreshSharedConfig();
         hightlightCheckBox.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 vizModel.setLightenNonSelectedAuto(hightlightCheckBox.isSelected());
@@ -92,6 +94,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
         });
         ((JColorButton) backgroundColorButton).addPropertyChangeListener(JColorButton.EVENT_COLOR, new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 vizModel.setBackgroundColor(((JColorButton) backgroundColorButton).getColor());
@@ -99,6 +102,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
         });
         autoSelectNeigborCheckbox.addItemListener(new ItemListener() {
 
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 VizModel vizModel = VizController.getInstance().getVizModel();
                 vizModel.setAutoSelectNeighbor(autoSelectNeigborCheckbox.isSelected());
@@ -106,6 +110,7 @@ public class GlobalSettingsPanel extends javax.swing.JPanel {
         });
         zoomSlider.addChangeListener(new ChangeListener() {
 
+            @Override
             public void stateChanged(ChangeEvent e) {
                 int cam = (int) VizController.getInstance().getVizModel().getCameraDistance();
                 if (zoomSlider.getValue() != cam && cam < zoomSlider.getMaximum()) {

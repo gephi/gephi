@@ -122,6 +122,7 @@ public class ScreenshotMaker implements VizArchitecture {
         finishedMessage = NbPreferences.forModule(ScreenshotMaker.class).getBoolean(SHOW_MESSAGE, finishedMessage);
     }
 
+    @Override
     public void initArchitecture() {
         drawable = VizController.getInstance().getDrawable();
         engine = VizController.getInstance().getEngine();
@@ -289,6 +290,7 @@ public class ScreenshotMaker implements VizArchitecture {
             final String msg = NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.message", file.getName());
             SwingUtilities.invokeLater(new Runnable() {
 
+                @Override
                 public void run() {
                     JOptionPane.showMessageDialog(WindowManager.getDefault().getMainWindow(), msg, NbBundle.getMessage(ScreenshotMaker.class, "ScreenshotMaker.finishedMessage.title"), JOptionPane.INFORMATION_MESSAGE);
                 }

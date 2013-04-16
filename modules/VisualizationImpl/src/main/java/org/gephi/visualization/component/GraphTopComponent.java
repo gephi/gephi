@@ -47,14 +47,10 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import org.gephi.datalab.api.DataLaboratoryHelper;
-import org.gephi.datalab.spi.ContextMenuItemManipulator;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
@@ -62,9 +58,7 @@ import org.gephi.tools.api.ToolController;
 import org.gephi.ui.utils.UIUtils;
 import org.gephi.visualization.VizController;
 import org.gephi.visualization.apiimpl.PropertiesBarAddon;
-import org.gephi.visualization.bridge.DHNSEventBridge;
 import org.gephi.visualization.opengl.AbstractEngine;
-import org.gephi.visualization.spi.GraphContextMenuItem;
 import org.gephi.visualization.swing.GraphDrawableImpl;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -75,20 +69,19 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 @ConvertAsProperties(dtd = "-//org.gephi.visualization.component//Graph//EN",
-autostore = false)
+        autostore = false)
 @TopComponent.Description(preferredID = "GraphTopComponent",
-persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "editor", openAtStartup = true, roles = {"overview"})
 @ActionID(category = "Window", id = "org.gephi.visualization.component.GraphTopComponent")
 @ActionReference(path = "Menu/Window", position = 500)
 @TopComponent.OpenActionRegistration(displayName = "#CTL_GraphTopComponent",
-preferredID = "GraphTopComponent")
+        preferredID = "GraphTopComponent")
 public class GraphTopComponent extends TopComponent implements AWTEventListener {
-    
+
     private AbstractEngine engine;
     private VizBarController vizBarController;
-    private final DHNSEventBridge eventBridge;
-    private Map<Integer, ContextMenuItemManipulator> keyActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();
+//    private Map<Integer, ContextMenuItemManipulator> keyActionMappings = new HashMap<Integer, ContextMenuItemManipulator>();
 
     public GraphTopComponent() {
         initComponents();
@@ -97,7 +90,6 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 //        setToolTipText(NbBundle.getMessage(GraphTopComponent.class, "HINT_GraphTopComponent"));
 
         engine = VizController.getInstance().getEngine();
-        eventBridge = (DHNSEventBridge) VizController.getInstance().getEventBridge();
 
         //Init
         initCollapsePanel();
@@ -106,11 +98,11 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
 
         //Request component activation and therefore initialize JOGL component
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
-
+            @Override
             public void run() {
                 open();
                 SwingUtilities.invokeLater(new Runnable() {
-
+                    @Override
                     public void run() {
                         requestActive();
                         add(drawable.getGraphComponent(), BorderLayout.CENTER);
@@ -180,10 +172,11 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         //Workspace events
         ProjectController projectController = Lookup.getDefault().lookup(ProjectController.class);
         projectController.addWorkspaceListener(new WorkspaceListener() {
-
+            @Override
             public void initialize(Workspace workspace) {
             }
 
+            @Override
             public void select(Workspace workspace) {
                 toolbar.setEnabled(true);
                 propertiesBar.setEnabled(true);
@@ -192,12 +185,15 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
                 addonsBar.setEnabled(true);
             }
 
+            @Override
             public void unselect(Workspace workspace) {
             }
 
+            @Override
             public void close(Workspace workspace) {
             }
 
+            @Override
             public void disable() {
                 toolbar.setEnabled(false);
                 tc.select(null);//Unselect any selected tool
@@ -217,42 +213,43 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
     }
 
     private void initKeyEventContextMenuActionMappings() {
-        mapItems(Lookup.getDefault().lookupAll(GraphContextMenuItem.class).toArray(new GraphContextMenuItem[0]));
+//        mapItems(Lookup.getDefault().lookupAll(GraphContextMenuItem.class).toArray(new GraphContextMenuItem[0]));
     }
-
-    private void mapItems(ContextMenuItemManipulator[] items) {
-        Integer key;
-        ContextMenuItemManipulator[] subItems;
-        for (ContextMenuItemManipulator item : items) {
-            key = item.getMnemonicKey();
-            if (key != null) {
-                if (!keyActionMappings.containsKey(key)) {
-                    keyActionMappings.put(key, item);
-                }
-            }
-            subItems = item.getSubItems();
-            if (subItems != null) {
-                mapItems(subItems);
-            }
-        }
-    }
+//
+//    private void mapItems(ContextMenuItemManipulator[] items) {
+//        Integer key;
+//        ContextMenuItemManipulator[] subItems;
+//        for (ContextMenuItemManipulator item : items) {
+//            key = item.getMnemonicKey();
+//            if (key != null) {
+//                if (!keyActionMappings.containsKey(key)) {
+//                    keyActionMappings.put(key, item);
+//                }
+//            }
+//            subItems = item.getSubItems();
+//            if (subItems != null) {
+//                mapItems(subItems);
+//            }
+//        }
+//    }
 
     /**
      * For attending Ctrl+Key events in graph window to launch context menu
      * actions
      */
+    @Override
     public void eventDispatched(AWTEvent event) {
         KeyEvent evt = (KeyEvent) event;
 
         if (evt.getID() == KeyEvent.KEY_RELEASED && (evt.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) == KeyEvent.CTRL_DOWN_MASK) {
-            final ContextMenuItemManipulator item = keyActionMappings.get(evt.getKeyCode());
-            if (item != null) {
-                ((GraphContextMenuItem) item).setup(eventBridge.getGraph(), eventBridge.getSelectedNodes());
-                if (item.isAvailable() && item.canExecute()) {
-                    DataLaboratoryHelper.getDefault().executeManipulator(item);
-                }
-                evt.consume();
-            }
+//            final ContextMenuItemManipulator item = keyActionMappings.get(evt.getKeyCode());
+//            if (item != null) {
+//                ((GraphContextMenuItem) item).setup(eventBridge.getGraph(), eventBridge.getSelectedNodes());
+//                if (item.isAvailable() && item.canExecute()) {
+//                    DataLaboratoryHelper.getDefault().executeManipulator(item);
+//                }
+//                evt.consume();
+//            }
         }
     }
 
@@ -332,7 +329,7 @@ public class GraphTopComponent extends TopComponent implements AWTEventListener 
         @Override
         public void setEnabled(final boolean enabled) {
             SwingUtilities.invokeLater(new Runnable() {
-
+                @Override
                 public void run() {
                     for (Component c : getComponents()) {
                         c.setEnabled(enabled);

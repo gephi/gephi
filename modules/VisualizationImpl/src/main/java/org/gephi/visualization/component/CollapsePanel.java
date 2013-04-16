@@ -79,6 +79,7 @@ public class CollapsePanel extends javax.swing.JPanel {
         }
         extendButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 boolean ext = CollapsePanel.this.extended;
                 ext = !ext;
